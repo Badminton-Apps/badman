@@ -3,7 +3,37 @@ import { ActivatedRouteSnapshot } from '@angular/router';
 import { EventTournament } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { Apollo, gql } from 'apollo-angular';
-import { first, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+
+export const EVENT_QUERY = gql`
+  query EventTournament($id: ID!) {
+    eventTournament(id: $id) {
+      id
+      name
+      slug
+      openDate
+      closeDate
+      visualCode
+      lastSync
+      official
+      subEventTournaments {
+        id
+        name
+        eventType
+        level
+        rankingGroups {
+          id
+          name
+        }
+        drawTournaments {
+          id
+          name
+          size
+        }
+      }
+    }
+  }
+`;
 
 @Injectable()
 export class EventResolver {
@@ -15,41 +45,13 @@ export class EventResolver {
     const eventId = route.params['id'];
 
     return this.apollo
-      .query<{ eventTournament: Partial<EventTournament> }>({
-        query: gql`
-          query EventTournament($id: ID!) {
-            eventTournament(id: $id) {
-              id
-              name
-              slug
-              openDate
-              closeDate
-              visualCode
-              lastSync
-              official
-              subEventTournaments {
-                id
-                name
-                eventType
-                level
-                rankingGroups {
-                  id
-                  name
-                }
-                drawTournaments {
-                  id
-                  name
-                  size
-                }
-              }
-            }
-          }
-        `,
+      .watchQuery<{ eventTournament: Partial<EventTournament> }>({
+        query: EVENT_QUERY,
         variables: {
           id: eventId,
         },
       })
-      .pipe(
+      .valueChanges.pipe(
         transferState('eventKey-' + eventId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.eventTournament) {
@@ -57,8 +59,6 @@ export class EventResolver {
           }
           return new EventTournament(result.data.eventTournament);
         }),
-
-        first(),
       );
   }
 }

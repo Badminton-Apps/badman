@@ -13,44 +13,41 @@ export class SubEventCompetitionBuilder {
   private draws: DrawCompetitionBuilder[] = [];
   private entries: EventCompetitionEntryBuilder[] = [];
 
-  constructor(type: SubEventTypeEnum) {
+  constructor(type: SubEventTypeEnum, name?: string, eventId?: string) {
     this.subEvent = new SubEventCompetition({
       eventType: type,
+      name: name ?? 'SubEvent',
+      eventId: eventId ?? '123',
+      levelWithModifier: 1,
     });
   }
 
-  static Create(type: SubEventTypeEnum): SubEventCompetitionBuilder {
-    return new SubEventCompetitionBuilder(type);
+  static Create(type: SubEventTypeEnum, name?: string, eventId?: string) {
+    return new SubEventCompetitionBuilder(type, name, eventId);
   }
 
-  WithName(firstName: string): SubEventCompetitionBuilder {
-    this.subEvent.name = firstName;
-
-    return this;
-  }
-
-  WithId(id: string): SubEventCompetitionBuilder {
+  WithId(id: string): this {
     this.subEvent.id = id;
     return this;
   }
 
-  WithIndex(minBaseIndex: number, maxBaseIndex: number): SubEventCompetitionBuilder {
+  WithEventId(eventId: string): this {
+    this.subEvent.eventId = eventId;
+    return this;
+  }
+
+  WithIndex(minBaseIndex: number, maxBaseIndex: number): this {
     this.subEvent.minBaseIndex = minBaseIndex;
     this.subEvent.maxBaseIndex = maxBaseIndex;
     return this;
   }
 
-  WitnMaxLevel(maxLevel: number): SubEventCompetitionBuilder {
+  WitnMaxLevel(maxLevel: number): this {
     this.subEvent.maxLevel = maxLevel;
     return this;
   }
 
-  WithEventId(eventId: string): SubEventCompetitionBuilder {
-    this.subEvent.eventId = eventId;
-    return this;
-  }
-
-  ForEvent(event: EventCompetitionBuilder): SubEventCompetitionBuilder {
+  ForEvent(event: EventCompetitionBuilder): this {
     event.WithSubEvent(this);
     return this;
   }
@@ -60,12 +57,12 @@ export class SubEventCompetitionBuilder {
     return this;
   }
 
-  WithDraw(draw: DrawCompetitionBuilder): SubEventCompetitionBuilder {
+  WithDraw(draw: DrawCompetitionBuilder): this {
     this.draws.push(draw);
     return this;
   }
 
-  WithEntry(entry: EventCompetitionEntryBuilder): SubEventCompetitionBuilder {
+  WithEntry(entry: EventCompetitionEntryBuilder): this {
     this.entries.push(entry);
     return this;
   }

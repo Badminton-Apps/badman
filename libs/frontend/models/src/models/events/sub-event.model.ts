@@ -1,3 +1,4 @@
+import { SubEventTypeEnum } from '@badman/utils';
 import { EventEntry } from '../entry.model';
 import { Game } from '../game.model';
 import { RankingGroup } from '../group.model';
@@ -6,7 +7,7 @@ import { Player } from '../player.model';
 export class SubEvent {
   id?: string;
   name?: string;
-  eventType?: string;
+  eventType?: SubEventTypeEnum;
   eventId?: string;
   level?: number;
   maxLevel?: number;

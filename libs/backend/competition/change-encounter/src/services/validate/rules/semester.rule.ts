@@ -64,9 +64,9 @@ export class SemesterRule extends Rule {
       } as EncounterCompetition;
 
       for (const suggestedDate of suggestedDates) {
-        const suggestedSemester1 = suggestedDate.getFullYear() === lowestYear;
+        const suggestedSemester1 = suggestedDate.date.getFullYear() === lowestYear;
 
-        encounter.date = suggestedDate;
+        encounter.date = suggestedDate.date
         const encountersSemester = suggestedSemester1 ? encountersSemester1 : encountersSemester2;
         const warns = this.findEncountersInSameSemester(
           [...encountersSemester, encounter],
@@ -78,7 +78,7 @@ export class SemesterRule extends Rule {
             message: 'all.competition.change-encounter.errors.same-semester',
             params: {
               encounterId: warn.id,
-              date: suggestedDate,
+              date: suggestedDate.date,
             },
           });
         });

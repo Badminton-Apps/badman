@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-event",
-  "version": "6.166.3",
+  "version": "6.168.3",
   "peerDependencies": {
     "@badman/frontend-team-assembly": "*",
     "@badman/frontend-team-enrollment": "*",
@@ -27,7 +27,7 @@
     "ngxtension": "^3.2.0",
     "rxjs": "~7.8.1",
     "ng-apexcharts": "^1.10.0",
-    "xng-breadcrumb": "^11.0.0",
+    "xng-breadcrumb": "^12.0.0",
     "@ng-maps/google": "^6.0.0",
     "ngx-moment": "^6.0.2",
     "@angular/animations": "18.1.0",

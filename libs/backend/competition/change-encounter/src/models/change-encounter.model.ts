@@ -10,8 +10,17 @@ export class ChangeEncounterInput {
   @Field(() => ID, { nullable: true })
   workingencounterId?: string;
 
-  @Field(() => [Date], { nullable: true })
-  suggestedDates?: Date[];
+  @Field(() => [Suggestions], { nullable: true })
+  suggestedDates?: Suggestions[];
+}
+
+@InputType()
+export class Suggestions {
+  @Field(() => Date)
+  date!: Date;
+
+  @Field(() => ID)
+  locationId!: string;
 }
 
 @ObjectType()
@@ -39,5 +48,8 @@ export class ChangeEncounterValidationData {
   locations!: Location[];
   lowestYear!: number;
   workingencounterId?: string;
-  suggestedDates?: Date[];
+  suggestedDates?: {
+    date: Date;
+    locationId: string;
+  }[];
 }

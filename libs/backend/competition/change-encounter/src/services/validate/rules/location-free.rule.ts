@@ -48,12 +48,14 @@ export class LocationRule extends Rule {
       } as EncounterCompetition;
 
       for (const suggestedDate of suggestedDates) {
-        if (moment(suggestedDate).isSame(encounter.date, 'minute')) {
+        if (moment(suggestedDate.date).isSame(encounter.date, 'minute')) {
           // if the suggested date is the same as the current date, we can skip this
           continue;
         }
 
-        encounter.date = suggestedDate;
+        encounter.date = suggestedDate.date;
+        encounter.locationId = suggestedDate.locationId;
+
         const warning = await this.checkifLocationIsFree([encounter], locations, true);
         warnings.push(...warning);
       }

@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-queue",
-  "version": "6.166.3",
+  "version": "6.168.3",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "@badman/utils": "6.166.3",
+    "@badman/utils": "6.168.3",
     "@nestjs/common": "^10.3.10",
     "@nestjs/config": "^3.2.3",
     "@nestjs/bull": "^10.1.1"

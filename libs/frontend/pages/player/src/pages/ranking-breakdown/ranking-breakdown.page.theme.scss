@@ -12,9 +12,9 @@
   @include add-game.color($theme);
   @include list-games.color($theme);
 
-  badman-ranking-breakdown {
+  // badman-ranking-breakdown {
     
-  }
+  // }
 }
 
 @mixin typography($theme) {
@@ -22,9 +22,9 @@
   @include add-game.typography($theme);
   @include list-games.typography($theme);
 
-  badman-ranking-breakdown {
-    
-  }
+  // badman-ranking-breakdown {
+  //   
+  // }
 }
 
 @mixin theme($theme) {

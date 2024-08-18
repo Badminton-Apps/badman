@@ -11,6 +11,7 @@ const MODULE_ROUTES: Routes = [
   },
   {
     path: ':id',
+    runGuardsAndResolvers: 'always',
     resolve: {
       eventTournament: EventResolver,
     },
@@ -22,10 +23,12 @@ const MODULE_ROUTES: Routes = [
     children: [
       {
         path: '',
+        runGuardsAndResolvers: 'always',
         component: DetailPageComponent,
       },
       {
         path: 'draw/:id',
+        runGuardsAndResolvers: 'always',
         resolve: {
           drawTournament: DrawResolver,
         },

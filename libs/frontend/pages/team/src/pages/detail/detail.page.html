@@ -1,5 +1,5 @@
 <badman-page-header>
-  <ng-content title>{{ team().name }}</ng-content>
+  <ng-content title>{{ team()?.name }}</ng-content>
   @if (this.entry()) {
     <ng-content subTitle>
       @if (this.entry()?.drawCompetition?.id) {
@@ -22,14 +22,49 @@
       }
     </ng-content>
   }
+
+  <ng-content actions>
+    <button mat-icon-button (click)="this.showCalendar()">
+      <mat-icon>event</mat-icon>
+    </button>
+  </ng-content>
 </badman-page-header>
-<section class="games">
-  <section class="recent-games">
-    <h3>{{ 'all.game.recent.title' | translate }}</h3>
-    <badman-recent-games [teams]="team()"></badman-recent-games>
+
+@if (team(); as team) {
+  <section class="games">
+    <section class="recent-games">
+      <h3>{{ 'all.game.recent.title' | translate }}</h3>
+      <badman-recent-games [teams]="team"></badman-recent-games>
+    </section>
+    <section class="upcoming-games">
+      <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
+      <badman-upcoming-games [teams]="team"></badman-upcoming-games>
+    </section>
   </section>
-  <section class="upcoming-games">
-    <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
-    <badman-upcoming-games [teams]="team()"></badman-upcoming-games>
-  </section>
-</section>
+
+  <ng-template #calendar>
+    <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
+    <mat-dialog-content>
+      <p>
+        <small>{{ 'all.player.ical.description' | translate }}</small>
+      </p>
+      <p>
+        {{ 'all.player.ical.team-season' | translate }}:
+        <button mat-flat-button (click)="this.copyToClipboard('?teamId=' + team.id)">
+          {{ 'all.player.ical.click' | translate }}
+        </button>
+
+        <br />
+        {{ 'all.player.ical.linked' | translate }}:
+        <button mat-flat-button (click)="this.copyToClipboard('?linkId=' + team.link)">
+          {{ 'all.player.ical.click' | translate }}
+        </button>
+      </p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button matDialogClose>
+        {{ 'all.button.close' | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+}

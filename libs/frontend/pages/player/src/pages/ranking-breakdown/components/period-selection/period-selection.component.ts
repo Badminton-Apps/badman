@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, computed, input, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, ViewChild, computed, inject, input, signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
@@ -14,6 +14,7 @@ import { getRankingPeriods } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
+import { RankingBreakdownService } from '../../services/ranking-breakdown.service';
 
 @Component({
   selector: 'badman-period-selection',
@@ -37,15 +38,10 @@ import { MomentModule } from 'ngx-moment';
   ],
 })
 export class PeriodSelectionComponent {
-  period = input.required<
-    FormGroup<{
-      start: FormControl<Moment>;
-      end: FormControl<Moment>;
-      game: FormControl<Moment>;
-      next: FormControl<Moment>;
-    }>
-  >();
+  private readonly breakdownService = inject(RankingBreakdownService);
+
   system = input.required<RankingSystem>();
+  filter = this.breakdownService.filter;
 
   @ViewChild(MatMenuTrigger) trigger?: MatMenuTrigger;
   minDateInUpdate?: Moment;
@@ -136,7 +132,7 @@ export class PeriodSelectionComponent {
       .clone()
       .add(this.system().calculationIntervalAmount, this.system().calculationIntervalUnit);
 
-    this.period()?.patchValue({
+    this.filter.patchValue({
       start: startPeriod,
       end: endPeriod,
       game: gamePeriod,
