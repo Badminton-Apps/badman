@@ -737,6 +737,7 @@
       "countsForUpgrade": "# Promotion",
       "date": "Date",
       "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
+      "downgrade": "Dégradation",
       "downgrade-average": "Moyenne des déclassements",
       "drops-next-period": "Ne compte pas dans la période suivante",
       "evolution": "Évolution",
@@ -799,6 +800,7 @@
         "point": "Mise à jour des points",
         "ranking": "Mise à jour du classement"
       },
+      "upgrade": "Promotion",
       "upgrade-average": "Moyenne. promotion",
       "used-for-downgrade": "Utilisé pour le déclassement",
       "used-for-upgrade": "Utilisé pour la promotion"
