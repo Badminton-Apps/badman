@@ -736,6 +736,7 @@
       "countsForUpgrade": "# Degradatie",
       "date": "Datum",
       "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
+      "downgrade": "Degradatie",
       "downgrade-average": "Avg. degradatie",
       "drops-next-period": "Telt niet meer mee in volgende periode",
       "evolution": "Evolutie",
@@ -798,6 +799,7 @@
         "point": "Punten update",
         "ranking": "Ranking update"
       },
+      "upgrade": "Promotie",
       "upgrade-average": "Avg. promotie",
       "used-for-downgrade": "Gebruikt voor degradatie",
       "used-for-upgrade": "Gebruikt voor promotie"
