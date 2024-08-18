@@ -99,4 +99,9 @@ export class AppController {
     // Respond ok for now
     res.status(200).send(result);
   }
+
+  @Get('test-auth') 
+  async testAuth(@User() user: Player) {
+    return user;
+  }
 }
