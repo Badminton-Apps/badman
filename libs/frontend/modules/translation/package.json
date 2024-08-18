@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-translation",
-  "version": "6.168.3",
+  "version": "6.169.0",
   "peerDependencies": {
     "@angular/core": "18.1.0",
     "@badman/utils": "*",
