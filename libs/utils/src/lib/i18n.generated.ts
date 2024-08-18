@@ -148,6 +148,7 @@ export type I18nTranslations = {
                     "closing": string;
                     "home-accept": string;
                     "location-change": string;
+                    "location-might-not-free": string;
                     "missing-availability": string;
                     "selected-different-location": string;
                 };

@@ -27,8 +27,13 @@ export class LocationRule extends Rule {
     const { encountersSem1, encountersSem2, suggestedDates, workingencounterId, locations } =
       changeEncounter;
 
-    (await this.checkifLocationIsFree(encountersSem1, locations))?.map((r) => warnings.push(r));
-    (await this.checkifLocationIsFree(encountersSem2, locations))?.map((r) => warnings.push(r));
+    const sem1Err = await this.checkifLocationIsFree(encountersSem1, locations);
+    const sem2Err = await this.checkifLocationIsFree(encountersSem2, locations);
+
+    errors.push(...sem1Err.err);
+    errors.push(...sem2Err.err);
+    warnings.push(...sem1Err.wrn);
+    warnings.push(...sem2Err.wrn);
 
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
     if (suggestedDates && workingencounterId) {
@@ -56,8 +61,10 @@ export class LocationRule extends Rule {
         encounter.date = suggestedDate.date;
         encounter.locationId = suggestedDate.locationId;
 
-        const warning = await this.checkifLocationIsFree([encounter], locations, true);
-        warnings.push(...warning);
+        const { err, wrn } = await this.checkifLocationIsFree([encounter], locations, true);
+
+        warnings.push(...wrn);
+        errors.push(...err);
       }
     }
 
@@ -74,9 +81,13 @@ export class LocationRule extends Rule {
     isSuggested = false,
   ) {
     const errors: ChangeEncounterValidationError<LocationRuleParams>[] = [];
+    const warnings: ChangeEncounterValidationError<LocationRuleParams>[] = [];
 
     if (!locations) {
-      return errors;
+      return {
+        err: errors,
+        wrn: warnings,
+      };
     }
 
     for (const enc of encounters) {
@@ -86,10 +97,6 @@ export class LocationRule extends Rule {
           date: enc.date,
         },
       });
-
-      if (isSuggested) {
-        count++;
-      }
 
       const location = locations.find((r) => r.id === enc.locationId);
 
@@ -103,12 +110,6 @@ export class LocationRule extends Rule {
         const filteredDays = availability.days?.filter((r) => r.day === encounterDay);
         const filteredSlots = filteredDays?.find((r) => r.startTime === encounterTime);
 
-        this.logger.debug(`encounter day: ${encounterDay}, encounter time: ${encounterTime}`);
-        for (const day of availability.days ?? []) {
-          this.logger.debug(`availability day: ${day.day}, start time: ${day.startTime}`);
-        }
-        this.logger.debug(`Found slot: ${filteredSlots != null}`);
-
         if (filteredSlots != null && !slot) {
           slot = filteredSlots;
         }
@@ -116,8 +117,23 @@ export class LocationRule extends Rule {
 
       if (slot) {
         if (count > (slot?.courts ?? 0) / 2) {
+          console.log('slot.courts', slot.courts);
+          console.log('count', count);
           errors.push({
             message: 'all.competition.change-encounter.errors.location-not-free',
+            params: {
+              encounterId: enc.id,
+              date: enc.date,
+            },
+          });
+        }
+        if (isSuggested) {
+          count++;
+        }
+
+        if (count > (slot?.courts ?? 0) / 2) {
+          warnings.push({
+            message: 'all.competition.change-encounter.warnings.location-might-not-free',
             params: {
               encounterId: enc.id,
               date: enc.date,
@@ -140,6 +156,9 @@ export class LocationRule extends Rule {
       }
     }
 
-    return errors.flat();
+    return {
+      err: errors,
+      wrn: warnings,
+    };
   }
 }

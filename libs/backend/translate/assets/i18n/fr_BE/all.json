@@ -141,6 +141,7 @@
         "closing": "La date limite d'envoi et de traitement des candidatures est",
         "home-accept": "L'équipe à domicile ne peut effectuer qu'un mouvement",
         "location-change": "Changement de lieu",
+        "location-might-not-free": "Certaines propositions à ces dates pourraient entraîner un manque d'espace.",
         "missing-availability": "Les deux équipes doivent être disponibles.",
         "selected-different-location": "Un emplacement différent a été choisi, mais en raison des limitations des systèmes externes, ces emplacements doivent être mis à jour manuellement. Veuillez noter que cela peut prendre plusieurs jours."
       }
@@ -732,8 +733,8 @@
       "can-not-upgrade": "Plus de {points} = passer de {level} à {newLevel}",
       "can-upgrade": "Avec ce nombre de points (>{points}), le joueur passera de {level} à {newLevel}",
       "corrected": " {original} correspondances d'origine, la moyenne est calculée avec un minimum de {corrected} correspondances.",
-      "countsForDowngrade": "# Promotion",
-      "countsForUpgrade": "# Dégradation",
+      "countsForDowngrade": "# Dégradation",
+      "countsForUpgrade": "# Promotion",
       "date": "Date",
       "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
       "downgrade-average": "Moyenne des déclassements",

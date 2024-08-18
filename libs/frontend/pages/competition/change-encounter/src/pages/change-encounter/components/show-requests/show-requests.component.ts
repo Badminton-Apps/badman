@@ -248,8 +248,6 @@ export class ShowRequestsComponent implements OnInit {
         locationId: r.locationId,
       }));
 
-    console.log('suggestedDates', suggestedDates);
-
     return this.apollo
       .query<{
         validateChangeEncounter: {

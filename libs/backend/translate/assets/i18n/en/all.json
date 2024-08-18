@@ -141,6 +141,7 @@
         "closing": "The deadline for sending and processing applications is",
         "home-accept": "The home team can only complete a move",
         "location-change": "Change of location",
+        "location-might-not-free": "There are proposals on these dates that may cause there to be too little space.",
         "missing-availability": "Both teams must be available.",
         "selected-different-location": "A different location has been chosen, but due to limitations in external systems, these locations must be updated manually. Please note that this may take several days."
       }
@@ -732,8 +733,8 @@
       "can-not-upgrade": "More than {points} = rising from {level} to {newLevel}",
       "can-upgrade": "With this number of points (>{points}), the player will rise from {level} to {newLevel}",
       "corrected": "Originally {original} games, average is being calculated with minimum {corrected} games.",
-      "countsForDowngrade": "# Promotion",
-      "countsForUpgrade": "# Degradation",
+      "countsForDowngrade": "# Degradation",
+      "countsForUpgrade": "# Promotion",
       "date": "Date",
       "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",
       "downgrade-average": "Avg. demotion",

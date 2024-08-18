@@ -141,6 +141,7 @@
         "closing": "De deadline voor het versturen en afwerken van aanvragen is",
         "home-accept": "De thuisploeg kan enkel een verplaatsing afronden",
         "location-change": "Verandering van locatie",
+        "location-might-not-free": "Er zijn voorstellen op deze data die er voor kunnen zorgen dat er te weinig plaats is.",
         "missing-availability": "Beide ploegen moeten op beschikbaar staan.",
         "selected-different-location": "Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren."
       }
@@ -732,8 +733,8 @@
       "can-not-upgrade": "Meer dan {points} = stijgen van {level} naar {newLevel}",
       "can-upgrade": "Met dit aantal punten (>{points}) zal de speler stijgen van {level} naar {newLevel}",
       "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
-      "countsForDowngrade": "# Promotie",
-      "countsForUpgrade": "# Degradatie",
+      "countsForDowngrade": "# Degradatie",
+      "countsForUpgrade": "# Promotie",
       "date": "Datum",
       "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
       "downgrade-average": "Avg. degradatie",
