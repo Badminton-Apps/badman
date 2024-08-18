@@ -1,3 +1,14 @@
+## 6.169.0 (2024-08-18)
+
+
+### 🚀 Features
+
+- improved breakdown table ([9c5723a09](https://github.com/Badminton-Apps/badman/commit/9c5723a09))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.168.3 (2024-08-15)
 
 
