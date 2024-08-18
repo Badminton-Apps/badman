@@ -39,9 +39,9 @@ import { CompileInterface, CompileModuleOptions, CompileOptions, ViewOptions } f
 export class CompileService implements CompileInterface, OnModuleInit {
   private readonly logger = new Logger(CompileService.name);
 
-  static browserInstance$ = new BehaviorSubject<Browser | null>(null);
-  static stopBrowserRefresh$ = new Subject<void>();
-  static lastActivity = new BehaviorSubject<number>(0);
+  static readonly browserInstance$ = new BehaviorSubject<Browser | null>(null);
+  static readonly stopBrowserRefresh$ = new Subject<void>();
+  static readonly lastActivity = new BehaviorSubject<number>(0);
 
   get browser$(): Observable<Browser | null> {
     if (CompileService.browserInstance$.value === null) {
@@ -182,7 +182,7 @@ export class CompileService implements CompileInterface, OnModuleInit {
 
     await page.close();
 
-    return pdf;
+    return Buffer.from(pdf);
   }
 
   private getTemplatePath(template: string, { root, extension, engine }: ViewOptions): string {

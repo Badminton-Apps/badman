@@ -1,10 +1,9 @@
-import { Readable } from 'stream';
+import { FactoryProvider, ModuleMetadata, Type } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ModuleMetadata, FactoryProvider } from '@nestjs/common';
-import { Type } from '@nestjs/common';
 import { Options as JuiceOptions } from 'juice';
-import { Observable } from 'rxjs';
 import { PDFOptions } from 'puppeteer';
+import { Observable } from 'rxjs';
+import { Readable } from 'stream';
 
 export type engine =
   | 'arc-templates'
