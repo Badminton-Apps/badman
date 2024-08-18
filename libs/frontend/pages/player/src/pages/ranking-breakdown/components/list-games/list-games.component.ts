@@ -326,6 +326,22 @@ export class ListGamesComponent {
             return classes.join(' ');
           },
         },
+        {
+          header: 'Operation',
+          field: 'operation',
+          pinned: 'right',
+          right: '0px',
+          type: 'button',
+          buttons: [
+            {
+              type: 'icon',
+              text: 'delete',
+              icon: 'delete',
+              tooltip: 'delete',
+              click: (row) => this.deleteGame(row),
+            },
+          ],
+        },
       ] as MtxGridColumn<GameBreakdown>[],
   );
 
