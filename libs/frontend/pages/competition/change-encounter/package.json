@@ -27,7 +27,8 @@
     "seed-to-color": "^1.0.5",
     "@ng-matero/extensions": "^18.0.3",
     "@apollo/client": "^3.10.8",
-    "@angular/material-moment-adapter": "18.1.0"
+    "@angular/material-moment-adapter": "18.1.0",
+    "moment-timezone": "^0.5.45"
   },
   "dependencies": {},
   "sideEffects": false

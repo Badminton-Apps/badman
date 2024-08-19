@@ -50,7 +50,12 @@
       "change-location": "Gewijzigde locatie",
       "change-location-note": "De optie tot het filteren van locatie wijzigingen werkt enkel voor wedstrijden verlegd na 30/07",
       "home-games": "Alleen thuiswedstrijden",
-      "open-requests": "Openstaande verplaatsingsaanvragen",
+      "open-requests": {
+        "all": "Alles",
+        "no-requests": "Geen openstaande aanvragen",
+        "open-requests": "Met openstaande aanvragen",
+        "title": "Openstaande verplaatsingsaanvragen"
+      },
       "validation": {
         "all": "Alles",
         "invalid": "Bevat fouten",
