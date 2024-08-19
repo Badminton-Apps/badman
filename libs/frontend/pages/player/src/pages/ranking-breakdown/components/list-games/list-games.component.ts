@@ -188,12 +188,10 @@ export class ListGamesComponent {
     () => this.currGames().filter((x) => x.type == GameBreakdownType.LOST_IGNORED).length,
   );
 
-
   outOfScopeGamesUpgrade = computed(
     () =>
-      this.currGames().filter(
-        (x) => x.type == GameBreakdownType.LOST_UPGRADE && !x.usedForUpgrade,
-      ).length,
+      this.currGames().filter((x) => x.type == GameBreakdownType.LOST_UPGRADE && !x.usedForUpgrade)
+        .length,
   );
   outOfScopeGamesDowngrade = computed(
     () =>
@@ -277,7 +275,7 @@ export class ListGamesComponent {
         },
         { header: this.translateService.stream('all.ranking.breakdown.points'), field: 'points' },
         {
-          header: this.translateService.stream('all.ranking.breakdown.used-for-upgrade'),
+          header: this.translateService.stream('all.ranking.breakdown.usedForUpgrade'),
           field: 'usedForUpgrade',
           hide: !this.showUpgrade(),
         },
@@ -303,7 +301,7 @@ export class ListGamesComponent {
         },
 
         {
-          header: this.translateService.stream('all.ranking.breakdown.used-for-downgrade'),
+          header: this.translateService.stream('all.ranking.breakdown.usedForDowngrade'),
           field: 'usedForDowngrade',
           hide: !this.showDowngrade(),
         },
@@ -326,6 +324,22 @@ export class ListGamesComponent {
 
             return classes.join(' ');
           },
+        },
+        {
+          header: 'Operation',
+          field: 'operation',
+          pinned: 'right',
+          right: '0px',
+          type: 'button',
+          buttons: [
+            {
+              type: 'icon',
+              text: 'delete',
+              icon: 'delete',
+              tooltip: 'delete',
+              click: (row) => this.deleteGame(row),
+            },
+          ],
         },
       ] as MtxGridColumn<GameBreakdown>[],
   );
