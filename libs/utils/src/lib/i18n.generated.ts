@@ -57,7 +57,12 @@ export type I18nTranslations = {
                 "change-location": string;
                 "change-location-note": string;
                 "home-games": string;
-                "open-requests": string;
+                "open-requests": {
+                    "all": string;
+                    "no-requests": string;
+                    "open-requests": string;
+                    "title": string;
+                };
                 "validation": {
                     "all": string;
                     "invalid": string;
