@@ -12,12 +12,11 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';
-import { ChangeEncounterValidationService } from './change-encounter.service';
-
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
+import { EncounterValidationService } from './encounter.service';
 
-describe('ChangeEncounterValidationService', () => {
-  let service: ChangeEncounterValidationService;
+describe('EncounterValidationService', () => {
+  let service: EncounterValidationService;
   let draw: DrawCompetition;
   let event: EventCompetition;
   let subEvent: SubEventCompetition;
@@ -26,7 +25,7 @@ describe('ChangeEncounterValidationService', () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      providers: [ChangeEncounterValidationService],
+      providers: [EncounterValidationService],
       imports: [
         ConfigModule.forRoot({
           envFilePath: '.env.test',
@@ -35,7 +34,7 @@ describe('ChangeEncounterValidationService', () => {
       ],
     }).compile();
 
-    service = module.get<ChangeEncounterValidationService>(ChangeEncounterValidationService);
+    service = module.get<EncounterValidationService>(EncounterValidationService);
 
     // Setup db
     const sequelize = module.get<Sequelize>(Sequelize);

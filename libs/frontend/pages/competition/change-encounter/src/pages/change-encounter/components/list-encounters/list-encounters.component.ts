@@ -69,22 +69,6 @@ export class ListEncountersComponent implements OnInit {
   encountersSem1!: EncounterCompetition[];
   encountersSem2!: EncounterCompetition[];
 
-  validation: {
-    valid: boolean;
-    errors: {
-      params: { [key: string]: unknown };
-      message: string;
-    }[];
-    warnings: {
-      params: { [key: string]: unknown };
-      message: string;
-    }[];
-  } = {
-    valid: true,
-    errors: [],
-    warnings: [],
-  };
-
   ngOnInit() {
     if (this.control() != undefined) {
       this.internalControl = this.control() as FormControl<EncounterCompetition>;
@@ -134,23 +118,11 @@ export class ListEncountersComponent implements OnInit {
             if (next && next.length === 36) {
               return this._loadTeams(next);
             } else {
-              return of({
-                encounters: [],
-                validateChangeEncounter: {
-                  valid: false,
-                  errors: [
-                    {
-                      message: 'all.competition.change-encounter.errors.no-team-selected',
-                      params: {},
-                    },
-                  ],
-                  warnings: [],
-                },
-              });
+              return of([]);
             }
           }),
         )
-        .subscribe(({ encounters, validateChangeEncounter }) => {
+        .subscribe((encounters) => {
           // the encoutners should be devided in 2 years,
           // semester 1 = lowest year
           // semester 2 = highest year
@@ -161,10 +133,6 @@ export class ListEncountersComponent implements OnInit {
           this.encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear);
 
           this.encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear);
-
-          if (validateChangeEncounter) {
-            this.validation = validateChangeEncounter;
-          }
 
           const params = this.activatedRoute.snapshot.queryParams;
 
@@ -199,27 +167,21 @@ export class ListEncountersComponent implements OnInit {
       tooltip.push('all.competition.change-encounter.errors.not-accepted');
     }
 
-    const warnings = this.validation.warnings.filter(
-      (e) => e.params['encounterId'] == encounter.id,
-    );
-
-    if (warnings.length > 0) {
+    if ((encounter.validateEncounter?.warnings?.length ?? 0) > 0) {
       infoClass = 'warning';
       if (icon == 'check') {
         icon = 'warning';
       }
-      tooltip = tooltip.concat(warnings.map((e) => e.message));
+      tooltip = tooltip.concat(encounter.validateEncounter?.warnings.map((e) => e.message) ?? []);
     }
 
-    const errors = this.validation.errors.filter((e) => e.params['encounterId'] == encounter.id);
-
-    if (errors.length > 0) {
+    if ((encounter.validateEncounter?.errors?.length ?? 0) > 0) {
       if (icon == 'check') {
         icon = 'error';
       }
       infoClass = 'error';
 
-      tooltip = tooltip.concat(errors.map((e) => e.message));
+      tooltip = tooltip.concat(encounter.validateEncounter?.errors.map((e) => e.message) ?? []);
     }
 
     // translate all tooltips and join them with a \n\r
@@ -272,24 +234,15 @@ export class ListEncountersComponent implements OnInit {
   private _loadTeams(teamId: string) {
     return this.apollo
       .query<{
-        encounterCompetitions: { rows: EncounterCompetition[] };
-        validateChangeEncounter: {
-          valid: boolean;
-          errors: {
-            params: { [key: string]: unknown };
-            message: string;
-          }[];
-          warnings: {
-            params: { [key: string]: unknown };
-            message: string;
-          }[];
+        encounterCompetitions: {
+          rows: EncounterCompetition[];
         };
       }>({
         query: gql`
           query ListEncounterQuery(
             $where: JSONObject
             $order: [SortOrderType!]
-            $changeEncounter: ChangeEncounterInput!
+            $validationData: EncounterValidationInput
           ) {
             encounterCompetitions(where: $where, order: $order) {
               rows {
@@ -329,18 +282,18 @@ export class ListEncountersComponent implements OnInit {
                   id
                   name
                 }
-              }
-            }
-
-            validateChangeEncounter(ChangeEncounter: $changeEncounter) {
-              valid
-              errors {
-                message
-                params
-              }
-              warnings {
-                message
-                params
+                validateEncounter(validationData: $validationData) {
+                  errors {
+                    params
+                    message
+                  }
+                  valid
+                  validators
+                  warnings {
+                    message
+                    params
+                  }
+                }
               }
             }
           }
@@ -352,8 +305,9 @@ export class ListEncountersComponent implements OnInit {
               awayTeamId: teamId,
             },
           },
-          changeEncounter: {
+          validationData: {
             teamId,
+            clubId: this.group().value?.club,
           },
           // For easy viewing in network tab
           order: [
@@ -365,29 +319,24 @@ export class ListEncountersComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) => ({
-          encounters: result.data.encounterCompetitions?.rows.map(
-            (r) => new EncounterCompetition(r),
-          ),
-          validateChangeEncounter: result.data.validateChangeEncounter,
-        })),
-        map((e) => ({
-          ...e,
-          encounters: e.encounters.sort((a, b) => {
+        map((result) =>
+          result.data.encounterCompetitions?.rows?.map((r) => new EncounterCompetition(r)),
+        ),
+        map((e) =>
+          e.slice().sort((a, b) => {
             if (!a.date || !b.date) {
               throw new Error('No date');
             }
 
             return a.date.getTime() - b.date.getTime();
           }),
-        })),
-        map((e) => ({
-          ...e,
-          encounters: e.encounters?.map((r) => {
+        ),
+        map((e) =>
+          e?.map((r) => {
             r.showingForHomeTeam = r.home?.id === teamId;
             return r;
           }),
-        })),
+        ),
       );
   }
 }

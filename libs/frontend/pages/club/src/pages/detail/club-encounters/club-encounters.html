@@ -10,15 +10,17 @@
   sortDirection="desc"
   [pageSize]="15"
   [pageSizeOptions]="[15, 30, 50, 100, 150, 200]"
+  [cellTemplate]="{
+    validation: validationTmpl,
+  }"
 >
 </mtx-grid>
 
 <ng-template #toolbar>
   <div class="actions">
     <div class="row">
-    
       <mat-form-field>
-        <mat-label>Select Team</mat-label>
+        <mat-label>{{ 'all.pickers.select-team' | translate }}</mat-label>
         <mtx-select
           [items]="teams()"
           bindLabel="name"
@@ -28,15 +30,51 @@
       </mat-form-field>
 
       <!-- switch only changed -->
-      <mat-slide-toggle (change)="this.toggleOpenRequests($event)"
+      <mat-slide-toggle
+        [checked]="service.state.filterOpenRequests()"
+        (change)="this.toggleOpenRequests($event)"
         >{{ 'all.club.encounters.open-requests' | translate }}
       </mat-slide-toggle>
-      <mat-slide-toggle (change)="this.toggleOnlyChanged($event)"
+      <mat-slide-toggle
+        [checked]="service.state.filterChangedRequest()"
+        (change)="this.toggleOnlyChanged($event)"
         >{{ 'all.club.encounters.change-date' | translate }}
       </mat-slide-toggle>
-      <mat-slide-toggle (change)="this.toggleHomeGames($event)"
+      <mat-slide-toggle
+        [checked]="service.state.filterHomeGames()"
+        (change)="this.toggleHomeGames($event)"
         >{{ 'all.club.encounters.home-games' | translate }}
       </mat-slide-toggle>
+      <!-- dropdown for valid games, invalid, all -->
+      <mat-form-field>
+        <mat-label>{{ 'all.club.encounters.validation.title' | translate }}</mat-label>
+        <mtx-select
+          [ngModel]="service.state.filterValidGames()"
+          (change)="this.filterValidGames($event)"
+        >
+          <mtx-option [value]="'all'">{{
+            'all.club.encounters.validation.all' | translate
+          }}</mtx-option>
+          <mtx-option [value]="'valid'">{{
+            'all.club.encounters.validation.valid' | translate
+          }}</mtx-option>
+          <mtx-option [value]="'invalid'">{{
+            'all.club.encounters.validation.invalid' | translate
+          }}</mtx-option>
+        </mtx-select>
+      </mat-form-field>
     </div>
   </div>
+</ng-template>
+
+<ng-template #validationTmpl let-row let-index="index" let-col="colDef">
+  @if (getInfo(row); as info) {
+    <mat-icon
+      matListItemIcon
+      [matTooltip]="info.tooltip"
+      matTooltipClass="tooltip-multi-line"
+      [ngClass]="info.infoClass"
+      >{{ info.icon }}</mat-icon
+    >
+  }
 </ng-template>

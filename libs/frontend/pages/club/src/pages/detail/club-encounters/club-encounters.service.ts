@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { EncounterCompetition } from '@badman/frontend-models';
 import { getSeasonPeriod, sortTeams } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
+import { valid } from 'joi';
 import moment from 'moment';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge } from 'rxjs';
@@ -26,7 +27,10 @@ export interface ClubEncounterState {
   filterOpenRequests: boolean;
   filterChangedRequest: boolean;
   filterTeam: string | null;
+  filterValidGames: validationFilter;
 }
+
+export type validationFilter = 'all' | 'valid' | 'invalid';
 
 @Injectable({
   providedIn: 'root',
@@ -48,6 +52,7 @@ export class ClubEncounterService {
     filterOpenRequests: false,
     filterChangedRequest: false,
     filterTeam: null,
+    filterValidGames: 'all',
   };
 
   // selectors
@@ -75,6 +80,13 @@ export class ClubEncounterService {
         (encounter) =>
           encounter.home?.id === this.state().filterTeam ||
           encounter.away?.id === this.state().filterTeam,
+      );
+    }
+
+    if (this.state().filterValidGames !== 'all') {
+      filtered = filtered.filter(
+        (encounter) =>
+          encounter.validateEncounter?.valid == (this.state().filterValidGames === 'valid'),
       );
     }
 
@@ -125,7 +137,7 @@ export class ClubEncounterService {
       })),
     ),
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ encounters: [], loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ encounters: [], teams: [], loaded: false }))),
   );
 
   state = signalSlice({
@@ -156,6 +168,12 @@ export class ClubEncounterService {
             filterHomeGames,
           })),
         ),
+      filterOnValidGames: (_state, action$: Observable<validationFilter>) =>
+        action$.pipe(
+          map((filterValidGames) => ({
+            filterValidGames,
+          })),
+        ),
     },
   });
 
@@ -172,7 +190,7 @@ export class ClubEncounterService {
         encounterCompetitions: { count: number; rows: EncounterCompetition[] };
       }>({
         query: gql`
-          query GetClubEncounters($where: JSONObject) {
+          query GetClubEncounters($where: JSONObject, $validationData: EncounterValidationInput) {
             encounterCompetitions(where: $where) {
               count
               rows {
@@ -207,6 +225,17 @@ export class ClubEncounterService {
                   id
                   accepted
                 }
+                validateEncounter(validationData: $validationData) {
+                  errors {
+                    params
+                    message
+                  }
+                  valid
+                  warnings {
+                    message
+                    params
+                  }
+                }
               }
             }
           }
@@ -226,6 +255,9 @@ export class ClubEncounterService {
                 '$away.clubId$': filter.clubId,
               },
             ],
+          },
+          validationData: {
+            clubId: filter.clubId,
           },
         },
       })

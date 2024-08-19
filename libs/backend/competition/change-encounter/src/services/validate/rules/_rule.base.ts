@@ -1,6 +1,6 @@
 import { ValidationRule } from '@badman/backend-validation';
-import { ChangeEncounterValidationData, ChangeEncounterOutput } from '../../../models';
+import { EncounterValidationData, EncounterValidationOutput } from '../../../models';
 
 
 
-export abstract class Rule extends ValidationRule<ChangeEncounterValidationData, ChangeEncounterOutput> {}
+export abstract class Rule extends ValidationRule<EncounterValidationData, EncounterValidationOutput> {}

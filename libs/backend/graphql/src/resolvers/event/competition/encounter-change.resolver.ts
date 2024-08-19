@@ -10,13 +10,14 @@ import {
   Player,
   SubEventCompetition,
 } from '@badman/backend-database';
-import { Sync } from '@badman/backend-queue';
-import { Logger, NotFoundException } from '@nestjs/common';
+import { Sync, SyncQueue } from '@badman/backend-queue';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
   Int,
+  Mutation,
   ObjectType,
   Parent,
   Query,
@@ -27,17 +28,11 @@ import moment from 'moment-timezone';
 import { ListArgs } from '../../../utils';
 
 import { User } from '@badman/backend-authorization';
-import {
-  ChangeEncounterInput,
-  ChangeEncounterOutput,
-  ChangeEncounterValidationService,
-} from '@badman/backend-change-encounter';
+
+import { EncounterValidationService } from '@badman/backend-change-encounter';
 import { NotificationService } from '@badman/backend-notifications';
-import { SyncQueue } from '@badman/backend-queue';
 import { LoggingAction } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
-import { UnauthorizedException } from '@nestjs/common';
-import { Mutation } from '@nestjs/graphql';
 import { Queue } from 'bull';
 import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
@@ -59,7 +54,7 @@ export class EncounterChangeCompetitionResolver {
     private _sequelize: Sequelize,
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private notificationService: NotificationService,
-    private changeEncounterService: ChangeEncounterValidationService,
+    private encounterService: EncounterValidationService,
   ) {}
 
   @Query(() => EncounterChange)
@@ -77,16 +72,6 @@ export class EncounterChangeCompetitionResolver {
     @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterChange[] }> {
     return EncounterChange.findAndCountAll(ListArgs.toFindOptions(listArgs));
-  }
-
-  @Query(() => ChangeEncounterOutput, {
-    description: `Validate the ChangeEncounter`,
-  })
-  async validateChangeEncounter(
-    @User() user: Player,
-    @Args('ChangeEncounter') data: ChangeEncounterInput,
-  ): Promise<ChangeEncounterOutput> {
-    return this.changeEncounterService.validate(data, { playerId: user.id, teamId: data.teamId });
   }
 
   @ResolveField(() => [EncounterChangeDate])

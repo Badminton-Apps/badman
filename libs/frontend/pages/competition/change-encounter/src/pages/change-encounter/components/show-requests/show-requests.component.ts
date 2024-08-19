@@ -46,7 +46,7 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { Observable, lastValueFrom, of } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
@@ -216,10 +216,13 @@ export class ShowRequestsComponent implements OnInit {
           this.formGroupRequest.valueChanges
             .pipe(
               takeUntil(this.destroy$),
+              debounceTime(100),
               switchMap(() => this.validate()),
             )
             .subscribe((result) => {
-              this.validation.set(result);
+              if (result) {
+                this.validation.set(result);
+              }
             });
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
@@ -249,43 +252,39 @@ export class ShowRequestsComponent implements OnInit {
       }));
     return this.apollo
       .query<{
-        validateChangeEncounter: {
-          valid: boolean;
-          errors: {
-            params: { [key: string]: unknown };
-            message: string;
-          }[];
-          warnings: {
-            params: { [key: string]: unknown };
-            message: string;
-          }[];
-        };
+        encounterCompetition: EncounterCompetition;
       }>({
         query: gql`
-          query ValidateChangeEncounter($data: ChangeEncounterInput!) {
-            validateChangeEncounter(ChangeEncounter: $data) {
-              valid
-              validators
-              errors {
-                message
-                params
-              }
-              warnings {
-                message
-                params
+          query ValidateChangeEncounter(
+            $encounterId: ID!
+            $validationData: EncounterValidationInput!
+          ) {
+            encounterCompetition(id: $encounterId) {
+              id
+              validateEncounter(validationData: $validationData) {
+                errors {
+                  params
+                  message
+                }
+                valid
+                validators
+                warnings {
+                  message
+                  params
+                }
               }
             }
           }
         `,
         variables: {
-          data: {
+          encounterId: this.encounter?.id,
+          validationData: {
             teamId: this.group().get('team')?.value,
-            workingencounterId: this.encounter.id,
             suggestedDates,
           },
         },
       })
-      ?.pipe(map((r) => r.data?.validateChangeEncounter));
+      ?.pipe(map((r) => r.data?.encounterCompetition.validateEncounter));
   }
 
   addDate() {

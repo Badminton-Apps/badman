@@ -36,6 +36,18 @@ export class EncounterCompetition {
   showingForHomeTeam?: boolean;
   encounterChange?: EncounterChange;
 
+  validateEncounter?: {
+    valid: boolean;
+    errors: {
+      params: { [key: string]: unknown };
+      message: string;
+    }[];
+    warnings: {
+      params: { [key: string]: unknown };
+      message: string;
+    }[];
+  };
+
   constructor(args?: Partial<EncounterCompetition>) {
     this.id = args?.id;
     this.date = args?.date != null ? new Date(args?.date) : undefined;
@@ -56,9 +68,7 @@ export class EncounterCompetition {
     this.endHour = args?.endHour;
     this.gameLeader = (args?.gameLeader ?? null) != null ? new Player(args?.gameLeader) : undefined;
 
-    this.games = args?.games
-      ?.map((g) => new Game(g))
-      ?.sort(sortGames);
+    this.games = args?.games?.map((g) => new Game(g))?.sort(sortGames);
     this.home = args?.home != null ? new Team(args.home) : undefined;
     this.away = args?.away != null ? new Team(args.away) : undefined;
 
@@ -69,5 +79,7 @@ export class EncounterCompetition {
 
     this.homeTeamId = args?.homeTeamId;
     this.awayTeamId = args?.awayTeamId;
+
+    this.validateEncounter = args?.validateEncounter;
   }
 }

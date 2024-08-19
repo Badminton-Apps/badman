@@ -3,19 +3,19 @@ import { ValidationService } from '@badman/backend-validation';
 import { Logger } from '@nestjs/common';
 import { Op, WhereOptions } from 'sequelize';
 import {
-  ChangeEncounterOutput,
-  ChangeEncounterValidationData,
-  ChangeEncounterValidationError,
+  EncounterValidationOutput,
+  EncounterValidationData,
+  EncounterValidationError,
 } from '../../models';
 import { DatePeriodRule, ExceptionRule, LocationRule, SemesterRule, TeamClubRule } from './rules';
 
-export class ChangeEncounterValidationService extends ValidationService<
-  ChangeEncounterValidationData,
-  ChangeEncounterValidationError<unknown>
+export class EncounterValidationService extends ValidationService<
+  EncounterValidationData,
+  EncounterValidationError<unknown>
 > {
   override group = 'change-encounter';
 
-  private readonly _logger = new Logger(ChangeEncounterValidationService.name);
+  private readonly _logger = new Logger(EncounterValidationService.name);
 
   override async onApplicationBootstrap() {
     this._logger.log('Initializing rules');
@@ -32,33 +32,15 @@ export class ChangeEncounterValidationService extends ValidationService<
 
   override async fetchData(args: {
     teamId: string;
-    workingencounterId?: string;
+    encounterId?: string;
     suggestedDates?: {
       date: Date;
       locationId: string;
     }[];
-  }): Promise<ChangeEncounterValidationData> {
-    const team = await Team.findByPk(args.teamId, {
-      attributes: ['id', 'name', 'type', 'teamNumber', 'clubId', 'season'],
-    });
-
-    if (!team) {
-      throw new Error('Team not found');
-    }
-
+  }): Promise<EncounterValidationData> {
     // get encounters for the team
-    const encounters = await EncounterCompetition.findAll({
-      attributes: ['id', 'date', 'drawId', 'locationId', 'homeTeamId'],
-      where: {
-        [Op.or]: [
-          {
-            homeTeamId: team.id,
-          },
-          {
-            awayTeamId: team.id,
-          },
-        ],
-      },
+    const encounter = await EncounterCompetition.findByPk(args.encounterId, {
+      attributes: ['id', 'date', 'drawId', 'locationId', 'homeTeamId', 'awayTeamId'],
       order: [['date', 'DESC']],
       include: [
         {
@@ -72,29 +54,11 @@ export class ChangeEncounterValidationService extends ValidationService<
       ],
     });
 
-    const lowestYear = Math.min(...encounters.map((r) => r.date?.getFullYear() ?? 0));
-    const encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear);
-    const encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear);
-
-    // find the home clubId
-    const currentGame = encounters.find((r) => r.id == args.workingencounterId);
-
-    let homeTeam: Team | null = null;
-    if (currentGame) {
-      if (currentGame?.homeTeamId !== team.id) {
-        homeTeam = await Team.findByPk(currentGame?.homeTeamId, {
-          attributes: ['id', 'clubId'],
-        });
-      } else {
-        homeTeam = team;
-      }
+    if (!encounter) {
+      throw new Error('Encounter not found');
     }
 
-    if (encountersSem1.length === 0 || encountersSem2.length === 0) {
-      throw new Error('Not enough encounters');
-    }
-
-    const draw = await encountersSem1[0].getDrawCompetition({
+    const draw = await encounter.getDrawCompetition({
       attributes: ['id', 'name', 'subeventId'],
       include: [
         {
@@ -110,38 +74,72 @@ export class ChangeEncounterValidationService extends ValidationService<
       ],
     });
 
-    const loactionFinder: WhereOptions<Location> = [
-      { id: encounters.map((r) => r.locationId)?.filter((r) => !!r) as string[] },
-    ];
-    if (homeTeam) {
-      loactionFinder.push({ clubId: homeTeam.clubId });
-    }
+    const encounters = await draw.getEncounterCompetitions({
+      attributes: ['id', 'date', 'drawId', 'locationId', 'homeTeamId', 'awayTeamId'],
+      order: [['date', 'DESC']],
+      where: {
+        // filter only on the teams currently changing
+        [Op.or]: [
+          {
+            homeTeamId: encounter.homeTeamId,
+          },
+          {
+            awayTeamId: encounter.homeTeamId,
+          },
+          {
+            homeTeamId: encounter.awayTeamId,
+          },
+          {
+            awayTeamId: encounter.awayTeamId,
+          },
+        ],
+      },
+      include: [
+        {
+          association: 'home',
+          attributes: ['id', 'clubId'],
+        },
+        {
+          association: 'away',
+          attributes: ['id', 'clubId'],
+        },
+      ],
+    });
+
+    const season = Math.min(...encounters.map((r) => r.date?.getFullYear() ?? 0));
+    const encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === season);
+    const encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== season);
+
+    const indexSem1 = encountersSem1.findIndex((r) => r.id === encounter.id);
+    const indexSem2 = encountersSem2.findIndex((r) => r.id === encounter.id);
+    const semseter1 = indexSem1 > -1;
+    const index = semseter1 ? indexSem1 : indexSem2;
 
     const locations = await Location.findAll({
       attributes: ['id', 'name'],
       where: {
-        [Op.or]: loactionFinder,
+        id: encounter.locationId,
       },
       include: [
         {
           association: 'availabilities',
           where: {
-            season: team.season,
+            season: season,
           },
         },
       ],
     });
 
     return {
-      team,
-      encountersSem1,
-      encountersSem2,
       draw,
       locations,
+      season,
+      encountersSem1,
+      encountersSem2,
+      semseter1,
+      index,
 
-      lowestYear,
-
-      workingencounterId: args.workingencounterId,
+      encounter,
       suggestedDates: args.suggestedDates,
     };
   }
@@ -154,8 +152,7 @@ export class ChangeEncounterValidationService extends ValidationService<
    */
   override async validate(
     args: {
-      teamId: string;
-      workingencounterId?: string;
+      encounterId?: string;
       suggestedDates?: {
         date: Date;
         locationId: string;
@@ -170,6 +167,6 @@ export class ChangeEncounterValidationService extends ValidationService<
       errors: data.errors,
       warnings: data.warnings,
       validators: data.validators,
-    } as ChangeEncounterOutput;
+    } as EncounterValidationOutput;
   }
 }
