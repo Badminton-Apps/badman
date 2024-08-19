@@ -14,7 +14,7 @@ import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
-import { ClubEncounterService } from './club-encounters.service';
+import { ClubEncounterService, openRequestFilter, validationFilter } from './club-encounters.service';
 
 @Component({
   selector: 'badman-club-encounters',
@@ -95,14 +95,17 @@ export class ClubEncountersComponent {
     this.service.state.filterOnChangedRequest(state.checked);
   }
 
-  toggleOpenRequests(state: MatSlideToggleChange) {
-    this.service.state.filterOnOpenRequests(state.checked);
-  }
+
 
   toggleHomeGames(state: MatSlideToggleChange) {
     this.service.state.filterOnHomeGames(state.checked);
   }
-  filterValidGames(state: 'all' | 'valid' | 'invalid') {
+
+  filterOpenRequests(state: openRequestFilter) {
+    this.service.state.filterOnOpenRequests(state);
+  }
+  
+  filterValidGames(state: validationFilter) {
     this.service.state.filterOnValidGames(state);
   }
 
