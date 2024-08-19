@@ -58,6 +58,12 @@ export type I18nTranslations = {
                 "change-location-note": string;
                 "home-games": string;
                 "open-requests": string;
+                "validation": {
+                    "all": string;
+                    "invalid": string;
+                    "title": string;
+                    "valid": string;
+                };
             };
             "end": string;
             "hints": {
@@ -743,6 +749,7 @@ export type I18nTranslations = {
                 "countsForUpgrade": string;
                 "date": string;
                 "disclaimer": string;
+                "downgrade": string;
                 "downgrade-average": string;
                 "drops-next-period": string;
                 "evolution": string;
@@ -805,6 +812,7 @@ export type I18nTranslations = {
                     "point": string;
                     "ranking": string;
                 };
+                "upgrade": string;
                 "upgrade-average": string;
                 "used-for-downgrade": string;
                 "used-for-upgrade": string;

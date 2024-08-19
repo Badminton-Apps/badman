@@ -37,7 +37,7 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
@@ -613,14 +613,16 @@ export class CalendarComponent implements OnInit {
 
       this.encounters.get(date)?.push(encounter);
 
-      for (const request of encounter.encounterChange?.dates ?? []) {
-        const date = moment(request.date).format('YYYY-MM-DD');
+      if (!encounter.encounterChange?.accepted) {
+        for (const request of encounter.encounterChange?.dates ?? []) {
+          const date = moment(request.date).format('YYYY-MM-DD');
 
-        if (!this.changeRequests.has(date)) {
-          this.changeRequests.set(date, []);
+          if (!this.changeRequests.has(date)) {
+            this.changeRequests.set(date, []);
+          }
+
+          this.changeRequests.get(date)?.push({ request: request, encounter });
         }
-
-        this.changeRequests.get(date)?.push({ request: request, encounter });
       }
     }
   }
@@ -962,8 +964,13 @@ export class CalendarComponent implements OnInit {
         if (dayInfo.locations.length == 1) {
           infoIndex = 0;
         } else {
-          // temp fix. locationId is still wrong, but it's not common for 2 locations on the same day
-          infoIndex = dayInfo.locations.findIndex((l) => l.locationId === encounter.locationId);
+          // convert the date to the brussels time zone
+          const brusselsDate = moment(encounter.date).tz('Europe/Brussels');
+          const time = brusselsDate.format('HH:mm');
+
+          infoIndex = dayInfo.locations.findIndex(
+            (l) => l.locationId === encounter.locationId && l.time === time,
+          );
         }
 
         if (infoIndex >= 0) {
