@@ -50,7 +50,12 @@
       "change-location": "Changement de lieu",
       "change-location-note": "L'option de filtrage des changements de lieu ne fonctionne que pour les matches reprogrammés après le 30/07.",
       "home-games": "Matchs à domicile uniquement",
-      "open-requests": "Ouvrir les demandes de transfert",
+      "open-requests": {
+        "all": "Tous",
+        "no-requests": "Pas de candidatures ouvertes",
+        "open-requests": "Avec des applications ouvertes",
+        "title": "Ouvrir les demandes de transfert"
+      },
       "validation": {
         "all": "Tous",
         "invalid": "Contient des erreurs",
