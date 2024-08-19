@@ -770,6 +770,11 @@
         "usedForUpgrade": "Utilisé pour la promotion",
         "WON": "Gagné"
       },
+      "games": {
+        "none": "Aucun jeu",
+        "one": "1 match",
+        "other": "{count} matchs"
+      },
       "games-downgrade": "# Jeux relégation",
       "games-upgrade": "# Correspond à la promotion",
       "hint": "Cliquez sur un classement pour une simulation et une analyse",
@@ -812,8 +817,8 @@
       },
       "upgrade": "Promotion",
       "upgrade-average": "Moyenne. promotion",
-      "used-for-downgrade": "Utilisé pour le déclassement",
-      "used-for-upgrade": "Utilisé pour la promotion"
+      "usedForDowngrade": "Utilisé pour le déclassement",
+      "usedForUpgrade": "Utilisé pour la promotion"
     },
     "clone-points": "Copier les points vers ce système",
     "double": "Double",

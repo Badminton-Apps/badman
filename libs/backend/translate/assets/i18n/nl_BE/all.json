@@ -770,6 +770,11 @@
         "usedForUpgrade": "Gebruikt voor promotie",
         "WON": "Gewonnen"
       },
+      "games": {
+        "none": "Geen wedstrijden",
+        "one": "1 wedstrijd",
+        "other": "{count} wedstrijden"
+      },
       "games-downgrade": "# Wedstrijden degradatie",
       "games-upgrade": "# Wedstrijden promotie",
       "hint": "Klik op een klassement voor simulatie en analyse",
@@ -812,8 +817,8 @@
       },
       "upgrade": "Promotie",
       "upgrade-average": "Avg. promotie",
-      "used-for-downgrade": "Gebruikt voor degradatie",
-      "used-for-upgrade": "Gebruikt voor promotie"
+      "usedForDowngrade": "Gebruikt voor degradatie",
+      "usedForUpgrade": "Gebruikt voor promotie"
     },
     "clone-points": "Kopieer punten naar dit systeem",
     "double": "Dubbel",

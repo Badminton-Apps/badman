@@ -11600,6 +11600,68 @@
 											</concept_node>
 										</children>
 									</folder_node>
+									<folder_node>
+										<name>games</name>
+										<children>
+											<concept_node>
+												<name>none</name>
+												<description/>
+												<comment/>
+												<translations>
+													<translation>
+														<language>en-US</language>
+														<approved>true</approved>
+													</translation>
+													<translation>
+														<language>fr-BE</language>
+														<approved>true</approved>
+													</translation>
+													<translation>
+														<language>nl-BE</language>
+														<approved>true</approved>
+													</translation>
+												</translations>
+											</concept_node>
+											<concept_node>
+												<name>one</name>
+												<description/>
+												<comment/>
+												<translations>
+													<translation>
+														<language>en-US</language>
+														<approved>true</approved>
+													</translation>
+													<translation>
+														<language>fr-BE</language>
+														<approved>true</approved>
+													</translation>
+													<translation>
+														<language>nl-BE</language>
+														<approved>true</approved>
+													</translation>
+												</translations>
+											</concept_node>
+											<concept_node>
+												<name>other</name>
+												<description/>
+												<comment/>
+												<translations>
+													<translation>
+														<language>en-US</language>
+														<approved>true</approved>
+													</translation>
+													<translation>
+														<language>fr-BE</language>
+														<approved>true</approved>
+													</translation>
+													<translation>
+														<language>nl-BE</language>
+														<approved>true</approved>
+													</translation>
+												</translations>
+											</concept_node>
+										</children>
+									</folder_node>
 									<concept_node>
 										<name>games-downgrade</name>
 										<description/>
@@ -12267,7 +12329,7 @@
 										</translations>
 									</concept_node>
 									<concept_node>
-										<name>used-for-downgrade</name>
+										<name>usedForDowngrade</name>
 										<description/>
 										<comment/>
 										<translations>
@@ -12286,7 +12348,7 @@
 										</translations>
 									</concept_node>
 									<concept_node>
-										<name>used-for-upgrade</name>
+										<name>usedForUpgrade</name>
 										<description/>
 										<comment/>
 										<translations>

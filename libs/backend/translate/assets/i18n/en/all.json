@@ -770,6 +770,11 @@
         "usedForUpgrade": "Used for promotion",
         "WON": "Won"
       },
+      "games": {
+        "none": "No games",
+        "one": "1 game",
+        "other": "{count}  games."
+      },
       "games-downgrade": "# Games relegation",
       "games-upgrade": "# Matches promotion",
       "hint": "Click on a level for simulation and breakdown",
@@ -812,8 +817,8 @@
       },
       "upgrade": "Promotion",
       "upgrade-average": "Avg. promotion",
-      "used-for-downgrade": "Used for downgrade",
-      "used-for-upgrade": "Used for promotion"
+      "usedForDowngrade": "Used for downgrade",
+      "usedForUpgrade": "Used for promotion"
     },
     "clone-points": "Copy points to this system",
     "double": "Double",

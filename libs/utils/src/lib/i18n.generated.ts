@@ -777,6 +777,11 @@ export type I18nTranslations = {
                     "usedForUpgrade": string;
                     "WON": string;
                 };
+                "games": {
+                    "none": string;
+                    "one": string;
+                    "other": string;
+                };
                 "games-downgrade": string;
                 "games-upgrade": string;
                 "hint": string;
@@ -819,8 +824,8 @@ export type I18nTranslations = {
                 };
                 "upgrade": string;
                 "upgrade-average": string;
-                "used-for-downgrade": string;
-                "used-for-upgrade": string;
+                "usedForDowngrade": string;
+                "usedForUpgrade": string;
             };
             "clone-points": string;
             "double": string;
