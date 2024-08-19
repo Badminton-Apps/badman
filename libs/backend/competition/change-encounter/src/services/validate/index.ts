@@ -1,2 +1,2 @@
-export * from './change-encounter.service';
+export * from './encounter.service';
 export * from './rules';

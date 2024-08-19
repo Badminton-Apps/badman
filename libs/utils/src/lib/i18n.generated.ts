@@ -58,6 +58,12 @@ export type I18nTranslations = {
                 "change-location-note": string;
                 "home-games": string;
                 "open-requests": string;
+                "validation": {
+                    "all": string;
+                    "invalid": string;
+                    "title": string;
+                    "valid": string;
+                };
             };
             "end": string;
             "hints": {

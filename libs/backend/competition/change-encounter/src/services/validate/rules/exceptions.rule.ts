@@ -1,12 +1,12 @@
-import { EncounterCompetition, InfoEvent } from '@badman/backend-database';
-import {
-  ChangeEncounterOutput,
-  ChangeEncounterValidationData,
-  ChangeEncounterValidationError,
-} from '../../../models';
-import { Rule } from './_rule.base';
+import { InfoEvent } from '@badman/backend-database';
 import { Logger } from '@nestjs/common';
 import moment from 'moment';
+import {
+  EncounterValidationData,
+  EncounterValidationError,
+  EncounterValidationOutput,
+} from '../../../models';
+import { Rule } from './_rule.base';
 
 export type ExceptionRuleParams = {
   encounterId: string;
@@ -20,42 +20,34 @@ export class ExceptionRule extends Rule {
   static override readonly description = 'all.rules.change-encounter.exceptions';
   private readonly logger = new Logger(ExceptionRule.name);
 
-  async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
-    const errors = [] as ChangeEncounterValidationError<ExceptionRuleParams>[];
-    const warnings = [] as ChangeEncounterValidationError<ExceptionRuleParams>[];
+  async validate(changeEncounter: EncounterValidationData): Promise<EncounterValidationOutput> {
+    const errors = [] as EncounterValidationError<ExceptionRuleParams>[];
+    const warnings = [] as EncounterValidationError<ExceptionRuleParams>[];
     const valid = true;
-    const { encountersSem1, encountersSem2, suggestedDates, workingencounterId, draw } =
-      changeEncounter;
+    const { suggestedDates, encounter, draw } = changeEncounter;
     const infoEvents = draw?.subEventCompetition?.eventCompetition?.infoEvents ?? [];
 
-    this.findEncountersOnExceptionDays(encountersSem1, infoEvents).map((error) =>
-      errors.push(error),
-    );
-    this.findEncountersOnExceptionDays(encountersSem2, infoEvents).map((error) =>
-      errors.push(error),
-    );
+    if (!encounter?.date) {
+      throw new Error('No date provided');
+    }
+
+    const error = this.findEncountersOnExceptionDays(encounter.date, encounter.id, infoEvents);
+    if (error.length) {
+      errors.push(...error);
+    }
 
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
-    if (suggestedDates && workingencounterId) {
-      const indexSem1 = encountersSem1.findIndex((r) => r.id === workingencounterId);
-      const indexSem2 = encountersSem2.findIndex((r) => r.id === workingencounterId);
-      const semseter1 = indexSem1 > -1;
-      const index = semseter1 ? indexSem1 : indexSem2;
-      if (index == -1) {
-        throw new Error('Working encounter not found');
-      }
-
-      const encounter = {
-        ...(semseter1
-          ? [...encountersSem1].splice(index, 1)[0]
-          : [...encountersSem2].splice(index, 1)[0]
-        ).toJSON(),
-      } as EncounterCompetition;
-
+    if (suggestedDates && encounter) {
       for (const suggestedDate of suggestedDates) {
-        encounter.date = suggestedDate.date;
-        const warning = this.findEncountersOnExceptionDays([encounter], infoEvents);
-        warnings.push(...warning);
+        const warning = this.findEncountersOnExceptionDays(
+          suggestedDate.date,
+          encounter.id,
+          infoEvents,
+        );
+
+        if (warning.length) {
+          warnings.push(...warning);
+        }
       }
     }
 
@@ -66,8 +58,8 @@ export class ExceptionRule extends Rule {
     };
   }
 
-  findEncountersOnExceptionDays(encounters: EncounterCompetition[], infoEvents: InfoEvent[]) {
-    const warms: ChangeEncounterValidationError<ExceptionRuleParams>[] = [];
+  findEncountersOnExceptionDays(encounteDate: Date, encounterId: string, infoEvents: InfoEvent[]) {
+    const warms: EncounterValidationError<ExceptionRuleParams>[] = [];
 
     if (!infoEvents) {
       return warms;
@@ -75,16 +67,14 @@ export class ExceptionRule extends Rule {
 
     for (const infoEvent of infoEvents) {
       if (!(infoEvent.allowCompetition ?? false)) {
-        for (const encounter of encounters) {
-          if (moment(encounter.date).isBetween(infoEvent.start, infoEvent.end, 'day', '[]')) {
-            warms.push({
-              message: 'all.competition.change-encounter.errors.exception-day',
-              params: {
-                encounterId: encounter.id,
-                date: encounter.date,
-              },
-            });
-          }
+        if (moment(encounteDate).isBetween(infoEvent.start, infoEvent.end, 'day', '[]')) {
+          warms.push({
+            message: 'all.competition.change-encounter.errors.exception-day',
+            params: {
+              encounterId: encounterId,
+              date: encounteDate,
+            },
+          });
         }
       }
     }

@@ -5,10 +5,23 @@
 
 @mixin color($theme) {
   badman-club-encounters {
+    $danger-palette: map.get($theme, danger);
+    $warn-palette: map.get($theme, warn);
+    $success-palette: map.get($theme, success);
     
     a {
       text-decoration: none;
       color: mat.get-theme-color($theme, foreground, 'base');
+    }
+
+    .error {
+      color: mat.m2-get-color-from-palette($danger-palette, 300) !important;
+    }
+    .warning {
+      color: mat.m2-get-color-from-palette($warn-palette, 300) !important;
+    }
+    .success {
+      color: mat.m2-get-color-from-palette($success-palette, 300) !important;
     }
   }
 }
