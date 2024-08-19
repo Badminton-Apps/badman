@@ -1,17 +1,17 @@
 import { DrawCompetition, EncounterCompetition, Location, Team } from '@badman/backend-database';
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
-import { ChangeEncounterValidationError } from './error.model';
+import { EncounterValidationError } from './encounter-validation-error.model';
 
 @InputType()
-export class ChangeEncounterInput {
-  @Field(() => ID)
-  teamId!: string;
-
-  @Field(() => ID, { nullable: true })
-  workingencounterId?: string;
-
+export class EncounterValidationInput {
   @Field(() => [Suggestions], { nullable: true })
   suggestedDates?: Suggestions[];
+
+  @Field(() => ID, { nullable: true })
+  teamId?: string;
+
+  @Field(() => ID, { nullable: true })
+  clubId?: string;
 }
 
 @InputType()
@@ -24,12 +24,12 @@ export class Suggestions {
 }
 
 @ObjectType()
-export class ChangeEncounterOutput {
-  @Field(() => [ChangeEncounterValidationError], { nullable: 'itemsAndList' })
-  errors?: ChangeEncounterValidationError<unknown>[];
+export class EncounterValidationOutput {
+  @Field(() => [EncounterValidationError], { nullable: 'itemsAndList' })
+  errors?: EncounterValidationError<unknown>[];
 
-  @Field(() => [ChangeEncounterValidationError], { nullable: 'itemsAndList' })
-  warnings?: ChangeEncounterValidationError<unknown>[];
+  @Field(() => [EncounterValidationError], { nullable: 'itemsAndList' })
+  warnings?: EncounterValidationError<unknown>[];
 
   @Field(() => Boolean, { nullable: true })
   valid?: boolean;
@@ -38,16 +38,16 @@ export class ChangeEncounterOutput {
   validators?: string[];
 }
 
-export class ChangeEncounterValidationData {
-  team!: Team;
-  // club!: Club;
+export class EncounterValidationData {
+  encounter!: EncounterCompetition;
 
   encountersSem1!: EncounterCompetition[];
   encountersSem2!: EncounterCompetition[];
   draw!: DrawCompetition;
   locations!: Location[];
-  lowestYear!: number;
-  workingencounterId?: string;
+  season!: number;
+  semseter1!: boolean;
+  index!: number;
   suggestedDates?: {
     date: Date;
     locationId: string;

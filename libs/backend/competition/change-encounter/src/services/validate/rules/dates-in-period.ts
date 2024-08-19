@@ -1,8 +1,8 @@
 import { Logger } from '@nestjs/common';
 import {
-  ChangeEncounterOutput,
-  ChangeEncounterValidationData,
-  ChangeEncounterValidationError,
+  EncounterValidationOutput,
+  EncounterValidationData,
+  EncounterValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
 import { getSeasonPeriod } from '@badman/utils';
@@ -20,29 +20,23 @@ export class DatePeriodRule extends Rule {
   static override readonly description = 'all.rules.change-encounter.date-period';
   private readonly logger = new Logger(DatePeriodRule.name);
 
-  async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
-    const errors = [] as ChangeEncounterValidationError<DatePeriodRuleParams>[];
-    const warnings = [] as ChangeEncounterValidationError<DatePeriodRuleParams>[];
+  async validate(changeEncounter: EncounterValidationData): Promise<EncounterValidationOutput> {
+    const errors = [] as EncounterValidationError<DatePeriodRuleParams>[];
+    const warnings = [] as EncounterValidationError<DatePeriodRuleParams>[];
     const valid = true;
-    const { encountersSem1, encountersSem2, team, suggestedDates } = changeEncounter;
-    const period = getSeasonPeriod(team.season);
+    const { suggestedDates, encounter, season } = changeEncounter;
+    const period = getSeasonPeriod(season);
 
-    const err = encountersSem1
-      .concat(encountersSem2)
-      .map((encounter) => this.isBetween(encounter.date, [...period], encounter.id));
-
-    for (const error of err) {
-      if (error) {
-        errors.push(error);
-      }
+    const err = this.isBetween(encounter.date, [...period], encounter.id);
+    if (err) {
+      errors.push(err);
     }
 
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
-    if (suggestedDates && changeEncounter.workingencounterId) {
+    if (suggestedDates && encounter) {
       const warns = suggestedDates.map((suggestedDate) =>
-        this.isBetween(suggestedDate.date, [...period], changeEncounter.workingencounterId),
+        this.isBetween(suggestedDate.date, [...period], encounter.id),
       );
-
       for (const warn of warns) {
         if (warn) {
           warnings.push(warn);
@@ -61,7 +55,7 @@ export class DatePeriodRule extends Rule {
     inputDate?: Date,
     period?: [string, string],
     encounterId?: string,
-  ): ChangeEncounterValidationError<DatePeriodRuleParams> | null {
+  ): EncounterValidationError<DatePeriodRuleParams> | null {
     if (!inputDate) {
       this.logger.warn('No date provided');
       return null;

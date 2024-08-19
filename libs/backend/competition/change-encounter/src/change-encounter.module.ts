@@ -1,11 +1,11 @@
 import { DatabaseModule } from '@badman/backend-database';
 import { Module } from '@nestjs/common';
-import { ChangeEncounterValidationService } from './services/validate';
+import { EncounterValidationService } from './services/validate';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [ChangeEncounterValidationService],
-  exports: [ChangeEncounterValidationService],
+  providers: [EncounterValidationService],
+  exports: [EncounterValidationService],
   controllers: [],
 })
 export class ChangeEncounterModule {}
