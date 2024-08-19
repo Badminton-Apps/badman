@@ -1,3 +1,22 @@
+## 6.170.0 (2024-08-19)
+
+
+### 🚀 Features
+
+- showing encounters with error in overview ([4f7a4d347](https://github.com/Badminton-Apps/badman/commit/4f7a4d347))
+
+### 🩹 Fixes
+
+- calender was wrongly selecting time on multiple slots on same day ([9e52e8ca6](https://github.com/Badminton-Apps/badman/commit/9e52e8ca6))
+- skip accepted change requests ([1340b1bb8](https://github.com/Badminton-Apps/badman/commit/1340b1bb8))
+- changed filter to allow filtering on invalid but with no open requests ([0b92780c5](https://github.com/Badminton-Apps/badman/commit/0b92780c5))
+- toggles were wrongly showing ([251bdd28c](https://github.com/Badminton-Apps/badman/commit/251bdd28c))
+- adding option to delete game ([9d5287cf5](https://github.com/Badminton-Apps/badman/commit/9d5287cf5))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.169.0 (2024-08-18)
 
 
