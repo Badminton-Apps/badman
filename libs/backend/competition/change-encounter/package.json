@@ -12,7 +12,8 @@
     "sequelize": "^6.37.3",
     "tslib": "^2.6.2",
     "moment-timezone": "^0.5.45",
-    "@badman/backend-validation": "6.169.0"
+    "@badman/backend-validation": "6.169.0",
+    "express": "^4.19.2"
   },
   "type": "commonjs",
   "main": "./src/index.js",
