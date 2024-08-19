@@ -50,7 +50,12 @@
       "change-location": "Modified location",
       "change-location-note": "Location change filtering option works only for encounters rescheduled after 30/07",
       "home-games": "Home games only",
-      "open-requests": "Open transfer requests",
+      "open-requests": {
+        "all": "Everything",
+        "no-requests": "No open applications",
+        "open-requests": "With open applications",
+        "title": "Open transfer requests"
+      },
       "validation": {
         "all": "Everything",
         "invalid": "Contains errors",
