@@ -24,13 +24,14 @@ export interface ClubEncounterState {
   loaded: boolean;
 
   filterHomeGames: boolean;
-  filterOpenRequests: boolean;
   filterChangedRequest: boolean;
   filterTeam: string | null;
+  filterOpenRequests: openRequestFilter;
   filterValidGames: validationFilter;
 }
 
 export type validationFilter = 'all' | 'valid' | 'invalid';
+export type openRequestFilter = 'all' | 'openRequests' | 'noRequests';
 
 @Injectable({
   providedIn: 'root',
@@ -49,9 +50,9 @@ export class ClubEncounterService {
     loaded: false,
 
     filterHomeGames: false,
-    filterOpenRequests: false,
     filterChangedRequest: false,
     filterTeam: null,
+    filterOpenRequests: 'all',
     filterValidGames: 'all',
   };
 
@@ -63,10 +64,6 @@ export class ClubEncounterService {
       filtered = filtered.filter(
         (encounter) => encounter.home?.clubId === this.filter.value.clubId,
       );
-    }
-
-    if (this.state().filterOpenRequests) {
-      filtered = filtered.filter((encounter) => !(encounter.encounterChange?.accepted ?? true));
     }
 
     if (this.state().filterChangedRequest) {
@@ -81,6 +78,16 @@ export class ClubEncounterService {
           encounter.home?.id === this.state().filterTeam ||
           encounter.away?.id === this.state().filterTeam,
       );
+    }
+
+    if (this.state().filterOpenRequests === 'openRequests') {
+      filtered = filtered.filter(
+        (encounter) => (encounter.encounterChange?.accepted ?? true) === false,
+      );
+    }
+
+    if (this.state().filterOpenRequests === 'noRequests') {
+      filtered = filtered.filter((encounter) => encounter.encounterChange?.accepted ?? true);
     }
 
     if (this.state().filterValidGames !== 'all') {
@@ -156,7 +163,7 @@ export class ClubEncounterService {
             filterChangedRequest,
           })),
         ),
-      filterOnOpenRequests: (_state, action$: Observable<boolean>) =>
+      filterOnOpenRequests: (_state, action$: Observable<openRequestFilter>) =>
         action$.pipe(
           map((filterOpenRequests) => ({
             filterOpenRequests,
