@@ -37,7 +37,7 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
@@ -962,8 +962,13 @@ export class CalendarComponent implements OnInit {
         if (dayInfo.locations.length == 1) {
           infoIndex = 0;
         } else {
-          // temp fix. locationId is still wrong, but it's not common for 2 locations on the same day
-          infoIndex = dayInfo.locations.findIndex((l) => l.locationId === encounter.locationId);
+          // convert the date to the brussels time zone
+          const brusselsDate = moment(encounter.date).tz('Europe/Brussels');
+          const time = brusselsDate.format('HH:mm');
+
+          infoIndex = dayInfo.locations.findIndex(
+            (l) => l.locationId === encounter.locationId && l.time === time,
+          );
         }
 
         if (infoIndex >= 0) {
@@ -975,6 +980,7 @@ export class CalendarComponent implements OnInit {
           else if (this._isVisible(encounter.homeTeamId)) {
             dayInfo.locations[infoIndex].encounters.push(encounter);
           }
+
 
           dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
         }
