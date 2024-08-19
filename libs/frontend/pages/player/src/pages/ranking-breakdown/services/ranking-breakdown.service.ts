@@ -34,7 +34,7 @@ export class RankingBreakdownService {
     playerId: new FormControl<string>(''),
     includedIgnored: new FormControl<boolean>(false),
     includedUpgrade: new FormControl<boolean>(true),
-    includedDowngrade: new FormControl<boolean>(true),
+    includedDowngrade: new FormControl<boolean>(false),
     includeOutOfScopeUpgrade: new FormControl<boolean>(false),
     includeOutOfScopeDowngrade: new FormControl<boolean>(false),
     includeOutOfScopeWonGames: new FormControl<boolean>(false),
