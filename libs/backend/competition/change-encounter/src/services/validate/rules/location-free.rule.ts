@@ -103,11 +103,6 @@ export class LocationRule extends Rule {
         const filteredDays = availability.days?.filter((r) => r.day === encounterDay);
         const filteredSlots = filteredDays?.find((r) => r.startTime === encounterTime);
 
-        this.logger.debug(`encounter day: ${encounterDay}, encounter time: ${encounterTime}`);
-        for (const day of availability.days ?? []) {
-          this.logger.debug(`availability day: ${day.day}, start time: ${day.startTime}`);
-        }
-        this.logger.debug(`Found slot: ${filteredSlots != null}`);
 
         if (filteredSlots != null && !slot) {
           slot = filteredSlots;
