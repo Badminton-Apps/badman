@@ -613,14 +613,16 @@ export class CalendarComponent implements OnInit {
 
       this.encounters.get(date)?.push(encounter);
 
-      for (const request of encounter.encounterChange?.dates ?? []) {
-        const date = moment(request.date).format('YYYY-MM-DD');
+      if (!encounter.encounterChange?.accepted) {
+        for (const request of encounter.encounterChange?.dates ?? []) {
+          const date = moment(request.date).format('YYYY-MM-DD');
 
-        if (!this.changeRequests.has(date)) {
-          this.changeRequests.set(date, []);
+          if (!this.changeRequests.has(date)) {
+            this.changeRequests.set(date, []);
+          }
+
+          this.changeRequests.get(date)?.push({ request: request, encounter });
         }
-
-        this.changeRequests.get(date)?.push({ request: request, encounter });
       }
     }
   }
@@ -980,7 +982,6 @@ export class CalendarComponent implements OnInit {
           else if (this._isVisible(encounter.homeTeamId)) {
             dayInfo.locations[infoIndex].encounters.push(encounter);
           }
-
 
           dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
         }
