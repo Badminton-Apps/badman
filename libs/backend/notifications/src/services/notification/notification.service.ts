@@ -26,7 +26,11 @@ import { PushService } from '../push';
 import { ConfigService } from '@nestjs/config';
 import { ClubEnrollmentNotifier } from '../../notifiers/clubenrollment';
 import { sortTeams } from '@badman/utils';
-import { ChangeEncounterValidationService } from '@badman/backend-change-encounter';
+import {
+  EncounterValidationError,
+  EncounterValidationOutput,
+  EncounterValidationService,
+} from '@badman/backend-change-encounter';
 import { I18nService } from 'nestjs-i18n';
 import { I18nTranslations } from '@badman/utils';
 
@@ -38,7 +42,7 @@ export class NotificationService {
     private mailing: MailingService,
     private push: PushService,
     private configService: ConfigService<ConfigType>,
-    private changeEncounterValidation: ChangeEncounterValidationService,
+    private changeEncounterValidation: EncounterValidationService,
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
@@ -383,31 +387,23 @@ export class NotificationService {
   }
 
   private async _getValidationMessage(team: Team, captainId?: string) {
-    const validation = await this.changeEncounterValidation.validate(
-      { teamId: team.id },
-      { playerId: captainId, teamId: team.id, clubId: team.clubId },
-    );
-
-    if (validation.valid) {
-      return [];
-    }
-
-    const errors = [] as {
-      encounter: EncounterCompetition;
-      errors: string[];
-    }[];
-
-    // get all encounterIds from the validation from the params
-    const encounterIds = validation.errors?.map(
-      (e) => (e.params as { encounterId: string })['encounterId'],
-    );
-
-    // get all encounters
-    const encounters = await EncounterCompetition.findAll({
+    const encountersH = await team.getHomeEncounters({
       attributes: ['id', 'date'],
-      where: {
-        id: encounterIds,
-      },
+
+      include: [
+        {
+          association: 'home',
+          attributes: ['id', 'name'],
+        },
+        {
+          association: 'away',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+    const encountersA = await team.getHomeEncounters({
+      attributes: ['id', 'date'],
+
       include: [
         {
           association: 'home',
@@ -420,32 +416,40 @@ export class NotificationService {
       ],
     });
 
-    // map all errors to the encounter
-    for (const error of validation.errors ?? []) {
-      const encounter = encounters.find(
-        (e) => e.id === (error.params as { encounterId: string }).encounterId,
-      );
+    const validationErrors = [] as {
+      encounter: EncounterCompetition;
+      errors: EncounterValidationError<unknown>[];
+    }[];
 
-      if (!encounter) {
-        continue;
-      }
-
-      const message: string = this.i18nService.translate(error.message, {
-        args: error.params as never,
-        lang: 'nl_BE',
+    for (const encounter of [...encountersH, ...encountersA]) {
+      const validation = await this.changeEncounterValidation.validate({
+        encounterId: encounter.id,
       });
 
-      // check if the encounter is already in the errors
-      const errorEncounter = errors.find((e) => e.encounter.id === encounter.id);
-
-      if (errorEncounter) {
-        errorEncounter.errors.push(message);
-      } else {
-        errors.push({
-          encounter,
-          errors: [message],
+      if (!validation.valid && validation.errors) {
+        validationErrors.push({
+          encounter: encounter,
+          errors: validation.errors,
         });
       }
+    }
+
+    const errors = [] as {
+      encounter: EncounterCompetition;
+      errors: string[];
+    }[];
+
+    // map all errors to the encounter
+    for (const error of validationErrors ?? []) {
+      errors.push({
+        encounter: error.encounter,
+        errors: error.errors.map((err) =>
+          this.i18nService.translate(err.message, {
+            args: err.params as never,
+            lang: 'nl_BE',
+          }),
+        ),
+      });
     }
 
     return errors;

@@ -1,5 +1,10 @@
 import { User } from '@badman/backend-authorization';
 import {
+  EncounterValidationInput,
+  EncounterValidationOutput,
+  EncounterValidationService,
+} from '@badman/backend-change-encounter';
+import {
   Assembly,
   Comment,
   DrawCompetition,
@@ -11,6 +16,9 @@ import {
   RankingSystem,
   Team,
 } from '@badman/backend-database';
+import { Sync, SyncQueue } from '@badman/backend-queue';
+import { PointsService } from '@badman/backend-ranking';
+import { InjectQueue } from '@nestjs/bull';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
@@ -24,12 +32,9 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { ListArgs } from '../../../utils';
-import { InjectQueue } from '@nestjs/bull';
-import { Sync, SyncQueue } from '@badman/backend-queue';
 import { Queue } from 'bull';
 import { Sequelize } from 'sequelize-typescript';
-import { PointsService } from '@badman/backend-ranking';
+import { ListArgs } from '../../../utils';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -48,6 +53,7 @@ export class EncounterCompetitionResolver {
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
+    private encounterValidationService: EncounterValidationService,
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -142,6 +148,27 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => [Comment], { nullable: true })
   async awayCommentsChange(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getAwayComments();
+  }
+
+  @ResolveField(() => EncounterValidationOutput, {
+    description: `Validate the ChangeEncounter`,
+  })
+  async validateEncounter(
+    @User() user: Player,
+    @Parent() encounter: EncounterCompetition,
+    @Args('validationData', { nullable: true }) data: EncounterValidationInput,
+  ): Promise<EncounterValidationOutput> {
+    return this.encounterValidationService.validate(
+      {
+        ...data,
+        encounterId: encounter.id,
+      },
+      {
+        playerId: user.id,
+        teamId: data.teamId,
+        clubId: data.clubId,
+      },
+    );
   }
 
   @Mutation(() => Boolean)

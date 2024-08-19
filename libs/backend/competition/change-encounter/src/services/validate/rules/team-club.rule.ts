@@ -1,11 +1,12 @@
 import { EncounterCompetition } from '@badman/backend-database';
 import {
-  ChangeEncounterOutput,
-  ChangeEncounterValidationData,
-  ChangeEncounterValidationError,
+  EncounterValidationOutput,
+  EncounterValidationData,
+  EncounterValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
 import { Logger } from '@nestjs/common';
+import e from 'express';
 
 export type TeamClubRuleParams = {
   encounterId: string;
@@ -19,34 +20,34 @@ export class TeamClubRule extends Rule {
   static override readonly description = 'all.rules.change-encounter.team-club';
   private readonly logger = new Logger(TeamClubRule.name);
 
-  async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
-    const errors = [] as ChangeEncounterValidationError<TeamClubRuleParams>[];
-    const warnings = [] as ChangeEncounterValidationError<TeamClubRuleParams>[];
+  async validate(changeEncounter: EncounterValidationData): Promise<EncounterValidationOutput> {
+    const errors = [] as EncounterValidationError<TeamClubRuleParams>[];
+    const warnings = [] as EncounterValidationError<TeamClubRuleParams>[];
     const valid = true;
-    const { encountersSem1, encountersSem2, team, suggestedDates, workingencounterId, lowestYear } =
+    const { encountersSem1, encountersSem2, suggestedDates, encounter, season, semseter1, index } =
       changeEncounter;
 
-    const errors1 = this.findIfSameClubIsFirst(encountersSem1, team.id);
-    const errors2 = this.findIfSameClubIsFirst(encountersSem2, team.id);
+    if (encounter.home?.clubId !== encounter.away?.clubId) {
+      return {
+        valid,
+        errors,
+        warnings,
+      };
+    }
 
-    [errors1, errors2].forEach((err) => {
-      for (const error of err) {
-        errors.push({
-          message: 'all.competition.change-encounter.errors.same-club',
-          params: {
-            encounterId: error.id,
-          },
-        });
-      }
-    });
+    const error = this.isSameClubFirst(semseter1 ? encountersSem1 : encountersSem2, encounter);
+
+    if (error) {
+      errors.push({
+        message: 'all.competition.change-encounter.errors.same-club',
+        params: {
+          encounterId: encounter.id,
+        },
+      });
+    }
 
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
-    if (suggestedDates && workingencounterId) {
-      const indexSem1 = encountersSem1.findIndex((r) => r.id === workingencounterId);
-      const indexSem2 = encountersSem2.findIndex((r) => r.id === workingencounterId);
-      const semseter1 = indexSem1 > -1;
-      const index = semseter1 ? indexSem1 : indexSem2;
-
+    if (suggestedDates && encounter.id) {
       if (index == -1) {
         throw new Error('Working encounter not found');
       }
@@ -55,7 +56,7 @@ export class TeamClubRule extends Rule {
       const encountersSemester2 = [...encountersSem2];
 
       // remove the working encounter from the list
-      const encounter = {
+      const workingEncounter = {
         ...(semseter1
           ? encountersSemester1.splice(index, 1)[0]
           : encountersSemester2.splice(index, 1)[0]
@@ -63,60 +64,54 @@ export class TeamClubRule extends Rule {
       } as EncounterCompetition;
 
       for (const suggestedDate of suggestedDates) {
-        const suggestedSemester1 = suggestedDate.date.getFullYear() === lowestYear;
+        const suggestedSemester1 = suggestedDate.date.getFullYear() === season;
 
-        encounter.date = suggestedDate.date
+        workingEncounter.date = suggestedDate.date;
         const encountersSemester = suggestedSemester1 ? encountersSemester1 : encountersSemester2;
-        const warns = this.findIfSameClubIsFirst([...encountersSemester, encounter], team.id);
+        // remove the working encounter from the list
 
-        warns.forEach((warn) => {
+        const warn = this.isSameClubFirst(
+          [...encountersSemester, workingEncounter],
+          workingEncounter,
+        );
+
+        if (warn) {
           warnings.push({
             message: 'all.competition.change-encounter.errors.same-club',
             params: {
-              encounterId: warn.id,
-              date: suggestedDate.date
+              encounterId: workingEncounter.id,
+              date: suggestedDate.date,
             },
           });
-        });
+        }
       }
     }
 
     return {
       valid,
       errors,
+      warnings,
     };
   }
 
-  findIfSameClubIsFirst(encounters: EncounterCompetition[], currentTeamId: string) {
-    const firstEnc = encounters[0];
-    if (!firstEnc) {
-      return [];
+  isSameClubFirst(encounters: EncounterCompetition[], encounter: EncounterCompetition) {
+    // sorting by date this should be the first or second encounter within the respective teams
+    const indexOfHome = encounters
+      .slice()
+      .sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0))
+      .filter((enc) => enc.homeTeamId === encounter.homeTeamId)
+      .findIndex((enc) => enc.id === encounter.id);
+
+    const indexOfAway = encounters
+      .slice()
+      .sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0))
+      .filter((enc) => enc.awayTeamId === encounter.homeTeamId)
+      .findIndex((enc) => enc.id === encounter.id);
+
+    if (indexOfHome < 2 || indexOfAway < 2) {
+      return false;
     }
 
-    // pick the first encounter to get the current club id
-    const currentClubId =
-      firstEnc?.home?.id == currentTeamId ? firstEnc.home?.clubId : firstEnc.away?.clubId;
-
-    if (!currentClubId) {
-      return [];
-    }
-
-    const errors = [];
-    let differentClubPassed = 0;
-    for (const enc of encounters.slice().sort(
-      (a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0),
-    )) {
-      const otherClub = enc.home?.id == currentTeamId ? enc.away?.clubId : enc.home?.clubId;
-
-      if (otherClub != currentClubId) {
-        differentClubPassed++;
-      } else if (differentClubPassed > 1) {
-        this.logger.debug(`Found error for encounter ${enc.id}`);
-
-        errors.push(enc);
-      }
-    }
-
-    return errors;
+    return true;
   }
 }
