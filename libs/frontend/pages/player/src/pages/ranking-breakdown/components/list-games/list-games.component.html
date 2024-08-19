@@ -3,20 +3,6 @@
     <button mat-stroked-button [matMenuTriggerFor]="menu">Filter</button>
     <mat-menu #menu="matMenu">
       <form [formGroup]="this.breakdownService.filter">
-        <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedIgnored">
-          {{ 'all.ranking.breakdown.notUsed' | translate }}:
-          {{
-            lostGamesIgnored()
-              | i18nPlural
-                : {
-                    '=0': 'all.ranking.breakdown.lostGames.none',
-                    '=1': 'all.ranking.breakdown.lostGames.one',
-                    other: 'all.ranking.breakdown.lostGames.other',
-                  }
-              | translate: { count: lostGamesIgnored() }
-          }}</mat-slide-toggle
-        >
-
         <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedUpgrade">
           {{ 'all.ranking.breakdown.used-for-upgrade' | translate }}:
           {{
@@ -79,22 +65,19 @@
             }}
           </mat-slide-toggle>
 
-          <mat-slide-toggle
-            (click)="$event.stopPropagation()"
-            formControlName="includeOutOfScopeWonGames"
-          >
-            {{ 'all.ranking.breakdown.outOfScopeWonGames' | translate }}:
+          <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedIgnored">
+            {{ 'all.ranking.breakdown.notUsed' | translate }}:
             {{
-              wonGames()
+              lostGamesIgnored()
                 | i18nPlural
                   : {
-                      '=0': 'all.ranking.breakdown.outOfScope.none',
-                      '=1': 'all.ranking.breakdown.outOfScope.one',
-                      other: 'all.ranking.breakdown.outOfScope.other',
+                      '=0': 'all.ranking.breakdown.lostGames.none',
+                      '=1': 'all.ranking.breakdown.lostGames.one',
+                      other: 'all.ranking.breakdown.lostGames.other',
                     }
-                | translate: { count: wonGames() }
-            }}
-          </mat-slide-toggle>
+                | translate: { count: lostGamesIgnored() }
+            }}</mat-slide-toggle
+          >
         }
       </form>
     </mat-menu>
