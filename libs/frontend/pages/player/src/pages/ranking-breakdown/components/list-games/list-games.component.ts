@@ -188,16 +188,17 @@ export class ListGamesComponent {
     () => this.currGames().filter((x) => x.type == GameBreakdownType.LOST_IGNORED).length,
   );
 
+
   outOfScopeGamesUpgrade = computed(
     () =>
       this.currGames().filter(
-        (x) => x.type == GameBreakdownType.LOST_UPGRADE && !x.usedForDowngrade,
+        (x) => x.type == GameBreakdownType.LOST_UPGRADE && !x.usedForUpgrade,
       ).length,
   );
   outOfScopeGamesDowngrade = computed(
     () =>
       this.currGames().filter(
-        (x) => x.type == GameBreakdownType.LOST_DOWNGRADE && !x.usedForUpgrade,
+        (x) => x.type == GameBreakdownType.LOST_DOWNGRADE && !x.usedForDowngrade,
       ).length,
   );
 
