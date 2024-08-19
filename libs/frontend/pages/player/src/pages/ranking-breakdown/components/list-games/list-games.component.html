@@ -1,5 +1,23 @@
-<div class="options">
-  <div>
+<mtx-grid
+  [showToolbar]="true"
+  [toolbarTemplate]="toolbar"
+  [data]="filterdGames()"
+  [loading]="!loaded()"
+  [columns]="columns()"
+  [pageSize]="99999"
+  [showPaginator]="false"
+  [showToolbar]="true"
+  [cellTemplate]="{
+    usedForDowngrade: gamesDowngradeTmpl,
+    usedForUpgrade: gamesUpgradeTmpl,
+    avgUpgrade: avgUpgradeTmpl,
+    avgDowngrade: avgDowngradeTmpl,
+    dropsNextPeriod: dropsTmpl,
+  }"
+/>
+
+<ng-template #toolbar>
+  <div class="options">
     <button mat-stroked-button [matMenuTriggerFor]="menu">Filter</button>
     <mat-menu #menu="matMenu">
       <form [formGroup]="this.breakdownService.filter">
@@ -9,9 +27,9 @@
             lostGamesUpgrade()
               | i18nPlural
                 : {
-                    '=0': 'all.ranking.breakdown.lostGames.none',
-                    '=1': 'all.ranking.breakdown.lostGames.one',
-                    other: 'all.ranking.breakdown.lostGames.other',
+                    '=0': 'all.ranking.breakdown.games.none',
+                    '=1': 'all.ranking.breakdown.games.one',
+                    other: 'all.ranking.breakdown.games.other',
                   }
               | translate: { count: lostGamesUpgrade() }
           }}
@@ -23,9 +41,9 @@
             lostGamesDowngrade()
               | i18nPlural
                 : {
-                    '=0': 'all.ranking.breakdown.lostGames.none',
-                    '=1': 'all.ranking.breakdown.lostGames.one',
-                    other: 'all.ranking.breakdown.lostGames.other',
+                    '=0': 'all.ranking.breakdown.games.none',
+                    '=1': 'all.ranking.breakdown.games.one',
+                    other: 'all.ranking.breakdown.games.other',
                   }
               | translate: { count: lostGamesDowngrade() }
           }}
@@ -81,39 +99,23 @@
         }
       </form>
     </mat-menu>
+
+    <button (click)="this.addGame()" mat-stroked-button>
+      {{ 'all.ranking.breakdown.add-game.title' | translate }}
+    </button>
+    <button (click)="this.exportToExcel()" mat-stroked-button>
+      {{ 'all.ranking.breakdown.export.title' | translate }}
+    </button>
+    <mat-slide-toggle (change)="this.showUpgrade.set($event.checked)" [checked]="this.showUpgrade()"
+      >Show upgrade</mat-slide-toggle
+    >
+    <mat-slide-toggle
+      (change)="this.showDowngrade.set($event.checked)"
+      [checked]="this.showDowngrade()"
+      >Show downgrade</mat-slide-toggle
+    >
   </div>
-
-  <button (click)="this.addGame()" mat-stroked-button>
-    {{ 'all.ranking.breakdown.add-game.title' | translate }}
-  </button>
-  <button (click)="this.exportToExcel()" mat-stroked-button>
-    {{ 'all.ranking.breakdown.export.title' | translate }}
-  </button>
-  <mat-slide-toggle (change)="this.showUpgrade.set($event.checked)" [checked]="this.showUpgrade()"
-    >Show upgrade</mat-slide-toggle
-  >
-  <mat-slide-toggle
-    (change)="this.showDowngrade.set($event.checked)"
-    [checked]="this.showDowngrade()"
-    >Show downgrade</mat-slide-toggle
-  >
-</div>
-
-<mtx-grid
-  [data]="filterdGames()"
-  [loading]="!loaded()"
-  [columns]="columns()"
-  [pageSize]="99999"
-  [showPaginator]="false"
-  [showToolbar]="true"
-  [cellTemplate]="{
-    usedForDowngrade: gamesDowngradeTmpl,
-    usedForUpgrade: gamesUpgradeTmpl,
-    avgUpgrade: avgUpgradeTmpl,
-    avgDowngrade: avgDowngradeTmpl,
-    dropsNextPeriod: dropsTmpl,
-  }"
-/>
+</ng-template>
 
 <ng-template #gamesUpgradeTmpl let-row let-index="index" let-col="colDef">
   @if (row.usedForUpgrade) {
