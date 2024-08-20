@@ -2,10 +2,10 @@ import { DatabaseModule } from '@badman/backend-database';
 import { configSchema, load } from '@badman/utils';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { PlayersWrongRankingRunner } from './scripts/players-with-wrong-ranking/players-with-wrong-ranking';
+import { ExportPlayersWithRanking } from './scripts';
 
 @Module({
-  providers: [PlayersWrongRankingRunner],
+  providers: [ExportPlayersWithRanking],
   imports: [
     ConfigModule.forRoot({
       cache: true,
@@ -18,12 +18,12 @@ import { PlayersWrongRankingRunner } from './scripts/players-with-wrong-ranking/
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
 
-  constructor(private fixer: PlayersWrongRankingRunner) {}
+  constructor(private fixer: ExportPlayersWithRanking) {}
 
   async onModuleInit() {
     this.logger.log('Running script');
 
-    await this.fixer.process();
+    await this.fixer.exportPlayersWithRanking();
 
     this.logger.log('Script finished');
   }
