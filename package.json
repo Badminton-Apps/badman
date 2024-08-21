@@ -237,10 +237,10 @@
     "node-adodb": "github:nuintun/node-adodb"
   },
   "volta": {
-    "node": "20.14.0"
+    "node": "20.17.0"
   },
   "engines": {
-    "node": "20.14.0"
+    "node": "20.17.0"
   },
   "browserslist": [
     "defaults"
