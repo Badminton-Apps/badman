@@ -115,10 +115,18 @@ export class EncounterValidationService extends ValidationService<
     const semseter1 = indexSem1 > -1;
     const index = semseter1 ? indexSem1 : indexSem2;
 
+    if (!encounter.locationId) {
+      throw new Error('Encounter location not found');
+    }
+    const locationIds: string[] = [encounter.locationId];
+    if (args.suggestedDates) {
+      locationIds.push(...args.suggestedDates.map((r) => r.locationId));
+    }
+
     const locations = await Location.findAll({
       attributes: ['id', 'name'],
       where: {
-        id: encounter.locationId,
+        id: locationIds,
       },
       include: [
         {
