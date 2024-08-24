@@ -86,17 +86,19 @@ export class TeamPlayersComponent implements OnInit {
   }
 
   async playerAdded(player: Player) {
-    const newPlayer = new TeamPlayer(player);
-    newPlayer.teamMembership = {
-      id: uuid(),
-      membershipType: TeamMembershipType.REGULAR,
-    };
+    const newPlayer = new TeamPlayer({
+      ...player,
+      teamMembership: {
+        id: uuid(),
+        membershipType: TeamMembershipType.REGULAR,
+      },
+    });
 
     if (!newPlayer) {
       return;
     }
 
-    if (this.control() && newPlayer != null) {
+    if (this.internalControl && newPlayer != null) {
       this.internalControl.push(new FormControl<TeamPlayer>(newPlayer) as FormControl<TeamPlayer>);
     }
   }
