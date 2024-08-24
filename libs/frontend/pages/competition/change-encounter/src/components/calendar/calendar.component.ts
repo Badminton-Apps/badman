@@ -866,7 +866,7 @@ export class CalendarComponent implements OnInit {
 
     // check if it is out of season
     const seasonP = getSeasonPeriod(this.season);
-    if (!moment(date).isBetween(seasonP[0], seasonP[1])) {
+    if (!moment(date).isBetween(seasonP[0], seasonP[1], 'day', '[]')) {
       this.snack.open(
         this.translate.instant('all.competition.change-encounter.calendar.out-of-season'),
         'Ok',
