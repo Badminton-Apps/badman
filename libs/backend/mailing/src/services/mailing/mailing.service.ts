@@ -1,3 +1,4 @@
+import { EncounterValidationOutput } from '@badman/backend-change-encounter';
 import { CompileOptions, CompileService } from '@badman/backend-compile';
 import {
   Club,
@@ -447,6 +448,37 @@ export class MailingService {
       urlBadman?: string;
       user: string;
       settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
+  async sendOpenRequestMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    encounters: EncounterCompetition[],
+    validation: EncounterValidationOutput[],
+  ) {
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Synchronisatie encounter failed`,
+      template: 'synEncounterFailed',
+      context: {
+        encounters: encounters.map((e) => e.toJSON()),
+        validation,
+        user: to.fullName,
+      },
+    } as MailOptions<{
+      encounters: EncounterCompetition[];
+      validation: [];
+      url?: string;
+      urlBadman?: string;
+      user: string;
     }>;
 
     await this._sendMail(options);
