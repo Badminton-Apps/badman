@@ -687,6 +687,7 @@ export class AssemblyComponent implements OnInit {
                   season
                   preferredDay
                   preferredTime
+                  prefferedLocationId
                   players {
                     id
                     slug
@@ -956,15 +957,15 @@ export class AssemblyComponent implements OnInit {
     this.players?.REGULAR.sort(sortList);
     this.substitutes.sort(sortList);
 
-    this.double1 = this.double1.sort(sortDouble);
-    this.double2 = this.double2.sort(sortDouble);
+    this.double1.sort(sortDouble);
+    this.double2.sort(sortDouble);
 
     if (this.type() == 'MX') {
-      this.double3 = this.double3.sort(sortMix);
-      this.double4 = this.double4.sort(sortMix);
+      this.double3.sort(sortMix);
+      this.double4.sort(sortMix);
     } else {
-      this.double3 = this.double3.sort(sortDouble);
-      this.double4 = this.double4.sort(sortDouble);
+      this.double3.sort(sortDouble);
+      this.double4.sort(sortDouble);
     }
   }
 

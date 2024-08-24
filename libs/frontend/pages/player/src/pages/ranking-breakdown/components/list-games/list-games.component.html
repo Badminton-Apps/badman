@@ -22,7 +22,7 @@
     <mat-menu #menu="matMenu">
       <form [formGroup]="this.breakdownService.filter">
         <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedUpgrade">
-          {{ 'all.ranking.breakdown.used-for-upgrade' | translate }}:
+          {{ 'all.ranking.breakdown.usedForUpgrade' | translate }}:
           {{
             lostGamesUpgrade()
               | i18nPlural
@@ -36,7 +36,7 @@
         </mat-slide-toggle>
 
         <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedDowngrade">
-          {{ 'all.ranking.breakdown.used-for-downgrade' | translate }}:
+          {{ 'all.ranking.breakdown.usedForDowngrade' | translate }}:
           {{
             lostGamesDowngrade()
               | i18nPlural
