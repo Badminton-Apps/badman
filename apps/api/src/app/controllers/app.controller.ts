@@ -33,8 +33,7 @@ export class AppController {
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private cpGen: CpGeneratorService,
     private planner: PlannerService,
-    private mailingService: MailingService,
-    private encounterValidationService: EncounterValidationService,
+    private mailingService: MailingService
   ) {}
 
   @Post('queue-job')
