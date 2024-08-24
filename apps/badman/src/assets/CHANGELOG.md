@@ -1,3 +1,23 @@
+## 6.171.0 (2024-08-24)
+
+
+### 🚀 Features
+
+- exporting players with their calculated downgrade points ([129162145](https://github.com/Badminton-Apps/badman/commit/129162145))
+- sending reminder mail for open requests ([8553dbd15](https://github.com/Badminton-Apps/badman/commit/8553dbd15))
+
+### 🩹 Fixes
+
+- allowing to select 1st of september ([0d9b09b9a](https://github.com/Badminton-Apps/badman/commit/0d9b09b9a))
+- changed location would not be loaded in the validation ([afe67521a](https://github.com/Badminton-Apps/badman/commit/afe67521a))
+- changing team from assambly screen ([fd6f2a775](https://github.com/Badminton-Apps/badman/commit/fd6f2a775))
+- typo in  mail ([accb49372](https://github.com/Badminton-Apps/badman/commit/accb49372))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.170.0 (2024-08-19)
 
 
