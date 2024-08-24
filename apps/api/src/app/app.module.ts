@@ -23,6 +23,7 @@ import { join } from 'path';
 import versionPackage from '../version.json';
 import { CleanEnvironmentModule } from './clean-environment.module';
 import { CalendarController } from './controllers/ical.controller';
+import { ChangeEncounterModule } from '@badman/backend-change-encounter';
 
 const productionModules = [];
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
@@ -69,6 +70,7 @@ console.log('envFilePath', envFilePath, process.env.NODE_ENV);
     TranslateModule,
     OrchestratorModule,
     SocketModule,
+    ChangeEncounterModule,
     TransferLoanModule,
   ],
   controllers: [AppController, ImageController, CalendarController],
