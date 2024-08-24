@@ -2,7 +2,6 @@ import { User } from '@badman/backend-authorization';
 
 import { Player } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
-import { MailingService } from '@badman/backend-mailing';
 import { RankingQueue, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import {
@@ -30,7 +29,6 @@ export class AppController {
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private cpGen: CpGeneratorService,
     private planner: PlannerService,
-    private mailingService: MailingService,
   ) {}
 
   @Post('queue-job')
