@@ -4,6 +4,7 @@
   "dependencies": {
     "@badman/backend-database": "6.170.0",
     "@badman/backend-compile": "6.170.0",
+    "@badman/backend-change-encounter": "6.170.0",
     "@badman/utils": "6.170.0",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
