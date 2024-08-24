@@ -1,6 +1,6 @@
 import { EncounterCompetition, Location, Team } from '@badman/backend-database';
 import { ValidationService } from '@badman/backend-validation';
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Op, WhereOptions } from 'sequelize';
 import {
   EncounterValidationOutput,
@@ -9,6 +9,8 @@ import {
 } from '../../models';
 import { DatePeriodRule, ExceptionRule, LocationRule, SemesterRule, TeamClubRule } from './rules';
 
+
+@Injectable()
 export class EncounterValidationService extends ValidationService<
   EncounterValidationData,
   EncounterValidationError<unknown>
