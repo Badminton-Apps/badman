@@ -69,6 +69,12 @@ export class EditDialogComponent {
   saveing = false;
 
   constructor() {
+    if (!this.data.locations) {
+      this.getLocations().subscribe((locations) => {
+        this.data.locations = locations;
+      });
+    }
+
     const group = this.fb.group({
       id: this.fb.control(this.data.team.id),
       clubId: this.fb.control(this.data.team.clubId),
@@ -208,7 +214,14 @@ export class EditDialogComponent {
             playerId: player.id,
             teamId: this.data.team.id,
           },
-          refetchQueries: ['TeamPlayers'],
+          refetchQueries: [
+            {
+              query: PLAYERS_QUERY,
+              variables: {
+                teamId: this.data.team.id,
+              },
+            },
+          ],
         }),
       );
     }
@@ -229,7 +242,14 @@ export class EditDialogComponent {
             playerId: player.id,
             teamId: this.data.team.id,
           },
-          refetchQueries: ['TeamPlayers'],
+          refetchQueries: [
+            {
+              query: PLAYERS_QUERY,
+              variables: {
+                teamId: this.data.team.id,
+              },
+            },
+          ],
         }),
       );
     }
@@ -250,8 +270,10 @@ export class EditDialogComponent {
               membershipType: $membershipType
             ) {
               id
-              membershipType
-              teamId
+              teamMembership {
+                membershipType
+                teamId
+              }
             }
           }
         `,
@@ -260,7 +282,14 @@ export class EditDialogComponent {
           playerId: args.player.id,
           membershipType: args.type,
         },
-        refetchQueries: ['TeamPlayers'],
+        refetchQueries: [
+          {
+            query: PLAYERS_QUERY,
+            variables: {
+              teamId: this.data.team.id,
+            },
+          },
+        ],
       })
       .subscribe(() => {
         this.snackBar.open('Saved', undefined, {
@@ -296,7 +325,14 @@ export class EditDialogComponent {
           variables: {
             id: this.data.team.id,
           },
-          refetchQueries: ['Teams'],
+          refetchQueries: [
+            {
+              query: PLAYERS_QUERY,
+              variables: {
+                teamId: this.data.team.id,
+              },
+            },
+          ],
         })
         .subscribe(() => {
           this.snackBar.open('Deleted', undefined, {
@@ -308,6 +344,50 @@ export class EditDialogComponent {
     });
   }
 
-
-
+  getLocations() {
+    return this.apollo
+      .query<{ locations: Location[] }>({
+        fetchPolicy: 'network-only',
+        query: gql`
+          query Locations($where: JSONObject, $availabilitiesWhere: JSONObject) {
+            locations(where: $where) {
+              id
+              name
+              address
+              street
+              streetNumber
+              postalcode
+              city
+              state
+              phone
+              fax
+              availabilities(where: $availabilitiesWhere) {
+                id
+                season
+                days {
+                  day
+                  startTime
+                  endTime
+                  courts
+                }
+                exceptions {
+                  start
+                  end
+                  courts
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          where: {
+            clubId: this.data.team.clubId,
+          },
+          availabilitiesWhere: {
+            season: this.data.team.season,
+          },
+        },
+      })
+      .pipe(map((result) => result.data?.locations?.map((location) => new Location(location))));
+  }
 }
