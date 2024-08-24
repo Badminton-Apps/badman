@@ -27,11 +27,8 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
       logging,
     };
 
-    // throw new Error(`Dialect ${dialect} not supported, env: ${this.configService.get('DB_STORAGE')}`);
-
     if (dialect === 'postgres') {
       require('pg');
-      // await import('pg');
 
       options = {
         ...options,
@@ -69,8 +66,6 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
         ssl: options.ssl,
       });
     }
-
-    // options.logging = false;
 
     options.models = models;
 
