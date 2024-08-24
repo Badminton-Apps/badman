@@ -13,8 +13,8 @@ import { NotificationsModule } from '@badman/backend-notifications';
 import { OrchestratorModule } from '@badman/backend-orchestrator';
 import { QueueModule } from '@badman/backend-queue';
 import { SearchModule } from '@badman/backend-search';
-import { TranslateModule } from '@badman/backend-translate';
 import { TransferLoanModule } from '@badman/backend-transfer-loan';
+import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
 import { SocketModule } from '@badman/backend-websockets';
 import { ConfigType, configSchema, load } from '@badman/utils';
@@ -23,7 +23,6 @@ import { join } from 'path';
 import versionPackage from '../version.json';
 import { CleanEnvironmentModule } from './clean-environment.module';
 import { CalendarController } from './controllers/ical.controller';
-import { ChangeEncounterModule } from '@badman/backend-change-encounter';
 
 const productionModules = [];
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
@@ -70,7 +69,6 @@ console.log('envFilePath', envFilePath, process.env.NODE_ENV);
     TranslateModule,
     OrchestratorModule,
     SocketModule,
-    ChangeEncounterModule,
     TransferLoanModule,
   ],
   controllers: [AppController, ImageController, CalendarController],
