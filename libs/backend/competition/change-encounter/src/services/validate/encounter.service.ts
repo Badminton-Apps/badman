@@ -1,6 +1,6 @@
 import { EncounterCompetition, Location, Team } from '@badman/backend-database';
 import { ValidationService } from '@badman/backend-validation';
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Op, WhereOptions } from 'sequelize';
 import {
   EncounterValidationOutput,
@@ -9,6 +9,7 @@ import {
 } from '../../models';
 import { DatePeriodRule, ExceptionRule, LocationRule, SemesterRule, TeamClubRule } from './rules';
 
+@Injectable()
 export class EncounterValidationService extends ValidationService<
   EncounterValidationData,
   EncounterValidationError<unknown>
@@ -115,10 +116,10 @@ export class EncounterValidationService extends ValidationService<
     const semseter1 = indexSem1 > -1;
     const index = semseter1 ? indexSem1 : indexSem2;
 
-    if (!encounter.locationId) {
-      throw new Error('Encounter location not found');
+    const locationIds: string[] = [];
+    if (encounter.locationId) {
+      locationIds.push(encounter.locationId);
     }
-    const locationIds: string[] = [encounter.locationId];
     if (args.suggestedDates) {
       locationIds.push(...args.suggestedDates.map((r) => r.locationId));
     }
