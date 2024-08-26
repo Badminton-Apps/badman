@@ -99,6 +99,10 @@ export class LocationRule extends Rule {
       return errors;
     }
 
+    if (!locationId) {
+      return errors;
+    }
+
     const encsOnDayAndLocation = await EncounterCompetition.findAll({
       attributes: ['id'],
       where: {
