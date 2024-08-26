@@ -1,3 +1,16 @@
+## 6.171.1 (2024-08-26)
+
+
+### 🩹 Fixes
+
+- moved to own module ([22947bb2d](https://github.com/Badminton-Apps/badman/commit/22947bb2d))
+- when no default location was availible don't try to load it ([7452745a8](https://github.com/Badminton-Apps/badman/commit/7452745a8))
+- allow admins to still change locations ([988389b33](https://github.com/Badminton-Apps/badman/commit/988389b33))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.171.0 (2024-08-24)
 
 
