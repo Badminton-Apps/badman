@@ -1,3 +1,14 @@
+## 6.171.2 (2024-08-26)
+
+
+### 🩹 Fixes
+
+- disable error if no location is configured ([ed60123bf](https://github.com/Badminton-Apps/badman/commit/ed60123bf))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.171.1 (2024-08-26)
 
 
