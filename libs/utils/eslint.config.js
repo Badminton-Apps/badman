@@ -29,4 +29,7 @@ module.exports = [
       '@nx/dependency-checks': 'error',
     },
   })),
+  {
+    ignores: ['**/*.generated.ts'],
+  },
 ];
