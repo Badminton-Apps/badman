@@ -124,6 +124,7 @@ export type I18nTranslations = {
                 "description": string;
                 "disclaimer-submit": string;
                 "errors": {
+                    "closed": string;
                     "date-out-of-period": string;
                     "exception-day": string;
                     "invalid": string;
