@@ -128,7 +128,7 @@ export class ListEncountersComponent implements OnInit {
           // semester 2 = highest year
 
           // get the lowest year
-          const lowestYear = Math.min(...encounters.map((r) => r.date?.getFullYear() || 0));
+          const lowestYear = Math.min(...encounters.map((r) => r.date?.getFullYear() ?? 0));
 
           this.encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear);
 
@@ -161,7 +161,7 @@ export class ListEncountersComponent implements OnInit {
     let tooltip = [];
 
     // if not accepted, show info icon
-    if ((encounter.encounterChange?.accepted ?? true) == false) {
+    if (!(encounter.encounterChange?.accepted ?? true)) {
       icon = 'info';
       infoClass = 'warning';
       tooltip.push('all.competition.change-encounter.errors.not-accepted');
@@ -272,8 +272,11 @@ export class ListEncountersComponent implements OnInit {
                     id
                     eventCompetition {
                       id
-                      changeCloseRequestDate
-                      changeCloseDate
+                      changeCloseRequestDatePeriod1
+                      changeCloseRequestDatePeriod2
+                      changeCloseDatePeriod1
+                      changeCloseDatePeriod2
+                      season
                       visualCode
                     }
                   }

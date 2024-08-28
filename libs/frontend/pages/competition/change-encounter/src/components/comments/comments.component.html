@@ -7,7 +7,7 @@
       <div
         class="message"
         [ngClass]="{
-          me: comment.player?.id === user()?.id
+          me: comment.player?.id === user()?.id,
         }"
       >
         <div class="message-content">
@@ -27,7 +27,12 @@
       <mat-label>{{ 'all.competition.change-encounter.comment' | translate }}</mat-label>
       <textarea matInput [formControl]="this.commentControl" rows="5"></textarea>
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="addComment()">
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="addComment()"
+      [disabled]="this.disabled() ?? false"
+    >
       {{ 'all.button.add-comment' | translate }}
     </button>
   </div>

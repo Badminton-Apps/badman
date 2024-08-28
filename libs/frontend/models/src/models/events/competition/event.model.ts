@@ -18,8 +18,10 @@ export class EventCompetition extends Event {
   infoEvents?: InfoEvent[];
 
   changeOpenDate?: Date;
-  changeCloseDate?: Date;
-  changeCloseRequestDate?: Date;
+  changeCloseDatePeriod1?: Date;
+  changeCloseDatePeriod2?: Date;
+  changeCloseRequestDatePeriod1?: Date;
+  changeCloseRequestDatePeriod2?: Date;
   checkEncounterForFilledIn?: boolean;
 
   constructor({ ...args }: Partial<EventCompetition>) {
@@ -36,11 +38,28 @@ export class EventCompetition extends Event {
     this.infoEvents = args?.infoEvents?.map((e) => new InfoEvent(e));
     this.changeOpenDate = args.changeOpenDate ? new Date(args.changeOpenDate) : undefined;
 
-    this.changeCloseDate = args.changeCloseDate ? new Date(args.changeCloseDate) : undefined;
-
-    this.changeCloseRequestDate = args.changeCloseRequestDate
-      ? new Date(args.changeCloseRequestDate)
+    this.changeCloseDatePeriod1 = args.changeCloseDatePeriod1
+      ? new Date(args.changeCloseDatePeriod1)
       : undefined;
+    if (args.changeCloseDatePeriod2) {
+      this.changeCloseDatePeriod2 = new Date(args.changeCloseDatePeriod2);
+    } else {
+      this.changeCloseDatePeriod2 = args.changeCloseDatePeriod1
+        ? new Date(args.changeCloseDatePeriod1)
+        : undefined;
+    }
+
+    this.changeCloseRequestDatePeriod1 = args.changeCloseRequestDatePeriod1
+      ? new Date(args.changeCloseRequestDatePeriod1)
+      : undefined;
+
+    if (args.changeCloseRequestDatePeriod2) {
+      this.changeCloseRequestDatePeriod2 = new Date(args.changeCloseRequestDatePeriod2);
+    } else {
+      this.changeCloseRequestDatePeriod2 = args.changeCloseRequestDatePeriod1
+        ? new Date(args.changeCloseRequestDatePeriod1)
+        : undefined;
+    }
 
     this.subEventCompetitions = args?.subEventCompetitions
       ?.map((s) => new SubEventCompetition({ ...s, eventCompetition: this }))
