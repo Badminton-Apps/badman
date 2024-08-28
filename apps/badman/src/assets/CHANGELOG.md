@@ -1,3 +1,18 @@
+## 6.172.0 (2024-08-28)
+
+
+### 🚀 Features
+
+- allow setting of multiple dates for change encounter ([37ee38c4d](https://github.com/Badminton-Apps/badman/commit/37ee38c4d))
+
+### 🩹 Fixes
+
+- new meta tag for apple ([cfef8e1ec](https://github.com/Badminton-Apps/badman/commit/cfef8e1ec))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.171.2 (2024-08-26)
 
 
