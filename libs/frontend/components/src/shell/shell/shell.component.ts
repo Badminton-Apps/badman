@@ -139,43 +139,43 @@ export class ShellComponent {
       ),
   );
 
-  openChangeEncounter = derivedAsync (() =>
-    this.apollo
-      .query<{
-        eventTournaments: { count: number };
-        eventCompetitions: { count: number };
-      }>({
-        query: gql`
-          # we request only first one, because if it's more that means it's open
-          query CanChange($where: JSONObject) {
-            eventCompetitions(take: 1, where: $where) {
-              count
-            }
-          }
-        `,
-        variables: {
-          where: {
-            changeOpenDate: { $lte: new Date().toISOString() },
-            changeCloseDate: { $gte: new Date().toISOString() },
-          },
-        },
-      })
-      .pipe(
-        map(
-          (events) =>
-            (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-            (events?.data?.eventCompetitions?.count ?? 0) != 0,
-        ),
-      ),
-  );
+  // openChangeEncounter = derivedAsync (() =>
+  //   this.apollo
+  //     .query<{
+  //       eventTournaments: { count: number };
+  //       eventCompetitions: { count: number };
+  //     }>({
+  //       query: gql`
+  //         # we request only first one, because if it's more that means it's open
+  //         query CanChange($where: JSONObject) {
+  //           eventCompetitions(take: 1, where: $where) {
+  //             count
+  //           }
+  //         }
+  //       `,
+  //       variables: {
+  //         where: {
+  //           changeOpenDate: { $lte: new Date().toISOString() },
+  //           changeCloseDate: { $gte: new Date().toISOString() },
+  //         },
+  //       },
+  //     })
+  //     .pipe(
+  //       map(
+  //         (events) =>
+  //           (events?.data?.eventTournaments?.count ?? 0) != 0 ||
+  //           (events?.data?.eventCompetitions?.count ?? 0) != 0,
+  //       ),
+  //     ),
+  // );
 
   canEnroll = computed(
     () => this.canAnyEnroll() || (this.canViewEnroll() && this.openEnrollments()),
   );
 
-  canChange = computed(
-    () => this.canAnyChange() || (this.canViewChange() && this.openChangeEncounter()),
-  );
+  // canChange = computed(
+  //   () => this.canAnyChange() || (this.canViewChange() && this.openChangeEncounter()),
+  // );
 
   constructor() {
     const snackBar = inject(MatSnackBar);

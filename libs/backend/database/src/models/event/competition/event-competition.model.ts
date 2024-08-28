@@ -91,11 +91,19 @@ export class EventCompetition extends Model<
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  changeCloseDate?: Date;
+  changeCloseDatePeriod1?: Date;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  changeCloseRequestDate?: Date;
+  changeCloseDatePeriod2?: Date;  
+
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  changeCloseRequestDatePeriod1?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  changeCloseRequestDatePeriod2?: Date;
 
   @Field(() => EventCompetitionMetaType, { nullable: true })
   @Column({

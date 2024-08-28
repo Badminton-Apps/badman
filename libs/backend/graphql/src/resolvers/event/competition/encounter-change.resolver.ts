@@ -219,23 +219,29 @@ export class EncounterChangeCompetitionResolver {
             include: [
               {
                 model: EventCompetition,
-                attributes: ['id', 'changeCloseRequestDate'],
+                attributes: [
+                  'id',
+                  'season',
+                  'changeCloseRequestDatePeriod1',
+                  'changeCloseRequestDatePeriod2',
+                ],
               },
             ],
           },
         ],
+        logging: (msg) => this.logger.debug(msg),
       });
 
       // can request new dates in timezone europe/brussels
+      const event = draw?.subEventCompetition?.eventCompetition;
+      const closedDate =
+        encounter.date?.getFullYear() === event?.season
+          ? event?.changeCloseRequestDatePeriod1
+          : event?.changeCloseRequestDatePeriod2;
 
       const canRequestNewDates = moment
         .tz('europe/brussels')
-        .isBefore(
-          moment.tz(
-            draw?.subEventCompetition?.eventCompetition?.changeCloseRequestDate,
-            'europe/brussels',
-          ),
-        );
+        .isBefore(moment.tz(closedDate, 'europe/brussels'));
 
       await this.changeOrUpdate(
         encounterChange,

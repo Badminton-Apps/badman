@@ -7,9 +7,9 @@ import {
   TemplateRef,
   ViewChild,
   computed,
+  inject,
   input,
   signal,
-  inject,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -19,7 +19,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -32,8 +31,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { InMemoryCache } from '@apollo/client/cache';
 import { ClaimService } from '@badman/frontend-auth';
 import { HasClaimComponent, SetEncounterDateDialogComponent } from '@badman/frontend-components';
+import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import {
   Comment,
   EncounterChange,
@@ -45,13 +46,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, lastValueFrom, of } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { InMemoryCache } from '@apollo/client/cache';
 
 const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
@@ -122,11 +122,12 @@ export class ShowRequestsComponent implements OnInit {
   home!: boolean;
   running = false;
 
-  requestClosed = false;
+  requestingClosed = false;
   requestClosing!: moment.Moment;
 
   isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
 
+  canChangeEncounter = computed<boolean>(() => false);
   comments = signal<Comment[]>([]);
 
   requests$!: Observable<EncounterChange>;
@@ -156,13 +157,24 @@ export class ShowRequestsComponent implements OnInit {
       this.requests$ = this.previous.valueChanges.pipe(
         tap((encounter: EncounterCompetition) => {
           this.encounter = encounter;
-          if (encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.changeCloseDate) {
-            this.requestClosing = moment(
-              encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.changeCloseDate,
+          const event = encounter?.drawCompetition?.subEventCompetition?.eventCompetition;
+          if (event?.changeCloseDatePeriod1 || event?.changeCloseDatePeriod2) {
+            if (encounter.date?.getFullYear() == event.season) {
+              this.requestClosing = moment(event?.changeCloseDatePeriod1);
+            } else {
+              this.requestClosing = moment(event?.changeCloseDatePeriod2);
+            }
+
+            console.log(
+              'requestClosing',
+              event?.changeCloseDatePeriod2,
+              event.season,
+              encounter.date?.getFullYear(),
             );
-            this.requestClosed = moment().isAfter(this.requestClosing);
+
+            this.requestingClosed = moment().isAfter(this.requestClosing);
           } else {
-            this.requestClosed = false;
+            this.requestingClosed = false;
           }
 
           this.running = false;
