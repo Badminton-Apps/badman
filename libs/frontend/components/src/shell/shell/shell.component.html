@@ -81,14 +81,12 @@
                 }
               </badman-has-claim>
               <badman-has-claim [any]="['*_change:encounter', 'change-any:encounter']">
-                @if (this.canChange()) {
-                  <a
-                    mat-list-item
-                    (click)="isHandset() && drawer.close()"
-                    [routerLink]="['/competition', 'change-encounter']"
-                    >{{ 'all.shell.sidebar.competition.change-encounter' | translate }}</a
-                  >
-                }
+                <a
+                  mat-list-item
+                  (click)="isHandset() && drawer.close()"
+                  [routerLink]="['/competition', 'change-encounter']"
+                  >{{ 'all.shell.sidebar.competition.change-encounter' | translate }}</a
+                >
               </badman-has-claim>
             </mat-nav-list>
           </div>
