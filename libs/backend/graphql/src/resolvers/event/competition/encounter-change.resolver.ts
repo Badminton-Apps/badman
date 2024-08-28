@@ -31,7 +31,7 @@ import { User } from '@badman/backend-authorization';
 
 import { EncounterValidationService } from '@badman/backend-change-encounter';
 import { NotificationService } from '@badman/backend-notifications';
-import { getSeason, LoggingAction } from '@badman/utils';
+import { LoggingAction } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { Transaction } from 'sequelize';
