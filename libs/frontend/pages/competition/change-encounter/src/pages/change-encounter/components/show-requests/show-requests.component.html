@@ -81,45 +81,48 @@
               }
             </div>
           </div>
-          @if (!this.requestClosed || this.isAdmin()) {
-            <div class="submit">
-              <div>
-                <button
-                  mat-stroked-button
-                  (click)="this.addDate()"
-                  type="button"
-                  [disabled]="this.requestClosed && this.isAdmin() === false"
-                >
-                  {{ 'all.competition.change-encounter.add-date' | translate }}
+          <div class="submit">
+            <div>
+              <button
+                mat-stroked-button
+                (click)="this.addDate()"
+                type="button"
+                [disabled]="this.requestingClosed && !this.isAdmin()"
+              >
+                {{ 'all.competition.change-encounter.add-date' | translate }}
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="!this.running && this.requestingClosed && !this.isAdmin()"
+              >
+                {{ 'all.button.submit' | translate }}
+              </button>
+              <button
+                mat-stroked-button
+                color="secondary"
+                type="button"
+                (click)="this.cancel()"
+                [disabled]="!this.running && this.requestingClosed && !this.isAdmin()"
+              >
+                {{ 'all.button.cancel' | translate }}
+              </button>
+              <badman-has-claim [any]="['change-any:encounter']">
+                <button (click)="this.changeDate()" type="button" mat-stroked-button>
+                  Change date
                 </button>
-                <button mat-raised-button color="primary" type="submit" [disabled]="this.running">
-                  {{ 'all.button.submit' | translate }}
-                </button>
-                <button
-                  mat-stroked-button
-                  color="secondary"
-                  type="button"
-                  (click)="this.cancel()"
-                  [disabled]="this.running"
-                >
-                  {{ 'all.button.cancel' | translate }}
-                </button>
-                <badman-has-claim [any]="['change-any:encounter']">
-                  <button (click)="this.changeDate()" type="button" mat-stroked-button>
-                    Change date
-                  </button>
-                </badman-has-claim>
-              </div>
-              @if (!this.requestClosed && requestClosing) {
-                <div class="caption">
-                  <p>
-                    {{ 'all.competition.change-encounter.warnings.closing' | translate }}
-                    <strong class="warning">{{ requestClosing | amDateFormat: 'llll' }}</strong>
-                  </p>
-                </div>
-              }
+              </badman-has-claim>
             </div>
-          }
+            @if (!this.requestingClosed && requestClosing) {
+              <div class="caption">
+                <p>
+                  {{ 'all.competition.change-encounter.warnings.closing' | translate }}
+                  <strong class="warning">{{ requestClosing | amDateFormat: 'llll' }}</strong>
+                </p>
+              </div>
+            }
+          </div>
         } @else {
           <div class="already-accepted">
             <div class="caption">
@@ -134,6 +137,7 @@
       <badman-comments
         [clubId]="this.home ? this.encounter.home?.clubId! : this.encounter.away?.clubId!"
         [encounter]="this.encounter"
+        [disabled]="this.requestingClosed && !this.isAdmin()"
       ></badman-comments>
     }
   </div>

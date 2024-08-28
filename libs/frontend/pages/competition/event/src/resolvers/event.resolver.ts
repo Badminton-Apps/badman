@@ -15,8 +15,10 @@ export const EVENT_QUERY = gql`
       openDate
       closeDate
       changeOpenDate
-      changeCloseDate
-      changeCloseRequestDate
+      changeCloseDatePeriod1
+      changeCloseDatePeriod2
+      changeCloseRequestDatePeriod1
+      changeCloseRequestDatePeriod2
       visualCode
       official
       lastSync

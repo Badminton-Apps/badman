@@ -261,8 +261,10 @@ export class DetailPageComponent {
     const ref = this.dialog.open(OpenCloseChangeEncounterDateDialogComponent, {
       data: {
         openDate: this.eventCompetition()?.changeOpenDate,
-        closeDate: this.eventCompetition()?.changeCloseDate,
-        requestDate: this.eventCompetition()?.changeCloseRequestDate,
+        changeCloseDatePeriod1: this.eventCompetition()?.changeCloseDatePeriod1,
+        changeCloseDatePeriod2: this.eventCompetition()?.changeCloseDatePeriod2,
+        changeCloseRequestDatePeriod1: this.eventCompetition()?.changeCloseRequestDatePeriod1,
+        changeCloseRequestDatePeriod2: this.eventCompetition()?.changeCloseRequestDatePeriod2,
       },
       width: '400px',
     });
@@ -277,8 +279,10 @@ export class DetailPageComponent {
         }
 
         eventCompetition.changeOpenDate = result.openDate;
-        eventCompetition.changeCloseDate = result.closeDate;
-        eventCompetition.changeCloseRequestDate = result.requestDate;
+        eventCompetition.changeCloseDatePeriod1 = result.changeCloseDatePeriod1;
+        eventCompetition.changeCloseDatePeriod2 = result.changeCloseDatePeriod2;
+        eventCompetition.changeCloseRequestDatePeriod1 = result.changeCloseRequestDatePeriod1;
+        eventCompetition.changeCloseRequestDatePeriod2 = result.changeCloseRequestDatePeriod2;
 
         this.apollo
           .mutate({
@@ -293,8 +297,10 @@ export class DetailPageComponent {
               data: {
                 id: eventCompetition.id,
                 changeOpenDate: eventCompetition.changeOpenDate,
-                changeCloseDate: eventCompetition.changeCloseDate,
-                changeCloseRequestDate: eventCompetition.changeCloseRequestDate,
+                changeCloseDatePeriod1: eventCompetition.changeCloseDatePeriod1,
+                changeCloseDatePeriod2: eventCompetition.changeCloseDatePeriod2,
+                changeCloseRequestDatePeriod1: eventCompetition.changeCloseRequestDatePeriod1,
+                changeCloseRequestDatePeriod2: eventCompetition.changeCloseRequestDatePeriod2,
               },
             },
           })

@@ -75,10 +75,16 @@ export class CommentsComponent implements OnInit, OnChanges {
 
   encounter = input.required<EncounterCompetition>();
 
+  disabled = input<boolean>();
+
   // forms
   commentControl = new FormControl<string>('');
 
   ngOnInit(): void {
+    if (this.disabled()){
+      this.commentControl.disable();
+    }
+
     this.comments = toSignal(
       this.update$.pipe(
         startWith(null),
