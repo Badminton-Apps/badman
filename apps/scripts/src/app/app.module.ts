@@ -1,11 +1,12 @@
 import { DatabaseModule } from '@badman/backend-database';
+import { VisualModule } from '@badman/backend-visual';
 import { configSchema, load } from '@badman/utils';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ExportPlayersWithRanking } from './scripts';
+import { WrongDatesService } from './scripts/wrong-dates/wrong-dates.service';
 
 @Module({
-  providers: [ExportPlayersWithRanking],
+  providers: [WrongDatesService],
   imports: [
     ConfigModule.forRoot({
       cache: true,
@@ -13,17 +14,18 @@ import { ExportPlayersWithRanking } from './scripts';
       load: [load],
     }),
     DatabaseModule,
+    VisualModule,
   ],
 })
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
 
-  constructor(private fixer: ExportPlayersWithRanking) {}
+  constructor(private fixer: WrongDatesService) {}
 
   async onModuleInit() {
     this.logger.log('Running script');
 
-    await this.fixer.exportPlayersWithRanking();
+    await this.fixer.fixWrongDates(2024); 
 
     this.logger.log('Script finished');
   }
