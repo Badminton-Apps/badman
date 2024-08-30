@@ -1,8 +1,10 @@
 import { EncounterCompetition } from '@badman/backend-database';
 import { VisualService } from '@badman/backend-visual';
+import { getSeasonPeriod } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
+import xlsx from 'xlsx';
 
 @Injectable()
 export class WrongDatesService {
@@ -11,14 +13,13 @@ export class WrongDatesService {
 
   constructor(private readonly visualService: VisualService) {}
 
-  async fixWrongDates(year: number) {
-    const startDate = moment([year, 9, 1]).toDate();
-    const endDate = moment([year + 1, 7, 1]).toDate();
+  async fixWrongDates(season: number) {
+    const period = getSeasonPeriod(season) as [string, string];
 
     const encounters = await EncounterCompetition.findAll({
       where: {
         date: {
-          [Op.between]: [startDate, endDate],
+          [Op.between]: period,
         },
         originalDate: {
           [Op.ne]: null,
@@ -28,7 +29,7 @@ export class WrongDatesService {
 
     this.logger.log(`Found ${encounters.length} encounters`);
 
-    const wrongTimezone = [];
+    const toChange = [];
     const notChanged = [];
 
     for (const encounter of encounters) {
@@ -48,7 +49,7 @@ export class WrongDatesService {
           return;
         }
 
-        const result = await this.visualService.getDate(event.visualCode, encounter.visualCode);
+        const result = await this.visualService.getDate(event.visualCode, encounter.visualCode, false);
 
         const dateBrussels = moment.tz(result, 'Europe/Brussels');
 
@@ -58,23 +59,6 @@ export class WrongDatesService {
 
         const home = await encounter.getHome();
         const away = await encounter.getAway();
-        const gmtWrong = moment.tz(result, 'Etc/GMT+0');
-        // Check if it was submitted without timezone update
-        if (gmtWrong.isSame(moment(encounter.date))) {
-          wrongTimezone.push(
-            `${home.name},${away.name},${gmtWrong.format(
-              this.visualFormat,
-            )},${moment(encounter.date).format(this.visualFormat)}`,
-          );
-
-          // this.visualService.changeDate(
-          //   event.visualCode,
-          //   encounter.visualCode,
-          //   encounter.date
-          // );
-
-          continue;
-        }
 
         if (dateBrussels.isSame(moment(encounter.originalDate))) {
           notChanged.push(
@@ -83,6 +67,13 @@ export class WrongDatesService {
             )},${moment(encounter.date).format(this.visualFormat)}`,
           );
 
+          toChange.push({
+            home: home.name,
+            away: away.name,
+            visual: dateBrussels.format(this.visualFormat),
+            badman: moment(encounter.date).format(this.visualFormat),
+          });
+
           // this.visualService.changeDate(
           //   event.visualCode,
           //   encounter.visualCode,
@@ -91,26 +82,21 @@ export class WrongDatesService {
           continue;
         }
 
-        // this.logger.log(`Changing date for encounter ${encounter.id}`);
-
         // encounter.synced = new Date();
       } catch (error) {
         this.logger.error(error);
       }
     }
 
-    this.logger.debug(`Wrong timezone: ${wrongTimezone.length}`);
     this.logger.debug(`Not changed: ${notChanged.length}`);
 
-    this.logger.log('Done');
+    // wirte to xlsx
+    const wb = xlsx.utils.book_new();
+    const ws = xlsx.utils.json_to_sheet(toChange);
+    xlsx.utils.book_append_sheet(wb, ws, 'To change');
+    xlsx.writeFile(wb, `wrong-dates-${season}.xlsx`);
+    
 
-    // await writeFile(
-    //   'wrong-timezone.csv',
-    //   `home,away,wrong,right\n${wrongTimezone.join('\n')}`
-    // );
-    // await writeFile(
-    //   'wrong-date.csv',
-    //   `home,away,wrong,right\n${notChanged.join('\n')}`
-    // );
+    this.logger.log('Done');
   }
 }

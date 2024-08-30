@@ -59,6 +59,7 @@
       "validation": {
         "all": "Tous",
         "invalid": "Contient des erreurs",
+        "potential": "Problèmes potentiels",
         "title": "Validation",
         "valid": "Ne contient pas d'erreurs"
       }
