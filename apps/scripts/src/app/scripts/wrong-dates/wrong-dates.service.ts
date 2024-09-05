@@ -13,7 +13,7 @@ export class WrongDatesService {
 
   constructor(private readonly visualService: VisualService) {}
 
-  async fixWrongDates(season: number) {
+  async process(season: number) {
     const period = getSeasonPeriod(season) as [string, string];
 
     const encounters = await EncounterCompetition.findAll({
