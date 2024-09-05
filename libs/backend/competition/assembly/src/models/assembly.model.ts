@@ -95,6 +95,7 @@ export class AssemblyValidationData {
   meta?: MetaEntry;
   otherMeta?: MetaEntry[];
   team?: Team;
+  previousSeasonTeam?: Team | null;
 
   teamIndex?: number;
   teamPlayers?: Player[];

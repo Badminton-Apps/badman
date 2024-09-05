@@ -12,10 +12,17 @@ export type TeamSubeventIndexRuleParams = {
 export class TeamSubeventIndexRule extends Rule {
   static override readonly description = 'all.rules.team-assembly.team-subevent-index';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const { teamIndex, subEvent } = assembly;
+    const { teamIndex, subEvent, previousSeasonTeam } = assembly;
 
     if (!subEvent?.minBaseIndex) {
       throw new Error('Subevent is not defined');
+    }
+
+    // if team is degraded, it can have a lower index
+    if (previousSeasonTeam?.entry?.standing?.faller) {
+      return {
+        valid: true,
+      };
     }
 
     if ((teamIndex ?? 0) < subEvent.minBaseIndex) {

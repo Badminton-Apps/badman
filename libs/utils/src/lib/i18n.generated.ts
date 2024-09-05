@@ -66,6 +66,7 @@ export type I18nTranslations = {
                 "validation": {
                     "all": string;
                     "invalid": string;
+                    "potential": string;
                     "title": string;
                     "valid": string;
                 };
