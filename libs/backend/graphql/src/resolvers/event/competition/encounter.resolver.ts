@@ -109,9 +109,13 @@ export class EncounterCompetitionResolver {
 
   @ResolveField(() => [Assembly])
   async assemblies(
+    @User() user: Player,
     @Parent() encounter: EncounterCompetition,
     @Args() listArgs: ListArgs,
   ): Promise<Assembly[]> {
+    if (!user?.id){
+      return [];
+    }
     return encounter.getAssemblies(ListArgs.toFindOptions(listArgs));
   }
 

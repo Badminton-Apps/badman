@@ -47,15 +47,19 @@ export class LocationRule extends Rule {
       };
     }
 
-    const warning = await this.checkifLocationIsFree(
+    const { err, warn } = await this.checkifLocationIsFree(
       encounter.date,
       encounter.locationId,
       encounter.id,
       locations,
       false,
     );
-    if (warning.length) {
-      errors.push(...warning);
+    if (err.length) {
+      errors.push(...err);
+    }
+
+    if (warn.length) {
+      warnings.push(...warn);
     }
 
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
@@ -66,15 +70,18 @@ export class LocationRule extends Rule {
           continue;
         }
 
-        const warning = await this.checkifLocationIsFree(
+        const { err, warn } = await this.checkifLocationIsFree(
           suggestedDate.date,
           suggestedDate.locationId,
           encounter.id,
           locations,
           true,
         );
-        if (warning.length) {
-          warnings.push(...warning);
+        if (err.length) {
+          warnings.push(...err);
+        }
+        if (warn.length) {
+          warnings.push(...warn);
         }
       }
     }
@@ -93,14 +100,11 @@ export class LocationRule extends Rule {
     locations: Location[],
     isSuggested = false,
   ) {
-    const errors: EncounterValidationError<LocationRuleParams>[] = [];
+    const err: EncounterValidationError<LocationRuleParams>[] = [];
+    const warn: EncounterValidationError<LocationRuleParams>[] = [];
 
-    if (!locations) {
-      return errors;
-    }
-
-    if (!locationId) {
-      return errors;
+    if (!locations || !locationId) {
+      return { err, warn };
     }
 
     const encsOnDayAndLocation = await EncounterCompetition.findAll({
@@ -119,9 +123,11 @@ export class LocationRule extends Rule {
 
     // all encounters that are on this day and don't have a encounterChange.accepted == false
     let count = encsOnDayAndLocation.filter((r) => r.encounterChange?.accepted !== false).length;
+    let countWithouteRplaced = encsOnDayAndLocation.length;
 
     if (isSuggested) {
       count++;
+      countWithouteRplaced++;
     }
 
     const location = locations.find((r) => r.id === locationId);
@@ -150,7 +156,15 @@ export class LocationRule extends Rule {
 
     if (slot) {
       if (count > (slot?.courts ?? 0) / 2) {
-        errors.push({
+        err.push({
+          message: 'all.competition.change-encounter.errors.location-not-free',
+          params: {
+            encounterId: encounterId,
+            date: encounterDate,
+          },
+        });
+      } else if (countWithouteRplaced > (slot?.courts ?? 0) / 2) {
+        warn.push({
           message: 'all.competition.change-encounter.errors.location-not-free',
           params: {
             encounterId: encounterId,
@@ -159,7 +173,7 @@ export class LocationRule extends Rule {
         });
       }
     } else {
-      errors.push({
+      err.push({
         message: 'all.competition.change-encounter.errors.location-no-timeslot',
         params: {
           encounterId: encounterId,
@@ -168,6 +182,9 @@ export class LocationRule extends Rule {
       });
     }
 
-    return errors.flat();
+    return {
+      err,
+      warn,
+    };
   }
 }

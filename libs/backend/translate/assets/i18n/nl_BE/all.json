@@ -59,6 +59,7 @@
       "validation": {
         "all": "Alles",
         "invalid": "Bevat fouten",
+        "potential": "Potentiële  problemen",
         "title": "Validatie",
         "valid": "Bevat geen fouten"
       }
