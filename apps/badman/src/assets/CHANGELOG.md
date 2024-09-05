@@ -1,3 +1,18 @@
+## 6.172.1 (2024-09-05)
+
+
+### 🩹 Fixes
+
+- extra check for not yet replaced encounters ([a9ae9ef88](https://github.com/Badminton-Apps/badman/commit/a9ae9ef88))
+- scripts for finding incorrect rankings since last update ([c02bb2495](https://github.com/Badminton-Apps/badman/commit/c02bb2495))
+- don't load assemblies when not logged in ([cc554bae9](https://github.com/Badminton-Apps/badman/commit/cc554bae9))
+- allow fallers to have a lower index then the subevent ([8cfae86bb](https://github.com/Badminton-Apps/badman/commit/8cfae86bb))
+- further improvements on export of players ranking ([8b22b5d34](https://github.com/Badminton-Apps/badman/commit/8b22b5d34))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.172.0 (2024-08-28)
 
 

@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-change-encounter",
-  "version": "6.172.0",
+  "version": "6.172.1",
   "dependencies": {
-    "@badman/backend-database": "6.172.0",
-    "@badman/utils": "6.172.0",
+    "@badman/backend-database": "6.172.1",
+    "@badman/utils": "6.172.1",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
     "@nestjs/graphql": "^12.1.1",
@@ -12,9 +12,9 @@
     "sequelize": "^6.37.3",
     "tslib": "^2.6.2",
     "moment-timezone": "^0.5.45",
-    "@badman/backend-validation": "6.172.0",
+    "@badman/backend-validation": "6.172.1",
     "express": "^4.19.2",
-    "@badman/backend-authorization": "6.172.0"
+    "@badman/backend-authorization": "6.172.1"
   },
   "type": "commonjs",
   "main": "./src/index.js",
