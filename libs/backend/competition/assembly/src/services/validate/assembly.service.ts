@@ -9,6 +9,7 @@ import {
   RankingLastPlace,
   RankingPlace,
   RankingSystem,
+  Standing,
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
@@ -84,12 +85,32 @@ export class AssemblyValidationService extends ValidationService<
     const idSubs = args.subtitudes?.filter((p) => p !== undefined && p !== null);
 
     const team = await Team.findByPk(args.teamId, {
-      attributes: ['id', 'name', 'type', 'teamNumber', 'clubId'],
+      attributes: ['id', 'name', 'type', 'teamNumber', 'clubId', 'link', 'season'],
     });
 
-    if (!team) {
+    if (!team?.season) {
       throw new Error('Team not found');
     }
+
+    const previousSeasonTeam = await Team.findOne({
+      attributes: ['id'],
+      where: {
+        link: team.link,
+        season: team.season - 1,
+      },
+      include: [
+        {
+          attributes: ['id'],
+          model: EventEntry,
+          include: [
+            {
+              attributes: ['id', 'faller'],
+              model: Standing,
+            },
+          ],
+        },
+      ],
+    });
 
     const encounter = (await EncounterCompetition.findByPk(args.encounterId)) || undefined;
 
@@ -304,8 +325,6 @@ export class AssemblyValidationService extends ValidationService<
       }),
     );
 
-    // const titularsTeam = Team.baseTeam(players, type);
-
     return {
       type,
       meta,
@@ -321,6 +340,7 @@ export class AssemblyValidationService extends ValidationService<
       event,
 
       team,
+      previousSeasonTeam,
 
       system,
 

@@ -26,6 +26,9 @@ export class AssemblyResolver {
     return this.assemblyService.validate(assembly, { playerId: user.id, teamId: assembly.teamId });
   }
 
+
+  
+
   @ResolveField(() => [PlayerRankingType])
   async titularsPlayers(@Parent() assembly: AssemblyOutput): Promise<PlayerRankingType[]> {
     if (!assembly.titularsPlayerData) return [];
@@ -87,6 +90,7 @@ export class AssemblyResolver {
     if (!assembly) throw new Error('Assembly is required');
     if (!assembly.encounterId) throw new Error('Encounter is required');
     if (!assembly.teamId) throw new Error('Team is required');
+    if (!user?.id) throw new Error('User is required');
 
     this.logger.debug(
       `Saving assembly for encounter ${assembly.encounterId} and team ${assembly.teamId}, by player ${user.fullName}`,

@@ -9,7 +9,7 @@ import xlsx from 'xlsx';
 export class ExportPlayersWithRanking {
   private readonly logger = new Logger(ExportPlayersWithRanking.name);
 
-  public async exportPlayersWithRanking() {
+  public async process() {
     const primarySystem = await RankingSystem.findOne({
       where: {
         primary: true,
@@ -39,8 +39,8 @@ export class ExportPlayersWithRanking {
           model: RankingPlace,
           where: {
             systemId: primarySystem.id,
-            rankingDate: {
-              [Op.in]: ['2024-08-12', '2024-07-01'],
+          rankingDate: {
+              [Op.in]: ['2024-09-02', '2024-08-12'],
             },
           },
         },
@@ -77,39 +77,39 @@ export class ExportPlayersWithRanking {
     this.logger.debug(`Mapping ${players.length} data for ${type}`);
     const data = [];
     for (const player of players) {
-      const rankingAug = player.rankingPlaces.find(
-        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-08-12', 'day'),
+      const rankingSep = player.rankingPlaces.find(
+        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-09-12', 'day'),
       );
 
-      const rankingJul = player.rankingPlaces.find(
-        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-07-01', 'day'),
+      const rankingAug = player.rankingPlaces.find(
+        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-08-01', 'day'),
       );
 
       const averages = await this.calcaulateAverages(
         player,
         system,
         type,
-        '2024-08-12',
-        rankingAug,
+        '2024-09-02',
+        rankingSep,
       );
 
       const pointsNeededForPromotion =
-        system.pointsToGoUp[system.pointsToGoUp.length + 1 - (rankingJul?.[type] ?? 0)];
+        system.pointsToGoUp[system.pointsToGoUp.length + 1 - (rankingAug?.[type] ?? 0)];
       const pointsNeededForDowngrade =
-        system.pointsToGoDown[system.pointsToGoDown.length - (rankingJul?.[type] ?? 0)];
+        system.pointsToGoDown[system.pointsToGoDown.length - (rankingAug?.[type] ?? 0)];
 
       const shouldHaveGoneUp =
-        rankingAug?.[type + 'Points'] > pointsNeededForPromotion &&
-        rankingJul?.[type] == rankingAug?.[type];
+        rankingSep?.[type + 'Points'] > pointsNeededForPromotion &&
+        rankingAug?.[type] == rankingSep?.[type];
 
       let shouldHaveGoneDown =
         averages.avgDowngrade < pointsNeededForDowngrade &&
-        rankingJul?.[type] == rankingAug?.[type];
+        rankingAug?.[type] == rankingSep?.[type];
 
       shouldHaveGoneDown = this.validateShouldHaveGoneDown(
         shouldHaveGoneDown,
         type,
-        rankingJul,
+        rankingAug,
         system,
       );
 
@@ -117,9 +117,9 @@ export class ExportPlayersWithRanking {
         Name: player.fullName,
         Number: player.memberId,
         Gender: player.gender,
+        ['Ranking sep']: rankingSep?.[type],
         ['Ranking aug']: rankingAug?.[type],
-        ['Ranking jul']: rankingJul?.[type],
-        ['Points upgrade']: rankingAug?.[type + 'Points'],
+        ['Points upgrade']: rankingSep?.[type + 'Points'],
         ['Points downgrade']: averages.avgDowngrade ? Math.round(averages.avgDowngrade) : '',
         ['Points needed']: pointsNeededForPromotion,
         ['Should have gone up']: shouldHaveGoneUp ? 'Yes' : 'No',

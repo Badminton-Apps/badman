@@ -4,7 +4,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { EncounterCompetition } from '@badman/frontend-models';
 import { getSeasonPeriod, sortTeams } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
-import { valid } from 'joi';
 import moment from 'moment';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge } from 'rxjs';
@@ -30,7 +29,7 @@ export interface ClubEncounterState {
   filterValidGames: validationFilter;
 }
 
-export type validationFilter = 'all' | 'valid' | 'invalid';
+export type validationFilter = 'all' | 'valid' | 'invalid' | 'potential';
 export type openRequestFilter = 'all' | 'openRequests' | 'noRequests';
 
 @Injectable({
@@ -89,11 +88,14 @@ export class ClubEncounterService {
     if (this.state().filterOpenRequests === 'noRequests') {
       filtered = filtered.filter((encounter) => encounter.encounterChange?.accepted ?? true);
     }
+    
+    console.log(this.state().filterValidGames);
 
-    if (this.state().filterValidGames !== 'all') {
+    if (this.state().filterValidGames == 'invalid') {
+      filtered = filtered.filter((encounter) => encounter.validateEncounter?.valid == false);
+    } else if (this.state().filterValidGames == 'potential') {
       filtered = filtered.filter(
-        (encounter) =>
-          encounter.validateEncounter?.valid == (this.state().filterValidGames === 'valid'),
+        (encounter) => (encounter.validateEncounter?.warnings?.length ?? 0) > 0,
       );
     }
 
