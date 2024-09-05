@@ -1053,7 +1053,7 @@ export class AssemblyComponent implements OnInit {
   };
 
   private _loadSaved(encounterId?: string, captainId?: string) {
-    if (!this.authenticateService.loggedIn || !encounterId) {
+    if (!this.authenticateService.loggedIn() || !encounterId) {
       return of([]);
     }
 
