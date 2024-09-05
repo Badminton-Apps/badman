@@ -20,7 +20,7 @@ export class ExportPlayersWithRanking {
       attributes: ['id', 'firstName', 'lastName', 'memberId', 'gender'],
       where: {
         competitionPlayer: true,
-        // memberId: '50104197',
+        // memberId: '51648865',
         // memberId: '50072145',
       },
       include: [
@@ -39,7 +39,7 @@ export class ExportPlayersWithRanking {
           model: RankingPlace,
           where: {
             systemId: primarySystem.id,
-          rankingDate: {
+            rankingDate: {
               [Op.in]: ['2024-09-02', '2024-08-12'],
             },
           },
@@ -78,11 +78,11 @@ export class ExportPlayersWithRanking {
     const data = [];
     for (const player of players) {
       const rankingSep = player.rankingPlaces.find(
-        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-09-12', 'day'),
+        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-09-02', 'day'),
       );
 
       const rankingAug = player.rankingPlaces.find(
-        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-08-01', 'day'),
+        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-08-12', 'day'),
       );
 
       const averages = await this.calcaulateAverages(
@@ -103,8 +103,9 @@ export class ExportPlayersWithRanking {
         rankingAug?.[type] == rankingSep?.[type];
 
       let shouldHaveGoneDown =
-        averages.avgDowngrade < pointsNeededForDowngrade &&
-        rankingAug?.[type] == rankingSep?.[type];
+        (averages.avgDowngrade ?? Infinity) < pointsNeededForDowngrade &&
+        rankingAug?.[type] == rankingSep?.[type] &&
+        !shouldHaveGoneUp;
 
       shouldHaveGoneDown = this.validateShouldHaveGoneDown(
         shouldHaveGoneDown,
@@ -165,7 +166,7 @@ export class ExportPlayersWithRanking {
     calcDate: string,
     rankingPlace: RankingPlace,
   ) {
-    const g = await player.getGames({
+    const games = await player.getGames({
       where: {
         gameType: type == 'single' ? GameType.S : type == 'double' ? GameType.D : GameType.MX,
         playedAt: {
@@ -183,31 +184,34 @@ export class ExportPlayersWithRanking {
       ],
     });
 
-    if (g.length == 0) {
+    if (games.length == 0) {
       return {
         avgUpgrade: 0,
         avgDowngrade: 0,
       };
     }
 
-    const games = g.map(
-      (game) =>
-        ({
-          ...game.toJSON(),
-        }) as GameBreakdown,
-    );
+    const breakdownInfo = new Map<string, GameBreakdown>();
 
-    this._addBreakdownInfo(games, player, system);
-    this._determineUsedForRanking(games, system);
-    this._calculateAverageUpgrade(games, system, rankingPlace, type);
+    this._addBreakdownInfo(games, breakdownInfo, player, system);
+    this._determineUsedForRanking(games, breakdownInfo, system);
+    this._calculateAverageUpgrade(games, breakdownInfo, system, rankingPlace, type);
+
+    // find in the breakdownInfo the highest avgUpgrade and avgDowngrade
+    const gamesArray = Array.from(breakdownInfo.values());
 
     return {
-      avgUpgrade: games?.find((x) => x.highestAvgUpgrade)?.avgUpgrade,
-      avgDowngrade: games?.find((x) => x.highestAvgDowngrade)?.avgDowngrade,
+      avgUpgrade: gamesArray?.find((x) => x.highestAvgUpgrade)?.avgUpgrade,
+      avgDowngrade: gamesArray?.find((x) => x.highestAvgDowngrade)?.avgDowngrade,
     };
   }
 
-  private _addBreakdownInfo(games: GameBreakdown[], player: Player, system: RankingSystem) {
+  private _addBreakdownInfo(
+    games: Game[],
+    breakdownInfo: Map<string, GameBreakdown>,
+    player: Player,
+    system: RankingSystem,
+  ) {
     for (const game of games) {
       const me = game.players?.find((x) => x.id == player.id);
       if (!me) {
@@ -225,24 +229,32 @@ export class ExportPlayersWithRanking {
         system: system,
       });
 
-      game.points = rankingPoint?.points ?? 0;
-      game.type = type;
-      game.opponent =
+      const info = {} as GameBreakdown;
+
+      info.points = rankingPoint?.points ?? 0;
+      info.type = type;
+      info.opponent =
         game.players?.filter((x) => x.GamePlayerMembership.team !== me.GamePlayerMembership.team) ??
         [];
-      game.team =
+      info.team =
         game.players?.filter((x) => x.GamePlayerMembership.team == me.GamePlayerMembership.team) ??
         [];
 
       // defaults
-      game.usedForDowngrade = false;
-      game.usedForUpgrade = false;
-      game.canUpgrade = false;
-      game.canDowngrade = false;
+      info.usedForDowngrade = false;
+      info.usedForUpgrade = false;
+      info.canUpgrade = false;
+      info.canDowngrade = false;
+
+      breakdownInfo.set(game.id, info);
     }
   }
 
-  private _determineUsedForRanking(games: GameBreakdown[], system: RankingSystem) {
+  private _determineUsedForRanking(
+    games: Game[],
+    breakdownInfo: Map<string, GameBreakdown>,
+    system: RankingSystem,
+  ) {
     let validGamesUpgrade = 0;
     let validGamesDowngrade = 0;
 
@@ -253,22 +265,24 @@ export class ExportPlayersWithRanking {
       }
       return b.playedAt.getTime() - a.playedAt.getTime();
     })) {
-      if (game.type == GameBreakdownType.LOST_IGNORED) {
+      const info = breakdownInfo.get(game.id);
+
+      if (info.type == GameBreakdownType.LOST_IGNORED) {
         continue;
       }
 
       let validUpgrade = false;
       let validDowngrade = false;
 
-      if (game.type == GameBreakdownType.WON) {
+      if (info.type == GameBreakdownType.WON) {
         validUpgrade = true;
         validDowngrade = true;
       } else {
-        if (game.type == GameBreakdownType.LOST_UPGRADE) {
+        if (info.type == GameBreakdownType.LOST_UPGRADE) {
           validUpgrade = true;
         }
 
-        if (game.type == GameBreakdownType.LOST_DOWNGRADE) {
+        if (info.type == GameBreakdownType.LOST_DOWNGRADE) {
           validUpgrade = true;
           validDowngrade = true;
         }
@@ -276,11 +290,11 @@ export class ExportPlayersWithRanking {
 
       if (validUpgrade && validGamesUpgrade < (system?.latestXGamesToUse ?? Infinity)) {
         validGamesUpgrade++;
-        game.usedForUpgrade = true;
+        info.usedForUpgrade = true;
       }
       if (validDowngrade && validGamesDowngrade < (system?.latestXGamesToUse ?? Infinity)) {
         validGamesDowngrade++;
-        game.usedForDowngrade = true;
+        info.usedForDowngrade = true;
       }
 
       // if both x games are used, the rest of the games are not used
@@ -290,13 +304,16 @@ export class ExportPlayersWithRanking {
       ) {
         break;
       }
+
+      breakdownInfo.set(game.id, info);
     }
 
     return games;
   }
 
   private _calculateAverageUpgrade(
-    games: GameBreakdown[],
+    games: Game[],
+    breakdownInfo: Map<string, GameBreakdown>,
     system: RankingSystem,
     rankingPlace: RankingPlace,
     type: 'single' | 'double' | 'mix',
@@ -305,93 +322,116 @@ export class ExportPlayersWithRanking {
     // then first all 0 points,
     // then highest points first
     // then newest first
+
     games = games.sort((a, b) => {
-      if (a.points == 0 && b.points != 0) {
+      const infoA = breakdownInfo.get(a.id);
+      const infoB = breakdownInfo.get(b.id);
+
+      if (infoA.points == 0 && infoB.points != 0) {
         return -1;
       }
 
-      if (a.points != 0 && b.points == 0) {
+      if (infoA.points != 0 && infoB.points == 0) {
         return 1;
       }
 
-      if (a.points == b.points) {
+      if (infoA.points == infoB.points) {
         return 0;
       }
-      return (a.points ?? 0) > (b.points ?? 0) ? -1 : 1;
+      return (infoA.points ?? 0) > (infoB.points ?? 0) ? -1 : 1;
     });
 
     // Upgrade
     let totalPointsUpgrade = 0;
     let gamesProssecedUpgrade = 0;
     let workingAvgUpgrade = undefined;
-    for (const game of games.filter((x) => x.usedForUpgrade)) {
+    for (const game of games.filter((x) => {
+      const info = breakdownInfo.get(x.id);
+      return info.usedForUpgrade;
+    })) {
+      const info = breakdownInfo.get(game.id);
+
       gamesProssecedUpgrade++;
-      game.devideUpgrade = gamesProssecedUpgrade;
-      game.countUpgrade = gamesProssecedUpgrade;
+      info.devideUpgrade = gamesProssecedUpgrade;
+      info.countUpgrade = gamesProssecedUpgrade;
 
       let divider = gamesProssecedUpgrade;
       if (divider < (system.minNumberOfGamesUsedForUpgrade ?? 1)) {
         divider = system.minNumberOfGamesUsedForUpgrade ?? 1;
       }
 
-      totalPointsUpgrade += game.points ?? 0;
+      totalPointsUpgrade += info.points ?? 0;
       const avg = totalPointsUpgrade / divider;
-      if (avg > workingAvgUpgrade) {
+      if (avg > (workingAvgUpgrade ?? 0)) {
         workingAvgUpgrade = avg;
       }
 
-      game.totalPointsUpgrade = totalPointsUpgrade;
-      game.avgUpgrade = workingAvgUpgrade;
-      game.devideUpgradeCorrected = divider;
+      info.totalPointsUpgrade = totalPointsUpgrade;
+      info.avgUpgrade = workingAvgUpgrade;
+      info.devideUpgradeCorrected = divider;
+
+      breakdownInfo.set(game.id, info);
     }
 
     // Downgrade
     let totalPointsDowngrade = 0;
     let gamesProssecedDowngrade = 0;
     let workingAvgDowngrade = undefined;
-    for (const game of games.filter((x) => x.usedForDowngrade)) {
+    for (const game of games.filter((x) => {
+      const info = breakdownInfo.get(x.id);
+      return info.usedForDowngrade;
+    })) {
+      const info = breakdownInfo.get(game.id);
+
       gamesProssecedDowngrade++;
-      game.devideDowngrade = gamesProssecedDowngrade;
-      game.countDowngrade = gamesProssecedDowngrade;
+      info.devideDowngrade = gamesProssecedDowngrade;
+      info.countDowngrade = gamesProssecedDowngrade;
 
       let divider = gamesProssecedDowngrade;
       if (divider < (system.minNumberOfGamesUsedForDowngrade ?? 1)) {
         divider = system.minNumberOfGamesUsedForDowngrade ?? 1;
       }
 
-      totalPointsDowngrade += game.points ?? 0;
+      totalPointsDowngrade += info.points ?? 0;
       const avg = totalPointsDowngrade / divider;
       if (avg > (workingAvgDowngrade ?? 0)) {
         workingAvgDowngrade = avg;
       }
 
-      game.totalPointsDowngrade = totalPointsDowngrade;
-      game.avgDowngrade = workingAvgDowngrade;
-      game.devideDowngradeCorrected = divider;
+      info.totalPointsDowngrade = totalPointsDowngrade;
+      info.avgDowngrade = workingAvgDowngrade;
+      info.devideDowngradeCorrected = divider;
+
+      breakdownInfo.set(game.id, info);
     }
     const level = rankingPlace?.[type ?? 'single'] ?? 12;
 
     // set highest avg for upgrade and downgrade
     for (const game of games) {
-      if (game.avgUpgrade == workingAvgUpgrade) {
-        game.highestAvgUpgrade = true;
+      const info = breakdownInfo.get(game.id);
+      if (info.avgUpgrade == workingAvgUpgrade) {
+        info.highestAvgUpgrade = true;
         if (
           workingAvgUpgrade >= (system.pointsToGoUp?.[(system.amountOfLevels ?? 12) - level] ?? 0)
         ) {
-          game.canUpgrade = true;
+          info.canUpgrade = true;
+          breakdownInfo.set(game.id, info);
         }
         break;
       }
     }
     for (const game of games) {
-      if (game.avgDowngrade == workingAvgDowngrade) {
-        game.highestAvgDowngrade = true;
+      const info = breakdownInfo.get(game.id);
+
+      if (info.avgDowngrade == workingAvgDowngrade) {
+        info.highestAvgDowngrade = true;
         if (
           workingAvgDowngrade <=
           (system.pointsToGoDown?.[(system.amountOfLevels ?? 12) - (level + 1)] ?? 0)
         ) {
-          game.canDowngrade = true;
+          info.canDowngrade = true;
         }
+        breakdownInfo.set(game.id, info);
         break;
       }
     }
@@ -400,7 +440,7 @@ export class ExportPlayersWithRanking {
   }
 }
 
-interface GameBreakdown extends Game {
+interface GameBreakdown {
   points?: number;
 
   totalPointsUpgrade?: number;
