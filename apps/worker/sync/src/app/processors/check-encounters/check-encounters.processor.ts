@@ -15,6 +15,7 @@ import { SearchService } from '@badman/backend-search';
 import { ConfigType } from '@badman/utils';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Job } from 'bull';
 import moment from 'moment';
 import { Browser, Page } from 'puppeteer';
@@ -28,7 +29,6 @@ import {
   gotoEncounterPage,
   hasTime,
 } from './pupeteer';
-import { ConfigService } from '@nestjs/config';
 
 const includes = [
   {
@@ -153,7 +153,7 @@ export class CheckEncounterProcessor {
         for (const chunk of chunks) {
           this.logger.debug(
             `Processing cthunk of ${chunk.length} encounters, ${
-              encounters.count - encountersProcessed 
+              encounters.count - encountersProcessed
             } encounter left, ${chunks.length - chunksProcessed} chunks left`,
           );
           // Close browser if any
@@ -259,9 +259,7 @@ export class CheckEncounterProcessor {
       // not entered and passed 24 hours and no comment
       if (!entered && hoursPassed > 24 && !hasComment) {
         this.notificationService.notifyEncounterNotEntered(encounter);
-      }
-
-      else if (!accepted && hoursPassed > 48 && !hasComment) {
+      } else if (!accepted && hoursPassed > 48 && !hasComment) {
         // Check if it falls under the auto accept clubs
         if (
           encounter.away?.club?.slug &&
