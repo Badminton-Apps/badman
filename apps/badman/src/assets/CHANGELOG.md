@@ -1,3 +1,15 @@
+## 6.172.2 (2024-09-14)
+
+
+### 🩹 Fixes
+
+- accept cookies is optional, if the accept button isn't found we don't really care ([0711f3c3f](https://github.com/Badminton-Apps/badman/commit/0711f3c3f))
+- sync was broken ([19b71ac82](https://github.com/Badminton-Apps/badman/commit/19b71ac82))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.172.1 (2024-09-05)
 
 
