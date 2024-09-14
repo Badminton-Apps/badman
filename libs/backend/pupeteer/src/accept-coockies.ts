@@ -33,7 +33,7 @@ export async function accepCookies(
   }
 
   {
-    const targetPage = page;
+    const targetPage = page; 
     const promises = [];
     promises.push(targetPage.waitForNavigation());
     await targetPage.goto('https://www.toernooi.nl/cookiewall/');
@@ -44,12 +44,7 @@ export async function accepCookies(
     const promises = [];
     promises.push(targetPage.waitForNavigation());
     const element = await waitForSelectors(
-      [
-        ['aria/AKKOORD'],
-        [
-          'body > div > div > div > main > form > div.flex-container.message-page__buttons.message-page__buttons--basic.js-simple-accept-view > button.btn.btn--success.js-accept-basic',
-        ],
-      ],
+      [['button[type="submit"]'], ['button.btn.btn--success.js-accept-basic']],
       targetPage,
       timeout,
     );
