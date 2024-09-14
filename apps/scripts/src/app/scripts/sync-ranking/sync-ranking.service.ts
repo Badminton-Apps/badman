@@ -81,7 +81,11 @@ export class SyncRankingService {
       await page.setViewport({ width: 1691, height: 1337 });
 
       // Accept cookies
-      await accepCookies({ page });
+      try {
+        await accepCookies({ page });
+      } catch (error) {
+        this.logger.error('Error while accepting cookies');
+      }
       await selectBadmninton({ page });
 
       // Processing player
