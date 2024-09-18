@@ -87,7 +87,6 @@ export class CheckEncounterProcessor {
 
   private readonly _username?: string;
   private readonly _password?: string;
-  private readonly autoAcceptClubs = ['smash-for-fun', 'herne', 'opslag'];
 
   constructor(
     private notificationService: NotificationService,
@@ -212,7 +211,7 @@ export class CheckEncounterProcessor {
       return;
     }
     // Create browser
-    const browser = await getBrowser();
+    const browser = await getBrowser(false);
     try {
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
@@ -261,14 +260,8 @@ export class CheckEncounterProcessor {
         this.notificationService.notifyEncounterNotEntered(encounter);
       } else if (!accepted && hoursPassed > 48 && !hasComment) {
         // Check if it falls under the auto accept clubs
-        if (
-          encounter.away?.club?.slug &&
-          this.autoAcceptClubs.includes(encounter.away.club.slug) &&
-          this.configService.get<boolean>('VR_ACCEPT_ENCOUNTERS') &&
-          enteredMoment.isValid()
-        ) {
+        if (encounter.away?.club?.slug && enteredMoment.isValid()) {
           let hoursPassedEntered = moment().diff(enteredMoment, 'hour');
-
           // was entered on time
           const enteredOnTime = enteredMoment.isSameOrBefore(
             moment(encounter.date).add(36, 'hour'),
@@ -280,15 +273,21 @@ export class CheckEncounterProcessor {
 
           // Check if anough time has passed for auto accepting
           if (hoursPassedEntered > 36) {
-            this.logger.debug(
-              `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
-            );
-            await signIn({ page }, this._username, this._password);
-            const succesfull = await acceptEncounter({ page }, { logger: this.logger });
-            if (!succesfull) {
-              // we failed to accept the encounter for some reason, notify the user
-              this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
-              this.notificationService.notifyEncounterNotAccepted(encounter);
+            if (this.configService.get<boolean>('VR_ACCEPT_ENCOUNTERS')) {
+              this.logger.debug(
+                `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
+              );
+              await signIn({ page }, this._username, this._password);
+              const succesfull = await acceptEncounter({ page }, { logger: this.logger });
+              if (!succesfull) {
+                // we failed to accept the encounter for some reason, notify the user
+                this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
+                this.notificationService.notifyEncounterNotAccepted(encounter);
+              }
+            } else {
+              this.logger.debug(
+                `Not auto accepting encounters, auto accept is disabled ${encounter.away.name}`,
+              );
             }
           } else {
             this.logger.debug(
