@@ -23,6 +23,7 @@ export const EVENT_QUERY = gql`
       official
       lastSync
       contactEmail
+      contactId
       teamMatcher
       type
       state

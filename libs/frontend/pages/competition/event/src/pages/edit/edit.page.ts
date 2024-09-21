@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Signal, TemplateRef, computed, inject } from '@angular/core';
+import { Component, Signal, TemplateRef, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,21 +15,23 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import {
   AddRoleComponent,
   EditRoleComponent,
   HasClaimComponent,
   PageHeaderComponent,
+  PlayerSearchComponent,
   SelectCountryComponent,
   SelectCountrystateComponent,
 } from '@badman/frontend-components';
-import { EventCompetition, Role } from '@badman/frontend-models';
+import { EventCompetition, Player, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { LevelType, SecurityType } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
+import { injectRouteData } from 'ngxtension/inject-route-data';
 import {
   BehaviorSubject,
   Subject,
@@ -96,6 +98,7 @@ const roleQuery = gql`
 
     SelectCountryComponent,
     SelectCountrystateComponent,
+    PlayerSearchComponent,
   ],
 })
 export class EditPageComponent {
@@ -104,15 +107,12 @@ export class EditPageComponent {
   private readonly translateService = inject(TranslateService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly seoService = inject(SeoService);
-  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly apollo = inject(Apollo);
   private readonly dialog = inject(MatDialog);
 
-  private routeData = toSignal(this.route.data);
-
-  eventCompetition = computed(() => this.routeData()?.['eventCompetition'] as EventCompetition);
+  eventCompetition = injectRouteData<EventCompetition>('eventCompetition');
 
   public securityTypes: typeof SecurityType = SecurityType;
 
@@ -133,11 +133,16 @@ export class EditPageComponent {
   constructor() {
     const compTitle = 'all.competition.title';
 
+    const eventCompetition = this.eventCompetition();
+    if (!eventCompetition) {
+      throw new Error('Event competition not found');
+    }
+
     this.translateService
       .get([compTitle])
       .pipe(takeUntil(this.destroy$))
       .subscribe((translations) => {
-        const eventCompetitionName = `${this.eventCompetition().name}`;
+        const eventCompetitionName = `${eventCompetition.name}`;
 
         this.breadcrumbService.set('competition', translations[compTitle]);
         this.breadcrumbService.set('@eventCompetition', eventCompetitionName);
@@ -149,7 +154,7 @@ export class EditPageComponent {
         });
       });
 
-    this.setupFormGroup(this.eventCompetition());
+    this.setupFormGroup(eventCompetition);
 
     this.roles = toSignal(
       this.roleChanged$.pipe(
@@ -160,7 +165,7 @@ export class EditPageComponent {
               query: roleQuery,
               variables: {
                 where: {
-                  linkId: this.eventCompetition().id,
+                  linkId: eventCompetition.id,
                   linkType: 'competition',
                 },
               },
@@ -204,6 +209,7 @@ export class EditPageComponent {
         Validators.max(3000),
       ]),
       contactEmail: new FormControl(event.contactEmail, Validators.required),
+      contactId: new FormControl(event.contactId),
       checkEncounterForFilledIn: new FormControl(event.checkEncounterForFilledIn),
       teamMatcher: new FormControl(event.teamMatcher),
 
@@ -252,7 +258,7 @@ export class EditPageComponent {
                 }
               `,
               variables: {
-                id: this.eventCompetition().id,
+                id: this.eventCompetition()?.id,
                 year: r,
               },
             })
@@ -274,6 +280,7 @@ export class EditPageComponent {
       name: eventCompetition.name,
       season: eventCompetition.season,
       contactEmail: eventCompetition.contactEmail,
+      contactId: eventCompetition.contactId,
       teamMatcher: eventCompetition.teamMatcher,
       type: eventCompetition.type,
       state: eventCompetition.state,

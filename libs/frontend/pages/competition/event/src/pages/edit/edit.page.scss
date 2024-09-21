@@ -49,6 +49,13 @@ h3 {
   }
 }
 
+.contact {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex: 1 1 auto;
+}
+
 .general {
   display: flex;
   flex-direction: column;
@@ -82,7 +89,8 @@ h3 {
   }
 }
 
-mat-form-field {
+mat-form-field,
+badman-player-search {
   flex: 1 1 auto;
   width: 100%;
 }
