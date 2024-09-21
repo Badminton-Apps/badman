@@ -2,12 +2,12 @@ extends ../../layouts/layout.pug
 
 block title
   h1.text-center
-    | Ontmoeting nog niet ingevuld
+    | Ontmoeting heeft een opmerking
 
 block content
   p.text-center
     p
-      | Beste #{ captain }, 
+      | Beste #{ contact }, 
       br
       br
       |
@@ -17,7 +17,7 @@ block content
       strong #{ encounter.away.name } 
       | op
       strong #{ date } 
-      | is nog niet ingevuld.
+      | heeft een opmerking.
       br
     p
       a(href=`${url}`)

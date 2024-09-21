@@ -28,6 +28,14 @@
           <mat-label>Contact</mat-label>
           <input matInput formControlName="contactEmail" [required]="true" />
         </mat-form-field>
+
+        <badman-player-search
+          [player]="this.formGroup.get('contactId')?.value"
+          [includePersonal]="true"
+          [allowCreation]="true"
+          [clearOnSelection]="false"
+          (whenSelectPlayer)="this.formGroup.get('contactId')?.setValue($event.id)"
+        ></badman-player-search>
       </div>
 
       <div class="country">
@@ -131,7 +139,9 @@
           </div>
           <div class="allowCompetition">
             <div>
-                <mat-checkbox formControlName="allowCompetition">{{ 'all.competition.allow-competition' | translate }}</mat-checkbox>
+              <mat-checkbox formControlName="allowCompetition">{{
+                'all.competition.allow-competition' | translate
+              }}</mat-checkbox>
             </div>
           </div>
           <div class="delete">
@@ -150,10 +160,10 @@
       </div>
     </ng-container>
     <h3>Sub events</h3>
-    @for (subEvent of eventCompetition().subEventCompetitions; track subEvent; let i = $index) {
+    @for (subEvent of eventCompetition()?.subEventCompetitions; track subEvent; let i = $index) {
       <div>
         <badman-event-competition-level-fields
-          [type]="eventCompetition().type"
+          [type]="eventCompetition()?.type"
           [subEvent]="subEvent"
           [formGroup]="$any(this.formGroup.get('subEventCompetitions'))?.at(i)"
         ></badman-event-competition-level-fields>
@@ -166,12 +176,12 @@
     </div>
   </ng-container>
 }
-<badman-has-claim [any]="[eventCompetition().id + '_edit:role', 'edit-any:club']">
+<badman-has-claim [any]="[eventCompetition()?.id + '_edit:role', 'edit-any:club']">
   <h2>
     Roles
     <badman-add-role
       linkType="competition"
-      [linkId]="this.eventCompetition().id!"
+      [linkId]="this.eventCompetition()?.id!"
       (whenRoleAdded)="this.roleChanged$.next()"
     />
   </h2>
