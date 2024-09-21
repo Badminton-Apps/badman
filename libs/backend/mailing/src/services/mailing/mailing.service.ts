@@ -319,6 +319,40 @@ export class MailingService {
     await this._sendMail(options);
   }
 
+  
+  async sendHasCommentMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    encounter: EncounterCompetition,
+    url: string,
+  ) {
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Ontmoeting ${encounter.home?.name} tegen ${encounter.away?.name} heeft een opmerking`,
+      template: 'hasComment',
+      context: {
+        encounter: encounter.toJSON(),
+        url,
+        contact: to.fullName,
+        date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      encounter: EncounterCompetition;
+      url: string;
+      contact: string;
+      date: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
   async sendNotAcceptedMail(
     to: {
       fullName: string;

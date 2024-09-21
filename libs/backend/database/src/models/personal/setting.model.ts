@@ -97,6 +97,13 @@ export class Setting extends Model {
     defaultValue: NotificationType.NONE,
   })
   encounterChangeFinishedNotification!: NotificationType;
+  
+  @Field(() => Int)
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: NotificationType.NONE,
+  })
+  encounterHasCommentNotification!: NotificationType;
 
   @Field(() => Int)
   @Column({
