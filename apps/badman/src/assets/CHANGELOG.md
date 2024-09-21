@@ -1,3 +1,18 @@
+## 6.173.0 (2024-09-21)
+
+
+### 🚀 Features
+
+- notifications for competition responsibles when a comment was added ([4c163de19](https://github.com/Badminton-Apps/badman/commit/4c163de19))
+
+### 🩹 Fixes
+
+- enable for all clubs ([d686fd490](https://github.com/Badminton-Apps/badman/commit/d686fd490))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.172.2 (2024-09-14)
 
 
