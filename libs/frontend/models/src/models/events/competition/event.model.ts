@@ -7,6 +7,7 @@ import { Exception, InfoEvent } from '../../availibilty.model';
 export class EventCompetition extends Event {
   season?: number;
   contactEmail?: string;
+  contactId?: string;
   subEventCompetitions?: SubEventCompetition[];
   comments?: Comment[];
   type?: LevelType;
@@ -28,6 +29,7 @@ export class EventCompetition extends Event {
     super(args);
     this.season = args.season;
     this.contactEmail = args.contactEmail;
+    this.contactId = args.contactId;
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
     this.teamMatcher = args.teamMatcher;

@@ -1,6 +1,8 @@
 import { LevelType, UsedRankingTiming } from '@badman/utils';
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
   CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
@@ -15,6 +17,7 @@ import {
   InferCreationAttributes,
 } from 'sequelize';
 import {
+  BelongsTo,
   Column,
   DataType,
   Default,
@@ -36,6 +39,7 @@ import {
   Slugify,
 } from '../../../types';
 import { Relation } from '../../../wrapper';
+import { Player } from '../../player.model';
 import { Role } from '../../security';
 import { AvailabilityException } from '../availability.model';
 import { Comment } from './../../comment.model';
@@ -64,7 +68,7 @@ export class EventCompetition extends Model<
   override createdAt?: Date;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field(() => String, { nullable: true })
+  @Field(() => String, { nullable: false })
   @Column(DataType.STRING)
   name?: string;
 
@@ -95,7 +99,7 @@ export class EventCompetition extends Model<
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  changeCloseDatePeriod2?: Date;  
+  changeCloseDatePeriod2?: Date;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
@@ -114,6 +118,17 @@ export class EventCompetition extends Model<
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   contactEmail?: string;
+
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  contactId?: string;
+
+  @Field(() => Player, { nullable: true })
+  @BelongsTo(() => Player, {
+    foreignKey: 'contactId',
+    constraints: false,
+  })
+  contact?: Relation<Player>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
@@ -252,6 +267,10 @@ export class EventCompetition extends Model<
   hasRole!: HasManyHasAssociationMixin<Role, string>;
   hasRoles!: HasManyHasAssociationsMixin<Role, string>;
   countRoles!: HasManyCountAssociationsMixin;
+
+  // Belongs to Contact
+  getContact!: BelongsToGetAssociationMixin<Player>;
+  setContact!: BelongsToSetAssociationMixin<Player, string>;
 }
 
 @InputType()
@@ -264,6 +283,7 @@ export class EventCompetitionUpdateInput extends PartialType(
     'roles',
     'exceptions',
     'infoEvents',
+    'contact',
     'meta',
   ] as const),
   InputType,

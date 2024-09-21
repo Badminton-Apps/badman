@@ -62,18 +62,8 @@ const includes = [
     include: [
       {
         required: true,
-        attributes: ['id'],
+        attributes: ['id', 'eventId'],
         model: SubEventCompetition,
-        include: [
-          {
-            required: true,
-            attributes: ['id', 'visualCode'],
-            model: EventCompetition,
-            where: {
-              checkEncounterForFilledIn: true,
-            },
-          },
-        ],
       },
     ],
   },
@@ -172,6 +162,7 @@ export class CheckEncounterProcessor {
 
           // Processing encounters
           for (const encounter of chunk) {
+            await this.loadEvent(encounter);
             await this._syncEncounter(encounter, page);
             encountersProcessed++;
           }
@@ -192,6 +183,7 @@ export class CheckEncounterProcessor {
 
       cronJob.amount++;
       cronJob.lastRun = new Date();
+      cronJob.running = false;
       await cronJob.save();
 
       this.logger.log('Synced encounters');
@@ -206,12 +198,17 @@ export class CheckEncounterProcessor {
       include: includes,
     });
 
+    await this.loadEvent(encounter);
+
     if (!encounter) {
       this.logger.error(`Encounter ${job.data.encounterId} not found`);
       return;
     }
+
+    this.logger.debug(encounter.drawCompetition.subEventCompetition.eventCompetition.toJSON());
+
     // Create browser
-    const browser = await getBrowser(false);
+    const browser = await getBrowser();
     try {
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
@@ -236,6 +233,25 @@ export class CheckEncounterProcessor {
     }
   }
 
+  private async loadEvent(encounter: EncounterCompetition) {
+    const event = await encounter.drawCompetition.subEventCompetition.getEventCompetition({
+      attributes: ['id', 'visualCode', 'contactEmail', 'name'],
+      where: {
+        checkEncounterForFilledIn: true,
+      },
+      include: [
+        {
+          model: Player,
+          as: 'contact',
+          attributes: ['id', 'email'],
+        },
+      ],
+    });
+
+    // set the event
+    encounter.drawCompetition.subEventCompetition.eventCompetition = event;
+  }
+
   private async _syncEncounter(encounter: EncounterCompetition, page: Page) {
     const url = await gotoEncounterPage({ page }, encounter);
     this.logger.debug(`Syncing encounter ${url}`);
@@ -254,6 +270,11 @@ export class CheckEncounterProcessor {
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
       );
+
+      // if we have a comment notify the event contact
+      if (hasComment) {
+        this.notificationService.notifyEncounterHasComment(encounter);
+      }
 
       // not entered and passed 24 hours and no comment
       if (!entered && hoursPassed > 24 && !hasComment) {

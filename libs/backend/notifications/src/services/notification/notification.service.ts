@@ -21,6 +21,7 @@ import {
   EventSyncedFailedNotifier,
   CompetitionEncounterChangeFinishRequestNotifier,
   SyncEncounterFailed,
+  CompetitionEncounterHasCommentNotifier,
 } from '../../notifiers';
 import { PushService } from '../push';
 import { ConfigService } from '@nestjs/config';
@@ -36,7 +37,7 @@ import { I18nTranslations } from '@badman/utils';
 
 @Injectable()
 export class NotificationService {
-  private readonly logger = new Logger(NotificationService.name);
+  private readonly _logger = new Logger(NotificationService.name);
 
   constructor(
     private mailing: MailingService,
@@ -168,14 +169,45 @@ export class NotificationService {
     const matchId = encounter.visualCode;
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
-    if (homeTeam.captain && homeTeam.email) {
-      notifierNotEntered.notify(
-        homeTeam.captain,
-        encounter.id,
-        { encounter },
-        { email: homeTeam.email ?? homeTeam.captain?.email, url },
-      );
+    if (!homeTeam.captain || !homeTeam.email) {
+      this._logger.error('Captain or email not found');
+      return;
     }
+
+    notifierNotEntered.notify(
+      homeTeam.captain,
+      encounter.id,
+      { encounter },
+      { email: homeTeam.email ?? homeTeam.captain?.email, url },
+    );
+  }
+
+  async notifyEncounterHasComment(encounter: EncounterCompetition) {
+    const notifierNotEntered = new CompetitionEncounterHasCommentNotifier(this.mailing, this.push);
+
+    const event = encounter.drawCompetition?.subEventCompetition?.eventCompetition;
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    // Property was loaded when sending notification
+    const eventId = event?.visualCode;
+    const matchId = encounter.visualCode;
+    const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
+    const email = event.contactEmail ?? event.contact?.email;
+
+    if (!email) {
+      this._logger.error('Email not found');
+      return;
+    }
+
+    let contact = event.contact;
+
+    if (!contact?.email || !contact?.fullName || !contact?.slug) {
+      contact = (await Player.findByPk(event.contactId ?? event.contact?.id)) as Player;
+    }
+
+    notifierNotEntered.notify(contact, encounter.id, { encounter }, { email, url });
   }
 
   async notifyEncounterNotAccepted(encounter: EncounterCompetition) {
