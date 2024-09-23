@@ -154,7 +154,14 @@ export class ClubsResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const clubDb = await Club.create({ ...newClubData }, { transaction });
+      if (!newClubData.name) {
+        throw new Error('Club name is required');
+      }
+
+      const clubDb = await Club.create(
+        { ...newClubData, name: newClubData.name as string },
+        { transaction },
+      );
 
       // Commit transaction
       await transaction.commit();
