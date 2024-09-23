@@ -311,7 +311,7 @@ function addClub(
     .WithSeason(season)
     .WithTeamNumber(1);
 
-  const club = ClubBuilder.Create(clubId)
+  const club = ClubBuilder.Create('Test Club', clubId)
     .WithName(name)
     .WithTeamName(name)
     .WithTeam(

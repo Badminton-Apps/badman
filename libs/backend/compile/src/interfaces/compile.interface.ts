@@ -77,7 +77,8 @@ export interface CompileModuleRegisterAsyncOptions extends Pick<ModuleMetadata, 
   isGlobal?: boolean;
   useClass?: Type<CompileOptionsFactory>;
   useExisting?: Type<CompileOptionsFactory>;
-  useFactory?: (config: ConfigService) => CompileModuleOptions;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useFactory?:  (...args: any[]) => CompileModuleOptions;
   inject?: FactoryProvider['inject'];
 }
 

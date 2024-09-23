@@ -68,9 +68,9 @@ export class EventTournament extends Model {
   tournamentNumber?: string;
 
   @Unique('EventTournaments_unique_constraint')
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column(DataType.STRING)
-  name?: string;
+  declare name: string;
 
   @Unique('EventTournaments_unique_constraint')
   @Field(() => Date, { nullable: true })

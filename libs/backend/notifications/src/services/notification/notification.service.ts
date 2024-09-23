@@ -1,4 +1,8 @@
 import {
+  EncounterValidationError,
+  EncounterValidationService,
+} from '@badman/backend-change-encounter';
+import {
   Availability,
   Club,
   EncounterCompetition,
@@ -10,30 +14,23 @@ import {
   Team,
 } from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
+import { ConfigType, I18nTranslations, sortTeams } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigType } from '@badman/utils';
+import { ConfigService } from '@nestjs/config';
+import { I18nService } from 'nestjs-i18n';
 import {
   CompetitionEncounterChangeConfirmationRequestNotifier,
+  CompetitionEncounterChangeFinishRequestNotifier,
   CompetitionEncounterChangeNewRequestNotifier,
+  CompetitionEncounterHasCommentNotifier,
   CompetitionEncounterNotAcceptedNotifier,
   CompetitionEncounterNotEnteredNotifier,
-  EventSyncedSuccessNotifier,
   EventSyncedFailedNotifier,
-  CompetitionEncounterChangeFinishRequestNotifier,
+  EventSyncedSuccessNotifier,
   SyncEncounterFailed,
-  CompetitionEncounterHasCommentNotifier,
 } from '../../notifiers';
-import { PushService } from '../push';
-import { ConfigService } from '@nestjs/config';
 import { ClubEnrollmentNotifier } from '../../notifiers/clubenrollment';
-import { sortTeams } from '@badman/utils';
-import {
-  EncounterValidationError,
-  EncounterValidationOutput,
-  EncounterValidationService,
-} from '@badman/backend-change-encounter';
-import { I18nService } from 'nestjs-i18n';
-import { I18nTranslations } from '@badman/utils';
+import { PushService } from '../push';
 
 @Injectable()
 export class NotificationService {
