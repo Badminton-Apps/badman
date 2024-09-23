@@ -14,10 +14,12 @@ export class EventCompetitionBuilder {
     official = true,
     season = 2022,
     usedRanking?: UsedRankingTiming,
+    name = 'Test Event',
     id?: string,
   ) {
     this.event = new EventCompetition({
       id,
+      name,
       type,
       official,
       usedRanking: usedRanking ?? { amount: 0, unit: 'days' },
@@ -30,9 +32,10 @@ export class EventCompetitionBuilder {
     official = true,
     season = 2022,
     usedRanking?: UsedRankingTiming,
+    name = 'Test Event',
     id?: string,
   ): EventCompetitionBuilder {
-    return new EventCompetitionBuilder(type, official, season, usedRanking, id);
+    return new EventCompetitionBuilder(type, official, season, usedRanking, name, id);
   }
 
   WithName(name: string): this {
