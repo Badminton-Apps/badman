@@ -1,3 +1,14 @@
+## 6.173.1 (2024-09-23)
+
+
+### 🩹 Fixes
+
+- search was broken in last update ([ba9d17c6b](https://github.com/Badminton-Apps/badman/commit/ba9d17c6b))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.173.0 (2024-09-21)
 
 
