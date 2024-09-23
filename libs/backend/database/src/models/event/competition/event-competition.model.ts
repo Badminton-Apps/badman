@@ -68,14 +68,14 @@ export class EventCompetition extends Model<
   override createdAt?: Date;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field(() => String, { nullable: false })
+  @Field(() => String)
   @Column(DataType.STRING)
-  name?: string;
+  declare name: string;
 
   @Unique('EventCompetitions_unique_constraint')
   @Field(() => Int)
   @Column(DataType.NUMBER)
-  season!: number;
+  declare season: number;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
