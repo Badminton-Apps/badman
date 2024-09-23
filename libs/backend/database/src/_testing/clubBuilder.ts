@@ -8,12 +8,12 @@ export class ClubBuilder {
 
   private teams: TeamBuilder[] = [];
 
-  constructor(id?: string) {
-    this.club = new Club({ id });
+  constructor(name = 'Test Club', id?: string) {
+    this.club = new Club({ id, name });
   }
 
-  static Create(id?: string): ClubBuilder {
-    return new ClubBuilder(id);
+  static Create(name = 'Test Club',id?: string): ClubBuilder {
+    return new ClubBuilder(name, id);
   }
 
   WithName(name: string): this {

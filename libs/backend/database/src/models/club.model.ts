@@ -77,9 +77,9 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
   @Unique('club_number_unique')
   @Index
   @AllowNull(false)
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column(DataType.STRING)
-  declare name?: string;
+  declare name: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
