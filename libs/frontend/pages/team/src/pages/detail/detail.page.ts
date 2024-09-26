@@ -157,8 +157,15 @@ export class DetailPageComponent {
     });
   }
 
-  copyToClipboard(suffix: string) {
-    this.clipboard.copy(`${window.location.origin}/api/v1/calendar/team/${suffix}`);
+  copyToClipboard(id?: string, type?: 'team' | 'link') {
+    if (!id || !type) {
+      return;
+    }
+
+    // create url to the ical
+    const url = `${window.location.origin}/api/v1/calendar/team?${type}Id=${id}`;
+    this.clipboard.copy(url);
+
     this.snackbar.open(this.translate.instant('all.player.ical.copied'), 'X', {
       duration: 2000,
     });
