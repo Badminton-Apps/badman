@@ -1,9 +1,9 @@
-import { Team, Location, EncounterCompetition } from '@badman/backend-database';
+import { EncounterCompetition, Location, Team } from '@badman/backend-database';
 import { Controller, Get, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { ICalCalendar } from 'ical-generator';
 import moment from 'moment';
-import { Includeable, Op } from 'sequelize';
+import { Op } from 'sequelize';
 
 @Controller('calendar')
 export class CalendarController {

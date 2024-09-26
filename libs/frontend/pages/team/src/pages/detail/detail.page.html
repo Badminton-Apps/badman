@@ -50,13 +50,13 @@
       </p>
       <p>
         {{ 'all.player.ical.team-season' | translate }}:
-        <button mat-flat-button (click)="this.copyToClipboard('?teamId=' + team.id)">
+        <button mat-flat-button (click)="this.copyToClipboard(team.id, 'team')">
           {{ 'all.player.ical.click' | translate }}
         </button>
 
         <br />
         {{ 'all.player.ical.linked' | translate }}:
-        <button mat-flat-button (click)="this.copyToClipboard('?linkId=' + team.link)">
+        <button mat-flat-button (click)="this.copyToClipboard(team.link, 'link')">
           {{ 'all.player.ical.click' | translate }}
         </button>
       </p>
