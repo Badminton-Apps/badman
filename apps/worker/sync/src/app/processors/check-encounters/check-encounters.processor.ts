@@ -205,8 +205,6 @@ export class CheckEncounterProcessor {
       return;
     }
 
-    this.logger.debug(encounter.drawCompetition.subEventCompetition.eventCompetition.toJSON());
-
     // Create browser
     const browser = await getBrowser();
     try {
@@ -233,9 +231,11 @@ export class CheckEncounterProcessor {
     }
   }
 
+  /// Load the event for the encounter, we do this in a separate part
+  /// because the nesting gets to deep and we can't parse the data then
   private async loadEvent(encounter: EncounterCompetition) {
     const event = await encounter.drawCompetition.subEventCompetition.getEventCompetition({
-      attributes: ['id', 'visualCode', 'contactEmail', 'name'],
+      attributes: ['id', 'visualCode', 'contactEmail', 'name', 'checkEncounterForFilledIn'],
       where: {
         checkEncounterForFilledIn: true,
       },
@@ -253,6 +253,10 @@ export class CheckEncounterProcessor {
   }
 
   private async _syncEncounter(encounter: EncounterCompetition, page: Page) {
+    if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.checkEncounterForFilledIn){
+      return;
+    }
+
     const url = await gotoEncounterPage({ page }, encounter);
     this.logger.debug(`Syncing encounter ${url}`);
     try {
@@ -273,6 +277,7 @@ export class CheckEncounterProcessor {
 
       // if we have a comment notify the event contact
       if (hasComment) {
+        
         this.notificationService.notifyEncounterHasComment(encounter);
       }
 
