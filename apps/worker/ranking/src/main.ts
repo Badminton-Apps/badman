@@ -30,7 +30,7 @@ async function bootstrap() {
     app.useWebSocketAdapter(redisIoAdapter);
   }
 
-  const port = configService.get('PORT') || 5002;
+  const port = configService.get('WORKER_RANKING_PORT') || configService.get('PORT') || 5002;
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   await app.listen(port, '0.0.0.0', (error) => {
     if (error) {
