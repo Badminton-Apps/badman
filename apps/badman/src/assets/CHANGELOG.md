@@ -1,3 +1,15 @@
+## 6.173.2 (2024-09-26)
+
+
+### 🩹 Fixes
+
+- ical link wasn't working ([40f5d2e8b](https://github.com/Badminton-Apps/badman/commit/40f5d2e8b))
+- link should fetch all teams ([867ab5732](https://github.com/Badminton-Apps/badman/commit/867ab5732))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.173.1 (2024-09-23)
 
 
