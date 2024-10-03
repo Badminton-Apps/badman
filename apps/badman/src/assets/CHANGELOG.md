@@ -1,3 +1,15 @@
+## 6.173.3 (2024-10-03)
+
+
+### 🩹 Fixes
+
+- skip encounter when needed ([dd3cd8256](https://github.com/Badminton-Apps/badman/commit/dd3cd8256))
+- still update our data ([2f81a39f6](https://github.com/Badminton-Apps/badman/commit/2f81a39f6))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.173.2 (2024-09-26)
 
 
