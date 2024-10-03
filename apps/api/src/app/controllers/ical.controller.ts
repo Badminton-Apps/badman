@@ -79,7 +79,7 @@ export class CalendarController {
     });
 
     // res.header('Content-Type', 'text/calendar');
-    // res.header('Content-Disposition', `attachment; filename="calendar-${team.name}.ics"`);
+    // res.header('Content-Disposition', `attachment; filename="calendar-${teamName}.ics"`);
 
     // Send the calendar data as an .ics file
     res.send(calendar.toString());
