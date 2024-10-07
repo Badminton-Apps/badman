@@ -1,11 +1,11 @@
 {
   "name": "@badman/backend-mailing",
-  "version": "6.173.4",
+  "version": "6.173.5",
   "dependencies": {
-    "@badman/backend-database": "6.173.4",
-    "@badman/backend-compile": "6.173.4",
-    "@badman/backend-change-encounter": "6.173.4",
-    "@badman/utils": "6.173.4",
+    "@badman/backend-database": "6.173.5",
+    "@badman/backend-compile": "6.173.5",
+    "@badman/backend-change-encounter": "6.173.5",
+    "@badman/utils": "6.173.5",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
     "moment-timezone": "^0.5.45",
