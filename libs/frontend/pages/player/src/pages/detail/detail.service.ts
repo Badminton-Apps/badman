@@ -201,7 +201,7 @@ export class PlayerDetailService {
     return this.apollo.mutate({
       mutation: gql`
         mutation RemovePlayer($id: ID!) {
-          removeEventPlayer(id: $id)
+          removePlayer(id: $id)
         }
       `,
       variables: {
