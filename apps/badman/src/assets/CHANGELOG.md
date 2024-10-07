@@ -1,3 +1,14 @@
+## 6.173.4 (2024-10-07)
+
+
+### 🩹 Fixes
+
+- remove player ([d3fdf42f9](https://github.com/Badminton-Apps/badman/commit/d3fdf42f9))
+
+### ❤️  Thank You
+
+- Glenn Latomme @cskiwi
+
 ## 6.173.3 (2024-10-03)
 
 
