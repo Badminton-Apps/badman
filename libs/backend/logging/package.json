@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-logging",
-  "version": "6.173.3",
+  "version": "6.173.5",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "@badman/utils": "6.173.3",
+    "@badman/utils": "6.173.5",
     "@logtail/node": "~0.4.21",
     "@logtail/winston": "^0.4.21",
     "@nestjs/common": "^10.3.10",

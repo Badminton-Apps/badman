@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-team-enrollment",
-  "version": "6.173.3",
+  "version": "6.173.5",
   "peerDependencies": {
     "@badman/frontend-auth": "*",
     "@badman/frontend-components": "*",
