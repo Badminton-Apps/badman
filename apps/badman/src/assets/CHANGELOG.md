@@ -1,3 +1,14 @@
+## 6.173.5 (2024-10-07)
+
+### 🩹 Fixes
+
+- bun file ([4bd244a8d](https://github.com/Badminton-Apps/badman/commit/4bd244a8d))
+- **deps:** update dependency @actions/core to v1.11.1 ([fa7bfa753](https://github.com/Badminton-Apps/badman/commit/fa7bfa753))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.173.4 (2024-10-07)
 
 
