@@ -35,7 +35,7 @@ export const configSchema = Joi.object({
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
-  DB_SSL: Joi.string().optional(),
+  DB_SSL: Joi.boolean().optional(),
 
   DB_CACHE: Joi.boolean().default(false),
   DB_CACHE_PREFIX: Joi.string().optional(),
@@ -111,27 +111,18 @@ export const configSchema = Joi.object({
   VR_API_USER: Joi.string().optional(),
   VR_API_PASS: Joi.string().optional(),
 
+  TWIZZIT_API: Joi.string().uri().required(),
+  TWIZZIT_API_USER: Joi.string().required(),
+  TWIZZIT_API_PASS: Joi.string().required(),
+
   CP_PASS: Joi.string().optional(),
 
-  APM_SERVER_ACTIVE: Joi.boolean(),
-  APM_SERVER_URL: Joi.when('APM_SERVER_ACTIVE', {
-    is: true,
-    then: Joi.string().uri().required(),
-    otherwise: Joi.string().uri().optional(),
-  }),
-  APM_SERVER_TOKEN: Joi.when('APM_SERVER_ACTIVE', {
-    is: true,
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional(),
-  }),
 
   APOLLO_GRAPH_REF: Joi.when('NODE_ENV', {
     is: Joi.valid('production', 'beta'),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
-
-  VERCEL_ANALYTICS_ID: Joi.string(),
 
   GRAPH_ID: Joi.string().optional(),
 
@@ -147,7 +138,6 @@ export const load = () => ({
   PUSH_ENABLED: process.env?.['PUSH_ENABLED'] === 'true',
   VR_CHANGE_DATES: process.env?.['VR_CHANGE_DATES'] === 'true',
   VR_ACCEPT_ENCOUNTERS: process.env?.['VR_ACCEPT_ENCOUNTERS'] === 'true',
-  APM_SERVER_ACTIVE: process.env?.['APM_SERVER_ACTIVE'] === 'true',
 });
 
 export type ConfigType = {
@@ -159,7 +149,7 @@ export type ConfigType = {
   DB_USER?: string;
   DB_PASSWORD?: string;
   DB_DIALECT?: string;
-  DB_SSL?: string;
+  DB_SSL?: boolean;
   DB_CACHE: boolean;
   DB_CACHE_PREFIX?: string;
   DB_LOGGING?: boolean;
@@ -185,12 +175,11 @@ export type ConfigType = {
   VR_API: string;
   VR_API_USER: string;
   VR_API_PASS: string;
+  TWIZZIT_API: string;
+  TWIZZIT_API_USER: string;
+  TWIZZIT_API_PASS: string;
   CP_PASS?: string;
-  APM_SERVER_ACTIVE?: boolean;
-  APM_SERVER_URL?: string;
-  APM_SERVER_TOKEN?: string;
   APOLLO_GRAPH_REF?: string;
-  VERCEL_ANALYTICS_ID?: string;
   GRAPH_ID: string;
   RENDER_API_KEY: string;
   RENDER_API_URL: string;

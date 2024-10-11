@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TwizzitController } from './controllers';
-import { GameExportService } from './services';
+import { GameExportService, TwizzitService } from './services';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   controllers: [TwizzitController],
-  providers: [GameExportService],
-  exports: [GameExportService],
+  imports: [ConfigModule],
+  providers: [GameExportService, TwizzitService],
+  exports: [GameExportService, TwizzitService],
 })
 export class TwizzitModule {}
