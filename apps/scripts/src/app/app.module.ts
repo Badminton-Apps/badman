@@ -3,10 +3,10 @@ import { VisualModule } from '@badman/backend-visual';
 import { configSchema, load } from '@badman/utils';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ExportPlayersWithRanking } from './scripts';
+import { UpdaetComPlayers } from './scripts';
 
 @Module({
-  providers: [ExportPlayersWithRanking],
+  providers: [UpdaetComPlayers],
   imports: [
     ConfigModule.forRoot({
       cache: true,
@@ -20,7 +20,7 @@ import { ExportPlayersWithRanking } from './scripts';
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
 
-  constructor(private fixer: ExportPlayersWithRanking) {}
+  constructor(private fixer: UpdaetComPlayers) {}
 
   async onModuleInit() {
     this.logger.log('Running script');
