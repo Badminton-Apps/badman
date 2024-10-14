@@ -3,6 +3,7 @@ export * from './change-date';
 export * from './enter-scores';
 export * from './sync-ranking';
 export * from './sync-events';
+export * from './sync-twizzit';
 export * from './check-encounters';
 export * from './check-ranking';
 export * from './global';
