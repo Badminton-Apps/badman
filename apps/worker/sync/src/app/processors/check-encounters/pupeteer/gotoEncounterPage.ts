@@ -18,6 +18,15 @@ export async function gotoEncounterPage(
   }
   const matchId = encounter.visualCode;
   const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
+
+  if (!eventId) {
+    throw new Error('No eventId found');
+  }
+
+  if (!matchId) {
+    throw new Error('No matchId found');
+  }
+
   const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
   {

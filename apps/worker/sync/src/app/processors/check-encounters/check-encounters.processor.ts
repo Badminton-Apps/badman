@@ -163,6 +163,11 @@ export class CheckEncounterProcessor {
           // Processing encounters
           for (const encounter of chunk) {
             await this.loadEvent(encounter);
+            // if event is not found we can't continue
+            if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition) {
+              continue;
+            }
+
             await this._syncEncounter(encounter, page);
             encountersProcessed++;
           }
@@ -198,15 +203,22 @@ export class CheckEncounterProcessor {
       include: includes,
     });
 
-    await this.loadEvent(encounter);
 
     if (!encounter) {
       this.logger.error(`Encounter ${job.data.encounterId} not found`);
       return;
     }
 
+    await this.loadEvent(encounter);
+
+    if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition) {
+      // here we throw an error because this is a manual trigger, so we need to know
+      this.logger.error(`Event not found for encounter ${encounter.visualCode}`);
+      return;
+    }
+
     // Create browser
-    const browser = await getBrowser();
+    const browser = await getBrowser(false);
     try {
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
