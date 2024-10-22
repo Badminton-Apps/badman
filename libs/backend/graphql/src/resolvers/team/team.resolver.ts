@@ -135,7 +135,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Club.name}: ${clubId}`);
       }
 
-      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club']))) {
+      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:club`, 'edit-any:club']))) {
         throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
@@ -168,7 +168,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Club.name}: ${newTeamData.clubId}`);
       }
 
-      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club']))) {
+      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:club`, 'edit-any:club']))) {
         throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
@@ -404,7 +404,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${updateTeamData.id}`);
       }
 
-      if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:location`, 'edit-any:club']))) {
+      if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:club`, 'edit-any:club']))) {
         throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
@@ -500,7 +500,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${id}`);
       }
 
-      if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:location`, 'edit-any:club']))) {
+      if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:club`, 'edit-any:club']))) {
         throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
