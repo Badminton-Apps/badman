@@ -1,3 +1,21 @@
+## 6.174.0 (2024-10-22)
+
+### 🚀 Features
+
+- twizzit syncer ([cd6fe7e87](https://github.com/Badminton-Apps/badman/commit/cd6fe7e87))
+- only check lower then subevent index when it's the first team ([e418bab3b](https://github.com/Badminton-Apps/badman/commit/e418bab3b))
+
+### 🩹 Fixes
+
+- updated packages ([d43a3f1be](https://github.com/Badminton-Apps/badman/commit/d43a3f1be))
+- skip check if event is not found or marked to skip ([fdf0c7427](https://github.com/Badminton-Apps/badman/commit/fdf0c7427))
+- permissions should be on team feature ([d42157d16](https://github.com/Badminton-Apps/badman/commit/d42157d16))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.173.5 (2024-10-07)
 
 ### 🩹 Fixes

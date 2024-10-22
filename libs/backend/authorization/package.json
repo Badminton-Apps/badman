@@ -1,8 +1,8 @@
 {
   "name": "@badman/backend-authorization",
-  "version": "6.173.5",
+  "version": "6.174.0",
   "dependencies": {
-    "@badman/backend-database": "6.173.5",
+    "@badman/backend-database": "6.174.0",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.3.8",
