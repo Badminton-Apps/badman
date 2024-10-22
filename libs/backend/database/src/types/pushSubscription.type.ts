@@ -36,7 +36,7 @@ export class PushSubscriptionKeysInputType extends PartialType(
 
 export interface PushSubscription {
   endpoint: string;
-  expirationTime: string;
+  expirationTime: number;
   keys: PushSubscriptionKeys;
 }
 
