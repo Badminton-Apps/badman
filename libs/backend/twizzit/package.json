@@ -7,7 +7,12 @@
     "fastify": "^4.27.0",
     "moment-timezone": "^0.5.45",
     "sequelize": "^6.37.3",
-    "@swc/helpers": "^0.5.11"
+    "@swc/helpers": "^0.5.11",
+    "@badman/utils": "6.173.5",
+    "@nestjs/config": "^3.2.3",
+    "axios": "^1.7.7",
+    "axios-rate-limit": "^1.4.0",
+    "axios-retry": "^4.5.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",
