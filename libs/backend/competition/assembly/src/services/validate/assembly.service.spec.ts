@@ -199,7 +199,6 @@ describe('AssemblyValidationService', () => {
         .WithName('club 1')
         .WithTeam(
           teamB
-            .WithTeamNumber(2)
             .WithPlayer(player777B, TeamMembershipType.REGULAR)
             .WithPlayer(player888B, TeamMembershipType.REGULAR)
             .WithPlayer(player999B, TeamMembershipType.REGULAR)
@@ -760,7 +759,8 @@ describe('AssemblyValidationService', () => {
     let player888: Player;
     let player999: Player;
 
-    let team: Team;
+    let team1: Team;
+    let team2: Team;
 
     beforeEach(async () => {
       const player555B = PlayerBuilder.Create()
@@ -823,30 +823,41 @@ describe('AssemblyValidationService', () => {
             .WithDate(new Date('2020-05-09')),
         );
 
-      const teamB = TeamBuilder.Create(SubEventTypeEnum.MX)
+      const team1B = TeamBuilder.Create(SubEventTypeEnum.MX)
         .WithTeamNumber(1)
         .WithSeason(event.season)
         .WithName('team 1');
+      const team2B = TeamBuilder.Create(SubEventTypeEnum.MX)
+        .WithTeamNumber(2)
+        .WithSeason(event.season)
+        .WithName('team 2');
+
+      const entry = EventCompetitionEntryBuilder.Create('competition')
+        .WithDrawId(draw.id)
+        .WithSubEventId(subEvent.id)
+        .WithBasePlayer(player666B, 6, 6, 6)
+        .WithBasePlayer(player777B, 7, 7, 7)
+        .WithBasePlayer(player888B, 8, 8, 8)
+        .WithBasePlayer(player999B, 9, 9, 9)
+        .WithBaseIndex(60);
 
       await ClubBuilder.Create()
         .WithName('club 1')
         .WithTeam(
-          teamB
-            .WithTeamNumber(2)
+          team1B
             .WithPlayer(player777B, TeamMembershipType.REGULAR)
             .WithPlayer(player888B, TeamMembershipType.REGULAR)
             .WithPlayer(player999B, TeamMembershipType.REGULAR)
             .WithPlayer(player666B, TeamMembershipType.REGULAR)
-            .WithEntry(
-              EventCompetitionEntryBuilder.Create('competition')
-                .WithDrawId(draw.id)
-                .WithSubEventId(subEvent.id)
-                .WithBasePlayer(player666B, 6, 6, 6)
-                .WithBasePlayer(player777B, 7, 7, 7)
-                .WithBasePlayer(player888B, 8, 8, 8)
-                .WithBasePlayer(player999B, 9, 9, 9)
-                .WithBaseIndex(60),
-            ),
+            .WithEntry(entry),
+        )
+        .WithTeam(
+          team2B
+            .WithPlayer(player777B, TeamMembershipType.REGULAR)
+            .WithPlayer(player888B, TeamMembershipType.REGULAR)
+            .WithPlayer(player999B, TeamMembershipType.REGULAR)
+            .WithPlayer(player666B, TeamMembershipType.REGULAR)
+            .WithEntry(entry),
         )
         .Build();
 
@@ -856,7 +867,8 @@ describe('AssemblyValidationService', () => {
       player888 = await player888B.Build();
       player999 = await player999B.Build();
 
-      team = await teamB.Build();
+      team1 = await team1B.Build();
+      team2 = await team2B.Build();
     });
     describe('Rule [PlayerOrderRule]', () => {
       beforeEach(async () => {
@@ -870,7 +882,7 @@ describe('AssemblyValidationService', () => {
         it('Double 3 is better then Double 4', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             double3: [player666.id, player999.id],
             double4: [player777.id, player888.id],
@@ -895,7 +907,7 @@ describe('AssemblyValidationService', () => {
         test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             [`single${p1}`]: player888.id,
             [`single${p2}`]: player777.id,
@@ -920,7 +932,7 @@ describe('AssemblyValidationService', () => {
         it('Mixed double is better then other', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             double3: [player777.id, player888.id],
             double4: [player666.id, player888.id],
@@ -951,7 +963,7 @@ describe('AssemblyValidationService', () => {
         it('Mixed double is better then other by level', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             double3: [player777.id, player888.id],
             double4: [player666.id, player999.id],
@@ -993,7 +1005,7 @@ describe('AssemblyValidationService', () => {
         it('should be valid doubles', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             double1: [player666.id, player888.id],
             double2: [player777.id, player999.id],
@@ -1015,7 +1027,7 @@ describe('AssemblyValidationService', () => {
         it('should be invalid if the player has more then 1 mixed', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             double3: [player666.id, player999.id],
             double4: [player888.id, player999.id],
@@ -1046,7 +1058,7 @@ describe('AssemblyValidationService', () => {
         it('should be valid doubles', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             double1: [player666.id, player777.id],
             double2: [player888.id, player999.id],
@@ -1070,7 +1082,7 @@ describe('AssemblyValidationService', () => {
         it('should be invalid if a mixed 3 has 2 of the same gender', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             double3: [player666.id, player777.id],
             double4: [player888.id, player777.id],
@@ -1091,7 +1103,7 @@ describe('AssemblyValidationService', () => {
         it('should be invalid if a mixed 4 has 2 of the same gender', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team1?.id,
             encounterId: encounter.id,
             double3: [player666.id, player999.id],
             double4: [player888.id, player999.id],
@@ -1123,9 +1135,28 @@ describe('AssemblyValidationService', () => {
         it('should be valid', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team2?.id,
             encounterId: encounter.id,
             single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
+
+          expect(validation).toBeDefined();
+
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
+          );
+          expect(error).toBeUndefined();
+        });
+
+        it('first team should always be valid', async () => {
+           const validation = await service.validate({
+            systemId: system.id,
+            teamId: team1?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
             single2: player777.id,
             single3: player888.id,
             single4: player999.id,
@@ -1141,10 +1172,10 @@ describe('AssemblyValidationService', () => {
       });
 
       describe('invalid', () => {
-        it("should be invalid if the player doesn't have competition status on true ", async () => {
+        it('should be invalid if the player has a lower ranking then the subevent ', async () => {
           const validation = await service.validate({
             systemId: system.id,
-            teamId: team?.id,
+            teamId: team2?.id,
             encounterId: encounter.id,
             single1: player555.id,
             single2: player777.id,
@@ -1604,7 +1635,6 @@ describe('AssemblyValidationService', () => {
         .WithName('club 1')
         .WithTeam(
           teamB
-            .WithTeamNumber(2)
             .WithPlayer(player777B, TeamMembershipType.REGULAR)
             .WithPlayer(player888B, TeamMembershipType.REGULAR)
             .WithPlayer(player999B, TeamMembershipType.REGULAR)
