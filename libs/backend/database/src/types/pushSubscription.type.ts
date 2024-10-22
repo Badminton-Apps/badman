@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 
 @ObjectType({ description: 'An Exception' })
 export class PushSubscriptionKeysType {
@@ -12,8 +12,9 @@ export class PushSubscriptionKeysType {
 export class PushSubscriptionType {
   @Field(() => String, { nullable: true })
   endpoint?: string;
-  @Field(() => String, { nullable: true })
-  expirationTime?: string;
+  
+  @Field(() => Int, { nullable: true })
+  expirationTime?: number;
 
   @Field(() => PushSubscriptionKeysType, { nullable: true })
   keys?: PushSubscriptionKeys;
