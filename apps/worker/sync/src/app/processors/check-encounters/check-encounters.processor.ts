@@ -281,11 +281,6 @@ export class CheckEncounterProcessor {
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
       );
-      this.logger.debug(
-        !encounter?.drawCompetition?.subEventCompetition?.eventCompetition
-          ?.checkEncounterForFilledIn,
-      );
-
       // Check if we need to notify the event contact
       if (
         encounter?.drawCompetition?.subEventCompetition?.eventCompetition
