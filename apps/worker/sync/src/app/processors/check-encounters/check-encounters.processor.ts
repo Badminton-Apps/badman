@@ -203,7 +203,6 @@ export class CheckEncounterProcessor {
       include: includes,
     });
 
-
     if (!encounter) {
       this.logger.error(`Encounter ${job.data.encounterId} not found`);
       return;
@@ -218,7 +217,7 @@ export class CheckEncounterProcessor {
     }
 
     // Create browser
-    const browser = await getBrowser(false);
+    const browser = await getBrowser();
     try {
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
@@ -282,11 +281,16 @@ export class CheckEncounterProcessor {
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
       );
+      this.logger.debug(
+        !encounter?.drawCompetition?.subEventCompetition?.eventCompetition
+          ?.checkEncounterForFilledIn,
+      );
 
       // Check if we need to notify the event contact
       if (
-        !encounter?.drawCompetition?.subEventCompetition?.eventCompetition
-          ?.checkEncounterForFilledIn
+        encounter?.drawCompetition?.subEventCompetition?.eventCompetition
+          ?.checkEncounterForFilledIn ??
+        false
       ) {
         // if we have a comment notify the event contact
         if (hasComment) {
