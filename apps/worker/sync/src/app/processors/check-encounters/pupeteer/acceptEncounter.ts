@@ -35,8 +35,12 @@ export async function acceptEncounter(
     // click the button
     await button.click();
 
-    // wait for the page to load
-    await targetPage.waitForNavigation();
+    // wait a second
+    await page.evaluate(async () => {
+      await new Promise(function (resolve) {
+        setTimeout(resolve, 1000);
+      });
+    });
 
     return true;
   }
