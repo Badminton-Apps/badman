@@ -1,3 +1,16 @@
+## 6.174.1 (2024-11-03)
+
+### 🩹 Fixes
+
+- this check was reversed ([6fd6b6e56](https://github.com/Badminton-Apps/badman/commit/6fd6b6e56))
+- switch to just a wait ([45d58cf23](https://github.com/Badminton-Apps/badman/commit/45d58cf23))
+- was still causing errors ([7540670c0](https://github.com/Badminton-Apps/badman/commit/7540670c0))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.174.0 (2024-10-22)
 
 ### 🚀 Features
