@@ -25,22 +25,18 @@ export async function acceptEncounter(
     // find the input type submit with value 'Bevestig'
     const selector = `input[type="submit"][value="Uitslag bevestigen"]`;
     const targetPage = page;
-    const button = await waitForSelector(selector, targetPage, pupeteer.timeout);
+    try {
+      const button = await waitForSelector(selector, targetPage, pupeteer.timeout);
 
-    // if button not found return false
-    if (!button) {
-      return false;
+      // if button not found return false
+      if (!button) {
+        return false;
+      }
+
+      await button.click();
+    } catch (error) {
+      logger?.warn('Accept button not found', error);
     }
-
-    // click the button
-    await button.click();
-
-    // wait a second
-    await page.evaluate(async () => {
-      await new Promise(function (resolve) {
-        setTimeout(resolve, 1000);
-      });
-    });
 
     return true;
   }
