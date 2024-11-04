@@ -1,3 +1,13 @@
+## 6.174.2 (2024-11-04)
+
+### 🩹 Fixes
+
+- try and move this to sync ([5dfd6d9a9](https://github.com/Badminton-Apps/badman/commit/5dfd6d9a9))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.174.1 (2024-11-03)
 
 ### 🩹 Fixes
