@@ -29,46 +29,49 @@ export class UploadRankingController {
   @Post('process')
   @UseGuards(UploadGuard)
   async process(@File() file: MultipartFile, @Res() res: FastifyReply) {
-    const mappedData = await this._readFile(file);
+    this._readFile(file).then((mappedData) => {
+      const updateCompStatus =
+        (file.fields['updateCompStatus'] as MultipartValue)?.value === 'true';
+      const updateRanking = (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
+      const rankingDate = moment((file.fields['rankingDate'] as MultipartValue)?.value as string);
+      const clubMembershipStartDate = moment(
+        (file.fields['clubMembershipStartDate'] as MultipartValue)?.value as string,
+      );
+      const clubMembershipEndDate = moment(
+        (file.fields['clubMembershipEndDate'] as MultipartValue)?.value as string,
+      );
+      const removeAllRanking =
+        (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
+      const updatePossible = (file.fields['updatePossible'] as MultipartValue)?.value === 'true';
+      const updateClubs = (file.fields['updateClubs'] as MultipartValue)?.value === 'true';
+      const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)?.value as string;
 
-    const updateCompStatus = (file.fields['updateCompStatus'] as MultipartValue)?.value === 'true';
-    const updateRanking = (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
-    const rankingDate = moment((file.fields['rankingDate'] as MultipartValue)?.value as string);
-    const clubMembershipStartDate = moment(
-      (file.fields['clubMembershipStartDate'] as MultipartValue)?.value as string,
-    );
-    const clubMembershipEndDate = moment(
-      (file.fields['clubMembershipEndDate'] as MultipartValue)?.value as string,
-    );
-    const removeAllRanking = (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
-    const updatePossible = (file.fields['updatePossible'] as MultipartValue)?.value === 'true';
-    const updateClubs = (file.fields['updateClubs'] as MultipartValue)?.value === 'true';
-    const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)?.value as string;
+      const createNewPlayers =
+        (file.fields['createNewPlayers'] as MultipartValue)?.value === 'true';
 
-    const createNewPlayers = (file.fields['createNewPlayers'] as MultipartValue)?.value === 'true';
+      if (updateRanking && !rankingDate.isValid()) {
+        throw new Error('Invalid ranking date');
+      }
 
-    if (updateRanking && !rankingDate.isValid()) {
-      throw new Error('Invalid ranking date');
-    }
+      res.send({ message: true });
 
-    res.send({ message: true });
-
-    this._updateRankingService
-      .processFileUpload(mappedData, {
-        updateCompStatus,
-        updateRanking,
-        updatePossible,
-        updateClubs,
-        rankingDate: rankingDate.toDate(),
-        clubMembershipStartDate: clubMembershipStartDate.toDate(),
-        clubMembershipEndDate: clubMembershipEndDate.toDate(),
-        removeAllRanking,
-        rankingSystemId,
-        createNewPlayers,
-      })
-      .then(() => {
-        this._logger.log('Ranking processed');
-      });
+      this._updateRankingService
+        .processFileUpload(mappedData, {
+          updateCompStatus,
+          updateRanking,
+          updatePossible,
+          updateClubs,
+          rankingDate: rankingDate.toDate(),
+          clubMembershipStartDate: clubMembershipStartDate.toDate(),
+          clubMembershipEndDate: clubMembershipEndDate.toDate(),
+          removeAllRanking,
+          rankingSystemId,
+          createNewPlayers,
+        })
+        .then(() => {
+          this._logger.log('Ranking processed');
+        });
+    });
   }
 
   private async _readFile(file: MultipartFile, rows: number | undefined = undefined) {
