@@ -36,6 +36,7 @@ export async function acceptEncounter(
       await button.click();
     } catch (error) {
       logger?.warn('Accept button not found', error);
+      return false;
     }
 
     return true;
