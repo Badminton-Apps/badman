@@ -14,7 +14,7 @@ export class RenderService {
   private renderApi!: string;
 
   constructor(private readonly configService: ConfigService<ConfigType>) {
-    if (this.configService.get<string>('NODE_ENV') !== 'development') {
+    if (this.configService.get<string>('NODE_ENV') === 'development') {
       this._logger.verbose(`Skipping startService for ${RenderService.name} in development`);
     } else {
       this.headers = {
