@@ -14,7 +14,10 @@ export class RenderService {
   private renderApi!: string;
 
   constructor(private readonly configService: ConfigService<ConfigType>) {
-    if (this.configService.get<string>('NODE_ENV') === 'development') {
+    if (
+      this.configService.get<string>('NODE_ENV') === 'development' ||
+      this.configService.get<string>('NODE_ENV') === 'test'
+    ) {
       this._logger.verbose(`Skipping startService for ${RenderService.name} in development`);
     } else {
       this.headers = {
@@ -34,7 +37,10 @@ export class RenderService {
 
   async startService(service: Service) {
     // Don't start services in development
-    if (this.configService.get<string>('NODE_ENV') === 'development') {
+    if (
+      this.configService.get<string>('NODE_ENV') === 'development' ||
+      this.configService.get<string>('NODE_ENV') === 'test'
+    ) {
       this._logger.verbose(`Skipping startService for ${service.name} in development`);
       return;
     }
@@ -68,7 +74,10 @@ export class RenderService {
 
   async suspendService(service: Service) {
     // Don't suspend services in development
-    if (this.configService.get<string>('NODE_ENV') === 'development') {
+    if (
+      this.configService.get<string>('NODE_ENV') === 'development' ||
+      this.configService.get<string>('NODE_ENV') === 'test'
+    ) {
       this._logger.verbose(`Skipping suspendService for ${service.name} in development`);
       return;
     }
