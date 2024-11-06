@@ -16,12 +16,12 @@ export class OrchestratorBase implements OnModuleInit {
 
   constructor(
     protected readonly serviceName: Services,
-    protected readonly configSerivce: ConfigService<ConfigType>,
+    protected readonly configService: ConfigService<ConfigType>,
     private readonly gateway: EventsGateway,
     private readonly queue: Queue,
     private readonly renderService: RenderService,
   ) {
-    const configuredTimeout = this.configSerivce.get<string>('RENDER_WAIT_TIME');
+    const configuredTimeout = this.configService.get<string>('RENDER_WAIT_TIME');
 
     if (configuredTimeout) {
       this.timeoutTime = parseInt(configuredTimeout);
@@ -29,7 +29,10 @@ export class OrchestratorBase implements OnModuleInit {
   }
 
   async onModuleInit() {
-    if (this.configSerivce.get<string>('NODE_ENV') === 'test') {
+    if (
+      this.configService.get<string>('NODE_ENV') === 'development' ||
+      this.configService.get<string>('NODE_ENV') === 'test'
+    ) {
       return;
     }
 
@@ -42,7 +45,10 @@ export class OrchestratorBase implements OnModuleInit {
 
   @Cron('*/1 * * * *')
   async checkQueue() {
-    if (this.configSerivce.get<string>('NODE_ENV') === 'test') {
+    if (
+      this.configService.get<string>('NODE_ENV') === 'development' ||
+      this.configService.get<string>('NODE_ENV') === 'test'
+    ) {
       return;
     }
 
