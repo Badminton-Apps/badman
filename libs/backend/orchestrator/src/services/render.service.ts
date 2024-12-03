@@ -14,23 +14,33 @@ export class RenderService {
   private renderApi!: string;
 
   constructor(private readonly configService: ConfigService<ConfigType>) {
-    this.headers = {
-      accept: 'application/json',
-      authorization: `Bearer ${this.configService.get<string>('RENDER_API_KEY')}`,
-    };
+    if (
+      this.configService.get<string>('NODE_ENV') === 'development' ||
+      this.configService.get<string>('NODE_ENV') === 'test'
+    ) {
+      this._logger.verbose(`Skipping startService for ${RenderService.name} in development`);
+    } else {
+      this.headers = {
+        accept: 'application/json',
+        authorization: `Bearer ${this.configService.get<string>('RENDER_API_KEY')}`,
+      };
 
-    const api = this.configService.get<string>('RENDER_API_URL');
+      const api = this.configService.get<string>('RENDER_API_URL');
 
-    if (!api) {
-      throw new Error('RENDER_API_URL is not defined');
+      if (!api) {
+        throw new Error('RENDER_API_URL is not defined');
+      }
+
+      this.renderApi = api;
     }
-
-    this.renderApi = api;
   }
 
   async startService(service: Service) {
     // Don't start services in development
-    if (this.configService.get<string>('NODE_ENV') === 'development') {
+    if (
+      this.configService.get<string>('NODE_ENV') === 'development' ||
+      this.configService.get<string>('NODE_ENV') === 'test'
+    ) {
       this._logger.verbose(`Skipping startService for ${service.name} in development`);
       return;
     }
@@ -64,7 +74,10 @@ export class RenderService {
 
   async suspendService(service: Service) {
     // Don't suspend services in development
-    if (this.configService.get<string>('NODE_ENV') === 'development') {
+    if (
+      this.configService.get<string>('NODE_ENV') === 'development' ||
+      this.configService.get<string>('NODE_ENV') === 'test'
+    ) {
       this._logger.verbose(`Skipping suspendService for ${service.name} in development`);
       return;
     }
