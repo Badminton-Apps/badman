@@ -1,3 +1,17 @@
+## 6.174.3 (2024-12-03)
+
+### 🩹 Fixes
+
+- some env variables are only required in production ([c3148e6b1](https://github.com/Badminton-Apps/badman/commit/c3148e6b1))
+- don't try and set the api in development ([8eab53662](https://github.com/Badminton-Apps/badman/commit/8eab53662))
+- this was also used here ([7864f2f78](https://github.com/Badminton-Apps/badman/commit/7864f2f78))
+- don't update ranking anymore ([89d13973b](https://github.com/Badminton-Apps/badman/commit/89d13973b))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.174.2 (2024-11-04)
 
 ### 🩹 Fixes
