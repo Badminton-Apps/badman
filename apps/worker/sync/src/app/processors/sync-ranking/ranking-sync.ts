@@ -306,9 +306,10 @@ export class RankingSyncer {
           if (places.has(foundPlayer.id)) {
             const place = places.get(foundPlayer.id);
 
-            place[type] = points.Level;
+            // place[type] = points.Level; // disabled, BVL uploads this manually
             place[`${type}Points`] = points.Totalpoints;
             place[`${type}Rank`] = points.Rank;
+            await place.save({ transaction: args.transaction });
           } else {
             places.set(
               foundPlayer.id,
@@ -325,15 +326,16 @@ export class RankingSyncer {
             );
           }
 
-          if (publication.usedForUpdate === false && foundPlayer.rankingLastPlaces != null) {
-            const place = foundPlayer.rankingLastPlaces.find(
-              (r) => r.systemId === ranking.system.id,
-            );
-            if (place?.[type] != null && place[type] !== points.Level) {
-              place[type] = points.Level;
-              await place.save({ transaction: args.transaction });
-            }
-          }
+          // disabled, BVL uploads this manually
+          // if (publication.usedForUpdate === false && foundPlayer.rankingLastPlaces != null) {
+          //   const place = foundPlayer.rankingLastPlaces.find(
+          //     (r) => r.systemId === ranking.system.id,
+          //   );
+          //   if (place?.[type] != null && place[type] !== points.Level) {
+          //     place[type] = points.Level;
+          //     await place.save({ transaction: args.transaction });
+          //   }
+          // }
         }
       };
 
@@ -505,9 +507,9 @@ export class RankingSyncer {
 
       // For now we only check if it's the last update
 
-      const lastPublication = visiblePublications.slice()?.sort(
-        (a, b) => b.date.valueOf() - a.date.valueOf(),
-      )?.[0];
+      const lastPublication = visiblePublications
+        .slice()
+        ?.sort((a, b) => b.date.valueOf() - a.date.valueOf())?.[0];
 
       if (lastPublication == null) {
         return;
