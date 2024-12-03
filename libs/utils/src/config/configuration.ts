@@ -111,12 +111,23 @@ export const configSchema = Joi.object({
   VR_API_USER: Joi.string().optional(),
   VR_API_PASS: Joi.string().optional(),
 
-  TWIZZIT_API: Joi.string().uri().required(),
-  TWIZZIT_API_USER: Joi.string().required(),
-  TWIZZIT_API_PASS: Joi.string().required(),
+  TWIZZIT_API: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  TWIZZIT_API_USER: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  TWIZZIT_API_PASS: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
 
   CP_PASS: Joi.string().optional(),
-
 
   APOLLO_GRAPH_REF: Joi.when('NODE_ENV', {
     is: Joi.valid('production', 'beta'),
@@ -126,8 +137,16 @@ export const configSchema = Joi.object({
 
   GRAPH_ID: Joi.string().optional(),
 
-  RENDER_API_KEY: Joi.string().required(),
-  RENDER_API_URL: Joi.string().uri().required(),
+  RENDER_API_KEY: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  RENDER_API_URL: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().uri().required(),
+    otherwise: Joi.string().uri().optional(),
+  }),
   RENDER_WAIT_TIME: Joi.number().integer().optional().default(2_100_000),
 });
 
