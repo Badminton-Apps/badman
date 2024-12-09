@@ -32,7 +32,7 @@ export class Processor {
       );
     }
 
-    return this.procesSteps.get(stepName)?.getData<T>();
+    return this.procesSteps.get(stepName)?.getData<T>();  
   }
 
   async process(args?: unknown) {

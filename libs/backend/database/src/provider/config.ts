@@ -39,7 +39,7 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
         password: this.configService.get('DB_PASSWORD'),
         database: this.configService.get('DB_DATABASE'),
         ssl: this.configService.get<boolean>('DB_SSL'),
-
+        logQueryParameters: true,
         dialectOptions: {
           ssl: this.configService.get<boolean>('DB_SSL') === true,
         },
