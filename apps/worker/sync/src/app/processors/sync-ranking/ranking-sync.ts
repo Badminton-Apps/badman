@@ -305,37 +305,25 @@ export class RankingSyncer {
           // Check if other publication has create the ranking place
           if (places.has(foundPlayer.id)) {
             const place = places.get(foundPlayer.id);
-
-            // place[type] = points.Level; // disabled, BVL uploads this manually
+            place[type] = points.Level;
             place[`${type}Points`] = points.Totalpoints;
             place[`${type}Rank`] = points.Rank;
-            await place.save({ transaction: args.transaction });
           } else {
-            places.set(
-              foundPlayer.id,
-              new RankingPlace({
-                updatePossible: publication.usedForUpdate,
-                playerId: foundPlayer.id,
-                rankingDate: publication.date.toDate(),
-                [type]: points.Level,
-                [`${type}Points`]: points.Totalpoints,
-                [`${type}Rank`]: points.Rank,
-                systemId: ranking.system.id,
-                gender,
-              }),
-            );
+            const place = new RankingPlace({
+              updatePossible: publication.usedForUpdate,
+              playerId: foundPlayer.id,
+              rankingDate: publication.date.toDate(),
+              [type]: points.Level,
+              [`${type}Points`]: points.Totalpoints,
+              [`${type}Rank`]: points.Rank,
+              systemId: ranking.system.id,
+              gender,
+            });
+
+            places.set(foundPlayer.id, place);
           }
 
-          // disabled, BVL uploads this manually
-          // if (publication.usedForUpdate === false && foundPlayer.rankingLastPlaces != null) {
-          //   const place = foundPlayer.rankingLastPlaces.find(
-          //     (r) => r.systemId === ranking.system.id,
-          //   );
-          //   if (place?.[type] != null && place[type] !== points.Level) {
-          //     place[type] = points.Level;
-          //     await place.save({ transaction: args.transaction });
-          //   }
-          // }
+     
         }
       };
 
@@ -431,19 +419,52 @@ export class RankingSyncer {
             await RankingPlace.bulkCreate(chunk, {
               updateOnDuplicate: [
                 'updatePossible',
-                'single',
                 'singlePoints',
                 'singleRank',
-                'double',
                 'doublePoints',
                 'doubleRank',
-                'mix',
                 'mixPoints',
                 'mixRank',
               ],
               transaction: args.transaction,
               returning: false,
             });
+
+            // for (const place of chunk) {
+            //   try {
+            //     await RankingPlace.update(
+            //       {
+            //         single: place.single,
+            //         double: place.double,
+            //         mix: place.mix,
+            //       },
+            //       {
+            //         returning: false,
+            //         where: {
+            //           playerId: place.playerId,
+            //           rankingDate: place.rankingDate,
+            //           systemId: place.systemId,
+            //           single: null,
+            //           double: null,
+            //           mix: null,
+            //         },
+            //         transaction: args.transaction,
+            //         logging: (msg) => {
+            //           this.logger.debug(msg);
+            //         }
+            //       },
+            //     );
+            //   } catch (e) {
+            //     console.error('Error', e);
+            //     throw e;
+            //   }
+            // }
+
+            // find any promisses where the playerId is unknown or null or undefined
+            const unknownPlayers = instances.filter((place) => !place.playerId);
+
+            console.log('unknownPlayers', unknownPlayers);
+            // await Promise.all(promisses);
           }
 
           this.logger.verbose(`Finished processing ${instances.length} ranking places`);

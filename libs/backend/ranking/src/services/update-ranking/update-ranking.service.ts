@@ -341,7 +341,7 @@ export class UpdateRankingService {
         place.doublePoints = d.doublesPoints || place.doublePoints;
         place.mix = d.mixed || place.mix;
         place.mixPoints = d.mixedPoints || place.mixPoints;
-        place.updatePossible = updatePossible;
+        place.updatePossible = place.updatePossible ? true : updatePossible;
 
         if (place.changed() != false) {
           this._logger.verbose(`Update ranking place for player: ${player.id}`);
