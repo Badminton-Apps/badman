@@ -123,7 +123,7 @@ export class UpdateRankingService {
     const distinctPlayers: Player[] = [];
     const distinctIds: string[] = [];
 
-    const chunks = this.chunkArray(data);
+    const chunks = this.chunkArray(data, 50);
 
     const include = (
       updateClubs
@@ -172,8 +172,7 @@ export class UpdateRankingService {
   }
 
   private async createPlayers(newPlayers: MembersRolePerGroupData[], transaction?: Transaction) {
-    const chunkSize = 100;
-    const chunks = this.chunkArray(newPlayers, chunkSize);
+    const chunks = this.chunkArray(newPlayers, 50);
 
     let playersProcessed = 0;
     for (const chunk of chunks) {
@@ -292,7 +291,7 @@ export class UpdateRankingService {
     updatePossible: boolean,
     transaction?: Transaction,
   ) {
-    const distinctPlayersChunks = this.chunkArray(distinctPlayers, 100);
+    const distinctPlayersChunks = this.chunkArray(distinctPlayers, 50);
 
     for (const chunk of distinctPlayersChunks) {
       const places = await RankingPlace.findAll({
@@ -513,7 +512,7 @@ export class UpdateRankingService {
     this._logger.verbose(`Stop ${toStop.length} memberships`);
 
     if (toStop.length > 0) {
-      const chunks = this.chunkArray(toStop, 100);
+      const chunks = this.chunkArray(toStop, 50);
       for (const chunk of chunks) {
         await ClubPlayerMembership.update(
           {
@@ -546,7 +545,7 @@ export class UpdateRankingService {
     this._logger.verbose(`Create ${toCreate.length} memberships`);
 
     if (toCreate.length > 0) {
-      const chunks = this.chunkArray(toCreate, 100);
+      const chunks = this.chunkArray(toCreate, 50);
       for (const chunk of chunks) {
         await ClubPlayerMembership.bulkCreate(chunk, { transaction });
       }
