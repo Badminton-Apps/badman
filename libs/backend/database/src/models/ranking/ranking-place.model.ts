@@ -199,43 +199,43 @@ export class RankingPlace extends Model {
     await this.updateLatestRankings(instances, options, 'update');
   }
 
-  @BeforeCreate
-  @BeforeBulkCreate
-  static async addEmptyValues(instances: RankingPlace[] | RankingPlace, options: SaveOptions) {
-    if (!Array.isArray(instances)) {
-      instances = [instances];
-    }
+  // @BeforeCreate
+  // @BeforeBulkCreate
+  // static async addEmptyValues(instances: RankingPlace[] | RankingPlace, options: SaveOptions) {
+  //   if (!Array.isArray(instances)) {
+  //     instances = [instances];
+  //   }
 
-    for (const instance of instances) {
-      // We are missing values
-      if (!instance.single || !instance.double || !instance.mix) {
-        const prevRankingPlace = await RankingPlace.findOne({
-          where: {
-            playerId: instance.playerId,
-            systemId: instance.systemId,
-            rankingDate: {
-              [Op.lt]: instance.rankingDate,
-            },
-          },
-          limit: 1,
-          order: [['rankingDate', 'DESC']],
-          transaction: options?.transaction,
-        });
+  //   for (const instance of instances) {
+  //     // We are missing values
+  //     if (!instance.single || !instance.double || !instance.mix) {
+  //       const prevRankingPlace = await RankingPlace.findOne({
+  //         where: {
+  //           playerId: instance.playerId,
+  //           systemId: instance.systemId,
+  //           rankingDate: {
+  //             [Op.lt]: instance.rankingDate,
+  //           },
+  //         },
+  //         limit: 1,
+  //         order: [['rankingDate', 'DESC']],
+  //         transaction: options?.transaction,
+  //       });
 
-        if (prevRankingPlace) {
-          if ((instance.single ?? 0) === 0) {
-            instance.single = prevRankingPlace.single;
-          }
-          if ((instance.double ?? 0) === 0) {
-            instance.double = prevRankingPlace.double;
-          }
-          if ((instance.mix ?? 0) === 0) {
-            instance.mix = prevRankingPlace.mix;
-          }
-        }
-      }
-    }
-  }
+  //       if (prevRankingPlace) {
+  //         if ((instance.single ?? 0) === 0) {
+  //           instance.single = prevRankingPlace.single;
+  //         }
+  //         if ((instance.double ?? 0) === 0) {
+  //           instance.double = prevRankingPlace.double;
+  //         }
+  //         if ((instance.mix ?? 0) === 0) {
+  //           instance.mix = prevRankingPlace.mix;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   @AfterUpdate
   @AfterBulkUpdate
@@ -337,34 +337,42 @@ export class RankingPlace extends Model {
           );
 
     // Update the last ranking place
-    await RankingLastPlace.bulkCreate(updateInstances, {
-      updateOnDuplicate: [
-        'rankingDate',
-        'singlePoints',
-        'mixPoints',
-        'doublePoints',
-        'gender',
-        'singlePointsDowngrade',
-        'mixPointsDowngrade',
-        'doublePointsDowngrade',
-        'singleRank',
-        'mixRank',
-        'doubleRank',
-        'totalSingleRanking',
-        'totalMixRanking',
-        'totalDoubleRanking',
-        'totalWithinSingleLevel',
-        'totalWithinMixLevel',
-        'totalWithinDoubleLevel',
-        'single',
-        'mix',
-        'double',
-        'singleInactive',
-        'mixInactive',
-        'doubleInactive',
-      ],
-      transaction: options.transaction,
-    });
+    await RankingLastPlace.bulkCreate(
+      updateInstances?.filter((x) => {
+        if (x.single === undefined || x.double === undefined || x.mix === undefined) {
+          return false;
+        }
+        return true;
+      }),
+      {
+        updateOnDuplicate: [
+          'rankingDate',
+          'singlePoints',
+          'mixPoints',
+          'doublePoints',
+          'gender',
+          'singlePointsDowngrade',
+          'mixPointsDowngrade',
+          'doublePointsDowngrade',
+          'singleRank',
+          'mixRank',
+          'doubleRank',
+          'totalSingleRanking',
+          'totalMixRanking',
+          'totalDoubleRanking',
+          'totalWithinSingleLevel',
+          'totalWithinMixLevel',
+          'totalWithinDoubleLevel',
+          'single',
+          'mix',
+          'double',
+          'singleInactive',
+          'mixInactive',
+          'doubleInactive',
+        ],
+        transaction: options.transaction,
+      },
+    );
   }
 
   static async updateGameRanking(instances: RankingPlace[], options: UpdateOptions) {
