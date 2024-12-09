@@ -1,3 +1,13 @@
+## 6.174.4 (2024-12-09)
+
+### 🩹 Fixes
+
+- smaller chunk sizes? ([fd86eb2bd](https://github.com/Badminton-Apps/badman/commit/fd86eb2bd))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.174.3 (2024-12-03)
 
 ### 🩹 Fixes
