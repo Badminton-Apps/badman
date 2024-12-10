@@ -1,3 +1,14 @@
+## 6.174.5 (2024-12-10)
+
+### 🩹 Fixes
+
+- if this was true, keep the value ([ea882decf](https://github.com/Badminton-Apps/badman/commit/ea882decf))
+- importing from visual did some things wrong ([09ee294fc](https://github.com/Badminton-Apps/badman/commit/09ee294fc))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.174.4 (2024-12-09)
 
 ### 🩹 Fixes
