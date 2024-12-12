@@ -16,7 +16,8 @@
     "sequelize": "^6.37.3",
     "@nestjs/bull": "^10.1.1",
     "bull": "^4.15.0",
-    "sequelize-typescript": "^2.1.6"
+    "sequelize-typescript": "^2.1.6",
+    "@nestjs/core": "^10.4.6"
   },
   "type": "commonjs",
   "main": "./src/index.js",
