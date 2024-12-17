@@ -2,14 +2,14 @@
   "name": "@badman/backend-logging",
   "version": "6.174.5",
   "dependencies": {
-    "@swc/helpers": "~0.5.2",
     "@badman/utils": "6.174.5",
     "@logtail/node": "~0.4.21",
     "@logtail/winston": "^0.4.21",
     "@nestjs/common": "^10.3.10",
     "@nestjs/config": "^3.2.3",
     "nest-winston": "^1.10.0",
-    "winston": "^3.13.0"
+    "winston": "^3.13.0",
+    "tslib": "^2.8.1"
   },
   "type": "commonjs",
   "main": "./src/index.js",
