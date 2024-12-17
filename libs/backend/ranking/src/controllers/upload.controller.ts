@@ -5,6 +5,8 @@ import moment from 'moment';
 import * as XLSX from 'xlsx';
 import { MembersRolePerGroupData, UpdateRankingService } from '../services';
 import { UploadGuard, MultipartFile, File } from '@badman/backend-utils';
+import workerThreadFilePath from '../worker/config';
+import { Worker } from 'worker_threads';
 
 @Controller('ranking/upload')
 export class UploadRankingController {
@@ -55,22 +57,29 @@ export class UploadRankingController {
 
       res.send({ message: true });
 
-      this._updateRankingService
-        .processFileUpload(mappedData, {
+      const worker = new Worker(workerThreadFilePath, {
+        workerData: JSON.stringify({
           updateCompStatus,
           updateRanking,
           updatePossible,
           updateClubs,
-          rankingDate: rankingDate.toDate(),
-          clubMembershipStartDate: clubMembershipStartDate.toDate(),
-          clubMembershipEndDate: clubMembershipEndDate.toDate(),
+          rankingDate,
+          clubMembershipStartDate,
+          clubMembershipEndDate,
           removeAllRanking,
           rankingSystemId,
           createNewPlayers,
-        })
-        .then(() => {
-          this._logger.log('Ranking processed');
-        });
+          mappedData,
+        }),
+      });
+
+      worker.on('message', () => {
+        this._logger.verbose('Done');
+      });
+      worker.on('error', (e) => {
+        return this._logger.error('on error', e);
+      });
+      worker.on('exit', (code) => this._logger.log('on exit', code));
     });
   }
 
