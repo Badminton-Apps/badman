@@ -2,7 +2,6 @@
   "name": "@badman/backend-database",
   "version": "6.174.5",
   "dependencies": {
-    "@swc/helpers": "~0.5.2",
     "@nestjs/graphql": "^12.0.11",
     "@badman/utils": "6.174.5",
     "@badman/backend-cache": "6.174.5",
@@ -15,7 +14,8 @@
     "@nestjs/sequelize": "^10.0.1",
     "sequelize-slugify": "^1.6.2",
     "moment": "^2.30.1",
-    "pg": "^8.12.0"
+    "pg": "^8.12.0",
+    "tslib": "^2.8.1"
   },
   "type": "commonjs",
   "main": "./src/index.js",
