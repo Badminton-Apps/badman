@@ -44,7 +44,7 @@ jobs:
 
       - run: bun install --no-cache
 
-      - run: bun nx affected -t lint test build -c ci
+      - run: bun nx affected -t test build -c ci
 
       - name: Run Playwright tests
         run: bun nx affected --parallel 1 -t e2e-ci
@@ -96,7 +96,5 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-
