@@ -1,3 +1,18 @@
+## 6.175.0 (2024-12-17)
+
+### 🚀 Features
+
+- offloading upload to worker ([75969bba0](https://github.com/Badminton-Apps/badman/commit/75969bba0))
+- offload processing file to worker thread to keep main thread free ([dd4e70d65](https://github.com/Badminton-Apps/badman/commit/dd4e70d65))
+
+### 🩹 Fixes
+
+- remove remaining swc stuff ([8e08a9a04](https://github.com/Badminton-Apps/badman/commit/8e08a9a04))
+
+### ❤️ Thank You
+
+- Glenn Latomme
+
 ## 6.174.5 (2024-12-10)
 
 ### 🩹 Fixes
