@@ -1,13 +1,13 @@
 {
   "name": "@badman/backend-notifications",
-  "version": "6.174.5",
+  "version": "6.175.0",
   "dependencies": {
-    "@badman/backend-database": "6.174.5",
-    "@badman/utils": "6.174.5",
+    "@badman/backend-database": "6.175.0",
+    "@badman/utils": "6.175.0",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
-    "@badman/backend-mailing": "6.174.5",
-    "@badman/backend-change-encounter": "6.174.5",
+    "@badman/backend-mailing": "6.175.0",
+    "@badman/backend-change-encounter": "6.175.0",
     "web-push": "^3.6.7",
     "moment": "^2.30.1",
     "nestjs-i18n": "^10.4.5",
