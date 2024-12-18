@@ -58,7 +58,7 @@ export class UploadRankingController {
       res.send({ message: true });
 
       const worker = new Worker(workerThreadFilePath, {
-        workerData: {
+        workerData: JSON.stringify({
           updateCompStatus,
           updateRanking,
           updatePossible,
@@ -70,13 +70,15 @@ export class UploadRankingController {
           rankingSystemId,
           createNewPlayers,
           mappedData,
-        },
+        }),
       });
 
       worker.on('message', () => {
         this._logger.verbose('Done');
       });
-      worker.on('error', (e) => this._logger.error('on error', e));
+      worker.on('error', (e) => {
+        return this._logger.error('on error', e);
+      });
       worker.on('exit', (code) => this._logger.log('on exit', code));
     });
   }

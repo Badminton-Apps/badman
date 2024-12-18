@@ -22,7 +22,7 @@ async function run() {
     rankingSystemId,
     createNewPlayers,
     mappedData,
-  } = workerData;
+  } = JSON.parse(workerData);
 
   await updateRankingService.processFileUpload(mappedData, {
     updateCompStatus,
