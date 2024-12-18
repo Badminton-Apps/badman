@@ -26,6 +26,6 @@ launch-templates:
           sudo apt install unzip
           curl -fsSL https://bun.sh/install | bash
       - name: Install Node Modules (with Bun)
-        script: bun install --frozen-lockfile --ignore-scripts
+        script: bun install --frozen-lockfile --ignore-scripts 
       - name: Install Browsers (if needed)
         uses: 'nrwl/nx-cloud-workflows/v4/workflow-steps/install-browsers/main.yaml'
