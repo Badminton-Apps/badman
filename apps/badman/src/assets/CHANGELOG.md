@@ -1,3 +1,14 @@
+## 6.175.1 (2024-12-24)
+
+### 🩹 Fixes
+
+- script for twizzit to ttp ([5affc5c34](https://github.com/Badminton-Apps/badman/commit/5affc5c34))
+- variables names were to long for psql to process and map ([485d90d75](https://github.com/Badminton-Apps/badman/commit/485d90d75))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.175.0 (2024-12-17)
 
 ### 🚀 Features
