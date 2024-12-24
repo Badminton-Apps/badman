@@ -46,13 +46,10 @@ export class TwizzitToPlayerDbService {
       where: {
         [Op.or]: inputPlayers
           .filter(([lastName, firstName]) => lastName && firstName)
-          .map(([lastName, firstName]) => ({
+          .map(([lastName, firstName]) => ({ 
             lastName,
             firstName,
           })),
-        memberId: {
-          [Op.like]: '5%',
-        },
       },
     });
 
@@ -66,17 +63,17 @@ export class TwizzitToPlayerDbService {
     const playerPerLevel = new Map<string, [Player, Player][]>();
 
     rows.forEach((row) => {
-      let player = players.find(
+      let playerDb = players.filter(
         (player) => player.lastName == row.Achternaam && player.firstName == row.Voornaam,
       );
 
-      let plyerDubbelpartner = players.find(
+      let plyerDubbelpartnerDb = players.filter(
         (player) =>
           player.lastName == row['Dubbelpartner Achternaam'] &&
           player.firstName == row.Dubbelpartner,
       );
 
-      let plyerMixpartner = players.find(
+      let plyerMixpartnerDb = players.filter(
         (player) =>
           player.lastName == row['Mixpartner Achternaam'] && player.firstName == row.Mixpartner,
       );
@@ -84,6 +81,23 @@ export class TwizzitToPlayerDbService {
       if (!playerPerLevel.has('All')) {
         playerPerLevel.set('All', []);
       }
+
+      // take the first player with a starting 5 memberid, else with any gender filled in, else with the memberid not null
+      let player =
+        playerDb.find((player) => player.memberId?.startsWith('5')) ??
+        playerDb.find((player) => player.gender != null) ??
+        playerDb.find((player) => player.memberId != null) ??
+        playerDb[0];
+      let plyerDubbelpartner =
+        plyerDubbelpartnerDb.find((player) => player.memberId?.startsWith('5')) ??
+        plyerDubbelpartnerDb.find((player) => player.gender != null) ??
+        plyerDubbelpartnerDb.find((player) => player.memberId != null) ??
+        plyerDubbelpartnerDb[0];
+      let plyerMixpartner =
+        plyerMixpartnerDb.find((player) => player.memberId?.startsWith('5')) ??
+        plyerMixpartnerDb.find((player) => player.gender != null) ??
+        plyerMixpartnerDb.find((player) => player.memberId != null) ??
+        plyerMixpartnerDb[0];
 
       if (!player && row.Achternaam && row.Voornaam) {
         player = new Player({
@@ -135,6 +149,9 @@ export class TwizzitToPlayerDbService {
         playerPerLevel.get(key)?.push([player, plyerDubbelpartner]);
       }
 
+      // distinct 'all' players on firstname and lastname
+      playerPerLevel.set('All', this.makeUniqueByFullName(playerPerLevel.get('All')));
+
       // if player and mix player add to map
       if (row['Mix op zaterdag'] != 'Geen mix') {
         // add to map based on value of Mix op zaterdag's value
@@ -177,6 +194,18 @@ export class TwizzitToPlayerDbService {
         moment().format('YYYY-MM-DD_HH-mm-ss') +
         '.xlsx',
     );
+  }
+
+  makeUniqueByFullName(array: [Player, Player][]): [Player, Player][] {
+    const seen = new Set<string>();
+    return array.filter(([person]) => {
+      const identifier = `${person.firstName}-${person.lastName}`;
+      if (seen.has(identifier)) {
+        return false;
+      }
+      seen.add(identifier);
+      return true;
+    });
   }
 }
 
