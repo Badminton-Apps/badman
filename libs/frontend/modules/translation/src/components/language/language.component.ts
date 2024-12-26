@@ -12,11 +12,10 @@ import { MomentDatetimeAdapter } from '@ng-matero/extensions-moment-adapter';
 import { DatetimeAdapter } from '@ng-matero/extensions/core';
 
 @Component({
-  selector: 'badman-language',
-  templateUrl: './language.component.html',
-  styleUrls: ['./language.component.scss'],
-  standalone: true,
-  imports: [CommonModule, TranslateModule, MatMenuModule, MatButtonModule, MatIconModule],
+    selector: 'badman-language',
+    templateUrl: './language.component.html',
+    styleUrls: ['./language.component.scss'],
+    imports: [CommonModule, TranslateModule, MatMenuModule, MatButtonModule, MatIconModule]
 })
 export class LanguageComponent implements OnInit {
   public translate = inject(TranslateService);

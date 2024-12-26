@@ -7,20 +7,17 @@ import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-ranking-overview',
-  templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss'],
-  standalone: true,
-  imports: [
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-
-    TranslateModule,
-    MtxGridModule,
-
-    PageHeaderComponent,
-  ],
+    selector: 'badman-ranking-overview',
+    templateUrl: './overview.page.html',
+    styleUrls: ['./overview.page.scss'],
+    imports: [
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+        TranslateModule,
+        MtxGridModule,
+        PageHeaderComponent,
+    ]
 })
 export class OverviewPageComponent {
   columns: MtxGridColumn[] = [

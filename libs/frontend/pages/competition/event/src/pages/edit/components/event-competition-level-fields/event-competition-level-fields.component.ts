@@ -11,21 +11,20 @@ import { LevelType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-event-competition-level-fields',
-  templateUrl: './event-competition-level-fields.component.html',
-  styleUrls: ['./event-competition-level-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatInputModule,
-  ],
+    selector: 'badman-event-competition-level-fields',
+    templateUrl: './event-competition-level-fields.component.html',
+    styleUrls: ['./event-competition-level-fields.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatInputModule,
+    ]
 })
 export class EventCompetitionLevelFieldsComponent implements OnInit {
   subEvent = input<SubEventCompetition>({} as SubEventCompetition);

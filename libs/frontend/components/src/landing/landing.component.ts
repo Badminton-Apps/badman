@@ -25,19 +25,18 @@ import { RankingTableComponent } from '../ranking-table';
 import { BetaComponent } from './components';
 
 @Component({
-  selector: 'badman-landing',
-  standalone: true,
-  imports: [
-    CommonModule,
-    BetaComponent,
-    TranslateModule,
-    MatIconModule,
-    UpcomingGamesComponent,
-    RankingTableComponent,
-  ],
-  templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-landing',
+    imports: [
+        CommonModule,
+        BetaComponent,
+        TranslateModule,
+        MatIconModule,
+        UpcomingGamesComponent,
+        RankingTableComponent,
+    ],
+    templateUrl: './landing.component.html',
+    styleUrls: ['./landing.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LandingComponent implements OnInit {
   // private

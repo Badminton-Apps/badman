@@ -20,30 +20,29 @@ import { MomentModule } from 'ngx-moment';
 import { CronJobService } from '../../services/cronjob.service';
 
 @Component({
-  selector: 'badman-ranking-overview',
-  templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MtxGrid,
-    MomentModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatSlideToggleModule,
-    MatDatepickerModule,
-    PageHeaderComponent,
-    HasClaimComponent,
-  ],
+    selector: 'badman-ranking-overview',
+    templateUrl: './overview.page.html',
+    styleUrls: ['./overview.page.scss'],
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MtxGrid,
+        MomentModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatMenuModule,
+        MatDialogModule,
+        MatDividerModule,
+        MatSlideToggleModule,
+        MatDatepickerModule,
+        PageHeaderComponent,
+        HasClaimComponent,
+    ]
 })
 export class OverviewPageComponent {
   // injects

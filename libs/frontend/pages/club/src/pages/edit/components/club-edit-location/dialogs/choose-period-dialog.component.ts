@@ -8,21 +8,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-choose-period-dialog',
-  standalone: true,
-  imports: [
-    JsonPipe,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    MatDialogModule,
-    MatButtonModule,
-  ],
-  templateUrl: './choose-period-dialog.component.html',
-  styleUrl: './choose-period-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-choose-period-dialog',
+    imports: [
+        JsonPipe,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        MatDialogModule,
+        MatButtonModule,
+    ],
+    templateUrl: './choose-period-dialog.component.html',
+    styleUrl: './choose-period-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChoosePeriodDialogComponent {
   initialRange: FormGroup<{

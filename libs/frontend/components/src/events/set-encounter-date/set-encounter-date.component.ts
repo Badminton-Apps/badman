@@ -10,23 +10,22 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatInputModule,
-    MatSlideToggleModule,
-    MtxDatetimepickerModule,
-    MtxMomentDatetimeModule
-  ],
-  templateUrl: './set-encounter-date.component.html',
-  styleUrls: ['./set-encounter-date.component.scss'],
-  standalone: true,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatInputModule,
+        MatSlideToggleModule,
+        MtxDatetimepickerModule,
+        MtxMomentDatetimeModule
+    ],
+    templateUrl: './set-encounter-date.component.html',
+    styleUrls: ['./set-encounter-date.component.scss']
 })
 export class SetEncounterDateDialogComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<SetEncounterDateDialogComponent>>(

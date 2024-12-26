@@ -35,23 +35,22 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  templateUrl: './detail.page.html',
-  styleUrls: ['./detail.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    RecentGamesComponent,
-    UpcomingGamesComponent,
-    PageHeaderComponent,
-    HasClaimComponent,
-    MatDialogModule,
-  ],
+    templateUrl: './detail.page.html',
+    styleUrls: ['./detail.page.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        RecentGamesComponent,
+        UpcomingGamesComponent,
+        PageHeaderComponent,
+        HasClaimComponent,
+        MatDialogModule,
+    ]
 })
 export class DetailPageComponent {
   private apollo = inject(Apollo);

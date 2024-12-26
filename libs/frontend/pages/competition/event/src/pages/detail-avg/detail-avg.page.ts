@@ -15,21 +15,20 @@ import { map, take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-  selector: 'badman-competition-detail-avg',
-  templateUrl: './detail-avg.page.html',
-  styleUrls: ['./detail-avg.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    NgApexchartsModule,
-    MatProgressBarModule,
-    MatButtonModule,
-    MatIconModule,
-    LoadingBlockComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-competition-detail-avg',
+    templateUrl: './detail-avg.page.html',
+    styleUrls: ['./detail-avg.page.scss'],
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        NgApexchartsModule,
+        MatProgressBarModule,
+        MatButtonModule,
+        MatIconModule,
+        LoadingBlockComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetailAvgPageComponent implements OnInit {
   private readonly translate = inject(TranslateService);

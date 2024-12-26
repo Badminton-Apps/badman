@@ -13,20 +13,19 @@ import { LoadingBlockComponent } from '../../loading-block';
 import { UpcommingGamesService } from './upcomming-games.service';
 
 @Component({
-  selector: 'badman-upcoming-games',
-  standalone: true,
-  imports: [
-    TrackByProp,
-    CommonModule,
-    MatListModule,
-    MomentModule,
-    TranslateModule,
-    MatButtonModule,
-    RouterModule,
-    LoadingBlockComponent,
-  ],
-  templateUrl: './upcoming-games.component.html',
-  styleUrls: ['./upcoming-games.component.scss'],
+    selector: 'badman-upcoming-games',
+    imports: [
+        TrackByProp,
+        CommonModule,
+        MatListModule,
+        MomentModule,
+        TranslateModule,
+        MatButtonModule,
+        RouterModule,
+        LoadingBlockComponent,
+    ],
+    templateUrl: './upcoming-games.component.html',
+    styleUrls: ['./upcoming-games.component.scss']
 })
 export class UpcomingGamesComponent implements OnInit, OnChanges {
   upcommingGames = inject(UpcommingGamesService);

@@ -20,23 +20,22 @@ import { QuillModule } from 'ngx-quill';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'badman-faq',
-  templateUrl: './faq.page.html',
-  styleUrls: ['./faq.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    HasClaimComponent,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatInputModule,
-    QuillModule,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-faq',
+    templateUrl: './faq.page.html',
+    styleUrls: ['./faq.page.scss'],
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        HasClaimComponent,
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatInputModule,
+        QuillModule,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaqPageComponent implements OnInit {
   questions!: Question[];

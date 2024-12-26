@@ -8,11 +8,10 @@ import { Apollo, gql } from 'apollo-angular';
 import { iif, of, switchMap } from 'rxjs';
 
 @Component({
-  selector: 'badman-add-role',
-  standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatInputModule],
-  templateUrl: './add-role.component.html',
-  styleUrls: ['./add-role.component.scss'],
+    selector: 'badman-add-role',
+    imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatInputModule],
+    templateUrl: './add-role.component.html',
+    styleUrls: ['./add-role.component.scss']
 })
 export class AddRoleComponent {
   private apollo = inject(Apollo);

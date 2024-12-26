@@ -8,7 +8,7 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
+        "eslintConfig": "apps/badman-e2e/eslint.config.js"
       }
     }
   }

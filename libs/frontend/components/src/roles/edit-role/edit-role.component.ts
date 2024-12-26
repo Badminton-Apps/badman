@@ -47,24 +47,23 @@ const roleQuery = gql`
 `;
 
 @Component({
-  selector: 'badman-edit-role',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDividerModule,
-    MatTooltipModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatListModule,
-    PlayerSearchComponent,
-    ClaimComponent,
-    BadmanBlockModule,
-  ],
-  templateUrl: './edit-role.component.html',
-  styleUrls: ['./edit-role.component.scss'],
+    selector: 'badman-edit-role',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDividerModule,
+        MatTooltipModule,
+        MatMenuModule,
+        MatDialogModule,
+        MatListModule,
+        PlayerSearchComponent,
+        ClaimComponent,
+        BadmanBlockModule,
+    ],
+    templateUrl: './edit-role.component.html',
+    styleUrls: ['./edit-role.component.scss']
 })
 export class EditRoleComponent implements OnInit {
   private injector = inject(Injector);

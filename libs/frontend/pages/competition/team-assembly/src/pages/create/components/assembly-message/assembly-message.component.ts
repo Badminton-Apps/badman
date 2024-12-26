@@ -6,11 +6,10 @@ import { map, switchMap } from 'rxjs/operators';
 import { ValidationMessage, ValidationPlayer } from '../../models/validation';
 
 @Component({
-  selector: 'badman-assembly-message',
-  standalone: true,
-  imports: [CommonModule, TranslateModule],
-  templateUrl: './assembly-message.component.html',
-  styleUrls: ['./assembly-message.component.scss'],
+    selector: 'badman-assembly-message',
+    imports: [CommonModule, TranslateModule],
+    templateUrl: './assembly-message.component.html',
+    styleUrls: ['./assembly-message.component.scss']
 })
 export class AssemblyMessageComponent implements OnInit {
   private translate = inject(TranslateService);
