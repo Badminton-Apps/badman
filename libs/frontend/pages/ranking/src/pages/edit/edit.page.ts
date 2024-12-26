@@ -79,26 +79,25 @@ const FETCH_SYSTEM = gql`
 `;
 
 @Component({
-  selector: 'badman-ranking-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MomentModule,
-    MatButtonModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatMenuModule,
-    MatSnackBarModule,
-    PageHeaderComponent,
-    RankingSystemFieldsComponent,
-  ],
+    selector: 'badman-ranking-edit',
+    templateUrl: './edit.page.html',
+    styleUrls: ['./edit.page.scss'],
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MomentModule,
+        MatButtonModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatMenuModule,
+        MatSnackBarModule,
+        PageHeaderComponent,
+        RankingSystemFieldsComponent,
+    ]
 })
 export class EditPageComponent {
   // injects

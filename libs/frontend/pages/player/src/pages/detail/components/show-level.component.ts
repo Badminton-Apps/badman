@@ -15,12 +15,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { ShowLevelService } from './show-level.service';
 
 @Component({
-  selector: 'badman-show-level',
-  standalone: true,
-  imports: [CommonModule, MatTooltipModule],
-  templateUrl: './show-level.component.html',
-  styleUrl: './show-level.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-show-level',
+    imports: [CommonModule, MatTooltipModule],
+    templateUrl: './show-level.component.html',
+    styleUrl: './show-level.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowLevelComponent implements OnInit {
   showLevelService = inject(ShowLevelService);

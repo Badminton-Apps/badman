@@ -33,29 +33,26 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { ClubTeamsService } from './club-teams.service';
 @Component({
-  selector: 'badman-club-teams',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    LoadingBlockComponent,
-    RouterModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatButtonToggleModule,
-   
-   
-    SelectSeasonComponent,
-    HasClaimComponent,
-    RecentGamesComponent,
-    UpcomingGamesComponent,
-  ],
-  templateUrl: './club-teams.component.html',
-  styleUrls: ['./club-teams.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-club-teams',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        LoadingBlockComponent,
+        RouterModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatButtonToggleModule,
+        SelectSeasonComponent,
+        HasClaimComponent,
+        RecentGamesComponent,
+        UpcomingGamesComponent,
+    ],
+    templateUrl: './club-teams.component.html',
+    styleUrls: ['./club-teams.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClubTeamsComponent implements OnInit {
   // injects

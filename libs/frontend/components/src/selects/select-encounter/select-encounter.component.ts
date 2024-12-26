@@ -38,21 +38,20 @@ import {
 } from 'rxjs';
 
 @Component({
-  selector: 'badman-select-encounter',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MomentModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatSelectModule,
-  ],
-  templateUrl: './select-encounter.component.html',
-  styleUrls: ['./select-encounter.component.scss'],
+    selector: 'badman-select-encounter',
+    imports: [
+        CommonModule,
+        MomentModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatSelectModule,
+    ],
+    templateUrl: './select-encounter.component.html',
+    styleUrls: ['./select-encounter.component.scss']
 })
 export class SelectEncounterComponent implements OnInit {
   private apollo = inject(Apollo);

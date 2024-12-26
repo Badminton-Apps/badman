@@ -17,22 +17,21 @@ import { map, tap, Observable } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-  selector: 'badman-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatInputModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatButtonModule,
-    TranslateModule,
-    MatSnackBarModule,
-    HasClaimComponent,
-  ],
+    selector: 'badman-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatInputModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatButtonModule,
+        TranslateModule,
+        MatSnackBarModule,
+        HasClaimComponent,
+    ]
 })
 export class SettingsPageComponent implements OnInit {
   private apollo = inject(Apollo);

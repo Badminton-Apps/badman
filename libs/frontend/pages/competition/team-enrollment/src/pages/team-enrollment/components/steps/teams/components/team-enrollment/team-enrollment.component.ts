@@ -42,24 +42,23 @@ import { TeamComponent } from '../team';
 import { getNewTypeAndLevel } from '../utils/get-next-level';
 
 @Component({
-  selector: 'badman-team-enrollment',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TeamComponent,
-    EnrollmentMessageComponent,
-    TranslateModule,
-  ],
-  templateUrl: './team-enrollment.component.html',
-  styleUrls: ['./team-enrollment.component.scss'],
+    selector: 'badman-team-enrollment',
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TeamComponent,
+        EnrollmentMessageComponent,
+        TranslateModule,
+    ],
+    templateUrl: './team-enrollment.component.html',
+    styleUrls: ['./team-enrollment.component.scss']
 })
 export class TeamEnrollmentComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);

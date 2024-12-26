@@ -21,24 +21,23 @@ import { ClubMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  templateUrl: './edit-club-history-dialog.component.html',
-  styleUrls: ['./edit-club-history-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    TranslateModule,
-    MatDialogModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
-    MatInputModule,
-    MatButtonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatSelectModule,
-    SelectClubComponent,
-  ],
+    templateUrl: './edit-club-history-dialog.component.html',
+    styleUrls: ['./edit-club-history-dialog.component.scss'],
+    imports: [
+        CommonModule,
+        FormsModule,
+        TranslateModule,
+        MatDialogModule,
+        MatSlideToggleModule,
+        MatTooltipModule,
+        MatInputModule,
+        MatButtonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatSelectModule,
+        SelectClubComponent,
+    ]
 })
 export class EditClubHistoryDialogComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<EditClubHistoryDialogComponent>>(

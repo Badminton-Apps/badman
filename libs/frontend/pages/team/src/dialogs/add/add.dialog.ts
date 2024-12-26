@@ -11,17 +11,16 @@ import { Apollo, gql } from 'apollo-angular';
 import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
 
 @Component({
-  templateUrl: './add.dialog.html',
-  styleUrls: ['./add.dialog.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    TeamFieldComponent,
-    TeamPlayersComponent,
-    MatDialogModule,
-    MatButtonModule,
-  ],
+    templateUrl: './add.dialog.html',
+    styleUrls: ['./add.dialog.scss'],
+    imports: [
+        CommonModule,
+        TranslateModule,
+        TeamFieldComponent,
+        TeamPlayersComponent,
+        MatDialogModule,
+        MatButtonModule,
+    ]
 })
 export class AddDialogComponent {
   public dialogRef = inject<MatDialogRef<AddDialogComponent>>(MatDialogRef<AddDialogComponent>);

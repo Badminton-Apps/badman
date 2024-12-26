@@ -16,21 +16,20 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ReplacePlayerComponent } from '../../dialogs';
 
 @Component({
-  templateUrl: './edit-encounter.page.html',
-  styleUrls: ['./edit-encounter.page.scss'],
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatMenuModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatDialogModule,
-    GameScoreComponentComponent,
-  ],
+    templateUrl: './edit-encounter.page.html',
+    styleUrls: ['./edit-encounter.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatMenuModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatDialogModule,
+        GameScoreComponentComponent,
+    ]
 })
 export class EditEncounterComponent implements OnInit {
   private seoService = inject(SeoService);

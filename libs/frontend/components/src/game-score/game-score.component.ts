@@ -6,12 +6,11 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-game-score',
-  standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, TranslateModule],
-  templateUrl: './game-score.component.html',
-  styleUrls: ['./game-score.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-game-score',
+    imports: [CommonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, TranslateModule],
+    templateUrl: './game-score.component.html',
+    styleUrls: ['./game-score.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GameScoreComponentComponent implements OnInit {
   readonly separators = '[-_,=/]';

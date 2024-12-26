@@ -61,29 +61,28 @@ export type LocationForm = FormGroup<{
 }>;
 
 @Component({
-  selector: 'badman-location',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MomentModule,
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatSelectModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatSnackBarModule,
-    MatDividerModule,
-    MatTooltipModule,
-    MatDatepickerModule,
-    MtxDatetimepickerModule,
-    MtxMomentDatetimeModule
-  ],
-  templateUrl: './location.component.html',
-  styleUrls: ['./location.component.scss'],
+    selector: 'badman-location',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MomentModule,
+        MatButtonModule,
+        MatIconModule,
+        MatListModule,
+        MatSelectModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSnackBarModule,
+        MatDividerModule,
+        MatTooltipModule,
+        MatDatepickerModule,
+        MtxDatetimepickerModule,
+        MtxMomentDatetimeModule
+    ],
+    templateUrl: './location.component.html',
+    styleUrls: ['./location.component.scss']
 })
 export class LocationComponent implements OnInit {
   destroy$ = new Subject<void>();

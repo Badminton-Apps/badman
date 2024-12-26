@@ -12,22 +12,21 @@ import { TranslateModule } from '@ngx-translate/core';
 import { throttleTime } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-location-fields',
-  templateUrl: './location-fields.component.html',
-  styleUrls: ['./location-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    MatInputModule,
-    MatDividerModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatIconModule,
-    NgMapsPlacesModule,
-  ],
+    selector: 'badman-location-fields',
+    templateUrl: './location-fields.component.html',
+    styleUrls: ['./location-fields.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        MatInputModule,
+        MatDividerModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatIconModule,
+        NgMapsPlacesModule,
+    ]
 })
 export class LocationDialogFieldsComponent implements OnInit {
   location = input<Location>({} as Location);

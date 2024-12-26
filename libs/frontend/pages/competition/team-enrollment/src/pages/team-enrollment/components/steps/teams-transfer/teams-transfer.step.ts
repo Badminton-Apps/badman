@@ -21,20 +21,19 @@ import { TeamEnrollmentDataService } from '../../../service/team-enrollment.serv
 import { TeamForm } from '../../../team-enrollment.page';
 
 @Component({
-  selector: 'badman-teams-transfer-step',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatCheckboxModule,
-    MatButtonModule,
-    MatListModule,
-    MatProgressBarModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule,
-  ],
-  templateUrl: './teams-transfer.step.html',
-  styleUrls: ['./teams-transfer.step.scss'],
+    selector: 'badman-teams-transfer-step',
+    imports: [
+        CommonModule,
+        MatCheckboxModule,
+        MatButtonModule,
+        MatListModule,
+        MatProgressBarModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TranslateModule,
+    ],
+    templateUrl: './teams-transfer.step.html',
+    styleUrls: ['./teams-transfer.step.scss']
 })
 export class TeamsTransferStepComponent {
   private readonly destroy$ = injectDestroy();

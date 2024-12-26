@@ -7,12 +7,11 @@ import { EventEntry } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-standing',
-  templateUrl: './standing.component.html',
-  styleUrls: ['./standing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [CommonModule, TranslateModule, RouterModule, MatTableModule, MatIconModule],
+    selector: 'badman-standing',
+    templateUrl: './standing.component.html',
+    styleUrls: ['./standing.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, TranslateModule, RouterModule, MatTableModule, MatIconModule]
 })
 export class StandingComponent implements OnInit {
   entriesAll = input.required<EventEntry[]>({

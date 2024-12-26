@@ -16,12 +16,11 @@ import { Observable, combineLatest } from 'rxjs';
 import { groupBy, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-edit-permissions',
-  templateUrl: './edit-permissions.component.html',
-  styleUrls: ['./edit-permissions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [CommonModule, ClaimComponent],
+    selector: 'badman-edit-permissions',
+    templateUrl: './edit-permissions.component.html',
+    styleUrls: ['./edit-permissions.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, ClaimComponent]
 })
 export class EditPermissionsComponent implements OnInit {
   private apollo = inject(Apollo);

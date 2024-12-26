@@ -32,25 +32,24 @@ import { RankingBreakdownService } from './services/ranking-breakdown.service';
 import {  Ranking } from '@badman/utils';
 
 @Component({
-  templateUrl: './ranking-breakdown.page.html',
-  styleUrls: ['./ranking-breakdown.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatDialogModule,
-    MatProgressBarModule,
-    ListGamesComponent,
-    PeriodSelectionComponent,
-    RankingEvolutionComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './ranking-breakdown.page.html',
+    styleUrls: ['./ranking-breakdown.page.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslateModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatDialogModule,
+        MatProgressBarModule,
+        ListGamesComponent,
+        PeriodSelectionComponent,
+        RankingEvolutionComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RankingBreakdownPageComponent {
   // Dependencies

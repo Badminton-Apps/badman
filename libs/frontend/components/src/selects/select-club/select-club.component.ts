@@ -43,20 +43,19 @@ import {
 } from 'rxjs';
 
 @Component({
-  selector: 'badman-select-club',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatSelectModule,
-  ],
-  templateUrl: './select-club.component.html',
-  styleUrls: ['./select-club.component.scss'],
+    selector: 'badman-select-club',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatSelectModule,
+    ],
+    templateUrl: './select-club.component.html',
+    styleUrls: ['./select-club.component.scss']
 })
 export class SelectClubComponent implements OnInit {
   private readonly apollo = inject(Apollo);

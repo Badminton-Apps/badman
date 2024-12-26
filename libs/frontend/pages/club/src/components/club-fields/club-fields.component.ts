@@ -24,23 +24,22 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ClubFieldsForm } from '../../pages';
 
 @Component({
-  selector: 'badman-club-fields',
-  templateUrl: './club-fields.component.html',
-  styleUrls: ['./club-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    FormsModule,
-    MatInputModule,
-    MatOptionModule,
-    MatSelectModule,
-    HasClaimComponent,
-    SelectCountryComponent,
-    SelectCountrystateComponent,
-  ],
+    selector: 'badman-club-fields',
+    templateUrl: './club-fields.component.html',
+    styleUrls: ['./club-fields.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        FormsModule,
+        MatInputModule,
+        MatOptionModule,
+        MatSelectModule,
+        HasClaimComponent,
+        SelectCountryComponent,
+        SelectCountrystateComponent,
+    ]
 })
 export class ClubFieldsComponent implements OnInit {
   private readonly claimService = inject(ClaimService);

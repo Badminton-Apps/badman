@@ -6,12 +6,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { RankingTableService } from './ranking-table.service';
 
 @Component({
-  selector: 'badman-ranking-table',
-  standalone: true,
-  imports: [CommonModule, TranslateModule, MtxGrid],
-  templateUrl: './ranking-table.component.html',
-  styleUrls: ['./ranking-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-ranking-table',
+    imports: [CommonModule, TranslateModule, MtxGrid],
+    templateUrl: './ranking-table.component.html',
+    styleUrls: ['./ranking-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RankingTableComponent {
   private readonly rankingSystemService = inject(RankingSystemService);

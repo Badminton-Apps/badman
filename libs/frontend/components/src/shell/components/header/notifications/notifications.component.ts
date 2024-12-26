@@ -26,26 +26,25 @@ import { bufferCount, concatMap, delay, forkJoin, from } from 'rxjs';
 import { ThemeSwitcherComponent } from '../theme-switcher';
 
 @Component({
-  selector: 'badman-notifications',
-  standalone: true,
-  imports: [
-    CommonModule,
-    GraphQLModule,
-    RouterModule,
-    TranslateModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatDividerModule,
-    MatBadgeModule,
-    OverlayModule,
-    MatListModule,
-    LanguageComponent,
-    ThemeSwitcherComponent,
-  ],
-  templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-notifications',
+    imports: [
+        CommonModule,
+        GraphQLModule,
+        RouterModule,
+        TranslateModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        MatDividerModule,
+        MatBadgeModule,
+        OverlayModule,
+        MatListModule,
+        LanguageComponent,
+        ThemeSwitcherComponent,
+    ],
+    templateUrl: './notifications.component.html',
+    styleUrls: ['./notifications.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationComponent {
   isOpen = signal(false);

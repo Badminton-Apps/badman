@@ -16,26 +16,25 @@ import moment from 'moment';
 import { CompetitionEncounterService } from './competition-encounters.service';
 
 @Component({
-  selector: 'badman-competition-encounters',
-  templateUrl: './competition-encounters.html',
-  styleUrls: ['./competition-encounters.scss'],
-  standalone: true,
-  imports: [
-    JsonPipe,
-    MatCheckbox,
-    FormsModule,
-    MatRadioGroup,
-    MatRadioButton,
-    MatButtonModule,
-    MtxGrid,
-    MtxSelect,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatSlideToggleModule,
-    PageHeaderComponent,
-    TranslateModule,
-  ],
+    selector: 'badman-competition-encounters',
+    templateUrl: './competition-encounters.html',
+    styleUrls: ['./competition-encounters.scss'],
+    imports: [
+        JsonPipe,
+        MatCheckbox,
+        FormsModule,
+        MatRadioGroup,
+        MatRadioButton,
+        MatButtonModule,
+        MtxGrid,
+        MtxSelect,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatSlideToggleModule,
+        PageHeaderComponent,
+        TranslateModule,
+    ]
 })
 export class CompetitionEncountersComponent {
   // injects

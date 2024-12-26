@@ -22,27 +22,26 @@ import { RANKING_CONFIG } from '../../injection';
 import moment from 'moment';
 
 @Component({
-  selector: 'badman-upload-ranking',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-    MatProgressBarModule,
-    MatChipsModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-  ],
-  templateUrl: './upload-ranking.dialog.html',
-  styleUrls: ['./upload-ranking.dialog.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-upload-ranking',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTableModule,
+        MatProgressBarModule,
+        MatChipsModule,
+        MatCheckboxModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+    ],
+    templateUrl: './upload-ranking.dialog.html',
+    styleUrls: ['./upload-ranking.dialog.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadRankingDialogComponent {
   private config = inject<IRankingConfig>(RANKING_CONFIG);

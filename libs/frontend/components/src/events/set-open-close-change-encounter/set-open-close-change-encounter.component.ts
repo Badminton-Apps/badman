@@ -9,22 +9,21 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatInputModule,
-    MtxDatetimepickerModule,
-    MtxMomentDatetimeModule,
-  ],
-  templateUrl: './set-open-close-change-encounter.component.html',
-  styleUrls: ['./set-open-close-change-encounter.component.scss'],
-  standalone: true,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatInputModule,
+        MtxDatetimepickerModule,
+        MtxMomentDatetimeModule,
+    ],
+    templateUrl: './set-open-close-change-encounter.component.html',
+    styleUrls: ['./set-open-close-change-encounter.component.scss']
 })
 export class OpenCloseChangeEncounterDateDialogComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<OpenCloseChangeEncounterDateDialogComponent>>(

@@ -10,20 +10,18 @@ import { AssemblyMessageComponent } from '../assembly-message/assembly-message.c
 import { AssemblyService } from './assembly.service';
 
 @Component({
-  selector: 'badman-assembly-v2',
-  standalone: true,
-  imports: [
-    CommonModule,
-    AssemblyMessageComponent,
-
-    TranslateModule,
-    NgxResize,
-    MatTooltipModule,
-    MatIconModule,
-    MatButtonModule,
-  ],
-  templateUrl: './assembly-v2.component.html',
-  styleUrl: './assembly-v2.component.scss',
+    selector: 'badman-assembly-v2',
+    imports: [
+        CommonModule,
+        AssemblyMessageComponent,
+        TranslateModule,
+        NgxResize,
+        MatTooltipModule,
+        MatIconModule,
+        MatButtonModule,
+    ],
+    templateUrl: './assembly-v2.component.html',
+    styleUrl: './assembly-v2.component.scss'
 })
 export class AssemblyV2Component {
   data = inject(AssemblyService);

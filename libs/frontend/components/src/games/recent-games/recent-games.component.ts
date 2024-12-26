@@ -8,19 +8,17 @@ import { ListEncountersComponent } from './list-encounters/list-encounters.compo
 import { ListGamesComponent } from './list-games/list-games.component';
 
 @Component({
-  selector: 'badman-recent-games',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MomentModule,
-    TranslateModule,
-    RouterModule,
-    ListEncountersComponent,
-    ListGamesComponent,
-  ],
-
-  templateUrl: './recent-games.component.html',
-  styleUrls: ['./recent-games.component.scss'],
+    selector: 'badman-recent-games',
+    imports: [
+        CommonModule,
+        MomentModule,
+        TranslateModule,
+        RouterModule,
+        ListEncountersComponent,
+        ListGamesComponent,
+    ],
+    templateUrl: './recent-games.component.html',
+    styleUrls: ['./recent-games.component.scss']
 })
 export class RecentGamesComponent {
   teams = input<Team | Team[]>();

@@ -17,24 +17,23 @@ import { MatDialog } from '@angular/material/dialog';
 import { UploadTransferLoanDialogComponent } from '../dialogs';
 
 @Component({
-  selector: 'badman-ranking-overview',
-  templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss'],
-  standalone: true,
-  imports: [
-    MatCheckbox,
-    FormsModule,
-    MatRadioGroup,
-    MatRadioButton,
-    MatButtonModule,
-    MtxGrid,
-    MtxSelect,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    PageHeaderComponent,
-    TranslateModule,
-  ],
+    selector: 'badman-ranking-overview',
+    templateUrl: './overview.page.html',
+    styleUrls: ['./overview.page.scss'],
+    imports: [
+        MatCheckbox,
+        FormsModule,
+        MatRadioGroup,
+        MatRadioButton,
+        MatButtonModule,
+        MtxGrid,
+        MtxSelect,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        PageHeaderComponent,
+        TranslateModule,
+    ]
 })
 export class OverviewPageComponent {
   // injects

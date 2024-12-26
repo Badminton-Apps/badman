@@ -38,26 +38,25 @@ import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
 import { AssemblyV2Component } from './components/assembly-v2/assembly-v2.component';
 
 @Component({
-  selector: 'badman-assembly-create',
-  templateUrl: './create.page.html',
-  styleUrls: ['./create.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    SelectClubComponent,
-    SelectTeamComponent,
-    SelectEncounterComponent,
-    SelectSeasonComponent,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    AssemblyComponent,
-    AssemblyV2Component,
-    MatDialogModule,
-    MatMenuModule,
-    MatRippleModule,
-  ],
+    selector: 'badman-assembly-create',
+    templateUrl: './create.page.html',
+    styleUrls: ['./create.page.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        SelectClubComponent,
+        SelectTeamComponent,
+        SelectEncounterComponent,
+        SelectSeasonComponent,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        AssemblyComponent,
+        AssemblyV2Component,
+        MatDialogModule,
+        MatMenuModule,
+        MatRippleModule,
+    ]
 })
 export class CreatePageComponent {
   private readonly injector = inject(Injector);

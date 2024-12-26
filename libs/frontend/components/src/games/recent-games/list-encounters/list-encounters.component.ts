@@ -27,21 +27,20 @@ import { map, takeUntil } from 'rxjs';
 import { LoadingBlockComponent } from '../../../loading-block';
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    MomentModule,
-    TrackByProp,
-    MatButtonModule,
-    MatListModule,
-    LoadingBlockComponent,
-  ],
-  selector: 'badman-list-encounters',
-  templateUrl: './list-encounters.component.html',
-  styleUrls: ['./list-encounters.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        MomentModule,
+        TrackByProp,
+        MatButtonModule,
+        MatListModule,
+        LoadingBlockComponent,
+    ],
+    selector: 'badman-list-encounters',
+    templateUrl: './list-encounters.component.html',
+    styleUrls: ['./list-encounters.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListEncountersComponent implements OnInit, OnChanges {
   private apollo = inject(Apollo);

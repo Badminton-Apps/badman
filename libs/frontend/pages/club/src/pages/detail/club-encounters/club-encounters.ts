@@ -17,27 +17,26 @@ import moment from 'moment';
 import { ClubEncounterService, openRequestFilter, validationFilter } from './club-encounters.service';
 
 @Component({
-  selector: 'badman-club-encounters',
-  templateUrl: './club-encounters.html',
-  styleUrls: ['./club-encounters.scss'],
-  standalone: true,
-  imports: [
-    NgClass,
-    MatCheckbox,
-    FormsModule,
-    MatRadioGroup,
-    MatRadioButton,
-    MatButtonModule,
-    MtxGrid,
-    MtxSelectModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatIconModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
-    TranslateModule,
-  ],
+    selector: 'badman-club-encounters',
+    templateUrl: './club-encounters.html',
+    styleUrls: ['./club-encounters.scss'],
+    imports: [
+        NgClass,
+        MatCheckbox,
+        FormsModule,
+        MatRadioGroup,
+        MatRadioButton,
+        MatButtonModule,
+        MtxGrid,
+        MtxSelectModule,
+        MatFormField,
+        MatLabel,
+        MatInput,
+        MatIconModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
+        TranslateModule,
+    ]
 })
 export class ClubEncountersComponent {
   // injects

@@ -21,23 +21,22 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
 
 @Component({
-  selector: 'badman-change-encounter',
-  templateUrl: './change-encounter.component.html',
-  styleUrls: ['./change-encounter.component.scss'],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    MatIconModule,
-    SelectClubComponent,
-    SelectTeamComponent,
-    SelectSeasonComponent,
-    ListEncountersComponent,
-    ShowRequestsComponent,
-    HasClaimComponent,
-  ],
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-change-encounter',
+    templateUrl: './change-encounter.component.html',
+    styleUrls: ['./change-encounter.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        MatIconModule,
+        SelectClubComponent,
+        SelectTeamComponent,
+        SelectSeasonComponent,
+        ListEncountersComponent,
+        ShowRequestsComponent,
+        HasClaimComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangeEncounterComponent implements OnInit {
   private readonly destroy$ = injectDestroy();

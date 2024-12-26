@@ -21,27 +21,26 @@ import { SelectSeasonComponent } from '@badman/frontend-components';
 import { getSeason } from '@badman/utils';
 
 @Component({
-  selector: 'badman-upload-transfer-loan',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-    MatProgressBarModule,
-    MatChipsModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    SelectSeasonComponent,
-  ],
-  templateUrl: './upload-transfer-loan.dialog.html',
-  styleUrls: ['./upload-transfer-loan.dialog.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-upload-transfer-loan',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTableModule,
+        MatProgressBarModule,
+        MatChipsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        SelectSeasonComponent,
+    ],
+    templateUrl: './upload-transfer-loan.dialog.html',
+    styleUrls: ['./upload-transfer-loan.dialog.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadTransferLoanDialogComponent {
   private config = inject<ITransferLoanConfig>(TRANSFERLOAN_CONFIG);
