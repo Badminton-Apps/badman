@@ -8,12 +8,13 @@ import {
   input,
 } from '@angular/core';
 @Component({
-  selector: 'badman-block',
-  templateUrl: './block.component.html',
-  styleUrls: ['./block.component.scss'],
-  exportAs: 'badmanBlock',
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-block',
+    templateUrl: './block.component.html',
+    styleUrls: ['./block.component.scss'],
+    exportAs: 'badmanBlock',
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class BadmanBlockComponent {
   @HostBinding('class')
@@ -39,7 +40,8 @@ export class BadmanBlockComponent {
  * BadmanBlockTitle provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-  selector: `badman-block-title, [badman-block-title], [badmanBlockTitle]`,
+    selector: `badman-block-title, [badman-block-title], [badmanBlockTitle]`,
+    standalone: false
 })
 export class BadmanBlockTitleDirective {
   @HostBinding('class')
@@ -52,10 +54,11 @@ export class BadmanBlockTitleDirective {
  * (e.g. `<img badmanBlockLgImage>`).
  */
 @Component({
-  selector: 'badman-block-title-group',
-  templateUrl: './block-title-group.component.html',
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-block-title-group',
+    templateUrl: './block-title-group.component.html',
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class BadmanBlockTitleGroupComponent {
   @HostBinding('class')
@@ -70,7 +73,8 @@ export class BadmanBlockTitleGroupComponent {
  * BadmanBlockContent provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-  selector: 'badman-block-content',
+    selector: 'badman-block-content',
+    standalone: false
 })
 export class BadmanBlockContentDirective {
   @HostBinding('class')
@@ -85,7 +89,8 @@ export class BadmanBlockContentDirective {
  * BadmanBlockSubtitle provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-  selector: `badman-block-subtitle, [badman-block-subtitle], [badmanBlockSubtitle]`,
+    selector: `badman-block-subtitle, [badman-block-subtitle], [badmanBlockSubtitle]`,
+    standalone: false
 })
 export class BadmanBlockSubtitleDirective {
   @HostBinding('class')
@@ -100,8 +105,9 @@ export class BadmanBlockSubtitleDirective {
  * BadmanBlockActions provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-  selector: 'badman-block-actions',
-  exportAs: 'badmanBlockActions',
+    selector: 'badman-block-actions',
+    exportAs: 'badmanBlockActions',
+    standalone: false
 })
 export class BadmanBlockActionsDirective {
   /** Position of the actions inside the card. */
@@ -130,10 +136,11 @@ export class BadmanBlockActionsDirective {
  * BadmanBlockHeader provides no behaviors, instead serving as a purely visual treatment.
  */
 @Component({
-  selector: 'badman-block-header',
-  templateUrl: './block-header.component.html',
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-block-header',
+    templateUrl: './block-header.component.html',
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class BadmanBlockHeaderComponent {
   @HostBinding('class')
@@ -148,7 +155,8 @@ export class BadmanBlockHeaderComponent {
  * BadmanBlockFooter provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-  selector: 'badman-block-footer',
+    selector: 'badman-block-footer',
+    standalone: false
 })
 export class BadmanBlockFooterDirective {
   @HostBinding('class')
@@ -169,7 +177,8 @@ export class BadmanBlockFooterDirective {
  * BadmanBlockImage provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-  selector: '[badman-block-image], [badmanBlockImage]',
+    selector: '[badman-block-image], [badmanBlockImage]',
+    standalone: false
 })
 export class BadmanBlockImageDirective {
   @HostBinding('class')
@@ -178,7 +187,8 @@ export class BadmanBlockImageDirective {
 
 /** Same as `BadmanBlockImage`, but small. */
 @Directive({
-  selector: '[badman-block-sm-image], [badmanBlockImageSmall]',
+    selector: '[badman-block-sm-image], [badmanBlockImageSmall]',
+    standalone: false
 })
 export class BadmanBlockSmImageDirective {
   @HostBinding('class')
@@ -187,7 +197,8 @@ export class BadmanBlockSmImageDirective {
 
 /** Same as `BadmanBlockImage`, but medium. */
 @Directive({
-  selector: '[badman-block-md-image], [badmanBlockImageMedium]',
+    selector: '[badman-block-md-image], [badmanBlockImageMedium]',
+    standalone: false
 })
 export class BadmanBlockMdImageDirective {
   @HostBinding('class')
@@ -196,7 +207,8 @@ export class BadmanBlockMdImageDirective {
 
 /** Same as `BadmanBlockImage`, but large. */
 @Directive({
-  selector: '[badman-block-lg-image], [badmanBlockImageLarge]',
+    selector: '[badman-block-lg-image], [badmanBlockImageLarge]',
+    standalone: false
 })
 export class BadmanBlockLgImageDirective {
   @HostBinding('class')
@@ -205,7 +217,8 @@ export class BadmanBlockLgImageDirective {
 
 /** Same as `BadmanBlockImage`, but extra-large. */
 @Directive({
-  selector: '[badman-block-xl-image], [badmanBlockImageXLarge]',
+    selector: '[badman-block-xl-image], [badmanBlockImageXLarge]',
+    standalone: false
 })
 export class BadmanBlockXlImageDirective {
   @HostBinding('class')
@@ -222,7 +235,8 @@ export class BadmanBlockXlImageDirective {
  * BadmanBlockAvatar provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-  selector: '[badman-block-avatar], [badmanBlockAvatar]',
+    selector: '[badman-block-avatar], [badmanBlockAvatar]',
+    standalone: false
 })
 export class BadmanBlockAvatarDirective {
   @HostBinding('class')

@@ -24,23 +24,22 @@ import {
 } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-list-encounters',
-  templateUrl: './list-encounters.component.html',
-  styleUrls: ['./list-encounters.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatListModule,
-    MatDividerModule,
-    MatSelectModule,
-    MatTooltipModule,
-    MomentModule,
-    LoadingBlockComponent,
-  ],
+    selector: 'badman-list-encounters',
+    templateUrl: './list-encounters.component.html',
+    styleUrls: ['./list-encounters.component.scss'],
+    imports: [
+        CommonModule,
+        TranslateModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatListModule,
+        MatDividerModule,
+        MatSelectModule,
+        MatTooltipModule,
+        MomentModule,
+        LoadingBlockComponent,
+    ]
 })
 export class ListEncountersComponent implements OnInit {
   private readonly apollo = inject(Apollo);

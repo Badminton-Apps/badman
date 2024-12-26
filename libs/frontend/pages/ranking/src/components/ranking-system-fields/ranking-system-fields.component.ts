@@ -17,28 +17,27 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MomentModule,
-    MatButtonModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatMenuModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatSlideToggleModule,
-    PageHeaderComponent,
-  ],
-  selector: 'badman-ranking-system-fields',
-  templateUrl: './ranking-system-fields.component.html',
-  styleUrls: ['./ranking-system-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MomentModule,
+        MatButtonModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatMenuModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        PageHeaderComponent,
+    ],
+    selector: 'badman-ranking-system-fields',
+    templateUrl: './ranking-system-fields.component.html',
+    styleUrls: ['./ranking-system-fields.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RankingSystemFieldsComponent implements OnInit {
   system = input<RankingSystem>({} as RankingSystem);

@@ -23,27 +23,25 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { DrawLocationMapComponent } from './components';
 
 @Component({
-  selector: 'badman-detail-draw-competition',
-  templateUrl: './detail-draw.page.html',
-  styleUrls: ['./detail-draw.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    MatTooltipModule,
-    MatIconModule,
-    MatButtonModule,
-
-    StandingComponent,
-    RecentGamesComponent,
-    UpcomingGamesComponent,
-    PageHeaderComponent,
-    DrawLocationMapComponent,
-    HasClaimComponent,
-    MatMenuModule,
-  ],
+    selector: 'badman-detail-draw-competition',
+    templateUrl: './detail-draw.page.html',
+    styleUrls: ['./detail-draw.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        MatTooltipModule,
+        MatIconModule,
+        MatButtonModule,
+        StandingComponent,
+        RecentGamesComponent,
+        UpcomingGamesComponent,
+        PageHeaderComponent,
+        DrawLocationMapComponent,
+        HasClaimComponent,
+        MatMenuModule,
+    ]
 })
 export class DetailDrawCompetitionComponent {
   private readonly destroy$ = injectDestroy();

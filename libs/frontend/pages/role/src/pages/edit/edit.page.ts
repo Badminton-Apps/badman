@@ -13,10 +13,9 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { RoleFieldsComponent } from '../../components';
 
 @Component({
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, RoleFieldsComponent],
+    templateUrl: './edit.page.html',
+    styleUrls: ['./edit.page.scss'],
+    imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, RoleFieldsComponent]
 })
 export class EditPageComponent implements OnInit {
   private apollo = inject(Apollo);

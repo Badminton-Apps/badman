@@ -14,11 +14,10 @@ import {
 } from 'ng-apexcharts';
 
 @Component({
-  selector: 'badman-chart',
-  templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.scss'],
-  standalone: true,
-  imports: [CommonModule, NgApexchartsModule],
+    selector: 'badman-chart',
+    templateUrl: './chart.component.html',
+    styleUrls: ['./chart.component.scss'],
+    imports: [CommonModule, NgApexchartsModule]
 })
 export class ChartComponent implements OnInit {
   private themeSwitcher = inject(ThemeSwitcherService);

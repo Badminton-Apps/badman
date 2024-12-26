@@ -10,19 +10,19 @@
       "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "{workspaceRoot}/dist/{projectRoot}",
-        "index": "{projectRoot}/src/index.html",
-        "browser": "{projectRoot}/src/main.ts",
+        "outputPath": "{workspaceRoot}/dist/apps/badman",
+        "index": "apps/badman/src/index.html",
+        "browser": "apps/badman/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "{projectRoot}/tsconfig.app.json",
+        "tsConfig": "apps/badman/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
-          "{projectRoot}/src/favicon.ico",
-          "{projectRoot}/src/assets",
-          "{projectRoot}/src/manifest.json",
-          "{projectRoot}/src/robots.txt",
-          "{projectRoot}/src/sitemap.xml",
-          "{projectRoot}/src/ads.txt"
+          "apps/badman/src/favicon.ico",
+          "apps/badman/src/assets",
+          "apps/badman/src/manifest.json",
+          "apps/badman/src/robots.txt",
+          "apps/badman/src/sitemap.xml",
+          "apps/badman/src/ads.txt"
         ],
         "allowedCommonJsDependencies": [
           "moment",
@@ -33,7 +33,7 @@
           "apexcharts"
         ],
         "styles": [
-          "{projectRoot}/src/styles.scss",
+          "apps/badman/src/styles.scss",
           "node_modules/quill/dist/quill.bubble.css",
           "node_modules/@fontsource/roboto/100.css",
           "node_modules/@fontsource/roboto/300.css",
@@ -42,7 +42,7 @@
           "node_modules/material-icons/iconfont/material-icons.css"
         ],
         "scripts": ["node_modules/apexcharts/dist/apexcharts.js"],
-        "serviceWorker": "{projectRoot}/ngsw-config.json"
+        "serviceWorker": "apps/badman/ngsw-config.json"
       },
       "configurations": {
         "production": {
@@ -59,17 +59,17 @@
             }
           ],
           "assets": [
-            "{projectRoot}/src/favicon.ico",
-            "{projectRoot}/src/assets",
-            "{projectRoot}/src/manifest.json",
-            "{projectRoot}/src/robots.txt",
-            "{projectRoot}/src/sitemap.xml",
-            "{projectRoot}/src/ads.txt"
+            "apps/badman/src/favicon.ico",
+            "apps/badman/src/assets",
+            "apps/badman/src/manifest.json",
+            "apps/badman/src/robots.txt",
+            "apps/badman/src/sitemap.xml",
+            "apps/badman/src/ads.txt"
           ],
           "fileReplacements": [
             {
-              "replace": "{projectRoot}/src/environments/environment.ts",
-              "with": "{projectRoot}/src/environments/environment.prod.ts"
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.prod.ts"
             }
           ],
           "optimization": true,
@@ -92,22 +92,22 @@
             }
           ],
           "assets": [
-            "{projectRoot}/src/favicon.ico",
-            "{projectRoot}/src/assets",
-            "{projectRoot}/src/manifest.json",
-            "{projectRoot}/src/robots.txt",
-            "{projectRoot}/src/sitemap.xml",
-            "{projectRoot}/src/ads.txt",
+            "apps/badman/src/favicon.ico",
+            "apps/badman/src/assets",
+            "apps/badman/src/manifest.json",
+            "apps/badman/src/robots.txt",
+            "apps/badman/src/sitemap.xml",
+            "apps/badman/src/ads.txt",
             {
-              "input": "{projectRoot}/src/deployment/beta",
+              "input": "apps/badman/src/deployment/beta",
               "output": "/",
               "glob": "*"
             }
           ],
           "fileReplacements": [
             {
-              "replace": "{projectRoot}/src/environments/environment.ts",
-              "with": "{projectRoot}/src/environments/environment.beta.ts"
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.beta.ts"
             }
           ],
           "outputHashing": "all"
@@ -125,8 +125,8 @@
           "namedChunks": true,
           "fileReplacements": [
             {
-              "replace": "{projectRoot}/src/environments/environment.ts",
-              "with": "{projectRoot}/src/environments/environment.dev-beta.ts"
+              "replace": "apps/badman/src/environments/environment.ts",
+              "with": "apps/badman/src/environments/environment.dev-beta.ts"
             }
           ]
         }
@@ -143,7 +143,7 @@
           "buildTarget": "badman:build:production"
         },
         "development": {
-          "proxyConfig": "{projectRoot}/proxy.conf.json",
+          "proxyConfig": "apps/badman/proxy.conf.json",
           "buildTarget": "badman:build:development"
         },
         "beta": {
@@ -163,15 +163,15 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/apps/badman"],
       "options": {
-        "jestConfig": "{projectRoot}/jest.config.ts"
+        "jestConfig": "apps/badman/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
+        "eslintConfig": "apps/badman/eslint.config.js"
       }
     }
   }

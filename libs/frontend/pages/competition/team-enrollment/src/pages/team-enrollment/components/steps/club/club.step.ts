@@ -34,20 +34,19 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-  selector: 'badman-club-step',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    MatInputModule,
-    MatProgressBarModule,
-    SelectClubSignalsComponent,
-  ],
-  templateUrl: './club.step.html',
-  styleUrls: ['./club.step.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-club-step',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TranslateModule,
+        MatInputModule,
+        MatProgressBarModule,
+        SelectClubSignalsComponent,
+    ],
+    templateUrl: './club.step.html',
+    styleUrls: ['./club.step.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClubStepComponent {
   private readonly authenticateService = inject(AuthenticateService);

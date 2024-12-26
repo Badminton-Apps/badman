@@ -22,18 +22,17 @@ import { Apollo, gql } from 'apollo-angular';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-select-season',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-  ],
-  templateUrl: './select-season.component.html',
-  styleUrls: ['./select-season.component.scss'],
+    selector: 'badman-select-season',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+    ],
+    templateUrl: './select-season.component.html',
+    styleUrls: ['./select-season.component.scss']
 })
 export class SelectSeasonComponent implements OnInit {
   private apollo = inject(Apollo);

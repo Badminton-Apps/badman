@@ -30,38 +30,37 @@ import { bufferCount, concatMap, map, startWith, switchMap, takeUntil, tap } fro
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 
 @Component({
-  selector: 'badman-competition-enrollments',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatExpansionModule,
-    MatCardModule,
-    MatRippleModule,
-    MatListModule,
-    MatProgressBarModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatBadgeModule,
-    TranslateModule,
-    CdkTableModule,
-    CdkTreeModule,
-    EnrollmentDetailRowDirective,
-    SelectClubComponent,
-    EnrollmentMessageComponent,
-    BadmanBlockModule,
-    LoadingBlockComponent,
-  ],
-  templateUrl: './competition-enrollments.component.html',
-  styleUrls: ['./competition-enrollments.component.scss'],
-  providers: [provideAnimations()],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-      state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+    selector: 'badman-competition-enrollments',
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatExpansionModule,
+        MatCardModule,
+        MatRippleModule,
+        MatListModule,
+        MatProgressBarModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatBadgeModule,
+        TranslateModule,
+        CdkTableModule,
+        CdkTreeModule,
+        EnrollmentDetailRowDirective,
+        SelectClubComponent,
+        EnrollmentMessageComponent,
+        BadmanBlockModule,
+        LoadingBlockComponent,
+    ],
+    templateUrl: './competition-enrollments.component.html',
+    styleUrls: ['./competition-enrollments.component.scss'],
+    providers: [provideAnimations()],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
+            state('expanded', style({ height: '*', visibility: 'visible' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ]
 })
 export class CompetitionEnrollmentsComponent implements OnInit {
   // injects

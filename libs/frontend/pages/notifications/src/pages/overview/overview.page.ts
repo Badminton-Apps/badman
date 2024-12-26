@@ -13,19 +13,18 @@ import moment from 'moment';
 import { Observable } from 'rxjs';
 
 @Component({
-  templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    MatListModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './overview.page.html',
+    styleUrls: ['./overview.page.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslateModule,
+        MatListModule,
+        MatButtonModule,
+        MatIconModule,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OverviewPageComponent implements OnInit {
   private seoService = inject(SeoService);

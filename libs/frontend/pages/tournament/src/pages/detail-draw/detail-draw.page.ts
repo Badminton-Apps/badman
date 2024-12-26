@@ -23,22 +23,21 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-  selector: 'badman-detail-draw-tournament',
-  templateUrl: './detail-draw.page.html',
-  styleUrls: ['./detail-draw.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    MatIconModule,
-    MatTooltipModule,
-    StandingComponent,
-    RecentGamesComponent,
-    UpcomingGamesComponent,
-    PageHeaderComponent,
-  ],
+    selector: 'badman-detail-draw-tournament',
+    templateUrl: './detail-draw.page.html',
+    styleUrls: ['./detail-draw.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        MatIconModule,
+        MatTooltipModule,
+        StandingComponent,
+        RecentGamesComponent,
+        UpcomingGamesComponent,
+        PageHeaderComponent,
+    ]
 })
 export class DetailDrawComponent {
   private readonly route = inject(ActivatedRoute);

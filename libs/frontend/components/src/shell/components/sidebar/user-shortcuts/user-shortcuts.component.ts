@@ -10,20 +10,19 @@ import { ClubMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-user-shortcuts',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatListModule,
-    MatDividerModule,
-    RouterModule,
-    MatExpansionModule,
-    MatIconModule,
-  ],
-  templateUrl: './user-shortcuts.component.html',
-  styleUrls: ['./user-shortcuts.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-user-shortcuts',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MatListModule,
+        MatDividerModule,
+        RouterModule,
+        MatExpansionModule,
+        MatIconModule,
+    ],
+    templateUrl: './user-shortcuts.component.html',
+    styleUrls: ['./user-shortcuts.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserShortcutsComponent {
   private readonly authenticateService = inject(AuthenticateService);

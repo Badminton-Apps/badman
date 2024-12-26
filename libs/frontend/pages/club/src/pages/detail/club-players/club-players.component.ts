@@ -22,17 +22,16 @@ import { combineLatest } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-club-players',
-  standalone: true,
-  imports: [
-    CommonModule,
-    LoadingBlockComponent,
-    RouterModule,
-    TranslateModule,
-    SelectSeasonComponent,
-  ],
-  templateUrl: './club-players.component.html',
-  styleUrls: ['./club-players.component.scss'],
+    selector: 'badman-club-players',
+    imports: [
+        CommonModule,
+        LoadingBlockComponent,
+        RouterModule,
+        TranslateModule,
+        SelectSeasonComponent,
+    ],
+    templateUrl: './club-players.component.html',
+    styleUrls: ['./club-players.component.scss']
 })
 export class ClubPlayersComponent implements OnInit {
   // injects
