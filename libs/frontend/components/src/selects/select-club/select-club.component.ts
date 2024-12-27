@@ -90,10 +90,8 @@ export class SelectClubComponent implements OnInit {
   }
   filteredClubs$?: Observable<Club[]>;
 
-  useAutocompleteInput = input<boolean | 'auto'>('auto', {
-    alias: 'useAutocomplete',
-  });
-  useAutocomplete = signal<boolean | 'auto'>(this.useAutocompleteInput());
+  useAutocomplete = input<boolean | 'auto'>('auto');
+  useAutocompleteSignal = signal<boolean | 'auto'>(this.useAutocomplete());
 
   autoCompleteTreshold = input(5);
 
@@ -149,7 +147,7 @@ export class SelectClubComponent implements OnInit {
                 });
 
                 if (filtered.length < this.autoCompleteTreshold()) {
-                  this.useAutocomplete.set(false);
+                  this.useAutocompleteSignal.set(false);
                 }
 
                 return of({
