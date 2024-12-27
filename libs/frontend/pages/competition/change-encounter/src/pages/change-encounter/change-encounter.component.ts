@@ -5,10 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
 import {
-  HasClaimComponent,
   SelectClubComponent,
   SelectSeasonComponent,
-  SelectTeamComponent,
+  SelectTeamComponent
 } from '@badman/frontend-components';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { SeoService } from '@badman/frontend-seo';
@@ -21,22 +20,21 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
 
 @Component({
-    selector: 'badman-change-encounter',
-    templateUrl: './change-encounter.component.html',
-    styleUrls: ['./change-encounter.component.scss'],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        MatIconModule,
-        SelectClubComponent,
-        SelectTeamComponent,
-        SelectSeasonComponent,
-        ListEncountersComponent,
-        ShowRequestsComponent,
-        HasClaimComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-change-encounter',
+  templateUrl: './change-encounter.component.html',
+  styleUrls: ['./change-encounter.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    MatIconModule,
+    SelectClubComponent,
+    SelectTeamComponent,
+    SelectSeasonComponent,
+    ListEncountersComponent,
+    ShowRequestsComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeEncounterComponent implements OnInit {
   private readonly destroy$ = injectDestroy();
@@ -87,7 +85,5 @@ export class ChangeEncounterComponent implements OnInit {
         this.breadcrumbsService.set('competition/change-encounter', result[changeEncounterKey]);
         this.breadcrumbsService.set('competition', result[competition]);
       });
-
-      
   }
 }

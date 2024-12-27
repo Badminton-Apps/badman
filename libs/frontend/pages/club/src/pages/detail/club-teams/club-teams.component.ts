@@ -21,8 +21,7 @@ import {
   HasClaimComponent,
   LoadingBlockComponent,
   RecentGamesComponent,
-  SelectSeasonComponent,
-  UpcomingGamesComponent,
+  UpcomingGamesComponent
 } from '@badman/frontend-components';
 import { Team } from '@badman/frontend-models';
 import { DEVICE } from '@badman/frontend-utils';
@@ -32,27 +31,27 @@ import { Apollo } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { ClubTeamsService } from './club-teams.service';
+
 @Component({
-    selector: 'badman-club-teams',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        LoadingBlockComponent,
-        RouterModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatButtonToggleModule,
-        SelectSeasonComponent,
-        HasClaimComponent,
-        RecentGamesComponent,
-        UpcomingGamesComponent,
-    ],
-    templateUrl: './club-teams.component.html',
-    styleUrls: ['./club-teams.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-club-teams',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    LoadingBlockComponent,
+    RouterModule,
+    TranslateModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatButtonToggleModule,
+    HasClaimComponent,
+    RecentGamesComponent,
+    UpcomingGamesComponent,
+  ],
+  templateUrl: './club-teams.component.html',
+  styleUrls: ['./club-teams.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubTeamsComponent implements OnInit {
   // injects
@@ -97,7 +96,7 @@ export class ClubTeamsComponent implements OnInit {
   }
 
   editTeam(team: Team) {
-    console.log(this.clubTeamsService.locations())
+    console.log(this.clubTeamsService.locations());
 
     import('@badman/frontend-team').then((m) => {
       this.dialog
@@ -111,7 +110,6 @@ export class ClubTeamsComponent implements OnInit {
                 ?.map((t) => t.teamNumber),
             },
             locations: this.clubTeamsService.locations(),
-
           },
 
           width: '100%',

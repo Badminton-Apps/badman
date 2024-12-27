@@ -49,7 +49,6 @@ import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, lastValueFrom, of } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
 
@@ -70,32 +69,31 @@ const CHANGE_QUERY = gql`
 `;
 
 @Component({
-    selector: 'badman-show-requests',
-    templateUrl: './show-requests.component.html',
-    styleUrls: ['./show-requests.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        MomentModule,
-        MatFormFieldModule,
-        MatOptionModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        MatCheckboxModule,
-        MatSelectModule,
-        MatProgressBarModule,
-        MatExpansionModule,
-        MatTooltipModule,
-        DateSelectorComponent,
-        CommentsComponent,
-        RequestDateComponent,
-        HasClaimComponent,
-    ]
+  selector: 'badman-show-requests',
+  templateUrl: './show-requests.component.html',
+  styleUrls: ['./show-requests.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslateModule,
+    MomentModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatProgressBarModule,
+    MatExpansionModule,
+    MatTooltipModule,
+    CommentsComponent,
+    RequestDateComponent,
+    HasClaimComponent,
+  ],
 })
 export class ShowRequestsComponent implements OnInit {
   showCompact = input<boolean | undefined>(false);

@@ -11,7 +11,6 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { PageHeaderComponent } from '@badman/frontend-components';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
@@ -32,7 +31,6 @@ import { MomentModule } from 'ngx-moment';
         MatOptionModule,
         MatSelectModule,
         MatSlideToggleModule,
-        PageHeaderComponent,
     ],
     selector: 'badman-ranking-system-fields',
     templateUrl: './ranking-system-fields.component.html',

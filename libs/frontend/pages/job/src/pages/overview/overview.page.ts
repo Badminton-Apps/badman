@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RouterModule } from '@angular/router';
-import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
+import { PageHeaderComponent } from '@badman/frontend-components';
 import { CronJob } from '@badman/frontend-models';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { TranslateModule } from '@ngx-translate/core';
@@ -41,7 +41,6 @@ import { CronJobService } from '../../services/cronjob.service';
         MatSlideToggleModule,
         MatDatepickerModule,
         PageHeaderComponent,
-        HasClaimComponent,
     ]
 })
 export class OverviewPageComponent {
