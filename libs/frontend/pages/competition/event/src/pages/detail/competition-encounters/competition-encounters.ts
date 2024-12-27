@@ -1,13 +1,8 @@
-import { JsonPipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { PageHeaderComponent } from '@badman/frontend-components';
 import { Club, EncounterCompetition, Team } from '@badman/frontend-models';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelect } from '@ng-matero/extensions/select';
@@ -16,25 +11,19 @@ import moment from 'moment';
 import { CompetitionEncounterService } from './competition-encounters.service';
 
 @Component({
-    selector: 'badman-competition-encounters',
-    templateUrl: './competition-encounters.html',
-    styleUrls: ['./competition-encounters.scss'],
-    imports: [
-        JsonPipe,
-        MatCheckbox,
-        FormsModule,
-        MatRadioGroup,
-        MatRadioButton,
-        MatButtonModule,
-        MtxGrid,
-        MtxSelect,
-        MatFormField,
-        MatLabel,
-        MatInput,
-        MatSlideToggleModule,
-        PageHeaderComponent,
-        TranslateModule,
-    ]
+  selector: 'badman-competition-encounters',
+  templateUrl: './competition-encounters.html',
+  styleUrls: ['./competition-encounters.scss'],
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MtxGrid,
+    MtxSelect,
+    MatFormField,
+    MatLabel,
+    MatSlideToggleModule,
+    TranslateModule,
+  ],
 })
 export class CompetitionEncountersComponent {
   // injects

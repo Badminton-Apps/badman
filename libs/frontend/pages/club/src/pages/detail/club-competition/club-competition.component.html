@@ -180,32 +180,32 @@
         </badman-block-header>
         <mat-divider></mat-divider>
         <badman-block-content>
-          @if (this.location.street) {
-            <span>{{ this.location.street }} </span>
+          @if (location.street) {
+            <span>{{ location.street }} </span>
           }
-          @if (this.location.streetNumber) {
-            <span>{{ this.location.streetNumber }}</span>
-          }
-          <br />
-          @if (this.location.postalcode) {
-            <span>{{ this.location.postalcode }} </span>
-          }
-          @if (this.location.city) {
-            <span>{{ this.location.city }}</span>
+          @if (location.streetNumber) {
+            <span>{{ location.streetNumber }}</span>
           }
           <br />
-          @if (this.location.state) {
-            <span>{{ this.location.state }}</span>
+          @if (location.postalcode) {
+            <span>{{ location.postalcode }} </span>
+          }
+          @if (location.city) {
+            <span>{{ location.city }}</span>
           }
           <br />
-          @if (this.location.phone) {
-            <span>{{ this.location.phone }}</span>
+          @if (location.state) {
+            <span>{{ location.state }}</span>
           }
-          @if (this.location.fax) {
-            <span>{{ this.location.fax }}</span>
+          <br />
+          @if (location.phone) {
+            <span>{{ location.phone }}</span>
+          }
+          @if (location.fax) {
+            <span>{{ location.fax }}</span>
           }
           <div class="days">
-            @for (availibility of this.location?.availabilities ?? []; track availibility) {
+            @for (availibility of location?.availabilities ?? []; track availibility) {
               <div>
                 <h4>
                   {{ 'all.competition.team-enrollment.play-days' | translate }}

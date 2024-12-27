@@ -55,27 +55,26 @@ export type TeamForm = FormGroup<{
 }>;
 
 @Component({
-    selector: 'badman-team-enrollment',
-    templateUrl: './team-enrollment.page.html',
-    styleUrls: ['./team-enrollment.page.scss'],
-    imports: [
-        ClubStepComponent,
-        CommentsStepComponent,
-        CommonModule,
-        HasClaimComponent,
-        LocationsStepComponent,
-        MatButtonModule,
-        MatIconModule,
-        MatProgressBarModule,
-        MatStepperModule,
-        MatTooltipModule,
-        NgxJsonViewerModule,
-        PlayerTransferStepComponent,
-        ReactiveFormsModule,
-        TeamsStepComponent,
-        TeamsTransferStepComponent,
-        TranslateModule,
-    ]
+  selector: 'badman-team-enrollment',
+  templateUrl: './team-enrollment.page.html',
+  styleUrls: ['./team-enrollment.page.scss'],
+  imports: [
+    ClubStepComponent,
+    CommentsStepComponent,
+    CommonModule,
+    LocationsStepComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatStepperModule,
+    MatTooltipModule,
+    NgxJsonViewerModule,
+    PlayerTransferStepComponent,
+    ReactiveFormsModule,
+    TeamsStepComponent,
+    TeamsTransferStepComponent,
+    TranslateModule,
+  ],
 })
 export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   vert_stepper = viewChild.required(MatStepper);
@@ -152,7 +151,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         this.formGroup.disable();
       }
 
-      this.formGroup.enable()
+      this.formGroup.enable();
     });
   }
 

@@ -182,7 +182,8 @@ export class CompileService implements CompileInterface, OnModuleInit {
 
     await page.close();
 
-    return pdf;
+    return Buffer.from(pdf);
+    
   }
 
   private getTemplatePath(template: string, { root, extension, engine }: ViewOptions): string {

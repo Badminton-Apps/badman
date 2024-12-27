@@ -27,13 +27,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import {
-  BadmanBlockModule,
-  EnrollmentMessageComponent,
-  HasClaimComponent,
-  SelectClubComponent,
-  SelectSeasonComponent,
-} from '@badman/frontend-components';
+import { BadmanBlockModule, EnrollmentMessageComponent } from '@badman/frontend-components';
 import { Club, Comment, EventCompetition, Location, Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -43,41 +37,38 @@ import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 
 @Component({
-    selector: 'badman-club-competition',
-    imports: [
-        CommonModule,
-        MatTableModule,
-        MatExpansionModule,
-        MatCardModule,
-        MatRippleModule,
-        MatListModule,
-        MatTooltipModule,
-        MatBadgeModule,
-        MatIconModule,
-        MatProgressBarModule,
-        MatMenuModule,
-        MatButtonModule,
-        MomentModule,
-        TranslateModule,
-        CdkTableModule,
-        CdkTreeModule,
-        EnrollmentDetailRowDirective,
-        SelectClubComponent,
-        SelectSeasonComponent,
-        EnrollmentMessageComponent,
-        BadmanBlockModule,
-        HasClaimComponent,
-    ],
-    templateUrl: './club-competition.component.html',
-    styleUrls: ['./club-competition.component.scss'],
-    providers: [provideAnimations()],
-    animations: [
-        trigger('detailExpand', [
-            state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-            state('expanded', style({ height: '*', visibility: 'visible' })),
-            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-        ]),
-    ]
+  selector: 'badman-club-competition',
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatExpansionModule,
+    MatCardModule,
+    MatRippleModule,
+    MatListModule,
+    MatTooltipModule,
+    MatBadgeModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatMenuModule,
+    MatButtonModule,
+    MomentModule,
+    TranslateModule,
+    CdkTableModule,
+    CdkTreeModule,
+    EnrollmentDetailRowDirective,
+    EnrollmentMessageComponent,
+    BadmanBlockModule,
+  ],
+  templateUrl: './club-competition.component.html',
+  styleUrls: ['./club-competition.component.scss'],
+  providers: [provideAnimations()],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
+      state('expanded', style({ height: '*', visibility: 'visible' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class ClubCompetitionComponent implements OnInit {
   // injects

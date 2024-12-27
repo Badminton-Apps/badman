@@ -18,9 +18,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import {
-  GameScoreComponentComponent,
   HasClaimComponent,
-  PageHeaderComponent,
+  PageHeaderComponent
 } from '@badman/frontend-components';
 import {
   DrawCompetition,
@@ -41,28 +40,27 @@ import { lastValueFrom, take } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-    selector: 'badman-detail-encounter',
-    templateUrl: './detail-encounter.page.html',
-    styleUrls: ['./detail-encounter.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        MatFormFieldModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatChipsModule,
-        MatIconModule,
-        MatMenuModule,
-        MatDividerModule,
-        MatTooltipModule,
-        GameScoreComponentComponent,
-        PageHeaderComponent,
-        HasClaimComponent,
-        MomentModule,
-    ]
+  selector: 'badman-detail-encounter',
+  templateUrl: './detail-encounter.page.html',
+  styleUrls: ['./detail-encounter.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule,
+    MatTooltipModule,
+    PageHeaderComponent,
+    HasClaimComponent,
+    MomentModule,
+  ],
 })
 export class DetailEncounterComponent {
   private seoService = inject(SeoService);

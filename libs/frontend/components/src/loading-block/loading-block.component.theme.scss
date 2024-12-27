@@ -1,12 +1,11 @@
 // info: https://material.angular.io/guide/theming-your-components
 
 @use 'sass:map';
+@use 'sass:color';
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
   badman-loading-block {
-    
-    
     $isDark: map.get($theme, 'is-dark');
     $background-color: mat.get-theme-color($theme, 'background', 'app-bar');
 
@@ -18,16 +17,16 @@
       @if $isDark {
         background: linear-gradient(
           to right,
-          lighten($background-color, 20%) 10%,
-          lighten($background-color, 30%) 18%,
-          lighten($background-color, 20%) 33%
+          color.scale($background-color, $lightness: 20%) 10%,
+          color.scale($background-color, $lightness: 30%) 18%,
+          color.scale($background-color, $lightness: 20%) 33%
         );
       } @else {
         background: linear-gradient(
           to right,
-          darken($background-color, 20%) 10%,
-          darken($background-color, 30%) 18%,
-          darken($background-color, 20%) 33%
+          color.scale($background-color, $lightness: -20%) 10%,
+          color.scale($background-color, $lightness: -30%) 18%,
+          color.scale($background-color, $lightness: -20%) 33%
         );
       }
     }
@@ -36,6 +35,6 @@
 
 @mixin typography($theme) {
   // badman-loading-block {
-    
+
   // }
 }

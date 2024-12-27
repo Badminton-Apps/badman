@@ -13,9 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   PageHeaderComponent,
-  RecentGamesComponent,
-  StandingComponent,
-  UpcomingGamesComponent,
+  StandingComponent
 } from '@badman/frontend-components';
 import { DrawTournament, EventTournament, Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -23,21 +21,19 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-    selector: 'badman-detail-draw-tournament',
-    templateUrl: './detail-draw.page.html',
-    styleUrls: ['./detail-draw.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        MatIconModule,
-        MatTooltipModule,
-        StandingComponent,
-        RecentGamesComponent,
-        UpcomingGamesComponent,
-        PageHeaderComponent,
-    ]
+  selector: 'badman-detail-draw-tournament',
+  templateUrl: './detail-draw.page.html',
+  styleUrls: ['./detail-draw.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    MatIconModule,
+    MatTooltipModule,
+    StandingComponent,
+    PageHeaderComponent,
+  ],
 })
 export class DetailDrawComponent {
   private readonly route = inject(ActivatedRoute);

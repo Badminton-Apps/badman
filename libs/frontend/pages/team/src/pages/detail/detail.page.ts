@@ -16,7 +16,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
 import {
-  HasClaimComponent,
   PageHeaderComponent,
   RecentGamesComponent,
   UpcomingGamesComponent,
@@ -48,7 +47,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         RecentGamesComponent,
         UpcomingGamesComponent,
         PageHeaderComponent,
-        HasClaimComponent,
         MatDialogModule,
     ]
 })

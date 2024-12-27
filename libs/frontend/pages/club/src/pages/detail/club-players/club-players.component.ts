@@ -12,7 +12,7 @@ import {
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { LoadingBlockComponent, SelectSeasonComponent } from '@badman/frontend-components';
+import { LoadingBlockComponent } from '@badman/frontend-components';
 import { Club, Player } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getSeason } from '@badman/utils';
@@ -22,16 +22,10 @@ import { combineLatest } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
-    selector: 'badman-club-players',
-    imports: [
-        CommonModule,
-        LoadingBlockComponent,
-        RouterModule,
-        TranslateModule,
-        SelectSeasonComponent,
-    ],
-    templateUrl: './club-players.component.html',
-    styleUrls: ['./club-players.component.scss']
+  selector: 'badman-club-players',
+  imports: [CommonModule, LoadingBlockComponent, RouterModule, TranslateModule],
+  templateUrl: './club-players.component.html',
+  styleUrls: ['./club-players.component.scss'],
 })
 export class ClubPlayersComponent implements OnInit {
   // injects

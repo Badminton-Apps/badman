@@ -32,7 +32,7 @@ module.exports = [
     files: ['**/*.ts', '**/*.tsx', '**/*.cts', '**/*.mts'],
     rules: {
       ...config.rules,
-      '@typescript-eslint/no-extra-semi': 'error',
+      '@/no-extra-semi': 'error',
       'no-extra-semi': 'off',
     },
   })),
@@ -41,7 +41,7 @@ module.exports = [
     files: ['**/*.js', '**/*.jsx', '**/*.cjs', '**/*.mjs'],
     rules: {
       ...config.rules,
-      '@typescript-eslint/no-extra-semi': 'error',
+      '@/no-extra-semi': 'error',
       'no-extra-semi': 'off',
     },
   })),

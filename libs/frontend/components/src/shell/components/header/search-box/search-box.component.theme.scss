@@ -1,5 +1,6 @@
 // _carousel-theme.scss
 
+@use 'sass:color';
 @use 'sass:map';
 @use '@angular/material' as mat;
 
@@ -9,24 +10,24 @@
 
   badman-search-box {
     // Get the primary color palette from the color-config.
-    $background-color: darken(mat.get-theme-color($theme, 'background', 'app-bar'), 5%);
+    $background-color: color.scale(mat.get-theme-color($theme, 'background', 'app-bar'), $lightness: -5%);
 
     .header {
       input {
         background-color: $background-color;
-        color: invert($background-color);
+        color: color.invert($background-color);
 
         &:focus {
-          background-color: lighten(mat.get-theme-color($theme, 'background', 'app-bar'), 5%);
+          background-color: color.scale(mat.get-theme-color($theme, 'background', 'app-bar'), $lightness: 5%);
         }
       }
     }
   }
 
   @if ($isDark) {
-    $caption-color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
+    $caption-color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: -40%);
   } @else {
-    $caption-color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
+    $caption-color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: 60%);
   }
 
   .search-select-panel {

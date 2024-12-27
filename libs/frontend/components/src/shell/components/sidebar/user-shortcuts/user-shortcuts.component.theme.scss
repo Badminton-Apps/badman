@@ -1,5 +1,6 @@
 // info: https://material.angular.io/guide/theming-your-components
 
+@use 'sass:color';
 @use 'sass:map';
 @use '@angular/material' as mat;
 
@@ -10,9 +11,9 @@
     $caption-color: null;
 
     @if ($isDark) {
-      $caption-color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
+      $caption-color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: -40%);
     } @else {
-      $caption-color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
+      $caption-color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: 60%);
     }
 
     .loan {

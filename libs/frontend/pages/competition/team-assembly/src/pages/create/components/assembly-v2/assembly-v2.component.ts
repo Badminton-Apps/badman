@@ -3,25 +3,25 @@ import { Component, Injector, Signal, effect, inject, input } from '@angular/cor
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Player } from '@badman/frontend-models';
+import { EntryCompetitionPlayer, Player } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxResize, ResizeResult } from 'ngxtension/resize';
 import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
 import { AssemblyService } from './assembly.service';
 
 @Component({
-    selector: 'badman-assembly-v2',
-    imports: [
-        CommonModule,
-        AssemblyMessageComponent,
-        TranslateModule,
-        NgxResize,
-        MatTooltipModule,
-        MatIconModule,
-        MatButtonModule,
-    ],
-    templateUrl: './assembly-v2.component.html',
-    styleUrl: './assembly-v2.component.scss'
+  selector: 'badman-assembly-v2',
+  imports: [
+    CommonModule,
+    AssemblyMessageComponent,
+    TranslateModule,
+    NgxResize,
+    MatTooltipModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
+  templateUrl: './assembly-v2.component.html',
+  styleUrl: './assembly-v2.component.scss',
 })
 export class AssemblyV2Component {
   data = inject(AssemblyService);
@@ -75,7 +75,8 @@ export class AssemblyV2Component {
     }
 
     return (
-      this.data.state['metaPlayers']()?.find((p: Player) => p.id === id)?.levelException ?? false
+      (this.data.state['metaPlayers']() as EntryCompetitionPlayer[])?.find((p) => p.id === id)
+        ?.levelException ?? false
     );
   }
 
