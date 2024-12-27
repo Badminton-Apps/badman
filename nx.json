@@ -3,6 +3,7 @@
   "defaultBase": "main",
   "defaultProject": "badman",
   "ci": "github",
+  "parallel": 14,
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [

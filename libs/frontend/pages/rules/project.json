@@ -10,14 +10,14 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/pages/rule"],
       "options": {
-        "project": "libs/frontend/pages/rule/ng-package.json"
+        "project": "libs/frontend/pages/rules/ng-package.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "libs/frontend/pages/rule/tsconfig.lib.prod.json"
+          "tsConfig": "libs/frontend/pages/rules/tsconfig.lib.prod.json"
         },
         "development": {
-          "tsConfig": "libs/frontend/pages/rule/tsconfig.lib.json"
+          "tsConfig": "libs/frontend/pages/rules/tsconfig.lib.json"
         }
       },
       "defaultConfiguration": "production"
@@ -26,13 +26,13 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/frontend/pages/rule"],
       "options": {
-        "jestConfig": "libs/frontend/pages/rule/jest.config.ts"
+        "jestConfig": "libs/frontend/pages/rules/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "libs/frontend/pages/rule/eslint.config.js"
+        "eslintConfig": "libs/frontend/pages/rules/eslint.config.js"
       }
     }
   }

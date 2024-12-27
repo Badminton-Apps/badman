@@ -1,3 +1,5 @@
+/// <reference types="@types/googlemaps" />
+
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,21 +14,21 @@ import { TranslateModule } from '@ngx-translate/core';
 import { throttleTime } from 'rxjs/operators';
 
 @Component({
-    selector: 'badman-location-fields',
-    templateUrl: './location-fields.component.html',
-    styleUrls: ['./location-fields.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        MatInputModule,
-        MatDividerModule,
-        MatAutocompleteModule,
-        MatButtonModule,
-        MatIconModule,
-        NgMapsPlacesModule,
-    ]
+  selector: 'badman-location-fields',
+  templateUrl: './location-fields.component.html',
+  styleUrls: ['./location-fields.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    MatInputModule,
+    MatDividerModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatIconModule,
+    NgMapsPlacesModule,
+  ],
 })
 export class LocationDialogFieldsComponent implements OnInit {
   location = input<Location>({} as Location);
@@ -87,18 +89,20 @@ export class LocationDialogFieldsComponent implements OnInit {
   }
 
   syncAutoComplete($event: google.maps.places.PlaceResult) {
-    const city =
+    const city: string | undefined =
       $event.address_components?.find((r) => r.types.includes('sublocality'))?.long_name ??
       $event.address_components?.find((r) => r.types.includes('locality'))?.long_name;
 
-    const postalcode = $event.address_components?.find((r) =>
+    const postalcode: string | undefined = $event.address_components?.find((r) =>
       r.types.includes('postal_code'),
     )?.long_name;
-    const state = $event.address_components?.find((r) =>
+    const state: string | undefined = $event.address_components?.find((r) =>
       r.types.includes('administrative_area_level_2'),
     )?.long_name;
-    const street = $event.address_components?.find((r) => r.types.includes('route'))?.long_name;
-    const streetNumber = $event.address_components?.find((r) =>
+    const street: string | undefined = $event.address_components?.find((r) =>
+      r.types.includes('route'),
+    )?.long_name;
+    const streetNumber: string | undefined = $event.address_components?.find((r) =>
       r.types.includes('street_number'),
     )?.long_name;
 

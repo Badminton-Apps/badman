@@ -24,20 +24,20 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
-    imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatCheckboxModule,
-        MatSelectModule,
-        MatTableModule,
-    ],
-    templateUrl: './assign-ranking-groups.component.html',
-    styleUrls: ['./assign-ranking-groups.component.scss']
+  imports: [
+    CommonModule,
+    TranslateModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatTableModule,
+  ],
+  templateUrl: './assign-ranking-groups.component.html',
+  styleUrls: ['./assign-ranking-groups.component.scss'],
 })
 export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   public data = inject<{ event: EventCompetition | EventTournament }>(MAT_DIALOG_DATA);
@@ -152,9 +152,11 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle(group: string) {
-    this.isAllSelected(group)
-      ? this.selection.get(group)?.clear()
-      : this.dataSource?.data.forEach((row) => this.selection.get(group)?.select(row));
+    if (this.isAllSelected(group)) {
+      this.selection.get(group)?.clear();
+    } else {
+      this.dataSource?.data.forEach((row) => this.selection.get(group)?.select(row));
+    }
   }
 
   /** The label for the checkbox on the passed row */

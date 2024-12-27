@@ -44,13 +44,9 @@ export class OverviewPageComponent {
   ];
 
   list = EXAMPLE_DATA;
-
-  log(e: any) {
-    console.log(e);
-  }
 }
 
-export const EXAMPLE_DATA: any[] = [
+export const EXAMPLE_DATA = [
   {
     position: 1,
     name: 'Boron',

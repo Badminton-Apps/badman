@@ -14,10 +14,8 @@ import { TranslateModule } from '@ngx-translate/core';
     imports: [CommonModule, TranslateModule, RouterModule, MatTableModule, MatIconModule]
 })
 export class StandingComponent implements OnInit {
-  entriesAll = input.required<EventEntry[]>({
-    alias: 'entries',
-  });
-  entries = computed(() => this.entriesAll().filter((e) => e.standing));
+  entries = input.required<EventEntry[]>();
+  entriesSignal = computed(() => this.entries().filter((e) => e.standing));
 
   type = input<'players' | 'team' | undefined>();
 
@@ -26,7 +24,7 @@ export class StandingComponent implements OnInit {
 
   ngOnInit(): void {
     // Sort by postion
-    this.entries()?.sort((a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0));
+    this.entriesSignal()?.sort((a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0));
 
     if (this.type() == 'players') {
       this.displayedColumns = [
