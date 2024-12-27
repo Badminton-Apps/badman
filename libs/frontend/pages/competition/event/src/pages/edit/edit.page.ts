@@ -20,12 +20,11 @@ import {
   AddRoleComponent,
   EditRoleComponent,
   HasClaimComponent,
-  PageHeaderComponent,
   PlayerSearchComponent,
   SelectCountryComponent,
-  SelectCountrystateComponent,
+  SelectCountrystateComponent
 } from '@badman/frontend-components';
-import { EventCompetition, Player, Role } from '@badman/frontend-models';
+import { EventCompetition, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { LevelType, SecurityType } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -68,36 +67,35 @@ const roleQuery = gql`
 `;
 
 @Component({
-    selector: 'badman-competition-edit',
-    templateUrl: './edit.page.html',
-    styleUrls: ['./edit.page.scss'],
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        MatIconModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatInputModule,
-        MatCheckboxModule,
-        ReactiveFormsModule,
-        MatDatepickerModule,
-        MatSnackBarModule,
-        MatSlideToggleModule,
-        MatOptionModule,
-        MatSelectModule,
-        PageHeaderComponent,
-        EventCompetitionLevelFieldsComponent,
-        HasClaimComponent,
-        AddRoleComponent,
-        EditRoleComponent,
-        SelectCountryComponent,
-        SelectCountrystateComponent,
-        PlayerSearchComponent,
-    ]
+  selector: 'badman-competition-edit',
+  templateUrl: './edit.page.html',
+  styleUrls: ['./edit.page.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatSnackBarModule,
+    MatSlideToggleModule,
+    MatOptionModule,
+    MatSelectModule,
+    EventCompetitionLevelFieldsComponent,
+    HasClaimComponent,
+    AddRoleComponent,
+    EditRoleComponent,
+    SelectCountryComponent,
+    SelectCountrystateComponent,
+    PlayerSearchComponent,
+  ],
 })
 export class EditPageComponent {
   private readonly destroy$ = injectDestroy();

@@ -19,7 +19,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { PageHeaderComponent } from '@badman/frontend-components';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
@@ -95,7 +94,6 @@ const FETCH_SYSTEM = gql`
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
-        PageHeaderComponent,
         RankingSystemFieldsComponent,
     ]
 })

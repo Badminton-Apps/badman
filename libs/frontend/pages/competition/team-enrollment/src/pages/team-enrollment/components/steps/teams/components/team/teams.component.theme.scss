@@ -1,5 +1,5 @@
 // info: https://material.angular.io/guide/theming-your-components
-
+@use 'sass:color';
 @use 'sass:map';
 @use '@angular/material' as mat;
 
@@ -12,9 +12,9 @@
 
     .ranking {
       @if ($isDark) {
-        color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
+        color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: -40%);
       } @else {
-        color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
+        color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: 60%);
       }
     }
 
@@ -26,8 +26,6 @@
 
 @mixin typography($theme) {
   badman-team {
-    
-
     .general {
       .name {
         font: mat.get-theme-typography($theme, 'headline-5', font);

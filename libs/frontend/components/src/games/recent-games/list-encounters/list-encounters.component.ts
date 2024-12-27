@@ -22,25 +22,23 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { TrackByProp } from 'ngxtension/trackby-id-prop';
 import { map, takeUntil } from 'rxjs';
 import { LoadingBlockComponent } from '../../../loading-block';
 
 @Component({
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        MomentModule,
-        TrackByProp,
-        MatButtonModule,
-        MatListModule,
-        LoadingBlockComponent,
-    ],
-    selector: 'badman-list-encounters',
-    templateUrl: './list-encounters.component.html',
-    styleUrls: ['./list-encounters.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    MomentModule,
+    MatButtonModule,
+    MatListModule,
+    LoadingBlockComponent,
+  ],
+  selector: 'badman-list-encounters',
+  templateUrl: './list-encounters.component.html',
+  styleUrls: ['./list-encounters.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListEncountersComponent implements OnInit, OnChanges {
   private apollo = inject(Apollo);

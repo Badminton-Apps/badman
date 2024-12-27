@@ -90,7 +90,7 @@
           }
         </a>
       }
-      @if (this.game.gameType !== 'S' && this.getPlayer(game, 2, 1); as playerT1P2) {
+      @if (game.gameType !== 'S' && this.getPlayer(game, 2, 1); as playerT1P2) {
         <a class="player player2" [routerLink]="['/player', playerT1P2?.slug]">
           {{ playerT1P2.fullName }}
           @if (this.getRanking(playerT1P2, game); as ranking) {
@@ -115,7 +115,7 @@
           }
         </a>
       }
-      @if (this.game.gameType !== 'S' && this.getPlayer(game, 2, 2); as playerT2P2) {
+      @if (game.gameType !== 'S' && this.getPlayer(game, 2, 2); as playerT2P2) {
         <a class="player player2" [routerLink]="['/player', playerT2P2?.slug]">
           {{ playerT2P2.fullName }}
           @if (this.getRanking(playerT2P2, game); as ranking) {

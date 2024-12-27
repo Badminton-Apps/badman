@@ -19,32 +19,28 @@ import { RouterModule } from '@angular/router';
 import { AuthenticateService, NotificationService } from '@badman/frontend-auth';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import { Notification } from '@badman/frontend-models';
-import { LanguageComponent } from '@badman/frontend-translation';
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
 import { bufferCount, concatMap, delay, forkJoin, from } from 'rxjs';
-import { ThemeSwitcherComponent } from '../theme-switcher';
 
 @Component({
-    selector: 'badman-notifications',
-    imports: [
-        CommonModule,
-        GraphQLModule,
-        RouterModule,
-        TranslateModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        MatDividerModule,
-        MatBadgeModule,
-        OverlayModule,
-        MatListModule,
-        LanguageComponent,
-        ThemeSwitcherComponent,
-    ],
-    templateUrl: './notifications.component.html',
-    styleUrls: ['./notifications.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-notifications',
+  imports: [
+    CommonModule,
+    GraphQLModule,
+    RouterModule,
+    TranslateModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MatDividerModule,
+    MatBadgeModule,
+    OverlayModule,
+    MatListModule,
+  ],
+  templateUrl: './notifications.component.html',
+  styleUrls: ['./notifications.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationComponent {
   isOpen = signal(false);

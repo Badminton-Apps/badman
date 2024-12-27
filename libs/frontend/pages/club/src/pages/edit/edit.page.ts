@@ -33,9 +33,7 @@ import { InMemoryCache } from '@apollo/client/cache';
 import {
   AddRoleComponent,
   EditRoleComponent,
-  HasClaimComponent,
-  SelectCountryComponent,
-  SelectCountrystateComponent,
+  HasClaimComponent
 } from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { Club, EntryCompetitionPlayer, Location, Role, Team } from '@badman/frontend-models';
@@ -70,7 +68,6 @@ import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
 import { ClubDetailService } from '../../services/club.service';
 import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
-
 export type ClubFieldsForm = FormGroup<{
   id: FormControl<string>;
   name: FormControl<string>;
@@ -84,35 +81,33 @@ export type ClubFieldsForm = FormGroup<{
 }>;
 
 @Component({
-    selector: 'badman-club-edit',
-    templateUrl: './edit.page.html',
-    styleUrls: ['./edit.page.scss'],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        RouterModule,
-        MomentModule,
-        TranslateModule,
-        ClubEditLocationComponent,
-        ClubEditTeamComponent,
-        ClubFieldsComponent,
-        HasClaimComponent,
-        SelectCountryComponent,
-        SelectCountrystateComponent,
-        EditRoleComponent,
-        AddRoleComponent,
-        MatButtonToggleModule,
-        MatIconModule,
-        MatInputModule,
-        MatButtonModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatOptionModule,
-        MatSelectModule,
-        MatProgressBarModule,
-        MatDividerModule,
-    ]
+  selector: 'badman-club-edit',
+  templateUrl: './edit.page.html',
+  styleUrls: ['./edit.page.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule,
+    MomentModule,
+    TranslateModule,
+    ClubEditLocationComponent,
+    ClubEditTeamComponent,
+    ClubFieldsComponent,
+    HasClaimComponent,
+    EditRoleComponent,
+    AddRoleComponent,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatProgressBarModule,
+    MatDividerModule,
+  ],
 })
 export class EditPageComponent {
   private readonly clubDetailService = inject(ClubDetailService);

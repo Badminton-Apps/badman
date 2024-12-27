@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,20 +7,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-    selector: 'badman-choose-period-dialog',
-    imports: [
-        JsonPipe,
-        MatFormFieldModule,
-        MatDatepickerModule,
-        FormsModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        MatDialogModule,
-        MatButtonModule,
-    ],
-    templateUrl: './choose-period-dialog.component.html',
-    styleUrl: './choose-period-dialog.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-choose-period-dialog',
+  imports: [
+    MatFormFieldModule,
+    MatDatepickerModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
+  templateUrl: './choose-period-dialog.component.html',
+  styleUrl: './choose-period-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChoosePeriodDialogComponent {
   initialRange: FormGroup<{

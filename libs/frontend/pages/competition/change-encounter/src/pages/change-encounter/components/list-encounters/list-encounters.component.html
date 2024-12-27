@@ -74,15 +74,13 @@
           (click)="selectEncounter(option)"
           [ngClass]="{ selected: this.internalControl.value?.id === option?.id }"
         >
-          @if (getInfo(option); as info) {
-            <mat-icon
-              matListItemIcon
-              [matTooltip]="info.tooltip"
-              matTooltipClass="tooltip-multi-line"
-              [ngClass]="info.infoClass"
-              >{{ info.icon }}</mat-icon
-            >
-          }
+          <mat-icon
+            matListItemIcon
+            [matTooltip]="option.info.tooltip"
+            matTooltipClass="tooltip-multi-line"
+            [ngClass]="option.info.infoClass"
+            >{{ option.info.icon }}</mat-icon
+          >
 
           <h3 matListItemTitle>
             {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
@@ -104,15 +102,13 @@
           (click)="selectEncounter(option)"
           [ngClass]="{ selected: this.internalControl.value?.id === option?.id }"
         >
-          @if (getInfo(option); as info) {
-            <mat-icon
-              matListItemIcon
-              [matTooltip]="info.tooltip"
-              matTooltipClass="tooltip-multi-line"
-              [ngClass]="info.infoClass"
-              >{{ info.icon }}</mat-icon
-            >
-          }
+          <mat-icon
+            matListItemIcon
+            [matTooltip]="option.info.tooltip"
+            matTooltipClass="tooltip-multi-line"
+            [ngClass]="option.info.infoClass"
+            >{{ option.info.icon }}</mat-icon
+          >
           <h3 matListItemTitle>
             {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
             @if (option.originalDate) {
