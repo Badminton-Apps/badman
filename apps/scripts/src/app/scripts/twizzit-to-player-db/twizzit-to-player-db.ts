@@ -63,17 +63,17 @@ export class TwizzitToPlayerDbService {
     const playerPerLevel = new Map<string, [Player, Player][]>();
 
     rows.forEach((row) => {
-      let playerDb = players.filter(
+      const playerDb = players.filter(
         (player) => player.lastName == row.Achternaam && player.firstName == row.Voornaam,
       );
 
-      let plyerDubbelpartnerDb = players.filter(
+      const plyerDubbelpartnerDb = players.filter(
         (player) =>
           player.lastName == row['Dubbelpartner Achternaam'] &&
           player.firstName == row.Dubbelpartner,
       );
 
-      let plyerMixpartnerDb = players.filter(
+      const plyerMixpartnerDb = players.filter(
         (player) =>
           player.lastName == row['Mixpartner Achternaam'] && player.firstName == row.Mixpartner,
       );

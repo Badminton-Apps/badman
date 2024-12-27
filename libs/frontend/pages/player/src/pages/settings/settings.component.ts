@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -13,25 +13,25 @@ import { SeoService } from '@badman/frontend-seo';
 import { AvaliableLanguages, NotificationType } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, tap, Observable } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-    selector: 'badman-settings',
-    templateUrl: './settings.component.html',
-    styleUrls: ['./settings.component.scss'],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatInputModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatButtonModule,
-        TranslateModule,
-        MatSnackBarModule,
-        HasClaimComponent,
-    ]
+  selector: 'badman-settings',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatButtonModule,
+    TranslateModule,
+    MatSnackBarModule,
+    HasClaimComponent,
+  ],
 })
 export class SettingsPageComponent implements OnInit {
   private apollo = inject(Apollo);
