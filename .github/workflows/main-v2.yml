@@ -95,11 +95,11 @@ jobs:
 
       - name: Run affected commands
         run: |
-          ${{ env.PACKAGE_MANAGER }} run nx affected -t test build -c ci
+          ${{ env.PACKAGE_MANAGER }} run nx -- affected -t test build -c ci
 
       - name: Run Playwright tests
         run: |
-          ${{ env.PACKAGE_MANAGER }} run nx affected --parallel 1 -t e2e-ci
+          ${{ env.PACKAGE_MANAGER }} run nx -- affected --parallel 1 -t e2e-ci
         id: run-e2e-tests
         if: ${{ inputs.e2e-tests }}
 
@@ -176,14 +176,14 @@ jobs:
       # deploy the new packages
       - name: Deploy to Prod
         if: github.ref == 'refs/heads/main'
-        run: ${{ env.PACKAGE_MANAGER }} run nx affected -t deploy --no-agents
+        run: ${{ env.PACKAGE_MANAGER }} run nx -- affected -t deploy --no-agents
         env:
           API_HOOK: ${{ secrets.PROD_API_HOOK  }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK  }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK  }}
 
       - name: Deploy to Beta
-        run: ${{ env.PACKAGE_MANAGER }} run nx affected -t deploy --no-agents
+        run: ${{ env.PACKAGE_MANAGER }} run nx -- affected -t deploy --no-agents
         env:
             API_HOOK: ${{  secrets.BETA_API_HOOK }}
             WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
