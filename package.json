@@ -225,7 +225,7 @@
   },
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.18",
-    "node-adodb": "github:nuintun/node-adodb"
+    "node-adodb": "5.0.3"
   },
   "overrides": {
     "@ng-maps/core": {

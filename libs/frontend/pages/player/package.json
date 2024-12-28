@@ -28,7 +28,7 @@
     "uuid": "^11.0.3",
     "@ng-matero/extensions-moment-adapter": "^19.0.0",
     "@ng-matero/extensions": "~19.0.1",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    "xlsx": "0.20.3"
   },
   "dependencies": {},
   "sideEffects": false
