@@ -91,11 +91,11 @@ jobs:
 
       - name: Run affected commands
         run: |
-          ${{ env.PACKAGE_MANAGER }} nx affected -t test build -c ci
+          ${{ env.PACKAGE_MANAGER }} run nx affected -t test build -c ci
 
       - name: Run Playwright tests
         run: |
-          ${{ env.PACKAGE_MANAGER }} nx affected --parallel 1 -t e2e-ci
+          ${{ env.PACKAGE_MANAGER }} run nx affected --parallel 1 -t e2e-ci
         id: run-e2e-tests
         if: ${{ inputs.e2e-tests }}
 
