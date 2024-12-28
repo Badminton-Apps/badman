@@ -8,6 +8,7 @@
     "start": "nx serve",
     "start:prod": "node -r dotenv/config dist/apps/api/main.js",
     "build": "nx build",
+    "nx": "nx",
     "test": "nx test",
     "lint": "nx lint",
     "e2e": "nx run-many --target=e2e",
