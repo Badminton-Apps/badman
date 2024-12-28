@@ -136,7 +136,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: stop agents
-        run: bun nx-cloud complete-ci-run
+        run: npx nx-cloud complete-ci-run
         if: always()
 
       - uses: actions/upload-artifact@v3
@@ -172,15 +172,15 @@ jobs:
       # deploy the new packages
       - name: Deploy to Prod
         if: github.ref == 'refs/heads/main'
-        run: bun nx affected -t deploy --no-agents
+        run: ${{ env.PACKAGE_MANAGER }} run nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{ secrets.PROD_API_HOOK  }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK  }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK  }}
 
       - name: Deploy to Beta
-        run: bun nx affected -t deploy --no-agents
+        run: ${{ env.PACKAGE_MANAGER }} run nx affected -t deploy --no-agents
         env:
-          API_HOOK: ${{  secrets.BETA_API_HOOK }}
-          WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
-          WORKER_RANKING_HOOK: ${{  secrets.BETA_WORKER_RANKING_HOOK }}
+            API_HOOK: ${{  secrets.BETA_API_HOOK }}
+            WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
+            WORKER_RANKING_HOOK: ${{  secrets.BETA_WORKER_RANKING_HOOK }}
