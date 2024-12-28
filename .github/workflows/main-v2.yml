@@ -82,8 +82,12 @@ jobs:
           fi
 
       - name: Start CI run
-        run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
-        if: ${{ env.PACKAGE_MANAGER != 'bun' }}
+        run: |
+          if [ "${{ env.PACKAGE_MANAGER }}" = "bun" ]; then
+              npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets-bun.yaml"
+          else
+              npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+          fi
 
       - name: Install dependencies
         run: |
