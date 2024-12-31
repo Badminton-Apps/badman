@@ -85,6 +85,8 @@
     "@nx/angular": "20.3.0",
     "@nx/nest": "20.3.0",
     "@socket.io/redis-adapter": "^8.3.0",
+    "@swc-node/register": "^1.10.9",
+    "@swc/core": "^1.10.3",
     "apexcharts": "^4.3.0",
     "apollo-angular": "^8.0.0",
     "archiver": "^7.0.1",
