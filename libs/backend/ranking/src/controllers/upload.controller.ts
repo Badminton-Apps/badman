@@ -1,18 +1,22 @@
+import { File, MultipartFile, UploadGuard } from '@badman/backend-utils';
 import { MultipartValue } from '@fastify/multipart';
 import { Controller, Logger, Post, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import moment from 'moment';
+import { Worker } from 'worker_threads';
 import * as XLSX from 'xlsx';
 import { MembersRolePerGroupData, UpdateRankingService } from '../services';
-import { UploadGuard, MultipartFile, File } from '@badman/backend-utils';
 import workerThreadFilePath from '../worker/config';
-import { Worker } from 'worker_threads';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('ranking/upload')
 export class UploadRankingController {
   private readonly _logger = new Logger(UploadRankingController.name);
 
-  constructor(private _updateRankingService: UpdateRankingService) {}
+  constructor(
+    private _updateRankingService: UpdateRankingService,
+    private _config: ConfigService,
+  ) {}
 
   @Post('preview')
   @UseGuards(UploadGuard)
@@ -36,12 +40,7 @@ export class UploadRankingController {
         (file.fields['updateCompStatus'] as MultipartValue)?.value === 'true';
       const updateRanking = (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
       const rankingDate = moment((file.fields['rankingDate'] as MultipartValue)?.value as string);
-      const clubMembershipStartDate = moment(
-        (file.fields['clubMembershipStartDate'] as MultipartValue)?.value as string,
-      );
-      const clubMembershipEndDate = moment(
-        (file.fields['clubMembershipEndDate'] as MultipartValue)?.value as string,
-      );
+
       const removeAllRanking =
         (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
       const updatePossible = (file.fields['updatePossible'] as MultipartValue)?.value === 'true';
@@ -57,29 +56,43 @@ export class UploadRankingController {
 
       res.send({ message: true });
 
-      const worker = new Worker(workerThreadFilePath, {
-        workerData: JSON.stringify({
-          updateCompStatus,
-          updateRanking,
-          updatePossible,
-          updateClubs,
-          rankingDate,
-          clubMembershipStartDate,
-          clubMembershipEndDate,
-          removeAllRanking,
-          rankingSystemId,
-          createNewPlayers,
-          mappedData,
-        }),
-      });
+      if (this._config.get('NODE_ENV') === 'development') {
+        try {
+          this._updateRankingService.processFileUpload(mappedData, {
+            updateCompStatus,
+            updateRanking,
+            updatePossible,
+            updateClubs,
+            rankingDate: rankingDate.toDate(),
+            removeAllRanking,
+            rankingSystemId,
+            createNewPlayers,
+          });
+        } catch (e) {
+          this._logger.error('Error processing file', e);
+        }
+      } else {
+        const worker = new Worker(workerThreadFilePath, {
+          workerData: JSON.stringify({
+            updateCompStatus,
+            updateRanking,
+            updatePossible,
+            updateClubs,
+            rankingDate,
+            removeAllRanking,
+            rankingSystemId,
+            createNewPlayers,
+            mappedData,
+          }),
+        });
 
-      worker.on('message', () => {
-        this._logger.verbose('Done');
-      });
-      worker.on('error', (e) => {
-        return this._logger.error('on error', e);
-      });
-      worker.on('exit', (code) => this._logger.log('on exit', code));
+        worker.on('error', (e) => {
+          return this._logger.error('on error', e);
+        });
+        worker.on('exit', (code) => {
+          this._logger.log('Processing existed', code);
+        });
+      }
     });
   }
 
@@ -154,12 +167,17 @@ export class UploadRankingController {
         row['lastname2']?.trim(),
       ]?.filter((name) => !!name);
 
+      const startdate = this.parseExcelDate(row['startdate']);
+      const enddate = this.parseExcelDate(row['endate']);
+
       return {
         memberId: row['memberid'],
         firstName: row['firstname'],
         lastName: names?.join(' '),
         clubName: row['groupname'],
         gender: row['gender'],
+        startdate: new Date(startdate.year, startdate.month - 1, startdate.day),
+        enddate: new Date(enddate.year, enddate.month - 1, enddate.day),
         single: row['PlayerLevelSingle'],
         doubles: row['PlayerLevelDouble'],
         mixed: row['PlayerLevelMixed'],
@@ -197,6 +215,20 @@ export class UploadRankingController {
 
     return [...players.values()];
   }
+
+  private parseExcelDate(excelDate: number) {
+    if (excelDate < 61) excelDate += 1; // lotus123 bugfix
+    const utc = new Date((excelDate - 25569) * 8.64e7);
+    return {
+      year: utc.getUTCFullYear(),
+      month: utc.getUTCMonth() + 1,
+      day: utc.getUTCDate(),
+      hours: utc.getUTCHours(),
+      minutes: utc.getUTCMinutes(),
+      seconds: utc.getUTCSeconds(),
+      milliseconds: utc.getUTCMilliseconds(),
+    };
+  }
 }
 
 interface bbfRating {
@@ -217,6 +249,8 @@ interface exportMembers {
   lastname2: string;
   gender: 'V' | 'M';
   groupname: string;
+  startdate: number;
+  endate: number;
   PlayerLevelSingle: number;
   PlayerLevelDouble: number;
   PlayerLevelMixed: number;

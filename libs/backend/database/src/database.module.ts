@@ -41,6 +41,8 @@ export class DatabaseModule implements OnModuleInit {
       await loadTest();
     }
 
+    this.sequelize.options.logging = false;
+
     this.logger.debug('initialize addons');
     slugifyModel(Player as unknown as Model, {
       source: ['firstName', 'lastName', 'memberId'],
