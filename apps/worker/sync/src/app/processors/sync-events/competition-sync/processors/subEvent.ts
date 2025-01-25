@@ -44,7 +44,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     });
     const canChange = moment().isBefore(`${this.event.season}-09-01`);
 
-    const visualEvents = await this.visualService.getEvents(this.visualTournament.Code, !canChange);
+    const visualEvents = await this.visualService.getSubEvents(this.visualTournament.Code, !canChange);
     const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events
