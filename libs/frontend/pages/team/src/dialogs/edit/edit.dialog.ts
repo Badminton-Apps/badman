@@ -36,18 +36,18 @@ const PLAYERS_QUERY = gql`
 `;
 
 @Component({
-    templateUrl: './edit.dialog.html',
-    styleUrls: ['./edit.dialog.scss'],
-    imports: [
-        CommonModule,
-        TranslateModule,
-        TeamFieldComponent,
-        TeamPlayersComponent,
-        MatDialogModule,
-        MatButtonModule,
-        MatSnackBarModule,
-        MatProgressBarModule,
-    ]
+  templateUrl: './edit.dialog.html',
+  styleUrls: ['./edit.dialog.scss'],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    TeamFieldComponent,
+    TeamPlayersComponent,
+    MatDialogModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatProgressBarModule,
+  ],
 })
 export class EditDialogComponent {
   private snackBar = inject(MatSnackBar);
@@ -153,15 +153,17 @@ export class EditDialogComponent {
     const data = this.group?.value;
     this.saveing = true;
 
+    const mutation = gql`
+      mutation UpdateTeam($team: TeamUpdateInput!) {
+        updateTeam(data: $team) {
+          id
+        }
+      }
+    `;
+
     return this.apollo
-      .mutate<{ createTeam: Partial<Team> }>({
-        mutation: gql`
-          mutation UpdateTeam($team: TeamUpdateInput!) {
-            updateTeam(data: $team) {
-              id
-            }
-          }
-        `,
+      .mutate({
+        mutation,
         variables: {
           team: {
             id: data.id,
