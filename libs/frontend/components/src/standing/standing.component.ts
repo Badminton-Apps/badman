@@ -7,15 +7,19 @@ import { EventEntry } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-    selector: 'badman-standing',
-    templateUrl: './standing.component.html',
-    styleUrls: ['./standing.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, TranslateModule, RouterModule, MatTableModule, MatIconModule]
+  selector: 'badman-standing',
+  templateUrl: './standing.component.html',
+  styleUrls: ['./standing.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, TranslateModule, RouterModule, MatTableModule, MatIconModule],
 })
 export class StandingComponent implements OnInit {
   entries = input.required<EventEntry[]>();
-  entriesSignal = computed(() => this.entries().filter((e) => e.standing));
+  entriesSignal = computed(() =>
+    this.entries()
+      .filter((e) => e.standing)
+      .sort((a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0)),
+  );
 
   type = input<'players' | 'team' | undefined>();
 
@@ -23,9 +27,6 @@ export class StandingComponent implements OnInit {
   displayedColumnsHeaders!: string[];
 
   ngOnInit(): void {
-    // Sort by postion
-    this.entriesSignal()?.sort((a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0));
-
     if (this.type() == 'players') {
       this.displayedColumns = [
         'position',
