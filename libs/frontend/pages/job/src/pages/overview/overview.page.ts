@@ -113,6 +113,13 @@ export class OverviewPageComponent {
         break;
       case 'ranking':
         template = this.rankingTemplate;
+        cron = {
+          ...cron,
+          meta: {
+            ...cron.meta,
+            arguments: JSON.stringify(cron.meta?.arguments, null, 2),
+          },
+        } as CronJob;
         break;
 
       default:
