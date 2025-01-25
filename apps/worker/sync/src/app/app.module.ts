@@ -5,6 +5,7 @@ import { QueueModule, SyncQueue } from '@badman/backend-queue';
 import { RankingModule } from '@badman/backend-ranking';
 import { SearchModule } from '@badman/backend-search';
 import { TranslateModule } from '@badman/backend-translate';
+import { TwizzitModule } from '@badman/backend-twizzit';
 import { VisualModule } from '@badman/backend-visual';
 import { EventsGateway, SocketModule } from '@badman/backend-websockets';
 import { EVENTS, configSchema, load } from '@badman/utils';
@@ -15,13 +16,21 @@ import {
   CheckEncounterProcessor,
   CheckRankingProcessor,
   EnterScoresProcessor,
+  EventTournamenScheduler,
+  SubEventTournamentScheduler,
+  DrawTournamentScheduler,
+  MatchTournamentScheduler,
+  DrawStandingTournamentProcessor,
+  EventTournamentProcessor,
   GlobalConsumer,
   SyncDateProcessor,
   SyncEventsProcessor,
   SyncRankingProcessor,
   SyncTwizzitProcessor,
+  SubEventTournamentProcessor,
+  DrawTournamentProcessor,
+  MatchTournamentProcessor,
 } from './processors';
-import { TwizzitModule } from '@badman/backend-twizzit';
 
 @Module({
   providers: [
@@ -34,6 +43,18 @@ import { TwizzitModule } from '@badman/backend-twizzit';
     EnterScoresProcessor,
     CheckEncounterProcessor,
     CheckRankingProcessor,
+
+    // v2
+    EventTournamentProcessor,
+    SubEventTournamentProcessor,
+    DrawTournamentProcessor,
+    MatchTournamentProcessor,
+    DrawStandingTournamentProcessor,
+
+    EventTournamenScheduler,
+    SubEventTournamentScheduler,
+    DrawTournamentScheduler,
+    MatchTournamentScheduler,
   ],
   imports: [
     ConfigModule.forRoot({

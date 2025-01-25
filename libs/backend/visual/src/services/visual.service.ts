@@ -53,21 +53,21 @@ export class VisualService {
     return this._asArray(parsed.Player);
   }
 
-  async getMatch(tourneyId: string, matchId: string | number, useCache = true) {
+  async getTeamMatch(tourneyId: string, matchId: string | number, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}/TeamMatch/${matchId}`,
       useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
-    if (parsed.Match) {
-      return this._asArray(parsed.Match);
-    }
-    if (parsed.TeamMatch) {
-      return this._asArray(parsed.TeamMatch);
-    }
+    return this._asArray(parsed.Match) as XmlMatch[];
+  }
 
-    this.logger.warn('No matches');
-    return [];
+  async getMatch(tourneyId: string, matchId: string | number, useCache = true) {
+    const result = await this._getFromApi(
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/MatchDetail/${matchId}`,
+      useCache,
+    );
+    return this._parser.parse(result).Result.Match;
   }
 
   async getMatches(
@@ -118,13 +118,26 @@ export class VisualService {
     return parsed.TournamentDraw as XmlTournamentDraw;
   }
 
-  async getEvents(tourneyId: string | number, useCache = true): Promise<XmlTournamentEvent[]> {
+  async getSubEvents(eventCode: string | number, useCache = true): Promise<XmlTournamentEvent[]> {
     const result = await this._getFromApi(
-      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Event`,
+      `${this._configService.get('VR_API')}/Tournament/${eventCode}/Event`,
       useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.TournamentEvent);
+  }
+
+  async getSubEvent(
+    eventCode: string | number,
+    subEventCode: string | number,
+    useCache = true,
+  ): Promise<XmlTournamentEvent> {
+    const result = await this._getFromApi(
+      `${this._configService.get('VR_API')}/Tournament/${eventCode}/Event/${subEventCode}`,
+      useCache,
+    );
+    const parsed = this._parser.parse(result).Result as XmlResult;
+    return parsed.TournamentEvent as XmlTournamentEvent;
   }
 
   async getTournament(tourneyId: string, useCache = true) {
@@ -156,8 +169,8 @@ export class VisualService {
     return tournaments;
   }
 
-  async getEvent(id: string) {
-    const url = `${this._configService.get('VR_API')}/Tournament/${id}`;
+  async getEvent(code: string) {
+    const url = `${this._configService.get('VR_API')}/Tournament/${code}`;
 
     const result = await this._getFromApi(url, false);
     const body = this._parser.parse(result).Result as XmlResult;
@@ -167,11 +180,6 @@ export class VisualService {
     }
 
     const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
-
-    // TODO: Wait untill Visual fixes this
-    // if (tournaments.length != 0) {
-    //   tournaments.concat(await this._getChangeEvents(date, page + 1));
-    // }
 
     return tournaments;
   }
@@ -189,11 +197,6 @@ export class VisualService {
     }
 
     const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
-
-    // TODO: Wait untill Visual fixes this
-    // if (tournaments.length != 0) {
-    //   tournaments.concat(await this._getChangeEvents(date, page + 1));
-    // }
 
     return tournaments;
   }
@@ -304,7 +307,6 @@ export class VisualService {
       },
       timeout: 1000000,
       headers: {
-         
         'Content-Type': 'application/xml',
       },
     });
