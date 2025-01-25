@@ -11,16 +11,16 @@ import { Apollo, gql } from 'apollo-angular';
 import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
 
 @Component({
-    templateUrl: './add.dialog.html',
-    styleUrls: ['./add.dialog.scss'],
-    imports: [
-        CommonModule,
-        TranslateModule,
-        TeamFieldComponent,
-        TeamPlayersComponent,
-        MatDialogModule,
-        MatButtonModule,
-    ]
+  templateUrl: './add.dialog.html',
+  styleUrls: ['./add.dialog.scss'],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    TeamFieldComponent,
+    TeamPlayersComponent,
+    MatDialogModule,
+    MatButtonModule,
+  ],
 })
 export class AddDialogComponent {
   public dialogRef = inject<MatDialogRef<AddDialogComponent>>(MatDialogRef<AddDialogComponent>);
@@ -35,8 +35,6 @@ export class AddDialogComponent {
     locations: Location[];
   }>(MAT_DIALOG_DATA);
   group?: FormGroup;
-
-
 
   constructor() {
     if (!this.group) {
@@ -67,7 +65,7 @@ export class AddDialogComponent {
     });
 
     this.apollo
-      .mutate<{ createTeam: Partial<Team> }>({
+      .mutate({
         mutation: gql`
           mutation CreateTeam($team: TeamNewInput!) {
             createTeam(data: $team) {
