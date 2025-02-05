@@ -45,6 +45,17 @@ export class PagedEncounterCompetition {
   rows?: EncounterCompetition[];
 }
 
+
+@ObjectType()
+export class PlayerEncounterCompetition {
+  @Field(() => Int)
+  count?: number;
+
+  @Field(() => [EncounterCompetition])
+  rows?: EncounterCompetition[];
+}
+
+
 @Resolver(() => EncounterCompetition)
 export class EncounterCompetitionResolver {
   private readonly logger = new Logger(EncounterCompetitionResolver.name);
@@ -68,12 +79,31 @@ export class EncounterCompetitionResolver {
     return encounterCompetition;
   }
 
+  // @Query(() => PagedEncounterCompetition)
+  // async encounterCompetitions(
+  //   @Args() listArgs: ListArgs,
+  // ): Promise<{ count: number; rows: EncounterCompetition[] }> {
+  //   return EncounterCompetition.findAndCountAll({
+  //     ...ListArgs.toFindOptions(listArgs),
+  //     include: [
+  //       {
+  //         model: Team,
+  //         as: 'home',
+  //       },
+  //       {
+  //         model: Team,
+  //         as: 'away',
+  //       },
+  //     ],
+  //   });
+  // }
+
   @Query(() => PagedEncounterCompetition)
   async encounterCompetitions(
     @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterCompetition[] }> {
     return EncounterCompetition.findAndCountAll({
-      ...ListArgs.toFindOptions(listArgs),
+      subQuery: false,
       include: [
         {
           model: Team,
@@ -83,7 +113,20 @@ export class EncounterCompetitionResolver {
           model: Team,
           as: 'away',
         },
+        {
+          model: Game,
+          as: 'games',
+          include: [
+            {
+              model: Player,
+              as: 'players',
+              attributes: [],
+              required: true,
+            },
+          ],
+        },
       ],
+      ...ListArgs.toFindOptions(listArgs),
     });
   }
 
@@ -123,6 +166,27 @@ export class EncounterCompetitionResolver {
   async encounterChange(@Parent() encounter: EncounterCompetition): Promise<EncounterChange> {
     return encounter.getEncounterChange();
   }
+
+  @ResolveField(() => Boolean)
+  async isPlayerPlayed(
+    @Parent() encounter: EncounterCompetition,
+    @Args('playerId', { type: () => ID }) playerId: string,
+  ): Promise<boolean> {
+    const games = await encounter.getGames({
+      include: [
+        {
+          model: Player,
+          as: 'players',
+        },
+      ],
+    });  
+    return games.some(game => 
+      game?.players?.some(player => {
+        return player.id === playerId;
+      })
+    );
+  }
+  
 
   @ResolveField(() => [Game])
   async games(@Parent() encounter: EncounterCompetition): Promise<Game[]> {
@@ -272,5 +336,30 @@ export class EncounterCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+  @Mutation(() => EncounterCompetition)
+  async updateGameLeader(
+    @Args('encounterId') encounterId: string,
+    @Args('gameLeaderId') gameLeaderId: string,
+  ): Promise<boolean> {
+    const transaction = await this._sequelize.transaction();
+    try {
+     
+
+    const encounter = await EncounterCompetition.findByPk(encounterId);
+
+    if (!encounter) {
+      throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+    }
+
+    encounter.update({ gameLeaderId }, { transaction });
+    await transaction.commit();
+    return true;
+  }catch (error) {
+    this.logger.error(error);
+    await transaction.rollback();
+    throw error;
+  }
+
   }
 }

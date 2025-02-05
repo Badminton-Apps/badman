@@ -132,6 +132,11 @@ export class EncounterCompetition extends Model<
   @BelongsTo(() => Player, 'gameLeaderId')
   gameLeader?: Relation<Player>;
 
+  @ForeignKey(() => Player)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  gameLeaderId?: string;
+
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'enteredById')
   enteredBy?: Relation<Player>;
