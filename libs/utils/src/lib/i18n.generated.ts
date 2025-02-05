@@ -722,6 +722,7 @@ export type I18nTranslations = {
                 "claim": string;
                 "delete": string;
                 "edit": string;
+                "recalculatePoints": string;
             };
             "no-memberid": string;
             "no-players": string;
@@ -740,9 +741,50 @@ export type I18nTranslations = {
                 "not-found": string;
             };
             "title": string;
-        };
-        "points": {
-            "title": string;
+            "notFound": string;
+            "ranking": {
+                "single": string;
+                "double": string;
+                "mix": string;
+            };
+            "nextEncounterTitle": string;
+            "upcomingEncountersTitle": string;
+            "recentEncountersTitle": string;
+            "rolePrefix": string;
+            "gameLeader": string;
+            "captain": string;
+            "player": string;
+            "date": string;
+            "teams": string;
+            "against": string;
+            "location": string;
+            "meetingForm": string;
+            "filled": string;
+            "notFilled": string;
+            "notSelected": string;
+            "teamFormation": string;
+            "teamIsFormed": string;
+            "noTeamFormation": string;
+            "won": string;
+            "lost": string;
+            "draw": string;
+            "buttons": {
+                "change": string;
+                "create": string;
+                "select": string;
+                "view": string;
+                "allEncounters": string;
+                "viewEncounterForm": string;
+            };
+            "eventTypes": {
+                "D": string;
+                "F": string;
+                "M": string;
+                "MX": string;
+                "S": string;
+                "unknown": string;
+            };
+            "points": string;
         };
         "ranking": {
             "all-ranking": string;
@@ -961,6 +1003,19 @@ export type I18nTranslations = {
         };
         "shell": {
             "sidebar": {
+                "pages": {
+                    "myProfile": string;
+                    "myClub": string;
+                    "competition": string;
+                    "ranking": string;
+                    "enrollment": string;
+                    "faq": string;
+                    "settings": string;
+                };
+                "auth": {
+                    "logIn": string;
+                    "logOut": string;
+                };
                 "admin": {
                     "title": string;
                 };
@@ -994,6 +1049,19 @@ export type I18nTranslations = {
                 };
                 "transfer": {
                     "title": string;
+                };
+            };
+            "topBar": {
+                "search": {
+                    "placeholder": string;
+                    "noResults": string;
+                    "loading": string;
+                    "categories": {
+                        "Club": string;
+                        "Player": string;
+                        "EventTournament": string;
+                        "EventCompetition": string;
+                    };
                 };
             };
         };
@@ -1133,6 +1201,302 @@ export type I18nTranslations = {
                 "transfer-file": string;
                 "unkown": string;
             };
+        };
+        "rankingPage": {
+            "title": string;
+            "buttons": {
+                "add": string;
+            };
+            "overviewTable": {
+                "team": string;
+                "name": string;
+                "win": string;
+                "loss": string;
+                "gamesToUse": string;
+                "calculateUpdates": string;
+                "actions": string;
+                "actionItems": {
+                    "watchSystem": string;
+                    "copyPoints": string;
+                    "pastePoints": string;
+                    "edit": string;
+                    "delete": string;
+                    "deleteSuccess": string;
+                    "deleteError": string;
+                };
+                "noRecords": string;
+            };
+            "detailTable": {
+                "level": string;
+                "pointsToGoUp": string;
+                "pointsToGoDown": string;
+                "pointsWhenWinningAgainst": string;
+                "menu": {
+                    "watchSystem": string;
+                    "uploadPoints": string;
+                    "sync": string;
+                    "edit": string;
+                    "delete": string;
+                    "deleteSuccess": string;
+                    "deleteError": string;
+                };
+                "noRecords": string;
+            };
+            "editRankingPage": {
+                "title": string;
+                "success": string;
+                "error": string;
+            };
+            "addRankingPage": {
+                "title": string;
+                "success": string;
+                "error": string;
+            };
+            "form": {
+                "title": string;
+                "name": string;
+                "type": string;
+                "amountOfLevels": string;
+                "winning": string;
+                "winningPlusOne": string;
+                "losing": string;
+                "gamesToUse": string;
+                "minimumGamesForUpgrade": string;
+                "diffLevels": string;
+                "primary": string;
+                "calculateUpdates": string;
+                "updateInterval": string;
+                "pointUpdate": string;
+                "pointPeriod": string;
+                "pointUpdateDay": string;
+                "rankUpdate": string;
+                "rankPeriod": string;
+                "calculationUpdateDay": string;
+                "periodTotal": string;
+                "periodGames": string;
+                "upgradeDowngrade": string;
+                "differenceForUpgradeSingle": string;
+                "differenceForUpgradeDouble": string;
+                "differenceForUpgradeMix": string;
+                "differenceForDowngradeSingle": string;
+                "differenceForDowngradeDouble": string;
+                "differenceForDowngradeMix": string;
+                "maxLevelUpPerChange": string;
+                "maxLevelDownPerChange": string;
+                "inactivity": string;
+                "inactivityAmount": string;
+                "inactivityUnit": string;
+                "gamesForInactivity": string;
+                "linkToEvents": string;
+                "groups": string;
+                "periods": {
+                    "weeks": string;
+                    "months": string;
+                    "days": string;
+                };
+                "days": {
+                    "monday": string;
+                    "tuesday": string;
+                    "wednesday": string;
+                    "thursday": string;
+                    "friday": string;
+                    "saturday": string;
+                    "sunday": string;
+                };
+                "save": string;
+                "cancel": string;
+                "add": string;
+            };
+            "dialogCopyRankingSystem": {
+                "title": string;
+                "startDate": string;
+                "endDate": string;
+                "success": string;
+                "error": string;
+                "cancel": string;
+                "create": string;
+            };
+            "dialogCopyPoints": {
+                "title": string;
+                "startDate": string;
+                "endDate": string;
+                "success": string;
+                "error": string;
+                "cancel": string;
+                "copy": string;
+            };
+        };
+        "encountersPage": {
+            "title": string;
+            "notFound": string;
+        };
+        "playerRanking": {
+            "title": string;
+            "notFound": string;
+            "filters": {
+                "ranking": string;
+                "rankingOptions": {
+                    "both": string;
+                    "upgrade": string;
+                    "downgrade": string;
+                };
+                "gameTypeOptions": {
+                    "S": string;
+                    "D": string;
+                    "MX": string;
+                };
+                "gameType": string;
+                "period": string;
+                "simulateGame": string;
+            };
+            "dialog": {
+                "title": string;
+                "level": string;
+                "teamA": string;
+                "teamB": string;
+                "winner": string;
+                "simulate": string;
+                "cancel": string;
+            };
+            "table": {
+                "date": string;
+                "team": string;
+                "opponent": string;
+                "points": string;
+                "usedForUpgrade": string;
+                "avgUpgrade": string;
+                "usedForDowngrade": string;
+                "avgDowngrade": string;
+                "operation": string;
+                "noRecords": string;
+            };
+            "rankingUpdate": string;
+            "pointsUpdate": string;
+        };
+        "teamFormation": {
+            "title": string;
+            "notFound": string;
+            "buttons": {
+                "cancel": string;
+                "save": string;
+                "print": string;
+            };
+            "info": {
+                "basePlayers": string;
+                "titulars": string;
+                "errors": string;
+                "params": {
+                    "single1": string;
+                    "single2": string;
+                    "single3": string;
+                    "single4": string;
+                    "double1": string;
+                    "double2": string;
+                    "double3": string;
+                    "double4": string;
+                    "mix1": string;
+                    "mix2": string;
+                    "mix3": string;
+                    "mix4": string;
+                    "gender": {
+                        "female": string;
+                        "females": string;
+                        "long": {
+                            "F": string;
+                            "M": string;
+                            "MX": string;
+                        };
+                        "longs": {
+                            "F": string;
+                            "M": string;
+                        };
+                        "male": string;
+                        "males": string;
+                        "mix": string;
+                        "national": string;
+                        "select": string;
+                        "short": {
+                            "female": string;
+                            "male": string;
+                            "mix": string;
+                        };
+                        "title": string;
+                    };
+                    "ranking": {
+                        "single": string;
+                        "double": string;
+                        "mix": string;
+                    };
+                };
+            };
+            "teamFormation": {
+                "title": string;
+                "noClub": string;
+                "selectPlayer": string;
+                "categories": {
+                    "singleMan": string;
+                    "doubleMen": string;
+                    "singleWoman": string;
+                    "doubleWomen": string;
+                    "mixDouble": string;
+                    "subtitudes": string;
+                    "captainId": string;
+                };
+                "labels": {
+                    "singleMan1": string;
+                    "singleMan2": string;
+                    "singleMan3": string;
+                    "singleMan4": string;
+                    "singleWoman1": string;
+                    "singleWoman2": string;
+                    "singleWoman3": string;
+                    "singleWoman4": string;
+                    "doubleMen": string;
+                    "doubleWomen": string;
+                    "doubleMen1": string;
+                    "doubleMen2": string;
+                    "doubleMen3": string;
+                    "doubleMen4": string;
+                    "doubleWomen1": string;
+                    "doubleWomen2": string;
+                    "doubleWomen3": string;
+                    "doubleWomen4": string;
+                    "mixDouble1": string;
+                    "mixDouble2": string;
+                    "captainId": string;
+                    "subtitudes": string;
+                };
+            };
+            "errors": {
+                "already": string;
+                "club-base-other-team": string;
+                "comp-status": string;
+                "comp-status-html": string;
+                "none": string;
+                "not-enough-players": string;
+                "player-above-lower": string;
+                "player-gender": string;
+                "player-genders": string;
+                "player-max-double-games": string;
+                "player-max-mix-games": string;
+                "player-max-mixed-games": string;
+                "player-max-single-games": string;
+                "player-min-level": string;
+                "player-order-doubles": string;
+                "player-order-highest": string;
+                "player-order-single": string;
+                "players-above-lower": string;
+                "team-index": string;
+                "team-to-strong": string;
+                "title": string;
+                "to-much": string;
+            };
+            "warnings": {
+                "subtitute-team-index": string;
+            };
+        };
+        "points": {
+            "title": string;
         };
     };
 };

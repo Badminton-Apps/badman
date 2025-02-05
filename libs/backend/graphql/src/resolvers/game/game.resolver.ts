@@ -33,7 +33,21 @@ export class GamesResolver {
 
   @Query(() => [Game])
   async games(@Args() listArgs: ListArgs): Promise<Game[]> {
-    return Game.findAll(ListArgs.toFindOptions(listArgs));
+    return Game.findAll({
+      subQuery: false,
+      include: [
+        {
+          model:EncounterCompetition,
+          as: 'competition',
+        },
+        {
+          model: Player,
+          as: 'players',
+        },
+      ], 
+      ...ListArgs.toFindOptions(listArgs)
+    }
+    );
   }
 
   @ResolveField(() => [RankingPoint])
