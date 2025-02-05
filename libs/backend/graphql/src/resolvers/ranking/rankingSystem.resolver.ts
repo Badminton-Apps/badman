@@ -7,6 +7,7 @@ import {
   RankingSystemUpdateInput,
   RankingPoint,
   RankingPlace,
+  RankingSystemNewInput,
 } from '@badman/backend-database';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
@@ -69,6 +70,59 @@ export class RankingSystemResolver {
   }
 
   @Mutation(() => RankingSystem)
+  async createRankingSystem(
+    @User() user: Player,
+    @Args('data') createRankingSystemData: RankingSystemNewInput,
+  ) {
+    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+      throw new UnauthorizedException(`You do not have permission to create a ranking system`);
+    }
+
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      // If the system is primary, we need to set all other systems to false
+      if (createRankingSystemData.primary === true) {
+        await RankingSystem.update(
+          { primary: false },
+          {
+            where: { primary: true },
+            transaction,
+          },
+        );
+      }
+
+
+    const newSystem = new RankingSystem({
+      ...createRankingSystemData,
+      id: undefined, 
+    });
+
+    await newSystem.save({ transaction });
+
+    // Handle ranking groups
+    const rankingGroupIds = createRankingSystemData.rankingGroupIds;
+    if (rankingGroupIds && rankingGroupIds.length > 0) {
+      for (const groupId of rankingGroupIds) {
+        const dbGroup = await RankingGroup.findByPk(groupId, { transaction });
+        if (!dbGroup) {
+          throw new NotFoundException(`${RankingGroup.name}: ${groupId}`);
+        }
+        await newSystem.addRankingGroup(dbGroup, { transaction });
+      }
+    }
+
+    await transaction.commit();
+    this.logger.log(`Created system ${newSystem.name}`);
+    return newSystem;
+  } catch (error) {
+    this.logger.error('rollback', error);
+    await transaction.rollback();
+    throw error;
+  }
+}
+
+  @Mutation(() => RankingSystem)
   async updateRankingSystem(
     @User() user: Player,
     @Args('data') updateRankingSystemData: RankingSystemUpdateInput,
@@ -101,6 +155,33 @@ export class RankingSystemResolver {
             transaction,
           },
         );
+      }
+
+      const rankingGroupIds = updateRankingSystemData.rankingGroupIds;
+      delete updateRankingSystemData.rankingGroupIds;
+
+      if (rankingGroupIds) {
+        const currentGroups = await dbSystem.getRankingGroups({ transaction });
+
+        const currentGroupIds = currentGroups.map(group => group.id);
+        const groupsToAdd = rankingGroupIds.filter(id => !currentGroupIds.includes(id));
+        const groupsToRemove = currentGroupIds.filter(id => !rankingGroupIds.includes(id));
+
+        for (const groupId of groupsToAdd) {
+          const dbGroup = await RankingGroup.findByPk(groupId);
+          if (!dbGroup) {
+            throw new NotFoundException(`${RankingGroup.name}: ${groupId}`);
+          }
+          await dbSystem.addRankingGroup(dbGroup, { transaction });
+        }
+
+        for (const groupId of groupsToRemove) {
+          const dbGroup = await RankingGroup.findByPk(groupId);
+          if (!dbGroup) {
+            throw new NotFoundException(`${RankingGroup.name}: ${groupId}`);
+          }
+          await dbSystem.removeRankingGroup(dbGroup, { transaction });
+        }
       }
 
       // Update system

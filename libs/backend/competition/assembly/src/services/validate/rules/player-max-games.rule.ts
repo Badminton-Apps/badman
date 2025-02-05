@@ -30,7 +30,7 @@ export class PlayerMaxGamesRule extends Rule {
       const found = singlePlayers.filter((p) => p?.id === player?.id);
       if (found.length > 1) {
         errors.push({
-          message: 'all.competition.team-assembly.errors.player-max-single-games',
+          message: 'all.teamFormation.errors.player-max-single-games',
           params: {
             player: {
               id: player?.id,
@@ -55,7 +55,7 @@ export class PlayerMaxGamesRule extends Rule {
         const found = mixedPlayers.filter((p) => p.id === player.id);
         if (found.length > 1) {
           errors.push({
-            message: 'all.competition.team-assembly.errors.player-max-mix-games',
+            message: 'all.teamFormation.errors.player-max-mix-games',
             params: {
               player: {
                 id: player.id,
@@ -82,7 +82,7 @@ export class PlayerMaxGamesRule extends Rule {
       const found = doublePlayers.filter((p) => p.id === player.id);
       if (found.length > 2) {
         errors.push({
-          message: 'all.competition.team-assembly.errors.player-max-double-games',
+          message: 'all.teamFormation.errors.player-max-double-games',
           params: {
             player: {
               id: player.id,

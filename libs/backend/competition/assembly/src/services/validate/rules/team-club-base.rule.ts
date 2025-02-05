@@ -67,7 +67,7 @@ export class TeamClubBaseRule extends Rule {
     for (const player of players) {
       if (otherPlayers.includes(player.id)) {
         errors.push({
-          message: 'all.competition.team-assembly.errors.club-base-other-team',
+          message: 'all.teamFormation.errors.club-base-other-team',
           params: {
             player: {
               id: player.id,
