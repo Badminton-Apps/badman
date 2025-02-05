@@ -38,7 +38,7 @@ export class PlayerCompStatusRule extends Rule {
       if (!player.competitionPlayer) {
         valid = false;
         errors.push({
-          message: 'all.competition.team-assembly.errors.comp-status-html',
+          message: 'all.teamFormation.errors.comp-status-html',
           params: {
             player: {
               id: player?.id,

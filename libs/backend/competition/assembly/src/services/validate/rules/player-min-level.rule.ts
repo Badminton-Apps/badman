@@ -75,7 +75,7 @@ export class PlayerMinLevelRule extends Rule {
         if (ranking.single < subEvent.maxLevel && !metaPlayer?.levelException) {
           valid = false;
           errors.push({
-            message: 'all.competition.team-assembly.errors.player-min-level',
+            message: 'all.teamFormation.errors.player-min-level',
             params: {
               player: {
                 id: player?.id,
@@ -91,7 +91,7 @@ export class PlayerMinLevelRule extends Rule {
         if (ranking.double < subEvent.maxLevel && !metaPlayer?.levelException) {
           valid = false;
           errors.push({
-            message: 'all.competition.team-assembly.errors.player-min-level',
+            message: 'all.teamFormation.errors.player-min-level',
             params: {
               player: {
                 id: player?.id,
@@ -111,7 +111,7 @@ export class PlayerMinLevelRule extends Rule {
         ) {
           valid = false;
           errors.push({
-            message: 'all.competition.team-assembly.errors.player-min-level',
+            message: 'all.teamFormation.errors.player-min-level',
             params: {
               player: {
                 id: player?.id,

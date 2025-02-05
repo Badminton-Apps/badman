@@ -17,4 +17,11 @@ export class TranslateController {
 
     res.send(translated[param.lang]);
   }
+
+  @AllowAnonymous()
+  @Get('i18n')
+  async allTranslations(@Res() res: FastifyReply) {
+    const translations = this.i18nService.getTranslations();
+    res.send(translations);
+  }
 }
