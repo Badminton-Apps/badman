@@ -89,6 +89,7 @@ export type I18nTranslations = {
             "start": string;
             "titles": {
                 "encounters": string;
+                "encounter-form": string;
                 "matrix": string;
                 "players": string;
                 "plural": string;
@@ -438,6 +439,43 @@ export type I18nTranslations = {
             "thursday": string;
             "tuesday": string;
             "wednesday": string;
+        };
+        "encounterFormPage": {
+            "title": string;
+            "steps": {
+                "0": string;
+                "1": string;
+                "2": string;
+            };
+            "sectionTitles": {
+                "register": string;
+                "confirmEncounter": string;
+                "confirmPresence": string;
+                "cancelPresence": string;
+                "confirmConfirmed": string;
+                "cancelConfirmed": string;
+            };
+            "prompts": {
+                "confirmPresence": string;
+                "cancelPresence": string;
+                "confirmConfirmed": string;
+                "cancelConfirmed": string;
+            };
+            "buttons": {
+                "back": string;
+                "next": string;
+                "submit": string;
+                "cancel": string;
+                "confirm": string;
+            };
+            "inputs": {
+                "present": string;
+                "confirm": string;
+            };
+            "positions": {
+                "captain": string;
+                "gameLeader": string;
+            };
         };
         "event": {
             "checkEncounterForFilledIn": string;
@@ -1360,6 +1398,10 @@ export type I18nTranslations = {
         "teamFormation": {
             "title": string;
             "notFound": string;
+            "messages": {
+                "saved": string;
+                "downloaded": string;
+            };
             "buttons": {
                 "cancel": string;
                 "save": string;
