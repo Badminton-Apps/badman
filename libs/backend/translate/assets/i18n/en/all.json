@@ -82,6 +82,7 @@
     "start": "Start date",
     "titles": {
       "encounters": "Encounters",
+      "encounter-form": "Encounter form",
       "matrix": "Assembly matrix",
       "players": "Players",
       "plural": "Clubs",
@@ -432,6 +433,43 @@
     "tuesday": "Tuesday",
     "wednesday": "Wednesday"
   },
+  "encounterFormPage": {
+    "title": "Encounter form",
+    "steps": {
+      "0": "Info",
+      "1": "Results",
+      "2": "Confirm"
+    },
+    "sectionTitles": {
+      "register": "Register",
+      "confirmEncounter": "Confirm encounter",
+      "confirmPresence": "Confirm presence",
+      "cancelPresence": "Cancel presence",
+      "confirmConfirmed": "Confirm encounter",
+      "cancelConfirmed": "Cancel confirmation"
+    },
+    "prompts": {
+      "confirmPresence": "Is the team captain, {fullName}, present for this encounter?",
+      "cancelPresence": "Do you want to cancel the presence of {fullName}?",
+      "confirmConfirmed": "Does the team captain, {fullName}, confirm the result of this encounter?",
+      "cancelConfirmed": "Do you want to cancel the confirmation of {fullName}?"
+    },
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "inputs": {
+      "present": "Present",
+      "confirm": "Confirm"
+    },
+    "positions": {
+      "captain": "Captain",
+      "gameLeader": "Game leader"
+    }
+  }, 
   "event": {
     "checkEncounterForFilledIn": "Send notifications when encounter is not entered or confirmed",
     "last-sync": "Last sync",
