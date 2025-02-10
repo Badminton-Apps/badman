@@ -440,6 +440,43 @@
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
   },
+  "encounterFormPage": {
+    "title": "Formulaire de rencontre",
+    "steps": {
+      "0": "Informations",
+      "1": "Résultats",
+      "2": "Confirmation"
+    },
+    "sectionTitles": {
+      "register": "S'inscrire",
+      "confirmEncounter": "Confirmer la rencontre",
+      "confirmPresence": "Confirmer la présence",
+      "cancelPresence": "Annuler la présence",
+      "confirmConfirmed": "Confirmer la rencontre",
+      "cancelConfirmed": "Annuler la rencontre"
+    },
+    "prompts": {
+      "confirmPresence": "Le capitaine de l'équipe, {fullName}, est-il présent pour cette rencontre?",
+      "cancelPresence": "Voulez-vous annuler la présence de {fullName}?",
+      "confirmConfirmed": "Le capitaine de l'équipe, {fullName}, confirme-t-il le résultat de cette rencontre?",
+      "cancelConfirmed": "Voulez-vous annuler la confirmation de {fullName}?"
+    },
+    "buttons": {
+      "back": "Retour",
+      "next": "Suivant",
+      "submit": "Envoyer",
+      "cancel": "Annuler",
+      "confirm": "Confirmer"
+    },
+    "inputs": {
+      "present": "Présent",
+      "confirm": "Confirmer"
+    },
+    "positions": {
+      "captain": "Capitaine",
+      "gameLeader": "Chef de jeu"
+    }
+  }, 
   "event": {
     "checkEncounterForFilledIn": "Envoyer des notifications lorsque le match n'est pas saisi ou confirmé",
     "last-sync": "Dernière mise à jour",

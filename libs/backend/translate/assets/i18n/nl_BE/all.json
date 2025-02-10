@@ -440,6 +440,43 @@
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag"
   },
+  "encounterFormPage": {
+    "title": "Ontmoetingsformulier",
+    "steps": {
+      "0": "Info",
+      "1": "Uitslagen",
+      "2": "Bevestigen"
+    },
+    "sectionTitles": {
+      "register": "Aanmelden",
+      "confirmEncounter": "Ontmoeting bevestigen",
+      "confirmPresence": "Bevestig aanwezigheid ",
+      "cancelPresence": "Annuleer aanwezigheid",
+      "confirmConfirmed": "Bevestig ontmoeting",
+      "cancelConfirmed": "Annuleer bevestiging"
+    },
+    "prompts": {
+      "confirmPresence": "Is de ploegkapitein, {fullName}, aanwezig voor deze ontmoeting?",
+      "cancelPresence": "Wil je de aanwezigheid van {fullName}, annuleren?",
+      "confirmConfirmed": "Bevestigd de ploegkapitein, {fullName}, de uitslag van deze ontmoeting?",
+      "cancelConfirmed": "Wil je de bevestiging van {fullName} annuleren?"
+    },
+    "inputs": {
+      "present": "Aanwezig",
+      "confirm": "Bevestig"
+    },
+    "buttons": {
+      "back": "Terug",
+      "next": "Volgende",
+      "submit": "Indienen",
+      "cancel": "Annuleren",
+      "confirm": "Bevestigen"
+    },
+    "positions": {
+      "captain": "Ploegkapitein",
+      "gameLeader": "Wedstrijdleider"
+    }
+  }, 
   "event": {
     "checkEncounterForFilledIn": "Stuur notificaties wanneer de wedstrijd niet ingevuld of bevestigd is",
     "last-sync": "Laatste update",
