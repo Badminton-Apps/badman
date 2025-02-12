@@ -1,4 +1,4 @@
-import { APP_ID, inject, isDevMode, NgModule, SecurityContext } from '@angular/core';
+import { APP_ID, isDevMode, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { GraphQLModule } from '@badman/frontend-graphql';
@@ -32,7 +32,7 @@ import { AppComponent } from './app.component';
 
 import { ExcelModule } from '@badman/frontend-excel';
 import { JOBS_CONFIG_TOKEN } from '@badman/frontend-queue';
-import { Socket, SocketIoModule } from 'ngx-socket-io';
+import { SocketIoModule } from 'ngx-socket-io';
 
 /*  eslint-disable @nx/enforce-module-boundaries*/
 import { ShellComponent } from '@badman/frontend-components';
@@ -112,6 +112,7 @@ const APP_ROUTES: Routes = [
     loadChildren: () => import('@badman/frontend-transfers').then((m) => m.TransferModule),
   },
 ];
+
 @NgModule({
   declarations: [AppComponent],
   bootstrap: [AppComponent],
@@ -179,7 +180,8 @@ const APP_ROUTES: Routes = [
       api: `${environment.api}/${environment.apiVersion}/cp`,
     }),
     SocketIoModule.forRoot({
-      url: `${environment.api}`,
+      url: '/',
+      options: {},
     }),
     TranslationModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/translate/i18n/`,
@@ -240,11 +242,4 @@ const APP_ROUTES: Routes = [
     provideHttpClient(withInterceptorsFromDi()),
   ],
 })
-export class AppModule {
-  socket = inject(Socket);
-
-  constructor() {
-    // Something is wrong with the socket.io configuration, so we need to fix it here
-    this.socket.ioSocket.nsp = '/';
-  }
-}
+export class AppModule {}
