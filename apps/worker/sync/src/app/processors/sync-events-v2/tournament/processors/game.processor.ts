@@ -19,8 +19,8 @@ import { Op, Transaction } from 'sequelize';
 @Processor({
   name: SyncQueue,
 })
-export class MatchTournamentProcessor {
-  private readonly logger = new Logger(MatchTournamentProcessor.name);
+export class GameTournamentProcessor {
+  private readonly logger = new Logger(GameTournamentProcessor.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,
@@ -28,13 +28,13 @@ export class MatchTournamentProcessor {
     private readonly _pointService: PointsService,
   ) {}
 
-  @Process(Sync.ProcessSyncTournamentMatch)
-  async ProcessSyncTournamentMatch(
+  @Process(Sync.ProcessSyncTournamentGame)
+  async ProcessSyncTournamentGame(
     job: Job<{
       // transaction
       transactionId: string;
 
-      // provide or direed
+      // provide or derived
       eventCode: string;
       subEventId: string;
       rankingSystemId: string;
@@ -45,6 +45,9 @@ export class MatchTournamentProcessor {
       gameCode: number;
 
       // options
+      options: {
+        deleteMatches?: boolean;
+      };
     }>,
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
@@ -106,49 +109,37 @@ export class MatchTournamentProcessor {
     }
 
     // delete the data and reuse the guid
-    const gameId = game?.id;
+    const gameId = game?.id || job.data.gameId;
     const gameCode = game?.visualCode || job.data.gameCode.toString();
-    if (game) {
+    if (game && job.data.options?.deleteMatches) {
       this.logger.debug(`Deleting game`);
       await game.destroy({ transaction });
-
-      // also delete game players memberships
-      await GamePlayerMembership.destroy({
-        where: {
-          gameId: game.id,
-        },
-        transaction,
-      });
     }
 
     if (!gameCode) {
-      throw new Error('match code is required');
+      throw new Error('game code is required');
     }
 
-    // we fetch it via the draw because bye's aren't in the match detail
-    const xmlMatches = await this._visualService.getMatches(
-      job.data.eventCode,
-      draw.visualCode,
-      true,
-    );
-    const xmlMatch = xmlMatches.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
-    if (!xmlMatch) {
-      throw new Error('match not found');
+    // we fetch it via the draw because bye's aren't in the game detail
+    const xmlGamees = await this._visualService.getGames(job.data.eventCode, draw.visualCode, true);
+    const xmlGame = xmlGamees.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
+    if (!xmlGame) {
+      throw new Error('game not found');
     }
 
-    if (!xmlMatch.Sets) {
-      xmlMatch.Sets = { Set: [] };
+    if (!xmlGame.Sets) {
+      xmlGame.Sets = { Set: [] };
     }
 
-    if (!Array.isArray(xmlMatch?.Sets?.Set)) {
-      xmlMatch.Sets.Set = [xmlMatch.Sets.Set];
+    if (!Array.isArray(xmlGame?.Sets?.Set)) {
+      xmlGame.Sets.Set = [xmlGame.Sets.Set];
     }
 
     const playedAt =
-      xmlMatch.MatchTime != null ? moment.tz(xmlMatch.MatchTime, 'Europe/Brussels').toDate() : null;
+      xmlGame.MatchTime != null ? moment.tz(xmlGame.MatchTime, 'Europe/Brussels').toDate() : null;
 
     let gameStatus: GameStatus;
-    switch (xmlMatch.ScoreStatus) {
+    switch (xmlGame.ScoreStatus) {
       case XmlScoreStatus.Retirement:
         gameStatus = GameStatus.RETIREMENT;
         break;
@@ -166,15 +157,14 @@ export class MatchTournamentProcessor {
         // This is the case when the tournament didn't configured their score status
         if (
           // No scores
-          xmlMatch?.Sets?.Set[0]?.Team1 == null &&
-          xmlMatch?.Sets?.Set[0]?.Team2 == null &&
+          xmlGame?.Sets?.Set[0]?.Team1 == null &&
+          xmlGame?.Sets?.Set[0]?.Team2 == null &&
           // But not both players filled
           !(
-            xmlMatch?.Team1?.Player1?.MemberID == null && xmlMatch?.Team2?.Player1?.MemberID == null
+            xmlGame?.Team1?.Player1?.MemberID == null && xmlGame?.Team2?.Player1?.MemberID == null
           ) &&
           // And not both players null
-          (xmlMatch?.Team2?.Player1?.MemberID !== null ||
-            xmlMatch?.Team2?.Player2?.MemberID !== null)
+          (xmlGame?.Team2?.Player1?.MemberID !== null || xmlGame?.Team2?.Player2?.MemberID !== null)
         ) {
           gameStatus = GameStatus.WALKOVER;
         } else {
@@ -183,31 +173,36 @@ export class MatchTournamentProcessor {
         break;
     }
 
-    game = new Game({
-      id: gameId,
-      round: xmlMatch.RoundName,
-      order: xmlMatch.MatchOrder,
-      winner: xmlMatch.Winner,
-      gameType: subEvent?.gameType,
-      visualCode: xmlMatch.Code,
-      linkId: draw.id,
-      linkType: 'tournament',
-      status: gameStatus,
-      playedAt,
-      set1Team1: xmlMatch?.Sets?.Set[0]?.Team1,
-      set1Team2: xmlMatch?.Sets?.Set[0]?.Team2,
-      set2Team1: xmlMatch?.Sets?.Set[1]?.Team1,
-      set2Team2: xmlMatch?.Sets?.Set[1]?.Team2,
-      set3Team1: xmlMatch?.Sets?.Set[2]?.Team1,
-      set3Team2: xmlMatch?.Sets?.Set[2]?.Team2,
-    });
+    if (!game) {
+      game = new Game();
+    }
+
+    if (gameId) {
+      game.id = gameId;
+    }
+
+    game.round = xmlGame.RoundName;
+    game.order = xmlGame.MatchOrder;
+    game.winner = xmlGame.Winner;
+    game.gameType = subEvent?.gameType;
+    game.visualCode = xmlGame.Code;
+    game.linkId = draw.id;
+    game.linkType = 'tournament';
+    game.status = gameStatus;
+    game.playedAt = playedAt;
+    game.set1Team1 = xmlGame?.Sets?.Set[0]?.Team1;
+    game.set1Team2 = xmlGame?.Sets?.Set[0]?.Team2;
+    game.set2Team1 = xmlGame?.Sets?.Set[1]?.Team1;
+    game.set2Team2 = xmlGame?.Sets?.Set[1]?.Team2;
+    game.set3Team1 = xmlGame?.Sets?.Set[2]?.Team1;
+    game.set3Team2 = xmlGame?.Sets?.Set[2]?.Team2;
 
     await game.save({ transaction });
     const system = await RankingSystem.findByPk(job.data.rankingSystemId, {
       transaction,
     });
 
-    const memberships = await this._createGamePlayers(xmlMatch, game, system, transaction);
+    const memberships = await this._createGamePlayers(xmlGame, game, system, transaction);
     await GamePlayerMembership.bulkCreate(memberships, {
       transaction,
       updateOnDuplicate: ['single', 'double', 'mix'],
@@ -219,7 +214,7 @@ export class MatchTournamentProcessor {
   }
 
   private async _createGamePlayers(
-    xmlMatch: XmlMatch,
+    xmlGame: XmlMatch,
     game: Game,
     system: RankingSystem,
     transaction: Transaction,
@@ -227,10 +222,10 @@ export class MatchTournamentProcessor {
     const gamePlayers = [];
     game.players = [];
 
-    const t1p1 = await this._getPlayer(xmlMatch?.Team1?.Player1);
-    const t1p2 = await this._getPlayer(xmlMatch?.Team1?.Player2);
-    const t2p1 = await this._getPlayer(xmlMatch?.Team2?.Player1);
-    const t2p2 = await this._getPlayer(xmlMatch?.Team2?.Player2);
+    const t1p1 = await this._getPlayer(xmlGame?.Team1?.Player1);
+    const t1p2 = await this._getPlayer(xmlGame?.Team1?.Player2);
+    const t2p1 = await this._getPlayer(xmlGame?.Team2?.Player1);
+    const t2p2 = await this._getPlayer(xmlGame?.Team2?.Player2);
 
     if (t1p1) {
       const rankingt1p1 = await t1p1.getRankingPlaces({

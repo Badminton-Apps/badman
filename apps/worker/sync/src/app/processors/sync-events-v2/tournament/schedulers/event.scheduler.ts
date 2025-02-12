@@ -23,6 +23,7 @@ export class EventTournamenScheduler {
       updateSubEvents: boolean;
       updateDraws: boolean;
       updateMatches: boolean;
+      updateStanding: boolean;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
@@ -42,7 +43,7 @@ export class EventTournamenScheduler {
         await new Promise((resolve) => setTimeout(resolve, 3000));
       }
 
-      if (await this._transactionManager.transactinoErrored(transactionId)) {
+      if (await this._transactionManager.transactionErrored(transactionId)) {
         throw new Error('Error in transaction');
       }
 
