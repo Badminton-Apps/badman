@@ -31,32 +31,33 @@ import { AssignRankingGroupsComponent } from '../../components';
 import { TournamentDetailService } from './detail.service';
 import { injectParams } from 'ngxtension/inject-params';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Apollo, gql } from 'apollo-angular';
 
 @Component({
-    selector: 'badman-tournament-detail',
-    templateUrl: './detail.page.html',
-    styleUrls: ['./detail.page.scss'],
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        MomentModule,
-        MatIconModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        MatChipsModule,
-        MatCardModule,
-        MatTooltipModule,
-        MatSnackBarModule,
-        PageHeaderComponent,
-        HasClaimComponent,
-        MatProgressBarModule,
-    ]
+  selector: 'badman-tournament-detail',
+  templateUrl: './detail.page.html',
+  styleUrls: ['./detail.page.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    MomentModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatChipsModule,
+    MatCardModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    PageHeaderComponent,
+    HasClaimComponent,
+    MatProgressBarModule,
+  ],
 })
 export class DetailPageComponent {
   private readonly breadcrumbService = inject(BreadcrumbService);
@@ -65,6 +66,7 @@ export class DetailPageComponent {
   private readonly jobsService = inject(JobsService);
   private readonly dialog = inject(MatDialog);
   private readonly matSnackBar = inject(MatSnackBar);
+  private readonly apollo = inject(Apollo);
 
   private readonly detailService = inject(TournamentDetailService);
 
@@ -174,9 +176,34 @@ export class DetailPageComponent {
       return;
     }
 
-    await lastValueFrom(
-      this.jobsService.syncEventById({ id: this.eventTournament()?.visualCode as string }),
-    );
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation SyncEvent(
+            $eventId: ID
+            $updateSubEvents: Boolean
+            $updateDraws: Boolean
+            $updateMatches: Boolean
+            $updateStanding: Boolean
+          ) {
+            syncEvent(
+              eventId: $eventId
+              updateSubEvents: $updateSubEvents
+              updateDraws: $updateDraws
+              updateMatches: $updateMatches
+              updateStanding: $updateStanding
+            )
+          }
+        `,
+        variables: {
+          eventId: this.eventTournament()?.id,
+          updateSubEvents: true,
+          updateDraws: true,
+          updateMatches: true,
+          updateStanding: true,
+        },
+      })
+      .subscribe();
   }
 
   assignRankingGroups() {

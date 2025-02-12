@@ -29,7 +29,7 @@ import {
   SyncTwizzitProcessor,
   SubEventTournamentProcessor,
   DrawTournamentProcessor,
-  MatchTournamentProcessor,
+  GameTournamentProcessor,
 } from './processors';
 
 @Module({
@@ -48,7 +48,7 @@ import {
     EventTournamentProcessor,
     SubEventTournamentProcessor,
     DrawTournamentProcessor,
-    MatchTournamentProcessor,
+    GameTournamentProcessor,
     DrawStandingTournamentProcessor,
 
     EventTournamenScheduler,

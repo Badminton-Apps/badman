@@ -16,15 +16,17 @@ export class DrawTournamentScheduler {
   ) {}
 
   @Process(Sync.ScheduleSyncTournamentDraw)
-  async ScheduleSyncTournamentEvent(
+  async ScheduleSyncTournamentDraw(
     job: Job<{
       subEventId: string;
+      
       eventCode: string;
       drawId: string;
       drawCode: number;
       rankingSystemId: string;
 
       updateMatches: boolean;
+      updateStanding: boolean;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
@@ -54,16 +56,16 @@ export class DrawTournamentScheduler {
         await new Promise((resolve) => setTimeout(resolve, 3000));
       }
 
-      if (await this._transactionManager.transactinoErrored(transactionId)) {
+      if (await this._transactionManager.transactionErrored(transactionId)) {
         throw new Error('Error in transaction');
       }
 
       await this._transactionManager.commitTransaction(transactionId);
 
-      this.logger.debug(`Synced tournament`);
+      this.logger.debug(`Synced tournament draw`);
     } catch (error) {
       await this._transactionManager.rollbackTransaction(transactionId);
-      this.logger.error(`Failed to sync tournament event`, error);
+      this.logger.error(`Failed to sync tournament draw`, error);
     }
   }
 }

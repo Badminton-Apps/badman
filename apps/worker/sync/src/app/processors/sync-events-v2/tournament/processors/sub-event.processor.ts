@@ -1,4 +1,9 @@
-import { EventTournament, RankingSystem, SubEventTournament } from '@badman/backend-database';
+import {
+  DrawTournament,
+  EventTournament,
+  RankingSystem,
+  SubEventTournament,
+} from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
 import {
   VisualService,
@@ -29,21 +34,42 @@ export class SubEventTournamentProcessor {
       // transaction
       transactionId: string;
 
-      // provide or direed
-      eventCode: string;
+      // provide or direved
       rankingSystemId: string;
+
+      // we try to find the event
+      eventCode: string;
+      eventId: string;
 
       // one or the other
       subEventId: string;
       subEventCode: number;
 
       // options
-      updateMatches: boolean;
-      updateDraws: boolean;
-      updateStanding: boolean;
+      options: {
+        deleteSubEvent?: boolean;
+        deleteDraw?: boolean;
+        deleteMatches?: boolean;
+        deleteStandings?: boolean;
+
+        updateDraws?: boolean;
+        updateMatches?: boolean;
+        updateStanding?: boolean;
+      };
+
+      // from parent
+      draws: { id: string; visualCode: string; games: { id: string; visualCode: string }[] }[];
     }>,
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
+
+    const options = {
+      // update when we delete the event (unless specified)
+      updateDraws: job.data.options?.deleteSubEvent || false,
+      updateMatches: job.data.options?.deleteSubEvent || false,
+      updateStanding: job.data.options?.deleteSubEvent || false,
+      ...job.data.options,
+    };
 
     let subEvent: SubEventTournament;
     if (job.data.subEventId) {
@@ -61,6 +87,12 @@ export class SubEventTournamentProcessor {
       if (event) {
         job.data.eventCode = event.visualCode;
       }
+    }
+
+    if (!event && job.data.eventId) {
+      event = await EventTournament.findByPk(job.data.eventId, {
+        transaction,
+      });
     }
 
     if (!event && job.data.eventCode) {
@@ -89,11 +121,43 @@ export class SubEventTournamentProcessor {
     // delete the data and reuse the guid
     const subEventId = subEvent?.id;
     const subEventCode = subEvent?.visualCode || job.data.subEventCode.toString();
-    let existed = false;
-    if (subEvent) {
+    const existing = {
+      existed: false,
+      draws: job.data?.draws || [],
+    };
+    if (subEvent && options.deleteSubEvent) {
       this.logger.debug(`Deleting subevent ${subEvent.name}`);
+
+      // remove all draws and games
+      const draws = await subEvent.getDrawTournaments({
+        transaction,
+      });
+
+      for (const draw of draws) {
+        const existingDraw = {
+          id: draw.id,
+          visualCode: draw.visualCode,
+          games: [],
+        };
+
+        const games = await draw.getGames({
+          transaction,
+        });
+
+        for (const game of games) {
+          existingDraw.games.push({
+            id: game.id,
+            visualCode: game.visualCode,
+          });
+          await game.destroy({ transaction });
+        }
+
+        existing.draws.push(existingDraw);
+      }
+
       await subEvent.destroy({ transaction });
-      existed = true;
+      subEvent = undefined;
+      existing.existed = true;
     }
 
     if (!subEventCode) {
@@ -109,15 +173,21 @@ export class SubEventTournamentProcessor {
       throw new Error('Sub subevent not found');
     }
 
-    subEvent = new SubEventTournament({
-      id: subEventId,
-      name: visualSubEvent.Name,
-      visualCode: visualSubEvent.Code,
-      eventType: this.getEventType(visualSubEvent),
-      gameType: this.getGameType(visualSubEvent),
-      eventId: event.id,
-      level: visualSubEvent.LevelID,
-    });
+    if (!subEvent) {
+      subEvent = new SubEventTournament();
+    }
+
+    if (subEventId) {
+      subEvent.id = subEventId;
+    }
+
+    subEvent.id = subEventId;
+    subEvent.name = visualSubEvent.Name;
+    subEvent.visualCode = visualSubEvent.Code;
+    subEvent.eventType = this.getEventType(visualSubEvent);
+    subEvent.gameType = this.getGameType(visualSubEvent);
+    subEvent.eventId = event.id;
+    subEvent.level = visualSubEvent.LevelID;
 
     const primary = await RankingSystem.findOne({
       where: { primary: true },
@@ -141,15 +211,15 @@ export class SubEventTournamentProcessor {
     await subEvent.save({ transaction });
 
     // if we request to update the draws or the event is new we need to process the matches
-    if (job.data.updateDraws || !existed) {
+    if (options.updateDraws || !existing.existed) {
       await this.processDraws(
         event.visualCode,
         subEventCode,
         subEvent,
         primary.id,
         job.data.transactionId,
-        job.data.updateMatches,
-        job.data.updateStanding,
+        options,
+        existing.draws,
       );
     }
   }
@@ -160,36 +230,56 @@ export class SubEventTournamentProcessor {
     subEvent: SubEventTournament,
     rankingSystemId: string,
     transactionId: string,
-    updateMatches: boolean,
-    updateStanding: boolean,
+    options: {
+      deleteDraw?: boolean;
+      deleteMatches?: boolean;
+      deleteStandings?: boolean;
+
+      updateMatches?: boolean;
+      updateStanding?: boolean;
+    },
+    existing: { id: string; visualCode: string; games: { id: string; visualCode: string }[] }[],
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
     const draws = await this._visualService.getDraws(eventCode, subEventCode, true);
 
     // remove all sub events in this event that are not in the visual to remove stray data
-    const dbDraws = await subEvent.getDrawTournaments({
+    const dbDraws = await DrawTournament.findAll({
+      where: {
+        subeventId: subEvent.id,
+      },
       transaction,
     });
 
     for (const dbDraw of dbDraws) {
       if (!draws.find((r) => r.Code === dbDraw.visualCode)) {
-        this.logger.debug(`Removing sub event ${dbDraw.visualCode}`);
+        this.logger.debug(`Removing draw ${dbDraw.visualCode}`);
+
+        const dbGames = await dbDraw.getGames({
+          transaction,
+        });
+
+        for (const dbGame of dbGames) {
+          await dbGame.destroy({ transaction });
+        }
+
         await dbDraw.destroy({ transaction });
       }
     }
 
     // queue the new sub events
     for (const xmlSubEvent of draws) {
+      const existingDraw = existing.find((r) => r.visualCode === `${xmlSubEvent.Code}`);
       // update sub events
       const drawJob = await this._syncQueue.add(Sync.ProcessSyncTournamentDraw, {
         transactionId,
         subEventId: subEvent.id,
         eventCode,
         drawCode: xmlSubEvent.Code,
+        drawId: existingDraw?.id,
         rankingSystemId,
-
-        updateMatches,
-        updateStanding,
+        options,
+        games: existingDraw?.games,
       });
 
       this._transactionManager.addJob(transactionId, drawJob);

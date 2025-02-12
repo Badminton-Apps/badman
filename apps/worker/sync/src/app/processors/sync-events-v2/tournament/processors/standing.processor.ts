@@ -29,6 +29,11 @@ export class DrawStandingTournamentProcessor {
 
       drawId: string;
       gameJobIds: JobId[];
+
+      // options
+      options: {
+        deleteStandings?: boolean;
+      };
     }>,
   ): Promise<void> {
     this.logger.debug(`Processing draw standing for draw ${job.data.drawId}`);

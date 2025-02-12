@@ -78,7 +78,7 @@ export class TransactionManager {
     return statuses.every((status) => status.status === 'completed' || status.status === 'failed');
   }
 
-  async transactinoErrored(transactionId: string) {
+  async transactionErrored(transactionId: string) {
     const statuses = await this.getJobStatuses(transactionId);
 
     return statuses.some((status) => status.status === 'failed');

@@ -62,7 +62,7 @@ export class VisualService {
     return this._asArray(parsed.Match) as XmlMatch[];
   }
 
-  async getMatch(tourneyId: string, matchId: string | number, useCache = true) {
+  async getGame(tourneyId: string, matchId: string | number, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}/MatchDetail/${matchId}`,
       useCache,
@@ -70,7 +70,7 @@ export class VisualService {
     return this._parser.parse(result).Result.Match;
   }
 
-  async getMatches(
+  async getGames(
     tourneyId: string,
     drawId: string | number,
     useCache = true,
