@@ -65,7 +65,7 @@ export class EncounterCompetitionResolver {
     private _sequelize: Sequelize,
     private _pointService: PointsService,
     private encounterValidationService: EncounterValidationService,
-  ) {}
+  ) { }
 
   @Query(() => EncounterCompetition)
   async encounterCompetition(
@@ -156,7 +156,7 @@ export class EncounterCompetitionResolver {
     @Parent() encounter: EncounterCompetition,
     @Args() listArgs: ListArgs,
   ): Promise<Assembly[]> {
-    if (!user?.id){
+    if (!user?.id) {
       return [];
     }
     return encounter.getAssemblies(ListArgs.toFindOptions(listArgs));
@@ -179,14 +179,14 @@ export class EncounterCompetitionResolver {
           as: 'players',
         },
       ],
-    });  
-    return games.some(game => 
+    });
+    return games.some(game =>
       game?.players?.some(player => {
         return player.id === playerId;
       })
     );
   }
-  
+
 
   @ResolveField(() => [Game])
   async games(@Parent() encounter: EncounterCompetition): Promise<Game[]> {
@@ -337,29 +337,28 @@ export class EncounterCompetitionResolver {
       throw error;
     }
   }
-  @Mutation(() => EncounterCompetition)
+
+  @Mutation(() => Boolean)
   async updateGameLeader(
     @Args('encounterId') encounterId: string,
     @Args('gameLeaderId') gameLeaderId: string,
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
-     
+      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
 
-    const encounter = await EncounterCompetition.findByPk(encounterId);
+      if (!encounter) {
+        throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
 
-    if (!encounter) {
-      throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      await encounter.update({ gameLeaderId }, { transaction }); // Ensure transaction is passed here
+
+      await transaction.commit();
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
     }
-
-    encounter.update({ gameLeaderId }, { transaction });
-    await transaction.commit();
-    return true;
-  }catch (error) {
-    this.logger.error(error);
-    await transaction.rollback();
-    throw error;
-  }
-
   }
 }

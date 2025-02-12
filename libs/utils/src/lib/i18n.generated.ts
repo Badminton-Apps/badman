@@ -1360,6 +1360,10 @@ export type I18nTranslations = {
         "teamFormation": {
             "title": string;
             "notFound": string;
+            "messages": {
+                "saved": string;
+                "downloaded": string;
+            };
             "buttons": {
                 "cancel": string;
                 "save": string;
@@ -1477,6 +1481,20 @@ export type I18nTranslations = {
             };
             "warnings": {
                 "subtitute-team-index": string;
+            };
+        };
+        "encounter": {
+            "gameLeader": {
+                "dialog": {
+                    "title": string;
+                    "buttons": {
+                        "cancel": string;
+                        "select": string;
+                    };
+                    "messages": {
+                        "saved": string;
+                    };
+                };
             };
         };
         "points": {
