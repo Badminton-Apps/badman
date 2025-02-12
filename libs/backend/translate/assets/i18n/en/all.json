@@ -1491,5 +1491,19 @@
     "warnings": {
       "subtitute-team-index": "s"
     }
+  },
+  "encounter":{
+    "gameLeader":{
+      "dialog":{
+        "title": "Select game leader",
+        "buttons": {
+          "cancel": "Cancel",
+          "select": "Select"
+        },
+        "messages": {
+          "saved": "Game leader saved"
+        }
+      }
+    }
   }
 }
