@@ -34,7 +34,7 @@
             <span>{{ 'all.competition.menu.sync' | translate }}</span>
           </button>
         </badman-has-claim>
-        <badman-has-claim [all]="['re-sync:points']">
+        <badman-has-claim [all]="['sync:tournament']">
           <button mat-menu-item (click)="reCalculatePoints()">
             <mat-icon>sync</mat-icon>
             <span>{{ 'all.button.re-sync' | translate }}</span>

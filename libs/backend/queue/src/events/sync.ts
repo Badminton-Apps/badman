@@ -15,7 +15,7 @@ export enum Sync {
   ScheduleSyncTournamentSubEvent = 'ScheduleSyncTournamentSubEvent',
   ScheduleSyncTournamentDraw = 'ScheduleSyncTournamentDraw',
   ScheduleSyncTournamentDrawStanding = 'ScheduleSyncTournamentDrawStanding',
-  ScheduleSyncTournamentMatch = 'ScheduleSyncTournamentMatch',
+  ScheduleSyncTournamentGame = 'ScheduleSyncTournamentMatch',
 
   ScheduleSyncCompetitionEvent = 'ScheduleSyncCompetitionEvent',
   ScheduleSyncCompetitionSubEvent = 'ScheduleSyncCompetitionSubEvent',
@@ -30,7 +30,7 @@ export enum Sync {
   ProcessSyncTournamentDraw = 'ProcessSyncTournamentDraw',
   ProcessSyncTournamentDrawStanding = 'ProcessSyncTournamentDrawStanding',
 
-  ProcessSyncTournamentMatch = 'ProcessSyncTournamentMatch',
+  ProcessSyncTournamentGame = 'ProcessSyncTournamentMatch',
 
   ProcessSyncCompetitionEvent = 'ProcessSyncCompetitionEvent',
   ProcessSyncCompetitionSubEvent = 'ProcessSyncCompetitionSubEvent',
