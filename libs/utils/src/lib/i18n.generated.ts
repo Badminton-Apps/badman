@@ -1537,6 +1537,20 @@ export type I18nTranslations = {
                 "subtitute-team-index": string;
             };
         };
+        "encounter": {
+            "gameLeader": {
+                "dialog": {
+                    "title": string;
+                    "buttons": {
+                        "cancel": string;
+                        "select": string;
+                    };
+                    "messages": {
+                        "saved": string;
+                    };
+                };
+            };
+        };
         "points": {
             "title": string;
         };
