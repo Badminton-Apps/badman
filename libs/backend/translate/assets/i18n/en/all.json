@@ -442,11 +442,13 @@
     },
     "sectionTitles": {
       "register": "Register",
+      "teams": "Teams",
       "confirmEncounter": "Confirm encounter",
       "confirmPresence": "Confirm presence",
       "cancelPresence": "Cancel presence",
       "confirmConfirmed": "Confirm encounter",
-      "cancelConfirmed": "Cancel confirmation"
+      "cancelConfirmed": "Cancel confirmation",
+      "results": "Results"
     },
     "prompts": {
       "confirmPresence": "Is the team captain, {fullName}, present for this encounter?",
@@ -454,20 +456,33 @@
       "confirmConfirmed": "Does the team captain, {fullName}, confirm the result of this encounter?",
       "cancelConfirmed": "Do you want to cancel the confirmation of {fullName}?"
     },
+    "messages": {
+      "areComments": "{numberOfComments} comments",
+      "noComments": "No Comments",
+      "presenceUpdated": "{position} presence updated"
+    },
     "buttons": {
       "back": "Back",
       "next": "Next",
       "submit": "Submit",
       "cancel": "Cancel",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "seeTeamFormation": "See team details"
     },
     "inputs": {
       "present": "Present",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "league": "League",
+      "date": "Date"
     },
     "positions": {
       "captain": "Captain",
-      "gameLeader": "Game leader"
+      "gameLeader": "Game leader",
+      "homeCaptain": "Home captain",
+      "awayCaptain": "Away captain"
+    },
+    "errors": {
+      "presenceNotUpdated": "{position} presence not updated"
     }
   }, 
   "event": {
@@ -1450,6 +1465,7 @@
     },
     "teamFormation": {
       "title": "Select players",
+      "disabledTitle": "Players",
       "noClub": "Team has no club",
       "selectPlayer": "Select player",
       "categories": {

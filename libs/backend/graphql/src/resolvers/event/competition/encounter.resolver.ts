@@ -3,6 +3,7 @@ import {
   EncounterValidationInput,
   EncounterValidationOutput,
   EncounterValidationService,
+  updateEncounterCompetitionInput,
 } from '@badman/backend-change-encounter';
 import {
   Assembly,
@@ -362,4 +363,25 @@ export class EncounterCompetitionResolver {
   }
 
   }
+
+    @Mutation(() => EncounterCompetition)
+    async updateEncounterCompetition(
+      @User() user: Player,
+      @Args('encounterId') encounterId: string,
+      @Args('data') updateEncounterCompetitionData: updateEncounterCompetitionInput,
+    ) {
+      const encounter = await EncounterCompetition.findByPk(encounterId);
+
+      if (!encounter) {
+        throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
+
+      if (!(await user.hasAnyPermission(['change-any:encounter']) || encounter.gameLeaderId === user.id)) {
+        throw new UnauthorizedException(`You do not have permission to edit this encounter`);
+      }
+
+      await encounter.update(updateEncounterCompetitionData);
+
+      return encounter;
+    }
 }
