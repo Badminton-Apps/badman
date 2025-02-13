@@ -457,11 +457,13 @@ export type I18nTranslations = {
             };
             "sectionTitles": {
                 "register": string;
+                "teams": string;
                 "confirmEncounter": string;
                 "confirmPresence": string;
                 "cancelPresence": string;
                 "confirmConfirmed": string;
                 "cancelConfirmed": string;
+                "results": string;
             };
             "prompts": {
                 "confirmPresence": string;
@@ -469,20 +471,33 @@ export type I18nTranslations = {
                 "confirmConfirmed": string;
                 "cancelConfirmed": string;
             };
+            "messages": {
+                "areComments": string;
+                "noComments": string;
+                "presenceUpdated": string;
+            };
             "buttons": {
                 "back": string;
                 "next": string;
                 "submit": string;
                 "cancel": string;
                 "confirm": string;
+                "seeTeamFormation": string;
             };
             "inputs": {
                 "present": string;
                 "confirm": string;
+                "league": string;
+                "date": string;
             };
             "positions": {
                 "captain": string;
                 "gameLeader": string;
+                "homeCaptain": string;
+                "awayCaptain": string;
+            };
+            "errors": {
+                "presenceNotUpdated": string;
             };
         };
         "event": {
@@ -1683,6 +1698,7 @@ export type I18nTranslations = {
             };
             "teamFormation": {
                 "title": string;
+                "disabledTitle": string;
                 "noClub": string;
                 "selectPlayer": string;
                 "categories": {

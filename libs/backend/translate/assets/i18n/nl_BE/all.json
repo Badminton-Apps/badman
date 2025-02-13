@@ -449,11 +449,13 @@
     },
     "sectionTitles": {
       "register": "Aanmelden",
+      "teams": "Ploegen",
       "confirmEncounter": "Ontmoeting bevestigen",
       "confirmPresence": "Bevestig aanwezigheid ",
       "cancelPresence": "Annuleer aanwezigheid",
       "confirmConfirmed": "Bevestig ontmoeting",
-      "cancelConfirmed": "Annuleer bevestiging"
+      "cancelConfirmed": "Annuleer bevestiging",
+      "results": "Uitslagen"
     },
     "prompts": {
       "confirmPresence": "Is de ploegkapitein, {fullName}, aanwezig voor deze ontmoeting?",
@@ -461,20 +463,31 @@
       "confirmConfirmed": "Bevestigd de ploegkapitein, {fullName}, de uitslag van deze ontmoeting?",
       "cancelConfirmed": "Wil je de bevestiging van {fullName} annuleren?"
     },
+    "messages": {
+      "areComments": "{numberOfComments} opmerkingen",
+      "noComments": "Geen opmerkingen"
+    },
     "inputs": {
       "present": "Aanwezig",
-      "confirm": "Bevestig"
+      "confirm": "Bevestig",
+      "league": "Afdeling"
     },
     "buttons": {
       "back": "Terug",
       "next": "Volgende",
       "submit": "Indienen",
       "cancel": "Annuleren",
-      "confirm": "Bevestigen"
+      "confirm": "Bevestigen",
+      "seeTeamFormation": "Bekijk ploegopstelling"
     },
     "positions": {
       "captain": "Ploegkapitein",
-      "gameLeader": "Wedstrijdleider"
+      "gameLeader": "Wedstrijdleider",
+      "homeCaptain": "thuis kapitein",
+      "awayCaptain": "uit kapitein"
+    },
+    "errors": {
+      "presenceNotUpdated": "{position} aanwezigheid niet bijgewerkt"
     }
   }, 
   "event": {

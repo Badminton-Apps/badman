@@ -145,6 +145,30 @@ export class EncounterCompetition extends Model<
   @BelongsTo(() => Player, 'acceptedById')
   acceptedBy?: Relation<Player>;
 
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  homeCaptainPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  awayCaptainPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  gameLeaderPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  gameLeaderAccepted?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  homeCaptainAccepted?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  awayCaptainAccepted?: boolean;
+
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   enteredOn?: Date;
