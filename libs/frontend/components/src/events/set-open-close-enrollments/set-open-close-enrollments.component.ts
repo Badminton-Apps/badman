@@ -15,24 +15,23 @@ import { Moment } from 'moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 @Component({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    FormsModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MtxDatetimepickerModule,
-    MtxMomentDatetimeModule
-  ],
-  templateUrl: './set-open-close-enrollments.component.html',
-  styleUrls: ['./set-open-close-enrollments.component.scss'],
-  standalone: true,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        FormsModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatInputModule,
+        MatDatepickerModule,
+        MtxDatetimepickerModule,
+        MtxMomentDatetimeModule
+    ],
+    templateUrl: './set-open-close-enrollments.component.html',
+    styleUrls: ['./set-open-close-enrollments.component.scss']
 })
 export class OpenCloseDateDialogComponent implements OnInit {
   private readonly destroy$ = injectDestroy();

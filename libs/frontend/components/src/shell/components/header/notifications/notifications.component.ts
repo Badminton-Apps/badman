@@ -19,15 +19,12 @@ import { RouterModule } from '@angular/router';
 import { AuthenticateService, NotificationService } from '@badman/frontend-auth';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import { Notification } from '@badman/frontend-models';
-import { LanguageComponent } from '@badman/frontend-translation';
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
 import { bufferCount, concatMap, delay, forkJoin, from } from 'rxjs';
-import { ThemeSwitcherComponent } from '../theme-switcher';
 
 @Component({
   selector: 'badman-notifications',
-  standalone: true,
   imports: [
     CommonModule,
     GraphQLModule,
@@ -40,8 +37,6 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
     MatBadgeModule,
     OverlayModule,
     MatListModule,
-    LanguageComponent,
-    ThemeSwitcherComponent,
   ],
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],

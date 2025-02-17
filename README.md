@@ -97,3 +97,31 @@ https://github.com/rakyll/hey
 
 - `docker build -t badman . -f apps/api/Dockerfile`
 - `docker run badman --env-file .env -p 5001:5001`
+
+### todo
+
+- [ ] Rename club: plumpjes ternat -> Carpe Pluma Ternat
+- [ ] Rename club: psv Brugge -> Koninklijke Badmintonclub PSV Brugge
+- [ ] Rename club: De valkaart -> DE VALKAART BC
+- [ ] Rename club: Hamse BC (L) -> Hamse BC (L)
+- [ ] Rename club: Very Bad'Lobbes -> Lob'Bad
+- [ ] create new club: Badminton Club Moorsel
+- [ ] create new club: Asbl Les Rollingchairs
+- [ ] create new club: The power to smash
+- [ ] create new club: Shuttle Badminton
+- [ ] create new club: Badmintonclub Aalter 
+- [ ] create new club: Fun Team Leuven
+- [ ] remove memberships:
+
+```sql
+
+DELETE FROM "ClubPlayerMemberships"
+WHERE
+	"playerId" IN (
+		'3028b2fc-68df-445d-a699-f6388f76303e',
+		'38386ba2-34fb-45ad-ab8a-f0774bcb19da',
+		'85e9bc2e-6a42-455a-b91f-958ca3bc4a16'
+	)
+	AND "end" = NULL
+
+```

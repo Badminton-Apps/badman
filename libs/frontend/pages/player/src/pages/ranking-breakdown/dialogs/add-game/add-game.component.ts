@@ -17,24 +17,22 @@ import { DocumentNode } from 'graphql';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
-  selector: 'badman-add-game',
-  templateUrl: './add-game.component.html',
-  styleUrls: ['./add-game.component.scss'],
-  //   encapsulation: ViewEncapsulation.None,
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatSlideToggleModule,
-    MatFormFieldModule,
-    MatAutocompleteModule,
-    MatOptionModule,
-    MatInputModule,
-    MatButtonModule,
-    SelectPlayerComponent,
-  ],
+    selector: 'badman-add-game',
+    templateUrl: './add-game.component.html',
+    styleUrls: ['./add-game.component.scss'],
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatSlideToggleModule,
+        MatFormFieldModule,
+        MatAutocompleteModule,
+        MatOptionModule,
+        MatInputModule,
+        MatButtonModule,
+        SelectPlayerComponent,
+    ]
 })
 export class AddGameComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<AddGameComponent>>(MatDialogRef<AddGameComponent>);

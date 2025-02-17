@@ -1,3 +1,18 @@
+## 6.176.0 (2024-12-28)
+
+### 🚀 Features
+
+- more upgrading to latest versions ([60965b376](https://github.com/Badminton-Apps/badman/commit/60965b376))
+
+### 🩹 Fixes
+
+- updated to latest nx version ([72ab41128](https://github.com/Badminton-Apps/badman/commit/72ab41128))
+- linting ([5b51c36fa](https://github.com/Badminton-Apps/badman/commit/5b51c36fa))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.175.1 (2024-12-24)
 
 ### 🩹 Fixes

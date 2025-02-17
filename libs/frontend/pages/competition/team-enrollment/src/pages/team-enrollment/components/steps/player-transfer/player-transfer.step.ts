@@ -27,21 +27,20 @@ import { TRANSFERS_LOANS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 
 @Component({
-  selector: 'badman-player-transfer-step',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatListModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
-    MatDialogModule,
-    TranslateModule,
-    SelectPlayerSignalsComponent,
-  ],
-  templateUrl: './player-transfer.step.html',
-  styleUrls: ['./player-transfer.step.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-player-transfer-step',
+    imports: [
+        CommonModule,
+        MatListModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatDialogModule,
+        TranslateModule,
+        SelectPlayerSignalsComponent,
+    ],
+    templateUrl: './player-transfer.step.html',
+    styleUrls: ['./player-transfer.step.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerTransferStepComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);

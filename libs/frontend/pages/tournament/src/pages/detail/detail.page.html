@@ -34,7 +34,7 @@
             <span>{{ 'all.competition.menu.sync' | translate }}</span>
           </button>
         </badman-has-claim>
-        <badman-has-claim [all]="['re-sync:points']">
+        <badman-has-claim [all]="['sync:tournament']">
           <button mat-menu-item (click)="reCalculatePoints()">
             <mat-icon>sync</mat-icon>
             <span>{{ 'all.button.re-sync' | translate }}</span>
@@ -67,7 +67,7 @@
       <mat-chip
         >{{ 'all.tournament.enrollment.title' | translate }}:
         {{
-          (this.eventTournament()?.allowEnlisting ?? false
+          ((this.eventTournament()?.allowEnlisting ?? false)
             ? 'all.tournament.enrollment.open'
             : 'all.tournament.enrollment.closed'
           ) | translate
@@ -92,13 +92,20 @@
           @for (sub of type.subEvents; track sub) {
             <mat-card class="subEvent">
               <mat-card-header>
-                <mat-card-title
-                  >{{ sub.name }} {{ sub.eventType }}
-                  @if ((sub?.rankingGroups?.length ?? 0) > 0) {
-                    <span>*</span>
-                  }
-                </mat-card-title>
-                <mat-card-subtitle></mat-card-subtitle>
+                <div class="title">
+                  <mat-card-title>
+                    {{ sub.name }} {{ sub.eventType }}
+                    @if ((sub?.rankingGroups?.length ?? 0) > 0) {
+                      <span>*</span>
+                    }
+                  </mat-card-title>
+                  <div class="spacer"></div>
+                  <badman-has-claim [any]="'sync:tournament'">
+                    <button mat-icon-button (click)="this.syncSubEvent()">
+                      <mat-icon>sync</mat-icon>
+                    </button>
+                  </badman-has-claim>
+                </div>
               </mat-card-header>
               <div class="draw">
                 @for (draw of sub.drawTournaments; track draw) {

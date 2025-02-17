@@ -1,29 +1,27 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RankingSystem } from '@badman/frontend-models';
 
 import { HttpClient, HttpEventType } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import { lastValueFrom, Subscription } from 'rxjs';
-import { IRankingConfig } from '../../interfaces';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { RANKING_CONFIG } from '../../injection';
-import moment from 'moment';
+import { IRankingConfig } from '../../interfaces';
 
 @Component({
   selector: 'badman-upload-ranking',
-  standalone: true,
   imports: [
     CommonModule,
     TranslateModule,
@@ -53,7 +51,6 @@ export class UploadRankingDialogComponent {
   public data = inject<{ rankingSystem: RankingSystem }>(MAT_DIALOG_DATA);
   private changeDetectorRef = inject(ChangeDetectorRef);
   snackbar = inject(MatSnackBar);
-
   previewData?: MembersRolePerGroupData[];
   headerRow?: string[];
   dragging = false;
@@ -64,13 +61,11 @@ export class UploadRankingDialogComponent {
 
   competitionStatus = true;
   updatePossible = false;
-  updateClubs = false;
+  updateClubs = true;
   updateRanking = true;
   removeAllRanking = false;
   createNewPlayers = true;
   rankingDate = new Date();
-  clubMembershipStartDate = new Date();
-  clubMembershipEndDate = new Date();
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -125,19 +120,16 @@ export class UploadRankingDialogComponent {
       return;
     }
 
-    // if the filename has 'exportMembersRolePerGroup-' then the part after is the date in DDMMYYYY format set the ranking date to that
-    if (this.uploadedFile.name.includes('exportMembersRolePerGroup-')) {
-      const datePart = this.uploadedFile.name.split('exportMembersRolePerGroup-')[1];
-      const date = moment(datePart, 'DDMMYYYY');
-      if (date.isValid()) {
-        this.rankingDate = date.toDate();
-        this.clubMembershipStartDate = new Date(this.rankingDate.getFullYear(), 5, 1);
-        this.clubMembershipEndDate = new Date(this.rankingDate.getFullYear(), 3, 30);
-      }
-    }
-
     const formData = new FormData();
     formData.append('file', this.uploadedFile, this.uploadedFile.name);
+
+    if (this.uploadedFile.name.indexOf('exportMembersRolePerGroup') !== -1) {
+      this.rankingDate = new Date(
+        parseInt(this.uploadedFile.name.slice(-9, -5)),
+        parseInt(this.uploadedFile.name.slice(-11, -9)) - 1,
+        parseInt(this.uploadedFile.name.slice(-13, -11)),
+      );
+    }
 
     this.uploadProgress$ = this.http
       .post<MembersRolePerGroupData[]>(`${this.config.api}/upload/preview`, formData, {
@@ -170,8 +162,6 @@ export class UploadRankingDialogComponent {
     formData.append('removeAllRanking', this.removeAllRanking.toString());
     formData.append('createNewPlayers', this.createNewPlayers.toString());
     formData.append('rankingDate', this.rankingDate.toISOString());
-    formData.append('clubMembershipStartDate', this.clubMembershipStartDate.toISOString());
-    formData.append('clubMembershipEndDate', this.clubMembershipEndDate.toISOString());
 
     try {
       const result = await lastValueFrom(

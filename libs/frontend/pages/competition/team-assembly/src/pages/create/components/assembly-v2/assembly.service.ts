@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { EncounterCompetition, EventCompetition, Player, Team } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
-import { Observable, delay, distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs';
+import { Observable, delay, distinctUntilChanged, filter, map, shareReplay, switchMap, tap } from 'rxjs';
 import { ValidationMessage, ValidationResult } from '../../models/validation';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import moment from 'moment';
@@ -298,6 +298,9 @@ export class AssemblyService {
       ) =>
         action$.pipe(
           delay(1),
+          tap(() => {
+            this.state.loadTeam();
+          }),
           map(
             (data) =>
               ({
@@ -359,6 +362,9 @@ export class AssemblyService {
         action$.pipe(
           filter(() => !!state().encounterId && !!state().teamId),
           switchMap(() => this._getTeam(state().encounterId, state().teamId)),
+          tap(() => {
+            this.state.validate();
+          }),
           map((data) => ({
             team: new Team(data),
           })),
@@ -366,6 +372,9 @@ export class AssemblyService {
 
       setSingle: (_, action$: Observable<{ index: 1 | 2 | 3 | 4; player: Player }>) =>
         action$.pipe(
+          tap(() => {
+            this.state.validate();
+          }),
           map((data) => ({
             [`single${data.index}`]: data.player,
           })),
@@ -380,6 +389,9 @@ export class AssemblyService {
         }>,
       ) =>
         action$.pipe(
+          tap(() => {
+            this.state.validate();
+          }),
           map((data) => {
             const key = `double${data.index}` as keyof AssemblyState;
             const current = (state()[key] ?? []) as [Player | undefined, Player | undefined];
@@ -392,28 +404,19 @@ export class AssemblyService {
           }),
         ),
     },
-    actionEffects: (state) => ({
-      setInfo: () => {
-        state.loadTeam();
-      },
-      loadTeam: () => {
-        state.validate();
-      },
-      setSingle: () => {
-        state.validate();
-      },
-      setDouble: () => {
-        state.validate();
-      },
-    }),
+
     selectors: (state) => ({
       type: () => state().team?.type,
 
       metaPlayers: () => state().team?.entry?.meta?.competition?.players ?? [],
       regularPlayers: () =>
-        state().team?.players?.filter((p) => p.teamMembership.membershipType === TeamMembershipType.REGULAR) ?? [],
+        state().team?.players?.filter(
+          (p) => p.teamMembership.membershipType === TeamMembershipType.REGULAR,
+        ) ?? [],
       backupPlayers: () =>
-        state().team?.players?.filter((p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP) ?? [],
+        state().team?.players?.filter(
+          (p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP,
+        ) ?? [],
     }),
   });
 }

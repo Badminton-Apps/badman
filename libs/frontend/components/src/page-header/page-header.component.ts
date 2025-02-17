@@ -11,12 +11,11 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'badman-page-header',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './page-header.component.html',
-  styleUrls: ['./page-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-page-header',
+    imports: [CommonModule],
+    templateUrl: './page-header.component.html',
+    styleUrls: ['./page-header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageHeaderComponent implements AfterContentInit {
   private destroy$ = injectDestroy();

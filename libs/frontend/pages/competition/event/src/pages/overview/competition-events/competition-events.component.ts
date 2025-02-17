@@ -19,23 +19,22 @@ import { RisersFallersDialogComponent } from '../../../dialogs';
 import { EventOverviewService } from '../overview.service';
 
 @Component({
-  selector: 'badman-competition-events',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    HasClaimComponent,
-    LoadingBlockComponent,
-    BadmanBlockModule,
-  ],
-  templateUrl: './competition-events.component.html',
-  styleUrls: ['./competition-events.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-competition-events',
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        MatMenuModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDialogModule,
+        HasClaimComponent,
+        LoadingBlockComponent,
+        BadmanBlockModule,
+    ],
+    templateUrl: './competition-events.component.html',
+    styleUrls: ['./competition-events.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompetitionEventsComponent {
   private readonly dialog = inject(MatDialog);

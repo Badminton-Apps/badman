@@ -1,12 +1,13 @@
 {
   "migrations": [
     {
-      "version": "20.0.1",
-      "description": "Set `useLegacyCache` to true for migrating workspaces",
-      "implementation": "./src/migrations/update-20-0-1/use-legacy-cache",
-      "x-repair-skip": true,
-      "package": "nx",
-      "name": "use-legacy-cache"
+      "cli": "nx",
+      "version": "20.4.0-beta.1",
+      "requires": { "@angular/core": ">=19.1.0" },
+      "description": "Update the @angular/cli package version to ~19.1.0.",
+      "factory": "./src/migrations/update-20-4-0/update-angular-cli",
+      "package": "@nx/angular",
+      "name": "update-angular-cli-version-19-1-0"
     }
   ]
 }

@@ -13,21 +13,20 @@ import { MatCardModule } from '@angular/material/card';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 @Component({
-  selector: 'badman-sub-event-view',
-  templateUrl: './sub-event-view.component.html',
-  styleUrls: ['./sub-event-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatExpansionModule,
-    MatCardModule,
-    OverlayModule,
-  ],
+    selector: 'badman-sub-event-view',
+    templateUrl: './sub-event-view.component.html',
+    styleUrls: ['./sub-event-view.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatExpansionModule,
+        MatCardModule,
+        OverlayModule,
+    ]
 })
 export class SubEventViewComponent implements OnInit {
   private _apollo = inject(Apollo);

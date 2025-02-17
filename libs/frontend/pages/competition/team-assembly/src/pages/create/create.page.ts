@@ -35,13 +35,11 @@ import moment from 'moment';
 import { connect } from 'ngxtension/connect';
 import { lastValueFrom } from 'rxjs';
 import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
-import { AssemblyV2Component } from './components/assembly-v2/assembly-v2.component';
 
 @Component({
   selector: 'badman-assembly-create',
   templateUrl: './create.page.html',
   styleUrls: ['./create.page.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -53,7 +51,6 @@ import { AssemblyV2Component } from './components/assembly-v2/assembly-v2.compon
     MatIconModule,
     MatButtonModule,
     AssemblyComponent,
-    AssemblyV2Component,
     MatDialogModule,
     MatMenuModule,
     MatRippleModule,
