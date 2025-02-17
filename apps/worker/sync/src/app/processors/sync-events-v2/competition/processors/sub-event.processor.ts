@@ -1,17 +1,12 @@
 import {
-  DrawTournament,
-  EventTournament,
+  DrawCompetition,
+  EventCompetition,
   RankingSystem,
-  SubEventTournament,
+  SubEventCompetition,
 } from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import {
-  VisualService,
-  XmlGameTypeID,
-  XmlGenderID,
-  XmlTournamentEvent,
-} from '@badman/backend-visual';
-import { GameType, SubEventTypeEnum } from '@badman/utils';
+import { VisualService, XmlGenderID, XmlTournamentEvent } from '@badman/backend-visual';
+import { SubEventTypeEnum } from '@badman/utils';
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
@@ -19,8 +14,8 @@ import { Job, Queue } from 'bull';
 @Processor({
   name: SyncQueue,
 })
-export class SubEventTournamentProcessor {
-  private readonly logger = new Logger(SubEventTournamentProcessor.name);
+export class SubEventCompetitionProcessor {
+  private readonly logger = new Logger(SubEventCompetitionProcessor.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,
@@ -28,8 +23,8 @@ export class SubEventTournamentProcessor {
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
   ) {}
 
-  @Process(Sync.ProcessSyncTournamentSubEvent)
-  async ProcessSyncTournamentSubEvent(
+  @Process(Sync.ProcessSyncCompetitionSubEvent)
+  async ProcessSyncCompetitionSubEvent(
     job: Job<{
       // transaction
       transactionId: string;
@@ -49,6 +44,7 @@ export class SubEventTournamentProcessor {
       options: {
         deleteSubEvent?: boolean;
         deleteDraw?: boolean;
+        deleteEnocunters?: boolean;
         deleteMatches?: boolean;
         deleteStandings?: boolean;
 
@@ -58,7 +54,15 @@ export class SubEventTournamentProcessor {
       };
 
       // from parent
-      draws: { id: string; visualCode: string; games: { id: string; visualCode: string }[] }[];
+      draws: {
+        id: string;
+        visualCode: string;
+        encounters: {
+          id: string;
+          visualCode: string;
+          games: { id: string; visualCode: string }[];
+        }[];
+      }[];
     }>,
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
@@ -71,9 +75,9 @@ export class SubEventTournamentProcessor {
       ...job.data.options,
     };
 
-    let subEvent: SubEventTournament;
+    let subEvent: SubEventCompetition;
     if (job.data.subEventId) {
-      subEvent = await SubEventTournament.findOne({
+      subEvent = await SubEventCompetition.findOne({
         where: {
           id: job.data.subEventId,
         },
@@ -83,20 +87,20 @@ export class SubEventTournamentProcessor {
     let event;
 
     if (subEvent) {
-      event = await subEvent.getEvent();
+      event = await subEvent.getEventCompetition();
       if (event) {
         job.data.eventCode = event.visualCode;
       }
     }
 
     if (!event && job.data.eventId) {
-      event = await EventTournament.findByPk(job.data.eventId, {
+      event = await EventCompetition.findByPk(job.data.eventId, {
         transaction,
       });
     }
 
     if (!event && job.data.eventCode) {
-      event = await EventTournament.findOne({
+      event = await EventCompetition.findOne({
         where: {
           visualCode: job.data.eventCode,
         },
@@ -109,7 +113,7 @@ export class SubEventTournamentProcessor {
     }
 
     if (!subEvent && job.data.subEventCode) {
-      subEvent = await SubEventTournament.findOne({
+      subEvent = await SubEventCompetition.findOne({
         where: {
           visualCode: job.data.subEventCode.toString(),
           eventId: event.id,
@@ -129,7 +133,7 @@ export class SubEventTournamentProcessor {
       this.logger.debug(`Deleting subevent ${subEvent.name}`);
 
       // remove all draws and games
-      const draws = await subEvent.getDrawTournaments({
+      const draws = await subEvent.getDrawCompetitions({
         transaction,
       });
 
@@ -137,19 +141,40 @@ export class SubEventTournamentProcessor {
         const existingDraw = {
           id: draw.id,
           visualCode: draw.visualCode,
-          games: [],
+          encounters: [],
         };
 
-        const games = await draw.getGames({
+        const encounters = await draw.getEncounterCompetitions({
           transaction,
         });
 
-        for (const game of games) {
-          existingDraw.games.push({
-            id: game.id,
-            visualCode: game.visualCode,
+        for (const encounter of encounters) {
+          const existingEncounter = {
+            id: encounter.id,
+            visualCode: encounter.visualCode,
+            games: [],
+          };
+
+          const games = await encounter.getGames({
+            transaction,
           });
-          await game.destroy({ transaction });
+
+          for (const game of games) {
+            existingEncounter.games.push({
+              id: game.id,
+              visualCode: game.visualCode,
+            });
+
+            if (options.deleteMatches) {
+              await game.destroy({ transaction });
+            }
+          }
+
+          existingDraw.encounters.push(existingEncounter);
+
+          if (options.deleteEnocunters) {
+            await encounter.destroy({ transaction });
+          }
         }
 
         existing.draws.push(existingDraw);
@@ -174,7 +199,7 @@ export class SubEventTournamentProcessor {
     }
 
     if (!subEvent) {
-      subEvent = new SubEventTournament();
+      subEvent = new SubEventCompetition();
     }
 
     if (subEventId) {
@@ -185,7 +210,6 @@ export class SubEventTournamentProcessor {
     subEvent.name = visualSubEvent.Name;
     subEvent.visualCode = visualSubEvent.Code;
     subEvent.eventType = this.getEventType(visualSubEvent);
-    subEvent.gameType = this.getGameType(visualSubEvent);
     subEvent.eventId = event.id;
     subEvent.level = visualSubEvent.LevelID;
 
@@ -227,7 +251,7 @@ export class SubEventTournamentProcessor {
   private async processDraws(
     eventCode: string,
     subEventCode: string,
-    subEvent: SubEventTournament,
+    subEvent: SubEventCompetition,
     rankingSystemId: string,
     transactionId: string,
     options: {
@@ -238,13 +262,21 @@ export class SubEventTournamentProcessor {
       updateMatches?: boolean;
       updateStanding?: boolean;
     },
-    existing: { id: string; visualCode: string; games: { id: string; visualCode: string }[] }[],
+    existing: {
+      id: string;
+      visualCode: string;
+      encounters: {
+        id: string;
+        visualCode: string;
+        games: { id: string; visualCode: string }[];
+      }[];
+    }[],
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
     const draws = await this._visualService.getDraws(eventCode, subEventCode, true);
 
     // remove all sub events in this event that are not in the visual to remove stray data
-    const dbDraws = await DrawTournament.findAll({
+    const dbDraws = await DrawCompetition.findAll({
       where: {
         subeventId: subEvent.id,
       },
@@ -255,12 +287,18 @@ export class SubEventTournamentProcessor {
       if (!draws.find((r) => `${r.Code}` === `${dbDraw.visualCode}`)) {
         this.logger.debug(`Removing draw ${dbDraw.visualCode}`);
 
-        const dbGames = await dbDraw.getGames({
+        const encounters = await dbDraw.getEncounterCompetitions({
           transaction,
         });
 
-        for (const dbGame of dbGames) {
-          await dbGame.destroy({ transaction });
+        for (const encounter of encounters) {
+          const dbGames = await encounter.getGames({
+            transaction,
+          });
+
+          for (const dbGame of dbGames) {
+            await dbGame.destroy({ transaction });
+          }
         }
 
         await dbDraw.destroy({ transaction });
@@ -271,7 +309,7 @@ export class SubEventTournamentProcessor {
     for (const xmlSubEvent of draws) {
       const existingDraw = existing.find((r) => `${r.visualCode}` === `${xmlSubEvent.Code}`);
       // update sub events
-      const drawJob = await this._syncQueue.add(Sync.ProcessSyncTournamentDraw, {
+      const drawJob = await this._syncQueue.add(Sync.ProcessSyncCompetitionDraw, {
         transactionId,
         subEventId: subEvent.id,
         eventCode,
@@ -279,29 +317,10 @@ export class SubEventTournamentProcessor {
         drawId: existingDraw?.id,
         rankingSystemId,
         options,
-        games: existingDraw?.games,
+        games: existingDraw?.encounters,
       });
 
       this._transactionManager.addJob(transactionId, drawJob);
-    }
-  }
-
-  private getGameType(xmlEvent: XmlTournamentEvent): GameType | undefined {
-    switch (xmlEvent.GameTypeID) {
-      case XmlGameTypeID.Doubles:
-        // Stupid fix but should work
-        if (xmlEvent.GenderID === XmlGenderID.Mixed) {
-          return GameType.MX;
-        } else {
-          return GameType.D;
-        }
-      case XmlGameTypeID.Singles:
-        return GameType.S;
-      case XmlGameTypeID.Mixed:
-        return GameType.MX;
-      default:
-        this.logger.warn('No Game type found');
-        return;
     }
   }
 

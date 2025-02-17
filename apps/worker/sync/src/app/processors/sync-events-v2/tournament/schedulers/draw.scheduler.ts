@@ -19,14 +19,11 @@ export class DrawTournamentScheduler {
   async ScheduleSyncTournamentDraw(
     job: Job<{
       subEventId: string;
-      
+
       eventCode: string;
       drawId: string;
       drawCode: number;
       rankingSystemId: string;
-
-      updateMatches: boolean;
-      updateStanding: boolean;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();

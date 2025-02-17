@@ -22,7 +22,7 @@ export enum Sync {
   ScheduleSyncCompetitionDraw = 'ScheduleSyncCompetitionDraw',
   ScheduleSyncCompetitionDrawStanding = 'ScheduleSyncCompetitionDrawStanding',
   ScheduleSyncCompetitionEncounter = 'ScheduleSyncCompetitionEncounter',
-  ScheduleSyncCompetitionMatch = 'ScheduleSyncCompetitionMatch',
+  ScheduleSyncCompetitionGame = 'ScheduleSyncCompetitionGame',
 
   // For processing
   ProcessSyncTournamentEvent = 'ProcessSyncTournamentEvent',
@@ -37,5 +37,5 @@ export enum Sync {
   ProcessSyncCompetitionDraw = 'ProcessSyncCompetitionDraw',
   ProcessSyncCompetitionDrawStanding = 'ProcessSyncCompetitionDrawStanding',
   ProcessSyncCompetitionEncounter = 'ProcessSyncCompetitionEncounter',
-  ProcessSyncCompetitionMatch = 'ProcessSyncCompetitionMatch',
+  ProcessSyncCompetitionGame = 'ProcessSyncCompetitionGame',
 }
