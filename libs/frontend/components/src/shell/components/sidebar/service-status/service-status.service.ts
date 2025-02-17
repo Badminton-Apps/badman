@@ -1,6 +1,6 @@
 import { Injectable, Signal, inject } from '@angular/core';
 import { Service } from '@badman/frontend-models';
-import { EVENTS } from '@badman/utils';
+import { EVENTS, ServiceEvent } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { Socket } from 'ngx-socket-io';
 import { signalSlice } from 'ngxtension/signal-slice';
@@ -24,12 +24,12 @@ export class ServiceService {
     loaded: false,
   };
 
-  // constructor() {
-  //   // debugging purposes listen to all events
-  //   this.socket.onAny((event, ...args) => {
-  //     console.log(event, args);
-  //   });
-  // }
+  constructor() {
+    // // debugging purposes listen to all events
+    // this.socket.onAny((event, ...args) => {
+    //   console.log(event, args);
+    // });
+  }
 
   // sources
   private servicesLoaded$ = this.apollo
@@ -49,7 +49,7 @@ export class ServiceService {
     .pipe(map((res) => res.data?.services?.map((item) => new Service(item)) ?? []));
 
   starting$ = (state: Signal<ServicesState>) =>
-    this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STARTING).pipe(
+    this.socket.fromEvent<{ id: string }, ServiceEvent>(EVENTS.SERVICE.SERVICE_STARTING).pipe(
       map((service) => {
         if (!service.id) {
           console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STARTING} event`);
@@ -64,7 +64,7 @@ export class ServiceService {
     );
 
   started$ = (state: Signal<ServicesState>) =>
-    this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STARTED).pipe(
+    this.socket.fromEvent<{ id: string }, ServiceEvent>(EVENTS.SERVICE.SERVICE_STARTED).pipe(
       map((service) => {
         if (!service.id) {
           console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STARTED} event`);
@@ -79,7 +79,7 @@ export class ServiceService {
     );
 
   stopped$ = (state: Signal<ServicesState>) =>
-    this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STOPPED).pipe(
+    this.socket.fromEvent<{ id: string }, ServiceEvent>(EVENTS.SERVICE.SERVICE_STOPPED).pipe(
       map((service) => {
         if (!service.id) {
           console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STOPPED} event`);
