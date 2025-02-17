@@ -1,4 +1,4 @@
-import { Injectable, computed, inject } from '@angular/core';
+import { Injectable, computed, effect, inject } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -140,6 +140,19 @@ export class TeamEnrollmentDataService {
         action$.pipe(
           tap((id) => sessionStorage.setItem(CLUBS_KEY, id)),
           switchMap((id) => loadClub(this.apollo, id)),
+          tap((club) => {
+            const season = this.state().season;
+
+            if (!club || !club.state || !season) {
+              console.warn('setClub', 'no club, state or season');
+              return;
+            }
+
+            this.state.loadTeams({ clubId: club.id, season });
+            this.state.loadTransersAndLoans({ clubId: club.id, season });
+            this.state.loadLocations({ clubId: club.id, season });
+            this.state.loadEvents({ state: club.state });
+          }),
           map((club) => ({
             club,
             teams: [],
@@ -253,6 +266,19 @@ export class TeamEnrollmentDataService {
       loadEvents: (_state, action$: Observable<{ state: string }>) =>
         action$.pipe(
           switchMap(({ state }) => loadEvents(this.apollo, state)),
+          tap((events) => {
+            const club = this.state().club;
+
+            if (!club || events.length <= 0) {
+              console.warn('loadEvents', 'no club or events');
+              return;
+            }
+
+            this.state.loadComments({
+              clubId: club.id,
+              eventIds: events.map((event) => event.id),
+            });
+          }),
           map((events) => ({
             events,
           })),
@@ -287,35 +313,5 @@ export class TeamEnrollmentDataService {
         ),
     },
 
-    actionEffects: (state) => ({
-      setClub: () => {
-        const club = state().club;
-        const season = state().season;
-
-        if (!club || !club.state || !season) {
-          console.warn('setClub', 'no club, state or season');
-          return;
-        }
-
-        state.loadTeams({ clubId: club.id, season });
-        state.loadTransersAndLoans({ clubId: club.id, season });
-        state.loadLocations({ clubId: club.id, season });
-        state.loadEvents({ state: club.state });
-      },
-      loadEvents: () => {
-        const club = state().club;
-        const events = state().events;
-
-        if (!club || events.length <= 0) {
-          console.warn('loadEvents', 'no club or events');
-          return;
-        }
-
-        state.loadComments({
-          clubId: club.id,
-          eventIds: events.map((event) => event.id),
-        });
-      },
-    }),
   });
 }

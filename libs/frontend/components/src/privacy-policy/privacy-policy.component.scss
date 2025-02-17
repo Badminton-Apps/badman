@@ -1,8 +1,9 @@
 :host {
   display: flex;
   padding: 1rem 1rem 0;
+  flex-direction: column;
+
   @media (max-width: 760px) {
     padding: 0.5rem 0.5rem 0;
   }
-  flex-direction: column;
 }

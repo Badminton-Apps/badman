@@ -17,19 +17,18 @@ import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators'
 type SearchType = { id: string; name: string; slug: string };
 
 @Component({
-  selector: 'badman-search-box',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './search-box.component.html',
-  styleUrls: ['./search-box.component.scss'],
+    selector: 'badman-search-box',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatAutocompleteModule,
+        ReactiveFormsModule,
+    ],
+    templateUrl: './search-box.component.html',
+    styleUrls: ['./search-box.component.scss']
 })
 export class SearchBoxComponent implements OnInit {
   private apollo = inject(Apollo);

@@ -31,30 +31,26 @@ import { ClubAssemblyService } from './club-assembly/club-assembly.service';
 import { ClubEncounterService } from './club-encounters/club-encounters.service';
 
 @Component({
-  selector: 'badman-club-detail',
-  templateUrl: './detail.page.html',
-  styleUrls: ['./detail.page.scss'],
-  standalone: true,
-  imports: [
-    RouterModule,
-    TranslateModule,
-
-    MatMenuModule,
-    MatIcon,
-    MatButtonModule,
-    MatTabsModule,
-
-    HasClaimComponent,
-    PageHeaderComponent,
-
-    // tabs
-    ClubTeamsComponent,
-    ClubAssemblyComponent,
-    ClubPlayersComponent,
-    ClubEncountersComponent,
-    ClubCompetitionComponent,
-    SelectSeasonComponent,
-  ],
+    selector: 'badman-club-detail',
+    templateUrl: './detail.page.html',
+    styleUrls: ['./detail.page.scss'],
+    imports: [
+        RouterModule,
+        TranslateModule,
+        MatMenuModule,
+        MatIcon,
+        MatButtonModule,
+        MatTabsModule,
+        HasClaimComponent,
+        PageHeaderComponent,
+        // tabs
+        ClubTeamsComponent,
+        ClubAssemblyComponent,
+        ClubPlayersComponent,
+        ClubEncountersComponent,
+        ClubCompetitionComponent,
+        SelectSeasonComponent,
+    ]
 })
 export class DetailPageComponent {
   private readonly clubDetailService = inject(ClubDetailService);

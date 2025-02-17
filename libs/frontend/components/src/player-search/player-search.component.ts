@@ -33,24 +33,23 @@ import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 
 import { PlayerFieldsComponent } from '../fields';
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatOptionModule,
-    MatAutocompleteModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatDialogModule,
-    MatInputModule,
-    MatProgressBarModule,
-    PlayerFieldsComponent,
-  ],
-  selector: 'badman-player-search',
-  templateUrl: './player-search.component.html',
-  styleUrls: ['./player-search.component.scss'],
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatOptionModule,
+        MatAutocompleteModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatDialogModule,
+        MatInputModule,
+        MatProgressBarModule,
+        PlayerFieldsComponent,
+    ],
+    selector: 'badman-player-search',
+    templateUrl: './player-search.component.html',
+    styleUrls: ['./player-search.component.scss']
 })
 export class PlayerSearchComponent implements OnChanges, OnInit {
   private apollo = inject(Apollo);

@@ -8,11 +8,10 @@ import { startWith, takeUntil } from 'rxjs/operators';
 import statesList from './states.json';
 
 @Component({
-  selector: 'badman-select-state',
-  standalone: true,
-  imports: [CommonModule, MatSelectModule, TranslateModule, ReactiveFormsModule],
-  templateUrl: './select-state.component.html',
-  styleUrls: ['./select-state.component.scss'],
+    selector: 'badman-select-state',
+    imports: [CommonModule, MatSelectModule, TranslateModule, ReactiveFormsModule],
+    templateUrl: './select-state.component.html',
+    styleUrls: ['./select-state.component.scss']
 })
 export class SelectCountrystateComponent implements OnInit {
   private destroy$ = injectDestroy();

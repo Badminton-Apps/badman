@@ -7,10 +7,9 @@ import { Player } from '@badman/frontend-models';
 import { PlayerSearchComponent } from '../player-search';
 
 @Component({
-  templateUrl: './add-player.component.html',
-  styleUrls: ['./add-player.component.scss'],
-  standalone: true,
-  imports: [CommonModule, TranslateModule, MatDialogModule, MatButtonModule, PlayerSearchComponent],
+    templateUrl: './add-player.component.html',
+    styleUrls: ['./add-player.component.scss'],
+    imports: [CommonModule, TranslateModule, MatDialogModule, MatButtonModule, PlayerSearchComponent]
 })
 export class AddPlayerComponent {
   public dialogRef = inject<MatDialogRef<AddPlayerComponent>>(MatDialogRef<AddPlayerComponent>);

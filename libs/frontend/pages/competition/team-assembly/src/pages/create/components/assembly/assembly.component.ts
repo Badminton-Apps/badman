@@ -88,27 +88,26 @@ export const SAVED_ASSEMBLY = gql`
 `;
 
 @Component({
-  selector: 'badman-assembly',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    TeamAssemblyPlayerComponent,
-    PlayerSearchComponent,
-    AssemblyMessageComponent,
-    HasClaimComponent,
-    NgxResize,
-    MatTooltipModule,
-    DragDropModule,
-    MatDividerModule,
-    MatProgressBarModule,
-    MatSnackBarModule,
-    MatIconModule,
-    MatDialogModule,
-    MatButtonModule,
-  ],
-  templateUrl: './assembly.component.html',
-  styleUrls: ['./assembly.component.scss'],
+    selector: 'badman-assembly',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        TeamAssemblyPlayerComponent,
+        PlayerSearchComponent,
+        AssemblyMessageComponent,
+        HasClaimComponent,
+        NgxResize,
+        MatTooltipModule,
+        DragDropModule,
+        MatDividerModule,
+        MatProgressBarModule,
+        MatSnackBarModule,
+        MatIconModule,
+        MatDialogModule,
+        MatButtonModule,
+    ],
+    templateUrl: './assembly.component.html',
+    styleUrls: ['./assembly.component.scss']
 })
 export class AssemblyComponent implements OnInit {
   private apollo = inject(Apollo);

@@ -3,6 +3,7 @@
   "defaultBase": "main",
   "defaultProject": "badman",
   "ci": "github",
+  "parallel": 14,
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -122,6 +123,5 @@
       "skipTests": true
     }
   },
-  "nxCloudAccessToken": "NGRkMmFkZjktYmRjZi00OTFhLWJkMzEtZDcwZjMwM2Q3MzkwfHJlYWQtd3JpdGU=",
-  "useLegacyCache": true
+  "nxCloudAccessToken": "NGRkMmFkZjktYmRjZi00OTFhLWJkMzEtZDcwZjMwM2Q3MzkwfHJlYWQtd3JpdGU="
 }

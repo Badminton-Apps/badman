@@ -4,12 +4,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Claim } from '@badman/frontend-models';
 
 @Component({
-  selector: 'badman-claim',
-  templateUrl: './claim.component.html',
-  styleUrls: ['./claim.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [CommonModule, MatSlideToggleModule],
+    selector: 'badman-claim',
+    templateUrl: './claim.component.html',
+    styleUrls: ['./claim.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, MatSlideToggleModule]
 })
 export class ClaimComponent {
   claim = input<Claim>();

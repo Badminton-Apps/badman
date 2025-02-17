@@ -17,26 +17,25 @@ import { MomentModule } from 'ngx-moment';
 import { OverlayModule } from '@angular/cdk/overlay';
 
 @Component({
-  selector: 'badman-club-view',
-  templateUrl: './club-view.component.html',
-  styleUrls: ['./club-view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MomentModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatExpansionModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
-    MatProgressBarModule,
-    OverlayModule,
-  ],
+    selector: 'badman-club-view',
+    templateUrl: './club-view.component.html',
+    styleUrls: ['./club-view.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MomentModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatExpansionModule,
+        MatCardModule,
+        MatIconModule,
+        MatButtonModule,
+        MatProgressBarModule,
+        OverlayModule,
+    ]
 })
 export class ClubViewComponent implements OnInit {
   private _apollo = inject(Apollo);

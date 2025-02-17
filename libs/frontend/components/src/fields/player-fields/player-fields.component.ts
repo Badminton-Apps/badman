@@ -8,19 +8,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-player-fields',
-  templateUrl: './player-fields.component.html',
-  styleUrls: ['./player-fields.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-  ],
+    selector: 'badman-player-fields',
+    templateUrl: './player-fields.component.html',
+    styleUrls: ['./player-fields.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+    ]
 })
 export class PlayerFieldsComponent {
   group = input<FormGroup>(PlayerFieldsComponent.newPlayerForm());

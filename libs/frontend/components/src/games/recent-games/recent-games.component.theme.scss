@@ -1,6 +1,7 @@
 // info: https://material.angular.io/guide/theming-your-components
 
 @use 'sass:map';
+@use 'sass:color';
 @use '@angular/material' as mat;
 
 @use './list-games/list-games.component.theme.scss' as list-games;
@@ -8,7 +9,7 @@
 @mixin color($theme) {
   badman-recent-games {
     @include list-games.color($theme);
-    
+
     $isDark: map.get($theme, 'is-dark');
     $background-color: mat.get-theme-color($theme, 'background', 'app-bar');
 
@@ -36,23 +37,21 @@
     }
 
     .loading-row {
-      //  background: darkgray;
-      // background: linear-gradient(to right, #eeeeee 10%, #dddddd 18%, #eeeeee 33%);
       @if $isDark {
-        background: lighten($background-color, 20%);
+        background: color.scale($background-color, $lightness: 20%);
         background-image: linear-gradient(
           to right,
-          lighten($background-color, 20%) 10%,
-          lighten($background-color, 30%) 18%,
-          lighten($background-color, 20%) 33%
+          color.scale($background-color, $lightness: 20%) 10%,
+          color.scale($background-color, $lightness: 30%) 18%,
+          color.scale($background-color, $lightness: 20%) 33%
         );
       } @else {
-        background: darken($background-color, 20%);
+        background: color.scale($background-color, $lightness: -20%);
         background-image: linear-gradient(
           to right,
-          darken($background-color, 20%) 10%,
-          darken($background-color, 30%) 18%,
-          darken($background-color, 20%) 33%
+          color.scale($background-color, $lightness: -20%) 10%,
+          color.scale($background-color, $lightness: -30%) 18%,
+          color.scale($background-color, $lightness: -20%) 33%
         );
       }
     }
@@ -62,7 +61,6 @@
 @mixin typography($theme) {
   badman-recent-games {
     @include list-games.typography($theme);
-    
 
     .header {
       .date {

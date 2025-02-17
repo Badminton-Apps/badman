@@ -7,11 +7,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ThemeSwitcherService } from './theme-switcher.service';
 
 @Component({
-  selector: 'badman-theme-switcher',
-  standalone: true,
-  imports: [CommonModule, TranslateModule, MatMenuModule, MatButtonModule, MatIconModule],
-  templateUrl: './theme-switcher.component.html',
-  styleUrls: ['./theme-switcher.component.scss'],
+    selector: 'badman-theme-switcher',
+    imports: [CommonModule, TranslateModule, MatMenuModule, MatButtonModule, MatIconModule],
+    templateUrl: './theme-switcher.component.html',
+    styleUrls: ['./theme-switcher.component.scss']
 })
 export class ThemeSwitcherComponent implements OnInit {
   public colorSchemaService = inject(ThemeSwitcherService);

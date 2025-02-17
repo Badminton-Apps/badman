@@ -8,31 +8,31 @@
   "targets": {
     "build": {
       "executor": "@nx/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/html-injects"],
       "options": {
-        "project": "{projectRoot}/ng-package.json"
+        "project": "libs/frontend/modules/html-injects/ng-package.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "{projectRoot}/tsconfig.lib.prod.json"
+          "tsConfig": "libs/frontend/modules/html-injects/tsconfig.lib.prod.json"
         },
         "development": {
-          "tsConfig": "{projectRoot}/tsconfig.lib.json"
+          "tsConfig": "libs/frontend/modules/html-injects/tsconfig.lib.json"
         }
       },
       "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/libs/frontend/modules/html-injects"],
       "options": {
-        "jestConfig": "{projectRoot}/jest.config.ts"
+        "jestConfig": "libs/frontend/modules/html-injects/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
+        "eslintConfig": "libs/frontend/modules/html-injects/eslint.config.js"
       }
     }
   }

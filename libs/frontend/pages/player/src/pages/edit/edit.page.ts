@@ -30,26 +30,25 @@ import {
 } from './tabs';
 
 @Component({
-  selector: 'badman-player-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    EditRankingComponent,
-    EditCompetitionStatusComponent,
-    EditRankingAllComponent,
-    EditClubHistoryComponent,
-    EditPermissionsComponent,
-    EditPlayerFieldsComponent,
-    MatIconModule,
-    MatTabsModule,
-    MatButtonModule,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-player-edit',
+    templateUrl: './edit.page.html',
+    styleUrls: ['./edit.page.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslateModule,
+        EditRankingComponent,
+        EditCompetitionStatusComponent,
+        EditRankingAllComponent,
+        EditClubHistoryComponent,
+        EditPermissionsComponent,
+        EditPlayerFieldsComponent,
+        MatIconModule,
+        MatTabsModule,
+        MatButtonModule,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditPageComponent implements AfterViewInit {
   private readonly seoService = inject(SeoService);

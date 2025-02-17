@@ -35,21 +35,20 @@ import {
 } from 'rxjs';
 
 @Component({
-  selector: 'badman-select-team',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatAutocompleteModule,
-    MatSelectModule,
-  ],
-  templateUrl: './select-team.component.html',
-  styleUrls: ['./select-team.component.scss'],
+    selector: 'badman-select-team',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatAutocompleteModule,
+        MatSelectModule,
+    ],
+    templateUrl: './select-team.component.html',
+    styleUrls: ['./select-team.component.scss']
 })
 export class SelectTeamComponent implements OnInit {
   private apollo = inject(Apollo);

@@ -27,7 +27,6 @@ import {
   selector: 'badman-list-encounters',
   templateUrl: './list-encounters.component.html',
   styleUrls: ['./list-encounters.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     TranslateModule,
@@ -66,8 +65,20 @@ export class ListEncountersComponent implements OnInit {
   control = input<FormControl<EncounterCompetition>>();
   protected internalControl!: FormControl<EncounterCompetition | null>;
 
-  encountersSem1!: EncounterCompetition[];
-  encountersSem2!: EncounterCompetition[];
+  encountersSem1!: (EncounterCompetition & {
+    info: {
+      icon: string;
+      tooltip: string;
+      infoClass: string;
+    };
+  })[];
+  encountersSem2!: (EncounterCompetition & {
+    info: {
+      icon: string;
+      tooltip: string;
+      infoClass: string;
+    };
+  })[];
 
   ngOnInit() {
     if (this.control() != undefined) {
@@ -130,9 +141,15 @@ export class ListEncountersComponent implements OnInit {
           // get the lowest year
           const lowestYear = Math.min(...encounters.map((r) => r.date?.getFullYear() ?? 0));
 
-          this.encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear);
+          this.encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear).map((r) => ({
+            ...r,
+            info: this.getInfo(r),
+          }));
 
-          this.encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear);
+          this.encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear).map((r) => ({
+            ...r,
+            info: this.getInfo(r),
+          }));
 
           const params = this.activatedRoute.snapshot.queryParams;
 

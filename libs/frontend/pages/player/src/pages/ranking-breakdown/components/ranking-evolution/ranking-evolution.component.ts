@@ -17,12 +17,11 @@ import { map } from 'rxjs/operators';
 import { ChartComponent } from './components';
 
 @Component({
-  selector: 'badman-ranking-evolution',
-  templateUrl: './ranking-evolution.component.html',
-  styleUrls: ['./ranking-evolution.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [CommonModule, TranslateModule, ChartComponent],
+    selector: 'badman-ranking-evolution',
+    templateUrl: './ranking-evolution.component.html',
+    styleUrls: ['./ranking-evolution.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, TranslateModule, ChartComponent]
 })
 export class RankingEvolutionComponent implements OnInit {
   private platformId = inject<string>(PLATFORM_ID);
