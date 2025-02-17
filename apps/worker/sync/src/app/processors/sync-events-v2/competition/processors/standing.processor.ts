@@ -56,7 +56,8 @@ export class DrawStandingCompetitionProcessor {
         transaction,
       });
     }
-    const games = await draw.getGames({
+
+    const games = await draw.getEncounterCompetitions({
       transaction,
       include: [
         {
@@ -65,9 +66,9 @@ export class DrawStandingCompetitionProcessor {
       ],
     });
 
-    await this.destroyExisting(draw, transaction);
-    const standings = await this.createEntriesAndStanding(draw, games, transaction);
-    await this.calculateStandings(games, standings, draw, transaction);
+    // await this.destroyExisting(draw, transaction);
+    // const standings = await this.createEntriesAndStanding(draw, games, transaction);
+    // await this.calculateStandings(games, standings, draw, transaction);
   }
 
   private async calculateStandings(games: Game[], standings: Map<string, Standing>, draw: DrawCompetition, transaction: Transaction) {
