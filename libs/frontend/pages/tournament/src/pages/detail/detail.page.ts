@@ -179,28 +179,15 @@ export class DetailPageComponent {
     this.apollo
       .mutate({
         mutation: gql`
-          mutation SyncEvent(
-            $eventId: ID
-            $updateSubEvents: Boolean
-            $updateDraws: Boolean
-            $updateMatches: Boolean
-            $updateStanding: Boolean
-          ) {
-            syncEvent(
-              eventId: $eventId
-              updateSubEvents: $updateSubEvents
-              updateDraws: $updateDraws
-              updateMatches: $updateMatches
-              updateStanding: $updateStanding
-            )
+          mutation SyncEvent($eventId: ID, $options: SyncEventOptions) {
+            syncEvent(eventId: $eventId, options: $options)
           }
         `,
         variables: {
           eventId: this.eventTournament()?.id,
-          updateSubEvents: true,
-          updateDraws: true,
-          updateMatches: true,
-          updateStanding: true,
+          options: {
+            deleteEvent: true,
+          },
         },
       })
       .subscribe();
@@ -249,5 +236,23 @@ export class DetailPageComponent {
 
   reCalculatePoints() {
     this.detailService.state.reCalculatePoints();
+  }
+
+  syncSubEvent() {
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation SyncSubEvent($subEventId: ID, $options: SyncSubEventOptions) {
+            syncSubEvent(subEventId: $subEventId, options: $options)
+          }
+        `,
+        variables: {
+          subEventId: this.eventTournament()?.id,
+          options: {
+            deleteSubEvent: true,
+          },
+        },
+      })
+      .subscribe();
   }
 }

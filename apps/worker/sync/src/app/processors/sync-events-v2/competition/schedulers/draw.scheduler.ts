@@ -1,3 +1,4 @@
+import { RankingSystem } from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
@@ -6,25 +7,38 @@ import { Job, Queue } from 'bull';
 @Processor({
   name: SyncQueue,
 })
-export class SubEventTournamentScheduler {
-  private readonly logger = new Logger(SubEventTournamentScheduler.name);
+export class DrawCompetitionScheduler {
+  private readonly logger = new Logger(DrawCompetitionScheduler.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
   ) {}
 
-  @Process(Sync.ScheduleSyncTournamentSubEvent)
-  async ScheduleSyncTournamentSubEvent(
+  @Process(Sync.ScheduleSyncCompetitionDraw)
+  async ScheduleSyncCompetitionDraw(
     job: Job<{
       subEventId: string;
+
       eventCode: string;
-      subEventCode: string;
+      drawId: string;
+      drawCode: number;
+      rankingSystemId: string;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
 
-    const executor = await this._syncQueue.add(Sync.ProcessSyncTournamentSubEvent, {
+    if (!job.data.rankingSystemId) {
+      job.data.rankingSystemId = (
+        await RankingSystem.findOne({
+          where: {
+            primary: true,
+          },
+        })
+      ).id;
+    }
+
+    const executor = await this._syncQueue.add(Sync.ProcessSyncCompetitionDraw, {
       transactionId,
       ...job.data,
     });
@@ -45,10 +59,10 @@ export class SubEventTournamentScheduler {
 
       await this._transactionManager.commitTransaction(transactionId);
 
-      this.logger.debug(`Synced tournament subevent`);
+      this.logger.debug(`Synced tournament draw`);
     } catch (error) {
       await this._transactionManager.rollbackTransaction(transactionId);
-      this.logger.error(`Failed to sync tournament subevent`, error);
+      this.logger.error(`Failed to sync tournament draw`, error);
     }
   }
 }

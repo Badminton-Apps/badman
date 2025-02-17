@@ -17,13 +17,8 @@ export class EventTournamenScheduler {
   @Process(Sync.ScheduleSyncTournamentEvent)
   async ScheduleSyncTournamentEvent(
     job: Job<{
-      eventId: string,
-      eventCode: string,
-
-      updateSubEvents: boolean;
-      updateDraws: boolean;
-      updateMatches: boolean;
-      updateStanding: boolean;
+      eventId: string;
+      eventCode: string;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();

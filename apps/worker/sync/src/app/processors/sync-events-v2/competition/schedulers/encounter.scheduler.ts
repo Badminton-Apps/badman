@@ -6,25 +6,29 @@ import { Job, Queue } from 'bull';
 @Processor({
   name: SyncQueue,
 })
-export class SubEventTournamentScheduler {
-  private readonly logger = new Logger(SubEventTournamentScheduler.name);
+export class EncounterCompetitionScheduler {
+  private readonly logger = new Logger(EncounterCompetitionScheduler.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
   ) {}
 
-  @Process(Sync.ScheduleSyncTournamentSubEvent)
-  async ScheduleSyncTournamentSubEvent(
+  @Process(Sync.ScheduleSyncCompetitionGame)
+  async ScheduleSyncCompetitionGame(
     job: Job<{
+      transactionId: string;
       subEventId: string;
       eventCode: string;
-      subEventCode: string;
+      rankingSystemId: string;
+      drawId: string;
+      gameId: string;
+      gameCode: number;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
 
-    const executor = await this._syncQueue.add(Sync.ProcessSyncTournamentSubEvent, {
+    const executor = await this._syncQueue.add(Sync.ProcessSyncCompetitionGame, {
       transactionId,
       ...job.data,
     });
@@ -45,10 +49,10 @@ export class SubEventTournamentScheduler {
 
       await this._transactionManager.commitTransaction(transactionId);
 
-      this.logger.debug(`Synced tournament subevent`);
+      this.logger.debug(`Synced tournament game`);
     } catch (error) {
       await this._transactionManager.rollbackTransaction(transactionId);
-      this.logger.error(`Failed to sync tournament subevent`, error);
+      this.logger.error(`Failed to sync tournament game`, error);
     }
   }
 }

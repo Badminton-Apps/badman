@@ -86,12 +86,15 @@ export class DetailDrawComponent {
     this.apollo
       .mutate({
         mutation: gql`
-          mutation SyncSubEvent($drawId: ID) {
-            syncDraw(drawId: $drawId)
+          mutation SyncDraw($drawId: ID, $options: SyncDrawOptions) {
+            syncDraw(drawId: $drawId, options: $options)
           }
         `,
         variables: {
           drawId: this.drawTournament().id,
+          options: {
+            deleteDraw: true,
+          },
         },
       })
       .subscribe();
