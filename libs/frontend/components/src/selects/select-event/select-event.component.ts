@@ -10,11 +10,10 @@ import { Observable } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-select-event',
-  templateUrl: './select-event.component.html',
-  styleUrls: ['./select-event.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule],
+    selector: 'badman-select-event',
+    templateUrl: './select-event.component.html',
+    styleUrls: ['./select-event.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule]
 })
 export class SelectEventComponent implements OnInit {
   private apollo = inject(Apollo);

@@ -27,13 +27,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import {
-  BadmanBlockModule,
-  EnrollmentMessageComponent,
-  HasClaimComponent,
-  SelectClubComponent,
-  SelectSeasonComponent,
-} from '@badman/frontend-components';
+import { BadmanBlockModule, EnrollmentMessageComponent } from '@badman/frontend-components';
 import { Club, Comment, EventCompetition, Location, Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -44,7 +38,6 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
 
 @Component({
   selector: 'badman-club-competition',
-  standalone: true,
   imports: [
     CommonModule,
     MatTableModule,
@@ -63,11 +56,8 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     CdkTableModule,
     CdkTreeModule,
     EnrollmentDetailRowDirective,
-    SelectClubComponent,
-    SelectSeasonComponent,
     EnrollmentMessageComponent,
     BadmanBlockModule,
-    HasClaimComponent,
   ],
   templateUrl: './club-competition.component.html',
   styleUrls: ['./club-competition.component.scss'],

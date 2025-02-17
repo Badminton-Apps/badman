@@ -55,6 +55,8 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
 
     // log the options when in development
     if (env !== 'production') {
+      console.log(this.configService.get<boolean>('DB_LOGGING'));
+
       this.logger.debug({
         logging: this.configService.get<boolean>('DB_LOGGING'),
         dialect: options.dialect,

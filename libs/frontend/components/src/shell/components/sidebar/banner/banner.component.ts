@@ -11,12 +11,11 @@ import {
 import { Banner } from '@badman/frontend-models';
 
 @Component({
-  selector: 'badman-banner',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './banner.component.html',
-  styleUrls: ['./banner.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-banner',
+    imports: [CommonModule],
+    templateUrl: './banner.component.html',
+    styleUrls: ['./banner.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BannerComponent implements OnInit {
   private elementRef = inject(ElementRef);

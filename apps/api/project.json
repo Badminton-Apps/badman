@@ -30,11 +30,11 @@
       "defaultConfiguration": "development",
       "configurations": {
         "development": {
-          "cwd": "{projectRoot}",
+          "cwd": "apps/api",
           "args": ["--node-env=development"]
         },
         "production": {
-          "cwd": "{projectRoot}",
+          "cwd": "apps/api",
           "args": ["--node-env=production"],
           "dependsOn": ["badman:build"]
         }
@@ -42,15 +42,15 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/apps/api"],
       "options": {
-        "jestConfig": "{projectRoot}/jest.config.ts"
+        "jestConfig": "apps/api/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
+        "eslintConfig": "apps/api/eslint.config.js"
       }
     }
   }

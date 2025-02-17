@@ -224,7 +224,7 @@ export class EncounterChangeCompetitionResolver {
             ],
           },
         ],
-        logging: (msg) => this.logger.debug(msg),
+        // logging: (msg) => this.logger.debug(msg),
       });
 
       // can request new dates in timezone europe/brussels

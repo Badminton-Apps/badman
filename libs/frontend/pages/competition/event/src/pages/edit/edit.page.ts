@@ -20,12 +20,11 @@ import {
   AddRoleComponent,
   EditRoleComponent,
   HasClaimComponent,
-  PageHeaderComponent,
   PlayerSearchComponent,
   SelectCountryComponent,
-  SelectCountrystateComponent,
+  SelectCountrystateComponent
 } from '@badman/frontend-components';
-import { EventCompetition, Player, Role } from '@badman/frontend-models';
+import { EventCompetition, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { LevelType, SecurityType } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -71,7 +70,6 @@ const roleQuery = gql`
   selector: 'badman-competition-edit',
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
@@ -90,12 +88,10 @@ const roleQuery = gql`
     MatSlideToggleModule,
     MatOptionModule,
     MatSelectModule,
-    PageHeaderComponent,
     EventCompetitionLevelFieldsComponent,
     HasClaimComponent,
     AddRoleComponent,
     EditRoleComponent,
-
     SelectCountryComponent,
     SelectCountrystateComponent,
     PlayerSearchComponent,

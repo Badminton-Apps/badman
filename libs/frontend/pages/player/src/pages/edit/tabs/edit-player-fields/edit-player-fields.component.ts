@@ -27,20 +27,19 @@ import { Apollo, gql } from 'apollo-angular';
 import { throttleTime, filter, switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-player-fields',
-  templateUrl: './edit-player-fields.component.html',
-  styleUrls: ['./edit-player-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatInputModule,
-    HasClaimComponent,
-    MatSelectModule,
-    TranslateModule,
-  ],
+    selector: 'badman-player-fields',
+    templateUrl: './edit-player-fields.component.html',
+    styleUrls: ['./edit-player-fields.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatInputModule,
+        HasClaimComponent,
+        MatSelectModule,
+        TranslateModule,
+    ]
 })
 export class EditPlayerFieldsComponent implements OnInit {
   private readonly claimService = inject(ClaimService);

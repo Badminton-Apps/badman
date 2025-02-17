@@ -26,24 +26,23 @@ import { LoadingBlockComponent } from '../../../loading-block';
 import { RecentGamesService } from '../recent-games.service';
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    MomentModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatChipsModule,
-    MatTooltipModule,
-    MatButtonToggleModule,
-    MatIconModule,
-    LoadingBlockComponent,
-  ],
-  selector: 'badman-list-games',
-  templateUrl: './list-games.component.html',
-  styleUrls: ['./list-games.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        MomentModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatChipsModule,
+        MatTooltipModule,
+        MatButtonToggleModule,
+        MatIconModule,
+        LoadingBlockComponent,
+    ],
+    selector: 'badman-list-games',
+    templateUrl: './list-games.component.html',
+    styleUrls: ['./list-games.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   recentGames = inject(RecentGamesService);

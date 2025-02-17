@@ -15,6 +15,11 @@
       >
         <mat-icon>open_in_new</mat-icon>
       </a>
+      <badman-has-claim [any]="'sync:tournament'">
+        <button mat-icon-button (click)="this.syncDraw()">
+          <mat-icon>sync</mat-icon>
+        </button>
+      </badman-has-claim>
     }
   </ng-content>
 

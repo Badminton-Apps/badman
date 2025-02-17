@@ -224,7 +224,8 @@ export class TeamsResolver {
         teamDb.captainId = newTeamData.captainId;
         teamDb.preferredDay = newTeamData.preferredDay;
         teamDb.preferredTime = newTeamData.preferredTime;
-        (teamDb.link = newTeamData.link ?? uuidv4()), await teamDb.save({ transaction });
+        teamDb.link = newTeamData.link ?? uuidv4();
+        await teamDb.save({ transaction });
       }
       if (created) {
         await teamDb.setClub(dbClub, { transaction });

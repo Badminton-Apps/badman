@@ -9,22 +9,21 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatInputModule,
-    MtxDatetimepickerModule,
-    MtxMomentDatetimeModule,
-  ],
-  templateUrl: './select-period.component.html',
-  styleUrls: ['./select-period.component.scss'],
-  standalone: true,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatInputModule,
+        MtxDatetimepickerModule,
+        MtxMomentDatetimeModule,
+    ],
+    templateUrl: './select-period.component.html',
+    styleUrls: ['./select-period.component.scss']
 })
 export class SelectPeriodDialogComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<SelectPeriodDialogComponent>>(

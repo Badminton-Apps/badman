@@ -6,11 +6,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import countriesList from './countries.json';
 
 @Component({
-  selector: 'badman-select-country',
-  standalone: true,
-  imports: [CommonModule, MatSelectModule, TranslateModule, ReactiveFormsModule],
-  templateUrl: './select-country.component.html',
-  styleUrls: ['./select-country.component.scss'],
+    selector: 'badman-select-country',
+    imports: [CommonModule, MatSelectModule, TranslateModule, ReactiveFormsModule],
+    templateUrl: './select-country.component.html',
+    styleUrls: ['./select-country.component.scss']
 })
 export class SelectCountryComponent implements OnInit {
   countries = countriesList?.map((country) => country.code);

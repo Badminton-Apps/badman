@@ -54,7 +54,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     const canChange = moment().isAfter(`${this.event.season}-08-01`);
 
-    const visualMatches = (await this.visualService.getMatches(
+    const visualMatches = (await this.visualService.getGames(
       this.visualTournament.Code,
       internalId,
       !canChange,

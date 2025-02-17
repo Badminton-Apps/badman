@@ -19,22 +19,21 @@ import { TranslateModule } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 
 @Component({
-  templateUrl: './edit-ranking-place-dialog.component.html',
-  styleUrls: ['./edit-ranking-place-dialog.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    TranslateModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSlideToggleModule,
-    ReactiveFormsModule,
-    FormsModule,
-  ],
+    templateUrl: './edit-ranking-place-dialog.component.html',
+    styleUrls: ['./edit-ranking-place-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        TranslateModule,
+        MatDatepickerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatSlideToggleModule,
+        ReactiveFormsModule,
+        FormsModule,
+    ]
 })
 export class EditRankingPlaceDialogComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<EditRankingPlaceDialogComponent>>(

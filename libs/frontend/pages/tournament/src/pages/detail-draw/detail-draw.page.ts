@@ -8,18 +8,19 @@ import {
   inject,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
+  HasClaimComponent,
   PageHeaderComponent,
-  RecentGamesComponent,
   StandingComponent,
-  UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { DrawTournament, EventTournament, Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
+import { Apollo, gql } from 'apollo-angular';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -27,7 +28,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   templateUrl: './detail-draw.page.html',
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
@@ -35,15 +35,16 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatIconModule,
     MatTooltipModule,
     StandingComponent,
-    RecentGamesComponent,
-    UpcomingGamesComponent,
     PageHeaderComponent,
+    MatButtonModule,
+    HasClaimComponent,
   ],
 })
 export class DetailDrawComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly seoService = inject(SeoService);
+  private readonly apollo = inject(Apollo);
   private readonly platformId = inject(PLATFORM_ID);
 
   private routeData = toSignal(this.route.data);
@@ -79,5 +80,23 @@ export class DetailDrawComponent {
       this.breadcrumbService.set('@eventTournament', eventTournamentName);
       this.breadcrumbService.set('@drawTournament', drawTournamentName);
     });
+  }
+
+  syncDraw() {
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation SyncDraw($drawId: ID, $options: SyncDrawOptions) {
+            syncDraw(drawId: $drawId, options: $options)
+          }
+        `,
+        variables: {
+          drawId: this.drawTournament().id,
+          options: {
+            deleteDraw: true,
+          },
+        },
+      })
+      .subscribe();
   }
 }

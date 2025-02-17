@@ -58,12 +58,10 @@ export type TeamForm = FormGroup<{
   selector: 'badman-team-enrollment',
   templateUrl: './team-enrollment.page.html',
   styleUrls: ['./team-enrollment.page.scss'],
-  standalone: true,
   imports: [
     ClubStepComponent,
     CommentsStepComponent,
     CommonModule,
-    HasClaimComponent,
     LocationsStepComponent,
     MatButtonModule,
     MatIconModule,
@@ -153,7 +151,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         this.formGroup.disable();
       }
 
-      this.formGroup.enable()
+      this.formGroup.enable();
     });
   }
 

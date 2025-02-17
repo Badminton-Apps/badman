@@ -6,10 +6,8 @@ import { PathImpl2 } from '@nestjs/config';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  templateUrl: './confirm.dialog.html',
-  standalone: true,
-  imports: [MatDialogModule, MatButtonModule, TranslateModule],
-  // styleUrls: ['./confirm-dialog.component.css']
+    templateUrl: './confirm.dialog.html',
+    imports: [MatDialogModule, MatButtonModule, TranslateModule]
 })
 export class ConfirmDialogComponent {
   public dialogRef = inject<MatDialogRef<ConfirmDialogComponent>>(

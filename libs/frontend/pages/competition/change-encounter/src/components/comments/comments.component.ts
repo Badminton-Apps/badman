@@ -39,21 +39,20 @@ const COMMENTS_QUERY = gql`
 `;
 
 @Component({
-  selector: 'badman-comments',
-  templateUrl: './comments.component.html',
-  styleUrls: ['./comments.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MomentModule,
-    FormsModule,
-    TranslateModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+    selector: 'badman-comments',
+    templateUrl: './comments.component.html',
+    styleUrls: ['./comments.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MomentModule,
+        FormsModule,
+        TranslateModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+    ]
 })
 export class CommentsComponent implements OnInit, OnChanges {
   // injects

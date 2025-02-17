@@ -8,31 +8,31 @@
   "targets": {
     "build": {
       "executor": "@nx/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/vitals"],
       "options": {
-        "project": "{projectRoot}/ng-package.json"
+        "project": "libs/frontend/modules/vitals/ng-package.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "{projectRoot}/tsconfig.lib.prod.json"
+          "tsConfig": "libs/frontend/modules/vitals/tsconfig.lib.prod.json"
         },
         "development": {
-          "tsConfig": "{projectRoot}/tsconfig.lib.json"
+          "tsConfig": "libs/frontend/modules/vitals/tsconfig.lib.json"
         }
       },
       "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/libs/frontend/modules/vitals"],
       "options": {
-        "jestConfig": "{projectRoot}/jest.config.ts"
+        "jestConfig": "libs/frontend/modules/vitals/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
+        "eslintConfig": "libs/frontend/modules/vitals/eslint.config.js"
       }
     }
   }

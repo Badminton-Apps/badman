@@ -21,21 +21,20 @@ import { v4 as uuid } from 'uuid';
 export const PLAYERS_CONTROL = 'players';
 
 @Component({
-  selector: 'badman-team-player',
-  templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    PlayerSearchComponent,
-  ],
+    selector: 'badman-team-player',
+    templateUrl: './player.component.html',
+    styleUrls: ['./player.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        PlayerSearchComponent,
+    ]
 })
 export class TeamPlayersComponent implements OnInit {
   private fb = inject(FormBuilder);

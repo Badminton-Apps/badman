@@ -18,9 +18,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import {
-  GameScoreComponentComponent,
   HasClaimComponent,
-  PageHeaderComponent,
+  PageHeaderComponent
 } from '@badman/frontend-components';
 import {
   DrawCompetition,
@@ -45,7 +44,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   templateUrl: './detail-encounter.page.html',
   styleUrls: ['./detail-encounter.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
@@ -59,7 +57,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatMenuModule,
     MatDividerModule,
     MatTooltipModule,
-    GameScoreComponentComponent,
     PageHeaderComponent,
     HasClaimComponent,
     MomentModule,

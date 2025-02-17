@@ -1,5 +1,6 @@
 // info: https://material.angular.io/guide/theming-your-components
 
+@use 'sass:color';
 @use 'sass:map';
 @use '@angular/material' as mat;
 
@@ -21,9 +22,9 @@
 
     .list-item.read {
       @if ($isDark) {
-        color: darken($color, 10%);
+        color: color.scale($color, $lightness: -10%);
       } @else {
-        color: lighten($color, 10%);
+        color: color.scale($color, $lightness: 10%);
       }
     }
   }

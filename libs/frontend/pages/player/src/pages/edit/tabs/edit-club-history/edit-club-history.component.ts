@@ -12,19 +12,18 @@ import { BehaviorSubject, Observable, map, switchMap } from 'rxjs';
 import { EditClubHistoryDialogComponent } from '../../dialogs';
 
 @Component({
-  selector: 'badman-edit-club-history',
-  templateUrl: './edit-club-history.component.html',
-  styleUrls: ['./edit-club-history.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatListModule,
-    TranslateModule,
-    MomentModule,
-    MatDialogModule,
-    MatButtonModule,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-edit-club-history',
+    templateUrl: './edit-club-history.component.html',
+    styleUrls: ['./edit-club-history.component.scss'],
+    imports: [
+        CommonModule,
+        MatListModule,
+        TranslateModule,
+        MomentModule,
+        MatDialogModule,
+        MatButtonModule,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditClubHistoryComponent implements OnInit {
   private appollo = inject(Apollo);

@@ -18,24 +18,23 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { BehaviorSubject, takeUntil, zip } from 'rxjs';
 
 @Component({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatCheckboxModule,
-    MatSelectModule,
-    MatTableModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-  ],
-  templateUrl: './set-risers-fallers.component.html',
-  styleUrls: ['./set-risers-fallers.component.scss'],
-  standalone: true,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatSelectModule,
+        MatTableModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+    ],
+    templateUrl: './set-risers-fallers.component.html',
+    styleUrls: ['./set-risers-fallers.component.scss']
 })
 export class RisersFallersDialogComponent implements OnInit {
   private cache = inject<InMemoryCache>(APOLLO_CACHE);

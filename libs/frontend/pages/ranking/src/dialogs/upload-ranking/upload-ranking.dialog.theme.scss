@@ -1,5 +1,6 @@
 // info: https://material.angular.io/guide/theming-your-components
 
+@use 'sass:color';
 @use 'sass:map';
 @use '@angular/material' as mat;
 
@@ -18,9 +19,9 @@
 
       &.dragging {
         @if ($isDark) {
-          background-color: darken(mat.get-theme-color($theme, 'background', 'background'), 40%);
+          background-color: color.scale(mat.get-theme-color($theme, 'background', 'background'), $lightness: -40%);
         } @else {
-          background-color: lighten(mat.get-theme-color($theme, 'background', 'background'), 60%);
+          background-color: color.scale(mat.get-theme-color($theme, 'background', 'background'), $lightness: 60%);
         }
       }
     }

@@ -25,25 +25,24 @@ import { UploadRankingDialogComponent } from '../../dialogs';
 import { RankingSystemService } from '@badman/frontend-graphql';
 
 @Component({
-  templateUrl: './detail.page.html',
-  styleUrls: ['./detail.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    RouterModule,
-    MomentModule,
-    MatIconModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatChipsModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatDividerModule,
-    PageHeaderComponent,
-    RankingTableComponent,
-    HasClaimComponent,
-  ],
+    templateUrl: './detail.page.html',
+    styleUrls: ['./detail.page.scss'],
+    imports: [
+        CommonModule,
+        TranslateModule,
+        RouterModule,
+        MomentModule,
+        MatIconModule,
+        MatMenuModule,
+        MatButtonModule,
+        MatChipsModule,
+        MatTooltipModule,
+        MatDialogModule,
+        MatDividerModule,
+        PageHeaderComponent,
+        RankingTableComponent,
+        HasClaimComponent,
+    ]
 })
 export class DetailPageComponent {
   private route = inject(ActivatedRoute);

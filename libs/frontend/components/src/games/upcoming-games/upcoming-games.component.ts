@@ -1,22 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-
-import { input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { TrackByProp } from 'ngxtension/trackby-id-prop';
 import { LoadingBlockComponent } from '../../loading-block';
 import { UpcommingGamesService } from './upcomming-games.service';
-
 @Component({
   selector: 'badman-upcoming-games',
-  standalone: true,
   imports: [
-    TrackByProp,
     CommonModule,
     MatListModule,
     MomentModule,
