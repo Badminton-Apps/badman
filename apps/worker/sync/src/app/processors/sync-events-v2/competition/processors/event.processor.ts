@@ -1,4 +1,4 @@
-import { EventTournament, SubEventTournament } from '@badman/backend-database';
+import { EventCompetition, SubEventCompetition } from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
 import { VisualService } from '@badman/backend-visual';
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
@@ -10,8 +10,8 @@ import { Transaction } from 'sequelize';
 @Processor({
   name: SyncQueue,
 })
-export class EventTournamentProcessor {
-  private readonly logger = new Logger(EventTournamentProcessor.name);
+export class EventCompetitionProcessor {
+  private readonly logger = new Logger(EventCompetitionProcessor.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,
@@ -19,8 +19,8 @@ export class EventTournamentProcessor {
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
   ) {}
 
-  @Process(Sync.ProcessSyncTournamentEvent)
-  async ProcessSyncTournamentEvent(
+  @Process(Sync.ProcessSyncCompetitionEvent)
+  async ProcessSyncCompetitionEvent(
     job: Job<{
       // transcation
       transactionId: string;
@@ -34,6 +34,7 @@ export class EventTournamentProcessor {
         deleteEvent?: boolean;
         deleteSubEvent?: boolean;
         deleteDraw?: boolean;
+        deleteEncounters?: boolean;
         deleteMatches?: boolean;
         deleteStandings?: boolean;
 
@@ -54,9 +55,9 @@ export class EventTournamentProcessor {
       updateStanding: job.data.options?.deleteEvent || false,
       ...job.data.options,
     };
-    let event: EventTournament;
+    let event: EventCompetition;
     if (job.data.eventId) {
-      event = await EventTournament.findOne({
+      event = await EventCompetition.findOne({
         where: {
           id: job.data.eventId,
         },
@@ -65,7 +66,7 @@ export class EventTournamentProcessor {
     }
 
     if (!event && job.data.eventCode) {
-      event = await EventTournament.findOne({
+      event = await EventCompetition.findOne({
         where: {
           visualCode: job.data.eventCode,
         },
@@ -87,7 +88,7 @@ export class EventTournamentProcessor {
     if (event && options.deleteEvent) {
       this.logger.debug(`Deleting event ${event.name}`);
 
-      const subEvents = await event.getSubEventTournaments({
+      const subEvents = await event.getSubEventCompetitions({
         transaction,
       });
 
@@ -102,50 +103,47 @@ export class EventTournamentProcessor {
       existing.existed = true;
     }
 
-    const visualTournament = await this._visualService.getTournament(tournemtnCode);
-
-    const dates: Moment[] = [];
-    for (
-      let date = moment(visualTournament.StartDate);
-      date.diff(visualTournament.EndDate, 'days') <= 0;
-      date.add(1, 'days')
-    ) {
-      dates.push(date.clone());
-    }
+    const visualCompetition = await this._visualService.getTournament(tournemtnCode);
 
     if (!event) {
-      event = new EventTournament();
+      event = new EventCompetition();
     }
 
     if (tournamentid) {
       event.id = tournamentid;
     }
 
-    event.name = visualTournament.Name;
-    event.firstDay = visualTournament.StartDate;
-    event.visualCode = visualTournament.Code;
-    event.dates = dates.map((r) => r.toISOString()).join(',');
-    event.tournamentNumber = visualTournament.Number;
+    event.name = visualCompetition.Name;
+    event.visualCode = visualCompetition.Code;
+    event.season = moment(visualCompetition.StartDate).year();
 
     event.lastSync = new Date();
     await event.save({ transaction });
     this.logger.debug(`Event ${event.name} created`);
 
-    // if we request to update the sub events or the event is new we need to process the sub events
-    if (options.updateSubEvents || !existing.existed) {
-      await this.processSubEvents(
-        visualTournament.Code,
-        event,
-        job.data.transactionId,
-        options,
-        existing.subEvents,
-      );
+    const enlistingOpen =
+      moment(event.openDate).diff(moment(), 'days') > 0 &&
+      moment(event.closeDate).diff(moment(), 'days') < 0;
+
+    if (enlistingOpen) {
+      this.logger.debug(`EventCompetition ${event.name} is open, skipping processing`);
+    } else {
+      // if we request to update the sub events or the event is new we need to process the sub events
+      if (options.updateSubEvents || !existing.existed) {
+        await this.processSubEvents(
+          visualCompetition.Code,
+          event,
+          job.data.transactionId,
+          options,
+          existing.subEvents,
+        );
+      }
     }
   }
 
   private async processSubEvents(
     eventCode: string,
-    event: EventTournament,
+    event: EventCompetition,
     transactionId: string,
     options: {
       deleteSubEvent?: boolean;
@@ -167,7 +165,7 @@ export class EventTournamentProcessor {
     const subEvents = await this._visualService.getSubEvents(eventCode, true);
 
     // remove all sub events in this event that are not in the visual to remove stray data
-    const dbSubEvents = await event.getSubEventTournaments({
+    const dbSubEvents = await event.getSubEventCompetitions({
       transaction,
     });
 
@@ -184,7 +182,7 @@ export class EventTournamentProcessor {
     for (const xmlSubEvent of subEvents) {
       const existingSubEvent = existing.find((r) => `${r.visualCode}` === `${xmlSubEvent.Code}`);
       // update sub events
-      const subEvnetJob = await this._syncQueue.add(Sync.ProcessSyncTournamentSubEvent, {
+      const subEvnetJob = await this._syncQueue.add(Sync.ProcessSyncCompetitionSubEvent, {
         transactionId,
         eventId: event.id,
         subEventCode: xmlSubEvent.Code,
@@ -199,18 +197,14 @@ export class EventTournamentProcessor {
     }
   }
 
-  private async removeSubevent(dbSubEvent: SubEventTournament, transaction: Transaction) {
+  private async removeSubevent(dbSubEvent: SubEventCompetition, transaction: Transaction) {
     const existing = {
       id: dbSubEvent.id,
       visualCode: dbSubEvent.visualCode,
-      draws: [] as {
-        id: string;
-        visualCode: string;
-        games: { id: string; visualCode: string }[];
-      }[],
+      draws: [],
     };
 
-    const dbDraws = await dbSubEvent.getDrawTournaments({
+    const dbDraws = await dbSubEvent.getDrawCompetitions({
       transaction,
     });
 
@@ -218,19 +212,35 @@ export class EventTournamentProcessor {
       const existingDraw = {
         id: draw.id,
         visualCode: draw.visualCode,
-        games: [],
+        encounters: [],
       };
 
-      const games = await draw.getGames({
+      const encounters = await draw.getEncounterCompetitions({
         transaction,
       });
 
-      for (const game of games) {
-        existingDraw.games.push({
-          id: game.id,
-          visualCode: game.visualCode,
+      for (const encounter of encounters) {
+        const existingEncounter = {
+          id: encounter.id,
+          visualCode: encounter.visualCode,
+          games: [],
+        };
+
+        const games = await encounter.getGames({
+          transaction,
         });
-        await game.destroy({ transaction });
+
+        for (const game of games) {
+          existingEncounter.games.push({
+            id: game.id,
+            visualCode: game.visualCode,
+          });
+          await game.destroy({ transaction });
+        }
+
+        existingDraw.encounters.push(existingEncounter);
+
+        await encounter.destroy({ transaction });
       }
 
       existing.draws.push(existingDraw);

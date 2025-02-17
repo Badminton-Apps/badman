@@ -24,8 +24,6 @@ export class MatchTournamentScheduler {
       drawId: string;
       gameId: string;
       gameCode: number;
-      
-      updateStanding: boolean;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();

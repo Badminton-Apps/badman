@@ -6,16 +6,16 @@ import { Job, Queue } from 'bull';
 @Processor({
   name: SyncQueue,
 })
-export class SubEventTournamentScheduler {
-  private readonly logger = new Logger(SubEventTournamentScheduler.name);
+export class SubEventCompetitionScheduler {
+  private readonly logger = new Logger(SubEventCompetitionScheduler.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
   ) {}
 
-  @Process(Sync.ScheduleSyncTournamentSubEvent)
-  async ScheduleSyncTournamentSubEvent(
+  @Process(Sync.ScheduleSyncCompetitionSubEvent)
+  async ScheduleSyncCompetitionSubEvent(
     job: Job<{
       subEventId: string;
       eventCode: string;
@@ -24,7 +24,7 @@ export class SubEventTournamentScheduler {
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
 
-    const executor = await this._syncQueue.add(Sync.ProcessSyncTournamentSubEvent, {
+    const executor = await this._syncQueue.add(Sync.ProcessSyncCompetitionSubEvent, {
       transactionId,
       ...job.data,
     });
