@@ -229,15 +229,6 @@
     "esbuild-android-arm64": "^0.15.18",
     "node-adodb": "5.0.3"
   },
-  "overrides": {
-    "@ng-maps/core": {
-      "zone.js": "0.15.0"
-    },
-    "@angular/core": "19.1.5",
-    "@angular/common": "19.1.5",
-    "@angular/router": "19.1.5",
-    "@angular/platform-browser-dynamic": "19.1.5"
-  },
   "volta": {
     "node": "22.14.0"
   },
