@@ -28,9 +28,8 @@ export class SubEventCompetitionResolver {
 
   constructor(
     @Inject(CACHE_MANAGER) private readonly _cacheManager: Cache,
-
-    private _sequelize: Sequelize,
-    private _pointService: PointsService,
+    private readonly _sequelize: Sequelize,
+    private readonly _pointService: PointsService,
   ) {}
 
   @Query(() => SubEventCompetition)

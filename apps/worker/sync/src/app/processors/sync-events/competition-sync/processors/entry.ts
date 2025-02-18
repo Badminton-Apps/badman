@@ -1,5 +1,5 @@
 import { Club, EventEntry, Team } from '@badman/backend-database';
-import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
+import { VisualService, XmlItem, XmlTournament, TeamClass } from '@badman/backend-visual';
 import { LevelType, runParallel, teamValues } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import { isArray } from 'class-validator';
@@ -66,8 +66,9 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     // get the teams for the draw
     const teams = new Set(
-      xmlDraw.Structure.Item?.map((item) => item.Team?.Name)?.filter((name) => name?.length > 0) ??
-        [],
+      xmlDraw.Structure.Item?.map((item) => (item.Team as TeamClass)?.Name)?.filter(
+        (name) => name?.length > 0,
+      ) ?? [],
     );
 
     for (const item of teams) {

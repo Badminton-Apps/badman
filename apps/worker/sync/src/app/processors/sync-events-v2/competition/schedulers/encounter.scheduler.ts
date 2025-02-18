@@ -14,21 +14,20 @@ export class EncounterCompetitionScheduler {
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
   ) {}
 
-  @Process(Sync.ScheduleSyncCompetitionGame)
-  async ScheduleSyncCompetitionGame(
+  @Process(Sync.ScheduleSyncCompetitionEncounter)
+  async ScheduleSyncCompetitionEncounter(
     job: Job<{
       transactionId: string;
       subEventId: string;
       eventCode: string;
-      rankingSystemId: string;
       drawId: string;
-      gameId: string;
-      gameCode: number;
+      encounterId: string;
+      encounterCode: number;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
 
-    const executor = await this._syncQueue.add(Sync.ProcessSyncCompetitionGame, {
+    const executor = await this._syncQueue.add(Sync.ProcessSyncCompetitionEncounter, {
       transactionId,
       ...job.data,
     });
@@ -49,10 +48,10 @@ export class EncounterCompetitionScheduler {
 
       await this._transactionManager.commitTransaction(transactionId);
 
-      this.logger.debug(`Synced tournament game`);
+      this.logger.debug(`Synced competition game`);
     } catch (error) {
       await this._transactionManager.rollbackTransaction(transactionId);
-      this.logger.error(`Failed to sync tournament game`, error);
+      this.logger.error(`Failed to sync competition game`, error);
     }
   }
 }

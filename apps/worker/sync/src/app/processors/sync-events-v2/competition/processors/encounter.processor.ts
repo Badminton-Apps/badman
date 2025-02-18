@@ -104,8 +104,8 @@ export class EncounterCompetitionProcessor {
     }
 
     // delete the data and reuse the guid
-    const EncounterId = encounter?.id;
-    const EncounterCode = encounter?.visualCode || job.data.encounterCode.toString();
+    const encounterId = encounter?.id;
+    const encounterCode = encounter?.visualCode || job.data.encounterCode.toString();
     const existing = {
       existed: false,
       games: job.data?.games || [],
@@ -130,30 +130,31 @@ export class EncounterCompetitionProcessor {
       existing.existed = true;
     }
 
-    if (!EncounterCode) {
+    if (!encounterCode) {
       throw new Error('Sub Encounter code is required');
     }
 
     const visualEncounters = await this._visualService.getGames(
       job.data.eventCode,
-      EncounterCode,
+      dbDraw.visualCode,
       true,
     );
 
-    const visualEncounter = visualEncounters.find((r) => `${r.Code}` === `${EncounterCode}`);
+    const visualEncounter = visualEncounters.find((r) => `${r.Code}` === `${encounterCode}`);
 
     if (!visualEncounter) {
-      throw new Error('Sub Encounter not found');
+      throw new Error('Encounter not found');
     }
 
     if (!encounter) {
       encounter = new EncounterCompetition();
     }
-    if (EncounterId) {
-      encounter.id = EncounterId;
+    if (encounterId) {
+      encounter.id = encounterId;
     }
 
     encounter.visualCode = visualEncounter.Code;
+    encounter.drawId = dbDraw.id;
 
     await encounter.save({ transaction });
 
@@ -162,7 +163,7 @@ export class EncounterCompetitionProcessor {
     if (options.updateMatches || !existing.existed) {
       gameJobIds = await this.processGames(
         job.data.eventCode,
-        encounter.visualCode,
+        dbDraw.visualCode,
         encounter,
         job.data.rankingSystemId,
         job.data.transactionId,
@@ -185,7 +186,7 @@ export class EncounterCompetitionProcessor {
 
   private async processGames(
     eventCode: string,
-    encounterCode: string,
+    drawCode: string,
     encounter: EncounterCompetition,
     rankingSystemId: string,
     transactionId: string,
@@ -195,7 +196,7 @@ export class EncounterCompetitionProcessor {
     },
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
-    const matches = await this._visualService.getGames(eventCode, encounterCode, true);
+    const matches = await this._visualService.getTeamMatch(eventCode, encounter.visualCode, true);
 
     // remove all sub events in this event that are not in the visual to remove stray data
     const dbGames = await encounter.getGames({
@@ -231,8 +232,4 @@ export class EncounterCompetitionProcessor {
 
     return gameJobIds;
   }
-
-  // private async getTeam(draw: DrawCompetition, teamName: string) {
-  //   const entries = await draw.getEventEntries();
-  // }
 }

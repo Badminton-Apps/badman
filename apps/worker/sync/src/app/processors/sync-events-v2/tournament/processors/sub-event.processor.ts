@@ -267,6 +267,8 @@ export class SubEventTournamentProcessor {
       }
     }
 
+    // schedule
+
     // queue the new sub events
     for (const xmlSubEvent of draws) {
       const existingDraw = existing.find((r) => `${r.visualCode}` === `${xmlSubEvent.Code}`);
@@ -285,6 +287,7 @@ export class SubEventTournamentProcessor {
       this._transactionManager.addJob(transactionId, drawJob);
     }
   }
+
 
   private getGameType(xmlEvent: XmlTournamentEvent): GameType | undefined {
     switch (xmlEvent.GameTypeID) {

@@ -1,10 +1,8 @@
-// start:ng42.barrel
+export * from './assembly.resolver';
 export * from './draw.resolver';
-export * from './encounter.resolver';
 export * from './encounter-change.resolver';
+export * from './encounter.resolver';
+export * from './ennrollment.resolver';
 export * from './event.resolver';
 export * from './subevent.resolver';
-export * from './assembly.resolver';
-export * from './ennrollment.resolver';
-
-// end:ng42.barrel
+export * from './sync.resolver';

@@ -75,7 +75,7 @@ export class EventCompetitionProcessor {
     }
 
     // delete the data and reuse the guid
-    const tournamentid = event?.id;
+    const competitionid = event?.id;
     const tournemtnCode = event?.visualCode || job.data.eventCode;
     const existing = {
       existed: false,
@@ -109,8 +109,8 @@ export class EventCompetitionProcessor {
       event = new EventCompetition();
     }
 
-    if (tournamentid) {
-      event.id = tournamentid;
+    if (competitionid) {
+      event.id = competitionid;
     }
 
     event.name = visualCompetition.Name;

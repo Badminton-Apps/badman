@@ -236,7 +236,7 @@ export interface XmlItem {
   Code: string;
   Winner: string;
   ScoreStatus: string;
-  Team: TeamClass;
+  Team: TeamClass | XmlPlayer[];
   MatchTime?: Date;
   Sets?: XmlSets;
 }
@@ -245,6 +245,7 @@ export interface TeamClass {
   Code: string;
   Name: string;
 }
+
 
 export interface XmlTeam {
   Player1?: XmlPlayer;

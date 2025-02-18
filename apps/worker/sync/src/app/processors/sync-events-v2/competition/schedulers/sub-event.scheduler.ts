@@ -45,10 +45,10 @@ export class SubEventCompetitionScheduler {
 
       await this._transactionManager.commitTransaction(transactionId);
 
-      this.logger.debug(`Synced tournament subevent`);
+      this.logger.debug(`Synced competition subevent`);
     } catch (error) {
       await this._transactionManager.rollbackTransaction(transactionId);
-      this.logger.error(`Failed to sync tournament subevent`, error);
+      this.logger.error(`Failed to sync competition subevent`, error);
     }
   }
 }

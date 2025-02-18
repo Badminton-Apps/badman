@@ -1,10 +1,17 @@
-import { DrawTournament, RankingSystem, SubEventTournament } from '@badman/backend-database';
+import {
+  DrawTournament,
+  EventEntry,
+  Player,
+  RankingSystem,
+  SubEventTournament,
+} from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { VisualService, XmlDrawTypeID } from '@badman/backend-visual';
+import { VisualService, XmlDrawTypeID, XmlPlayer, XmlTournamentDraw } from '@badman/backend-visual';
 import { DrawType } from '@badman/utils';
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
+import { Transaction } from 'sequelize';
 
 @Processor({
   name: SyncQueue,

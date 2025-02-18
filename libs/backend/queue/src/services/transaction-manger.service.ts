@@ -32,7 +32,11 @@ export class TransactionManager {
       return [];
     }
 
-    const statuses = [];
+    return await this.getJobStatusses(jobs);
+  }
+
+  async getJobStatusses(jobs: Job<any>[]) {
+    const statuses = [] as { id: JobId; status: string; name: string; error?: any }[];
 
     for (const job of jobs) {
       try {
@@ -75,21 +79,27 @@ export class TransactionManager {
   async transactionFinished(transactionId: string) {
     const statuses = await this.getJobStatuses(transactionId);
 
-    return statuses.every((status) => status.status === 'completed' || status.status === 'failed');
+    return this.jobsFinished(statuses);
+  }
+
+  async jobsFinished(jobs: { id: JobId; status: string }[]) {
+    return jobs.every((job) => job.status === 'completed' || job.status === 'failed');
   }
 
   async transactionErrored(transactionId: string) {
     const statuses = await this.getJobStatuses(transactionId);
 
-    return statuses.some((status) => status.status === 'failed');
+    return this.jobsErrored(statuses);
   }
 
-  async jobsFinished(transactionId: string, ids: JobId[]) {
+  async jobsErrored(jobs: { id: JobId; status: string }[]) {
+    return jobs.some((job) => job.status === 'failed');
+  }
+
+  async jobInTransactionFinished(transactionId: string, ids: JobId[]) {
     const statuses = await this.getJobStatuses(transactionId);
 
-    return statuses
-      .filter((status) => ids.includes(status.id))
-      .every((status) => status.status === 'completed' || status.status === 'failed');
+    return this.jobsFinished(statuses.filter((job) => ids.includes(job.id)));
   }
 
   async transaction(transactionId?: string) {

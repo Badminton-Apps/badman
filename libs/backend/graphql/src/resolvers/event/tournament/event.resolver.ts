@@ -10,7 +10,7 @@ import {
   RankingSystem,
   SubEventTournament,
 } from '@badman/backend-database';
-import { Sync, SyncQueue } from '@badman/backend-queue';
+import { SyncQueue } from '@badman/backend-queue';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import { IsUUID } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
@@ -19,7 +19,6 @@ import {
   Args,
   Field,
   ID,
-  InputType,
   Int,
   Mutation,
   ObjectType,
@@ -32,7 +31,6 @@ import { Queue } from 'bull';
 import { Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
-import { SyncSubEventOptions } from './subevent.resolver';
 
 @ObjectType()
 export class PagedEventTournament {
@@ -41,18 +39,6 @@ export class PagedEventTournament {
 
   @Field(() => [EventTournament])
   rows?: EventTournament[];
-}
-
-@InputType()
-export class SyncEventOptions extends SyncSubEventOptions {
-  @Field(() => Boolean, {
-    nullable: true,
-    description: 'Deletes the exsiting event (and childs) and re-creates with the same id',
-  })
-  deleteEvent?: boolean;
-
-  @Field(() => Boolean, { nullable: true })
-  updateSubEvents?: boolean;
 }
 
 @Resolver(() => EventTournament)
@@ -399,37 +385,5 @@ export class EventTournamentResolver {
       await transaction.rollback();
       throw error;
     }
-  }
-
-  @Mutation(() => Boolean)
-  async syncEvent(
-    @User() user: Player,
-    @Args('eventId', { type: () => ID, nullable: true }) eventId: string,
-    @Args('eventCode', { type: () => ID, nullable: true }) eventCode: string,
-
-    // options
-    @Args('options', { nullable: true }) options: SyncEventOptions,
-  ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['sync:tournament']))) {
-      throw new UnauthorizedException(`You do not have permission to sync tournament`);
-    }
-
-    if (!eventId && !eventCode) {
-      throw new Error('EventId or eventCode must be provided');
-    }
-
-    this._syncQueue.add(
-      Sync.ScheduleSyncTournamentEvent,
-      {
-        eventId,
-        eventCode,
-        options,
-      },
-      {
-        removeOnComplete: true,
-      },
-    );
-
-    return true;
   }
 }

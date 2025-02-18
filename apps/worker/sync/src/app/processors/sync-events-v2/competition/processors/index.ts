@@ -1,4 +1,5 @@
 export * from './draw.processor';
+export * from './encounter.processor';
 export * from './event.processor';
 export * from './game.processor';
 export * from './standing.processor';

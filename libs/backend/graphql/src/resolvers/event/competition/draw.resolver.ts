@@ -10,12 +10,24 @@ import {
   SubEventCompetition,
 } from '@badman/backend-database';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Field,
+  ID,
+  InputType,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 import { User } from '@badman/backend-authorization';
 import { Sequelize } from 'sequelize-typescript';
 import { sortStanding } from '@badman/utils';
 import { PointsService } from '@badman/backend-ranking';
+
+
 
 @Resolver(() => DrawCompetition)
 export class DrawCompetitionResolver {

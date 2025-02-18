@@ -40,6 +40,7 @@ export class DrawCompetitionProcessor {
         deleteMatches?: boolean;
         deleteStandings?: boolean;
 
+        updateEncounters?: boolean;
         updateMatches?: boolean;
         updateStanding?: boolean;
       };
@@ -153,7 +154,7 @@ export class DrawCompetitionProcessor {
 
     let gameJobIds = [];
     // if we request to update the draws or the event is new we need to process the matches
-    if (options.updateMatches || !existing.existed) {
+    if (options.updateEncounters || !existing.existed) {
       gameJobIds = await this.processEncounters(
         job.data.eventCode,
         draw.visualCode,
@@ -163,17 +164,6 @@ export class DrawCompetitionProcessor {
         existing.encounters,
         options,
       );
-    }
-
-    if (options.updateStanding || !existing.existed) {
-      // also schedule a standing job
-      const standingJob = await this._syncQueue.add(Sync.ProcessSyncCompetitionDrawStanding, {
-        transactionId: job.data.transactionId,
-        drawId: draw.id,
-        gameJobIds,
-      });
-
-      await this._transactionManager.addJob(job.data.transactionId, standingJob);
     }
   }
 

@@ -26,19 +26,6 @@ import { Sequelize } from 'sequelize-typescript';
 import { SyncQueue, Sync } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { SyncDrawOptions } from './draw.resolver';
-
-@InputType()
-export class SyncSubEventOptions extends SyncDrawOptions {
-  @Field(() => Boolean, {
-    nullable: true,
-    description: 'Deletes the exsiting sub-event (and childs) and re-creates with the same id',
-  })
-  deleteSubEvent?: boolean;
-
-  @Field(() => Boolean, { nullable: true })
-  updateDraws?: boolean;
-}
 
 @Resolver(() => SubEventTournament)
 export class SubEventTournamentResolver {
@@ -143,53 +130,5 @@ export class SubEventTournamentResolver {
       await transaction.rollback();
       throw error;
     }
-  }
-
-  @Mutation(() => Boolean, {
-    description: `
-    Sync a subEvent from the tournament\n
-\n
-    Codes are the visual reality code's\n
-\n
-    Valid combinations: \n
-    - subeventId\n
-    - eventId and subEventCode\n
-    - eventCode and subEventCode\n
-
-    `,
-  })
-  async syncSubEvent(
-    @User() user: Player,
-    @Args('eventId', { type: () => ID, nullable: true }) eventId: string,
-    @Args('eventCode', { type: () => ID, nullable: true }) eventCode: string,
-
-    @Args('subEventId', { type: () => ID, nullable: true }) subEventId: string,
-    @Args('subEventCode', { type: () => ID, nullable: true }) subEventCode: string,
-
-    @Args('options', { nullable: true }) options: SyncSubEventOptions,
-  ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['sync:tournament']))) {
-      throw new UnauthorizedException(`You do not have permission to sync tournament`);
-    }
-
-    // Any of the following combinations are valid
-    if (!subEventId && !(eventId && subEventCode) && !(eventCode && subEventCode)) {
-      throw new Error('Invalid arguments');
-    }
-
-    this._syncQueue.add(
-      Sync.ScheduleSyncTournamentSubEvent,
-      {
-        subEventId,
-        subEventCode,
-
-        options,
-      },
-      {
-        removeOnComplete: true,
-      },
-    );
-
-    return true;
   }
 }

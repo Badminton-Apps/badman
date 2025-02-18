@@ -49,10 +49,10 @@ export class MatchCompetitionScheduler {
 
       await this._transactionManager.commitTransaction(transactionId);
 
-      this.logger.debug(`Synced tournament game`);
+      this.logger.debug(`Synced competition game`);
     } catch (error) {
       await this._transactionManager.rollbackTransaction(transactionId);
-      this.logger.error(`Failed to sync tournament game`, error);
+      this.logger.error(`Failed to sync competition game`, error);
     }
   }
 }

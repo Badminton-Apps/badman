@@ -1,5 +1,6 @@
 import {
   DrawCompetition,
+  EncounterCompetition,
   Game,
   GamePlayerMembership,
   Player,
@@ -44,7 +45,7 @@ export class GameCompetitionProcessor {
       eventCode: string;
       subEventId: string;
       rankingSystemId: string;
-      drawId: string;
+      encounterId: string;
 
       // one or the other
       gameId: string;
@@ -68,12 +69,21 @@ export class GameCompetitionProcessor {
       });
     }
 
-    const draw = await DrawCompetition.findByPk(job.data.drawId || game.linkId, {
+    const encounter = await EncounterCompetition.findByPk(job.data.encounterId || game.linkId, {
       transaction,
     });
+    if (!encounter) {
+      throw new Error('Encounter not found');
+    }
+
+    const draw = await encounter.getDrawCompetition({
+      transaction,
+    });
+
     if (!draw) {
       throw new Error('Draw not found');
     }
+
     const subEvent = await SubEventCompetition.findByPk(job.data.subEventId || draw.subeventId, {
       transaction,
     });
@@ -127,8 +137,12 @@ export class GameCompetitionProcessor {
     }
 
     // we fetch it via the draw because bye's aren't in the game detail
-    const xmlGamees = await this._visualService.getGames(job.data.eventCode, draw.visualCode, true);
-    const xmlGame = xmlGamees.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
+    const xmlGames = await this._visualService.getTeamMatch(
+      job.data.eventCode,
+      encounter.visualCode,
+      true,
+    );
+    const xmlGame = xmlGames.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
     if (!xmlGame) {
       throw new Error('game not found');
     }
@@ -160,7 +174,7 @@ export class GameCompetitionProcessor {
         break;
       case XmlScoreStatus.Normal:
       default:
-        // This is the case when the tournament didn't configured their score status
+        // This is the case when the competition didn't configured their score status
         if (
           // No scores
           xmlGame?.Sets?.Set[0]?.Team1 == null &&
@@ -193,7 +207,7 @@ export class GameCompetitionProcessor {
     game.gameType = this._getGameType(xmlGame.MatchTypeID);
     game.visualCode = xmlGame.Code;
     game.linkId = draw.id;
-    game.linkType = 'tournament';
+    game.linkType = 'competition';
     game.status = gameStatus;
     game.playedAt = playedAt;
     game.set1Team1 = xmlGame?.Sets?.Set[0]?.Team1;

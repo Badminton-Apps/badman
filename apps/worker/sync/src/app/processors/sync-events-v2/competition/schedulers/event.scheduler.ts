@@ -6,8 +6,8 @@ import { Job, Queue } from 'bull';
 @Processor({
   name: SyncQueue,
 })
-export class EventTournamenScheduler {
-  private readonly logger = new Logger(EventTournamenScheduler.name);
+export class EventCompetitionScheduler {
+  private readonly logger = new Logger(EventCompetitionScheduler.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,
@@ -44,10 +44,10 @@ export class EventTournamenScheduler {
 
       await this._transactionManager.commitTransaction(transactionId);
 
-      this.logger.debug(`Synced tournament event`);
+      this.logger.debug(`Synced compitiont event`);
     } catch (error) {
       await this._transactionManager.rollbackTransaction(transactionId);
-      this.logger.error(`Failed to sync tournament event`, error);
+      this.logger.error(`Failed to sync compitiont event`, error);
     }
   }
 }

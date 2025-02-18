@@ -6,8 +6,8 @@ import { Job, Queue } from 'bull';
 @Processor({
   name: SyncQueue,
 })
-export class EventTournamenScheduler {
-  private readonly logger = new Logger(EventTournamenScheduler.name);
+export class EventTournamentScheduler {
+  private readonly logger = new Logger(EventTournamentScheduler.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,

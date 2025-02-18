@@ -79,8 +79,8 @@ export class DetailDrawCompetitionComponent {
     this.apollo
       .mutate({
         mutation: gql`
-          mutation RecalculateDrawCompetitionRankingPoints($drawId: ID!) {
-            recalculateDrawCompetitionRankingPoints(drawId: $drawId)
+          mutation SyncDraw(){
+            
           }
         `,
         variables: {

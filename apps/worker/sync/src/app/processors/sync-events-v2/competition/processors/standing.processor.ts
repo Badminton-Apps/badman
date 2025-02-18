@@ -1,13 +1,11 @@
 import {
   DrawCompetition,
+  EncounterCompetition,
   EventEntry,
-  Game,
-  GamePlayerMembership,
   Player,
   Standing,
 } from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { GameStatus } from '@badman/utils';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, JobId } from 'bull';
@@ -16,8 +14,8 @@ import { Op, Transaction } from 'sequelize';
 @Processor({
   name: SyncQueue,
 })
-export class DrawStandingCompetitionProcessor {
-  private readonly logger = new Logger(DrawStandingCompetitionProcessor.name);
+export class StandingCompetitionProcessor {
+  private readonly logger = new Logger(StandingCompetitionProcessor.name);
 
   constructor(private readonly _transactionManager: TransactionManager) {}
 
@@ -39,7 +37,10 @@ export class DrawStandingCompetitionProcessor {
     this.logger.debug(`Processing draw standing for draw ${job.data.drawId}`);
     // check evey 3 seconds if the game jobs are finished
     while (
-      !(await this._transactionManager.jobsFinished(job.data.transactionId, job.data.gameJobIds))
+      !(await this._transactionManager.jobInTransactionFinished(
+        job.data.transactionId,
+        job.data.gameJobIds,
+      ))
     ) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -57,7 +58,7 @@ export class DrawStandingCompetitionProcessor {
       });
     }
 
-    const games = await draw.getEncounterCompetitions({
+    const encounters = await draw.getEncounterCompetitions({
       transaction,
       include: [
         {
@@ -66,115 +67,123 @@ export class DrawStandingCompetitionProcessor {
       ],
     });
 
-    // await this.destroyExisting(draw, transaction);
-    // const standings = await this.createEntriesAndStanding(draw, games, transaction);
-    // await this.calculateStandings(games, standings, draw, transaction);
+    await this.destroyExisting(draw, transaction);
+    const standings = await this.createEntriesAndStanding(draw, encounters, transaction);
+    await this.calculateStandings(encounters, standings, draw, transaction);
   }
 
-  private async calculateStandings(games: Game[], standings: Map<string, Standing>, draw: DrawCompetition, transaction: Transaction) {
-    for (const game of games) {
-      if (game.status == GameStatus.WALKOVER || game.status == GameStatus.NO_MATCH) {
+  private async calculateStandings(
+    encounters: EncounterCompetition[],
+    standings: Map<string, Standing>,
+    draw: DrawCompetition,
+    transaction: Transaction,
+  ) {
+    for (const encounter of encounters) {
+      if (!encounter.homeTeamId || !encounter.awayTeamId) {
         continue;
       }
 
-      const playert1p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
-      );
-
-      const playert2p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
-      );
-
-      if (!playert1p1 || !playert2p1) {
-        this.logger.error(`Could not find players for game ${game.id}`);
-        continue;
-      }
-
-      const t1Standing = standings.get(`${playert1p1?.id}`);
-      const t2Standing = standings.get(`${playert2p1?.id}`);
-
-      if (!t1Standing || !t2Standing) {
-        this.logger.error(`Could not find standings for game ${game.id}`);
-        continue;
-      }
+      const homeStanding = standings.get(encounter.homeTeamId);
+      const awayStanding = standings.get(encounter.awayTeamId);
 
       // We played 1 encounter
-      t1Standing.played++;
-      t2Standing.played++;
+      homeStanding.played = (homeStanding.played ?? 0) + 1;
+      awayStanding.played = (awayStanding.played ?? 0) + 1;
 
-      if (game.winner == 1) {
-        t1Standing.gamesWon++;
-        t2Standing.gamesLost++;
+      if (encounter.homeScore > encounter.awayScore) {
+        homeStanding.won++;
+        awayStanding.lost++;
 
-        t1Standing.points += 1;
-      } else if (game.winner == 2) {
-        t2Standing.gamesWon++;
-        t1Standing.gamesLost++;
+        // 2 points won
+        homeStanding.points += 2;
+      } else if (encounter.homeScore < encounter.awayScore) {
+        homeStanding.lost++;
+        awayStanding.won++;
 
-        t2Standing.points += 1;
+        // 2 points won
+        awayStanding.points += 2;
       } else {
-        this.logger.warn('Game is not finished yet');
+        homeStanding.tied++;
+        awayStanding.tied++;
+
+        // 1 point for a draw
+        homeStanding.points++;
+        awayStanding.points++;
       }
 
-      if ((game.set1Team1 ?? 0) > (game.set1Team2 ?? 0)) {
-        t1Standing.setsWon++;
-        t2Standing.setsLost++;
+      const encoutnerGames = await encounter.getGames({
+        transaction,
+      });
 
-        t1Standing.totalPointsWon += game.set1Team1 ?? 0;
-        t1Standing.totalPointsLost += game.set1Team2 ?? 0;
+      for (const game of encoutnerGames ?? []) {
+        if (game.winner == 1) {
+          homeStanding.gamesWon++;
+          awayStanding.gamesLost++;
+        } else {
+          awayStanding.gamesWon++;
+          homeStanding.gamesLost++;
+        }
 
-        t2Standing.totalPointsLost += game.set1Team1 ?? 0;
-        t2Standing.totalPointsWon += game.set1Team2 ?? 0;
-      } else if ((game.set1Team1 ?? 0) < (game.set1Team2 ?? 0)) {
-        t1Standing.setsLost++;
-        t2Standing.setsWon++;
+        if ((game.set1Team1 ?? 0) > (game.set1Team2 ?? 0)) {
+          homeStanding.setsWon++;
+          awayStanding.setsLost++;
 
-        t2Standing.totalPointsWon += game.set1Team2 ?? 0;
-        t2Standing.totalPointsLost += game.set1Team1 ?? 0;
+          homeStanding.totalPointsWon += game.set1Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set1Team2 ?? 0;
 
-        t1Standing.totalPointsLost += game.set1Team2 ?? 0;
-        t1Standing.totalPointsWon += game.set1Team1 ?? 0;
-      }
+          awayStanding.totalPointsLost += game.set1Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set1Team2 ?? 0;
+        } else if ((game.set1Team1 ?? 0) < (game.set1Team2 ?? 0)) {
+          homeStanding.setsLost++;
+          awayStanding.setsWon++;
 
-      if ((game.set2Team1 ?? 0) > (game.set2Team2 ?? 0)) {
-        t1Standing.setsWon++;
-        t2Standing.setsLost++;
+          homeStanding.totalPointsWon += game.set1Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set1Team2 ?? 0;
 
-        t1Standing.totalPointsWon += game.set2Team1 ?? 0;
-        t1Standing.totalPointsLost += game.set2Team2 ?? 0;
+          awayStanding.totalPointsLost += game.set1Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set1Team2 ?? 0;
+        }
 
-        t2Standing.totalPointsLost += game.set2Team1 ?? 0;
-        t2Standing.totalPointsWon += game.set2Team2 ?? 0;
-      } else if ((game.set2Team1 ?? 0) < (game.set2Team2 ?? 0)) {
-        t1Standing.setsLost++;
-        t2Standing.setsWon++;
+        if ((game.set2Team1 ?? 0) > (game.set2Team2 ?? 0)) {
+          homeStanding.setsWon++;
+          awayStanding.setsLost++;
 
-        t2Standing.totalPointsWon += game.set2Team2 ?? 0;
-        t2Standing.totalPointsLost += game.set2Team1 ?? 0;
+          homeStanding.totalPointsWon += game.set2Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set2Team2 ?? 0;
 
-        t1Standing.totalPointsLost += game.set2Team2 ?? 0;
-        t1Standing.totalPointsWon += game.set2Team1 ?? 0;
-      }
+          awayStanding.totalPointsLost += game.set2Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set2Team2 ?? 0;
+        } else if ((game.set2Team1 ?? 0) < (game.set2Team2 ?? 0)) {
+          homeStanding.setsLost++;
+          awayStanding.setsWon++;
 
-      if ((game.set3Team1 ?? 0) !== 0 && (game.set3Team2 ?? 0) !== 0) {
-        if ((game.set3Team1 ?? 0) > (game.set3Team2 ?? 0)) {
-          t1Standing.setsWon++;
-          t2Standing.setsLost++;
+          homeStanding.totalPointsWon += game.set2Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set2Team2 ?? 0;
 
-          t1Standing.totalPointsWon += game.set3Team1 ?? 0;
-          t1Standing.totalPointsLost += game.set3Team2 ?? 0;
+          awayStanding.totalPointsLost += game.set2Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set2Team2 ?? 0;
+        }
 
-          t2Standing.totalPointsLost += game.set3Team1 ?? 0;
-          t2Standing.totalPointsWon += game.set3Team2 ?? 0;
-        } else if ((game.set3Team1 ?? 0) < (game.set3Team2 ?? 0)) {
-          t1Standing.setsLost++;
-          t2Standing.setsWon++;
+        if ((game.set3Team1 ?? 0) !== 0 && (game.set3Team2 ?? 0) !== 0) {
+          if ((game.set3Team1 ?? 0) > (game.set3Team2 ?? 0)) {
+            homeStanding.setsWon++;
+            awayStanding.setsLost++;
 
-          t2Standing.totalPointsWon += game.set3Team2 ?? 0;
-          t2Standing.totalPointsLost += game.set3Team1 ?? 0;
+            homeStanding.totalPointsWon += game.set3Team1 ?? 0;
+            homeStanding.totalPointsLost += game.set3Team2 ?? 0;
 
-          t1Standing.totalPointsLost += game.set3Team2 ?? 0;
-          t1Standing.totalPointsWon += game.set3Team1 ?? 0;
+            awayStanding.totalPointsLost += game.set3Team1 ?? 0;
+            awayStanding.totalPointsWon += game.set3Team2 ?? 0;
+          } else if ((game.set3Team1 ?? 0) < (game.set3Team2 ?? 0)) {
+            homeStanding.setsLost++;
+            awayStanding.setsWon++;
+
+            homeStanding.totalPointsWon += game.set3Team1 ?? 0;
+            homeStanding.totalPointsLost += game.set3Team2 ?? 0;
+
+            awayStanding.totalPointsLost += game.set3Team1 ?? 0;
+            awayStanding.totalPointsWon += game.set3Team2 ?? 0;
+          }
         }
       }
     }
@@ -219,38 +228,37 @@ export class DrawStandingCompetitionProcessor {
             'totalPointsWon',
             'totalPointsLost',
           ],
-        }
+        },
       );
     }
   }
 
   private async createEntriesAndStanding(
     draw: DrawCompetition,
-    games: Game[],
+    encounters: EncounterCompetition[],
     transaction: Transaction,
   ) {
     const processed = new Set<string>();
     const standings = new Map<string, Standing>();
 
-    // creat a entry for each game
-    for (const game of games) {
-      const team1p1 = game?.players?.find(
-        (player) =>
-          player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 1,
-      )?.id;
+    for (const encounter of encounters) {
+      if (!encounter.homeTeamId || !encounter.awayTeamId) {
+        continue;
+      }
 
-      const team1p2 = game?.players?.find(
-        (player) =>
-          player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 2,
-      )?.id;
+      const homeTeam = await encounter.getHome({ transaction });
+      const awayTeam = await encounter.getAway({ transaction });
 
-      if (team1p1 && !processed.has(team1p1)) {
+      if (!homeTeam || !awayTeam) {
+        continue;
+      }
+
+      if (homeTeam && !processed.has(homeTeam.id)) {
         const entryTeam1 = new EventEntry({
           subEventId: draw.subeventId,
-          entryType: 'tournament',
+          entryType: 'competition',
           drawId: draw.id,
-          player1Id: team1p1,
-          player2Id: team1p2,
+          teamId: homeTeam.id,
         });
 
         const standingTeam1 = new Standing({
@@ -260,49 +268,36 @@ export class DrawStandingCompetitionProcessor {
         await entryTeam1.save({ transaction });
         await standingTeam1.save({ transaction });
 
-        processed.add(team1p1);
-        processed.add(team1p2);
+        processed.add(homeTeam.id);
 
-        standings.set(team1p1, standingTeam1);
+        standings.set(homeTeam.id, standingTeam1);
       }
 
-      const team2p1 = game?.players?.find(
-        (player) =>
-          player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 1,
-      )?.id;
-
-      const team2p2 = game?.players?.find(
-        (player) =>
-          player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 2,
-      )?.id;
-
-      if (team2p1 && !processed.has(team2p1)) {
-        const entryTeam2 = new EventEntry({
+      if (awayTeam && !processed.has(awayTeam.id)) {
+        const entryTeam1 = new EventEntry({
           subEventId: draw.subeventId,
-          entryType: 'tournament',
+          entryType: 'competition',
           drawId: draw.id,
-          player1Id: team2p1,
-          player2Id: team2p2,
+          teamId: awayTeam.id,
         });
 
-        const standingTeam2 = new Standing({
-          entryId: entryTeam2.id,
+        const standingTeam1 = new Standing({
+          entryId: entryTeam1.id,
         });
 
-        await entryTeam2.save({ transaction });
-        await standingTeam2.save({ transaction });
+        await entryTeam1.save({ transaction });
+        await standingTeam1.save({ transaction });
 
-        processed.add(team2p1);
-        processed.add(team2p2);
+        processed.add(awayTeam.id);
 
-        standings.set(team2p1, standingTeam2);
+        standings.set(awayTeam.id, standingTeam1);
       }
     }
 
     return standings;
   }
 
-  private async destroyExisting(draw: DrawCompetition, transaction) {
+  private async destroyExisting(draw: DrawCompetition, transaction: Transaction) {
     const entries = await EventEntry.findAll({
       where: {
         drawId: draw.id,

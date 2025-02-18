@@ -1,0 +1,8 @@
+{
+  "client": {
+    "service": {
+      "name": "Badman-beta-52fi5",
+      "url": "http://localhost:5000/graphql"
+    }
+  }
+}

@@ -16,8 +16,8 @@ import { Op, Transaction } from 'sequelize';
 @Processor({
   name: SyncQueue,
 })
-export class DrawStandingTournamentProcessor {
-  private readonly logger = new Logger(DrawStandingTournamentProcessor.name);
+export class StandingTournamentProcessor {
+  private readonly logger = new Logger(StandingTournamentProcessor.name);
 
   constructor(private readonly _transactionManager: TransactionManager) {}
 
@@ -39,7 +39,10 @@ export class DrawStandingTournamentProcessor {
     this.logger.debug(`Processing draw standing for draw ${job.data.drawId}`);
     // check evey 3 seconds if the game jobs are finished
     while (
-      !(await this._transactionManager.jobsFinished(job.data.transactionId, job.data.gameJobIds))
+      !(await this._transactionManager.jobInTransactionFinished(
+        job.data.transactionId,
+        job.data.gameJobIds,
+      ))
     ) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -70,18 +73,23 @@ export class DrawStandingTournamentProcessor {
     await this.calculateStandings(games, standings, draw, transaction);
   }
 
-  private async calculateStandings(games: Game[], standings: Map<string, Standing>, draw: DrawTournament, transaction: Transaction) {
+  private async calculateStandings(
+    games: Game[],
+    standings: Map<string, Standing>,
+    draw: DrawTournament,
+    transaction: Transaction,
+  ) {
     for (const game of games) {
       if (game.status == GameStatus.WALKOVER || game.status == GameStatus.NO_MATCH) {
         continue;
       }
 
       const playert1p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1,
       );
 
       const playert2p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1,
       );
 
       if (!playert1p1 || !playert2p1) {
@@ -218,7 +226,7 @@ export class DrawStandingTournamentProcessor {
             'totalPointsWon',
             'totalPointsLost',
           ],
-        }
+        },
       );
     }
   }
@@ -301,7 +309,7 @@ export class DrawStandingTournamentProcessor {
     return standings;
   }
 
-  private async destroyExisting(draw: DrawTournament, transaction) {
+  private async destroyExisting(draw: DrawTournament, transaction: Transaction) {
     const entries = await EventEntry.findAll({
       where: {
         drawId: draw.id,
