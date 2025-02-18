@@ -15,12 +15,11 @@ import { RouterModule } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
 
 @Component({
-  selector: 'badman-beta',
-  standalone: true,
-  imports: [CommonModule, MatCardModule, RouterModule, MatButtonModule, MatIconModule],
-  templateUrl: './beta.component.html',
-  styleUrls: ['./beta.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-beta',
+    imports: [CommonModule, MatCardModule, RouterModule, MatButtonModule, MatIconModule],
+    templateUrl: './beta.component.html',
+    styleUrls: ['./beta.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BetaComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);

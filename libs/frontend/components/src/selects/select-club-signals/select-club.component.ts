@@ -8,18 +8,17 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SelectClubsService } from './select-club.service';
 
 @Component({
-  selector: 'badman-select-club',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MtxSelectModule,
-  ],
-  templateUrl: './select-club.component.html',
-  styleUrls: ['./select-club.component.scss'],
+    selector: 'badman-select-club',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MtxSelectModule,
+    ],
+    templateUrl: './select-club.component.html',
+    styleUrls: ['./select-club.component.scss']
 })
 export class SelectClubSignalsComponent {
   private readonly dataService = new SelectClubsService();

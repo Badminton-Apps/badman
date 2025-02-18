@@ -1,6 +1,7 @@
 // info: https://material.angular.io/guide/theming-your-components
 
 @use 'sass:map';
+@use 'sass:color';
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
@@ -18,17 +19,17 @@
 
   ::-webkit-scrollbar-thumb {
     @if $isDark {
-      background-color: lighten($background-color, 30%);
+      background-color: color.scale($background-color, $lightness: 30%);
     } @else {
-      background-color: darken($background-color, 30%);
+      background-color: color.scale($background-color, $lightness: -30%);
     }
   }
 
   ::-webkit-scrollbar-thumb:hover {
     @if $isDark {
-      background-color: lighten($background-color, 20%);
+      background-color: color.scale($background-color, $lightness: 20%);
     } @else {
-      background-color: darken($background-color, 20%);
+      background-color: color.scale($background-color, $lightness: -20%);
     }
   }
 

@@ -51,7 +51,10 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       transaction: this.transaction,
     });
     const canChange = moment().subtract(2, 'months').isBefore(this.event.firstDay);
-    const visualEvents = await this.visualService.getEvents(this.visualTournament.Code, !canChange);
+    const visualEvents = await this.visualService.getSubEvents(
+      this.visualTournament.Code,
+      !canChange,
+    );
     const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events

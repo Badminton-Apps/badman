@@ -9,21 +9,20 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-add-event',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatInputModule,
-    MatSlideToggleModule,
-    TranslateModule,
-  ],
-  templateUrl: './add-event.component.html',
-  styleUrls: ['./add-event.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-add-event',
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatInputModule,
+        MatSlideToggleModule,
+        TranslateModule,
+    ],
+    templateUrl: './add-event.component.html',
+    styleUrls: ['./add-event.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddEventComponent {
   public dialogRef = inject<MatDialogRef<AddEventComponent>>(MatDialogRef<AddEventComponent>);

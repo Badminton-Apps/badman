@@ -22,6 +22,10 @@ concurrency:
 
 run-name: ${{ github.ref == 'refs/heads/main' && 'Prod' || 'Beta' }} release ${{ inputs.e2e-tests && 'with E2E tests' || '' }} - ${{ github.run_number }}
 
+# variable to use certain package manager
+env:
+  PACKAGE_MANAGER: npm # Change this to 'bun', 'yarn', or 'pnpm' as needed.
+
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -63,18 +67,39 @@ jobs:
           # Set NX_HEAD to the current commit
           echo "NX_HEAD=origin/${{github.ref_name}}" >> $GITHUB_ENV
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      - name: Setup package manager
+        run: |
+          if [ "${{ env.PACKAGE_MANAGER }}" = "bun" ]; then
+            echo "Installing Bun..."
+            curl -fsSL https://bun.sh/install | bash
+            export PATH="/root/.bun/bin:$PATH"
+          elif [ "${{ env.PACKAGE_MANAGER }}" = "pnpm" ]; then
+            echo "Installing pnpm..."
+            npm install -g pnpm
+          elif [ "${{ env.PACKAGE_MANAGER }}" = "yarn" ]; then
+            echo "Installing Yarn..."
+            npm install -g yarn
+          fi
 
-      # - run: bun nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
-      
-      - run: bun install --no-cache --concurrent-scripts 1
+      - name: Start CI run
+        run: |
+          if [ "${{ env.PACKAGE_MANAGER }}" = "bun" ]; then
+              npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets-bun.yaml"
+          else
+              npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+          fi
 
-      - run: bun nx affected -t test build -c ci
+      - name: Install dependencies
+        run: |
+          ${{ env.PACKAGE_MANAGER }} install
+
+      - name: Run affected commands
+        run: |
+          ${{ env.PACKAGE_MANAGER }} run nx -- affected -t test build -c ci
 
       - name: Run Playwright tests
-        run: bun nx affected --parallel 1 -t e2e-ci
+        run: |
+          ${{ env.PACKAGE_MANAGER }} run nx -- affected --parallel 1 -t e2e-ci
         id: run-e2e-tests
         if: ${{ inputs.e2e-tests }}
 
@@ -115,17 +140,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: stop agents
-        run: bun nx-cloud complete-ci-run
+        run: npx nx-cloud complete-ci-run
         if: always()
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report
@@ -135,8 +160,8 @@ jobs:
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}          
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Merge main -> develop
         uses: devmasx/merge-branch@master
@@ -151,15 +176,15 @@ jobs:
       # deploy the new packages
       - name: Deploy to Prod
         if: github.ref == 'refs/heads/main'
-        run: bun nx affected -t deploy --no-agents
+        run: ${{ env.PACKAGE_MANAGER }} run nx -- affected -t deploy --no-agents
         env:
           API_HOOK: ${{ secrets.PROD_API_HOOK  }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK  }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK  }}
 
       - name: Deploy to Beta
-        run: bun nx affected -t deploy --no-agents
+        run: ${{ env.PACKAGE_MANAGER }} run nx -- affected -t deploy --no-agents
         env:
-          API_HOOK: ${{  secrets.BETA_API_HOOK }}
-          WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
-          WORKER_RANKING_HOOK: ${{  secrets.BETA_WORKER_RANKING_HOOK }}
+            API_HOOK: ${{  secrets.BETA_API_HOOK }}
+            WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
+            WORKER_RANKING_HOOK: ${{  secrets.BETA_WORKER_RANKING_HOOK }}

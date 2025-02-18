@@ -5,10 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
 import {
-  HasClaimComponent,
   SelectClubComponent,
   SelectSeasonComponent,
-  SelectTeamComponent,
+  SelectTeamComponent
 } from '@badman/frontend-components';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { SeoService } from '@badman/frontend-seo';
@@ -34,9 +33,7 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
     SelectSeasonComponent,
     ListEncountersComponent,
     ShowRequestsComponent,
-    HasClaimComponent,
   ],
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeEncounterComponent implements OnInit {
@@ -88,7 +85,5 @@ export class ChangeEncounterComponent implements OnInit {
         this.breadcrumbsService.set('competition/change-encounter', result[changeEncounterKey]);
         this.breadcrumbsService.set('competition', result[competition]);
       });
-
-      
   }
 }

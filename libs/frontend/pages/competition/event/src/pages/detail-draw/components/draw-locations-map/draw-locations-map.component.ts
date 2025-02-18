@@ -7,12 +7,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 
 @Component({
-  selector: 'badman-draw-locations-map',
-  templateUrl: './draw-locations-map.component.html',
-  styleUrls: ['./draw-locations-map.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, NgMapsGoogleModule],
+    selector: 'badman-draw-locations-map',
+    templateUrl: './draw-locations-map.component.html',
+    styleUrls: ['./draw-locations-map.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, RouterModule, TranslateModule, NgMapsGoogleModule]
 })
 export class DrawLocationMapComponent implements OnInit {
   private apollo = inject(Apollo);

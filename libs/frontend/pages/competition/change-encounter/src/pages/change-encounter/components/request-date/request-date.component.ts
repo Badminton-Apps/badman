@@ -15,22 +15,21 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 
 @Component({
-  selector: 'badman-request-date',
-  standalone: true,
-  imports: [
-    CommonModule,
-    DateSelectorComponent,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    MatSelectModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatTooltipModule,
-  ],
-  templateUrl: './request-date.component.html',
-  styleUrls: ['./request-date.component.scss'],
+    selector: 'badman-request-date',
+    imports: [
+        CommonModule,
+        DateSelectorComponent,
+        ReactiveFormsModule,
+        FormsModule,
+        TranslateModule,
+        MatSelectModule,
+        MatIconModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatTooltipModule,
+    ],
+    templateUrl: './request-date.component.html',
+    styleUrls: ['./request-date.component.scss']
 })
 export class RequestDateComponent implements OnInit {
   showCompact = input<boolean | undefined>(false);

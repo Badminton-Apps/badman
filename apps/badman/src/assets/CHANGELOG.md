@@ -1,3 +1,44 @@
+## 6.176.0 (2024-12-28)
+
+### 🚀 Features
+
+- more upgrading to latest versions ([60965b376](https://github.com/Badminton-Apps/badman/commit/60965b376))
+
+### 🩹 Fixes
+
+- updated to latest nx version ([72ab41128](https://github.com/Badminton-Apps/badman/commit/72ab41128))
+- linting ([5b51c36fa](https://github.com/Badminton-Apps/badman/commit/5b51c36fa))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
+## 6.175.1 (2024-12-24)
+
+### 🩹 Fixes
+
+- script for twizzit to ttp ([5affc5c34](https://github.com/Badminton-Apps/badman/commit/5affc5c34))
+- variables names were to long for psql to process and map ([485d90d75](https://github.com/Badminton-Apps/badman/commit/485d90d75))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
+## 6.175.0 (2024-12-17)
+
+### 🚀 Features
+
+- offloading upload to worker ([75969bba0](https://github.com/Badminton-Apps/badman/commit/75969bba0))
+- offload processing file to worker thread to keep main thread free ([dd4e70d65](https://github.com/Badminton-Apps/badman/commit/dd4e70d65))
+
+### 🩹 Fixes
+
+- remove remaining swc stuff ([8e08a9a04](https://github.com/Badminton-Apps/badman/commit/8e08a9a04))
+
+### ❤️ Thank You
+
+- Glenn Latomme
+
 ## 6.174.5 (2024-12-10)
 
 ### 🩹 Fixes

@@ -28,27 +28,26 @@ import { PlayerDetailService } from './detail.service';
 import { SelectPeriodDialogComponent } from './dialogs/select-period/select-period.component';
 
 @Component({
-  selector: 'badman-player-detail',
-  templateUrl: './detail.page.html',
-  styleUrls: ['./detail.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatChipsModule,
-    MatProgressBarModule,
-    MatDialogModule,
-    RecentGamesComponent,
-    UpcomingGamesComponent,
-    PageHeaderComponent,
-    HasClaimComponent,
-    ShowLevelComponent,
-  ],
+    selector: 'badman-player-detail',
+    templateUrl: './detail.page.html',
+    styleUrls: ['./detail.page.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatChipsModule,
+        MatProgressBarModule,
+        MatDialogModule,
+        RecentGamesComponent,
+        UpcomingGamesComponent,
+        PageHeaderComponent,
+        HasClaimComponent,
+        ShowLevelComponent,
+    ]
 })
 export class DetailPageComponent {
   // private

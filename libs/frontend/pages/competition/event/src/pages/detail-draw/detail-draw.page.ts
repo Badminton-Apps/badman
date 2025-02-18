@@ -20,14 +20,12 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
 import { take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { DrawLocationMapComponent } from './components';
 
 @Component({
   selector: 'badman-detail-draw-competition',
   templateUrl: './detail-draw.page.html',
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
@@ -35,12 +33,10 @@ import { DrawLocationMapComponent } from './components';
     MatTooltipModule,
     MatIconModule,
     MatButtonModule,
-
     StandingComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
     PageHeaderComponent,
-    DrawLocationMapComponent,
     HasClaimComponent,
     MatMenuModule,
   ],

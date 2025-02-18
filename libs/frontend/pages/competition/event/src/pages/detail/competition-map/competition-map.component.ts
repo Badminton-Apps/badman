@@ -22,12 +22,11 @@ import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
-  selector: 'badman-competition-map',
-  standalone: true,
-  imports: [CommonModule, GoogleMapsModule, MatProgressBarModule, MatCheckboxModule],
-  templateUrl: './competition-map.component.html',
-  styleUrls: ['./competition-map.component.scss'],
-  providers: [provideAnimations()],
+    selector: 'badman-competition-map',
+    imports: [CommonModule, GoogleMapsModule, MatProgressBarModule, MatCheckboxModule],
+    templateUrl: './competition-map.component.html',
+    styleUrls: ['./competition-map.component.scss'],
+    providers: [provideAnimations()]
 })
 export class CompetitionMapComponent implements OnInit {
   @ViewChild(MapInfoWindow) infoWindow?: MapInfoWindow;

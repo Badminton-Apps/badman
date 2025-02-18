@@ -29,25 +29,24 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PickEventDialogComponent } from '../../../../dialogs';
 
 @Component({
-  selector: 'badman-club-edit-team',
-  templateUrl: './club-edit-team.component.html',
-  styleUrls: ['./club-edit-team.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    MatListModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatMenuModule,
-    MatInputModule,
-    PlayerSearchComponent,
-    BadmanBlockModule,
-  ],
+    selector: 'badman-club-edit-team',
+    templateUrl: './club-edit-team.component.html',
+    styleUrls: ['./club-edit-team.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        MatListModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatDialogModule,
+        MatMenuModule,
+        MatInputModule,
+        PlayerSearchComponent,
+        BadmanBlockModule,
+    ]
 })
 export class ClubEditTeamComponent implements OnInit {
   private readonly dialog = inject(MatDialog);

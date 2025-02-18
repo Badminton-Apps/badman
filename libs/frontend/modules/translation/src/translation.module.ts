@@ -3,13 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import myLocaleEn from '@angular/common/locales/en';
 import myLocaleFr from '@angular/common/locales/fr-BE';
 import myLocaleNl from '@angular/common/locales/nl-BE';
-import {
-  APP_INITIALIZER,
-  InjectionToken,
-  Injector,
-  ModuleWithProviders,
-  NgModule,
-} from '@angular/core';
+import { InjectionToken, Injector, ModuleWithProviders, NgModule, inject, provideAppInitializer } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import {
   TranslateLoader,
@@ -58,12 +52,10 @@ registerLocaleData(myLocaleEn, 'en');
   ],
   providers: [
     SingleBracketInterpolation,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: langulageInitializer,
-      deps: [TranslateService, Injector, DateAdapter, DatetimeAdapter, AuthenticateService],
-      multi: true,
-    },
+    provideAppInitializer(() => {
+        const initializerFn = (langulageInitializer)(inject(TranslateService), inject(Injector), inject(DateAdapter), inject(DatetimeAdapter), inject(AuthenticateService));
+        return initializerFn();
+      }),
     {
       provide: DatetimeAdapter,
       useClass: MomentDatetimeAdapter,

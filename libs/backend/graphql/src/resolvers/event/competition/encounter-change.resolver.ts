@@ -219,21 +219,26 @@ export class EncounterChangeCompetitionResolver {
             include: [
               {
                 model: EventCompetition,
-                attributes: [
-                  'id',
-                  'season',
-                  'changeCloseRequestDatePeriod1',
-                  'changeCloseRequestDatePeriod2',
-                ],
+                attributes: ['id'],
               },
             ],
           },
         ],
-        logging: (msg) => this.logger.debug(msg),
+        // logging: (msg) => this.logger.debug(msg),
       });
 
       // can request new dates in timezone europe/brussels
-      const event = draw?.subEventCompetition?.eventCompetition;
+      const event = await EventCompetition.findByPk(
+        draw?.subEventCompetition?.eventCompetition?.id,
+        {
+          attributes: [
+            'id',
+            'season',
+            'changeCloseRequestDatePeriod1',
+            'changeCloseRequestDatePeriod2',
+          ],
+        },
+      );
       const closedDate =
         encounter.date?.getFullYear() === event?.season
           ? event?.changeCloseRequestDatePeriod1

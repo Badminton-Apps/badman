@@ -19,19 +19,18 @@ import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-edit-ranking',
-  templateUrl: './edit-ranking.component.html',
-  styleUrls: ['./edit-ranking.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    FormsModule,
-    MatInputModule,
-    MatButtonModule,
-  ],
+    selector: 'badman-edit-ranking',
+    templateUrl: './edit-ranking.component.html',
+    styleUrls: ['./edit-ranking.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TranslateModule,
+        FormsModule,
+        MatInputModule,
+        MatButtonModule,
+    ]
 })
 export class EditRankingComponent implements OnInit {
   private cache = inject<InMemoryCache>(APOLLO_CACHE);

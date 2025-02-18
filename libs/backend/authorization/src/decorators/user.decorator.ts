@@ -8,7 +8,7 @@ export const User = createParamDecorator(async (data: unknown, context: Executio
   const user = request['user'];
 
   // If we have a user in the request, return it
-  if (user && user.sub && user.id) {
+  if (user?.sub && user?.id) {
     return user;
   }
 

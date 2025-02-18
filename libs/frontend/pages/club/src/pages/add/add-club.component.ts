@@ -5,8 +5,9 @@ import { Club } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 
 @Component({
-  templateUrl: './add-club.component.html',
-  styleUrls: ['./add-club.component.scss'],
+    templateUrl: './add-club.component.html',
+    styleUrls: ['./add-club.component.scss'],
+    standalone: false
 })
 export class AddClubComponent {
   private apollo = inject(Apollo);
