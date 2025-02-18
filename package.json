@@ -239,10 +239,10 @@
     "@angular/platform-browser-dynamic": "19.1.5"
   },
   "volta": {
-    "node": "20.17.0"
+    "node": "22.14.0"
   },
   "engines": {
-    "node": "20.17.0"
+    "node": "22.14.0"
   },
   "browserslist": [
     "defaults"
