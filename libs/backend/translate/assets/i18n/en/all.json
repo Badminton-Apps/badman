@@ -732,6 +732,212 @@
       "double": "Double",
       "mix": "Mix"
     },
+    "messages": {
+      "claimAccountSuccess": "Account claimed successfully"
+    },
+    "crud": {
+      "title": "Edit profile",
+      "tabs": {
+        "player": "Player",
+        "ranking": "Ranking",
+        "clubHistory": "Club History",
+        "permissions": "Permissions"
+      },
+      "playerForm": {
+        "inputs": {
+          "name": "Name",
+          "lastName": "Last name",
+          "gender": "Gender",
+          "memberId": "Member id",
+          "registrationNumber": "Registration number"
+        },
+        "gender": {
+          "M": "Male",
+          "F": "Female"
+        },
+        "buttons": {
+          "save": "Save"
+        },
+        "messages": {
+          "success": "Player data updated"
+        }
+      },
+      "ranking": {
+        "lastRanking": {
+          "title": "Last Ranking",
+          "notFound": "Last ranking not found",
+          "inputs": {
+            "single": "Single",
+            "double": "Double",
+            "mix": "Mix"
+          },
+          "messages": {
+            "success": "Last ranking updated"
+          },
+          "buttons": {
+            "save": "Save"
+          }
+        },
+        "competitionPlayer": {
+          "title": "Competition Player",
+          "inputs": {
+            "competitionPlayer": "This player plays in competitions"
+          },
+          "messages": {
+            "success": "Player data updated"
+          },
+          "buttons": {
+            "save": "Save"
+          }
+        },
+        "allUpdates": {
+          "title": "All updated",
+          "nextRanking": "Next ranking",
+          "updates": "Updates",
+          "buttons": {
+            "add": "Add Update"
+          },
+          "table": {
+            "headers": {
+              "date": "Date",
+              "single": "Single",
+              "double": "Double",
+              "mix": "Mix",
+              "actions": "Actions"
+            },
+            "actions": {
+              "edit": "Edit",
+              "delete": "Delete"
+            }
+          },
+          "rankingPlace": {
+            "editDialog": {
+              "titleEdit": "Edit update",
+              "titleCreate": "Create update",
+              "inputs": {
+                "rankingDate": "Select ranking date",
+                "single": "Single",
+                "double": "Double",
+                "mix": "Mix",
+                "singlePoints": "Single points",
+                "doublePoints": "Double points",
+                "mixPoints": "Mix points",
+                "updatePossible": "Update happened"
+              },
+              "messages": {
+                "successCreate": "Ranking place created",
+                "successUpdate": "Ranking place updated"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "saveEdit": "Save",
+                "saveCreate": "Create"
+              }
+            },
+            "deleteDialog": {
+              "title": "Delete ranking place",
+              "subTitle": "Are you sure you want to delete this ranking place?",
+              "messages": {
+                "success": "Ranking place removed"
+              },
+              "buttons": {
+                "no": "No",
+                "yes": "Yes"
+              }
+            }
+          }
+        }
+      },
+      "clubHistory": {
+        "notFound": "No club history found",
+        "buttons": {
+          "add": "Add history"
+        },
+        "deleteDialog": {
+          "title": "Delete club history",
+          "subTitle": "Are you sure you want to delete this club history?",
+          "messages": {
+            "success": "Club membership removed"
+          },
+          "buttons": {
+            "no": "No",
+            "yes": "Yes"
+          }
+        },
+        "editDialog": {
+          "titleAdd": "Add history",
+          "titleEdit": "Edit history",
+          "inputs": {
+            "selectClub": "Select club",
+            "isCurrentClub": "Current club",
+            "start": "Start",
+            "end": "End",
+            "membershipType": "Membership type",
+            "confirmed": "Confirmed"
+          },
+          "membershipTypes": {
+            "NORMAL": "Normal",
+            "LOAN": "Loan"
+          },
+          "messages": {
+            "successAdd": "Club membership added",
+            "successEdit": "Club membership updated"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "add": "Add history",
+            "edit": "Edit history"
+          }
+        },
+        "table": {
+          "notFound": "No records found",
+          "headers": {
+            "fullName": "Full name",
+            "start": "Start",
+            "end": "End",
+            "actions": "Actions"
+          },
+          "actions": {
+            "edit": "Edit",
+            "delete": "Delete"
+          }
+        }
+      },
+      "permissionsForm": {
+        "buttons": {
+          "save": "Save"
+        },
+        "messages": {
+          "success": "Player permissions updated"
+        }
+      },
+      "deletePlayer": {
+        "title": "Delete player",
+        "subTitle": "Are you sure you want to delete this player?",
+        "messages": {
+          "success": "Player deleted"
+        },
+        "buttons": {
+          "no": "No",
+          "yes": "Yes"
+        }
+      },
+      "recalculatePoints": {
+        "title": "Recalculate points for player in period",
+        "subTitle": "Are you sure you want to delete this ranking place?",
+        "inputs": {
+          "from": "From",
+          "to": "To"
+        },
+        "messages": {
+          "success": "Ranking points recalculated"
+        },
+        "buttons": {
+          "close": "Close",
+          "calculate": "Calculate"
+        }
+      }
+    },
     "nextEncounterTitle": "Next encounter",
     "upcomingEncountersTitle": "Upcoming encounters",
     "recentEncountersTitle": "Recent encounters",
@@ -1476,9 +1682,9 @@
       "subtitute-team-index": "s"
     }
   },
-  "encounter":{
-    "gameLeader":{
-      "dialog":{
+  "encounter": {
+    "gameLeader": {
+      "dialog": {
         "title": "Select game leader",
         "buttons": {
           "cancel": "Cancel",
