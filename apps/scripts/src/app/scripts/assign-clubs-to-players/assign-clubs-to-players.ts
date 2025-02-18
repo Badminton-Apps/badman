@@ -87,19 +87,19 @@ export class AssignClubToPlayers {
 
     // Enable filtering
     ws1['!autofilter'] = {
-      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws1['!ref'] as string)),
+      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws1['!ref'])),
     };
     xlsx.utils.book_append_sheet(wb, ws1, 'Log');
 
     const ws2 = xlsx.utils.json_to_sheet(this.unkownClubs);
     ws2['!autofilter'] = {
-      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws2['!ref'] as string)),
+      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws2['!ref'])),
     };
     xlsx.utils.book_append_sheet(wb, ws2, 'Unknown Clubs');
 
     const ws3 = xlsx.utils.json_to_sheet(this.unkownPlayers);
     ws3['!autofilter'] = {
-      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws3['!ref'] as string)),
+      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws3['!ref'])),
     };
     xlsx.utils.book_append_sheet(wb, ws3, 'Unknown Players');
 

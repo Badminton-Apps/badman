@@ -2,11 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 
 @Component({
-  selector: 'badman-loading-block',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './loading-block.component.html',
-  styleUrls: ['./loading-block.component.scss'],
+    selector: 'badman-loading-block',
+    imports: [CommonModule],
+    templateUrl: './loading-block.component.html',
+    styleUrls: ['./loading-block.component.scss']
 })
 export class LoadingBlockComponent {
   items = input(3);

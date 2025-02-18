@@ -119,7 +119,11 @@ export class DateSelectorComponent
   }
   set disabled(value: BooleanInput) {
     this._disabled = coerceBooleanProperty(value);
-    this._disabled ? this.dateControl.disable() : this.dateControl.enable();
+    if (this._disabled) {
+      this.dateControl.disable();
+    } else {
+      this.dateControl.enable();
+    }
     this.stateChanges.next();
   }
 

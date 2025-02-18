@@ -9,19 +9,18 @@ import { Subject } from 'rxjs';
 import { SelectPlayersService } from './select-player.service';
 
 @Component({
-  selector: 'badman-select-player',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MtxSelectModule,
-    TranslateModule,
-  ],
-  templateUrl: './select-player.component.html',
-  styleUrls: ['./select-player.component.scss'],
+    selector: 'badman-select-player',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MtxSelectModule,
+        TranslateModule,
+    ],
+    templateUrl: './select-player.component.html',
+    styleUrls: ['./select-player.component.scss']
 })
 export class SelectPlayerSignalsComponent {
   private readonly dataService = new SelectPlayersService();

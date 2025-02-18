@@ -41,23 +41,22 @@ import { TeamForm } from '../../../team-enrollment.page';
 import { TeamEnrollmentComponent } from './components';
 
 @Component({
-  selector: 'badman-teams-step',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatDividerModule,
-    MatProgressBarModule,
-    TeamEnrollmentComponent,
-  ],
-  templateUrl: './teams.step.html',
-  styleUrls: ['./teams.step.scss'],
+    selector: 'badman-teams-step',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatDividerModule,
+        MatProgressBarModule,
+        TeamEnrollmentComponent,
+    ],
+    templateUrl: './teams.step.html',
+    styleUrls: ['./teams.step.scss']
 })
 export class TeamsStepComponent {
   private readonly destroy$ = injectDestroy();

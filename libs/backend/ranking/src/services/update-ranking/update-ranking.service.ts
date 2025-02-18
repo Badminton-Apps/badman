@@ -1,8 +1,8 @@
 import { Club, ClubPlayerMembership, Player, RankingPlace } from '@badman/backend-database';
 import { ClubMembershipType } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment';
-import { IncludeOptions, Op, Transaction } from 'sequelize';
+import moment, { Moment } from 'moment';
+import { InferCreationAttributes, Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
@@ -30,22 +30,12 @@ export class UpdateRankingService {
     try {
       this._logger.log('Start processing export members role per group');
 
-      const distinctPlayers = await this.fetchDistinctPlayers(
-        data,
-        options.clubMembershipStartDate,
-        options.updateClubs,
-        transaction,
-      );
+      const distinctPlayers = await this.fetchDistinctPlayers(data, transaction);
       const newPlayers = this.getNewPlayers(data, distinctPlayers);
 
       if (newPlayers.length > 0 && options.createNewPlayers) {
         await this.createPlayers(newPlayers, transaction);
-        const newPlayersFromDb = await this.getNewPlayersFromDb(
-          newPlayers,
-          options.updateClubs,
-          options.clubMembershipEndDate,
-          transaction,
-        );
+        const newPlayersFromDb = await this.getNewPlayersFromDb(newPlayers, transaction);
         distinctPlayers.push(...newPlayersFromDb);
       }
 
@@ -54,13 +44,7 @@ export class UpdateRankingService {
       }
 
       if (options.updateClubs) {
-        await this.updateClubs(
-          data,
-          distinctPlayers,
-          options.clubMembershipEndDate,
-          options.clubMembershipStartDate,
-          transaction,
-        );
+        await this.updateClubs(data, distinctPlayers, transaction);
       }
 
       if (options.removeAllRanking) {
@@ -107,41 +91,17 @@ export class UpdateRankingService {
       throw new Error('No data to process');
     }
 
-    if (options.updateClubs && !options.clubMembershipStartDate && !options.clubMembershipEndDate) {
-      throw new Error('Club membership start and end date are required');
-    }
-
     return options as Options;
   }
 
   private async fetchDistinctPlayers(
     data: MembersRolePerGroupData[],
-    clubMembershipEndDate: Date,
-    updateClubs: boolean,
     transaction?: Transaction,
   ): Promise<Player[]> {
     const distinctPlayers: Player[] = [];
     const distinctIds: string[] = [];
 
     const chunks = this.chunkArray(data, 50);
-
-    const include = (
-      updateClubs
-        ? [
-            {
-              model: Club,
-              attributes: ['id', 'name', 'fullName'],
-              required: false,
-              through: {
-                attributes: ['id', 'active', 'end', 'start', 'confirmed'],
-                where: {
-                  [Op.or]: [{ end: null }, { start: { [Op.lte]: clubMembershipEndDate } }],
-                },
-              },
-            },
-          ]
-        : []
-    ) as IncludeOptions;
 
     for (const chunk of chunks) {
       const distinctChunkIds = chunk
@@ -153,7 +113,6 @@ export class UpdateRankingService {
         where: {
           memberId: distinctChunkIds,
         },
-        include,
         transaction,
       });
 
@@ -195,8 +154,6 @@ export class UpdateRankingService {
 
   private async getNewPlayersFromDb(
     newPlayers: MembersRolePerGroupData[],
-    updateClubs: boolean,
-    clubMembershipEndDate: Date,
     transaction?: Transaction,
   ): Promise<Player[]> {
     return Player.findAll({
@@ -204,22 +161,6 @@ export class UpdateRankingService {
       where: {
         memberId: newPlayers.map((p) => p.memberId),
       },
-      include: updateClubs
-        ? [
-            {
-              model: Club,
-              attributes: ['id', 'name', 'fullName'],
-              required: false,
-              through: {
-                attributes: ['id', 'active', 'end', 'start', 'confirmed'],
-                where: {
-                  [Op.or]: [{ end: null }, { start: { [Op.lte]: clubMembershipEndDate } }],
-                },
-              },
-            },
-          ]
-        : [],
-
       transaction,
     });
   }
@@ -370,86 +311,145 @@ export class UpdateRankingService {
   private async updateClubs(
     data: MembersRolePerGroupData[],
     players: Player[],
-    clubMembershipEndDate: Date,
-    clubMembershipStartDate: Date,
     transaction?: Transaction,
   ) {
     const clubs = await Club.findAll({
       attributes: ['id', 'name', 'fullName'],
       transaction,
     });
-    const changes = [] as {
-      memberId: string;
-      playerId: string;
-      clubMembershipId: string;
-      name: string;
-      currentClub: string;
-      newClub: string;
-      exportClub: string;
-      clubId: string;
-      newClubId: string;
-    }[];
+    const newClubMemberships: InferCreationAttributes<ClubPlayerMembership>[] = [];
+    const processedPlayers = new Set<string>();
 
-    const hasMembership = [] as string[];
+    for (const row of data) {
+      // print progress every 100 players
+      if (processedPlayers.size % 1000 === 0) {
+        const percentage = Math.round((processedPlayers.size / data.length) * 100);
+        this._logger.verbose(`Processed ${processedPlayers.size}/${data.length} (${percentage}%) players`);
+      }
 
-    data.forEach((row) => {
-      const club = clubs.find(
-        (c) =>
-          c.name?.toLowerCase() === row.clubName?.toLowerCase() ||
-          c.fullName?.toLowerCase() === row.clubName?.toLowerCase(),
-      );
 
       const player = players.find((p) => p.memberId === row.memberId);
 
       if (player) {
-        hasMembership.push(player.id);
-
-        if (club) {
-          const activeClub = player.clubs?.find(
-            (c) => c.ClubPlayerMembership?.isActiveFrom(clubMembershipStartDate) ?? false,
-          );
-
-          if (activeClub?.id !== club.id) {
-            changes.push({
-              memberId: row.memberId,
-              playerId: player.id,
-              clubMembershipId: activeClub?.ClubPlayerMembership.id ?? '',
-              name: player.fullName,
-              currentClub: activeClub?.name ?? '',
-              newClub: club.name ?? '',
-              exportClub: row.clubName,
-              clubId: activeClub?.id ?? '',
-              newClubId: club.id,
-            });
-          }
+        if (processedPlayers.has(player.id)) {
+          this._logger.warn(`Player ${row.memberId} already processed`);
+          continue;
         }
+
+        const club = clubs.find(
+          (c) =>
+            c.name?.toLowerCase() === row.clubName?.toLowerCase() ||
+            c.fullName?.toLowerCase() === row.clubName?.toLowerCase(),
+        );
+        if (club) {
+          const playerClubs = (await player.getClubs({
+            include: [
+              {
+                model: ClubPlayerMembership,
+                as: 'ClubPlayerMembership',
+                where: { membershipType: ClubMembershipType.NORMAL },
+                order: [['start', 'DESC']],
+              },
+            ],
+          })) as (Club & { ClubPlayerMembership: ClubPlayerMembership })[];
+
+          // find the expected club
+          const activeClub = playerClubs.find(
+            (c) => c.id === club.id && c.ClubPlayerMembership.end === null,
+          );
+          const inputStartDate = moment(row.startdate);
+
+          if (activeClub?.id) {
+            // if the player has multiple memberships with the same clubId, remove all but one
+            if (
+              playerClubs.filter((c) => c.id === club.id && c.ClubPlayerMembership.end == null)
+                .length > 1
+            ) {
+              for (const otherClub of playerClubs.filter(
+                (c) =>
+                  c.id === club.id &&
+                  c.ClubPlayerMembership.id !== activeClub.ClubPlayerMembership.id,
+              )) {
+                await otherClub.ClubPlayerMembership.destroy({ transaction });
+              }
+            }
+
+            // check if the club is the same club
+            if (activeClub?.id === club.id) {
+              if (!inputStartDate.isSame(activeClub.ClubPlayerMembership.start, 'day')) {
+                activeClub.ClubPlayerMembership.start = inputStartDate.toDate();
+                await activeClub.ClubPlayerMembership.save({ transaction });
+              }
+            } else {
+              const newMembership = await this.createClubMembership(
+                playerClubs,
+                player.id,
+                club.id,
+                inputStartDate,
+                transaction,
+              );
+
+              if (newMembership) {
+                newClubMemberships.push(newMembership);
+              }
+            }
+
+            // end other club membership(s)
+            for (const otherClub of playerClubs.filter(
+              (c) => c.id !== club.id && c.ClubPlayerMembership.end == null,
+            )) {
+              otherClub.ClubPlayerMembership.end = inputStartDate.subtract(1, 'day').toDate();
+              await otherClub.ClubPlayerMembership.save({ transaction });
+            }
+          } else {
+            const newMembership = await this.createClubMembership(
+              playerClubs,
+              player.id,
+              club.id,
+              inputStartDate,
+              transaction,
+            );
+
+            if (newMembership) {
+              newClubMemberships.push(newMembership);
+            }
+          }
+        } else {
+          this._logger.warn(`Club ${row.clubName} not found for player: ${player.id}`);
+        }
+        processedPlayers.add(player.id);
       }
-    });
+    }
 
-    await this.updatePlayerClubs(
-      changes,
-      clubMembershipEndDate,
-      clubMembershipStartDate,
+    await ClubPlayerMembership.bulkCreate(newClubMemberships, { transaction });
+  }
 
-      transaction,
-    );
+  private async createClubMembership(
+    playerClubs: (Club & { ClubPlayerMembership: ClubPlayerMembership })[],
+    playerId: string,
+    clubId: string,
+    inputStartDate: Moment,
+    transaction?: Transaction,
+  ) {
+    // check if the player has a membership with the same clubId that starts on the same date
+    const existingClub = playerClubs.find(
+      (c) => c.id === clubId && inputStartDate.isSame(c.ClubPlayerMembership.start, 'day'),
+    ); 
 
-    // end all memberships that are not in the list
-    const [changed] = await ClubPlayerMembership.update(
-      {
-        end: clubMembershipEndDate,
-      },
-      {
-        where: {
-          playerId: {
-            [Op.notIn]: hasMembership,
-          },
-        },
-        transaction,
-      },
-    );
-
-    this._logger.verbose(`${changed} no more active players`);
+    if (existingClub) {
+      // activate the existing club membership
+      existingClub.ClubPlayerMembership.end = null;
+      await existingClub.ClubPlayerMembership.save({ transaction });
+      return null;
+    } else {
+      // create a new club membership
+      return {
+        playerId: playerId,
+        clubId: clubId,
+        start: inputStartDate.toDate(),
+        membershipType: ClubMembershipType.NORMAL,
+      } as InferCreationAttributes<ClubPlayerMembership>;
+    }
   }
 
   private async updatePlayerGender(data: MembersRolePerGroupData[], transaction?: Transaction) {
@@ -484,72 +484,6 @@ export class UpdateRankingService {
       'F',
       transaction,
     );
-  }
-
-  private async updatePlayerClubs(
-    changes: {
-      memberId: string;
-      clubMembershipId: string;
-      playerId: string;
-      name: string;
-      currentClub: string;
-      newClub: string;
-      exportClub: string;
-      clubId: string;
-      newClubId: string;
-    }[],
-    clubMembershipEndDate: Date,
-    clubMembershipStartDate: Date,
-    transaction?: Transaction,
-  ) {
-    // disble current memberships
-    const toStop = changes
-      ?.filter(
-        (c) => c.clubId != undefined && c.clubMembershipId != undefined && c.clubMembershipId != '',
-      )
-      .map((c) => c.clubMembershipId) as string[];
-
-    this._logger.verbose(`Stop ${toStop.length} memberships`);
-
-    if (toStop.length > 0) {
-      const chunks = this.chunkArray(toStop, 50);
-      for (const chunk of chunks) {
-        await ClubPlayerMembership.update(
-          {
-            end: clubMembershipEndDate,
-          },
-          {
-            where: {
-              id: chunk,
-            },
-            transaction,
-          },
-        );
-      }
-    }
-
-    // create new memberships
-    const toCreate = changes
-      ?.filter((c) => c.newClubId != undefined && c.playerId != undefined)
-      .map((c) => {
-        return {
-          playerId: c.playerId,
-          clubId: c.newClubId,
-          end: null,
-          start: clubMembershipStartDate,
-          confirmed: true,
-          membershipType: ClubMembershipType.NORMAL,
-        } as ClubPlayerMembership;
-      });
-
-    this._logger.verbose(`Create ${toCreate.length} memberships`);
-
-    if (toCreate.length > 0) {
-      const chunks = this.chunkArray(toCreate, 50);
-      for (const chunk of chunks) {
-        await ClubPlayerMembership.bulkCreate(chunk, { transaction });
-      }
-    }
   }
 
   private async setCompetitionStatus(id: string[], status: boolean, transaction?: Transaction) {
@@ -608,6 +542,8 @@ export interface MembersRolePerGroupData {
   lastName: string;
   role: string;
   gender: 'M' | 'V';
+  startdate: Date;
+  enddate: Date;
   single: number;
   singlePoints: number;
   doubles: number;
@@ -626,6 +562,4 @@ type Options = {
   createNewPlayers: boolean;
   rankingDate: Date;
   rankingSystemId: string;
-  clubMembershipStartDate: Date;
-  clubMembershipEndDate: Date;
 };

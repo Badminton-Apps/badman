@@ -8,31 +8,31 @@
   "targets": {
     "build": {
       "executor": "@nx/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/dist/libs/frontend/pages/general"],
       "options": {
-        "project": "{projectRoot}/ng-package.json"
+        "project": "libs/frontend/pages/general/ng-package.json"
       },
       "configurations": {
         "production": {
-          "tsConfig": "{projectRoot}/tsconfig.lib.prod.json"
+          "tsConfig": "libs/frontend/pages/general/tsconfig.lib.prod.json"
         },
         "development": {
-          "tsConfig": "{projectRoot}/tsconfig.lib.json"
+          "tsConfig": "libs/frontend/pages/general/tsconfig.lib.json"
         }
       },
       "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/libs/frontend/pages/general"],
       "options": {
-        "jestConfig": "{projectRoot}/jest.config.ts"
+        "jestConfig": "libs/frontend/pages/general/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
+        "eslintConfig": "libs/frontend/pages/general/eslint.config.js"
       }
     }
   }

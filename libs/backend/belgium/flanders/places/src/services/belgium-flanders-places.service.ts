@@ -142,8 +142,7 @@ export class BelgiumFlandersPlacesService {
 
     const { upgrade, downgrade } = this._calculatePoints(
       system,
-      (games?.map((g) => g.rankingPoints?.[0])?.filter((g) => g != undefined) ??
-        []) as RankingPoint[],
+      games?.map((g) => g.rankingPoints?.[0])?.filter((g) => g != undefined) ?? [],
       gameType,
     );
 
@@ -165,8 +164,8 @@ export class BelgiumFlandersPlacesService {
             case 'freeze':
               level = lastRanking;
               break;
-            default:
             case 'decrease':
+            default:
               level = lastRankingInactive ? lastRanking : lastRanking + 2;
               break;
           }

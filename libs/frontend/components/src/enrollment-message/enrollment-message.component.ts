@@ -13,11 +13,10 @@ import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-enrollment-message',
-  standalone: true,
-  imports: [CommonModule, TranslateModule],
-  templateUrl: './enrollment-message.component.html',
-  styleUrls: ['./enrollment-message.component.scss'],
+    selector: 'badman-enrollment-message',
+    imports: [CommonModule, TranslateModule],
+    templateUrl: './enrollment-message.component.html',
+    styleUrls: ['./enrollment-message.component.scss']
 })
 export class EnrollmentMessageComponent implements OnInit {
   private translate = inject(TranslateService);

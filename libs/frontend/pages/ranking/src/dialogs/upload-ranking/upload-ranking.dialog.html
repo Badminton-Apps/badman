@@ -55,34 +55,6 @@
       }}</mat-checkbox>
     </div>
 
-    @if (updateClubs) {
-      <div class="set-clubs">
-        <mat-form-field>
-          <mat-label>{{ 'all.ranking.upload.club-end-date' | translate }}</mat-label>
-          <input
-            matInput
-            [matDatepicker]="startPicker"
-            [placeholder]="'all.ranking.upload.club-end-date' | translate"
-            [(ngModel)]="clubMembershipEndDate"
-          />
-          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label>{{ 'all.ranking.upload.club-start-date' | translate }}</mat-label>
-          <input
-            matInput
-            [matDatepicker]="stopPicker"
-            [placeholder]="'all.ranking.upload.club-start-date' | translate"
-            [(ngModel)]="clubMembershipStartDate"
-          />
-          <mat-datepicker-toggle matSuffix [for]="stopPicker"></mat-datepicker-toggle>
-          <mat-datepicker #stopPicker></mat-datepicker>
-        </mat-form-field>
-      </div>
-    }
-
     <h3>{{ 'all.ranking.upload.preview' | translate }}</h3>
     <table mat-table [dataSource]="previewData">
       <!-- Position Column -->

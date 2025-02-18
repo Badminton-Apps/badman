@@ -21,8 +21,7 @@ import {
   HasClaimComponent,
   LoadingBlockComponent,
   RecentGamesComponent,
-  SelectSeasonComponent,
-  UpcomingGamesComponent,
+  UpcomingGamesComponent
 } from '@badman/frontend-components';
 import { Team } from '@badman/frontend-models';
 import { DEVICE } from '@badman/frontend-utils';
@@ -32,9 +31,9 @@ import { Apollo } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { ClubTeamsService } from './club-teams.service';
+
 @Component({
   selector: 'badman-club-teams',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -46,9 +45,6 @@ import { ClubTeamsService } from './club-teams.service';
     MatButtonModule,
     MatDialogModule,
     MatButtonToggleModule,
-   
-   
-    SelectSeasonComponent,
     HasClaimComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
@@ -100,7 +96,7 @@ export class ClubTeamsComponent implements OnInit {
   }
 
   editTeam(team: Team) {
-    console.log(this.clubTeamsService.locations())
+    console.log(this.clubTeamsService.locations());
 
     import('@badman/frontend-team').then((m) => {
       this.dialog
@@ -114,7 +110,6 @@ export class ClubTeamsComponent implements OnInit {
                 ?.map((t) => t.teamNumber),
             },
             locations: this.clubTeamsService.locations(),
-
           },
 
           width: '100%',

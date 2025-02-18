@@ -10,18 +10,17 @@ import { Apollo, gql } from 'apollo-angular';
 import { throttleTime, map } from 'rxjs';
 
 @Component({
-  selector: 'badman-edit-competition-status',
-  templateUrl: './edit-competition-status.component.html',
-  styleUrls: ['./edit-competition-status.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    HasClaimComponent,
-    MatSlideToggleModule,
-    ReactiveFormsModule,
-    TranslateModule,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-edit-competition-status',
+    templateUrl: './edit-competition-status.component.html',
+    styleUrls: ['./edit-competition-status.component.scss'],
+    imports: [
+        CommonModule,
+        HasClaimComponent,
+        MatSlideToggleModule,
+        ReactiveFormsModule,
+        TranslateModule,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditCompetitionStatusComponent implements OnInit {
   private apollo = inject(Apollo);

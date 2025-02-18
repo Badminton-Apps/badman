@@ -17,25 +17,23 @@ import { MomentModule } from 'ngx-moment';
 import { RankingBreakdownService } from '../../services/ranking-breakdown.service';
 
 @Component({
-  selector: 'badman-period-selection',
-  templateUrl: './period-selection.component.html',
-  styleUrls: ['./period-selection.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    MomentModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatMenuModule,
-    MatDividerModule,
-  ],
+    selector: 'badman-period-selection',
+    templateUrl: './period-selection.component.html',
+    styleUrls: ['./period-selection.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslateModule,
+        MomentModule,
+        MatIconModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatMenuModule,
+        MatDividerModule,
+    ]
 })
 export class PeriodSelectionComponent {
   private readonly breakdownService = inject(RankingBreakdownService);

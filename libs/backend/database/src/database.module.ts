@@ -19,7 +19,6 @@ import { loadTest } from './_testing/load-test';
     ConfigModule,
     CacheModule,
   ],
-  providers: [],
 })
 export class DatabaseModule implements OnModuleInit {
   private readonly logger = new Logger(DatabaseModule.name);
@@ -40,6 +39,8 @@ export class DatabaseModule implements OnModuleInit {
       this.logger.log('Loading test data');
       await loadTest();
     }
+
+    this.sequelize.options.logging = false;
 
     this.logger.debug('initialize addons');
     slugifyModel(Player as unknown as Model, {

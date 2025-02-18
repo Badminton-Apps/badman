@@ -3,11 +3,10 @@ import { Component, ViewEncapsulation, computed, inject, input } from '@angular/
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 
 @Component({
-  selector: 'badman-has-claim',
-  templateUrl: './has-claim.component.html',
-  standalone: true,
-  imports: [CommonModule],
-  encapsulation: ViewEncapsulation.Emulated,
+    selector: 'badman-has-claim',
+    templateUrl: './has-claim.component.html',
+    imports: [CommonModule],
+    encapsulation: ViewEncapsulation.Emulated
 })
 export class HasClaimComponent {
   private readonly claim = inject(ClaimService);

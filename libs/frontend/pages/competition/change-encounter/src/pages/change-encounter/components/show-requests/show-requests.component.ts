@@ -49,7 +49,6 @@ import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, lastValueFrom, of } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
 
@@ -74,7 +73,6 @@ const CHANGE_QUERY = gql`
   templateUrl: './show-requests.component.html',
   styleUrls: ['./show-requests.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -92,7 +90,6 @@ const CHANGE_QUERY = gql`
     MatProgressBarModule,
     MatExpansionModule,
     MatTooltipModule,
-    DateSelectorComponent,
     CommentsComponent,
     RequestDateComponent,
     HasClaimComponent,

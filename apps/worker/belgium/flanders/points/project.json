@@ -22,20 +22,20 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/apps/worker/belgium/flanders/points"],
       "options": {
-        "jestConfig": "{projectRoot}/jest.config.ts"
+        "jestConfig": "apps/worker/belgium/flanders/points/jest.config.ts"
       }
     },
     "build": {
       "defaultConfiguration": "development",
       "configurations": {
         "development": {
-          "cwd": "{projectRoot}",
+          "cwd": "apps/worker/belgium/flanders/points",
           "args": ["--node-env=development"]
         },
         "production": {
-          "cwd": "{projectRoot}",
+          "cwd": "apps/worker/belgium/flanders/points",
           "args": ["--node-env=production"]
         }
       }
@@ -43,7 +43,7 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
+        "eslintConfig": "apps/worker/belgium/flanders/points/eslint.config.js"
       }
     }
   }

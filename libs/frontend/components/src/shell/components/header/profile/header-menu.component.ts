@@ -11,21 +11,20 @@ import { LanguageComponent } from '@badman/frontend-translation';
 import { ThemeSwitcherComponent } from '../theme-switcher';
 
 @Component({
-  selector: 'badman-header-menu',
-  standalone: true,
-  imports: [
-    CommonModule,
-    GraphQLModule,
-    RouterModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatDividerModule,
-    LanguageComponent,
-    ThemeSwitcherComponent,
-  ],
-  templateUrl: './header-menu.component.html',
-  styleUrls: ['./header-menu.component.scss'],
+    selector: 'badman-header-menu',
+    imports: [
+        CommonModule,
+        GraphQLModule,
+        RouterModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatIconModule,
+        MatDividerModule,
+        LanguageComponent,
+        ThemeSwitcherComponent,
+    ],
+    templateUrl: './header-menu.component.html',
+    styleUrls: ['./header-menu.component.scss']
 })
 export class HeaderMenuComponent {
   auth = inject(AuthenticateService);
