@@ -1,7 +1,7 @@
 import { User } from '@badman/backend-authorization';
 import { CompileService } from '@badman/backend-compile';
 import { Logging, Player, RankingLastPlace, Team } from '@badman/backend-database';
-import { I18nTranslations, LoggingAction, SubEventTypeEnum, gameLabel } from '@badman/utils';
+import { I18nTranslations, LoggingAction, gameLabel } from '@badman/utils';
 import { Controller, Logger, Post, Req, Res, StreamableFile } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { readFile } from 'fs/promises';
@@ -328,13 +328,13 @@ export class AssemblyController {
       prepped.sum =
         (player.rankingPlaces?.[0].single ?? 12) +
         (player.rankingPlaces?.[0].double ?? 12) +
-        (data.type === 'MX' ? player.rankingPlaces?.[0].mix ?? 12 : 0);
+        (data.type === 'MX' ? (player.rankingPlaces?.[0].mix ?? 12) : 0);
 
       prepped.highest =
         Math.min(
           player.rankingPlaces?.[0].single ?? 12,
           player.rankingPlaces?.[0].double ?? 12,
-          data.type === 'MX' ? player.rankingPlaces?.[0].mix ?? 12 : 12,
+          data.type === 'MX' ? (player.rankingPlaces?.[0].mix ?? 12) : 12,
         ) ?? 12;
     } else {
       prepped.sum = data.type === 'MX' ? 36 : 24;
@@ -344,7 +344,7 @@ export class AssemblyController {
     const best = Math.min(
       player.rankingLastPlaces?.[0]?.single ?? 12,
       player.rankingLastPlaces?.[0]?.double ?? 12,
-      data.type === 'MX' ? player.rankingLastPlaces?.[0]?.mix ?? 12 : 12,
+      data.type === 'MX' ? (player.rankingLastPlaces?.[0]?.mix ?? 12) : 12,
     );
 
     prepped.exception =

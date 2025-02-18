@@ -19,7 +19,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { PageHeaderComponent } from '@badman/frontend-components';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
@@ -79,26 +78,24 @@ const FETCH_SYSTEM = gql`
 `;
 
 @Component({
-  selector: 'badman-ranking-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MomentModule,
-    MatButtonModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatMenuModule,
-    MatSnackBarModule,
-    PageHeaderComponent,
-    RankingSystemFieldsComponent,
-  ],
+    selector: 'badman-ranking-edit',
+    templateUrl: './edit.page.html',
+    styleUrls: ['./edit.page.scss'],
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MomentModule,
+        MatButtonModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatMenuModule,
+        MatSnackBarModule,
+        RankingSystemFieldsComponent,
+    ]
 })
 export class EditPageComponent {
   // injects

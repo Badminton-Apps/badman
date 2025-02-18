@@ -9,11 +9,11 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "{workspaceRoot}/dist/{projectRoot}",
-        "tsConfig": "{projectRoot}/tsconfig.lib.json",
-        "packageJson": "{projectRoot}/package.json",
-        "main": "{projectRoot}/src/index.ts",
-        "assets": ["{projectRoot/*.md"],
+        "outputPath": "{workspaceRoot}/dist/libs/backend/micro",
+        "tsConfig": "libs/backend/micro/tsconfig.lib.json",
+        "packageJson": "libs/backend/micro/package.json",
+        "main": "libs/backend/micro/src/index.ts",
+        "assets": ["libs/backend/micro/*.md"],
         "transformers": [
           {
             "name": "typescript-transform-paths/nx-transformer"
@@ -23,15 +23,15 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/micro"],
       "options": {
-        "jestConfig": "{projectRoot}/jest.config.ts"
+        "jestConfig": "libs/backend/micro/jest.config.ts"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
+        "eslintConfig": "libs/backend/micro/eslint.config.js"
       }
     }
   }

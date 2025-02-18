@@ -14,19 +14,18 @@ import { filter, map } from 'rxjs/operators';
 import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
 
 @Component({
-  selector: 'badman-edit-ranking-all',
-  templateUrl: './edit-ranking-all.component.html',
-  styleUrls: ['./edit-ranking-all.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatExpansionModule,
-    MatListModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatButtonModule,
-  ],
+    selector: 'badman-edit-ranking-all',
+    templateUrl: './edit-ranking-all.component.html',
+    styleUrls: ['./edit-ranking-all.component.scss'],
+    imports: [
+        CommonModule,
+        TranslateModule,
+        MatExpansionModule,
+        MatListModule,
+        MatTooltipModule,
+        MatDialogModule,
+        MatButtonModule,
+    ]
 })
 export class EditRankingAllComponent implements OnInit {
   private systemService = inject(RankingSystemService);

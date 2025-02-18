@@ -21,19 +21,18 @@ export interface PickEventDialogData {
 }
 
 @Component({
-  selector: 'badman-pick-event-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatProgressBarModule,
-    MatSelectModule,
-    MatButtonModule,
-  ],
-  templateUrl: './pick-event-dialog.component.html',
-  styleUrls: ['./pick-event-dialog.component.scss'],
+    selector: 'badman-pick-event-dialog',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatProgressBarModule,
+        MatSelectModule,
+        MatButtonModule,
+    ],
+    templateUrl: './pick-event-dialog.component.html',
+    styleUrls: ['./pick-event-dialog.component.scss']
 })
 export class PickEventDialogComponent implements OnInit {
   private readonly appollo = inject(Apollo);

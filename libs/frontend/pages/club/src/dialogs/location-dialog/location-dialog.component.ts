@@ -14,20 +14,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  templateUrl: './location-dialog.component.html',
-  styleUrls: ['./location-dialog.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatProgressBarModule,
-    MatButtonModule,
-    MatIconModule,
-    LocationDialogFieldsComponent,
-  ],
+    templateUrl: './location-dialog.component.html',
+    styleUrls: ['./location-dialog.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatProgressBarModule,
+        MatButtonModule,
+        MatIconModule,
+        LocationDialogFieldsComponent,
+    ]
 })
 export class LocationDialogComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<LocationDialogComponent>>(

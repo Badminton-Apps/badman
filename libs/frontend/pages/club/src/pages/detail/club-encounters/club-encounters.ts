@@ -2,11 +2,8 @@ import { NgClass } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EncounterCompetition, Team } from '@badman/frontend-models';
@@ -14,25 +11,24 @@ import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
-import { ClubEncounterService, openRequestFilter, validationFilter } from './club-encounters.service';
+import {
+  ClubEncounterService,
+  openRequestFilter,
+  validationFilter,
+} from './club-encounters.service';
 
 @Component({
   selector: 'badman-club-encounters',
   templateUrl: './club-encounters.html',
   styleUrls: ['./club-encounters.scss'],
-  standalone: true,
   imports: [
     NgClass,
-    MatCheckbox,
     FormsModule,
-    MatRadioGroup,
-    MatRadioButton,
     MatButtonModule,
     MtxGrid,
     MtxSelectModule,
     MatFormField,
     MatLabel,
-    MatInput,
     MatIconModule,
     MatTooltipModule,
     MatSlideToggleModule,
@@ -49,7 +45,6 @@ export class ClubEncountersComponent {
   teams = this.service.teams;
   loaded = this.service.state.loaded;
   loading = computed(() => !this.loaded());
-
 
   columns: MtxGridColumn<EncounterCompetition>[] = [
     {
@@ -95,8 +90,6 @@ export class ClubEncountersComponent {
     this.service.state.filterOnChangedRequest(state.checked);
   }
 
-
-
   toggleHomeGames(state: MatSlideToggleChange) {
     this.service.state.filterOnHomeGames(state.checked);
   }
@@ -104,7 +97,7 @@ export class ClubEncountersComponent {
   filterOpenRequests(state: openRequestFilter) {
     this.service.state.filterOnOpenRequests(state);
   }
-  
+
   filterValidGames(state: validationFilter) {
     this.service.state.filterOnValidGames(state);
   }

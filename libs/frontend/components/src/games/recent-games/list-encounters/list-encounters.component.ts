@@ -22,18 +22,15 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { TrackByProp } from 'ngxtension/trackby-id-prop';
 import { map, takeUntil } from 'rxjs';
 import { LoadingBlockComponent } from '../../../loading-block';
 
 @Component({
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,
     TranslateModule,
     MomentModule,
-    TrackByProp,
     MatButtonModule,
     MatListModule,
     LoadingBlockComponent,

@@ -11,34 +11,31 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { PageHeaderComponent } from '@badman/frontend-components';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MomentModule,
-    MatButtonModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatMenuModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatSlideToggleModule,
-    PageHeaderComponent,
-  ],
-  selector: 'badman-ranking-system-fields',
-  templateUrl: './ranking-system-fields.component.html',
-  styleUrls: ['./ranking-system-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MomentModule,
+        MatButtonModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatMenuModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+    ],
+    selector: 'badman-ranking-system-fields',
+    templateUrl: './ranking-system-fields.component.html',
+    styleUrls: ['./ranking-system-fields.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RankingSystemFieldsComponent implements OnInit {
   system = input<RankingSystem>({} as RankingSystem);

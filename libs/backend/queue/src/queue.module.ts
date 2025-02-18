@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { Badminton, RankingQueue, SyncQueue } from './queues';
 import { ConfigType } from '@badman/utils';
+import { TransactionManager } from './services';
 
 const BullQueueModules = [
   BullModule.registerQueue({ name: RankingQueue }),
@@ -27,10 +28,14 @@ const BullQueueModules = [
           },
         };
       },
-      inject: [ConfigService],
+      inject: [ConfigService],  
     }),
     ...BullQueueModules,
   ],
-  exports: BullQueueModules,
+  providers: [TransactionManager],
+  exports: [
+    TransactionManager,
+    ...BullQueueModules,
+  ],
 })
 export class QueueModule {}

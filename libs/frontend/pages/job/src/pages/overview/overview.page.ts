@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RouterModule } from '@angular/router';
-import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
+import { PageHeaderComponent } from '@badman/frontend-components';
 import { CronJob } from '@badman/frontend-models';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { TranslateModule } from '@ngx-translate/core';
@@ -20,30 +20,28 @@ import { MomentModule } from 'ngx-moment';
 import { CronJobService } from '../../services/cronjob.service';
 
 @Component({
-  selector: 'badman-ranking-overview',
-  templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MtxGrid,
-    MomentModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatSlideToggleModule,
-    MatDatepickerModule,
-    PageHeaderComponent,
-    HasClaimComponent,
-  ],
+    selector: 'badman-ranking-overview',
+    templateUrl: './overview.page.html',
+    styleUrls: ['./overview.page.scss'],
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MtxGrid,
+        MomentModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatMenuModule,
+        MatDialogModule,
+        MatDividerModule,
+        MatSlideToggleModule,
+        MatDatepickerModule,
+        PageHeaderComponent,
+    ]
 })
 export class OverviewPageComponent {
   // injects
@@ -115,6 +113,13 @@ export class OverviewPageComponent {
         break;
       case 'ranking':
         template = this.rankingTemplate;
+        cron = {
+          ...cron,
+          meta: {
+            ...cron.meta,
+            arguments: JSON.stringify(cron.meta?.arguments, null, 2),
+          },
+        } as CronJob;
         break;
 
       default:

@@ -33,25 +33,24 @@ import { injectParams } from 'ngxtension/inject-params';
 import { DEVICE } from '@badman/frontend-utils';
 
 @Component({
-  selector: 'badman-list-games',
-  templateUrl: './list-games.component.html',
-  styleUrls: ['./list-games.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MomentModule,
-    MatIconModule,
-    MatSlideToggleModule,
-    MatTableModule,
-    MatTooltipModule,
-    MatButtonModule,
-    MatMenuModule,
-    LayoutModule,
-    MtxGridModule,
-  ],
+    selector: 'badman-list-games',
+    templateUrl: './list-games.component.html',
+    styleUrls: ['./list-games.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MomentModule,
+        MatIconModule,
+        MatSlideToggleModule,
+        MatTableModule,
+        MatTooltipModule,
+        MatButtonModule,
+        MatMenuModule,
+        LayoutModule,
+        MtxGridModule,
+    ]
 })
 export class ListGamesComponent {
   private translateService = inject(TranslateService);

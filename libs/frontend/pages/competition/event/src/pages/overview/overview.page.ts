@@ -24,27 +24,26 @@ import { EventOverviewService } from './overview.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
-  selector: 'badman-competition-overview',
-  templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MomentModule,
-    MatIconModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatSlideToggleModule,
-    MatDialogModule,
-    PageHeaderComponent,
-    HasClaimComponent,
-    CompetitionEventsComponent,
-    SelectSeasonComponent,
-  ],
+    selector: 'badman-competition-overview',
+    templateUrl: './overview.page.html',
+    styleUrls: ['./overview.page.scss'],
+    imports: [
+        CommonModule,
+        RouterModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MomentModule,
+        MatIconModule,
+        MatMenuModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        MatDialogModule,
+        PageHeaderComponent,
+        HasClaimComponent,
+        CompetitionEventsComponent,
+        SelectSeasonComponent,
+    ]
 })
 export class OverviewPageComponent implements OnInit {
   private readonly translate = inject(TranslateService);

@@ -27,12 +27,11 @@ type CommentForm = {
 };
 
 @Component({
-  selector: 'badman-comments-step',
-  standalone: true,
-  imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
-  templateUrl: './comments.step.html',
-  styleUrls: ['./comments.step.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-comments-step',
+    imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+    templateUrl: './comments.step.html',
+    styleUrls: ['./comments.step.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CommentsStepComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);

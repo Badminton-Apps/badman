@@ -9,20 +9,19 @@ import { Claim, Role } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-role-fields',
-  templateUrl: './role-fields.component.html',
-  styleUrls: ['./role-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    TranslateModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    ClaimComponent,
-  ],
+    selector: 'badman-role-fields',
+    templateUrl: './role-fields.component.html',
+    styleUrls: ['./role-fields.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        ClaimComponent,
+    ]
 })
 export class RoleFieldsComponent implements OnInit {
   role = input<Role>({} as Role);

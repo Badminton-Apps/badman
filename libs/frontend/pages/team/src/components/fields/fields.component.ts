@@ -16,26 +16,25 @@ import { Observable } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-team-fields',
-  templateUrl: './fields.component.html',
-  styleUrls: ['./fields.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    FormsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatInputModule,
-    MatOptionModule,
-    HasClaimComponent,
-    MatSelectModule,
-    HasClaimComponent,
-    PlayerSearchComponent,
-    RouterModule,
-  ],
+    selector: 'badman-team-fields',
+    templateUrl: './fields.component.html',
+    styleUrls: ['./fields.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        TranslateModule,
+        FormsModule,
+        MatIconModule,
+        MatButtonModule,
+        MatInputModule,
+        MatOptionModule,
+        HasClaimComponent,
+        MatSelectModule,
+        HasClaimComponent,
+        PlayerSearchComponent,
+        RouterModule,
+    ]
 })
 export class TeamFieldComponent implements OnInit {
   private readonly apollo = inject(Apollo);

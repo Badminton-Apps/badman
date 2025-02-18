@@ -6,10 +6,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ClubViewComponent } from './components';
 
 @Component({
-  templateUrl: './team-enrollments.component.html',
-  styleUrls: ['./team-enrollments.component.scss'],
-  standalone: true,
-  imports: [CommonModule, TranslateModule, ClubViewComponent],
+    templateUrl: './team-enrollments.component.html',
+    styleUrls: ['./team-enrollments.component.scss'],
+    imports: [CommonModule, TranslateModule, ClubViewComponent]
 })
 export class TeamEnrollmentsComponent {
   private _title = inject(Title);

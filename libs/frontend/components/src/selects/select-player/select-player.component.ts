@@ -20,21 +20,20 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, throttleTime, filter, lastValueFrom, map, switchMap, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'badman-select-player',
-  templateUrl: './select-player.component.html',
-  styleUrls: ['./select-player.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatSelectModule,
-  ],
+    selector: 'badman-select-player',
+    templateUrl: './select-player.component.html',
+    styleUrls: ['./select-player.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatSelectModule,
+    ]
 })
 export class SelectPlayerComponent implements OnInit {
   private apollo = inject(Apollo);

@@ -51,4 +51,10 @@ module.exports = [
       '@nx/dependency-checks': 'error',
     },
   })),
+  {
+    files: ['**/*.ts'],
+    rules: {
+      '@angular-eslint/prefer-standalone': 'off',
+    },
+  },
 ];

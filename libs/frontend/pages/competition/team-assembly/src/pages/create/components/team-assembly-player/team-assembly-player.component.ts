@@ -6,12 +6,11 @@ import { Player } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
-  selector: 'badman-assembly-player',
-  standalone: true,
-  imports: [CommonModule, TranslateModule, MatIconModule, MatTooltipModule],
-  templateUrl: './team-assembly-player.component.html',
-  styleUrls: ['./team-assembly-player.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-assembly-player',
+    imports: [CommonModule, TranslateModule, MatIconModule, MatTooltipModule],
+    templateUrl: './team-assembly-player.component.html',
+    styleUrls: ['./team-assembly-player.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TeamAssemblyPlayerComponent {
   player = input.required<Player>();

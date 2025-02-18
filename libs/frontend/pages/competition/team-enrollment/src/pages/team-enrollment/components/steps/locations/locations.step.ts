@@ -21,20 +21,19 @@ import { TeamEnrollmentDataService } from '../../../service/team-enrollment.serv
 import { LocationAvailibilityForm, LocationComponent, LocationForm } from './components';
 
 @Component({
-  selector: 'badman-locations-step',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatProgressBarModule,
-    LocationComponent,
-  ],
-  templateUrl: './locations.step.html',
-  styleUrls: ['./locations.step.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'badman-locations-step',
+    imports: [
+        CommonModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatProgressBarModule,
+        LocationComponent,
+    ],
+    templateUrl: './locations.step.html',
+    styleUrls: ['./locations.step.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocationsStepComponent {
   private readonly dialog = inject(MatDialog);

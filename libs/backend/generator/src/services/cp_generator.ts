@@ -51,7 +51,6 @@ export class CpGeneratorService {
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
-  
   public async generateCpFile(eventId: string) {
     this.logger.log('Started generating CP file');
     const event = await EventCompetition.findByPk(eventId);
@@ -95,7 +94,6 @@ export class CpGeneratorService {
     return destination;
   }
 
-   
   private async _prepCPfile(event: EventCompetition, connection: AdobdbOpen, existed = false) {
     // delete existing data
     const queries = [
@@ -170,7 +168,7 @@ export class CpGeneratorService {
     try {
       ADODB = require('node-adodb');
     } catch (er) {
-      this.logger.warn(`ADODB not found`);
+      this.logger.warn(`ADODB not found`, er);
       return null;
     }
 
