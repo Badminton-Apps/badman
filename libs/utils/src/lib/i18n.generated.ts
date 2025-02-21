@@ -811,6 +811,212 @@ export type I18nTranslations = {
                 "double": string;
                 "mix": string;
             };
+            "messages": {
+                "claimAccountSuccess": string;
+            };
+            "crud": {
+                "title": string;
+                "tabs": {
+                    "player": string;
+                    "ranking": string;
+                    "clubHistory": string;
+                    "permissions": string;
+                };
+                "playerForm": {
+                    "inputs": {
+                        "name": string;
+                        "lastName": string;
+                        "gender": string;
+                        "memberId": string;
+                        "registrationNumber": string;
+                    };
+                    "gender": {
+                        "M": string;
+                        "F": string;
+                    };
+                    "buttons": {
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                    };
+                };
+                "ranking": {
+                    "lastRanking": {
+                        "title": string;
+                        "notFound": string;
+                        "inputs": {
+                            "single": string;
+                            "double": string;
+                            "mix": string;
+                        };
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "save": string;
+                        };
+                    };
+                    "competitionPlayer": {
+                        "title": string;
+                        "inputs": {
+                            "competitionPlayer": string;
+                        };
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "save": string;
+                        };
+                    };
+                    "allUpdates": {
+                        "title": string;
+                        "nextRanking": string;
+                        "updates": string;
+                        "buttons": {
+                            "add": string;
+                        };
+                        "table": {
+                            "headers": {
+                                "date": string;
+                                "single": string;
+                                "double": string;
+                                "mix": string;
+                                "actions": string;
+                            };
+                            "actions": {
+                                "edit": string;
+                                "delete": string;
+                            };
+                        };
+                        "rankingPlace": {
+                            "editDialog": {
+                                "titleEdit": string;
+                                "titleCreate": string;
+                                "inputs": {
+                                    "rankingDate": string;
+                                    "single": string;
+                                    "double": string;
+                                    "mix": string;
+                                    "singlePoints": string;
+                                    "doublePoints": string;
+                                    "mixPoints": string;
+                                    "updatePossible": string;
+                                };
+                                "messages": {
+                                    "successCreate": string;
+                                    "successUpdate": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "saveEdit": string;
+                                    "saveCreate": string;
+                                };
+                            };
+                            "deleteDialog": {
+                                "title": string;
+                                "subTitle": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "buttons": {
+                                    "no": string;
+                                    "yes": string;
+                                };
+                            };
+                        };
+                    };
+                };
+                "clubHistory": {
+                    "notFound": string;
+                    "buttons": {
+                        "add": string;
+                    };
+                    "deleteDialog": {
+                        "title": string;
+                        "subTitle": string;
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "no": string;
+                            "yes": string;
+                        };
+                    };
+                    "editDialog": {
+                        "titleAdd": string;
+                        "titleEdit": string;
+                        "inputs": {
+                            "selectClub": string;
+                            "isCurrentClub": string;
+                            "start": string;
+                            "end": string;
+                            "membershipType": string;
+                            "confirmed": string;
+                        };
+                        "membershipTypes": {
+                            "NORMAL": string;
+                            "LOAN": string;
+                        };
+                        "messages": {
+                            "successAdd": string;
+                            "successEdit": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "add": string;
+                            "edit": string;
+                        };
+                    };
+                    "table": {
+                        "notFound": string;
+                        "headers": {
+                            "fullName": string;
+                            "start": string;
+                            "end": string;
+                            "actions": string;
+                        };
+                        "actions": {
+                            "edit": string;
+                            "delete": string;
+                        };
+                    };
+                };
+                "permissionsForm": {
+                    "buttons": {
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                    };
+                };
+                "deletePlayer": {
+                    "title": string;
+                    "subTitle": string;
+                    "messages": {
+                        "success": string;
+                    };
+                    "buttons": {
+                        "no": string;
+                        "yes": string;
+                    };
+                };
+                "recalculatePoints": {
+                    "title": string;
+                    "subTitle": string;
+                    "inputs": {
+                        "from": string;
+                        "to": string;
+                    };
+                    "messages": {
+                        "success": string;
+                    };
+                    "buttons": {
+                        "close": string;
+                        "calculate": string;
+                    };
+                };
+            };
             "nextEncounterTitle": string;
             "upcomingEncountersTitle": string;
             "recentEncountersTitle": string;
