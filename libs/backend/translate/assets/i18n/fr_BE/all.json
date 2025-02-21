@@ -447,7 +447,9 @@
       "cancelPresence": "Annuler la présence",
       "confirmConfirmed": "Confirmer la rencontre",
       "cancelConfirmed": "Annuler la rencontre",
-      "results": "Résultats"
+      "results": "Résultats",
+      "players": "Joueurs",
+      "information": "Informations"
     },
     "prompts": {
       "confirmPresence": "Le capitaine de l'équipe, {fullName}, est-il présent pour cette rencontre?",
@@ -457,7 +459,9 @@
     },    
     "messages": {
       "areComments": "{numberOfComments} commentaires",
-      "noComments": "Pas de commentaires"
+      "noComments": "Pas de commentaires",
+      "gameCreated": "Le match a été créé",
+      "gameUpdated": "Le match a été mis à jour"
     },
     "buttons": {
       "back": "Retour",
@@ -465,12 +469,25 @@
       "submit": "Envoyer",
       "cancel": "Annuler",
       "confirm": "Confirmer",
-      "seeTeamFormation": "Voir la formation de l'équipe"
+      "seeTeamFormation": "Voir la formation de l'équipe",
+      "2Sets": "2 sets",
+      "3Sets": "3 sets",
+      "saveChanges": "Sauvegarder les modifications"
     },
     "inputs": {
       "present": "Présent",
       "confirm": "Confirmer",
-      "league": "Ligue"
+      "league": "Ligue",
+      "players": "Joueurs",
+      "player": "Joueur",
+      "winner": "Gagnant",
+      "set1": "Set 1",
+      "set2": "Set 2",
+      "set3": "Set 3",
+      "startTime": "Heure de début",
+      "endTime": "Heure de fin",
+      "shuttle": "Navette",
+      "commentsOptional": "Commentaires (facultatif)"
     },
     "positions": {
       "captain": "Capitaine",
@@ -479,7 +496,9 @@
       "awayCaptain": "Capitaine à l'extérieur"
     },
     "errors": {
-      "presenceNotUpdated": "présence du {position} non mise à jour"
+      "presenceNotUpdated": "présence du {position} non mise à jour",
+      "errorCreatingGame": "Erreur lors de la création du match",
+      "errorUpdatingGame": "Erreur lors de la mise à jour du match"
     }
   }, 
   "event": {
