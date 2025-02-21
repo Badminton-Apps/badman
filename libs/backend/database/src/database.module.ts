@@ -19,7 +19,6 @@ import { loadTest } from './_testing/load-test';
     ConfigModule,
     CacheModule,
   ],
-  providers: [],
 })
 export class DatabaseModule implements OnModuleInit {
   private readonly logger = new Logger(DatabaseModule.name);
