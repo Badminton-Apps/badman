@@ -82,6 +82,7 @@
     "start": "Start date",
     "titles": {
       "encounters": "Encounters",
+      "encounter-form": "Encounter form",
       "matrix": "Assembly matrix",
       "players": "Players",
       "plural": "Clubs",
@@ -432,6 +433,77 @@
     "tuesday": "Tuesday",
     "wednesday": "Wednesday"
   },
+  "encounterFormPage": {
+    "title": "Encounter form",
+    "steps": {
+      "0": "Info",
+      "1": "Results",
+      "2": "Confirm"
+    },
+    "sectionTitles": {
+      "register": "Register",
+      "teams": "Teams",
+      "confirmEncounter": "Confirm encounter",
+      "confirmPresence": "Confirm presence",
+      "cancelPresence": "Cancel presence",
+      "confirmConfirmed": "Confirm encounter",
+      "cancelConfirmed": "Cancel confirmation",
+      "results": "Results",
+      "players": "Players",
+      "information": "Information"
+    },
+    "prompts": {
+      "confirmPresence": "Is the team captain, {fullName}, present for this encounter?",
+      "cancelPresence": "Do you want to cancel the presence of {fullName}?",
+      "confirmConfirmed": "Does the team captain, {fullName}, confirm the result of this encounter?",
+      "cancelConfirmed": "Do you want to cancel the confirmation of {fullName}?"
+    },
+    "messages": {
+      "areComments": "{numberOfComments} comments",
+      "noComments": "No Comments",
+      "presenceUpdated": "{position} presence updated",
+      "gameCreated": "Game successfully created",
+      "gameUpdated": "Game successfully updated"
+    },
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "seeTeamFormation": "See team details",
+      "2Sets": "2 sets",
+      "3Sets": "3 sets",
+      "saveChanges": "Save changes"
+    },
+    "inputs": {
+      "present": "Present",
+      "confirm": "Confirm",
+      "league": "League",
+      "date": "Date",
+      "players": "Players",
+      "player": "Player",
+      "winner": "Winner",
+      "set1": "Set 1",
+      "set2": "Set 2",
+      "set3": "Set 3",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "shuttle": "Shuttle",
+      "commentsOptional": "Comments (optional)"
+    },
+    "positions": {
+      "captain": "Captain",
+      "gameLeader": "Game leader",
+      "homeCaptain": "Home captain",
+      "awayCaptain": "Away captain"
+    },
+    "errors": {
+      "presenceNotUpdated": "{position} presence not updated",
+      "errorCreatingGame": "Error creating game",
+      "errorUpdatingGame": "Error updating game"
+    }
+  }, 
   "event": {
     "checkEncounterForFilledIn": "Send notifications when encounter is not entered or confirmed",
     "last-sync": "Last sync",
@@ -1618,6 +1690,7 @@
     },
     "teamFormation": {
       "title": "Select players",
+      "disabledTitle": "Players",
       "noClub": "Team has no club",
       "selectPlayer": "Select player",
       "categories": {

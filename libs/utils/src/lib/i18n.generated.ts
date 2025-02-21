@@ -89,6 +89,7 @@ export type I18nTranslations = {
             "start": string;
             "titles": {
                 "encounters": string;
+                "encounter-form": string;
                 "matrix": string;
                 "players": string;
                 "plural": string;
@@ -438,6 +439,77 @@ export type I18nTranslations = {
             "thursday": string;
             "tuesday": string;
             "wednesday": string;
+        };
+        "encounterFormPage": {
+            "title": string;
+            "steps": {
+                "0": string;
+                "1": string;
+                "2": string;
+            };
+            "sectionTitles": {
+                "register": string;
+                "teams": string;
+                "confirmEncounter": string;
+                "confirmPresence": string;
+                "cancelPresence": string;
+                "confirmConfirmed": string;
+                "cancelConfirmed": string;
+                "results": string;
+                "players": string;
+                "information": string;
+            };
+            "prompts": {
+                "confirmPresence": string;
+                "cancelPresence": string;
+                "confirmConfirmed": string;
+                "cancelConfirmed": string;
+            };
+            "messages": {
+                "areComments": string;
+                "noComments": string;
+                "presenceUpdated": string;
+                "gameCreated": string;
+                "gameUpdated": string;
+            };
+            "buttons": {
+                "back": string;
+                "next": string;
+                "submit": string;
+                "cancel": string;
+                "confirm": string;
+                "seeTeamFormation": string;
+                "2Sets": string;
+                "3Sets": string;
+                "saveChanges": string;
+            };
+            "inputs": {
+                "present": string;
+                "confirm": string;
+                "league": string;
+                "date": string;
+                "players": string;
+                "player": string;
+                "winner": string;
+                "set1": string;
+                "set2": string;
+                "set3": string;
+                "startTime": string;
+                "endTime": string;
+                "shuttle": string;
+                "commentsOptional": string;
+            };
+            "positions": {
+                "captain": string;
+                "gameLeader": string;
+                "homeCaptain": string;
+                "awayCaptain": string;
+            };
+            "errors": {
+                "presenceNotUpdated": string;
+                "errorCreatingGame": string;
+                "errorUpdatingGame": string;
+            };
         };
         "event": {
             "checkEncounterForFilledIn": string;
@@ -1625,6 +1697,7 @@ export type I18nTranslations = {
             };
             "teamFormation": {
                 "title": string;
+                "disabledTitle": string;
                 "noClub": string;
                 "selectPlayer": string;
                 "categories": {

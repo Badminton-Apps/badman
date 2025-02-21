@@ -67,6 +67,12 @@ export class Comment extends Model {
   @Column(DataType.UUIDV4)
   clubId?: string;
 
+  @ForeignKey(() => EncounterCompetition)
+  @Index
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  encounterId?: string;
+
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,

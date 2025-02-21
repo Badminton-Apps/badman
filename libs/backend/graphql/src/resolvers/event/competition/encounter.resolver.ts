@@ -2,7 +2,7 @@ import { User } from '@badman/backend-authorization';
 import {
   EncounterValidationInput,
   EncounterValidationOutput,
-  EncounterValidationService,
+  EncounterValidationService
 } from '@badman/backend-change-encounter';
 import {
   Assembly,
@@ -15,6 +15,7 @@ import {
   Player,
   RankingSystem,
   Team,
+  updateEncounterCompetitionInput,
 } from '@badman/backend-database';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { PointsService } from '@badman/backend-ranking';
@@ -198,6 +199,11 @@ export class EncounterCompetitionResolver {
     return encounter.getGameLeader();
   }
 
+  @ResolveField(() => Player)
+  async acceptedBy(@Parent() encounter: EncounterCompetition): Promise<Player> {
+    return encounter.getAcceptedBy();
+  }
+
   @ResolveField(() => [Comment], { nullable: true })
   async homeComments(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getHomeComments();
@@ -206,6 +212,11 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => [Comment], { nullable: true })
   async awayComments(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getAwayComments();
+  }
+
+  @ResolveField(() => Comment, { nullable: true })
+  async encounterComment(@Parent() encounter: EncounterCompetition): Promise<Comment> {
+    return encounter.getEncounterComment();
   }
 
   @ResolveField(() => [Comment], { nullable: true })
@@ -361,4 +372,25 @@ export class EncounterCompetitionResolver {
       throw error;
     }
   }
+
+    @Mutation(() => EncounterCompetition)
+    async updateEncounterCompetition(
+      @User() user: Player,
+      @Args('encounterId') encounterId: string,
+      @Args('data') updateEncounterCompetitionData: updateEncounterCompetitionInput,
+    ) {
+      const encounter = await EncounterCompetition.findByPk(encounterId);
+
+      if (!encounter) {
+        throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
+
+      if (!(await user.hasAnyPermission(['change-any:encounter']) || encounter.gameLeaderId === user.id)) {
+        throw new UnauthorizedException(`You do not have permission to edit this encounter`);
+      }
+
+      await encounter.update(updateEncounterCompetitionData);
+
+      return encounter;
+    }
 }

@@ -432,6 +432,76 @@
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag"
   },
+  "encounterFormPage": {
+    "title": "Ontmoetingsformulier",
+    "steps": {
+      "0": "Info",
+      "1": "Uitslagen",
+      "2": "Bevestigen"
+    },
+    "sectionTitles": {
+      "register": "Aanmelden",
+      "teams": "Ploegen",
+      "confirmEncounter": "Ontmoeting bevestigen",
+      "confirmPresence": "Bevestig aanwezigheid ",
+      "cancelPresence": "Annuleer aanwezigheid",
+      "confirmConfirmed": "Bevestig ontmoeting",
+      "cancelConfirmed": "Annuleer bevestiging",
+      "results": "Uitslagen",
+      "players": "Spelers",
+      "information": "Informatie"
+    },
+    "prompts": {
+      "confirmPresence": "Is de ploegkapitein, {fullName}, aanwezig voor deze ontmoeting?",
+      "cancelPresence": "Wil je de aanwezigheid van {fullName}, annuleren?",
+      "confirmConfirmed": "Bevestigd de ploegkapitein, {fullName}, de uitslag van deze ontmoeting?",
+      "cancelConfirmed": "Wil je de bevestiging van {fullName} annuleren?"
+    },
+    "messages": {
+      "areComments": "{numberOfComments} opmerkingen",
+      "noComments": "Geen opmerkingen",
+      "gameCreated": "Wedstrijd aangemaakt",
+      "gameUpdated": "Wedstrijd bijgewerkt"
+    },
+    "inputs": {
+      "present": "Aanwezig",
+      "confirm": "Bevestig",
+      "league": "Afdeling",
+      "players": "Spelers",
+      "player": "Speler",
+      "winner": "Winnaar",
+      "set1": "Set 1",
+      "set2": "Set 2",
+      "set3": "Set 3",
+      "startTime": "Starttijd",
+      "endTime": "Eindtijd",
+      "shuttle": "Shuttle",
+      "commentsOptional": "Opmerkingen (optioneel)"
+    },
+    "buttons": {
+      "back": "Terug",
+      "next": "Volgende",
+      "submit": "Indienen",
+      "cancel": "Annuleren",
+      "confirm": "Bevestigen",
+      "seeTeamFormation": "Bekijk ploegopstelling",
+      "2Sets": "2 sets",
+      "3Sets": "3 sets",
+      "saveChanges": "Wijzigingen opslaan"
+    },
+    "positions": {
+      "captain": "Ploegkapitein",
+      "gameLeader": "Wedstrijdleider",
+      "homeCaptain": "thuis kapitein",
+      "awayCaptain": "uit kapitein"
+    },
+    "errors": {
+      "presenceNotUpdated": "{position} aanwezigheid niet bijgewerkt",
+      "errorCreatingGame": "Er is een fout opgetreden bij het aanmaken van de wedstrijd",
+      "errorUpdatingGame": "Er is een fout opgetreden bij het bijwerken van de wedstrijd"
+
+    }
+  }, 
   "event": {
     "checkEncounterForFilledIn": "Stuur notificaties wanneer de wedstrijd niet ingevuld of bevestigd is",
     "last-sync": "Laatste update",

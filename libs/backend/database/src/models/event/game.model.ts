@@ -1,5 +1,5 @@
 // import { SocketEmitter, EVENTS } from '../../../sockets';
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -265,3 +265,46 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
   hasPlayers!: BelongsToManyHasAssociationsMixin<Player, string>;
   countPlayer!: BelongsToManyCountAssociationsMixin;
 }
+
+@InputType()
+export class GameNewInputPlayers {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => ID)
+  systemId!: string;
+
+  @Field(() => Int)
+  team!: number;
+
+  @Field(() => Int)
+  player!: number;
+}
+
+@InputType()
+export class GameNewInput extends PartialType(
+  OmitType(Game, ['id', 'visualCode', "rankingPoints", "players", 'competition','linkId', 'linkType', "tournament", "createdAt", "updatedAt"] as const),
+  InputType
+) {
+  @Field(() => ID, { nullable: true })
+  linkId!: string;
+
+  @Field(() => String, { nullable: true })
+  linkType!: string;
+
+  @Field(() => [GameNewInputPlayers], { nullable: true })
+  players!: GameNewInputPlayers[];
+}
+
+@InputType()
+export class GameUpdateInput extends PartialType(
+  OmitType(Game, ['id', 'visualCode', "rankingPoints", "players", 'competition','linkId', 'linkType', "tournament", "createdAt", "updatedAt"] as const),
+  InputType
+) {
+  @Field(() => ID, { nullable: true })
+  linkId!: string;
+
+  @Field(() => ID, { nullable: true })
+  gameId!: string;
+}
+
