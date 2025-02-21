@@ -15,27 +15,6 @@ export class EncounterValidationInput {
 }
 
 @InputType()
-export class updateEncounterCompetitionInput {
-  @Field(() => Boolean, { nullable: true })
-  gameLeaderPresent?: boolean;
-
-  @Field(() => Boolean, { nullable: true })
-  homeCaptainPresent?: boolean;
-
-  @Field(() => Boolean, { nullable: true })
-  awayCaptainPresent?: boolean;
-
-  @Field(() => Boolean, { nullable: true })
-  gameLeaderAccepted?: boolean;
-
-  @Field(() => Boolean, { nullable: true })
-  homeCaptainAccepted?: boolean;
-
-  @Field(() => Boolean, { nullable: true })
-  awayCaptainAccepted?: boolean;
-}
-
-@InputType()
 export class Suggestions {
   @Field(() => Date)
   date!: Date;

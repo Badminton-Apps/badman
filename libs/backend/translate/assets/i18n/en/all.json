@@ -456,7 +456,9 @@
       "cancelPresence": "Cancel presence",
       "confirmConfirmed": "Confirm encounter",
       "cancelConfirmed": "Cancel confirmation",
-      "results": "Results"
+      "results": "Results",
+      "players": "Players",
+      "information": "Information"
     },
     "prompts": {
       "confirmPresence": "Is the team captain, {fullName}, present for this encounter?",
@@ -467,7 +469,9 @@
     "messages": {
       "areComments": "{numberOfComments} comments",
       "noComments": "No Comments",
-      "presenceUpdated": "{position} presence updated"
+      "presenceUpdated": "{position} presence updated",
+      "gameCreated": "Game successfully created",
+      "gameUpdated": "Game successfully updated"
     },
     "buttons": {
       "back": "Back",
@@ -475,13 +479,26 @@
       "submit": "Submit",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "seeTeamFormation": "See team details"
+      "seeTeamFormation": "See team details",
+      "2Sets": "2 sets",
+      "3Sets": "3 sets",
+      "saveChanges": "Save changes"
     },
     "inputs": {
       "present": "Present",
       "confirm": "Confirm",
       "league": "League",
-      "date": "Date"
+      "date": "Date",
+      "players": "Players",
+      "player": "Player",
+      "winner": "Winner",
+      "set1": "Set 1",
+      "set2": "Set 2",
+      "set3": "Set 3",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "shuttle": "Shuttle",
+      "commentsOptional": "Comments (optional)"
     },
     "positions": {
       "captain": "Captain",
@@ -490,7 +507,9 @@
       "awayCaptain": "Away captain"
     },
     "errors": {
-      "presenceNotUpdated": "{position} presence not updated"
+      "presenceNotUpdated": "{position} presence not updated",
+      "errorCreatingGame": "Error creating game",
+      "errorUpdatingGame": "Error updating game"
     }
   }, 
   "event": {

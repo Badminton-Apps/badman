@@ -464,6 +464,8 @@ export type I18nTranslations = {
                 "confirmConfirmed": string;
                 "cancelConfirmed": string;
                 "results": string;
+                "players": string;
+                "information": string;
             };
             "prompts": {
                 "confirmPresence": string;
@@ -475,6 +477,8 @@ export type I18nTranslations = {
                 "areComments": string;
                 "noComments": string;
                 "presenceUpdated": string;
+                "gameCreated": string;
+                "gameUpdated": string;
             };
             "buttons": {
                 "back": string;
@@ -483,12 +487,25 @@ export type I18nTranslations = {
                 "cancel": string;
                 "confirm": string;
                 "seeTeamFormation": string;
+                "2Sets": string;
+                "3Sets": string;
+                "saveChanges": string;
             };
             "inputs": {
                 "present": string;
                 "confirm": string;
                 "league": string;
                 "date": string;
+                "players": string;
+                "player": string;
+                "winner": string;
+                "set1": string;
+                "set2": string;
+                "set3": string;
+                "startTime": string;
+                "endTime": string;
+                "shuttle": string;
+                "commentsOptional": string;
             };
             "positions": {
                 "captain": string;
@@ -498,6 +515,8 @@ export type I18nTranslations = {
             };
             "errors": {
                 "presenceNotUpdated": string;
+                "errorCreatingGame": string;
+                "errorUpdatingGame": string;
             };
         };
         "event": {
