@@ -1,10 +1,9 @@
-// start:ng42.barrel
 export * from './change-date';
-export * from './enter-scores';
-export * from './sync-ranking';
-export * from './sync-events';
-export * from './sync-twizzit';
 export * from './check-encounters';
 export * from './check-ranking';
+export * from './enter-scores';
 export * from './global';
-// end:ng42.barrel
+export * from './sync-events-v2';
+export * from './sync-events';
+export * from './sync-ranking';
+export * from './sync-twizzit';
