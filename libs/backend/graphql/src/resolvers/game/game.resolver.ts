@@ -10,17 +10,22 @@ import {
   GameNewInput,
   GameUpdateInput,
 } from '@badman/backend-database';
-import { Logger, NotFoundException } from '@nestjs/common';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
 import { getRankingProtected } from '@badman/utils';
 import { User } from '@badman/backend-authorization';
+import { InjectQueue } from '@nestjs/bull';
+import { Sync, SyncQueue } from '@badman/backend-queue';
+import { Queue } from 'bull';
+
 import { Sequelize } from 'sequelize-typescript';
 
 @Resolver(() => Game)
 export class GamesResolver {
   private readonly logger = new Logger(GamesResolver.name);
-  constructor(private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize, @InjectQueue(SyncQueue) private readonly _syncQueue: Queue) {}
+  
   @Query(() => Game)
   async game(@Args('id', { type: () => ID }) id: string): Promise<Game> {
     const game = await Game.findByPk(id);
@@ -249,5 +254,32 @@ export class GamesResolver {
       await transaction.rollback();
       throw e;
     }
+  }
+
+  @Mutation(() => Boolean)
+  async syncGame(
+    @User() user: Player,
+    @Args('gameId', { type: () => ID, nullable: true }) gameId: string,
+
+    @Args('drawId', { type: () => ID, nullable: true }) drawId: string,
+    @Args('gameCode', { type: () => ID, nullable: true }) gameCode: string,
+  ): Promise<boolean> {
+    if (!(await user.hasAnyPermission(['sync:tournament', 'sync:competition']))) {
+      throw new UnauthorizedException(`You do not have permission to sync tournament`);
+    }
+
+    this._syncQueue.add(
+      Sync.ScheduleSyncTournamentGame,
+      {
+        gameId,
+        drawId,
+        gameCode,
+      },
+      {
+        removeOnComplete: true,
+      },
+    );
+
+    return true;
   }
 }

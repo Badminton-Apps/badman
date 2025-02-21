@@ -106,7 +106,7 @@ export class CronService implements OnModuleInit {
 
         // if the job is already running, don't queue it again
         const runningJobs = await queue.getJobs(['active', 'waiting']);
-        const running = runningJobs.find((j) => j.name === job.meta?.jobName);
+        const running = runningJobs.find((j) => j?.name === job.meta?.jobName);
         if (running) {
           this.logger.verbose(`Job ${job.name} already running`);
           return;
