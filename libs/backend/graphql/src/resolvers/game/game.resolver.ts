@@ -8,13 +8,19 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/backend-database';
-import { NotFoundException } from '@nestjs/common';
-import { Args, ID, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
 import { getRankingProtected } from '@badman/utils';
+import { User } from '@badman/backend-authorization';
+import { InjectQueue } from '@nestjs/bull';
+import { Sync, SyncQueue } from '@badman/backend-queue';
+import { Queue } from 'bull';
 
 @Resolver(() => Game)
 export class GamesResolver {
+  constructor(@InjectQueue(SyncQueue) private readonly _syncQueue: Queue) {}
+
   @Query(() => Game)
   async game(@Args('id', { type: () => ID }) id: string): Promise<Game> {
     const game = await Game.findByPk(id);
@@ -114,5 +120,32 @@ export class GamesResolver {
         ...gamePlayer.toJSON(),
       } as Player & GamePlayerMembership;
     });
+  }
+
+  @Mutation(() => Boolean)
+  async syncGame(
+    @User() user: Player,
+    @Args('gameId', { type: () => ID, nullable: true }) gameId: string,
+
+    @Args('drawId', { type: () => ID, nullable: true }) drawId: string,
+    @Args('gameCode', { type: () => ID, nullable: true }) gameCode: string,
+  ): Promise<boolean> {
+    if (!(await user.hasAnyPermission(['sync:tournament', 'sync:competition']))) {
+      throw new UnauthorizedException(`You do not have permission to sync tournament`);
+    }
+
+    this._syncQueue.add(
+      Sync.ScheduleSyncTournamentGame,
+      {
+        gameId,
+        drawId,
+        gameCode,
+      },
+      {
+        removeOnComplete: true,
+      },
+    );
+
+    return true;
   }
 }
