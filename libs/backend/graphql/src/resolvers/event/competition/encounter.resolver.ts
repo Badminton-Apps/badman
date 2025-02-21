@@ -381,8 +381,6 @@ export class EncounterCompetitionResolver {
     ) {
       const encounter = await EncounterCompetition.findByPk(encounterId);
 
-      console.log('updateEncounterCompetitionData.acceptedById', updateEncounterCompetitionData.acceptedById)
-
       if (!encounter) {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
       }
