@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -280,6 +280,16 @@ export class EncounterCompetition extends Model<
   })
   awayCommentsChange?: Relation<Comment[]>;
 
+  @Field(() => Comment, { nullable: true })
+  @HasOne(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: true,
+    scope: {
+      linkType: 'encounter',
+    },
+  })
+  encounterComment?: Relation<Comment>;
+
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;
   setGames!: HasManySetAssociationsMixin<Game, string>;
@@ -302,6 +312,10 @@ export class EncounterCompetition extends Model<
   // Belongs to Away
   getAway!: BelongsToGetAssociationMixin<Team>;
   setAway!: BelongsToSetAssociationMixin<Team, string>;
+
+    // Belongs to Away
+    getAcceptedBy!: BelongsToGetAssociationMixin<Player>;
+    setAccdeptedBy!: BelongsToSetAssociationMixin<Player, string>;
 
   // Has one EncounterChange
   getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
@@ -348,6 +362,11 @@ export class EncounterCompetition extends Model<
   hasAwayComments!: HasManyHasAssociationsMixin<Comment, string>;
   countAwayComments!: HasManyCountAssociationsMixin;
 
+  // Has one EncounterComment
+  getEncounterComment!: BelongsToGetAssociationMixin<Comment>;
+  setEncounterComment!: BelongsToSetAssociationMixin<Comment, string>;
+
+
   // Has many HomeCommentsChange
   getHomeCommentsChanges!: HasManyGetAssociationsMixin<Comment>;
   setHomeCommentsChanges!: HasManySetAssociationsMixin<Comment, string>;
@@ -369,4 +388,43 @@ export class EncounterCompetition extends Model<
   hasAwayCommentsChange!: HasManyHasAssociationMixin<Comment, string>;
   hasAwayCommentsChanges!: HasManyHasAssociationsMixin<Comment, string>;
   countAwayCommentsChanges!: HasManyCountAssociationsMixin;
+}
+
+@InputType()
+export class updateEncounterCompetitionInput {
+  @Field(() => Boolean, { nullable: true })
+  gameLeaderPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  homeCaptainPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  awayCaptainPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  gameLeaderAccepted?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  homeCaptainAccepted?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  awayCaptainAccepted?: boolean;
+
+  @Field(() => String, { nullable: true })
+  startHour?: string;
+
+  @Field(() => String, { nullable: true })
+  endHour?: string;
+
+  @Field(() => String, { nullable: true })
+  shuttle?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  accepted?: boolean;
+
+  @Field(() => String, { nullable: true })
+  acceptedById?: string;
+
+  @Field(() => Date, { nullable: true })
+  acceptedOn?: Date;
 }

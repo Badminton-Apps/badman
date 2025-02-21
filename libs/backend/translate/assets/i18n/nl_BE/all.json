@@ -447,7 +447,9 @@
       "cancelPresence": "Annuleer aanwezigheid",
       "confirmConfirmed": "Bevestig ontmoeting",
       "cancelConfirmed": "Annuleer bevestiging",
-      "results": "Uitslagen"
+      "results": "Uitslagen",
+      "players": "Spelers",
+      "information": "Informatie"
     },
     "prompts": {
       "confirmPresence": "Is de ploegkapitein, {fullName}, aanwezig voor deze ontmoeting?",
@@ -457,12 +459,24 @@
     },
     "messages": {
       "areComments": "{numberOfComments} opmerkingen",
-      "noComments": "Geen opmerkingen"
+      "noComments": "Geen opmerkingen",
+      "gameCreated": "Wedstrijd aangemaakt",
+      "gameUpdated": "Wedstrijd bijgewerkt"
     },
     "inputs": {
       "present": "Aanwezig",
       "confirm": "Bevestig",
-      "league": "Afdeling"
+      "league": "Afdeling",
+      "players": "Spelers",
+      "player": "Speler",
+      "winner": "Winnaar",
+      "set1": "Set 1",
+      "set2": "Set 2",
+      "set3": "Set 3",
+      "startTime": "Starttijd",
+      "endTime": "Eindtijd",
+      "shuttle": "Shuttle",
+      "commentsOptional": "Opmerkingen (optioneel)"
     },
     "buttons": {
       "back": "Terug",
@@ -470,7 +484,10 @@
       "submit": "Indienen",
       "cancel": "Annuleren",
       "confirm": "Bevestigen",
-      "seeTeamFormation": "Bekijk ploegopstelling"
+      "seeTeamFormation": "Bekijk ploegopstelling",
+      "2Sets": "2 sets",
+      "3Sets": "3 sets",
+      "saveChanges": "Wijzigingen opslaan"
     },
     "positions": {
       "captain": "Ploegkapitein",
@@ -479,7 +496,10 @@
       "awayCaptain": "uit kapitein"
     },
     "errors": {
-      "presenceNotUpdated": "{position} aanwezigheid niet bijgewerkt"
+      "presenceNotUpdated": "{position} aanwezigheid niet bijgewerkt",
+      "errorCreatingGame": "Er is een fout opgetreden bij het aanmaken van de wedstrijd",
+      "errorUpdatingGame": "Er is een fout opgetreden bij het bijwerken van de wedstrijd"
+
     }
   }, 
   "event": {
