@@ -75,7 +75,8 @@ export class CommentResolver {
           playerId: user.id,
           linkId: newCommentData.linkId,
           linkType: newCommentData.linkType,
-          clubId: newCommentData.clubId,
+          ...(newCommentData.clubId ? {clubId: newCommentData.clubId} : {}),
+          ...(newCommentData.encounterId ? {encounterId: newCommentData.encounterId} : {}),
         },
         defaults: {
           ...newCommentData,
@@ -105,7 +106,7 @@ export class CommentResolver {
           if (!(link instanceof EncounterCompetition)) {
             throw new BadRequestException(`linkType is not home_comment_chamge`);
           }
-          await this.encounterComment(link, comment, user, transaction);
+            await this.encounterComment(link, comment, user, transaction);
           break;
       }
 
@@ -177,6 +178,8 @@ export class CommentResolver {
         return EventCompetition.findByPk(linkId);
       case 'encounterChange':
         return EncounterCompetition.findByPk(linkId);
+      case 'encounter':
+        return EncounterCompetition.findByPk(linkId);
       default:
         throw new NotFoundException(`${linkType}: ${linkId}`);
     }
@@ -230,13 +233,14 @@ export class CommentResolver {
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this comment`);
     }
-
-    if (home.clubId === comment.clubId) {
-      await link.addHomeComment(comment, { transaction });
-    } else if (away.clubId === comment.clubId) {
-      await link.addAwayComment(comment, { transaction });
-    } else {
-      throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
+    if (comment.clubId !== null && comment.encounterId === null) {
+      if (home.clubId === comment.clubId) {
+        await link.addHomeComment(comment, { transaction });
+      } else if (away.clubId === comment.clubId) {
+        await link.addAwayComment(comment, { transaction });
+      } else {
+        throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
+      }
     }
   }
 }
