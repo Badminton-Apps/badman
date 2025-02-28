@@ -147,6 +147,10 @@ export class EncounterCompetition extends Model<
 
   @Field(() => Boolean, { nullable: false })
   @Column(DataType.BOOLEAN)
+  finished?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
   homeCaptainPresent?: boolean;
 
   @Field(() => Boolean, { nullable: false })
@@ -313,9 +317,13 @@ export class EncounterCompetition extends Model<
   getAway!: BelongsToGetAssociationMixin<Team>;
   setAway!: BelongsToSetAssociationMixin<Team, string>;
 
-    // Belongs to Away
-    getAcceptedBy!: BelongsToGetAssociationMixin<Player>;
-    setAccdeptedBy!: BelongsToSetAssociationMixin<Player, string>;
+  // Belongs to player
+  getAcceptedBy!: BelongsToGetAssociationMixin<Player>;
+  setAcceptedBy!: BelongsToSetAssociationMixin<Player, string>;
+
+  // Belongs to player
+  getEnteredBy!: BelongsToGetAssociationMixin<Player>;
+  setEnteredBy!: BelongsToSetAssociationMixin<Player, string>;
 
   // Has one EncounterChange
   getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
@@ -427,4 +435,13 @@ export class updateEncounterCompetitionInput {
 
   @Field(() => Date, { nullable: true })
   acceptedOn?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  finished?: boolean;
+
+  @Field(() => String, { nullable: true })
+  enteredById?: string;
+
+  @Field(() => Date, { nullable: true })
+  enteredOn?: Date;
 }

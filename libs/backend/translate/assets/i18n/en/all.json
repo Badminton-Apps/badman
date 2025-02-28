@@ -433,6 +433,43 @@
     "tuesday": "Tuesday",
     "wednesday": "Wednesday"
   },
+  "confirmEncounterPage": {
+    "title": "Confirm encounter",
+    "sectionTitles": {
+      "teams": "Teams",
+      "confirmation": "Confirmation",
+      "results": "Results",
+      "information": "Information"
+    },
+    "positions": {
+      "captain": "Captain",
+      "gameLeader": "Game leader",
+      "homeCaptain": "Home captain",
+      "awayCaptain": "Away captain"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "confirm": "Confirm",
+      "seeEncounter": "See encounter"
+    },
+    "messages": {
+      "timeToConfirm": "You have {hoursUntilExpiry} more hours to confirm or dispute encounter"
+    }
+  },
+  "encounterAlerts": {
+    "buttons": {
+      "seeEncounter": "See encounter",
+      "seeAllMessages": "show all messages ({amountOfAlerts})",
+      "hideMessages": "hide messages"
+    },
+    "messages": {
+      "confirmOrDisputeEncounter": "You have {hoursUntilExpiry} more hours to confirm or dispute encounter"
+    },
+    "details": {
+
+    }
+  },
   "encounterFormPage": {
     "title": "Encounter form",
     "steps": {
@@ -462,6 +499,8 @@
       "areComments": "{numberOfComments} comments",
       "noComments": "No Comments",
       "presenceUpdated": "{position} presence updated",
+      "confirmationUpdated": "{position} confirmation updated",
+      "encounterUpdated": "Encounter successfully updated",
       "gameCreated": "Game successfully created",
       "gameUpdated": "Game successfully updated"
     },
@@ -500,8 +539,10 @@
     },
     "errors": {
       "presenceNotUpdated": "{position} presence not updated",
+      "confirmationNotUpdated": "{position} confirmation not updated",
       "errorCreatingGame": "Error creating game",
-      "errorUpdatingGame": "Error updating game"
+      "errorUpdatingGame": "Error updating game",
+      "encounterNotUpdated": "Error updating encounter"
     }
   }, 
   "event": {

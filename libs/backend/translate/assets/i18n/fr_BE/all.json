@@ -432,6 +432,39 @@
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
   },
+  "confirmEncounterPage": {
+    "title": "Confirmer la rencontre",
+    "sectionTitles": {
+      "teams": "Équipes",
+      "confirmation": "Confirmation",
+      "results": "Résultats",
+      "information": "Informations"
+    },
+    "positions": {
+      "captain": "Capitaine",
+      "gameLeader": "Chef de jeu",
+      "homeCaptain": "Capitaine à domicile",
+      "awayCaptain": "Capitaine à l'extérieur"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "confirm": "Confirmer"
+    }
+  },
+  "encounterAlerts": {
+    "buttons": {
+      "seeEncounter": "Voir la rencontre",
+      "seeAllMessages": "voir tous les messages ({amountOfAlerts})",
+      "hideMessages": "masquer les messages"
+    },
+    "messages": {
+      "confirmOrDisputeEncounter": "Il vous reste {hoursUntilExpiry} heures pour confirmer ou contester la rencontre"
+    },
+    "details": {
+      
+    }
+  },
   "encounterFormPage": {
     "title": "Formulaire de rencontre",
     "steps": {
@@ -461,7 +494,10 @@
       "areComments": "{numberOfComments} commentaires",
       "noComments": "Pas de commentaires",
       "gameCreated": "Le match a été créé",
-      "gameUpdated": "Le match a été mis à jour"
+      "gameUpdated": "Le match a été mis à jour",
+      "presenceUpdated": "Confirmation de présence de {position} mise à jour",
+      "confirmationUpdated": "Confirmation de {position} mise à jour",      
+      "encounterUpdated": "Rencontre mise à jour"
     },
     "buttons": {
       "back": "Retour",
@@ -497,8 +533,10 @@
     },
     "errors": {
       "presenceNotUpdated": "présence du {position} non mise à jour",
+      "confirmationNotUpdated": "Confirmation de {position} non mise à jour",
       "errorCreatingGame": "Erreur lors de la création du match",
-      "errorUpdatingGame": "Erreur lors de la mise à jour du match"
+      "errorUpdatingGame": "Erreur lors de la mise à jour du match",
+       "encounterNotUpdated": "Rencontre non mise à jour"
     }
   }, 
   "event": {
