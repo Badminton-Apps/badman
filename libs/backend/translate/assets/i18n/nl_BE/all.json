@@ -440,6 +440,39 @@
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag"
   },
+  "confirmEncounterPage": {
+    "title": "bevestig ontmoeting",
+    "sectionTitles": {
+      "teams": "Ploegen",
+      "confirmation": "Bevestiging",
+      "results": "Uitslagen",
+      "information": "Informatie"
+    },    
+    "positions": {
+      "captain": "Ploegkapitein",
+      "gameLeader": "Wedstrijdleider",
+      "homeCaptain": "thuis kapitein",
+      "awayCaptain": "uit kapitein"
+    }, 
+    "buttons": {
+      "cancel": "Annuleren",
+      "close": "Afsluiten",
+      "confirm": "Bevestigen"
+    }
+  },
+  "encounterAlerts": {
+    "buttons": {
+      "seeEncounter": "Bekijk ontmoeting",
+      "seeAllMessages": "bekijk alle berichten ({amountOfAlerts})",
+      "hideMessages": "berichten verbergen"
+    },
+    "messages": {
+      "confirmOrDisputeEncounter": "Je hebt nog {hoursUntilExpiry} uur om de ontmoeting te bevestigen of te betwisten"
+    },
+    "details": {
+      
+    }
+  },
   "encounterFormPage": {
     "title": "Ontmoetingsformulier",
     "steps": {
@@ -469,7 +502,10 @@
       "areComments": "{numberOfComments} opmerkingen",
       "noComments": "Geen opmerkingen",
       "gameCreated": "Wedstrijd aangemaakt",
-      "gameUpdated": "Wedstrijd bijgewerkt"
+      "gameUpdated": "Wedstrijd bijgewerkt",
+      "presenceUpdated": "Aanwezigheid van {position} bijgewerkt",
+      "confirmationUpdated": "Bevestiging van {position} bijgewerkt",
+      "encounterUpdated": "Ontmoeting bijgewerkt"
     },
     "inputs": {
       "present": "Aanwezig",
@@ -504,9 +540,11 @@
       "awayCaptain": "uit kapitein"
     },
     "errors": {
+      "confirmationNotUpdated": "{position} bevestiging niet bijgewerkt",
       "presenceNotUpdated": "{position} aanwezigheid niet bijgewerkt",
       "errorCreatingGame": "Er is een fout opgetreden bij het aanmaken van de wedstrijd",
-      "errorUpdatingGame": "Er is een fout opgetreden bij het bijwerken van de wedstrijd"
+      "errorUpdatingGame": "Er is een fout opgetreden bij het bijwerken van de wedstrijd",
+      "encounterNotUpdated": "Ontmoeting niet bijgewerkt"
 
     }
   }, 
