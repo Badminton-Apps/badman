@@ -440,6 +440,41 @@ export type I18nTranslations = {
             "tuesday": string;
             "wednesday": string;
         };
+        "confirmEncounterPage": {
+            "title": string;
+            "sectionTitles": {
+                "teams": string;
+                "confirmation": string;
+                "results": string;
+                "information": string;
+            };
+            "positions": {
+                "captain": string;
+                "gameLeader": string;
+                "homeCaptain": string;
+                "awayCaptain": string;
+            };
+            "buttons": {
+                "cancel": string;
+                "close": string;
+                "confirm": string;
+                "seeEncounter": string;
+            };
+            "messages": {
+                "timeToConfirm": string;
+            };
+        };
+        "encounterAlerts": {
+            "buttons": {
+                "seeEncounter": string;
+                "seeAllMessages": string;
+                "hideMessages": string;
+            };
+            "messages": {
+                "confirmOrDisputeEncounter": string;
+            };
+            "details": {};
+        };
         "encounterFormPage": {
             "title": string;
             "steps": {
@@ -469,6 +504,8 @@ export type I18nTranslations = {
                 "areComments": string;
                 "noComments": string;
                 "presenceUpdated": string;
+                "confirmationUpdated": string;
+                "encounterUpdated": string;
                 "gameCreated": string;
                 "gameUpdated": string;
             };
@@ -507,8 +544,10 @@ export type I18nTranslations = {
             };
             "errors": {
                 "presenceNotUpdated": string;
+                "confirmationNotUpdated": string;
                 "errorCreatingGame": string;
                 "errorUpdatingGame": string;
+                "encounterNotUpdated": string;
             };
         };
         "event": {
