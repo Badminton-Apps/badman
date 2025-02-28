@@ -53,6 +53,7 @@ export class CommentResolver {
     @Args('data') newCommentData: CommentNewInput,
     @User() user: Player,
   ): Promise<Comment> {
+    this.logger.log('Adding or updating a comment');
     const transaction = await this._sequelize.transaction();
     try {
       if (!newCommentData?.linkType) {

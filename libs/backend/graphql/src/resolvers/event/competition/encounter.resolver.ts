@@ -103,6 +103,7 @@ export class EncounterCompetitionResolver {
   async encounterCompetitions(
     @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterCompetition[] }> {
+    
     return EncounterCompetition.findAndCountAll({
       subQuery: false,
       include: [
@@ -197,6 +198,11 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => Player)
   async gameLeader(@Parent() encounter: EncounterCompetition): Promise<Player> {
     return encounter.getGameLeader();
+  }
+
+  @ResolveField(() => Player)
+  async enteredBy(@Parent() encounter: EncounterCompetition): Promise<Player> {
+    return encounter.getEnteredBy();
   }
 
   @ResolveField(() => Player)
@@ -379,18 +385,28 @@ export class EncounterCompetitionResolver {
       @Args('encounterId') encounterId: string,
       @Args('data') updateEncounterCompetitionData: updateEncounterCompetitionInput,
     ) {
-      const encounter = await EncounterCompetition.findByPk(encounterId);
+      this.logger.log('Updating encounter record with id:', encounterId);
+      const transaction = await this._sequelize.transaction();
+      try {
+        const encounter = await EncounterCompetition.findByPk(encounterId, {transaction});
+  
+        if (!encounter) {
+          throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+        }
+  
+        if (!(await user.hasAnyPermission(['change-any:encounter']) ||[`change-${encounterId}:encounter`]|| encounter.gameLeaderId === user.id)) {
+          throw new UnauthorizedException(`You do not have permission to edit this encounter`);
+        }
+  
+        const result = await encounter.update(updateEncounterCompetitionData, {transaction});
 
-      if (!encounter) {
-        throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+  
+        await transaction.commit();
+        return result;
+      } catch (error) {
+        this.logger.error(error);
+        await transaction.rollback();
+        throw error;
       }
-
-      if (!(await user.hasAnyPermission(['change-any:encounter']) || encounter.gameLeaderId === user.id)) {
-        throw new UnauthorizedException(`You do not have permission to edit this encounter`);
-      }
-
-      await encounter.update(updateEncounterCompetitionData);
-
-      return encounter;
     }
 }
