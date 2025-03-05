@@ -446,7 +446,8 @@
       "teams": "Ploegen",
       "confirmation": "Bevestiging",
       "results": "Uitslagen",
-      "information": "Informatie"
+      "information": "Informatie",
+      "submitComment": "Opmerking toevoegen"
     },    
     "positions": {
       "captain": "Ploegkapitein",
@@ -456,8 +457,21 @@
     }, 
     "buttons": {
       "cancel": "Annuleren",
+      "back": "Terug",
       "close": "Afsluiten",
-      "confirm": "Bevestigen"
+      "confirm": "Bevestigen",
+      "submit": "Indienen",
+      "addComment": "Opmerking toevoegen"
+    },
+    "inputs": {
+      "comment": "Opmerking"
+    },
+    "messages": {
+      "addedComment": "Opmerking toegevoegd",
+      "commentFrom": "Opmerking van {fullName}"
+    },
+    "errors": {
+      "errorAddingComment": "Fout bij het toevoegen van de opmerking"
     }
   },
   "encounterAlerts": {
@@ -760,6 +774,12 @@
     "select": "Selecteer",
     "start": "Start",
     "sync": "Sync"
+  },
+  "messages": {
+    "buttons": {
+      "hide": "Verberg {messageType}",
+      "seeAll": "Bekijk alle {messageType} ({amountOfMessages})"
+    }
   },
   "months": {
     "april": "April",

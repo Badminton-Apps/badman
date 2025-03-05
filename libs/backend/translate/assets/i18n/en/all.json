@@ -447,7 +447,8 @@
       "teams": "Teams",
       "confirmation": "Confirmation",
       "results": "Results",
-      "information": "Information"
+      "information": "Information",
+      "submitComment": "Submit comment"
     },
     "positions": {
       "captain": "Captain",
@@ -457,12 +458,22 @@
     },
     "buttons": {
       "cancel": "Cancel",
+      "back": "Back",
       "close": "Close",
       "confirm": "Confirm",
-      "seeEncounter": "See encounter"
+      "submit": "Submit",
+      "seeEncounter": "See encounter",
+      "addComment": "Add comment"
+    },
+    "inputs": {
+      "comment": "Comment"
     },
     "messages": {
-      "timeToConfirm": "You have {hoursUntilExpiry} more hours to confirm or dispute encounter"
+      "addedComment": "Comment successfully added",
+      "commentFrom": "Comment from {fullName}"
+    },
+    "errors": {
+      "errorAddingComment": "Error adding comment"
     }
   },
   "encounterAlerts": {
@@ -765,6 +776,12 @@
     "select": "Select",
     "start": "Start",
     "sync": "Sync"
+  },
+  "messages": {
+    "buttons": {
+      "hide": "Hide {messageType}",
+      "seeAll": "show all {messageType} ({amountOfMessages})"
+    }
   },
   "months": {
     "april": "April",
