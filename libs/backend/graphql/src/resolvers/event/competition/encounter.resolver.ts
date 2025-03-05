@@ -65,7 +65,7 @@ export class EncounterCompetitionResolver {
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    private encounterValidationService: EncounterValidationService,
+    private encounterValidationService: EncounterValidationService
   ) { }
 
   @Query(() => EncounterCompetition)
@@ -385,7 +385,7 @@ export class EncounterCompetitionResolver {
       @Args('encounterId') encounterId: string,
       @Args('data') updateEncounterCompetitionData: updateEncounterCompetitionInput,
     ) {
-      this.logger.log('Updating encounter record with id:', encounterId);
+      this.logger.log('Updating encounter record with id:', `${encounterId}`);
       const transaction = await this._sequelize.transaction();
       try {
         const encounter = await EncounterCompetition.findByPk(encounterId, {transaction});
@@ -397,12 +397,31 @@ export class EncounterCompetitionResolver {
         if (!(await user.hasAnyPermission(['change-any:encounter']) ||[`change-${encounterId}:encounter`]|| encounter.gameLeaderId === user.id)) {
           throw new UnauthorizedException(`You do not have permission to edit this encounter`);
         }
+
+        const shouldUpdateTournooiNL = 
+          updateEncounterCompetitionData.finished === true && 
+          updateEncounterCompetitionData.enteredById !== null && 
+          encounter.enteredOn === null &&
+          encounter.finished === false;
   
         const result = await encounter.update(updateEncounterCompetitionData, {transaction});
 
+        if (shouldUpdateTournooiNL){
+          await this.syncQueue.add(
+            Sync.EnterScores,
+            {
+              encounterId: encounter.id,
+            },
+            {
+              removeOnComplete: true,
+              removeOnFail: false,
+            },
+          );
+        }
+
   
         await transaction.commit();
-        return result;
+        return result.toJSON();
       } catch (error) {
         this.logger.error(error);
         await transaction.rollback();

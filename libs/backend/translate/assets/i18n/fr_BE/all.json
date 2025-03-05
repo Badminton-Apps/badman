@@ -438,7 +438,8 @@
       "teams": "Équipes",
       "confirmation": "Confirmation",
       "results": "Résultats",
-      "information": "Informations"
+      "information": "Informations",
+      "submitComment": "Soumettre un commentaire"
     },
     "positions": {
       "captain": "Capitaine",
@@ -446,10 +447,23 @@
       "homeCaptain": "Capitaine à domicile",
       "awayCaptain": "Capitaine à l'extérieur"
     },
+    "inputs": {
+      "comment": "Commentaire"
+    },
     "buttons": {
       "cancel": "Annuler",
+      "back": "Retour",
       "close": "Fermer",
-      "confirm": "Confirmer"
+      "confirm": "Confirmer",
+      "submit": "Envoyer",
+      "addComment": "Ajouter un commentaire"
+    },    
+    "messages": {
+      "addedComment": "Commentaire ajouté",
+      "commentFrom": "Commentaire de {fullName}"
+    },
+    "errors": {
+      "errorAddingComment": "Erreur lors de l'ajout du commentaire"
     }
   },
   "encounterAlerts": {
@@ -751,6 +765,12 @@
     "select": "Sélectionner",
     "start": "Commencer",
     "sync": "Sync"
+  },
+"messages": {
+    "buttons": {
+      "hide": "Masquer {messageType}",
+      "seeAll": "Voir tous les {messageType} ({amountOfMessages})"
+    }
   },
   "months": {
     "april": "Avril",
