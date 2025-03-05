@@ -447,6 +447,7 @@ export type I18nTranslations = {
                 "confirmation": string;
                 "results": string;
                 "information": string;
+                "submitComment": string;
             };
             "positions": {
                 "captain": string;
@@ -456,12 +457,22 @@ export type I18nTranslations = {
             };
             "buttons": {
                 "cancel": string;
+                "back": string;
                 "close": string;
                 "confirm": string;
+                "submit": string;
                 "seeEncounter": string;
+                "addComment": string;
+            };
+            "inputs": {
+                "comment": string;
             };
             "messages": {
-                "timeToConfirm": string;
+                "addedComment": string;
+                "commentFrom": string;
+            };
+            "errors": {
+                "errorAddingComment": string;
             };
         };
         "encounterAlerts": {
@@ -762,6 +773,12 @@ export type I18nTranslations = {
             "select": string;
             "start": string;
             "sync": string;
+        };
+        "messages": {
+            "buttons": {
+                "hide": string;
+                "seeAll": string;
+            };
         };
         "months": {
             "april": string;
