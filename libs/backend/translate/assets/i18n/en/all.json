@@ -940,9 +940,13 @@
     },
     "nextEncounterTitle": "Next encounter",
     "upcomingEncountersTitle": "Upcoming encounters",
+    "noUpcomingEncounters": "No upcoming encounters",
+    "noUpcomingEncounter": "No upcoming encounter",
     "recentEncountersTitle": "Recent encounters",
+    "noRecentEncounters": "No recent encounters",
     "rolePrefix": "You are",
     "gameLeader": "Game leader",
+    "unknown": "Unknown",
     "captain": "Captain",
     "player": "Player",
     "date": "Date",
@@ -1692,6 +1696,147 @@
         },
         "messages": {
           "saved": "Game leader saved"
+        }
+      }
+    }
+  },
+  "clubPage": {
+    "noClubFound": "No club found",
+    "actions": {
+      "edit": "Edit",
+      "addPlayer": "Add player",
+      "addPlayerDialog": {
+        "title": "Add player",
+        "messages": {
+          "success": "Player is added"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "addPlayer": "Add player"
+        }
+      },
+      "twizzitOverview": "Twizzit overview",
+      "delete": "Delete",
+      "deleteDialog": {
+        "title": "Delete club",
+        "subTitle": "Are you sure you want to delete this club?",
+        "messages": {
+          "success": "Club is deleted"
+        },
+        "buttons": {
+          "no": "No",
+          "yes": "Yes"
+        }
+      },
+      "messages": {
+        "downloadSuccess": "Twizzit overview downloaded"
+      }
+    },
+    "season": "Season",
+    "tabs": {
+      "teams": "Teams",
+      "assemblyMatrix": "Assembly matrix",
+      "players": "Players",
+      "encounters": "Encounters",
+      "teamEnrollment": "Team enrollment"
+    },
+    "teams": {
+      "title": "Teams",
+      "table": {
+        "headers": {
+          "team": "Team",
+          "type": "Type",
+          "ranking": "Ranking",
+          "liga": "Liga",
+          "actions": "Actions"
+        },
+        "noData": "No teams found"
+      }
+    },
+    "editClubPage": {
+      "title": "Edit club",
+      "tabs": {
+        "generalInfo": "General info",
+        "locations": "Locations",
+        "basePlayers": "Base players"
+      },
+      "generalInfoTab": {
+        "title": "General info",
+        "generalForm": {
+          "name": "Name",
+          "fullName": "Full name",
+          "teamName": "Team name",
+          "abbreviation": "Abbreviation",
+          "country": "Country",
+          "state": "State",
+          "states": {
+            "antwerpen": "Antwerp",
+            "brabant-wallon": "Walloon Brabant",
+            "brussels-hoofdstedelijk-gewest": "Brussels Capital Region",
+            "hainaut": "Hainaut",
+            "liege": "Liège",
+            "limburg": "Limburg",
+            "luxembourg": "Luxembourg",
+            "name": "Belgium",
+            "namur": "Namur",
+            "oost-vlaanderen": "East Flanders",
+            "vlaams-brabant": "Flemish Brabant",
+            "west-vlaanderen": "West Flanders"
+          },
+          "clubId": "Club ID",
+          "messages": {
+            "success": "Club updated"
+          },
+          "buttons": {
+            "save": "Save"
+          }
+        },
+        "roles": {
+          "title": "Roles",
+          "buttons": {
+            "addRole": "Add role",
+            "addPlayer": "Add player"
+          },
+          "messages": {
+            "successAddPlayer": "Player added to role",
+            "successRemovePlayer": "Player removed from role",
+            "failAddPlayer": "Error adding player to role",
+            "failRemovePlayer": "Error removing player from role"
+          },
+          "menu": {
+            "edit": "Edit",
+            "delete": "Delete"
+          },
+          "deleteDialog": {
+            "title": "Delete role",
+            "subTitle": "Are you sure you want to delete this role?",
+            "messages": {
+              "success": "Role is deleted"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "delete": "Delete"
+            }
+          },
+          "addDialog": {
+            "title": "Create role",
+            "messages": {
+              "success": "Role is created"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "addRole": "Add role"
+            }
+          },
+          "editDialog": {
+            "title": "Choose the rights for this role",
+            "messages": {
+              "success": "Permissions updated"
+            },
+            "buttons": {
+              "save": "Add role"
+            }
+          }
         }
       }
     }

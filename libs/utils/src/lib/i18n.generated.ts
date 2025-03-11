@@ -947,9 +947,13 @@ export type I18nTranslations = {
             };
             "nextEncounterTitle": string;
             "upcomingEncountersTitle": string;
+            "noUpcomingEncounters": string;
+            "noUpcomingEncounter": string;
             "recentEncountersTitle": string;
+            "noRecentEncounters": string;
             "rolePrefix": string;
             "gameLeader": string;
+            "unknown": string;
             "captain": string;
             "player": string;
             "date": string;
@@ -1699,6 +1703,147 @@ export type I18nTranslations = {
                     };
                     "messages": {
                         "saved": string;
+                    };
+                };
+            };
+        };
+        "clubPage": {
+            "noClubFound": string;
+            "actions": {
+                "edit": string;
+                "addPlayer": string;
+                "addPlayerDialog": {
+                    "title": string;
+                    "messages": {
+                        "success": string;
+                    };
+                    "buttons": {
+                        "cancel": string;
+                        "addPlayer": string;
+                    };
+                };
+                "twizzitOverview": string;
+                "delete": string;
+                "deleteDialog": {
+                    "title": string;
+                    "subTitle": string;
+                    "messages": {
+                        "success": string;
+                    };
+                    "buttons": {
+                        "no": string;
+                        "yes": string;
+                    };
+                };
+                "messages": {
+                    "downloadSuccess": string;
+                };
+            };
+            "season": string;
+            "tabs": {
+                "teams": string;
+                "assemblyMatrix": string;
+                "players": string;
+                "encounters": string;
+                "teamEnrollment": string;
+            };
+            "teams": {
+                "title": string;
+                "table": {
+                    "headers": {
+                        "team": string;
+                        "type": string;
+                        "ranking": string;
+                        "liga": string;
+                        "actions": string;
+                    };
+                    "noData": string;
+                };
+            };
+            "editClubPage": {
+                "title": string;
+                "tabs": {
+                    "generalInfo": string;
+                    "locations": string;
+                    "basePlayers": string;
+                };
+                "generalInfoTab": {
+                    "title": string;
+                    "generalForm": {
+                        "name": string;
+                        "fullName": string;
+                        "teamName": string;
+                        "abbreviation": string;
+                        "country": string;
+                        "state": string;
+                        "states": {
+                            "antwerpen": string;
+                            "brabant-wallon": string;
+                            "brussels-hoofdstedelijk-gewest": string;
+                            "hainaut": string;
+                            "liege": string;
+                            "limburg": string;
+                            "luxembourg": string;
+                            "name": string;
+                            "namur": string;
+                            "oost-vlaanderen": string;
+                            "vlaams-brabant": string;
+                            "west-vlaanderen": string;
+                        };
+                        "clubId": string;
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "save": string;
+                        };
+                    };
+                    "roles": {
+                        "title": string;
+                        "buttons": {
+                            "addRole": string;
+                            "addPlayer": string;
+                        };
+                        "messages": {
+                            "successAddPlayer": string;
+                            "successRemovePlayer": string;
+                            "failAddPlayer": string;
+                            "failRemovePlayer": string;
+                        };
+                        "menu": {
+                            "edit": string;
+                            "delete": string;
+                        };
+                        "deleteDialog": {
+                            "title": string;
+                            "subTitle": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "delete": string;
+                            };
+                        };
+                        "addDialog": {
+                            "title": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "addRole": string;
+                            };
+                        };
+                        "editDialog": {
+                            "title": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "buttons": {
+                                "save": string;
+                            };
+                        };
                     };
                 };
             };

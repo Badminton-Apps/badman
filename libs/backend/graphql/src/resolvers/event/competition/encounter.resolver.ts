@@ -103,7 +103,6 @@ export class EncounterCompetitionResolver {
     @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterCompetition[] }> {
     return EncounterCompetition.findAndCountAll({
-      subQuery: false,
       include: [
         {
           model: Team,
@@ -121,7 +120,6 @@ export class EncounterCompetitionResolver {
               model: Player,
               as: 'players',
               attributes: [],
-              required: true,
             },
           ],
         },
@@ -170,8 +168,12 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => Boolean)
   async isPlayerPlayed(
     @Parent() encounter: EncounterCompetition,
-    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('playerId', { type: () => ID, nullable: true }) playerId?: string, 
   ): Promise<boolean> {
+    if (!playerId) {
+      return false; 
+    }
+  
     const games = await encounter.getGames({
       include: [
         {
@@ -181,9 +183,7 @@ export class EncounterCompetitionResolver {
       ],
     });
     return games.some(game =>
-      game?.players?.some(player => {
-        return player.id === playerId;
-      })
+      game?.players?.some(player => player.id === playerId)
     );
   }
 
