@@ -456,7 +456,8 @@
       "addComment": "Opmerking toevoegen"
     },
     "inputs": {
-      "comment": "Opmerking"
+      "comment": "Opmerking",
+      "gameLeaderCommentsOptional": "Wedstrijdleider opmerkingen (optioneel)"
     },
     "messages": {
       "addedComment": "Opmerking toegevoegd",
