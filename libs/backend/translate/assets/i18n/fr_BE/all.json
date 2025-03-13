@@ -474,6 +474,101 @@
       "errorAddingComment": "Erreur lors de l'ajout du commentaire"
     }
   },
+  "competitionDetailPage": {
+    "tabs": {
+      "divisions": "Divisions",
+      "encounters": "Rencontres",
+      "teamSignups": "Inscriptions d'équipe"
+    },
+    "buttons": {
+      "openInToernooiNL": "Ouvrir dans toernooi.nl",
+      "view": "Voir",
+      "clearFilters": "Effacer les filtres"
+    },
+    "divisions": {
+      "actions": {
+        "edit": "Modifier",
+        "sync": "Synchroniser",
+        "recalculatePoints": "Recalculer les points",
+        "actions": "Actions",
+        "reports": "Rapports",
+        "copy": "Copier",
+        "openCloseSignups": "Ouvrir/Fermer les inscriptions",
+        "openCloseChangeEncounters": "Ouvrir/Fermer la modification de la date de rencontre",
+        "makeUnofficialTournament": "Rendre le tournoi non officiel",
+        "delete": "Supprimer",
+        "averageLevel": "Niveau moyen",
+        "downloadBasePlayers": "Télécharger les joueurs de base",
+        "downloadCPFile": "Télécharger le fichier CP"
+      },
+      "tableNames": {
+        "F": "Femmes",
+        "M": "Hommes",
+        "MX": "Mixte"
+      },
+      "table": {
+        "headers": {
+          "divisions": "Divisions",
+          "type": "Type",
+          "numberTeams": "# équipes",
+          "maxLevel": "Niveau max",
+          "index": "Indice",
+          "subdivisions": "Sous-divisions"
+        },
+        "noRecords": "Aucun enregistrement trouvé"
+      }
+    },
+    "encounters": {
+      "table": {
+        "buttons": {
+          "filters": "Filtres"
+        },
+        "headers": {
+          "date": "Date",
+          "homeTeam": "Équipe à domicile",
+          "awayTeam": "Équipe à l'extérieur",
+          "originalDate": "Date originale",
+          "reschedule": "Replanifier"
+        },
+        "tooltips": {
+          "reschedule": "Replanifier la rencontre"
+        },
+        "rescheduleStatuses": {
+          "rescheduled": "Replanifié",
+          "rescheduleInProgress": "Replanification en cours",
+          "rescheduleRequested": "Replanification demandée"
+        },
+        "inputs": {
+          "team": "Équipe",
+          "club": "Club"
+        },
+        "noRecords": "Aucun enregistrement trouvé"
+      }
+    }
+  },
+  "competitionOverviewPage": {
+    "title": "Toutes les compétitions",
+    "sectionTitles": {
+      "overview": "Aperçu"
+    },
+    "table": {
+      "headers": {
+        "name": "Nom",
+        "start": "Début",
+        "end": "Fin",
+        "official": "Officiel",
+        "actions": "Actions"
+      },
+      "divisions": "divisions",
+      "inputs": {
+        "onlyOfficialCompetitions": "Seulement les compétitions officielles"
+      },
+      "buttons": {
+        "addCompetition": "compétition",
+        "loadMoreCompetitions": "Charger plus de compétitions..."
+      }
+    }
+  },
   "encounterAlerts": {
     "buttons": {
       "seeEncounter": "Voir la rencontre",

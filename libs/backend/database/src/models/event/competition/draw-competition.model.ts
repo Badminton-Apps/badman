@@ -31,6 +31,7 @@ import { SubEventCompetition } from './sub-event-competition.model';
 import { DrawType } from '@badman/utils';
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import { Relation } from '../../../wrapper';
+import { Game } from '../game.model';
 
 @Table({
   timestamps: true,
@@ -109,6 +110,17 @@ export class DrawCompetition extends Model {
     },
   })
   eventEntries?: Relation<EventEntry[]>;
+
+    // Has many Game
+    getGames!: HasManyGetAssociationsMixin<Game>;
+    setGames!: HasManySetAssociationsMixin<Game, string>;
+    addGames!: HasManyAddAssociationsMixin<Game, string>;
+    addGame!: HasManyAddAssociationMixin<Game, string>;
+    removeGame!: HasManyRemoveAssociationMixin<Game, string>;
+    removeGames!: HasManyRemoveAssociationsMixin<Game, string>;
+    hasGame!: HasManyHasAssociationMixin<Game, string>;
+    hasGames!: HasManyHasAssociationsMixin<Game, string>;
+    countGames!: HasManyCountAssociationsMixin;
 
   // Belongs to SubEvent
   getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;

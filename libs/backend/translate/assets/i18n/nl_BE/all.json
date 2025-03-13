@@ -474,6 +474,101 @@
       "errorAddingComment": "Fout bij het toevoegen van de opmerking"
     }
   },
+  "competitionDetailPage": {
+    "tabs": {
+      "divisions": "Divisies",
+      "encounters": "Wedstrijden",
+      "teamSignups": "Team inschrijvingen"
+    },
+    "buttons": {
+      "openInToernooiNL": "Open in toernooi.nl",
+      "view": "Bekijk",
+      "clearFilters": "Filters wissen"
+    },
+    "divisions": {
+      "actions": {
+        "edit": "Bewerken",
+        "sync": "Synchroniseren",
+        "recalculatePoints": "Punten herberekenen",
+        "actions": "Acties",
+        "reports": "Rapporten",
+        "copy": "Kopiëren",
+        "openCloseSignups": "Inschrijvingen openen/sluiten",
+        "openCloseChangeEncounters": "Wijziging wedstrijd datum openen/sluiten",
+        "makeUnofficialTournament": "Maak onofficieel toernooi",
+        "delete": "Verwijderen",
+        "averageLevel": "Gemiddeld niveau",
+        "downloadBasePlayers": "Download basis spelers",
+        "downloadCPFile": "Download CP bestand"
+      },
+      "tableNames": {
+        "F": "Vrouwen",
+        "M": "Mannen",
+        "MX": "Gemengd"
+      },
+      "table": {
+        "headers": {
+          "divisions": "Afdelingen",
+          "type": "Type",
+          "numberTeams": "# teams",
+          "maxLevel": "Max level",
+          "index": "Index",
+          "subdivisions": "Subdivisies"
+        },
+        "noRecords": "Geen records gevonden"
+      }
+    },
+    "encounters": {
+      "table": {
+        "buttons": {
+          "filters": "Filters"
+        },
+        "headers": {
+          "date": "Datum",
+          "homeTeam": "Thuis team",
+          "awayTeam": "Uit team",
+          "originalDate": "Originele datum",
+          "reschedule": "Verplaatsen"
+        },
+        "tooltips": {
+          "reschedule": "Ontmoeting verplaatsen"
+        },
+        "rescheduleStatuses": {
+          "rescheduled": "Verplaatst",
+          "rescheduleInProgress": "Verplaatsing bezig",
+          "rescheduleRequested": "Verplaatsing aangevraagd"
+        },
+        "inputs": {
+          "team": "Ploeg",
+          "club": "Club"
+        },
+        "noRecords": "Geen records gevonden"
+      }
+    }
+  },
+  "competitionOverviewPage": {
+    "title": "Alle competities",
+    "sectionTitles": {
+      "overview": "Overzicht"
+    },
+    "table": {
+      "headers": {
+        "name": "Naam",
+        "start": "Start",
+        "end": "Einde",
+        "official": "Officieel",
+        "actions": "Acties"
+      },
+      "divisions": "afdelingen",
+      "inputs": {
+        "onlyOfficialCompetitions": "Enkel officiële competities"
+      },
+      "buttons": {
+        "addCompetition": "competitie",
+        "loadMoreCompetitions": "Meer competities laden..."
+      }
+    }
+  },
   "encounterAlerts": {
     "buttons": {
       "seeEncounter": "Bekijk ontmoeting",

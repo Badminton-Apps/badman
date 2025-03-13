@@ -483,6 +483,104 @@ export type I18nTranslations = {
                 "errorAddingComment": string;
             };
         };
+        "competitionDetailPage": {
+            "tabs": {
+                "divisions": string;
+                "encounters": string;
+                "teamSignups": string;
+            };
+            "buttons": {
+                "openInToernooiNL": string;
+                "view": string;
+                "clearFilters": string;
+            };
+            "divisions": {
+                "actions": {
+                    "edit": string;
+                    "sync": string;
+                    "recalculatePoints": string;
+                    "actions": string;
+                    "reports": string;
+                    "copy": string;
+                    "openCloseSignups": string;
+                    "openCloseChangeEncounters": string;
+                    "makeUnofficialTournament": string;
+                    "delete": string;
+                    "averageLevel": string;
+                    "downloadBasePlayers": string;
+                    "downloadCPFile": string;
+                };
+                "tableNames": {
+                    "F": string;
+                    "M": string;
+                    "MX": string;
+                };
+                "table": {
+                    "headers": {
+                        "divisions": string;
+                        "type": string;
+                        "numberTeams": string;
+                        "maxLevel": string;
+                        "index": string;
+                        "subdivisions": string;
+                    };
+                    "noRecords": string;
+                };
+            };
+            "encounters": {
+                "table": {
+                    "buttons": {
+                        "filters": string;
+                    };
+                    "headers": {
+                        "date": string;
+                        "homeTeam": string;
+                        "awayTeam": string;
+                        "originalDate": string;
+                        "reschedule": string;
+                    };
+                    "tootips": {
+                        "reschedule": string;
+                    };
+                    "rescheduleStatuses": {
+                        "rescheduled": string;
+                        "rescheduleInProgress": string;
+                        "rescheduleRequested": string;
+                    };
+                    "inputs": {
+                        "team": string;
+                        "club": string;
+                    };
+                    "noRecords": string;
+                    "tooltips": {
+                        "reschedule": string;
+                    };
+                };
+            };
+        };
+        "competitionOverviewPage": {
+            "title": string;
+            "sectionTitles": {
+                "overview": string;
+            };
+            "table": {
+                "headers": {
+                    "name": string;
+                    "start": string;
+                    "end": string;
+                    "official": string;
+                    "actions": string;
+                };
+                "divisions": string;
+                "inputs": {
+                    "onlyOfficialCompetitions": string;
+                };
+                "buttons": {
+                    "addCompetition": string;
+                    "loadMoreCompetitions": string;
+                };
+            };
+        };
         "encounterAlerts": {
             "buttons": {
                 "seeEncounter": string;

@@ -476,6 +476,101 @@
       "errorAddingComment": "Error adding comment"
     }
   },
+  "competitionDetailPage": {
+    "tabs": {
+      "divisions": "Divisions",
+      "encounters": "Encounters",
+      "teamSignups": "Team signups"
+    },
+    "buttons": {
+      "openInToernooiNL": "Open in toernooi.nl",
+      "view": "View",
+      "clearFilters": "Clear filters"
+    },
+    "divisions": {
+      "actions": {
+        "edit": "Edit",
+        "sync": "Sync",
+        "recalculatePoints":"Recalculate points",
+        "actions": "Actions",
+        "reports": "Reports",
+        "copy": "Copy",
+        "openCloseSignups": "Open/Close signups",
+        "openCloseChangeEncounters": "Open/Close change encounter date",
+        "makeUnofficialTournament": "Make unofficial tournament",
+        "delete": "Delete",
+        "averageLevel": "Average level",
+        "downloadBasePlayers": "Download base players",
+        "downloadCPFile": "Download CP file"
+      },
+      "tableNames": {
+        "F": "Women",
+        "M": "Men",
+        "MX": "Mixed"
+      },
+      "table": {
+        "headers": {
+          "divisions": "Divisions",
+          "type": "Type",
+          "numberTeams": "# teams",
+          "maxLevel": "Max level",
+          "index": "Index",
+          "subdivisions": "Subdivisions"
+        },
+        "noRecords": "No records found"
+      }
+    },
+    "encounters": {
+      "table": {
+        "buttons": {
+          "filters": "Filters"
+        },
+        "headers": {
+          "date": "Date",
+          "homeTeam": "Home team",
+          "awayTeam": "Away team",
+          "originalDate": "Original date",
+          "reschedule": "Reschedule"
+        },
+        "tootips": {
+          "reschedule": "Reschedule encounter"
+        },
+        "rescheduleStatuses":{
+          "rescheduled": "Rescheduled",
+          "rescheduleInProgress": "Reschedule in progress",
+          "rescheduleRequested": "Reschedule requested"
+        },
+        "inputs": {
+          "team": "Team",
+          "club": "Club"
+        },
+        "noRecords": "No records found"
+      }
+    }
+  },
+  "competitionOverviewPage": {
+    "title": "All competitions",
+    "sectionTitles": {
+      "overview": "Overview"
+    },
+    "table": {
+      "headers": {
+        "name": "Name",
+        "start": "Start",
+        "end": "End",
+        "official": "Official",
+        "actions": "Actions"
+      },
+      "divisions": "divisions",
+      "inputs": {
+        "onlyOfficialCompetitions": "Only official competitions"
+      },
+      "buttons": {
+        "addCompetition": "competition",
+        "loadMoreCompetitions": "Load more competitions..."
+      }
+    }
+  },
   "encounterAlerts": {
     "buttons": {
       "seeEncounter": "See encounter",
