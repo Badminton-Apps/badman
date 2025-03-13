@@ -466,7 +466,8 @@
       "addComment": "Add comment"
     },
     "inputs": {
-      "comment": "Comment"
+      "comment": "Comment",
+      "gameLeaderCommentsOptional": "Game leader comments (optional)"
     },
     "messages": {
       "addedComment": "Comment successfully added",

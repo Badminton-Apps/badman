@@ -474,6 +474,7 @@ export type I18nTranslations = {
             };
             "inputs": {
                 "comment": string;
+                "gameLeaderCommentsOptional": string;
             };
             "messages": {
                 "addedComment": string;

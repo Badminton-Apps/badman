@@ -456,7 +456,8 @@
       "awayCaptain": "Capitaine à l'extérieur"
     },
     "inputs": {
-      "comment": "Commentaire"
+      "comment": "Commentaire",
+      "gameLeaderCommentsOptional": "Commentaires du chef de jeu (facultatif)"
     },
     "buttons": {
       "cancel": "Annuler",
