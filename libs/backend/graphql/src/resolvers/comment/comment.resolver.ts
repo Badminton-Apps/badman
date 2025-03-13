@@ -76,8 +76,7 @@ export class CommentResolver {
           playerId: user.id,
           linkId: newCommentData.linkId,
           linkType: newCommentData.linkType,
-          ...(newCommentData.clubId ? {clubId: newCommentData.clubId} : {}),
-          ...(newCommentData.encounterId ? {encounterId: newCommentData.encounterId} : {}),
+          clubId: newCommentData.clubId,
         },
         defaults: {
           ...newCommentData,
@@ -168,11 +167,6 @@ export class CommentResolver {
     }
   }
 
-  // @Mutation(returns => Boolean)
-  // async removeComment(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
-
   private getLink(linkType: string, linkId: string) {
     switch (linkType) {
       case 'competition':
@@ -234,14 +228,14 @@ export class CommentResolver {
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this comment`);
     }
-    if (comment.clubId !== null && comment.encounterId === null) {
-      if (home.clubId === comment.clubId) {
+      if (link.gameLeaderId === comment.playerId) {
+        await link.setGameLeaderComment(comment, { transaction });
+      } else if (home.clubId === comment.clubId) {
         await link.addHomeComment(comment, { transaction });
       } else if (away.clubId === comment.clubId) {
         await link.addAwayComment(comment, { transaction });
       } else {
         throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
       }
-    }
   }
 }
