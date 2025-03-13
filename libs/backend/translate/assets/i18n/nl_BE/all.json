@@ -432,6 +432,224 @@
     "tuesday": "Dinsdag",
     "wednesday": "Woensdag"
   },
+  "confirmEncounterPage": {
+    "title": "bevestig ontmoeting",
+    "sectionTitles": {
+      "teams": "Ploegen",
+      "confirmation": "Bevestiging",
+      "results": "Uitslagen",
+      "information": "Informatie",
+      "submitComment": "Opmerking toevoegen"
+    },    
+    "positions": {
+      "captain": "Ploegkapitein",
+      "gameLeader": "Wedstrijdleider",
+      "homeCaptain": "thuis kapitein",
+      "awayCaptain": "uit kapitein"
+    }, 
+    "buttons": {
+      "cancel": "Annuleren",
+      "back": "Terug",
+      "close": "Afsluiten",
+      "confirm": "Bevestigen",
+      "submit": "Indienen",
+      "addComment": "Opmerking toevoegen"
+    },
+    "inputs": {
+      "comment": "Opmerking",
+      "gameLeaderCommentsOptional": "Wedstrijdleider opmerkingen (optioneel)"
+    },
+    "messages": {
+      "addedComment": "Opmerking toegevoegd",
+      "commentFrom": "Opmerking van {fullName}"
+    },
+    "errors": {
+      "errorAddingComment": "Fout bij het toevoegen van de opmerking"
+    }
+  },
+  "competitionDetailPage": {
+    "tabs": {
+      "divisions": "Divisies",
+      "encounters": "Wedstrijden",
+      "teamSignups": "Team inschrijvingen"
+    },
+    "buttons": {
+      "openInToernooiNL": "Open in toernooi.nl",
+      "view": "Bekijk",
+      "clearFilters": "Filters wissen"
+    },
+    "divisions": {
+      "actions": {
+        "edit": "Bewerken",
+        "sync": "Synchroniseren",
+        "recalculatePoints": "Punten herberekenen",
+        "actions": "Acties",
+        "reports": "Rapporten",
+        "copy": "Kopiëren",
+        "openCloseSignups": "Inschrijvingen openen/sluiten",
+        "openCloseChangeEncounters": "Wijziging wedstrijd datum openen/sluiten",
+        "makeUnofficialTournament": "Maak onofficieel toernooi",
+        "delete": "Verwijderen",
+        "averageLevel": "Gemiddeld niveau",
+        "downloadBasePlayers": "Download basis spelers",
+        "downloadCPFile": "Download CP bestand"
+      },
+      "tableNames": {
+        "F": "Vrouwen",
+        "M": "Mannen",
+        "MX": "Gemengd"
+      },
+      "table": {
+        "headers": {
+          "divisions": "Afdelingen",
+          "type": "Type",
+          "numberTeams": "# teams",
+          "maxLevel": "Max level",
+          "index": "Index",
+          "subdivisions": "Subdivisies"
+        },
+        "noRecords": "Geen records gevonden"
+      }
+    },
+    "encounters": {
+      "table": {
+        "buttons": {
+          "filters": "Filters"
+        },
+        "headers": {
+          "date": "Datum",
+          "homeTeam": "Thuis team",
+          "awayTeam": "Uit team",
+          "originalDate": "Originele datum",
+          "reschedule": "Verplaatsen"
+        },
+        "tooltips": {
+          "reschedule": "Ontmoeting verplaatsen"
+        },
+        "rescheduleStatuses": {
+          "rescheduled": "Verplaatst",
+          "rescheduleInProgress": "Verplaatsing bezig",
+          "rescheduleRequested": "Verplaatsing aangevraagd"
+        },
+        "inputs": {
+          "team": "Ploeg",
+          "club": "Club"
+        },
+        "noRecords": "Geen records gevonden"
+      }
+    }
+  },
+  "competitionOverviewPage": {
+    "title": "Alle competities",
+    "sectionTitles": {
+      "overview": "Overzicht"
+    },
+    "table": {
+      "headers": {
+        "name": "Naam",
+        "start": "Start",
+        "end": "Einde",
+        "official": "Officieel",
+        "actions": "Acties"
+      },
+      "divisions": "afdelingen",
+      "inputs": {
+        "onlyOfficialCompetitions": "Enkel officiële competities"
+      },
+      "buttons": {
+        "addCompetition": "competitie",
+        "loadMoreCompetitions": "Meer competities laden..."
+      }
+    }
+  },
+  "encounterAlerts": {
+    "buttons": {
+      "seeEncounter": "Bekijk ontmoeting",
+      "seeAllMessages": "bekijk alle berichten ({amountOfAlerts})",
+      "hideMessages": "berichten verbergen"
+    },
+    "messages": {
+      "confirmOrDisputeEncounter": "Je hebt nog {hoursUntilExpiry} uur om de ontmoeting te bevestigen of te betwisten"
+    },
+    "details": {
+      
+    }
+  },
+  "encounterFormPage": {
+    "title": "Ontmoetingsformulier",
+    "steps": {
+      "0": "Info",
+      "1": "Uitslagen",
+      "2": "Bevestigen"
+    },
+    "sectionTitles": {
+      "register": "Aanmelden",
+      "teams": "Ploegen",
+      "confirmEncounter": "Ontmoeting bevestigen",
+      "confirmPresence": "Bevestig aanwezigheid ",
+      "cancelPresence": "Annuleer aanwezigheid",
+      "confirmConfirmed": "Bevestig ontmoeting",
+      "cancelConfirmed": "Annuleer bevestiging",
+      "results": "Uitslagen",
+      "players": "Spelers",
+      "information": "Informatie"
+    },
+    "prompts": {
+      "confirmPresence": "Is de ploegkapitein, {fullName}, aanwezig voor deze ontmoeting?",
+      "cancelPresence": "Wil je de aanwezigheid van {fullName}, annuleren?",
+      "confirmConfirmed": "Bevestigd de ploegkapitein, {fullName}, de uitslag van deze ontmoeting?",
+      "cancelConfirmed": "Wil je de bevestiging van {fullName} annuleren?"
+    },
+    "messages": {
+      "areComments": "{numberOfComments} opmerkingen",
+      "noComments": "Geen opmerkingen",
+      "gameCreated": "Wedstrijd aangemaakt",
+      "gameUpdated": "Wedstrijd bijgewerkt",
+      "presenceUpdated": "Aanwezigheid van {position} bijgewerkt",
+      "confirmationUpdated": "Bevestiging van {position} bijgewerkt",
+      "encounterUpdated": "Ontmoeting bijgewerkt"
+    },
+    "inputs": {
+      "present": "Aanwezig",
+      "confirm": "Bevestig",
+      "league": "Afdeling",
+      "players": "Spelers",
+      "player": "Speler",
+      "winner": "Winnaar",
+      "set1": "Set 1",
+      "set2": "Set 2",
+      "set3": "Set 3",
+      "startTime": "Starttijd",
+      "endTime": "Eindtijd",
+      "shuttle": "Shuttle",
+      "commentsOptional": "Opmerkingen (optioneel)"
+    },
+    "buttons": {
+      "back": "Terug",
+      "next": "Volgende",
+      "submit": "Indienen",
+      "cancel": "Annuleren",
+      "confirm": "Bevestigen",
+      "seeTeamFormation": "Bekijk ploegopstelling",
+      "2Sets": "2 sets",
+      "3Sets": "3 sets",
+      "saveChanges": "Wijzigingen opslaan"
+    },
+    "positions": {
+      "captain": "Ploegkapitein",
+      "gameLeader": "Wedstrijdleider",
+      "homeCaptain": "thuis kapitein",
+      "awayCaptain": "uit kapitein"
+    },
+    "errors": {
+      "confirmationNotUpdated": "{position} bevestiging niet bijgewerkt",
+      "presenceNotUpdated": "{position} aanwezigheid niet bijgewerkt",
+      "errorCreatingGame": "Er is een fout opgetreden bij het aanmaken van de wedstrijd",
+      "errorUpdatingGame": "Er is een fout opgetreden bij het bijwerken van de wedstrijd",
+      "encounterNotUpdated": "Ontmoeting niet bijgewerkt"
+
+    }
+  }, 
   "event": {
     "checkEncounterForFilledIn": "Stuur notificaties wanneer de wedstrijd niet ingevuld of bevestigd is",
     "last-sync": "Laatste update",
@@ -644,6 +862,12 @@
     "select": "Selecteer",
     "start": "Start",
     "sync": "Sync"
+  },
+  "messages": {
+    "buttons": {
+      "hide": "Verberg {messageType}",
+      "seeAll": "Bekijk alle {messageType} ({amountOfMessages})"
+    }
   },
   "months": {
     "april": "April",

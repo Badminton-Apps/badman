@@ -2,7 +2,7 @@ import { User } from '@badman/backend-authorization';
 import {
   EncounterValidationInput,
   EncounterValidationOutput,
-  EncounterValidationService,
+  EncounterValidationService
 } from '@badman/backend-change-encounter';
 import {
   Assembly,
@@ -15,6 +15,7 @@ import {
   Player,
   RankingSystem,
   Team,
+  updateEncounterCompetitionInput,
 } from '@badman/backend-database';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { PointsService } from '@badman/backend-ranking';
@@ -64,7 +65,7 @@ export class EncounterCompetitionResolver {
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    private encounterValidationService: EncounterValidationService,
+    private encounterValidationService: EncounterValidationService
   ) { }
 
   @Query(() => EncounterCompetition)
@@ -102,6 +103,7 @@ export class EncounterCompetitionResolver {
   async encounterCompetitions(
     @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterCompetition[] }> {
+    
     return EncounterCompetition.findAndCountAll({
       include: [
         {
@@ -198,6 +200,16 @@ export class EncounterCompetitionResolver {
     return encounter.getGameLeader();
   }
 
+  @ResolveField(() => Player)
+  async enteredBy(@Parent() encounter: EncounterCompetition): Promise<Player> {
+    return encounter.getEnteredBy();
+  }
+
+  @ResolveField(() => Player)
+  async acceptedBy(@Parent() encounter: EncounterCompetition): Promise<Player> {
+    return encounter.getAcceptedBy();
+  }
+
   @ResolveField(() => [Comment], { nullable: true })
   async homeComments(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getHomeComments();
@@ -206,6 +218,11 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => [Comment], { nullable: true })
   async awayComments(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getAwayComments();
+  }
+
+  @ResolveField(() => Comment, { nullable: true })
+  async gameLeaderComment(@Parent() encounter: EncounterCompetition): Promise<Comment> {
+    return encounter.getGameLeaderComment();
   }
 
   @ResolveField(() => [Comment], { nullable: true })
@@ -361,4 +378,54 @@ export class EncounterCompetitionResolver {
       throw error;
     }
   }
+
+    @Mutation(() => EncounterCompetition)
+    async updateEncounterCompetition(
+      @User() user: Player,
+      @Args('encounterId') encounterId: string,
+      @Args('data') updateEncounterCompetitionData: updateEncounterCompetitionInput,
+    ) {
+      this.logger.log('Updating encounter record with id:', `${encounterId}`);
+      const transaction = await this._sequelize.transaction();
+      try {
+        const encounter = await EncounterCompetition.findByPk(encounterId, {transaction});
+  
+        if (!encounter) {
+          throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+        }
+  
+        if (!((await user.hasAnyPermission(['change-any:encounter'])) ||[`change-${encounterId}:encounter`]|| encounter.gameLeaderId === user.id)) {
+          throw new UnauthorizedException(`You do not have permission to edit this encounter`);
+        }
+
+        const shouldUpdateTournooiNL = 
+          updateEncounterCompetitionData.finished === true && 
+          updateEncounterCompetitionData.enteredById !== null && 
+          encounter.enteredOn === null &&
+          encounter.finished === false;
+  
+        const result = await encounter.update(updateEncounterCompetitionData, {transaction});
+
+        if (shouldUpdateTournooiNL){
+          await this.syncQueue.add(
+            Sync.EnterScores,
+            {
+              encounterId: encounter.id,
+            },
+            {
+              removeOnComplete: true,
+              removeOnFail: false,
+            },
+          );
+        }
+
+  
+        await transaction.commit();
+        return result.toJSON();
+      } catch (error) {
+        this.logger.error(error);
+        await transaction.rollback();
+        throw error;
+      }
+    }
 }
