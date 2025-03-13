@@ -221,8 +221,8 @@ export class EncounterCompetitionResolver {
   }
 
   @ResolveField(() => Comment, { nullable: true })
-  async encounterComment(@Parent() encounter: EncounterCompetition): Promise<Comment> {
-    return encounter.getEncounterComment();
+  async gameLeaderComment(@Parent() encounter: EncounterCompetition): Promise<Comment> {
+    return encounter.getGameLeaderComment();
   }
 
   @ResolveField(() => [Comment], { nullable: true })
@@ -394,7 +394,7 @@ export class EncounterCompetitionResolver {
           throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
         }
   
-        if (!(await user.hasAnyPermission(['change-any:encounter']) ||[`change-${encounterId}:encounter`]|| encounter.gameLeaderId === user.id)) {
+        if (!((await user.hasAnyPermission(['change-any:encounter'])) ||[`change-${encounterId}:encounter`]|| encounter.gameLeaderId === user.id)) {
           throw new UnauthorizedException(`You do not have permission to edit this encounter`);
         }
 

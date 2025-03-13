@@ -12,7 +12,6 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions,
   CreateOptions,
   CreationOptional,
   HasManyAddAssociationMixin,
@@ -281,20 +280,6 @@ export class GameNewInputPlayers {
   player!: number;
 }
 
-@InputType()
-export class GameNewInput extends PartialType(
-  OmitType(Game, ['id', 'visualCode', "rankingPoints", "players", 'competition','linkId', 'linkType', "tournament", "createdAt", "updatedAt"] as const),
-  InputType
-) {
-  @Field(() => ID, { nullable: true })
-  linkId!: string;
-
-  @Field(() => String, { nullable: true })
-  linkType!: string;
-
-  @Field(() => [GameNewInputPlayers], { nullable: true })
-  players!: GameNewInputPlayers[];
-}
 
 @InputType()
 export class GameUpdateInput extends PartialType(
@@ -307,4 +292,20 @@ export class GameUpdateInput extends PartialType(
   @Field(() => ID, { nullable: true })
   gameId!: string;
 }
+
+@InputType()
+export class GameNewInput extends PartialType(
+  OmitType(GameUpdateInput, ['linkId'] as const),
+  InputType
+) {
+  @Field(() => ID, { nullable: true })
+  linkId!: string;
+
+  @Field(() => String, { nullable: true })
+  linkType!: string;
+
+  @Field(() => [GameNewInputPlayers], { nullable: true })
+  players!: GameNewInputPlayers[];
+}
+
 

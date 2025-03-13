@@ -264,6 +264,16 @@ export class EncounterCompetition extends Model<
   })
   awayComments?: Relation<Comment[]>;
 
+  @Field(() => Comment, { nullable: true })
+  @HasOne(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'game_leader_comment',
+    },
+  })
+  gameLeaderComment?: Relation<Comment>;
+
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
     foreignKey: 'linkId',
@@ -347,6 +357,10 @@ export class EncounterCompetition extends Model<
   hasAssembly!: HasManyHasAssociationMixin<Assembly, string>;
   hasAssemblies!: HasManyHasAssociationsMixin<Assembly, string>;
   countAssemblies!: HasManyCountAssociationsMixin;
+
+  // Has one Location
+  getGameLeaderComment!: BelongsToGetAssociationMixin<Comment>;
+  setGameLeaderComment!: BelongsToSetAssociationMixin<Comment, string>;
 
   // Has many HomeComment
   getHomeComments!: HasManyGetAssociationsMixin<Comment>;
