@@ -49,7 +49,7 @@ export class ServiceService {
     .pipe(map((res) => res.data?.services?.map((item) => new Service(item)) ?? []));
 
   starting$ = (state: Signal<ServicesState>) =>
-    this.socket.fromEvent<{ id: string }, ServiceEvent>(EVENTS.SERVICE.SERVICE_STARTING).pipe(
+    this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STARTING).pipe(
       map((service) => {
         if (!service.id) {
           console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STARTING} event`);
@@ -64,7 +64,7 @@ export class ServiceService {
     );
 
   started$ = (state: Signal<ServicesState>) =>
-    this.socket.fromEvent<{ id: string }, ServiceEvent>(EVENTS.SERVICE.SERVICE_STARTED).pipe(
+    this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STARTED).pipe(
       map((service) => {
         if (!service.id) {
           console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STARTED} event`);
@@ -79,7 +79,7 @@ export class ServiceService {
     );
 
   stopped$ = (state: Signal<ServicesState>) =>
-    this.socket.fromEvent<{ id: string }, ServiceEvent>(EVENTS.SERVICE.SERVICE_STOPPED).pipe(
+    this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STOPPED).pipe(
       map((service) => {
         if (!service.id) {
           console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STOPPED} event`);
