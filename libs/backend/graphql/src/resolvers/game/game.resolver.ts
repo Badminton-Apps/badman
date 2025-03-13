@@ -9,6 +9,7 @@ import {
   RankingSystem,
   GameNewInput,
   GameUpdateInput,
+  RankingLastPlace,
 } from '@badman/backend-database';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
@@ -193,6 +194,12 @@ export class GamesResolver {
 
       if (gameData.players) {
         for (const player of gameData.players) {
+          const ranking = await RankingLastPlace.findOne({
+            where: {
+              playerId: player.id,
+            },
+            transaction,
+          });
           await GamePlayerMembership.create(
             {
               playerId: player.id,
@@ -200,6 +207,9 @@ export class GamesResolver {
               team: player.team,
               player: player.player,
               systemId: player.systemId,
+              single: ranking?.single,
+              double: ranking?.double,
+              mix: ranking?.mix,
             },
             {
               transaction,
