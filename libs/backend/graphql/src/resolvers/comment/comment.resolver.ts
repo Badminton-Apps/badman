@@ -53,6 +53,7 @@ export class CommentResolver {
     @Args('data') newCommentData: CommentNewInput,
     @User() user: Player,
   ): Promise<Comment> {
+    this.logger.log('Adding or updating a comment');
     const transaction = await this._sequelize.transaction();
     try {
       if (!newCommentData?.linkType) {
@@ -105,7 +106,7 @@ export class CommentResolver {
           if (!(link instanceof EncounterCompetition)) {
             throw new BadRequestException(`linkType is not home_comment_chamge`);
           }
-          await this.encounterComment(link, comment, user, transaction);
+            await this.encounterComment(link, comment, user, transaction);
           break;
       }
 
@@ -166,16 +167,13 @@ export class CommentResolver {
     }
   }
 
-  // @Mutation(returns => Boolean)
-  // async removeComment(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
-
   private getLink(linkType: string, linkId: string) {
     switch (linkType) {
       case 'competition':
         return EventCompetition.findByPk(linkId);
       case 'encounterChange':
+        return EncounterCompetition.findByPk(linkId);
+      case 'encounter':
         return EncounterCompetition.findByPk(linkId);
       default:
         throw new NotFoundException(`${linkType}: ${linkId}`);
@@ -230,13 +228,14 @@ export class CommentResolver {
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this comment`);
     }
-
-    if (home.clubId === comment.clubId) {
-      await link.addHomeComment(comment, { transaction });
-    } else if (away.clubId === comment.clubId) {
-      await link.addAwayComment(comment, { transaction });
-    } else {
-      throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
-    }
+      if (link.gameLeaderId === comment.playerId) {
+        await link.setGameLeaderComment(comment, { transaction });
+      } else if (home.clubId === comment.clubId) {
+        await link.addHomeComment(comment, { transaction });
+      } else if (away.clubId === comment.clubId) {
+        await link.addAwayComment(comment, { transaction });
+      } else {
+        throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
+      }
   }
 }

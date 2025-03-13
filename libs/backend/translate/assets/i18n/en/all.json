@@ -82,6 +82,7 @@
     "start": "Start date",
     "titles": {
       "encounters": "Encounters",
+      "encounter-form": "Encounter form",
       "matrix": "Assembly matrix",
       "players": "Players",
       "plural": "Clubs",
@@ -432,6 +433,225 @@
     "tuesday": "Tuesday",
     "wednesday": "Wednesday"
   },
+  "confirmEncounterPage": {
+    "title": "Confirm encounter",
+    "sectionTitles": {
+      "teams": "Teams",
+      "confirmation": "Confirmation",
+      "results": "Results",
+      "information": "Information",
+      "submitComment": "Submit comment"
+    },
+    "positions": {
+      "captain": "Captain",
+      "gameLeader": "Game leader",
+      "homeCaptain": "Home captain",
+      "awayCaptain": "Away captain"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "back": "Back",
+      "close": "Close",
+      "confirm": "Confirm",
+      "submit": "Submit",
+      "seeEncounter": "See encounter",
+      "addComment": "Add comment"
+    },
+    "inputs": {
+      "comment": "Comment",
+      "gameLeaderCommentsOptional": "Game leader comments (optional)"
+    },
+    "messages": {
+      "addedComment": "Comment successfully added",
+      "commentFrom": "Comment from {fullName}"
+    },
+    "errors": {
+      "errorAddingComment": "Error adding comment"
+    }
+  },
+  "competitionDetailPage": {
+    "tabs": {
+      "divisions": "Divisions",
+      "encounters": "Encounters",
+      "teamSignups": "Team signups"
+    },
+    "buttons": {
+      "openInToernooiNL": "Open in toernooi.nl",
+      "view": "View",
+      "clearFilters": "Clear filters"
+    },
+    "divisions": {
+      "actions": {
+        "edit": "Edit",
+        "sync": "Sync",
+        "recalculatePoints":"Recalculate points",
+        "actions": "Actions",
+        "reports": "Reports",
+        "copy": "Copy",
+        "openCloseSignups": "Open/Close signups",
+        "openCloseChangeEncounters": "Open/Close change encounter date",
+        "makeUnofficialTournament": "Make unofficial tournament",
+        "delete": "Delete",
+        "averageLevel": "Average level",
+        "downloadBasePlayers": "Download base players",
+        "downloadCPFile": "Download CP file"
+      },
+      "tableNames": {
+        "F": "Women",
+        "M": "Men",
+        "MX": "Mixed"
+      },
+      "table": {
+        "headers": {
+          "divisions": "Divisions",
+          "type": "Type",
+          "numberTeams": "# teams",
+          "maxLevel": "Max level",
+          "index": "Index",
+          "subdivisions": "Subdivisions"
+        },
+        "noRecords": "No records found"
+      }
+    },
+    "encounters": {
+      "table": {
+        "buttons": {
+          "filters": "Filters"
+        },
+        "headers": {
+          "date": "Date",
+          "homeTeam": "Home team",
+          "awayTeam": "Away team",
+          "originalDate": "Original date",
+          "reschedule": "Reschedule"
+        },
+        "tootips": {
+          "reschedule": "Reschedule encounter"
+        },
+        "rescheduleStatuses":{
+          "rescheduled": "Rescheduled",
+          "rescheduleInProgress": "Reschedule in progress",
+          "rescheduleRequested": "Reschedule requested"
+        },
+        "inputs": {
+          "team": "Team",
+          "club": "Club"
+        },
+        "noRecords": "No records found"
+      }
+    }
+  },
+  "competitionOverviewPage": {
+    "title": "All competitions",
+    "sectionTitles": {
+      "overview": "Overview"
+    },
+    "table": {
+      "headers": {
+        "name": "Name",
+        "start": "Start",
+        "end": "End",
+        "official": "Official",
+        "actions": "Actions"
+      },
+      "divisions": "divisions",
+      "inputs": {
+        "onlyOfficialCompetitions": "Only official competitions"
+      },
+      "buttons": {
+        "addCompetition": "competition",
+        "loadMoreCompetitions": "Load more competitions..."
+      }
+    }
+  },
+  "encounterAlerts": {
+    "buttons": {
+      "seeEncounter": "See encounter",
+      "seeAllMessages": "show all messages ({amountOfAlerts})",
+      "hideMessages": "hide messages"
+    },
+    "messages": {
+      "confirmOrDisputeEncounter": "You have {hoursUntilExpiry} more hours to confirm or dispute encounter"
+    },
+    "details": {
+
+    }
+  },
+  "encounterFormPage": {
+    "title": "Encounter form",
+    "steps": {
+      "0": "Info",
+      "1": "Results",
+      "2": "Confirm"
+    },
+    "sectionTitles": {
+      "register": "Register",
+      "teams": "Teams",
+      "confirmEncounter": "Confirm encounter",
+      "confirmPresence": "Confirm presence",
+      "cancelPresence": "Cancel presence",
+      "confirmConfirmed": "Confirm encounter",
+      "cancelConfirmed": "Cancel confirmation",
+      "results": "Results",
+      "players": "Players",
+      "information": "Information"
+    },
+    "prompts": {
+      "confirmPresence": "Is the team captain, {fullName}, present for this encounter?",
+      "cancelPresence": "Do you want to cancel the presence of {fullName}?",
+      "confirmConfirmed": "Does the team captain, {fullName}, confirm the result of this encounter?",
+      "cancelConfirmed": "Do you want to cancel the confirmation of {fullName}?"
+    },
+    "messages": {
+      "areComments": "{numberOfComments} comments",
+      "noComments": "No Comments",
+      "presenceUpdated": "{position} presence updated",
+      "confirmationUpdated": "{position} confirmation updated",
+      "encounterUpdated": "Encounter successfully updated",
+      "gameCreated": "Game successfully created",
+      "gameUpdated": "Game successfully updated"
+    },
+    "buttons": {
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "seeTeamFormation": "See team details",
+      "2Sets": "2 sets",
+      "3Sets": "3 sets",
+      "saveChanges": "Save changes"
+    },
+    "inputs": {
+      "present": "Present",
+      "confirm": "Confirm",
+      "league": "League",
+      "date": "Date",
+      "players": "Players",
+      "player": "Player",
+      "winner": "Winner",
+      "set1": "Set 1",
+      "set2": "Set 2",
+      "set3": "Set 3",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "shuttle": "Shuttle",
+      "commentsOptional": "Comments (optional)"
+    },
+    "positions": {
+      "captain": "Captain",
+      "gameLeader": "Game leader",
+      "homeCaptain": "Home captain",
+      "awayCaptain": "Away captain"
+    },
+    "errors": {
+      "presenceNotUpdated": "{position} presence not updated",
+      "confirmationNotUpdated": "{position} confirmation not updated",
+      "errorCreatingGame": "Error creating game",
+      "errorUpdatingGame": "Error updating game",
+      "encounterNotUpdated": "Error updating encounter"
+    }
+  }, 
   "event": {
     "checkEncounterForFilledIn": "Send notifications when encounter is not entered or confirmed",
     "last-sync": "Last sync",
@@ -644,6 +864,12 @@
     "select": "Select",
     "start": "Start",
     "sync": "Sync"
+  },
+  "messages": {
+    "buttons": {
+      "hide": "Hide {messageType}",
+      "seeAll": "show all {messageType} ({amountOfMessages})"
+    }
   },
   "months": {
     "april": "April",
@@ -1622,6 +1848,7 @@
     },
     "teamFormation": {
       "title": "Select players",
+      "disabledTitle": "Players",
       "noClub": "Team has no club",
       "selectPlayer": "Select player",
       "categories": {
