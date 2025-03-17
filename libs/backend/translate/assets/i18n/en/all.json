@@ -492,7 +492,7 @@
       "actions": {
         "edit": "Edit",
         "sync": "Sync",
-        "recalculatePoints":"Recalculate points",
+        "recalculatePoints": "Recalculate points",
         "actions": "Actions",
         "reports": "Reports",
         "copy": "Copy",
@@ -536,7 +536,7 @@
         "tootips": {
           "reschedule": "Reschedule encounter"
         },
-        "rescheduleStatuses":{
+        "rescheduleStatuses": {
           "rescheduled": "Rescheduled",
           "rescheduleInProgress": "Reschedule in progress",
           "rescheduleRequested": "Reschedule requested"
@@ -581,9 +581,7 @@
     "messages": {
       "confirmOrDisputeEncounter": "You have {hoursUntilExpiry} more hours to confirm or dispute encounter"
     },
-    "details": {
-
-    }
+    "details": {}
   },
   "encounterFormPage": {
     "title": "Encounter form",
@@ -659,7 +657,7 @@
       "errorUpdatingGame": "Error updating game",
       "encounterNotUpdated": "Error updating encounter"
     }
-  }, 
+  },
   "event": {
     "checkEncounterForFilledIn": "Send notifications when encounter is not entered or confirmed",
     "last-sync": "Last sync",
@@ -2078,6 +2076,156 @@
             },
             "buttons": {
               "save": "Add role"
+            }
+          }
+        }
+      },
+      "locations": {
+        "title": "Locations",
+        "buttons": {
+          "addLocation": "Add location"
+        },
+        "location": {
+          "addDialog": {
+            "title": "Add location",
+            "messages": {
+              "success": "Location added"
+            }
+          },
+          "editDialog": {
+            "title": "Edit location",
+            "messages": {
+              "success": "Location updated"
+            }
+          },
+          "deleteDialog": {
+            "title": "Delete location",
+            "subTitle": "Are you sure you want to delete this location?",
+            "messages": {
+              "success": "Location deleted"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "delete": "Delete"
+            }
+          },
+          "form": {
+            "name": "Name",
+            "street": "Street",
+            "number": "Number",
+            "zip": "Zip",
+            "city": "City",
+            "state": "State",
+            "phone": "Phone",
+            "fax": "Fax"
+          },
+          "search": {
+            "title": "Search location",
+            "placeholder": "Search location"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "save": "Save",
+            "delete": "Delete"
+          }
+        },
+        "gameDays": {
+          "title": "Game Days",
+          "buttons": {
+            "addGameDay": "Add game day"
+          },
+          "createDialog": {
+            "title": "Game day",
+            "messages": {
+              "success": "Game days updated"
+            },
+            "form": {
+              "day": "Day",
+              "daysOfWeek": {
+                "monday": "Monday",
+                "tuesday": "Tuesday",
+                "wednesday": "Wednesday",
+                "thursday": "Thursday",
+                "friday": "Friday",
+                "saturday": "Saturday",
+                "sunday": "Sunday"
+              },
+              "startTime": "Start time",
+              "endTime": "End time",
+              "courts": "Courts"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "save": "Save"
+            }
+          },
+          "deleteDialog": {
+            "title": "Delete game day",
+            "subTitle": "Are you sure you want to delete this game day?",
+            "messages": {
+              "success": "Game day deleted",
+              "error": "Error deleting game day"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "delete": "Delete"
+            }
+          },
+          "actions": {
+            "edit": "Edit",
+            "delete": "Delete"
+          },
+          "table": {
+            "noData": "No game days found",
+            "headers": {
+              "day": "Day",
+              "startTime": "Start time",
+              "endTime": "End time",
+              "courts": "Courts",
+              "actions": "Actions"
+            }
+          }
+        },
+        "exceptions": {
+          "title": "Exceptions",
+          "buttons": {
+            "addException": "Add exception"
+          },
+          "createDialog": {
+            "title": "Exception",
+            "messages": {
+              "success": "Exceptions updated"
+            },
+            "form": {
+              "start": "Start",
+              "end": "End"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "save": "Save"
+            }
+          },
+          "deleteDialog": {
+            "title": "Delete exception",
+            "subTitle": "Are you sure you want to delete this exception?",
+            "messages": {
+              "success": "Exception deleted",
+              "error": "Error deleting exception"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "delete": "Delete"
+            }
+          },
+          "actions": {
+            "edit": "Edit",
+            "delete": "Delete"
+          },
+          "table": {
+            "noData": "No exceptions found",
+            "headers": {
+              "period": "Start",
+              "actions": "Actions"
             }
           }
         }
