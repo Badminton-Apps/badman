@@ -2074,6 +2074,156 @@ export type I18nTranslations = {
                         };
                     };
                 };
+                "locations": {
+                    "title": string;
+                    "buttons": {
+                        "addLocation": string;
+                    };
+                    "location": {
+                        "addDialog": {
+                            "title": string;
+                            "messages": {
+                                "success": string;
+                            };
+                        };
+                        "editDialog": {
+                            "title": string;
+                            "messages": {
+                                "success": string;
+                            };
+                        };
+                        "deleteDialog": {
+                            "title": string;
+                            "subTitle": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "delete": string;
+                            };
+                        };
+                        "form": {
+                            "name": string;
+                            "street": string;
+                            "number": string;
+                            "zip": string;
+                            "city": string;
+                            "state": string;
+                            "phone": string;
+                            "fax": string;
+                        };
+                        "search": {
+                            "title": string;
+                            "placeholder": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "save": string;
+                            "delete": string;
+                        };
+                    };
+                    "gameDays": {
+                        "title": string;
+                        "buttons": {
+                            "addGameDay": string;
+                        };
+                        "createDialog": {
+                            "title": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "form": {
+                                "day": string;
+                                "daysOfWeek": {
+                                    "monday": string;
+                                    "tuesday": string;
+                                    "wednesday": string;
+                                    "thursday": string;
+                                    "friday": string;
+                                    "saturday": string;
+                                    "sunday": string;
+                                };
+                                "startTime": string;
+                                "endTime": string;
+                                "courts": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "save": string;
+                            };
+                        };
+                        "deleteDialog": {
+                            "title": string;
+                            "subTitle": string;
+                            "messages": {
+                                "success": string;
+                                "error": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "delete": string;
+                            };
+                        };
+                        "actions": {
+                            "edit": string;
+                            "delete": string;
+                        };
+                        "table": {
+                            "noData": string;
+                            "headers": {
+                                "day": string;
+                                "startTime": string;
+                                "endTime": string;
+                                "courts": string;
+                                "actions": string;
+                            };
+                        };
+                    };
+                    "exceptions": {
+                        "title": string;
+                        "buttons": {
+                            "addException": string;
+                        };
+                        "createDialog": {
+                            "title": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "form": {
+                                "start": string;
+                                "end": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "save": string;
+                            };
+                        };
+                        "deleteDialog": {
+                            "title": string;
+                            "subTitle": string;
+                            "messages": {
+                                "success": string;
+                                "error": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "delete": string;
+                            };
+                        };
+                        "actions": {
+                            "edit": string;
+                            "delete": string;
+                        };
+                        "table": {
+                            "noData": string;
+                            "headers": {
+                                "period": string;
+                                "actions": string;
+                            };
+                        };
+                    };
+                };
             };
         };
         "points": {
