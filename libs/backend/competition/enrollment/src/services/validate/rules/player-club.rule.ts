@@ -129,7 +129,7 @@ export class PlayerClubRule extends Rule {
       // else if the player has no active club
       if (activeClubsInNextSeason.length == 0) {
         return {
-          message: 'all.competition.team-enrollment.errors.player-club-none',
+          message: 'all.competitionDetailPage.teamEnrollments.errors.player-club-none',
           params: {
             player: {
               fullName: player.fullName,
@@ -153,7 +153,7 @@ export class PlayerClubRule extends Rule {
 
       // else return the error
       return {
-        message: 'all.competition.team-enrollment.errors.player-club',
+        message: 'all.competitionDetailPage.teamEnrollments.errors.player-club',
         params: {
           player: {
             fullName: player.fullName,

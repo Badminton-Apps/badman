@@ -34,7 +34,7 @@ export class TeamOrderRule extends Rule {
           // if next team is in a better subEvent->level than the current team and the teamnumber is higher
           if (subEventDiff === 'lower') {
             errors.push({
-              message: 'all.competition.team-enrollment.errors.team-order',
+              message: 'all.competitionDetailPage.teamEnrollments.errors.team-order',
               params: {
                 team: higherTeam.team,
               },
@@ -46,7 +46,7 @@ export class TeamOrderRule extends Rule {
             (teamEnrollment.baseIndex ?? 0) < (higherTeam.baseIndex ?? 0)
           ) {
             warnings.push({
-              message: 'all.competition.team-enrollment.errors.team-order-same-subevent',
+              message: 'all.competitionDetailPage.teamEnrollments.errors.team-order-same-subevent',
               params: {
                 team: higherTeam.team,
               },
