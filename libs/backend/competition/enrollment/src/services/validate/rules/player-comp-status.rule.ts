@@ -24,7 +24,7 @@ export class PlayerCompStatusRule extends Rule {
 
         if (!player.player?.competitionPlayer) {
           errors.push({
-            message: 'all.competition.team-enrollment.errors.comp-status-base',
+            message: 'all.competitionDetailPage.teamEnrollments.errors.comp-status-base',
             params: {
               player: {
                 id: player?.id,
@@ -43,7 +43,7 @@ export class PlayerCompStatusRule extends Rule {
 
         if (!player.player?.competitionPlayer) {
           warnings.push({
-            message: 'all.competition.team-enrollment.errors.comp-status-team',
+            message: 'all.competitionDetailPage.teamEnrollments.errors.comp-status-team',
             params: {
               player: {
                 id: player?.id,

@@ -25,7 +25,7 @@ export class TeamRiserFallerRule extends Rule {
         isFirstHigher(subEvent, previousSeasonTeam?.entry?.subEventCompetition) !== 'better'
       ) {
         errors.push({
-          message: 'all.competition.team-enrollment.errors.riser',
+          message: 'all.competitionDetailPage.teamEnrollments.errors.riser',
           params: {
             team,
           },
@@ -35,7 +35,7 @@ export class TeamRiserFallerRule extends Rule {
         isFirstHigher(subEvent, previousSeasonTeam?.entry?.subEventCompetition) !== 'lower'
       ) {
         errors.push({
-          message: 'all.competition.team-enrollment.errors.faller',
+          message: 'all.competitionDetailPage.teamEnrollments.errors.faller',
           params: {
             team,
           },
