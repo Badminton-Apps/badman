@@ -479,7 +479,7 @@
     "tabs": {
       "divisions": "Divisions",
       "encounters": "Rencontres",
-      "teamSignups": "Inscriptions d'équipe"
+      "teamEnrollments": "Inscriptions d'équipe"
     },
     "buttons": {
       "openInToernooiNL": "Ouvrir dans toernooi.nl",
@@ -517,6 +517,67 @@
           "subdivisions": "Sous-divisions"
         },
         "noRecords": "Aucun enregistrement trouvé"
+      },
+      "teamEnrollments": {
+        "drawer": {
+          "sectionTitles": {
+            "primaryPlayers": "Joueurs principaux",
+            "generalInfo": "Informations générales",
+            "validations": "Validations"
+          },
+          "dataKeys": {
+            "teamIndex": "Indice d'équipe",
+            "teamCaptain": "Capitaine de l'équipe",
+            "preferredPlayingTime": "Temps de jeu préféré"
+          },
+          "emptyStates": {
+            "noValidations": "Aucune validation trouvée"
+          }
+        },
+        "table": {
+          "headers": {
+            "division": "Division",
+            "team": "Team",
+            "index": "Index",
+            "numberSignups": "Nombre d'inscriptions",
+            "messages": "Messages",
+            "actions": "Actions"
+          },
+          "buttons": {
+            "view": "Voir"
+          },
+          "messages": {
+            "numberErrors": "{amount} erreurs",
+            "numberWarnings": "{amount} avertissements",
+            "loadingEntries": "Chargement des inscriptions d'équipe..."
+          },
+          "noRecords": "Aucun enregistrement trouvé"
+        },
+        "errors": {
+          "already": "Joueur déjà présent en tant que détenteur du titre",
+          "base-gender-mix": "L'escouade de base comprend {maleCount} hommes et {femaleCount} femmes, alors que cela devrait être 2 dans chaque cas",
+          "base-other-team": "{playerFullName} ne peut être inscrit comme joueur de base qu'une seule fois par ligue",
+          "comp-status-base": "Le joueur titulaire {playerFullName} n'est pas inscrit à la compétition",
+          "comp-status-team": "{playerFullName} n'est pas inscrit au concours",
+          "faller": "L'équipe devrait être reléguée, mais n'est pas engagée dans une série inférieure cette année",
+          "first-team-index": "Une équipe première éliminée ne peut aligner une équipe dont l'indice est inférieur à son indice de base au cours de la saison",
+          "no-subevent": "Veuillez choisir une gamme",
+          "none": "Aucune erreur n'a été trouvée",
+          "player-club": "Le joueur {playerFullName} ne fait pas partie de {clubName} (club actuel : {activeClubName})",
+          "player-club-none": "Aucun club connu pour le joueur {playerFullName}",
+          "player-gender": "{playerFullName} est un {playerGender} mais un {gender} était attendu",
+          "player-min-level": "{playerFullName} a un indice de {playerRanking} dans {rankingType} et peut être au moins {minLevel}",
+          "player-subevent": "{playerFullName} fait partie de l'équipe de base {teamName} qui joue également en {subEventName}",
+          "riser": "L'équipe devrait être promue mais n'est pas inscrite dans une série supérieure",
+          "team-index": "La configuration de configuration la plus forte n'est pas possible. L'index d'équipe est {teamIndex} et l'index d'équipe de base est {baseIndex}",
+          "team-order": "L'équipe {teamName} est dans une série inférieure mais a un numéro d'équipe inférieur",
+          "team-order-same-subevent": "L'équipe {teamName} a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
+          "team-to-strong": "Les joueurs de départ de l'indice d'équipe sont {baseIndex} et ne peuvent pas tomber en dessous de la limite de la division {minIndex}",
+          "team-to-week": "Les joueurs de départ de l'indice d'équipe sont {baseIndex} et ne peuvent pas dépasser la limite de la division {maxIndex}",
+          "title": "Erreurs",
+          "too-few-base-players": "Trop peu de joueurs de base",
+          "too-many-base-players": "Trop de joueurs de base"
+        }
       }
     },
     "encounters": {

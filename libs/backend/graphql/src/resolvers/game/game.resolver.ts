@@ -194,6 +194,11 @@ export class GamesResolver {
 
       if (gameData.players) {
         for (const player of gameData.players) {
+          const system = await RankingSystem.findOne({
+            where: {
+              primary: true,
+            },
+          });
           const ranking = await RankingLastPlace.findOne({
             where: {
               playerId: player.id,
@@ -206,7 +211,7 @@ export class GamesResolver {
               gameId: game.id,
               team: player.team,
               player: player.player,
-              systemId: player.systemId,
+              systemId: system?.id,
               single: ranking?.single,
               double: ranking?.double,
               mix: ranking?.mix,

@@ -488,7 +488,7 @@ export type I18nTranslations = {
             "tabs": {
                 "divisions": string;
                 "encounters": string;
-                "teamSignups": string;
+                "teamEnrollments": string;
             };
             "buttons": {
                 "openInToernooiNL": string;
@@ -527,6 +527,67 @@ export type I18nTranslations = {
                     };
                     "noRecords": string;
                 };
+                "teamEnrollments": {
+                    "drawer": {
+                        "sectionTitles": {
+                            "primaryPlayers": string;
+                            "generalInfo": string;
+                            "validations": string;
+                        };
+                        "dataKeys": {
+                            "teamIndex": string;
+                            "teamCaptain": string;
+                            "preferredPlayingTime": string;
+                        };
+                        "emptyStates": {
+                            "noValidations": string;
+                        };
+                    };
+                    "table": {
+                        "headers": {
+                            "division": string;
+                            "team": string;
+                            "index": string;
+                            "numberSignups": string;
+                            "messages": string;
+                            "actions": string;
+                        };
+                        "buttons": {
+                            "view": string;
+                        };
+                        "messages": {
+                            "numberErrors": string;
+                            "numberWarnings": string;
+                            "loadingEntries": string;
+                        };
+                        "noRecords": string;
+                    };
+                    "errors": {
+                        "already": string;
+                        "base-gender-mix": string;
+                        "base-other-team": string;
+                        "comp-status-base": string;
+                        "comp-status-team": string;
+                        "faller": string;
+                        "first-team-index": string;
+                        "no-subevent": string;
+                        "none": string;
+                        "player-club": string;
+                        "player-club-none": string;
+                        "player-gender": string;
+                        "player-min-level": string;
+                        "player-subevent": string;
+                        "riser": string;
+                        "team-index": string;
+                        "team-order": string;
+                        "team-order-same-subevent": string;
+                        "team-to-strong": string;
+                        "team-to-week": string;
+                        "title": string;
+                        "too-few-base-players": string;
+                        "too-many-base-players": string;
+                    };
+                };
             };
             "encounters": {
                 "table": {
@@ -556,6 +617,67 @@ export type I18nTranslations = {
                     "tooltips": {
                         "reschedule": string;
                     };
+                };
+            };
+            "teamEnrollments": {
+                "drawer": {
+                    "sectionTitles": {
+                        "primaryPlayers": string;
+                        "generalInfo": string;
+                        "validations": string;
+                    };
+                    "dataKeys": {
+                        "teamIndex": string;
+                        "teamCaptain": string;
+                        "preferredPlayingTime": string;
+                    };
+                    "emptyStates": {
+                        "noValidations": string;
+                    };
+                };
+                "table": {
+                    "headers": {
+                        "division": string;
+                        "numberSignups": string;
+                        "team": string;
+                        "index": string;
+                        "messages": string;
+                        "actions": string;
+                    };
+                    "buttons": {
+                        "view": string;
+                    };
+                    "messages": {
+                        "numberErrors": string;
+                        "numberWarnings": string;
+                        "loadingEntries": string;
+                    };
+                    "noRecords": string;
+                };
+                "errors": {
+                    "already": string;
+                    "base-gender-mix": string;
+                    "base-other-team": string;
+                    "comp-status-base": string;
+                    "comp-status-team": string;
+                    "faller": string;
+                    "first-team-index": string;
+                    "no-subevent": string;
+                    "none": string;
+                    "player-club": string;
+                    "player-club-none": string;
+                    "player-gender": string;
+                    "player-min-level": string;
+                    "player-subevent": string;
+                    "riser": string;
+                    "team-index": string;
+                    "team-order": string;
+                    "team-order-same-subevent": string;
+                    "team-to-strong": string;
+                    "team-to-week": string;
+                    "title": string;
+                    "too-few-base-players": string;
+                    "too-many-base-players": string;
                 };
             };
         };
