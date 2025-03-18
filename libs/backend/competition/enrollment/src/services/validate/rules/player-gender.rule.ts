@@ -54,7 +54,7 @@ export class PlayerGenderRule extends Rule {
     const wrong = uniquePlayers?.filter((p) => p?.gender != gender);
     if (wrong) {
       return wrong.map((p) => ({
-        message: 'all.competition.team-enrollment.errors.player-gender',
+        message: 'all.competitionDetailPage.teamEnrollments.errors.player-gender',
         params: {
           player: {
             id: p?.id,

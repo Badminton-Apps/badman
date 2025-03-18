@@ -1,8 +1,8 @@
 import {
-  EnrollmentValidationData,
-  EnrollmentValidationError,
-  EnrollmentValidationTeam,
-  RuleResult,
+    EnrollmentValidationData,
+    EnrollmentValidationError,
+    EnrollmentValidationTeam,
+    RuleResult,
 } from '../../../models';
 import { Rule } from './_rule.base';
 
@@ -67,7 +67,7 @@ export class PlayerSubEventRule extends Rule {
           warnings.set(otherTeam.team.id, [
             ...(currentWrans || []),
             {
-              message: `all.competition.team-enrollment.errors.player-subevent`,
+              message: `all.competitionDetailPage.teamEnrollments.errors.player-subevent`,
               params: {
                 player: {
                   id: player.id,

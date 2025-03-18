@@ -23,7 +23,7 @@ export class TeamBaseGenderRule extends Rule {
         const femalePlayers = basePlayers?.filter((p) => p.gender == 'F') ?? [];
         if (malePlayers.length != 2 || femalePlayers.length != 2) {
           errors.push({
-            message: 'all.competition.team-enrollment.errors.base-gender-mix',
+            message: 'all.competitionDetailPage.teamEnrollments.errors.base-gender-mix',
             params: {
               maleCount: malePlayers.length,
               femaleCount: femalePlayers.length,

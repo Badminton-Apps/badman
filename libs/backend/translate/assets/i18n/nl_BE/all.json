@@ -471,7 +471,7 @@
     "tabs": {
       "divisions": "Divisies",
       "encounters": "Wedstrijden",
-      "teamSignups": "Team inschrijvingen"
+      "teamEnrollments": "Team inschrijvingen"
     },
     "buttons": {
       "openInToernooiNL": "Open in toernooi.nl",
@@ -509,6 +509,67 @@
           "subdivisions": "Subdivisies"
         },
         "noRecords": "Geen records gevonden"
+      },
+      "teamEnrollments": {
+        "drawer": {
+          "sectionTitles": {
+            "primaryPlayers": "Basisspeler(s)",
+            "generalInfo": "Algemene info",
+            "validations": "Validaties"
+          },
+          "dataKeys": {
+            "teamIndex": "Ploegindex",
+            "teamCaptain": "Ploegkapitein",
+            "preferredPlayingTime": "Voorkeurs speelmoment"
+          },
+          "emptyStates": {
+            "noValidations": "Geen validaties gevonden"
+          }
+        },
+        "table": {
+          "headers": {
+        "division": "Afdeling",
+        "team": "Ploeg",
+        "index": "Index",
+        "numberSignups": "Aantal inschrijvingen",
+        "messages": "Berichten",
+        "actions": "Acties"
+          },
+          "buttons": {
+        "view": "Bekijk"
+          },
+          "messages": {
+            "numberErrors": "{amount} fouten",
+            "numberWarnings": "{amount} waarschuwingen",
+            "loadingEntries": "inschrijvingen inladen"
+          },
+          "noRecords": "Geen records gevonden"
+        },
+        "errors": {
+          "already": "Speler al als titularis aanwezig",
+          "base-gender-mix": "De basisploeg bevat {maleCount} mannen en {femaleCount} vrouwen, terwijl die telkens 2 moet zijn",
+          "base-other-team": "{playerFullName} kan slechts éénmaal als basisspeler opgegeven worden per competitie",
+          "comp-status-base": "Basisspeler {playerFullName} staat niet ingeschreven voor de competitie",
+          "comp-status-team": "{playerFullName} staat niet ingeschreven voor de competitie",
+          "faller": "Het team moet degraderen, maar staat niet in een lagere afdeling ingeschreven",
+          "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun ploegindex van de basisspelers",
+          "no-subevent": "Gelieve een afdeling te kiezen",
+          "none": "Geen fouten gevonden",
+          "player-club": "Speler {playerFullName} is niet deel van {clubName} (huidige club: {activeClubName})",
+          "player-club-none": "Geen club gekend voor speler {playerFullName}",
+          "player-gender": "{playerFullName} is een {playerGender} maar een {gender} was verwacht",
+          "player-min-level": "{playerFullName} heeft een discipline-index van {playerRanking} in {rankingType} en mag minimaal {minLevel} zijn",
+          "player-subevent": "{playerFullName} is deel van de basisploeg {teamName} dat ook in {subEventName} speelt",
+          "riser": "Het team moet promoveren, maar staat niet in een hogere afdeling ingeschreven",
+          "team-index": "Sterkste opstelling opstellen is niet mogelijk. De ploegindex is {teamIndex} en de index van de basisploeg is {baseIndex}",
+          "team-order": "Team {teamName} zit in een lagere afdeling maar heeft een lager teamnummer",
+          "team-order-same-subevent": "Team {teamName} heeft een betere ploegindex in dezelfde afdeling, maar heeft een lager teamnummer",
+          "team-to-strong": "Ploegindex basisspelers is {baseIndex} en mag niet onder de grens van de afdeling {minIndex} komen",
+          "team-to-week": "Ploegindex basisspelers is {baseIndex} en mag niet boven de grens van de afdeling {maxIndex} komen",
+          "title": "Fouten",
+          "too-few-base-players": "Te weinig basis spelers",
+          "too-many-base-players": "Te veel basis spelers"
+        }
       }
     },
     "encounters": {
