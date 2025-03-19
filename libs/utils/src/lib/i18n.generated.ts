@@ -2261,8 +2261,8 @@ export type I18nTranslations = {
                         "form": {
                             "name": string;
                             "street": string;
-                            "number": string;
-                            "zip": string;
+                            "streetNumber": string;
+                            "postalcode": string;
                             "city": string;
                             "state": string;
                             "phone": string;
