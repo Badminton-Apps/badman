@@ -2274,6 +2274,68 @@
             }
           }
         }
+      },
+      "basePlayers": {
+        "title": "Teams",
+        "buttons": {
+          "addTeam": "Add team"
+        },
+        "team": {
+          "buttons": {
+            "addPlayer": "Add player"
+          },
+          "list": {
+            "noPlayers": "No players",
+            "actions": {
+              "editRanking": "Edit ranking",
+              "toggleLevelExemption": "Toggle level exemption",
+              "delete": "Delete"
+            }
+          },
+          "addPlayerDialog": {
+            "title": "Add player",
+            "messages": {
+              "success": "Player added",
+              "error": "Error adding player",
+              "playerAlreadyInTeam": "Player is already in the team"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "addPlayer": "Add player"
+            }
+          },
+          "deletePlayerDialog": {
+            "title": "Delete player",
+            "subTitle": "Are you sure you want to delete this player?",
+            "messages": {
+              "success": "Player deleted",
+              "playerNotFound": "Player not found"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "delete": "Delete"
+            }
+          },
+          "editPlayerRankingDialog": {
+            "title": "Edit ranking",
+            "messages": {
+              "success": "Ranking updated"
+            },
+            "form": {
+              "single": "Single",
+              "double": "Double",
+              "mix": "Mix"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "save": "Save"
+            }
+          },
+          "messages": {
+            "levelExemptionUpdated": "Level exemption updated",
+            "levelExemptionError": "Error updating level exemption"
+          }
+        }
       }
     }
   }
