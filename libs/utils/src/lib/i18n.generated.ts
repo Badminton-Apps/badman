@@ -2362,6 +2362,68 @@ export type I18nTranslations = {
                         };
                     };
                 };
+                "basePlayers": {
+                    "title": string;
+                    "buttons": {
+                        "addTeam": string;
+                    };
+                    "team": {
+                        "buttons": {
+                            "addPlayer": string;
+                        };
+                        "list": {
+                            "noPlayers": string;
+                            "actions": {
+                                "editRanking": string;
+                                "toggleLevelExemption": string;
+                                "delete": string;
+                            };
+                        };
+                        "addPlayerDialog": {
+                            "title": string;
+                            "messages": {
+                                "success": string;
+                                "error": string;
+                                "playerAlreadyInTeam": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "addPlayer": string;
+                            };
+                        };
+                        "deletePlayerDialog": {
+                            "title": string;
+                            "subTitle": string;
+                            "messages": {
+                                "success": string;
+                                "playerNotFound": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "delete": string;
+                            };
+                        };
+                        "editPlayerRankingDialog": {
+                            "title": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "form": {
+                                "single": string;
+                                "double": string;
+                                "mix": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "save": string;
+                            };
+                        };
+                        "messages": {
+                            "levelExemptionUpdated": string;
+                            "levelExemptionError": string;
+                        };
+                    };
+                };
             };
         };
         "points": {
