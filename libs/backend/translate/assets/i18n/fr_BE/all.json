@@ -633,7 +633,7 @@
       "add": "Ajouter"
       },
       "messages": {
-      "competitionAdded": "Compétition ajoutée avec succès"
+        "competitionAdded": "La compétition sera ajoutée sous peu"
       },
       "errors": {
       "errorAddingCompetition": "Erreur lors de l'ajout de la compétition"
