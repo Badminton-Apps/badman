@@ -621,6 +621,23 @@
         "addCompetition": "competitie",
         "loadMoreCompetitions": "Meer competities laden..."
       }
+    },
+    "addCompetitionDialog": {
+      "title": "Competitie toevoegen",
+      "inputs": {
+      "visualCode": "Visuele code",
+      "officialCompetition": "Officiële competitie"
+      },
+      "buttons": {
+      "cancel": "Annuleren",
+      "add": "Toevoegen"
+      },
+      "messages": {
+      "competitionAdded": "Competitie succesvol toegevoegd"
+      },
+      "errors": {
+      "errorAddingCompetition": "Fout bij het toevoegen van de competitie"
+      }
     }
   },
   "encounterAlerts": {
