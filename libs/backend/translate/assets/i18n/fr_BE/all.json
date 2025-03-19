@@ -629,6 +629,23 @@
         "addCompetition": "compétition",
         "loadMoreCompetitions": "Charger plus de compétitions..."
       }
+    },
+    "addCompetitionDialog": {
+      "title": "Ajouter une compétition",
+      "inputs": {
+      "visualCode": "Code visuel",
+      "officialCompetition": "Compétition officielle"
+      },
+      "buttons": {
+      "cancel": "Annuler",
+      "add": "Ajouter"
+      },
+      "messages": {
+      "competitionAdded": "Compétition ajoutée avec succès"
+      },
+      "errors": {
+      "errorAddingCompetition": "Erreur lors de l'ajout de la compétition"
+      }
     }
   },
   "encounterAlerts": {

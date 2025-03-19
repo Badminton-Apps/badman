@@ -703,6 +703,23 @@ export type I18nTranslations = {
                     "loadMoreCompetitions": string;
                 };
             };
+            "addCompetitionDialog": {
+                "title": string;
+                "inputs": {
+                    "visualCode": string;
+                    "officialCompetition": string;
+                };
+                "buttons": {
+                    "cancel": string;
+                    "add": string;
+                };
+                "messages": {
+                    "competitionAdded": string;
+                };
+                "errors": {
+                    "errorAddingCompetition": string;
+                };
+            };
         };
         "encounterAlerts": {
             "buttons": {
