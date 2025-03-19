@@ -2174,8 +2174,8 @@
           "form": {
             "name": "Name",
             "street": "Street",
-            "number": "Number",
-            "zip": "Zip",
+            "streetNumber": "Number",
+            "postalcode": "Zip",
             "city": "City",
             "state": "State",
             "phone": "Phone",
