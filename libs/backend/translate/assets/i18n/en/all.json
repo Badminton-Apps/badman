@@ -623,6 +623,23 @@
         "addCompetition": "competition",
         "loadMoreCompetitions": "Load more competitions..."
       }
+    },
+    "addCompetitionDialog": {
+      "title": "Add competition",
+      "inputs": {
+        "visualCode": "Visual code",
+        "officialCompetition": "Official competition"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "add": "Add"
+      },
+      "messages": {
+        "competitionAdded": "Competition will be added shortly"
+      },
+      "errors": {
+        "errorAddingCompetition": "Error adding competition"
+      }
     }
   },
   "encounterAlerts": {
