@@ -302,7 +302,7 @@ export class EventCompetitionResolver {
   @Mutation(() => Boolean)
   async removeEventCompetition(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission([`delete:competition`]))) {
-      throw new UnauthorizedException(`You do not have permission to add a competition`);
+      throw new UnauthorizedException(`You do not have permission to delete a competition`);
     }
 
     const eventTournament = await EventCompetition.findByPk(id);
