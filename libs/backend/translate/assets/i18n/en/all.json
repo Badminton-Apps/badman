@@ -648,6 +648,16 @@
       "errors": {
         "errorAddingCompetition": "Error adding competition"
       }
+    },
+    "deleteCompetitionDialog": {
+      "title": "Delete competition?",
+      "body": " Are you sure you want to delete this competition? If you confirm, all data related to this competition will be permanently deleted.",
+      "buttons": {
+        "cancel": "Cancel",
+        "delete": "Delete"
+      },
+      "successMessage": "Competition successfully removed from platform",
+      "errorMessage": "Error removing competition"
     }
   },
   "encounterAlerts": {

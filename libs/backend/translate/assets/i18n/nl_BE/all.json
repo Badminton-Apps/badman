@@ -646,6 +646,16 @@
       "errors": {
       "errorAddingCompetition": "Fout bij het toevoegen van de competitie"
       }
+    },
+    "deleteCompetitionDialog": {
+      "title": "Competitie verwijderen?",
+      "body": "Weet je zeker dat je deze competitie wilt verwijderen? Als je bevestigt, worden alle gegevens met betrekking tot deze competitie permanent verwijderd.",
+      "buttons": {
+        "cancel": "Annuleren",
+        "delete": "Verwijderen"
+      },
+      "successMessage": "Competitie succesvol verwijderd van platform",
+      "errorMessage": "Fout bij het verwijderen van de competitie"
     }
   },
   "encounterAlerts": {

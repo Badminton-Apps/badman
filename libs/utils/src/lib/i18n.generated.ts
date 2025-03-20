@@ -720,6 +720,16 @@ export type I18nTranslations = {
                     "errorAddingCompetition": string;
                 };
             };
+            "deleteCompetitionDialog": {
+                "title": string;
+                "body": string;
+                "buttons": {
+                    "cancel": string;
+                    "delete": string;
+                };
+                "successMessage": string;
+                "errorMessage": string;
+            };
         };
         "encounterAlerts": {
             "buttons": {
