@@ -2136,6 +2136,69 @@ export type I18nTranslations = {
                     };
                     "noData": string;
                 };
+                "addEditTeamDialog": {
+                    "titleAdd": string;
+                    "titleEdit": string;
+                    "steps": {
+                        "info": string;
+                        "players": string;
+                    };
+                    "messages": {
+                        "successAdd": string;
+                        "successEdit": string;
+                    };
+                    "buttons": {
+                        "cancel": string;
+                        "next": string;
+                        "back": string;
+                        "editTeam": string;
+                        "addTeam": string;
+                    };
+                    "teamInfo": {
+                        "generalInfo": string;
+                        "teamCaptain": string;
+                        "preferredPlayingTime": string;
+                        "form": {
+                            "type": string;
+                            "teamNumber": string;
+                            "season": string;
+                            "email": string;
+                            "phone": string;
+                            "preferredDay": string;
+                            "preferredTime": string;
+                            "preferredLocation": string;
+                            "teamType": {
+                                "M": string;
+                                "F": string;
+                                "MX": string;
+                                "NATIONAL": string;
+                            };
+                            "daysOfWeek": {
+                                "monday": string;
+                                "tuesday": string;
+                                "wednesday": string;
+                                "thursday": string;
+                                "friday": string;
+                                "saturday": string;
+                                "sunday": string;
+                            };
+                        };
+                    };
+                    "players": {
+                        "addPlayer": string;
+                        "players": string;
+                        "form": {
+                            "membership": string;
+                            "membershipTypes": {
+                                "REGULAR": string;
+                                "BACKUP": string;
+                            };
+                        };
+                        "buttons": {
+                            "addPlayer": string;
+                        };
+                    };
+                };
             };
             "editClubPage": {
                 "title": string;
