@@ -638,6 +638,16 @@
       "errors": {
       "errorAddingCompetition": "Erreur lors de l'ajout de la compétition"
       }
+    },
+    "deleteCompetitionDialog": {
+      "title": "Supprimer la compétition ?",
+      "body": "Êtes-vous sûr de vouloir supprimer cette compétition ? Si vous confirmez, toutes les données liées à cette compétition seront définitivement supprimées.",
+      "buttons": {
+        "cancel": "Annuler",
+        "delete": "Supprimer"
+      },
+      "successMessage": "Compétition supprimée avec succès de la plateforme",
+      "errorMessage": "Erreur lors de la suppression de la compétition"
     }
   },
   "encounterAlerts": {
