@@ -2080,6 +2080,69 @@
           "actions": "Actions"
         },
         "noData": "No teams found"
+      },
+      "addEditTeamDialog": {
+        "titleAdd": "Add team",
+        "titleEdit": "Edit team",
+        "steps": {
+          "info": "Info",
+          "players": "Players"
+        },
+        "messages": {
+          "successAdd": "Team is added",
+          "successEdit": "Team is updated"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "next": "Next",
+          "back": "Back",
+          "editTeam": "Edit team",
+          "addTeam": "Add team"
+        },
+        "teamInfo": {
+          "generalInfo": "General info",
+          "teamCaptain": "Team captain",
+          "preferredPlayingTime": "Preferred playing time",
+          "form": {
+            "type": "Type",
+            "teamNumber": "Team number",
+            "season": "Season",
+            "email": "Email",
+            "phone": "Phone",
+            "preferredDay": "Preferred day",
+            "preferredTime": "Preferred time",
+            "preferredLocation": "Preferred location",
+            "teamType": {
+              "M": "Male",
+              "F": "Female",
+              "MX": "Mixed",
+              "NATIONAL": "National"
+            },
+            "daysOfWeek": {
+              "monday": "Monday",
+              "tuesday": "Tuesday",
+              "wednesday": "Wednesday",
+              "thursday": "Thursday",
+              "friday": "Friday",
+              "saturday": "Saturday",
+              "sunday": "Sunday"
+            }
+          }
+        },
+        "players": {
+          "addPlayer": "Add player",
+          "players": "Players",
+          "form": {
+            "membership": "Membership",
+            "membershipTypes": {
+              "REGULAR": "Regular",
+              "BACKUP": "Backup"
+            }
+          },
+          "buttons": {
+            "addPlayer": "Add player"
+          }
+        }
       }
     },
     "editClubPage": {
