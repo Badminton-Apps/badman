@@ -2152,6 +2152,10 @@ export type I18nTranslations = {
                     };
                     "noData": string;
                 };
+                "actions": {
+                    "edit": string;
+                    "delete": string;
+                };
                 "addEditTeamDialog": {
                     "titleAdd": string;
                     "titleEdit": string;
@@ -2214,6 +2218,57 @@ export type I18nTranslations = {
                             "addPlayer": string;
                         };
                     };
+                };
+                "deleteTeamDialog": {
+                    "title": string;
+                    "subTitle": string;
+                    "messages": {
+                        "success": string;
+                    };
+                    "buttons": {
+                        "cancel": string;
+                        "delete": string;
+                    };
+                };
+            };
+            "assemblyMatrix": {
+                "teamsFilter": {
+                    "label": string;
+                    "options": {
+                        "ALL": string;
+                    };
+                };
+                "table": {
+                    "headers": {
+                        "players": string;
+                    };
+                    "noData": string;
+                };
+                "tooltipMessages": {
+                    "basePlayer": string;
+                    "genderError": string;
+                    "playerOfAnotherTeam": string;
+                    "playerOfAnotherTeamInSameSeries": string;
+                    "minLevelError": string;
+                    "betterMeta": string;
+                };
+                "types": {
+                    "double": string;
+                    "female": string;
+                    "male": string;
+                    "mix": string;
+                    "single": string;
+                    "title": string;
+                };
+                "gender": {
+                    "F": string;
+                    "M": string;
+                };
+                "teamTypes": {
+                    "F": string;
+                    "M": string;
+                    "MX": string;
+                    "NATIONAL": string;
                 };
             };
             "editClubPage": {
@@ -2463,6 +2518,7 @@ export type I18nTranslations = {
                         };
                         "list": {
                             "noPlayers": string;
+                            "noSubEvent": string;
                             "actions": {
                                 "editRanking": string;
                                 "toggleLevelExemption": string;
