@@ -2184,6 +2184,31 @@
         "NATIONAL": "National"
       }
     },
+    "players": {
+      "playersFilter": {
+        "teams": {
+          "label": "Teams",
+          "options": {
+            "ALL": "All"
+          }
+        },
+        "players": {
+          "label": "Players",
+          "options": {
+            "ALL": "All"
+          },
+          "loadingText": "Loading players",
+          "noData": "No players found"
+        }
+      },
+      "table": {
+        "headers": {
+          "name": "Name",
+          "teams": "Teams"
+        },
+        "noData": "No players found"
+      }
+    },
     "editClubPage": {
       "title": "Edit club",
       "tabs": {
@@ -2483,6 +2508,14 @@
           }
         }
       }
+    }
+  },
+  "filterComponent": {
+    "title": "Filters",
+    "buttons": {
+      "filters": "Filters",
+      "cancel": "Cancel",
+      "apply": "Apply"
     }
   }
 }
