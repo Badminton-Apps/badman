@@ -2255,6 +2255,31 @@ export type I18nTranslations = {
                     "NATIONAL": string;
                 };
             };
+            "players": {
+                "playersFilter": {
+                    "teams": {
+                        "label": string;
+                        "options": {
+                            "ALL": string;
+                        };
+                    };
+                    "players": {
+                        "label": string;
+                        "options": {
+                            "ALL": string;
+                        };
+                        "loadingText": string;
+                        "noData": string;
+                    };
+                };
+                "table": {
+                    "headers": {
+                        "name": string;
+                        "teams": string;
+                    };
+                    "noData": string;
+                };
+            };
             "editClubPage": {
                 "title": string;
                 "tabs": {
@@ -2554,6 +2579,14 @@ export type I18nTranslations = {
                         };
                     };
                 };
+            };
+        };
+        "filterComponent": {
+            "title": string;
+            "buttons": {
+                "filters": string;
+                "cancel": string;
+                "apply": string;
             };
         };
         "points": {
