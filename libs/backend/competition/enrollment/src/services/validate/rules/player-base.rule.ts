@@ -47,7 +47,7 @@ export class PlayerBaseRule extends Rule {
         for (const otherTeam of otherTeams) {
           if (otherTeam.basePlayers?.find((p) => p.id === player.id)) {
             errors.push({
-              message: 'all.competitionDetailPage.teamEnrollments.errors.base-other-team',
+              message: 'all.entryTeamDrawer.validation.errors.base-other-team',
               params: {
                 player: {
                   id: player.player?.id,
@@ -68,7 +68,7 @@ export class PlayerBaseRule extends Rule {
         for (const otherTeam of otherTeams) {
           if (otherTeam.basePlayers?.find((p) => p.id === player.id)) {
             warnings.push({
-              message: 'all.competition.team-enrollment.warnings.base-other-team',
+              message: 'all.entryTeamDrawer.validation.warnings.base-other-team',
               params: {
                 player: {
                   id: player.player?.id,

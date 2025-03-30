@@ -620,21 +620,6 @@ export type I18nTranslations = {
                 };
             };
             "teamEnrollments": {
-                "drawer": {
-                    "sectionTitles": {
-                        "primaryPlayers": string;
-                        "generalInfo": string;
-                        "validations": string;
-                    };
-                    "dataKeys": {
-                        "teamIndex": string;
-                        "teamCaptain": string;
-                        "preferredPlayingTime": string;
-                    };
-                    "emptyStates": {
-                        "noValidations": string;
-                    };
-                };
                 "table": {
                     "headers": {
                         "division": string;
@@ -653,31 +638,6 @@ export type I18nTranslations = {
                         "loadingEntries": string;
                     };
                     "noRecords": string;
-                };
-                "errors": {
-                    "already": string;
-                    "base-gender-mix": string;
-                    "base-other-team": string;
-                    "comp-status-base": string;
-                    "comp-status-team": string;
-                    "faller": string;
-                    "first-team-index": string;
-                    "no-subevent": string;
-                    "none": string;
-                    "player-club": string;
-                    "player-club-none": string;
-                    "player-gender": string;
-                    "player-min-level": string;
-                    "player-subevent": string;
-                    "riser": string;
-                    "team-index": string;
-                    "team-order": string;
-                    "team-order-same-subevent": string;
-                    "team-to-strong": string;
-                    "team-to-week": string;
-                    "title": string;
-                    "too-few-base-players": string;
-                    "too-many-base-players": string;
                 };
             };
         };
@@ -2296,6 +2256,94 @@ export type I18nTranslations = {
                     "noData": string;
                 };
             };
+            "encounters": {
+                "filters": {
+                    "team": {
+                        "label": string;
+                        "options": {
+                            "ALL": string;
+                        };
+                    };
+                    "openRequest": {
+                        "label": string;
+                        "options": {
+                            "ALL": string;
+                            "openRequests": string;
+                            "noRequests": string;
+                        };
+                    };
+                    "validation": {
+                        "label": string;
+                        "options": {
+                            "ALL": string;
+                            "valid": string;
+                            "invalid": string;
+                            "warnings": string;
+                        };
+                    };
+                    "changedDate": string;
+                    "homeGames": string;
+                };
+                "table": {
+                    "headers": {
+                        "team": string;
+                        "opponent": string;
+                        "homeAway": string;
+                        "date": string;
+                        "status": string;
+                        "validation": string;
+                        "changeEncounterDate": string;
+                    };
+                    "encounterState": {
+                        "moved": string;
+                        "original": string;
+                        "inProgress": string;
+                    };
+                    "originalDate": string;
+                    "home": string;
+                    "away": string;
+                    "noData": string;
+                };
+            };
+            "teamEnrollment": {
+                "teams": {
+                    "title": string;
+                    "table": {
+                        "headers": {
+                            "teams": string;
+                            "liga": string;
+                            "comments": string;
+                        };
+                        "teamIndex": string;
+                        "noData": string;
+                    };
+                };
+                "locations": {
+                    "title": string;
+                    "locationDrawer": {
+                        "title": string;
+                        "buttons": {
+                            "copyAddress": string;
+                        };
+                        "gameDaysTitle": string;
+                        "till": string;
+                        "courts": string;
+                        "exceptionsTitle": string;
+                        "daysOfWeek": {
+                            "monday": string;
+                            "tuesday": string;
+                            "wednesday": string;
+                            "thursday": string;
+                            "friday": string;
+                            "saturday": string;
+                            "sunday": string;
+                        };
+                    };
+                };
+                "comments": {
+                    "title": string;
+                };
+            };
             "editClubPage": {
                 "title": string;
                 "tabs": {
@@ -2603,6 +2651,56 @@ export type I18nTranslations = {
                 "filters": string;
                 "cancel": string;
                 "apply": string;
+            };
+        };
+        "entryTeamDrawer": {
+            "sectionTitles": {
+                "basePlayers": string;
+                "generalInfo": string;
+                "validations": string;
+            };
+            "dataKeys": {
+                "teamIndex": string;
+                "teamCaptain": string;
+                "preferredPlayingTime": string;
+            };
+            "emptyStates": {
+                "noValidations": string;
+            };
+            "noData": string;
+            "validation": {
+                "errors": {
+                    "already": string;
+                    "base-gender-mix": string;
+                    "base-other-team": string;
+                    "comp-status-base": string;
+                    "comp-status-team": string;
+                    "faller": string;
+                    "first-team-index": string;
+                    "no-subevent": string;
+                    "none": string;
+                    "player-club": string;
+                    "player-club-none": string;
+                    "player-gender": string;
+                    "player-min-level": string;
+                    "player-subevent": string;
+                    "riser": string;
+                    "team-index": string;
+                    "team-order": string;
+                    "team-order-same-subevent": string;
+                    "team-to-strong": string;
+                    "team-to-week": string;
+                    "title": string;
+                    "too-few-base-players": string;
+                    "too-many-base-players": string;
+                };
+                "warnings": {
+                    "already-saved": string;
+                    "base-other-team": string;
+                    "player-min-level": string;
+                    "subtitute-team-index": string;
+                    "title": string;
+                };
             };
         };
         "points": {

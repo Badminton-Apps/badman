@@ -88,7 +88,6 @@ export class ClubEncounterService {
     if (this.state().filterOpenRequests === 'noRequests') {
       filtered = filtered.filter((encounter) => encounter.encounterChange?.accepted ?? true);
     }
-    
 
     if (this.state().filterValidGames == 'invalid') {
       filtered = filtered.filter((encounter) => encounter.validateEncounter?.valid == false);

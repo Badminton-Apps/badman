@@ -18,7 +18,7 @@ export class TeamMaxBasePlayersRule extends Rule {
       const errors = [] as EnrollmentValidationError[];
       if (amountOfBasePlayers < (basePlayers?.length ?? 0) ) {
         errors.push({
-          message: 'all.competitionDetailPage.teamEnrollments.errors.too-many-base-players',
+          message: 'all.entryTeamDrawer.validation.errors.too-many-base-players',
           params: {
             amountOfBasePlayers,
           },
@@ -27,7 +27,7 @@ export class TeamMaxBasePlayersRule extends Rule {
 
       if (amountOfBasePlayers > (basePlayers?.length ?? 0)) {
         errors.push({
-          message: 'all.competitionDetailPage.teamEnrollments.errors.too-few-base-players',
+          message: 'all.entryTeamDrawer.validation.errors.too-few-base-players',
           params: {
             amountOfBasePlayers,
           },
