@@ -89,8 +89,7 @@ export class ClubEncounterService {
       filtered = filtered.filter((encounter) => encounter.encounterChange?.accepted ?? true);
     }
     
-    console.log(this.state().filterValidGames);
-
+    
     if (this.state().filterValidGames == 'invalid') {
       filtered = filtered.filter((encounter) => encounter.validateEncounter?.valid == false);
     } else if (this.state().filterValidGames == 'potential') {
