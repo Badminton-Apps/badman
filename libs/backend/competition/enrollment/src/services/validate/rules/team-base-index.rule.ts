@@ -16,7 +16,7 @@ export class TeamBaseIndexRule extends Rule {
       if (team?.teamNumber != 1 && (teamIndex ?? 0) < (baseIndex ?? 0)) {
         teamValid = true;
         warning.push({
-          message: 'all.competitionDetailPage.teamEnrollments.errors.team-index',
+          message: 'all.entryTeamDrawer.validation.errors.team-index',
           params: {
             teamIndex,
             baseIndex,
@@ -31,7 +31,7 @@ export class TeamBaseIndexRule extends Rule {
       ) {
         teamValid = false;
         errors.push({
-          message: 'all.competitionDetailPage.teamEnrollments.errors.first-team-index',
+          message: 'all.entryTeamDrawer.validation.errors.first-team-index',
         });
       }
 
