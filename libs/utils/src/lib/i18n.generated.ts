@@ -620,6 +620,21 @@ export type I18nTranslations = {
                 };
             };
             "teamEnrollments": {
+                "drawer": {
+                    "sectionTitles": {
+                        "primaryPlayers": string;
+                        "generalInfo": string;
+                        "validations": string;
+                    };
+                    "dataKeys": {
+                        "teamIndex": string;
+                        "teamCaptain": string;
+                        "preferredPlayingTime": string;
+                    };
+                    "emptyStates": {
+                        "noValidations": string;
+                    };
+                };
                 "table": {
                     "headers": {
                         "division": string;
@@ -689,6 +704,133 @@ export type I18nTranslations = {
                 };
                 "successMessage": string;
                 "errorMessage": string;
+            };
+        };
+        "editCompetitionPage": {
+            "steps": {
+                "0": string;
+                "1": string;
+                "2": string;
+            };
+            "general": {
+                "sectionTitles": {
+                    "general": string;
+                };
+                "inputs": {
+                    "name": string;
+                    "season": string;
+                    "type": string;
+                    "contact": string;
+                    "country": string;
+                    "province": string;
+                    "sendNotifications": string;
+                    "teamMatcherLink": string;
+                };
+                "successMessage": string;
+                "errorMessage": string;
+            };
+            "divisions": {
+                "table": {
+                    "headers": {
+                        "name": string;
+                        "type": string;
+                        "maxLevel": string;
+                        "index": string;
+                    };
+                    "actions": {
+                        "edit": string;
+                        "delete": string;
+                        "add": string;
+                    };
+                    "noRecords": string;
+                    "addDivisionDialog": {
+                        "title": string;
+                        "inputs": {
+                            "name": string;
+                            "type": string;
+                            "level": string;
+                            "maxLevel": string;
+                            "minBaseTeamIndex": string;
+                            "maxBaseTeamIndex": string;
+                            "index": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "add": string;
+                        };
+                        "messages": {
+                            "divisionAdded": string;
+                        };
+                        "errors": {
+                            "errorAddingDivision": string;
+                        };
+                    };
+                    "editDivisionDialog": {
+                        "title": string;
+                        "inputs": {
+                            "name": string;
+                            "type": string;
+                            "level": string;
+                            "maxLevel": string;
+                            "minBaseTeamIndex": string;
+                            "maxBaseTeamIndex": string;
+                            "index": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "add": string;
+                        };
+                        "messages": {
+                            "divisionAdded": string;
+                        };
+                        "errors": {
+                            "errorAddingDivision": string;
+                        };
+                    };
+                    "deleteDivisionDialog": {
+                        "title": string;
+                        "body": string;
+                        "buttons": {
+                            "cancel": string;
+                            "delete": string;
+                        };
+                    };
+                };
+            };
+            "extra": {
+                "sectionTitles": {
+                    "exceptions": string;
+                    "info": string;
+                    "roles": string;
+                };
+                "emptyStates": {
+                    "noExceptions": string;
+                    "noInfo": string;
+                };
+                "inputs": {
+                    "periodStart": string;
+                    "periodEnd": string;
+                    "availableFields": string;
+                    "name": string;
+                    "competitionAllowed": string;
+                };
+                "inputDescriptions": {
+                    "exceptions": string;
+                    "info": string;
+                };
+                "buttons": {
+                    "add": string;
+                };
+                "successMessage": string;
+                "errorMessage": string;
+            };
+            "buttons": {
+                "next": string;
+                "cancel": string;
+                "back": string;
+                "save": string;
+                "saveChanges": string;
+                "finish": string;
             };
         };
         "encounterAlerts": {

@@ -658,6 +658,133 @@
       "errorMessage": "Fout bij het verwijderen van de competitie"
     }
   },
+  "editCompetitionPage": {
+    "steps": {
+      "0": "Algemeen",
+      "1": "Afdelingen",
+      "2": "Extra"
+    },
+    "general": {
+      "sectionTitles": {
+      "general": "Algemeen"
+      },
+      "inputs": {
+      "name": "Naam",
+      "season": "Seizoen",
+      "type": "Type",
+      "contact": "Contact",
+      "country": "Land",
+      "province": "Provincie",
+      "sendNotifications": "Stuur notificaties wanneer een ontmoeting niet is ingevuld of bevestigd",
+      "teamMatcherLink": "Team matcher link"
+      },
+      "successMessage": "Algemene competitie-informatie opgeslagen",
+      "errorMessage": "Fout bij het opslaan van algemene competitie-informatie"
+    },
+    "divisions": {
+      "table": {
+      "headers": {
+        "name": "Naam",
+        "type": "Type",
+        "maxLevel": "Max niveau",
+        "index": "Index"
+      },
+      "actions": {
+        "edit": "Bewerken",
+        "delete": "Verwijderen",
+        "add": "Toevoegen"
+      },
+      "noRecords": "Geen records gevonden",
+      "addDivisionDialog": {
+        "title": "Afdeling toevoegen",
+        "inputs": {
+        "name": "Naam",
+        "type": "Type",
+        "level": "Niveau",
+        "maxLevel": "Max niveau",
+        "minBaseTeamIndex": "Min basis team index",
+        "maxBaseTeamIndex": "Max basis team index",
+        "index": "Index"
+        },
+        "buttons": {
+        "cancel": "Annuleren",
+        "add": "Toevoegen"
+        },
+        "messages": {
+        "divisionAdded": "Afdeling succesvol toegevoegd"
+        },
+        "errors": {
+        "errorAddingDivision": "Fout bij het toevoegen van afdeling"
+        }
+      },
+      "editDivisionDialog": {
+        "title": "Afdeling bewerken",
+        "inputs": {
+        "name": "Naam",
+        "type": "Type",
+        "level": "Niveau",
+        "maxLevel": "Max niveau",
+        "minBaseTeamIndex": "Min basis team index",
+        "maxBaseTeamIndex": "Max basis team index",
+        "index": "Index"
+        },
+        "buttons": {
+        "cancel": "Annuleren",
+        "add": "Wijzigingen indienen"
+        },
+        "messages": {
+        "divisionAdded": "Afdeling succesvol bewerkt"
+        },
+        "errors": {
+        "errorAddingDivision": "Fout bij het bewerken van afdeling"
+        }
+      },
+      "deleteDivisionDialog": {
+        "title": "Afdeling verwijderen?",
+        "body": "Weet je zeker dat je deze afdeling wilt verwijderen? Als je bevestigt, worden alle gegevens met betrekking tot deze afdeling permanent verwijderd.",
+        "buttons": {
+        "cancel": "Annuleren",
+        "delete": "Verwijderen"
+        }
+      }
+      }
+    },
+    "extra": {
+      "sectionTitles": {
+      "exceptions": "Uitzonderingen",
+      "info": "Info",
+      "roles": "Rollen"
+      },
+      "emptyStates": {
+      "noExceptions": "Geen uitzonderingen",
+      "noInfo": "Geen info"
+      },
+      "inputs": {
+      "periodStart": "Startperiode",
+      "periodEnd": "Eindperiode",
+      "availableFields": "Beschikbare velden",
+      "name": "Naam",
+      "competitionAllowed": "Competitie toegestaan"
+      },
+      "inputDescriptions": {
+      "exceptions": "Definieer periodes met meer of minder beschikbare velden.",
+      "info": "Definieer periodes met meer of minder beschikbare velden."
+      },
+      "buttons": {
+      "add": "Toevoegen"
+      },
+      "successMessage": "Competitiedetails opgeslagen",
+      "errorMessage": "Fout bij het opslaan van competitiedetails"
+    },
+    "buttons": {
+      "next": "Volgende",
+      "cancel": "Annuleren",
+      "back": "Terug",
+      "save": "Opslaan",
+      "saveChanges": "Wijzigingen opslaan",
+      "finish": "Voltooien"
+    }
+  },
   "encounterAlerts": {
     "buttons": {
       "seeEncounter": "Bekijk ontmoeting",
