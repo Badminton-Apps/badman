@@ -2845,6 +2845,12 @@ export type I18nTranslations = {
                 };
             };
         };
+        "notFoundPage": {
+            "title": string;
+            "buttons": {
+                "back": string;
+            };
+        };
         "points": {
             "title": string;
         };
