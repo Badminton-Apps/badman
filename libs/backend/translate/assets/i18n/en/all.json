@@ -541,6 +541,21 @@
       }
     },
     "teamEnrollments": {
+      "drawer": {
+        "sectionTitles": {
+          "primaryPlayers": "Base players",
+          "generalInfo": "General information",
+          "validations": "Validations"
+        },
+        "dataKeys": {
+          "teamIndex": "Team index",
+          "teamCaptain": "Team captain",
+          "preferredPlayingTime": "Preferred playing time"
+        },
+        "emptyStates": {
+          "noValidations": "No validations found"
+        }
+      },
       "table": {
         "headers": {
           "division": "Division",
@@ -610,6 +625,134 @@
       },
       "successMessage": "Competition successfully removed from platform",
       "errorMessage": "Error removing competition"
+    }
+  },
+  "editCompetitionPage": {
+    "steps": {
+      "0": "General",
+      "1": "Divisions",
+      "2": "Extra"
+    },
+    "general": {
+      "sectionTitles": {
+        "general": "General"
+      },
+      "inputs": {
+        "name": "Name",
+        "season": "Season",
+        "type": "Type",
+        "contact": "Contact",
+        "country": "Country",
+        "province": "Province",
+        "sendNotifications": "Send notifications when an encounter is not entered or confirmed",
+        "teamMatcherLink": "Team matcher link"
+      },
+      "successMessage": "Saved competition general info",
+      "errorMessage": "Error saving competition general info"
+    },
+    "divisions": {
+      "table": {
+        "headers": {
+          "name": "Name",
+          "type": "Type",
+          "maxLevel": "Max level",
+          "index": "Index"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete",
+          "add": "Add"
+        },
+        "noRecords": "No records found",
+        "addDivisionDialog": {
+          "title": "Add division",
+          "inputs": {
+            "name": "Name",
+            "type": "Type",
+            "level": "Level",
+            "maxLevel": "Max level",
+            "minBaseTeamIndex": "Min base team index",
+            "maxBaseTeamIndex": "Max base team index",
+            "index": "Index"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "add": "Add"
+          },
+          "messages": {
+            "divisionAdded": "Division successfully added"
+          },
+          "errors": {
+            "errorAddingDivision": "Error adding division"
+          }
+        },
+        "editDivisionDialog": {
+          "title": "Edit division",
+          "inputs": {
+            "name": "Name",
+            "type": "Type",
+            "level": "Level",
+            "maxLevel": "Max level",
+            "minBaseTeamIndex": "Min base team index",
+            "maxBaseTeamIndex": "Max base team index",
+            "index": "Index"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "add": "Submit changes"
+          },
+          "messages": {
+            "divisionAdded": "Division successfully edited"
+          },
+          "errors": {
+            "errorAddingDivision": "Error editing division"
+          }
+        },
+        "deleteDivisionDialog": {
+          "title": "Delete division?",
+          "body": "Are you sure you want to delete this division? If you confirm, all data related to this division will be permanently deleted.",
+          "buttons": {
+            "cancel": "Cancel",
+            "delete": "Delete"
+          }
+        }
+      }
+    },
+    "extra": {
+      "sectionTitles": {
+        "exceptions": "Exceptions",
+        "info": "Info",
+        "roles": "Roles"
+      },
+      "emptyStates": {
+        "noExceptions": "No exceptions",
+        "noInfo": "No info"
+      },
+      "inputs": {
+        "periodStart": "Period start",
+        "periodEnd": "Period end",
+        "availableFields": "Available fields",
+        "name": "Name",
+        "competitionAllowed": "Competition allowed"
+      },
+      "inputDescriptions": {
+        "exceptions": "Define periods with more or fewer available fields.",
+        "info": "Define periods with more or fewer available fields."
+      },
+      "buttons": {
+        "add": "Add"
+      },
+      "successMessage": "Saved competition details",
+      "errorMessage": "Error saving competition details"
+
+    },
+    "buttons": {
+      "next": "Next",
+      "cancel": "Cancel",
+      "back": "Back",
+      "save": "Save",
+      "saveChanges":"Save changes",
+      "finish": "Finish"
     }
   },
   "encounterAlerts": {

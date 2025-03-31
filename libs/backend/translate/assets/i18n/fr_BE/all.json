@@ -650,6 +650,133 @@
       "errorMessage": "Erreur lors de la suppression de la compétition"
     }
   },
+"editCompetitionPage": {
+    "steps": {
+      "0": "Général",
+      "1": "Divisions",
+      "2": "Supplémentaire"
+    },
+    "general": {
+      "sectionTitles": {
+      "general": "Général"
+      },
+      "inputs": {
+      "name": "Nom",
+      "season": "Saison",
+      "type": "Type",
+      "contact": "Contact",
+      "country": "Pays",
+      "province": "Province",
+      "sendNotifications": "Envoyer des notifications lorsqu'une rencontre n'est pas saisie ou confirmée",
+      "teamMatcherLink": "Lien de correspondance d'équipe"
+      },
+      "successMessage": "Informations générales de la compétition enregistrées",
+      "errorMessage": "Erreur lors de l'enregistrement des informations générales de la compétition"
+    },
+    "divisions": {
+      "table": {
+      "headers": {
+        "name": "Nom",
+        "type": "Type",
+        "maxLevel": "Niveau max",
+        "index": "Indice"
+      },
+      "actions": {
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "add": "Ajouter"
+      },
+      "noRecords": "Aucun enregistrement trouvé",
+      "addDivisionDialog": {
+        "title": "Ajouter une division",
+        "inputs": {
+        "name": "Nom",
+        "type": "Type",
+        "level": "Niveau",
+        "maxLevel": "Niveau max",
+        "minBaseTeamIndex": "Indice minimum de l'équipe de base",
+        "maxBaseTeamIndex": "Indice maximum de l'équipe de base",
+        "index": "Indice"
+        },
+        "buttons": {
+        "cancel": "Annuler",
+        "add": "Ajouter"
+        },
+        "messages": {
+        "divisionAdded": "Division ajoutée avec succès"
+        },
+        "errors": {
+        "errorAddingDivision": "Erreur lors de l'ajout de la division"
+        }
+      },
+      "editDivisionDialog": {
+        "title": "Modifier la division",
+        "inputs": {
+        "name": "Nom",
+        "type": "Type",
+        "level": "Niveau",
+        "maxLevel": "Niveau max",
+        "minBaseTeamIndex": "Indice minimum de l'équipe de base",
+        "maxBaseTeamIndex": "Indice maximum de l'équipe de base",
+        "index": "Indice"
+        },
+        "buttons": {
+        "cancel": "Annuler",
+        "add": "Soumettre les modifications"
+        },
+        "messages": {
+        "divisionAdded": "Division modifiée avec succès"
+        },
+        "errors": {
+        "errorAddingDivision": "Erreur lors de la modification de la division"
+        }
+      },
+      "deleteDivisionDialog": {
+        "title": "Supprimer la division ?",
+        "body": "Êtes-vous sûr de vouloir supprimer cette division ? Si vous confirmez, toutes les données liées à cette division seront définitivement supprimées.",
+        "buttons": {
+        "cancel": "Annuler",
+        "delete": "Supprimer"
+        }
+      }
+      }
+    },
+    "extra": {
+      "sectionTitles": {
+      "exceptions": "Exceptions",
+      "info": "Informations",
+      "roles": "Rôles"
+      },
+      "emptyStates": {
+      "noExceptions": "Aucune exception",
+      "noInfo": "Aucune information"
+      },
+      "inputs": {
+      "periodStart": "Début de la période",
+      "periodEnd": "Fin de la période",
+      "availableFields": "Champs disponibles",
+      "name": "Nom",
+      "competitionAllowed": "Compétition autorisée"
+      },
+      "inputDescriptions": {
+      "exceptions": "Définir des périodes avec plus ou moins de champs disponibles.",
+      "info": "Définir des périodes avec plus ou moins de champs disponibles."
+      },
+      "buttons": {
+      "add": "Ajouter"
+      },
+      "successMessage": "Détails de la compétition enregistrés",
+      "errorMessage": "Erreur lors de l'enregistrement des détails de la compétition"
+    },
+    "buttons": {
+      "next": "Suivant",
+      "cancel": "Annuler",
+      "back": "Retour",
+      "save": "Enregistrer",
+      "saveChanges": "Enregistrer les modifications",
+      "finish": "Terminer"
+    }
+  },
   "encounterAlerts": {
     "buttons": {
       "seeEncounter": "Voir la rencontre",
