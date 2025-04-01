@@ -1994,6 +1994,7 @@
       "print": "Print"
     },
     "info": {
+      "title": "Info",
       "basePlayers": "Base players",
       "titulars": "Titulars",
       "errors": "Errors",
