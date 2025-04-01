@@ -1628,7 +1628,13 @@
         "ranking": "Ranking",
         "enrollment": "Enrollment",
         "faq": "FAQ",
-        "settings": "Settings"
+        "settings": "Settings",
+        "encounters": "Encounters",
+        "edit": "Edit",
+        "add": "Add",
+        "teamFormation": "Team formation",
+        "encounterForm": "Encounter form",
+        "confirmEncounter": "Confirm encounter"
       },
       "auth": {
         "logIn": "Log in",

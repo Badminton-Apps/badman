@@ -1699,6 +1699,12 @@ export type I18nTranslations = {
                     "enrollment": string;
                     "faq": string;
                     "settings": string;
+                    "encounters": string;
+                    "edit": string;
+                    "add": string;
+                    "teamFormation": string;
+                    "encounterForm": string;
+                    "confirmEncounter": string;
                 };
                 "auth": {
                     "logIn": string;
