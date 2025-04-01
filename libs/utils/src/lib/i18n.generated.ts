@@ -2080,6 +2080,7 @@ export type I18nTranslations = {
                 "print": string;
             };
             "info": {
+                "title": string;
                 "basePlayers": string;
                 "titulars": string;
                 "errors": string;
