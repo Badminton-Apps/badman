@@ -635,6 +635,48 @@
       "errorMessage": "Error removing competition"
     }
   },
+  "drawDetailPage": {
+    "sections": {
+      "standings": {
+        "title": "Standings",
+        "actions": {
+          "openInToernooiNL": "Open in toernooi.nl"
+        },
+        "table": {
+          "headers": {
+            "rank": "Rank",
+            "status": "Status",
+            "name": "Name",
+            "points": "Points",
+            "played": "Played",
+            "won": "Won",
+            "lost": "Lost",
+            "drawn": "Drawn",
+            "games":"Games",
+            "setsWonLost": "Sets won / lost",
+            "pointsWonLost": "Points won / lost"
+          }
+        },
+        "noRecords": "No records found"
+      },
+      "encounters": {
+        "title": "Encounters",
+        "noRecords": "No records found",
+        "calendar": {
+          "filters": {
+            "team": "Team"
+          }
+        }
+      }
+    },
+    "actions": {
+      "syncPoints": "Sync points"
+    },
+    "messages": {
+      "pointsSynced": "Points successfully synced",
+      "errorSyncingPoints": "Error syncing points"
+    }
+  },
   "editCompetitionPage": {
     "steps": {
       "0": "General",

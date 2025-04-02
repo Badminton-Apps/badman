@@ -658,6 +658,48 @@
       "errorMessage": "Fout bij het verwijderen van de competitie"
     }
   },
+  "drawDetailPage": {
+    "sections": {
+      "standings": {
+      "title": "Standen",
+      "actions": {
+        "openInToernooiNL": "Open in toernooi.nl"
+      },
+      "table": {
+        "headers": {
+        "rank": "Rang",
+        "status": "Status",
+        "name": "Naam",
+        "points": "Punten",
+        "played": "Gespeeld",
+        "won": "Gewonnen",
+        "lost": "Verloren",
+        "drawn": "Gelijk",
+        "games": "Wedstrijden",
+        "setsWonLost": "Sets gewonnen / verloren",
+        "pointsWonLost": "Punten gewonnen / verloren"
+        }
+      },
+      "noRecords": "Geen records gevonden"
+      },
+      "encounters": {
+      "title": "Ontmoetingen",
+      "noRecords": "Geen records gevonden",
+      "calendar": {
+        "filters": {
+        "team": "Ploeg"
+        }
+      }
+      }
+    },
+    "actions": {
+      "syncPoints": "Synchroniseer punten"
+    },
+    "messages": {
+      "pointsSynced": "Punten succesvol gesynchroniseerd",
+      "errorSyncingPoints": "Fout bij het synchroniseren van punten"
+    }
+  },
   "editCompetitionPage": {
     "steps": {
       "0": "Algemeen",
