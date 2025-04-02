@@ -650,6 +650,48 @@
       "errorMessage": "Erreur lors de la suppression de la compétition"
     }
   },
+  "drawDetailPage": {
+    "sections": {
+      "standings": {
+      "title": "Classements",
+      "actions": {
+        "openInToernooiNL": "Ouvrir dans toernooi.nl"
+      },
+      "table": {
+        "headers": {
+        "rank": "Rang",
+        "status": "Statut",
+        "name": "Nom",
+        "points": "Points",
+        "played": "Joué",
+        "won": "Gagné",
+        "lost": "Perdu",
+        "drawn": "Nul",
+        "games": "Matchs",
+        "setsWonLost": "Sets gagnés / perdus",
+        "pointsWonLost": "Points gagnés / perdus"
+        }
+      },
+      "noRecords": "Aucun enregistrement trouvé"
+      },
+      "encounters": {
+      "title": "Rencontres",
+      "noRecords": "Aucun enregistrement trouvé",
+      "calendar": {
+        "filters": {
+        "team": "Équipe"
+        }
+      }
+      }
+    },
+    "actions": {
+      "syncPoints": "Synchroniser les points"
+    },
+    "messages": {
+      "pointsSynced": "Points synchronisés avec succès",
+      "errorSyncingPoints": "Erreur lors de la synchronisation des points"
+    }
+  },
 "editCompetitionPage": {
     "steps": {
       "0": "Général",
