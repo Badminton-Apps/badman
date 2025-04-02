@@ -698,6 +698,48 @@ export type I18nTranslations = {
                 "errorMessage": string;
             };
         };
+        "drawDetailPage": {
+            "sections": {
+                "standings": {
+                    "title": string;
+                    "actions": {
+                        "openInToernooiNL": string;
+                    };
+                    "table": {
+                        "headers": {
+                            "rank": string;
+                            "status": string;
+                            "name": string;
+                            "points": string;
+                            "played": string;
+                            "won": string;
+                            "lost": string;
+                            "drawn": string;
+                            "games": string;
+                            "setsWonLost": string;
+                            "pointsWonLost": string;
+                        };
+                    };
+                    "noRecords": string;
+                };
+                "encounters": {
+                    "title": string;
+                    "noRecords": string;
+                    "calendar": {
+                        "filters": {
+                            "team": string;
+                        };
+                    };
+                };
+            };
+            "actions": {
+                "syncPoints": string;
+            };
+            "messages": {
+                "pointsSynced": string;
+                "errorSyncingPoints": string;
+            };
+        };
         "editCompetitionPage": {
             "steps": {
                 "0": string;
