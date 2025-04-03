@@ -68,7 +68,7 @@ export class PlayerGenderRule extends Rule {
 
       if (double4?.[0] && double4?.[1] && double4?.[0].gender == double4?.[1].gender) {
         errors.push({
-          message: 'all.teamFormation.errors.player-genders',
+          message: 'all.v1.teamFormation.errors.player-genders',
           params: {
             game: 'double4',
             player1: {
@@ -88,7 +88,7 @@ export class PlayerGenderRule extends Rule {
       // in doubles 3 and 4 we should have a F and M player
       if (double3?.[0] && double3?.[1] && double3?.[0].gender == double3?.[1].gender) {
         errors.push({
-          message: 'all.teamFormation.errors.player-genders',
+          message: 'all.v1.teamFormation.errors.player-genders',
           params: {
             game: 'double3',
             player1: {
@@ -107,7 +107,7 @@ export class PlayerGenderRule extends Rule {
 
       if (double4?.[0] && double4?.[1] && double4?.[0].gender == double4?.[1].gender) {
         errors.push({
-          message: 'all.teamFormation.errors.player-genders',
+          message: 'all.v1.teamFormation.errors.player-genders',
           params: {
             game: 'double4',
             player1: {
@@ -139,7 +139,7 @@ export class PlayerGenderRule extends Rule {
     const wrong = uniquePlayers?.filter((p) => p?.gender != gender);
     if (wrong) {
       return wrong.map((p) => ({
-        message: 'all.teamFormation.errors.player-gender',
+        message: 'all.v1.teamFormation.errors.player-gender',
         params: {
           player: {
             id: p?.id,

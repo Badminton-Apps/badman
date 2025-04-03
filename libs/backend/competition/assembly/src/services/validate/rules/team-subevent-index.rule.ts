@@ -38,7 +38,7 @@ export class TeamSubeventIndexRule extends Rule {
         valid: false,
         errors: [
           {
-            message: 'all.teamFormation.errors.team-to-strong',
+            message: 'all.v1.teamFormation.errors.team-to-strong',
             params: {
               teamIndex: teamIndex,
               minIndex: subEvent.minBaseIndex,
