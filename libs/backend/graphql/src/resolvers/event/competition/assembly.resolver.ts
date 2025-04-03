@@ -107,6 +107,7 @@ export class AssemblyResolver {
           captainId: assembly?.captainId,
           description: assembly?.description,
           encounterId: assembly.encounterId,
+          isComplete: assembly.isComplete,
           teamId: assembly.teamId,
           playerId: user.id,
           assembly: {
