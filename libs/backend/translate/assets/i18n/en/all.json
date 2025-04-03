@@ -607,6 +607,19 @@
         "loadMoreCompetitions": "Load more competitions..."
       }
     },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "setRisersFallers": "Set risers/fallers",
+      "openCloseDate": "Open/Close date",
+      "makeOfficial": "Make official",
+      "makeUnofficial": "Make unofficial",
+      "sync": "Sync",
+      "messages": {
+        "syncSuccess": "Competition successfully synced",
+        "syncError": "Error syncing competition"
+      }
+    },
     "addCompetitionDialog": {
       "title": "Add competition",
       "inputs": {
@@ -633,6 +646,33 @@
       },
       "successMessage": "Competition successfully removed from platform",
       "errorMessage": "Error removing competition"
+    },
+    "competitionStatusDialog": {
+      "title": "Make competition {status}?",
+      "text": "Are you sure you want to make this competition {status}? This will change all the rules related to the competition and ranking.",
+      "official": "official",
+      "unofficial": "unofficial",
+      "buttons": {
+        "cancel": "Cancel",
+        "make": "Make {status}"
+      },
+      "successMessage": "Competition successfully updated",
+      "errorMessage": "Error updating competition"
+    },
+    "openCloseDateDialog": {
+      "title": "Open/Close date",
+      "form": {
+        "openDate": "Open date",
+        "closeDate": "Close date"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save"
+      },
+      "messages": {
+        "success": "Open/Close date successfully updated",
+        "error": "Error updating open/close date"
+      }
     }
   },
   "drawDetailPage": {
@@ -794,14 +834,13 @@
       },
       "successMessage": "Saved competition details",
       "errorMessage": "Error saving competition details"
-
     },
     "buttons": {
       "next": "Next",
       "cancel": "Cancel",
       "back": "Back",
       "save": "Save",
-      "saveChanges":"Save changes",
+      "saveChanges": "Save changes",
       "finish": "Finish"
     }
   },

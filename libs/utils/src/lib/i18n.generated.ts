@@ -678,6 +678,19 @@ export type I18nTranslations = {
                     "loadMoreCompetitions": string;
                 };
             };
+            "actions": {
+                "edit": string;
+                "delete": string;
+                "setRisersFallers": string;
+                "openCloseDate": string;
+                "makeOfficial": string;
+                "makeUnofficial": string;
+                "sync": string;
+                "messages": {
+                    "syncSuccess": string;
+                    "syncError": string;
+                };
+            };
             "addCompetitionDialog": {
                 "title": string;
                 "inputs": {
@@ -704,6 +717,33 @@ export type I18nTranslations = {
                 };
                 "successMessage": string;
                 "errorMessage": string;
+            };
+            "competitionStatusDialog": {
+                "title": string;
+                "text": string;
+                "official": string;
+                "unofficial": string;
+                "buttons": {
+                    "cancel": string;
+                    "make": string;
+                };
+                "successMessage": string;
+                "errorMessage": string;
+            };
+            "openCloseDateDialog": {
+                "title": string;
+                "form": {
+                    "openDate": string;
+                    "closeDate": string;
+                };
+                "buttons": {
+                    "cancel": string;
+                    "save": string;
+                };
+                "messages": {
+                    "success": string;
+                    "error": string;
+                };
             };
         };
         "drawDetailPage": {
