@@ -67,7 +67,7 @@ export class PlayerSubEventRule extends Rule {
           warnings.set(otherTeam.team.id, [
             ...(currentWrans || []),
             {
-              message: `all.entryTeamDrawer.validation.errors.player-subevent`,
+              message: `all.v1.entryTeamDrawer.validation.errors.player-subevent`,
               params: {
                 player: {
                   id: player.id,

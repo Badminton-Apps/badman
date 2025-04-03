@@ -24,7 +24,7 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             if (player?.levelExceptionRequested) {
               warnings.push({
-                message: 'all.entryTeamDrawer.validation.warnings.player-min-level',
+                message: 'all.v1.entryTeamDrawer.validation.warnings.player-min-level',
                 params: {
                   player: {
                     id: player?.id,
@@ -37,7 +37,7 @@ export class PlayerMinLevelRule extends Rule {
               });
             } else {
               errors.push({
-                message: 'all.entryTeamDrawer.validation.errors.player-min-level',
+                message: 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
                 params: {
                   player: {
                     id: player?.id,
@@ -57,7 +57,7 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             if (player?.levelExceptionRequested) {
               warnings.push({
-                message: 'all.entryTeamDrawer.validation.warnings.player-min-level',
+                message: 'all.v1.entryTeamDrawer.validation.warnings.player-min-level',
                 params: {
                   player: {
                     id: player?.id,
@@ -70,7 +70,7 @@ export class PlayerMinLevelRule extends Rule {
               });
             } else {
               errors.push({
-                message: 'all.entryTeamDrawer.validation.errors.player-min-level',
+                message: 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
                 params: {
                   player: {
                     id: player?.id,
@@ -91,7 +91,7 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             if (player?.levelExceptionRequested) {
               warnings.push({
-                message: 'all.entryTeamDrawer.validation.warnings.player-min-level',
+                message: 'all.v1.entryTeamDrawer.validation.warnings.player-min-level',
                 params: {
                   player: {
                     id: player?.id,
@@ -104,7 +104,7 @@ export class PlayerMinLevelRule extends Rule {
               });
             } else {
               errors.push({
-                message: 'all.entryTeamDrawer.validation.errors.player-min-level',
+                message: 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
                 params: {
                   player: {
                     id: player?.id,
@@ -126,8 +126,8 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             warnings.push({
               message: player.levelExceptionRequested
-                ? 'all.competition.team-enrollment.warnings.player-min-level'
-                : 'all.entryTeamDrawer.validation.errors.player-min-level',
+                ? 'all.v1.teamFormation.errors.player-min-level'
+                : 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -146,8 +146,8 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             warnings.push({
               message: player.levelExceptionRequested
-                ? 'all.competition.team-enrollment.warnings.player-min-level'
-                : 'all.entryTeamDrawer.validation.errors.player-min-level',
+                ? 'all.v1.teamFormation.errors.player-min-level'
+                : 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -167,8 +167,8 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             warnings.push({
               message: player.levelExceptionRequested
-                ? 'all.competition.team-enrollment.warnings.player-min-level'
-                : 'all.entryTeamDrawer.validation.errors.player-min-level',
+                ? 'all.v1.teamFormation.errors.player-min-level'
+                : 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
