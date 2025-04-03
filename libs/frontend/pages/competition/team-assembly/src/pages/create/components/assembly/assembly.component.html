@@ -58,7 +58,7 @@
         </div>
         <div class="errors">
           <div class="container">
-            <label>{{ 'all.teamFormation.errors.title' | translate }}</label>
+            <label>{{ 'all.v1.teamFormation.errors.title' | translate }}</label>
             <ng-container *ngTemplateOutlet="validationOverview"></ng-container>
           </div>
         </div>
@@ -618,7 +618,7 @@
       }
       @if ((this.errors?.length ?? 0) === 0 && (this.warnings?.length ?? 0) === 0) {
         <div class="no-errors">
-          {{ 'all.teamFormation.errors.none' | translate }}
+          {{ 'all.v1.teamFormation.errors.none' | translate }}
         </div>
       }
     </div>
