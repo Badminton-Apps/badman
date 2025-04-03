@@ -108,6 +108,7 @@ export class AssemblyResolver {
           description: assembly?.description,
           encounterId: assembly.encounterId,
           teamId: assembly.teamId,
+          isComplete: assembly.isComplete ?? false,
           playerId: user.id,
           assembly: {
             single1: assembly?.single1 || undefined,
@@ -130,6 +131,7 @@ export class AssemblyResolver {
           encounterId: assembly.encounterId,
           teamId: assembly.teamId,
           playerId: user.id,
+          isComplete: assembly.isComplete ?? false,
           assembly: {
             single1: assembly?.single1 || undefined,
             single2: assembly?.single2 || undefined,

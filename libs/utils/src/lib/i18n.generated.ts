@@ -1440,6 +1440,8 @@ export type I18nTranslations = {
             "location": string;
             "meetingForm": string;
             "filled": string;
+            "notStarted": string;
+            "started": string;
             "notFilled": string;
             "notSelected": string;
             "teamFormation": string;
@@ -1452,6 +1454,8 @@ export type I18nTranslations = {
                 "change": string;
                 "create": string;
                 "select": string;
+                "edit": string;
+                "continue": string;
                 "view": string;
                 "allEncounters": string;
                 "viewEncounterForm": string;
