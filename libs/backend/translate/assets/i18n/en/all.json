@@ -1451,6 +1451,8 @@
     "location": "Location",
     "meetingForm": "Meeting form",
     "filled": "Filled",
+    "notStarted": "Not started",
+    "started": "Started",
     "notFilled": "Not filled",
     "notSelected": "Not selected",
     "teamFormation": "Team formation",
@@ -1463,6 +1465,8 @@
       "change": "Change",
       "create": "Create",
       "select": "Select",
+      "edit": "Edit",
+      "continue": "Continue",
       "view": "View",
       "allEncounters": "All encounters",
       "viewEncounterForm": "View encounter form"
