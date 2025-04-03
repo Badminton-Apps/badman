@@ -670,6 +670,19 @@ export type I18nTranslations = {
                     "loadMoreCompetitions": string;
                 };
             };
+            "actions": {
+                "edit": string;
+                "delete": string;
+                "setRisersFallers": string;
+                "openCloseDate": string;
+                "makeOfficial": string;
+                "makeUnofficial": string;
+                "sync": string;
+                "messages": {
+                    "syncSuccess": string;
+                    "syncError": string;
+                };
+            };
             "addCompetitionDialog": {
                 "title": string;
                 "inputs": {
@@ -696,6 +709,75 @@ export type I18nTranslations = {
                 };
                 "successMessage": string;
                 "errorMessage": string;
+            };
+            "competitionStatusDialog": {
+                "title": string;
+                "text": string;
+                "official": string;
+                "unofficial": string;
+                "buttons": {
+                    "cancel": string;
+                    "make": string;
+                };
+                "successMessage": string;
+                "errorMessage": string;
+            };
+            "openCloseDateDialog": {
+                "title": string;
+                "form": {
+                    "openDate": string;
+                    "closeDate": string;
+                };
+                "buttons": {
+                    "cancel": string;
+                    "save": string;
+                };
+                "messages": {
+                    "success": string;
+                    "error": string;
+                };
+            };
+        };
+        "drawDetailPage": {
+            "sections": {
+                "standings": {
+                    "title": string;
+                    "actions": {
+                        "openInToernooiNL": string;
+                    };
+                    "table": {
+                        "headers": {
+                            "rank": string;
+                            "status": string;
+                            "name": string;
+                            "points": string;
+                            "played": string;
+                            "won": string;
+                            "lost": string;
+                            "drawn": string;
+                            "games": string;
+                            "setsWonLost": string;
+                            "pointsWonLost": string;
+                        };
+                    };
+                    "noRecords": string;
+                };
+                "encounters": {
+                    "title": string;
+                    "noRecords": string;
+                    "calendar": {
+                        "filters": {
+                            "team": string;
+                        };
+                    };
+                };
+            };
+            "actions": {
+                "syncPoints": string;
+            };
+            "messages": {
+                "pointsSynced": string;
+                "errorSyncingPoints": string;
             };
         };
         "editCompetitionPage": {
