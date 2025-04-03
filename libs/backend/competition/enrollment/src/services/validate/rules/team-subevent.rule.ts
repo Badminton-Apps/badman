@@ -12,7 +12,7 @@ export class TeamSubEventRule extends Rule {
       const errors = [] as EnrollmentValidationError[];
       if (!subEvent) {
         errors.push({
-          message: 'all.entryTeamDrawer.validation.errors.no-subevent',
+          message: 'all.v1.entryTeamDrawer.validation.errors.no-subevent',
         });
       }
 
