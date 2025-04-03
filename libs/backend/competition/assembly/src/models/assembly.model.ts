@@ -58,7 +58,7 @@ export class AssemblyInput {
   @Field(() => String, { nullable: true })
   description?: string;
 
-  @Field(() => Boolean, { nullable: false })
+  @Field(() => Boolean, { nullable: true })
   isComplete?: boolean;
 }
 
