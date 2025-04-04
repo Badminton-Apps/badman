@@ -1776,6 +1776,7 @@ export type I18nTranslations = {
                 "notSelected": string;
                 "teamFormation": string;
                 "teamIsFormed": string;
+                "teamNotComplete": string;
                 "noTeamFormation": string;
                 "won": string;
                 "lost": string;
