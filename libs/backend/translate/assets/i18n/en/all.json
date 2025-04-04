@@ -2918,7 +2918,7 @@
           "onlyOfficialCompetitions": "Only official competitions"
         },
         "buttons": {
-          "addCompetition": "competition",
+          "addCompetition": "Competition",
           "loadMoreCompetitions": "Load more competitions..."
         }
       },
@@ -2987,6 +2987,19 @@
         "messages": {
           "success": "Open/Close date successfully updated",
           "error": "Error updating open/close date"
+        }
+      },
+      "risersFallersDialog": {
+        "title": "Set risers/fallers",
+        "risers":"Risers",
+        "fallers":"Fallers",
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save"
+        },
+        "messages": {
+          "success": "Risers/fallers successfully updated",
+          "error": "Error updating risers/fallers"
         }
       }
     },

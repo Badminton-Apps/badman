@@ -3060,6 +3060,19 @@ export type I18nTranslations = {
                         "error": string;
                     };
                 };
+                "risersFallersDialog": {
+                    "title": string;
+                    "risers": string;
+                    "fallers": string;
+                    "buttons": {
+                        "cancel": string;
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                        "error": string;
+                    };
+                };
             };
             "drawDetailPage": {
                 "sections": {
