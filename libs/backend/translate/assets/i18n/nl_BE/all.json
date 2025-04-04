@@ -2673,7 +2673,7 @@
           "onlyOfficialCompetitions": "Enkel officiële competities"
         },
         "buttons": {
-          "addCompetition": "competitie",
+          "addCompetition": "Competitie",
           "loadMoreCompetitions": "Meer competities laden..."
         }
       },
@@ -2742,6 +2742,19 @@
         "messages": {
           "success": "Open/Sluit datum succesvol bijgewerkt",
           "error": "Fout bij het bijwerken van de open/sluit datum"
+        }
+      },
+      "risersFallersDialog": {
+        "title": "Stel stijgers/dalers in",
+        "risers": "Stijgers",
+        "fallers": "Dalers",
+        "buttons": {
+          "cancel": "Annuleren",
+          "save": "Opslaan"
+        },
+        "messages": {
+          "success": "Stijgers/dalers succesvol bijgewerkt",
+          "error": "Fout bij het bijwerken van stijgers/dalers"
         }
       }
     },
