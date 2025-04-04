@@ -1753,6 +1753,7 @@
       "notSelected": "Not selected",
       "teamFormation": "Team formation",
       "teamIsFormed": "Team is formed",
+      "teamNotComplete": "Team not complete",
       "noTeamFormation": "No team formation",
       "won": "Won",
       "lost": "Lost",
