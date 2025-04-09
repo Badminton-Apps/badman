@@ -1661,11 +1661,11 @@
       "pointsUpdate": "Punten update"
     },
     "teamFormation": {
-      "title": "Teamopstelling",
-      "notFound": "Geen teamopstelling gevonden",
+      "title": "Ploegopstelling",
+      "notFound": "Geen ploegopstelling gevonden",
       "messages": {
-        "saved": "Teamopstelling opgeslagen",
-        "downloaded": "Teamopstelling gedownload"
+        "saved": "Ploegopstelling opgeslagen",
+        "downloaded": "Ploegopstelling gedownload"
       },
       "buttons": {
         "cancel": "Annuleren",
@@ -3011,6 +3011,62 @@
         "errorCreatingGame": "Er is een fout opgetreden bij het aanmaken van de wedstrijd",
         "errorUpdatingGame": "Er is een fout opgetreden bij het bijwerken van de wedstrijd",
         "encounterNotUpdated": "Ontmoeting niet bijgewerkt"
+      }
+    },
+    "settings": {
+      "title": "Instellingen",
+      "languages": {
+        "title": "Taal",
+        "options": {
+          "en": "English",
+          "nl_BE": "Nederlands"
+        }
+      },
+      "notifications": {
+        "title": "Notificaties",
+        "encounterChangeNewNotification": {
+          "title": "Nieuwe verplaatsingsaanvraag",
+          "description": "Ontvang een melding bij een nieuwe verplaatsingsaanvraag."
+        },
+        "encounterChangeFinishedNotification": {
+          "title": "Verplaatsing afgewerkt",
+          "description": "Ontvang een melding wanneer een verplaatsing is voltooid."
+        },
+        "encounterChangeConfirmationNotification": {
+          "title": "Bevestiging verplaatsingsaanvraag",
+          "description": "Ontvang een melding wanneer een verplaatsing wordt bevestigd."
+        },
+        "encounterNotEnteredNotification": {
+          "title": "Ontmoeting is nog niet ingevuld",
+          "description": "Ontvang een melding wanneer een ontmoeting niet ingevuld is."
+        },
+        "encounterNotAcceptedNotification": {
+          "title": "Ontmoeting is nog niet geaccepteerd",
+          "description": "Ontvang een melding wanneer een ontmoeting nog niet geaccepteerd is."
+        },
+        "syncSuccessNotification": {
+          "title": "Synchronisatie succesvol",
+          "description": "Ontvang een melding wanneer de synchronisatie succesvol is afgerond."
+        },
+        "syncFailedNotification": {
+          "title": "Synchronisatie mislukt",
+          "description": "Ontvang een melding wanneer de synchronisatie mislukt is."
+        },
+        "clubEnrollmentNotification": {
+          "title": "Team inschrijving",
+          "description": "Ontvang een melding wanneer een team zich inschrijft."
+        },
+        "types": {
+          "email": "Email",
+          "push": "Push"
+        }
+      },
+      "messages": {
+        "success": "Notificaties succesvol bijgewerkt",
+        "error": "Fout bij het bijwerken van notificaties"
+      },
+      "buttons": {
+        "save": "Opslaan"
       }
     }
   }
