@@ -2975,8 +2975,8 @@
       },
       "risersFallersDialog": {
         "title": "Set risers/fallers",
-        "risers":"Risers",
-        "fallers":"Fallers",
+        "risers": "Risers",
+        "fallers": "Fallers",
         "buttons": {
           "cancel": "Cancel",
           "save": "Save"
@@ -3240,6 +3240,62 @@
         "errorCreatingGame": "Error creating game",
         "errorUpdatingGame": "Error updating game",
         "encounterNotUpdated": "Error updating encounter"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "languages": {
+        "title": "Language",
+        "options": {
+          "en": "English",
+          "nl_BE": "Dutch"
+        }
+      },
+      "notifications": {
+        "title": "Notifications",
+        "encounterChangeNewNotification": {
+          "title": "New rescheduling request",
+          "description": "Receive a notification for a new rescheduling request."
+        },
+        "encounterChangeFinishedNotification": {
+          "title": "Rescheduling completed",
+          "description": "Receive a notification when a rescheduling is completed."
+        },
+        "encounterChangeConfirmationNotification": {
+          "title": "Rescheduling confirmation",
+          "description": "Receive a notification when a rescheduling is confirmed."
+        },
+        "encounterNotEnteredNotification": {
+          "title": "Encounter not yet entered",
+          "description": "Receive a notification when an encounter has not been entered."
+        },
+        "encounterNotAcceptedNotification": {
+          "title": "Encounter not yet accepted",
+          "description": "Receive a notification when an encounter has not been accepted yet."
+        },
+        "syncSuccessNotification": {
+          "title": "Synchronization successful",
+          "description": "Receive a notification when synchronization is successfully completed."
+        },
+        "syncFailedNotification": {
+          "title": "Synchronization failed",
+          "description": "Receive a notification when synchronization fails."
+        },
+        "clubEnrollmentNotification": {
+          "title": "Team registration",
+          "description": "Receive a notification when a team registers."
+        },
+        "types": {
+          "email": "Email",
+          "push": "Push"
+        }
+      },
+      "messages": {
+        "success": "Notifications successfully updated",
+        "error": "Error while updating notifications"
+      },
+      "buttons": {
+        "save": "Save"
       }
     }
   }
