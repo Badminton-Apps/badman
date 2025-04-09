@@ -3313,6 +3313,62 @@ export type I18nTranslations = {
                     "encounterNotUpdated": string;
                 };
             };
+            "settings": {
+                "title": string;
+                "languages": {
+                    "title": string;
+                    "options": {
+                        "en": string;
+                        "nl_BE": string;
+                    };
+                };
+                "notifications": {
+                    "title": string;
+                    "encounterChangeNewNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "encounterChangeFinishedNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "encounterChangeConfirmationNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "encounterNotEnteredNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "encounterNotAcceptedNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "syncSuccessNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "syncFailedNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "clubEnrollmentNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "types": {
+                        "email": string;
+                        "push": string;
+                    };
+                };
+                "messages": {
+                    "success": string;
+                    "error": string;
+                };
+                "buttons": {
+                    "save": string;
+                };
+            };
         };
         "confirmEncounterPage": {
             "title": string;
