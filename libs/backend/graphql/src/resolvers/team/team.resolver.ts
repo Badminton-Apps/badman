@@ -17,10 +17,12 @@ import {
 } from '@badman/backend-database';
 import {
   IsUUID,
+  SubEventTypeEnum,
   TeamMembershipType,
   UseForTeamName,
   getIndexFromPlayers,
   getLetterForRegion,
+  sortTeams,
 } from '@badman/utils';
 import {
   BadRequestException,
@@ -157,7 +159,12 @@ export class TeamsResolver {
   }
 
   @Mutation(() => Team)
-  async createTeam(@Args('data') newTeamData: TeamNewInput, @User() user: Player): Promise<Team> {
+  async createTeam(
+    @Args('data') newTeamData: TeamNewInput,
+    @Args('nationalCountsAsMixed', { type: () => Boolean })
+    nationalCountsAsMixed: boolean,
+    @User() user: Player,
+  ): Promise<Team> {
     const transaction = await this._sequelize.transaction();
     try {
       const dbClub = await Club.findByPk(newTeamData.clubId, {
@@ -173,11 +180,18 @@ export class TeamsResolver {
       }
 
       if (!newTeamData.teamNumber) {
+        const types = [newTeamData.type];
+        if (nationalCountsAsMixed && newTeamData.type === SubEventTypeEnum.MX) {
+          types.push(SubEventTypeEnum.NATIONAL);
+        }
+
         // Find the highst active team number for the club
         const highestNumber = (await Team.max('teamNumber', {
           where: {
             clubId: dbClub.id,
-            type: newTeamData.type,
+            type: {
+              [Op.or]: types,
+            },
             season: newTeamData.season,
           },
         })) as number;
@@ -396,13 +410,16 @@ export class TeamsResolver {
       type: () => [TeamNewInput],
     })
     newTeamData: TeamNewInput[],
+    @Args('nationalCountsAsMixed', { type: () => Boolean })
+    nationalCountsAsMixed: boolean,
     @User() user: Player,
   ): Promise<Team[]> {
     const results: Team[] = [];
 
-    for (const team of newTeamData) {
+    // we need to sort the teams to make sure we create the teams in the right order
+    for (const team of newTeamData.sort(sortTeams)) {
       this.logger.debug(`Creating team ${team.name}`);
-      const created = await this.createTeam(team, user);
+      const created = await this.createTeam(team, nationalCountsAsMixed, user);
       results.push(created);
     }
 

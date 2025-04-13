@@ -8,7 +8,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { HasClaimComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -23,9 +22,18 @@ import {
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
-import { delay, forkJoin, lastValueFrom, of, switchMap } from 'rxjs';
+import { forkJoin, lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { CLUB, COMMENTS, EMAIL, LOCATIONS, SEASON, TEAMS, TRANSFERS_LOANS } from '../../forms';
+import {
+  CLUB,
+  COMMENTS,
+  EMAIL,
+  LOCATIONS,
+  NATIONAL_COUNTS_AS_MIXED,
+  SEASON,
+  TEAMS,
+  TRANSFERS_LOANS,
+} from '../../forms';
 import {
   ClubStepComponent,
   CommentsStepComponent,
@@ -90,6 +98,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
 
   clubControl = new FormControl(undefined, [Validators.required]);
   emailControl = new FormControl(undefined, [Validators.required]);
+  nationalCountsAsMixedControl = new FormControl(true, [Validators.required]);
 
   locationControl = new FormArray<LocationForm>([], [Validators.required]);
 
@@ -137,6 +146,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     [TEAMS]: this.teamControl,
 
     [COMMENTS]: this.commentsControl,
+    [NATIONAL_COUNTS_AS_MIXED]: this.nationalCountsAsMixedControl,
   });
 
   allLoaded = this.dataService.state.allLoaded;
@@ -523,13 +533,14 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     return lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation CreateTeams($teams: [TeamNewInput!]!) {
-            createTeams(data: $teams) {
+          mutation CreateTeams($teams: [TeamNewInput!]!, $nationalCountsAsMixed: Boolean!) {
+            createTeams(data: $teams, nationalCountsAsMixed: $nationalCountsAsMixed) {
               id
             }
           }
         `,
         variables: {
+          nationalCountsAsMixed: this.formGroup.get(NATIONAL_COUNTS_AS_MIXED)?.value,
           teams: teamsInput,
         },
       }),
