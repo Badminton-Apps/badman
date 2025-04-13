@@ -1,7 +1,17 @@
 export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandingType>) => {
-  const aScore = (a.won ?? 0) - (a.lost ?? 0) - (a.tied ?? 0);
-  const bScore = (b.won ?? 0) - (b.lost ?? 0) - (b.tied ?? 0);
-  return bScore - aScore;
+  // Based on C320 - Article 31
+
+  const wonA = a.won ?? 0;
+  const wonB = b.won ?? 0;
+
+  if (wonA !== wonB) {
+    return wonB - wonA; // higher number of wins comes first
+  }
+
+  const tiedA = a.tied ?? 0;
+  const tiedB = b.tied ?? 0;
+
+  return tiedB - tiedA; // higher number of ties comes next
 };
 
 type SortStandingType = {
