@@ -32,7 +32,7 @@
         <li>Base: {{ validation()?.baseIndex }}</li>
       </ul>
 
-      @for (exception of levelExceptions(); track exception) {
+      @for (exception of levelExceptions(); track $index) {
         <div class="exception">
           <button mat-raised-button color="primary" (click)="requestLevelException(exception.id)">
             {{
