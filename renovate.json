@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "monorepo:nrwl"],
+  "extends": ["config:recommended", "monorepo:nx"],
   "semanticCommits": "enabled",
   "dependencyDashboardApproval": true,
   "rebaseWhen": "auto",
@@ -8,19 +8,19 @@
   "labels": ["dependencies"],
   "packageRules": [
     {
-      "depTypeList": ["devDependencies"],
+      "matchDepTypes": ["devDependencies"],
       "automerge": true
     },
     {
-      "updateTypes": ["major"],
+      "matchUpdateTypes": ["major"],
       "labels": ["major-update", "dependencies"]
     },
     {
-      "updateTypes": ["minor"],
+      "matchUpdateTypes": ["minor"],
       "labels": ["minor-update", "dependencies"]
     },
     {
-      "updateTypes": ["patch"],
+      "matchUpdateTypes": ["patch"],
       "labels": ["patch-update", "dependencies"]
     },
     {
@@ -35,17 +35,17 @@
       ]
     },
     {
-      "extends": "monorepo:angular",
+      "extends": ["monorepo:angular"],
       "matchPackageNames": ["ng-packagr"]
     },
     {
       "groupName": "logtail monorepo",
-      "matchPackagePrefixes": ["@logtail"]
+      "matchPackageNames": ["@logtail{/,}**"]
     },
     {
       "groupName": "Own packages",
-      "matchPackagePrefixes": ["@badman"],
-      "enabled": false
-   }
+      "enabled": false,
+      "matchPackageNames": ["@badman{/,}**"]
+    }
   ]
 }
