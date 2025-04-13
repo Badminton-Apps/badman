@@ -266,21 +266,23 @@ export class TeamsStepComponent {
   private setTeamnumbers() {
     const club = this.club();
     if (!club) return;
+
     for (const type of this.eventTypes) {
+      let offset = 0;
+      if (type == SubEventTypeEnum.MX && this.nationalCountsAsMixed().value) {
+        const nationalTeams = this.teams().get(SubEventTypeEnum.NATIONAL) as FormArray<TeamForm>;
+        offset = nationalTeams?.value.length ?? 0;
+      }
+
       const teams = this.teams().get(type) as FormArray<TeamForm>;
       if (!teams) continue;
 
-      const start =
-        type == SubEventTypeEnum.MX && this.nationalCountsAsMixed().value
-          ? ((this.teams().get(SubEventTypeEnum.NATIONAL) as FormArray<TeamForm>)?.length ?? 0)
-          : 0;
-
-      for (let i = start; i < teams.length; i++) {
+      for (let i = 0; i < teams.length; i++) {
         const team = teams.at(i)?.get('team') as FormControl<Team>;
         if (!team) continue;
         if (!team.value) continue;
 
-        team.value.teamNumber = i + 1;
+        team.value.teamNumber = i + offset + 1;
         team.value.name = this.getTeamName(team.value, club);
       }
     }
