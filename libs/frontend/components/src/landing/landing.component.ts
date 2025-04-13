@@ -75,7 +75,6 @@ export class LandingComponent implements OnInit {
         });
       },
       {
-        // allowSignalWrites: true,
         injector: this.injector,
       },
     );
