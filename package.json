@@ -74,9 +74,9 @@
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/terminus": "^10.3.0",
     "@nestjs/websockets": "^10.4.15",
-    "@ng-maps/core": "^7.0.0",
-    "@ng-maps/google": "^7.0.0",
-    "@ng-maps/places": "^7.0.0",
+    "@ng-maps/core": "^8.0.0",
+    "@ng-maps/google": "^8.0.0",
+    "@ng-maps/places": "^8.0.0",
     "@ng-matero/extensions": "~19.0.3",
     "@ng-matero/extensions-moment-adapter": "^19.1.0",
     "@ngx-translate/core": "^16.0.4",
@@ -153,7 +153,7 @@
     "web-vitals": "^4.2.4",
     "winston": "^3.17.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
-    "xng-breadcrumb": "^12.0.0",
+    "xng-breadcrumb": "^13.0.0",
     "zone.js": "0.15.0"
   },
   "devDependencies": {
@@ -230,10 +230,10 @@
     "node-adodb": "5.0.3"
   },
   "volta": {
-    "node": "22.14.0"
+    "node": "20.19.0"
   },
   "engines": {
-    "node": "22.14.0"
+    "node": "20.19.0"
   },
   "browserslist": [
     "defaults"
