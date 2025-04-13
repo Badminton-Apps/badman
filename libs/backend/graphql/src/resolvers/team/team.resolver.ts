@@ -394,10 +394,19 @@ export class TeamsResolver {
   async createTeams(
     @Args('data', {
       type: () => [TeamNewInput],
-    }) newTeamData: TeamNewInput[],
+    })
+    newTeamData: TeamNewInput[],
     @User() user: Player,
   ): Promise<Team[]> {
-    return await Promise.all(newTeamData.map((team) => this.createTeam(team, user)));
+    const results: Team[] = [];
+
+    for (const team of newTeamData) {
+      this.logger.debug(`Creating team ${team.name}`);
+      const created = await this.createTeam(team, user);
+      results.push(created);
+    }
+
+    return results;
   }
 
   @Mutation(() => Team)
