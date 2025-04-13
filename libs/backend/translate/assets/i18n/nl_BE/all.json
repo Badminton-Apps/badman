@@ -352,6 +352,7 @@
         "courts-hint": "Wijzig het aantal beschikbare velden",
         "title": "Locaties"
       },
+      "mixed-national-teams": "De nationale ploegen worden meegeteld bij de nummering van de gemengde ploegen. (Voorbeeld, je hebt 3 ploegen: Aangevinkt: Nationale 1, Nationale 2, Ploeg 3G’. Uitgevinkt: ‘Nationale 1, Nationale 2, Ploeg 1G’)",
       "open": "Open",
       "play-days": "Speeldagen",
       "players": {

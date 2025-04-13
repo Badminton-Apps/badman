@@ -6,7 +6,7 @@
     "@angular/core": "^19.0.5",
     "@ngx-translate/core": "^16.0.4",
     "rxjs": "~7.8.1",
-    "@angular/forms": "19.0.5",
+    "@angular/forms": "19.1.5",
     "@angular/router": "^19.0.5",
     "apollo-angular": "^8.0.0",
     "moment": "^2.30.1",
@@ -21,15 +21,15 @@
     "@badman/frontend-seo": "*",
     "@badman/frontend-html-injects": "*",
     "@badman/frontend-translation": "*",
-    "@angular/material": "19.0.4",
+    "@angular/material": "19.1.3",
     "@ng-matero/extensions": "~19.0.1",
     "ngxtension": "^4.2.0",
     "@nestjs/config": "^3.2.3",
     "graphql": "16.10.0",
-    "@angular/cdk": "19.0.4",
+    "@angular/cdk": "19.1.3",
     "ngx-socket-io": "~4.8.1",
-    "@angular/service-worker": "19.0.5",
-    "xng-breadcrumb": "^12.0.0"
+    "@angular/service-worker": "19.1.5",
+    "xng-breadcrumb": "^13.0.0"
   },
   "dependencies": {},
   "sideEffects": false
