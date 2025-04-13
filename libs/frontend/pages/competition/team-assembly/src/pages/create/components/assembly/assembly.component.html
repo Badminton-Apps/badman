@@ -33,7 +33,7 @@
           <div class="container">
             <label>{{ 'all.competition.team-assembly.players.team' | translate }}</label>
             <div class="index">Index: {{ this.base.index }}</div>
-            @for (player of this.base.players; track player) {
+            @for (player of this.base.players; track player.id) {
               <div>
                 {{ player.fullName }}
                 @if (isException(player?.id)) {
@@ -284,7 +284,7 @@
               [cdkDropListSortingDisabled]="true"
             >
               <label>{{ 'all.competition.team-assembly.players.title' | translate }}</label>
-              @for (item of this.players.REGULAR; track item) {
+              @for (item of this.players.REGULAR; track item.id) {
                 <badman-assembly-player
                   class="drag-item"
                   [player]="item"
@@ -309,7 +309,7 @@
                   }
                 </div>
                 <div [ngClass]="{ hidden: !showBackup }" class="backup">
-                  @for (item of this.players.BACKUP; track item) {
+                  @for (item of this.players.BACKUP; track item.id) {
                     <badman-assembly-player
                       class="drag-item"
                       [player]="item"
