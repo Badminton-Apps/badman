@@ -417,7 +417,20 @@ export class TeamsResolver {
     const results: Team[] = [];
 
     // we need to sort the teams to make sure we create the teams in the right order
-    for (const team of newTeamData.sort(sortTeams)) {
+    for (const team of newTeamData.sort((a, b) => {
+      // nationals should be before mixed
+      if (a.type === SubEventTypeEnum.MX && b.type === SubEventTypeEnum.NATIONAL) {
+        return 1;
+      }
+      if (a.type === SubEventTypeEnum.NATIONAL && b.type === SubEventTypeEnum.MX) {
+        return -1;
+      }
+
+      if (a.type === b.type) {
+        return (a.teamNumber ?? 0) - (b.teamNumber ?? 0);
+      }
+      return (a.type ?? a.name ?? '').localeCompare(b.type ?? b.name ?? '');
+    })) {
       this.logger.debug(`Creating team ${team.name}`);
       const created = await this.createTeam(team, nationalCountsAsMixed, user);
       results.push(created);
