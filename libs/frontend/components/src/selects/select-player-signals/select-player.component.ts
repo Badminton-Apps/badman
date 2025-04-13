@@ -76,10 +76,7 @@ export class SelectPlayerSignalsComponent {
         if (!this.player() && this.possiblePlayers().length > 0) {
           this.player.set(this.possiblePlayers()[0].id);
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 }
