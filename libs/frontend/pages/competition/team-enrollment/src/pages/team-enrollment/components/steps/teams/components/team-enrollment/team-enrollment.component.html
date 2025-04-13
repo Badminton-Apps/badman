@@ -14,7 +14,7 @@
       <mat-form-field>
         <mat-label>Select</mat-label>
         <mat-select [formControl]="subEvent()">
-          @for (subEvent of subEventsForTeam(); track subEvent) {
+          @for (subEvent of subEventsForTeam(); track subEvent.id) {
             <mat-option [value]="subEvent.id">
               {{ subEvent.name }}
             </mat-option>
@@ -46,7 +46,7 @@
       <div class="validation-overview">
         @if ((validation()?.errors?.length ?? 0) > 0) {
           <ul class="error-list">
-            @for (error of validation()?.errors; track error) {
+            @for (error of validation()?.errors; track $index) {
               <li>
                 <badman-enrollment-message [validation]="error"></badman-enrollment-message>
               </li>
@@ -55,7 +55,7 @@
         }
         @if ((validation()?.warnings?.length ?? 0) > 0) {
           <ul class="warning-list">
-            @for (warning of validation()?.warnings; track warning) {
+            @for (warning of validation()?.warnings; track $index) {
               <li>
                 <badman-enrollment-message [validation]="warning"></badman-enrollment-message>
 
