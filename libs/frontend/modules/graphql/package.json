@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-graphql",
-  "version": "6.176.0",
+  "version": "6.177.0",
   "peerDependencies": {
     "@angular/common": "^19.0.5",
     "@angular/core": "^19.0.5",
