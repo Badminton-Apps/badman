@@ -352,6 +352,7 @@
         "courts-hint": "Change the number of available fields",
         "title": "Locations"
       },
+      "mixed-national-teams": "National teams are counted in the numbering of mixed teams. (Example, you have 3 teams: Checked: 'National 1, National 2, Team 3G'. Unchecked: 'National 1, National 2, Team 1G')",
       "open": "Open",
       "play-days": "Game days",
       "players": {
