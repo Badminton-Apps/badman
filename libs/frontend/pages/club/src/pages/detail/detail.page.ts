@@ -120,10 +120,7 @@ export class DetailPageComponent {
             this.currentTab.set(parseInt(queryParam, 10));
           }
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 

@@ -4,6 +4,8 @@
     <p class="error">{{ 'all.competition.team-enrollment.example-error' | translate }}</p>
     <p class="warning">{{ 'all.competition.team-enrollment.example-warning' | translate }}</p>
   </div>
+  <!-- A checkbox to mark if the national teams count as mixed teams for numbering -->
+
   @for (type of eventTypes; track type) {
     <div class="type">
       <h3>{{ 'all.team.types.long.' + type | translate }}</h3>
@@ -51,7 +53,7 @@
           mat-button
           [mat-dialog-close]="{
             id: data.team.id,
-            newNumber: newValue.value
+            newNumber: newValue.value,
           }"
           cdkFocusInitial
         >
