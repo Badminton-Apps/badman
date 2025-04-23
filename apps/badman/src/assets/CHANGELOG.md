@@ -1,3 +1,14 @@
+## 6.177.1 (2025-04-23)
+
+### 🩹 Fixes
+
+- update track variable in loops for better readability ([bb018be28](https://github.com/Badminton-Apps/badman/commit/bb018be28))
+- frontend optimalisations ([dacfac716](https://github.com/Badminton-Apps/badman/commit/dacfac716))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.177.0 (2025-04-13)
 
 ### 🚀 Features
