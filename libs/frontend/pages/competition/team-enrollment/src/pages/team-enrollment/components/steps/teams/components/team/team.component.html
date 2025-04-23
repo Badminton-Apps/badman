@@ -77,7 +77,7 @@
             <mat-form-field class="location">
               <mat-label>{{ 'all.input.location' | translate }}</mat-label>
               <mat-select [required]="true" [(value)]="team().value.prefferedLocationId">
-                @for (location of locations(); track $index) {
+                @for (location of locations(); track location.id) {
                   <mat-option [value]="location?.id">{{ location?.name }}</mat-option>
                 }
               </mat-select>
@@ -133,7 +133,7 @@
   @if (expanded.regular) {
     <div>
       <div class="player-list">
-        @for (player of this.team().value.players; track player) {
+        @for (player of this.team().value.players; track player.id) {
           <div class="player">
             <div class="name">
               @if (loans().indexOf(player.id) > -1) {

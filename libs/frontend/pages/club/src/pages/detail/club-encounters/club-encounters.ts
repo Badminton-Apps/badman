@@ -16,6 +16,7 @@ import {
   openRequestFilter,
   validationFilter,
 } from './club-encounters.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'badman-club-encounters',
@@ -121,7 +122,10 @@ export class ClubEncountersComponent {
     }
 
     // translate all tooltips and join them with a \n\r
-    const tooltips = tooltip.map((t) => this.translate.instant(t)).join('\n\r\n\r');
+    const tooltips = tooltip
+      .filter((t) => (t || '') !== '')
+      .map((t) => this.translate.instant(t))
+      .join('\n\r\n\r');
 
     return {
       icon,

@@ -120,7 +120,7 @@
                     @if (team.entry; as entry) {
                       index: {{ entry.meta?.competition?.teamIndex }}
                       <ul>
-                        @for (player of entry.meta?.competition?.players; track player) {
+                        @for (player of entry.meta?.competition?.players; track player.id) {
                           <li>
                             {{ player?.player?.fullName }} ({{ player?.single }} -
                             {{ player?.double }} - {{ player?.mix }})

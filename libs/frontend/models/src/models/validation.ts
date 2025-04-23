@@ -24,4 +24,5 @@ export type TeamValidationResult = {
 export type ValidationMessage<T = { [key: string]: unknown }> = {
   params: T;
   message: string;
+  id: string
 };
