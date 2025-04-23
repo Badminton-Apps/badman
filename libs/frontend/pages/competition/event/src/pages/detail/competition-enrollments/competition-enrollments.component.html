@@ -108,7 +108,7 @@
                 <mat-divider />
                 <badman-block-content>
                   <mat-list role="list">
-                    @for (player of entry?.meta?.competition?.players ?? []; track player) {
+                    @for (player of entry?.meta?.competition?.players ?? []; track player.id) {
                       <mat-list-item role="listitem">
                         <span matListItemTitle>{{ player.player.fullName }}</span>
                         <span matListItemLine

@@ -6,7 +6,7 @@
           <div class="container" (ngxResize)="onResized($event)">
             <label>{{ 'all.competition.team-assembly.players.base' | translate }}</label>
             <div class="index">Index: {{ this.titulars.index }}</div>
-            @for (player of this.titulars.players; track player) {
+            @for (player of this.titulars.players; track player.id) {
               <div>
                 {{ player.fullName }}
                 @if (isException(player?.id)) {

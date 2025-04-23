@@ -37,6 +37,7 @@ import { Op } from 'sequelize';
 import { PartialType, PickType } from '@nestjs/graphql';
 import { PlayerClubRule } from './rules/player-club.rule';
 import { TeamBaseGenderRule } from './rules/team-base-gender.rule';
+import { Md5 } from 'ts-md5';
 
 @Injectable()
 export class EnrollmentValidationService {
@@ -269,13 +270,25 @@ export class EnrollmentValidationService {
           ?.filter((e) => !!e) ?? [];
       const valid = ruleResults?.every((r) => r?.valid);
 
-      const uniqueErrors = errors.filter((error, index, self) => {
-        return index === self.findIndex((e) => JSON.stringify(e) === JSON.stringify(error));
-      }) as EnrollmentValidationError[];
+      const uniqueErrors = errors
+        .filter((error, index, self) => {
+          return index === self.findIndex((e) => JSON.stringify(e) === JSON.stringify(error));
+        })
+        ?.map((r) => ({
+          ...r,
+          // has of the error as an id
+          id: Md5.hashStr(JSON.stringify(r)),
+        })) as EnrollmentValidationError[];
 
-      const uniqueWarnings = warnings.filter((warning, index, self) => {
-        return index === self.findIndex((w) => JSON.stringify(w) === JSON.stringify(warning));
-      }) as EnrollmentValidationError[];
+      const uniqueWarnings = warnings
+        .filter((warning, index, self) => {
+          return index === self.findIndex((w) => JSON.stringify(w) === JSON.stringify(warning));
+        })
+        ?.map((r) => ({
+          ...r,
+          // has of the error as an id
+          id: Md5.hashStr(JSON.stringify(r)),
+        })) as EnrollmentValidationError[];
 
       teams.push({
         id: team.team?.id,
