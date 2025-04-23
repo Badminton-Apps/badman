@@ -32,7 +32,7 @@
         <li>Base: {{ validation()?.baseIndex }}</li>
       </ul>
 
-      @for (exception of levelExceptions(); track $index) {
+      @for (exception of levelExceptions(); track exception) {
         <div class="exception">
           <button mat-raised-button color="primary" (click)="requestLevelException(exception.id)">
             {{
@@ -46,7 +46,7 @@
       <div class="validation-overview">
         @if ((validation()?.errors?.length ?? 0) > 0) {
           <ul class="error-list">
-            @for (error of validation()?.errors; track $index) {
+            @for (error of validation()?.errors; track error ) {
               <li>
                 <badman-enrollment-message [validation]="error"></badman-enrollment-message>
               </li>
@@ -55,7 +55,7 @@
         }
         @if ((validation()?.warnings?.length ?? 0) > 0) {
           <ul class="warning-list">
-            @for (warning of validation()?.warnings; track $index) {
+            @for (warning of validation()?.warnings; track warning) {
               <li>
                 <badman-enrollment-message [validation]="warning"></badman-enrollment-message>
 
