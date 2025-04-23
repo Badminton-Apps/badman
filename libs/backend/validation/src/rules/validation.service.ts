@@ -146,24 +146,10 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
 
     const errors = results
       ?.map((r) => r.errors)
-      ?.map((r) => ({
-        ...r?.map((e) => ({
-          ...e,
-          // has of the error as an id
-          id: Md5.hashStr(JSON.stringify(e)),
-        })),
-      }))
       ?.flat(1)
       ?.filter((e) => !!e) as V[];
     const warnings = results
       ?.map((r) => r.warnings)
-      ?.map((r) => ({
-        ...r?.map((e) => ({
-          ...e,
-          // has of the error as an id
-          id: Md5.hashStr(JSON.stringify(e)),
-        })),
-      }))
       ?.flat(1)
       ?.filter((e) => !!e) as V[];
 
