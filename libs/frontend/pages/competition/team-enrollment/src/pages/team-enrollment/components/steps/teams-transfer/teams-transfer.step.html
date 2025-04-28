@@ -3,14 +3,6 @@
     {{ 'all.competition.team-enrollment.transfer.transfer-teams-description' | translate }}
   </div>
 
-  <mat-checkbox
-    [formControl]="nationalCountsAsMixed()"
-    class="mixed-national-teams"
-    [attr.data-anchor]="'mixed-national-teams'"
-  >
-    {{ 'all.competition.team-enrollment.mixed-national-teams' | translate }}
-  </mat-checkbox>
-
   <div class="all">
     <button mat-button (click)="selectAll()">{{ 'all.button.all' | translate }}</button>
     <button mat-button (click)="deselectAll()">
