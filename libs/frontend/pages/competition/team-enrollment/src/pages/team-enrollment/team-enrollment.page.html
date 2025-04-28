@@ -4,7 +4,7 @@
 </h1>
 @if (this.formGroup.value !== null) {
   <mat-vertical-stepper [linear]="true">
-    <mat-step>
+    <mat-step completed="false">
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-club' | translate
       }}</ng-template>
@@ -12,7 +12,7 @@
       <button
         mat-raised-button
         color="primary"
-        matStepperNext
+        (click)="this.nextStep()"
         [disabled]="!allLoaded()"
         [class.spinner]="!allLoaded()"
       >
@@ -20,7 +20,7 @@
       </button>
     </mat-step>
 
-    <mat-step>
+    <mat-step completed="false">
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-location' | translate
       }}</ng-template>
@@ -30,7 +30,7 @@
         @if (hadEntries()) {
           <button
             mat-raised-button
-            matStepperNext
+            (click)="this.nextStep()"
             color="primary"
             [disabled]="!locationControl.valid || this.saving"
           >
@@ -39,7 +39,7 @@
         } @else {
           <button
             mat-stroked-button
-            matStepperNext
+            (click)="this.nextStep()"
             [disabled]="!locationControl.valid || this.saving"
           >
             {{ 'all.button.next' | translate }}
@@ -65,7 +65,7 @@
       </div>
     </mat-step>
 
-    <mat-step>
+    <mat-step completed="false">
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.transfer.transfers-players' | translate
       }}</ng-template>
@@ -75,7 +75,7 @@
         @if (hadEntries()) {
           <button
             mat-raised-button
-            matStepperNext
+            (click)="this.nextStep()"
             color="primary"
             [disabled]="this.saving"
             [class.spinner]="this.saving"
@@ -85,7 +85,7 @@
         } @else {
           <button
             mat-stroked-button
-            matStepperNext
+            (click)="this.nextStep()"
             [disabled]="this.saving"
             [class.spinner]="this.saving"
           >
@@ -112,7 +112,7 @@
       </div>
     </mat-step>
 
-    <mat-step>
+    <mat-step completed="false">
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.transfer.transfer-teams' | translate
       }}</ng-template>
@@ -123,7 +123,7 @@
         <button
           mat-raised-button
           color="primary"
-          matStepperNext
+          (click)="this.nextStep()"
           [disabled]="this.saving"
           [class.spinner]="this.saving"
         >
@@ -132,7 +132,7 @@
       </div>
     </mat-step>
 
-    <mat-step>
+    <mat-step completed="false">
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-teams' | translate
       }}</ng-template>
@@ -144,7 +144,7 @@
           <button
             mat-raised-button
             color="primary"
-            matStepperNext
+            (click)="this.nextStep()"
             [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
             [class.spinner]="this.saving"
           >
@@ -154,7 +154,7 @@
           <button
             mat-stroked-button
             color="primary"
-            matStepperNext
+            (click)="this.nextStep()"
             [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
             [class.spinner]="this.saving"
           >
@@ -180,7 +180,7 @@
         </div>
       </div>
     </mat-step>
-    <mat-step>
+    <mat-step completed="false">
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.comments.title' | translate
       }}</ng-template>

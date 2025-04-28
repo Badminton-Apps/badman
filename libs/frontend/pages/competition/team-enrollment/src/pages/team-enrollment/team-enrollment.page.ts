@@ -389,7 +389,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         panelClass: 'success',
       });
 
-      this.vert_stepper().next();
+      this.nextStep()
     } catch (error) {
       this.snackBar.open(
         this.translate.instant('all.competition.team-enrollment.saved-failed'),
@@ -445,6 +445,15 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     } finally {
       this.saving = false;
     }
+  }
+
+  nextStep() {
+    const selectedStep = this.vert_stepper().selected;
+    if (selectedStep) {
+      selectedStep.completed = true;
+    }
+
+    this.vert_stepper().next();
   }
 
   private async saveTeams() {
