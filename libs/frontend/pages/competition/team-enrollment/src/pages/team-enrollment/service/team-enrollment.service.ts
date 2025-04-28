@@ -30,6 +30,8 @@ import { loadLocations } from './queries/locations';
 import { loadTeams } from './queries/teams';
 import { loadTransersAndLoans } from './queries/transfers';
 import { validateEnrollment } from './queries/validate';
+import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 interface TeamEnrollmentState {
   club: Club | null;
@@ -59,6 +61,9 @@ const CLUBS_KEY = 'clubs.id';
 export class TeamEnrollmentDataService {
   private readonly apollo = inject(Apollo);
   private readonly systemService = inject(RankingSystemService);
+  private readonly claimService = inject(ClaimService);
+
+  isAdmin = this.claimService.hasClaimSignal('enlist-any:team');
 
   // state
   initialState: TeamEnrollmentState = {
@@ -151,7 +156,7 @@ export class TeamEnrollmentDataService {
             this.state.loadTeams({ clubId: club.id, season });
             this.state.loadTransersAndLoans({ clubId: club.id, season });
             this.state.loadLocations({ clubId: club.id, season });
-            this.state.loadEvents({ state: club.state });
+            this.state.loadEvents({ state: club.state , season });
           }),
           map((club) => ({
             club,
@@ -263,9 +268,9 @@ export class TeamEnrollmentDataService {
           })),
         ),
 
-      loadEvents: (_state, action$: Observable<{ state: string }>) =>
+      loadEvents: (_state, action$: Observable<{ state: string; season: number }>) =>
         action$.pipe(
-          switchMap(({ state }) => loadEvents(this.apollo, state)),
+          switchMap(({ state, season }) => loadEvents(this.apollo, season, state, this.isAdmin())),
           tap((events) => {
             const club = this.state().club;
 
@@ -312,6 +317,5 @@ export class TeamEnrollmentDataService {
           })),
         ),
     },
-
   });
 }
