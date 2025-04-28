@@ -1,3 +1,16 @@
+## 6.178.0 (2025-04-28)
+
+### 🚀 Features
+
+- implement nextStep method and update step navigation in team enrollment ([31d113e1b](https://github.com/Badminton-Apps/badman/commit/31d113e1b))
+- remove mixed national teams checkbox from team enrollment step ([dcb71d28d](https://github.com/Badminton-Apps/badman/commit/dcb71d28d))
+- add translations for loans and transfers ([11270cf03](https://github.com/Badminton-Apps/badman/commit/11270cf03))
+- allow admins to enroll anytime ([ce18be781](https://github.com/Badminton-Apps/badman/commit/ce18be781))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.177.1 (2025-04-23)
 
 ### 🩹 Fixes
