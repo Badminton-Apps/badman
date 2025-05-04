@@ -43,25 +43,25 @@ import { v4 as uuid } from 'uuid';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 
 @Component({
-    selector: 'badman-team',
-    imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatButtonModule,
-        MatInputModule,
-        MatIconModule,
-        MatListModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatSnackBarModule,
-        MatDividerModule,
-        MatTooltipModule,
-        PlayerSearchComponent,
-    ],
-    templateUrl: './team.component.html',
-    styleUrls: ['./team.component.scss']
+  selector: 'badman-team',
+  imports: [
+    CommonModule,
+    TranslateModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    MatListModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatSnackBarModule,
+    MatDividerModule,
+    MatTooltipModule,
+    PlayerSearchComponent,
+  ],
+  templateUrl: './team.component.html',
+  styleUrls: ['./team.component.scss'],
 })
 export class TeamComponent implements OnInit {
   private readonly dataService = inject(TeamEnrollmentDataService);
@@ -81,6 +81,10 @@ export class TeamComponent implements OnInit {
       name: string;
     }[]
   >();
+
+  where = (type: SubEventTypeEnum) => ({
+    gender: type === 'MX' ? undefined : type,
+  });
 
   teamType = computed(() => {
     if (!this.team()?.value?.type) {
