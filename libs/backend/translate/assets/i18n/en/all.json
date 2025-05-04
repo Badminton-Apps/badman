@@ -388,12 +388,12 @@
       "transfer": {
         "add-transfer": "New transfer",
         "enrolled-as": "enrolled as",
-        "loans": "Transfers",
+        "loans": "Lending",
         "transfer-locked": "Transfer has already been confirmed, removing it is no longer possible",
         "transfer-player": "Transferred player",
         "transfer-teams": "Transfer teams (optional)",
         "transfer-teams-description": "If you would like to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you can transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nThe order in which you check your shifts will determine the order (check everything in the correct order)\n\nYou can still change the team numbers in the next step.",
-        "transfers": "Lending",
+        "transfers": "Transfers",
         "transfers-players": "Transfers and loans"
       },
       "validations": "Validations",
