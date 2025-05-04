@@ -1,3 +1,16 @@
+## 6.178.1 (2025-05-04)
+
+### 🩹 Fixes
+
+- handle division by zero in average level calculations ([4abdf1e37](https://github.com/Badminton-Apps/badman/commit/4abdf1e37))
+- bulk update muttation on server ([862145a66](https://github.com/Badminton-Apps/badman/commit/862145a66))
+- transfer and loans were switched around ([178bad958](https://github.com/Badminton-Apps/badman/commit/178bad958))
+- update player search component to include strictMemberId input and adjust where clause ([bba78316b](https://github.com/Badminton-Apps/badman/commit/bba78316b))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.178.0 (2025-04-28)
 
 ### 🚀 Features
