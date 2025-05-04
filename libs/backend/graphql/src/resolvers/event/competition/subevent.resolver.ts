@@ -221,11 +221,11 @@ export class SubEventCompetitionResolver {
 
     return {
       gender: 'M',
-      single: averageLevelSingleMale / singleMales,
+      single: averageLevelSingleMale / (singleMales == 0 ? 1 : singleMales),
       singleCount: singleMales,
-      double: averageLevelDoubleMale / doubleMales,
+      double: averageLevelDoubleMale / (doubleMales == 0 ? 1 : doubleMales),
       doubleCount: doubleMales,
-      mix: averageLevelMixedMale / mixMales,
+      mix: averageLevelMixedMale / (mixMales == 0 ? 1 : mixMales),
       mixCount: mixMales,
     } as SubEventCompetitionAverageLevel;
   }
@@ -292,11 +292,11 @@ export class SubEventCompetitionResolver {
 
     return {
       gender: 'F',
-      single: averageLevelSingleFemale / singleFemales,
+      single: averageLevelSingleFemale / (singleFemales == 0 ? 1 : singleFemales),
       singleCount: singleFemales,
-      double: averageLevelDoubleFemale / doubleFemales,
+      double: averageLevelDoubleFemale / (doubleFemales == 0 ? 1 : doubleFemales),
       doubleCount: doubleFemales,
-      mix: averageLevelMixedFemale / mixFemales,
+      mix: averageLevelMixedFemale / (mixFemales == 0 ? 1 : mixFemales),
       mixCount: mixFemales,
     } as SubEventCompetitionAverageLevel;
   }
