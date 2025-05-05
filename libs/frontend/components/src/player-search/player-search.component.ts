@@ -393,12 +393,23 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
           { memberId: { $iLike: `%${part}%` } },
         ],
       });
+    }
 
-      if (this.strictMemberId()) {
-        queries.push({
-          $or: [{ memberId: { $iLike: `5%` } }, { memberId: { $iLike: `3%` } }],
-        });
-      }
+    if (this.strictMemberId()) {
+      queries.push({
+        $and: [
+          {
+            memberId: {
+              $not: null,
+            },
+          },
+          {
+            memberId: {
+              $not: '',
+            },
+          },
+        ],
+      });
     }
 
     return {
