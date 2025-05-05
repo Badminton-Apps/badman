@@ -1,3 +1,19 @@
+## 6.179.0 (2025-05-05)
+
+### 🚀 Features
+
+- updated sorting and some refactoring ([341e6cfcf](https://github.com/Badminton-Apps/badman/commit/341e6cfcf))
+- **nx-cloud:** setup nx cloud workspace ([f45b982a5](https://github.com/Badminton-Apps/badman/commit/f45b982a5))
+
+### 🩹 Fixes
+
+- improve error and warning uniqueness in enrollment validation ([4946cfa26](https://github.com/Badminton-Apps/badman/commit/4946cfa26))
+- update player search query to exclude null and empty memberId values ([38d437e1d](https://github.com/Badminton-Apps/badman/commit/38d437e1d))
+
+### ❤️ Thank You
+
+- Glenn Latomme @cskiwi
+
 ## 6.178.1 (2025-05-04)
 
 ### 🩹 Fixes
