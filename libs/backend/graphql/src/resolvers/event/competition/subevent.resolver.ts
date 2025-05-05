@@ -13,11 +13,14 @@ import {
   SubEventCompetition,
   SubEventCompetitionAverageLevel,
 } from '@badman/backend-database';
+import { Sync, SyncQueue } from '@badman/backend-queue';
 import { PointsService } from '@badman/backend-ranking';
 import { SubEventTypeEnum } from '@badman/utils';
+import { InjectQueue } from '@nestjs/bull';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Queue } from 'bull';
 import { Cache } from 'cache-manager';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
@@ -28,7 +31,7 @@ export class SubEventCompetitionResolver {
 
   constructor(
     @Inject(CACHE_MANAGER) private readonly _cacheManager: Cache,
-
+    @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
   ) {}
@@ -364,5 +367,36 @@ export class SubEventCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  @Mutation(() => Boolean)
+  async recalculateStandingSubEvent(
+    @User() user: Player,
+    @Args('subEventId', { type: () => ID }) subEventId: string,
+  ) {
+    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+      throw new UnauthorizedException(`You do not have permission to sync points`);
+    }
+
+    const event = await SubEventCompetition.findByPk(subEventId, {
+      attributes: ['id'],
+    });
+
+    if (!event) {
+      throw new NotFoundException(`${SubEventCompetition.name}  not found for ${subEventId}`);
+    }
+
+    await this._syncQueue.add(
+      Sync.ScheduleRecalculateStandingCompetitionSubEvent,
+      {
+        eventId: event.id,
+      },
+      {
+        removeOnComplete: true,
+        removeOnFail: 1,
+      },
+    );
+
+    return true;
   }
 }

@@ -271,24 +271,24 @@ export class EnrollmentValidationService {
       const valid = ruleResults?.every((r) => r?.valid);
 
       const uniqueErrors = errors
-        .filter((error, index, self) => {
-          return index === self.findIndex((e) => JSON.stringify(e) === JSON.stringify(error));
-        })
         ?.map((r) => ({
           ...r,
-          // has of the error as an id
+          // hash of the error as an id
           id: Md5.hashStr(JSON.stringify(r)),
-        })) as EnrollmentValidationError[];
+        }))
+        .filter((error, index, self) => {
+          return index === self.findIndex((e) => e?.id === error?.id);
+        }) as EnrollmentValidationError[];
 
       const uniqueWarnings = warnings
-        .filter((warning, index, self) => {
-          return index === self.findIndex((w) => JSON.stringify(w) === JSON.stringify(warning));
-        })
         ?.map((r) => ({
           ...r,
-          // has of the error as an id
+          // hash of the error as an id
           id: Md5.hashStr(JSON.stringify(r)),
-        })) as EnrollmentValidationError[];
+        }))
+        .filter((warning, index, self) => {
+          return index === self.findIndex((e) => e?.id === warning?.id);
+        }) as EnrollmentValidationError[];
 
       teams.push({
         id: team.team?.id,

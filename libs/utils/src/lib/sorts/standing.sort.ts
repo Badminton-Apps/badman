@@ -1,5 +1,11 @@
 export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandingType>) => {
-  // Based on C320 - Article 31
+  // Based on C320 - Article 61
+  const pointA = a.points ?? 0;
+  const pointB = b.points ?? 0;
+
+  if (pointA !== pointB) {
+    return pointB - pointA; // higher number of points comes first
+  }
 
   const wonA = a.won ?? 0;
   const wonB = b.won ?? 0;
@@ -8,14 +14,21 @@ export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandi
     return wonB - wonA; // higher number of wins comes first
   }
 
-  const tiedA = a.tied ?? 0;
-  const tiedB = b.tied ?? 0;
+  const saldoA = (a.gamesWon ?? 0) - (a.gamesLost ?? 0);
+  const saldoB = (b.gamesWon ?? 0) - (b.gamesLost ?? 0);
 
-  return tiedB - tiedA; // higher number of ties comes next
+  if (saldoA !== saldoB) {
+    return saldoB - saldoA; // higher number of saldo comes first
+  }
+
+  const setsWonA = a.setsWon ?? 0;
+  const setsWonB = b.setsWon ?? 0;
+
+  return setsWonB - setsWonA; // higher number of sets won comes first
 };
 
 type SortStandingType = {
-  points: number;
+  points: number | null;
   won: number;
   tied: number;
   lost: number;
