@@ -201,6 +201,9 @@ export class EventCompetitionProcessor {
     const existing = {
       id: dbSubEvent.id,
       visualCode: dbSubEvent.visualCode,
+      maxLevel: dbSubEvent.maxLevel,
+      minBaseIndex: dbSubEvent.minBaseIndex,
+      maxBaseIndex: dbSubEvent.maxBaseIndex,
       draws: [],
     };
 
@@ -213,6 +216,8 @@ export class EventCompetitionProcessor {
         id: draw.id,
         visualCode: draw.visualCode,
         encounters: [],
+        risers: draw.risers,
+        fallers: draw.fallers,
       };
 
       const encounters = await draw.getEncounterCompetitions({
@@ -223,6 +228,8 @@ export class EventCompetitionProcessor {
         const existingEncounter = {
           id: encounter.id,
           visualCode: encounter.visualCode,
+          shuttle: encounter.shuttle,
+          
           games: [],
         };
 
