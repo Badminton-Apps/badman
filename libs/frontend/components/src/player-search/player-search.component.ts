@@ -33,23 +33,23 @@ import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 
 import { PlayerFieldsComponent } from '../fields';
 
 @Component({
-    imports: [
-        CommonModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatOptionModule,
-        MatAutocompleteModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatDialogModule,
-        MatInputModule,
-        MatProgressBarModule,
-        PlayerFieldsComponent,
-    ],
-    selector: 'badman-player-search',
-    templateUrl: './player-search.component.html',
-    styleUrls: ['./player-search.component.scss']
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MatIconModule,
+    MatButtonModule,
+    MatOptionModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatInputModule,
+    MatProgressBarModule,
+    PlayerFieldsComponent,
+  ],
+  selector: 'badman-player-search',
+  templateUrl: './player-search.component.html',
+  styleUrls: ['./player-search.component.scss'],
 })
 export class PlayerSearchComponent implements OnChanges, OnInit {
   private apollo = inject(Apollo);
@@ -83,6 +83,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   club = input<string | Club | undefined>();
 
   searchOutsideClub = input(true);
+  strictMemberId = input(false);
 
   includePersonal = input(false);
 
@@ -392,6 +393,12 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
           { memberId: { $iLike: `%${part}%` } },
         ],
       });
+
+      if (this.strictMemberId()) {
+        queries.push({
+          $or: [{ memberId: { $iLike: `5%` } }, { memberId: { $iLike: `3%` } }],
+        });
+      }
     }
 
     return {

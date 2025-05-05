@@ -352,6 +352,7 @@
         "courts-hint": "Modifier le nombre de champs disponibles",
         "title": "Emplacements"
       },
+      "mixed-national-teams": "Les équipes nationales sont incluses dans la numérotation des équipes mixtes. (Exemple : vous avez 3 équipes : 'Coché : Nationale 1, Nationale 2, Equipe 3G'. Non coché : 'Nationale 1, Nationale 2, Equipe 1G')",
       "open": "Ouvrir",
       "play-days": "Jours de match",
       "players": {
@@ -387,10 +388,12 @@
       "transfer": {
         "add-transfer": "Nouveau transfert",
         "enrolled-as": "enregistré comme",
+        "loans": "Prêts",
         "transfer-locked": "Le transfert a déjà été confirmé, il n'est plus possible de le supprimer",
         "transfer-player": "Joueur transféré",
         "transfer-teams": "Transfert d'équipes (facultatif)",
         "transfer-teams-description": "Si vous souhaitez transférer votre ou vos équipes à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre ou vos équipes et les placer automatiquement dans le bon événement en fonction de votre participation précédente.\n\nL'ordre dans lequel vous vérifiez vos quarts de travail déterminera l'ordre (vérifiez tout dans le bon ordre)\n\nVous pouvez toujours modifier les numéros d'équipe à l'étape suivante.",
+        "transfers": "Transferts",
         "transfers-players": "Transferts et prêts"
       },
       "validations": "Validations",

@@ -2,7 +2,7 @@
   <section class="players">
     <h3>{{ 'all.club.titles.players' | translate }}</h3>
     <div class="players-container">
-      @for (player of this.players(); track player) {
+      @for (player of this.players(); track player.player.id) {
         <div class="player">
           <div [routerLink]="['/player', player.player.slug]">
             <span class="name">{{ player.player.fullName }}</span>

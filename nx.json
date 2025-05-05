@@ -5,7 +5,10 @@
   "ci": "github",
   "parallel": 14,
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
     "production": [
       "default",
       "!{projectRoot}/.eslintrc.json",
@@ -32,8 +35,13 @@
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {
       "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
     },
     "@nx/eslint:lint": {
       "cache": true,
@@ -46,11 +54,18 @@
     },
     "@nx/jest:jest": {
       "cache": true,
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js"
+      ],
       "options": {
         "codeCoverage": true,
         "passWithNoTests": true,
-        "coverageReporters": ["text-summary", "lcov"]
+        "coverageReporters": [
+          "text-summary",
+          "lcov"
+        ]
       },
       "configurations": {
         "ci": {
@@ -60,16 +75,28 @@
     },
     "@nx/js:tsc": {
       "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
     },
     "@nx/angular:ng-packagr-lite": {
       "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
     },
     "e2e": {
-      "dependsOn": ["^build"]
+      "dependsOn": [
+        "^build"
+      ]
     }
   },
   "plugins": [
@@ -81,10 +108,15 @@
     },
     {
       "plugin": "@nx/jest/plugin",
-      "exclude": ["e2e/**/*"],
+      "exclude": [
+        "e2e/**/*"
+      ],
       "options": {
         "targetName": "test",
-        "coverageReporters": ["text-summary", "lcov"]
+        "coverageReporters": [
+          "text-summary",
+          "lcov"
+        ]
       }
     },
     {
@@ -123,5 +155,6 @@
       "skipTests": true
     }
   },
-  "nxCloudAccessToken": "NGRkMmFkZjktYmRjZi00OTFhLWJkMzEtZDcwZjMwM2Q3MzkwfHJlYWQtd3JpdGU="
+  "nxCloudAccessToken": "NGRkMmFkZjktYmRjZi00OTFhLWJkMzEtZDcwZjMwM2Q3MzkwfHJlYWQtd3JpdGU=",
+  "nxCloudId": "6818a5c8c5bf9c39bd3339ef"
 }

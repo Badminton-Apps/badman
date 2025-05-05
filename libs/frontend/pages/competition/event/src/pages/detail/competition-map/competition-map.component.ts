@@ -190,7 +190,6 @@ export class CompetitionMapComponent implements OnInit {
       },
       {
         injector: this.injector,
-        allowSignalWrites: true,
       },
     );
   }
