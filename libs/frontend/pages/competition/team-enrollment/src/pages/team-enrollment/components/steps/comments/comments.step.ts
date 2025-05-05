@@ -135,10 +135,7 @@ export class CommentsStepComponent {
               Array.from(new Set(events.map((event) => event.type as LevelType))),
             );
           });
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 }

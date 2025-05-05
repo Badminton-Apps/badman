@@ -169,10 +169,7 @@ export class TeamEnrollmentComponent {
             this.subEvent().disable();
           }
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 

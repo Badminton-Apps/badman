@@ -259,7 +259,6 @@ export class CompetitionEnrollmentsComponent implements OnInit {
       },
       {
         injector: this.injector,
-        allowSignalWrites: true,
       },
     );
   }

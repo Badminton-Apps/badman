@@ -1,14 +1,14 @@
 {
   "name": "@badman/frontend-translation",
-  "version": "6.176.0",
+  "version": "6.178.1",
   "peerDependencies": {
     "@angular/core": "^19.0.5",
     "@badman/utils": "*",
     "@ngx-translate/core": "^16.0.4",
     "@badman/frontend-auth": "*",
     "@angular/common": "^19.0.5",
-    "@angular/material": "19.0.4",
-    "@angular/material-moment-adapter": "19.0.4",
+    "@angular/material": "19.2.9",
+    "@angular/material-moment-adapter": "19.2.9",
     "moment": "^2.30.1",
     "rxjs": "~7.8.1",
     "@ngx-translate/http-loader": "^16.0.1",

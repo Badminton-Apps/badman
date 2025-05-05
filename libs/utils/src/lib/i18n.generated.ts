@@ -359,6 +359,7 @@ export type I18nTranslations = {
                     "courts-hint": string;
                     "title": string;
                 };
+                "mixed-national-teams": string;
                 "open": string;
                 "play-days": string;
                 "players": {
@@ -394,10 +395,12 @@ export type I18nTranslations = {
                 "transfer": {
                     "add-transfer": string;
                     "enrolled-as": string;
+                    "loans": string;
                     "transfer-locked": string;
                     "transfer-player": string;
                     "transfer-teams": string;
                     "transfer-teams-description": string;
+                    "transfers": string;
                     "transfers-players": string;
                 };
                 "validations": string;

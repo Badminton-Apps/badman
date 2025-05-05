@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { EventEntry } from '@badman/frontend-models';
+import { sortStanding } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -18,7 +19,20 @@ export class StandingComponent implements OnInit {
   entriesSignal = computed(() =>
     this.entries()
       .filter((e) => e.standing)
-      .sort((a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0)),
+      .sort((a, b) =>
+        sortStanding(
+          {
+            won: a.standing?.won,
+            lost: a.standing?.lost,
+            tied: a.standing?.tied,
+          },
+          {
+            won: b.standing?.won,
+            lost: b.standing?.lost,
+            tied: b.standing?.tied,
+          },
+        ),
+      ),
   );
 
   type = input<'players' | 'team' | undefined>();
