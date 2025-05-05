@@ -77,10 +77,7 @@ export class SelectClubSignalsComponent {
         ) {
           this.club.set(this.possibleClubs()[0].id);
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 }

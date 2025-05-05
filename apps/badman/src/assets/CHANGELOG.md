@@ -1,3 +1,70 @@
+## 6.178.1 (2025-05-04)
+
+### 🩹 Fixes
+
+- handle division by zero in average level calculations ([4abdf1e37](https://github.com/Badminton-Apps/badman/commit/4abdf1e37))
+- bulk update muttation on server ([862145a66](https://github.com/Badminton-Apps/badman/commit/862145a66))
+- transfer and loans were switched around ([178bad958](https://github.com/Badminton-Apps/badman/commit/178bad958))
+- update player search component to include strictMemberId input and adjust where clause ([bba78316b](https://github.com/Badminton-Apps/badman/commit/bba78316b))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
+## 6.178.0 (2025-04-28)
+
+### 🚀 Features
+
+- implement nextStep method and update step navigation in team enrollment ([31d113e1b](https://github.com/Badminton-Apps/badman/commit/31d113e1b))
+- remove mixed national teams checkbox from team enrollment step ([dcb71d28d](https://github.com/Badminton-Apps/badman/commit/dcb71d28d))
+- add translations for loans and transfers ([11270cf03](https://github.com/Badminton-Apps/badman/commit/11270cf03))
+- allow admins to enroll anytime ([ce18be781](https://github.com/Badminton-Apps/badman/commit/ce18be781))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
+## 6.177.1 (2025-04-23)
+
+### 🩹 Fixes
+
+- update track variable in loops for better readability ([bb018be28](https://github.com/Badminton-Apps/badman/commit/bb018be28))
+- frontend optimalisations ([dacfac716](https://github.com/Badminton-Apps/badman/commit/dacfac716))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
+## 6.177.0 (2025-04-13)
+
+### 🚀 Features
+
+- support setting of clubs ([fecc7edb3](https://github.com/Badminton-Apps/badman/commit/fecc7edb3))
+- processing of tournaments ([21cab0784](https://github.com/Badminton-Apps/badman/commit/21cab0784))
+- syncing tournaments improvements ([74c72b3d1](https://github.com/Badminton-Apps/badman/commit/74c72b3d1))
+- add consentPrivacyAndCookie function to handle cookie consent ([f079d0bc0](https://github.com/Badminton-Apps/badman/commit/f079d0bc0))
+- add createTeams mutation to handle batch team creation ([c9cf40a2b](https://github.com/Badminton-Apps/badman/commit/c9cf40a2b))
+- enhance createTeams mutation to log team creation and handle promises sequentially ([df6836bc3](https://github.com/Badminton-Apps/badman/commit/df6836bc3))
+- add nationalCountsAsMixed option to team creation and update related translations ([47d560861](https://github.com/Badminton-Apps/badman/commit/47d560861))
+- enhance team sorting and numbering logic for mixed and national teams ([c76210095](https://github.com/Badminton-Apps/badman/commit/c76210095))
+
+### 🩹 Fixes
+
+- pass cron meta data along ([f88f440a3](https://github.com/Badminton-Apps/badman/commit/f88f440a3))
+- updated new version of socket ([49b1ec20b](https://github.com/Badminton-Apps/badman/commit/49b1ec20b))
+- this hasn't been finished ([d010b21b2](https://github.com/Badminton-Apps/badman/commit/d010b21b2))
+- remove allowSignalWrites option from multiple components ([96b9f4c75](https://github.com/Badminton-Apps/badman/commit/96b9f4c75))
+- update tracking in loops for subEvents and validation errors/warnings ([5bed747c4](https://github.com/Badminton-Apps/badman/commit/5bed747c4))
+- update tracking in loops for subEvents and levelExceptions ([7f3c118ed](https://github.com/Badminton-Apps/badman/commit/7f3c118ed))
+- refactor standing sorting logic to use dedicated sortStanding utility ([8f6d968d6](https://github.com/Badminton-Apps/badman/commit/8f6d968d6))
+- refactor sortStanding function to prioritize wins and ties for sorting ([4cb34cefc](https://github.com/Badminton-Apps/badman/commit/4cb34cefc))
+- update player tracking in assembly component to use player IDs ([8bb1082cc](https://github.com/Badminton-Apps/badman/commit/8bb1082cc))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+- Glenn @cskiwi
+
 ## 6.176.0 (2024-12-28)
 
 ### 🚀 Features

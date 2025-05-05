@@ -16,6 +16,7 @@ import { User } from '@badman/backend-authorization';
 import { Sequelize } from 'sequelize-typescript';
 import { sortStanding } from '@badman/utils';
 import { PointsService } from '@badman/backend-ranking';
+import { Transaction } from 'sequelize';
 
 @Resolver(() => DrawCompetition)
 export class DrawCompetitionResolver {
@@ -68,8 +69,9 @@ export class DrawCompetitionResolver {
       throw new UnauthorizedException(`You do not have permission to add a competition`);
     }
 
-    // Do transaction
+    // if no transaction is passed, create a new one
     const transaction = await this._sequelize.transaction();
+
     try {
       const drawCompetitionDb = await DrawCompetition.findByPk(updateDrawCompetitionData.id);
 
@@ -135,6 +137,31 @@ export class DrawCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  @Mutation(() => [DrawCompetition])
+  async updateDrawCompetitions(
+    @User() user: Player,
+    @Args('data', { type: () => [DrawCompetitionUpdateInput] })
+    updateDrawCompetitionData: DrawCompetitionUpdateInput[],
+  ): Promise<DrawCompetition[]> {
+    // update all draw competitions in a transaction
+    if (!(await user.hasAnyPermission([`edit:competition`]))) {
+      throw new UnauthorizedException(`You do not have permission to add a competition`);
+    }
+
+    const results = [];
+    for (const data of updateDrawCompetitionData) {
+      try {
+        const result = await this.updateDrawCompetition(user, data);
+        results.push(result);
+      } catch (error) {
+        this.logger.error(error);
+        throw error;
+      }
+    }
+
+    return results;
   }
 
   @Mutation(() => Boolean)

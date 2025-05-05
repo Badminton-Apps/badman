@@ -1,6 +1,7 @@
 import { Rule, Team } from '@badman/backend-database';
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ValidationRule } from './_rule.base';
+import { Md5 } from 'ts-md5';
 
 type ruleType<T, V> = new () => ValidationRule<
   T,
@@ -26,7 +27,6 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     rule: ruleType<T, V>,
     args?: { meta?: object; activated?: boolean },
   ): Promise<void> {
-
     // find or create rule
     await Rule.findOrCreate({
       where: {
