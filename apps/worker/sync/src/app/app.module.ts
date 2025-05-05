@@ -30,6 +30,11 @@ import {
   SubEventTournamentProcessor,
   DrawTournamentProcessor,
   GameTournamentProcessor,
+  ScheduleRecalculateStandingCompetitionDraw,
+  ScheduleRecalculateStandingCompetitionEvent,
+  ScheduleRecalculateStandingCompetitionSubEvent,
+  DrawStandingCompetitionProcessor,
+
 } from './processors';
 
 @Module({
@@ -51,10 +56,17 @@ import {
     GameTournamentProcessor,
     DrawStandingTournamentProcessor,
 
+    DrawStandingCompetitionProcessor,
+
     EventTournamenScheduler,
     SubEventTournamentScheduler,
     DrawTournamentScheduler,
     MatchTournamentScheduler,
+
+    // Standing
+    ScheduleRecalculateStandingCompetitionDraw,
+    ScheduleRecalculateStandingCompetitionSubEvent,
+    ScheduleRecalculateStandingCompetitionEvent
   ],
   imports: [
     ConfigModule.forRoot({
