@@ -22,14 +22,20 @@ export class StandingComponent implements OnInit {
       .sort((a, b) =>
         sortStanding(
           {
+            points: a.standing?.points,
             won: a.standing?.won,
-            lost: a.standing?.lost,
-            tied: a.standing?.tied,
+            gamesWon: a.standing?.gamesWon,
+            gamesLost: a.standing?.gamesLost,
+            setsWon: a.standing?.setsWon,
+            setsLost: a.standing?.setsLost,
           },
           {
+            points: b.standing?.points,
             won: b.standing?.won,
-            lost: b.standing?.lost,
-            tied: b.standing?.tied,
+            gamesWon: b.standing?.gamesWon,
+            gamesLost: b.standing?.gamesLost,
+            setsWon: b.standing?.setsWon,
+            setsLost: b.standing?.setsLost,
           },
         ),
       ),

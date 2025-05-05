@@ -30,6 +30,7 @@ export type I18nTranslations = {
             "open-in-new-tab": string;
             "prev": string;
             "re-sync": string;
+            "re-sync-standings": string;
             "save": string;
             "save-and-continue": string;
             "set-primary": string;
