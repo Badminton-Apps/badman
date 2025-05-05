@@ -90,4 +90,20 @@ export class DetailDrawCompetitionComponent {
       .pipe(take(1))
       .subscribe();
   }
+
+  reCalculateStanding() {
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation RecalculateStandingDraw($drawId: ID!) {
+            recalculateStandingDraw(drawId: $drawId)
+          }
+        `,
+        variables: {
+          drawId: this.drawCompetition()?.id,
+        },
+      })
+      .pipe(take(1))
+      .subscribe();
+  }
 }
