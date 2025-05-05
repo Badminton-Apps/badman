@@ -7,7 +7,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
 import {
   BadmanBlockModule,
-  HasClaimComponent,
   LoadingBlockComponent,
   OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
@@ -16,25 +15,26 @@ import { JobsService } from '@badman/frontend-queue';
 import { TranslateModule } from '@ngx-translate/core';
 import { lastValueFrom } from 'rxjs';
 import { RisersFallersDialogComponent } from '../../../dialogs';
+import { EventMenuComponent } from '../../../menus/event-menu/event-menu.component';
 import { EventOverviewService } from '../overview.service';
 
 @Component({
-    selector: 'badman-competition-events',
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDialogModule,
-        HasClaimComponent,
-        LoadingBlockComponent,
-        BadmanBlockModule,
-    ],
-    templateUrl: './competition-events.component.html',
-    styleUrls: ['./competition-events.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-competition-events',
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    EventMenuComponent,
+    LoadingBlockComponent,
+    BadmanBlockModule,
+  ],
+  templateUrl: './competition-events.component.html',
+  styleUrls: ['./competition-events.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompetitionEventsComponent {
   private readonly dialog = inject(MatDialog);
