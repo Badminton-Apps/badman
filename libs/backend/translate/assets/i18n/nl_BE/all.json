@@ -1155,7 +1155,9 @@
           "add": "Toevoegen",
           "teamFormation": "Ploegopstelling",
           "encounterForm": "Ontmoetingsformulier",
-          "confirmEncounter": "Bevestig ontmoeting"
+          "confirmEncounter": "Bevestig ontmoeting",
+          "changeEncounter": "Verplaats ontmoeting",
+          "addProposal": "Voorstel toevoegen"
         },
         "auth": {
           "logIn": "Inloggen",
@@ -1636,6 +1638,11 @@
     "playerRanking": {
       "title": "Punten per spel",
       "notFound": "Geen rankinginformatie gevonden",
+      "rankingTooltipMessages": {
+        "readyForUpgrade": "Klaar voor promotie",
+        "notPossibleToReachRequiredAverage": "Niet mogelijk om vereiste gemiddelde te bereiken",
+        "winsNeeded": "Je hebt ongeveer {winsNeeded} meer winst(en) nodig tegen hetzelfde niveau om te promoveren."
+      },
       "filters": {
         "ranking": "Ranking",
         "rankingOptions": {
@@ -3083,6 +3090,84 @@
       },
       "buttons": {
         "save": "Opslaan"
+      }
+    },
+    "changeEncounter": {
+      "title": "Verplaats ontmoeting",
+      "encounterNotFound": "Ontmoeting niet gevonden",
+      "proposals": {
+        "title": "Voorstellen",
+        "proposalPeriod": "De periode om voorstellen te maken is van 1 juni tot 31 augustus.",
+        "noProposals": "Geen voorstellen",
+        "date": "Datum",
+        "time": "Tijd",
+        "location": "Locatie",
+        "messages": {
+          "proposalAddedSuccess": "Voorstel toegevoegd",
+          "proposalAddedError": "Fout bij het toevoegen van het voorstel",
+          "proposalAcceptedSuccess": "Voorstel geaccepteerd",
+          "proposalAcceptedError": "Fout bij het accepteren van het voorstel",
+          "proposalRejectedSuccess": "Voorstel geweigerd",
+          "proposalRejectedError": "Fout bij het weigeren van het voorstel",
+          "proposalDeletedSuccess": "Voorstel verwijderd",
+          "proposalDeletedError": "Fout bij het verwijderen van het voorstel",
+          "generalError": "Iets ging mis bij het verplaatsen van de ontmoeting"
+        },
+        "buttons": {
+          "addProposal": "Voorstel toevoegen",
+          "accept": "Accepteren",
+          "reject": "Weigeren",
+          "delete": "Verwijderen"
+        }
+      },
+      "messages": {
+        "title": "Berichten",
+        "noMessages": "Geen berichten",
+        "messages": {
+          "messageSentSuccess": "Bericht verstuurd",
+          "messageSentError": "Fout bij het versturen van het bericht"
+        },
+        "label": "Bericht",
+        "placeholder": "Schrijf een bericht",
+        "proposalPeriodInfo": "De periode om voorstellen te maken is van 1 juni tot 31 augustus."
+      },
+      "calendar": {
+        "encounterNotFound": "Ontmoeting niet gevonden",
+        "filter": {
+          "labels": {
+            "homeTeam": "Thuisploeg",
+            "awayTeam": "Uitploeg"
+          },
+          "options": {
+            "allTeams": "Alle ploegen"
+          }
+        },
+        "buttons": {
+          "close": "Sluiten"
+        },
+        "dayContent": {
+          "otherEncounters": "Andere ontmoetings",
+          "originalDate": "Oorspronkelijke datum",
+          "proposal": "Voorstel",
+          "buttons": {
+            "courtsAvailable": "veld(en) beschikbaar"
+          },
+          "eventWarning": "Competitie is niet toegestaan",
+          "drawer": {
+            "courts": "veld(en)",
+            "proposal": "Voorstel",
+            "originalDate": "Oorspronkelijke datum",
+            "availableCourts": "Beschikbare veld(en)",
+            "buttons": {
+              "sendRequest": "Aanvraag versturen"
+            },
+            "otherEncounters": "Andere ontmoetings",
+            "messages": {
+              "success": "Aanvraag verstuurd",
+              "error": "Fout bij het versturen van de aanvraag"
+            }
+          }
+        }
       }
     }
   }

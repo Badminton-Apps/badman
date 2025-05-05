@@ -1444,7 +1444,9 @@
           "add": "Add",
           "teamFormation": "Team formation",
           "encounterForm": "Encounter form",
-          "confirmEncounter": "Confirm encounter"
+          "confirmEncounter": "Confirm encounter",
+          "changeEncounter": "Change encounter",
+          "addProposal": "Add proposal"
         },
         "auth": {
           "logIn": "Log in",
@@ -1925,6 +1927,11 @@
     "playerRanking": {
       "title": "Points per game",
       "notFound": "No ranking information found",
+      "rankingTooltipMessages": {
+        "readyForUpgrade": "Ready for upgrade",
+        "notPossibleToReachRequiredAverage": "Not possible to reach required average",
+        "winsNeeded": "You need approximately {winsNeeded} more win(s) against same level to upgrade."
+      },
       "filters": {
         "ranking": "Ranking",
         "rankingOptions": {
@@ -3312,6 +3319,84 @@
       },
       "buttons": {
         "save": "Save"
+      }
+    },
+    "changeEncounter": {
+      "title": "Change encounter",
+      "encounterNotFound": "Encounter not found",
+      "proposals": {
+        "title": "Proposal",
+        "proposalPeriod": "The proposal period is from 1 June to 31 August.",
+        "noProposals": "No proposals",
+        "date": "Date",
+        "time": "Time",
+        "location": "Location",
+        "messages": {
+          "proposalAddedSuccess": "Proposal added successfully",
+          "proposalAddedError": "Error adding proposal",
+          "proposalAcceptedSuccess": "Proposal accepted successfully",
+          "proposalAcceptedError": "Error accepting proposal",
+          "proposalRejectedSuccess": "Proposal rejected successfully",
+          "proposalRejectedError": "Error rejecting proposal",
+          "proposalDeletedSuccess": "Proposal deleted successfully",
+          "proposalDeletedError": "Error deleting proposal",
+          "generalError": "Something went wrong while moving the encounter"
+        },
+        "buttons": {
+          "reject": "Reject",
+          "accept": "Accept",
+          "addProposal": "Add proposal",
+          "delete": "Delete"
+        }
+      },
+      "messages": {
+        "title": "Messages",
+        "noMessages": "No messages",
+        "messages": {
+          "messageSentSuccess": "Message sent successfully",
+          "messageSentError": "Error sending message"
+        },
+        "label": "Message",
+        "placeholder": "Write a message",
+        "proposalPeriodInfo": "The proposal period is from 1 June to 31 August."
+      },
+      "calendar": {
+        "encounterNotFound": "Encounter not found",
+        "filter": {
+          "labels": {
+            "homeTeam": "Home team",
+            "awayTeam": "Away team"
+          },
+          "options": {
+            "allTeams": "All teams"
+          }
+        },
+        "buttons": {
+          "close": "Close"
+        },
+        "dayContent": {
+          "otherEncounters": "Other encounters",
+          "originalDate": "Original date",
+          "proposal": "Proposal",
+          "buttons": {
+            "courtsAvailable": "court(s) available"
+          },
+          "eventWarning": "Competition is not allowed",
+          "drawer": {
+            "courts": "court(s)",
+            "proposal": "Proposal",
+            "originalDate": "Original date",
+            "availableCourts": "Available court(s)",
+            "buttons": {
+              "sendRequest": "Send request"
+            },
+            "otherEncounters": "Other encounters",
+            "messages": {
+              "success": "Request sent successfully",
+              "error": "Error sending request"
+            }
+          }
+        }
       }
     }
   }

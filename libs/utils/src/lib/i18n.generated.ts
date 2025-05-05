@@ -1452,6 +1452,8 @@ export type I18nTranslations = {
                         "teamFormation": string;
                         "encounterForm": string;
                         "confirmEncounter": string;
+                        "changeEncounter": string;
+                        "addProposal": string;
                     };
                     "auth": {
                         "logIn": string;
@@ -1932,6 +1934,11 @@ export type I18nTranslations = {
             "playerRanking": {
                 "title": string;
                 "notFound": string;
+                "rankingTooltipMessages": {
+                    "readyForUpgrade": string;
+                    "notPossibleToReachRequiredAverage": string;
+                    "winsNeeded": string;
+                };
                 "filters": {
                     "ranking": string;
                     "rankingOptions": {
@@ -3383,6 +3390,84 @@ export type I18nTranslations = {
                 };
                 "buttons": {
                     "save": string;
+                };
+            };
+            "changeEncounter": {
+                "title": string;
+                "encounterNotFound": string;
+                "proposals": {
+                    "title": string;
+                    "proposalPeriod": string;
+                    "noProposals": string;
+                    "date": string;
+                    "time": string;
+                    "location": string;
+                    "messages": {
+                        "proposalAddedSuccess": string;
+                        "proposalAddedError": string;
+                        "proposalAcceptedSuccess": string;
+                        "proposalAcceptedError": string;
+                        "proposalRejectedSuccess": string;
+                        "proposalRejectedError": string;
+                        "proposalDeletedSuccess": string;
+                        "proposalDeletedError": string;
+                        "generalError": string;
+                    };
+                    "buttons": {
+                        "reject": string;
+                        "accept": string;
+                        "addProposal": string;
+                        "delete": string;
+                    };
+                };
+                "messages": {
+                    "title": string;
+                    "noMessages": string;
+                    "messages": {
+                        "messageSentSuccess": string;
+                        "messageSentError": string;
+                    };
+                    "label": string;
+                    "placeholder": string;
+                    "proposalPeriodInfo": string;
+                };
+                "calendar": {
+                    "encounterNotFound": string;
+                    "filter": {
+                        "labels": {
+                            "homeTeam": string;
+                            "awayTeam": string;
+                        };
+                        "options": {
+                            "allTeams": string;
+                        };
+                    };
+                    "buttons": {
+                        "close": string;
+                    };
+                    "dayContent": {
+                        "otherEncounters": string;
+                        "originalDate": string;
+                        "proposal": string;
+                        "buttons": {
+                            "courtsAvailable": string;
+                        };
+                        "eventWarning": string;
+                        "drawer": {
+                            "courts": string;
+                            "proposal": string;
+                            "originalDate": string;
+                            "availableCourts": string;
+                            "buttons": {
+                                "sendRequest": string;
+                            };
+                            "otherEncounters": string;
+                            "messages": {
+                                "success": string;
+                                "error": string;
+                            };
+                        };
+                    };
                 };
             };
         };
