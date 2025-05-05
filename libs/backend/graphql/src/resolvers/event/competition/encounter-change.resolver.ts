@@ -177,8 +177,8 @@ export class EncounterChangeCompetitionResolver {
           locationHasChanged = true;
         }
 
-        // Save cahnges
-        // Must be before Sync Queue is triggered (othrwise wrong date is passed)
+        // Save changes
+        // Must be before Sync Queue is triggered (otherwise wrong date is passed)
         await encounter.save({ transaction });
 
         await Logging.create({
@@ -202,6 +202,15 @@ export class EncounterChangeCompetitionResolver {
             removeOnFail: false,
           },
         );
+
+        // Remove the selected date from the change dates
+        const selectedDate = selectedDates[0];
+        const dateToRemove = dates.find(
+          (d) => d.date?.getTime() === selectedDate.date?.getTime()
+        );
+        if (dateToRemove) {
+          await dateToRemove.destroy({ transaction });
+        }
 
         encounterChange.accepted = true;
       } else {
