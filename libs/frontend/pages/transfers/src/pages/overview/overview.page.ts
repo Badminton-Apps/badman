@@ -9,7 +9,7 @@ import { Club, ClubMembership } from '@badman/frontend-models';
 import { ClubMembershipType, getSeason } from '@badman/utils';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelect } from '@ng-matero/extensions/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { UploadTransferLoanDialogComponent } from '../dialogs';
 import { TransferService } from './transfer.service';
@@ -27,7 +27,7 @@ import { TransferService } from './transfer.service';
     MatLabel,
     MatInput,
     PageHeaderComponent,
-    TranslateModule,
+    TranslatePipe,
     SelectSeasonComponent,
   ],
 })

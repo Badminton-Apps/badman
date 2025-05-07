@@ -22,7 +22,7 @@ import {
   SelectClubComponent,
 } from '@badman/frontend-components';
 import { EventCompetition, EventEntry, TeamValidationResult } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { from } from 'rxjs';
@@ -42,7 +42,7 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
         MatIconModule,
         MatTooltipModule,
         MatBadgeModule,
-        TranslateModule,
+        TranslatePipe,
         CdkTableModule,
         CdkTreeModule,
         EnrollmentDetailRowDirective,

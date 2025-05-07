@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Club, Location } from '@badman/frontend-models';
 import { NgMapsPlacesModule } from '@ng-maps/places';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { throttleTime } from 'rxjs/operators';
 
 @Component({
@@ -21,7 +21,7 @@ import { throttleTime } from 'rxjs/operators';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslatePipe,
     MatInputModule,
     MatDividerModule,
     MatAutocompleteModule,

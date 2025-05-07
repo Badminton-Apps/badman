@@ -28,7 +28,7 @@ import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
@@ -49,7 +49,7 @@ import { EventMenuComponent } from '../../menus/event-menu/event-menu.component'
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MomentModule,
     MatIconModule,
     MatMenuModule,

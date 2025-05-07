@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { EncounterCompetition, Team } from '@badman/frontend-models';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 import {
   ClubEncounterService,
@@ -33,7 +33,7 @@ import { map } from 'rxjs';
     MatIconModule,
     MatTooltipModule,
     MatSlideToggleModule,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class ClubEncountersComponent {

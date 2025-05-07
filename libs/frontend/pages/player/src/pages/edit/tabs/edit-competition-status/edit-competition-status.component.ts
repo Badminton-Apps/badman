@@ -5,7 +5,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HasClaimComponent } from '@badman/frontend-components';
 import { Player } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { throttleTime, map } from 'rxjs';
 
@@ -18,7 +18,7 @@ import { throttleTime, map } from 'rxjs';
         HasClaimComponent,
         MatSlideToggleModule,
         ReactiveFormsModule,
-        TranslateModule,
+        TranslatePipe,
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
