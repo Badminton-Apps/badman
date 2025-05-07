@@ -334,7 +334,8 @@ export class PlayersResolver {
       throw new Error('You are already claimed ');
     }
 
-    if (player.sub !== null) {
+    // check if null or empty
+    if ((player.sub?.trim()?.length || 0) > 0) {
       throw new Error('Player is already claimed by someone else');
     }
 
