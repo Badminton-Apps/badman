@@ -47,7 +47,7 @@ export class AddDialogComponent {
         clubId: this.fb.control(this.data.team?.clubId),
         season: this.fb.control(this.data.team?.season ?? getSeason()),
         players: this.fb.array([]),
-
+        prefferedLocationId: this.fb.control(this.data.team?.prefferedLocationId),
         preferredDay: this.fb.control(this.data.team?.preferredDay),
         preferredTime: this.fb.control(this.data.team?.preferredTime),
       });
