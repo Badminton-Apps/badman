@@ -1,3 +1,22 @@
+## 6.180.0 (2025-05-07)
+
+### 🚀 Features
+
+- add season selection and update transfer loading logic ([efdb3ee3d](https://github.com/Badminton-Apps/badman/commit/efdb3ee3d))
+- fix double date adapter, and some cleanup on the import to improve perforamnce ([1d284cf53](https://github.com/Badminton-Apps/badman/commit/1d284cf53))
+- add shortcut for searching players ([3f78551c0](https://github.com/Badminton-Apps/badman/commit/3f78551c0))
+- set captain info when known ([951f60724](https://github.com/Badminton-Apps/badman/commit/951f60724))
+
+### 🩹 Fixes
+
+- improve player claim check for null or empty subscription ([64242051c](https://github.com/Badminton-Apps/badman/commit/64242051c))
+- tranfers weren't coming trough ([5ae4f4619](https://github.com/Badminton-Apps/badman/commit/5ae4f4619))
+- add missing control for preferred location ID in form group ([6100e28c5](https://github.com/Badminton-Apps/badman/commit/6100e28c5))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.179.0 (2025-05-05)
 
 ### 🚀 Features
