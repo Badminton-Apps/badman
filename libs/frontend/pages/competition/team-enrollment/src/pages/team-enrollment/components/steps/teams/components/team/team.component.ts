@@ -256,6 +256,15 @@ export class TeamComponent implements OnInit {
     this.checkTeam();
   }
 
+  selectCaptain(player: Player) {
+    this.team().patchValue({
+      ...this.team().value,
+      captainId: player.id,
+      email: player.email,
+      phone: player.phone,
+    } as Team);
+  }
+
   private checkTeam() {
     this.hasWarning = false;
     this.warningMessage = '';
