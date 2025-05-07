@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SubEventCompetition } from '@badman/frontend-models';
 import { LevelType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-event-competition-level-fields',
@@ -17,7 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         MatIconModule,
         ReactiveFormsModule,
         MatSelectModule,

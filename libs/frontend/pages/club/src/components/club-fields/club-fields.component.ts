@@ -20,7 +20,7 @@ import {
   SelectCountrystateComponent,
 } from '@badman/frontend-components';
 import { UseForTeamName } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ClubFieldsForm } from '../../pages';
 
 @Component({
@@ -31,7 +31,7 @@ import { ClubFieldsForm } from '../../pages';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        TranslateModule,
+        TranslatePipe,
         FormsModule,
         MatInputModule,
         MatOptionModule,

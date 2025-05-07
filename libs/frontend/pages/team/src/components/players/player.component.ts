@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
 import { PlayerSearchComponent } from '@badman/frontend-components';
 import { Player, TeamPlayer } from '@badman/frontend-models';
 import { TeamMembershipType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { v4 as uuid } from 'uuid';
 
 export const PLAYERS_CONTROL = 'players';
@@ -28,7 +28,7 @@ export const PLAYERS_CONTROL = 'players';
         CommonModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         MatIconModule,
         MatButtonModule,
         MatSelectModule,

@@ -92,7 +92,7 @@
             [allowCreation]="true"
             [club]="team().value.clubId"
             [clearOnSelection]="false"
-            (whenSelectPlayer)="team().value.captainId = $event.id"
+            (whenSelectPlayer)="selectCaptain($event)"
           ></badman-player-search>
         </div>
         <div class="contact">

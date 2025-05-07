@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Location } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { LOCATIONS } from '../../../../../forms';
@@ -24,7 +24,7 @@ import { LocationAvailibilityForm, LocationComponent, LocationForm } from './com
     selector: 'badman-locations-step',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         MatDialogModule,
         MatButtonModule,

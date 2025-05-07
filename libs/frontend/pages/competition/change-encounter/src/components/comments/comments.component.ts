@@ -18,7 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { Comment, EncounterCompetition } from '@badman/frontend-models';
 import { sortComments } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { Subject, of } from 'rxjs';
@@ -48,7 +48,7 @@ const COMMENTS_QUERY = gql`
         ReactiveFormsModule,
         MomentModule,
         FormsModule,
-        TranslateModule,
+        TranslatePipe,
         MatButtonModule,
         MatFormFieldModule,
         MatInputModule,

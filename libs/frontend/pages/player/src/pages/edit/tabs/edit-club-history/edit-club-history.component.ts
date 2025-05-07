@@ -5,7 +5,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Club, Player } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, Observable, map, switchMap } from 'rxjs';
@@ -18,7 +18,7 @@ import { EditClubHistoryDialogComponent } from '../../dialogs';
     imports: [
         CommonModule,
         MatListModule,
-        TranslateModule,
+        TranslatePipe,
         MomentModule,
         MatDialogModule,
         MatButtonModule,

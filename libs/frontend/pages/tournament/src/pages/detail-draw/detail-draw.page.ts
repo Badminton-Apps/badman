@@ -19,7 +19,7 @@ import {
 } from '@badman/frontend-components';
 import { DrawTournament, EventTournament, Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
@@ -31,7 +31,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatIconModule,
     MatTooltipModule,
     StandingComponent,

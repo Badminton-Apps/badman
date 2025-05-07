@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EntryCompetitionPlayer, Player } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { NgxResize, ResizeResult } from 'ngxtension/resize';
 import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
 import { AssemblyService } from './assembly.service';
@@ -14,7 +14,7 @@ import { AssemblyService } from './assembly.service';
   imports: [
     CommonModule,
     AssemblyMessageComponent,
-    TranslateModule,
+    TranslatePipe,
     NgxResize,
     MatTooltipModule,
     MatIconModule,

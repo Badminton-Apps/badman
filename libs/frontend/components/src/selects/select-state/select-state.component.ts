@@ -2,14 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 import statesList from './states.json';
 
 @Component({
     selector: 'badman-select-state',
-    imports: [CommonModule, MatSelectModule, TranslateModule, ReactiveFormsModule],
+    imports: [CommonModule, MatSelectModule, TranslatePipe, ReactiveFormsModule],
     templateUrl: './select-state.component.html',
     styleUrls: ['./select-state.component.scss']
 })
