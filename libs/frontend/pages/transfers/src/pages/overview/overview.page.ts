@@ -1,12 +1,12 @@
 import { Component, Signal, computed, inject, model } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { PageHeaderComponent } from '@badman/frontend-components';
+import { PageHeaderComponent, SelectSeasonComponent } from '@badman/frontend-components';
 import { Club, ClubMembership } from '@badman/frontend-models';
-import { ClubMembershipType } from '@badman/utils';
+import { ClubMembershipType, getSeason } from '@badman/utils';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelect } from '@ng-matero/extensions/select';
 import { TranslateModule } from '@ngx-translate/core';
@@ -28,6 +28,7 @@ import { TransferService } from './transfer.service';
     MatInput,
     PageHeaderComponent,
     TranslateModule,
+    SelectSeasonComponent,
   ],
 })
 export class OverviewPageComponent {
@@ -38,6 +39,25 @@ export class OverviewPageComponent {
   transfers = this.service.state.transfers;
   loaded = this.service.state.loaded;
   loading = computed(() => !this.loaded());
+
+  // create an array starting from getSeason() and go back 5 years
+  seasons = computed(() => {
+    const currentYear = getSeason();
+    const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+    return years.reverse();
+  });
+
+  seasonControl = new FormControl<number>(getSeason()) as FormControl<number>;
+
+  constructor() {
+    // watch for changes in the seasonControl and update the service state
+    this.seasonControl.valueChanges.subscribe((season) => {
+      console.log('Season changed:', season);
+      if (season) {
+        this.service.state.setSeason(season);
+      }
+    });
+  }
 
   currentClubs = computed(() => {
     const uniqueClubIds = new Set<string>(); // Using Set to store unique club IDs

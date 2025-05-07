@@ -325,7 +325,6 @@ export class TeamComponent implements OnInit {
           where: {
             playerId: player.id,
             systemId: this.system()?.id,
-
             rankingDate: {
               $lte: moment([this.season(), 5, 10]).toISOString(),
             },
