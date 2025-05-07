@@ -4,14 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SelectClubsService } from './select-club.service';
 
 @Component({
     selector: 'badman-select-club',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         FormsModule,
         MatFormFieldModule,

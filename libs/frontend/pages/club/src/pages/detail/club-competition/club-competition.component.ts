@@ -29,7 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { BadmanBlockModule, EnrollmentMessageComponent } from '@badman/frontend-components';
 import { Club, Comment, EventCompetition, Location, Team } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { of } from 'rxjs';
@@ -52,7 +52,7 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     MatMenuModule,
     MatButtonModule,
     MomentModule,
-    TranslateModule,
+    TranslatePipe,
     CdkTableModule,
     CdkTreeModule,
     EnrollmentDetailRowDirective,

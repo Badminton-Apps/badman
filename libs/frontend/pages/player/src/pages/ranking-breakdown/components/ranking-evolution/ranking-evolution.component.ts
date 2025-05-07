@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -21,7 +21,7 @@ import { ChartComponent } from './components';
     templateUrl: './ranking-evolution.component.html',
     styleUrls: ['./ranking-evolution.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, TranslateModule, ChartComponent]
+    imports: [CommonModule, TranslatePipe, ChartComponent]
 })
 export class RankingEvolutionComponent implements OnInit {
   private platformId = inject<string>(PLATFORM_ID);

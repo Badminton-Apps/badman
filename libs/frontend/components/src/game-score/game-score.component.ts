@@ -3,11 +3,11 @@ import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-game-score',
-    imports: [CommonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, TranslateModule],
+    imports: [CommonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, TranslatePipe],
     templateUrl: './game-score.component.html',
     styleUrls: ['./game-score.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 import { HasClaimComponent, PlayerSearchComponent } from '@badman/frontend-components';
 import { Location, Player, Role } from '@badman/frontend-models';
 import { SubEventType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
@@ -23,7 +23,7 @@ import { map, startWith, switchMap } from 'rxjs/operators';
         CommonModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         FormsModule,
         MatIconModule,
         MatButtonModule,

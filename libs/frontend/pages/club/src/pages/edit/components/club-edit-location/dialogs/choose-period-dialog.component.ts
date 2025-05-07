@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'badman-choose-period-dialog',
@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDatepickerModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslatePipe,
     MatDialogModule,
     MatButtonModule,
   ],

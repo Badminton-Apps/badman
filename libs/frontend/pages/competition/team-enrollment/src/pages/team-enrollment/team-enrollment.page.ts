@@ -19,7 +19,7 @@ import {
   getNextSeason,
   startOfSeason,
 } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { forkJoin, lastValueFrom } from 'rxjs';
@@ -81,7 +81,7 @@ export type TeamForm = FormGroup<{
     ReactiveFormsModule,
     TeamsStepComponent,
     TeamsTransferStepComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class TeamEnrollmentComponent implements OnInit, OnDestroy {
@@ -389,7 +389,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         panelClass: 'success',
       });
 
-      this.nextStep()
+      this.nextStep();
     } catch (error) {
       this.snackBar.open(
         this.translate.instant('all.competition.team-enrollment.saved-failed'),

@@ -35,7 +35,7 @@ import {
   TeamPlayer,
 } from '@badman/frontend-models';
 import { SubEventTypeEnum, TeamMembershipType, getIndexFromPlayers } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
@@ -46,7 +46,7 @@ import { TeamEnrollmentDataService } from '../../../../../service/team-enrollmen
   selector: 'badman-team',
   imports: [
     CommonModule,
-    TranslateModule,
+    TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
     MatButtonModule,

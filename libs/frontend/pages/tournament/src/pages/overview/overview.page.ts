@@ -34,7 +34,7 @@ import { JobsService } from '@badman/frontend-queue';
 import { EventTournament } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, lastValueFrom, merge } from 'rxjs';
@@ -65,7 +65,7 @@ const FETCH_TOURNAMENTS = gql`
     imports: [
         CommonModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         MomentModule,
         HasClaimComponent,

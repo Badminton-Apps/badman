@@ -42,7 +42,7 @@ import {
   EncounterCompetition,
 } from '@badman/frontend-models';
 import { ChangeEncounterAvailability, getSeasonPeriod } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
@@ -77,7 +77,7 @@ const CHANGE_QUERY = gql`
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     MomentModule,
     MatFormFieldModule,
     MatOptionModule,

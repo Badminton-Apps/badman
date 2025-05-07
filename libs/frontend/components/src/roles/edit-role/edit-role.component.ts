@@ -20,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Claim, Player, Role } from '@badman/frontend-models';
 import { SecurityType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
 import { groupBy, map, mergeMap, shareReplay, toArray } from 'rxjs/operators';
@@ -50,7 +50,7 @@ const roleQuery = gql`
     selector: 'badman-edit-role',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         MatButtonModule,
         MatIconModule,
         MatDividerModule,

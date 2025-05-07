@@ -12,7 +12,7 @@ import {
 } from '@badman/frontend-components';
 import { EventCompetition } from '@badman/frontend-models';
 import { JobsService } from '@badman/frontend-queue';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { lastValueFrom } from 'rxjs';
 import { RisersFallersDialogComponent } from '../../../dialogs';
 import { EventMenuComponent } from '../../../menus/event-menu/event-menu.component';
@@ -23,7 +23,7 @@ import { EventOverviewService } from '../overview.service';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatMenuModule,
     MatButtonModule,
     MatIconModule,

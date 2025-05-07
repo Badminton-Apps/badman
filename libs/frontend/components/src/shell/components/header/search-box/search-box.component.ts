@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, ReplaySubject, merge } from 'rxjs';
 import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
@@ -20,7 +20,7 @@ type SearchType = { id: string; name: string; slug: string };
     selector: 'badman-search-box',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         MatInputModule,
         MatButtonModule,
         MatIconModule,

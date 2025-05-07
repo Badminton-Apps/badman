@@ -12,7 +12,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { InMemoryCache } from '@apollo/client/cache';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { DrawCompetition, EventCompetition, SubEventCompetition } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { BehaviorSubject, takeUntil, zip } from 'rxjs';
@@ -20,10 +20,10 @@ import { BehaviorSubject, takeUntil, zip } from 'rxjs';
 @Component({
   imports: [
     CommonModule,
-    TranslateModule,
+    TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     MatIconModule,
     MatButtonModule,
     MatDialogModule,

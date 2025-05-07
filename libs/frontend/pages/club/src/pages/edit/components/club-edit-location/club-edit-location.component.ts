@@ -31,7 +31,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BadmanBlockModule, HasClaimComponent } from '@badman/frontend-components';
 import { Club, Location } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, MutationResult, gql } from 'apollo-angular';
 import { Observable, forkJoin } from 'rxjs';
 import { ChoosePeriodDialogComponent } from './dialogs/choose-period-dialog.component';
@@ -87,7 +87,7 @@ export type LocationForm = FormGroup<{
         MatOptionModule,
         MatDatepickerModule,
         MatTooltipModule,
-        TranslateModule,
+        TranslatePipe,
         MatListModule,
         MatSelectModule,
         MatInputModule,

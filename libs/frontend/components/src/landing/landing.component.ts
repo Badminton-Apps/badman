@@ -17,7 +17,7 @@ import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
@@ -29,7 +29,7 @@ import { BetaComponent } from './components';
     imports: [
         CommonModule,
         BetaComponent,
-        TranslateModule,
+        TranslatePipe,
         MatIconModule,
         UpcomingGamesComponent,
         RankingTableComponent,

@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { RANKING_CONFIG } from '../../injection';
 import { IRankingConfig } from '../../interfaces';
@@ -24,7 +24,7 @@ import { IRankingConfig } from '../../interfaces';
   selector: 'badman-upload-ranking',
   imports: [
     CommonModule,
-    TranslateModule,
+    TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
     MatDialogModule,

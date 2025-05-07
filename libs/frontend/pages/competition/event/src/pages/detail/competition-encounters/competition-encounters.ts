@@ -6,7 +6,7 @@ import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/sl
 import { Club, EncounterCompetition, Team } from '@badman/frontend-models';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelect } from '@ng-matero/extensions/select';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 import { CompetitionEncounterService } from './competition-encounters.service';
 
@@ -22,7 +22,7 @@ import { CompetitionEncounterService } from './competition-encounters.service';
     MatFormField,
     MatLabel,
     MatSlideToggleModule,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class CompetitionEncountersComponent {
