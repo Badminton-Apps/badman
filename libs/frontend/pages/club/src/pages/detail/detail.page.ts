@@ -13,7 +13,7 @@ import {
   SelectSeasonComponent,
 } from '@badman/frontend-components';
 import { TwizzitService } from '@badman/frontend-twizzit';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { injectParams } from 'ngxtension/inject-params';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 import { lastValueFrom } from 'rxjs';
@@ -36,7 +36,7 @@ import { ClubEncounterService } from './club-encounters/club-encounters.service'
     styleUrls: ['./detail.page.scss'],
     imports: [
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         MatMenuModule,
         MatIcon,
         MatButtonModule,

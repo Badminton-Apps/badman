@@ -12,14 +12,14 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 
 @Component({
     imports: [
         CommonModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         MomentModule,
         MatButtonModule,

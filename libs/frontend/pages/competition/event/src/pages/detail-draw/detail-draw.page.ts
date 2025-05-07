@@ -14,7 +14,7 @@ import {
 } from '@badman/frontend-components';
 import { DrawCompetition, EventCompetition, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
@@ -29,7 +29,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatTooltipModule,
     MatIconModule,
     MatButtonModule,

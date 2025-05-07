@@ -11,7 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SelectPlayerComponent } from '@badman/frontend-components';
 import { Game, Player, GamePlayer, RankingPoint, RankingSystem } from '@badman/frontend-models';
 import { GameType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { gql } from 'apollo-angular';
 import { DocumentNode } from 'graphql';
 import { v4 as uuidv4 } from 'uuid';
@@ -22,7 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
     styleUrls: ['./add-game.component.scss'],
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         MatDialogModule,
         MatSlideToggleModule,

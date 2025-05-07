@@ -3,11 +3,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { I18nTranslations } from '@badman/utils';
 import { PathImpl2 } from '@nestjs/config';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     templateUrl: './confirm.dialog.html',
-    imports: [MatDialogModule, MatButtonModule, TranslateModule]
+    imports: [MatDialogModule, MatButtonModule, TranslatePipe]
 })
 export class ConfirmDialogComponent {
   public dialogRef = inject<MatDialogRef<ConfirmDialogComponent>>(

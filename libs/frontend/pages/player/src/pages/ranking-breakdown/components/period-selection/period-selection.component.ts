@@ -11,7 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { RankingSystem } from '@badman/frontend-models';
 import { getRankingPeriods } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { RankingBreakdownService } from '../../services/ranking-breakdown.service';
@@ -24,7 +24,7 @@ import { RankingBreakdownService } from '../../services/ranking-breakdown.servic
         CommonModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         MomentModule,
         MatIconModule,
         MatButtonModule,
