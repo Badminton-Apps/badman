@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ClaimComponent } from '@badman/frontend-components';
 import { Claim, Role } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-role-fields',
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        TranslateModule,
+        TranslatePipe,
         MatInputModule,
         MatButtonModule,
         MatIconModule,

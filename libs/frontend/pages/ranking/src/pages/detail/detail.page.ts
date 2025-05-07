@@ -17,7 +17,7 @@ import {
 import { JobsService } from '@badman/frontend-queue';
 import { RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { take } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -29,7 +29,7 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     styleUrls: ['./detail.page.scss'],
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         RouterModule,
         MomentModule,
         MatIconModule,

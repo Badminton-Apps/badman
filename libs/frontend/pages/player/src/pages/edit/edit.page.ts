@@ -16,7 +16,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
 import { Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -37,7 +37,7 @@ import {
         CommonModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         EditRankingComponent,
         EditCompetitionStatusComponent,
         EditRankingAllComponent,

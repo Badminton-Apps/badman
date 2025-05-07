@@ -13,7 +13,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
 import { SubEventTypeEnum, sortTeams } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { pairwise, startWith, takeUntil } from 'rxjs';
 import { NATIONAL_COUNTS_AS_MIXED, TEAMS } from '../../../../../forms';
@@ -30,7 +30,7 @@ import { TeamForm } from '../../../team-enrollment.page';
     MatProgressBarModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslatePipe,
   ],
   templateUrl: './teams-transfer.step.html',
   styleUrls: ['./teams-transfer.step.scss'],

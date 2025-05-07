@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angu
 import { RouterModule } from '@angular/router';
 import { DrawCompetition, DrawTournament, Location } from '@badman/frontend-models';
 import { NgMapsGoogleModule } from '@ng-maps/google';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 
 @Component({
@@ -11,7 +11,7 @@ import { Apollo, gql } from 'apollo-angular';
     templateUrl: './draw-locations-map.component.html',
     styleUrls: ['./draw-locations-map.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, RouterModule, TranslateModule, NgMapsGoogleModule]
+    imports: [CommonModule, RouterModule, TranslatePipe, NgMapsGoogleModule]
 })
 export class DrawLocationMapComponent implements OnInit {
   private apollo = inject(Apollo);

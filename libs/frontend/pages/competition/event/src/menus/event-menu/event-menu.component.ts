@@ -31,7 +31,7 @@ import { CpService } from '@badman/frontend-cp';
 import { ExcelService } from '@badman/frontend-excel';
 import { EventCompetition } from '@badman/frontend-models';
 import { JobsService } from '@badman/frontend-queue';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { lastValueFrom, take } from 'rxjs';
@@ -41,7 +41,7 @@ import { lastValueFrom, take } from 'rxjs';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MomentModule,
     MatIconModule,
     MatMenuModule,

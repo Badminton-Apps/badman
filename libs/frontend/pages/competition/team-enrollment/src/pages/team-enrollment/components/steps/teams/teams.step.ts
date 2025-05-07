@@ -36,7 +36,7 @@ import {
   UseForTeamName,
   getLetterForRegion,
 } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { combineLatest } from 'rxjs';
 import { debounceTime, map, pairwise, startWith, takeUntil } from 'rxjs/operators';
@@ -51,7 +51,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   selector: 'badman-teams-step',
   imports: [
     CommonModule,
-    TranslateModule,
+    TranslatePipe,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,

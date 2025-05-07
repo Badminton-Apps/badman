@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, effect, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -15,35 +15,36 @@ import {
 } from '@badman/frontend-components';
 import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CompetitionEventsComponent } from './competition-events/competition-events.component';
 import { EventOverviewService } from './overview.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
-    selector: 'badman-competition-overview',
-    templateUrl: './overview.page.html',
-    styleUrls: ['./overview.page.scss'],
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        MomentModule,
-        MatIconModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-        MatDialogModule,
-        PageHeaderComponent,
-        HasClaimComponent,
-        CompetitionEventsComponent,
-        SelectSeasonComponent,
-    ]
+  selector: 'badman-competition-overview',
+  templateUrl: './overview.page.html',
+  styleUrls: ['./overview.page.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    MomentModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatDialogModule,
+    PageHeaderComponent,
+    HasClaimComponent,
+    CompetitionEventsComponent,
+    SelectSeasonComponent,
+  ],
 })
 export class OverviewPageComponent implements OnInit {
   private readonly translate = inject(TranslateService);
@@ -55,7 +56,15 @@ export class OverviewPageComponent implements OnInit {
   eventService = inject(EventOverviewService);
 
   filter = this.eventService.filter;
-  
+
+  private readonly _adapter = inject<DateAdapter<unknown, unknown>>(DateAdapter);
+
+  constructor() {
+    console.log('Locale', this._adapter);
+    this._adapter.localeChanges.subscribe(() => {
+      console.log('Locale changed', this._adapter);
+    });
+  }
 
   ngOnInit(): void {
     this.translate.get(['all.competition.title']).subscribe((translations) => {

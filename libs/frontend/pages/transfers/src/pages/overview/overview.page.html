@@ -17,6 +17,8 @@
 <ng-template #toolbar>
   <div class="actions">
     <div class="row">
+      <badman-select-season [control]="this.seasonControl" />
+
       <mat-form-field>
         <mat-label>{{ 'all.transfers-loan.filter.player' | translate }}</mat-label>
         <input matInput />

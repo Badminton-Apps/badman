@@ -5,14 +5,14 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { EventEntry } from '@badman/frontend-models';
 import { sortStanding } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'badman-standing',
   templateUrl: './standing.component.html',
   styleUrls: ['./standing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, TranslateModule, RouterModule, MatTableModule, MatIconModule],
+  imports: [CommonModule, TranslatePipe, RouterModule, MatTableModule, MatIconModule],
 })
 export class StandingComponent implements OnInit {
   entries = input.required<EventEntry[]>();

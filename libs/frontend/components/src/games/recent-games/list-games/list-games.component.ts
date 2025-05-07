@@ -20,7 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { Game, GamePlayer } from '@badman/frontend-models';
 import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { LoadingBlockComponent } from '../../../loading-block';
 import { RecentGamesService } from '../recent-games.service';
@@ -29,7 +29,7 @@ import { RecentGamesService } from '../recent-games.service';
     imports: [
         CommonModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         MomentModule,
         ReactiveFormsModule,
         MatButtonModule,
