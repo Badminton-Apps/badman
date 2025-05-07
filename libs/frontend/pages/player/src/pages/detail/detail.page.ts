@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Signal, computed, effect, inject, untracked } from '@angular/core';
+import { Component, Signal, computed, effect, inject, signal, untracked } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -20,34 +20,35 @@ import {
 } from '@badman/frontend-components';
 import { Game } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { injectParams } from 'ngxtension/inject-params';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShowLevelComponent } from './components/show-level.component';
 import { PlayerDetailService } from './detail.service';
 import { SelectPeriodDialogComponent } from './dialogs/select-period/select-period.component';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 @Component({
-    selector: 'badman-player-detail',
-    templateUrl: './detail.page.html',
-    styleUrls: ['./detail.page.scss'],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatChipsModule,
-        MatProgressBarModule,
-        MatDialogModule,
-        RecentGamesComponent,
-        UpcomingGamesComponent,
-        PageHeaderComponent,
-        HasClaimComponent,
-        ShowLevelComponent,
-    ]
+  selector: 'badman-player-detail',
+  templateUrl: './detail.page.html',
+  styleUrls: ['./detail.page.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatChipsModule,
+    MatProgressBarModule,
+    MatDialogModule,
+    RecentGamesComponent,
+    UpcomingGamesComponent,
+    PageHeaderComponent,
+    HasClaimComponent,
+    ShowLevelComponent,
+  ],
 })
 export class DetailPageComponent {
   // private
@@ -62,6 +63,9 @@ export class DetailPageComponent {
 
   readonly playerId = injectParams('id') as Signal<string>;
   private readonly detailService = inject(PlayerDetailService);
+
+  private readonly _locale = signal(inject<unknown>(MAT_DATE_LOCALE));
+  private readonly _adapter = inject<DateAdapter<unknown, unknown>>(DateAdapter);
 
   player = this.detailService.player;
   teams = this.detailService.teams;
@@ -117,6 +121,10 @@ export class DetailPageComponent {
       untracked(() => {
         this.detailService.state.loadTeams();
       });
+    });
+
+    effect(() => {
+      console.log(this._adapter, this._locale());
     });
   }
 

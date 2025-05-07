@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { NotificationService } from '@badman/frontend-auth';
 import { Notification } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { Observable } from 'rxjs';
 
@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
         CommonModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         MatListModule,
         MatButtonModule,
         MatIconModule,

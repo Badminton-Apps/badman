@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input, HostListener } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -9,7 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { DEVICE } from '@badman/frontend-utils';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, ReplaySubject, merge } from 'rxjs';
 import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
@@ -20,7 +21,7 @@ type SearchType = { id: string; name: string; slug: string };
     selector: 'badman-search-box',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         MatInputModule,
         MatButtonModule,
         MatIconModule,
@@ -31,8 +32,10 @@ type SearchType = { id: string; name: string; slug: string };
     styleUrls: ['./search-box.component.scss']
 })
 export class SearchBoxComponent implements OnInit {
-  private apollo = inject(Apollo);
-  private router = inject(Router);
+  private readonly apollo = inject(Apollo);
+  private readonly router = inject(Router);
+  readonly isMobile = inject(DEVICE);
+
   label = input('all.search.placeholder');
 
   formControl!: FormControl;
@@ -46,6 +49,17 @@ export class SearchBoxComponent implements OnInit {
       __typename: string;
     })[]
   > = new ReplaySubject(0);
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 'k') {
+      event.preventDefault();
+      const inputElement = document.querySelector('input[type="text"]');
+      if (inputElement) {
+        (inputElement as HTMLElement).focus();
+      }
+    }
+  }
 
   ngOnInit() {
     this.formControl = new FormControl();

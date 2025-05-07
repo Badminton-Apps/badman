@@ -7,13 +7,13 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { ClubMembershipType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-user-shortcuts',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         MatListModule,
         MatDividerModule,
         RouterModule,

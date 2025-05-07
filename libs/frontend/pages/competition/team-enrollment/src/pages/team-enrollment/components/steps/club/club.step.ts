@@ -21,7 +21,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { SelectClubSignalsComponent } from '@badman/frontend-components';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { CLUB, EMAIL } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -39,7 +39,7 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     MatInputModule,
     MatProgressBarModule,
     SelectClubSignalsComponent,

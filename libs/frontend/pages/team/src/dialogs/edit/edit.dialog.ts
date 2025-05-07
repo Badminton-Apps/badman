@@ -14,7 +14,7 @@ import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-com
 import { Player, Team, TeamPlayer, Location } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { SubEventType, TeamMembershipType, sortPlayers } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map, pairwise, startWith, take } from 'rxjs';
 import { PLAYERS_CONTROL, TeamFieldComponent, TeamPlayersComponent } from '../../components';
@@ -40,7 +40,7 @@ const PLAYERS_QUERY = gql`
   styleUrls: ['./edit.dialog.scss'],
   imports: [
     CommonModule,
-    TranslateModule,
+    TranslatePipe,
     TeamFieldComponent,
     TeamPlayersComponent,
     MatDialogModule,

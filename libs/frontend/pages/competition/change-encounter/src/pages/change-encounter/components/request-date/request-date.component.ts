@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { input } from '@angular/core';
 import { EncounterCompetition } from '@badman/frontend-models';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
@@ -21,7 +21,7 @@ import { DateSelectorComponent } from '../../../../components';
         DateSelectorComponent,
         ReactiveFormsModule,
         FormsModule,
-        TranslateModule,
+        TranslatePipe,
         MatSelectModule,
         MatIconModule,
         MatButtonModule,

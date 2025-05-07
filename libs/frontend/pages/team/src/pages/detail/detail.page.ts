@@ -24,7 +24,7 @@ import { EventEntry, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { getSeason } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
@@ -40,7 +40,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         CommonModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         MatIconModule,
         MatButtonModule,
         MatMenuModule,

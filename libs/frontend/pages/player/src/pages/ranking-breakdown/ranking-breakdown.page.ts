@@ -18,7 +18,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { Player, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectParams } from 'ngxtension/inject-params';
@@ -38,7 +38,7 @@ import {  Ranking } from '@badman/utils';
         CommonModule,
         ReactiveFormsModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         MatIconModule,
         MatFormFieldModule,
         MatSelectModule,

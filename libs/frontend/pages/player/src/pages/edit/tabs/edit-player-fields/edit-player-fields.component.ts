@@ -22,7 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClaimService } from '@badman/frontend-auth';
 import { HasClaimComponent } from '@badman/frontend-components';
 import { Player } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { throttleTime, filter, switchMap } from 'rxjs/operators';
 
@@ -38,7 +38,7 @@ import { throttleTime, filter, switchMap } from 'rxjs/operators';
         MatInputModule,
         HasClaimComponent,
         MatSelectModule,
-        TranslateModule,
+        TranslatePipe,
     ]
 })
 export class EditPlayerFieldsComponent implements OnInit {

@@ -46,7 +46,7 @@ import {
   getSeason,
   sortTeams,
 } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectParams } from 'ngxtension/inject-params';
@@ -90,7 +90,7 @@ export type ClubFieldsForm = FormGroup<{
     FormsModule,
     RouterModule,
     MomentModule,
-    TranslateModule,
+    TranslatePipe,
     ClubEditLocationComponent,
     ClubEditTeamComponent,
     ClubFieldsComponent,

@@ -13,7 +13,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { TRANSFERLOAN_CONFIG } from '../../../injection';
 import { ITransferLoanConfig } from '../../../interfaces/transfer-loan-config.interface';
@@ -24,7 +24,7 @@ import { getSeason } from '@badman/utils';
     selector: 'badman-upload-transfer-loan',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         FormsModule,
         MatDialogModule,

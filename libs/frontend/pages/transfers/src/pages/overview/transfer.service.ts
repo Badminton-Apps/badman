@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { ClubMembership } from '@badman/frontend-models';
+import { endOfSeason, getSeason, startOfSeason } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { Socket } from 'ngx-socket-io';
 import { signalSlice } from 'ngxtension/signal-slice';
@@ -11,6 +12,7 @@ export interface TransferState {
   transfers: ClubMembership[];
   error: string | null;
   loaded: boolean;
+  season: number;
 }
 
 @Injectable({
@@ -24,6 +26,7 @@ export class TransferService {
     transfers: [],
     error: null,
     loaded: false,
+    season: getSeason(),
   };
 
   // selectors
@@ -32,7 +35,7 @@ export class TransferService {
   private error$ = new Subject<string | null>();
 
   sources$ = merge(
-    this._loadTransfersAndLoans().pipe(
+    this._loadTransfersAndLoans(this.initialState.season).pipe(
       map((transfers) => ({
         transfers,
         loaded: true,
@@ -50,7 +53,9 @@ export class TransferService {
           switchMap((event) => this._updateTransferOrLoan(event)),
           // load the default system
           switchMap(() =>
-            this._loadTransfersAndLoans().pipe(map((transfers) => ({ transfers, loading: false }))),
+            this._loadTransfersAndLoans(_state().season).pipe(
+              map((transfers) => ({ transfers, loading: false })),
+            ),
           ),
         ),
       deleteMembership: (_state, action$: Observable<Partial<ClubMembership>>) =>
@@ -58,19 +63,32 @@ export class TransferService {
           switchMap((event) => this._deleteTransferOrLoan(event)),
           // load the default system
           switchMap(() =>
-            this._loadTransfersAndLoans().pipe(map((transfers) => ({ transfers, loading: false }))),
+            this._loadTransfersAndLoans(_state().season).pipe(
+              map((transfers) => ({ transfers, loading: false })),
+            ),
           ),
         ),
       reload: (_state, action$: Observable<void>) =>
         action$.pipe(
           switchMap(() =>
-            this._loadTransfersAndLoans().pipe(map((transfers) => ({ transfers, loading: false }))),
+            this._loadTransfersAndLoans(_state().season).pipe(
+              map((transfers) => ({ transfers, loading: false })),
+            ),
+          ),
+        ),
+
+      setSeason: (_state, action$: Observable<number>) =>
+        action$.pipe(
+          switchMap((season) =>
+            this._loadTransfersAndLoans(season).pipe(
+              map((transfers) => ({ transfers, season, loading: false })),
+            ),
           ),
         ),
     },
   });
 
-  private _loadTransfersAndLoans() {
+  private _loadTransfersAndLoans(season: number) {
     return this.apollo
       .query<{
         clubPlayerMemberships: { rows: ClubMembership[] };
@@ -110,6 +128,10 @@ export class TransferService {
         variables: {
           where: {
             confirmed: false,
+            start: {
+              $gte: startOfSeason(season),
+              $lte: endOfSeason(season),
+            },
           },
         },
       })

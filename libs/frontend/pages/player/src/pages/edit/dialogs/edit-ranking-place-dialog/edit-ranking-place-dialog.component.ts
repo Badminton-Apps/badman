@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { RankingSystems } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 
 @Component({
@@ -25,7 +25,7 @@ import moment, { Moment } from 'moment';
     imports: [
         CommonModule,
         MatDialogModule,
-        TranslateModule,
+        TranslatePipe,
         MatDatepickerModule,
         MatFormFieldModule,
         MatInputModule,

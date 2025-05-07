@@ -11,7 +11,7 @@ import { HasClaimComponent } from '@badman/frontend-components';
 import { Player, Setting } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { AvaliableLanguages, NotificationType } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, map, tap } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -28,7 +28,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatSelectModule,
     MatOptionModule,
     MatButtonModule,
-    TranslateModule,
+    TranslatePipe,
     MatSnackBarModule,
     HasClaimComponent,
   ],

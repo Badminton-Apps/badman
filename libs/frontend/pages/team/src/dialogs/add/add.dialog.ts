@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Team, TeamPlayer, Location } from '@badman/frontend-models';
 import { SubEventType, getSeason } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
 
@@ -15,7 +15,7 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
   styleUrls: ['./add.dialog.scss'],
   imports: [
     CommonModule,
-    TranslateModule,
+    TranslatePipe,
     TeamFieldComponent,
     TeamPlayersComponent,
     MatDialogModule,
@@ -47,7 +47,7 @@ export class AddDialogComponent {
         clubId: this.fb.control(this.data.team?.clubId),
         season: this.fb.control(this.data.team?.season ?? getSeason()),
         players: this.fb.array([]),
-
+        prefferedLocationId: this.fb.control(this.data.team?.prefferedLocationId),
         preferredDay: this.fb.control(this.data.team?.preferredDay),
         preferredTime: this.fb.control(this.data.team?.preferredTime),
       });

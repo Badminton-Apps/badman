@@ -10,9 +10,15 @@
   badman-teams-step {
     @include team.color($theme);
     @include team-enrollment.color($theme);
+    $danger-palette: map.get($theme, danger);
+    $warn-palette: map.get($theme, warn);
 
-    
-
+    .error {
+      color: mat.m2-get-color-from-palette($danger-palette, 300);
+    }
+    .warning {
+      color: mat.m2-get-color-from-palette($warn-palette, 300);
+    }
   }
 }
 
@@ -20,8 +26,6 @@
   badman-teams-step {
     @include team.typography($theme);
     @include team-enrollment.typography($theme);
-
-    
 
     .description {
       font: mat.get-theme-typography($theme, caption, font);
