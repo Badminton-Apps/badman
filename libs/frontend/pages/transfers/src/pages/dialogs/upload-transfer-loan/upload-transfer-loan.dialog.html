@@ -1,4 +1,12 @@
-<h1 mat-dialog-title>{{ 'all.transfers-loan.upload.title' | translate }}</h1>
+<h1 mat-dialog-title>
+  {{
+    'all.transfers-loan.upload.title'
+      | translate
+        : {
+            season: this.data.season,
+          }
+  }}
+</h1>
 <div mat-dialog-content>
   <p [innerHTML]="'all.transfers-loan.upload.description' | translate"></p>
   @if (!this.uploadedFile) {
@@ -30,7 +38,7 @@
   @if (uploadedFile) {
     <h3>Options</h3>
     <div class="options">
-      <badman-select-season [(value)]="this.season"></badman-select-season>
+      <badman-select-season [(value)]="this.data.season"></badman-select-season>
 
       <mat-form-field>
         <mat-label>{{ 'all.transfers-loan.upload.file-type' | translate }}</mat-label>
