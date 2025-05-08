@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,26 +21,26 @@ import { SelectSeasonComponent } from '@badman/frontend-components';
 import { getSeason } from '@badman/utils';
 
 @Component({
-    selector: 'badman-upload-transfer-loan',
-    imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatIconModule,
-        MatTableModule,
-        MatProgressBarModule,
-        MatChipsModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        SelectSeasonComponent,
-    ],
-    templateUrl: './upload-transfer-loan.dialog.html',
-    styleUrls: ['./upload-transfer-loan.dialog.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-upload-transfer-loan',
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatProgressBarModule,
+    MatChipsModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    SelectSeasonComponent,
+  ],
+  templateUrl: './upload-transfer-loan.dialog.html',
+  styleUrls: ['./upload-transfer-loan.dialog.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadTransferLoanDialogComponent {
   private config = inject<ITransferLoanConfig>(TRANSFERLOAN_CONFIG);
@@ -49,6 +49,10 @@ export class UploadTransferLoanDialogComponent {
     MatDialogRef<UploadTransferLoanDialogComponent>,
   );
   private changeDetectorRef = inject(ChangeDetectorRef);
+  public data = inject<{
+    season: number;
+  }>(MAT_DIALOG_DATA);
+
   snackbar = inject(MatSnackBar);
 
   dragging = false;
@@ -58,7 +62,6 @@ export class UploadTransferLoanDialogComponent {
   uploadProgress$?: Subscription;
 
   transferOrLoan: 'transfer' | 'loan' | null = null;
-  season: number = getSeason();
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -129,12 +132,6 @@ export class UploadTransferLoanDialogComponent {
       );
     }
 
-    // find if there are years in the file name
-    const matches = this.uploadedFile.name.match(/\d{4}/g);
-    if (matches) {
-      this.season = Math.min(...matches.map((m) => parseInt(m, 10)));
-    }
-
     this.uploading = false;
     this.changeDetectorRef.markForCheck();
   }
@@ -148,7 +145,7 @@ export class UploadTransferLoanDialogComponent {
     const formData = new FormData();
     formData.append('file', this.uploadedFile, this.uploadedFile.name);
     formData.append('transferOrLoan', this.transferOrLoan);
-    formData.append('season', this.season.toString());
+    formData.append('season', this.data.season.toString());
 
     try {
       const result = await lastValueFrom(

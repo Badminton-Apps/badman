@@ -1101,6 +1101,7 @@
     "filter": {
       "current-club": "Club actuel",
       "new-club": "Nouveau club",
+      "only-confirmed": "Confirmé",
       "player": "Joueur"
     },
     "title": "Transferts / prêts",
@@ -1110,7 +1111,7 @@
       "file-type": "Dossier de transfert ou de prêt",
       "hint": "Faites glisser votre fichier ici",
       "loan-file": "Dossier de prêt",
-      "title": "Télécharger le fichier de transfert / de prêt",
+      "title": "Télécharger le fichier de transfert / prêt pour {season}",
       "transfer-file": "Transférer le fichier",
       "unkown": "Inconnu"
     }
