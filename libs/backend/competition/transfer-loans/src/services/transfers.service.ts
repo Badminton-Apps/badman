@@ -1,6 +1,7 @@
 import { Club, ClubPlayerMembership, Player } from '@badman/backend-database';
 import { ClubMembershipType } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
+import e from 'express';
 import moment from 'moment';
 import 'multer';
 import * as XLSX from 'xlsx';
@@ -20,7 +21,7 @@ export class TransferService {
     return await this._createMemberships(mappedData, season);
   }
 
-  private async _createMemberships(data: TransfersMapped[], season: number) {
+  private async _createMemberships(data: Transfers[], season: number) {
     const players = await Player.findAll({
       attributes: ['id', 'memberId', 'firstName', 'lastName'],
       where: {
@@ -56,25 +57,30 @@ export class TransferService {
         continue;
       }
 
-      let membership = memberships.find((m) => m.playerId === player.id);
-      if (!membership) {
+      const membership = memberships.find((m) => m.playerId === player.id);
+      if (!membership || membership.clubId !== newClubId) {
         this.logger.debug(`Processing new club membership for player ${player.fullName}`);
-        membership = new ClubPlayerMembership();
-        membership.playerId = player.id;
-        membership.start = moment()
+        const newMembership = new ClubPlayerMembership();
+        newMembership.playerId = player.id;
+        newMembership.start = moment()
           .set('year', season)
           .startOf('year')
           .set('month', 6)
           .set('date', 1)
           .toDate();
-        membership.membershipType = ClubMembershipType.NORMAL;
+        newMembership.membershipType = ClubMembershipType.NORMAL;
+        newMembership.clubId = newClubId;
+        newMembership.confirmed = true;
+        await newMembership.save();
+
+        if (membership && membership.confirmed) {
+          // mark the old membership as ended
+          membership.end = moment().toDate();
+          await membership.save();
+        }
       } else {
         this.logger.debug(`Processing existing club membership for player ${player.fullName}`);
       }
-
-      membership.clubId = newClubId;
-      membership.confirmed = true;
-      await membership.save();
     }
   }
 
@@ -85,35 +91,13 @@ export class TransferService {
     });
 
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils
-      .sheet_to_json<Transfers>(firstSheet, {
-        range: 1,
-      })
-      .map((d) => ({
-        Lidnummer: d.Lidnummer,
-        Voornaam: d.Voornaam,
-        Naam: d.Naam,
-        OudeClub: d['Oude Club'],
-        OudClubnummer: parseInt(d['Oud clubnummer']) || -1,
-        NieuweClub: d['Nieuwe club'],
-        NieuwClubnummer: parseInt(d['Nieuw clubnummer']) || -1,
-      }));
+    const data = XLSX.utils.sheet_to_json<Transfers>(firstSheet);
 
     return data;
   }
 }
 
 interface Transfers {
-  Lidnummer: number;
-  Voornaam: string;
-  Naam: string;
-  ['Oude Club']: string;
-  ['Oud clubnummer']: string;
-  ['Nieuwe club']: string;
-  ['Nieuw clubnummer']: string;
-}
-
-interface TransfersMapped {
   Lidnummer: number;
   Voornaam: string;
   Naam: string;
