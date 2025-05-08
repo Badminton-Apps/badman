@@ -1,10 +1,14 @@
 import { Component, Signal, computed, inject, model } from '@angular/core';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { PageHeaderComponent, SelectSeasonComponent } from '@badman/frontend-components';
+import {
+  PageHeaderComponent,
+  SelectSeasonComponent,
+  TriStateCheckboxComponent,
+} from '@badman/frontend-components';
 import { Club, ClubMembership } from '@badman/frontend-models';
 import { ClubMembershipType, getSeason } from '@badman/utils';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
@@ -12,7 +16,8 @@ import { MtxSelect } from '@ng-matero/extensions/select';
 import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { UploadTransferLoanDialogComponent } from '../dialogs';
-import { TransferService } from './transfer.service';
+import { TransferLoanService } from './transfer-loan.service';
+import { combineLatest, debounceTime, startWith } from 'rxjs';
 
 @Component({
   selector: 'badman-ranking-overview',
@@ -26,17 +31,19 @@ import { TransferService } from './transfer.service';
     MatFormField,
     MatLabel,
     MatInput,
+    TriStateCheckboxComponent,
     PageHeaderComponent,
     TranslatePipe,
     SelectSeasonComponent,
+    ReactiveFormsModule,
   ],
 })
 export class OverviewPageComponent {
   // injects
-  service = inject(TransferService);
+  service = inject(TransferLoanService);
   dialog = inject(MatDialog);
 
-  transfers = this.service.state.transfers;
+  transfers = this.service.state.filtered;
   loaded = this.service.state.loaded;
   loading = computed(() => !this.loaded());
 
@@ -48,15 +55,45 @@ export class OverviewPageComponent {
   });
 
   seasonControl = new FormControl<number>(getSeason()) as FormControl<number>;
+  confirmedControl = new FormControl<boolean>(false) as FormControl<boolean>;
+  searchControl = new FormControl<string>('') as FormControl<string>;
+  newClubsControl = new FormControl<string[] | null>(null) as FormControl<string[]>;
+  currentClubsControl = new FormControl<string[] | null>(null) as FormControl<string[]>;
 
   constructor() {
     // watch for changes in the seasonControl and update the service state
     this.seasonControl.valueChanges.subscribe((season) => {
       console.log('Season changed:', season);
       if (season) {
+        this.searchControl.reset(); // reset the search control when confirmed changes
         this.service.state.setSeason(season);
       }
     });
+
+    // watch for changes in the confirmedControl and update the service state
+    this.confirmedControl.valueChanges.subscribe((confirmed) => {
+      console.log('Confirmed changed:', confirmed);
+      this.searchControl.reset(); // reset the search control when confirmed changes
+      this.service.state.setConfirmed(confirmed);
+    });
+
+    // watch for any changes in the search, new club, currentclubs controls and update the service state
+    combineLatest([
+      this.searchControl.valueChanges.pipe(startWith(this.searchControl.value)),
+      this.newClubsControl.valueChanges.pipe(startWith(this.newClubsControl.value)),
+      this.currentClubsControl.valueChanges.pipe(startWith(this.currentClubsControl.value)),
+    ])
+      .pipe(debounceTime(300)) // debounce the input for 300ms
+      .subscribe(([search, newClubs, currentClubs]) => {
+        console.log('Search changed:', search);
+        console.log('New clubs changed:', newClubs);
+        console.log('Current clubs changed:', currentClubs);
+        this.service.state.setFilter({
+          search,
+          newClubs,
+          currentClubs,
+        });
+      });
   }
 
   currentClubs = computed(() => {
@@ -191,6 +228,9 @@ export class OverviewPageComponent {
     this.dialog
       .open(UploadTransferLoanDialogComponent, {
         disableClose: true,
+        data: {
+          season: this.seasonControl.value,
+        },
       })
       .afterClosed()
       .subscribe(() => {

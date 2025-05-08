@@ -1108,6 +1108,7 @@ export type I18nTranslations = {
             "filter": {
                 "current-club": string;
                 "new-club": string;
+                "only-confirmed": string;
                 "player": string;
             };
             "title": string;

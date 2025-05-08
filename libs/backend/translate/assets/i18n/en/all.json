@@ -1101,6 +1101,7 @@
     "filter": {
       "current-club": "Current club",
       "new-club": "New club",
+      "only-confirmed": "Confirmed",
       "player": "Player"
     },
     "title": "Transfers / loans",
@@ -1110,7 +1111,7 @@
       "file-type": "Transfer or loan file",
       "hint": "Drag your file here",
       "loan-file": "Loan file",
-      "title": "Upload transfer / loan file",
+      "title": "Upload transfer/loan file for {season}",
       "transfer-file": "Transfer file",
       "unkown": "Unknown"
     }
