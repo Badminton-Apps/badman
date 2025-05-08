@@ -21,7 +21,7 @@ export class LoansService {
     return await this._createMemberships(mappedData, season);
   }
 
-  private async _createMemberships(data: LoansMapped[], season: number) {
+  private async _createMemberships(data: Loans[], season: number) {
     const players = await Player.findAll({
       attributes: ['id', 'memberId', 'firstName', 'lastName'],
       where: {
@@ -37,11 +37,12 @@ export class LoansService {
     });
 
     // We take a month before the start of the season and a month after the end of the season
-    const startDate = moment().set('year', season).startOf('year').set('month', 5).startOf('month');
+    const startDate = moment().set('year', season).startOf('year').set('month', 6).set('date', 1);
+
     const endDate = moment()
       .set('year', season + 1)
       .startOf('year')
-      .set('month', 6)
+      .set('month', 5)
       .endOf('month');
 
     const memberships = await ClubPlayerMembership.findAll({
@@ -49,8 +50,8 @@ export class LoansService {
         playerId: players.map((p) => p.id),
         membershipType: ClubMembershipType.LOAN,
         [Op.and]: [
-          literal(`"start"::date > '${startDate.format('YYYY-MM-DD')}'`),
-          literal(`"end"::date < '${endDate.format('YYYY-MM-DD')}'`),
+          { start: { [Op.gte]: startDate.toDate() } },
+          { end: { [Op.lte]: endDate.toDate() } },
         ],
       },
     });
@@ -69,20 +70,19 @@ export class LoansService {
       }
 
       let membership = memberships.find((m) => m.playerId === player.id);
-      if (!membership) {
+      if (!membership || membership.clubId !== newClubId) {
         this.logger.debug(`Processing new club membership for player ${player.fullName}`);
         membership = new ClubPlayerMembership();
         membership.playerId = player.id;
         membership.start = startDate.toDate();
         membership.end = endDate.toDate();
         membership.membershipType = ClubMembershipType.LOAN;
+        membership.clubId = newClubId;
+        membership.confirmed = true;
+        await membership.save();
       } else {
         this.logger.debug(`Processing existing club membership for player ${player.fullName}`);
       }
-
-      membership.clubId = newClubId;
-      membership.confirmed = true;
-      await membership.save();
     }
   }
 
@@ -93,35 +93,13 @@ export class LoansService {
     });
 
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils
-      .sheet_to_json<Loans>(firstSheet, {
-        range: 1,
-      })
-      .map((d) => ({
-        Lidnummer: d.Lidnummer,
-        Voornaam: d.Voornaam,
-        Naam: d.Naam,
-        uitlenendeClub: d['Club die uitleent'],
-        uitlenendeClubNummer: parseInt(d['Uitlenende club clubnummer']) || -1,
-        ontLenendeClub: d['Club die ontleent'],
-        ontLenendeClubNummer: parseInt(d['Ontlenende club clubnummer']) || -1,
-      }));
+    const data = XLSX.utils.sheet_to_json<Loans>(firstSheet);
 
     return data;
   }
 }
 
 interface Loans {
-  Lidnummer: number;
-  Voornaam: string;
-  Naam: string;
-  ['Club die uitleent']: string;
-  ['Uitlenende club clubnummer']: string;
-  ['Club die ontleent']: string;
-  ['Ontlenende club clubnummer']: string;
-}
-
-interface LoansMapped {
   Lidnummer: number;
   Voornaam: string;
   Naam: string;
