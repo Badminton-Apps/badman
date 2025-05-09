@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-team-assembly",
-  "version": "6.180.0",
+  "version": "6.181.0",
   "peerDependencies": {
     "@badman/frontend-models": "*",
     "@badman/frontend-graphql": "*",
