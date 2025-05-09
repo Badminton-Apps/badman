@@ -1,3 +1,19 @@
+## 6.181.0 (2025-05-09)
+
+### 🚀 Features
+
+- add tri-state checkbox component and update exports ([5cba51862](https://github.com/Badminton-Apps/badman/commit/5cba51862))
+
+### 🩹 Fixes
+
+- it's a signal ([ea4969ab8](https://github.com/Badminton-Apps/badman/commit/ea4969ab8))
+- update data types in Loans and Transfers services ([05ab92fc2](https://github.com/Badminton-Apps/badman/commit/05ab92fc2))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.180.0 (2025-05-07)
 
 ### 🚀 Features
