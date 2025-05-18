@@ -47,7 +47,7 @@ export class PlayerClubRule extends Rule {
       const warnings = [] as EnrollmentValidationError[];
 
       // All base players should be from the teams's club
-      const basePlayerErrors = this.checkPlayersClub(
+      const basePlayerErrors = await this.checkPlayersClub(
         players,
         basePlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
@@ -61,7 +61,7 @@ export class PlayerClubRule extends Rule {
       }
 
       // if teamplayers or backup players are set, they should be from the same club, if not: warning
-      const teamPlayerErrors = this.checkPlayersClub(
+      const teamPlayerErrors = await this.checkPlayersClub(
         players,
         teamPlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
@@ -69,7 +69,7 @@ export class PlayerClubRule extends Rule {
         enrollment.loans ?? [],
         enrollment.transfers ?? [],
       );
-      const backupPlayerErrors = this.checkPlayersClub(
+      const backupPlayerErrors = await this.checkPlayersClub(
         players,
         backupPlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
@@ -97,7 +97,7 @@ export class PlayerClubRule extends Rule {
     return results;
   }
 
-  private checkPlayersClub(
+  private async checkPlayersClub(
     playerList: Player[],
     playersToCheck: string[],
     club: Club,
@@ -111,7 +111,7 @@ export class PlayerClubRule extends Rule {
     // 2. check if the active club (= no end date) is the same as the club
     // 3. return a list of players that are not from the club
 
-    return playersToCheck.map(async (id) => {
+    const reuslts = playersToCheck.map(async (id) => {
       const player = playerList.find((p) => p.id === id);
       if (!player) {
         this.logger.error(`Player with id ${id} not found`);
@@ -169,5 +169,7 @@ export class PlayerClubRule extends Rule {
         },
       } as EnrollmentValidationError;
     });
+
+    return await Promise.all(reuslts);
   }
 }
