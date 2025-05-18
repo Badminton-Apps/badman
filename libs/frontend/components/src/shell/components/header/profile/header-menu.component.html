@@ -13,7 +13,7 @@
     <img
       class="avatar"
       [src]="auth.user()?.picture"
-      [alt]="'profile picture' + auth.user()?.fullName"
+      [alt]="auth.user()?.fullName + 's avatar'"
       loading="lazy"
     />
     {{ auth.user()?.firstName }}
@@ -28,9 +28,7 @@
       </div>
     }
     <button mat-menu-item (click)="logout()">Logout</button>
-    <a mat-menu-item [routerLink]="['/', 'player', auth.user()?.slug, 'settings']"
-      >Settings</a
-    >
+    <a mat-menu-item [routerLink]="['/', 'player', auth.user()?.slug, 'settings']">Settings</a>
     <mat-divider></mat-divider>
   }
   <badman-language></badman-language>
