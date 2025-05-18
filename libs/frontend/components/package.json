@@ -14,7 +14,6 @@
     "@angular/platform-browser": "^19.0.5",
     "@badman/frontend-models": "*",
     "@badman/utils": "*",
-    "@ng-matero/extensions-moment-adapter": "^19.0.0",
     "@badman/frontend-utils": "*",
     "@badman/frontend-graphql": "*",
     "@badman/frontend-auth": "*",
