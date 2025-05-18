@@ -40,30 +40,30 @@ import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
 
 @Component({
-    selector: 'badman-calendar',
-    imports: [
-        CommonModule,
-        RouterModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslatePipe,
-        MatIconModule,
-        MatInputModule,
-        MatButtonModule,
-        MatChipsModule,
-        MatTooltipModule,
-        MatCheckboxModule,
-        MatProgressBarModule,
-        MatFormFieldModule,
-        MatDatepickerModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        HasClaimComponent,
-        MtxDatetimepickerModule,
-    ],
-    templateUrl: './calendar.component.html',
-    styleUrls: ['./calendar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-calendar',
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatCheckboxModule,
+    MatProgressBarModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    HasClaimComponent,
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<CalendarComponent>>(MatDialogRef<CalendarComponent>);
@@ -993,9 +993,9 @@ export class CalendarComponent implements OnInit {
         });
 
         if (!event.allowCompetition) {
-          dayInfo.locations.map((l) => {
-            l.space = 0;
-          });
+          for (const location of dayInfo.locations) {
+            location.space = 0;
+          }
         }
       }
     }

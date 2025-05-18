@@ -1,7 +1,6 @@
 import { Rule, Team } from '@badman/backend-database';
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ValidationRule } from './_rule.base';
-import { Md5 } from 'ts-md5';
 
 type ruleType<T, V> = new () => ValidationRule<
   T,
@@ -90,7 +89,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
 
     const activatedRules = configuredRules.filter((r) => r.activated);
 
-    configuredRules
+    for (const r of configuredRules
       .filter((r) => !r.activated)
       .filter((r) => {
         const meta = r.meta as {
@@ -116,12 +115,11 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
           false;
 
         return containsId && !doesntContainsId;
-      })
-      .map((r) => {
-        this.logger.verbose(`Activating rule ${r.name}`);
+      })) {
+      this.logger.verbose(`Activating rule ${r.name}`);
 
-        return activatedRules.push(r);
-      });
+      activatedRules.push(r);
+    }
 
     this.logger.verbose(`Found ${activatedRules.length} rules for group ${this.group}`);
 
