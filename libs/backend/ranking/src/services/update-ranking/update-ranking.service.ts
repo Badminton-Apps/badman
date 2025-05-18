@@ -324,9 +324,10 @@ export class UpdateRankingService {
       // print progress every 100 players
       if (processedPlayers.size % 1000 === 0) {
         const percentage = Math.round((processedPlayers.size / data.length) * 100);
-        this._logger.verbose(`Processed ${processedPlayers.size}/${data.length} (${percentage}%) players`);
+        this._logger.verbose(
+          `Processed ${processedPlayers.size}/${data.length} (${percentage}%) players`,
+        );
       }
-
 
       const player = players.find((p) => p.memberId === row.memberId);
 
@@ -434,7 +435,7 @@ export class UpdateRankingService {
     // check if the player has a membership with the same clubId that starts on the same date
     const existingClub = playerClubs.find(
       (c) => c.id === clubId && inputStartDate.isSame(c.ClubPlayerMembership.start, 'day'),
-    ); 
+    );
 
     if (existingClub) {
       // activate the existing club membership
@@ -456,31 +457,35 @@ export class UpdateRankingService {
     const memberIdsMale = data?.filter((p) => p.gender === 'M')?.map((d) => d.memberId);
     const memberIdsFemale = data?.filter((p) => p.gender === 'V')?.map((d) => d.memberId);
 
-    const malePlayers = await Player.findAll({
+    const wrongMalePlayers = await Player.findAll({
       attributes: ['id', 'memberId', 'gender'],
       where: {
         memberId: memberIdsMale,
-        gender: 'F',
+        gender: {
+          [Op.not]: 'M',
+        },
       },
       transaction,
     });
 
-    const femalePlayers = await Player.findAll({
+    const wrongFemalePlayers = await Player.findAll({
       attributes: ['id', 'memberId', 'gender'],
       where: {
         memberId: memberIdsFemale,
-        gender: 'M',
+        gender: {
+          [Op.not]: 'F',
+        },
       },
       transaction,
     });
 
     await this.setGender(
-      malePlayers.map((p) => p.id),
+      wrongMalePlayers.map((p) => p.id),
       'M',
       transaction,
     );
     await this.setGender(
-      femalePlayers.map((p) => p.id),
+      wrongFemalePlayers.map((p) => p.id),
       'F',
       transaction,
     );
@@ -513,7 +518,7 @@ export class UpdateRankingService {
       return;
     }
 
-    await Player.update(
+    const [changed] = await Player.update(
       {
         gender,
       },
@@ -524,6 +529,8 @@ export class UpdateRankingService {
         transaction,
       },
     );
+
+    this._logger.verbose(`updated ${changed} player(s) gender to ${gender}`);
   }
 
   private chunkArray<T>(data: T[], chunkSize = 100) {
