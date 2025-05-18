@@ -26,7 +26,6 @@
     "ng-apexcharts": "^1.10.0",
     "graphql": "16.10.0",
     "uuid": "^11.0.3",
-    "@ng-matero/extensions-moment-adapter": "^19.0.0",
     "@ng-matero/extensions": "~19.0.1",
     "xlsx": "0.20.3"
   },
