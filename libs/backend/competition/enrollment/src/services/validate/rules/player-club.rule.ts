@@ -1,4 +1,4 @@
-import { Club, Player } from '@badman/backend-database';
+import { Club, ClubPlayerMembership, Player } from '@badman/backend-database';
 import { startOfSeason } from '@badman/utils';
 import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
 import { Rule } from './_rule.base';
@@ -31,11 +31,6 @@ export class PlayerClubRule extends Rule {
       where: {
         id: final?.filter((id) => !!id) ?? [],
       },
-      include: [
-        {
-          model: Club,
-        },
-      ],
     });
 
     if (enrollment.club?.id == null) {
@@ -116,15 +111,19 @@ export class PlayerClubRule extends Rule {
     // 2. check if the active club (= no end date) is the same as the club
     // 3. return a list of players that are not from the club
 
-    return playersToCheck.map((id) => {
+    return playersToCheck.map(async (id) => {
       const player = playerList.find((p) => p.id === id);
       if (!player) {
         this.logger.error(`Player with id ${id} not found`);
         return;
       }
 
+      const clubs = (await player.getClubs()) as (Club & {
+        ClubPlayerMembership: ClubPlayerMembership;
+      })[];
+
       const activeClubsInNextSeason =
-        player?.clubs?.filter((c) => c.ClubPlayerMembership.isActiveFrom(startDate, false)) ?? [];
+        clubs?.filter((c) => c.ClubPlayerMembership.isActiveFrom(startDate, false)) ?? [];
 
       // else if the player has no active club
       if (activeClubsInNextSeason.length == 0) {
