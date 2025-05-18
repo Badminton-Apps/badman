@@ -3,6 +3,7 @@ import { ClubMembershipType } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import 'multer';
+import { Op } from 'sequelize';
 import * as XLSX from 'xlsx';
 
 @Injectable()
@@ -56,26 +57,70 @@ export class TransferService {
         continue;
       }
 
-      const membership = memberships.find((m) => m.playerId === player.id);
-      if (!membership || membership.clubId !== newClubId) {
+      const startDate = moment()
+        .set('year', season)
+        .startOf('year')
+        .set('month', 6)
+        .set('date', 1)
+        .toDate();
+
+      // check if the player is already a member of the new club with the current season
+      const thisseasonMemberships = await ClubPlayerMembership.findAll({
+        where: {
+          playerId: player.id,
+          membershipType: ClubMembershipType.NORMAL,
+          clubId: newClubId,
+          start: {
+            [Op.gte]: startDate,
+          },
+        },
+      });
+
+      if (thisseasonMemberships.length > 0) {
+        this.logger.debug(`Player ${player.fullName} already has a membership for this season`);
+        // if multiple memberships exist, take one with the latest start date and delete the rest and set the end date to null
+        const latestMembership = thisseasonMemberships.reduce((prev, current) =>
+          prev.start > current.start ? prev : current,
+        );
+
+        for (const membership of thisseasonMemberships) {
+          if (membership.id !== latestMembership.id) {
+            this.logger.debug(
+              `Deleting old membership ${membership.id} for player ${player.fullName}`,
+            );
+            await membership.destroy();
+          } else {
+            this.logger.debug(`Keeping membership ${membership.id} for player ${player.fullName}`);
+            membership.end = null;
+            await membership.save();
+          }
+        }
+
+        continue;
+      }
+
+      const playerMemberships = memberships.filter((m) => m.playerId === player.id);
+      // check if any members is with the current club
+      const currentMembership = playerMemberships.find((m) => m.clubId === newClubId);
+
+      if (!currentMembership) {
         this.logger.debug(`Processing new club membership for player ${player.fullName}`);
         const newMembership = new ClubPlayerMembership();
         newMembership.playerId = player.id;
-        newMembership.start = moment()
-          .set('year', season)
-          .startOf('year')
-          .set('month', 6)
-          .set('date', 1)
-          .toDate();
+        newMembership.start = startDate;
         newMembership.membershipType = ClubMembershipType.NORMAL;
         newMembership.clubId = newClubId;
         newMembership.confirmed = true;
         await newMembership.save();
 
-        if (membership && membership.confirmed) {
-          // mark the old membership as ended
-          membership.end = moment().toDate();
-          await membership.save();
+        // mark old membershipss as end
+
+        for (const playerMembership of playerMemberships) {
+          if (playerMembership && playerMembership.confirmed) {
+            // mark the old membership as ended
+            playerMembership.end = moment().toDate();
+            await playerMembership.save();
+          }
         }
       } else {
         this.logger.debug(`Processing existing club membership for player ${player.fullName}`);
