@@ -148,7 +148,7 @@ export class ShowRequestsComponent implements OnInit {
 
   warnings = computed(() => this.validation()?.warnings ?? []);
 
-  async ngOnInit() {
+  ngOnInit() {
     this.previous = this.group().get(this.dependsOn()) ?? undefined;
     if (this.previous) {
       this.requests$ = this.previous.valueChanges.pipe(
@@ -241,6 +241,7 @@ export class ShowRequestsComponent implements OnInit {
       console.warn(`Dependency ${this.dependsOn()} not found`, this.previous);
     }
   }
+  
   getWarnings(date: Date | string) {
     return computed(() =>
       this.warnings().filter(
