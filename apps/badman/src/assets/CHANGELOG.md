@@ -1,3 +1,16 @@
+## 6.181.1 (2025-05-18)
+
+### 🩹 Fixes
+
+- improve gender assignment logic when uploading ([fb2c6caa7](https://github.com/Badminton-Apps/badman/commit/fb2c6caa7))
+- improve error message ([e9e3f5c45](https://github.com/Badminton-Apps/badman/commit/e9e3f5c45))
+- enhance membership processing logic to handle existing memberships and prevent duplicates ([b27ed8da1](https://github.com/Badminton-Apps/badman/commit/b27ed8da1))
+- fetch player clubs seperatly to medigate false negative of no clubs ([29439a3ee](https://github.com/Badminton-Apps/badman/commit/29439a3ee))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.181.0 (2025-05-09)
 
 ### 🚀 Features
