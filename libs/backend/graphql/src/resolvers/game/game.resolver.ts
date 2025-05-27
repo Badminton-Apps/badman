@@ -266,6 +266,13 @@ export class GamesResolver {
 
       const game = await Game.findByPk(gameData.gameId, {
         transaction,
+        include: [
+          /* This is to ensure that the frontend can update game records that originated from toernooi.nl */
+          {
+            model: Player,
+            through: { attributes: ['team', 'player', 'single', 'double', 'mix'] }
+          }
+        ]
       });
 
       if (!game) {
@@ -288,6 +295,36 @@ export class GamesResolver {
         },
         { transaction },
       );
+
+      // if the game has no players, and there are players in the request, add the players to the game.
+      // this is only used in cases when the frontend is updating a game record orginating from toernooi.nl
+      if (gameData.players && game.players?.length === 0 ) {
+        for (const player of gameData.players) {
+          const system = await RankingSystem.findOne({
+            where: {
+              primary: true,
+            },
+          });
+          const ranking = await RankingLastPlace.findOne({
+            where: {
+              playerId: player.id,
+            },
+            transaction,
+          });
+          await GamePlayerMembership.create({
+            playerId: player.id,
+            gameId: game.id,
+            team: player.team,
+            player: player.player,
+            systemId: system?.id,
+            single: ranking?.single,
+            double: ranking?.double,
+            mix: ranking?.mix,
+          }, {
+            transaction,
+          });
+        }
+      }
 
       // if game is not a draw, update the score of the encounter
       if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
