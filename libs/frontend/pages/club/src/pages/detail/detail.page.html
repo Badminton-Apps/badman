@@ -42,7 +42,9 @@
   (selectedIndexChange)="setTab($event)"
 >
   <mat-tab [label]="'all.club.titles.teams' | translate">
-    <badman-club-teams [clubId]="this.club()?.id!" [filter]="this.filter" />
+    @if (this.club()?.id) {
+      <badman-club-teams [clubId]="this.club()?.id!" [filter]="this.filter" />
+    }
   </mat-tab>
   <mat-tab [label]="'all.club.titles.matrix' | translate">
     <ng-template matTabContent>
@@ -51,7 +53,9 @@
   </mat-tab>
   <mat-tab [label]="'all.club.titles.players' | translate">
     <ng-template matTabContent>
-      <badman-club-players [clubId]="this.club()?.id!" [filter]="this.filter" />
+      @if (this.club()?.id) {
+        <badman-club-players [clubId]="this.club()?.id!" [filter]="this.filter" />
+      }
     </ng-template>
   </mat-tab>
 
@@ -64,7 +68,9 @@
   @if (this.canViewEnrollments()) {
     <mat-tab [label]="'all.competition.team-enrollment.title' | translate">
       <ng-template matTabContent>
-        <badman-club-competition [clubId]="this.club()?.id!" [filter]="this.filter" />
+        @if (this.club()?.id) {
+          <badman-club-competition [clubId]="this.club()?.id!" [filter]="this.filter" />
+        }
       </ng-template>
     </mat-tab>
   }
