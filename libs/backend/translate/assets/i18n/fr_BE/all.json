@@ -1047,6 +1047,7 @@
   },
   "tournament": {
     "away": "Dehors",
+    "closeDate": "",
     "delete": {
       "description": "Êtes-vous sûr de vouloir supprimer ce tournoi ?",
       "title": "Supprimer le tournoi"
@@ -1061,13 +1062,17 @@
       "open": "Ouvrir",
       "title": "Entrées"
     },
+    "firstDay": "Premier jour",
     "home": "Accueil",
     "last-updated": "Modifié le",
     "load-more": "Charger plus",
     "menu": {
       "add-event": "Ajouter un évènement"
     },
+    "name": "Tournoi",
     "note": "note : les modifications sont enregistrées immédiatement",
+    "official": "Officielle",
+    "openDate": "Entrées d'ouverture",
     "overview": {
       "date": "Date",
       "menu": {
@@ -1088,7 +1093,9 @@
       "min-base": "Indice de décalage de la base minimale"
     },
     "title": "Tournoi",
+    "tournamentNumber": "Numéro du tournoi",
     "type": "Type",
+    "visualCode": "Toernooi.nl Code",
     "vs": "à",
     "vs-short": "vs"
   },

@@ -1047,6 +1047,7 @@
   },
   "tournament": {
     "away": "Away",
+    "closeDate": "Closing entries",
     "delete": {
       "description": "Are you sure you want to delete this tournament?",
       "title": "Delete Tournament"
@@ -1061,13 +1062,17 @@
       "open": "Open",
       "title": "Enrollments"
     },
+    "firstDay": "First Day",
     "home": "Home",
     "last-updated": "Changed on",
     "load-more": "load more",
     "menu": {
       "add-event": "Add event"
     },
+    "name": "Tournament",
     "note": "note: Changes are saved directly",
+    "official": "Official",
+    "openDate": "Opening entries",
     "overview": {
       "date": "Date",
       "menu": {
@@ -1088,7 +1093,9 @@
       "min-base": "Min basis team index"
     },
     "title": "Tournament",
+    "tournamentNumber": "Tournament number",
     "type": "Type",
+    "visualCode": "Toernooi.nl Code",
     "vs": "against",
     "vs-short": "vs"
   },

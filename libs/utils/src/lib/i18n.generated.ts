@@ -1054,6 +1054,7 @@ export type I18nTranslations = {
         };
         "tournament": {
             "away": string;
+            "closeDate": string;
             "delete": {
                 "description": string;
                 "title": string;
@@ -1068,13 +1069,17 @@ export type I18nTranslations = {
                 "open": string;
                 "title": string;
             };
+            "firstDay": string;
             "home": string;
             "last-updated": string;
             "load-more": string;
             "menu": {
                 "add-event": string;
             };
+            "name": string;
             "note": string;
+            "official": string;
+            "openDate": string;
             "overview": {
                 "date": string;
                 "menu": {
@@ -1095,7 +1100,9 @@ export type I18nTranslations = {
                 "min-base": string;
             };
             "title": string;
+            "tournamentNumber": string;
             "type": string;
+            "visualCode": string;
             "vs": string;
             "vs-short": string;
         };

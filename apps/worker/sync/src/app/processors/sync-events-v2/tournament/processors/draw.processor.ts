@@ -104,7 +104,7 @@ export class DrawTournamentProcessor {
 
     // delete the data and reuse the guid
     const drawId = draw?.id;
-    const drawCode = draw?.visualCode || job.data.drawCode.toString();
+    const drawCode = draw?.visualCode || job.data?.drawCode?.toString();
     const existing = {
       existed: false,
       games: job.data?.games || [],
@@ -233,6 +233,8 @@ export class DrawTournamentProcessor {
       await this._transactionManager.addJob(transactionId, matchJob);
       gameJobIds.push(matchJob.id);
     }
+
+    
 
     return gameJobIds;
   }
