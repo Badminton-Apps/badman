@@ -7,12 +7,15 @@ export class EventTournament extends Event {
   dates: Date[];
   subEventTournaments?: SubEventTournament[];
   tournamentNumber?: number;
-
+  state?: string;
+  country?: string;
   constructor({ ...args }: Partial<EventTournament>) {
     super(args);
     this.firstDay = args?.firstDay != null ? new Date(args.firstDay) : undefined;
     this.dates = (args.dates as unknown as string)?.split(',').map((x) => new Date(x));
     this.tournamentNumber = args.tournamentNumber;
+    this.state = args.state;
+    this.country = args.country;
     this.eventType = args.eventType ?? EventType.TOURNAMENT;
     this.subEventTournaments = args?.subEventTournaments
       ?.map((s) => new SubEventTournament(s))

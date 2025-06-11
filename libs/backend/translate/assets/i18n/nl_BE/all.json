@@ -1047,6 +1047,7 @@
   },
   "tournament": {
     "away": "UIt",
+    "closeDate": "Sluiting inschrijvingen",
     "delete": {
       "description": "Weet je zeker dat je dit toernooi wilt verwijderen?",
       "title": "Verwijder toernooi"
@@ -1061,13 +1062,17 @@
       "open": "Open",
       "title": "Inschrijvingen"
     },
+    "firstDay": "Eerste Dag",
     "home": "Thuis",
     "last-updated": "Gewijzigd op",
     "load-more": "Meer laden",
     "menu": {
       "add-event": "Add event"
     },
+    "name": "Toernooi",
     "note": "opmerking: wijzigingen worden onmiddelijk opgeslagen",
+    "official": "Official",
+    "openDate": "Opening inschrijvingen",
     "overview": {
       "date": "Datum",
       "menu": {
@@ -1088,7 +1093,9 @@
       "min-base": "Min basis ploegindex"
     },
     "title": "Toernooi",
+    "tournamentNumber": "Toernooi nummer",
     "type": "Type",
+    "visualCode": "Toernooi.nl Code",
     "vs": "tegen",
     "vs-short": "vs"
   },
