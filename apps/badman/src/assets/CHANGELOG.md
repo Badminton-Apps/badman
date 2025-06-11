@@ -1,3 +1,15 @@
+## 6.181.3 (2025-06-11)
+
+### 🩹 Fixes
+
+- **dependencies:** update backend-database version to * ([f06f6b88b](https://github.com/Badminton-Apps/badman/commit/f06f6b88b))
+- **report:** add checks for e2e and coverage reports before merging ([be47490ca](https://github.com/Badminton-Apps/badman/commit/be47490ca))
+- **visual:** enhance response parsing and add type normalization for enums ([71ea8acb3](https://github.com/Badminton-Apps/badman/commit/71ea8acb3))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.181.2 (2025-06-11)
 
 ### 🩹 Fixes
