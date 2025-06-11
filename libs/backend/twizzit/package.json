@@ -1,13 +1,13 @@
 {
   "name": "@badman/backend-twizzit",
-  "version": "6.181.1",
+  "version": "6.181.2",
   "dependencies": {
-    "@badman/backend-database": "6.181.1",
+    "@badman/backend-database": "6.181.2",
     "@nestjs/common": "^10.3.8",
     "fastify": "^4.27.0",
     "moment-timezone": "^0.5.45",
     "sequelize": "^6.37.3",
-    "@badman/utils": "6.181.1",
+    "@badman/utils": "6.181.2",
     "@nestjs/config": "^3.2.3",
     "axios": "^1.7.7",
     "axios-rate-limit": "^1.4.0",
