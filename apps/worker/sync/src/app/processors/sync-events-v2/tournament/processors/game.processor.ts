@@ -174,12 +174,11 @@ export class GameTournamentProcessor {
     }
 
     if (!game) {
-      game = new Game();
+      game = new Game({
+        id: gameId ? gameId : undefined,
+      });
     }
 
-    if (gameId) {
-      game.id = gameId;
-    }
 
     game.round = xmlGame.RoundName;
     game.order = xmlGame.MatchOrder;

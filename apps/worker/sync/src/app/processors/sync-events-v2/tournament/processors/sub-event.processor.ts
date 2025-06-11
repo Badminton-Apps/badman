@@ -174,12 +174,11 @@ export class SubEventTournamentProcessor {
     }
 
     if (!subEvent) {
-      subEvent = new SubEventTournament();
+      subEvent = new SubEventTournament({
+        id: subEventId? subEventId : undefined,
+      });
     }
 
-    if (subEventId) {
-      subEvent.id = subEventId;
-    }
 
     subEvent.id = subEventId;
     subEvent.name = visualSubEvent.Name;
