@@ -39,6 +39,12 @@ export class EventTournamenScheduler {
       }
 
       if (await this._transactionManager.transactionErrored(transactionId)) {
+        // log failed message
+        const statuses = await this._transactionManager.failedMessages(transactionId);
+        for (const status of statuses) {
+          this.logger.error(`Job failed: ${status.name} (${status.id})`, status.error);
+        }
+
         throw new Error('Error in transaction');
       }
 

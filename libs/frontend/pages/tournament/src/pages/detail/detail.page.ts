@@ -238,7 +238,15 @@ export class DetailPageComponent {
     this.detailService.state.reCalculatePoints();
   }
 
-  syncSubEvent() {
+  syncSubEvent(subEvent: SubEventTournament) {
+    console.log('Syncing sub-event', subEvent);
+    if (!subEvent.id) {
+      this.matSnackBar.open(`Tournament ${subEvent?.name} has no sub-event to sync.`, 'Close', {
+        duration: 2000,
+      });
+      return;
+    }
+
     this.apollo
       .mutate({
         mutation: gql`
@@ -247,7 +255,7 @@ export class DetailPageComponent {
           }
         `,
         variables: {
-          subEventId: this.eventTournament()?.id,
+          subEventId: subEvent?.id,
           options: {
             deleteSubEvent: true,
           },
