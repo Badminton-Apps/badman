@@ -68,3 +68,5 @@ files/
 playwright-report/
 blob-report/
 typesense-data/
+.cursor\rules\nx-rules.mdc
+.github\instructions\nx.instructions.md
