@@ -292,7 +292,7 @@ export class SubEventTournamentProcessor {
   }
 
   private getGameType(xmlEvent: XmlTournamentEvent): GameType | undefined {
-    switch (parseInt(`${xmlEvent.GameTypeID}`, 10)) {
+    switch (xmlEvent.GameTypeID) {
       case XmlGameTypeID.Doubles:
         // Stupid fix but should work
         if (xmlEvent.GenderID === parseInt(`${XmlGenderID.Mixed}`, 10)) {
@@ -311,7 +311,7 @@ export class SubEventTournamentProcessor {
   }
 
   private getEventType(xmlEvent: XmlTournamentEvent): SubEventTypeEnum | undefined {
-    switch (parseInt(`${xmlEvent.GenderID}`, 10)) {
+    switch (xmlEvent.GenderID) {
       case XmlGenderID.Male:
       case XmlGenderID.Boy:
         return SubEventTypeEnum.M;
