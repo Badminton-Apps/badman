@@ -40,4 +40,10 @@
       [entries]="this.drawTournament().eventEntries!"
     ></badman-standing>
   }
+  @case ('QUALIFICATION') {
+    <badman-standing
+      [type]="'players'"
+      [entries]="this.drawTournament().eventEntries!"
+    ></badman-standing>
+  }
 }

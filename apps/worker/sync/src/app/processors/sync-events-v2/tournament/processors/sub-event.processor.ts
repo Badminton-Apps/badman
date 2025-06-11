@@ -174,12 +174,11 @@ export class SubEventTournamentProcessor {
     }
 
     if (!subEvent) {
-      subEvent = new SubEventTournament();
+      subEvent = new SubEventTournament({
+        id: subEventId? subEventId : undefined,
+      });
     }
 
-    if (subEventId) {
-      subEvent.id = subEventId;
-    }
 
     subEvent.id = subEventId;
     subEvent.name = visualSubEvent.Name;
@@ -252,7 +251,7 @@ export class SubEventTournamentProcessor {
     });
 
     for (const dbDraw of dbDraws) {
-      if (!draws.find((r) => `${r.Code}` === `${dbDraw.visualCode}`)) {
+      if (!draws.find((r) => `${r?.Code}` === `${dbDraw.visualCode}`)) {
         this.logger.debug(`Removing draw ${dbDraw.visualCode}`);
 
         const dbGames = await dbDraw.getGames({
@@ -269,13 +268,19 @@ export class SubEventTournamentProcessor {
 
     // queue the new sub events
     for (const xmlSubEvent of draws) {
-      const existingDraw = existing.find((r) => `${r.visualCode}` === `${xmlSubEvent.Code}`);
+      const existingDraw = existing.find((r) => `${r.visualCode}` === `${xmlSubEvent?.Code}`);
+
+      if (!xmlSubEvent?.Code){
+        this.logger.warn(`No draw code found for sub event ${subEventCode}`);
+        continue;
+      }
+
       // update sub events
       const drawJob = await this._syncQueue.add(Sync.ProcessSyncTournamentDraw, {
         transactionId,
         subEventId: subEvent.id,
         eventCode,
-        drawCode: xmlSubEvent.Code,
+        drawCode: xmlSubEvent?.Code,
         drawId: existingDraw?.id,
         rankingSystemId,
         options,
@@ -287,10 +292,10 @@ export class SubEventTournamentProcessor {
   }
 
   private getGameType(xmlEvent: XmlTournamentEvent): GameType | undefined {
-    switch (xmlEvent.GameTypeID) {
+    switch (parseInt(`${xmlEvent.GameTypeID}`, 10)) {
       case XmlGameTypeID.Doubles:
         // Stupid fix but should work
-        if (xmlEvent.GenderID === XmlGenderID.Mixed) {
+        if (xmlEvent.GenderID === parseInt(`${XmlGenderID.Mixed}`, 10)) {
           return GameType.MX;
         } else {
           return GameType.D;
@@ -306,7 +311,7 @@ export class SubEventTournamentProcessor {
   }
 
   private getEventType(xmlEvent: XmlTournamentEvent): SubEventTypeEnum | undefined {
-    switch (xmlEvent.GenderID) {
+    switch (parseInt(`${xmlEvent.GenderID}`, 10)) {
       case XmlGenderID.Male:
       case XmlGenderID.Boy:
         return SubEventTypeEnum.M;

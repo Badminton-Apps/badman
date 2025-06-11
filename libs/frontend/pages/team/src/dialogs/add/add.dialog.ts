@@ -67,7 +67,7 @@ export class AddDialogComponent {
     this.apollo
       .mutate({
         mutation: gql`
-          mutation CreateTeam($team: TeamNewInput!, $nationalCountsAsMixed: Boolean) {
+          mutation CreateTeam($team: TeamNewInput!, $nationalCountsAsMixed: Boolean!) {
             createTeam(data: $team, nationalCountsAsMixed: $nationalCountsAsMixed) {
               id
             }
@@ -90,7 +90,7 @@ export class AddDialogComponent {
           },
           nationalCountsAsMixed: true,
         },
-        refetchQueries: () => ['Team', 'Teams'],
+        refetchQueries: () => ['Team', 'Teams', 'ClubTeams'],
       })
       // .pipe(switchMap((res) => {
       // save the players?
