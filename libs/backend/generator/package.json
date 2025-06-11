@@ -12,9 +12,6 @@
     "nestjs-i18n": "^10.4.5",
     "tslib": "^2.8.1"
   },
-  "optionalDependencies": {
-    "node-adodb": "5.0.3"
-  },
   "//the original node-adodb version is:": "github:nuintun/node-adodb",
   "//But waiting for following issue:": "https://github.com/nrwl/nx/issues/29478",
   "type": "commonjs",
