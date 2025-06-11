@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-validation",
-  "version": "6.181.2",
+  "version": "6.181.3",
   "dependencies": {
     "@nestjs/common": "^10.3.8",
-    "@badman/backend-database": "*",
+    "@badman/backend-database": "6.181.3",
     "tslib": "^2.8.1"
   },
   "type": "commonjs",
