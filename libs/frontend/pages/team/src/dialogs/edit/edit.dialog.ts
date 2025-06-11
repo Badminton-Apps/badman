@@ -326,14 +326,7 @@ export class EditDialogComponent {
           variables: {
             id: this.data.team.id,
           },
-          refetchQueries: [
-            {
-              query: PLAYERS_QUERY,
-              variables: {
-                teamId: this.data.team.id,
-              },
-            },
-          ],
+          refetchQueries: ['Team', 'Teams', 'ClubTeams'],
         })
         .subscribe(() => {
           this.snackBar.open('Deleted', undefined, {
