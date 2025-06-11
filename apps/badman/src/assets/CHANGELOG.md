@@ -1,3 +1,16 @@
+## 6.181.2 (2025-06-11)
+
+### 🩹 Fixes
+
+- tournament sync ([a14232938](https://github.com/Badminton-Apps/badman/commit/a14232938))
+- **detail:** conditionally render tab based on club ID ([23bd6d7e8](https://github.com/Badminton-Apps/badman/commit/23bd6d7e8))
+- **dialogs:** update GraphQL mutation and refetch queries in add and edit dialogs ([811fb0277](https://github.com/Badminton-Apps/badman/commit/811fb0277))
+- **processors:** initialize entities with optional IDs in tournament processors ([1881ebeba](https://github.com/Badminton-Apps/badman/commit/1881ebeba))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.181.1 (2025-05-18)
 
 ### 🩹 Fixes
