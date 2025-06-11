@@ -229,7 +229,7 @@
   },
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.18",
-    "node-adodb": "5.0.3"
+    "node-adodb": "https://github.com/nuintun/node-adodb/tree/master"
   },
   "volta": {
     "node": "20.19.0"
