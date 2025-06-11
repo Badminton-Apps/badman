@@ -139,12 +139,11 @@ export class DrawTournamentProcessor {
     }
 
     if (!draw) {
-      draw = new DrawTournament();
+      draw = new DrawTournament({
+        id: drawId ? drawId : undefined,
+      });
     }
-    if (drawId) {
-      draw.id = drawId;
-    }
-
+   
     draw.subeventId = subEvent.id;
     draw.visualCode = visualDraw.Code;
     draw.name = visualDraw.Name;
@@ -233,8 +232,6 @@ export class DrawTournamentProcessor {
       await this._transactionManager.addJob(transactionId, matchJob);
       gameJobIds.push(matchJob.id);
     }
-
-    
 
     return gameJobIds;
   }
