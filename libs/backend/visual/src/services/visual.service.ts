@@ -308,31 +308,93 @@ export class VisualService {
   private _parseResponse(data: string | unknown): XmlResult | unknown {
     // If data is not a string, it's likely already parsed JSON
     if (typeof data !== 'string') {
-      this.logger.debug('Data is already parsed (not a string), returning as-is');
+      this.logger.debug('Data is already parsed (not a string), processing for type corrections');
       if (data && typeof data === 'object' && 'Result' in data) {
-        return (data as { Result: unknown }).Result;
+        // Extract the Result and ensure proper typing
+        return this._normalizeTypes((data as { Result: unknown }).Result);
       }
-      return data;
+      // Apply type normalization to the parsed JSON data
+      return this._normalizeTypes(data);
     }
 
     // Check if the response is XML by looking for XML-like content
-    const trimmedData = data.trim();
-
-    // Check for XML declaration or XML tags
+    const trimmedData = data.trim(); // Check for XML declaration or XML tags
     if (trimmedData.startsWith('<?xml') || trimmedData.startsWith('<')) {
       // It's XML, parse with XML parser
       const parsed = this._parser.parse(data);
-      return parsed.Result || parsed;
+      return this._normalizeTypes(parsed.Result || parsed);
     } else {
       // Assume it's JSON, parse as JSON
       try {
-        return JSON.parse(data);
+        const jsonParsed = JSON.parse(data);
+        return this._normalizeTypes(jsonParsed);
       } catch (error) {
         this.logger.error('Failed to parse response as JSON:', error);
         // Fallback to XML parsing if JSON parsing fails
         const parsed = this._parser.parse(data);
-        return parsed.Result || parsed;
+        return this._normalizeTypes(parsed.Result || parsed);
       }
     }
+  }
+
+  /**
+   * Normalizes data types to ensure enums are properly typed as numbers
+   */
+  private _normalizeTypes(data: unknown): unknown {
+    if (data === null || data === undefined) {
+      return data;
+    }
+
+    if (Array.isArray(data)) {
+      return data.map((item) => this._normalizeTypes(item));
+    }
+
+    if (typeof data === 'object') {
+      const normalized: Record<string, unknown> = {};
+
+      for (const [key, value] of Object.entries(data)) {
+        // Convert enum fields to numbers
+        switch (key) {
+          case 'GenderID':
+          case 'GameTypeID':
+          case 'TypeID':
+          case 'MatchTypeID':
+          case 'ScoreStatus':
+          case 'TournamentTypeID':
+          case 'DrawTypeID':
+          case 'LevelID':
+          case 'Winner':
+          case 'MatchOrder':
+          case 'Code':
+          case 'Size':
+          case 'Team1':
+          case 'Team2':
+          case 'Rank':
+          case 'Level':
+          case 'Totalpoints':
+            // Convert to number if it's a string representation of a number
+            if (typeof value === 'string' && !isNaN(Number(value))) {
+              normalized[key] = Number(value);
+            } else if (typeof value === 'number') {
+              normalized[key] = value;
+            } else {
+              normalized[key] = this._normalizeTypes(value);
+            }
+            break;
+          case 'MemberID':
+            // MemberID should remain a string but ensure it's properly typed
+            normalized[key] = typeof value === 'string' ? value : String(value);
+            break;
+          default:
+            // Recursively normalize nested objects
+            normalized[key] = this._normalizeTypes(value);
+            break;
+        }
+      }
+
+      return normalized;
+    }
+
+    return data;
   }
 }
