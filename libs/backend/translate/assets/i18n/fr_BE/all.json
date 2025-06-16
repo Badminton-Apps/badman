@@ -873,8 +873,8 @@
       "cancel": "Annuler",
       "confirm": "Confirmer",
       "seeTeamFormation": "Voir la formation de l'équipe",
-      "2Sets": "2 sets",
-      "3Sets": "3 sets",
+      "2Sets": "2 games",
+      "3Sets": "3 games",
       "saveChanges": "Sauvegarder les modifications"
     },
     "inputs": {
@@ -884,9 +884,9 @@
       "players": "Joueurs",
       "player": "Joueur",
       "winner": "Gagnant",
-      "set1": "Set 1",
-      "set2": "Set 2",
-      "set3": "Set 3",
+      "set1": "Game 1",
+      "set2": "Game 2",
+      "set3": "Game 3",
       "startTime": "Heure de début",
       "endTime": "Heure de fin",
       "shuttle": "Navette",
