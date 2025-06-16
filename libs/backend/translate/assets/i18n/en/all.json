@@ -3231,8 +3231,8 @@
         "cancel": "Cancel",
         "confirm": "Confirm",
         "seeTeamFormation": "See team details",
-        "2Sets": "2 sets",
-        "3Sets": "3 sets",
+        "2Sets": "2 games",
+        "3Sets": "3 games",
         "saveChanges": "Save changes"
       },
       "inputs": {
@@ -3243,9 +3243,9 @@
         "players": "Players",
         "player": "Player",
         "winner": "Winner",
-        "set1": "Set 1",
-        "set2": "Set 2",
-        "set3": "Set 3",
+        "set1": "Game 1",
+        "set2": "Game 2",
+        "set3": "Game 3",
         "startTime": "Start time",
         "endTime": "End time",
         "shuttle": "Shuttle",
