@@ -291,11 +291,14 @@ export class GameUpdateInput extends PartialType(
 
   @Field(() => ID, { nullable: true })
   gameId!: string;
+
+  @Field(() => [GameNewInputPlayers], { nullable: true })
+  players!: GameNewInputPlayers[];
 }
 
 @InputType()
 export class GameNewInput extends PartialType(
-  OmitType(GameUpdateInput, ['linkId'] as const),
+  OmitType(GameUpdateInput, ['linkId', 'players'] as const),
   InputType
 ) {
   @Field(() => ID, { nullable: true })
