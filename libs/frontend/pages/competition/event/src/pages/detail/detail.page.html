@@ -45,17 +45,31 @@
       @for (type of subEvents(); track $index) {
         <div class="type">
           <h3>{{ 'all.gender.long.' + type.eventType | translate }}</h3>
-          @for (sub of type.subEvents; track sub) {
+          @for (sub of type.subEvents; track sub.id) {
             <mat-card class="subEvent">
               <mat-card-header>
-                <mat-card-title>{{ sub.name }} {{ sub.eventType }}</mat-card-title>
-                <mat-card-subtitle
-                  >Max Level: {{ sub.maxLevel }}, index: {{ sub.minBaseIndex }} -
-                  {{ sub.maxBaseIndex }}</mat-card-subtitle
-                >
+                <div class="header-content">
+                  <div class="title">
+                    <mat-card-title>{{ sub.name }} {{ sub.eventType }}</mat-card-title>
+                    <div class="spacer"></div>
+                    <badman-has-claim [any]="['edit:competition']">
+                      <button
+                        mat-icon-button
+                        (click)="editSubEvent(sub)"
+                        matTooltip="{{ 'all.button.edit' | translate }}"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </badman-has-claim>
+                  </div>
+                  <mat-card-subtitle
+                    >Max Level: {{ sub.maxLevel }}, index: {{ sub.minBaseIndex }} -
+                    {{ sub.maxBaseIndex }}</mat-card-subtitle
+                  >
+                </div>
               </mat-card-header>
               <div class="draw">
-                @for (draw of sub.drawCompetitions; track draw) {
+                @for (draw of sub.drawCompetitions; track draw.id) {
                   <div>
                     <button mat-button [routerLink]="['draw', draw.id]">
                       {{ draw.name }} ({{ draw.size }} teams)

@@ -24,10 +24,14 @@ import { TranslatePipe } from '@ngx-translate/core';
         MatFormFieldModule,
         MatButtonModule,
         MatInputModule,
-    ]
+    ],
+    
 })
 export class EventCompetitionLevelFieldsComponent implements OnInit {
   subEvent = input<SubEventCompetition>({} as SubEventCompetition);
+
+  canDelete = input<boolean>(false);
+  direction = input<'row' | 'column'>('row');
 
   type = input<LevelType>();
 
