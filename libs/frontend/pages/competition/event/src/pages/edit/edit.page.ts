@@ -42,7 +42,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { EVENT_QUERY } from '../../resolvers';
+import { EVENT_QUERY } from '../../queries';
 import { EventCompetitionLevelFieldsComponent } from './components';
 
 export type ExceptionType = FormGroup<{

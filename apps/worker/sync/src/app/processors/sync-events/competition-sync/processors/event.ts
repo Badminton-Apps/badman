@@ -1,9 +1,9 @@
 import { EventCompetition } from '@badman/backend-database';
-import moment, { Moment } from 'moment';
-import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService, XmlTournament } from '@badman/backend-visual';
 import { Logger } from '@nestjs/common';
+import moment from 'moment';
 import { Op } from 'sequelize';
+import { StepOptions, StepProcessor } from '../../../../processing';
 
 export interface EventStepData {
   stop: boolean;

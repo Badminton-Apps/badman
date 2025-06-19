@@ -32,7 +32,7 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
   InferAttributes,
-  InferCreationAttributes
+  InferCreationAttributes,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -82,7 +82,7 @@ export class SubEventCompetition extends Model<
   name!: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType!: SubEventTypeEnum;
 
