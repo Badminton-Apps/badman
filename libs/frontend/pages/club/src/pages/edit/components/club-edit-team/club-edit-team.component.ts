@@ -92,6 +92,7 @@ export class ClubEditTeamComponent implements OnInit {
           season: this.team().season,
           eventId: this.subEvent?.eventCompetition?.id,
           subEventId: this.subEvent?.id,
+          type: this.team()?.type,
         },
       })
       .afterClosed()

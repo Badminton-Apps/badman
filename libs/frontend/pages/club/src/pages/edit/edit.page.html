@@ -15,7 +15,7 @@
       </badman-has-claim>
     </h2>
     <div class="roles">
-      @for (role of this.roles$ | async; track role) {
+      @for (role of this.roles$ | async; track role.id) {
         @if (role.id) {
           <badman-edit-role [roleId]="role.id" [type]="[securityTypes.CLUB, securityTypes.TEAM]" />
         }
@@ -45,7 +45,7 @@
       </h2>
     </div>
     <div class="locations">
-      @for (location of this.locationForSeason$ | async; track location) {
+      @for (location of this.locationForSeason$ | async; track location.id) {
         <badman-club-edit-location
           [location]="location"
           [season]="this.season.value"
@@ -69,7 +69,7 @@
       </h2>
     </div>
     <div class="teams">
-      @for (team of this.teamsForSeason$ | async; track team) {
+      @for (team of this.teamsForSeason$ | async; track team.id) {
         <badman-club-edit-team
           [team]="team"
           [club]="club()!"

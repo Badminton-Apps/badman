@@ -26,7 +26,7 @@
       </badman-has-claim>
     </div>
     <div class="teams-container">
-      @for (team of this.clubTeamsService.teams(); track team) {
+      @for (team of this.clubTeamsService.teams(); track team.id) {
         <div class="team">
           <div [routerLink]="['team', team.slug]">
             <span class="name">{{ team.name }}</span>
