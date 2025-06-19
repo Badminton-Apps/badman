@@ -1,3 +1,17 @@
+## 6.182.0 (2025-06-19)
+
+### 🚀 Features
+
+- **event:** implement sub-event competition update functionality and UI enhancements ([f415c5a66](https://github.com/Badminton-Apps/badman/commit/f415c5a66))
+
+### 🩹 Fixes
+
+- stop when no type is found ([552244687](https://github.com/Badminton-Apps/badman/commit/552244687))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.181.3 (2025-06-11)
 
 ### 🩹 Fixes
