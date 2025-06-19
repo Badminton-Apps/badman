@@ -12,6 +12,7 @@ import {
   RankingSystem,
   SubEventCompetition,
   SubEventCompetitionAverageLevel,
+  SubEventCompetitionUpdateInput,
 } from '@badman/backend-database';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { PointsService } from '@badman/backend-ranking';
@@ -398,5 +399,25 @@ export class SubEventCompetitionResolver {
     );
 
     return true;
+  }
+  @Mutation(() => SubEventCompetition)
+  async updateSubEventCompetition(
+    @User() user: Player,
+    @Args('data') updateData: SubEventCompetitionUpdateInput,
+  ): Promise<SubEventCompetition> {
+    if (!(await user.hasAnyPermission(['edit:competition']))) {
+      throw new UnauthorizedException(`You do not have permission to edit competition`);
+    }
+
+    const subEventCompetition = await SubEventCompetition.findByPk(updateData.id);
+
+    if (!subEventCompetition) {
+      throw new NotFoundException(`${SubEventCompetition.name}: ${updateData.id}`);
+    }
+
+    // Update the sub event competition
+    await subEventCompetition.update(updateData);
+
+    return subEventCompetition;
   }
 }

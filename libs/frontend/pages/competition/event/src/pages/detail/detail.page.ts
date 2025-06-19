@@ -1,6 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, TemplateRef, computed, effect, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  PLATFORM_ID,
+  Signal,
+  signal,
+  TransferState,
+} from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -9,38 +18,32 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogModel,
-  HasClaimComponent,
-  OpenCloseChangeEncounterDateDialogComponent,
-  OpenCloseDateDialogComponent,
-  PageHeaderComponent,
-} from '@badman/frontend-components';
-import { CpService } from '@badman/frontend-cp';
-import { ExcelService } from '@badman/frontend-excel';
+import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
-import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 import { injectRouteData } from 'ngxtension/inject-route-data';
-import { lastValueFrom } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { EditSubeventDialogComponent } from '../../dialogs';
+import { EventMenuComponent } from '../../menus/event-menu/event-menu.component';
 import { CompetitionEncountersComponent } from './competition-encounters';
 import { CompetitionEncounterService } from './competition-encounters/competition-encounters.service';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
-import { EventMenuComponent } from '../../menus/event-menu/event-menu.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Apollo } from 'apollo-angular';
+import { EVENT_QUERY } from '../../queries';
+import { transferState } from '@badman/frontend-utils';
+import { map, tap } from 'rxjs';
+import { injectParams } from 'ngxtension/inject-params';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -65,6 +68,7 @@ import { EventMenuComponent } from '../../menus/event-menu/event-menu.component'
     MatSnackBarModule,
     MatTabsModule,
     PageHeaderComponent,
+    HasClaimComponent,
     CompetitionEnrollmentsComponent,
     CompetitionMapComponent,
     CompetitionEncountersComponent,
@@ -72,19 +76,39 @@ import { EventMenuComponent } from '../../menus/event-menu/event-menu.component'
   ],
 })
 export class DetailPageComponent {
-  private seoService = inject(SeoService);
-  private router = inject(Router);
-  private breadcrumbsService = inject(BreadcrumbService);
-
-  // injectors
-  private claimService = inject(ClaimService);
+  private readonly seoService = inject(SeoService);
+  private readonly router = inject(Router);
+  private readonly breadcrumbsService = inject(BreadcrumbService);
+  private readonly dialog = inject(MatDialog);
+  private readonly claimService = inject(ClaimService);
+  private apollo = inject(Apollo);
 
   private readonly competitionEncounterService = inject(CompetitionEncounterService);
+  private readonly stateTransfer = inject(TransferState);
+  private readonly platformId = inject<string>(PLATFORM_ID);
+  readonly eventId = injectParams('id') as Signal<string>;
 
   // signals
   currentTab = signal(0);
 
-  readonly eventCompetition = injectRouteData<EventCompetition>('eventCompetition');
+  readonly eventCompetition = toSignal(
+    this.apollo
+      .watchQuery<{ eventCompetition: Partial<EventCompetition> }>({
+        query: EVENT_QUERY,
+        variables: {
+          id: this.eventId(),
+        },
+      })
+      .valueChanges.pipe(
+        transferState(`eventKey-${this.eventId()}`, this.stateTransfer, this.platformId),
+        map((result) => {
+          if (!result?.data.eventCompetition) {
+            throw new Error('No event found!');
+          }
+          return new EventCompetition(result.data.eventCompetition);
+        }),
+      ),
+  );
   private readonly quaryTab = injectQueryParams('tab');
 
   hasPermission = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
@@ -152,5 +176,14 @@ export class DetailPageComponent {
       },
       queryParamsHandling: 'merge',
     });
+  }
+
+  editSubEvent(subEvent: SubEventCompetition) {
+    const dialogRef = this.dialog.open(EditSubeventDialogComponent, {
+      width: '500px',
+      data: { subEvent },
+    });
+
+    dialogRef.afterClosed().subscribe();
   }
 }
