@@ -76,14 +76,23 @@ export class SyncEventsProcessor {
     await cronJob.save();
 
     try {
+      // Creates a new date based on either the job's date parameter or the last run time
       const newDate = moment(job.data?.date ?? cronJob.lastRun);
       let newEvents: XmlTournament[] = [];
-      if (job.data?.search?.length > 0) {
+
+      // Checks if the search term is present in the job data.  If so, we will search for events based on the search term
+      const searchTermPresent = job.data?.search?.length > 0;
+      // Checks if a specific event id is present in the job data.  If so, we will process the event with specified id
+      const idPresent = job.data?.id?.length > 0;
+
+      if (searchTermPresent) {
         newEvents = newEvents.concat(await this.visualService.searchEvents(job.data?.search));
-      } else if (job.data?.id?.length > 0) {
+      } else if (idPresent) {
+        // If the id is not an array, convert it to an array, so we can loop through it
         if (!Array.isArray(job.data?.id)) {
           job.data.id = [job.data.id];
         }
+
         for (let id of job.data?.id as string[]) {
           for (const format of this.formats) {
             if (id.startsWith(format)) {
@@ -125,7 +134,7 @@ export class SyncEventsProcessor {
         job.progress(percent);
         this.logger.debug(`Processing ${xmlTournament?.Name}, ${percent}% (${i}/${total})`);
 
-        // Skip certain events
+        // Skip certain event
         if ((job.data?.skip?.length ?? 0) > 0 && job.data?.skip?.includes(xmlTournament?.Name)) {
           continue;
         }
@@ -164,7 +173,7 @@ export class SyncEventsProcessor {
               })) as { event: EventTournament };
             }
           }
-          this.logger.debug(`Committing transactin`);
+          this.logger.debug(`Committing transaction`);
           await transaction.commit();
           this.logger.log(`Finished ${xmlTournament?.Name}`);
 
