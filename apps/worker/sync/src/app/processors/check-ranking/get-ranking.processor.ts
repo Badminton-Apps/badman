@@ -1,10 +1,10 @@
 import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { accepCookies, getBrowser, selectBadmninton } from '@badman/backend-pupeteer';
+import { acceptCookies, getPage, selectBadmninton } from '@badman/backend-pupeteer';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger, NotFoundException } from '@nestjs/common';
 import { Job } from 'bull';
-import { Browser } from 'puppeteer';
+import { Page } from 'puppeteer';
 import { getRanking, getViaRanking, searchPlayer } from './pupeteer';
 
 @Processor({
@@ -26,7 +26,7 @@ export class CheckRankingProcessor {
   }
 
   async syncRanking(playerId: string): Promise<void> {
-    let browser: Browser | undefined;
+    let page: Page | undefined;
 
     const player = await Player.findByPk(playerId);
     if (!player) {
@@ -65,14 +65,12 @@ export class CheckRankingProcessor {
 
     try {
       // Create browser
-      browser = await getBrowser();
-
-      const page = await browser.newPage();
+      page = await getPage();
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
 
       // Accept cookies
-      await accepCookies({ page });
+      await acceptCookies({ page }, {logger: this.logger});
       await selectBadmninton({ page });
 
       // Processing player
@@ -143,8 +141,8 @@ export class CheckRankingProcessor {
       this.logger.error(`Error while processing player ${player.fullName}`);
     } finally {
       // Close browser
-      if (browser) {
-        browser.close();
+      if (page) {
+        page.close();
         this.logger.debug(`Syned ${player.fullName}`);
       }
     }
