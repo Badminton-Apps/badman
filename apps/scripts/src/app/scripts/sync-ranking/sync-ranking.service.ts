@@ -1,5 +1,5 @@
 import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { getBrowser, accepCookies, selectBadmninton } from '@badman/backend-pupeteer';
+import { getBrowser, acceptCookies, selectBadmninton } from '@badman/backend-pupeteer';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Browser } from 'puppeteer';
 import { Op } from 'sequelize';
@@ -82,7 +82,7 @@ export class SyncRankingService {
 
       // Accept cookies
       try {
-        await accepCookies({ page });
+        await acceptCookies({ page }, {logger: this.logger});
       } catch (error) {
         this.logger.error('Error while accepting cookies');
       }

@@ -3,13 +3,12 @@ import {
   CronJob,
   DrawCompetition,
   EncounterCompetition,
-  EventCompetition,
   Player,
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
 import { NotificationService } from '@badman/backend-notifications';
-import { accepCookies, getBrowser, signIn } from '@badman/backend-pupeteer';
+import { acceptCookies, getPage, signIn } from '@badman/backend-pupeteer';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { SearchService } from '@badman/backend-search';
 import { ConfigType } from '@badman/utils';
@@ -18,7 +17,7 @@ import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Job } from 'bull';
 import moment from 'moment';
-import { Browser, Page } from 'puppeteer';
+import { Page } from 'puppeteer';
 import { Op } from 'sequelize';
 import {
   acceptEncounter,
@@ -90,7 +89,7 @@ export class CheckEncounterProcessor {
   @Process(Sync.CheckEncounters)
   async syncEncounters() {
     this.logger.log('Syncing encounters');
-    let browser: Browser | undefined;
+    let page: Page | undefined;
     const cronJob = await CronJob.findOne({
       where: {
         'meta.jobName': Sync.CheckEncounters,
@@ -146,19 +145,16 @@ export class CheckEncounterProcessor {
             } encounter left, ${chunks.length - chunksProcessed} chunks left`,
           );
           // Close browser if any
-          if (browser) {
-            await browser.close();
+          if (page) {
+            await page.close();
           }
 
-          // Create browser
-          browser = await getBrowser();
-
-          const page = await browser.newPage();
+          page = await getPage();
           page.setDefaultTimeout(10000);
           await page.setViewport({ width: 1691, height: 1337 });
 
           // Accept cookies
-          await accepCookies({ page });
+          await acceptCookies({ page }, {logger: this.logger});
 
           // Processing encounters
           for (const encounter of chunk) {
@@ -182,8 +178,8 @@ export class CheckEncounterProcessor {
       this.logger.error(error);
     } finally {
       // Close browser
-      if (browser) {
-        await browser.close();
+      if (page) {
+        await page.close();
       }
 
       cronJob.amount++;
@@ -217,14 +213,13 @@ export class CheckEncounterProcessor {
     }
 
     // Create browser
-    const browser = await getBrowser();
+    const page = await getPage();
     try {
-      const page = await browser.newPage();
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
 
       // Accept cookies
-      await accepCookies({ page });
+      await acceptCookies({ page }, {logger: this.logger});
 
       // Processing encounters
       await this._syncEncounter(encounter, page);
@@ -234,8 +229,8 @@ export class CheckEncounterProcessor {
       this.logger.error(error);
     } finally {
       // Close browser
-      if (browser) {
-        browser.close();
+      if (page) {
+        page.close();
       }
 
       this.logger.log('Synced encounters');
@@ -314,7 +309,7 @@ export class CheckEncounterProcessor {
                 this.logger.debug(
                   `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
                 );
-                await signIn({ page }, this._username, this._password);
+                await signIn({ page }, {username: this._username, password: this._password, logger: this.logger});
                 const succesfull = await acceptEncounter({ page }, { logger: this.logger });
                 if (!succesfull) {
                   // we failed to accept the encounter for some reason, notify the user

@@ -6,8 +6,8 @@ import {
   SubEventCompetition,
   EventCompetition,
 } from '@badman/backend-database';
-import { accepCookies, getBrowser, signIn } from '@badman/backend-pupeteer';
-import { SyncQueue, Sync } from '@badman/backend-queue';
+import { acceptCookies, signIn, waitForSelectors } from '@badman/backend-pupeteer';
+import { SyncQueue, Sync, TransactionManager } from '@badman/backend-queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -15,14 +15,15 @@ import { Job } from 'bull';
 import {
   enterEditMode,
   clearFields,
-  selectPlayer,
-  enterScores,
   enterEndHour,
   enterGameLeader,
   enterShuttle,
   enterStartHour,
+  enableInputValidation,
 } from './pupeteer';
 import { ConfigType } from '@badman/utils';
+import { enterGames } from './pupeteer/enterGames';
+import { getPage } from '@badman/backend-pupeteer';
 
 @Processor({
   name: SyncQueue,
@@ -32,7 +33,10 @@ export class EnterScoresProcessor {
   private readonly _username?: string;
   private readonly _password?: string;
 
-  constructor(configService: ConfigService<ConfigType>) {
+  constructor(
+    configService: ConfigService<ConfigType>,
+    private readonly _transactionManager: TransactionManager
+  ) {
     this._username = configService.get('VR_API_USER');
     this._password = configService.get('VR_API_PASS');
 
@@ -50,11 +54,16 @@ export class EnterScoresProcessor {
     const encounterId = job.data.encounterId;
 
     this.logger.debug('Creating browser');
-    const browser = await getBrowser();
+    const page = await getPage(true, [
+      '--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage',
+      '--disable-save-password-bubble',
+      '--disable-credentials-enable-service',
+      '--disable-credential-saving',
+      '--password-store=basic',
+      '--no-default-browser-check',
+    ]);
 
     try {
-      const page = await browser.newPage();
-
       if (!page) {
         this.logger.error('No page found');
         return;
@@ -63,7 +72,7 @@ export class EnterScoresProcessor {
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
 
-      this.logger.debug('Getting encounter');
+      this.logger.log('Getting encounter');
       const encounter = await EncounterCompetition.findByPk(encounterId, {
         attributes: ['id', 'visualCode', 'shuttle', 'startHour', 'endHour'],
         include: [
@@ -78,6 +87,7 @@ export class EnterScoresProcessor {
               'set2Team2',
               'set3Team1',
               'set3Team2',
+              'gameType'
             ],
             model: Game,
             include: [
@@ -117,107 +127,72 @@ export class EnterScoresProcessor {
 
       this.logger.log(`Entering scores for ${encounter.visualCode}`);
 
-      await accepCookies({ page });
-      this.logger.debug(`Signing in as ${this._username}`);
-      await signIn({ page }, this._username, this._password);
+      await acceptCookies({ page }, {logger: this.logger});
+      this.logger.log(`Signing in as ${this._username}`);
+      await signIn({ page }, {username: this._username, password: this._password, logger: this.logger});
 
-      this.logger.debug(`Entering edit mode`);
+      this.logger.log(`Entering edit mode`);
       await enterEditMode({ page }, encounter);
 
-      this.logger.debug(`Clearing fields`);
-      await clearFields({ page });
+      this.logger.log(`Clearing fields`);
+      await clearFields({ page }, {logger: this.logger});
 
-      for (const game of encounter.games ?? []) {
-        if (!game?.visualCode) {
-          this.logger.error(`Game ${game.order} has no visualCode, skipping`);
-          continue;
-        }
-
-        this.logger.debug(`Processing game ${game.order}`);
-        const t1p1 = game.players?.find(
-          (p) => p.GamePlayerMembership.team === 1 && p.GamePlayerMembership.player === 1,
-        );
-        if (t1p1) {
-          if (!t1p1.memberId) {
-            this.logger.error(`Player ${t1p1.fullName} has no memberId, skipping`);
-            continue;
-          }
-          await selectPlayer({ page }, t1p1.memberId, 't1p1', game.visualCode);
-        }
-
-        const t1p2 = game.players?.find(
-          (p) => p.GamePlayerMembership.team === 1 && p.GamePlayerMembership.player === 2,
-        );
-        if (t1p2) {
-          if (!t1p2.memberId) {
-            this.logger.error(`Player ${t1p2.fullName} has no memberId, skipping`);
-            continue;
-          }
-          await selectPlayer({ page }, t1p2.memberId, 't1p2', game.visualCode);
-        }
-
-        const t2p1 = game.players?.find(
-          (p) => p.GamePlayerMembership.team === 2 && p.GamePlayerMembership.player === 1,
-        );
-        if (t2p1) {
-          if (!t2p1.memberId) {
-            this.logger.error(`Player ${t2p1.fullName} has no memberId, skipping`);
-            continue;
-          }
-          await selectPlayer({ page }, t2p1.memberId, 't2p1', game.visualCode);
-        }
-
-        const t2p2 = game.players?.find(
-          (p) => p.GamePlayerMembership.team === 2 && p.GamePlayerMembership.player === 2,
-        );
-        if (t2p2) {
-          if (!t2p2.memberId) {
-            this.logger.error(`Player ${t2p2.fullName} has no memberId, skipping`);
-            continue;
-          }
-          await selectPlayer({ page }, t2p2.memberId, 't2p2', game.visualCode);
-        }
-
-        if (game.set1Team1 && game.set1Team2) {
-          await enterScores({ page }, 1, `${game.set1Team1}-${game.set1Team2}`, game.visualCode);
-        }
-
-        if (game.set2Team1 && game.set2Team2) {
-          await enterScores({ page }, 2, `${game.set2Team1}-${game.set2Team2}`, game.visualCode);
-        }
-
-        if (game.set3Team1 && game.set3Team2) {
-          await enterScores({ page }, 3, `${game.set3Team1}-${game.set3Team2}`, game.visualCode);
-        }
+      // Create a transaction for database operations
+      const transactionId = await this._transactionManager.transaction();
+      const transaction = await this._transactionManager.getTransaction(transactionId);
+      
+      try {
+        await enterGames({ page }, {games: encounter.games, logger: this.logger, transaction: transaction});
+        await this._transactionManager.commitTransaction(transactionId);
+        this.logger.log('enter games transaction committed successfully');
+      } catch (error) {
+        this.logger.error('Error during enterGames, rolling back transaction:', error);
+        await this._transactionManager.rollbackTransaction(transactionId);
+        throw error;
       }
 
       if (encounter.gameLeader?.fullName) {
-        this.logger.debug(`Entering game leader ${encounter.gameLeader?.fullName}`);
+        this.logger.log(`Entering game leader ${encounter.gameLeader?.fullName}`);
         await enterGameLeader({ page }, encounter.gameLeader?.fullName);
       }
 
       if (encounter.shuttle) {
-        this.logger.debug(`Entering shuttle ${encounter.shuttle}`);
+        this.logger.log(`Entering shuttle ${encounter.shuttle}`);
         await enterShuttle({ page }, encounter.shuttle);
       }
 
       if (encounter.startHour) {
-        this.logger.debug(`Entering start hour ${encounter.startHour}`);
+        this.logger.log(`Entering start hour ${encounter.startHour}`);
         await enterStartHour({ page }, encounter.startHour);
       }
 
       if (encounter.endHour) {
-        this.logger.debug(`Entering end hour ${encounter.endHour}`);
+        this.logger.log(`Entering end hour ${encounter.endHour}`);
         await enterEndHour({ page }, encounter.endHour);
       }
 
-      // await browser.close();
+      await enableInputValidation({page}, this.logger)
+
+      const nodeEv = process.env.NODE_ENV;
+
+      const saveButton = await waitForSelectors([['input#btnSave.button']], page, 5000);
+      if (saveButton) {
+        this.logger.debug(`Save button found`);
+        if (nodeEv === 'production') {
+          await saveButton.click();
+          this.logger.log(`Save button clicked, waiting for navigation`);
+          await page.waitForNavigation({ waitUntil: 'networkidle0' });
+          this.logger.log(`Navigation completed`);
+        } else {
+          this.logger.log(`Skipping save button because we are not in production`);
+        }
+      }
     } catch (error) {
-      // await browser.close();
       this.logger.error(error);
     } finally {
-      // this.running = false;
-      // await browser.close();
+      this.logger.log(`Closing browser page...`);
+      await page.close();
+      this.logger.log('Browser closed');
     }
   }
 }

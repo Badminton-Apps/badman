@@ -1,62 +1,27 @@
 import { join } from 'path';
 
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import consolidate from 'consolidate';
 import juice from 'juice';
+import { Observable, asapScheduler, bindNodeCallback, from, of } from 'rxjs';
 import {
-  BehaviorSubject,
-  Observable,
-  Subject,
-  asapScheduler,
-  bindNodeCallback,
-  from,
-  interval,
-  lastValueFrom,
-  of,
-} from 'rxjs';
-import {
-  filter,
   mergeMap,
-  shareReplay,
-  startWith,
-  switchMap,
   take,
-  takeUntil,
-  tap,
 } from 'rxjs/operators';
 
-import { getBrowser } from '@badman/backend-pupeteer';
+import { getPage, startBrowserHealthMonitoring } from '@badman/backend-pupeteer';
 import { I18nTranslations } from '@badman/utils';
 import { writeFile } from 'fs/promises';
 import momentTz from 'moment-timezone';
 import { I18nService } from 'nestjs-i18n';
-import { Browser } from 'puppeteer';
 import { Readable } from 'stream';
 import { COMPILE_OPTIONS_TOKEN } from '../constants';
 import { CompileInterface, CompileModuleOptions, CompileOptions, ViewOptions } from '../interfaces';
 
 @Injectable()
-export class CompileService implements CompileInterface, OnModuleInit {
+export class CompileService implements CompileInterface, OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(CompileService.name);
-
-  static browserInstance$ = new BehaviorSubject<Browser | null>(null);
-  static stopBrowserRefresh$ = new Subject<void>();
-  static lastActivity = new BehaviorSubject<number>(0);
-
-  get browser$(): Observable<Browser | null> {
-    if (CompileService.browserInstance$.value === null) {
-      this._startBrowserRefresh();
-    }
-
-    return CompileService.browserInstance$.pipe(
-      filter((browser: Browser | null) => browser !== null),
-      shareReplay(1),
-      tap(() => {
-        this.logger.debug('Browser activity');
-        return CompileService.lastActivity.next(Date.now());
-      }),
-    );
-  }
+  private stopHealthMonitoring?: () => void;
 
   constructor(
     @Inject(COMPILE_OPTIONS_TOKEN)
@@ -65,48 +30,17 @@ export class CompileService implements CompileInterface, OnModuleInit {
   ) {}
 
   onModuleInit() {
-    // Destroy browser after 1h of inactivity, check every 15min
-    interval(15 * 60 * 1000).subscribe(() => {
-      const now = Date.now();
-      const lastActivityTime = CompileService.lastActivity.value;
-      if (lastActivityTime != 0) {
-        this.logger.verbose(`Last activity: ${now - lastActivityTime}`);
-
-        if (now - lastActivityTime > 60 * 60 * 1000) {
-          if (CompileService.browserInstance$.value !== null) {
-            this.logger.debug(
-              'Closing browser due to inactivity',
-              CompileService.browserInstance$.value,
-            );
-            CompileService.browserInstance$.value.close();
-            CompileService.browserInstance$.next(null);
-          }
-
-          CompileService.stopBrowserRefresh$.next();
-          CompileService.lastActivity.next(0);
-        }
-      }
-    });
+    // Start browser health monitoring
+    this.stopHealthMonitoring = startBrowserHealthMonitoring();
+    this.logger.debug('CompileService initialized - using shared browser management with health monitoring');
   }
 
-  private _startBrowserRefresh() {
-    // restart browser every 30min
-    interval(30 * 60 * 1000)
-      .pipe(
-        startWith(0),
-        takeUntil(CompileService.stopBrowserRefresh$),
-        switchMap(() => {
-          this.logger.debug('Creating browser');
-          return from(getBrowser());
-        }),
-      )
-      .subscribe((browser: Browser) => {
-        if (CompileService.browserInstance$.value !== null) {
-          this.logger.debug('Closing old browser');
-          CompileService.browserInstance$.value.close();
-        }
-        CompileService.browserInstance$.next(browser);
-      });
+  onModuleDestroy() {
+    // Clean up health monitoring when service is destroyed
+    if (this.stopHealthMonitoring) {
+      this.stopHealthMonitoring();
+      this.logger.debug('Browser health monitoring stopped');
+    }
   }
 
   toFile(template: string, options?: CompileOptions): Observable<string> {
@@ -139,13 +73,9 @@ export class CompileService implements CompileInterface, OnModuleInit {
 
   private async toPdf(html: string, options?: CompileOptions): Promise<Buffer> {
     this.logger.debug('Generating pdf from html');
-    const browser = await lastValueFrom(this.browser$.pipe(take(1)));
-
-    if (browser === null) {
-      throw new Error('Browser not available');
-    }
-
-    const page = await browser.newPage();
+    
+    // Use shared browser management
+    const page = await getPage();
 
     if (!page) {
       throw new Error('Page not available');
@@ -183,7 +113,6 @@ export class CompileService implements CompileInterface, OnModuleInit {
     await page.close();
 
     return Buffer.from(pdf);
-    
   }
 
   private getTemplatePath(template: string, { root, extension, engine }: ViewOptions): string {
