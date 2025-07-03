@@ -1,3 +1,21 @@
+## 6.183.0 (2025-07-03)
+
+### 🚀 Features
+
+- planner export ([68ff24039](https://github.com/Badminton-Apps/badman/commit/68ff24039))
+- add project structure and guidelines documentation ([331d937bd](https://github.com/Badminton-Apps/badman/commit/331d937bd))
+- add team data update logic before season start and enhance entry meta with Visual API player data ([7da2060e0](https://github.com/Badminton-Apps/badman/commit/7da2060e0))
+- add getTeam method to retrieve team data from API ([fe1016206](https://github.com/Badminton-Apps/badman/commit/fe1016206))
+
+### 🩹 Fixes
+
+- improve sorting logic in sortStanding function ([4136b0fde](https://github.com/Badminton-Apps/badman/commit/4136b0fde))
+- simplify sorting logic in entriesSignal computation ([fe91d81d9](https://github.com/Badminton-Apps/badman/commit/fe91d81d9))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.182.0 (2025-06-19)
 
 ### 🚀 Features
