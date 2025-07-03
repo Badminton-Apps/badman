@@ -1,4 +1,9 @@
 export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandingType>) => {
+  // if position is defined, use it for sorting
+  if (a.position !== undefined && b.position !== undefined) {
+    return a.position - b.position; // lower position comes first
+  }
+
   // Based on C320 - Article 61
   const pointA = a.points ?? 0;
   const pointB = b.points ?? 0;
@@ -38,4 +43,5 @@ type SortStandingType = {
   setsLost: number;
   totalPointsWon: number;
   totalPointsLost: number;
+  position?: number;
 };
