@@ -19,26 +19,11 @@ export class StandingComponent implements OnInit {
   entriesSignal = computed(() =>
     this.entries()
       .filter((e) => e.standing)
-      .sort((a, b) =>
-        sortStanding(
-          {
-            points: a.standing?.points,
-            won: a.standing?.won,
-            gamesWon: a.standing?.gamesWon,
-            gamesLost: a.standing?.gamesLost,
-            setsWon: a.standing?.setsWon,
-            setsLost: a.standing?.setsLost,
-          },
-          {
-            points: b.standing?.points,
-            won: b.standing?.won,
-            gamesWon: b.standing?.gamesWon,
-            gamesLost: b.standing?.gamesLost,
-            setsWon: b.standing?.setsWon,
-            setsLost: b.standing?.setsLost,
-          },
-        ),
-      ),
+      .sort((a, b) => {
+        // Since we filter for e.standing above, both a.standing and b.standing should exist
+        if (!a.standing || !b.standing) return 0;
+        return sortStanding(a.standing, b.standing);
+      }),
   );
 
   type = input<'players' | 'team' | undefined>();
