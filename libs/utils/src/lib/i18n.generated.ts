@@ -213,6 +213,7 @@ export type I18nTranslations = {
                 "dates": string;
                 "download-base-players": string;
                 "download-cp": string;
+                "export-planner": string;
                 "make-official": string;
                 "new-date": string;
                 "open_close_change-encounters": string;
