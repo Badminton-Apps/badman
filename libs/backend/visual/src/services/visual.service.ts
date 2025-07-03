@@ -11,6 +11,7 @@ import { performance } from 'perf_hooks';
 import {
   XmlMatch,
   XmlResult,
+  XmlTeam,
   XmlTeamMatch,
   XmlTournament,
   XmlTournamentDraw,
@@ -50,6 +51,14 @@ export class VisualService {
     );
     const parsed = this._parseResponse(result) as XmlResult;
     return this._asArray(parsed.Player);
+  }
+  async getTeam(tourneyId: string, teamId: string | number, useCache = true) {
+    const result = await this._getFromApi(
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/team/${teamId}`,
+      useCache,
+    );
+    const parsed = this._parseResponse(result) as XmlResult;
+    return parsed.Team as XmlTeam;
   }
   async getTeamMatch(tourneyId: string, matchId: string | number, useCache = true) {
     const result = await this._getFromApi(
