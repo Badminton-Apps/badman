@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-pupeteer",
-  "version": "6.182.0",
+  "version": "6.183.0",
   "dependencies": {
     "puppeteer": "^23.11.1",
     "@nestjs/common": "^10.3.8",
