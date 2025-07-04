@@ -297,7 +297,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         : [xmlDraw.Structure.Item as XmlItem];
 
       // Find the team in the draw structure by name
-      const teamItem = items.find(item => item.Team?.Name?.indexOf(team.name) !== -1);
+      const teamItem = items.find(item => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code);
       if (!teamItem?.Team?.Code) {
         this.logger.warn(`Team code not found for ${team.name} in draw structure`);
         return;

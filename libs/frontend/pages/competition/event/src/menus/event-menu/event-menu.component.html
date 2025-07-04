@@ -77,6 +77,18 @@
           <mat-icon>equalizer</mat-icon>
           <span>{{ 'all.competition.menu.download-base-players' | translate }}</span>
         </button>
+        <badman-has-claim [any]="['export-teams:competition']">
+          <button mat-menu-item (click)="downloadTeamsExport()">
+            <mat-icon>download</mat-icon>
+            <span>{{ 'all.competition.menu.download-teams' | translate }}</span>
+          </button>
+        </badman-has-claim>
+        <badman-has-claim [any]="['export-exceptions:competition']">
+          <button mat-menu-item (click)="downloadExceptionsExport()">
+            <mat-icon>download</mat-icon>
+            <span>{{ 'all.competition.menu.download-exceptions' | translate }}</span>
+          </button>
+        </badman-has-claim>
         <badman-has-claim [any]="['change:job']">
           <button mat-menu-item (click)="downloadCpFile()">
             <mat-icon>download</mat-icon>
