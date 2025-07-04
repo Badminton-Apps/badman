@@ -1,3 +1,18 @@
+## 6.184.0 (2025-07-04)
+
+### 🚀 Features
+
+- export exceptions and teams ([b8cd8bddc](https://github.com/Badminton-Apps/badman/commit/b8cd8bddc))
+
+### 🩹 Fixes
+
+- more precising searching for the correct team ([6e93c1e5f](https://github.com/Badminton-Apps/badman/commit/6e93c1e5f))
+- add optional chaining to prevent errors when accessing Tournament property ([b46088be3](https://github.com/Badminton-Apps/badman/commit/b46088be3))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.183.0 (2025-07-03)
 
 ### 🚀 Features
