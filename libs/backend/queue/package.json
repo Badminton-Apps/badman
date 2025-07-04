@@ -1,8 +1,8 @@
 {
   "name": "@badman/backend-queue",
-  "version": "6.182.0",
+  "version": "6.183.0",
   "dependencies": {
-    "@badman/utils": "6.182.0",
+    "@badman/utils": "6.183.0",
     "@nestjs/common": "^10.3.10",
     "@nestjs/config": "^3.2.3",
     "@nestjs/bull": "^10.1.1",
