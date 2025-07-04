@@ -206,6 +206,8 @@
       "dates": "Change dates",
       "download-base-players": "Download base players",
       "download-cp": "Download cp file",
+      "download-teams": "Download teams",
+      "download-exceptions": "Download exceptions",
       "export-planner": "Export planner (json)",
       "make-official": "Make official tournament",
       "new-date": "New date",

@@ -82,3 +82,9 @@ Badman is a comprehensive badminton management system built with Angular 19, Nod
 - `schema.gql` - GraphQL schema
 
 When suggesting code changes, consider the modular architecture and ensure proper separation between frontend/backend concerns. Follow Nx best practices for library boundaries and dependency management.
+
+## Fetching data
+Use the graphql tool to fetch data from the GraphQL API,
+Always try to use the existing data structures and types defined in the project.
+
+Only create new resolvers if we are changing the models
