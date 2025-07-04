@@ -354,6 +354,24 @@ export class EventMenuComponent {
     await lastValueFrom(this.excelService.getBaseplayersEnrollment(event));
   }
 
+  async downloadTeamsExport() {
+    const event = this.eventCompetition();
+    if (!event) {
+      return;
+    }
+
+    await lastValueFrom(this.excelService.getTeamsExport(event));
+  }
+
+  async downloadExceptionsExport() {
+    const event = this.eventCompetition();
+    if (!event) {
+      return;
+    }
+
+    await lastValueFrom(this.excelService.getExceptionsExport(event));
+  }
+
   async downloadCpFile() {
     const event = this.eventCompetition();
     if (!event) {
