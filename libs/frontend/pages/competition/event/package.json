@@ -35,7 +35,8 @@
     "@angular/platform-browser": "^19.0.5",
     "@angular/google-maps": "19.2.9",
     "@ng-matero/extensions": "~19.0.1",
-    "moment": "^2.30.1"
+    "moment": "^2.30.1",
+    "file-saver": "^2.0.5"
   },
   "dependencies": {},
   "sideEffects": false
