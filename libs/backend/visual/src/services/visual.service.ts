@@ -147,7 +147,7 @@ export class VisualService {
       useCache,
     );
     const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.Tournament as XmlTournament;
+    return parsed?.Tournament as XmlTournament;
   }
   async searchEvents(query: string) {
     const url = `${this._configService.get('VR_API')}/Tournament?q=${query}`;
@@ -155,7 +155,7 @@ export class VisualService {
     const result = await this._getFromApi(url, false);
     const body = this._parseResponse(result) as XmlResult;
 
-    if (body.Tournament === undefined) {
+    if (body?.Tournament === undefined) {
       return [];
     }
 
@@ -174,7 +174,7 @@ export class VisualService {
     const result = await this._getFromApi(url, false);
     const body = this._parseResponse(result) as XmlResult;
 
-    if (body.Tournament === undefined) {
+    if (body?.Tournament === undefined) {
       return [];
     }
 
@@ -190,7 +190,7 @@ export class VisualService {
     const result = await this._getFromApi(url, false);
     const body = this._parseResponse(result) as XmlResult;
 
-    if (body.Tournament === undefined) {
+    if (body?.Tournament === undefined) {
       return [];
     }
 
