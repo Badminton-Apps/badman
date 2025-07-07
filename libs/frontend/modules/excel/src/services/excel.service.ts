@@ -26,6 +26,7 @@ const EVENT_TEAMS_EXPORT_QUERY = gql`
               preferredTime
               club {
                 id
+                clubId
                 name
               }
             }
@@ -52,6 +53,7 @@ const EVENT_EXCEPTIONS_EXPORT_QUERY = gql`
               club {
                 id
                 name
+                clubId
                 locations {
                   id
                   name
@@ -178,7 +180,7 @@ export class ExcelService {
                 const team = entry.team;
                 if (team && !teamsData.has(team.id)) {
                   teamsData.set(team.id, {
-                    clubId: team.club?.id || '',
+                    clubId: team.club?.clubId || '',
                     clubName: team.club?.name || '',
                     teamName: team.name || '',
                     preferredDay: team.preferredDay || '',
@@ -267,7 +269,7 @@ export class ExcelService {
                             const dates = this.generateDateRange(exception.start, exception.end);
                             for (const date of dates) {
                               exceptionsData.push({
-                                clubId: team.club.id || '',
+                                clubId: team.club.clubId || '',
                                 clubName: team.club.name || '',
                                 locationName: location.name || '',
                                 date: this.formatDateToBelgianTime(date),
