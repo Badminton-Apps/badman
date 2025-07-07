@@ -372,6 +372,15 @@ export class EventMenuComponent {
     await lastValueFrom(this.excelService.getExceptionsExport(event));
   }
 
+  async downloadLocationsExport() {
+    const event = this.eventCompetition();
+    if (!event) {
+      return;
+    }
+
+    await lastValueFrom(this.excelService.getLocationsExport(event));
+  }
+
   async downloadCpFile() {
     const event = this.eventCompetition();
     if (!event) {
