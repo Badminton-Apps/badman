@@ -89,6 +89,12 @@
             <span>{{ 'all.competition.menu.download-exceptions' | translate }}</span>
           </button>
         </badman-has-claim>
+        <badman-has-claim [any]="['export-locations:competition']">
+          <button mat-menu-item (click)="downloadLocationsExport()">
+            <mat-icon>download</mat-icon>
+            <span>{{ 'all.competition.menu.download-locations' | translate }}</span>
+          </button>
+        </badman-has-claim>
         <badman-has-claim [any]="['change:job']">
           <button mat-menu-item (click)="downloadCpFile()">
             <mat-icon>download</mat-icon>
