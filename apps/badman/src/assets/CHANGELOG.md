@@ -1,3 +1,20 @@
+## 6.185.0 (2025-07-07)
+
+### 🚀 Features
+
+- update exceptions export to use start and end dates ([1dfb095e6](https://github.com/Badminton-Apps/badman/commit/1dfb095e6))
+- update exceptions export to include date range and remove start/end date fields ([f6de19919](https://github.com/Badminton-Apps/badman/commit/f6de19919))
+- add export locations functionality and permission ([741050bc8](https://github.com/Badminton-Apps/badman/commit/741050bc8))
+- update clubId reference in export queries and data processing ([217f2742b](https://github.com/Badminton-Apps/badman/commit/217f2742b))
+
+### 🩹 Fixes
+
+- update eventId reference to eventType in pick-event-dialog component ([68698b87f](https://github.com/Badminton-Apps/badman/commit/68698b87f))
+
+### ❤️ Thank You
+
+- cskiwi @cskiwi
+
 ## 6.184.0 (2025-07-04)
 
 ### 🚀 Features
