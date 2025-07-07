@@ -206,7 +206,8 @@ export class ExcelService {
             clubId: string;
             clubName: string;
             locationName: string;
-            date: string;
+            startDate: string;
+            endDate: string;
             courts: number;
           }> = [];
           
@@ -224,7 +225,8 @@ export class ExcelService {
                               clubId: team.club.id || '',
                               clubName: team.club.name || '',
                               locationName: location.name || '',
-                              date: exception.start ? (exception.start instanceof Date ? exception.start.toISOString().split('T')[0] : exception.start) : '',
+                              startDate: this.formatDateToBelgianTime(exception.start),
+                              endDate: this.formatDateToBelgianTime(exception.end),
                               courts: exception.courts || 0,
                             });
                           }
@@ -237,22 +239,24 @@ export class ExcelService {
             }
           }
 
-          // Remove duplicates based on clubId, locationName, and date
+          // Remove duplicates based on clubId, locationName, and startDate
           const uniqueExceptions = exceptionsData.filter((exception, index, self) =>
             index === self.findIndex(e => 
               e.clubId === exception.clubId && 
               e.locationName === exception.locationName && 
-              e.date === exception.date
+              e.startDate === exception.startDate && 
+              e.endDate === exception.endDate
             )
           );
           
           const excelData = [
-            ['Club ID', 'Clubnaam', 'Locatie', 'Datum', 'Velden'],
+            ['Club ID', 'Clubnaam', 'Locatie', 'Startdatum', 'Einddatum', 'Velden'],
             ...uniqueExceptions.map(exception => [
               exception.clubId,
               exception.clubName,
               exception.locationName,
-              exception.date,
+              exception.startDate,
+              exception.endDate,
               exception.courts
             ])
           ];
@@ -279,5 +283,19 @@ export class ExcelService {
           saveAs(blob, `${event.name}-exceptions.xlsx`);
         }),
       );
+  }
+
+  private formatDateToBelgianTime(date: string | Date | undefined): string {
+    if (!date) return '';
+    
+    const dateObj = date instanceof Date ? date : new Date(date);
+    
+    // Format to Belgian locale (DD/MM/YYYY)
+    return dateObj.toLocaleDateString('nl-BE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      timeZone: 'Europe/Brussels'
+    });
   }
 }
