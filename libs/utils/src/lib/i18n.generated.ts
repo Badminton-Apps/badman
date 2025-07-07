@@ -215,6 +215,7 @@ export type I18nTranslations = {
                 "download-cp": string;
                 "download-teams": string;
                 "download-exceptions": string;
+                "download-locations": string;
                 "export-planner": string;
                 "make-official": string;
                 "new-date": string;

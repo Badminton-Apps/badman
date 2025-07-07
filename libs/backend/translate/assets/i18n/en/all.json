@@ -208,6 +208,7 @@
       "download-cp": "Download cp file",
       "download-teams": "Download teams",
       "download-exceptions": "Download exceptions",
+      "download-locations": "Download locations",
       "export-planner": "Export planner (json)",
       "make-official": "Make official tournament",
       "new-date": "New date",

@@ -74,6 +74,49 @@ const EVENT_EXCEPTIONS_EXPORT_QUERY = gql`
   }
 `;
 
+const EVENT_LOCATIONS_EXPORT_QUERY = gql`
+  query EventCompetitionLocationsExport($id: ID!) {
+    eventCompetition(id: $id) {
+      id
+      name
+      subEventCompetitions {
+        id
+        drawCompetitions {
+          id
+          eventEntries {
+            id
+            team {
+              id
+              club {
+                id
+                name
+                clubId
+                locations {
+                  id
+                  name
+                  address
+                  street
+                  streetNumber
+                  postalcode
+                  city
+                  availabilities {
+                    id
+                    season
+                    days {
+                      day
+                      courts
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 interface TeamExportData {
   clubId: string;
   clubName: string;
@@ -285,6 +328,118 @@ export class ExcelService {
       );
   }
 
+  getLocationsExport(event: EventCompetition) {
+    if (!event?.id) {
+      throw new Error('Event is not defined');
+    }
+
+    return this.apollo
+      .query<{
+        eventCompetition: EventCompetition;
+      }>({
+        query: EVENT_LOCATIONS_EXPORT_QUERY,
+        variables: { id: event.id },
+        fetchPolicy: 'no-cache',
+      })
+      .pipe(
+        take(1),
+        map((result) => {
+          const eventData = result.data.eventCompetition;
+          
+          // Extract locations data from clubs structure
+          const locationsData: Array<{
+            clubId: string;
+            clubName: string;
+            locationName: string;
+            address: string;
+            day: string;
+            courts: number;
+          }> = [];
+          
+          for (const subEvent of eventData.subEventCompetitions || []) {
+            for (const draw of subEvent.drawCompetitions || []) {
+              for (const entry of draw.eventEntries || []) {
+                const team = entry.team;
+                if (team && team.club && team.club.locations) {
+                  for (const location of team.club.locations) {
+                    // Build address from location fields
+                    const addressParts = [
+                      location.street,
+                      location.streetNumber,
+                      location.postalcode,
+                      location.city
+                    ].filter(Boolean);
+                    const address = addressParts.length > 0 ? addressParts.join(' ') : (location.address || '');
+                    
+                    if (location.availabilities) {
+                      for (const availability of location.availabilities) {
+                        if (availability.days) {
+                          for (const day of availability.days) {
+                            if (day.day && day.courts) {
+                              locationsData.push({
+                                clubId: team.club.clubId || '',
+                                clubName: team.club.name || '',
+                                locationName: location.name || '',
+                                address: address,
+                                day: this.formatDayName(day.day),
+                                courts: day.courts || 0,
+                              });
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          // Remove duplicates based on clubId, locationName, and day
+          const uniqueLocations = locationsData.filter((location, index, self) =>
+            index === self.findIndex(l => 
+              l.clubId === location.clubId && 
+              l.locationName === location.locationName && 
+              l.day === location.day
+            )
+          );
+          
+          const excelData = [
+            ['Club ID', 'Clubnaam', 'Locatie', 'Adres', 'Dag', 'Aantal Velden'],
+            ...uniqueLocations.map(location => [
+              location.clubId,
+              location.clubName,
+              location.locationName,
+              location.address,
+              location.day,
+              location.courts
+            ])
+          ];
+
+          const wb = XLSX.utils.book_new();
+          const ws = XLSX.utils.aoa_to_sheet(excelData);
+
+          // Autosize columns
+          const columnSizes = excelData[0].map((_, columnIndex) =>
+            excelData.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
+          );
+          ws['!cols'] = columnSizes.map((width) => ({ width }));
+
+          // Enable filtering
+          ws['!autofilter'] = {
+            ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref'] as string)),
+          };
+
+          XLSX.utils.book_append_sheet(wb, ws, 'Locations');
+
+          const buffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          
+          saveAs(blob, `${event.name}-locations.xlsx`);
+        }),
+      );
+  }
+
   private formatDateToBelgianTime(date: string | Date | undefined): string {
     if (!date) return '';
     
@@ -297,6 +452,19 @@ export class ExcelService {
       year: 'numeric',
       timeZone: 'Europe/Brussels'
     });
+  }
+
+  private formatDayName(day: string): string {
+    const dayMap: { [key: string]: string } = {
+      'monday': 'Maandag',
+      'tuesday': 'Dinsdag',
+      'wednesday': 'Woensdag',
+      'thursday': 'Donderdag',
+      'friday': 'Vrijdag',
+      'saturday': 'Zaterdag',
+      'sunday': 'Zondag'
+    };
+    return dayMap[day.toLowerCase()] || day;
   }
 
   private generateDateRange(startDate: string | Date | undefined, endDate: string | Date | undefined): Date[] {
