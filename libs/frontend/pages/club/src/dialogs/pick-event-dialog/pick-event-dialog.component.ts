@@ -136,7 +136,7 @@ export class PickEventDialogComponent implements OnInit {
         variables: {
           where: {
             eventId: eventId,
-            type: this.data.type,
+            eventType: this.data.type,
           },
         },
       })
