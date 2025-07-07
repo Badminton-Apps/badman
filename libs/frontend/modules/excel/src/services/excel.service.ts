@@ -206,8 +206,7 @@ export class ExcelService {
             clubId: string;
             clubName: string;
             locationName: string;
-            startDate: string;
-            endDate: string;
+            date: string;
             courts: number;
           }> = [];
           
@@ -221,14 +220,17 @@ export class ExcelService {
                       for (const availability of location.availabilities) {
                         if (availability.exceptions) {
                           for (const exception of availability.exceptions) {
-                            exceptionsData.push({
-                              clubId: team.club.id || '',
-                              clubName: team.club.name || '',
-                              locationName: location.name || '',
-                              startDate: this.formatDateToBelgianTime(exception.start),
-                              endDate: this.formatDateToBelgianTime(exception.end),
-                              courts: exception.courts || 0,
-                            });
+                            // Generate a record for each day between start and end date
+                            const dates = this.generateDateRange(exception.start, exception.end);
+                            for (const date of dates) {
+                              exceptionsData.push({
+                                clubId: team.club.id || '',
+                                clubName: team.club.name || '',
+                                locationName: location.name || '',
+                                date: this.formatDateToBelgianTime(date),
+                                courts: exception.courts || 0,
+                              });
+                            }
                           }
                         }
                       }
@@ -239,24 +241,22 @@ export class ExcelService {
             }
           }
 
-          // Remove duplicates based on clubId, locationName, and startDate
+          // Remove duplicates based on clubId, locationName, and date
           const uniqueExceptions = exceptionsData.filter((exception, index, self) =>
             index === self.findIndex(e => 
               e.clubId === exception.clubId && 
               e.locationName === exception.locationName && 
-              e.startDate === exception.startDate && 
-              e.endDate === exception.endDate
+              e.date === exception.date
             )
           );
           
           const excelData = [
-            ['Club ID', 'Clubnaam', 'Locatie', 'Startdatum', 'Einddatum', 'Velden'],
+            ['Club ID', 'Clubnaam', 'Locatie', 'Datum', 'Velden'],
             ...uniqueExceptions.map(exception => [
               exception.clubId,
               exception.clubName,
               exception.locationName,
-              exception.startDate,
-              exception.endDate,
+              exception.date,
               exception.courts
             ])
           ];
@@ -297,5 +297,22 @@ export class ExcelService {
       year: 'numeric',
       timeZone: 'Europe/Brussels'
     });
+  }
+
+  private generateDateRange(startDate: string | Date | undefined, endDate: string | Date | undefined): Date[] {
+    if (!startDate) return [];
+    
+    const start = startDate instanceof Date ? startDate : new Date(startDate);
+    const end = endDate ? (endDate instanceof Date ? endDate : new Date(endDate)) : start;
+    
+    const dates: Date[] = [];
+    const currentDate = new Date(start);
+    
+    while (currentDate <= end) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return dates;
   }
 }
