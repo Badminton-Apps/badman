@@ -306,8 +306,9 @@ export class VisualService {
         password: `${this._configService.get('VR_API_PASS')}`,
       },
       timeout: 1000000,
+      responseType: 'text',
       headers: {
-        'Content-Type': 'application/xml',
+        Accept: 'text/xml, application/xml, */*',
       },
     });
 
