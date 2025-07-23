@@ -1466,6 +1466,7 @@
       "recentEncountersTitle": "Recente ontmoetingen",
       "noRecentEncounters": "Geen recente ontmoetingen",
       "rolePrefix": "Je bent",
+      "clubAdmin": "Club admin",
       "gameLeader": "Wedstrijdleider",
       "unknown": "Onbekend",
       "captain": "Kapitein",
@@ -1495,7 +1496,11 @@
         "continue": "Doorgaan",
         "view": "Bekijken",
         "allEncounters": "Alle ontmoetingen",
-        "viewEncounterForm": "Bekijk wedstrijdformulier"
+        "viewEncounterForm": "Bekijk wedstrijdformulier",
+        "tooltips": {
+          "encounterDateInFuture": "Wedstrijdformulier is beschikbaar op dag van de wedstrijd",
+          "teamFormationNotComplete": "Ploegopstelling is niet compleet"
+        }
       },
       "eventTypes": {
         "D": "Dubbel",

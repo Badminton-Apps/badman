@@ -1762,6 +1762,7 @@ export type I18nTranslations = {
                 "recentEncountersTitle": string;
                 "noRecentEncounters": string;
                 "rolePrefix": string;
+                "clubAdmin": string;
                 "gameLeader": string;
                 "unknown": string;
                 "captain": string;
@@ -1792,6 +1793,10 @@ export type I18nTranslations = {
                     "view": string;
                     "allEncounters": string;
                     "viewEncounterForm": string;
+                    "tooltips": {
+                        "encounterDateInFuture": string;
+                        "teamFormationNotComplete": string;
+                    };
                 };
                 "eventTypes": {
                     "D": string;
