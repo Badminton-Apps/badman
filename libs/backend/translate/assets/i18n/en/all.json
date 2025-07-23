@@ -1739,6 +1739,7 @@
       "recentEncountersTitle": "Recent encounters",
       "noRecentEncounters": "No recent encounters",
       "rolePrefix": "You are",
+      "clubAdmin": "Club admin",
       "gameLeader": "Game leader",
       "unknown": "Unknown",
       "captain": "Captain",
@@ -1768,7 +1769,11 @@
         "continue": "Continue",
         "view": "View",
         "allEncounters": "All encounters",
-        "viewEncounterForm": "View encounter form"
+        "viewEncounterForm": "View encounter form",
+        "tooltips": {
+          "encounterDateInFuture": "Encounter form will be available on day of encounter",
+          "teamFormationNotComplete": "Team formation is not complete"
+        }
       },
       "eventTypes": {
         "D": "Double",
