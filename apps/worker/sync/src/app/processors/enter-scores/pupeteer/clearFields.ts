@@ -1,5 +1,6 @@
 import { Page } from 'puppeteer';
 import { waitForSelectors } from '@badman/backend-pupeteer';
+import { Logger } from '@nestjs/common';
 
 export async function clearFields(
   pupeteer: {
@@ -9,8 +10,14 @@ export async function clearFields(
     page: null,
     timeout: 5000,
   },
+  args: {
+    logger?: Logger,
+  }
 ) {
   const { page, timeout } = pupeteer;
+  const { logger } = args || {};
+  logger?.verbose('clearFields');
+
   if (!page) {
     throw new Error('No page provided');
   }
@@ -27,12 +34,21 @@ export async function clearFields(
   }
   {
     const targetPage = page;
-    const element = await waitForSelectors(
-      [['aria/Velden legen'], ['#btnResetSubMatches']],
+    const veldenLegenButton = await waitForSelectors(
+      [['input[value=\"Velden legen\"]'], ['#btnResetSubMatches']],
       targetPage,
       timeout,
     );
-    await element.click({ offset: { x: 62, y: 7.015625 } });
+    logger.debug('empty fields button found', !!veldenLegenButton)
+    
+    // Handle any dialogs (like password change alerts)
+    targetPage.on('dialog', async dialog => {
+      logger.debug('Dialog message:', dialog.message());
+      await dialog.accept();
+    });
+    
+    // Click the element
+    await veldenLegenButton.click();
   }
   {
     const targetPage = page;
@@ -51,16 +67,16 @@ export async function clearFields(
   {
     const targetPage = page;
     await targetPage.evaluate(
+      () => ((<HTMLInputElement>document.getElementById('matchfield_1')).value = ''),
+    );
+    await targetPage.evaluate(
       () => ((<HTMLInputElement>document.getElementById('matchfield_2')).value = ''),
     );
     await targetPage.evaluate(
+      () => ((<HTMLInputElement>document.getElementById('matchfield_3')).value = ''),
+    );
+    await targetPage.evaluate(
       () => ((<HTMLInputElement>document.getElementById('matchfield_4')).value = ''),
-    );
-    await targetPage.evaluate(
-      () => ((<HTMLInputElement>document.getElementById('matchfield_5')).value = ''),
-    );
-    await targetPage.evaluate(
-      () => ((<HTMLInputElement>document.getElementById('matchfield_6')).value = ''),
     );
   }
   {
