@@ -1801,6 +1801,18 @@
       }
     },
     "encounter": {
+      "tempTeamCaptain": {
+        "dialog": {
+          "title": "Selecteer tijdelijk ploegkapitein",
+          "buttons": {
+            "cancel": "Annuleren",
+            "select": "Selecteren"
+          },
+          "messages": {
+            "saved": "Tijdelijk ploegkapitein opgeslagen"
+          }
+        }
+      },
       "gameLeader": {
         "dialog": {
           "title": "Selecteer wedstrijdleider",

@@ -120,6 +120,24 @@ export class EncounterCompetition extends Model<
   @Column(DataType.UUIDV4)
   awayTeamId?: string;
 
+  @Field(() => Player, { nullable: true })
+  @BelongsTo(() => Player, 'tempHomeCaptainId')
+  tempHomeCaptain?: Relation<Player>;
+
+  @ForeignKey(() => Player)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  tempHomeCaptainId?: string;
+
+  @Field(() => Player, { nullable: true })
+  @BelongsTo(() => Player, 'tempAwayCaptainId')
+  tempAwayCaptain?: Relation<Player>;
+
+  @ForeignKey(() => Player)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  tempAwayCaptainId?: string;
+
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   synced?: Date;
@@ -347,6 +365,14 @@ export class EncounterCompetition extends Model<
   getGameLeader!: BelongsToGetAssociationMixin<Player>;
   setGameLeader!: BelongsToSetAssociationMixin<Player, string>;
 
+  // Belongs to HomeCaptain
+  getTempHomeCaptain!: BelongsToGetAssociationMixin<Player>;
+  setTempHomeCaptain!: BelongsToSetAssociationMixin<Player, string>;
+
+  // Belongs to AwayCaptain
+  getTempAwayCaptain!: BelongsToGetAssociationMixin<Player>;
+  setTempAwayCaptain!: BelongsToSetAssociationMixin<Player, string>;
+
   // Has many Assemblie
   getAssemblies!: HasManyGetAssociationsMixin<Assembly>;
   setAssemblies!: HasManySetAssociationsMixin<Assembly, string>;
@@ -387,7 +413,6 @@ export class EncounterCompetition extends Model<
   // Has one EncounterComment
   getEncounterComment!: BelongsToGetAssociationMixin<Comment>;
   setEncounterComment!: BelongsToSetAssociationMixin<Comment, string>;
-
 
   // Has many HomeCommentsChange
   getHomeCommentsChanges!: HasManyGetAssociationsMixin<Comment>;
@@ -458,4 +483,19 @@ export class updateEncounterCompetitionInput {
 
   @Field(() => Date, { nullable: true })
   enteredOn?: Date;
+
+  @Field(() => String, { nullable: true })
+  tempHomeCaptainId?: string;
+
+  @Field(() => String, { nullable: true })
+  tempAwayCaptainId?: string;
+}
+
+@InputType()
+export class updateTempTeamCaptainInput {
+  @Field(() => String, { nullable: true })
+  tempHomeCaptainId?: string;
+
+  @Field(() => String, { nullable: true })
+  tempAwayCaptainId?: string;
 }
