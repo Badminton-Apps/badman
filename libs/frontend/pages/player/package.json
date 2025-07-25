@@ -23,7 +23,7 @@
     "ngx-moment": "^6.0.2",
     "@apollo/client": "^3.10.3",
     "@angular/cdk": "19.2.9",
-    "ng-apexcharts": "^1.10.0",
+    "ng-apexcharts": "1.10.0",
     "graphql": "16.10.0",
     "uuid": "^11.0.3",
     "@ng-matero/extensions": "~19.0.1",
