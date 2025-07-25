@@ -24,6 +24,7 @@ import {
   Team,
   TeamPlayerMembership,
   TeamWithPlayerMembershipType,
+  Role,
 } from '@badman/backend-database';
 import { IsUUID, getSeason, getRankingProtected } from '@badman/utils';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
@@ -105,6 +106,11 @@ export class PlayersResolver {
   @ResolveField(() => [Claim])
   async claims(@Parent() player: Player, @Args() listArgs: ListArgs): Promise<Claim[]> {
     return player.getClaims(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [Role])
+  async roles(@Parent() player: Player, @Args() listArgs: ListArgs): Promise<Role[]> {
+    return player.getRoles(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Notification])

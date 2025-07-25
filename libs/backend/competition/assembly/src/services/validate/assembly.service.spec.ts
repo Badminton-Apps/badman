@@ -271,7 +271,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
           );
           expect(error).toBeUndefined();
         });
@@ -288,7 +288,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
           );
           expect(error).toBeUndefined();
         });
@@ -305,7 +305,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
           );
           expect(error).toBeUndefined();
         });
@@ -331,7 +331,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
           ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
 
           expect(error).toBeDefined();
@@ -357,7 +357,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
 
           expect(error).toBeDefined();
@@ -389,7 +389,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -431,7 +431,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.team-to-strong',
+            (e) => e.message === 'all.v1.teamFormation.errors.team-to-strong',
           );
           expect(error).toBeUndefined();
         });
@@ -453,7 +453,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.team-to-strong',
+            (e) => e.message === 'all.v1.teamFormation.errors.team-to-strong',
           ) as AssemblyValidationError<TeamSubeventIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -520,7 +520,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
           );
           expect(error).toBeUndefined();
         });
@@ -542,7 +542,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
@@ -564,7 +564,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const errors = validation.errors?.filter(
-            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
           );
 
           expect(errors).toBeDefined();
@@ -597,7 +597,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-single-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-single-games',
           );
           expect(error).toBeUndefined();
         });
@@ -617,7 +617,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -639,7 +639,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-single-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-single-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -661,7 +661,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -699,8 +699,8 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.player-genders' ||
-              e.message === 'all.competition.team-assembly.errors.player-gender',
+              e.message === 'all.v1.teamFormation.errors.player-genders' ||
+              e.message === 'all.v1.teamFormation.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -722,7 +722,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-gender',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-gender',
           ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
           expect(error).toBeDefined();
@@ -741,7 +741,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-gender',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-gender',
           ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
           expect(error).toBeDefined();
@@ -892,7 +892,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
           );
           expect(error).toBeUndefined();
         });
@@ -917,7 +917,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
           ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`single${p1}`);
@@ -942,7 +942,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`mix3`);
@@ -973,7 +973,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`mix3`);
@@ -1017,7 +1017,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -1037,7 +1037,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-mix-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-mix-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -1071,8 +1071,8 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.player-genders' ||
-              e.message === 'all.competition.team-assembly.errors.player-gender',
+              e.message === 'all.v1.teamFormation.errors.player-genders' ||
+              e.message === 'all.v1.teamFormation.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -1092,7 +1092,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-genders',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-genders',
           ) as AssemblyValidationError<PlayerGenderRulePartnerParams>;
 
           expect(error).toBeDefined();
@@ -1113,7 +1113,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-genders',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-genders',
           ) as AssemblyValidationError<PlayerGenderRulePartnerParams>;
 
           expect(error).toBeDefined();
@@ -1146,7 +1146,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
           );
           expect(error).toBeUndefined();
         });
@@ -1165,7 +1165,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
           );
           expect(error).toBeUndefined();
         });
@@ -1187,7 +1187,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
           ) as AssemblyValidationError<PlayerMinLevelRuleParams>;
 
           expect(error).toBeDefined();
@@ -1407,7 +1407,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.team-index',
+            (e) => e.message === 'all.v1.teamFormation.errors.team-index',
           );
           expect(error).toBeUndefined();
         });
@@ -1444,7 +1444,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.team-index',
+            (e) => e.message === 'all.v1.teamFormation.errors.team-index',
           ) as AssemblyValidationError<TeamBaseIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -1478,7 +1478,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.club-base-other-team',
+            (e) => e.message === 'all.v1.teamFormation.errors.club-base-other-team',
           ) as AssemblyValidationError<TeamClubBaseRuleParams>;
 
           expect(error).toBeDefined();
@@ -1510,7 +1510,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
           );
           expect(error).toBeUndefined();
         });
@@ -1532,7 +1532,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
           ) as AssemblyValidationError<PlayerMinLevelRuleParams>;
 
           expect(error).toBeDefined();
@@ -1707,7 +1707,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
           );
           expect(error).toBeUndefined();
         });
@@ -1724,7 +1724,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
           );
           expect(error).toBeUndefined();
         });
@@ -1741,7 +1741,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
           );
           expect(error).toBeUndefined();
         });
@@ -1767,7 +1767,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
           ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`single${p1}`);
@@ -1792,7 +1792,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -1823,7 +1823,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -1866,7 +1866,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.team-to-strong',
+            (e) => e.message === 'all.v1.teamFormation.errors.team-to-strong',
           );
           expect(error).toBeUndefined();
         });
@@ -1888,7 +1888,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.team-to-strong',
+            (e) => e.message === 'all.v1.teamFormation.errors.team-to-strong',
           ) as AssemblyValidationError<TeamSubeventIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -1922,7 +1922,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
           );
           expect(error).toBeUndefined();
         });
@@ -1944,7 +1944,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
@@ -1966,7 +1966,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const errors = validation.errors?.filter(
-            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
           );
 
           expect(errors).toBeDefined();
@@ -1999,7 +1999,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-single-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-single-games',
           );
           expect(error).toBeUndefined();
         });
@@ -2019,7 +2019,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -2041,7 +2041,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-single-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-single-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -2063,7 +2063,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -2101,8 +2101,8 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.player-genders' ||
-              e.message === 'all.competition.team-assembly.errors.player-gender',
+              e.message === 'all.v1.teamFormation.errors.player-genders' ||
+              e.message === 'all.v1.teamFormation.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -2124,7 +2124,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-gender',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-gender',
           ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
           expect(error).toBeDefined();
@@ -2143,7 +2143,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.competition.team-assembly.errors.player-gender',
+            (e) => e.message === 'all.v1.teamFormation.errors.player-gender',
           ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
           expect(error).toBeDefined();

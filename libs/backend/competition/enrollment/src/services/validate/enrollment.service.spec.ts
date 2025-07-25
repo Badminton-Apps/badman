@@ -224,7 +224,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors?.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-single'
+  //               'all.v1.teamFormation.errors.player-order-single'
   //           );
   //           expect(error).toBeUndefined();
   //         }
@@ -249,7 +249,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors?.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-doubles'
+  //               'all.v1.teamFormation.errors.player-order-doubles'
   //           );
   //           expect(error).toBeUndefined();
   //         }
@@ -274,7 +274,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors?.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-highest'
+  //               'all.v1.teamFormation.errors.player-order-highest'
   //           );
   //           expect(error).toBeUndefined();
   //         }
@@ -308,7 +308,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-single'
+  //               'all.v1.teamFormation.errors.player-order-single'
   //           );
   //           expect(error).toBeDefined();
   //           expect(error?.params?.['game1']).toBe(`single${p1}`);
@@ -341,7 +341,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-doubles'
+  //               'all.v1.teamFormation.errors.player-order-doubles'
   //           );
   //           expect(error).toBeDefined();
   //           expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -380,7 +380,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-highest'
+  //               'all.v1.teamFormation.errors.player-order-highest'
   //           );
   //           expect(error).toBeDefined();
   //           expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -422,7 +422,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.team-to-strong'
+  //             'all.v1.teamFormation.errors.team-to-strong'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -449,7 +449,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.team-to-strong'
+  //             'all.v1.teamFormation.errors.team-to-strong'
   //         );
 
   //         expect(error).toBeDefined();
@@ -514,7 +514,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors?.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
+  //             e.message === 'all.v1.teamFormation.errors.comp-status-html'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -540,7 +540,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
+  //             e.message === 'all.v1.teamFormation.errors.comp-status-html'
   //         );
 
   //         expect(error).toBeDefined();
@@ -566,7 +566,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const errors = validation.errors.filter(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
+  //             e.message === 'all.v1.teamFormation.errors.comp-status-html'
   //         );
 
   //         expect(errors).toBeDefined();
@@ -597,7 +597,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-single-games'
+  //             'all.v1.teamFormation.errors.player-max-single-games'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -622,7 +622,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-double-games'
+  //             'all.v1.teamFormation.errors.player-max-double-games'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -649,7 +649,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-single-games'
+  //             'all.v1.teamFormation.errors.player-max-single-games'
   //         );
 
   //         expect(error).toBeDefined();
@@ -676,7 +676,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-double-games'
+  //             'all.v1.teamFormation.errors.player-max-double-games'
   //         );
 
   //         expect(error).toBeDefined();
@@ -711,8 +711,8 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //               'all.competition.team-assembly.errors.player-genders' ||
-  //             e.message === 'all.competition.team-assembly.errors.player-gender'
+  //               'all.v1.teamFormation.errors.player-genders' ||
+  //             e.message === 'all.v1.teamFormation.errors.player-gender'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -741,7 +741,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-gender'
+  //               'all.v1.teamFormation.errors.player-gender'
   //           );
 
   //           expect(error).toBeDefined();
@@ -768,7 +768,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-gender'
+  //               'all.v1.teamFormation.errors.player-gender'
   //           );
 
   //           expect(error).toBeDefined();
@@ -872,7 +872,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-order-highest'
+  //             'all.v1.teamFormation.errors.player-order-highest'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -904,7 +904,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-single'
+  //               'all.v1.teamFormation.errors.player-order-single'
   //           );
   //           expect(error).toBeDefined();
   //           expect(error?.params?.['game1']).toBe(`single${p1}`);
@@ -935,7 +935,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-order-doubles'
+  //             'all.v1.teamFormation.errors.player-order-doubles'
   //         );
   //         expect(error).toBeDefined();
   //         expect(error?.params?.['game1']).toBe(`double3`);
@@ -971,7 +971,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-order-highest'
+  //             'all.v1.teamFormation.errors.player-order-highest'
   //         );
   //         expect(error).toBeDefined();
   //         expect(error?.params?.['game1']).toBe(`double3`);
@@ -1013,7 +1013,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-double-games'
+  //             'all.v1.teamFormation.errors.player-max-double-games'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1038,7 +1038,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-mix-games'
+  //             'all.v1.teamFormation.errors.player-max-mix-games'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1069,8 +1069,8 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //               'all.competition.team-assembly.errors.player-genders' ||
-  //             e.message === 'all.competition.team-assembly.errors.player-gender'
+  //               'all.v1.teamFormation.errors.player-genders' ||
+  //             e.message === 'all.v1.teamFormation.errors.player-gender'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1095,7 +1095,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-genders'
+  //             'all.v1.teamFormation.errors.player-genders'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1121,7 +1121,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-genders'
+  //             'all.v1.teamFormation.errors.player-genders'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1152,7 +1152,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-min-level'
+  //             'all.v1.teamFormation.errors.player-min-level'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1179,7 +1179,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-min-level'
+  //             'all.v1.teamFormation.errors.player-min-level'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1340,7 +1340,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors?.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.team-index'
+  //             e.message === 'all.v1.teamFormation.errors.team-index'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1384,7 +1384,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.team-index'
+  //             e.message === 'all.v1.teamFormation.errors.team-index'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1416,7 +1416,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.club-base-other-team'
+  //             'all.v1.teamFormation.errors.club-base-other-team'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1446,7 +1446,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-min-level'
+  //             'all.v1.teamFormation.errors.player-min-level'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1473,7 +1473,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-min-level'
+  //             'all.v1.teamFormation.errors.player-min-level'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1613,7 +1613,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors?.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-single'
+  //               'all.v1.teamFormation.errors.player-order-single'
   //           );
   //           expect(error).toBeUndefined();
   //         }
@@ -1638,7 +1638,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors?.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-doubles'
+  //               'all.v1.teamFormation.errors.player-order-doubles'
   //           );
   //           expect(error).toBeUndefined();
   //         }
@@ -1663,7 +1663,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors?.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-highest'
+  //               'all.v1.teamFormation.errors.player-order-highest'
   //           );
   //           expect(error).toBeUndefined();
   //         }
@@ -1697,7 +1697,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-single'
+  //               'all.v1.teamFormation.errors.player-order-single'
   //           );
   //           expect(error).toBeDefined();
   //           expect(error?.params?.['game1']).toBe(`single${p1}`);
@@ -1730,7 +1730,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-doubles'
+  //               'all.v1.teamFormation.errors.player-order-doubles'
   //           );
   //           expect(error).toBeDefined();
   //           expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -1769,7 +1769,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-order-highest'
+  //               'all.v1.teamFormation.errors.player-order-highest'
   //           );
   //           expect(error).toBeDefined();
   //           expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -1811,7 +1811,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.team-to-strong'
+  //             'all.v1.teamFormation.errors.team-to-strong'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1838,7 +1838,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.team-to-strong'
+  //             'all.v1.teamFormation.errors.team-to-strong'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1869,7 +1869,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors?.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
+  //             e.message === 'all.v1.teamFormation.errors.comp-status-html'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1895,7 +1895,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
+  //             e.message === 'all.v1.teamFormation.errors.comp-status-html'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1921,7 +1921,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const errors = validation.errors.filter(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
+  //             e.message === 'all.v1.teamFormation.errors.comp-status-html'
   //         );
 
   //         expect(errors).toBeDefined();
@@ -1952,7 +1952,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-single-games'
+  //             'all.v1.teamFormation.errors.player-max-single-games'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1977,7 +1977,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-double-games'
+  //             'all.v1.teamFormation.errors.player-max-double-games'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -2004,7 +2004,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-single-games'
+  //             'all.v1.teamFormation.errors.player-max-single-games'
   //         );
 
   //         expect(error).toBeDefined();
@@ -2031,7 +2031,7 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors.find(
   //           (e) =>
   //             e.message ===
-  //             'all.competition.team-assembly.errors.player-max-double-games'
+  //             'all.v1.teamFormation.errors.player-max-double-games'
   //         );
 
   //         expect(error).toBeDefined();
@@ -2066,8 +2066,8 @@ describe('EnrollmentValidationService', () => {
   //         const error = validation.errors?.find(
   //           (e) =>
   //             e.message ===
-  //               'all.competition.team-assembly.errors.player-genders' ||
-  //             e.message === 'all.competition.team-assembly.errors.player-gender'
+  //               'all.v1.teamFormation.errors.player-genders' ||
+  //             e.message === 'all.v1.teamFormation.errors.player-gender'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -2096,7 +2096,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-gender'
+  //               'all.v1.teamFormation.errors.player-gender'
   //           );
 
   //           expect(error).toBeDefined();
@@ -2123,7 +2123,7 @@ describe('EnrollmentValidationService', () => {
   //           const error = validation.errors.find(
   //             (e) =>
   //               e.message ===
-  //               'all.competition.team-assembly.errors.player-gender'
+  //               'all.v1.teamFormation.errors.player-gender'
   //           );
 
   //           expect(error).toBeDefined();

@@ -127,8 +127,8 @@ export class GameCompetitionProcessor {
     }
 
     // we fetch it via the draw because bye's aren't in the game detail
-    const xmlGamees = await this._visualService.getGames(job.data.eventCode, draw.visualCode, true);
-    const xmlGame = xmlGamees.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
+    const xmlGames = await this._visualService.getGames(job.data.eventCode, draw.visualCode, true);
+    const xmlGame = xmlGames.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
     if (!xmlGame) {
       throw new Error('game not found');
     }

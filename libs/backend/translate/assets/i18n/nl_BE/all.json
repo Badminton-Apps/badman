@@ -653,6 +653,12 @@
     "start": "Start",
     "sync": "Sync"
   },
+  "messages": {
+    "buttons": {
+      "hide": "Verberg {messageType}",
+      "seeAll": "Bekijk alle {messageType} ({amountOfMessages})"
+    }
+  },
   "months": {
     "april": "April",
     "august": "Augustus",
@@ -1125,6 +1131,2049 @@
       "title": "Upload transfer / uitlening file voor {season}",
       "transfer-file": "Transfer file",
       "unkown": "Onbekend"
+    }
+  },
+  "v1": {
+    "messages": {
+      "buttons": {
+        "hide": "Verberg {messageType}",
+        "seeAll": "Bekijk alle {messageType} ({amountOfMessages})"
+      }
+    },
+    "shell": {
+      "sidebar": {
+        "pages": {
+          "myProfile": "Mijn Profiel",
+          "myClub": "Mijn Club",
+          "competition": "Competitie",
+          "ranking": "Ranglijst",
+          "enrollment": "Inschrijving",
+          "faq": "FAQ",
+          "settings": "Instellingen",
+          "encounters": "Ontmoetingen",
+          "edit": "Bewerken",
+          "add": "Toevoegen",
+          "teamFormation": "Ploegopstelling",
+          "encounterForm": "Ontmoetingsformulier",
+          "confirmEncounter": "Bevestig ontmoeting",
+          "changeEncounter": "Verplaats ontmoeting",
+          "addProposal": "Voorstel toevoegen"
+        },
+        "auth": {
+          "logIn": "Inloggen",
+          "logOut": "Uitloggen"
+        },
+        "admin": {
+          "title": "Admin"
+        },
+        "competition": {
+          "assembly": "Opstelling",
+          "change-encounter": "Verplaats ontmoeting",
+          "enrollment": "Inschrijven",
+          "overview": "Overzicht",
+          "title": "Competitie"
+        },
+        "general": {
+          "changelog": "Changelog",
+          "faq": "FAQ",
+          "title": "Algemeen"
+        },
+        "job": {
+          "title": "Jobs"
+        },
+        "persnal": {
+          "club": "Mijn Club",
+          "games": "Mijn Profiel"
+        },
+        "ranking": {
+          "title": "Ranking"
+        },
+        "rules": {
+          "title": "Validatie regels"
+        },
+        "tournament": {
+          "title": "Toernooien"
+        },
+        "transfer": {
+          "title": "Transfers / uitleningen"
+        }
+      },
+      "topBar": {
+        "search": {
+          "placeholder": "Zoeken",
+          "noResults": "Geen resultaten gevonden",
+          "loading": "Bezig met laden...",
+          "categories": {
+            "Club": "Club",
+            "Player": "Speler",
+            "EventTournament": "Toernooi",
+            "EventCompetition": "Competitie"
+          }
+        }
+      }
+    },
+    "player": {
+      "backup": "Reservespeler",
+      "base": "Basis speler",
+      "claimed": "Geclaimd",
+      "ical": {
+        "click": "Kopieer naar klembord",
+        "copied": "Link gekopieerd naar klembord",
+        "description": "De link voor het hele seizoen blijft het team volgen bij promotie/degradatie, zelfs als het team van nummer verandert (zolang de competitiebeheerder het team overzet van het vorige jaar).",
+        "linked": "Alle seizoenen",
+        "team-season": "Alleen dit seizoen"
+      },
+      "menu": {
+        "add": "Nieuwe speler",
+        "claim": "Account claimen",
+        "delete": "Verwijderen",
+        "edit": "Bewerken",
+        "recalculatePoints": "Punten herberekenen"
+      },
+      "no-memberid": "Onbekend lidnummer",
+      "no-players": "Geen spelers",
+      "re-calculate": {
+        "calculate": "Berekenen",
+        "from": "Van",
+        "title": "Punten voor speler in volgende periode herstellen",
+        "to": "Tot"
+      },
+      "regular": "Reguliere speler",
+      "search": {
+        "backup-player": "Speler staat vermeld bij reservespelers",
+        "create": "Nieuwe speler toevoegen",
+        "in-list": "Speler staat al op de lijst",
+        "label": "Zoek speler",
+        "not-found": "Speler niet gevonden"
+      },
+      "title": "Spelers",
+      "notFound": "Speler niet gevonden",
+      "ranking": {
+        "single": "Enkel",
+        "double": "Dubbel",
+        "mix": "Gemengd"
+      },
+      "messages": {
+        "claimAccountSuccess": "Account succesvol geclaimd"
+      },
+      "crud": {
+        "title": "Profiel bewerken",
+        "tabs": {
+          "player": "Speler",
+          "ranking": "Ranglijst",
+          "clubHistory": "Clubgeschiedenis",
+          "permissions": "Machtigingen"
+        },
+        "playerForm": {
+          "inputs": {
+            "name": "Naam",
+            "lastName": "Achternaam",
+            "gender": "Geslacht",
+            "memberId": "Lidnummer",
+            "registrationNumber": "Registratienummer"
+          },
+          "gender": {
+            "M": "Man",
+            "F": "Vrouw"
+          },
+          "buttons": {
+            "save": "Opslaan"
+          },
+          "messages": {
+            "success": "Speler gegevens bijgewerkt"
+          }
+        },
+        "ranking": {
+          "lastRanking": {
+            "title": "Laatste ranglijst",
+            "notFound": "Laatste ranglijst niet gevonden",
+            "inputs": {
+              "single": "Enkel",
+              "double": "Dubbel",
+              "mix": "Gemengd"
+            },
+            "messages": {
+              "success": "Laatste ranglijst bijgewerkt"
+            },
+            "buttons": {
+              "save": "Opslaan"
+            }
+          },
+          "competitionPlayer": {
+            "title": "Competitiespeler",
+            "inputs": {
+              "competitionPlayer": "Deze speler speelt in competities"
+            },
+            "messages": {
+              "success": "Speler gegevens bijgewerkt"
+            },
+            "buttons": {
+              "save": "Opslaan"
+            }
+          },
+          "allUpdates": {
+            "title": "Alle updates",
+            "nextRanking": "Volgende ranglijst",
+            "updates": "Updates",
+            "buttons": {
+              "add": "Update toevoegen"
+            },
+            "table": {
+              "headers": {
+                "date": "Datum",
+                "single": "Enkel",
+                "double": "Dubbel",
+                "mix": "Gemengd",
+                "actions": "Acties"
+              },
+              "actions": {
+                "edit": "Bewerken",
+                "delete": "Verwijderen"
+              }
+            },
+            "rankingPlace": {
+              "editDialog": {
+                "titleEdit": "Update bewerken",
+                "titleCreate": "Update maken",
+                "inputs": {
+                  "rankingDate": "Selecteer ranglijst datum",
+                  "single": "Enkel",
+                  "double": "Dubbel",
+                  "mix": "Gemengd",
+                  "singlePoints": "Enkel punten",
+                  "doublePoints": "Dubbel punten",
+                  "mixPoints": "Gemengd punten",
+                  "updatePossible": "Update gebeurd"
+                },
+                "messages": {
+                  "successCreate": "Ranglijst plaats aangemaakt",
+                  "successUpdate": "Ranglijst plaats bijgewerkt"
+                },
+                "buttons": {
+                  "cancel": "Annuleren",
+                  "saveEdit": "Opslaan",
+                  "saveCreate": "Aanmaken"
+                }
+              },
+              "deleteDialog": {
+                "title": "Ranglijst plaats verwijderen",
+                "subTitle": "Weet je zeker dat je deze ranglijst plaats wilt verwijderen?",
+                "messages": {
+                  "success": "Ranglijst plaats verwijderd"
+                },
+                "buttons": {
+                  "no": "Nee",
+                  "yes": "Ja"
+                }
+              }
+            }
+          }
+        },
+        "clubHistory": {
+          "notFound": "Geen clubgeschiedenis gevonden",
+          "buttons": {
+            "add": "Geschiedenis toevoegen"
+          },
+          "deleteDialog": {
+            "title": "Clubgeschiedenis verwijderen",
+            "subTitle": "Weet je zeker dat je deze clubgeschiedenis wilt verwijderen?",
+            "messages": {
+              "success": "Lidmaatschap verwijderd"
+            },
+            "buttons": {
+              "no": "Nee",
+              "yes": "Ja"
+            }
+          },
+          "editDialog": {
+            "titleAdd": "Geschiedenis toevoegen",
+            "titleEdit": "Geschiedenis bewerken",
+            "inputs": {
+              "selectClub": "Selecteer club",
+              "isCurrentClub": "Huidige club",
+              "start": "Start",
+              "end": "Einde",
+              "membershipType": "Lidmaatschapstype",
+              "confirmed": "Bevestigd"
+            },
+            "membershipTypes": {
+              "NORMAL": "Normaal",
+              "LOAN": "Uitleen"
+            },
+            "messages": {
+              "successAdd": "Lidmaatschap toegevoegd",
+              "successEdit": "Lidmaatschap bijgewerkt"
+            },
+            "buttons": {
+              "cancel": "Annuleren",
+              "add": "Geschiedenis toevoegen",
+              "edit": "Geschiedenis bewerken"
+            }
+          },
+          "table": {
+            "notFound": "Geen records gevonden",
+            "headers": {
+              "fullName": "Volledige naam",
+              "start": "Start",
+              "end": "Einde",
+              "actions": "Acties"
+            },
+            "actions": {
+              "edit": "Bewerken",
+              "delete": "Verwijderen"
+            }
+          }
+        },
+        "permissionsForm": {
+          "buttons": {
+            "save": "Opslaan"
+          },
+          "messages": {
+            "success": "Spelerrechten bijgewerkt"
+          }
+        },
+        "deletePlayer": {
+          "title": "Speler verwijderen",
+          "subTitle": "Weet je zeker dat je deze speler wilt verwijderen?",
+          "messages": {
+            "success": "Speler verwijderd"
+          },
+          "buttons": {
+            "no": "Nee",
+            "yes": "Ja"
+          }
+        },
+        "recalculatePoints": {
+          "title": "Punten herberekenen voor speler in periode",
+          "subTitle": "Weet je zeker dat je deze ranglijstplaats wilt verwijderen?",
+          "inputs": {
+            "from": "Van",
+            "to": "Tot"
+          },
+          "messages": {
+            "success": "Ranglijstpunten herberekend"
+          },
+          "buttons": {
+            "close": "Sluiten",
+            "calculate": "Berekenen"
+          }
+        }
+      },
+      "nextEncounterTitle": "Volgende ontmoeting",
+      "upcomingEncountersTitle": "Aankomende ontmoetingen",
+      "noUpcomingEncounters": "Geen aankomende ontmoetingen",
+      "noUpcomingEncounter": "Geen aankomende ontmoeting",
+      "recentEncountersTitle": "Recente ontmoetingen",
+      "noRecentEncounters": "Geen recente ontmoetingen",
+      "rolePrefix": "Je bent",
+      "clubAdmin": "Club admin",
+      "gameLeader": "Wedstrijdleider",
+      "unknown": "Onbekend",
+      "captain": "Kapitein",
+      "player": "Speler",
+      "date": "Datum",
+      "teams": "Teams",
+      "against": "Tegen",
+      "location": "Locatie",
+      "meetingForm": "Wedstrijdformulier",
+      "filled": "Ingevuld",
+      "notStarted": "Niet gestart",
+      "started": "Gestart",
+      "notFilled": "Niet ingevuld",
+      "notSelected": "Niet geselecteerd",
+      "teamFormation": "Ploegopstelling",
+      "teamIsFormed": "Team is gevormd",
+      "teamNotComplete": "Team niet compleet",
+      "noTeamFormation": "Geen ploegopstelling",
+      "won": "Gewonnen",
+      "lost": "Verloren",
+      "draw": "Gelijkspel",
+      "buttons": {
+        "change": "Wijzigen",
+        "create": "Aanmaken",
+        "select": "Selecteren",
+        "edit": "Bewerken",
+        "continue": "Doorgaan",
+        "view": "Bekijken",
+        "allEncounters": "Alle ontmoetingen",
+        "viewEncounterForm": "Bekijk wedstrijdformulier",
+        "tooltips": {
+          "encounterDateInFuture": "Wedstrijdformulier is beschikbaar op dag van de wedstrijd",
+          "teamFormationNotComplete": "Ploegopstelling is niet compleet"
+        }
+      },
+      "eventTypes": {
+        "D": "Dubbel",
+        "F": "Vrouw",
+        "M": "Man",
+        "MX": "Gemengd",
+        "S": "Enkel",
+        "unknown": "Onbekend"
+      },
+      "points": "punten"
+    },
+    "rankingPage": {
+      "title": "Rangschikkingssystemen",
+      "buttons": {
+        "add": "Rangschikking toevoegen"
+      },
+      "overviewTable": {
+        "team": "Team",
+        "name": "Naam",
+        "win": "% Winst",
+        "loss": "% Verlies",
+        "gamesToUse": "Te gebruiken wedstrijden",
+        "calculateUpdates": "Updates berekenen",
+        "actions": "Acties",
+        "actionItems": {
+          "watchSystem": "Systeem bekijken",
+          "copyPoints": "Punten kopiëren",
+          "pastePoints": "Punten plakken",
+          "edit": "Bewerken",
+          "delete": "Verwijderen",
+          "deleteSuccess": "Rangschikkingssysteem verwijderd",
+          "deleteError": "Fout bij verwijderen van rangschikkingssysteem"
+        },
+        "noRecords": "Geen records gevonden"
+      },
+      "detailTable": {
+        "level": "Niveau",
+        "pointsToGoUp": "Punten om te stijgen",
+        "pointsToGoDown": "Punten om te dalen",
+        "pointsWhenWinningAgainst": "Punten bij winst tegen",
+        "menu": {
+          "watchSystem": "Systeem bekijken",
+          "uploadPoints": "Uploaden",
+          "sync": "Synchroniseren",
+          "edit": "Bewerken",
+          "delete": "Verwijderen",
+          "deleteSuccess": "Rangschikkingssysteem verwijderd",
+          "deleteError": "Fout bij verwijderen van rangschikkingssysteem"
+        },
+        "noRecords": "Geen records gevonden"
+      },
+      "editRankingPage": {
+        "title": "Rangschikking bewerken",
+        "success": "Rangschikkingssysteem bijgewerkt",
+        "error": "Fout bij bijwerken van rangschikkingssysteem"
+      },
+      "addRankingPage": {
+        "title": "Rangschikking toevoegen",
+        "success": "Rangschikkingssysteem toegevoegd",
+        "error": "Fout bij toevoegen van rangschikkingssysteem"
+      },
+      "form": {
+        "title": "Laat optionele velden leeg om beperking uit te schakelen",
+        "name": "Naam",
+        "type": "Type",
+        "amountOfLevels": "Aantal niveaus",
+        "winning": "% Winst",
+        "winningPlusOne": "% Winst + 1",
+        "losing": "% Verlies",
+        "gamesToUse": "Te gebruiken wedstrijden",
+        "minimumGamesForUpgrade": "Minimale wedstrijden voor promotie",
+        "diffLevels": "Niveauverschillen",
+        "primary": "Primair",
+        "calculateUpdates": "Updates berekenen",
+        "updateInterval": "Update-interval",
+        "pointUpdate": "Puntenupdate",
+        "pointPeriod": "Puntenperiode",
+        "pointUpdateDay": "Puntenupdate dag",
+        "rankUpdate": "Rangupdate",
+        "rankPeriod": "Rangperiode",
+        "calculationUpdateDay": "Berekeningsupdate datum",
+        "periodTotal": "Totale periode",
+        "periodGames": "Periode wedstrijden",
+        "upgradeDowngrade": "Promotie / Degradatie",
+        "differenceForUpgradeSingle": "Niveauverschil voor promotie Enkel",
+        "differenceForUpgradeDouble": "Niveauverschil voor promotie Dubbel",
+        "differenceForUpgradeMix": "Niveauverschil voor promotie Mix",
+        "differenceForDowngradeSingle": "Niveauverschil voor degradatie Enkel",
+        "differenceForDowngradeDouble": "Niveauverschil voor degradatie Dubbel",
+        "differenceForDowngradeMix": "Niveauverschil voor degradatie Mix",
+        "maxLevelUpPerChange": "Max # niveaus omhoog per wijziging",
+        "maxLevelDownPerChange": "Max # niveaus omlaag per wijziging",
+        "inactivity": "Inactiviteit",
+        "inactivityAmount": "Inactiviteit hoeveelheid",
+        "inactivityUnit": "Periode",
+        "gamesForInactivity": "Wedstrijden voor inactiviteit",
+        "linkToEvents": "Koppelen aan evenementen",
+        "groups": "Groepen",
+        "periods": {
+          "weeks": "Weken",
+          "months": "Maanden",
+          "days": "Dagen"
+        },
+        "days": {
+          "monday": "Maandag",
+          "tuesday": "Dinsdag",
+          "wednesday": "Woensdag",
+          "thursday": "Donderdag",
+          "friday": "Vrijdag",
+          "saturday": "Zaterdag",
+          "sunday": "Zondag"
+        },
+        "save": "Opslaan",
+        "cancel": "Annuleren",
+        "add": "Toevoegen"
+      },
+      "dialogCopyRankingSystem": {
+        "title": "Rangschikking",
+        "startDate": "Startdatum",
+        "endDate": "Einddatum",
+        "success": "Rangschikking gekopieerd",
+        "error": "Fout bij kopiëren van rangschikking",
+        "cancel": "Annuleren",
+        "create": "Aanmaken"
+      },
+      "dialogCopyPoints": {
+        "title": "Rangschikking",
+        "startDate": "Startdatum",
+        "endDate": "Einddatum",
+        "success": "Punten gekopieerd",
+        "error": "Fout bij kopiëren van punten",
+        "cancel": "Annuleren",
+        "copy": "Kopiëren"
+      }
+    },
+    "encountersPage": {
+      "title": "Ontmoetingen",
+      "notFound": "Geen ontmoetingen gevonden"
+    },
+    "playerRanking": {
+      "title": "Punten per spel",
+      "notFound": "Geen rankinginformatie gevonden",
+      "rankingTooltipMessages": {
+        "readyForUpgrade": "Klaar voor promotie",
+        "notPossibleToReachRequiredAverage": "Niet mogelijk om vereiste gemiddelde te bereiken",
+        "winsNeeded": "Je hebt ongeveer {winsNeeded} meer winst(en) nodig tegen hetzelfde niveau om te promoveren."
+      },
+      "filters": {
+        "ranking": "Ranking",
+        "rankingOptions": {
+          "both": "Beide",
+          "upgrade": "Promotie",
+          "downgrade": "Degradatie"
+        },
+        "gameTypeOptions": {
+          "S": "Enkel",
+          "D": "Dubbel",
+          "MX": "Gemengd"
+        },
+        "gameType": "Speltype",
+        "period": "Periode",
+        "simulateGame": "Wedstrijd simuleren"
+      },
+      "dialog": {
+        "title": "Wedstrijd simuleren",
+        "level": "Niveau",
+        "teamA": "Team A",
+        "teamB": "Team B",
+        "winner": "Winnaar",
+        "simulate": "Simuleren",
+        "cancel": "Annuleren"
+      },
+      "table": {
+        "date": "Datum",
+        "team": "Team",
+        "opponent": "Tegenstander",
+        "points": "Punten",
+        "usedForUpgrade": "Gebruikt voor promotie",
+        "avgUpgrade": "Gemiddelde promotie",
+        "usedForDowngrade": "Gebruikt voor degradatie",
+        "avgDowngrade": "Gemiddelde degradatie",
+        "operation": "Bewerking",
+        "noRecords": "Geen gegevens gevonden"
+      },
+      "rankingUpdate": "Ranking update",
+      "pointsUpdate": "Punten update"
+    },
+    "teamFormation": {
+      "title": "Ploegopstelling",
+      "notFound": "Geen ploegopstelling gevonden",
+      "messages": {
+        "saved": "Ploegopstelling opgeslagen",
+        "downloaded": "Ploegopstelling gedownload"
+      },
+      "buttons": {
+        "cancel": "Annuleren",
+        "save": "Opslaan",
+        "print": "Afdrukken"
+      },
+      "info": {
+        "title": "Info",
+        "basePlayers": "Basis spelers",
+        "titulars": "Titularissen",
+        "errors": "Fouten",
+        "params": {
+          "single1": "Enkel 1",
+          "single2": "Enkel 2",
+          "single3": "Enkel 3",
+          "single4": "Enkel 4",
+          "double1": "Dubbel 1",
+          "double2": "Dubbel 2",
+          "double3": "Dubbel 3",
+          "double4": "Dubbel 4",
+          "mix1": "Mannendubbel",
+          "mix2": "Vrouwendubbel",
+          "mix3": "Gemengd 1",
+          "mix4": "Gemengd 2",
+          "gender": {
+            "female": "Vrouw",
+            "females": "Vrouwen",
+            "long": {
+              "F": "Vrouw",
+              "M": "Man",
+              "MX": "Gemengd"
+            },
+            "longs": {
+              "F": "Vrouw",
+              "M": "Man"
+            },
+            "male": "Man",
+            "males": "Mannen",
+            "mix": "Gemengd",
+            "national": "Nationaal",
+            "select": "Selecteer",
+            "short": {
+              "female": "V",
+              "male": "M",
+              "mix": "MX"
+            },
+            "title": "Geslacht"
+          },
+          "ranking": {
+            "single": "Enkel",
+            "double": "Dubbel",
+            "mix": "Gemengd"
+          }
+        }
+      },
+      "teamFormation": {
+        "title": "Selecteer spelers",
+        "disabledTitle": "Spelers",
+        "noClub": "Team heeft geen club",
+        "selectPlayer": "Selecteer speler",
+        "categories": {
+          "singleMan": "Enkel Man",
+          "doubleMen": "Dubbel Mannen",
+          "singleWoman": "Enkel Vrouw",
+          "doubleWomen": "Dubbel Vrouwen",
+          "mixDouble": "Gemengd Dubbel",
+          "subtitudes": "Reservespelers",
+          "captainId": "Kapitein"
+        },
+        "labels": {
+          "singleMan1": "Enkel Man 1",
+          "singleMan2": "Enkel Man 2",
+          "singleMan3": "Enkel Man 3",
+          "singleMan4": "Enkel Man 4",
+          "singleWoman1": "Enkel Vrouw 1",
+          "singleWoman2": "Enkel Vrouw 2",
+          "singleWoman3": "Enkel Vrouw 3",
+          "singleWoman4": "Enkel Vrouw 4",
+          "doubleMen": "Dubbel Mannen",
+          "doubleWomen": "Dubbel Vrouwen",
+          "doubleMen1": "Dubbel Mannen 1",
+          "doubleMen2": "Dubbel Mannen 2",
+          "doubleMen3": "Dubbel Mannen 3",
+          "doubleMen4": "Dubbel Mannen 4",
+          "doubleWomen1": "Dubbel Vrouwen 1",
+          "doubleWomen2": "Dubbel Vrouwen 2",
+          "doubleWomen3": "Dubbel Vrouwen 3",
+          "doubleWomen4": "Dubbel Vrouwen 4",
+          "mixDouble1": "Gemengd 1",
+          "mixDouble2": "Gemengd 2",
+          "captainId": "Kapitein",
+          "subtitudes": "Reservespelers"
+        }
+      },
+      "errors": {
+        "already": "Speler is al geselecteerd als titularis.",
+        "club-base-other-team": "{playerFullName} is basisspeler van een ander team",
+        "comp-status": "{playerFullName} is niet gemarkeerd als competitie speler",
+        "comp-status-html": "{playerFullName} is niet gemarkeerd als competitie speler",
+        "none": "Geen fouten gevonden",
+        "not-enough-players": "Te weinig titularissen zijn opgesteld voor de wedstrijd.",
+        "player-above-lower": "Speler met een hogere opstellingsindex is opgesteld vóór deze speler",
+        "player-gender": "{playerFullName} is een {playerGender}, maar {gender} wordt verwacht",
+        "player-genders": "{player1FullName} ({player1Gender}) en {player2FullName} ({player2Gender}) hebben niet het juiste geslacht voor {game}",
+        "player-max-double-games": "{playerFullName} mag maximaal {max} dubbels spelen",
+        "player-max-mix-games": "{playerFullName} mag maximaal {max} gemengde dubbels spelen",
+        "player-max-mixed-games": "{playerFullName} mag maximaal {max} gemengde dubbels spelen",
+        "player-max-single-games": "{playerFullName} mag maximaal {max} enkels spelen",
+        "player-min-level": "{playerFullName} heeft een index van {playerRanking} in {rankingType} en moet minimaal {minLevel} zijn.",
+        "player-order-doubles": "{team2player1FullName} en {team2player2FullName} in {game2} hebben een hogere gecombineerde index dan {team1player1FullName} en {team1player2FullName} in {game1}.",
+        "player-order-highest": "{team2player1FullName} of {team2player2FullName} in {game2} heeft een betere individuele ranking dan {team1player1FullName} of {team1player2FullName} in {game1}.",
+        "player-order-single": "{player2FullName} in {game2} heeft een hogere index dan {player1FullName} in {game1}.",
+        "players-above-lower": "Paar met een hogere opstellingsindex is opgesteld vóór dit paar.",
+        "team-index": "Teamindex titularissen is {teamIndex} en moet minimaal {baseIndex} zijn",
+        "team-to-strong": "Teamindex titularissen is {teamIndex} en mag niet lager zijn dan toegestaan in de divisie {minIndex}",
+        "title": "Fouten",
+        "to-much": "Een speler mag maximaal 2 (gemengde) dubbels en 1 enkel spelen."
+      },
+      "warnings": {
+        "subtitute-team-index": "s"
+      }
+    },
+    "encounter": {
+      "gameLeader": {
+        "dialog": {
+          "title": "Selecteer wedstrijdleider",
+          "buttons": {
+            "cancel": "Annuleren",
+            "select": "Selecteren"
+          },
+          "messages": {
+            "saved": "Wedstrijdleider opgeslagen"
+          }
+        }
+      }
+    },
+    "clubPage": {
+      "noClubFound": "Geen club gevonden",
+      "actions": {
+        "edit": "Bewerken",
+        "addPlayer": "Voeg speler toe",
+        "addPlayerDialog": {
+          "title": "Voeg speler toe",
+          "messages": {
+            "success": "Speler is toegevoegd"
+          },
+          "buttons": {
+            "cancel": "Annuleren",
+            "addPlayer": "Voeg speler toe"
+          }
+        },
+        "twizzitOverview": "Twizzit overzicht",
+        "delete": "Verwijderen",
+        "deleteDialog": {
+          "title": "Verwijder club",
+          "subTitle": "Weet je zeker dat je deze club wilt verwijderen?",
+          "messages": {
+            "success": "Club is verwijderd"
+          },
+          "buttons": {
+            "no": "Nee",
+            "yes": "Ja"
+          }
+        },
+        "messages": {
+          "downloadSuccess": "Twizzit overzicht gedownload"
+        }
+      },
+      "season": "Seizoen",
+      "tabs": {
+        "teams": "Teams",
+        "assemblyMatrix": "Assemblagematrix",
+        "players": "Spelers",
+        "encounters": "Ontmoetingen",
+        "teamEnrollment": "Teaminschrijving"
+      },
+      "teams": {
+        "title": "Teams",
+        "table": {
+          "headers": {
+            "team": "Team",
+            "type": "Type",
+            "ranking": "Ranking",
+            "liga": "Liga",
+            "actions": "Acties"
+          },
+          "noData": "Geen teams gevonden"
+        },
+        "actions": {
+          "edit": "Bewerken",
+          "delete": "Verwijderen"
+        },
+        "addEditTeamDialog": {
+          "titleAdd": "Team toevoegen",
+          "titleEdit": "Team bewerken",
+          "steps": {
+            "info": "Informatie",
+            "players": "Spelers"
+          },
+          "messages": {
+            "successAdd": "Team is toegevoegd",
+            "successEdit": "Team is bijgewerkt"
+          },
+          "buttons": {
+            "cancel": "Annuleren",
+            "next": "Volgende",
+            "back": "Terug",
+            "editTeam": "Bewerk team",
+            "addTeam": "Voeg team toe"
+          },
+          "teamInfo": {
+            "generalInfo": "Algemene informatie",
+            "teamCaptain": "Teamcaptain",
+            "preferredPlayingTime": "Gewenste speeltijd",
+            "form": {
+              "type": "Type",
+              "teamNumber": "Teamnummer",
+              "season": "Seizoen",
+              "email": "E-mail",
+              "phone": "Telefoon",
+              "preferredDay": "Gewenste dag",
+              "preferredTime": "Gewenste tijd",
+              "preferredLocation": "Gewenste locatie",
+              "teamType": {
+                "M": "Man",
+                "F": "Vrouw",
+                "MX": "Gemengd",
+                "NATIONAL": "Nationaal"
+              },
+              "daysOfWeek": {
+                "monday": "Maandag",
+                "tuesday": "Dinsdag",
+                "wednesday": "Woensdag",
+                "thursday": "Donderdag",
+                "friday": "Vrijdag",
+                "saturday": "Zaterdag",
+                "sunday": "Zondag"
+              }
+            }
+          },
+          "players": {
+            "addPlayer": "Voeg speler toe",
+            "players": "Spelers",
+            "form": {
+              "membership": "Lidmaatschap",
+              "membershipTypes": {
+                "REGULAR": "Regulier",
+                "BACKUP": "Back-up"
+              }
+            },
+            "buttons": {
+              "addPlayer": "Voeg speler toe"
+            }
+          }
+        },
+        "deleteTeamDialog": {
+          "title": "Verwijder team",
+          "subTitle": "Weet je zeker dat je dit team wilt verwijderen?",
+          "messages": {
+            "success": "Team is verwijderd"
+          },
+          "buttons": {
+            "cancel": "Annuleren",
+            "delete": "Verwijderen"
+          }
+        }
+      },
+      "assemblyMatrix": {
+        "teamsFilter": {
+          "label": "Teams",
+          "options": {
+            "ALL": "Alle"
+          }
+        },
+        "table": {
+          "headers": {
+            "players": "Spelers"
+          },
+          "noData": "Geen spelers gevonden"
+        },
+        "tooltipMessages": {
+          "basePlayer": "Basis speler",
+          "genderError": "{playerFullName} is een {playerGender}, maar het team is voor de {teamType}",
+          "playerOfAnotherTeam": "{playerFullName} is een basisspeler van een ander team",
+          "playerOfAnotherTeamInSameSeries": "{playerFullName} is een basisspeler van een ander team in dezelfde reeks",
+          "minLevelError": "Toegestane ranking is {maxLevel} terwijl {playerFullName} {level} is in {type}",
+          "betterMeta": "{player.fullName} is beter dan een van de basisspelers, wees voorzichtig om de teamindex niet te onderschatten."
+        },
+        "types": {
+          "double": "Dubbel",
+          "female": "Vrouw",
+          "male": "Man",
+          "mix": "Gemengd",
+          "single": "Enkel",
+          "title": "Wedstrijdtype"
+        },
+        "gender": {
+          "F": "Vrouw",
+          "M": "Man"
+        },
+        "teamTypes": {
+          "F": "Vrouw",
+          "M": "Man",
+          "MX": "Gemengd",
+          "NATIONAL": "Nationaal"
+        }
+      },
+      "players": {
+        "playersFilter": {
+          "teams": {
+            "label": "Teams",
+            "options": {
+              "ALL": "Alle"
+            }
+          },
+          "players": {
+            "label": "Spelers",
+            "options": {
+              "ALL": "Alle"
+            },
+            "loadingText": "Spelers laden",
+            "noData": "Geen spelers gevonden"
+          }
+        },
+        "table": {
+          "headers": {
+            "name": "Naam",
+            "teams": "Teams"
+          },
+          "noData": "Geen spelers gevonden"
+        }
+      },
+      "encounters": {
+        "filters": {
+          "team": {
+            "label": "Team",
+            "options": {
+              "ALL": "Alle"
+            }
+          },
+          "openRequest": {
+            "label": "Open verzoek",
+            "options": {
+              "ALL": "Alle",
+              "openRequests": "Open verzoeken",
+              "noRequests": "Geen verzoeken"
+            }
+          },
+          "validation": {
+            "label": "Validatie",
+            "options": {
+              "ALL": "Alle",
+              "valid": "Geldig",
+              "invalid": "Ongeldig",
+              "warnings": "Potentiële problemen"
+            }
+          },
+          "changedDate": "Gewijzigde datum",
+          "homeGames": "Thuiswedstrijden"
+        },
+        "table": {
+          "headers": {
+            "team": "Team",
+            "opponent": "Tegenstander",
+            "homeAway": "Thuis/Uit",
+            "date": "Datum",
+            "status": "Status",
+            "validation": "Validatie",
+            "changeEncounterDate": "Wijzig wedstrijddatum"
+          },
+          "encounterState": {
+            "moved": "Verplaatst",
+            "original": "Origineel",
+            "inProgress": "In uitvoering"
+          },
+          "originalDate": "Oorspronkelijke datum",
+          "home": "Thuis",
+          "away": "Uit",
+          "noData": "Geen ontmoetingen gevonden"
+        }
+      },
+      "teamEnrollment": {
+        "teams": {
+          "title": "Teams",
+          "table": {
+            "headers": {
+              "teams": "Teams",
+              "liga": "Liga",
+              "comments": "Opmerkingen"
+            },
+            "teamIndex": "Team index",
+            "noData": "Geen teams gevonden"
+          }
+        },
+        "locations": {
+          "title": "Locaties",
+          "locationDrawer": {
+            "title": "Locatie",
+            "buttons": {
+              "copyAddress": "Adres kopiëren"
+            },
+            "gameDaysTitle": "Speeldagen",
+            "till": "tot",
+            "courts": "velden",
+            "exceptionsTitle": "Uitzonderingen",
+            "daysOfWeek": {
+              "monday": "Maandag",
+              "tuesday": "Dinsdag",
+              "wednesday": "Woensdag",
+              "thursday": "Donderdag",
+              "friday": "Vrijdag",
+              "saturday": "Zaterdag",
+              "sunday": "Zondag"
+            }
+          }
+        },
+        "comments": {
+          "title": "Opmerkingen"
+        }
+      },
+      "editClubPage": {
+        "title": "Bewerk club",
+        "tabs": {
+          "generalInfo": "Algemene info",
+          "locations": "Locaties",
+          "basePlayers": "Basis spelers"
+        },
+        "generalInfoTab": {
+          "title": "Algemene info",
+          "generalForm": {
+            "name": "Naam",
+            "fullName": "Volledige naam",
+            "teamName": "Teamnaam",
+            "abbreviation": "Afkorting",
+            "country": "Land",
+            "state": "Provincie",
+            "states": {
+              "antwerpen": "Antwerpen",
+              "brabant-wallon": "Waals-Brabant",
+              "brussels-hoofdstedelijk-gewest": "Brussels Hoofdstedelijk Gewest",
+              "hainaut": "Henegouwen",
+              "liege": "Luik",
+              "limburg": "Limburg",
+              "luxembourg": "Luxemburg",
+              "name": "België",
+              "namur": "Namen",
+              "oost-vlaanderen": "Oost-Vlaanderen",
+              "vlaams-brabant": "Vlaams-Brabant",
+              "west-vlaanderen": "West-Vlaanderen"
+            },
+            "clubId": "Club ID",
+            "messages": {
+              "success": "Club bijgewerkt"
+            },
+            "buttons": {
+              "save": "Opslaan"
+            }
+          },
+          "roles": {
+            "title": "Rollen",
+            "buttons": {
+              "addRole": "Rol toevoegen",
+              "addPlayer": "Speler toevoegen"
+            },
+            "messages": {
+              "successAddPlayer": "Speler toegevoegd aan rol",
+              "successRemovePlayer": "Speler verwijderd uit rol",
+              "failAddPlayer": "Fout bij het toevoegen van speler aan rol",
+              "failRemovePlayer": "Fout bij het verwijderen van speler uit rol"
+            },
+            "menu": {
+              "edit": "Bewerken",
+              "delete": "Verwijderen"
+            },
+            "deleteDialog": {
+              "title": "Verwijder rol",
+              "subTitle": "Weet je zeker dat je deze rol wilt verwijderen?",
+              "messages": {
+                "success": "Rol is verwijderd"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "delete": "Verwijderen"
+              }
+            },
+            "addDialog": {
+              "title": "Rol maken",
+              "messages": {
+                "success": "Rol is aangemaakt"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "addRole": "Rol toevoegen"
+              }
+            },
+            "editDialog": {
+              "title": "Kies de rechten voor deze rol",
+              "messages": {
+                "success": "Rechten bijgewerkt"
+              },
+              "buttons": {
+                "save": "Rol toevoegen"
+              }
+            }
+          }
+        },
+        "locations": {
+          "title": "Locaties",
+          "buttons": {
+            "addLocation": "Locatie toevoegen"
+          },
+          "location": {
+            "addDialog": {
+              "title": "Locatie toevoegen",
+              "messages": {
+                "success": "Locatie toegevoegd"
+              }
+            },
+            "editDialog": {
+              "title": "Locatie bewerken",
+              "messages": {
+                "success": "Locatie bijgewerkt"
+              }
+            },
+            "deleteDialog": {
+              "title": "Locatie verwijderen",
+              "subTitle": "Weet je zeker dat je deze locatie wilt verwijderen?",
+              "messages": {
+                "success": "Locatie verwijderd"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "delete": "Verwijderen"
+              }
+            },
+            "form": {
+              "name": "Naam",
+              "street": "Straat",
+              "streetNumber": "Nummer",
+              "postalcode": "Postcode",
+              "city": "Stad",
+              "state": "Provincie",
+              "phone": "Telefoon",
+              "fax": "Fax"
+            },
+            "search": {
+              "title": "Zoek locatie",
+              "placeholder": "Zoek locatie"
+            },
+            "buttons": {
+              "cancel": "Annuleren",
+              "save": "Opslaan",
+              "delete": "Verwijderen"
+            }
+          },
+          "gameDays": {
+            "title": "Speeldagen",
+            "buttons": {
+              "addGameDay": "Speeldag toevoegen"
+            },
+            "createDialog": {
+              "title": "Speeldag",
+              "messages": {
+                "success": "Speeldagen bijgewerkt"
+              },
+              "form": {
+                "day": "Dag",
+                "daysOfWeek": {
+                  "monday": "Maandag",
+                  "tuesday": "Dinsdag",
+                  "wednesday": "Woensdag",
+                  "thursday": "Donderdag",
+                  "friday": "Vrijdag",
+                  "saturday": "Zaterdag",
+                  "sunday": "Zondag"
+                },
+                "startTime": "Starttijd",
+                "endTime": "Eindtijd",
+                "courts": "Velden"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "save": "Opslaan"
+              }
+            },
+            "deleteDialog": {
+              "title": "Verwijder speeldag",
+              "subTitle": "Weet je zeker dat je deze speeldag wilt verwijderen?",
+              "messages": {
+                "success": "Speeldag verwijderd",
+                "error": "Fout bij het verwijderen van speeldag"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "delete": "Verwijderen"
+              }
+            },
+            "actions": {
+              "edit": "Bewerken",
+              "delete": "Verwijderen"
+            },
+            "table": {
+              "noData": "Geen speeldagen gevonden",
+              "headers": {
+                "day": "Dag",
+                "startTime": "Starttijd",
+                "endTime": "Eindtijd",
+                "courts": "Velden",
+                "actions": "Acties"
+              }
+            }
+          },
+          "exceptions": {
+            "title": "Uitzonderingen",
+            "buttons": {
+              "addException": "Uitzondering toevoegen"
+            },
+            "createDialog": {
+              "title": "Uitzondering",
+              "messages": {
+                "success": "Uitzonderingen bijgewerkt"
+              },
+              "form": {
+                "start": "Start",
+                "end": "Einde"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "save": "Opslaan"
+              }
+            },
+            "deleteDialog": {
+              "title": "Verwijder uitzondering",
+              "subTitle": "Weet je zeker dat je deze uitzondering wilt verwijderen?",
+              "messages": {
+                "success": "Uitzondering verwijderd",
+                "error": "Fout bij het verwijderen van uitzondering"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "delete": "Verwijderen"
+              }
+            },
+            "actions": {
+              "edit": "Bewerken",
+              "delete": "Verwijderen"
+            },
+            "table": {
+              "noData": "Geen uitzonderingen gevonden",
+              "headers": {
+                "period": "Start",
+                "actions": "Acties"
+              }
+            }
+          }
+        },
+        "basePlayers": {
+          "title": "Teams",
+          "buttons": {
+            "addTeam": "Team toevoegen"
+          },
+          "team": {
+            "buttons": {
+              "addPlayer": "Speler toevoegen"
+            },
+            "list": {
+              "noPlayers": "Geen spelers",
+              "noSubEvent": "Kies eerst een divisie voordat je spelers kunt toevoegen",
+              "actions": {
+                "editRanking": "Ranking bewerken",
+                "toggleLevelExemption": "Schakel niveau-exemptie in/uit",
+                "delete": "Verwijderen"
+              }
+            },
+            "addPlayerDialog": {
+              "title": "Speler toevoegen",
+              "messages": {
+                "success": "Speler toegevoegd",
+                "error": "Fout bij het toevoegen van speler",
+                "playerAlreadyInTeam": "Speler is al in het team"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "addPlayer": "Speler toevoegen"
+              }
+            },
+            "deletePlayerDialog": {
+              "title": "Verwijder speler",
+              "subTitle": "Weet je zeker dat je deze speler wilt verwijderen?",
+              "messages": {
+                "success": "Speler verwijderd",
+                "playerNotFound": "Speler niet gevonden"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "delete": "Verwijderen"
+              }
+            },
+            "editPlayerRankingDialog": {
+              "title": "Ranking bewerken",
+              "messages": {
+                "success": "Ranking bijgewerkt"
+              },
+              "form": {
+                "single": "Enkelspel",
+                "double": "Dubbelspel",
+                "mix": "Gemengd"
+              },
+              "buttons": {
+                "cancel": "Annuleren",
+                "save": "Opslaan"
+              }
+            },
+            "messages": {
+              "levelExemptionUpdated": "Niveau-exemptie bijgewerkt",
+              "levelExemptionError": "Fout bij het bijwerken van niveau-exemptie"
+            }
+          }
+        }
+      }
+    },
+    "filterComponent": {
+      "title": "Filters",
+      "buttons": {
+        "filters": "Filters",
+        "cancel": "Annuleren",
+        "apply": "Toepassen"
+      }
+    },
+    "entryTeamDrawer": {
+      "sectionTitles": {
+        "basePlayers": "Basis spelers",
+        "generalInfo": "Algemene info",
+        "validations": "Validaties"
+      },
+      "dataKeys": {
+        "teamIndex": "Team index",
+        "teamCaptain": "Team captain",
+        "preferredPlayingTime": "Gewenste speeltijd"
+      },
+      "emptyStates": {
+        "noValidations": "Geen validaties gevonden"
+      },
+      "noData": "Geen gegevens",
+      "validation": {
+        "errors": {
+          "already": "Speler is al aanwezig als titularis.",
+          "base-gender-mix": "Het baseteam bestaat uit {maleCount} mannen en {femaleCount} vrouwen, terwijl dit elke keer 2 zou moeten zijn",
+          "base-other-team": "{playerFullName} mag slechts eenmaal per competitie als basis speler worden opgegeven",
+          "comp-status-base": "Basis speler {playerFullName} is niet gemarkeerd als competitie speler",
+          "comp-status-team": "{playerFullName} is niet gemarkeerd als competitie speler",
+          "faller": "Het team zou moeten degraderen, maar is niet ingeschreven in een lagere klasse",
+          "first-team-index": "Een eerste team dat is gedegradeerd mag geen team met een lagere teamindex opstellen dan hun basisindex gedurende het seizoen",
+          "no-subevent": "Kies alstublieft een reeks",
+          "none": "Geen fouten gevonden",
+          "player-club": "Speler {playerFullName} maakt geen deel uit van {clubName} (huidige club: {activeClubName})",
+          "player-club-none": "Geen club bekend voor speler {playerFullName}",
+          "player-gender": "{playerFullName} is een {player.gender}, maar een {gender} werd verwacht",
+          "player-min-level": "{playerFullName} heeft een index van {playerRanking} in {rankingType} en mag minimaal {minLevel} zijn.",
+          "player-subevent": "{playerFullName} maakt deel uit van het baseteam {teamName} dat ook speelt in {subEventName}",
+          "riser": "Het team zou moeten promoveren, maar is niet ingeschreven in een hogere klasse",
+          "team-index": "Sterkste opstelling is niet mogelijk. De teamindex is {teamIndex} en de basisteamindex is {baseIndex}.",
+          "team-order": "Team {teamName} zit in een lagere klasse maar heeft een lagere teamnummer",
+          "team-order-same-subevent": "Team {teamName} heeft een betere index in dezelfde reeks, maar heeft een lagere teamnummer",
+          "team-to-strong": "Teamindex basis spelers gelijk aan {baseIndex} kan niet lager zijn dan toegestaan in de divisie {minIndex}",
+          "team-to-week": "Teamindex startspelers is {baseIndex} en mag de limiet van de divisie {maxIndex} niet overschrijden",
+          "title": "Fouten",
+          "too-few-base-players": "Te weinig basis spelers",
+          "too-many-base-players": "Te veel basis spelers"
+        },
+        "warnings": {
+          "already-saved": "Nieuwe wijzigingen kunnen niet tussendoor worden opgeslagen, dien het formulier opnieuw in de laatste stap in om je wijzigingen op te slaan",
+          "base-other-team": "{playerFullName} is basis speler in een ander team",
+          "player-min-level": "Verzoek voor uitzondering voor speler {playerFullName} in {rankingType} is nog niet geaccepteerd",
+          "subtitute-team-index": "s",
+          "title": "Waarschuwingen"
+        }
+      }
+    },
+    "notFoundPage": {
+      "title": "De pagina die je zoekt bestaat niet",
+      "buttons": {
+        "back": "Terug naar home"
+      }
+    },
+    "confirmEncounterPage": {
+      "title": "bevestig ontmoeting",
+      "sectionTitles": {
+        "teams": "Ploegen",
+        "confirmation": "Bevestiging",
+        "results": "Uitslagen",
+        "information": "Informatie",
+        "submitComment": "Opmerking toevoegen"
+      },
+      "positions": {
+        "captain": "Ploegkapitein",
+        "gameLeader": "Wedstrijdleider",
+        "homeCaptain": "thuis kapitein",
+        "awayCaptain": "uit kapitein"
+      },
+      "buttons": {
+        "cancel": "Annuleren",
+        "back": "Terug",
+        "close": "Afsluiten",
+        "confirm": "Bevestigen",
+        "submit": "Indienen",
+        "addComment": "Opmerking toevoegen"
+      },
+      "inputs": {
+        "comment": "Opmerking",
+        "gameLeaderCommentsOptional": "Wedstrijdleider opmerkingen (optioneel)"
+      },
+      "messages": {
+        "addedComment": "Opmerking toegevoegd",
+        "commentFrom": "Opmerking van {fullName}"
+      },
+      "errors": {
+        "errorAddingComment": "Fout bij het toevoegen van de opmerking"
+      }
+    },
+    "competitionDetailPage": {
+      "tabs": {
+        "divisions": "Divisies",
+        "encounters": "Wedstrijden",
+        "teamEnrollments": "Team inschrijvingen"
+      },
+      "buttons": {
+        "openInToernooiNL": "Open in toernooi.nl",
+        "view": "Bekijk",
+        "clearFilters": "Filters wissen"
+      },
+      "divisions": {
+        "actions": {
+          "edit": "Bewerken",
+          "sync": "Synchroniseren",
+          "recalculatePoints": "Punten herberekenen",
+          "actions": "Acties",
+          "reports": "Rapporten",
+          "copy": "Kopiëren",
+          "openCloseSignups": "Inschrijvingen openen/sluiten",
+          "openCloseChangeEncounters": "Wijziging wedstrijd datum openen/sluiten",
+          "makeUnofficialTournament": "Maak onofficieel toernooi",
+          "delete": "Verwijderen",
+          "averageLevel": "Gemiddeld niveau",
+          "downloadBasePlayers": "Download basis spelers",
+          "downloadCPFile": "Download CP bestand"
+        },
+        "tableNames": {
+          "F": "Vrouwen",
+          "M": "Mannen",
+          "MX": "Gemengd"
+        },
+        "table": {
+          "headers": {
+            "divisions": "Afdelingen",
+            "type": "Type",
+            "numberTeams": "# teams",
+            "maxLevel": "Max level",
+            "index": "Index",
+            "subdivisions": "Subdivisies"
+          },
+          "noRecords": "Geen records gevonden"
+        },
+        "teamEnrollments": {
+          "drawer": {
+            "sectionTitles": {
+              "primaryPlayers": "Basisspeler(s)",
+              "generalInfo": "Algemene info",
+              "validations": "Validaties"
+            },
+            "dataKeys": {
+              "teamIndex": "Ploegindex",
+              "teamCaptain": "Ploegkapitein",
+              "preferredPlayingTime": "Voorkeurs speelmoment"
+            },
+            "emptyStates": {
+              "noValidations": "Geen validaties gevonden"
+            }
+          },
+          "table": {
+            "headers": {
+              "division": "Afdeling",
+              "team": "Team",
+              "index": "Index",
+              "numberSignups": "Aantal inschrijvingen",
+              "messages": "Berichten",
+              "actions": "Acties"
+            },
+            "buttons": {
+              "view": "Bekijk"
+            },
+            "messages": {
+              "numberErrors": "{amount} fouten",
+              "numberWarnings": "{amount} waarschuwingen",
+              "loadingEntries": "inschrijvingen inladen"
+            },
+            "noRecords": "Geen records gevonden"
+          },
+          "errors": {
+            "already": "Speler al als titularis aanwezig",
+            "base-gender-mix": "De basisploeg bevat {maleCount} mannen en {femaleCount} vrouwen, terwijl die telkens 2 moet zijn",
+            "base-other-team": "{playerFullName} kan slechts éénmaal als basisspeler opgegeven worden per competitie",
+            "comp-status-base": "Basisspeler {playerFullName} staat niet ingeschreven voor de competitie",
+            "comp-status-team": "{playerFullName} staat niet ingeschreven voor de competitie",
+            "faller": "Het team moet degraderen, maar staat niet in een lagere afdeling ingeschreven",
+            "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun ploegindex van de basisspelers",
+            "no-subevent": "Gelieve een afdeling te kiezen",
+            "none": "Geen fouten gevonden",
+            "player-club": "Speler {playerFullName} is niet deel van {clubName} (huidige club: {activeClubName})",
+            "player-club-none": "Geen club gekend voor speler {playerFullName}",
+            "player-gender": "{playerFullName} is een {playerGender} maar een {gender} was verwacht",
+            "player-min-level": "{playerFullName} heeft een discipline-index van {playerRanking} in {rankingType} en mag minimaal {minLevel} zijn",
+            "player-subevent": "{playerFullName} is deel van de basisploeg {teamName} dat ook in {subEventName} speelt",
+            "riser": "Het team moet promoveren, maar staat niet in een hogere afdeling ingeschreven",
+            "team-index": "Sterkste opstelling opstellen is niet mogelijk. De ploegindex is {teamIndex} en de index van de basisploeg is {baseIndex}",
+            "team-order": "Team {teamName} zit in een lagere afdeling maar heeft een lager teamnummer",
+            "team-order-same-subevent": "Team {teamName} heeft een betere ploegindex in dezelfde afdeling, maar heeft een lager teamnummer",
+            "team-to-strong": "Ploegindex basisspelers is {baseIndex} en mag niet onder de grens van de afdeling {minIndex} komen",
+            "team-to-week": "Ploegindex basisspelers is {baseIndex} en mag niet boven de grens van de afdeling {maxIndex} komen",
+            "title": "Fouten",
+            "too-few-base-players": "Te weinig basis spelers",
+            "too-many-base-players": "Te veel basis spelers"
+          }
+        }
+      },
+      "encounters": {
+        "table": {
+          "buttons": {
+            "filters": "Filters"
+          },
+          "headers": {
+            "date": "Datum",
+            "homeTeam": "Thuis team",
+            "awayTeam": "Uit team",
+            "originalDate": "Originele datum",
+            "reschedule": "Verplaatsen"
+          },
+          "tooltips": {
+            "reschedule": "Ontmoeting verplaatsen"
+          },
+          "rescheduleStatuses": {
+            "rescheduled": "Verplaatst",
+            "rescheduleInProgress": "Verplaatsing bezig",
+            "rescheduleRequested": "Verplaatsing aangevraagd"
+          },
+          "inputs": {
+            "team": "Team",
+            "club": "Club"
+          },
+          "noRecords": "Geen records gevonden"
+        }
+      },
+      "teamEnrollments": {
+        "drawer": {
+          "sectionTitles": {
+            "primaryPlayers": "Basis spelers",
+            "generalInfo": "Algemene informatie",
+            "validations": "Validaties"
+          },
+          "dataKeys": {
+            "teamIndex": "Team index",
+            "teamCaptain": "Teamcaptain",
+            "preferredPlayingTime": "Gewenste speeltijd"
+          },
+          "emptyStates": {
+            "noValidations": "Geen validaties gevonden"
+          }
+        },
+        "table": {
+          "headers": {
+            "division": "Divisie",
+            "numberSignups": "Aantal aanmeldingen",
+            "team": "Team",
+            "index": "Index",
+            "messages": "Berichten",
+            "actions": "Acties"
+          },
+          "buttons": {
+            "view": "Bekijken"
+          },
+          "messages": {
+            "numberErrors": "{amount} fouten",
+            "numberWarnings": "{amount} waarschuwingen",
+            "loadingEntries": "Invoeren laden"
+          },
+          "noRecords": "Geen gegevens gevonden"
+        }
+      }
+    },
+    "competitionOverviewPage": {
+      "title": "Alle competities",
+      "sectionTitles": {
+        "overview": "Overzicht"
+      },
+      "table": {
+        "headers": {
+          "name": "Naam",
+          "start": "Start",
+          "end": "Einde",
+          "official": "Officieel",
+          "actions": "Acties"
+        },
+        "divisions": "afdelingen",
+        "inputs": {
+          "onlyOfficialCompetitions": "Enkel officiële competities"
+        },
+        "buttons": {
+          "addCompetition": "Competitie",
+          "loadMoreCompetitions": "Meer competities laden..."
+        }
+      },
+      "actions": {
+        "edit": "Bewerken",
+        "delete": "Verwijderen",
+        "setRisersFallers": "Stel stijgers/dalers in",
+        "openCloseDate": "Openen/sluiten datum",
+        "makeOfficial": "Officieel maken",
+        "makeUnofficial": "Unofficieel maken",
+        "sync": "Synchroniseren",
+        "messages": {
+          "syncSuccess": "Competitie succesvol gesynchroniseerd",
+          "syncError": "Fout bij het synchroniseren van competitie"
+        }
+      },
+      "addCompetitionDialog": {
+        "title": "Competitie toevoegen",
+        "inputs": {
+          "visualCode": "Visuele code",
+          "officialCompetition": "Officiële competitie"
+        },
+        "buttons": {
+          "cancel": "Annuleren",
+          "add": "Toevoegen"
+        },
+        "messages": {
+          "competitionAdded": "Competitie wordt binnenkort toegevoegd"
+        },
+        "errors": {
+          "errorAddingCompetition": "Fout bij het toevoegen van de competitie"
+        }
+      },
+      "deleteCompetitionDialog": {
+        "title": "Competitie verwijderen?",
+        "body": "Weet je zeker dat je deze competitie wilt verwijderen? Als je bevestigt, worden alle gegevens met betrekking tot deze competitie permanent verwijderd.",
+        "buttons": {
+          "cancel": "Annuleren",
+          "delete": "Verwijderen"
+        },
+        "successMessage": "Competitie succesvol verwijderd van platform",
+        "errorMessage": "Fout bij het verwijderen van de competitie"
+      },
+      "competitionStatusDialog": {
+        "title": "Competitie {status} maken?",
+        "text": "Weet je zeker dat je deze competitie {status} wilt maken? Dit zal alle regels met betrekking tot de competitie en ranking veranderen.",
+        "official": "officieel",
+        "unofficial": "onofficieel",
+        "buttons": {
+          "cancel": "Annuleren",
+          "make": "Maak {status}"
+        },
+        "successMessage": "Competitie succesvol bijgewerkt",
+        "errorMessage": "Fout bij het bijwerken van de competitie"
+      },
+      "openCloseDateDialog": {
+        "title": "Open/Sluit datum",
+        "form": {
+          "openDate": "Open datum",
+          "closeDate": "Sluit datum"
+        },
+        "buttons": {
+          "cancel": "Annuleren",
+          "save": "Opslaan"
+        },
+        "messages": {
+          "success": "Open/Sluit datum succesvol bijgewerkt",
+          "error": "Fout bij het bijwerken van de open/sluit datum"
+        }
+      },
+      "risersFallersDialog": {
+        "title": "Stel stijgers/dalers in",
+        "risers": "Stijgers",
+        "fallers": "Dalers",
+        "buttons": {
+          "cancel": "Annuleren",
+          "save": "Opslaan"
+        },
+        "messages": {
+          "success": "Stijgers/dalers succesvol bijgewerkt",
+          "error": "Fout bij het bijwerken van stijgers/dalers"
+        }
+      }
+    },
+    "drawDetailPage": {
+      "sections": {
+        "standings": {
+          "title": "Standen",
+          "actions": {
+            "openInToernooiNL": "Open in toernooi.nl"
+          },
+          "table": {
+            "headers": {
+              "rank": "Rang",
+              "status": "Status",
+              "name": "Naam",
+              "points": "Punten",
+              "played": "Gespeeld",
+              "won": "Gewonnen",
+              "lost": "Verloren",
+              "drawn": "Gelijk",
+              "games": "Wedstrijden",
+              "setsWonLost": "Sets gewonnen / verloren",
+              "pointsWonLost": "Punten gewonnen / verloren"
+            }
+          },
+          "noRecords": "Geen records gevonden"
+        },
+        "encounters": {
+          "title": "Ontmoetingen",
+          "noRecords": "Geen records gevonden",
+          "calendar": {
+            "filters": {
+              "team": "Team"
+            }
+          }
+        }
+      },
+      "actions": {
+        "syncPoints": "Synchroniseer punten"
+      },
+      "messages": {
+        "pointsSynced": "Punten succesvol gesynchroniseerd",
+        "errorSyncingPoints": "Fout bij het synchroniseren van punten"
+      }
+    },
+    "editCompetitionPage": {
+      "steps": {
+        "0": "Algemeen",
+        "1": "Afdelingen",
+        "2": "Extra"
+      },
+      "general": {
+        "sectionTitles": {
+          "general": "Algemeen"
+        },
+        "inputs": {
+          "name": "Naam",
+          "season": "Seizoen",
+          "type": "Type",
+          "contact": "Contact",
+          "country": "Land",
+          "province": "Provincie",
+          "sendNotifications": "Stuur notificaties wanneer een ontmoeting niet is ingevuld of bevestigd",
+          "teamMatcherLink": "Team matcher link"
+        },
+        "successMessage": "Algemene competitie-informatie opgeslagen",
+        "errorMessage": "Fout bij het opslaan van algemene competitie-informatie"
+      },
+      "divisions": {
+        "table": {
+          "headers": {
+            "name": "Naam",
+            "type": "Type",
+            "maxLevel": "Max niveau",
+            "index": "Index"
+          },
+          "actions": {
+            "edit": "Bewerken",
+            "delete": "Verwijderen",
+            "add": "Toevoegen"
+          },
+          "noRecords": "Geen records gevonden",
+          "addDivisionDialog": {
+            "title": "Afdeling toevoegen",
+            "inputs": {
+              "name": "Naam",
+              "type": "Type",
+              "level": "Niveau",
+              "maxLevel": "Max niveau",
+              "minBaseTeamIndex": "Min basis team index",
+              "maxBaseTeamIndex": "Max basis team index",
+              "index": "Index"
+            },
+            "buttons": {
+              "cancel": "Annuleren",
+              "add": "Toevoegen"
+            },
+            "messages": {
+              "divisionAdded": "Afdeling succesvol toegevoegd"
+            },
+            "errors": {
+              "errorAddingDivision": "Fout bij het toevoegen van afdeling"
+            }
+          },
+          "editDivisionDialog": {
+            "title": "Afdeling bewerken",
+            "inputs": {
+              "name": "Naam",
+              "type": "Type",
+              "level": "Niveau",
+              "maxLevel": "Max niveau",
+              "minBaseTeamIndex": "Min basis team index",
+              "maxBaseTeamIndex": "Max basis team index",
+              "index": "Index"
+            },
+            "buttons": {
+              "cancel": "Annuleren",
+              "add": "Wijzigingen indienen"
+            },
+            "messages": {
+              "divisionAdded": "Afdeling succesvol bewerkt"
+            },
+            "errors": {
+              "errorAddingDivision": "Fout bij het bewerken van afdeling"
+            }
+          },
+          "deleteDivisionDialog": {
+            "title": "Afdeling verwijderen?",
+            "body": "Weet je zeker dat je deze afdeling wilt verwijderen? Als je bevestigt, worden alle gegevens met betrekking tot deze afdeling permanent verwijderd.",
+            "buttons": {
+              "cancel": "Annuleren",
+              "delete": "Verwijderen"
+            }
+          }
+        }
+      },
+      "extra": {
+        "sectionTitles": {
+          "exceptions": "Uitzonderingen",
+          "info": "Info",
+          "roles": "Rollen"
+        },
+        "emptyStates": {
+          "noExceptions": "Geen uitzonderingen",
+          "noInfo": "Geen info"
+        },
+        "inputs": {
+          "periodStart": "Startperiode",
+          "periodEnd": "Eindperiode",
+          "availableFields": "Beschikbare velden",
+          "name": "Naam",
+          "competitionAllowed": "Competitie toegestaan"
+        },
+        "inputDescriptions": {
+          "exceptions": "Definieer periodes met meer of minder beschikbare velden.",
+          "info": "Definieer periodes met meer of minder beschikbare velden."
+        },
+        "buttons": {
+          "add": "Toevoegen"
+        },
+        "successMessage": "Competitiedetails opgeslagen",
+        "errorMessage": "Fout bij het opslaan van competitiedetails"
+      },
+      "buttons": {
+        "next": "Volgende",
+        "cancel": "Annuleren",
+        "back": "Terug",
+        "save": "Opslaan",
+        "saveChanges": "Wijzigingen opslaan",
+        "finish": "Voltooien"
+      }
+    },
+    "encounterAlerts": {
+      "buttons": {
+        "seeEncounter": "Bekijk ontmoeting",
+        "seeAllMessages": "bekijk alle berichten ({amountOfAlerts})",
+        "hideMessages": "berichten verbergen"
+      },
+      "messages": {
+        "confirmOrDisputeEncounter": "Je hebt nog {hoursUntilExpiry} uur om de ontmoeting te bevestigen of te betwisten"
+      },
+      "details": {}
+    },
+    "encounterFormPage": {
+      "title": "Ontmoetingsformulier",
+      "steps": {
+        "0": "Info",
+        "1": "Uitslagen",
+        "2": "Bevestigen"
+      },
+      "sectionTitles": {
+        "register": "Aanmelden",
+        "teams": "Team",
+        "confirmEncounter": "Ontmoeting bevestigen",
+        "confirmPresence": "Bevestig aanwezigheid ",
+        "cancelPresence": "Annuleer aanwezigheid",
+        "confirmConfirmed": "Bevestig ontmoeting",
+        "cancelConfirmed": "Annuleer bevestiging",
+        "results": "Uitslagen",
+        "players": "Spelers",
+        "information": "Informatie"
+      },
+      "prompts": {
+        "confirmPresence": "Is de ploegkapitein, {fullName}, aanwezig voor deze ontmoeting?",
+        "cancelPresence": "Wil je de aanwezigheid van {fullName}, annuleren?",
+        "confirmConfirmed": "Bevestigd de ploegkapitein, {fullName}, de uitslag van deze ontmoeting?",
+        "cancelConfirmed": "Wil je de bevestiging van {fullName} annuleren?"
+      },
+      "messages": {
+        "areComments": "{numberOfComments} opmerkingen",
+        "noComments": "Geen opmerkingen",
+        "gameCreated": "Wedstrijd aangemaakt",
+        "gameUpdated": "Wedstrijd bijgewerkt",
+        "presenceUpdated": "Aanwezigheid van {position} bijgewerkt",
+        "confirmationUpdated": "Bevestiging van {position} bijgewerkt",
+        "encounterUpdated": "Ontmoeting bijgewerkt"
+      },
+      "inputs": {
+        "present": "Aanwezig",
+        "confirm": "Bevestig",
+        "league": "Afdeling",
+        "date": "Datum",
+        "players": "Spelers",
+        "player": "Speler",
+        "winner": "Winnaar",
+        "set1": "Game 1",
+        "set2": "Game 2",
+        "set3": "Game 3",
+        "startTime": "Starttijd",
+        "endTime": "Eindtijd",
+        "shuttle": "Shuttle",
+        "commentsOptional": "Opmerkingen (optioneel)"
+      },
+      "buttons": {
+        "back": "Terug",
+        "next": "Volgende",
+        "submit": "Indienen",
+        "cancel": "Annuleren",
+        "confirm": "Bevestigen",
+        "seeTeamFormation": "Bekijk ploegopstelling",
+        "2Sets": "2 games",
+        "3Sets": "3 games",
+        "saveChanges": "Wijzigingen opslaan"
+      },
+      "positions": {
+        "captain": "Ploegkapitein",
+        "gameLeader": "Wedstrijdleider",
+        "homeCaptain": "thuis kapitein",
+        "awayCaptain": "uit kapitein"
+      },
+      "errors": {
+        "confirmationNotUpdated": "{position} bevestiging niet bijgewerkt",
+        "presenceNotUpdated": "{position} aanwezigheid niet bijgewerkt",
+        "errorCreatingGame": "Er is een fout opgetreden bij het aanmaken van de wedstrijd",
+        "errorUpdatingGame": "Er is een fout opgetreden bij het bijwerken van de wedstrijd",
+        "encounterNotUpdated": "Ontmoeting niet bijgewerkt"
+      }
+    },
+    "settings": {
+      "title": "Instellingen",
+      "languages": {
+        "title": "Taal",
+        "options": {
+          "en": "English",
+          "nl_BE": "Nederlands"
+        }
+      },
+      "notifications": {
+        "title": "Notificaties",
+        "encounterChangeNewNotification": {
+          "title": "Nieuwe verplaatsingsaanvraag",
+          "description": "Ontvang een melding bij een nieuwe verplaatsingsaanvraag."
+        },
+        "encounterChangeFinishedNotification": {
+          "title": "Verplaatsing afgewerkt",
+          "description": "Ontvang een melding wanneer een verplaatsing is voltooid."
+        },
+        "encounterChangeConfirmationNotification": {
+          "title": "Bevestiging verplaatsingsaanvraag",
+          "description": "Ontvang een melding wanneer een verplaatsing wordt bevestigd."
+        },
+        "encounterNotEnteredNotification": {
+          "title": "Ontmoeting is nog niet ingevuld",
+          "description": "Ontvang een melding wanneer een ontmoeting niet ingevuld is."
+        },
+        "encounterNotAcceptedNotification": {
+          "title": "Ontmoeting is nog niet geaccepteerd",
+          "description": "Ontvang een melding wanneer een ontmoeting nog niet geaccepteerd is."
+        },
+        "syncSuccessNotification": {
+          "title": "Synchronisatie succesvol",
+          "description": "Ontvang een melding wanneer de synchronisatie succesvol is afgerond."
+        },
+        "syncFailedNotification": {
+          "title": "Synchronisatie mislukt",
+          "description": "Ontvang een melding wanneer de synchronisatie mislukt is."
+        },
+        "clubEnrollmentNotification": {
+          "title": "Team inschrijving",
+          "description": "Ontvang een melding wanneer een team zich inschrijft."
+        },
+        "types": {
+          "email": "Email",
+          "push": "Push"
+        }
+      },
+      "messages": {
+        "success": "Notificaties succesvol bijgewerkt",
+        "error": "Fout bij het bijwerken van notificaties"
+      },
+      "buttons": {
+        "save": "Opslaan"
+      }
+    },
+    "changeEncounter": {
+      "title": "Verplaats ontmoeting",
+      "encounterNotFound": "Ontmoeting niet gevonden",
+      "proposals": {
+        "title": "Voorstellen",
+        "proposalPeriod": "De periode om voorstellen te maken is van 1 juni tot 31 augustus.",
+        "noProposals": "Geen voorstellen",
+        "date": "Datum",
+        "time": "Tijd",
+        "location": "Locatie",
+        "messages": {
+          "proposalAddedSuccess": "Voorstel toegevoegd",
+          "proposalAddedError": "Fout bij het toevoegen van het voorstel",
+          "proposalAcceptedSuccess": "Voorstel geaccepteerd",
+          "proposalAcceptedError": "Fout bij het accepteren van het voorstel",
+          "proposalRejectedSuccess": "Voorstel geweigerd",
+          "proposalRejectedError": "Fout bij het weigeren van het voorstel",
+          "proposalDeletedSuccess": "Voorstel verwijderd",
+          "proposalDeletedError": "Fout bij het verwijderen van het voorstel",
+          "generalError": "Iets ging mis bij het verplaatsen van de ontmoeting"
+        },
+        "buttons": {
+          "addProposal": "Voorstel toevoegen",
+          "accept": "Accepteren",
+          "reject": "Weigeren",
+          "delete": "Verwijderen"
+        }
+      },
+      "messages": {
+        "title": "Berichten",
+        "noMessages": "Geen berichten",
+        "messages": {
+          "messageSentSuccess": "Bericht verstuurd",
+          "messageSentError": "Fout bij het versturen van het bericht"
+        },
+        "label": "Bericht",
+        "placeholder": "Schrijf een bericht",
+        "proposalPeriodInfo": "De periode om voorstellen te maken is van 1 juni tot 31 augustus."
+      },
+      "calendar": {
+        "encounterNotFound": "Ontmoeting niet gevonden",
+        "filter": {
+          "labels": {
+            "homeTeam": "Thuisploeg",
+            "awayTeam": "Uitploeg"
+          },
+          "options": {
+            "allTeams": "Alle ploegen"
+          }
+        },
+        "buttons": {
+          "close": "Sluiten"
+        },
+        "dayContent": {
+          "otherEncounters": "Andere ontmoetings",
+          "originalDate": "Oorspronkelijke datum",
+          "proposal": "Voorstel",
+          "buttons": {
+            "courtsAvailable": "veld(en) beschikbaar"
+          },
+          "eventWarning": "Competitie is niet toegestaan",
+          "drawer": {
+            "courts": "veld(en)",
+            "proposal": "Voorstel",
+            "originalDate": "Oorspronkelijke datum",
+            "availableCourts": "Beschikbare veld(en)",
+            "buttons": {
+              "sendRequest": "Aanvraag versturen"
+            },
+            "otherEncounters": "Andere ontmoetings",
+            "messages": {
+              "success": "Aanvraag verstuurd",
+              "error": "Fout bij het versturen van de aanvraag"
+            }
+          }
+        }
+      }
     }
   }
 }

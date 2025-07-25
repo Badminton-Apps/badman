@@ -8,7 +8,7 @@ import { ListArgs } from '../../utils';
 @Resolver(() => Role)
 export class RoleResolver {
   private readonly logger = new Logger(RoleResolver.name);
-  constructor(private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) { }
 
   @Query(() => Role)
   async role(@Args('id', { type: () => ID }) id: string): Promise<Role> {
@@ -178,6 +178,55 @@ export class RoleResolver {
       throw error;
     }
   }
+
+  @Mutation(() => Boolean)
+  async updateRolePlayers(
+    @User() user: Player,
+    @Args('roleId', { type: () => ID }) roleId: string,
+    @Args('playerIds', { type: () => [ID] }) playerIds: string[],
+  ) {
+    const dbRole = await Role.findByPk(roleId, { include: [Player] });
+
+    if (!dbRole) {
+      throw new NotFoundException(`${Role.name}: ${roleId}`);
+    }
+
+    if (
+      !(await user.hasAnyPermission([
+        `${dbRole.linkId}_edit:role`,
+        `${dbRole.linkId}_edit:${dbRole.linkType}`,
+        'edit-any:club',
+      ]))
+    ) {
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
+    }
+
+    // Start transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      // Fetch players
+      const dbPlayers = await Player.findAll({
+        where: { id: playerIds },
+        transaction,
+      });
+
+      if (dbPlayers.length !== playerIds.length) {
+        throw new NotFoundException(`Some players were not found`);
+      }
+
+      // Update role players
+      await dbRole.addPlayers(dbPlayers, { transaction });
+
+      // Commit transaction
+      await transaction.commit();
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
 
   @Mutation(() => Boolean)
   async removePlayerFromRole(

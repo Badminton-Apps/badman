@@ -92,6 +92,10 @@ export class Assembly extends Model<Assembly> {
     onDelete: 'CASCADE',
   })
   player?: Relation<Player>;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  isComplete?: boolean;
 }
 
 export interface AssemblyData {

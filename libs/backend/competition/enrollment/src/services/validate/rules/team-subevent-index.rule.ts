@@ -17,7 +17,7 @@ export class TeamSubeventIndexRule extends Rule {
         !previousSeasonTeam?.entry?.standing?.faller
       ) {
         errors.push({
-          message: 'all.competition.team-enrollment.errors.team-to-strong',
+          message: 'all.v1.entryTeamDrawer.validation.errors.team-to-strong',
           params: {
             baseIndex,
             minIndex: subEvent?.minBaseIndex,
@@ -30,7 +30,7 @@ export class TeamSubeventIndexRule extends Rule {
         !previousSeasonTeam?.entry?.standing?.riser
       ) {
         errors.push({
-          message: 'all.competition.team-enrollment.errors.team-to-week',
+          message: 'all.v1.entryTeamDrawer.validation.errors.team-to-week',
           params: {
             baseIndex,
             maxIndex: subEvent?.maxBaseIndex,

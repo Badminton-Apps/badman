@@ -132,7 +132,8 @@ export class Role extends Model {
   // Belongs to many Player
   getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
   setPlayer!: BelongsToManySetAssociationsMixin<Player, string>;
-  addPlayers!: BelongsToManyAddAssociationsMixin<Player, string>;
+  setPlayers!: BelongsToManySetAssociationsMixin<Player, string>;
+  addPlayers!:BelongsToManyAddAssociationsMixin<Player, string>;
   addPlayer!: BelongsToManyAddAssociationMixin<Player, string>;
   removePlayer!: BelongsToManyRemoveAssociationMixin<Player, string>;
   removePlayers!: BelongsToManyRemoveAssociationsMixin<Player, string>;
