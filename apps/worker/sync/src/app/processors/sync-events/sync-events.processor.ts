@@ -76,7 +76,7 @@ export class SyncEventsProcessor {
     await cronJob.save();
 
     try {
-      // Creates a new date based on either the job's date parameter or the last run time
+      // Creates a new date based on either the job's date parameter or the last run time
       const newDate = moment(job.data?.date ?? cronJob.lastRun);
       let newEvents: XmlTournament[] = [];
 
