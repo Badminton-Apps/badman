@@ -161,14 +161,6 @@ export class ShowRequestsComponent implements OnInit {
             } else {
               this.requestClosing = moment(event?.changeCloseDatePeriod2);
             }
-
-            console.log(
-              'requestClosing',
-              event?.changeCloseDatePeriod2,
-              event.season,
-              encounter.date?.getFullYear(),
-            );
-
             this.requestingClosed = moment().isAfter(this.requestClosing);
           } else {
             this.requestingClosed = false;

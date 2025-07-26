@@ -444,4 +444,6 @@ export class PlayerTeamInput {
 
   @Field(() => String, { nullable: true })
   membershipType?: Relation<TeamMembershipType>;
+  @Field(() => String, { nullable: true })
+  fullName?: Relation<TeamMembershipType>;
 }

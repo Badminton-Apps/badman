@@ -394,7 +394,10 @@ export class RankingSystem extends Model {
 export class RankingSystemUpdateInput extends PartialType(
   OmitType(RankingSystem, ['createdAt', 'updatedAt'] as const),
   InputType,
-) {}
+) {
+  @Field(() => [ID], { nullable: true })
+  rankingGroupIds?: string[];
+}
 
 @InputType()
 export class RankingSystemNewInput extends PartialType(
