@@ -440,6 +440,480 @@
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
   },
+  "confirmEncounterPage": {
+    "title": "Confirmer la rencontre",
+    "sectionTitles": {
+      "teams": "Équipes",
+      "confirmation": "Confirmation",
+      "results": "Résultats",
+      "information": "Informations",
+      "submitComment": "Soumettre un commentaire"
+    },
+    "positions": {
+      "captain": "Capitaine",
+      "gameLeader": "Chef de jeu",
+      "homeCaptain": "Capitaine à domicile",
+      "awayCaptain": "Capitaine à l'extérieur"
+    },
+    "inputs": {
+      "comment": "Commentaire",
+      "gameLeaderCommentsOptional": "Commentaires du chef de jeu (facultatif)"
+    },
+    "buttons": {
+      "cancel": "Annuler",
+      "back": "Retour",
+      "close": "Fermer",
+      "confirm": "Confirmer",
+      "submit": "Envoyer",
+      "addComment": "Ajouter un commentaire"
+    },    
+    "messages": {
+      "addedComment": "Commentaire ajouté",
+      "commentFrom": "Commentaire de {fullName}"
+    },
+    "errors": {
+      "errorAddingComment": "Erreur lors de l'ajout du commentaire"
+    }
+  },
+  "competitionDetailPage": {
+    "tabs": {
+      "divisions": "Divisions",
+      "encounters": "Rencontres",
+      "teamEnrollments": "Inscriptions d'équipe"
+    },
+    "buttons": {
+      "openInToernooiNL": "Ouvrir dans toernooi.nl",
+      "view": "Voir",
+      "clearFilters": "Effacer les filtres"
+    },
+    "divisions": {
+      "actions": {
+        "edit": "Modifier",
+        "sync": "Synchroniser",
+        "recalculatePoints": "Recalculer les points",
+        "actions": "Actions",
+        "reports": "Rapports",
+        "copy": "Copier",
+        "openCloseSignups": "Ouvrir/Fermer les inscriptions",
+        "openCloseChangeEncounters": "Ouvrir/Fermer la modification de la date de rencontre",
+        "makeUnofficialTournament": "Rendre le tournoi non officiel",
+        "delete": "Supprimer",
+        "averageLevel": "Niveau moyen",
+        "downloadBasePlayers": "Télécharger les joueurs de base",
+        "downloadCPFile": "Télécharger le fichier CP"
+      },
+      "tableNames": {
+        "F": "Femmes",
+        "M": "Hommes",
+        "MX": "Mixte"
+      },
+      "table": {
+        "headers": {
+          "divisions": "Divisions",
+          "type": "Type",
+          "numberTeams": "# équipes",
+          "maxLevel": "Niveau max",
+          "index": "Indice",
+          "subdivisions": "Sous-divisions"
+        },
+        "noRecords": "Aucun enregistrement trouvé"
+      },
+      "teamEnrollments": {
+        "drawer": {
+          "sectionTitles": {
+            "primaryPlayers": "Joueurs principaux",
+            "generalInfo": "Informations générales",
+            "validations": "Validations"
+          },
+          "dataKeys": {
+            "teamIndex": "Indice d'équipe",
+            "teamCaptain": "Capitaine de l'équipe",
+            "preferredPlayingTime": "Temps de jeu préféré"
+          },
+          "emptyStates": {
+            "noValidations": "Aucune validation trouvée"
+          }
+        },
+        "table": {
+          "headers": {
+            "division": "Division",
+            "team": "Team",
+            "index": "Index",
+            "numberSignups": "Nombre d'inscriptions",
+            "messages": "Messages",
+            "actions": "Actions"
+          },
+          "buttons": {
+            "view": "Voir"
+          },
+          "messages": {
+            "numberErrors": "{amount} erreurs",
+            "numberWarnings": "{amount} avertissements",
+            "loadingEntries": "Chargement des inscriptions d'équipe..."
+          },
+          "noRecords": "Aucun enregistrement trouvé"
+        },
+        "errors": {
+          "already": "Joueur déjà présent en tant que détenteur du titre",
+          "base-gender-mix": "L'escouade de base comprend {maleCount} hommes et {femaleCount} femmes, alors que cela devrait être 2 dans chaque cas",
+          "base-other-team": "{playerFullName} ne peut être inscrit comme joueur de base qu'une seule fois par ligue",
+          "comp-status-base": "Le joueur titulaire {playerFullName} n'est pas inscrit à la compétition",
+          "comp-status-team": "{playerFullName} n'est pas inscrit au concours",
+          "faller": "L'équipe devrait être reléguée, mais n'est pas engagée dans une série inférieure cette année",
+          "first-team-index": "Une équipe première éliminée ne peut aligner une équipe dont l'indice est inférieur à son indice de base au cours de la saison",
+          "no-subevent": "Veuillez choisir une gamme",
+          "none": "Aucune erreur n'a été trouvée",
+          "player-club": "Le joueur {playerFullName} ne fait pas partie de {clubName} (club actuel : {activeClubName})",
+          "player-club-none": "Aucun club connu pour le joueur {playerFullName}",
+          "player-gender": "{playerFullName} est un {playerGender} mais un {gender} était attendu",
+          "player-min-level": "{playerFullName} a un indice de {playerRanking} dans {rankingType} et peut être au moins {minLevel}",
+          "player-subevent": "{playerFullName} fait partie de l'équipe de base {teamName} qui joue également en {subEventName}",
+          "riser": "L'équipe devrait être promue mais n'est pas inscrite dans une série supérieure",
+          "team-index": "La configuration de configuration la plus forte n'est pas possible. L'index d'équipe est {teamIndex} et l'index d'équipe de base est {baseIndex}",
+          "team-order": "L'équipe {teamName} est dans une série inférieure mais a un numéro d'équipe inférieur",
+          "team-order-same-subevent": "L'équipe {teamName} a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
+          "team-to-strong": "Les joueurs de départ de l'indice d'équipe sont {baseIndex} et ne peuvent pas tomber en dessous de la limite de la division {minIndex}",
+          "team-to-week": "Les joueurs de départ de l'indice d'équipe sont {baseIndex} et ne peuvent pas dépasser la limite de la division {maxIndex}",
+          "title": "Erreurs",
+          "too-few-base-players": "Trop peu de joueurs de base",
+          "too-many-base-players": "Trop de joueurs de base"
+        }
+      }
+    },
+    "encounters": {
+      "table": {
+        "buttons": {
+          "filters": "Filtres"
+        },
+        "headers": {
+          "date": "Date",
+          "homeTeam": "Équipe à domicile",
+          "awayTeam": "Équipe à l'extérieur",
+          "originalDate": "Date originale",
+          "reschedule": "Replanifier"
+        },
+        "tooltips": {
+          "reschedule": "Replanifier la rencontre"
+        },
+        "rescheduleStatuses": {
+          "rescheduled": "Replanifié",
+          "rescheduleInProgress": "Replanification en cours",
+          "rescheduleRequested": "Replanification demandée"
+        },
+        "inputs": {
+          "team": "Équipe",
+          "club": "Club"
+        },
+        "noRecords": "Aucun enregistrement trouvé"
+      }
+    }
+  },
+  "competitionOverviewPage": {
+    "title": "Toutes les compétitions",
+    "sectionTitles": {
+      "overview": "Aperçu"
+    },
+    "table": {
+      "headers": {
+        "name": "Nom",
+        "start": "Début",
+        "end": "Fin",
+        "official": "Officiel",
+        "actions": "Actions"
+      },
+      "divisions": "divisions",
+      "inputs": {
+        "onlyOfficialCompetitions": "Seulement les compétitions officielles"
+      },
+      "buttons": {
+        "addCompetition": "compétition",
+        "loadMoreCompetitions": "Charger plus de compétitions..."
+      }
+    },
+    "addCompetitionDialog": {
+      "title": "Ajouter une compétition",
+      "inputs": {
+      "visualCode": "Code visuel",
+      "officialCompetition": "Compétition officielle"
+      },
+      "buttons": {
+      "cancel": "Annuler",
+      "add": "Ajouter"
+      },
+      "messages": {
+        "competitionAdded": "La compétition sera ajoutée sous peu"
+      },
+      "errors": {
+      "errorAddingCompetition": "Erreur lors de l'ajout de la compétition"
+      }
+    },
+    "deleteCompetitionDialog": {
+      "title": "Supprimer la compétition ?",
+      "body": "Êtes-vous sûr de vouloir supprimer cette compétition ? Si vous confirmez, toutes les données liées à cette compétition seront définitivement supprimées.",
+      "buttons": {
+        "cancel": "Annuler",
+        "delete": "Supprimer"
+      },
+      "successMessage": "Compétition supprimée avec succès de la plateforme",
+      "errorMessage": "Erreur lors de la suppression de la compétition"
+    }
+  },
+  "drawDetailPage": {
+    "sections": {
+      "standings": {
+      "title": "Classements",
+      "actions": {
+        "openInToernooiNL": "Ouvrir dans toernooi.nl"
+      },
+      "table": {
+        "headers": {
+        "rank": "Rang",
+        "status": "Statut",
+        "name": "Nom",
+        "points": "Points",
+        "played": "Joué",
+        "won": "Gagné",
+        "lost": "Perdu",
+        "drawn": "Nul",
+        "games": "Matchs",
+        "setsWonLost": "Sets gagnés / perdus",
+        "pointsWonLost": "Points gagnés / perdus"
+        }
+      },
+      "noRecords": "Aucun enregistrement trouvé"
+      },
+      "encounters": {
+      "title": "Rencontres",
+      "noRecords": "Aucun enregistrement trouvé",
+      "calendar": {
+        "filters": {
+        "team": "Équipe"
+        }
+      }
+      }
+    },
+    "actions": {
+      "syncPoints": "Synchroniser les points"
+    },
+    "messages": {
+      "pointsSynced": "Points synchronisés avec succès",
+      "errorSyncingPoints": "Erreur lors de la synchronisation des points"
+    }
+  },
+"editCompetitionPage": {
+    "steps": {
+      "0": "Général",
+      "1": "Divisions",
+      "2": "Supplémentaire"
+    },
+    "general": {
+      "sectionTitles": {
+      "general": "Général"
+      },
+      "inputs": {
+      "name": "Nom",
+      "season": "Saison",
+      "type": "Type",
+      "contact": "Contact",
+      "country": "Pays",
+      "province": "Province",
+      "sendNotifications": "Envoyer des notifications lorsqu'une rencontre n'est pas saisie ou confirmée",
+      "teamMatcherLink": "Lien de correspondance d'équipe"
+      },
+      "successMessage": "Informations générales de la compétition enregistrées",
+      "errorMessage": "Erreur lors de l'enregistrement des informations générales de la compétition"
+    },
+    "divisions": {
+      "table": {
+      "headers": {
+        "name": "Nom",
+        "type": "Type",
+        "maxLevel": "Niveau max",
+        "index": "Indice"
+      },
+      "actions": {
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "add": "Ajouter"
+      },
+      "noRecords": "Aucun enregistrement trouvé",
+      "addDivisionDialog": {
+        "title": "Ajouter une division",
+        "inputs": {
+        "name": "Nom",
+        "type": "Type",
+        "level": "Niveau",
+        "maxLevel": "Niveau max",
+        "minBaseTeamIndex": "Indice minimum de l'équipe de base",
+        "maxBaseTeamIndex": "Indice maximum de l'équipe de base",
+        "index": "Indice"
+        },
+        "buttons": {
+        "cancel": "Annuler",
+        "add": "Ajouter"
+        },
+        "messages": {
+        "divisionAdded": "Division ajoutée avec succès"
+        },
+        "errors": {
+        "errorAddingDivision": "Erreur lors de l'ajout de la division"
+        }
+      },
+      "editDivisionDialog": {
+        "title": "Modifier la division",
+        "inputs": {
+        "name": "Nom",
+        "type": "Type",
+        "level": "Niveau",
+        "maxLevel": "Niveau max",
+        "minBaseTeamIndex": "Indice minimum de l'équipe de base",
+        "maxBaseTeamIndex": "Indice maximum de l'équipe de base",
+        "index": "Indice"
+        },
+        "buttons": {
+        "cancel": "Annuler",
+        "add": "Soumettre les modifications"
+        },
+        "messages": {
+        "divisionAdded": "Division modifiée avec succès"
+        },
+        "errors": {
+        "errorAddingDivision": "Erreur lors de la modification de la division"
+        }
+      },
+      "deleteDivisionDialog": {
+        "title": "Supprimer la division ?",
+        "body": "Êtes-vous sûr de vouloir supprimer cette division ? Si vous confirmez, toutes les données liées à cette division seront définitivement supprimées.",
+        "buttons": {
+        "cancel": "Annuler",
+        "delete": "Supprimer"
+        }
+      }
+      }
+    },
+    "extra": {
+      "sectionTitles": {
+      "exceptions": "Exceptions",
+      "info": "Informations",
+      "roles": "Rôles"
+      },
+      "emptyStates": {
+      "noExceptions": "Aucune exception",
+      "noInfo": "Aucune information"
+      },
+      "inputs": {
+      "periodStart": "Début de la période",
+      "periodEnd": "Fin de la période",
+      "availableFields": "Champs disponibles",
+      "name": "Nom",
+      "competitionAllowed": "Compétition autorisée"
+      },
+      "inputDescriptions": {
+      "exceptions": "Définir des périodes avec plus ou moins de champs disponibles.",
+      "info": "Définir des périodes avec plus ou moins de champs disponibles."
+      },
+      "buttons": {
+      "add": "Ajouter"
+      },
+      "successMessage": "Détails de la compétition enregistrés",
+      "errorMessage": "Erreur lors de l'enregistrement des détails de la compétition"
+    },
+    "buttons": {
+      "next": "Suivant",
+      "cancel": "Annuler",
+      "back": "Retour",
+      "save": "Enregistrer",
+      "saveChanges": "Enregistrer les modifications",
+      "finish": "Terminer"
+    }
+  },
+  "encounterAlerts": {
+    "buttons": {
+      "seeEncounter": "Voir la rencontre",
+      "seeAllMessages": "voir tous les messages ({amountOfAlerts})",
+      "hideMessages": "masquer les messages"
+    },
+    "messages": {
+      "confirmOrDisputeEncounter": "Il vous reste {hoursUntilExpiry} heures pour confirmer ou contester la rencontre"
+    },
+    "details": {
+      
+    }
+  },
+  "encounterFormPage": {
+    "title": "Formulaire de rencontre",
+    "steps": {
+      "0": "Informations",
+      "1": "Résultats",
+      "2": "Confirmation"
+    },
+    "sectionTitles": {
+      "register": "S'inscrire",
+      "teams": "Équipes",
+      "confirmEncounter": "Confirmer la rencontre",
+      "confirmPresence": "Confirmer la présence",
+      "cancelPresence": "Annuler la présence",
+      "confirmConfirmed": "Confirmer la rencontre",
+      "cancelConfirmed": "Annuler la rencontre",
+      "results": "Résultats",
+      "players": "Joueurs",
+      "information": "Informations"
+    },
+    "prompts": {
+      "confirmPresence": "Le capitaine de l'équipe, {fullName}, est-il présent pour cette rencontre?",
+      "cancelPresence": "Voulez-vous annuler la présence de {fullName}?",
+      "confirmConfirmed": "Le capitaine de l'équipe, {fullName}, confirme-t-il le résultat de cette rencontre?",
+      "cancelConfirmed": "Voulez-vous annuler la confirmation de {fullName}?"
+    },    
+    "messages": {
+      "areComments": "{numberOfComments} commentaires",
+      "noComments": "Pas de commentaires",
+      "gameCreated": "Le match a été créé",
+      "gameUpdated": "Le match a été mis à jour",
+      "presenceUpdated": "Confirmation de présence de {position} mise à jour",
+      "confirmationUpdated": "Confirmation de {position} mise à jour",      
+      "encounterUpdated": "Rencontre mise à jour"
+    },
+    "buttons": {
+      "back": "Retour",
+      "next": "Suivant",
+      "submit": "Envoyer",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "seeTeamFormation": "Voir la formation de l'équipe",
+      "2Sets": "2 games",
+      "3Sets": "3 games",
+      "saveChanges": "Sauvegarder les modifications"
+    },
+    "inputs": {
+      "present": "Présent",
+      "confirm": "Confirmer",
+      "league": "Ligue",
+      "players": "Joueurs",
+      "player": "Joueur",
+      "winner": "Gagnant",
+      "set1": "Game 1",
+      "set2": "Game 2",
+      "set3": "Game 3",
+      "startTime": "Heure de début",
+      "endTime": "Heure de fin",
+      "shuttle": "Navette",
+      "commentsOptional": "Commentaires (facultatif)"
+    },
+    "positions": {
+      "captain": "Capitaine",
+      "gameLeader": "Chef de jeu",
+      "homeCaptain": "Capitaine à domicile",
+      "awayCaptain": "Capitaine à l'extérieur"
+    },
+    "errors": {
+      "presenceNotUpdated": "présence du {position} non mise à jour",
+      "confirmationNotUpdated": "Confirmation de {position} non mise à jour",
+      "errorCreatingGame": "Erreur lors de la création du match",
+      "errorUpdatingGame": "Erreur lors de la mise à jour du match",
+       "encounterNotUpdated": "Rencontre non mise à jour"
+    }
+  }, 
   "event": {
     "checkEncounterForFilledIn": "Envoyer des notifications lorsque le match n'est pas saisi ou confirmé",
     "last-sync": "Dernière mise à jour",
@@ -652,6 +1126,12 @@
     "select": "Sélectionner",
     "start": "Commencer",
     "sync": "Sync"
+  },
+"messages": {
+    "buttons": {
+      "hide": "Masquer {messageType}",
+      "seeAll": "Voir tous les {messageType} ({amountOfMessages})"
+    }
   },
   "months": {
     "april": "Avril",

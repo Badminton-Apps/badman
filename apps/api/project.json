@@ -27,15 +27,18 @@
       }
     },
     "build": {
+      "executor": "@nx/webpack:webpack",
       "defaultConfiguration": "development",
+      "options": {
+        "webpackConfig": "apps/api/webpack.config.js",
+        "outputPath": "dist/apps/api"
+      },
       "configurations": {
         "development": {
-          "cwd": "apps/api",
-          "args": ["--node-env=development"]
+          "mode": "development"
         },
         "production": {
-          "cwd": "apps/api",
-          "args": ["--node-env=production"],
+          "mode": "production",
           "dependsOn": ["badman:build"]
         }
       }

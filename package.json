@@ -123,7 +123,7 @@
     "multer": "1.4.5-lts.1",
     "nest-winston": "^1.10.2",
     "nestjs-i18n": "^10.5.0",
-    "ng-apexcharts": "^1.15.0",
+    "ng-apexcharts": "~1.15.0",
     "ng-process-env": "^16.0.6",
     "ngx-json-viewer": "^3.2.1",
     "ngx-markdown": "^19.1.0",
