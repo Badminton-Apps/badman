@@ -2,7 +2,10 @@
   "name": "@badman/backend-health",
   "version": "6.185.0",
   "dependencies": {
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/terminus": "^10.3.0",
+    "@nestjs/config": "^3.3.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

@@ -5,7 +5,16 @@
     "@badman/frontend-components": "*",
     "@badman/frontend-seo": "*",
     "@badman/frontend-models": "*",
-    "@badman/frontend-utils": "*"
+    "@badman/frontend-utils": "*",
+    "@angular/core": "19.2.6",
+    "@angular/common": "19.2.6",
+    "@angular/router": "19.2.6",
+    "ngx-markdown": "^19.1.0",
+    "@angular/forms": "19.2.6",
+    "@angular/material": "19.2.9",
+    "apollo-angular": "^8.0.2",
+    "ngx-quill": "^27.0.0",
+    "rxjs": "~7.8.1"
   },
   "dependencies": {},
   "sideEffects": false
