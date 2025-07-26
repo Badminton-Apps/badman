@@ -1,9 +1,10 @@
-import { Club, EventEntry, Team } from '@badman/backend-database';
+import { Club, EventEntry, Team, Player } from '@badman/backend-database';
 import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { LevelType, runParallel, teamValues } from '@badman/utils';
+import { LevelType, runParallel, teamValues, startOfSeason } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import { isArray } from 'class-validator';
 import { Op, WhereOptions } from 'sequelize';
+import moment from 'moment';
 import { StepOptions, StepProcessor } from '../../../../processing';
 import { correctWrongTeams } from '../../../../utils';
 import { DrawStepData } from './draw';
@@ -98,6 +99,15 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       }
 
       this.logger.debug(`Processing entry ${item} - ${teams.name}`);
+
+      // Check if we're before the start of the season (Septemebr 1st of the season) and if entry data needs updating
+      const seasonStart = moment([event.season, 8, 1]); // September 1st of the season
+      const currentDate = moment();
+      
+      if (currentDate.isBefore(seasonStart)) {
+        this.logger.debug(`Before season start, checking team data for ${teams.name}`);
+        await this._updateTeamDataFromVisual(teams, entry, internalId);
+      }
 
       await entry.setDrawCompetition(draw, {
         transaction: this.transaction,
@@ -271,5 +281,148 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     }
 
     this.logger.warn(`Team not found ${clubName} ${teamNumber} ${teamType}`);
+  }
+
+  private async _updateTeamDataFromVisual(team: Team, entry: EventEntry, drawId: number) {
+    try {
+      // Extract team code from the visual tournament structure
+      const xmlDraw = await this.visualService.getDraw(this.visualTournament.Code, drawId);
+      if (!xmlDraw?.Structure?.Item) {
+        return;
+      }
+
+      // Ensure items is an array
+      const items = isArray(xmlDraw.Structure.Item) 
+        ? xmlDraw.Structure.Item 
+        : [xmlDraw.Structure.Item as XmlItem];
+
+      // Find the team in the draw structure by name
+      const teamItem = items.find(item => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code);
+      if (!teamItem?.Team?.Code) {
+        this.logger.warn(`Team code not found for ${team.name} in draw structure`);
+        return;
+      }
+
+      // Get team data from the visual API
+      const xmlTeam = await this.visualService.getTeam(
+        this.visualTournament.Code, 
+        teamItem.Team.Code
+      );
+
+      if (!xmlTeam) {
+        this.logger.warn(`No team data found for team code ${teamItem.Team.Code}`);
+        return;
+      }
+
+      // Update team information if different - only update if API provides non-empty data
+      let teamUpdated = false;
+
+      if (xmlTeam.Contact && xmlTeam.Contact.trim() !== '' && xmlTeam.Contact !== team.name) {
+        // You might want to update contact information here if needed
+        this.logger.debug(`Team contact: ${xmlTeam.Contact}`);
+      }
+
+      // Only update phone if API provides a non-empty value and it's different from current
+      if (xmlTeam.Phone && xmlTeam.Phone.trim() !== '' && xmlTeam.Phone !== team.phone) {
+        team.phone = xmlTeam.Phone;
+        teamUpdated = true;
+        this.logger.debug(`Updated team phone for ${team.name}: ${xmlTeam.Phone}`);
+      }
+
+      // Only update email if API provides a non-empty value and it's different from current
+      if (xmlTeam.Email && xmlTeam.Email.trim() !== '' && xmlTeam.Email !== team.email) {
+        team.email = xmlTeam.Email;
+        teamUpdated = true;
+        this.logger.debug(`Updated team email for ${team.name}: ${xmlTeam.Email}`);
+      }
+
+      if (teamUpdated) {
+        await team.save({ transaction: this.transaction });
+        this.logger.debug(`Updated team data for ${team.name}`);
+      }
+
+      // Update entry meta with player information - follow priority order
+      const players = xmlTeam.Players?.Player;
+      
+      if (players && players.length > 0) {
+        // PRIORITY 1: Use Visual API data (team + players from endpoint)
+        this.logger.debug(`Using Visual API player data for team ${team.name} (${players.length} players)`);
+        
+        // Find existing players by memberId
+        const memberIds = players.map(p => p.MemberID).filter(id => id);
+        const dbPlayers = await Player.findAll({
+          where: {
+            memberId: {
+              [Op.in]: memberIds
+            }
+          },
+          include: [
+            {
+              association: 'rankingPlaces',
+              limit: 1,
+              order: [['rankingDate', 'DESC']]
+            }
+          ],
+          transaction: this.transaction
+        });
+
+        // Get existing meta to preserve exception data
+        const existingMeta = entry.meta || {};
+        const existingPlayersMeta = existingMeta.competition?.players || [];
+
+        // Create meta object with Visual API player information
+        const entryMeta = {
+          ...existingMeta,
+          competition: {
+            ...existingMeta.competition,
+            players: players.map(xmlPlayer => {
+              // Find existing player in database by memberId
+              const dbPlayer = dbPlayers.find(p => p.memberId === xmlPlayer.MemberID);
+              
+              // Find existing player data in current meta to preserve exception values
+              const existingPlayerMeta = existingPlayersMeta.find(p => 
+                p.id === dbPlayer?.id
+              );
+              
+              // Get ranking values from player's ranking places or use defaults
+              const ranking = dbPlayer?.rankingPlaces?.[0];
+              
+              return {
+                id: dbPlayer?.id || undefined,
+                gender: (xmlPlayer.GenderID === 1 ? 'M' : 'F') as 'M' | 'F',
+                single: ranking?.single || 12, // Use current ranking
+                double: ranking?.double || 12,
+                mix: ranking?.mix || 12,
+                levelException: existingPlayerMeta?.levelException || false, // Preserve existing exceptions
+                levelExceptionRequested: existingPlayerMeta?.levelExceptionRequested || false,
+                levelExceptionReason: existingPlayerMeta?.levelExceptionReason || undefined,
+              };
+            })
+          }
+        };
+
+        // Update entry meta with Visual API data
+        entry.meta = entryMeta;
+        await entry.save({ transaction: this.transaction });
+        
+        this.logger.debug(`Updated entry meta with Visual API data: ${players.length} players for team ${team.name}`);
+        
+      } else {
+        // PRIORITY 2: Keep existing database data if Visual API has no player data
+        const existingMeta = entry.meta;
+        
+        if (existingMeta?.competition?.players && existingMeta.competition.players.length > 0) {
+          this.logger.debug(`No Visual API player data for team ${team.name}, keeping existing database data (${existingMeta.competition.players.length} players)`);
+          // Do nothing - keep existing data as is
+        } else {
+          // PRIORITY 3: Do nothing if neither Visual API nor database has player data
+          this.logger.debug(`No player data available for team ${team.name} from Visual API or database`);
+          // Do nothing
+        }
+      }
+
+    } catch (error) {
+      this.logger.error(`Failed to update team data from visual for ${team.name}: ${error}`);
+    }
   }
 }

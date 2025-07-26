@@ -5,25 +5,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
-    imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        MtxDatetimepickerModule,
-        MtxMomentDatetimeModule,
-    ],
-    templateUrl: './select-period.component.html',
-    styleUrls: ['./select-period.component.scss']
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: './select-period.component.html',
+  styleUrls: ['./select-period.component.scss'],
 })
 export class SelectPeriodDialogComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<SelectPeriodDialogComponent>>(

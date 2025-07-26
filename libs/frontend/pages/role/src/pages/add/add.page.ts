@@ -5,16 +5,15 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Claim, Club, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, groupBy, lastValueFrom, map, mergeMap, toArray } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { RoleFieldsComponent } from '../../components';
 
 @Component({
-    templateUrl: './add.page.html',
-    styleUrls: ['./add.page.scss'],
-    imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, RoleFieldsComponent]
+  templateUrl: './add.page.html',
+  styleUrls: ['./add.page.scss'],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, RoleFieldsComponent],
 })
 export class AddPageComponent implements OnInit {
   private apollo = inject(Apollo);

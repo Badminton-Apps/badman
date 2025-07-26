@@ -25,7 +25,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Club, Player } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, ReplaySubject, lastValueFrom, merge, of } from 'rxjs';
@@ -33,23 +33,23 @@ import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 
 import { PlayerFieldsComponent } from '../fields';
 
 @Component({
-    imports: [
-        CommonModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatOptionModule,
-        MatAutocompleteModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatDialogModule,
-        MatInputModule,
-        MatProgressBarModule,
-        PlayerFieldsComponent,
-    ],
-    selector: 'badman-player-search',
-    templateUrl: './player-search.component.html',
-    styleUrls: ['./player-search.component.scss']
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    MatIconModule,
+    MatButtonModule,
+    MatOptionModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatInputModule,
+    MatProgressBarModule,
+    PlayerFieldsComponent,
+  ],
+  selector: 'badman-player-search',
+  templateUrl: './player-search.component.html',
+  styleUrls: ['./player-search.component.scss'],
 })
 export class PlayerSearchComponent implements OnChanges, OnInit {
   private apollo = inject(Apollo);
@@ -83,6 +83,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   club = input<string | Club | undefined>();
 
   searchOutsideClub = input(true);
+  strictMemberId = input(false);
 
   includePersonal = input(false);
 
@@ -390,6 +391,23 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
           { firstName: { $iLike: `%${part}%` } },
           { lastName: { $iLike: `%${part}%` } },
           { memberId: { $iLike: `%${part}%` } },
+        ],
+      });
+    }
+
+    if (this.strictMemberId()) {
+      queries.push({
+        $and: [
+          {
+            memberId: {
+              $not: null,
+            },
+          },
+          {
+            memberId: {
+              $not: '',
+            },
+          },
         ],
       });
     }

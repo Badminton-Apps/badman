@@ -35,7 +35,7 @@ import {
 } from '@badman/frontend-html-injects';
 import { Banner } from '@badman/frontend-models';
 import { DEVICE } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { derivedAsync  } from 'ngxtension/derived-async';
 import { filter, map } from 'rxjs/operators';
@@ -65,7 +65,7 @@ import {
         ServiceWorkerModule,
         BreadcrumbComponent,
         BreadcrumbItemDirective,
-        TranslateModule,
+        TranslatePipe,
         MatSidenavModule,
         MatSlideToggleModule,
         MatToolbarModule,

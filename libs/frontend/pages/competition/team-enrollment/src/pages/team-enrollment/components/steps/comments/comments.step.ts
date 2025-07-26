@@ -11,7 +11,7 @@ import {
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import { debounceTime } from 'rxjs';
@@ -28,7 +28,7 @@ type CommentForm = {
 
 @Component({
     selector: 'badman-comments-step',
-    imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+    imports: [CommonModule, TranslatePipe, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
     templateUrl: './comments.step.html',
     styleUrls: ['./comments.step.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -135,10 +135,7 @@ export class CommentsStepComponent {
               Array.from(new Set(events.map((event) => event.type as LevelType))),
             );
           });
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 }

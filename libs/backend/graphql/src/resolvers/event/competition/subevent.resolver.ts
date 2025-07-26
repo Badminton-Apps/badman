@@ -12,12 +12,16 @@ import {
   RankingSystem,
   SubEventCompetition,
   SubEventCompetitionAverageLevel,
+  SubEventCompetitionUpdateInput,
 } from '@badman/backend-database';
+import { Sync, SyncQueue } from '@badman/backend-queue';
 import { PointsService } from '@badman/backend-ranking';
 import { SubEventTypeEnum } from '@badman/utils';
+import { InjectQueue } from '@nestjs/bull';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Queue } from 'bull';
 import { Cache } from 'cache-manager';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
@@ -28,7 +32,7 @@ export class SubEventCompetitionResolver {
 
   constructor(
     @Inject(CACHE_MANAGER) private readonly _cacheManager: Cache,
-
+    @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
   ) {}
@@ -221,11 +225,11 @@ export class SubEventCompetitionResolver {
 
     return {
       gender: 'M',
-      single: averageLevelSingleMale / singleMales,
+      single: averageLevelSingleMale / (singleMales == 0 ? 1 : singleMales),
       singleCount: singleMales,
-      double: averageLevelDoubleMale / doubleMales,
+      double: averageLevelDoubleMale / (doubleMales == 0 ? 1 : doubleMales),
       doubleCount: doubleMales,
-      mix: averageLevelMixedMale / mixMales,
+      mix: averageLevelMixedMale / (mixMales == 0 ? 1 : mixMales),
       mixCount: mixMales,
     } as SubEventCompetitionAverageLevel;
   }
@@ -292,11 +296,11 @@ export class SubEventCompetitionResolver {
 
     return {
       gender: 'F',
-      single: averageLevelSingleFemale / singleFemales,
+      single: averageLevelSingleFemale / (singleFemales == 0 ? 1 : singleFemales),
       singleCount: singleFemales,
-      double: averageLevelDoubleFemale / doubleFemales,
+      double: averageLevelDoubleFemale / (doubleFemales == 0 ? 1 : doubleFemales),
       doubleCount: doubleFemales,
-      mix: averageLevelMixedFemale / mixFemales,
+      mix: averageLevelMixedFemale / (mixFemales == 0 ? 1 : mixFemales),
       mixCount: mixFemales,
     } as SubEventCompetitionAverageLevel;
   }
@@ -364,5 +368,56 @@ export class SubEventCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  @Mutation(() => Boolean)
+  async recalculateStandingSubEvent(
+    @User() user: Player,
+    @Args('subEventId', { type: () => ID }) subEventId: string,
+  ) {
+    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+      throw new UnauthorizedException(`You do not have permission to sync points`);
+    }
+
+    const event = await SubEventCompetition.findByPk(subEventId, {
+      attributes: ['id'],
+    });
+
+    if (!event) {
+      throw new NotFoundException(`${SubEventCompetition.name}  not found for ${subEventId}`);
+    }
+
+    await this._syncQueue.add(
+      Sync.ScheduleRecalculateStandingCompetitionSubEvent,
+      {
+        eventId: event.id,
+      },
+      {
+        removeOnComplete: true,
+        removeOnFail: 1,
+      },
+    );
+
+    return true;
+  }
+  @Mutation(() => SubEventCompetition)
+  async updateSubEventCompetition(
+    @User() user: Player,
+    @Args('data') updateData: SubEventCompetitionUpdateInput,
+  ): Promise<SubEventCompetition> {
+    if (!(await user.hasAnyPermission(['edit:competition']))) {
+      throw new UnauthorizedException(`You do not have permission to edit competition`);
+    }
+
+    const subEventCompetition = await SubEventCompetition.findByPk(updateData.id);
+
+    if (!subEventCompetition) {
+      throw new NotFoundException(`${SubEventCompetition.name}: ${updateData.id}`);
+    }
+
+    // Update the sub event competition
+    await subEventCompetition.update(updateData);
+
+    return subEventCompetition;
   }
 }

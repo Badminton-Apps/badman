@@ -8,11 +8,9 @@ import {
   inject,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { DateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,9 +31,8 @@ import {
   Team,
 } from '@badman/frontend-models';
 import { getSeason, getSeasonPeriod, sortTeams } from '@badman/utils';
-import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment-timezone';
 import { lastValueFrom } from 'rxjs';
@@ -43,31 +40,30 @@ import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
 
 @Component({
-    selector: 'badman-calendar',
-    imports: [
-        CommonModule,
-        RouterModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        MatIconModule,
-        MatInputModule,
-        MatButtonModule,
-        MatChipsModule,
-        MatTooltipModule,
-        MatCheckboxModule,
-        MatProgressBarModule,
-        MatFormFieldModule,
-        MatDatepickerModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        HasClaimComponent,
-        MtxDatetimepickerModule,
-        MtxMomentDatetimeModule,
-    ],
-    templateUrl: './calendar.component.html',
-    styleUrls: ['./calendar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-calendar',
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatCheckboxModule,
+    MatProgressBarModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    HasClaimComponent,
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<CalendarComponent>>(MatDialogRef<CalendarComponent>);
@@ -75,7 +71,6 @@ export class CalendarComponent implements OnInit {
   private readonly snack = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
   private readonly claimService = inject(ClaimService);
-  private _adapter = inject<DateAdapter<MomentDateAdapter>>(DateAdapter<MomentDateAdapter>);
 
   isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
 
@@ -998,9 +993,9 @@ export class CalendarComponent implements OnInit {
         });
 
         if (!event.allowCompetition) {
-          dayInfo.locations.map((l) => {
-            l.space = 0;
-          });
+          for (const location of dayInfo.locations) {
+            location.space = 0;
+          }
         }
       }
     }

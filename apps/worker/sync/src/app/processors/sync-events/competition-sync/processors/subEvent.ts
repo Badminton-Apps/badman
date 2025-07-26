@@ -44,7 +44,10 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     });
     const canChange = moment().isBefore(`${this.event.season}-09-01`);
 
-    const visualEvents = await this.visualService.getSubEvents(this.visualTournament.Code, !canChange);
+    const visualEvents = await this.visualService.getSubEvents(
+      this.visualTournament.Code,
+      !canChange,
+    );
     const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events
@@ -74,6 +77,13 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       }
 
       let type = this.getEventType(xmlEvent);
+      if (!type) {
+        this.logger.warn(`No event type found for ${xmlEvent.Name} (${xmlEvent.GenderID})`);
+        return {
+          stop: true,
+        } as any;
+      }
+
       if (!dbSubEvent) {
         if (this.event.type === LevelType.NATIONAL) {
           type = SubEventTypeEnum.MX;

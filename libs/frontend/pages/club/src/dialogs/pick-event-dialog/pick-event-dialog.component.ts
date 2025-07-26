@@ -7,7 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { SubEventType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { BehaviorSubject } from 'rxjs';
@@ -24,7 +24,7 @@ export interface PickEventDialogData {
     selector: 'badman-pick-event-dialog',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         MatDialogModule,
         MatProgressBarModule,
@@ -136,7 +136,7 @@ export class PickEventDialogComponent implements OnInit {
         variables: {
           where: {
             eventId: eventId,
-            type: this.data.type,
+            eventType: this.data.type,
           },
         },
       })

@@ -1,29 +1,36 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { ClubMembership } from '@badman/frontend-models';
+import { endOfSeason, getSeason, startOfSeason } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { Socket } from 'ngx-socket-io';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
-export interface TransferState {
-  transfers: ClubMembership[];
+export interface TransferLoanState {
+  transferAndLoans: ClubMembership[];
+  filtered: ClubMembership[];
   error: string | null;
   loaded: boolean;
+  season: number;
+  confirmed: boolean | null;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class TransferService {
+export class TransferLoanService {
   socket = inject(Socket);
   apollo = inject(Apollo);
 
-  initialState: TransferState = {
-    transfers: [],
+  initialState: TransferLoanState = {
+    transferAndLoans: [],
+    filtered: [],
     error: null,
     loaded: false,
+    season: getSeason(),
+    confirmed: null,
   };
 
   // selectors
@@ -32,9 +39,10 @@ export class TransferService {
   private error$ = new Subject<string | null>();
 
   sources$ = merge(
-    this._loadTransfersAndLoans().pipe(
-      map((transfers) => ({
-        transfers,
+    this._loadTransfersAndLoans(this.initialState.season).pipe(
+      map((transferAndLoans) => ({
+        transferAndLoans,
+        filtered: transferAndLoans,
         loaded: true,
       })),
     ),
@@ -50,7 +58,13 @@ export class TransferService {
           switchMap((event) => this._updateTransferOrLoan(event)),
           // load the default system
           switchMap(() =>
-            this._loadTransfersAndLoans().pipe(map((transfers) => ({ transfers, loading: false }))),
+            this._loadTransfersAndLoans(_state().season).pipe(
+              map((transferAndLoans) => ({
+                transferAndLoans,
+                filtered: transferAndLoans,
+                loading: false,
+              })),
+            ),
           ),
         ),
       deleteMembership: (_state, action$: Observable<Partial<ClubMembership>>) =>
@@ -58,19 +72,98 @@ export class TransferService {
           switchMap((event) => this._deleteTransferOrLoan(event)),
           // load the default system
           switchMap(() =>
-            this._loadTransfersAndLoans().pipe(map((transfers) => ({ transfers, loading: false }))),
+            this._loadTransfersAndLoans(_state().season).pipe(
+              map((transferAndLoans) => ({
+                transferAndLoans,
+                filtered: transferAndLoans,
+                loading: false,
+              })),
+            ),
           ),
         ),
       reload: (_state, action$: Observable<void>) =>
         action$.pipe(
           switchMap(() =>
-            this._loadTransfersAndLoans().pipe(map((transfers) => ({ transfers, loading: false }))),
+            this._loadTransfersAndLoans(_state().season).pipe(
+              map((transferAndLoans) => ({
+                transferAndLoans,
+                filtered: transferAndLoans,
+                loading: false,
+              })),
+            ),
           ),
+        ),
+
+      setSeason: (_state, action$: Observable<number>) =>
+        action$.pipe(
+          switchMap((season) =>
+            this._loadTransfersAndLoans(season, _state().confirmed).pipe(
+              map((transferAndLoans) => ({
+                transferAndLoans,
+                filtered: transferAndLoans,
+                season,
+                loading: false,
+              })),
+            ),
+          ),
+        ),
+      setConfirmed: (_state, action$: Observable<boolean | null>) =>
+        action$.pipe(
+          switchMap((confirmed) =>
+            this._loadTransfersAndLoans(_state().season, confirmed).pipe(
+              map((transferAndLoans) => ({
+                transferAndLoans,
+                filtered: transferAndLoans,
+                confirmed,
+                loading: false,
+              })),
+            ),
+          ),
+        ),
+      setFilter: (
+        _state,
+        action$: Observable<{
+          search: string;
+          newClubs: string[];
+          currentClubs: string[];
+        }>,
+      ) =>
+        action$.pipe(
+          map((filter) => {
+            const { search, newClubs, currentClubs } = filter;
+
+            let filtered = _state().transferAndLoans;
+
+            if (search.length > 0) {
+              filtered = filtered.filter((t) => {
+                return (
+                  t.player?.fullName?.toLowerCase().includes(search.toLowerCase()) ||
+                  t.club?.name?.toLowerCase().includes(search.toLowerCase())
+                );
+              });
+            }
+
+            if (newClubs?.length > 0) {
+              filtered = filtered.filter((t) => {
+                return t.club?.id && newClubs.includes(t.club.id);
+              });
+            }
+
+            if (currentClubs?.length > 0) {
+              filtered = filtered.filter((t) => {
+                return t.player?.clubs?.some((club) => currentClubs.includes(club.id));
+              });
+            }
+
+            return {
+              filtered,
+            };
+          }),
         ),
     },
   });
 
-  private _loadTransfersAndLoans() {
+  private _loadTransfersAndLoans(season: number, confirmed?: boolean | null) {
     return this.apollo
       .query<{
         clubPlayerMemberships: { rows: ClubMembership[] };
@@ -109,7 +202,11 @@ export class TransferService {
         `,
         variables: {
           where: {
-            confirmed: false,
+            confirmed: confirmed == null ? undefined : confirmed,
+            start: {
+              $gte: startOfSeason(season),
+              $lte: endOfSeason(season),
+            },
           },
         },
       })

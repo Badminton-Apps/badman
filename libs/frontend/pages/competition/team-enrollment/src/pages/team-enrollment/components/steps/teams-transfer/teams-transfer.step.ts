@@ -13,27 +13,27 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
 import { SubEventTypeEnum, sortTeams } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { pairwise, startWith, takeUntil } from 'rxjs';
-import { TEAMS } from '../../../../../forms';
+import { NATIONAL_COUNTS_AS_MIXED, TEAMS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { TeamForm } from '../../../team-enrollment.page';
 
 @Component({
-    selector: 'badman-teams-transfer-step',
-    imports: [
-        CommonModule,
-        MatCheckboxModule,
-        MatButtonModule,
-        MatListModule,
-        MatProgressBarModule,
-        FormsModule,
-        ReactiveFormsModule,
-        TranslateModule,
-    ],
-    templateUrl: './teams-transfer.step.html',
-    styleUrls: ['./teams-transfer.step.scss']
+  selector: 'badman-teams-transfer-step',
+  imports: [
+    CommonModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatListModule,
+    MatProgressBarModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslatePipe,
+  ],
+  templateUrl: './teams-transfer.step.html',
+  styleUrls: ['./teams-transfer.step.scss'],
 })
 export class TeamsTransferStepComponent {
   private readonly destroy$ = injectDestroy();
@@ -75,6 +75,9 @@ export class TeamsTransferStepComponent {
   );
   existingLinks = computed(() =>
     this.teamLastLinks().filter((link) => this.teamsCurrentLinks().includes(link)),
+  );
+  nationalCountsAsMixed = computed(
+    () => this.formGroup().get(NATIONAL_COUNTS_AS_MIXED) as FormControl<boolean>,
   );
 
   transferTeamsCtrl = new FormControl<string[]>([], { nonNullable: true });

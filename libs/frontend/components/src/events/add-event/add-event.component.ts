@@ -6,7 +6,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-add-event',
@@ -18,7 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
         MatButtonModule,
         MatInputModule,
         MatSlideToggleModule,
-        TranslateModule,
+        TranslatePipe,
     ],
     templateUrl: './add-event.component.html',
     styleUrls: ['./add-event.component.scss'],

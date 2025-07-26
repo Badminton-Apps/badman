@@ -21,7 +21,7 @@ const MODULE_ROUTES: Routes = [
   {
     path: 'assembly',
     loadChildren: () =>
-      import('@badman/frontend-team-assembly').then((module) => module.AssemblyModule),
+      import('@badman/frontend-team-assembly').then((m) => m.AssemblyModule),
   },
   {
     path: 'enrollment',
