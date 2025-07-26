@@ -4,9 +4,6 @@
   "dependencies": {
     "@badman/backend-authorization": "6.185.0",
     "@badman/utils": "6.185.0",
-    "@nestjs/common": "^10.3.1",
-    "nestjs-i18n": "^10.4.0",
-    "fastify": "^4.28.1",
     "tslib": "^2.8.1"
   },
   "type": "commonjs",

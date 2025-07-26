@@ -2,9 +2,7 @@
   "name": "@badman/frontend-queue",
   "version": "6.185.0",
   "peerDependencies": {
-    "@angular/core": "^19.0.5",
-    "@badman/frontend-models": "*",
-    "@angular/common": "^19.0.5"
+    "@badman/frontend-models": "*"
   },
   "dependencies": {},
   "sideEffects": false

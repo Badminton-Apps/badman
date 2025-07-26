@@ -1,11 +1,7 @@
 {
   "name": "@badman/frontend-vitals",
   "version": "6.185.0",
-  "peerDependencies": {
-    "@angular/common": "^19.0.5",
-    "@angular/core": "^19.0.5",
-    "web-vitals": "^4.1.1"
-  },
+  "peerDependencies": {},
   "dependencies": {},
   "sideEffects": false
 }

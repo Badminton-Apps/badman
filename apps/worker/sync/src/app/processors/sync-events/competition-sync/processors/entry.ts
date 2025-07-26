@@ -1,6 +1,6 @@
 import { Club, EventEntry, Team, Player } from '@badman/backend-database';
 import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { LevelType, runParallel, teamValues, startOfSeason } from '@badman/utils';
+import { LevelType, runParallel, teamValues } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import { isArray } from 'class-validator';
 import { Op, WhereOptions } from 'sequelize';

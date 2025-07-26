@@ -2,11 +2,7 @@
   "name": "@badman/frontend-twizzit",
   "version": "6.185.0",
   "peerDependencies": {
-    "@badman/frontend-models": "*",
-    "@angular/common": "^19.0.5",
-    "@angular/core": "^19.0.5",
-    "file-saver": "^2.0.5",
-    "rxjs": "~7.8.1"
+    "@badman/frontend-models": "*"
   },
   "dependencies": {},
   "sideEffects": false

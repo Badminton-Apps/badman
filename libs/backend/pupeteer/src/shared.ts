@@ -5,16 +5,16 @@ import { promises as fsPromises } from 'fs';
 // Single shared browser instance for all requests
 let sharedBrowser: Browser | null = null;
 let browserPromise: Promise<Browser> | null = null;
-let browserStartTime: number = 0;
+let browserStartTime = 0;
 const BROWSER_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
 const MAX_AGE = BROWSER_MAX_AGE_MS;
 const MAX_PAGES = 50;
 const MAX_INACTIVE = 15 * 60 * 1000; // 15 minutes
 
 // Track browser activity and requests
-let lastActivityTime: number = 0;
-let activeRequestCount: number = 0;
-let isRestarting: boolean = false; // Prevent multiple simultaneous restarts
+let lastActivityTime = 0;
+let activeRequestCount = 0;
+let isRestarting = false; // Prevent multiple simultaneous restarts
 
 // Function to decrement active request count
 export function decrementActiveRequestCount(): void {

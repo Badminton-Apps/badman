@@ -2,19 +2,8 @@
   "name": "@badman/frontend-auth",
   "version": "6.185.0",
   "peerDependencies": {
-    "@angular/common": "^19.0.5",
-    "@angular/core": "^19.0.5",
-    "@auth0/auth0-angular": "~2.2.3",
-    "@angular/router": "^19.0.5",
-    "@ngx-translate/core": "^16.0.4",
-    "rxjs": "~7.8.1",
     "@badman/frontend-models": "*",
-    "@badman/frontend-graphql": "*",
-    "@angular/material": "19.2.9",
-    "@auth0/auth0-spa-js": "2.2.0",
-    "apollo-angular": "^8.0.0",
-    "ngxtension": "^4.2.0",
-    "@angular/service-worker": "19.2.6"
+    "@badman/frontend-graphql": "*"
   },
   "dependencies": {},
   "sideEffects": false
