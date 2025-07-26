@@ -2,8 +2,6 @@
   "name": "@badman/utils",
   "version": "6.185.0",
   "dependencies": {
-    "joi": "^17.12.1",
-    "moment": "^2.30.1",
     "nestjs-i18n": "^10.4.0",
     "tslib": "^2.8.1"
   },
