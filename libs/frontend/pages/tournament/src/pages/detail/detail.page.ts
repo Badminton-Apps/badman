@@ -23,7 +23,7 @@ import { SubEventTournament } from '@badman/frontend-models';
 import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -40,7 +40,7 @@ import { Apollo, gql } from 'apollo-angular';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MomentModule,
     MatIconModule,
     MatMenuModule,
@@ -238,7 +238,15 @@ export class DetailPageComponent {
     this.detailService.state.reCalculatePoints();
   }
 
-  syncSubEvent() {
+  syncSubEvent(subEvent: SubEventTournament) {
+    console.log('Syncing sub-event', subEvent);
+    if (!subEvent.id) {
+      this.matSnackBar.open(`Tournament ${subEvent?.name} has no sub-event to sync.`, 'Close', {
+        duration: 2000,
+      });
+      return;
+    }
+
     this.apollo
       .mutate({
         mutation: gql`
@@ -247,7 +255,7 @@ export class DetailPageComponent {
           }
         `,
         variables: {
-          subEventId: this.eventTournament()?.id,
+          subEventId: subEvent?.id,
           options: {
             deleteSubEvent: true,
           },

@@ -27,7 +27,7 @@
         </mat-list-item>
       }
       @if (this.players && this.players.length > 0) {
-        @for (player of this.players; track player) {
+        @for (player of this.players; track player.id) {
           <div mat-list-item class="player">
             <span mat-line>
               {{ player?.player?.fullName }}

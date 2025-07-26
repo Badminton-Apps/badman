@@ -1,12 +1,14 @@
 {
   "name": "@badman/frontend-excel",
-  "version": "6.176.0",
+  "version": "6.185.0",
   "peerDependencies": {
     "@badman/frontend-models": "*",
     "@angular/core": "^19.0.5",
     "@angular/common": "^19.0.5",
+    "apollo-angular": "*",
     "file-saver": "^2.0.5",
-    "rxjs": "~7.8.1"
+    "rxjs": "~7.8.1",
+    "xlsx": "*"
   },
   "dependencies": {},
   "sideEffects": false

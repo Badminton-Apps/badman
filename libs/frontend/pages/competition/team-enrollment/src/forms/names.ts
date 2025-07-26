@@ -1,6 +1,7 @@
 export const CLUB = 'club';
 export const EMAIL = 'email';
 export const TEAMS = 'teams';
+export const NATIONAL_COUNTS_AS_MIXED = 'national-counts-as-mixed';
 export const TRANSFERS_LOANS = 'transfers-loans';
 export const EVENTS = 'events';
 export const LOCATIONS = 'locations';

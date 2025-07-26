@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
 import { PageHeaderComponent } from '@badman/frontend-components';
 import { CronJob } from '@badman/frontend-models';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { CronJobService } from '../../services/cronjob.service';
@@ -26,7 +26,7 @@ import { CronJobService } from '../../services/cronjob.service';
     imports: [
         CommonModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         FormsModule,
         MtxGrid,

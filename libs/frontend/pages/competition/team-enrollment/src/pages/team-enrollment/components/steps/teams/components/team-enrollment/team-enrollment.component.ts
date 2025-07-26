@@ -35,7 +35,7 @@ import {
   ValidationMessage,
 } from '@badman/frontend-models';
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 import { TeamForm } from '../../../../../team-enrollment.page';
 import { TeamComponent } from '../team';
@@ -55,7 +55,7 @@ import { getNewTypeAndLevel } from '../utils/get-next-level';
         FormsModule,
         TeamComponent,
         EnrollmentMessageComponent,
-        TranslateModule,
+        TranslatePipe,
     ],
     templateUrl: './team-enrollment.component.html',
     styleUrls: ['./team-enrollment.component.scss']
@@ -169,10 +169,7 @@ export class TeamEnrollmentComponent {
             this.subEvent().disable();
           }
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 

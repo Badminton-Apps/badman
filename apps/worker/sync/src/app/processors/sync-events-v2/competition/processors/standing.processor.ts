@@ -1,17 +1,16 @@
 import {
   DrawCompetition,
+  EncounterCompetition,
   EventEntry,
-  Game,
-  GamePlayerMembership,
-  Player,
   Standing,
+  Team,
 } from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { GameStatus } from '@badman/utils';
+import { runParallel, sortStanding } from '@badman/utils';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, JobId } from 'bull';
-import { Op, Transaction } from 'sequelize';
+import { Transaction } from 'sequelize';
 
 @Processor({
   name: SyncQueue,
@@ -32,18 +31,12 @@ export class DrawStandingCompetitionProcessor {
 
       // options
       options: {
+        // don't do this for now
         deleteStandings?: boolean;
       };
     }>,
   ): Promise<void> {
     this.logger.debug(`Processing draw standing for draw ${job.data.drawId}`);
-    // check evey 3 seconds if the game jobs are finished
-    while (
-      !(await this._transactionManager.jobsFinished(job.data.transactionId, job.data.gameJobIds))
-    ) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
-    this.logger.debug(`All game job finished`);
 
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
 
@@ -53,152 +46,179 @@ export class DrawStandingCompetitionProcessor {
         where: {
           id: job.data.drawId,
         },
-        transaction,
+        include: [
+          {
+            model: EncounterCompetition,
+            required: false,
+          },
+        ],
       });
     }
-    const games = await draw.getGames({
-      transaction,
-      include: [
-        {
-          model: Player,
-        },
-      ],
-    });
 
-    await this.destroyExisting(draw, transaction);
-    const standings = await this.createEntriesAndStanding(draw, games, transaction);
-    await this.calculateStandings(games, standings, draw, transaction);
+    await this._processEncounters(draw, transaction);
+
+
+    this.logger.debug(`Finished processing draw standing for draw ${job.data.drawId}`);
   }
 
-  private async calculateStandings(games: Game[], standings: Map<string, Standing>, draw: DrawCompetition, transaction: Transaction) {
-    for (const game of games) {
-      if (game.status == GameStatus.WALKOVER || game.status == GameStatus.NO_MATCH) {
+  private async _processEncounters(draw: DrawCompetition, transaction: Transaction) {
+    if (draw.encounterCompetitions.length === 0) {
+      return;
+    }
+
+    const teams = await this._getTeams(draw, draw.encounterCompetitions, transaction);
+    const standings = await this._getStanding(draw, teams, transaction);
+
+    for (const standing of standings.values()) {
+      // Restart the counts.
+      standing.restartCount();
+    }
+
+    for (const encounter of draw.encounterCompetitions) {
+      if (!encounter.homeTeamId || !encounter.awayTeamId) {
         continue;
       }
 
-      const playert1p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
-      );
+      const homeTeam = teams.find((t) => t.id === encounter.homeTeamId);
+      const awayTeam = teams.find((t) => t.id === encounter.awayTeamId);
 
-      const playert2p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
-      );
-
-      if (!playert1p1 || !playert2p1) {
-        this.logger.error(`Could not find players for game ${game.id}`);
+      if (!homeTeam || !awayTeam) {
         continue;
       }
 
-      const t1Standing = standings.get(`${playert1p1?.id}`);
-      const t2Standing = standings.get(`${playert2p1?.id}`);
+      const homeStanding = standings.get(homeTeam.id);
+      const awayStanding = standings.get(awayTeam.id);
 
-      if (!t1Standing || !t2Standing) {
-        this.logger.error(`Could not find standings for game ${game.id}`);
+      // Skip if game isn't played yet
+      if ((encounter.homeScore ?? 0) == 0 && (encounter.awayScore ?? 0) == 0) {
+        continue;
+      }
+
+      if (!homeStanding || !awayStanding) {
         continue;
       }
 
       // We played 1 encounter
-      t1Standing.played++;
-      t2Standing.played++;
+      homeStanding.played = (homeStanding.played ?? 0) + 1;
+      awayStanding.played = (awayStanding.played ?? 0) + 1;
 
-      if (game.winner == 1) {
-        t1Standing.gamesWon++;
-        t2Standing.gamesLost++;
+      if (encounter.homeScore > encounter.awayScore) {
+        homeStanding.won++;
+        awayStanding.lost++;
 
-        t1Standing.points += 1;
-      } else if (game.winner == 2) {
-        t2Standing.gamesWon++;
-        t1Standing.gamesLost++;
+        // 2 points won
+        homeStanding.points += 2;
+      } else if (encounter.homeScore < encounter.awayScore) {
+        homeStanding.lost++;
+        awayStanding.won++;
 
-        t2Standing.points += 1;
+        // 2 points won
+        awayStanding.points += 2;
       } else {
-        this.logger.warn('Game is not finished yet');
+        homeStanding.tied++;
+        awayStanding.tied++;
+
+        // 1 point for a draw
+        homeStanding.points++;
+        awayStanding.points++;
       }
 
-      if ((game.set1Team1 ?? 0) > (game.set1Team2 ?? 0)) {
-        t1Standing.setsWon++;
-        t2Standing.setsLost++;
+      const encounterGames = await encounter.getGames();
+      for (const game of encounterGames ?? []) {
+        if (game.winner == 1) {
+          homeStanding.gamesWon++;
+          awayStanding.gamesLost++;
+        } else {
+          awayStanding.gamesWon++;
+          homeStanding.gamesLost++;
+        }
 
-        t1Standing.totalPointsWon += game.set1Team1 ?? 0;
-        t1Standing.totalPointsLost += game.set1Team2 ?? 0;
+        if ((game.set1Team1 ?? 0) > (game.set1Team2 ?? 0)) {
+          homeStanding.setsWon++;
+          awayStanding.setsLost++;
 
-        t2Standing.totalPointsLost += game.set1Team1 ?? 0;
-        t2Standing.totalPointsWon += game.set1Team2 ?? 0;
-      } else if ((game.set1Team1 ?? 0) < (game.set1Team2 ?? 0)) {
-        t1Standing.setsLost++;
-        t2Standing.setsWon++;
+          homeStanding.totalPointsWon += game.set1Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set1Team2 ?? 0;
 
-        t2Standing.totalPointsWon += game.set1Team2 ?? 0;
-        t2Standing.totalPointsLost += game.set1Team1 ?? 0;
+          awayStanding.totalPointsLost += game.set1Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set1Team2 ?? 0;
+        } else if ((game.set1Team1 ?? 0) < (game.set1Team2 ?? 0)) {
+          homeStanding.setsLost++;
+          awayStanding.setsWon++;
 
-        t1Standing.totalPointsLost += game.set1Team2 ?? 0;
-        t1Standing.totalPointsWon += game.set1Team1 ?? 0;
-      }
+          homeStanding.totalPointsWon += game.set1Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set1Team2 ?? 0;
 
-      if ((game.set2Team1 ?? 0) > (game.set2Team2 ?? 0)) {
-        t1Standing.setsWon++;
-        t2Standing.setsLost++;
+          awayStanding.totalPointsLost += game.set1Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set1Team2 ?? 0;
+        }
 
-        t1Standing.totalPointsWon += game.set2Team1 ?? 0;
-        t1Standing.totalPointsLost += game.set2Team2 ?? 0;
+        if ((game.set2Team1 ?? 0) > (game.set2Team2 ?? 0)) {
+          homeStanding.setsWon++;
+          awayStanding.setsLost++;
 
-        t2Standing.totalPointsLost += game.set2Team1 ?? 0;
-        t2Standing.totalPointsWon += game.set2Team2 ?? 0;
-      } else if ((game.set2Team1 ?? 0) < (game.set2Team2 ?? 0)) {
-        t1Standing.setsLost++;
-        t2Standing.setsWon++;
+          homeStanding.totalPointsWon += game.set2Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set2Team2 ?? 0;
 
-        t2Standing.totalPointsWon += game.set2Team2 ?? 0;
-        t2Standing.totalPointsLost += game.set2Team1 ?? 0;
+          awayStanding.totalPointsLost += game.set2Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set2Team2 ?? 0;
+        } else if ((game.set2Team1 ?? 0) < (game.set2Team2 ?? 0)) {
+          homeStanding.setsLost++;
+          awayStanding.setsWon++;
 
-        t1Standing.totalPointsLost += game.set2Team2 ?? 0;
-        t1Standing.totalPointsWon += game.set2Team1 ?? 0;
-      }
+          homeStanding.totalPointsWon += game.set2Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set2Team2 ?? 0;
 
-      if ((game.set3Team1 ?? 0) !== 0 && (game.set3Team2 ?? 0) !== 0) {
-        if ((game.set3Team1 ?? 0) > (game.set3Team2 ?? 0)) {
-          t1Standing.setsWon++;
-          t2Standing.setsLost++;
+          awayStanding.totalPointsLost += game.set2Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set2Team2 ?? 0;
+        }
 
-          t1Standing.totalPointsWon += game.set3Team1 ?? 0;
-          t1Standing.totalPointsLost += game.set3Team2 ?? 0;
+        if ((game.set3Team1 ?? 0) !== 0 && (game.set3Team2 ?? 0) !== 0) {
+          if ((game.set3Team1 ?? 0) > (game.set3Team2 ?? 0)) {
+            homeStanding.setsWon++;
+            awayStanding.setsLost++;
 
-          t2Standing.totalPointsLost += game.set3Team1 ?? 0;
-          t2Standing.totalPointsWon += game.set3Team2 ?? 0;
-        } else if ((game.set3Team1 ?? 0) < (game.set3Team2 ?? 0)) {
-          t1Standing.setsLost++;
-          t2Standing.setsWon++;
+            homeStanding.totalPointsWon += game.set3Team1 ?? 0;
+            homeStanding.totalPointsLost += game.set3Team2 ?? 0;
 
-          t2Standing.totalPointsWon += game.set3Team2 ?? 0;
-          t2Standing.totalPointsLost += game.set3Team1 ?? 0;
+            awayStanding.totalPointsLost += game.set3Team1 ?? 0;
+            awayStanding.totalPointsWon += game.set3Team2 ?? 0;
+          } else if ((game.set3Team1 ?? 0) < (game.set3Team2 ?? 0)) {
+            homeStanding.setsLost++;
+            awayStanding.setsWon++;
 
-          t1Standing.totalPointsLost += game.set3Team2 ?? 0;
-          t1Standing.totalPointsWon += game.set3Team1 ?? 0;
+            homeStanding.totalPointsWon += game.set3Team1 ?? 0;
+            homeStanding.totalPointsLost += game.set3Team2 ?? 0;
+
+            awayStanding.totalPointsLost += game.set3Team1 ?? 0;
+            awayStanding.totalPointsWon += game.set3Team2 ?? 0;
+          }
         }
       }
     }
 
-    let position = 1;
+    this.logger.debug(`Calculating ${standings.size} standings`);
 
-    if (standings.size > 0) {
-      let sorted = [...standings.values()]?.sort(this.sortStandings())?.map((acc) => {
+    if (standings.size) {
+      let position = 1;
+      const sorted = [...standings.values()]?.sort(sortStanding)?.map((acc) => {
         acc.position = position;
         acc.size = standings.size;
 
+        acc.riser = false;
+        acc.faller = false;
+
         // Calculate if the team is promoted or relegated based on the position and the draw's amount of risers/fallers
-        if (draw.risers > 0 && position <= draw.risers) {
+        if (position <= (draw.risers ?? 0)) {
           acc.riser = true;
-          acc.faller = false;
-        } else if (draw.fallers > 0 && standings.size - position < draw.fallers) {
-          acc.riser = false;
+        } else if (position > standings.size - (draw.fallers ?? 0)) {
           acc.faller = true;
         }
 
+        // Finally increment the position
         position++;
         return acc;
       });
-
-      sorted = sorted.filter((a, i) => sorted.findIndex((s) => a.id === s.id) === i);
 
       await Standing.bulkCreate(
         sorted?.map((e) => e.toJSON()),
@@ -206,6 +226,7 @@ export class DrawStandingCompetitionProcessor {
           transaction,
           updateOnDuplicate: [
             'position',
+            'size',
             'played',
             'won',
             'lost',
@@ -217,143 +238,108 @@ export class DrawStandingCompetitionProcessor {
             'setsLost',
             'totalPointsWon',
             'totalPointsLost',
+            'riser',
+            'faller',
           ],
-        }
+        },
       );
     }
   }
 
-  private async createEntriesAndStanding(
+  private async _getTeams(
     draw: DrawCompetition,
-    games: Game[],
+    encounters: EncounterCompetition[],
     transaction: Transaction,
   ) {
-    const processed = new Set<string>();
-    const standings = new Map<string, Standing>();
+    const teams = new Map<string, Team>();
 
-    // creat a entry for each game
-    for (const game of games) {
-      const team1p1 = game?.players?.find(
-        (player) =>
-          player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 1,
-      )?.id;
+    await runParallel(
+      encounters.map(async (e) => {
+        try {
+          if (!e.homeTeamId || !e.awayTeamId) {
+            return;
+          }
 
-      const team1p2 = game?.players?.find(
-        (player) =>
-          player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 2,
-      )?.id;
+          if (!teams.has(e.homeTeamId) && e.homeTeamId) {
+            const homeTeam = await e.getHome({
+              transaction,
+              include: [
+                {
+                  model: EventEntry,
+                  required: false,
+                  where: { subEventId: draw.subeventId },
+                },
+              ],
+            });
+            teams.set(homeTeam.id, homeTeam);
+          }
 
-      if (team1p1 && !processed.has(team1p1)) {
-        const entryTeam1 = new EventEntry({
+          if (!teams.has(e.awayTeamId) && e.awayTeamId) {
+            const awayTeam = await e.getAway({
+              transaction,
+              include: [
+                {
+                  model: EventEntry,
+                  required: false,
+                  where: { subEventId: draw.subeventId },
+                },
+              ],
+            });
+            teams.set(awayTeam.id, awayTeam);
+          }
+        } catch (error) {
+          this.logger.error(`Error fetching teams for encounter ${e.id}`, error);
+          throw error;
+        }
+      }),
+    );
+    return [...teams.values()];
+  }
+
+  private async _getStanding(draw: DrawCompetition, teams: Team[], transaction: Transaction) {
+    const teamStandings = new Map<string, Standing>();
+
+    await runParallel(
+      teams.map(async (team) => {
+        teamStandings.set(team.id, await this._standingTeam(draw, team, transaction));
+      }),
+    );
+
+    return teamStandings;
+  }
+
+  private async _standingTeam(draw: DrawCompetition, team: Team, transaction: Transaction) {
+    let entryDraw = team.entry;
+
+    try {
+      if (!entryDraw) {
+        this.logger.warn(`No entries found`);
+        entryDraw = await new EventEntry({
           subEventId: draw.subeventId,
-          entryType: 'tournament',
+          entryType: 'competition',
           drawId: draw.id,
-          player1Id: team1p1,
-          player2Id: team1p2,
-        });
-
-        const standingTeam1 = new Standing({
-          entryId: entryTeam1.id,
-        });
-
-        await entryTeam1.save({ transaction });
-        await standingTeam1.save({ transaction });
-
-        processed.add(team1p1);
-        processed.add(team1p2);
-
-        standings.set(team1p1, standingTeam1);
+          teamId: team.id,
+          meta: undefined,
+        }).save({ transaction });
       }
 
-      const team2p1 = game?.players?.find(
-        (player) =>
-          player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 1,
-      )?.id;
+      entryDraw.entryType = 'competition';
+      entryDraw.drawId = draw.id;
 
-      const team2p2 = game?.players?.find(
-        (player) =>
-          player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 2,
-      )?.id;
-
-      if (team2p1 && !processed.has(team2p1)) {
-        const entryTeam2 = new EventEntry({
-          subEventId: draw.subeventId,
-          entryType: 'tournament',
-          drawId: draw.id,
-          player1Id: team2p1,
-          player2Id: team2p2,
-        });
-
-        const standingTeam2 = new Standing({
-          entryId: entryTeam2.id,
-        });
-
-        await entryTeam2.save({ transaction });
-        await standingTeam2.save({ transaction });
-
-        processed.add(team2p1);
-        processed.add(team2p2);
-
-        standings.set(team2p1, standingTeam2);
-      }
+      await entryDraw.save({ transaction });
+    } catch (error) {
+      this.logger.error(`Error fetching entry    for team ${team.id}`, error);
+      throw error;
     }
 
-    return standings;
-  }
+    let teamStanding = await entryDraw?.getStanding({ transaction });
 
-  private async destroyExisting(draw: DrawCompetition, transaction) {
-    const entries = await EventEntry.findAll({
-      where: {
-        drawId: draw.id,
-      },
-    });
+    if (!teamStanding) {
+      teamStanding = await new Standing({
+        entryId: entryDraw.id,
+      }).save({ transaction });
+    }
 
-    // destroy all standing
-    await Standing.destroy({
-      where: {
-        entryId: {
-          [Op.in]: entries.map((entry) => entry.id),
-        },
-      },
-      transaction,
-    });
-
-    // destroy entries
-    await EventEntry.destroy({
-      where: {
-        drawId: draw.id,
-      },
-      transaction,
-    });
-  }
-
-  private sortStandings(): (a: Standing, b: Standing) => number {
-    return (a, b) => {
-      if (a.points > b.points) {
-        return -1;
-      } else if (a.points < b.points) {
-        return 1;
-      }
-
-      if (a.gamesWon > b.gamesWon) {
-        return -1;
-      } else if (a.gamesWon < b.gamesWon) {
-        return 1;
-      }
-
-      if (a.setsWon > b.setsWon) {
-        return -1;
-      } else if (a.setsWon < b.setsWon) {
-        return 1;
-      }
-
-      if (a.totalPointsWon > b.totalPointsWon) {
-        return -1;
-      } else if (a.totalPointsWon < b.totalPointsWon) {
-        return 1;
-      }
-
-      return 0;
-    };
+    return teamStanding;
   }
 }

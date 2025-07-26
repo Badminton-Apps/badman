@@ -5,7 +5,6 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Claim, Club, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, lastValueFrom } from 'rxjs';
 import { groupBy, map, mergeMap, toArray } from 'rxjs/operators';
@@ -13,9 +12,9 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { RoleFieldsComponent } from '../../components';
 
 @Component({
-    templateUrl: './edit.page.html',
-    styleUrls: ['./edit.page.scss'],
-    imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, RoleFieldsComponent]
+  templateUrl: './edit.page.html',
+  styleUrls: ['./edit.page.scss'],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, RoleFieldsComponent],
 })
 export class EditPageComponent implements OnInit {
   private apollo = inject(Apollo);

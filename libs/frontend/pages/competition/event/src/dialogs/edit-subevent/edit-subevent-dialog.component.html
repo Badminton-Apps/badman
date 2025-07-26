@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>{{ 'all.competition.subevent.edit.title' | translate }}</h2>
+
+<mat-dialog-content>
+  <badman-event-competition-level-fields
+    [formGroup]="this.form"
+    [canDelete]="false"
+    [type]="this.data.subEvent.eventCompetition?.type"
+    [direction]="'column'"
+  ></badman-event-competition-level-fields>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()" [disabled]="loading">
+    {{ 'all.button.cancel' | translate }}
+  </button>
+  <button mat-raised-button color="primary" (click)="save()" [disabled]="loading || form.invalid">
+    {{ 'all.button.save' | translate }}
+  </button>
+</mat-dialog-actions>

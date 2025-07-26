@@ -30,6 +30,7 @@ export type I18nTranslations = {
             "open-in-new-tab": string;
             "prev": string;
             "re-sync": string;
+            "re-sync-standings": string;
             "save": string;
             "save-and-continue": string;
             "set-primary": string;
@@ -213,6 +214,10 @@ export type I18nTranslations = {
                 "dates": string;
                 "download-base-players": string;
                 "download-cp": string;
+                "download-teams": string;
+                "download-exceptions": string;
+                "download-locations": string;
+                "export-planner": string;
                 "make-official": string;
                 "new-date": string;
                 "open_close_change-encounters": string;
@@ -360,6 +365,7 @@ export type I18nTranslations = {
                     "courts-hint": string;
                     "title": string;
                 };
+                "mixed-national-teams": string;
                 "open": string;
                 "play-days": string;
                 "players": {
@@ -395,10 +401,12 @@ export type I18nTranslations = {
                 "transfer": {
                     "add-transfer": string;
                     "enrolled-as": string;
+                    "loans": string;
                     "transfer-locked": string;
                     "transfer-player": string;
                     "transfer-teams": string;
                     "transfer-teams-description": string;
+                    "transfers": string;
                     "transfers-players": string;
                 };
                 "validations": string;
@@ -1345,6 +1353,7 @@ export type I18nTranslations = {
         };
         "tournament": {
             "away": string;
+            "closeDate": string;
             "delete": {
                 "description": string;
                 "title": string;
@@ -1359,13 +1368,17 @@ export type I18nTranslations = {
                 "open": string;
                 "title": string;
             };
+            "firstDay": string;
             "home": string;
             "last-updated": string;
             "load-more": string;
             "menu": {
                 "add-event": string;
             };
+            "name": string;
             "note": string;
+            "official": string;
+            "openDate": string;
             "overview": {
                 "date": string;
                 "menu": {
@@ -1386,7 +1399,9 @@ export type I18nTranslations = {
                 "min-base": string;
             };
             "title": string;
+            "tournamentNumber": string;
             "type": string;
+            "visualCode": string;
             "vs": string;
             "vs-short": string;
         };
@@ -1399,6 +1414,7 @@ export type I18nTranslations = {
             "filter": {
                 "current-club": string;
                 "new-club": string;
+                "only-confirmed": string;
                 "player": string;
             };
             "title": string;
