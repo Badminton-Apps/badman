@@ -4,7 +4,11 @@
   "dependencies": {
     "@badman/backend-database": "6.185.0",
     "@badman/utils": "6.185.0",
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/graphql": "^12.2.2",
+    "sequelize": "^6.37.5"
   },
   "type": "commonjs",
   "main": "./src/index.js",

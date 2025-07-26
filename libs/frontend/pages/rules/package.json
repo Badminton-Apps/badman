@@ -5,7 +5,17 @@
     "@badman/frontend-auth": "*",
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
-    "@badman/frontend-queue": "*"
+    "@badman/frontend-queue": "*",
+    "@angular/core": "19.2.6",
+    "@angular/material": "19.2.9",
+    "@ng-matero/extensions": "~19.0.3",
+    "@ngx-translate/core": "^16.0.4",
+    "@angular/common": "19.2.6",
+    "@angular/router": "19.2.6",
+    "apollo-angular": "^8.0.2",
+    "ngx-socket-io": "~4.8.4",
+    "ngxtension": "^4.3.2",
+    "rxjs": "~7.8.1"
   },
   "dependencies": {},
   "sideEffects": false
