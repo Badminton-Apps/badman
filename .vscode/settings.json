@@ -7,5 +7,6 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "badman",
     "projectKey": "Badminton-Apps_badman"
-  }
+  },
+  "nxConsole.generateAiAgentRules": true
 }

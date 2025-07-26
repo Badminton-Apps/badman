@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { Team } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { LoadingBlockComponent } from '../../loading-block';
 import { UpcommingGamesService } from './upcomming-games.service';
@@ -14,7 +14,7 @@ import { UpcommingGamesService } from './upcomming-games.service';
     CommonModule,
     MatListModule,
     MomentModule,
-    TranslateModule,
+    TranslatePipe,
     MatButtonModule,
     RouterModule,
     LoadingBlockComponent,

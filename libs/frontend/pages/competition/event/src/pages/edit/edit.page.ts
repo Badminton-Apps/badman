@@ -27,7 +27,7 @@ import {
 import { EventCompetition, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { LevelType, SecurityType } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
@@ -42,7 +42,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { EVENT_QUERY } from '../../resolvers';
+import { EVENT_QUERY } from '../../queries';
 import { EventCompetitionLevelFieldsComponent } from './components';
 
 export type ExceptionType = FormGroup<{
@@ -73,7 +73,7 @@ const roleQuery = gql`
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatIconModule,
     MatMenuModule,
     MatButtonModule,

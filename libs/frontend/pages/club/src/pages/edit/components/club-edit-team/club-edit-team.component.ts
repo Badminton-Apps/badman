@@ -25,7 +25,7 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { PickEventDialogComponent } from '../../../../dialogs';
 
 @Component({
@@ -36,7 +36,7 @@ import { PickEventDialogComponent } from '../../../../dialogs';
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        TranslateModule,
+        TranslatePipe,
         MatListModule,
         MatIconModule,
         MatButtonModule,
@@ -92,6 +92,7 @@ export class ClubEditTeamComponent implements OnInit {
           season: this.team().season,
           eventId: this.subEvent?.eventCompetition?.id,
           subEventId: this.subEvent?.id,
+          type: this.team()?.type,
         },
       })
       .afterClosed()

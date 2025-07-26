@@ -23,6 +23,7 @@
     "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Vorige",
     "re-sync": "Herbereken punten",
+    "re-sync-standings": "Herbereken standen",
     "save": "Opslaan",
     "save-and-continue": "Opslaan en verdergaan",
     "set-primary": "Maak primair",
@@ -205,6 +206,10 @@
       "dates": "Wijzig datums",
       "download-base-players": "Download basis spelers",
       "download-cp": "Download cp file",
+      "download-teams": "Download ploegen",
+      "download-exceptions": "Download uitzonderingen",
+      "download-locations": "Download locaties",
+      "export-planner": "Export planner (json)",
       "make-official": "Maak officieel toernooi",
       "new-date": "Nieuwe datum",
       "open_close_change-encounters": "Open/sluit verplaatsen ontmoetingen",
@@ -329,7 +334,7 @@
         "riser": "Het team moet promoveren, maar staat niet in een hogere afdeling ingeschreven.",
         "team-index": "Sterkste opstelling opstellen is niet mogelijk. De ploegindex is <strong>{teamIndex}</strong> en de index van de basisploeg is <strong>{baseIndex}</strong>.",
         "team-order": "Team <strong>{team.name}</strong> zit in een lagere afdeling maar heeft een lager teamnummer",
-        "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere ploegindex in dezelfde afdeling, maar heeft een lager teamnummer",
+        "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een zwakkere ploegindex in dezelfde afdeling, maar heeft een lager teamnummer",
         "team-to-strong": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen",
         "team-to-week": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet boven de grens van de afdeling <strong>{maxIndex}</strong> komen",
         "title": "Fouten",
@@ -352,6 +357,7 @@
         "courts-hint": "Wijzig het aantal beschikbare velden",
         "title": "Locaties"
       },
+      "mixed-national-teams": "De nationale ploegen worden meegeteld bij de nummering van de gemengde ploegen. (Voorbeeld, je hebt 3 ploegen: Aangevinkt: Nationale 1, Nationale 2, Ploeg 3G’. Uitgevinkt: ‘Nationale 1, Nationale 2, Ploeg 1G’)",
       "open": "Open",
       "play-days": "Speeldagen",
       "players": {
@@ -387,10 +393,12 @@
       "transfer": {
         "add-transfer": "Nieuwe transfer",
         "enrolled-as": "ingeschreven als",
+        "loans": "Uitleningen",
         "transfer-locked": "Transfer is al bevestigd, deze verwijderen is niet meer mogelijk",
         "transfer-player": "Getransfereerde speler",
         "transfer-teams": "Zet teams over (optioneel)",
         "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nDe volgorde waarin je je ploegen aanvinkt zal de volgorde bepalen (\"alles\" vinkt het in de juiste volgorde aan)\n\nJe kan de teamnummers in volgende stap nog wijzigen.",
+        "transfers": "Transfers",
         "transfers-players": "Transfers en uitleningen"
       },
       "validations": "Validaties",
@@ -1049,6 +1057,7 @@
   },
   "tournament": {
     "away": "UIt",
+    "closeDate": "Sluiting inschrijvingen",
     "delete": {
       "description": "Weet je zeker dat je dit toernooi wilt verwijderen?",
       "title": "Verwijder toernooi"
@@ -1063,13 +1072,17 @@
       "open": "Open",
       "title": "Inschrijvingen"
     },
+    "firstDay": "Eerste Dag",
     "home": "Thuis",
     "last-updated": "Gewijzigd op",
     "load-more": "Meer laden",
     "menu": {
       "add-event": "Add event"
     },
+    "name": "Toernooi",
     "note": "opmerking: wijzigingen worden onmiddelijk opgeslagen",
+    "official": "Official",
+    "openDate": "Opening inschrijvingen",
     "overview": {
       "date": "Datum",
       "menu": {
@@ -1090,7 +1103,9 @@
       "min-base": "Min basis ploegindex"
     },
     "title": "Toernooi",
+    "tournamentNumber": "Toernooi nummer",
     "type": "Type",
+    "visualCode": "Toernooi.nl Code",
     "vs": "tegen",
     "vs-short": "vs"
   },
@@ -1103,6 +1118,7 @@
     "filter": {
       "current-club": "Huidige club",
       "new-club": "Nieuwe club",
+      "only-confirmed": "Bevestigd",
       "player": "Speler"
     },
     "title": "Transfers / uitleningen",
@@ -1112,7 +1128,7 @@
       "file-type": "Transfer of uitlening file",
       "hint": "Sleep je file hier",
       "loan-file": "Uitlening file",
-      "title": "Upload transfer / uitlening file",
+      "title": "Upload transfer / uitlening file voor {season}",
       "transfer-file": "Transfer file",
       "unkown": "Onbekend"
     }

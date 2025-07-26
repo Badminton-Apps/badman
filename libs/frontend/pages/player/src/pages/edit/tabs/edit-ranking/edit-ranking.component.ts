@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { InMemoryCache } from '@apollo/client/core';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
@@ -26,7 +26,7 @@ import { map, mergeMap } from 'rxjs/operators';
         CommonModule,
         ReactiveFormsModule,
         FormsModule,
-        TranslateModule,
+        TranslatePipe,
         FormsModule,
         MatInputModule,
         MatButtonModule,

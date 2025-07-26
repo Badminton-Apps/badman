@@ -114,12 +114,11 @@ export class EventTournamentProcessor {
     }
 
     if (!event) {
-      event = new EventTournament();
+      event = new EventTournament({
+        id: tournamentid ? tournamentid : undefined,
+      });
     }
 
-    if (tournamentid) {
-      event.id = tournamentid;
-    }
 
     event.name = visualTournament.Name;
     event.firstDay = visualTournament.StartDate;

@@ -8,7 +8,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { HasClaimComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -20,12 +19,21 @@ import {
   getNextSeason,
   startOfSeason,
 } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
-import { delay, forkJoin, lastValueFrom, of, switchMap } from 'rxjs';
+import { forkJoin, lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { CLUB, COMMENTS, EMAIL, LOCATIONS, SEASON, TEAMS, TRANSFERS_LOANS } from '../../forms';
+import {
+  CLUB,
+  COMMENTS,
+  EMAIL,
+  LOCATIONS,
+  NATIONAL_COUNTS_AS_MIXED,
+  SEASON,
+  TEAMS,
+  TRANSFERS_LOANS,
+} from '../../forms';
 import {
   ClubStepComponent,
   CommentsStepComponent,
@@ -73,7 +81,7 @@ export type TeamForm = FormGroup<{
     ReactiveFormsModule,
     TeamsStepComponent,
     TeamsTransferStepComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class TeamEnrollmentComponent implements OnInit, OnDestroy {
@@ -90,6 +98,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
 
   clubControl = new FormControl(undefined, [Validators.required]);
   emailControl = new FormControl(undefined, [Validators.required]);
+  nationalCountsAsMixedControl = new FormControl(true, [Validators.required]);
 
   locationControl = new FormArray<LocationForm>([], [Validators.required]);
 
@@ -137,6 +146,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     [TEAMS]: this.teamControl,
 
     [COMMENTS]: this.commentsControl,
+    [NATIONAL_COUNTS_AS_MIXED]: this.nationalCountsAsMixedControl,
   });
 
   allLoaded = this.dataService.state.allLoaded;
@@ -182,112 +192,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     const observables = [];
 
     if (includeTeams) {
-      await lastValueFrom(
-        // delete all teams from the backend
-        this.apollo.mutate({
-          mutation: gql`
-            mutation DeleteTeams($clubId: ID!, $season: Int!) {
-              deleteTeams(clubId: $clubId, season: $season)
-            }
-          `,
-          variables: {
-            clubId: this.formGroup.value.club,
-            season: this.formGroup.value.season,
-          },
-        }),
-      );
-
-      // save the teams to the backend
-      for (const enrollment of [
-        ...this.formGroup.getRawValue().teams.M,
-        ...this.formGroup.getRawValue().teams.F,
-        ...this.formGroup.getRawValue().teams.MX,
-        ...this.formGroup.getRawValue().teams.NATIONAL,
-      ]) {
-        if (!enrollment?.team?.id) {
-          continue;
-        }
-
-        const players =
-          enrollment?.team?.players?.map((player: Partial<TeamPlayer>) => {
-            return {
-              id: player.id,
-              membershipType: player.teamMembership?.membershipType,
-            };
-          }) ?? [];
-
-        const meta = {
-          players: enrollment?.entry?.players?.map(
-            (
-              player: Partial<Player> & {
-                single: number;
-                double: number;
-                mix: number;
-                levelExceptionRequested: boolean;
-                levelExceptionReason: string;
-              },
-            ) => ({
-              id: player?.id,
-              gender: player?.gender,
-              single: player?.single,
-              double: player?.double,
-              mix: player?.mix,
-              levelExceptionRequested: player?.levelExceptionRequested,
-              levelExceptionReason:
-                // avoid sending empty strings
-                (player?.levelExceptionReason?.length ?? 0) > 0
-                  ? player?.levelExceptionReason
-                  : undefined,
-            }),
-          ),
-        };
-
-        const data = {
-          // id: enrollment?.team?.id,
-          name: enrollment?.team?.name,
-          teamNumber: enrollment?.team?.teamNumber,
-          type: enrollment?.team?.type,
-          clubId: this.formGroup.value.club,
-          link: enrollment?.team?.link,
-          season: this.formGroup.value.season,
-          preferredDay: enrollment?.team?.preferredDay,
-          preferredTime: enrollment?.team?.preferredTime,
-          prefferedLocationId: enrollment?.team?.prefferedLocationId,
-          captainId: enrollment?.team?.captainId,
-          phone: enrollment?.team?.phone,
-          email: enrollment?.team?.email,
-          players,
-          entry: {
-            subEventId: enrollment?.entry?.subEventId,
-            meta: {
-              competition: {
-                players: meta.players,
-              },
-            },
-          },
-        };
-
-        observables.push(
-          of(data).pipe(
-            // we need to delay the request to help
-            delay(Math.random() * 1000),
-            switchMap(() =>
-              this.apollo.mutate({
-                mutation: gql`
-                  mutation CreateTeam($team: TeamNewInput!) {
-                    createTeam(data: $team) {
-                      id
-                    }
-                  }
-                `,
-                variables: {
-                  team: data,
-                },
-              }),
-            ),
-          ),
-        );
-      }
+      observables.push(this.saveTeams());
     }
 
     const comments = this.formGroup.get(COMMENTS)?.value as {
@@ -484,7 +389,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         panelClass: 'success',
       });
 
-      this.vert_stepper().next();
+      this.nextStep();
     } catch (error) {
       this.snackBar.open(
         this.translate.instant('all.competition.team-enrollment.saved-failed'),
@@ -540,5 +445,114 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     } finally {
       this.saving = false;
     }
+  }
+
+  nextStep() {
+    const selectedStep = this.vert_stepper().selected;
+    if (selectedStep) {
+      selectedStep.completed = true;
+    }
+
+    this.vert_stepper().next();
+  }
+
+  private async saveTeams() {
+    // Step 1: Delete all existing teams
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation DeleteTeams($clubId: ID!, $season: Int!) {
+            deleteTeams(clubId: $clubId, season: $season)
+          }
+        `,
+        variables: {
+          clubId: this.formGroup.value.club,
+          season: this.formGroup.value.season,
+        },
+      }),
+    );
+
+    // Step 2: Collect all team inputs into one array
+    const allEnrollments = [
+      ...this.formGroup.getRawValue().teams.M,
+      ...this.formGroup.getRawValue().teams.F,
+      ...this.formGroup.getRawValue().teams.MX,
+      ...this.formGroup.getRawValue().teams.NATIONAL,
+    ];
+
+    const teamsInput = allEnrollments
+      .filter((enrollment) => enrollment?.team?.id)
+      .map((enrollment) => {
+        const players =
+          enrollment?.team?.players?.map((player: Partial<TeamPlayer>) => ({
+            id: player.id,
+            membershipType: player.teamMembership?.membershipType,
+          })) ?? [];
+
+        const metaPlayers =
+          enrollment?.entry?.players?.map(
+            (
+              player: Partial<Player> & {
+                single: number;
+                double: number;
+                mix: number;
+                levelExceptionRequested: boolean;
+                levelExceptionReason: string;
+              },
+            ) => ({
+              id: player?.id,
+              gender: player?.gender,
+              single: player?.single,
+              double: player?.double,
+              mix: player?.mix,
+              levelExceptionRequested: player?.levelExceptionRequested,
+              levelExceptionReason:
+                (player?.levelExceptionReason?.length ?? 0) > 0
+                  ? player?.levelExceptionReason
+                  : undefined,
+            }),
+          ) ?? [];
+
+        return {
+          name: enrollment?.team?.name,
+          teamNumber: enrollment?.team?.teamNumber,
+          type: enrollment?.team?.type,
+          clubId: this.formGroup.value.club,
+          link: enrollment?.team?.link,
+          season: this.formGroup.value.season,
+          preferredDay: enrollment?.team?.preferredDay,
+          preferredTime: enrollment?.team?.preferredTime,
+          prefferedLocationId: enrollment?.team?.prefferedLocationId,
+          captainId: enrollment?.team?.captainId,
+          phone: enrollment?.team?.phone,
+          email: enrollment?.team?.email,
+          players,
+          entry: {
+            subEventId: enrollment?.entry?.subEventId,
+            meta: {
+              competition: {
+                players: metaPlayers,
+              },
+            },
+          },
+        };
+      });
+
+    // Step 3: Send all teams in one mutation
+    return lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation CreateTeams($teams: [TeamNewInput!]!, $nationalCountsAsMixed: Boolean!) {
+            createTeams(data: $teams, nationalCountsAsMixed: $nationalCountsAsMixed) {
+              id
+            }
+          }
+        `,
+        variables: {
+          nationalCountsAsMixed: this.formGroup.get(NATIONAL_COUNTS_AS_MIXED)?.value,
+          teams: teamsInput,
+        },
+      }),
+    );
   }
 }

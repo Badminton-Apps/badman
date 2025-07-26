@@ -122,7 +122,7 @@ export class GameTournamentProcessor {
 
     // we fetch it via the draw because bye's aren't in the game detail
     const xmlGamees = await this._visualService.getGames(job.data.eventCode, draw.visualCode, true);
-    const xmlGame = xmlGamees.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
+    const xmlGame = xmlGamees.find((m) => m.Code?.toString() === gameCode.toString()) as XmlMatch;
     if (!xmlGame) {
       throw new Error('game not found');
     }
@@ -174,12 +174,11 @@ export class GameTournamentProcessor {
     }
 
     if (!game) {
-      game = new Game();
+      game = new Game({
+        id: gameId ? gameId : undefined,
+      });
     }
 
-    if (gameId) {
-      game.id = gameId;
-    }
 
     game.round = xmlGame.RoundName;
     game.order = xmlGame.MatchOrder;

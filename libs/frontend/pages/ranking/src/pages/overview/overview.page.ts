@@ -27,7 +27,7 @@ import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-compone
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -56,7 +56,7 @@ const FETCH_SYSTEMS = gql`
     imports: [
         CommonModule,
         RouterModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         FormsModule,
         MomentModule,

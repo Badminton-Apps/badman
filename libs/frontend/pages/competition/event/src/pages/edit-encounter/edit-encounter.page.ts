@@ -11,7 +11,7 @@ import { GameScoreComponentComponent } from '@badman/frontend-components';
 import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { gameLabel } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ReplacePlayerComponent } from '../../dialogs';
 
@@ -21,7 +21,7 @@ import { ReplacePlayerComponent } from '../../dialogs';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         MatFormFieldModule,
         MatInputModule,
         MatMenuModule,

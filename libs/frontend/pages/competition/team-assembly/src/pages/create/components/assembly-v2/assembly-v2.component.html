@@ -5,7 +5,7 @@
         <div class="container" (ngxResize)="onResized($event)">
           <label>{{ 'all.competition.team-assembly.players.base' | translate }}</label>
           <div class="index">Index: {{ this.data.state().titulars.index }}</div>
-          @for (player of this.data.state().titulars.players; track player) {
+          @for (player of this.data.state().titulars.players; track player.id) {
             <div>
               {{ player.fullName }}
               @if (isException(player?.id)) {
@@ -32,7 +32,7 @@
         <div class="container">
           <label>{{ 'all.competition.team-assembly.players.team' | translate }}</label>
           <div class="index">Index: {{ this.data.state().base.index }}</div>
-          @for (player of this.data.state().base.players; track player) {
+          @for (player of this.data.state().base.players; track player.id) {
             <div>
               {{ player.fullName }}
               @if (isException(player?.id)) {
@@ -65,7 +65,7 @@
     </div>
   </section>
 
-  @for (player of this.data.state['regularPlayers'](); track player.id) {
+  @for (player of this.data.state['regularPlayers'](); track player.id.id) {
     <p>{{ player.fullName }}</p>
   }
 

@@ -7,31 +7,28 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { Moment } from 'moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 @Component({
-    imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        FormsModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MtxDatetimepickerModule,
-        MtxMomentDatetimeModule
-    ],
-    templateUrl: './set-open-close-enrollments.component.html',
-    styleUrls: ['./set-open-close-enrollments.component.scss']
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: './set-open-close-enrollments.component.html',
+  styleUrls: ['./set-open-close-enrollments.component.scss'],
 })
 export class OpenCloseDateDialogComponent implements OnInit {
   private readonly destroy$ = injectDestroy();

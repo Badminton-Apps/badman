@@ -1,4 +1,3 @@
-// start:ng42.barrel
 export * from './add-player';
 export * from './block';
 export * from './confirm';
@@ -18,6 +17,5 @@ export * from './roles';
 export * from './selects';
 export * from './shell';
 export * from './standing';
-export * from './shell/components/sidebar/service-status';
-
-// end:ng42.barrel
+export * from './test-setup';
+export * from './tri-state-checkbox';

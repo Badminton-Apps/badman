@@ -18,7 +18,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SelectClubComponent } from '@badman/frontend-components';
 import { Club } from '@badman/frontend-models';
 import { ClubMembershipType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     templateUrl: './edit-club-history-dialog.component.html',
@@ -26,7 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
     imports: [
         CommonModule,
         FormsModule,
-        TranslateModule,
+        TranslatePipe,
         MatDialogModule,
         MatSlideToggleModule,
         MatTooltipModule,

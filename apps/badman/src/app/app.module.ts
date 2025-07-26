@@ -19,7 +19,7 @@ import { AuthModule } from '@badman/frontend-auth';
 import { CpModule } from '@badman/frontend-cp';
 import { PdfModule } from '@badman/frontend-pdf';
 import { SeoModule } from '@badman/frontend-seo';
-import { TranslationModule } from '@badman/frontend-translation';
+import { provideTranslation } from '@badman/frontend-translation';
 import { TwizzitModule } from '@badman/frontend-twizzit';
 import { AnalyticsModule } from '@badman/frontend-vitals';
 import { NgMapsCoreModule } from '@ng-maps/core';
@@ -183,9 +183,7 @@ const APP_ROUTES: Routes = [
       url: '/',
       options: {},
     }),
-    TranslationModule.forRoot({
-      api: `${environment.api}/${environment.apiVersion}/translate/i18n/`,
-    }),
+
     MarkdownModule.forRoot({
       loader: HttpClient,
       sanitize: SecurityContext.NONE,
@@ -240,6 +238,9 @@ const APP_ROUTES: Routes = [
     },
 
     provideHttpClient(withInterceptorsFromDi()),
+    provideTranslation({
+      api: `${environment.api}/${environment.apiVersion}/translate/i18n/`,
+    }),
   ],
 })
 export class AppModule {}

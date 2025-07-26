@@ -21,6 +21,7 @@ import { Page } from 'puppeteer';
 import { Op } from 'sequelize';
 import {
   acceptEncounter,
+  consentPrivacyAndCookie,
   detailAccepted,
   detailComment,
   detailEntered,
@@ -261,7 +262,10 @@ export class CheckEncounterProcessor {
   private async _syncEncounter(encounter: EncounterCompetition, page: Page) {
     const url = await gotoEncounterPage({ page }, encounter);
     this.logger.debug(`Syncing encounter ${url}`);
-    try {
+
+    await consentPrivacyAndCookie({ page }, { logger: this.logger });
+
+    try { 
       const time = await hasTime({ page }, { logger: this.logger });
       if (!time) {
         this.logger.verbose(`Encounter ${encounter.visualCode} has no time`);

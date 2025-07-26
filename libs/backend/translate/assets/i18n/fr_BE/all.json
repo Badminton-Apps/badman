@@ -23,6 +23,7 @@
     "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Précédent",
     "re-sync": "Recalculer les points",
+    "re-sync-standings": "Recalculer le classement",
     "save": "Enregistrer",
     "save-and-continue": "Sauvegarder et continuer",
     "set-primary": "Rendre primaire",
@@ -205,6 +206,10 @@
       "dates": "Modifier les dates",
       "download-base-players": "Télécharger les lecteurs de base",
       "download-cp": "Télécharger le fichier CP",
+      "download-teams": "Télécharger les équipes",
+      "download-exceptions": "Télécharger les exceptions",
+      "download-locations": "Télécharger les emplacements",
+      "export-planner": "Exporter le planificateur (json)",
       "make-official": "Officialiser le tournoi",
       "new-date": "Nouvelle date",
       "open_close_change-encounters": "Ouvrir/fermer les rencontres de déménagement",
@@ -329,7 +334,7 @@
         "riser": "L'équipe devrait être promue mais n'est pas inscrite dans une série supérieure",
         "team-index": "La configuration de configuration la plus forte n'est pas possible. L'index d'équipe est <strong>{teamIndex}</strong> et l'index d'équipe de base est <strong>{baseIndex}</strong>.",
         "team-order": "L'équipe <strong>{team.name}</strong> est dans une série inférieure mais a un numéro d'équipe inférieur",
-        "team-order-same-subevent": "L'équipe <strong>{team.name}</strong> a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
+        "team-order-same-subevent": "L'équipe <strong>{team.name}</strong> a un indice d'équipe plus faible dans la même division, mais a un numéro d'équipe plus bas",
         "team-to-strong": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas tomber en dessous de la limite de la division <strong>{minIndex}</strong> ",
         "team-to-week": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas dépasser la limite de la division <strong>{maxIndex}</strong> ",
         "title": "Erreurs",
@@ -352,6 +357,7 @@
         "courts-hint": "Modifier le nombre de champs disponibles",
         "title": "Emplacements"
       },
+      "mixed-national-teams": "Les équipes nationales sont incluses dans la numérotation des équipes mixtes. (Exemple : vous avez 3 équipes : 'Coché : Nationale 1, Nationale 2, Equipe 3G'. Non coché : 'Nationale 1, Nationale 2, Equipe 1G')",
       "open": "Ouvrir",
       "play-days": "Jours de match",
       "players": {
@@ -387,10 +393,12 @@
       "transfer": {
         "add-transfer": "Nouveau transfert",
         "enrolled-as": "enregistré comme",
+        "loans": "Prêts",
         "transfer-locked": "Le transfert a déjà été confirmé, il n'est plus possible de le supprimer",
         "transfer-player": "Joueur transféré",
         "transfer-teams": "Transfert d'équipes (facultatif)",
         "transfer-teams-description": "Si vous souhaitez transférer votre ou vos équipes à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre ou vos équipes et les placer automatiquement dans le bon événement en fonction de votre participation précédente.\n\nL'ordre dans lequel vous vérifiez vos quarts de travail déterminera l'ordre (vérifiez tout dans le bon ordre)\n\nVous pouvez toujours modifier les numéros d'équipe à l'étape suivante.",
+        "transfers": "Transferts",
         "transfers-players": "Transferts et prêts"
       },
       "validations": "Validations",
@@ -1523,6 +1531,7 @@
   },
   "tournament": {
     "away": "Dehors",
+    "closeDate": "",
     "delete": {
       "description": "Êtes-vous sûr de vouloir supprimer ce tournoi ?",
       "title": "Supprimer le tournoi"
@@ -1537,13 +1546,17 @@
       "open": "Ouvrir",
       "title": "Entrées"
     },
+    "firstDay": "Premier jour",
     "home": "Accueil",
     "last-updated": "Modifié le",
     "load-more": "Charger plus",
     "menu": {
       "add-event": "Ajouter un évènement"
     },
+    "name": "Tournoi",
     "note": "note : les modifications sont enregistrées immédiatement",
+    "official": "Officielle",
+    "openDate": "Entrées d'ouverture",
     "overview": {
       "date": "Date",
       "menu": {
@@ -1564,7 +1577,9 @@
       "min-base": "Indice de décalage de la base minimale"
     },
     "title": "Tournoi",
+    "tournamentNumber": "Numéro du tournoi",
     "type": "Type",
+    "visualCode": "Toernooi.nl Code",
     "vs": "à",
     "vs-short": "vs"
   },
@@ -1577,6 +1592,7 @@
     "filter": {
       "current-club": "Club actuel",
       "new-club": "Nouveau club",
+      "only-confirmed": "Confirmé",
       "player": "Joueur"
     },
     "title": "Transferts / prêts",
@@ -1586,7 +1602,7 @@
       "file-type": "Dossier de transfert ou de prêt",
       "hint": "Faites glisser votre fichier ici",
       "loan-file": "Dossier de prêt",
-      "title": "Télécharger le fichier de transfert / de prêt",
+      "title": "Télécharger le fichier de transfert / prêt pour {season}",
       "transfer-file": "Transférer le fichier",
       "unkown": "Inconnu"
     }

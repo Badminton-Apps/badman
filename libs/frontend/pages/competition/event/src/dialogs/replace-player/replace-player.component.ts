@@ -4,7 +4,7 @@ import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
@@ -15,7 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
         MatSelectModule,
         MatDialogModule,
         MatButtonModule,
-        TranslateModule,
+        TranslatePipe,
     ],
     templateUrl: './replace-player.component.html',
     styleUrls: ['./replace-player.component.scss'],

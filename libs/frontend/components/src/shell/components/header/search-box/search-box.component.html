@@ -4,7 +4,9 @@
     [placeholder]="this.label() | translate"
     [formControl]="formControl"
     [matAutocomplete]="auto"
+    title="Press Ctrl+K to focus on this input"
   />
+  <span matTooltip="Press Ctrl+K to focus on the search box" class="shortcut-hint" *ngIf="!isMobile()">(Ctrl+K)</span>
   <mat-autocomplete
     #auto="matAutocomplete"
     (optionSelected)="selectedPlayer($event)"

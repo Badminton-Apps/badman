@@ -3,10 +3,27 @@ import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export const loadEvents = (apollo: Apollo, state?: string | null) => {
+export const loadEvents = (apollo: Apollo, season: number, state: string | null, admin = false) => {
   if (!state) {
-    console.error('No clubId or season provided');
+    console.error('No state provided');
     return of([]);
+  }
+
+  let where: any = {
+    $or: [{ type: 'LIGA' }, { type: 'PROV', state: state }, { type: 'NATIONAL' }],
+  };
+
+  if (admin) {
+    where = {
+      ...where,
+      season,
+    };
+  } else {
+    where = {
+      ...where,
+      openDate: { $lte: new Date().toISOString() },
+      closeDate: { $gte: new Date().toISOString() },
+    };
   }
 
   return apollo
@@ -42,11 +59,7 @@ export const loadEvents = (apollo: Apollo, state?: string | null) => {
         }
       `,
       variables: {
-        where: {
-          openDate: { $lte: new Date().toISOString() },
-          closeDate: { $gte: new Date().toISOString() },
-          $or: [{ type: 'LIGA' }, { type: 'PROV', state: state }, { type: 'NATIONAL' }],
-        },
+        where,
       },
     })
     .pipe(

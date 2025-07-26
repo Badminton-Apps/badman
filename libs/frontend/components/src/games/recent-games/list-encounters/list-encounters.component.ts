@@ -17,7 +17,7 @@ import { RouterModule } from '@angular/router';
 import { EncounterCompetition, Game, GamePlayer, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { GameType, gameLabel } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
@@ -29,7 +29,7 @@ import { LoadingBlockComponent } from '../../../loading-block';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MomentModule,
     MatButtonModule,
     MatListModule,

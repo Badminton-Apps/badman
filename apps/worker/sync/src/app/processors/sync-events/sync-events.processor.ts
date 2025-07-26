@@ -97,6 +97,7 @@ export class SyncEventsProcessor {
           for (const format of this.formats) {
             if (id.startsWith(format)) {
               id = id.replace(format, '');
+              break;
             }
           }
 

@@ -14,9 +14,15 @@
 
       <mat-menu #menu="matMenu">
         <badman-has-claim [any]="['change:job']">
-          <button mat-menu-item (click)="this.addEvent()">
+          <button mat-menu-item (click)="addEvent()">
             <mat-icon>sync</mat-icon>
             <span>{{ 'all.competition.menu.add-event' | translate }}</span>
+          </button>
+        </badman-has-claim>
+        <badman-has-claim [any]="['export-planner:competition']">
+          <button mat-menu-item (click)="exportPlanner()">
+            <mat-icon>download</mat-icon>
+            <span>{{ 'all.competition.menu.export-planner' | translate }}</span>
           </button>
         </badman-has-claim>
       </mat-menu>

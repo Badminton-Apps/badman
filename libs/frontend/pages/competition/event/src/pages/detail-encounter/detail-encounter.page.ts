@@ -31,7 +31,7 @@ import {
 import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
 import { GameType, gameLabel } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -47,7 +47,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,

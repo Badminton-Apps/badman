@@ -9,13 +9,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { EncounterCompetition, Team } from '@badman/frontend-models';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 import {
   ClubEncounterService,
   openRequestFilter,
   validationFilter,
 } from './club-encounters.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'badman-club-encounters',
@@ -32,7 +33,7 @@ import {
     MatIconModule,
     MatTooltipModule,
     MatSlideToggleModule,
-    TranslateModule,
+    TranslatePipe,
   ],
 })
 export class ClubEncountersComponent {
@@ -121,7 +122,10 @@ export class ClubEncountersComponent {
     }
 
     // translate all tooltips and join them with a \n\r
-    const tooltips = tooltip.map((t) => this.translate.instant(t)).join('\n\r\n\r');
+    const tooltips = tooltip
+      .filter((t) => (t || '') !== '')
+      .map((t) => this.translate.instant(t))
+      .join('\n\r\n\r');
 
     return {
       icon,

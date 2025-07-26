@@ -12,29 +12,29 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { InMemoryCache } from '@apollo/client/cache';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { DrawCompetition, EventCompetition, SubEventCompetition } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { BehaviorSubject, takeUntil, zip } from 'rxjs';
 
 @Component({
-    imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatCheckboxModule,
-        MatSelectModule,
-        MatTableModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-    ],
-    templateUrl: './set-risers-fallers.component.html',
-    styleUrls: ['./set-risers-fallers.component.scss']
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatTableModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: './set-risers-fallers.component.html',
+  styleUrls: ['./set-risers-fallers.component.scss'],
 })
 export class RisersFallersDialogComponent implements OnInit {
   private cache = inject<InMemoryCache>(APOLLO_CACHE);
@@ -122,13 +122,19 @@ export class RisersFallersDialogComponent implements OnInit {
       );
     });
 
-    const obs = changedDrawCompetitions.map((drawCompetition) => {
-      return this.apollo.mutate<{
-        updateDrawCompetition: Partial<DrawCompetition>;
+    if (changedDrawCompetitions.length === 0) {
+      this.loading = false;
+      this.dialogRef.close();
+      return;
+    }
+
+    this.apollo
+      .mutate<{
+        updateDrawCompetitions: Partial<DrawCompetition>[];
       }>({
         mutation: gql`
-          mutation UpdateDrawCompetition($data: DrawCompetitionUpdateInput!) {
-            updateDrawCompetition(data: $data) {
+          mutation UpdateDrawCompetitions($data: [DrawCompetitionUpdateInput!]!) {
+            updateDrawCompetitions(data: $data) {
               id
               risers
               fallers
@@ -136,37 +142,22 @@ export class RisersFallersDialogComponent implements OnInit {
           }
         `,
         variables: {
-          data: {
+          data: changedDrawCompetitions.map((drawCompetition) => ({
             id: drawCompetition.id,
             risers: drawCompetition.risers,
             fallers: drawCompetition.fallers,
-          },
+          })),
         },
-      });
-    });
-
-    if (obs.length === 0) {
-      this.loading = false;
-      this.dialogRef.close();
-      return;
-    }
-
-    // wait for all observables to complete
-
-    zip(...obs)
+      })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((results) => {
+      .subscribe((result) => {
         // update cache
-        results.forEach((result) => {
-          if (!result.data?.updateDrawCompetition) {
-            return;
-          }
-
+        result.data?.updateDrawCompetitions.forEach((updatedDrawCompetition) => {
           this.cache.modify({
-            id: `DrawCompetition:${result.data.updateDrawCompetition.id}`,
+            id: `DrawCompetition:${updatedDrawCompetition.id}`,
             fields: {
-              risers: () => result.data?.updateDrawCompetition.risers ?? 0,
-              fallers: () => result.data?.updateDrawCompetition.fallers ?? 0,
+              risers: () => updatedDrawCompetition.risers ?? 0,
+              fallers: () => updatedDrawCompetition.fallers ?? 0,
             },
           });
         });

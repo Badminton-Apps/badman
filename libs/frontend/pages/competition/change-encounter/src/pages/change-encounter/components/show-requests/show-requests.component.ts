@@ -42,7 +42,7 @@ import {
   EncounterCompetition,
 } from '@badman/frontend-models';
 import { ChangeEncounterAvailability, getSeasonPeriod } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
@@ -77,7 +77,7 @@ const CHANGE_QUERY = gql`
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     MomentModule,
     MatFormFieldModule,
     MatOptionModule,
@@ -148,7 +148,7 @@ export class ShowRequestsComponent implements OnInit {
 
   warnings = computed(() => this.validation()?.warnings ?? []);
 
-  async ngOnInit() {
+  ngOnInit() {
     this.previous = this.group().get(this.dependsOn()) ?? undefined;
     if (this.previous) {
       this.requests$ = this.previous.valueChanges.pipe(
@@ -241,6 +241,7 @@ export class ShowRequestsComponent implements OnInit {
       console.warn(`Dependency ${this.dependsOn()} not found`, this.previous);
     }
   }
+  
   getWarnings(date: Date | string) {
     return computed(() =>
       this.warnings().filter(
