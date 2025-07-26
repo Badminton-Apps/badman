@@ -138,22 +138,25 @@ export class EventCompetitionResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
+      // find event competition by updateData.id, include subevents
       const eventCompetitionDb = await EventCompetition.findByPk(updateEventCompetitionData.id, {
         include: [{ model: SubEventCompetition }],
         transaction,
       });
 
+      // throw error if not there
       if (!eventCompetitionDb) {
         throw new NotFoundException(`${EventCompetition.name}: ${updateEventCompetitionData.id}`);
       }
 
+      // check if  update data inclues official boolean, and if it is different from the db
       if (updateEventCompetitionData.official != undefined) {
         if (eventCompetitionDb.official !== updateEventCompetitionData.official) {
           const subEvents = await eventCompetitionDb.getSubEventCompetitions({
             transaction,
           });
 
-          // we are making it official
+          // getting the primary ranking system, in order to get the ranking groups, which will be added to each sub event
           const ranking = await RankingSystem.findOne({
             where: {
               primary: true,
@@ -306,7 +309,7 @@ export class EventCompetitionResolver {
   @Mutation(() => Boolean)
   async removeEventCompetition(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission([`delete:competition`]))) {
-      throw new UnauthorizedException(`You do not have permission to add a competition`);
+      throw new UnauthorizedException(`You do not have permission to delete a competition`);
     }
 
     const eventTournament = await EventCompetition.findByPk(id);

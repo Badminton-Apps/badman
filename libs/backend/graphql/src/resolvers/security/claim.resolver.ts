@@ -1,14 +1,26 @@
 import { Claim, Player } from '@badman/backend-database';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Field, ID, InputType, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
 
+@InputType()
+class ClaimInput {
+  @Field(() => ID)
+  claimId!: string;
+
+  @Field(() => ID)
+  playerId!: string;
+
+  @Field()
+  active!: boolean;
+}
+
 @Resolver(() => Claim)
 export class ClaimResolver {
   private readonly logger = new Logger(ClaimResolver.name);
-  constructor(private _sequelize: Sequelize) {}
+  constructor(private _sequelize: Sequelize) { }
 
   @Query(() => Claim)
   async claim(@Args('id', { type: () => ID }) id: string): Promise<Claim> {
@@ -60,6 +72,41 @@ export class ClaimResolver {
       throw error;
     }
   }
+
+  @Mutation(() => Boolean)
+  async assignClaims(
+    @User() user: Player,
+    @Args('claims', { type: () => [ClaimInput] }) claims: ClaimInput[],
+  ): Promise<boolean> {
+    if (!(await user.hasAnyPermission(['edit:claims']))) {
+      throw new UnauthorizedException(`You do not have permission to edit claims`);
+    }
+  
+    const transaction = await this._sequelize.transaction();
+    try {
+      for (const { playerId, claimId, active } of claims) {
+        const player = await Player.findByPk(playerId, { transaction });
+  
+        if (!player) {
+          throw new NotFoundException(`Player not found: ${playerId}`);
+        }
+  
+        if (active) {
+          await player.addClaim(claimId, { transaction });
+        } else {
+          await player.removeClaim(claimId, { transaction });
+        }
+      }
+  
+      await transaction.commit();
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+  
 
   // @Mutation(returns => Claim)
   // async addClaim(

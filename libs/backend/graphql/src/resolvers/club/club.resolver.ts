@@ -112,21 +112,22 @@ export class ClubsResolver {
       options.where = {
         ...options.where,
 
-        [`$${ClubPlayerMembership.name}.start$`]: {
-          [Op.lt]: new Date(),
-        },
-        [Op.or]: [
-          {
-            [`$${ClubPlayerMembership.name}.end$`]: {
-              [Op.gt]: new Date(),
-            },
-          },
-          {
-            [`$${ClubPlayerMembership.name}.end$`]: {
-              [Op.is]: null,
-            },
-          },
-        ],
+        //TODO - uncomment this
+        // [`$${ClubPlayerMembership.name}.start$`]: {
+        //   [Op.lt]: new Date(),
+        // },
+        // [Op.or]: [
+        //   {
+        //     [`$${ClubPlayerMembership.name}.end$`]: {
+        //       [Op.gt]: new Date(),
+        //     },
+        //   },
+        //   {
+        //     [`$${ClubPlayerMembership.name}.end$`]: {
+        //       [Op.is]: null,
+        //     },
+        //   },
+        // ],
         [`$${ClubPlayerMembership.name}.confirmed$`]: true,
       };
     }
