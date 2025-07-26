@@ -122,10 +122,6 @@ export class DetailPageComponent {
         this.detailService.state.loadTeams();
       });
     });
-
-    effect(() => {
-      console.log(this._adapter, this._locale());
-    });
   }
 
   getPlayer(game: Game, player: number, team: number) {
