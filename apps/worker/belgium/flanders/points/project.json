@@ -21,10 +21,27 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/worker/belgium/flanders/points"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/worker/belgium/flanders/points",
+        "{workspaceRoot}\\coverage\\apps\\worker\\badminton\\belgium\\flanders\\points"
+      ],
       "options": {
-        "jestConfig": "apps/worker/belgium/flanders/points/jest.config.ts"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     },
     "build": {
