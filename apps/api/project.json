@@ -5,21 +5,6 @@
   "projectType": "application",
   "tags": [],
   "targets": {
-    "serve": {
-      "executor": "@nx/js:node",
-      "defaultConfiguration": "development",
-      "options": {
-        "buildTarget": "api:build"
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "api:build:development"
-        },
-        "production": {
-          "buildTarget": "api:build:production"
-        }
-      }
-    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -27,19 +12,32 @@
       }
     },
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "defaultConfiguration": "development",
+      "executor": "nx:run-commands",
       "options": {
-        "webpackConfig": "apps/api/webpack.config.js",
-        "outputPath": "dist/apps/api"
+        "command": "webpack-cli build",
+        "args": ["--node-env=production"]
       },
       "configurations": {
         "development": {
-          "mode": "development"
+          "args": ["--node-env=development"]
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["^build"],
+      "options": {
+        "buildTarget": "api:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "api:build:development"
         },
         "production": {
-          "mode": "production",
-          "dependsOn": ["badman:build"]
+          "buildTarget": "api:build:production"
         }
       }
     },

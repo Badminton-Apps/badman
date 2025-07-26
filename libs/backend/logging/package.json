@@ -3,7 +3,13 @@
   "version": "6.185.0",
   "dependencies": {
     "@badman/utils": "6.185.0",
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "@logtail/node": "~0.5.2",
+    "@logtail/winston": "^0.5.2",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
+    "nest-winston": "^1.10.2",
+    "winston": "^3.17.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

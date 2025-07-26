@@ -2,7 +2,8 @@
   "name": "@badman/belgium-flanders-games",
   "version": "6.185.0",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@nestjs/common": "^10.4.15"
   },
   "type": "commonjs",
   "main": "./src/index.js",

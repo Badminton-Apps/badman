@@ -1,7 +1,11 @@
 {
   "name": "@badman/frontend-seo",
   "version": "6.185.0",
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@angular/core": "19.2.6",
+    "@angular/common": "19.2.6",
+    "@angular/platform-browser": "19.2.6"
+  },
   "dependencies": {},
   "sideEffects": false
 }

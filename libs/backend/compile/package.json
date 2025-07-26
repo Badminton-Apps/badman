@@ -4,7 +4,15 @@
   "dependencies": {
     "@badman/backend-pupeteer": "6.185.0",
     "@badman/utils": "6.185.0",
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
+    "juice": "^11.0.0",
+    "rxjs": "~7.8.1",
+    "puppeteer": "^23.11.1",
+    "consolidate": "^1.0.4",
+    "moment-timezone": "^0.5.47",
+    "nestjs-i18n": "^10.5.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

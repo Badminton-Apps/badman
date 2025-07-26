@@ -1,17 +1,13 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "main",
-  "defaultProject": "badman",
-  "ci": "github",
-  "parallel": 14,
+  "defaultProject": "app",
+  "parallel": 15,
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
-      "!{projectRoot}/.eslintrc.json",
+      "!{projectRoot}/eslint.config.mjs",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
@@ -21,104 +17,46 @@
     ],
     "sharedGlobals": []
   },
-  "release": {
-    "version": {
-      "conventionalCommits": true
-    },
-    "changelog": {
-      "workspaceChangelog": {
-        "createRelease": "github",
-        "file": "apps/badman/src/assets/CHANGELOG.md"
-      }
-    }
-  },
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
+    },
+    "@nx/angular:application": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     },
     "@nx/eslint:lint": {
       "cache": true,
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore",
-        "{workspaceRoot}/eslint.config.js"
-      ]
+      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs", "{workspaceRoot}/.eslintignore", "{workspaceRoot}/eslint.config.js"]
     },
     "@nx/jest:jest": {
       "cache": true,
-      "inputs": [
-        "default",
-        "^production",
-        "{workspaceRoot}/jest.preset.js"
-      ],
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js", "{workspaceRoot}/jest.config.ts"],
       "options": {
-        "codeCoverage": true,
-        "passWithNoTests": true,
-        "coverageReporters": [
-          "text-summary",
-          "lcov"
-        ]
+        "passWithNoTests": true
       },
       "configurations": {
         "ci": {
-          "ci": true
+          "ci": true,
+          "codeCoverage": true
         }
       }
     },
     "@nx/js:tsc": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     },
     "@nx/angular:ng-packagr-lite": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
-    },
-    "e2e": {
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   },
   "plugins": [
-    {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
-    {
-      "plugin": "@nx/jest/plugin",
-      "exclude": [
-        "e2e/**/*"
-      ],
-      "options": {
-        "targetName": "test",
-        "coverageReporters": [
-          "text-summary",
-          "lcov"
-        ]
-      }
-    },
     {
       "plugin": "@nx/playwright/plugin",
       "options": {
@@ -126,11 +64,16 @@
       }
     },
     {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    },
+    {
       "plugin": "@nx/webpack/plugin",
       "options": {
         "buildTargetName": "build",
-        "serveTargetName": "serve",
-        "previewTargetName": "preview"
+        "serveTargetName": "serve"
       }
     }
   ],
@@ -145,16 +88,74 @@
       "linter": "eslint",
       "unitTestRunner": "jest",
       "style": "scss",
+      "prefix": "app",
       "buildable": true
     },
     "@nx/angular:component": {
       "style": "scss",
       "standalone": true,
+      "prefix": "app",
       "changeDetection": "OnPush",
       "displayBlock": true,
-      "skipTests": true
+      "skipTests": true,
+      "type": "component"
+    },
+    "@nx/angular:library-secondary-entry-point": {
+      "library": "frontend-components",
+      "skipModule": true
+    },
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@nx/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@nx/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@nx/angular:scam": {
+      "type": "component"
+    },
+    "@nx/angular:scam-directive": {
+      "type": "directive"
+    },
+    "@nx/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@nx/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@nx/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@nx/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@nx/angular:resolver": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   },
-  "nxCloudAccessToken": "NGRkMmFkZjktYmRjZi00OTFhLWJkMzEtZDcwZjMwM2Q3MzkwfHJlYWQtd3JpdGU=",
-  "nxCloudId": "6818a5c8c5bf9c39bd3339ef"
+  "nxCloudAccessToken": "ODc0OWI3OWEtYjQ3Mi00ZTcxLTg2MDAtOTc4NmRlODk0NDE0fHJlYWQtd3JpdGU=",
+  "nxCloudId": "687533f4d4eccd26fa54a33d"
 }

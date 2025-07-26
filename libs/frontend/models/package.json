@@ -2,7 +2,8 @@
   "name": "@badman/frontend-models",
   "version": "6.185.0",
   "peerDependencies": {
-    "@badman/utils": "*"
+    "@badman/utils": "*",
+    "moment": "^2.30.1"
   },
   "dependencies": {},
   "sideEffects": false

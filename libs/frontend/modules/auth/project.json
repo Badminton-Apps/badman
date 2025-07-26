@@ -28,12 +28,6 @@
       "options": {
         "jestConfig": "libs/frontend/modules/auth/jest.config.ts"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "eslintConfig": "libs/frontend/modules/auth/eslint.config.js"
-      }
     }
   }
 }
