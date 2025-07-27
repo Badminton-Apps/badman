@@ -206,6 +206,7 @@
     "@typescript-eslint/parser": "8.29.0",
     "@typescript-eslint/utils": "8.29.0",
     "concurrently": "^9.1.2",
+    "conventional-recommended-bump": "^11.2.0",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "10.0.0",
     "eslint-plugin-playwright": "^2.2.0",
