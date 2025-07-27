@@ -82,12 +82,10 @@ export class OverviewPageComponent {
       type: 'button',
       buttons: [
         {
-          type: 'basic',
           text: 'Toogle',
           click: (row) => this.toggleActive(row),
         },
         {
-          type: 'basic',
           text: 'Queue',
           click: (row) => this.openDialog(row),
         },
