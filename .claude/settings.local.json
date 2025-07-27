@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(ls:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm view:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }
