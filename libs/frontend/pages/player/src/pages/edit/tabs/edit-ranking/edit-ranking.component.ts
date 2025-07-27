@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, input, inject } from '@angular/core';
 import {
   FormControl,
@@ -23,14 +23,13 @@ import { map, mergeMap } from 'rxjs/operators';
     templateUrl: './edit-ranking.component.html',
     styleUrls: ['./edit-ranking.component.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslatePipe,
-        FormsModule,
-        MatInputModule,
-        MatButtonModule,
-    ]
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    FormsModule,
+    MatInputModule,
+    MatButtonModule
+]
 })
 export class EditRankingComponent implements OnInit {
   private cache = inject<InMemoryCache>(APOLLO_CACHE);

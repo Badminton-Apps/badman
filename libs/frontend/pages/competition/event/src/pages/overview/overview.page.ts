@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, effect, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +32,6 @@ import saveAs from 'file-saver';
   templateUrl: './overview.page.html',
   styleUrls: ['./overview.page.scss'],
   imports: [
-    CommonModule,
     RouterModule,
     TranslatePipe,
     ReactiveFormsModule,
@@ -46,8 +45,8 @@ import saveAs from 'file-saver';
     PageHeaderComponent,
     HasClaimComponent,
     CompetitionEventsComponent,
-    SelectSeasonComponent,
-  ],
+    SelectSeasonComponent
+],
 })
 export class OverviewPageComponent implements OnInit {
   private readonly translate = inject(TranslateService);

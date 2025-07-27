@@ -1,10 +1,9 @@
 import { nxE2EPreset } from '@nx/playwright/preset';
-import { PlaywrightTestConfig, defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { sharedConfig } from '../badman-e2e/shared.config';
-
 export default defineConfig({
-  ...nxE2EPreset(__filename, { testDir:  '../badman-e2e/src' }),
+  ...nxE2EPreset(__filename, { testDir: './src' }),
   ...sharedConfig({
     PORT: `5500`,
     REDIS_PORT: `6380`,
@@ -23,15 +22,13 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
   ],
-} as PlaywrightTestConfig);
+});

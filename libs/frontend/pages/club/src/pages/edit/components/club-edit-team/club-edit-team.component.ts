@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -34,19 +34,18 @@ import { PickEventDialogComponent } from '../../../../dialogs';
     styleUrls: ['./club-edit-team.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslatePipe,
-        MatListModule,
-        MatIconModule,
-        MatButtonModule,
-        MatTooltipModule,
-        MatDialogModule,
-        MatMenuModule,
-        MatInputModule,
-        PlayerSearchComponent,
-        BadmanBlockModule,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    MatListModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatMenuModule,
+    MatInputModule,
+    PlayerSearchComponent,
+    BadmanBlockModule
+]
 })
 export class ClubEditTeamComponent implements OnInit {
   private readonly dialog = inject(MatDialog);

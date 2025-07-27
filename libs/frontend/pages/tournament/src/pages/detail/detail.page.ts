@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,7 +38,6 @@ import { Apollo, gql } from 'apollo-angular';
   templateUrl: './detail.page.html',
   styleUrls: ['./detail.page.scss'],
   imports: [
-    CommonModule,
     RouterModule,
     TranslatePipe,
     MomentModule,
@@ -56,8 +55,8 @@ import { Apollo, gql } from 'apollo-angular';
     MatSnackBarModule,
     PageHeaderComponent,
     HasClaimComponent,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
 })
 export class DetailPageComponent {
   private readonly breadcrumbService = inject(BreadcrumbService);

@@ -25,6 +25,9 @@
     },
     "build": {
       "defaultConfiguration": "development",
+      "options": {
+        "tsConfig": "apps/worker/belgium/flanders/places/tsconfig.app.json"
+      },
       "configurations": {
         "development": {
           "cwd": "apps/worker/belgium/flanders/places",

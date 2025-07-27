@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -12,14 +12,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     selector: 'badman-user-shortcuts',
     imports: [
-        CommonModule,
-        TranslatePipe,
-        MatListModule,
-        MatDividerModule,
-        RouterModule,
-        MatExpansionModule,
-        MatIconModule,
-    ],
+    TranslatePipe,
+    MatListModule,
+    MatDividerModule,
+    RouterModule,
+    MatExpansionModule,
+    MatIconModule
+],
     templateUrl: './user-shortcuts.component.html',
     styleUrls: ['./user-shortcuts.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/pages/role"],
       "options": {
-        "project": "libs/frontend/pages/role/ng-package.json"
+        "project": "libs/frontend/pages/role/ng-package.json",
+        "tsConfig": "libs/frontend/pages/role/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

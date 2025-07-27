@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -16,7 +16,7 @@ import { AuthenticateService } from '@badman/frontend-auth';
 
 @Component({
     selector: 'badman-beta',
-    imports: [CommonModule, MatCardModule, RouterModule, MatButtonModule, MatIconModule],
+    imports: [MatCardModule, RouterModule, MatButtonModule, MatIconModule],
     templateUrl: './beta.component.html',
     styleUrls: ['./beta.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

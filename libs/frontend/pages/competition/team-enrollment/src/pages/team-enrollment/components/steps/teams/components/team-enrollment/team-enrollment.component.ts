@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Signal,
@@ -44,19 +44,18 @@ import { getNewTypeAndLevel } from '../utils/get-next-level';
 @Component({
     selector: 'badman-team-enrollment',
     imports: [
-        CommonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatIconModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TeamComponent,
-        EnrollmentMessageComponent,
-        TranslatePipe,
-    ],
+    MatFormFieldModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TeamComponent,
+    EnrollmentMessageComponent,
+    TranslatePipe
+],
     templateUrl: './team-enrollment.component.html',
     styleUrls: ['./team-enrollment.component.scss']
 })

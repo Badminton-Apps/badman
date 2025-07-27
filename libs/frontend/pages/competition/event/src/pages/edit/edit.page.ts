@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Signal, TemplateRef, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -71,7 +71,6 @@ const roleQuery = gql`
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
   imports: [
-    CommonModule,
     RouterModule,
     TranslatePipe,
     MatIconModule,
@@ -94,8 +93,8 @@ const roleQuery = gql`
     EditRoleComponent,
     SelectCountryComponent,
     SelectCountrystateComponent,
-    PlayerSearchComponent,
-  ],
+    PlayerSearchComponent
+],
 })
 export class EditPageComponent {
   private readonly destroy$ = injectDestroy();

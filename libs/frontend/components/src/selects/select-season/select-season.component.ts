@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -24,13 +24,12 @@ import { map, startWith } from 'rxjs/operators';
 @Component({
     selector: 'badman-select-season',
     imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule
+],
     templateUrl: './select-season.component.html',
     styleUrls: ['./select-season.component.scss']
 })

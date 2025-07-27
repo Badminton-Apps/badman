@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Signal, computed, effect, inject, signal, untracked } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,7 +33,6 @@ import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
   templateUrl: './detail.page.html',
   styleUrls: ['./detail.page.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterModule,
     TranslatePipe,
@@ -47,8 +46,8 @@ import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
-    ShowLevelComponent,
-  ],
+    ShowLevelComponent
+],
 })
 export class DetailPageComponent {
   // private

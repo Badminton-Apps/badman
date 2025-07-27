@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/translation"],
       "options": {
-        "project": "libs/frontend/modules/translation/ng-package.json"
+        "project": "libs/frontend/modules/translation/ng-package.json",
+        "tsConfig": "libs/frontend/modules/translation/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,7 +27,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     RouterModule,
     TranslatePipe,
     MatTooltipModule,
@@ -38,8 +37,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
-    MatMenuModule,
-  ],
+    MatMenuModule
+],
 })
 export class DetailDrawCompetitionComponent {
   private readonly destroy$ = injectDestroy();

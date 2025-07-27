@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
@@ -8,7 +8,7 @@ import { ClubViewComponent } from './components';
 @Component({
     templateUrl: './team-enrollments.component.html',
     styleUrls: ['./team-enrollments.component.scss'],
-    imports: [CommonModule, TranslatePipe, ClubViewComponent]
+    imports: [TranslatePipe, ClubViewComponent]
 })
 export class TeamEnrollmentsComponent {
   private _title = inject(Title);

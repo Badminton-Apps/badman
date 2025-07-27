@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -39,7 +39,6 @@ import { lastValueFrom, take } from 'rxjs';
 @Component({
   selector: 'badman-event-menu',
   imports: [
-    CommonModule,
     RouterModule,
     TranslatePipe,
     MomentModule,
@@ -56,8 +55,8 @@ import { lastValueFrom, take } from 'rxjs';
     MatTooltipModule,
     MatSnackBarModule,
     MatTabsModule,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
   templateUrl: './event-menu.component.html',
   styleUrl: './event-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

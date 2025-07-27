@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/pages/tournament"],
       "options": {
-        "project": "libs/frontend/pages/tournament/ng-package.json"
+        "project": "libs/frontend/pages/tournament/ng-package.json",
+        "tsConfig": "libs/frontend/pages/tournament/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

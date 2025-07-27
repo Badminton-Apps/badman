@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Inject, NgModule, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, NgModule, PLATFORM_ID, DOCUMENT } from '@angular/core';
 import { GOOGLE_MAPS_API_CONFIG } from '@ng-maps/google';
 import { Libraries, Loader } from '@googlemaps/js-api-loader';
 

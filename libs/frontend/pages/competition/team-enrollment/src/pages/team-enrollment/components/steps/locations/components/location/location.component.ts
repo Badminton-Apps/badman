@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject, output } from '@angular/core';
 import {
   FormArray,
@@ -62,23 +62,22 @@ export type LocationForm = FormGroup<{
 @Component({
     selector: 'badman-location',
     imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MomentModule,
-        MatButtonModule,
-        MatIconModule,
-        MatListModule,
-        MatSelectModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatSnackBarModule,
-        MatDividerModule,
-        MatTooltipModule,
-        MatDatepickerModule,
-        MtxDatetimepickerModule,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MomentModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSnackBarModule,
+    MatDividerModule,
+    MatTooltipModule,
+    MatDatepickerModule,
+    MtxDatetimepickerModule
+],
     templateUrl: './location.component.html',
     styleUrls: ['./location.component.scss']
 })

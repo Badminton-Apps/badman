@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -21,18 +21,17 @@ import { v4 as uuidv4 } from 'uuid';
     templateUrl: './add-game.component.html',
     styleUrls: ['./add-game.component.scss'],
     imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatSlideToggleModule,
-        MatFormFieldModule,
-        MatAutocompleteModule,
-        MatOptionModule,
-        MatInputModule,
-        MatButtonModule,
-        SelectPlayerComponent,
-    ]
+    TranslatePipe,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    MatInputModule,
+    MatButtonModule,
+    SelectPlayerComponent
+]
 })
 export class AddGameComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<AddGameComponent>>(MatDialogRef<AddGameComponent>);

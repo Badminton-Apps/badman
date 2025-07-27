@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,14 +12,13 @@ import { TranslatePipe } from '@ngx-translate/core';
     templateUrl: './player-fields.component.html',
     styleUrls: ['./player-fields.component.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslatePipe,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
+]
 })
 export class PlayerFieldsComponent {
   group = input<FormGroup>(PlayerFieldsComponent.newPlayerForm());

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
@@ -7,7 +7,7 @@ import { RankingTableService } from './ranking-table.service';
 
 @Component({
   selector: 'badman-ranking-table',
-  imports: [CommonModule, MtxGrid],
+  imports: [MtxGrid],
   templateUrl: './ranking-table.component.html',
   styleUrls: ['./ranking-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

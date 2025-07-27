@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,14 +32,13 @@ import { throttleTime, filter, switchMap } from 'rxjs/operators';
     styleUrls: ['./edit-player-fields.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatInputModule,
-        HasClaimComponent,
-        MatSelectModule,
-        TranslatePipe,
-    ]
+    ReactiveFormsModule,
+    FormsModule,
+    MatInputModule,
+    HasClaimComponent,
+    MatSelectModule,
+    TranslatePipe
+]
 })
 export class EditPlayerFieldsComponent implements OnInit {
   private readonly claimService = inject(ClaimService);

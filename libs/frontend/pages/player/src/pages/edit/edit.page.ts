@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -34,20 +34,19 @@ import {
     templateUrl: './edit.page.html',
     styleUrls: ['./edit.page.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslatePipe,
-        EditRankingComponent,
-        EditCompetitionStatusComponent,
-        EditRankingAllComponent,
-        EditClubHistoryComponent,
-        EditPermissionsComponent,
-        EditPlayerFieldsComponent,
-        MatIconModule,
-        MatTabsModule,
-        MatButtonModule,
-    ],
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    EditRankingComponent,
+    EditCompetitionStatusComponent,
+    EditRankingAllComponent,
+    EditClubHistoryComponent,
+    EditPermissionsComponent,
+    EditPlayerFieldsComponent,
+    MatIconModule,
+    MatTabsModule,
+    MatButtonModule
+],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditPageComponent implements AfterViewInit {

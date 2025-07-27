@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -29,17 +29,16 @@ import { ClubFieldsForm } from '../../pages';
     styleUrls: ['./club-fields.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslatePipe,
-        FormsModule,
-        MatInputModule,
-        MatOptionModule,
-        MatSelectModule,
-        HasClaimComponent,
-        SelectCountryComponent,
-        SelectCountrystateComponent,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    FormsModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
+    HasClaimComponent,
+    SelectCountryComponent,
+    SelectCountrystateComponent
+]
 })
 export class ClubFieldsComponent implements OnInit {
   private readonly claimService = inject(ClaimService);

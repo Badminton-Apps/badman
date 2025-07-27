@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/pages/rule"],
       "options": {
-        "project": "libs/frontend/pages/rules/ng-package.json"
+        "project": "libs/frontend/pages/rules/ng-package.json",
+        "tsConfig": "libs/frontend/pages/rules/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

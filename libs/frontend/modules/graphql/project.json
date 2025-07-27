@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/graphql"],
       "options": {
-        "project": "libs/frontend/modules/graphql/ng-package.json"
+        "project": "libs/frontend/modules/graphql/ng-package.json",
+        "tsConfig": "libs/frontend/modules/graphql/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

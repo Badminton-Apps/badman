@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, input, model, untracked } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,14 +11,13 @@ import { SelectPlayersService } from './select-player.service';
 @Component({
     selector: 'badman-select-player',
     imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MtxSelectModule,
-        TranslatePipe,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MtxSelectModule,
+    TranslatePipe
+],
     templateUrl: './select-player.component.html',
     styleUrls: ['./select-player.component.scss']
 })

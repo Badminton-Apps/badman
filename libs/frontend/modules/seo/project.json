@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/seo"],
       "options": {
-        "project": "libs/frontend/modules/seo/ng-package.json"
+        "project": "libs/frontend/modules/seo/ng-package.json",
+        "tsConfig": "libs/frontend/modules/seo/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

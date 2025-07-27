@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,16 +9,15 @@ import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        MtxDatetimepickerModule,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MtxDatetimepickerModule
+],
     templateUrl: './set-open-close-change-encounter.component.html',
     styleUrls: ['./set-open-close-change-encounter.component.scss']
 })
