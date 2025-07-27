@@ -6,14 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
-import { GraphQLModule } from '@badman/frontend-graphql';
 import { LanguageComponent } from '@badman/frontend-translation';
 import { ThemeSwitcherComponent } from '../theme-switcher';
 
 @Component({
     selector: 'badman-header-menu',
     imports: [
-    GraphQLModule,
     RouterModule,
     MatButtonModule,
     MatMenuModule,

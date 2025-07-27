@@ -24,9 +24,15 @@
       }
     },
     "build": {
+      "executor": "@nx/webpack:webpack",
       "defaultConfiguration": "development",
       "options": {
-        "tsConfig": "apps/worker/ranking/tsconfig.app.json"
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/worker/ranking/src/main.ts",
+        "tsConfig": "apps/worker/ranking/tsconfig.app.json",
+        "outputPath": "dist/apps/worker/ranking",
+        "webpackConfig": "apps/worker/ranking/webpack.config.js"
       },
       "configurations": {
         "development": {

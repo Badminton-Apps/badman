@@ -12,15 +12,43 @@
       }
     },
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/webpack:webpack",
       "options": {
-        "command": "webpack-cli build",
-        "args": ["--node-env=production"],
-        "tsConfig": "apps/api/tsconfig.app.json"
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/api/src/main.ts",
+        "tsConfig": "apps/api/tsconfig.app.json",
+        "assets": [
+          "apps/api/src/assets",
+          {
+            "glob": "**/*",
+            "input": "libs/backend/translate/assets",
+            "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/backend/competition/assembly/src/compile",
+            "output": "compile/libs/assembly"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/backend/mailing/src/compile",
+            "output": "compile/libs/mailing"
+          }
+        ],
+        "outputPath": "dist/apps/api",
+        "webpackConfig": "apps/api/webpack.config.js"
       },
       "configurations": {
         "development": {
-          "args": ["--node-env=development"]
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true
+        },
+        "production": {
+          "extractLicenses": true,
+          "optimization": true,
+          "sourceMap": false
         }
       }
     },

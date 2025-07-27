@@ -30,9 +30,27 @@
       }
     },
     "build": {
+      "executor": "@nx/webpack:webpack",
       "defaultConfiguration": "development",
       "options": {
-        "tsConfig": "apps/worker/sync/tsconfig.app.json"
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/worker/sync/src/main.ts",
+        "tsConfig": "apps/worker/sync/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "libs/backend/mailing/src/compile",
+            "output": "compile/libs/mailing"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/backend/translate/assets",
+            "output": "assets"
+          }
+        ],
+        "outputPath": "dist/apps/worker/sync",
+        "webpackConfig": "apps/worker/sync/webpack.config.js"
       },
       "configurations": {
         "development": {
