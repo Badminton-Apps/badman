@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ import { PlayerSearchComponent } from '../player-search';
 @Component({
   templateUrl: './add-player.component.html',
   styleUrls: ['./add-player.component.scss'],
-  imports: [CommonModule, TranslatePipe, MatDialogModule, MatButtonModule, PlayerSearchComponent],
+  imports: [TranslatePipe, MatDialogModule, MatButtonModule, PlayerSearchComponent],
 })
 export class AddPlayerComponent {
   public dialogRef = inject<MatDialogRef<AddPlayerComponent>>(MatDialogRef<AddPlayerComponent>);

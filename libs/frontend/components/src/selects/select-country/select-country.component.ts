@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -7,7 +7,7 @@ import countriesList from './countries.json';
 
 @Component({
     selector: 'badman-select-country',
-    imports: [CommonModule, MatSelectModule, TranslatePipe, ReactiveFormsModule],
+    imports: [MatSelectModule, TranslatePipe, ReactiveFormsModule],
     templateUrl: './select-country.component.html',
     styleUrls: ['./select-country.component.scss']
 })

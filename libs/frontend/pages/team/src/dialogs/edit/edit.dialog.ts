@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,15 +39,14 @@ const PLAYERS_QUERY = gql`
   templateUrl: './edit.dialog.html',
   styleUrls: ['./edit.dialog.scss'],
   imports: [
-    CommonModule,
     TranslatePipe,
     TeamFieldComponent,
     TeamPlayersComponent,
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
 })
 export class EditDialogComponent {
   private snackBar = inject(MatSnackBar);

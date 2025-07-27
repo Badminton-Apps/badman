@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,15 +16,14 @@ import { TranslatePipe } from '@ngx-translate/core';
     styleUrls: ['./event-competition-level-fields.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        TranslatePipe,
-        MatIconModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatInputModule,
-    ],
+    TranslatePipe,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule
+],
     
 })
 export class EventCompetitionLevelFieldsComponent implements OnInit {

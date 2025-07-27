@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -13,16 +13,15 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
 @Component({
     selector: 'badman-header-menu',
     imports: [
-        CommonModule,
-        GraphQLModule,
-        RouterModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        MatDividerModule,
-        LanguageComponent,
-        ThemeSwitcherComponent,
-    ],
+    GraphQLModule,
+    RouterModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MatDividerModule,
+    LanguageComponent,
+    ThemeSwitcherComponent
+],
     templateUrl: './header-menu.component.html',
     styleUrls: ['./header-menu.component.scss']
 })

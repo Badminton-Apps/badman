@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -29,7 +29,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     RouterModule,
     TranslatePipe,
     MatIconModule,
@@ -37,8 +36,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     StandingComponent,
     PageHeaderComponent,
     MatButtonModule,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class DetailDrawComponent {
   private readonly route = inject(ActivatedRoute);

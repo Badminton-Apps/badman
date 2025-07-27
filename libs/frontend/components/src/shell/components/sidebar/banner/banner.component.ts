@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,7 +12,7 @@ import { Banner } from '@badman/frontend-models';
 
 @Component({
     selector: 'badman-banner',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './banner.component.html',
     styleUrls: ['./banner.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

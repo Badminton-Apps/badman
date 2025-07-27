@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -49,19 +49,18 @@ const roleQuery = gql`
 @Component({
     selector: 'badman-edit-role',
     imports: [
-        CommonModule,
-        TranslatePipe,
-        MatButtonModule,
-        MatIconModule,
-        MatDividerModule,
-        MatTooltipModule,
-        MatMenuModule,
-        MatDialogModule,
-        MatListModule,
-        PlayerSearchComponent,
-        ClaimComponent,
-        BadmanBlockModule,
-    ],
+    TranslatePipe,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+    MatTooltipModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatListModule,
+    PlayerSearchComponent,
+    ClaimComponent,
+    BadmanBlockModule
+],
     templateUrl: './edit-role.component.html',
     styleUrls: ['./edit-role.component.scss']
 })

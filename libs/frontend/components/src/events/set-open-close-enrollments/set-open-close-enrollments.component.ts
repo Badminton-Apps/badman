@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +15,6 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 @Component({
   imports: [
-    CommonModule,
     TranslatePipe,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -25,8 +24,8 @@ import { startWith, takeUntil } from 'rxjs/operators';
     MatDialogModule,
     MatInputModule,
     MatDatepickerModule,
-    MtxDatetimepickerModule,
-  ],
+    MtxDatetimepickerModule
+],
   templateUrl: './set-open-close-enrollments.component.html',
   styleUrls: ['./set-open-close-enrollments.component.scss'],
 })

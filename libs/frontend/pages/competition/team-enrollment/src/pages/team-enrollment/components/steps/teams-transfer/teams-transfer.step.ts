@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, inject, input, untracked } from '@angular/core';
 import {
   FormArray,
@@ -23,15 +23,14 @@ import { TeamForm } from '../../../team-enrollment.page';
 @Component({
   selector: 'badman-teams-transfer-step',
   imports: [
-    CommonModule,
     MatCheckboxModule,
     MatButtonModule,
     MatListModule,
     MatProgressBarModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
   templateUrl: './teams-transfer.step.html',
   styleUrls: ['./teams-transfer.step.scss'],
 })
