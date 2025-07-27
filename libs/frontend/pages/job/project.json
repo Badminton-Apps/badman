@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/pages/job"],
       "options": {
-        "project": "libs/frontend/pages/job/ng-package.json"
+        "project": "libs/frontend/pages/job/ng-package.json",
+        "tsConfig": "libs/frontend/pages/job/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

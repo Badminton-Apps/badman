@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import {
   FormControl,
@@ -23,17 +23,16 @@ import moment, { Moment } from 'moment';
     styleUrls: ['./edit-ranking-place-dialog.component.scss'],
     encapsulation: ViewEncapsulation.None,
     imports: [
-        CommonModule,
-        MatDialogModule,
-        TranslatePipe,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatSlideToggleModule,
-        ReactiveFormsModule,
-        FormsModule,
-    ]
+    MatDialogModule,
+    TranslatePipe,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    FormsModule
+]
 })
 export class EditRankingPlaceDialogComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<EditRankingPlaceDialogComponent>>(

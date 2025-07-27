@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, computed, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -12,7 +12,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './standing.component.html',
   styleUrls: ['./standing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, TranslatePipe, RouterModule, MatTableModule, MatIconModule],
+  imports: [TranslatePipe, RouterModule, MatTableModule, MatIconModule],
 })
 export class StandingComponent implements OnInit {
   entries = input.required<EventEntry[]>();

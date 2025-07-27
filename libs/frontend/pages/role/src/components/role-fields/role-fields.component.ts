@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,14 +14,13 @@ import { TranslatePipe } from '@ngx-translate/core';
     styleUrls: ['./role-fields.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslatePipe,
-        MatInputModule,
-        MatButtonModule,
-        MatIconModule,
-        ClaimComponent,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    ClaimComponent
+]
 })
 export class RoleFieldsComponent implements OnInit {
   role = input<Role>({} as Role);

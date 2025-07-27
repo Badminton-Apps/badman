@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { CommonModule } from '@angular/common';
+
 import { Component, Injector, OnInit, Signal, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
@@ -32,25 +32,24 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
 @Component({
     selector: 'badman-competition-enrollments',
     imports: [
-        CommonModule,
-        MatTableModule,
-        MatExpansionModule,
-        MatCardModule,
-        MatRippleModule,
-        MatListModule,
-        MatProgressBarModule,
-        MatIconModule,
-        MatTooltipModule,
-        MatBadgeModule,
-        TranslatePipe,
-        CdkTableModule,
-        CdkTreeModule,
-        EnrollmentDetailRowDirective,
-        SelectClubComponent,
-        EnrollmentMessageComponent,
-        BadmanBlockModule,
-        LoadingBlockComponent,
-    ],
+    MatTableModule,
+    MatExpansionModule,
+    MatCardModule,
+    MatRippleModule,
+    MatListModule,
+    MatProgressBarModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatBadgeModule,
+    TranslatePipe,
+    CdkTableModule,
+    CdkTreeModule,
+    EnrollmentDetailRowDirective,
+    SelectClubComponent,
+    EnrollmentMessageComponent,
+    BadmanBlockModule,
+    LoadingBlockComponent
+],
     templateUrl: './competition-enrollments.component.html',
     styleUrls: ['./competition-enrollments.component.scss'],
     providers: [provideAnimations()],

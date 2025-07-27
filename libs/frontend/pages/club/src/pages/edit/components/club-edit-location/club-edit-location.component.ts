@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -77,26 +77,25 @@ export type LocationForm = FormGroup<{
     styleUrls: ['./club-edit-location.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatDividerModule,
-        MatMenuModule,
-        MatIconModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatOptionModule,
-        MatDatepickerModule,
-        MatTooltipModule,
-        TranslatePipe,
-        MatListModule,
-        MatSelectModule,
-        MatInputModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatBadgeModule,
-        HasClaimComponent,
-        BadmanBlockModule,
-    ]
+    ReactiveFormsModule,
+    MatDividerModule,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatDatepickerModule,
+    MatTooltipModule,
+    TranslatePipe,
+    MatListModule,
+    MatSelectModule,
+    MatInputModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatBadgeModule,
+    HasClaimComponent,
+    BadmanBlockModule
+]
 })
 export class ClubEditLocationComponent implements OnInit {
   private formBuilder = inject(FormBuilder);

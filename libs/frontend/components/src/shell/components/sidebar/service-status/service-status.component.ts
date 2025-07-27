@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { ServiceService } from './service-status.service';
 
@@ -6,7 +6,7 @@ import { ServiceService } from './service-status.service';
     selector: 'badman-service-status',
     templateUrl: './service-status.component.html',
     styleUrls: ['./service-status.component.scss'],
-    imports: [CommonModule]
+    imports: []
 })
 export class ServiceStatusComponent {
   state = inject(ServiceService);

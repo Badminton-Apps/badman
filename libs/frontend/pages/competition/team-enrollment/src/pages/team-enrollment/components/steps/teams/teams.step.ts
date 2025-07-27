@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectorRef,
   Component,
@@ -50,7 +50,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 @Component({
   selector: 'badman-teams-step',
   imports: [
-    CommonModule,
     TranslatePipe,
     MatButtonModule,
     MatIconModule,
@@ -63,8 +62,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCheckboxModule,
     ReactiveFormsModule,
     FormsModule,
-    TeamEnrollmentComponent,
-  ],
+    TeamEnrollmentComponent
+],
   templateUrl: './teams.step.html',
   styleUrls: ['./teams.step.scss'],
 })

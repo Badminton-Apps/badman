@@ -23,6 +23,11 @@
         }
       }
     },
+    "build": {
+      "options": {
+        "tsConfig": "apps/scripts/tsconfig.app.json"
+      }
+    },
     "test": {
       "inputs": [
         "default",

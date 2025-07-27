@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   computed,
@@ -50,7 +50,6 @@ import { injectParams } from 'ngxtension/inject-params';
   templateUrl: './detail.page.html',
   styleUrls: ['./detail.page.scss'],
   imports: [
-    CommonModule,
     RouterModule,
     TranslatePipe,
     MomentModule,
@@ -72,8 +71,8 @@ import { injectParams } from 'ngxtension/inject-params';
     CompetitionEnrollmentsComponent,
     CompetitionMapComponent,
     CompetitionEncountersComponent,
-    EventMenuComponent,
-  ],
+    EventMenuComponent
+],
 })
 export class DetailPageComponent {
   private readonly seoService = inject(SeoService);

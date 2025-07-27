@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,14 +23,13 @@ import { LocationAvailibilityForm, LocationComponent, LocationForm } from './com
 @Component({
     selector: 'badman-locations-step',
     imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatProgressBarModule,
-        LocationComponent,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    LocationComponent
+],
     templateUrl: './locations.step.html',
     styleUrls: ['./locations.step.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

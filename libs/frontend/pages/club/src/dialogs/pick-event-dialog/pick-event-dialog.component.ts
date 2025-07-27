@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,14 +23,13 @@ export interface PickEventDialogData {
 @Component({
     selector: 'badman-pick-event-dialog',
     imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatProgressBarModule,
-        MatSelectModule,
-        MatButtonModule,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatProgressBarModule,
+    MatSelectModule,
+    MatButtonModule
+],
     templateUrl: './pick-event-dialog.component.html',
     styleUrls: ['./pick-event-dialog.component.scss']
 })

@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/html-injects"],
       "options": {
-        "project": "libs/frontend/modules/html-injects/ng-package.json"
+        "project": "libs/frontend/modules/html-injects/ng-package.json",
+        "tsConfig": "libs/frontend/modules/html-injects/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

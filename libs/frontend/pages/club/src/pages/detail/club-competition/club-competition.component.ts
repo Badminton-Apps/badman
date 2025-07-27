@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -39,7 +39,6 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
 @Component({
   selector: 'badman-club-competition',
   imports: [
-    CommonModule,
     MatTableModule,
     MatExpansionModule,
     MatCardModule,
@@ -57,8 +56,8 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     CdkTreeModule,
     EnrollmentDetailRowDirective,
     EnrollmentMessageComponent,
-    BadmanBlockModule,
-  ],
+    BadmanBlockModule
+],
   templateUrl: './club-competition.component.html',
   styleUrls: ['./club-competition.component.scss'],
   providers: [provideAnimations()],

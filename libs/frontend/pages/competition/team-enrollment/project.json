@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/pages/competition/team-enrollment"],
       "options": {
-        "project": "libs/frontend/pages/competition/team-enrollment/ng-package.json"
+        "project": "libs/frontend/pages/competition/team-enrollment/ng-package.json",
+        "tsConfig": "libs/frontend/pages/competition/team-enrollment/tsconfig.lib.json"
       },
       "configurations": {
         "production": {

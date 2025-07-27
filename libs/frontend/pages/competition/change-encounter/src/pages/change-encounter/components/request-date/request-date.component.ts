@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, inject, OnInit, output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,17 +17,16 @@ import { DateSelectorComponent } from '../../../../components';
 @Component({
     selector: 'badman-request-date',
     imports: [
-        CommonModule,
-        DateSelectorComponent,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslatePipe,
-        MatSelectModule,
-        MatIconModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatTooltipModule,
-    ],
+    DateSelectorComponent,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    MatSelectModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatTooltipModule
+],
     templateUrl: './request-date.component.html',
     styleUrls: ['./request-date.component.scss']
 })

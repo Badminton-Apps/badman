@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -7,7 +7,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-assembly-player',
-    imports: [CommonModule, TranslatePipe, MatIconModule, MatTooltipModule],
+    imports: [TranslatePipe, MatIconModule, MatTooltipModule],
     templateUrl: './team-assembly-player.component.html',
     styleUrls: ['./team-assembly-player.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
