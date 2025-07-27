@@ -24,9 +24,15 @@
       }
     },
     "build": {
+      "executor": "@nx/webpack:webpack",
       "defaultConfiguration": "development",
       "options": {
-        "tsConfig": "apps/worker/belgium/flanders/places/tsconfig.app.json"
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/worker/belgium/flanders/places/src/main.ts",
+        "tsConfig": "apps/worker/belgium/flanders/places/tsconfig.app.json",
+        "outputPath": "dist/apps/worker/belgium/flanders/places",
+        "webpackConfig": "apps/worker/belgium/flanders/places/webpack.config.js"
       },
       "configurations": {
         "development": {

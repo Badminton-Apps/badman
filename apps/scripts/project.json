@@ -24,8 +24,14 @@
       }
     },
     "build": {
+      "executor": "@nx/webpack:webpack",
       "options": {
-        "tsConfig": "apps/scripts/tsconfig.app.json"
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/scripts/src/main.ts",
+        "tsConfig": "apps/scripts/tsconfig.app.json",
+        "outputPath": "dist/apps/scripts",
+        "webpackConfig": "apps/scripts/webpack.config.js"
       }
     },
     "test": {

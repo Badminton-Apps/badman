@@ -1,7 +1,7 @@
 import { APP_ID, isDevMode, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { GraphQLModule } from '@badman/frontend-graphql';
+import { provideGraphQL } from '@badman/frontend-graphql';
 
 import {
   ClarityModule,
@@ -119,9 +119,6 @@ const APP_ROUTES: Routes = [
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
-    GraphQLModule.forRoot({
-      api: environment.graphql,
-    }),
     RouterModule.forRoot(APP_ROUTES, {
       enableViewTransitions: true,
     }),
@@ -240,6 +237,9 @@ const APP_ROUTES: Routes = [
     provideHttpClient(withInterceptorsFromDi()),
     provideTranslation({
       api: `${environment.api}/${environment.apiVersion}/translate/i18n/`,
+    }),
+    provideGraphQL({
+      api: environment.graphql,
     }),
   ],
 })
