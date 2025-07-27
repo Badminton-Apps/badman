@@ -10,6 +10,11 @@ on:
         required: true
         default: false
         type: boolean
+      cloud-run:
+        description: 'Run with Nx Cloud distributed CI'
+        required: false
+        default: true
+        type: boolean
 
 # Needed for nx-set-shas when run on the main branch
 permissions:
@@ -81,7 +86,9 @@ jobs:
             npm install -g yarn
           fi
 
+
       - name: Start CI run
+        if: ${{ inputs.cloud-run }}
         run: npx --yes nx-cloud start-ci-run --distribute-on="3 linux-medium-js"
 
       - name: Install dependencies
@@ -148,8 +155,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: stop agents
+        if: always() && inputs.cloud-run
         run: npx --yes nx-cloud complete-ci-run
-        if: always()
 
       - uses: actions/upload-artifact@v4
         if: always()
