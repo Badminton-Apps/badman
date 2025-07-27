@@ -6,6 +6,45 @@ const fs = require('fs');
 const path = require('path');
 const runExec = require('./run-exec');
 
+const conventionalRecommendedBump = require('conventional-recommended-bump');
+const { promisify } = require('util');
+
+async function getRecommendedVersion() {
+  console.log('Starting conventional recommended bump...');
+  console.log('Current working directory:', process.cwd());
+  
+  try {
+    // Check if we have any commits first
+    const { stdout: commitCount } = await runExec('git rev-list --count HEAD');
+    console.log(`Found ${commitCount.trim()} commits`);
+    
+    if (parseInt(commitCount.trim()) === 0) {
+      console.log('No commits found, defaulting to patch');
+      return 'patch';
+    }
+    
+    const conventionalRecommendedBumpAsync = promisify(conventionalRecommendedBump);
+    
+    const result = await Promise.race([
+      conventionalRecommendedBumpAsync({
+        preset: 'angular',
+        path: process.cwd(),
+      }),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout')), 5000)
+      )
+    ]);
+    
+    console.log('Recommended release type:', result.releaseType);
+    return result.releaseType;
+    
+  } catch (error) {
+    console.error('Error getting recommended version:', error.message);
+    console.log('Falling back to patch version');
+    return 'patch';
+  }
+}
+
 // Walk through directory recursively
 function walkDir(currentDir, newVersion) {
   fs.readdirSync(currentDir).forEach((file) => {
@@ -64,10 +103,22 @@ function updateVersion(filePath, newVersion) {
         default: false,
       }).argv;
 
+    if (options.version) {
+      console.log(`Using explicit version: ${options.version}`);
+    } else {
+      console.log('No explicit version provided, using conventional commits to determine version.');
+      options.version = await getRecommendedVersion();
+
+      console.log(`Using recommended version: ${options.version}`);
+    }
+
     const { workspaceVersion, projectsVersionData } = await releaseVersion({
       dryRun: options.dryRun,
       verbose: options.verbose,
+      version: options.version,
     });
+
+    console.log(`Workspace version: ${workspaceVersion}`);
 
     // update version.json files
     walkDir('./apps', workspaceVersion);
