@@ -77,8 +77,8 @@
     "@ng-maps/core": "^8.0.0",
     "@ng-maps/google": "^8.0.0",
     "@ng-maps/places": "^8.0.0",
-    "@ng-matero/extensions": "~19.0.3",
-    "@ng-matero/extensions-moment-adapter": "^19.1.0",
+    "@ng-matero/extensions": "^20.2.0",
+    "@ng-matero/extensions-moment-adapter": "^20.0.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
     "@nx/angular": "21.3.7",
@@ -213,6 +213,7 @@
     "jest-environment-jsdom": "29.7.0",
     "jest-environment-node": "^29.7.0",
     "jest-preset-angular": "14.6.0",
+    "jest-util": "30.0.5",
     "jsonc-eslint-parser": "^2.4.0",
     "ng-packagr": "20.1.0",
     "nx": "21.3.7",
@@ -225,8 +226,7 @@
     "typescript-transform-paths": "^3.5.3",
     "util": "^0.12.5",
     "webpack": "5.98.0",
-    "webpack-cli": "^6.0.1",
-    "jest-util": "30.0.5"
+    "webpack-cli": "^6.0.1"
   },
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.18",
