@@ -82,7 +82,7 @@ jobs:
           fi
 
       - name: Start CI run
-        run: npx --yes nx-cloud start-ci-run
+        run: npx --yes nx-cloud start-ci-run --distribute-on="3 linux-medium-js"
 
       - name: Install dependencies
         run: |
