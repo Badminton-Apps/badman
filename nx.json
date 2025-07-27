@@ -3,6 +3,12 @@
   "defaultBase": "main",
   "defaultProject": "app",
   "parallel": 15,
+  "release": {
+    "version": {
+      "specifierSource": "conventional-commits",
+      "currentVersionResolver": "git-tag"
+    }
+  },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
