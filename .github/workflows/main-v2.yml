@@ -90,7 +90,7 @@ jobs:
 
       - name: Run affected commands
         run: |
-          ${{ env.PACKAGE_MANAGER }} run nx -- affected -t test build -c ci --verbose
+          ${{ env.PACKAGE_MANAGER }} run nx -- affected -t test build -c ci
 
       - name: Run Playwright tests
         run: |
