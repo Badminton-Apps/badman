@@ -3253,7 +3253,11 @@
         "set3": "Game 3",
         "startTime": "Start time",
         "endTime": "End time",
-        "shuttle": "Shuttle",
+        "shuttle": {
+          "title": "Shuttle",
+          "helpText": "List of approved shuttles",
+          "helpLink": "https://www.badmintonvlaanderen.be/file/973717/?dl=1"
+        },
         "commentsOptional": "Comments (optional)"
       },
       "positions": {
