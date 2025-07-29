@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +14,7 @@ import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-com
 import { Player, Team, TeamPlayer, Location } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { SubEventType, TeamMembershipType, sortPlayers } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map, pairwise, startWith, take } from 'rxjs';
 import { PLAYERS_CONTROL, TeamFieldComponent, TeamPlayersComponent } from '../../components';
@@ -39,15 +39,14 @@ const PLAYERS_QUERY = gql`
   templateUrl: './edit.dialog.html',
   styleUrls: ['./edit.dialog.scss'],
   imports: [
-    CommonModule,
-    TranslateModule,
+    TranslatePipe,
     TeamFieldComponent,
     TeamPlayersComponent,
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
 })
 export class EditDialogComponent {
   private snackBar = inject(MatSnackBar);
@@ -326,14 +325,7 @@ export class EditDialogComponent {
           variables: {
             id: this.data.team.id,
           },
-          refetchQueries: [
-            {
-              query: PLAYERS_QUERY,
-              variables: {
-                teamId: this.data.team.id,
-              },
-            },
-          ],
+          refetchQueries: ['Team', 'Teams', 'ClubTeams'],
         })
         .subscribe(() => {
           this.snackBar.open('Deleted', undefined, {

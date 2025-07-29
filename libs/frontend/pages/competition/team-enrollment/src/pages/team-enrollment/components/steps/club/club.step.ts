@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -21,7 +21,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { SelectClubSignalsComponent } from '@badman/frontend-components';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { CLUB, EMAIL } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -34,19 +34,18 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
 }
 
 @Component({
-    selector: 'badman-club-step',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        MatInputModule,
-        MatProgressBarModule,
-        SelectClubSignalsComponent,
-    ],
-    templateUrl: './club.step.html',
-    styleUrls: ['./club.step.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-club-step',
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    MatInputModule,
+    MatProgressBarModule,
+    SelectClubSignalsComponent
+],
+  templateUrl: './club.step.html',
+  styleUrls: ['./club.step.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubStepComponent {
   private readonly authenticateService = inject(AuthenticateService);
@@ -60,41 +59,35 @@ export class ClubStepComponent {
 
   constructor() {
     // inital loading
-    effect(
-      () => {
-        const user = this.authenticateService.user();
+    effect(() => {
+      const user = this.authenticateService.user();
 
-        // use the state but don't update effect when it changes
-        untracked(() => {
-          if (user?.club) {
-            this.clubId.set(user.club.id);
-            this.clubControl().setValue(user.club.id);
-          }
-
-          if (user?.email && !this.emailControl().value) {
-            this.emailControl().setValue(user.email);
-          }
-        });
-      },
-      { allowSignalWrites: true },
-    );
-
-    effect(
-      () => {
-        const clubId = this.clubId();
-
-        if (!clubId) {
-          return;
+      // use the state but don't update effect when it changes
+      untracked(() => {
+        if (user?.club) {
+          this.clubId.set(user.club.id);
+          this.clubControl().setValue(user.club.id);
         }
-        
-        // use the state but don't update effect when it changes
-        untracked(() => {
-          this.clubControl().setValue(clubId);
-          this.dataService.state.setClub(clubId);
-        });
-      },
-      { allowSignalWrites: true },
-    );
+
+        if (user?.email && !this.emailControl().value) {
+          this.emailControl().setValue(user.email);
+        }
+      });
+    });
+
+    effect(() => {
+      const clubId = this.clubId();
+
+      if (!clubId) {
+        return;
+      }
+
+      // use the state but don't update effect when it changes
+      untracked(() => {
+        this.clubControl().setValue(clubId);
+        this.dataService.state.setClub(clubId);
+      });
+    });
 
     effect(() => {
       const club = this.dataService.club();
@@ -102,6 +95,6 @@ export class ClubStepComponent {
       if (club && club.contactCompetition) {
         this.emailControl().setValue(club.contactCompetition);
       }
-    })
+    });
   }
 }

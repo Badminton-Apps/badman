@@ -1,25 +1,24 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { DateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { AvaliableLanguages, languages } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { setLanguage } from '../../factory';
-import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MomentDatetimeAdapter } from '@ng-matero/extensions-moment-adapter';
 import { DatetimeAdapter } from '@ng-matero/extensions/core';
 
 @Component({
-    selector: 'badman-language',
-    templateUrl: './language.component.html',
-    styleUrls: ['./language.component.scss'],
-    imports: [CommonModule, TranslateModule, MatMenuModule, MatButtonModule, MatIconModule]
+  selector: 'badman-language',
+  templateUrl: './language.component.html',
+  styleUrls: ['./language.component.scss'],
+  imports: [TranslatePipe, MatMenuModule, MatButtonModule, MatIconModule],
 })
 export class LanguageComponent implements OnInit {
   public translate = inject(TranslateService);
-  private _adapter = inject<DateAdapter<MomentDateAdapter>>(DateAdapter<MomentDateAdapter>);
+  private _adapter = inject<DateAdapter<unknown, unknown>>(DateAdapter);
   private _dateTimeadapter = inject<DatetimeAdapter<MomentDatetimeAdapter>>(
     DatetimeAdapter<MomentDatetimeAdapter>,
   );

@@ -20,7 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Game, GamePlayer, Player, RankingSystem } from '@badman/frontend-models';
 import { GameBreakdownType, GameType, getGameResultType, Ranking } from '@badman/utils';
 import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { derivedAsync } from 'ngxtension/derived-async';
@@ -39,7 +39,7 @@ import { DEVICE } from '@badman/frontend-utils';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         MomentModule,
         MatIconModule,

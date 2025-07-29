@@ -4,62 +4,8 @@ import { EventCompetition } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { Apollo, gql } from 'apollo-angular';
 import { first, map } from 'rxjs/operators';
+import { EVENT_QUERY } from '../queries';
 
-export const EVENT_QUERY = gql`
-  query EventCompetition($id: ID!) {
-    eventCompetition(id: $id) {
-      id
-      name
-      slug
-      season
-      openDate
-      closeDate
-      changeOpenDate
-      changeCloseDatePeriod1
-      changeCloseDatePeriod2
-      changeCloseRequestDatePeriod1
-      changeCloseRequestDatePeriod2
-      visualCode
-      official
-      lastSync
-      contactEmail
-      contactId
-      teamMatcher
-      type
-      state
-      country
-      checkEncounterForFilledIn
-      meta {
-        amountOfBasePlayers
-      }
-      exceptions {
-        start
-        end
-        courts
-      }
-      infoEvents {
-        start
-        end
-        name
-        allowCompetition
-      }
-      subEventCompetitions {
-        id
-        name
-        eventType
-        level
-        maxLevel
-        minBaseIndex
-        maxBaseIndex
-        drawCompetitions {
-          id
-          name
-          size
-        }
-      }
-    }
-  }
-`;
 
 @Injectable()
 export class EventResolver {
@@ -85,7 +31,6 @@ export class EventResolver {
           }
           return new EventCompetition(result.data.eventCompetition);
         }),
-        first(),
       );
   }
 }

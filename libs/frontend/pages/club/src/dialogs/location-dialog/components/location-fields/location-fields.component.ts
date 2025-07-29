@@ -1,6 +1,6 @@
 /// <reference types="@types/googlemaps" />
 
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Club, Location } from '@badman/frontend-models';
 import { NgMapsPlacesModule } from '@ng-maps/places';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { throttleTime } from 'rxjs/operators';
 
 @Component({
@@ -19,16 +19,15 @@ import { throttleTime } from 'rxjs/operators';
   styleUrls: ['./location-fields.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslatePipe,
     MatInputModule,
     MatDividerModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatIconModule,
-    NgMapsPlacesModule,
-  ],
+    NgMapsPlacesModule
+],
 })
 export class LocationDialogFieldsComponent implements OnInit {
   location = input<Location>({} as Location);

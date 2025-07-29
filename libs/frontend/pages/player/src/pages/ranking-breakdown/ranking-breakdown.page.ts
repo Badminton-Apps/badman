@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,7 +18,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { Player, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectParams } from 'ngxtension/inject-params';
@@ -35,20 +35,19 @@ import {  Ranking } from '@badman/utils';
     templateUrl: './ranking-breakdown.page.html',
     styleUrls: ['./ranking-breakdown.page.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslateModule,
-        MatIconModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatDialogModule,
-        MatProgressBarModule,
-        ListGamesComponent,
-        PeriodSelectionComponent,
-        RankingEvolutionComponent,
-    ],
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDialogModule,
+    MatProgressBarModule,
+    ListGamesComponent,
+    PeriodSelectionComponent,
+    RankingEvolutionComponent
+],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RankingBreakdownPageComponent {

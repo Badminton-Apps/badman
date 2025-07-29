@@ -17,9 +17,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
 import { AuthenticateService, NotificationService } from '@badman/frontend-auth';
-import { GraphQLModule } from '@badman/frontend-graphql';
 import { Notification } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { bufferCount, concatMap, delay, forkJoin, from } from 'rxjs';
 
@@ -27,9 +26,8 @@ import { bufferCount, concatMap, delay, forkJoin, from } from 'rxjs';
   selector: 'badman-notifications',
   imports: [
     CommonModule,
-    GraphQLModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,

@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Player } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { DocumentNode, FragmentDefinitionNode } from 'graphql';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -26,7 +26,7 @@ import { Observable, throttleTime, filter, lastValueFrom, map, switchMap, takeUn
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         FormsModule,
         MatFormFieldModule,

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -25,7 +25,7 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { PickEventDialogComponent } from '../../../../dialogs';
 
 @Component({
@@ -34,19 +34,18 @@ import { PickEventDialogComponent } from '../../../../dialogs';
     styleUrls: ['./club-edit-team.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        MatListModule,
-        MatIconModule,
-        MatButtonModule,
-        MatTooltipModule,
-        MatDialogModule,
-        MatMenuModule,
-        MatInputModule,
-        PlayerSearchComponent,
-        BadmanBlockModule,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    MatListModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatMenuModule,
+    MatInputModule,
+    PlayerSearchComponent,
+    BadmanBlockModule
+]
 })
 export class ClubEditTeamComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
@@ -92,6 +91,7 @@ export class ClubEditTeamComponent implements OnInit {
           season: this.team().season,
           eventId: this.subEvent?.eventCompetition?.id,
           subEventId: this.subEvent?.id,
+          type: this.team()?.type,
         },
       })
       .afterClosed()

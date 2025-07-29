@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, input, inject } from '@angular/core';
 import {
   FormControl,
@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { InMemoryCache } from '@apollo/client/core';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
@@ -23,14 +23,13 @@ import { map, mergeMap } from 'rxjs/operators';
     templateUrl: './edit-ranking.component.html',
     styleUrls: ['./edit-ranking.component.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        FormsModule,
-        MatInputModule,
-        MatButtonModule,
-    ]
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    FormsModule,
+    MatInputModule,
+    MatButtonModule
+]
 })
 export class EditRankingComponent implements OnInit {
   private cache = inject<InMemoryCache>(APOLLO_CACHE);

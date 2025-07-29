@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -26,7 +26,7 @@ import {
 import { Team } from '@badman/frontend-models';
 import { DEVICE } from '@badman/frontend-utils';
 import { SubEventTypeEnum } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
@@ -35,20 +35,19 @@ import { ClubTeamsService } from './club-teams.service';
 @Component({
   selector: 'badman-club-teams',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     LoadingBlockComponent,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
     MatButtonToggleModule,
     HasClaimComponent,
     RecentGamesComponent,
-    UpcomingGamesComponent,
-  ],
+    UpcomingGamesComponent
+],
   templateUrl: './club-teams.component.html',
   styleUrls: ['./club-teams.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

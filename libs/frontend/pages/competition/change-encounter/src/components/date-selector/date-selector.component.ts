@@ -23,7 +23,7 @@ import { MatFormField, MatFormFieldControl, MAT_FORM_FIELD } from '@angular/mate
 import moment, { Moment } from 'moment';
 import { Subject } from 'rxjs';
 import { CalendarComponent } from '../calendar';
-import { CommonModule } from '@angular/common';
+
 import { MomentModule } from 'ngx-moment';
 import { input } from '@angular/core';
 
@@ -36,7 +36,7 @@ const selector = 'badman-date-selector';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: MatFormFieldControl, useExisting: DateSelectorComponent }],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MomentModule],
+  imports: [ReactiveFormsModule, FormsModule, MomentModule],
 })
 export class DateSelectorComponent
   implements

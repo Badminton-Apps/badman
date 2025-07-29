@@ -5,11 +5,61 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ./scripts/render.js --app=api"
+      }
+    },
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/api/src/main.ts",
+        "tsConfig": "apps/api/tsconfig.app.json",
+        "assets": [
+          "apps/api/src/assets",
+          {
+            "glob": "**/*",
+            "input": "libs/backend/translate/assets",
+            "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/backend/competition/assembly/src/compile",
+            "output": "compile/libs/assembly"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/backend/mailing/src/compile",
+            "output": "compile/libs/mailing"
+          }
+        ],
+        "outputPath": "dist/apps/api",
+        "webpackConfig": "apps/api/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true
+        },
+        "production": {
+          "extractLicenses": true,
+          "optimization": true,
+          "sourceMap": false
+        }
+      }
+    },
     "serve": {
+      "continuous": true,
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
+      "dependsOn": ["^build"],
       "options": {
-        "buildTarget": "api:build"
+        "buildTarget": "api:build",
+        "runBuildTargetDependencies": false
       },
       "configurations": {
         "development": {
@@ -20,31 +70,25 @@
         }
       }
     },
-    "deploy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node ./scripts/render.js --app=api"
-      }
-    },
-    "build": {
-      "defaultConfiguration": "development",
-      "configurations": {
-        "development": {
-          "cwd": "apps/api",
-          "args": ["--node-env=development"]
-        },
-        "production": {
-          "cwd": "apps/api",
-          "args": ["--node-env=production"],
-          "dependsOn": ["badman:build"]
-        }
-      }
-    },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/api"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": ["{workspaceRoot}/coverage/apps/api", "{workspaceRoot}\\coverage\\apps\\api"],
       "options": {
-        "jestConfig": "apps/api/jest.config.ts"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     },
     "lint": {

@@ -1,4 +1,4 @@
-import { Club, Player } from '@badman/backend-database';
+import { Club, ClubPlayerMembership, Player } from '@badman/backend-database';
 import { startOfSeason } from '@badman/utils';
 import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
 import { Rule } from './_rule.base';
@@ -31,11 +31,6 @@ export class PlayerClubRule extends Rule {
       where: {
         id: final?.filter((id) => !!id) ?? [],
       },
-      include: [
-        {
-          model: Club,
-        },
-      ],
     });
 
     if (enrollment.club?.id == null) {
@@ -52,7 +47,7 @@ export class PlayerClubRule extends Rule {
       const warnings = [] as EnrollmentValidationError[];
 
       // All base players should be from the teams's club
-      const basePlayerErrors = this.checkPlayersClub(
+      const basePlayerErrors = await this.checkPlayersClub(
         players,
         basePlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
@@ -66,7 +61,7 @@ export class PlayerClubRule extends Rule {
       }
 
       // if teamplayers or backup players are set, they should be from the same club, if not: warning
-      const teamPlayerErrors = this.checkPlayersClub(
+      const teamPlayerErrors = await this.checkPlayersClub(
         players,
         teamPlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
@@ -74,7 +69,7 @@ export class PlayerClubRule extends Rule {
         enrollment.loans ?? [],
         enrollment.transfers ?? [],
       );
-      const backupPlayerErrors = this.checkPlayersClub(
+      const backupPlayerErrors = await this.checkPlayersClub(
         players,
         backupPlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
@@ -102,7 +97,7 @@ export class PlayerClubRule extends Rule {
     return results;
   }
 
-  private checkPlayersClub(
+  private async checkPlayersClub(
     playerList: Player[],
     playersToCheck: string[],
     club: Club,
@@ -116,15 +111,19 @@ export class PlayerClubRule extends Rule {
     // 2. check if the active club (= no end date) is the same as the club
     // 3. return a list of players that are not from the club
 
-    return playersToCheck.map((id) => {
+    const reuslts = playersToCheck.map(async (id) => {
       const player = playerList.find((p) => p.id === id);
       if (!player) {
         this.logger.error(`Player with id ${id} not found`);
         return;
       }
 
+      const clubs = (await player.getClubs()) as (Club & {
+        ClubPlayerMembership: ClubPlayerMembership;
+      })[];
+
       const activeClubsInNextSeason =
-        player?.clubs?.filter((c) => c.ClubPlayerMembership.isActiveFrom(startDate, false)) ?? [];
+        clubs?.filter((c) => c.ClubPlayerMembership.isActiveFrom(startDate, false)) ?? [];
 
       // else if the player has no active club
       if (activeClubsInNextSeason.length == 0) {
@@ -170,5 +169,7 @@ export class PlayerClubRule extends Rule {
         },
       } as EnrollmentValidationError;
     });
+
+    return await Promise.all(reuslts);
   }
 }

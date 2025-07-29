@@ -6,32 +6,30 @@ import { Job, Queue } from 'bull';
 @Processor({
   name: SyncQueue,
 })
-export class EventTournamenScheduler {
-  private readonly logger = new Logger(EventTournamenScheduler.name);
+export class ScheduleRecalculateStandingCompetitionDraw {
+  private readonly logger = new Logger(ScheduleRecalculateStandingCompetitionDraw.name);
 
   constructor(
     private readonly _transactionManager: TransactionManager,
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
   ) {}
 
-  @Process(Sync.ScheduleSyncCompetitionEvent)
-  async ScheduleSyncCompetitionEvent(
+  @Process(Sync.ScheduleRecalculateStandingCompetitionDraw)
+  async ScheduleRecalculateStandingCompetitionDraw(
     job: Job<{
-      eventId: string;
-      eventCode: string;
+      drawId: string;
     }>,
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
 
-    const executor = await this._syncQueue.add(Sync.ProcessSyncCompetitionEvent, {
+    const executor = await this._syncQueue.add(Sync.ProcessSyncCompetitionDrawStanding, {
       transactionId,
-      ...job.data,
+      drawId: job.data.drawId,
     });
 
-    try {
-      this._transactionManager.addJob(transactionId, executor);
-      await executor.finished();
+    this._transactionManager.addJob(transactionId, executor);
 
+    try {
       // check evey 3 seconds if the job is finished
       while (!(await this._transactionManager.transactionFinished(transactionId))) {
         this.logger.debug(`Waiting for jobs to finish`);

@@ -10,4 +10,7 @@ export class AssemblyValidationError<T> {
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   params?: T;
+
+  @Field(() => String, { nullable: true })
+  id?: string;
 }

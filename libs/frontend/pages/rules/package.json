@@ -1,21 +1,21 @@
 {
   "name": "@badman/frontend-rule",
-  "version": "6.176.0",
+  "version": "6.185.0",
   "peerDependencies": {
     "@badman/frontend-auth": "*",
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
     "@badman/frontend-queue": "*",
-    "@angular/common": "^19.0.5",
-    "@angular/core": "^19.0.5",
-    "@angular/router": "^19.0.5",
-    "@angular/material": "19.0.4",
+    "@angular/core": "19.2.6",
+    "@angular/material": "19.2.9",
+    "@ng-matero/extensions": "~19.0.3",
     "@ngx-translate/core": "^16.0.4",
-    "apollo-angular": "^8.0.0",
-    "ngx-socket-io": "^4.6.1",
-    "ngxtension": "^4.2.0",
-    "rxjs": "~7.8.1",
-    "@ng-matero/extensions": "~19.0.1"
+    "@angular/common": "19.2.6",
+    "@angular/router": "19.2.6",
+    "apollo-angular": "^8.0.2",
+    "ngx-socket-io": "~4.8.4",
+    "ngxtension": "^4.3.2",
+    "rxjs": "~7.8.1"
   },
   "dependencies": {},
   "sideEffects": false

@@ -17,10 +17,12 @@ import {
 } from '@badman/backend-database';
 import {
   IsUUID,
+  SubEventTypeEnum,
   TeamMembershipType,
   UseForTeamName,
   getIndexFromPlayers,
   getLetterForRegion,
+  sortTeams,
 } from '@badman/utils';
 import {
   BadRequestException,
@@ -157,7 +159,12 @@ export class TeamsResolver {
   }
 
   @Mutation(() => Team)
-  async createTeam(@Args('data') newTeamData: TeamNewInput, @User() user: Player): Promise<Team> {
+  async createTeam(
+    @Args('data') newTeamData: TeamNewInput,
+    @Args('nationalCountsAsMixed', { type: () => Boolean })
+    nationalCountsAsMixed: boolean,
+    @User() user: Player,
+  ): Promise<Team> {
     const transaction = await this._sequelize.transaction();
     try {
       const dbClub = await Club.findByPk(newTeamData.clubId, {
@@ -173,11 +180,18 @@ export class TeamsResolver {
       }
 
       if (!newTeamData.teamNumber) {
+        const types = [newTeamData.type];
+        if (nationalCountsAsMixed && newTeamData.type === SubEventTypeEnum.MX) {
+          types.push(SubEventTypeEnum.NATIONAL);
+        }
+
         // Find the highst active team number for the club
         const highestNumber = (await Team.max('teamNumber', {
           where: {
             clubId: dbClub.id,
-            type: newTeamData.type,
+            type: {
+              [Op.or]: types,
+            },
             season: newTeamData.season,
           },
         })) as number;
@@ -389,6 +403,41 @@ export class TeamsResolver {
       await transaction.rollback();
       throw e;
     }
+  }
+
+  @Mutation(() => [Team])
+  async createTeams(
+    @Args('data', {
+      type: () => [TeamNewInput],
+    })
+    newTeamData: TeamNewInput[],
+    @Args('nationalCountsAsMixed', { type: () => Boolean })
+    nationalCountsAsMixed: boolean,
+    @User() user: Player,
+  ): Promise<Team[]> {
+    const results: Team[] = [];
+
+    // we need to sort the teams to make sure we create the teams in the right order
+    for (const team of newTeamData.sort((a, b) => {
+      // nationals should be before mixed
+      if (a.type === SubEventTypeEnum.MX && b.type === SubEventTypeEnum.NATIONAL) {
+        return 1;
+      }
+      if (a.type === SubEventTypeEnum.NATIONAL && b.type === SubEventTypeEnum.MX) {
+        return -1;
+      }
+
+      if (a.type === b.type) {
+        return (a.teamNumber ?? 0) - (b.teamNumber ?? 0);
+      }
+      return (a.type ?? a.name ?? '').localeCompare(b.type ?? b.name ?? '');
+    })) {
+      this.logger.debug(`Creating team ${team.name}`);
+      const created = await this.createTeam(team, nationalCountsAsMixed, user);
+      results.push(created);
+    }
+
+    return results;
   }
 
   @Mutation(() => Team)

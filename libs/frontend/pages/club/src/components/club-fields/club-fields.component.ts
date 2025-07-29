@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -20,7 +20,7 @@ import {
   SelectCountrystateComponent,
 } from '@badman/frontend-components';
 import { UseForTeamName } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ClubFieldsForm } from '../../pages';
 
 @Component({
@@ -29,17 +29,16 @@ import { ClubFieldsForm } from '../../pages';
     styleUrls: ['./club-fields.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        FormsModule,
-        MatInputModule,
-        MatOptionModule,
-        MatSelectModule,
-        HasClaimComponent,
-        SelectCountryComponent,
-        SelectCountrystateComponent,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    FormsModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSelectModule,
+    HasClaimComponent,
+    SelectCountryComponent,
+    SelectCountrystateComponent
+]
 })
 export class ClubFieldsComponent implements OnInit {
   private readonly claimService = inject(ClaimService);

@@ -29,7 +29,7 @@ import { EncounterCompetition, Player } from '@badman/frontend-models';
 import { PdfService } from '@badman/frontend-pdf';
 import { SeoService } from '@badman/frontend-seo';
 import { getSeason } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { connect } from 'ngxtension/connect';
@@ -47,7 +47,7 @@ import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
     SelectTeamComponent,
     SelectEncounterComponent,
     SelectSeasonComponent,
-    TranslateModule,
+    TranslatePipe,
     MatIconModule,
     MatButtonModule,
     AssemblyComponent,

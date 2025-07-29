@@ -1,22 +1,21 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, inject, input, model, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SelectClubsService } from './select-club.service';
 
 @Component({
     selector: 'badman-select-club',
     imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MtxSelectModule,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MtxSelectModule
+],
     templateUrl: './select-club.component.html',
     styleUrls: ['./select-club.component.scss']
 })
@@ -77,10 +76,7 @@ export class SelectClubSignalsComponent {
         ) {
           this.club.set(this.possibleClubs()[0].id);
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 }

@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HasClaimComponent } from '@badman/frontend-components';
 import { Player } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { throttleTime, map } from 'rxjs';
 
@@ -14,12 +14,11 @@ import { throttleTime, map } from 'rxjs';
     templateUrl: './edit-competition-status.component.html',
     styleUrls: ['./edit-competition-status.component.scss'],
     imports: [
-        CommonModule,
-        HasClaimComponent,
-        MatSlideToggleModule,
-        ReactiveFormsModule,
-        TranslateModule,
-    ],
+    HasClaimComponent,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    TranslatePipe
+],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditCompetitionStatusComponent implements OnInit {

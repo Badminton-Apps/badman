@@ -1,25 +1,24 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-player-fields',
     templateUrl: './player-fields.component.html',
     styleUrls: ['./player-fields.component.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSelectModule,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule
+]
 })
 export class PlayerFieldsComponent {
   group = input<FormGroup>(PlayerFieldsComponent.newPlayerForm());

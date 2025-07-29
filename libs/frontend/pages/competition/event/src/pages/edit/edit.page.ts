@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Signal, TemplateRef, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -27,7 +27,7 @@ import {
 import { EventCompetition, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { LevelType, SecurityType } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
@@ -42,7 +42,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { EVENT_QUERY } from '../../resolvers';
+import { EVENT_QUERY } from '../../queries';
 import { EventCompetitionLevelFieldsComponent } from './components';
 
 export type ExceptionType = FormGroup<{
@@ -71,9 +71,8 @@ const roleQuery = gql`
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
   imports: [
-    CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -94,8 +93,8 @@ const roleQuery = gql`
     EditRoleComponent,
     SelectCountryComponent,
     SelectCountrystateComponent,
-    PlayerSearchComponent,
-  ],
+    PlayerSearchComponent
+],
 })
 export class EditPageComponent {
   private readonly destroy$ = injectDestroy();

@@ -4,7 +4,7 @@ import { VisualService } from '@badman/backend-visual';
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { Transaction } from 'sequelize';
 
 @Processor({

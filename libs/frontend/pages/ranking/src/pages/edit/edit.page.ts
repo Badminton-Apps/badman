@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -22,7 +22,6 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -78,24 +77,22 @@ const FETCH_SYSTEM = gql`
 `;
 
 @Component({
-    selector: 'badman-ranking-edit',
-    templateUrl: './edit.page.html',
-    styleUrls: ['./edit.page.scss'],
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        MomentModule,
-        MatButtonModule,
-        MatTableModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatMenuModule,
-        MatSnackBarModule,
-        RankingSystemFieldsComponent,
-    ]
+  selector: 'badman-ranking-edit',
+  templateUrl: './edit.page.html',
+  styleUrls: ['./edit.page.scss'],
+  imports: [
+    RouterModule,
+    ReactiveFormsModule,
+    MomentModule,
+    MatButtonModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatMenuModule,
+    MatSnackBarModule,
+    RankingSystemFieldsComponent
+],
 })
 export class EditPageComponent {
   // injects

@@ -18,7 +18,9 @@
         <mat-form-field>
           <mat-label>Type</mat-label>
           <mat-select formControlName="type" [required]="true">
-            <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
+            @for (type of types; track type) {
+              <mat-option [value]="type">{{ type }}</mat-option>
+            }
           </mat-select>
         </mat-form-field>
       </div>
@@ -183,15 +185,15 @@
       linkType="competition"
       [linkId]="this.eventCompetition()?.id!"
       (whenRoleAdded)="this.roleChanged$.next()"
-    />
-  </h2>
-  @if (this.roles) {
-    <div class="roles">
-      @for (role of this.roles(); track role) {
-        @if (role.id) {
-          <badman-edit-role [roleId]="role.id" [type]="[securityTypes.COMPETITION]" />
+      />
+    </h2>
+    @if (this.roles) {
+      <div class="roles">
+        @for (role of this.roles(); track role) {
+          @if (role.id) {
+            <badman-edit-role [roleId]="role.id" [type]="[securityTypes.COMPETITION]" />
+          }
         }
-      }
-    </div>
-  }
-</badman-has-claim>
+      </div>
+    }
+  </badman-has-claim>

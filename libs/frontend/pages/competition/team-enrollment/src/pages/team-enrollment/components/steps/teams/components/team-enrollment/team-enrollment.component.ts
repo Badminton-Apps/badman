@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Signal,
@@ -35,7 +35,7 @@ import {
   ValidationMessage,
 } from '@badman/frontend-models';
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 import { TeamForm } from '../../../../../team-enrollment.page';
 import { TeamComponent } from '../team';
@@ -44,19 +44,18 @@ import { getNewTypeAndLevel } from '../utils/get-next-level';
 @Component({
     selector: 'badman-team-enrollment',
     imports: [
-        CommonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatIconModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TeamComponent,
-        EnrollmentMessageComponent,
-        TranslateModule,
-    ],
+    MatFormFieldModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TeamComponent,
+    EnrollmentMessageComponent,
+    TranslatePipe
+],
     templateUrl: './team-enrollment.component.html',
     styleUrls: ['./team-enrollment.component.scss']
 })
@@ -169,10 +168,7 @@ export class TeamEnrollmentComponent {
             this.subEvent().disable();
           }
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 

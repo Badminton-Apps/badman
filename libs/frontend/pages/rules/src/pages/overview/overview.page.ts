@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { PageHeaderComponent } from '@badman/frontend-components';
 import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-ranking-overview',
@@ -14,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
         MatButtonModule,
         MatIconModule,
         MatMenuModule,
-        TranslateModule,
+        TranslatePipe,
         MtxGridModule,
         PageHeaderComponent,
     ]

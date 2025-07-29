@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, inject, OnInit, output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { input } from '@angular/core';
 import { EncounterCompetition } from '@badman/frontend-models';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
@@ -17,17 +17,16 @@ import { DateSelectorComponent } from '../../../../components';
 @Component({
     selector: 'badman-request-date',
     imports: [
-        CommonModule,
-        DateSelectorComponent,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        MatSelectModule,
-        MatIconModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatTooltipModule,
-    ],
+    DateSelectorComponent,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    MatSelectModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatTooltipModule
+],
     templateUrl: './request-date.component.html',
     styleUrls: ['./request-date.component.scss']
 })

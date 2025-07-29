@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -11,7 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SelectPlayerComponent } from '@badman/frontend-components';
 import { Game, Player, GamePlayer, RankingPoint, RankingSystem } from '@badman/frontend-models';
 import { GameType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { gql } from 'apollo-angular';
 import { DocumentNode } from 'graphql';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,18 +21,17 @@ import { v4 as uuidv4 } from 'uuid';
     templateUrl: './add-game.component.html',
     styleUrls: ['./add-game.component.scss'],
     imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatSlideToggleModule,
-        MatFormFieldModule,
-        MatAutocompleteModule,
-        MatOptionModule,
-        MatInputModule,
-        MatButtonModule,
-        SelectPlayerComponent,
-    ]
+    TranslatePipe,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    MatInputModule,
+    MatButtonModule,
+    SelectPlayerComponent
+]
 })
 export class AddGameComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<AddGameComponent>>(MatDialogRef<AddGameComponent>);

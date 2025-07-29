@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -7,7 +7,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { Ranking } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { ApexAxisChartSeries, ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { combineLatest, Observable } from 'rxjs';
@@ -15,20 +15,19 @@ import { map, take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-    selector: 'badman-competition-detail-avg',
-    templateUrl: './detail-avg.page.html',
-    styleUrls: ['./detail-avg.page.scss'],
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        NgApexchartsModule,
-        MatProgressBarModule,
-        MatButtonModule,
-        MatIconModule,
-        LoadingBlockComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-competition-detail-avg',
+  templateUrl: './detail-avg.page.html',
+  styleUrls: ['./detail-avg.page.scss'],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgApexchartsModule,
+    MatProgressBarModule,
+    MatButtonModule,
+    MatIconModule,
+    LoadingBlockComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailAvgPageComponent implements OnInit {
   private readonly translate = inject(TranslateService);

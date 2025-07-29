@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -23,7 +23,7 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
 
 @Component({
     selector: 'badman-competition-map',
-    imports: [CommonModule, GoogleMapsModule, MatProgressBarModule, MatCheckboxModule],
+    imports: [GoogleMapsModule, MatProgressBarModule, MatCheckboxModule],
     templateUrl: './competition-map.component.html',
     styleUrls: ['./competition-map.component.scss'],
     providers: [provideAnimations()]
@@ -190,7 +190,6 @@ export class CompetitionMapComponent implements OnInit {
       },
       {
         injector: this.injector,
-        allowSignalWrites: true,
       },
     );
   }

@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -29,7 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { BadmanBlockModule, EnrollmentMessageComponent } from '@badman/frontend-components';
 import { Club, Comment, EventCompetition, Location, Team } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { of } from 'rxjs';
@@ -39,7 +39,6 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
 @Component({
   selector: 'badman-club-competition',
   imports: [
-    CommonModule,
     MatTableModule,
     MatExpansionModule,
     MatCardModule,
@@ -52,13 +51,13 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     MatMenuModule,
     MatButtonModule,
     MomentModule,
-    TranslateModule,
+    TranslatePipe,
     CdkTableModule,
     CdkTreeModule,
     EnrollmentDetailRowDirective,
     EnrollmentMessageComponent,
-    BadmanBlockModule,
-  ],
+    BadmanBlockModule
+],
   templateUrl: './club-competition.component.html',
   styleUrls: ['./club-competition.component.scss'],
   providers: [provideAnimations()],

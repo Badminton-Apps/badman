@@ -1,5 +1,5 @@
 import { Club, ClubPlayer } from '@badman/frontend-models';
-import { startOfSeason } from '@badman/utils';
+import { endOfSeason, startOfSeason } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -40,8 +40,8 @@ export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, sea
         where: {
           '$ClubPlayerMembership.start$': {
             $gte: startOfSeason(season),
+            $lte: endOfSeason(season),
           },
-          '$ClubPlayerMembership.end$': null,
         },
       },
     })

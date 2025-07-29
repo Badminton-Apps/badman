@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/twizzit"],
       "options": {
-        "project": "libs/frontend/modules/twizzit/ng-package.json"
+        "project": "libs/frontend/modules/twizzit/ng-package.json",
+        "tsConfig": "libs/frontend/modules/twizzit/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
@@ -23,16 +24,27 @@
       "defaultConfiguration": "production"
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/frontend/modules/twizzit"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/frontend/modules/twizzit",
+        "{workspaceRoot}\\coverage\\libs\\frontend\\modules\\twizzit"
+      ],
       "options": {
-        "jestConfig": "libs/frontend/modules/twizzit/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "eslintConfig": "libs/frontend/modules/twizzit/eslint.config.js"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     }
   }

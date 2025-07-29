@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectorRef,
   Component,
@@ -13,7 +13,13 @@ import {
   viewChild,
   viewChildren,
 } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -30,33 +36,36 @@ import {
   UseForTeamName,
   getLetterForRegion,
 } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { combineLatest } from 'rxjs';
 import { debounceTime, map, pairwise, startWith, takeUntil } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
-import { LOCATIONS, TEAMS, TRANSFERS_LOANS } from '../../../../../forms';
+import { LOCATIONS, NATIONAL_COUNTS_AS_MIXED, TEAMS, TRANSFERS_LOANS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { TeamForm } from '../../../team-enrollment.page';
 import { TeamEnrollmentComponent } from './components';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
-    selector: 'badman-teams-step',
-    imports: [
-        CommonModule,
-        TranslateModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDialogModule,
-        MatSnackBarModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatDividerModule,
-        MatProgressBarModule,
-        TeamEnrollmentComponent,
-    ],
-    templateUrl: './teams.step.html',
-    styleUrls: ['./teams.step.scss']
+  selector: 'badman-teams-step',
+  imports: [
+    TranslatePipe,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatDividerModule,
+    MatProgressBarModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TeamEnrollmentComponent
+],
+  templateUrl: './teams.step.html',
+  styleUrls: ['./teams.step.scss'],
 })
 export class TeamsStepComponent {
   private readonly destroy$ = injectDestroy();
@@ -91,6 +100,10 @@ export class TeamsStepComponent {
   );
   loans = computed(
     () => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>,
+  );
+
+  nationalCountsAsMixed = computed(
+    () => this.formGroup().get(NATIONAL_COUNTS_AS_MIXED) as FormControl<boolean>,
   );
 
   teamNumbers = computed(() => {
@@ -252,7 +265,14 @@ export class TeamsStepComponent {
   private setTeamnumbers() {
     const club = this.club();
     if (!club) return;
+
     for (const type of this.eventTypes) {
+      let offset = 0;
+      if (type == SubEventTypeEnum.MX && this.nationalCountsAsMixed().value) {
+        const nationalTeams = this.teams().get(SubEventTypeEnum.NATIONAL) as FormArray<TeamForm>;
+        offset = nationalTeams?.value.length ?? 0;
+      }
+
       const teams = this.teams().get(type) as FormArray<TeamForm>;
       if (!teams) continue;
 
@@ -261,7 +281,7 @@ export class TeamsStepComponent {
         if (!team) continue;
         if (!team.value) continue;
 
-        team.value.teamNumber = i + 1;
+        team.value.teamNumber = i + offset + 1;
         team.value.name = this.getTeamName(team.value, club);
       }
     }

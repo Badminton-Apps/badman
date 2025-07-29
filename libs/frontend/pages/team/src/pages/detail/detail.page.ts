@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   PLATFORM_ID,
@@ -24,7 +24,7 @@ import { EventEntry, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { getSeason } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
@@ -37,18 +37,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     templateUrl: './detail.page.html',
     styleUrls: ['./detail.page.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatMenuModule,
-        RecentGamesComponent,
-        UpcomingGamesComponent,
-        PageHeaderComponent,
-        MatDialogModule,
-    ]
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    RecentGamesComponent,
+    UpcomingGamesComponent,
+    PageHeaderComponent,
+    MatDialogModule
+]
 })
 export class DetailPageComponent {
   private apollo = inject(Apollo);

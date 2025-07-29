@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -7,19 +7,18 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { ClubMembershipType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-user-shortcuts',
     imports: [
-        CommonModule,
-        TranslateModule,
-        MatListModule,
-        MatDividerModule,
-        RouterModule,
-        MatExpansionModule,
-        MatIconModule,
-    ],
+    TranslatePipe,
+    MatListModule,
+    MatDividerModule,
+    RouterModule,
+    MatExpansionModule,
+    MatIconModule
+],
     templateUrl: './user-shortcuts.component.html',
     styleUrls: ['./user-shortcuts.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

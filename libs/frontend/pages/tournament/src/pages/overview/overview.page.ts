@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   AfterViewInit,
   Component,
@@ -34,7 +34,7 @@ import { JobsService } from '@badman/frontend-queue';
 import { EventTournament } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, lastValueFrom, merge } from 'rxjs';
@@ -63,27 +63,26 @@ const FETCH_TOURNAMENTS = gql`
     templateUrl: './overview.page.html',
     styleUrls: ['./overview.page.scss'],
     imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        MomentModule,
-        HasClaimComponent,
-        MatCardModule,
-        MatButtonModule,
-        MatTableModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatProgressSpinnerModule,
-        MatSlideToggleModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSnackBarModule,
-        MatDialogModule,
-    ]
+    RouterModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    MomentModule,
+    HasClaimComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule,
+    MatDialogModule
+]
 })
 export class OverviewPageComponent implements OnInit, AfterViewInit {
   private seoService = inject(SeoService);

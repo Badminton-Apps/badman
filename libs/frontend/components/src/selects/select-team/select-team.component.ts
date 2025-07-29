@@ -16,7 +16,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import {
@@ -38,7 +38,7 @@ import {
     selector: 'badman-select-team',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         FormsModule,
         MatFormFieldModule,

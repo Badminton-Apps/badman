@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'badman-page-header',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './page-header.component.html',
     styleUrls: ['./page-header.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
