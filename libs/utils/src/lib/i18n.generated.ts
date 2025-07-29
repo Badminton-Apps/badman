@@ -3324,7 +3324,11 @@ export type I18nTranslations = {
                     "set3": string;
                     "startTime": string;
                     "endTime": string;
-                    "shuttle": string;
+                    "shuttle": {
+                        "title": string;
+                        "helpText": string;
+                        "helpLink": string;
+                    };
                     "commentsOptional": string;
                 };
                 "positions": {
@@ -3931,7 +3935,11 @@ export type I18nTranslations = {
                 "set3": string;
                 "startTime": string;
                 "endTime": string;
-                "shuttle": string;
+                "shuttle": {
+                    "title": string;
+                    "helpText": string;
+                    "helpLink": string;
+                };
                 "commentsOptional": string;
             };
             "positions": {
