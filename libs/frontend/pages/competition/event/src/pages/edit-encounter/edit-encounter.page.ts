@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,7 @@ import { GameScoreComponentComponent } from '@badman/frontend-components';
 import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { gameLabel } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ReplacePlayerComponent } from '../../dialogs';
 
@@ -20,16 +20,15 @@ import { ReplacePlayerComponent } from '../../dialogs';
     styleUrls: ['./edit-encounter.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        TranslateModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatMenuModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatDialogModule,
-        GameScoreComponentComponent,
-    ]
+    TranslatePipe,
+    MatFormFieldModule,
+    MatInputModule,
+    MatMenuModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    GameScoreComponentComponent
+]
 })
 export class EditEncounterComponent implements OnInit {
   private seoService = inject(SeoService);

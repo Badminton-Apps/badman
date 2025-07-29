@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,7 +17,7 @@ import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
@@ -27,13 +27,12 @@ import { BetaComponent } from './components';
 @Component({
     selector: 'badman-landing',
     imports: [
-        CommonModule,
-        BetaComponent,
-        TranslateModule,
-        MatIconModule,
-        UpcomingGamesComponent,
-        RankingTableComponent,
-    ],
+    BetaComponent,
+    TranslatePipe,
+    MatIconModule,
+    UpcomingGamesComponent,
+    RankingTableComponent
+],
     templateUrl: './landing.component.html',
     styleUrls: ['./landing.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -75,7 +74,6 @@ export class LandingComponent implements OnInit {
         });
       },
       {
-        // allowSignalWrites: true,
         injector: this.injector,
       },
     );

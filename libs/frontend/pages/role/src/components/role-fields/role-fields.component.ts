@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ClaimComponent } from '@badman/frontend-components';
 import { Claim, Role } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-role-fields',
@@ -14,14 +14,13 @@ import { TranslateModule } from '@ngx-translate/core';
     styleUrls: ['./role-fields.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        MatInputModule,
-        MatButtonModule,
-        MatIconModule,
-        ClaimComponent,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    ClaimComponent
+]
 })
 export class RoleFieldsComponent implements OnInit {
   role = input<Role>({} as Role);

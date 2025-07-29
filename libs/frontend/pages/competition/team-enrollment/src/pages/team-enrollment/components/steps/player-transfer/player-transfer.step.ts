@@ -21,7 +21,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { SelectPlayerSignalsComponent } from '@badman/frontend-components';
 import { Player } from '@badman/frontend-models';
 import { ClubMembershipType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
 import { TRANSFERS_LOANS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
@@ -35,7 +35,7 @@ import { TeamEnrollmentDataService } from '../../../service/team-enrollment.serv
         MatButtonModule,
         MatTooltipModule,
         MatDialogModule,
-        TranslateModule,
+        TranslatePipe,
         SelectPlayerSignalsComponent,
     ],
     templateUrl: './player-transfer.step.html',

@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -16,7 +16,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
 import { Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -34,20 +34,19 @@ import {
     templateUrl: './edit.page.html',
     styleUrls: ['./edit.page.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslateModule,
-        EditRankingComponent,
-        EditCompetitionStatusComponent,
-        EditRankingAllComponent,
-        EditClubHistoryComponent,
-        EditPermissionsComponent,
-        EditPlayerFieldsComponent,
-        MatIconModule,
-        MatTabsModule,
-        MatButtonModule,
-    ],
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    EditRankingComponent,
+    EditCompetitionStatusComponent,
+    EditRankingAllComponent,
+    EditClubHistoryComponent,
+    EditPermissionsComponent,
+    EditPlayerFieldsComponent,
+    MatIconModule,
+    MatTabsModule,
+    MatButtonModule
+],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditPageComponent implements AfterViewInit {

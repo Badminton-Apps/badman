@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,24 +6,20 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 @Component({
     imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatInputModule,
-        MatSlideToggleModule,
-        MtxDatetimepickerModule,
-        MtxMomentDatetimeModule
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule,
+    MatSlideToggleModule,
+    MtxDatetimepickerModule
+],
     templateUrl: './set-encounter-date.component.html',
     styleUrls: ['./set-encounter-date.component.scss']
 })

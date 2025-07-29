@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -17,20 +17,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { transferState } from '@badman/frontend-utils';
 import { getSeason } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
     selector: 'badman-select-season',
     imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatSelectModule,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule
+],
     templateUrl: './select-season.component.html',
     styleUrls: ['./select-season.component.scss']
 })

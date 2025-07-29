@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,7 +14,7 @@ import {
 } from '@badman/frontend-components';
 import { DrawCompetition, EventCompetition, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
@@ -27,9 +27,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatTooltipModule,
     MatIconModule,
     MatButtonModule,
@@ -38,8 +37,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
-    MatMenuModule,
-  ],
+    MatMenuModule
+],
 })
 export class DetailDrawCompetitionComponent {
   private readonly destroy$ = injectDestroy();
@@ -81,6 +80,22 @@ export class DetailDrawCompetitionComponent {
         mutation: gql`
           mutation RecalculateDrawCompetitionRankingPoints($drawId: ID!) {
             recalculateDrawCompetitionRankingPoints(drawId: $drawId)
+          }
+        `,
+        variables: {
+          drawId: this.drawCompetition()?.id,
+        },
+      })
+      .pipe(take(1))
+      .subscribe();
+  }
+
+  reCalculateStanding() {
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation RecalculateStandingDraw($drawId: ID!) {
+            recalculateStandingDraw(drawId: $drawId)
           }
         `,
         variables: {

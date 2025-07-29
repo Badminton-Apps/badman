@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,7 +17,7 @@ import {
 import { JobsService } from '@badman/frontend-queue';
 import { RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { take } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -28,21 +28,20 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     templateUrl: './detail.page.html',
     styleUrls: ['./detail.page.scss'],
     imports: [
-        CommonModule,
-        TranslateModule,
-        RouterModule,
-        MomentModule,
-        MatIconModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatChipsModule,
-        MatTooltipModule,
-        MatDialogModule,
-        MatDividerModule,
-        PageHeaderComponent,
-        RankingTableComponent,
-        HasClaimComponent,
-    ]
+    TranslatePipe,
+    RouterModule,
+    MomentModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatDividerModule,
+    PageHeaderComponent,
+    RankingTableComponent,
+    HasClaimComponent
+]
 })
 export class DetailPageComponent {
   private route = inject(ActivatedRoute);

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +13,7 @@ import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { SeoService } from '@badman/frontend-seo';
 import { DEVICE } from '@badman/frontend-utils';
 import { getSeason } from '@badman/utils';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -24,16 +24,15 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
   templateUrl: './change-encounter.component.html',
   styleUrls: ['./change-encounter.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
-    TranslateModule,
+    TranslatePipe,
     MatIconModule,
     SelectClubComponent,
     SelectTeamComponent,
     SelectSeasonComponent,
     ListEncountersComponent,
-    ShowRequestsComponent,
-  ],
+    ShowRequestsComponent
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeEncounterComponent implements OnInit {

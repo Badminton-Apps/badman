@@ -4,9 +4,9 @@ import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { Club, Location } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LocationDialogFieldsComponent } from './components';
@@ -17,16 +17,15 @@ import { MatIconModule } from '@angular/material/icon';
     templateUrl: './location-dialog.component.html',
     styleUrls: ['./location-dialog.component.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        MatSelectModule,
-        MatDialogModule,
-        MatProgressBarModule,
-        MatButtonModule,
-        MatIconModule,
-        LocationDialogFieldsComponent,
-    ]
+    ReactiveFormsModule,
+    TranslatePipe,
+    MatSelectModule,
+    MatDialogModule,
+    MatProgressBarModule,
+    MatButtonModule,
+    MatIconModule,
+    LocationDialogFieldsComponent
+]
 })
 export class LocationDialogComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<LocationDialogComponent>>(

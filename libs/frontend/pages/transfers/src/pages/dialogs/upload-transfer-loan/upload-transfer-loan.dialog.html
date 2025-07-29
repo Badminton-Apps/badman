@@ -1,4 +1,12 @@
-<h1 mat-dialog-title>{{ 'all.transfers-loan.upload.title' | translate }}</h1>
+<h1 mat-dialog-title>
+  {{
+  'all.transfers-loan.upload.title'
+  | translate
+  : {
+  season: this.data.season,
+}
+}}
+</h1>
 <div mat-dialog-content>
   <p [innerHTML]="'all.transfers-loan.upload.description' | translate"></p>
   @if (!this.uploadedFile) {
@@ -9,7 +17,7 @@
       (dragleave)="onDragLeave($event)"
       (drop)="onFileDrop($event)"
       (click)="onCLick($event)"
-    >
+      >
       <p>{{ 'all.transfers-loan.upload.hint' | translate }}</p>
     </div>
   }
@@ -30,7 +38,7 @@
   @if (uploadedFile) {
     <h3>Options</h3>
     <div class="options">
-      <badman-select-season [(value)]="this.season"></badman-select-season>
+      <badman-select-season [(value)]="this.data.season"></badman-select-season>
 
       <mat-form-field>
         <mat-label>{{ 'all.transfers-loan.upload.file-type' | translate }}</mat-label>
@@ -47,9 +55,11 @@
         </mat-select>
       </mat-form-field>
       <!-- show error if the value is null -->
-      <mat-error *ngIf="this.transferOrLoan === null"
-        >{{ 'all.transfers-loan.upload.error' | translate }}
-      </mat-error>
+      @if (this.transferOrLoan === null) {
+        <mat-error
+          >{{ 'all.transfers-loan.upload.error' | translate }}
+        </mat-error>
+      }
     </div>
   }
 </div>
@@ -61,7 +71,7 @@
     [disabled]="!this.uploadedFile || this.uploading || this.processing"
     color="primary"
     (click)="processData()"
-  >
+    >
     Process
   </button>
 </div>

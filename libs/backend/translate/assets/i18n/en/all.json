@@ -23,6 +23,7 @@
     "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Previous",
     "re-sync": "Recalculate points",
+    "re-sync-standings": "Recalculate standings",
     "save": "Save",
     "save-and-continue": "Save and continue",
     "set-primary": "Make primary",
@@ -206,6 +207,10 @@
       "dates": "Change dates",
       "download-base-players": "Download base players",
       "download-cp": "Download cp file",
+      "download-teams": "Download teams",
+      "download-exceptions": "Download exceptions",
+      "download-locations": "Download locations",
+      "export-planner": "Export planner (json)",
       "make-official": "Make official tournament",
       "new-date": "New date",
       "open_close_change-encounters": "Open/close move encounters",
@@ -330,7 +335,7 @@
         "riser": "The team should promote, but is not enrolled in a higher series",
         "team-index": "Strongest setup setup is not possible. The team index is <strong>{teamIndex}</strong> and the base team index is <strong>{baseIndex}</strong>.",
         "team-order": "Team <strong>{team.name}</strong> is in a lower series but has a lower team number",
-        "team-order-same-subevent": "Team <strong>{team.name}</strong> has a better index in the same range, but has a lower team number",
+        "team-order-same-subevent": "Team <strong>{team.name}</strong> has a weaker team index in the same division, but has a lower team number",
         "team-to-strong": "Team index baseplayers equals <strong>{baseIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
         "team-to-week": "Team index starting players is <strong>{baseIndex}</strong> and may not exceed the limit of the division <strong>{maxIndex}</strong> ",
         "title": "Errors",
@@ -353,6 +358,7 @@
         "courts-hint": "Change the number of available fields",
         "title": "Locations"
       },
+      "mixed-national-teams": "National teams are counted in the numbering of mixed teams. (Example, you have 3 teams: Checked: 'National 1, National 2, Team 3G'. Unchecked: 'National 1, National 2, Team 1G')",
       "open": "Open",
       "play-days": "Game days",
       "players": {
@@ -388,10 +394,12 @@
       "transfer": {
         "add-transfer": "New transfer",
         "enrolled-as": "enrolled as",
+        "loans": "Lending",
         "transfer-locked": "Transfer has already been confirmed, removing it is no longer possible",
         "transfer-player": "Transferred player",
         "transfer-teams": "Transfer teams (optional)",
         "transfer-teams-description": "If you would like to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you can transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nThe order in which you check your shifts will determine the order (check everything in the correct order)\n\nYou can still change the team numbers in the next step.",
+        "transfers": "Transfers",
         "transfers-players": "Transfers and loans"
       },
       "validations": "Validations",
@@ -1338,6 +1346,7 @@
   },
   "tournament": {
     "away": "Away",
+    "closeDate": "Closing entries",
     "delete": {
       "description": "Are you sure you want to delete this tournament?",
       "title": "Delete Tournament"
@@ -1352,13 +1361,17 @@
       "open": "Open",
       "title": "Enrollments"
     },
+    "firstDay": "First Day",
     "home": "Home",
     "last-updated": "Changed on",
     "load-more": "load more",
     "menu": {
       "add-event": "Add event"
     },
+    "name": "Tournament",
     "note": "note: Changes are saved directly",
+    "official": "Official",
+    "openDate": "Opening entries",
     "overview": {
       "date": "Date",
       "menu": {
@@ -1379,7 +1392,9 @@
       "min-base": "Min basis team index"
     },
     "title": "Tournament",
+    "tournamentNumber": "Tournament number",
     "type": "Type",
+    "visualCode": "Toernooi.nl Code",
     "vs": "against",
     "vs-short": "vs"
   },
@@ -1392,6 +1407,7 @@
     "filter": {
       "current-club": "Current club",
       "new-club": "New club",
+      "only-confirmed": "Confirmed",
       "player": "Player"
     },
     "title": "Transfers / loans",
@@ -1401,7 +1417,7 @@
       "file-type": "Transfer or loan file",
       "hint": "Drag your file here",
       "loan-file": "Loan file",
-      "title": "Upload transfer / loan file",
+      "title": "Upload transfer/loan file for {season}",
       "transfer-file": "Transfer file",
       "unkown": "Unknown"
     }
@@ -3250,7 +3266,11 @@
         "set3": "Game 3",
         "startTime": "Start time",
         "endTime": "End time",
-        "shuttle": "Shuttle",
+        "shuttle": {
+          "title": "Shuttle",
+          "helpText": "List of approved shuttles",
+          "helpLink": "https://www.badmintonvlaanderen.be/file/973717/?dl=1"
+        },
         "commentsOptional": "Comments (optional)"
       },
       "positions": {

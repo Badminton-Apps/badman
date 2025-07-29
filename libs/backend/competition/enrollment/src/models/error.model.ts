@@ -10,6 +10,9 @@ export class EnrollmentValidationError {
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   params?: unknown;
+
+  @Field(() => String, { nullable: true })
+  id?: string;
 }
 
 @ObjectType()

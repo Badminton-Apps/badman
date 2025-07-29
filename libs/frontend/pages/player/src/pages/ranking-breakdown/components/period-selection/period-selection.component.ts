@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ViewChild, computed, inject, input, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { RankingSystem } from '@badman/frontend-models';
 import { getRankingPeriods } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { RankingBreakdownService } from '../../services/ranking-breakdown.service';
@@ -21,19 +21,18 @@ import { RankingBreakdownService } from '../../services/ranking-breakdown.servic
     templateUrl: './period-selection.component.html',
     styleUrls: ['./period-selection.component.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslateModule,
-        MomentModule,
-        MatIconModule,
-        MatButtonModule,
-        MatTooltipModule,
-        MatFormFieldModule,
-        MatDatepickerModule,
-        MatMenuModule,
-        MatDividerModule,
-    ]
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    MomentModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatMenuModule,
+    MatDividerModule
+]
 })
 export class PeriodSelectionComponent {
   private readonly breakdownService = inject(RankingBreakdownService);

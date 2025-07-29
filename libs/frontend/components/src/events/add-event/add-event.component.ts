@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,20 +6,19 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-add-event',
     imports: [
-        CommonModule,
-        MatFormFieldModule,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatInputModule,
-        MatSlideToggleModule,
-        TranslateModule,
-    ],
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatSlideToggleModule,
+    TranslatePipe
+],
     templateUrl: './add-event.component.html',
     styleUrls: ['./add-event.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

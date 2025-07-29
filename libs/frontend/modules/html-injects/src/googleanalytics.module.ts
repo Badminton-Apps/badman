@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Inject, InjectionToken, ModuleWithProviders, NgModule, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, InjectionToken, ModuleWithProviders, NgModule, PLATFORM_ID, DOCUMENT } from '@angular/core';
 
 function scriptconfig(tag: string): string {
   return `

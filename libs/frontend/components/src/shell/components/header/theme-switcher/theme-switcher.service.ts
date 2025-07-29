@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformServer } from '@angular/common';
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
+import { Injectable, PLATFORM_ID, inject, DOCUMENT } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 
 @Injectable({

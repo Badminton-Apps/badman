@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -31,7 +31,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BadmanBlockModule, HasClaimComponent } from '@badman/frontend-components';
 import { Club, Location } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, MutationResult, gql } from 'apollo-angular';
 import { Observable, forkJoin } from 'rxjs';
 import { ChoosePeriodDialogComponent } from './dialogs/choose-period-dialog.component';
@@ -77,26 +77,25 @@ export type LocationForm = FormGroup<{
     styleUrls: ['./club-edit-location.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatDividerModule,
-        MatMenuModule,
-        MatIconModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatOptionModule,
-        MatDatepickerModule,
-        MatTooltipModule,
-        TranslateModule,
-        MatListModule,
-        MatSelectModule,
-        MatInputModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatBadgeModule,
-        HasClaimComponent,
-        BadmanBlockModule,
-    ]
+    ReactiveFormsModule,
+    MatDividerModule,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatDatepickerModule,
+    MatTooltipModule,
+    TranslatePipe,
+    MatListModule,
+    MatSelectModule,
+    MatInputModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatBadgeModule,
+    HasClaimComponent,
+    BadmanBlockModule
+]
 })
 export class ClubEditLocationComponent implements OnInit {
   private formBuilder = inject(FormBuilder);

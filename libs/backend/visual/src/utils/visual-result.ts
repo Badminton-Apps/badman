@@ -1,4 +1,3 @@
- 
 export interface XmlResult {
   Tournament?: XmlTournament | XmlTournament[];
   TournamentMatch?: XmlTournamentMatch;
@@ -342,5 +341,3 @@ export enum XmlScoreStatus {
   Disqualified = 3,
   'No Match' = 4,
 }
-
- 

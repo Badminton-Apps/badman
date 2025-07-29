@@ -1,12 +1,16 @@
 {
   "name": "@badman/backend-queue",
-  "version": "6.176.0",
+  "version": "6.185.0",
   "dependencies": {
-    "@badman/utils": "6.176.0",
-    "@nestjs/common": "^10.3.10",
-    "@nestjs/config": "^3.2.3",
-    "@nestjs/bull": "^10.1.1",
-    "tslib": "^2.8.1"
+    "@badman/utils": "6.185.0",
+    "tslib": "^2.8.1",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/bull": "^10.2.3",
+    "bull": "^4.16.5",
+    "sequelize": "^6.37.5",
+    "sequelize-typescript": "^2.1.6",
+    "uuid": "^11.0.5"
   },
   "type": "commonjs",
   "main": "./src/index.js",

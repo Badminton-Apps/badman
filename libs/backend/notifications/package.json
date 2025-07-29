@@ -1,17 +1,17 @@
 {
   "name": "@badman/backend-notifications",
-  "version": "6.176.0",
+  "version": "6.185.0",
   "dependencies": {
-    "@badman/backend-database": "6.176.0",
-    "@badman/utils": "6.176.0",
-    "@nestjs/common": "^10.3.8",
-    "@nestjs/config": "^3.2.2",
-    "@badman/backend-mailing": "6.176.0",
-    "@badman/backend-change-encounter": "6.176.0",
+    "@badman/backend-database": "6.185.0",
+    "@badman/utils": "6.185.0",
+    "@badman/backend-mailing": "6.185.0",
+    "@badman/backend-change-encounter": "6.185.0",
+    "tslib": "^2.8.1",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
     "web-push": "^3.6.7",
     "moment": "^2.30.1",
-    "nestjs-i18n": "^10.4.5",
-    "tslib": "^2.8.1"
+    "nestjs-i18n": "^10.5.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

@@ -104,7 +104,7 @@ export class DrawTournamentProcessor {
 
     // delete the data and reuse the guid
     const drawId = draw?.id;
-    const drawCode = draw?.visualCode || job.data.drawCode.toString();
+    const drawCode = draw?.visualCode || job.data?.drawCode?.toString();
     const existing = {
       existed: false,
       games: job.data?.games || [],
@@ -139,12 +139,11 @@ export class DrawTournamentProcessor {
     }
 
     if (!draw) {
-      draw = new DrawTournament();
+      draw = new DrawTournament({
+        id: drawId ? drawId : undefined,
+      });
     }
-    if (drawId) {
-      draw.id = drawId;
-    }
-
+   
     draw.subeventId = subEvent.id;
     draw.visualCode = visualDraw.Code;
     draw.name = visualDraw.Name;

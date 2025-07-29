@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -20,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Claim, Player, Role } from '@badman/frontend-models';
 import { SecurityType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
 import { groupBy, map, mergeMap, shareReplay, toArray } from 'rxjs/operators';
@@ -49,19 +49,18 @@ const roleQuery = gql`
 @Component({
     selector: 'badman-edit-role',
     imports: [
-        CommonModule,
-        TranslateModule,
-        MatButtonModule,
-        MatIconModule,
-        MatDividerModule,
-        MatTooltipModule,
-        MatMenuModule,
-        MatDialogModule,
-        MatListModule,
-        PlayerSearchComponent,
-        ClaimComponent,
-        BadmanBlockModule,
-    ],
+    TranslatePipe,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
+    MatTooltipModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatListModule,
+    PlayerSearchComponent,
+    ClaimComponent,
+    BadmanBlockModule
+],
     templateUrl: './edit-role.component.html',
     styleUrls: ['./edit-role.component.scss']
 })

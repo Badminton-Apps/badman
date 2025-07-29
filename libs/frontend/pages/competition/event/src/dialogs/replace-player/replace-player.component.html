@@ -3,7 +3,7 @@
   <mat-form-field>
     <mat-label>Replacement</mat-label>
     <mat-select>
-      @for (player of players; track player) {
+      @for (player of players; track player.id) {
         <mat-option [value]="player">
           {{ player.fullName }}
         </mat-option>

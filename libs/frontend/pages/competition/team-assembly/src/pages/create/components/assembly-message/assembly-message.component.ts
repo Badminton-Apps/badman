@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, input } from '@angular/core';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ValidationMessage, ValidationPlayer } from '../../models/validation';
 
 @Component({
-    selector: 'badman-assembly-message',
-    imports: [CommonModule, TranslateModule],
-    templateUrl: './assembly-message.component.html',
-    styleUrls: ['./assembly-message.component.scss']
+  selector: 'badman-assembly-message',
+  imports: [CommonModule],
+  templateUrl: './assembly-message.component.html',
+  styleUrls: ['./assembly-message.component.scss'],
 })
 export class AssemblyMessageComponent implements OnInit {
   private translate = inject(TranslateService);

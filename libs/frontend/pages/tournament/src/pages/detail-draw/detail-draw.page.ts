@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,7 +19,7 @@ import {
 } from '@badman/frontend-components';
 import { DrawTournament, EventTournament, Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
@@ -29,16 +29,15 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MatIconModule,
     MatTooltipModule,
     StandingComponent,
     PageHeaderComponent,
     MatButtonModule,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class DetailDrawComponent {
   private readonly route = inject(ActivatedRoute);

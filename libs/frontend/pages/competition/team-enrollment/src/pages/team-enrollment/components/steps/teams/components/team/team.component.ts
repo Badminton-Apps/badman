@@ -35,7 +35,7 @@ import {
   TeamPlayer,
 } from '@badman/frontend-models';
 import { SubEventTypeEnum, TeamMembershipType, getIndexFromPlayers } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
@@ -43,25 +43,25 @@ import { v4 as uuid } from 'uuid';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 
 @Component({
-    selector: 'badman-team',
-    imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatButtonModule,
-        MatInputModule,
-        MatIconModule,
-        MatListModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatSnackBarModule,
-        MatDividerModule,
-        MatTooltipModule,
-        PlayerSearchComponent,
-    ],
-    templateUrl: './team.component.html',
-    styleUrls: ['./team.component.scss']
+  selector: 'badman-team',
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    MatListModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatSnackBarModule,
+    MatDividerModule,
+    MatTooltipModule,
+    PlayerSearchComponent,
+  ],
+  templateUrl: './team.component.html',
+  styleUrls: ['./team.component.scss'],
 })
 export class TeamComponent implements OnInit {
   private readonly dataService = inject(TeamEnrollmentDataService);
@@ -81,6 +81,10 @@ export class TeamComponent implements OnInit {
       name: string;
     }[]
   >();
+
+  where = (type: SubEventTypeEnum) => ({
+    gender: type === 'MX' ? undefined : type,
+  });
 
   teamType = computed(() => {
     if (!this.team()?.value?.type) {
@@ -252,6 +256,15 @@ export class TeamComponent implements OnInit {
     this.checkTeam();
   }
 
+  selectCaptain(player: Player) {
+    this.team().patchValue({
+      ...this.team().value,
+      captainId: player.id,
+      email: player.email,
+      phone: player.phone,
+    } as Team);
+  }
+
   private checkTeam() {
     this.hasWarning = false;
     this.warningMessage = '';
@@ -321,7 +334,6 @@ export class TeamComponent implements OnInit {
           where: {
             playerId: player.id,
             systemId: this.system()?.id,
-
             rankingDate: {
               $lte: moment([this.season(), 5, 10]).toISOString(),
             },

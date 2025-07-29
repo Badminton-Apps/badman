@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,26 +12,25 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 
 @Component({
     imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        MomentModule,
-        MatButtonModule,
-        MatTableModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatMenuModule,
-        MatOptionModule,
-        MatSelectModule,
-        MatSlideToggleModule,
-    ],
+    RouterModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    MomentModule,
+    MatButtonModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatMenuModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatSlideToggleModule
+],
     selector: 'badman-ranking-system-fields',
     templateUrl: './ranking-system-fields.component.html',
     styleUrls: ['./ranking-system-fields.component.scss'],

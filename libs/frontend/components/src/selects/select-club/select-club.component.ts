@@ -24,7 +24,7 @@ import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import { Club } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { ClubMembershipType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import {
@@ -46,7 +46,7 @@ import {
     selector: 'badman-select-club',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         ReactiveFormsModule,
         FormsModule,
         MatFormFieldModule,
