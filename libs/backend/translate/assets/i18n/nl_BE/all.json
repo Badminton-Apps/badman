@@ -3013,7 +3013,11 @@
         "set3": "Game 3",
         "startTime": "Starttijd",
         "endTime": "Eindtijd",
-        "shuttle": "Shuttle",
+        "shuttle": {
+          "title": "Shuttle",
+          "helpText": "Lijst met gehomologeerde shuttles",
+          "helpLink": "https://www.badmintonvlaanderen.be/file/973717/?dl=1"
+        },
         "commentsOptional": "Opmerkingen (optioneel)"
       },
       "buttons": {
