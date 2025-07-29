@@ -41,7 +41,7 @@
           </mat-list-item>
         }
         @if ((this.role()?.players?.length ?? 0) > 0) {
-          @for (player of this.role()?.players; track player) {
+          @for (player of this.role()?.players; track player.id) {
             <div mat-list-item class="player">
               <span mat-line>
                 {{ player.fullName }}

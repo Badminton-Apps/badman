@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import {
   Club,
   EventCompetition,
@@ -8,15 +8,15 @@ import {
   Team,
   ValidationMessage,
 } from '@badman/frontend-models';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 @Component({
-    selector: 'badman-enrollment-message',
-    imports: [CommonModule, TranslateModule],
-    templateUrl: './enrollment-message.component.html',
-    styleUrls: ['./enrollment-message.component.scss']
+  selector: 'badman-enrollment-message',
+  imports: [CommonModule],
+  templateUrl: './enrollment-message.component.html',
+  styleUrls: ['./enrollment-message.component.scss'],
 })
 export class EnrollmentMessageComponent implements OnInit {
   private translate = inject(TranslateService);

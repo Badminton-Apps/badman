@@ -45,7 +45,7 @@ import {
 import { EditDialogComponent } from '@badman/frontend-team';
 import { DEVICE, transferState } from '@badman/frontend-utils';
 import { TeamMembershipType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment, { Moment } from 'moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -91,7 +91,7 @@ export const SAVED_ASSEMBLY = gql`
     selector: 'badman-assembly',
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         TeamAssemblyPlayerComponent,
         PlayerSearchComponent,
         AssemblyMessageComponent,

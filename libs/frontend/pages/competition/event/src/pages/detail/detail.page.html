@@ -11,90 +11,8 @@
         <mat-icon>open_in_new</mat-icon>
       </a>
     }
-    <badman-has-claim
-      [any]="['edit-any:competition', 'delete-any:competition', 'change:job', 're-sync:points']"
-    >
-      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <badman-has-claim [any]="['edit:competition']">
-          <button mat-menu-item [routerLink]="'edit'">
-            <mat-icon>edit</mat-icon>
-            <span>{{ 'all.button.edit' | translate }}</span>
-          </button>
-          @if (this.eventCompetition()?.visualCode) {
-            <badman-has-claim [any]="['change:job']">
-              <button mat-menu-item (click)="syncEvent()">
-                <mat-icon>sync</mat-icon>
-                <span>{{ 'all.competition.menu.sync' | translate }}</span>
-              </button>
-            </badman-has-claim>
-          }
-          <badman-has-claim [all]="['re-sync:points']">
-            <button mat-menu-item (click)="reCalculatePoints()">
-              <mat-icon>sync</mat-icon>
-              <span>{{ 'all.button.re-sync' | translate }}</span>
-            </button>
-          </badman-has-claim>
-          <button mat-menu-item [matMenuTriggerFor]="actions">
-            <mat-icon> more_horiz </mat-icon>
-            <span>{{ 'all.competition.menu.actions' | translate }}</span>
-          </button>
-          <button mat-menu-item [matMenuTriggerFor]="reports">
-            <mat-icon>equalizer</mat-icon>
-            <span>{{ 'all.competition.menu.reports' | translate }}</span>
-          </button>
-          <mat-menu #actions="matMenu">
-            <button mat-menu-item (click)="this.copy(year)">
-              <mat-icon>content_copy</mat-icon>
-              <span>{{ 'all.competition.menu.copy' | translate }}</span>
-            </button>
-            <button mat-menu-item (click)="this.setOpenCloseEnrollents()">
-              <mat-icon>lock</mat-icon>
-              <span>{{ 'all.competition.menu.open_close_enrollments' | translate }}</span>
-            </button>
-            <button mat-menu-item (click)="this.setOpenCloseChangeEncounters()">
-              <mat-icon>lock</mat-icon>
-              <span>{{ 'all.competition.menu.open_close_change-encounters' | translate }}</span>
-            </button>
-            <button mat-menu-item (click)="this.makeOfficial(!eventCompetition()?.official)">
-              <mat-icon>verified_user</mat-icon>
-              <span>
-                {{
-                  (eventCompetition()?.official
-                    ? 'all.competition.menu.unmake-official'
-                    : 'all.competition.menu.make-official'
-                  ) | translate
-                }}
-              </span>
-            </button>
-            <badman-has-claim [any]="['delete:competition']">
-              <button mat-menu-item (click)="this.removeEvent()">
-                <mat-icon>delete</mat-icon>
-                <span>{{ 'all.button.delete' | translate }}</span>
-              </button>
-            </badman-has-claim>
-          </mat-menu>
-          <mat-menu #reports="matMenu">
-            <button mat-menu-item [routerLink]="'avg-level'">
-              <mat-icon>equalizer</mat-icon>
-              <span>{{ 'all.competition.menu.averages' | translate }}</span>
-            </button>
-            <button mat-menu-item (click)="downloadBasePlayers()">
-              <mat-icon>equalizer</mat-icon>
-              <span>{{ 'all.competition.menu.download-base-players' | translate }}</span>
-            </button>
-            <badman-has-claim [any]="['change:job']">
-              <button mat-menu-item (click)="downloadCpFile()">
-                <mat-icon>download</mat-icon>
-                <span>{{ 'all.competition.menu.download-cp' | translate }}</span>
-              </button>
-            </badman-has-claim>
-          </mat-menu>
-        </badman-has-claim>
-      </mat-menu>
-    </badman-has-claim>
+
+    <badman-event-menu [eventCompetition]="eventCompetition()!" />
   </div>
   <ng-content title>{{ eventCompetition()?.name }}</ng-content>
   <ng-content subTitle>
@@ -102,7 +20,7 @@
       <mat-chip
         >{{ 'all.competition.team-enrollment.title' | translate }}:
         {{
-          (this.eventCompetition()?.allowEnlisting ?? false
+          ((this.eventCompetition()?.allowEnlisting ?? false)
             ? 'all.competition.team-enrollment.open'
             : 'all.competition.team-enrollment.closed'
           ) | translate
@@ -124,20 +42,34 @@
 >
   <mat-tab [label]="'all.competition.subevent.title' | translate">
     <div class="subEvents">
-      @for (type of subEvents(); track type) {
+      @for (type of subEvents(); track $index) {
         <div class="type">
           <h3>{{ 'all.gender.long.' + type.eventType | translate }}</h3>
-          @for (sub of type.subEvents; track sub) {
+          @for (sub of type.subEvents; track sub.id) {
             <mat-card class="subEvent">
               <mat-card-header>
-                <mat-card-title>{{ sub.name }} {{ sub.eventType }}</mat-card-title>
-                <mat-card-subtitle
-                  >Max Level: {{ sub.maxLevel }}, index: {{ sub.minBaseIndex }} -
-                  {{ sub.maxBaseIndex }}</mat-card-subtitle
-                >
+                <div class="header-content">
+                  <div class="title">
+                    <mat-card-title>{{ sub.name }} {{ sub.eventType }}</mat-card-title>
+                    <div class="spacer"></div>
+                    <badman-has-claim [any]="['edit:competition']">
+                      <button
+                        mat-icon-button
+                        (click)="editSubEvent(sub)"
+                        matTooltip="{{ 'all.button.edit' | translate }}"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </badman-has-claim>
+                  </div>
+                  <mat-card-subtitle
+                    >Max Level: {{ sub.maxLevel }}, index: {{ sub.minBaseIndex }} -
+                    {{ sub.maxBaseIndex }}</mat-card-subtitle
+                  >
+                </div>
               </mat-card-header>
               <div class="draw">
-                @for (draw of sub.drawCompetitions; track draw) {
+                @for (draw of sub.drawCompetitions; track draw.id) {
                   <div>
                     <button mat-button [routerLink]="['draw', draw.id]">
                       {{ draw.name }} ({{ draw.size }} teams)
@@ -169,18 +101,3 @@
     </mat-tab>
   }
 </mat-tab-group>
-<ng-template #year>
-  <h2 mat-dialog-title>Copy subevent</h2>
-  <mat-dialog-content>
-    <mat-form-field>
-      <mat-label>Copmetition year</mat-label>
-      <input [formControl]="this.copyYearControl" matInput placeholder="2025" />
-    </mat-form-field>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button [mat-dialog-close]>{{ 'all.button.close' | translate }}</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="this.copyYearControl.value">
-      {{ 'all.button.create' | translate }}
-    </button>
-  </mat-dialog-actions>
-</ng-template>

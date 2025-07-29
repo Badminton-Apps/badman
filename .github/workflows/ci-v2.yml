@@ -36,18 +36,14 @@ jobs:
           # Set NX_BASE to the last tag
           echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
 
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      - run: npx --yes nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
 
-      # - run: bun nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+      - run: npm ci
 
-      - run: bun install --no-cache --concurrent-scripts 1
-
-      - run: bun nx affected -t test build -c ci
+      - run: npx --yes nx affected -t test build -c ci
 
       - name: Run Playwright tests
-        run: bun nx affected --parallel 1 -t e2e-ci
+        run: npx --yes nx affected --parallel 1 -t e2e-ci
         id: run-e2e-tests
         if: ${{ vars.PR_E2E_TESTS == 'true'}}
 
@@ -68,7 +64,7 @@ jobs:
           cp apps/**/blob-report/*.zip ./blob-reports
 
           # create nx report
-          bun playwright merge-reports --reporter=html,github ./blob-reports
+          playwright merge-reports --reporter=html,github ./blob-reports
 
           ## for copy pasting in shell
           # bun playwright show-report
@@ -77,16 +73,16 @@ jobs:
         run: npx --yes lcov-result-merger 'coverage/**/lcov.info' 'coverage/lcov.info'
 
       - name: stop agents
-        run: bun nx-cloud complete-ci-run
+        run: npx --yes nx-cloud complete-ci-run
         if: always()
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report

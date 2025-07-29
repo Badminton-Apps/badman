@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/pages/tournament"],
       "options": {
-        "project": "libs/frontend/pages/tournament/ng-package.json"
+        "project": "libs/frontend/pages/tournament/ng-package.json",
+        "tsConfig": "libs/frontend/pages/tournament/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
@@ -23,16 +24,27 @@
       "defaultConfiguration": "production"
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/frontend/pages/tournament"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/frontend/pages/tournament",
+        "{workspaceRoot}\\coverage\\libs\\frontend\\pages\\tournament"
+      ],
       "options": {
-        "jestConfig": "libs/frontend/pages/tournament/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "eslintConfig": "libs/frontend/pages/tournament/eslint.config.js"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     }
   }

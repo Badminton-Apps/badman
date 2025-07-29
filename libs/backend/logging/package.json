@@ -1,15 +1,15 @@
 {
   "name": "@badman/backend-logging",
-  "version": "6.176.0",
+  "version": "6.185.0",
   "dependencies": {
-    "@badman/utils": "6.176.0",
+    "@badman/utils": "6.185.0",
+    "tslib": "^2.8.1",
     "@logtail/node": "~0.5.2",
     "@logtail/winston": "^0.5.2",
-    "@nestjs/common": "^10.3.10",
-    "@nestjs/config": "^3.2.3",
-    "nest-winston": "^1.10.0",
-    "winston": "^3.13.0",
-    "tslib": "^2.8.1"
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
+    "nest-winston": "^1.10.2",
+    "winston": "^3.17.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

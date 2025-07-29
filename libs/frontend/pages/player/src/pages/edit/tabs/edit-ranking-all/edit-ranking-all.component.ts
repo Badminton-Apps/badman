@@ -7,7 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, QueryRef, gql } from 'apollo-angular';
 import { Observable, lastValueFrom } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -19,7 +19,7 @@ import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-plac
     styleUrls: ['./edit-ranking-all.component.scss'],
     imports: [
         CommonModule,
-        TranslateModule,
+        TranslatePipe,
         MatExpansionModule,
         MatListModule,
         MatTooltipModule,
@@ -123,8 +123,8 @@ export class EditRankingAllComponent implements OnInit {
           map(({ data }) => new Player(data.player)),
           map((player) => {
             const allPlaces: Map<Date, RankingPlace[]> = new Map();
-            allPlaces[Symbol.iterator] = function* () {
-              yield* [...allPlaces.entries()].sort((a, b) => b[0]?.getTime() - a[0]?.getTime());
+            allPlaces[Symbol.iterator] = function () {
+              return [...allPlaces.entries()].sort((a, b) => b[0]?.getTime() - a[0]?.getTime())[Symbol.iterator]();
             };
 
             const sorted = player.rankingPlaces?.sort((a, b) => {

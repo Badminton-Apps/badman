@@ -1,24 +1,23 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, input, model, untracked } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Player } from '@badman/frontend-models';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { SelectPlayersService } from './select-player.service';
 
 @Component({
     selector: 'badman-select-player',
     imports: [
-        CommonModule,
-        TranslateModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MtxSelectModule,
-        TranslateModule,
-    ],
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MtxSelectModule,
+    TranslatePipe
+],
     templateUrl: './select-player.component.html',
     styleUrls: ['./select-player.component.scss']
 })
@@ -76,10 +75,7 @@ export class SelectPlayerSignalsComponent {
         if (!this.player() && this.possiblePlayers().length > 0) {
           this.player.set(this.possiblePlayers()[0].id);
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
+      }
     );
   }
 }

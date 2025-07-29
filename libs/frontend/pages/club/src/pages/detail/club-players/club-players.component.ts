@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -16,14 +16,14 @@ import { LoadingBlockComponent } from '@badman/frontend-components';
 import { Club, Player } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getSeason } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { combineLatest } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-players',
-  imports: [CommonModule, LoadingBlockComponent, RouterModule, TranslateModule],
+  imports: [LoadingBlockComponent, RouterModule, TranslatePipe],
   templateUrl: './club-players.component.html',
   styleUrls: ['./club-players.component.scss'],
 })

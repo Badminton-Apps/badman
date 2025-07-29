@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +23,7 @@ import { SubEventTournament } from '@badman/frontend-models';
 import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -38,9 +38,8 @@ import { Apollo, gql } from 'apollo-angular';
   templateUrl: './detail.page.html',
   styleUrls: ['./detail.page.scss'],
   imports: [
-    CommonModule,
     RouterModule,
-    TranslateModule,
+    TranslatePipe,
     MomentModule,
     MatIconModule,
     MatMenuModule,
@@ -56,8 +55,8 @@ import { Apollo, gql } from 'apollo-angular';
     MatSnackBarModule,
     PageHeaderComponent,
     HasClaimComponent,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
 })
 export class DetailPageComponent {
   private readonly breadcrumbService = inject(BreadcrumbService);
@@ -238,7 +237,15 @@ export class DetailPageComponent {
     this.detailService.state.reCalculatePoints();
   }
 
-  syncSubEvent() {
+  syncSubEvent(subEvent: SubEventTournament) {
+    console.log('Syncing sub-event', subEvent);
+    if (!subEvent.id) {
+      this.matSnackBar.open(`Tournament ${subEvent?.name} has no sub-event to sync.`, 'Close', {
+        duration: 2000,
+      });
+      return;
+    }
+
     this.apollo
       .mutate({
         mutation: gql`
@@ -247,7 +254,7 @@ export class DetailPageComponent {
           }
         `,
         variables: {
-          subEventId: this.eventTournament()?.id,
+          subEventId: subEvent?.id,
           options: {
             deleteSubEvent: true,
           },

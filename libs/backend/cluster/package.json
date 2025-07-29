@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-cluster",
-  "version": "6.176.0",
+  "version": "6.185.0",
   "dependencies": {
-    "@nestjs/common": "^10.3.8",
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "@nestjs/common": "^10.4.15"
   },
   "type": "commonjs",
   "main": "./src/index.js",

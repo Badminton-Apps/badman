@@ -16,6 +16,11 @@ export const EVENT_QUERY = gql`
       visualCode
       lastSync
       official
+      firstDay
+      dates
+      tournamentNumber
+      state
+      country
       subEventTournaments {
         id
         name

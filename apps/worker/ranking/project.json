@@ -24,7 +24,16 @@
       }
     },
     "build": {
+      "executor": "@nx/webpack:webpack",
       "defaultConfiguration": "development",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/worker/ranking/src/main.ts",
+        "tsConfig": "apps/worker/ranking/tsconfig.app.json",
+        "outputPath": "dist/apps/worker/ranking",
+        "webpackConfig": "apps/worker/ranking/webpack.config.js"
+      },
       "configurations": {
         "development": {
           "cwd": "apps/worker/ranking",
@@ -43,10 +52,27 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/worker/ranking"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/worker/ranking",
+        "{workspaceRoot}\\coverage\\apps\\worker\\ranking"
+      ],
       "options": {
-        "jestConfig": "apps/worker/ranking/jest.config.ts"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     },
     "lint": {

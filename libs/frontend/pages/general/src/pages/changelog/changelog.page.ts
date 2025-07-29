@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
@@ -6,7 +6,7 @@ import { MarkdownModule } from 'ngx-markdown';
 @Component({
     templateUrl: './changelog.page.html',
     styleUrls: ['./changelog.page.scss'],
-    imports: [CommonModule, RouterModule, MarkdownModule],
+    imports: [RouterModule, MarkdownModule],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangelogPageComponent {}

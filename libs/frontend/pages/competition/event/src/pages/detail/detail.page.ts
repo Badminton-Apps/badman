@@ -1,6 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, TemplateRef, computed, effect, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  PLATFORM_ID,
+  Signal,
+  signal,
+  TransferState,
+} from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -9,86 +18,96 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogModel,
-  HasClaimComponent,
-  OpenCloseChangeEncounterDateDialogComponent,
-  OpenCloseDateDialogComponent,
-  PageHeaderComponent,
-} from '@badman/frontend-components';
-import { CpService } from '@badman/frontend-cp';
-import { ExcelService } from '@badman/frontend-excel';
+import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
-import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 import { injectRouteData } from 'ngxtension/inject-route-data';
-import { lastValueFrom } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { EditSubeventDialogComponent } from '../../dialogs';
+import { EventMenuComponent } from '../../menus/event-menu/event-menu.component';
 import { CompetitionEncountersComponent } from './competition-encounters';
 import { CompetitionEncounterService } from './competition-encounters/competition-encounters.service';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Apollo } from 'apollo-angular';
+import { EVENT_QUERY } from '../../queries';
+import { transferState } from '@badman/frontend-utils';
+import { map, tap } from 'rxjs';
+import { injectParams } from 'ngxtension/inject-params';
 
 @Component({
-    selector: 'badman-competition-detail',
-    templateUrl: './detail.page.html',
-    styleUrls: ['./detail.page.scss'],
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslateModule,
-        MomentModule,
-        MatIconModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        MatChipsModule,
-        MatCardModule,
-        MatTooltipModule,
-        MatSnackBarModule,
-        MatTabsModule,
-        PageHeaderComponent,
-        HasClaimComponent,
-        CompetitionEnrollmentsComponent,
-        CompetitionMapComponent,
-        CompetitionEncountersComponent,
-    ]
+  selector: 'badman-competition-detail',
+  templateUrl: './detail.page.html',
+  styleUrls: ['./detail.page.scss'],
+  imports: [
+    RouterModule,
+    TranslatePipe,
+    MomentModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatChipsModule,
+    MatCardModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    PageHeaderComponent,
+    HasClaimComponent,
+    CompetitionEnrollmentsComponent,
+    CompetitionMapComponent,
+    CompetitionEncountersComponent,
+    EventMenuComponent
+],
 })
 export class DetailPageComponent {
-  private seoService = inject(SeoService);
-  private router = inject(Router);
-  private breadcrumbsService = inject(BreadcrumbService);
+  private readonly seoService = inject(SeoService);
+  private readonly router = inject(Router);
+  private readonly breadcrumbsService = inject(BreadcrumbService);
+  private readonly dialog = inject(MatDialog);
+  private readonly claimService = inject(ClaimService);
   private apollo = inject(Apollo);
-  private dialog = inject(MatDialog);
-  private matSnackBar = inject(MatSnackBar);
-  private jobsService = inject(JobsService);
-  private cpService = inject(CpService);
-  private excelService = inject(ExcelService);
-  // injectors
-  private claimService = inject(ClaimService);
 
   private readonly competitionEncounterService = inject(CompetitionEncounterService);
+  private readonly stateTransfer = inject(TransferState);
+  private readonly platformId = inject<string>(PLATFORM_ID);
+  readonly eventId = injectParams('id') as Signal<string>;
 
   // signals
   currentTab = signal(0);
 
-  readonly eventCompetition = injectRouteData<EventCompetition>('eventCompetition');
+  readonly eventCompetition = toSignal(
+    this.apollo
+      .watchQuery<{ eventCompetition: Partial<EventCompetition> }>({
+        query: EVENT_QUERY,
+        variables: {
+          id: this.eventId(),
+        },
+      })
+      .valueChanges.pipe(
+        transferState(`eventKey-${this.eventId()}`, this.stateTransfer, this.platformId),
+        map((result) => {
+          if (!result?.data.eventCompetition) {
+            throw new Error('No event found!');
+          }
+          return new EventCompetition(result.data.eventCompetition);
+        }),
+      ),
+  );
   private readonly quaryTab = injectQueryParams('tab');
 
   hasPermission = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
@@ -98,7 +117,6 @@ export class DetailPageComponent {
       `${this.eventCompetition()?.id}_view:enrollment-competition`,
     ]),
   );
-  copyYearControl = new FormControl();
 
   subEvents = computed(() =>
     this.eventCompetition()
@@ -128,10 +146,6 @@ export class DetailPageComponent {
         eventId: this.eventCompetition()?.id,
       });
 
-      this.copyYearControl.setValue(
-        (this.eventCompetition()?.season ?? new Date().getFullYear()) + 1,
-      );
-
       const eventCompetitionName = `${this.eventCompetition()?.name}`;
       this.seoService.update({
         title: eventCompetitionName,
@@ -142,246 +156,15 @@ export class DetailPageComponent {
       this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
     });
 
-    effect(
-      () => {
-        // if the canViewEnrollments is loaded
-        if (this.canViewEnrollments?.() !== undefined) {
-          const queryParam = this.quaryTab();
-          if (queryParam) {
-            this.currentTab.set(parseInt(queryParam, 10));
-          }
+    effect(() => {
+      // if the canViewEnrollments is loaded
+      if (this.canViewEnrollments?.() !== undefined) {
+        const queryParam = this.quaryTab();
+        if (queryParam) {
+          this.currentTab.set(parseInt(queryParam, 10));
         }
-      },
-      {
-        allowSignalWrites: true,
-      },
-    );
-  }
-
-  reCalculatePoints() {
-    this.apollo
-      .mutate({
-        mutation: gql`
-          mutation RecalculateEventCompetitionRankingPoints($eventId: ID!) {
-            recalculateEventCompetitionRankingPoints(eventId: $eventId)
-          }
-        `,
-        variables: {
-          eventId: this.eventCompetition()?.id,
-        },
-      })
-      .pipe(take(1))
-      .subscribe();
-  }
-
-  async copy(templateRef: TemplateRef<object>) {
-    const year = await lastValueFrom(
-      this.dialog
-        .open(templateRef, {
-          width: '300px',
-        })
-        .afterClosed(),
-    );
-
-    if (!year) {
-      return;
-    }
-
-    const result = await lastValueFrom(
-      this.apollo.mutate<{ copyEventCompetition: Partial<EventCompetition> }>({
-        mutation: gql`
-          mutation CopyEventCompetition($id: ID!, $year: Int!) {
-            copyEventCompetition(id: $id, year: $year) {
-              id
-              slug
-            }
-          }
-        `,
-        variables: {
-          id: this.eventCompetition()?.id,
-          year,
-        },
-      }),
-    );
-
-    this.router.navigate(['/competition', result.data?.copyEventCompetition?.slug]);
-  }
-
-  setOpenCloseEnrollents() {
-    // open dialog
-    const ref = this.dialog.open(OpenCloseDateDialogComponent, {
-      data: {
-        openDate: this.eventCompetition()?.openDate,
-        closeDate: this.eventCompetition()?.closeDate,
-        season: this.eventCompetition()?.season,
-        title: 'all.competition.menu.open_close_enrollments',
-      },
-      width: '400px',
-    });
-
-    ref.afterClosed().subscribe((result) => {
-      if (result) {
-        const event = this.eventCompetition();
-        if (!event) {
-          return;
-        }
-
-        event.openDate = result.openDate;
-        event.closeDate = result.closeDate;
-
-        this.apollo
-          .mutate({
-            mutation: gql`
-              mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
-                updateEventCompetition(data: $data) {
-                  id
-                }
-              }
-            `,
-            variables: {
-              data: {
-                id: event?.id,
-                openDate: event?.openDate,
-                closeDate: event?.closeDate,
-              },
-            },
-          })
-          .subscribe(() => {
-            this.matSnackBar.open(`Competition ${event?.name} open/close dates updated`, 'Close', {
-              duration: 2000,
-            });
-          });
       }
     });
-  }
-
-  setOpenCloseChangeEncounters() {
-    // open dialog
-    const ref = this.dialog.open(OpenCloseChangeEncounterDateDialogComponent, {
-      data: {
-        openDate: this.eventCompetition()?.changeOpenDate,
-        changeCloseDatePeriod1: this.eventCompetition()?.changeCloseDatePeriod1,
-        changeCloseDatePeriod2: this.eventCompetition()?.changeCloseDatePeriod2,
-        changeCloseRequestDatePeriod1: this.eventCompetition()?.changeCloseRequestDatePeriod1,
-        changeCloseRequestDatePeriod2: this.eventCompetition()?.changeCloseRequestDatePeriod2,
-      },
-      width: '400px',
-    });
-
-    ref.afterClosed().subscribe((result) => {
-      if (result) {
-        const eventCompetition = this.eventCompetition();
-
-        if (!eventCompetition) {
-          console.error('Event competition not found');
-          return;
-        }
-
-        eventCompetition.changeOpenDate = result.openDate;
-        eventCompetition.changeCloseDatePeriod1 = result.changeCloseDatePeriod1;
-        eventCompetition.changeCloseDatePeriod2 = result.changeCloseDatePeriod2;
-        eventCompetition.changeCloseRequestDatePeriod1 = result.changeCloseRequestDatePeriod1;
-        eventCompetition.changeCloseRequestDatePeriod2 = result.changeCloseRequestDatePeriod2;
-
-        this.apollo
-          .mutate({
-            mutation: gql`
-              mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
-                updateEventCompetition(data: $data) {
-                  id
-                }
-              }
-            `,
-            variables: {
-              data: {
-                id: eventCompetition.id,
-                changeOpenDate: eventCompetition.changeOpenDate,
-                changeCloseDatePeriod1: eventCompetition.changeCloseDatePeriod1,
-                changeCloseDatePeriod2: eventCompetition.changeCloseDatePeriod2,
-                changeCloseRequestDatePeriod1: eventCompetition.changeCloseRequestDatePeriod1,
-                changeCloseRequestDatePeriod2: eventCompetition.changeCloseRequestDatePeriod2,
-              },
-            },
-          })
-          .subscribe(() => {
-            this.matSnackBar.open(
-              `Competition ${eventCompetition.name} open/close dates updated`,
-              'Close',
-              {
-                duration: 2000,
-              },
-            );
-          });
-      }
-    });
-  }
-
-  makeOfficial(offical: boolean) {
-    this.apollo
-      .mutate({
-        mutation: gql`
-          mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
-            updateEventCompetition(data: $data) {
-              id
-            }
-          }
-        `,
-        variables: {
-          data: {
-            id: this.eventCompetition()?.id,
-            official: offical,
-          },
-        },
-      })
-      .subscribe(() => {
-        this.matSnackBar.open(
-          `Competition ${this.eventCompetition()?.name} is ${offical ? 'official' : 'unofficial'}`,
-          'Close',
-          {
-            duration: 2000,
-          },
-        );
-
-        const eventCompetition = this.eventCompetition();
-
-        if (!eventCompetition) {
-          console.error('Event competition not found');
-          return;
-        }
-        const event = this.eventCompetition();
-        if (!event) {
-          return;
-        }
-
-        event.official = offical;
-      });
-  }
-
-  async syncEvent() {
-    const visualCode = this.eventCompetition()?.visualCode;
-    if (!visualCode) {
-      return;
-    }
-
-    await lastValueFrom(this.jobsService.syncEventById({ id: visualCode }));
-  }
-
-  async downloadCpFile() {
-    const event = this.eventCompetition();
-    if (!event) {
-      return;
-    }
-
-    await lastValueFrom(this.cpService.downloadCp(event));
-  }
-
-  async downloadBasePlayers() {
-    const event = this.eventCompetition();
-    if (!event) {
-      return;
-    }
-
-    await lastValueFrom(this.excelService.getBaseplayersEnrollment(event));
   }
 
   setTab(index: number) {
@@ -394,41 +177,12 @@ export class DetailPageComponent {
     });
   }
 
-  removeEvent() {
-    const dialogData = new ConfirmDialogModel(
-      'all.competition.delete.title',
-      'all.competition.delete.description',
-    );
-
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: '400px',
-      data: dialogData,
+  editSubEvent(subEvent: SubEventCompetition) {
+    const dialogRef = this.dialog.open(EditSubeventDialogComponent, {
+      width: '500px',
+      data: { subEvent },
     });
 
-    dialogRef.afterClosed().subscribe((dialogResult) => {
-      if (!dialogResult) {
-        return;
-      }
-
-      this.apollo
-        .mutate({
-          mutation: gql`
-            mutation RemoveCompetition($id: ID!) {
-              removeEventCompetition(id: $id)
-            }
-          `,
-          variables: {
-            id: this.eventCompetition()?.id,
-          },
-          refetchQueries: ['EventCompetition'],
-        })
-        .subscribe(() => {
-          this.matSnackBar.open('Deleted', undefined, {
-            duration: 1000,
-            panelClass: 'success',
-          });
-          this.router.navigate(['/competition']);
-        });
-    });
+    dialogRef.afterClosed().subscribe();
   }
 }

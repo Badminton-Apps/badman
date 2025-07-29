@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SubEventCompetition } from '@badman/frontend-models';
 import { LevelType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'badman-event-competition-level-fields',
@@ -16,18 +16,21 @@ import { TranslateModule } from '@ngx-translate/core';
     styleUrls: ['./event-competition-level-fields.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        CommonModule,
-        TranslateModule,
-        MatIconModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatInputModule,
-    ]
+    TranslatePipe,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule
+],
+    
 })
 export class EventCompetitionLevelFieldsComponent implements OnInit {
   subEvent = input<SubEventCompetition>({} as SubEventCompetition);
+
+  canDelete = input<boolean>(false);
+  direction = input<'row' | 'column'>('row');
 
   type = input<LevelType>();
 

@@ -2,7 +2,6 @@ import {
   DrawTournament,
   EventEntry,
   Game,
-  GamePlayerMembership,
   Player,
   Standing,
 } from '@badman/backend-database';

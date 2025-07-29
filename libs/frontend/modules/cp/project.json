@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/cp"],
       "options": {
-        "project": "libs/frontend/modules/cp/ng-package.json"
+        "project": "libs/frontend/modules/cp/ng-package.json",
+        "tsConfig": "libs/frontend/modules/cp/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
@@ -23,16 +24,27 @@
       "defaultConfiguration": "production"
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/frontend/modules/cp"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/frontend/modules/cp",
+        "{workspaceRoot}\\coverage\\libs\\frontend\\modules\\cp"
+      ],
       "options": {
-        "jestConfig": "libs/frontend/modules/cp/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "eslintConfig": "libs/frontend/modules/cp/eslint.config.js"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     }
   }

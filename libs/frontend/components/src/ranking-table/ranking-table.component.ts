@@ -1,16 +1,16 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 import { RankingTableService } from './ranking-table.service';
 
 @Component({
-    selector: 'badman-ranking-table',
-    imports: [CommonModule, TranslateModule, MtxGrid],
-    templateUrl: './ranking-table.component.html',
-    styleUrls: ['./ranking-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'badman-ranking-table',
+  imports: [MtxGrid],
+  templateUrl: './ranking-table.component.html',
+  styleUrls: ['./ranking-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RankingTableComponent {
   private readonly rankingSystemService = inject(RankingSystemService);

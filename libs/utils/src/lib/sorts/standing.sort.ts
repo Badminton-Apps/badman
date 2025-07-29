@@ -1,68 +1,39 @@
 export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandingType>) => {
-  const teamA = {
-    points: a?.points || 0,
-    won: a?.won || 0,
-    tied: a?.tied || 0,
-    lost: a?.lost || 0,
-    gamesWon: a?.gamesWon || 0,
-    gamesLost: a?.gamesLost || 0,
-    setsWon: a?.setsWon || 0,
-    setsLost: a?.setsLost || 0,
-    totalPointsWon: a?.totalPointsWon || 0,
-    totalPointsLost: a?.totalPointsLost || 0,
-  };
-
-  const teamB = {
-    points: b?.points || 0,
-    won: b?.won || 0,
-    tied: b?.tied || 0,
-    lost: b?.lost || 0,
-    gamesWon: b?.gamesWon || 0,
-    gamesLost: b?.gamesLost || 0,
-    setsWon: b?.setsWon || 0,
-    setsLost: b?.setsLost || 0,
-    totalPointsWon: b?.totalPointsWon || 0,
-    totalPointsLost: b?.totalPointsLost || 0,
-  };
-
-  if (teamA.points > teamB.points) {
-    return -1;
-  } else if (teamA.points < teamB.points) {
-    return 1;
+  // if position is defined, use it for sorting
+  if (a.position !== undefined && b.position !== undefined) {
+    return a.position - b.position; // lower position comes first
   }
 
-  if (teamA.won - teamA.lost > teamB.won - teamB.lost) {
-    return -1;
-  } else if (teamA.won - teamA.lost < teamB.won - teamB.lost) {
-    return 1;
+  // Based on C320 - Article 61
+  const pointA = a.points ?? 0;
+  const pointB = b.points ?? 0;
+
+  if (pointA !== pointB) {
+    return pointB - pointA; // higher number of points comes first
   }
 
-  if (teamA.tied > teamB.tied) {
-    return -1;
-  } else if (teamA.tied < teamB.tied) {
-    return 1;
+  const wonA = a.won ?? 0;
+  const wonB = b.won ?? 0;
+
+  if (wonA !== wonB) {
+    return wonB - wonA; // higher number of wins comes first
   }
 
-  if (teamA.gamesWon - teamA.gamesLost > teamB.gamesWon - teamB.gamesLost) {
-    return -1;
-  } else if (teamA.gamesWon - teamA.gamesLost < teamB.gamesWon - teamB.gamesLost) {
-    return 1;
+  const saldoA = (a.gamesWon ?? 0) - (a.gamesLost ?? 0);
+  const saldoB = (b.gamesWon ?? 0) - (b.gamesLost ?? 0);
+
+  if (saldoA !== saldoB) {
+    return saldoB - saldoA; // higher number of saldo comes first
   }
 
-  if (teamA.totalPointsWon - teamA.totalPointsLost > teamB.totalPointsWon - teamB.totalPointsLost) {
-    return -1;
-  } else if (
-    teamA.totalPointsWon - teamA.totalPointsLost <
-    teamB.totalPointsWon - teamB.totalPointsLost
-  ) {
-    return 1;
-  }
+  const setsWonA = a.setsWon ?? 0;
+  const setsWonB = b.setsWon ?? 0;
 
-  return 0;
+  return setsWonB - setsWonA; // higher number of sets won comes first
 };
 
 type SortStandingType = {
-  points: number;
+  points: number | null;
   won: number;
   tied: number;
   lost: number;
@@ -72,4 +43,5 @@ type SortStandingType = {
   setsLost: number;
   totalPointsWon: number;
   totalPointsLost: number;
+  position?: number;
 };

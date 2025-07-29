@@ -1,5 +1,6 @@
 import { Page } from 'puppeteer';
 import { waitForSelectors } from '@badman/backend-pupeteer';
+import { Logger } from '@nestjs/common';
 
 export async function selectPlayer(
   pupeteer: {
@@ -12,12 +13,14 @@ export async function selectPlayer(
   memberId: string,
   player: 't1p1' | 't1p2' | 't2p1' | 't2p2',
   matchId: string,
+  logger: Logger,
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
     throw new Error('No page provided');
   }
   const selector = `#match_${matchId}_${player}`;
+  logger.debug(`Selecting player ${memberId} in ${selector}`);
   {
     const targetPage = page;
     const element = await waitForSelectors([[selector]], targetPage, timeout);
@@ -38,6 +41,9 @@ export async function selectPlayer(
         continue;
       }
 
+      logger.debug(`optionContent`, optionContent);
+      logger.debug(`memberId`, memberId);
+
       if (optionContent.indexOf(memberId) > -1) {
         selectedOption = currentOption;
       }
@@ -47,15 +53,23 @@ export async function selectPlayer(
     }
 
     const optionValue = await page.evaluate((el) => el.value, selectedOption ?? options[3]);
+    console.log('optionValue', optionValue);
     // await option.type(optionValue);
-
+    
     await option.focus();
-    await option.evaluate((el) => {
-      // todo check if this is needed
-      // el['value'] = value;
-
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-      el.dispatchEvent(new Event('change', { bubbles: true }));
+    await option.evaluate((el, value) => {
+        // Cast to HTMLSelectElement to access selectedIndex
+        const select = el as HTMLSelectElement;
+        
+        // Find the index of the option with the matching value
+        const index = Array.from(select.options).findIndex(opt => opt.value === value);
+        if (index !== -1) {
+            select.selectedIndex = index;
+        }
+        
+        // Trigger necessary events
+        select.dispatchEvent(new Event('input', { bubbles: true }));
+        select.dispatchEvent(new Event('change', { bubbles: true }));
     }, optionValue);
   }
 }

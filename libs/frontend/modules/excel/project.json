@@ -10,7 +10,8 @@
       "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/excel"],
       "options": {
-        "project": "libs/frontend/modules/excel/ng-package.json"
+        "project": "libs/frontend/modules/excel/ng-package.json",
+        "tsConfig": "libs/frontend/modules/excel/tsconfig.lib.json"
       },
       "configurations": {
         "production": {
@@ -23,16 +24,27 @@
       "defaultConfiguration": "production"
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/frontend/modules/excel"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/frontend/modules/excel",
+        "{workspaceRoot}\\coverage\\libs\\frontend\\modules\\excel"
+      ],
       "options": {
-        "jestConfig": "libs/frontend/modules/excel/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "eslintConfig": "libs/frontend/modules/excel/eslint.config.js"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     }
   }

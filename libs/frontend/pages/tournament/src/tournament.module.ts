@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DetailDrawComponent, DetailPageComponent, OverviewPageComponent } from './pages';
+import { DetailDrawComponent, DetailPageComponent, EditPageComponent, OverviewPageComponent } from './pages';
 import { DrawResolver, EventResolver } from './resolver';
 
 const MODULE_ROUTES: Routes = [
@@ -25,6 +25,14 @@ const MODULE_ROUTES: Routes = [
         path: '',
         runGuardsAndResolvers: 'always',
         component: DetailPageComponent,
+      },
+      {
+        path: 'edit',
+        runGuardsAndResolvers: 'always',
+        component: EditPageComponent,
+        data: {
+          breadcrumb: 'Edit',
+        },
       },
       {
         path: 'draw/:id',
