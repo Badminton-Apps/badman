@@ -3,11 +3,11 @@
 ### 1. Environment values
 
 - copy `.env.example` to `.env`
-- And fill in the values (Request correct values from PandaPanda Team)
+- And fill in the values (Request complete set of ENV variables from PandaPanda Team)
 
 ### 2. Install dependencies
 
-run: `npm install`
+run: `npm install` (currently using node 20.19.0)
 
 ### 3. Creating database
 
