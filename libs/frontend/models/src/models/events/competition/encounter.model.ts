@@ -32,6 +32,8 @@ export class EncounterCompetition {
 
   homeTeamId?: string;
   awayTeamId?: string;
+  tempHomeCaptainId?: string;
+  tempAwayCaptainId?: string;
 
   showingForHomeTeam?: boolean;
   encounterChange?: EncounterChange;
@@ -75,10 +77,12 @@ export class EncounterCompetition {
     this.homeScore = args?.homeScore;
     this.awayScore = args?.awayScore;
     this.encounterChange =
-      args?.encounterChange != null ? new EncounterChange(args.encounterChange) : undefined;
+      args?.encounterChange != null ? new EncounterChange(args?.encounterChange) : undefined;
 
     this.homeTeamId = args?.homeTeamId;
     this.awayTeamId = args?.awayTeamId;
+    this.tempHomeCaptainId = args?.tempHomeCaptainId;
+    this.tempAwayCaptainId = args?.tempAwayCaptainId;
 
     this.validateEncounter = args?.validateEncounter;
   }
