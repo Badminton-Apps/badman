@@ -86,7 +86,6 @@ jobs:
             npm install -g yarn
           fi
 
-
       - name: Start CI run
         if: ${{ inputs.cloud-run }}
         run: npx --yes nx-cloud start-ci-run --distribute-on="3 linux-medium-js"
