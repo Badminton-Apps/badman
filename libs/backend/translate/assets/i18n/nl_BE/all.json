@@ -1819,13 +1819,13 @@
     "encounter": {
       "tempTeamCaptain": {
         "dialog": {
-          "title": "Selecteer tijdelijk ploegkapitein",
+          "title": "Selecteer tijdelijke ploegkapitein",
           "buttons": {
             "cancel": "Annuleren",
             "select": "Selecteren"
           },
           "messages": {
-            "saved": "Tijdelijk ploegkapitein opgeslagen"
+            "saved": "Tijdelijke ploegkapitein opgeslagen"
           }
         }
       },
