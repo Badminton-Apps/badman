@@ -1756,6 +1756,7 @@
       "noRecentEncounters": "No recent encounters",
       "rolePrefix": "You are",
       "clubAdmin": "Club admin",
+
       "gameLeader": "Game leader",
       "unknown": "Unknown",
       "captain": "Captain",
@@ -2106,6 +2107,18 @@
       }
     },
     "encounter": {
+      "tempTeamCaptain": {
+        "dialog": {
+          "title": "Select temporary team captain",
+          "buttons": {
+            "cancel": "Cancel",
+            "select": "Select"
+          },
+          "messages": {
+            "saved": "Temporary team captain saved"
+          }
+        }
+      },
       "gameLeader": {
         "dialog": {
           "title": "Select game leader",
