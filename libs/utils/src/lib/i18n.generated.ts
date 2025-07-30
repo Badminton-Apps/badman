@@ -2113,6 +2113,18 @@ export type I18nTranslations = {
                 };
             };
             "encounter": {
+                "tempTeamCaptain": {
+                    "dialog": {
+                        "title": string;
+                        "buttons": {
+                            "cancel": string;
+                            "select": string;
+                        };
+                        "messages": {
+                            "saved": string;
+                        };
+                    };
+                };
                 "gameLeader": {
                     "dialog": {
                         "title": string;
