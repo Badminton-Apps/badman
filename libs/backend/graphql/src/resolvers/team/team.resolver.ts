@@ -22,7 +22,6 @@ import {
   UseForTeamName,
   getIndexFromPlayers,
   getLetterForRegion,
-  sortTeams,
 } from '@badman/utils';
 import {
   BadRequestException,
@@ -40,17 +39,17 @@ import { ListArgs } from '../../utils';
 export class TeamsResolver {
   private readonly logger = new Logger(TeamsResolver.name);
 
-  constructor(private _sequelize: Sequelize) { }
+  constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Team)
   async team(@Args('id', { type: () => ID }) id: string): Promise<Team> {
     const team = IsUUID(id)
       ? await Team.findByPk(id)
       : await Team.findOne({
-        where: {
-          slug: id,
-        },
-      });
+          where: {
+            slug: id,
+          },
+        });
 
     if (!team) {
       throw new NotFoundException(id);
@@ -60,7 +59,8 @@ export class TeamsResolver {
 
   @Query(() => [Team])
   async teams(@Args() listArgs: ListArgs): Promise<Team[]> {
-    return Team.findAll(ListArgs.toFindOptions(listArgs));
+    const args = ListArgs.toFindOptions(listArgs);
+    return Team.findAll(args);
   }
 
   @ResolveField(() => [PlayerWithTeamMembershipType])
@@ -102,8 +102,25 @@ export class TeamsResolver {
   }
 
   @ResolveField(() => EventEntry, { nullable: true })
-  async entry(@Parent() team: Team): Promise<EventEntry> {
-    return team.getEntry();
+  async entry(@Parent() team: Team): Promise<EventEntry | null> {
+    // Get all entries for the team
+    const entries = await EventEntry.findAll({
+      where: {
+        teamId: team.id,
+      },
+    });
+
+    this.logger.verbose(`entries: ${JSON.stringify(entries, null, 2)}`);
+
+    // Find the first entry that has a drawId
+    const entryWithDrawId = entries.find((entry) => entry.drawId);
+
+    if (entryWithDrawId) {
+      return entryWithDrawId;
+    }
+
+    // Return null if no entry has a drawId
+    return null;
   }
 
   @ResolveField(() => Location)
@@ -448,8 +465,7 @@ export class TeamsResolver {
     const transaction = await this._sequelize.transaction();
     try {
       const dbTeam = await Team.findByPk(updateTeamData.id, {
-        include: [{ model: Club },
-        { model: Player, as: 'players' },],
+        include: [{ model: Club }, { model: Player, as: 'players' }],
       });
 
       if (!dbTeam) {
@@ -463,10 +479,12 @@ export class TeamsResolver {
       const changedTeams = [];
 
       if (updateTeamData.teamNumber && updateTeamData.teamNumber !== dbTeam.teamNumber) {
-        updateTeamData.name = `${dbTeam.club?.name} ${updateTeamData.teamNumber
-          }${getLetterForRegion(dbTeam.type, 'vl')}`;
-        updateTeamData.abbreviation = `${dbTeam.club?.abbreviation} ${updateTeamData.teamNumber
-          }${getLetterForRegion(dbTeam.type, 'vl')}`;
+        updateTeamData.name = `${dbTeam.club?.name} ${
+          updateTeamData.teamNumber
+        }${getLetterForRegion(dbTeam.type, 'vl')}`;
+        updateTeamData.abbreviation = `${dbTeam.club?.abbreviation} ${
+          updateTeamData.teamNumber
+        }${getLetterForRegion(dbTeam.type, 'vl')}`;
 
         if (updateTeamData.teamNumber > dbTeam.teamNumber) {
           // Number was increased
@@ -517,18 +535,14 @@ export class TeamsResolver {
         }
       }
 
-
       if (updateTeamData.players) {
         const playerIds = updateTeamData.players.map((p) => p.id);
-
 
         const currentPlayers = await dbTeam.getPlayers({ transaction });
         const currentPlayerIds = currentPlayers.map((p) => p.id);
 
-
         const playersToAdd = playerIds.filter((id) => !currentPlayerIds.includes(id));
         const playersToRemove = currentPlayerIds.filter((id) => !playerIds.includes(id));
-
 
         if (playersToRemove.length > 0) {
           const removePlayers = await Player.findAll({
@@ -537,7 +551,6 @@ export class TeamsResolver {
           });
           await dbTeam.removePlayers(removePlayers, { transaction });
         }
-
 
         if (playersToAdd.length > 0) {
           const addPlayers = await Player.findAll({
@@ -550,7 +563,6 @@ export class TeamsResolver {
           });
         }
       }
-
 
       await dbTeam.update({ ...dbTeam.toJSON(), ...updateTeamData } as Team, { transaction });
 
@@ -625,8 +637,9 @@ export class TeamsResolver {
       'vl',
     )}${temp ? '_temp' : ''}`;
 
-    team.abbreviation = `${team.club?.abbreviation} ${team.teamNumber
-      }${getLetterForRegion(team.type, 'vl')}`;
+    team.abbreviation = `${team.club?.abbreviation} ${
+      team.teamNumber
+    }${getLetterForRegion(team.type, 'vl')}`;
   }
 
   // Adding / removing links

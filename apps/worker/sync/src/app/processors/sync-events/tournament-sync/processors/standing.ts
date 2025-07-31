@@ -287,7 +287,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
       } else {
         // We didn't have any entries for this subEvent
         if (entriesSubevent.length == 0) {
-          entryDraw = await new EventEntry({
+          entryDraw = await {
             subEventId: draw.subeventId,
             entryType: 'tournament',
             drawId: draw.id,
@@ -315,7 +315,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
             await entry.destroy({ transaction: this.transaction });
           }
 
-          entryDraw = await new EventEntry({
+          entryDraw = await {
             subEventId: draw.subeventId,
             entryType: 'tournament',
             drawId: draw.id,

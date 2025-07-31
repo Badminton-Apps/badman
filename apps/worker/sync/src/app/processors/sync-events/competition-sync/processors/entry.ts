@@ -72,7 +72,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     );
 
     for (const item of teams) {
-      const teams = await this._getTeam(
+      const team = await this._getTeam(
         item,
         event.season,
         event.state,
@@ -82,41 +82,41 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         subEventEntries.map((r) => r.teamId ?? '') ?? [],
       );
 
-      if (!teams) {
+      if (!team) {
         this.logger.warn(`Team not found ${item}`);
         continue;
       }
 
-      let entry = subEventEntries.find((r) => r.teamId === teams?.id);
+      let entry = subEventEntries.find((r) => r.teamId === team?.id);
 
       if (!entry) {
-        this.logger.warn(`Teams entry not found ${teams.name}`);
+        this.logger.warn(`team entry not found ${team.name}`);
         entry = await new EventEntry({
-          teamId: teams.id,
+          teamId: team.id,
           subEventId: subEvent.id,
           date: new Date(event.season, 0, 1),
         }).save({ transaction: this.transaction });
       }
 
-      this.logger.debug(`Processing entry ${item} - ${teams.name}`);
+      this.logger.debug(`Processing entry ${item} - ${team.name}`);
 
       // Check if we're before the start of the season (Septemebr 1st of the season) and if entry data needs updating
       const seasonStart = moment([event.season, 8, 1]); // September 1st of the season
       const currentDate = moment();
-      
+
       if (currentDate.isBefore(seasonStart)) {
-        this.logger.debug(`Before season start, checking team data for ${teams.name}`);
-        await this._updateTeamDataFromVisual(teams, entry, internalId);
+        this.logger.debug(`Before season start, checking team data for ${team.name}`);
+        await this._updateTeamDataFromVisual(team, entry, internalId);
       }
 
       await entry.setDrawCompetition(draw, {
         transaction: this.transaction,
       });
-      await entry.setTeam(teams, {
+      await entry.setTeam(team, {
         transaction: this.transaction,
       });
 
-      entry.team = teams;
+      entry.team = team;
       this._entries.push({ entry, xmlTeamName: item });
     }
 
@@ -292,12 +292,14 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       }
 
       // Ensure items is an array
-      const items = isArray(xmlDraw.Structure.Item) 
-        ? xmlDraw.Structure.Item 
+      const items = isArray(xmlDraw.Structure.Item)
+        ? xmlDraw.Structure.Item
         : [xmlDraw.Structure.Item as XmlItem];
 
       // Find the team in the draw structure by name
-      const teamItem = items.find(item => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code);
+      const teamItem = items.find(
+        (item) => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code,
+      );
       if (!teamItem?.Team?.Code) {
         this.logger.warn(`Team code not found for ${team.name} in draw structure`);
         return;
@@ -305,8 +307,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
       // Get team data from the visual API
       const xmlTeam = await this.visualService.getTeam(
-        this.visualTournament.Code, 
-        teamItem.Team.Code
+        this.visualTournament.Code,
+        teamItem.Team.Code,
       );
 
       if (!xmlTeam) {
@@ -343,27 +345,29 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
       // Update entry meta with player information - follow priority order
       const players = xmlTeam.Players?.Player;
-      
+
       if (players && players.length > 0) {
         // PRIORITY 1: Use Visual API data (team + players from endpoint)
-        this.logger.debug(`Using Visual API player data for team ${team.name} (${players.length} players)`);
-        
+        this.logger.debug(
+          `Using Visual API player data for team ${team.name} (${players.length} players)`,
+        );
+
         // Find existing players by memberId
-        const memberIds = players.map(p => p.MemberID).filter(id => id);
+        const memberIds = players.map((p) => p.MemberID).filter((id) => id);
         const dbPlayers = await Player.findAll({
           where: {
             memberId: {
-              [Op.in]: memberIds
-            }
+              [Op.in]: memberIds,
+            },
           },
           include: [
             {
               association: 'rankingPlaces',
               limit: 1,
-              order: [['rankingDate', 'DESC']]
-            }
+              order: [['rankingDate', 'DESC']],
+            },
           ],
-          transaction: this.transaction
+          transaction: this.transaction,
         });
 
         // Get existing meta to preserve exception data
@@ -375,18 +379,16 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
           ...existingMeta,
           competition: {
             ...existingMeta.competition,
-            players: players.map(xmlPlayer => {
+            players: players.map((xmlPlayer) => {
               // Find existing player in database by memberId
-              const dbPlayer = dbPlayers.find(p => p.memberId === xmlPlayer.MemberID);
-              
+              const dbPlayer = dbPlayers.find((p) => p.memberId === xmlPlayer.MemberID);
+
               // Find existing player data in current meta to preserve exception values
-              const existingPlayerMeta = existingPlayersMeta.find(p => 
-                p.id === dbPlayer?.id
-              );
-              
+              const existingPlayerMeta = existingPlayersMeta.find((p) => p.id === dbPlayer?.id);
+
               // Get ranking values from player's ranking places or use defaults
               const ranking = dbPlayer?.rankingPlaces?.[0];
-              
+
               return {
                 id: dbPlayer?.id || undefined,
                 gender: (xmlPlayer.GenderID === 1 ? 'M' : 'F') as 'M' | 'F',
@@ -397,30 +399,34 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
                 levelExceptionRequested: existingPlayerMeta?.levelExceptionRequested || false,
                 levelExceptionReason: existingPlayerMeta?.levelExceptionReason || undefined,
               };
-            })
-          }
+            }),
+          },
         };
 
         // Update entry meta with Visual API data
         entry.meta = entryMeta;
         await entry.save({ transaction: this.transaction });
-        
-        this.logger.debug(`Updated entry meta with Visual API data: ${players.length} players for team ${team.name}`);
-        
+
+        this.logger.debug(
+          `Updated entry meta with Visual API data: ${players.length} players for team ${team.name}`,
+        );
       } else {
         // PRIORITY 2: Keep existing database data if Visual API has no player data
         const existingMeta = entry.meta;
-        
+
         if (existingMeta?.competition?.players && existingMeta.competition.players.length > 0) {
-          this.logger.debug(`No Visual API player data for team ${team.name}, keeping existing database data (${existingMeta.competition.players.length} players)`);
+          this.logger.debug(
+            `No Visual API player data for team ${team.name}, keeping existing database data (${existingMeta.competition.players.length} players)`,
+          );
           // Do nothing - keep existing data as is
         } else {
           // PRIORITY 3: Do nothing if neither Visual API nor database has player data
-          this.logger.debug(`No player data available for team ${team.name} from Visual API or database`);
+          this.logger.debug(
+            `No player data available for team ${team.name} from Visual API or database`,
+          );
           // Do nothing
         }
       }
-
     } catch (error) {
       this.logger.error(`Failed to update team data from visual for ${team.name}: ${error}`);
     }
