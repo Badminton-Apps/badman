@@ -3,6 +3,7 @@ import {
   EventTournament,
   RankingSystem,
   SubEventTournament,
+  EventEntry,
 } from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
 import {
@@ -175,10 +176,9 @@ export class SubEventTournamentProcessor {
 
     if (!subEvent) {
       subEvent = new SubEventTournament({
-        id: subEventId? subEventId : undefined,
+        id: subEventId ? subEventId : undefined,
       });
     }
-
 
     subEvent.id = subEventId;
     subEvent.name = visualSubEvent.Name;
@@ -262,6 +262,19 @@ export class SubEventTournamentProcessor {
           await dbGame.destroy({ transaction });
         }
 
+        // Clean up EventEntries first
+        const eventEntries = await EventEntry.findAll({
+          where: {
+            drawId: dbDraw.id,
+            entryType: 'tournament',
+          },
+          transaction,
+        });
+
+        for (const entry of eventEntries) {
+          await entry.destroy({ transaction });
+        }
+
         await dbDraw.destroy({ transaction });
       }
     }
@@ -270,7 +283,7 @@ export class SubEventTournamentProcessor {
     for (const xmlSubEvent of draws) {
       const existingDraw = existing.find((r) => `${r.visualCode}` === `${xmlSubEvent?.Code}`);
 
-      if (!xmlSubEvent?.Code){
+      if (!xmlSubEvent?.Code) {
         this.logger.warn(`No draw code found for sub event ${subEventCode}`);
         continue;
       }
