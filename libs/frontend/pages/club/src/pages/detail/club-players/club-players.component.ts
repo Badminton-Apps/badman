@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -23,7 +23,7 @@ import { filter, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-players',
-  imports: [CommonModule, LoadingBlockComponent, RouterModule, TranslatePipe],
+  imports: [LoadingBlockComponent, RouterModule, TranslatePipe],
   templateUrl: './club-players.component.html',
   styleUrls: ['./club-players.component.scss'],
 })

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +8,7 @@ import { ThemeSwitcherService } from './theme-switcher.service';
 
 @Component({
     selector: 'badman-theme-switcher',
-    imports: [CommonModule, TranslatePipe, MatMenuModule, MatButtonModule, MatIconModule],
+    imports: [TranslatePipe, MatMenuModule, MatButtonModule, MatIconModule],
     templateUrl: './theme-switcher.component.html',
     styleUrls: ['./theme-switcher.component.scss']
 })

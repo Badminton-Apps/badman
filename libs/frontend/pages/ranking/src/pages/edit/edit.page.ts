@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   Injector,
@@ -81,7 +81,6 @@ const FETCH_SYSTEM = gql`
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
   imports: [
-    CommonModule,
     RouterModule,
     ReactiveFormsModule,
     MomentModule,
@@ -92,8 +91,8 @@ const FETCH_SYSTEM = gql`
     MatIconModule,
     MatMenuModule,
     MatSnackBarModule,
-    RankingSystemFieldsComponent,
-  ],
+    RankingSystemFieldsComponent
+],
 })
 export class EditPageComponent {
   // injects

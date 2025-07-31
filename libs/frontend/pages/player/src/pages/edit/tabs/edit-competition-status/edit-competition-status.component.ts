@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -14,12 +14,11 @@ import { throttleTime, map } from 'rxjs';
     templateUrl: './edit-competition-status.component.html',
     styleUrls: ['./edit-competition-status.component.scss'],
     imports: [
-        CommonModule,
-        HasClaimComponent,
-        MatSlideToggleModule,
-        ReactiveFormsModule,
-        TranslatePipe,
-    ],
+    HasClaimComponent,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    TranslatePipe
+],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditCompetitionStatusComponent implements OnInit {

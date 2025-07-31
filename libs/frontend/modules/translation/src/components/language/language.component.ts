@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { DateAdapter } from '@angular/material/core';
@@ -14,7 +14,7 @@ import { DatetimeAdapter } from '@ng-matero/extensions/core';
   selector: 'badman-language',
   templateUrl: './language.component.html',
   styleUrls: ['./language.component.scss'],
-  imports: [CommonModule, TranslatePipe, MatMenuModule, MatButtonModule, MatIconModule],
+  imports: [TranslatePipe, MatMenuModule, MatButtonModule, MatIconModule],
 })
 export class LanguageComponent implements OnInit {
   public translate = inject(TranslateService);

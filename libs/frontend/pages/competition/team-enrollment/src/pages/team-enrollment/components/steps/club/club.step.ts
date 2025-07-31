@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -36,14 +36,13 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'badman-club-step',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     TranslatePipe,
     MatInputModule,
     MatProgressBarModule,
-    SelectClubSignalsComponent,
-  ],
+    SelectClubSignalsComponent
+],
   templateUrl: './club.step.html',
   styleUrls: ['./club.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -83,6 +83,7 @@
     "start": "Start date",
     "titles": {
       "encounters": "Encounters",
+      "encounter-form": "Encounter form",
       "matrix": "Assembly matrix",
       "players": "Players",
       "plural": "Clubs",
@@ -653,6 +654,12 @@
     "start": "Start",
     "sync": "Sync"
   },
+  "messages": {
+    "buttons": {
+      "hide": "Hide {messageType}",
+      "seeAll": "show all {messageType} ({amountOfMessages})"
+    }
+  },
   "months": {
     "april": "April",
     "august": "August",
@@ -714,7 +721,8 @@
       "add": "New player",
       "claim": "Claim account",
       "delete": "Delete",
-      "edit": "Edit"
+      "edit": "Edit",
+      "recalculatePoints": "Recalculate points"
     },
     "no-memberid": "Unknown member id",
     "no-players": "No Players",
@@ -732,10 +740,265 @@
       "label": "Search player",
       "not-found": "Player not found"
     },
-    "title": "Players"
-  },
-  "points": {
-    "title": "Points tabel"
+    "title": "Players",
+    "notFound": "Player not found",
+    "ranking": {
+      "single": "Single",
+      "double": "Double",
+      "mix": "Mix"
+    },
+    "messages": {
+      "claimAccountSuccess": "Account claimed successfully"
+    },
+    "crud": {
+      "title": "Edit profile",
+      "tabs": {
+        "player": "Player",
+        "ranking": "Ranking",
+        "clubHistory": "Club History",
+        "permissions": "Permissions"
+      },
+      "playerForm": {
+        "inputs": {
+          "name": "Name",
+          "lastName": "Last name",
+          "gender": "Gender",
+          "memberId": "Member id",
+          "registrationNumber": "Registration number"
+        },
+        "gender": {
+          "M": "Male",
+          "F": "Female"
+        },
+        "buttons": {
+          "save": "Save"
+        },
+        "messages": {
+          "success": "Player data updated"
+        }
+      },
+      "ranking": {
+        "lastRanking": {
+          "title": "Last Ranking",
+          "notFound": "Last ranking not found",
+          "inputs": {
+            "single": "Single",
+            "double": "Double",
+            "mix": "Mix"
+          },
+          "messages": {
+            "success": "Last ranking updated"
+          },
+          "buttons": {
+            "save": "Save"
+          }
+        },
+        "competitionPlayer": {
+          "title": "Competition Player",
+          "inputs": {
+            "competitionPlayer": "This player plays in competitions"
+          },
+          "messages": {
+            "success": "Player data updated"
+          },
+          "buttons": {
+            "save": "Save"
+          }
+        },
+        "allUpdates": {
+          "title": "All updated",
+          "nextRanking": "Next ranking",
+          "updates": "Updates",
+          "buttons": {
+            "add": "Add Update"
+          },
+          "table": {
+            "headers": {
+              "date": "Date",
+              "single": "Single",
+              "double": "Double",
+              "mix": "Mix",
+              "actions": "Actions"
+            },
+            "actions": {
+              "edit": "Edit",
+              "delete": "Delete"
+            }
+          },
+          "rankingPlace": {
+            "editDialog": {
+              "titleEdit": "Edit update",
+              "titleCreate": "Create update",
+              "inputs": {
+                "rankingDate": "Select ranking date",
+                "single": "Single",
+                "double": "Double",
+                "mix": "Mix",
+                "singlePoints": "Single points",
+                "doublePoints": "Double points",
+                "mixPoints": "Mix points",
+                "updatePossible": "Update happened"
+              },
+              "messages": {
+                "successCreate": "Ranking place created",
+                "successUpdate": "Ranking place updated"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "saveEdit": "Save",
+                "saveCreate": "Create"
+              }
+            },
+            "deleteDialog": {
+              "title": "Delete ranking place",
+              "subTitle": "Are you sure you want to delete this ranking place?",
+              "messages": {
+                "success": "Ranking place removed"
+              },
+              "buttons": {
+                "no": "No",
+                "yes": "Yes"
+              }
+            }
+          }
+        }
+      },
+      "clubHistory": {
+        "notFound": "No club history found",
+        "buttons": {
+          "add": "Add history"
+        },
+        "deleteDialog": {
+          "title": "Delete club history",
+          "subTitle": "Are you sure you want to delete this club history?",
+          "messages": {
+            "success": "Club membership removed"
+          },
+          "buttons": {
+            "no": "No",
+            "yes": "Yes"
+          }
+        },
+        "editDialog": {
+          "titleAdd": "Add history",
+          "titleEdit": "Edit history",
+          "inputs": {
+            "selectClub": "Select club",
+            "isCurrentClub": "Current club",
+            "start": "Start",
+            "end": "End",
+            "membershipType": "Membership type",
+            "confirmed": "Confirmed"
+          },
+          "membershipTypes": {
+            "NORMAL": "Normal",
+            "LOAN": "Loan"
+          },
+          "messages": {
+            "successAdd": "Club membership added",
+            "successEdit": "Club membership updated"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "add": "Add history",
+            "edit": "Edit history"
+          }
+        },
+        "table": {
+          "notFound": "No records found",
+          "headers": {
+            "fullName": "Full name",
+            "start": "Start",
+            "end": "End",
+            "actions": "Actions"
+          },
+          "actions": {
+            "edit": "Edit",
+            "delete": "Delete"
+          }
+        }
+      },
+      "permissionsForm": {
+        "buttons": {
+          "save": "Save"
+        },
+        "messages": {
+          "success": "Player permissions updated"
+        }
+      },
+      "deletePlayer": {
+        "title": "Delete player",
+        "subTitle": "Are you sure you want to delete this player?",
+        "messages": {
+          "success": "Player deleted"
+        },
+        "buttons": {
+          "no": "No",
+          "yes": "Yes"
+        }
+      },
+      "recalculatePoints": {
+        "title": "Recalculate points for player in period",
+        "subTitle": "Are you sure you want to delete this ranking place?",
+        "inputs": {
+          "from": "From",
+          "to": "To"
+        },
+        "messages": {
+          "success": "Ranking points recalculated"
+        },
+        "buttons": {
+          "close": "Close",
+          "calculate": "Calculate"
+        }
+      }
+    },
+    "nextEncounterTitle": "Next encounter",
+    "upcomingEncountersTitle": "Upcoming encounters",
+    "noUpcomingEncounters": "No upcoming encounters",
+    "noUpcomingEncounter": "No upcoming encounter",
+    "recentEncountersTitle": "Recent encounters",
+    "noRecentEncounters": "No recent encounters",
+    "rolePrefix": "You are",
+    "gameLeader": "Game leader",
+    "unknown": "Unknown",
+    "captain": "Captain",
+    "player": "Player",
+    "date": "Date",
+    "teams": "Teams",
+    "against": "Against",
+    "location": "Location",
+    "meetingForm": "Meeting form",
+    "filled": "Filled",
+    "notStarted": "Not started",
+    "started": "Started",
+    "notFilled": "Not filled",
+    "notSelected": "Not selected",
+    "teamFormation": "Team formation",
+    "teamIsFormed": "Team is formed",
+    "noTeamFormation": "No team formation",
+    "won": "Won",
+    "lost": "Lost",
+    "draw": "Draw",
+    "buttons": {
+      "change": "Change",
+      "create": "Create",
+      "select": "Select",
+      "edit": "Edit",
+      "continue": "Continue",
+      "view": "View",
+      "allEncounters": "All encounters",
+      "viewEncounterForm": "View encounter form"
+    },
+    "eventTypes": {
+      "D": "Double",
+      "F": "Female",
+      "M": "Male",
+      "MX": "Mixed",
+      "S": "Single",
+      "unknown": "Unknown"
+    },
+    "points": "points"
   },
   "ranking": {
     "all-ranking": "All update",
@@ -954,6 +1217,25 @@
   },
   "shell": {
     "sidebar": {
+      "pages": {
+        "myProfile": "My Profile",
+        "myClub": "My Club",
+        "competition": "Competition",
+        "ranking": "Ranking",
+        "enrollment": "Enrollment",
+        "faq": "FAQ",
+        "settings": "Settings",
+        "encounters": "Encounters",
+        "edit": "Edit",
+        "add": "Add",
+        "teamFormation": "Team formation",
+        "encounterForm": "Encounter form",
+        "confirmEncounter": "Confirm encounter"
+      },
+      "auth": {
+        "logIn": "Log in",
+        "logOut": "Log out"
+      },
       "admin": {
         "title": "Admin"
       },
@@ -987,6 +1269,19 @@
       },
       "transfer": {
         "title": "Transfers / loans"
+      }
+    },
+    "topBar": {
+      "search": {
+        "placeholder": "Search",
+        "noResults": "No results found",
+        "loading": "Loading...",
+        "categories": {
+          "Club": "Club",
+          "Player": "Player",
+          "EventTournament": "Tournament",
+          "EventCompetition": "Competition"
+        }
       }
     }
   },
@@ -1125,6 +1420,2006 @@
       "title": "Upload transfer/loan file for {season}",
       "transfer-file": "Transfer file",
       "unkown": "Unknown"
+    }
+  },
+  "v1": {
+    "messages": {
+      "buttons": {
+        "hide": "Hide {messageType}",
+        "seeAll": "show all {messageType} ({amountOfMessages})"
+      }
+    },
+    "shell": {
+      "sidebar": {
+        "pages": {
+          "myProfile": "My Profile",
+          "myClub": "My Club",
+          "competition": "Competition",
+          "ranking": "Ranking",
+          "enrollment": "Enrollment",
+          "faq": "FAQ",
+          "settings": "Settings",
+          "encounters": "Encounters",
+          "edit": "Edit",
+          "add": "Add",
+          "teamFormation": "Team formation",
+          "encounterForm": "Encounter form",
+          "confirmEncounter": "Confirm encounter",
+          "changeEncounter": "Change encounter",
+          "addProposal": "Add proposal"
+        },
+        "auth": {
+          "logIn": "Log in",
+          "logOut": "Log out"
+        },
+        "admin": {
+          "title": "Admin"
+        },
+        "competition": {
+          "assembly": "Assembly",
+          "change-encounter": "Change encounter",
+          "enrollment": "Enrollment",
+          "overview": "Overview",
+          "title": "Competition"
+        },
+        "general": {
+          "changelog": "Changelog",
+          "faq": "FAQ",
+          "title": "General"
+        },
+        "job": {
+          "title": "Jobs"
+        },
+        "persnal": {
+          "club": "My Club",
+          "games": "My Profile"
+        },
+        "ranking": {
+          "title": "Ranking"
+        },
+        "rules": {
+          "title": "Validation rules"
+        },
+        "tournament": {
+          "title": "Tournaments"
+        },
+        "transfer": {
+          "title": "Transfers / loans"
+        }
+      },
+      "topBar": {
+        "search": {
+          "placeholder": "Search",
+          "noResults": "No results found",
+          "loading": "Loading...",
+          "categories": {
+            "Club": "Club",
+            "Player": "Player",
+            "EventTournament": "Tournament",
+            "EventCompetition": "Competition"
+          }
+        }
+      }
+    },
+    "player": {
+      "backup": "Backup player",
+      "base": "Baseplayer",
+      "claimed": "Claimed",
+      "ical": {
+        "click": "Copy to clipboard",
+        "copied": "Link copied to clipboard",
+        "description": "The link for all season then continues to follow the team as it promotes/degrades. even if the team changes numbers (as long as the league responsible transfers the team from the previous year)",
+        "linked": "All seasons",
+        "team-season": "Just this season"
+      },
+      "menu": {
+        "add": "New player",
+        "claim": "Claim account",
+        "delete": "Delete",
+        "edit": "Edit",
+        "recalculatePoints": "Recalculate points"
+      },
+      "no-memberid": "Unknown member id",
+      "no-players": "No Players",
+      "re-calculate": {
+        "calculate": "Calculate",
+        "from": "From",
+        "title": "Recover points for player in next period",
+        "to": "To"
+      },
+      "regular": "Regular player",
+      "search": {
+        "backup-player": "Player is listed with reserve players",
+        "create": "Add new player",
+        "in-list": "Player is already listed",
+        "label": "Search player",
+        "not-found": "Player not found"
+      },
+      "title": "Players",
+      "notFound": "Player not found",
+      "ranking": {
+        "single": "Single",
+        "double": "Double",
+        "mix": "Mix"
+      },
+      "messages": {
+        "claimAccountSuccess": "Account claimed successfully"
+      },
+      "crud": {
+        "title": "Edit profile",
+        "tabs": {
+          "player": "Player",
+          "ranking": "Ranking",
+          "clubHistory": "Club History",
+          "permissions": "Permissions"
+        },
+        "playerForm": {
+          "inputs": {
+            "name": "Name",
+            "lastName": "Last name",
+            "gender": "Gender",
+            "memberId": "Member id",
+            "registrationNumber": "Registration number"
+          },
+          "gender": {
+            "M": "Male",
+            "F": "Female"
+          },
+          "buttons": {
+            "save": "Save"
+          },
+          "messages": {
+            "success": "Player data updated"
+          }
+        },
+        "ranking": {
+          "lastRanking": {
+            "title": "Last Ranking",
+            "notFound": "Last ranking not found",
+            "inputs": {
+              "single": "Single",
+              "double": "Double",
+              "mix": "Mix"
+            },
+            "messages": {
+              "success": "Last ranking updated"
+            },
+            "buttons": {
+              "save": "Save"
+            }
+          },
+          "competitionPlayer": {
+            "title": "Competition Player",
+            "inputs": {
+              "competitionPlayer": "This player plays in competitions"
+            },
+            "messages": {
+              "success": "Player data updated"
+            },
+            "buttons": {
+              "save": "Save"
+            }
+          },
+          "allUpdates": {
+            "title": "All updated",
+            "nextRanking": "Next ranking",
+            "updates": "Updates",
+            "buttons": {
+              "add": "Add Update"
+            },
+            "table": {
+              "headers": {
+                "date": "Date",
+                "single": "Single",
+                "double": "Double",
+                "mix": "Mix",
+                "actions": "Actions"
+              },
+              "actions": {
+                "edit": "Edit",
+                "delete": "Delete"
+              }
+            },
+            "rankingPlace": {
+              "editDialog": {
+                "titleEdit": "Edit update",
+                "titleCreate": "Create update",
+                "inputs": {
+                  "rankingDate": "Select ranking date",
+                  "single": "Single",
+                  "double": "Double",
+                  "mix": "Mix",
+                  "singlePoints": "Single points",
+                  "doublePoints": "Double points",
+                  "mixPoints": "Mix points",
+                  "updatePossible": "Update happened"
+                },
+                "messages": {
+                  "successCreate": "Ranking place created",
+                  "successUpdate": "Ranking place updated"
+                },
+                "buttons": {
+                  "cancel": "Cancel",
+                  "saveEdit": "Save",
+                  "saveCreate": "Create"
+                }
+              },
+              "deleteDialog": {
+                "title": "Delete ranking place",
+                "subTitle": "Are you sure you want to delete this ranking place?",
+                "messages": {
+                  "success": "Ranking place removed"
+                },
+                "buttons": {
+                  "no": "No",
+                  "yes": "Yes"
+                }
+              }
+            }
+          }
+        },
+        "clubHistory": {
+          "notFound": "No club history found",
+          "buttons": {
+            "add": "Add history"
+          },
+          "deleteDialog": {
+            "title": "Delete club history",
+            "subTitle": "Are you sure you want to delete this club history?",
+            "messages": {
+              "success": "Club membership removed"
+            },
+            "buttons": {
+              "no": "No",
+              "yes": "Yes"
+            }
+          },
+          "editDialog": {
+            "titleAdd": "Add history",
+            "titleEdit": "Edit history",
+            "inputs": {
+              "selectClub": "Select club",
+              "isCurrentClub": "Current club",
+              "start": "Start",
+              "end": "End",
+              "membershipType": "Membership type",
+              "confirmed": "Confirmed"
+            },
+            "membershipTypes": {
+              "NORMAL": "Normal",
+              "LOAN": "Loan"
+            },
+            "messages": {
+              "successAdd": "Club membership added",
+              "successEdit": "Club membership updated"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "add": "Add history",
+              "edit": "Edit history"
+            }
+          },
+          "table": {
+            "notFound": "No records found",
+            "headers": {
+              "fullName": "Full name",
+              "start": "Start",
+              "end": "End",
+              "actions": "Actions"
+            },
+            "actions": {
+              "edit": "Edit",
+              "delete": "Delete"
+            }
+          }
+        },
+        "permissionsForm": {
+          "buttons": {
+            "save": "Save"
+          },
+          "messages": {
+            "success": "Player permissions updated"
+          }
+        },
+        "deletePlayer": {
+          "title": "Delete player",
+          "subTitle": "Are you sure you want to delete this player?",
+          "messages": {
+            "success": "Player deleted"
+          },
+          "buttons": {
+            "no": "No",
+            "yes": "Yes"
+          }
+        },
+        "recalculatePoints": {
+          "title": "Recalculate points for player in period",
+          "subTitle": "Are you sure you want to delete this ranking place?",
+          "inputs": {
+            "from": "From",
+            "to": "To"
+          },
+          "messages": {
+            "success": "Ranking points recalculated"
+          },
+          "buttons": {
+            "close": "Close",
+            "calculate": "Calculate"
+          }
+        }
+      },
+      "nextEncounterTitle": "Next encounter",
+      "upcomingEncountersTitle": "Upcoming encounters",
+      "noUpcomingEncounters": "No upcoming encounters",
+      "noUpcomingEncounter": "No upcoming encounter",
+      "recentEncountersTitle": "Recent encounters",
+      "noRecentEncounters": "No recent encounters",
+      "rolePrefix": "You are",
+      "clubAdmin": "Club admin",
+
+      "gameLeader": "Game leader",
+      "unknown": "Unknown",
+      "captain": "Captain",
+      "player": "Player",
+      "date": "Date",
+      "teams": "Teams",
+      "against": "Against",
+      "location": "Location",
+      "meetingForm": "Meeting form",
+      "filled": "Filled",
+      "notStarted": "Not started",
+      "started": "Started",
+      "notFilled": "Not filled",
+      "notSelected": "Not selected",
+      "teamFormation": "Team formation",
+      "teamIsFormed": "Team is formed",
+      "teamNotComplete": "Team not complete",
+      "noTeamFormation": "No team formation",
+      "won": "Won",
+      "lost": "Lost",
+      "draw": "Draw",
+      "buttons": {
+        "change": "Change",
+        "create": "Create",
+        "select": "Select",
+        "edit": "Edit",
+        "continue": "Continue",
+        "view": "View",
+        "allEncounters": "All encounters",
+        "viewEncounterForm": "View encounter form",
+        "tooltips": {
+          "encounterDateInFuture": "Encounter form will be available on day of encounter",
+          "teamFormationNotComplete": "Team formation is not complete"
+        }
+      },
+      "eventTypes": {
+        "D": "Double",
+        "F": "Female",
+        "M": "Male",
+        "MX": "Mixed",
+        "S": "Single",
+        "unknown": "Unknown"
+      },
+      "points": "points"
+    },
+    "rankingPage": {
+      "title": "Ranking systems",
+      "buttons": {
+        "add": "Add ranking"
+      },
+      "overviewTable": {
+        "team": "Team",
+        "name": "Name",
+        "win": "% Win",
+        "loss": "% Loss",
+        "gamesToUse": "Games to use",
+        "calculateUpdates": "Calculate updates",
+        "actions": "Actions",
+        "actionItems": {
+          "watchSystem": "Watch system",
+          "copyPoints": "Copy points",
+          "pastePoints": "Paste points",
+          "edit": "Edit",
+          "delete": "Delete",
+          "deleteSuccess": "Ranking system deleted",
+          "deleteError": "Error deleting ranking system"
+        },
+        "noRecords": "No records found"
+      },
+      "detailTable": {
+        "level": "Level",
+        "pointsToGoUp": "Points to go up",
+        "pointsToGoDown": "Points to go down",
+        "pointsWhenWinningAgainst": "Points when winning against",
+        "menu": {
+          "watchSystem": "Watch system",
+          "uploadPoints": "Upload",
+          "sync": "Sync",
+          "edit": "Edit",
+          "delete": "Delete",
+          "deleteSuccess": "Ranking system deleted",
+          "deleteError": "Error deleting ranking system"
+        },
+        "noRecords": "No records found"
+      },
+      "editRankingPage": {
+        "title": "Edit Ranking",
+        "success": "Ranking system updated",
+        "error": "Error updating ranking system"
+      },
+      "addRankingPage": {
+        "title": "Add Ranking",
+        "success": "Ranking system added",
+        "error": "Error adding ranking system"
+      },
+      "form": {
+        "title": "Leave optional fields empty for disable limitation",
+        "name": "Name",
+        "type": "Type",
+        "amountOfLevels": "Amount of levels",
+        "winning": "% Winning",
+        "winningPlusOne": "% Winning + 1",
+        "losing": "% Losing",
+        "gamesToUse": "Games to use",
+        "minimumGamesForUpgrade": "Minimum games for upgrade",
+        "diffLevels": "Diff levels",
+        "primary": "Primary",
+        "calculateUpdates": "Calculate updates",
+        "updateInterval": "Update interval",
+        "pointUpdate": "Point update",
+        "pointPeriod": "Point period",
+        "pointUpdateDay": "Point update day",
+        "rankUpdate": "Rank update",
+        "rankPeriod": "Rank period",
+        "calculationUpdateDay": "Calculation update date",
+        "periodTotal": "Period total",
+        "periodGames": "Period games",
+        "upgradeDowngrade": "Upgrade / Downgrade",
+        "differenceForUpgradeSingle": "Level diff used for upgrade Single",
+        "differenceForUpgradeDouble": "Level diff used for upgrade Double",
+        "differenceForUpgradeMix": "Level diff used for upgrade Mix",
+        "differenceForDowngradeSingle": "Level diff used for downgrade Single",
+        "differenceForDowngradeDouble": "Level diff used for downgrade Double",
+        "differenceForDowngradeMix": "Level diff used for downgrade Mix",
+        "maxLevelUpPerChange": "Max # level up per change",
+        "maxLevelDownPerChange": "Max # level down per change",
+        "inactivity": "Inactivity",
+        "inactivityAmount": "Inactivity amount",
+        "inactivityUnit": "Period",
+        "gamesForInactivity": "Games for inactivity",
+        "linkToEvents": "Link to events",
+        "groups": "Groups",
+        "periods": {
+          "weeks": "Weeks",
+          "months": "Months",
+          "days": "Days"
+        },
+        "days": {
+          "monday": "Monday",
+          "tuesday": "Tuesday",
+          "wednesday": "Wednesday",
+          "thursday": "Thursday",
+          "friday": "Friday",
+          "saturday": "Saturday",
+          "sunday": "Sunday"
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "add": "Add"
+      },
+      "dialogCopyRankingSystem": {
+        "title": "Ranking",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "success": "Ranking copied",
+        "error": "Error copying ranking",
+        "cancel": "Cancel",
+        "create": "Create"
+      },
+      "dialogCopyPoints": {
+        "title": "Ranking",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "success": "Points copied",
+        "error": "Error copying points",
+        "cancel": "Cancel",
+        "copy": "Copy"
+      }
+    },
+    "encountersPage": {
+      "title": "Encounters",
+      "notFound": "No encounters found"
+    },
+    "playerRanking": {
+      "title": "Points per game",
+      "notFound": "No ranking information found",
+      "rankingTooltipMessages": {
+        "readyForUpgrade": "Ready for upgrade",
+        "notPossibleToReachRequiredAverage": "Not possible to reach required average",
+        "winsNeeded": "You need approximately {winsNeeded} more win(s) against same level to upgrade."
+      },
+      "filters": {
+        "ranking": "Ranking",
+        "rankingOptions": {
+          "both": "Both",
+          "upgrade": "Upgrade",
+          "downgrade": "Downgrade"
+        },
+        "gameTypeOptions": {
+          "S": "Single",
+          "D": "Double",
+          "MX": "Mixed"
+        },
+        "gameType": "Game type",
+        "period": "Period",
+        "simulateGame": "Simulate game"
+      },
+      "dialog": {
+        "title": "Simulate game",
+        "level": "Level",
+        "teamA": "Team A",
+        "teamB": "Team B",
+        "winner": "Winner",
+        "simulate": "Simulate",
+        "cancel": "Cancel"
+      },
+      "table": {
+        "date": "Date",
+        "team": "Team",
+        "opponent": "Opponent",
+        "points": "Points",
+        "usedForUpgrade": "Used for upgrade",
+        "avgUpgrade": "Average upgrade",
+        "usedForDowngrade": "Used for downgrade",
+        "avgDowngrade": "Average downgrade",
+        "operation": "Operation",
+        "noRecords": "No records found"
+      },
+      "rankingUpdate": "Ranking update",
+      "pointsUpdate": "Points update"
+    },
+    "teamFormation": {
+      "title": "Team formation",
+      "notFound": "No team formation found",
+      "messages": {
+        "saved": "Team formation saved",
+        "downloaded": "Team formation downloaded"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "print": "Print"
+      },
+      "info": {
+        "title": "Info",
+        "basePlayers": "Base players",
+        "titulars": "Titulars",
+        "errors": "Errors",
+        "params": {
+          "single1": "Single 1",
+          "single2": "Single 2",
+          "single3": "Single 3",
+          "single4": "Single 4",
+          "double1": "Double 1",
+          "double2": "Double 2",
+          "double3": "Double 3",
+          "double4": "Double 4",
+          "mix1": "Men doubles",
+          "mix2": "Women doubles",
+          "mix3": "Mixed 1",
+          "mix4": "Mixed 2",
+          "gender": {
+            "female": "Female",
+            "females": "Women",
+            "long": {
+              "F": "Female",
+              "M": "Male",
+              "MX": "Mixed"
+            },
+            "longs": {
+              "F": "Woman",
+              "M": "Man"
+            },
+            "male": "Male",
+            "males": "Men",
+            "mix": "Mixed",
+            "national": "National",
+            "select": "Select",
+            "short": {
+              "female": "F",
+              "male": "M",
+              "mix": "MX"
+            },
+            "title": "Gender"
+          },
+          "ranking": {
+            "single": "Single",
+            "double": "Double",
+            "mix": "Mix"
+          }
+        }
+      },
+      "teamFormation": {
+        "title": "Select players",
+        "disabledTitle": "Players",
+        "noClub": "Team has no club",
+        "selectPlayer": "Select player",
+        "categories": {
+          "singleMan": "Single Man",
+          "doubleMen": "Double Men",
+          "singleWoman": "Single Woman",
+          "doubleWomen": "Double Women",
+          "mixDouble": "Mix Double",
+          "subtitudes": "Substitutes",
+          "captainId": "Captain"
+        },
+        "labels": {
+          "singleMan1": "Single Man 1",
+          "singleMan2": "Single Man 2",
+          "singleMan3": "Single Man 3",
+          "singleMan4": "Single Man 4",
+          "singleWoman1": "Single Woman 1",
+          "singleWoman2": "Single Woman 2",
+          "singleWoman3": "Single Woman 3",
+          "singleWoman4": "Single Woman 4",
+          "doubleMen": "Double Men",
+          "doubleWomen": "Double Women",
+          "doubleMen1": "Double Men 1",
+          "doubleMen2": "Double Men 2",
+          "doubleMen3": "Double Men 3",
+          "doubleMen4": "Double Men 4",
+          "doubleWomen1": "Double Women 1",
+          "doubleWomen2": "Double Women 2",
+          "doubleWomen3": "Double Women 3",
+          "doubleWomen4": "Double Women 4",
+          "mixDouble1": "Mixed 1",
+          "mixDouble2": "Mixed 2",
+          "captainId": "Captain",
+          "subtitudes": "Substitutes"
+        }
+      },
+      "errors": {
+        "already": "Player already present as titular.",
+        "club-base-other-team": "{playerFullName} is base player of other team",
+        "comp-status": "{playerFullName} is not marked as a competition player",
+        "comp-status-html": "{playerFullName} is not marked as a competition player",
+        "none": "No errors found",
+        "not-enough-players": "Too few titulars are currently lined up for the meeting.",
+        "player-above-lower": "Player with higher formation index is lined up in front of this player",
+        "player-gender": "{playerFullName} is a {playerGender} but expected {gender}",
+        "player-genders": "{player1FullName} ({player1Gender}) and {player2FullName} ({player2Gender}) ar't of the correct gender for {game}",
+        "player-max-double-games": "{playerFullName} can only play a maximum of {max} doubles",
+        "player-max-mix-games": "{playerFullName} may play a maximum of {max} mixed doubles",
+        "player-max-mixed-games": "{playerFullName} can only play a maximum of {max} mixed doubles",
+        "player-max-single-games": "{playerFullName} can only play a maximum of {max} singles",
+        "player-min-level": "{playerFullName} has an index of {playerRanking} in {rankingType} and may minimally be {minLevel}.",
+        "player-order-doubles": "{team2player1FullName} and {team2player2FullName} in {game2} have a higher combined index than {team1player1FullName} and {team1player2FullName} in {game1}.",
+        "player-order-highest": "{team2player1FullName} or {team2player2FullName} in {game2} has a better individual ranking then {team1player1FullName} or {team1player2FullName} on {game1}",
+        "player-order-single": "{player2FullName} in {game2} has a higher index than {player1FullName} in {game1}.",
+        "players-above-lower": "Pair with higher lineup index is lined up in front of this pair.",
+        "team-index": "Team index titulars equals {teamIndex} and is allowed to minimally be {baseIndex}",
+        "team-to-strong": "Team index titulars equals {teamIndex} cannot be lower then allowed in the division {minIndex}",
+        "title": "Errors",
+        "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single."
+      },
+      "warnings": {
+        "subtitute-team-index": "s"
+      }
+    },
+    "encounter": {
+      "tempTeamCaptain": {
+        "dialog": {
+          "title": "Select temporary team captain",
+          "buttons": {
+            "cancel": "Cancel",
+            "select": "Select"
+          },
+          "messages": {
+            "saved": "Temporary team captain saved"
+          }
+        }
+      },
+      "gameLeader": {
+        "dialog": {
+          "title": "Select game leader",
+          "buttons": {
+            "cancel": "Cancel",
+            "select": "Select"
+          },
+          "messages": {
+            "saved": "Game leader saved"
+          }
+        }
+      }
+    },
+    "clubPage": {
+      "noClubFound": "No club found",
+      "actions": {
+        "edit": "Edit",
+        "addPlayer": "Add player",
+        "addPlayerDialog": {
+          "title": "Add player",
+          "messages": {
+            "success": "Player is added"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "addPlayer": "Add player"
+          }
+        },
+        "twizzitOverview": "Twizzit overview",
+        "delete": "Delete",
+        "deleteDialog": {
+          "title": "Delete club",
+          "subTitle": "Are you sure you want to delete this club?",
+          "messages": {
+            "success": "Club is deleted"
+          },
+          "buttons": {
+            "no": "No",
+            "yes": "Yes"
+          }
+        },
+        "messages": {
+          "downloadSuccess": "Twizzit overview downloaded"
+        }
+      },
+      "season": "Season",
+      "tabs": {
+        "teams": "Teams",
+        "assemblyMatrix": "Assembly matrix",
+        "players": "Players",
+        "encounters": "Encounters",
+        "teamEnrollment": "Team enrollment"
+      },
+      "teams": {
+        "title": "Teams",
+        "table": {
+          "headers": {
+            "team": "Team",
+            "type": "Type",
+            "ranking": "Ranking",
+            "liga": "Liga",
+            "actions": "Actions"
+          },
+          "noData": "No teams found"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "addEditTeamDialog": {
+          "titleAdd": "Add team",
+          "titleEdit": "Edit team",
+          "steps": {
+            "info": "Info",
+            "players": "Players"
+          },
+          "messages": {
+            "successAdd": "Team is added",
+            "successEdit": "Team is updated"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "next": "Next",
+            "back": "Back",
+            "editTeam": "Edit team",
+            "addTeam": "Add team"
+          },
+          "teamInfo": {
+            "generalInfo": "General info",
+            "teamCaptain": "Team captain",
+            "preferredPlayingTime": "Preferred playing time",
+            "form": {
+              "type": "Type",
+              "teamNumber": "Team number",
+              "season": "Season",
+              "email": "Email",
+              "phone": "Phone",
+              "preferredDay": "Preferred day",
+              "preferredTime": "Preferred time",
+              "preferredLocation": "Preferred location",
+              "teamType": {
+                "M": "Male",
+                "F": "Female",
+                "MX": "Mixed",
+                "NATIONAL": "National"
+              },
+              "daysOfWeek": {
+                "monday": "Monday",
+                "tuesday": "Tuesday",
+                "wednesday": "Wednesday",
+                "thursday": "Thursday",
+                "friday": "Friday",
+                "saturday": "Saturday",
+                "sunday": "Sunday"
+              }
+            }
+          },
+          "players": {
+            "addPlayer": "Add player",
+            "players": "Players",
+            "form": {
+              "membership": "Membership",
+              "membershipTypes": {
+                "REGULAR": "Regular",
+                "BACKUP": "Backup"
+              }
+            },
+            "buttons": {
+              "addPlayer": "Add player"
+            }
+          }
+        },
+        "deleteTeamDialog": {
+          "title": "Delete team",
+          "subTitle": "Are you sure you want to delete this team?",
+          "messages": {
+            "success": "Team is deleted"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "delete": "Delete"
+          }
+        }
+      },
+      "assemblyMatrix": {
+        "teamsFilter": {
+          "label": "Teams",
+          "options": {
+            "ALL": "All"
+          }
+        },
+        "table": {
+          "headers": {
+            "players": "Players"
+          },
+          "noData": "No players found"
+        },
+        "tooltipMessages": {
+          "basePlayer": "Base player",
+          "genderError": "{playerFullName} is a {playerGender}, but the team is for the {teamType}",
+          "playerOfAnotherTeam": "{playerFullName} is a starting player of another team",
+          "playerOfAnotherTeamInSameSeries": "{playerFullName} is a starting player of another team in the same series",
+          "minLevelError": "Allowed ranking is {maxLevel} while {playerFullName} is {level} in {type}",
+          "betterMeta": "{player.fullName} is better than one of the starting players, be careful not to undershoot the team index."
+        },
+        "types": {
+          "double": "Double",
+          "female": "Female",
+          "male": "Male",
+          "mix": "Mixed",
+          "single": "Single",
+          "title": "Game type"
+        },
+        "gender": {
+          "F": "Woman",
+          "M": "Man"
+        },
+        "teamTypes": {
+          "F": "Female",
+          "M": "Male",
+          "MX": "Mixed",
+          "NATIONAL": "National"
+        }
+      },
+      "players": {
+        "playersFilter": {
+          "teams": {
+            "label": "Teams",
+            "options": {
+              "ALL": "All"
+            }
+          },
+          "players": {
+            "label": "Players",
+            "options": {
+              "ALL": "All"
+            },
+            "loadingText": "Loading players",
+            "noData": "No players found"
+          }
+        },
+        "table": {
+          "headers": {
+            "name": "Name",
+            "teams": "Teams"
+          },
+          "noData": "No players found"
+        }
+      },
+      "encounters": {
+        "filters": {
+          "team": {
+            "label": "Team",
+            "options": {
+              "ALL": "All"
+            }
+          },
+          "openRequest": {
+            "label": "Open request",
+            "options": {
+              "ALL": "All",
+              "openRequests": "Open requests",
+              "noRequests": "No requests"
+            }
+          },
+          "validation": {
+            "label": "Validation",
+            "options": {
+              "ALL": "All",
+              "valid": "Valid",
+              "invalid": "Invalid",
+              "warnings": "Potential issues"
+            }
+          },
+          "changedDate": "Changed date",
+          "homeGames": "Home games"
+        },
+        "table": {
+          "headers": {
+            "team": "Team",
+            "opponent": "Opponent",
+            "homeAway": "Home/Away",
+            "date": "Date",
+            "status": "Status",
+            "validation": "Validation",
+            "changeEncounterDate": "Change encounter date"
+          },
+          "encounterState": {
+            "moved": "Moved",
+            "original": "Original",
+            "inProgress": "In progress"
+          },
+          "originalDate": "Original date",
+          "home": "Home",
+          "away": "Away",
+          "noData": "No encounters found"
+        }
+      },
+      "teamEnrollment": {
+        "teams": {
+          "title": "Teams",
+          "table": {
+            "headers": {
+              "teams": "Teams",
+              "liga": "Liga",
+              "comments": "Comments"
+            },
+            "teamIndex": "Team index",
+            "noData": "No teams found"
+          }
+        },
+        "locations": {
+          "title": "Locations",
+          "locationDrawer": {
+            "title": "Location",
+            "buttons": {
+              "copyAddress": "Copy address"
+            },
+            "gameDaysTitle": "Game days",
+            "till": "till",
+            "courts": "courts",
+            "exceptionsTitle": "Exceptions",
+            "daysOfWeek": {
+              "monday": "Monday",
+              "tuesday": "Tuesday",
+              "wednesday": "Wednesday",
+              "thursday": "Thursday",
+              "friday": "Friday",
+              "saturday": "Saturday",
+              "sunday": "Sunday"
+            }
+          }
+        },
+        "comments": {
+          "title": "Comments"
+        }
+      },
+      "editClubPage": {
+        "title": "Edit club",
+        "tabs": {
+          "generalInfo": "General info",
+          "locations": "Locations",
+          "basePlayers": "Base players"
+        },
+        "generalInfoTab": {
+          "title": "General info",
+          "generalForm": {
+            "name": "Name",
+            "fullName": "Full name",
+            "teamName": "Team name",
+            "abbreviation": "Abbreviation",
+            "country": "Country",
+            "state": "State",
+            "states": {
+              "antwerpen": "Antwerp",
+              "brabant-wallon": "Walloon Brabant",
+              "brussels-hoofdstedelijk-gewest": "Brussels Capital Region",
+              "hainaut": "Hainaut",
+              "liege": "Liège",
+              "limburg": "Limburg",
+              "luxembourg": "Luxembourg",
+              "name": "Belgium",
+              "namur": "Namur",
+              "oost-vlaanderen": "East Flanders",
+              "vlaams-brabant": "Flemish Brabant",
+              "west-vlaanderen": "West Flanders"
+            },
+            "clubId": "Club ID",
+            "messages": {
+              "success": "Club updated"
+            },
+            "buttons": {
+              "save": "Save"
+            }
+          },
+          "roles": {
+            "title": "Roles",
+            "buttons": {
+              "addRole": "Add role",
+              "addPlayer": "Add player"
+            },
+            "messages": {
+              "successAddPlayer": "Player added to role",
+              "successRemovePlayer": "Player removed from role",
+              "failAddPlayer": "Error adding player to role",
+              "failRemovePlayer": "Error removing player from role"
+            },
+            "menu": {
+              "edit": "Edit",
+              "delete": "Delete"
+            },
+            "deleteDialog": {
+              "title": "Delete role",
+              "subTitle": "Are you sure you want to delete this role?",
+              "messages": {
+                "success": "Role is deleted"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "delete": "Delete"
+              }
+            },
+            "addDialog": {
+              "title": "Create role",
+              "messages": {
+                "success": "Role is created"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "addRole": "Add role"
+              }
+            },
+            "editDialog": {
+              "title": "Choose the rights for this role",
+              "messages": {
+                "success": "Permissions updated"
+              },
+              "buttons": {
+                "save": "Add role"
+              }
+            }
+          }
+        },
+        "locations": {
+          "title": "Locations",
+          "buttons": {
+            "addLocation": "Add location"
+          },
+          "location": {
+            "addDialog": {
+              "title": "Add location",
+              "messages": {
+                "success": "Location added"
+              }
+            },
+            "editDialog": {
+              "title": "Edit location",
+              "messages": {
+                "success": "Location updated"
+              }
+            },
+            "deleteDialog": {
+              "title": "Delete location",
+              "subTitle": "Are you sure you want to delete this location?",
+              "messages": {
+                "success": "Location deleted"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "delete": "Delete"
+              }
+            },
+            "form": {
+              "name": "Name",
+              "street": "Street",
+              "streetNumber": "Number",
+              "postalcode": "Zip",
+              "city": "City",
+              "state": "State",
+              "phone": "Phone",
+              "fax": "Fax"
+            },
+            "search": {
+              "title": "Search location",
+              "placeholder": "Search location"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "save": "Save",
+              "delete": "Delete"
+            }
+          },
+          "gameDays": {
+            "title": "Game Days",
+            "buttons": {
+              "addGameDay": "Add game day"
+            },
+            "createDialog": {
+              "title": "Game day",
+              "messages": {
+                "success": "Game days updated"
+              },
+              "form": {
+                "day": "Day",
+                "daysOfWeek": {
+                  "monday": "Monday",
+                  "tuesday": "Tuesday",
+                  "wednesday": "Wednesday",
+                  "thursday": "Thursday",
+                  "friday": "Friday",
+                  "saturday": "Saturday",
+                  "sunday": "Sunday"
+                },
+                "startTime": "Start time",
+                "endTime": "End time",
+                "courts": "Courts"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "save": "Save"
+              }
+            },
+            "deleteDialog": {
+              "title": "Delete game day",
+              "subTitle": "Are you sure you want to delete this game day?",
+              "messages": {
+                "success": "Game day deleted",
+                "error": "Error deleting game day"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "delete": "Delete"
+              }
+            },
+            "actions": {
+              "edit": "Edit",
+              "delete": "Delete"
+            },
+            "table": {
+              "noData": "No game days found",
+              "headers": {
+                "day": "Day",
+                "startTime": "Start time",
+                "endTime": "End time",
+                "courts": "Courts",
+                "actions": "Actions"
+              }
+            }
+          },
+          "exceptions": {
+            "title": "Exceptions",
+            "buttons": {
+              "addException": "Add exception"
+            },
+            "createDialog": {
+              "title": "Exception",
+              "messages": {
+                "success": "Exceptions updated"
+              },
+              "form": {
+                "start": "Start",
+                "end": "End"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "save": "Save"
+              }
+            },
+            "deleteDialog": {
+              "title": "Delete exception",
+              "subTitle": "Are you sure you want to delete this exception?",
+              "messages": {
+                "success": "Exception deleted",
+                "error": "Error deleting exception"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "delete": "Delete"
+              }
+            },
+            "actions": {
+              "edit": "Edit",
+              "delete": "Delete"
+            },
+            "table": {
+              "noData": "No exceptions found",
+              "headers": {
+                "period": "Start",
+                "actions": "Actions"
+              }
+            }
+          }
+        },
+        "basePlayers": {
+          "title": "Teams",
+          "buttons": {
+            "addTeam": "Add team"
+          },
+          "team": {
+            "buttons": {
+              "addPlayer": "Add player"
+            },
+            "list": {
+              "noPlayers": "No players",
+              "noSubEvent": "Please choose a division first before you can add players",
+              "actions": {
+                "editRanking": "Edit ranking",
+                "toggleLevelExemption": "Toggle level exemption",
+                "delete": "Delete"
+              }
+            },
+            "addPlayerDialog": {
+              "title": "Add player",
+              "messages": {
+                "success": "Player added",
+                "error": "Error adding player",
+                "playerAlreadyInTeam": "Player is already in the team"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "addPlayer": "Add player"
+              }
+            },
+            "deletePlayerDialog": {
+              "title": "Delete player",
+              "subTitle": "Are you sure you want to delete this player?",
+              "messages": {
+                "success": "Player deleted",
+                "playerNotFound": "Player not found"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "delete": "Delete"
+              }
+            },
+            "editPlayerRankingDialog": {
+              "title": "Edit ranking",
+              "messages": {
+                "success": "Ranking updated"
+              },
+              "form": {
+                "single": "Single",
+                "double": "Double",
+                "mix": "Mix"
+              },
+              "buttons": {
+                "cancel": "Cancel",
+                "save": "Save"
+              }
+            },
+            "messages": {
+              "levelExemptionUpdated": "Level exemption updated",
+              "levelExemptionError": "Error updating level exemption"
+            }
+          }
+        }
+      }
+    },
+    "filterComponent": {
+      "title": "Filters",
+      "buttons": {
+        "filters": "Filters",
+        "cancel": "Cancel",
+        "apply": "Apply"
+      }
+    },
+    "entryTeamDrawer": {
+      "sectionTitles": {
+        "basePlayers": "Base players",
+        "generalInfo": "General info",
+        "validations": "Validations"
+      },
+      "dataKeys": {
+        "teamIndex": "Team index",
+        "teamCaptain": "Team captain",
+        "preferredPlayingTime": "Preferred playing time"
+      },
+      "emptyStates": {
+        "noValidations": "No validations found"
+      },
+      "noData": "No data",
+      "validation": {
+        "errors": {
+          "already": "Player already present as titular.",
+          "base-gender-mix": "The baseteam includes {maleCount} men and {femaleCount} women, while that should be 2 each time",
+          "base-other-team": "{playerFullName} can only be specified as a base player once per league",
+          "comp-status-base": "Base player {playerFullName} is not marked as a competition player",
+          "comp-status-team": "{playerFullName} is not marked as a competition player",
+          "faller": "The team should be degrade, but is not enrolled in a lower series",
+          "first-team-index": "A first team dropped may not field a team with team index lower than their base index during the season",
+          "no-subevent": "Please choose a series",
+          "none": "No errors found",
+          "player-club": "Player {playerFullName} is not part of {clubName} (current club: {activeClubName})",
+          "player-club-none": "No club known for player {playerFullName}",
+          "player-gender": "{playerFullName} is a {player.gender} but a {gender} was expected",
+          "player-min-level": "{playerFullName} has an index of {playerRanking} in {rankingType} and may be at least {minLevel} .",
+          "player-subevent": "{playerFullName} is part of the base team {teamName} that also plays in {subEventName} ",
+          "riser": "The team should promote, but is not enrolled in a higher series",
+          "team-index": "Strongest setup setup is not possible. The team index is {teamIndex} and the base team index is {baseIndex}.",
+          "team-order": "Team {teamName} is in a lower series but has a lower team number",
+          "team-order-same-subevent": "Team {teamName} has a better index in the same range, but has a lower team number",
+          "team-to-strong": "Team index baseplayers equals {baseIndex} cannot be lower then allowed in the division {minIndex}",
+          "team-to-week": "Team index starting players is {baseIndex} and may not exceed the limit of the division {maxIndex} ",
+          "title": "Errors",
+          "too-few-base-players": "Too few base players",
+          "too-many-base-players": "Too many base players"
+        },
+        "warnings": {
+          "already-saved": "New changes cannot be saved in between, please resubmit the form in the last step to save your changes",
+          "base-other-team": "{playerFullName} is baseplayer on another team",
+          "player-min-level": "Request for exception of player {playerFullName} in {rankingType} has not yet been accepted",
+          "subtitute-team-index": "s",
+          "title": "Warnings"
+        }
+      }
+    },
+    "notFoundPage": {
+      "title": "The page you are looking for does not exist",
+      "buttons": {
+        "back": "Back to home"
+      }
+    },
+    "confirmEncounterPage": {
+      "title": "Confirm encounter",
+      "sectionTitles": {
+        "teams": "Teams",
+        "confirmation": "Confirmation",
+        "results": "Results",
+        "information": "Information",
+        "submitComment": "Submit comment"
+      },
+      "positions": {
+        "captain": "Captain",
+        "gameLeader": "Game leader",
+        "homeCaptain": "Home captain",
+        "awayCaptain": "Away captain"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "back": "Back",
+        "close": "Close",
+        "confirm": "Confirm",
+        "submit": "Submit",
+        "seeEncounter": "See encounter",
+        "addComment": "Add comment"
+      },
+      "inputs": {
+        "comment": "Comment",
+        "gameLeaderCommentsOptional": "Game leader comments (optional)"
+      },
+      "messages": {
+        "addedComment": "Comment successfully added",
+        "commentFrom": "Comment from {fullName}"
+      },
+      "errors": {
+        "errorAddingComment": "Error adding comment"
+      }
+    },
+    "competitionDetailPage": {
+      "tabs": {
+        "divisions": "Divisions",
+        "encounters": "Encounters",
+        "teamEnrollments": "Team enrollments"
+      },
+      "buttons": {
+        "openInToernooiNL": "Open in toernooi.nl",
+        "view": "View",
+        "clearFilters": "Clear filters"
+      },
+      "divisions": {
+        "actions": {
+          "edit": "Edit",
+          "sync": "Sync",
+          "recalculatePoints": "Recalculate points",
+          "actions": "Actions",
+          "reports": "Reports",
+          "copy": "Copy",
+          "openCloseSignups": "Open/Close signups",
+          "openCloseChangeEncounters": "Open/Close change encounter date",
+          "makeUnofficialTournament": "Make unofficial tournament",
+          "delete": "Delete",
+          "averageLevel": "Average level",
+          "downloadBasePlayers": "Download base players",
+          "downloadCPFile": "Download CP file"
+        },
+        "tableNames": {
+          "F": "Women",
+          "M": "Men",
+          "MX": "Mixed"
+        },
+        "table": {
+          "headers": {
+            "divisions": "Divisions",
+            "type": "Type",
+            "numberTeams": "# teams",
+            "maxLevel": "Max level",
+            "index": "Index",
+            "subdivisions": "Subdivisions"
+          },
+          "noRecords": "No records found"
+        }
+      },
+      "encounters": {
+        "table": {
+          "buttons": {
+            "filters": "Filters"
+          },
+          "headers": {
+            "date": "Date",
+            "homeTeam": "Home team",
+            "awayTeam": "Away team",
+            "originalDate": "Original date",
+            "reschedule": "Reschedule"
+          },
+          "tootips": {
+            "reschedule": "Reschedule encounter"
+          },
+          "rescheduleStatuses": {
+            "rescheduled": "Rescheduled",
+            "rescheduleInProgress": "Reschedule in progress",
+            "rescheduleRequested": "Reschedule requested"
+          },
+          "inputs": {
+            "team": "Team",
+            "club": "Club"
+          },
+          "noRecords": "No records found"
+        }
+      },
+      "teamEnrollments": {
+        "drawer": {
+          "sectionTitles": {
+            "primaryPlayers": "Base players",
+            "generalInfo": "General information",
+            "validations": "Validations"
+          },
+          "dataKeys": {
+            "teamIndex": "Team index",
+            "teamCaptain": "Team captain",
+            "preferredPlayingTime": "Preferred playing time"
+          },
+          "emptyStates": {
+            "noValidations": "No validations found"
+          }
+        },
+        "table": {
+          "headers": {
+            "division": "Division",
+            "numberSignups": "Number of signups",
+            "team": "Team",
+            "index": "Index",
+            "messages": "Messages",
+            "actions": "Actions"
+          },
+          "buttons": {
+            "view": "View"
+          },
+          "messages": {
+            "numberErrors": "{amount} errors",
+            "numberWarnings": "{amount} warnings",
+            "loadingEntries": "Loading entries"
+          },
+          "noRecords": "No records found"
+        }
+      }
+    },
+    "competitionOverviewPage": {
+      "title": "All competitions",
+      "sectionTitles": {
+        "overview": "Overview"
+      },
+      "table": {
+        "headers": {
+          "name": "Name",
+          "start": "Start",
+          "end": "End",
+          "official": "Official",
+          "actions": "Actions"
+        },
+        "divisions": "divisions",
+        "inputs": {
+          "onlyOfficialCompetitions": "Only official competitions"
+        },
+        "buttons": {
+          "addCompetition": "Competition",
+          "loadMoreCompetitions": "Load more competitions..."
+        }
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "setRisersFallers": "Set risers/fallers",
+        "openCloseDate": "Open/Close date",
+        "makeOfficial": "Make official",
+        "makeUnofficial": "Make unofficial",
+        "sync": "Sync",
+        "messages": {
+          "syncSuccess": "Competition successfully synced",
+          "syncError": "Error syncing competition"
+        }
+      },
+      "addCompetitionDialog": {
+        "title": "Add competition",
+        "inputs": {
+          "visualCode": "Visual code",
+          "officialCompetition": "Official competition"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "add": "Add"
+        },
+        "messages": {
+          "competitionAdded": "Competition will be added shortly"
+        },
+        "errors": {
+          "errorAddingCompetition": "Error adding competition"
+        }
+      },
+      "deleteCompetitionDialog": {
+        "title": "Delete competition?",
+        "body": " Are you sure you want to delete this competition? If you confirm, all data related to this competition will be permanently deleted.",
+        "buttons": {
+          "cancel": "Cancel",
+          "delete": "Delete"
+        },
+        "successMessage": "Competition successfully removed from platform",
+        "errorMessage": "Error removing competition"
+      },
+      "competitionStatusDialog": {
+        "title": "Make competition {status}?",
+        "text": "Are you sure you want to make this competition {status}? This will change all the rules related to the competition and ranking.",
+        "official": "official",
+        "unofficial": "unofficial",
+        "buttons": {
+          "cancel": "Cancel",
+          "make": "Make {status}"
+        },
+        "successMessage": "Competition successfully updated",
+        "errorMessage": "Error updating competition"
+      },
+      "openCloseDateDialog": {
+        "title": "Open/Close date",
+        "form": {
+          "openDate": "Open date",
+          "closeDate": "Close date"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save"
+        },
+        "messages": {
+          "success": "Open/Close date successfully updated",
+          "error": "Error updating open/close date"
+        }
+      },
+      "risersFallersDialog": {
+        "title": "Set risers/fallers",
+        "risers": "Risers",
+        "fallers": "Fallers",
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save"
+        },
+        "messages": {
+          "success": "Risers/fallers successfully updated",
+          "error": "Error updating risers/fallers"
+        }
+      }
+    },
+    "drawDetailPage": {
+      "sections": {
+        "standings": {
+          "title": "Standings",
+          "actions": {
+            "openInToernooiNL": "Open in toernooi.nl"
+          },
+          "table": {
+            "headers": {
+              "rank": "Rank",
+              "status": "Status",
+              "name": "Name",
+              "points": "Points",
+              "played": "Played",
+              "won": "Won",
+              "lost": "Lost",
+              "drawn": "Drawn",
+              "games": "Games",
+              "setsWonLost": "Sets won / lost",
+              "pointsWonLost": "Points won / lost"
+            }
+          },
+          "noRecords": "No records found"
+        },
+        "encounters": {
+          "title": "Encounters",
+          "noRecords": "No records found",
+          "calendar": {
+            "filters": {
+              "team": "Team"
+            }
+          }
+        }
+      },
+      "actions": {
+        "syncPoints": "Sync points"
+      },
+      "messages": {
+        "pointsSynced": "Points successfully synced",
+        "errorSyncingPoints": "Error syncing points"
+      }
+    },
+    "editCompetitionPage": {
+      "steps": {
+        "0": "General",
+        "1": "Divisions",
+        "2": "Extra"
+      },
+      "general": {
+        "sectionTitles": {
+          "general": "General"
+        },
+        "inputs": {
+          "name": "Name",
+          "season": "Season",
+          "type": "Type",
+          "contact": "Contact",
+          "country": "Country",
+          "province": "Province",
+          "sendNotifications": "Send notifications when an encounter is not entered or confirmed",
+          "teamMatcherLink": "Team matcher link"
+        },
+        "successMessage": "Saved competition general info",
+        "errorMessage": "Error saving competition general info"
+      },
+      "divisions": {
+        "table": {
+          "headers": {
+            "name": "Name",
+            "type": "Type",
+            "maxLevel": "Max level",
+            "index": "Index"
+          },
+          "actions": {
+            "edit": "Edit",
+            "delete": "Delete",
+            "add": "Add"
+          },
+          "noRecords": "No records found",
+          "addDivisionDialog": {
+            "title": "Add division",
+            "inputs": {
+              "name": "Name",
+              "type": "Type",
+              "level": "Level",
+              "maxLevel": "Max level",
+              "minBaseTeamIndex": "Min base team index",
+              "maxBaseTeamIndex": "Max base team index",
+              "index": "Index"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "add": "Add"
+            },
+            "messages": {
+              "divisionAdded": "Division successfully added"
+            },
+            "errors": {
+              "errorAddingDivision": "Error adding division"
+            }
+          },
+          "editDivisionDialog": {
+            "title": "Edit division",
+            "inputs": {
+              "name": "Name",
+              "type": "Type",
+              "level": "Level",
+              "maxLevel": "Max level",
+              "minBaseTeamIndex": "Min base team index",
+              "maxBaseTeamIndex": "Max base team index",
+              "index": "Index"
+            },
+            "buttons": {
+              "cancel": "Cancel",
+              "add": "Submit changes"
+            },
+            "messages": {
+              "divisionAdded": "Division successfully edited"
+            },
+            "errors": {
+              "errorAddingDivision": "Error editing division"
+            }
+          },
+          "deleteDivisionDialog": {
+            "title": "Delete division?",
+            "body": "Are you sure you want to delete this division? If you confirm, all data related to this division will be permanently deleted.",
+            "buttons": {
+              "cancel": "Cancel",
+              "delete": "Delete"
+            }
+          }
+        }
+      },
+      "extra": {
+        "sectionTitles": {
+          "exceptions": "Exceptions",
+          "info": "Info",
+          "roles": "Roles"
+        },
+        "emptyStates": {
+          "noExceptions": "No exceptions",
+          "noInfo": "No info"
+        },
+        "inputs": {
+          "periodStart": "Period start",
+          "periodEnd": "Period end",
+          "availableFields": "Available fields",
+          "name": "Name",
+          "competitionAllowed": "Competition allowed"
+        },
+        "inputDescriptions": {
+          "exceptions": "Define periods with more or fewer available fields.",
+          "info": "Define periods with more or fewer available fields."
+        },
+        "buttons": {
+          "add": "Add"
+        },
+        "successMessage": "Saved competition details",
+        "errorMessage": "Error saving competition details"
+      },
+      "buttons": {
+        "next": "Next",
+        "cancel": "Cancel",
+        "back": "Back",
+        "save": "Save",
+        "saveChanges": "Save changes",
+        "finish": "Finish"
+      }
+    },
+    "encounterAlerts": {
+      "buttons": {
+        "seeEncounter": "See encounter",
+        "seeAllMessages": "show all messages ({amountOfAlerts})",
+        "hideMessages": "hide messages"
+      },
+      "messages": {
+        "confirmOrDisputeEncounter": "You have {hoursUntilExpiry} more hours to confirm or dispute encounter"
+      },
+      "details": {}
+    },
+    "encounterFormPage": {
+      "title": "Encounter form",
+      "steps": {
+        "0": "Info",
+        "1": "Results",
+        "2": "Confirm"
+      },
+      "sectionTitles": {
+        "register": "Register",
+        "teams": "Teams",
+        "confirmEncounter": "Confirm encounter",
+        "confirmPresence": "Confirm presence",
+        "cancelPresence": "Cancel presence",
+        "confirmConfirmed": "Confirm encounter",
+        "cancelConfirmed": "Cancel confirmation",
+        "results": "Results",
+        "players": "Players",
+        "information": "Information"
+      },
+      "prompts": {
+        "confirmPresence": "Is the team captain, {fullName}, present for this encounter?",
+        "cancelPresence": "Do you want to cancel the presence of {fullName}?",
+        "confirmConfirmed": "Does the team captain, {fullName}, confirm the result of this encounter?",
+        "cancelConfirmed": "Do you want to cancel the confirmation of {fullName}?"
+      },
+      "messages": {
+        "areComments": "{numberOfComments} comments",
+        "noComments": "No Comments",
+        "presenceUpdated": "{position} presence updated",
+        "confirmationUpdated": "{position} confirmation updated",
+        "encounterUpdated": "Encounter successfully updated",
+        "gameCreated": "Game successfully created",
+        "gameUpdated": "Game successfully updated"
+      },
+      "buttons": {
+        "back": "Back",
+        "next": "Next",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "seeTeamFormation": "See team details",
+        "2Sets": "2 games",
+        "3Sets": "3 games",
+        "saveChanges": "Save changes"
+      },
+      "inputs": {
+        "present": "Present",
+        "confirm": "Confirm",
+        "league": "League",
+        "date": "Date",
+        "players": "Players",
+        "player": "Player",
+        "winner": "Winner",
+        "set1": "Game 1",
+        "set2": "Game 2",
+        "set3": "Game 3",
+        "startTime": "Start time",
+        "endTime": "End time",
+        "shuttle": {
+          "title": "Shuttle",
+          "helpText": "List of approved shuttles",
+          "helpLink": "https://www.badmintonvlaanderen.be/file/973717/?dl=1"
+        },
+        "commentsOptional": "Comments (optional)"
+      },
+      "positions": {
+        "captain": "Captain",
+        "gameLeader": "Game leader",
+        "homeCaptain": "Home captain",
+        "awayCaptain": "Away captain"
+      },
+      "errors": {
+        "presenceNotUpdated": "{position} presence not updated",
+        "confirmationNotUpdated": "{position} confirmation not updated",
+        "errorCreatingGame": "Error creating game",
+        "errorUpdatingGame": "Error updating game",
+        "encounterNotUpdated": "Error updating encounter"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "languages": {
+        "title": "Language",
+        "options": {
+          "en": "English",
+          "nl_BE": "Dutch"
+        }
+      },
+      "notifications": {
+        "title": "Notifications",
+        "encounterChangeNewNotification": {
+          "title": "New rescheduling request",
+          "description": "Receive a notification for a new rescheduling request."
+        },
+        "encounterChangeFinishedNotification": {
+          "title": "Rescheduling completed",
+          "description": "Receive a notification when a rescheduling is completed."
+        },
+        "encounterChangeConfirmationNotification": {
+          "title": "Rescheduling confirmation",
+          "description": "Receive a notification when a rescheduling is confirmed."
+        },
+        "encounterNotEnteredNotification": {
+          "title": "Encounter not yet entered",
+          "description": "Receive a notification when an encounter has not been entered."
+        },
+        "encounterNotAcceptedNotification": {
+          "title": "Encounter not yet accepted",
+          "description": "Receive a notification when an encounter has not been accepted yet."
+        },
+        "syncSuccessNotification": {
+          "title": "Synchronization successful",
+          "description": "Receive a notification when synchronization is successfully completed."
+        },
+        "syncFailedNotification": {
+          "title": "Synchronization failed",
+          "description": "Receive a notification when synchronization fails."
+        },
+        "clubEnrollmentNotification": {
+          "title": "Team registration",
+          "description": "Receive a notification when a team registers."
+        },
+        "types": {
+          "email": "Email",
+          "push": "Push"
+        }
+      },
+      "messages": {
+        "success": "Notifications successfully updated",
+        "error": "Error while updating notifications"
+      },
+      "buttons": {
+        "save": "Save"
+      }
+    },
+    "changeEncounter": {
+      "title": "Change encounter",
+      "encounterNotFound": "Encounter not found",
+      "proposals": {
+        "title": "Proposal",
+        "proposalPeriod": "The proposal period is from 1 June to 31 August.",
+        "noProposals": "No proposals",
+        "date": "Date",
+        "time": "Time",
+        "location": "Location",
+        "messages": {
+          "proposalAddedSuccess": "Proposal added successfully",
+          "proposalAddedError": "Error adding proposal",
+          "proposalAcceptedSuccess": "Proposal accepted successfully",
+          "proposalAcceptedError": "Error accepting proposal",
+          "proposalRejectedSuccess": "Proposal rejected successfully",
+          "proposalRejectedError": "Error rejecting proposal",
+          "proposalDeletedSuccess": "Proposal deleted successfully",
+          "proposalDeletedError": "Error deleting proposal",
+          "generalError": "Something went wrong while moving the encounter"
+        },
+        "buttons": {
+          "reject": "Reject",
+          "accept": "Accept",
+          "addProposal": "Add proposal",
+          "delete": "Delete"
+        }
+      },
+      "messages": {
+        "title": "Messages",
+        "noMessages": "No messages",
+        "messages": {
+          "messageSentSuccess": "Message sent successfully",
+          "messageSentError": "Error sending message"
+        },
+        "label": "Message",
+        "placeholder": "Write a message",
+        "proposalPeriodInfo": "The proposal period is from 1 June to 31 August."
+      },
+      "calendar": {
+        "encounterNotFound": "Encounter not found",
+        "filter": {
+          "labels": {
+            "homeTeam": "Home team",
+            "awayTeam": "Away team"
+          },
+          "options": {
+            "allTeams": "All teams"
+          }
+        },
+        "buttons": {
+          "close": "Close"
+        },
+        "dayContent": {
+          "otherEncounters": "Other encounters",
+          "originalDate": "Original date",
+          "proposal": "Proposal",
+          "buttons": {
+            "courtsAvailable": "court(s) available"
+          },
+          "eventWarning": "Competition is not allowed",
+          "drawer": {
+            "courts": "court(s)",
+            "proposal": "Proposal",
+            "originalDate": "Original date",
+            "availableCourts": "Available court(s)",
+            "buttons": {
+              "sendRequest": "Send request"
+            },
+            "otherEncounters": "Other encounters",
+            "messages": {
+              "success": "Request sent successfully",
+              "error": "Error sending request"
+            }
+          }
+        }
+      }
     }
   }
 }

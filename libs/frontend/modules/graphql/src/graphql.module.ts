@@ -1,23 +1,16 @@
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import {
-  InjectionToken,
-  Injector,
-  isDevMode,
-  ModuleWithProviders,
-  NgModule,
-  PLATFORM_ID,
-} from '@angular/core';
+import { inject, InjectionToken, Injector, isDevMode, PLATFORM_ID } from '@angular/core';
 import { ApolloLink, InMemoryCache } from '@apollo/client/core';
+import { loadDevMessages, loadErrorMessages } from '@apollo/client/dev';
 import { setContext } from '@apollo/client/link/context';
 import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries';
 import { AuthService } from '@auth0/auth0-angular';
-import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
+import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { sha256 } from 'crypto-hash';
 import { lastValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
 
 export const APOLLO_CACHE = new InjectionToken<InMemoryCache>('apollo-cache');
 export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>('graphql.config');
@@ -104,10 +97,8 @@ export function createApollo(
   };
 }
 
-@NgModule({
-  exports: [ApolloModule],
-  imports: [ApolloModule],
-  providers: [
+export function provideGraphQL(config: GraphqlConfiguration) {
+  return [
     {
       provide: APOLLO_CACHE,
       useValue: new InMemoryCache({
@@ -136,19 +127,16 @@ export function createApollo(
         },
       }),
     },
-    {
-      provide: APOLLO_OPTIONS,
-      useFactory: createApollo,
-      deps: [HttpLink, APOLLO_CACHE, Injector, PLATFORM_ID, GRAPHQL_CONFIG_TOKEN],
-    },
+    { provide: GRAPHQL_CONFIG_TOKEN, useValue: config },
     provideHttpClient(withInterceptorsFromDi()),
-  ],
-})
-export class GraphQLModule {
-  static forRoot(config: GraphqlConfiguration): ModuleWithProviders<GraphQLModule> {
-    return {
-      ngModule: GraphQLModule,
-      providers: [{ provide: GRAPHQL_CONFIG_TOKEN, useValue: config }],
-    };
-  }
+    provideApollo(() => {
+      const httpLink = inject(HttpLink);
+      const cache = inject(APOLLO_CACHE);
+      const injector = inject(Injector);
+      const platformId = inject(PLATFORM_ID) as string;
+      const graphqlConfig = inject(GRAPHQL_CONFIG_TOKEN);
+
+      return createApollo(httpLink, cache, injector, platformId, graphqlConfig);
+    }),
+  ];
 }

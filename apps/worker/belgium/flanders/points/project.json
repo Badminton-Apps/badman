@@ -21,14 +21,40 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/worker/belgium/flanders/points"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/worker/belgium/flanders/points",
+        "{workspaceRoot}\\coverage\\apps\\worker\\badminton\\belgium\\flanders\\points"
+      ],
       "options": {
-        "jestConfig": "apps/worker/belgium/flanders/points/jest.config.ts"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     },
     "build": {
+      "executor": "@nx/webpack:webpack",
       "defaultConfiguration": "development",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/worker/belgium/flanders/points/src/main.ts",
+        "tsConfig": "apps/worker/belgium/flanders/points/tsconfig.app.json",
+        "outputPath": "dist/apps/worker/belgium/flanders/points",
+        "webpackConfig": "apps/worker/belgium/flanders/points/webpack.config.js"
+      },
       "configurations": {
         "development": {
           "cwd": "apps/worker/belgium/flanders/points",

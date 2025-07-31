@@ -30,7 +30,28 @@
       }
     },
     "build": {
+      "executor": "@nx/webpack:webpack",
       "defaultConfiguration": "development",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/worker/sync/src/main.ts",
+        "tsConfig": "apps/worker/sync/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "libs/backend/mailing/src/compile",
+            "output": "compile/libs/mailing"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/backend/translate/assets",
+            "output": "assets"
+          }
+        ],
+        "outputPath": "dist/apps/worker/sync",
+        "webpackConfig": "apps/worker/sync/webpack.config.js"
+      },
       "configurations": {
         "development": {
           "cwd": "apps/worker/sync",
@@ -43,10 +64,27 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/worker/sync"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/worker/sync",
+        "{workspaceRoot}\\coverage\\apps\\worker\\sync"
+      ],
       "options": {
-        "jestConfig": "apps/worker/sync/jest.config.ts"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     },
     "lint": {

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DrawCompetition, DrawTournament, Location } from '@badman/frontend-models';
@@ -11,7 +11,7 @@ import { Apollo, gql } from 'apollo-angular';
     templateUrl: './draw-locations-map.component.html',
     styleUrls: ['./draw-locations-map.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, RouterModule, TranslatePipe, NgMapsGoogleModule]
+    imports: [RouterModule, TranslatePipe, NgMapsGoogleModule]
 })
 export class DrawLocationMapComponent implements OnInit {
   private apollo = inject(Apollo);

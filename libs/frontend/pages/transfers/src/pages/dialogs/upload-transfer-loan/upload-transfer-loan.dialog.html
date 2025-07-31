@@ -1,11 +1,11 @@
 <h1 mat-dialog-title>
   {{
-    'all.transfers-loan.upload.title'
-      | translate
-        : {
-            season: this.data.season,
-          }
-  }}
+  'all.transfers-loan.upload.title'
+  | translate
+  : {
+  season: this.data.season,
+}
+}}
 </h1>
 <div mat-dialog-content>
   <p [innerHTML]="'all.transfers-loan.upload.description' | translate"></p>
@@ -17,7 +17,7 @@
       (dragleave)="onDragLeave($event)"
       (drop)="onFileDrop($event)"
       (click)="onCLick($event)"
-    >
+      >
       <p>{{ 'all.transfers-loan.upload.hint' | translate }}</p>
     </div>
   }
@@ -55,9 +55,11 @@
         </mat-select>
       </mat-form-field>
       <!-- show error if the value is null -->
-      <mat-error *ngIf="this.transferOrLoan === null"
-        >{{ 'all.transfers-loan.upload.error' | translate }}
-      </mat-error>
+      @if (this.transferOrLoan === null) {
+        <mat-error
+          >{{ 'all.transfers-loan.upload.error' | translate }}
+        </mat-error>
+      }
     </div>
   }
 </div>
@@ -69,7 +71,7 @@
     [disabled]="!this.uploadedFile || this.uploading || this.processing"
     color="primary"
     (click)="processData()"
-  >
+    >
     Process
   </button>
 </div>

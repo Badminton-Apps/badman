@@ -64,6 +64,7 @@ async function bootstrap() {
     origin: function (origin, callback) {
       return callback(null, true);
     },
+    credentials: true, 
     optionsSuccessStatus: 200,
   });
   Logger.debug('Cors enabled');
@@ -90,7 +91,7 @@ async function bootstrap() {
 
   Logger.debug('Extensions loaded');
 
-  const port = configService.get('PORT') || 5000;
+  const port = configService.get('PORT') || 5010;
   await app.listen(port, '0.0.0.0', (error) => {
     if (error) {
       process.exit(1);

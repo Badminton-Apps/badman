@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +9,6 @@ import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   imports: [
-    CommonModule,
     TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
@@ -18,8 +17,8 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MtxDatetimepickerModule,
-  ],
+    MtxDatetimepickerModule
+],
   templateUrl: './select-period.component.html',
   styleUrls: ['./select-period.component.scss'],
 })

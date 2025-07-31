@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -35,7 +35,6 @@ import { ClubTeamsService } from './club-teams.service';
 @Component({
   selector: 'badman-club-teams',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     FormsModule,
     LoadingBlockComponent,
@@ -47,8 +46,8 @@ import { ClubTeamsService } from './club-teams.service';
     MatButtonToggleModule,
     HasClaimComponent,
     RecentGamesComponent,
-    UpcomingGamesComponent,
-  ],
+    UpcomingGamesComponent
+],
   templateUrl: './club-teams.component.html',
   styleUrls: ['./club-teams.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -120,6 +120,24 @@ export class EncounterCompetition extends Model<
   @Column(DataType.UUIDV4)
   awayTeamId?: string;
 
+  @Field(() => Player, { nullable: true })
+  @BelongsTo(() => Player, 'tempHomeCaptainId')
+  tempHomeCaptain?: Relation<Player>;
+
+  @ForeignKey(() => Player)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  tempHomeCaptainId?: string;
+
+  @Field(() => Player, { nullable: true })
+  @BelongsTo(() => Player, 'tempAwayCaptainId')
+  tempAwayCaptain?: Relation<Player>;
+
+  @ForeignKey(() => Player)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  tempAwayCaptainId?: string;
+
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   synced?: Date;
@@ -132,6 +150,11 @@ export class EncounterCompetition extends Model<
   @BelongsTo(() => Player, 'gameLeaderId')
   gameLeader?: Relation<Player>;
 
+  @ForeignKey(() => Player)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  gameLeaderId?: string;
+
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'enteredById')
   enteredBy?: Relation<Player>;
@@ -139,6 +162,34 @@ export class EncounterCompetition extends Model<
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'acceptedById')
   acceptedBy?: Relation<Player>;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  finished?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  homeCaptainPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  awayCaptainPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  gameLeaderPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  gameLeaderAccepted?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  homeCaptainAccepted?: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  @Column(DataType.BOOLEAN)
+  awayCaptainAccepted?: boolean;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
@@ -231,6 +282,16 @@ export class EncounterCompetition extends Model<
   })
   awayComments?: Relation<Comment[]>;
 
+  @Field(() => Comment, { nullable: true })
+  @HasOne(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'game_leader_comment',
+    },
+  })
+  gameLeaderComment?: Relation<Comment>;
+
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
     foreignKey: 'linkId',
@@ -250,6 +311,16 @@ export class EncounterCompetition extends Model<
     },
   })
   awayCommentsChange?: Relation<Comment[]>;
+
+  @Field(() => Comment, { nullable: true })
+  @HasOne(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: true,
+    scope: {
+      linkType: 'encounter',
+    },
+  })
+  encounterComment?: Relation<Comment>;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;
@@ -274,6 +345,14 @@ export class EncounterCompetition extends Model<
   getAway!: BelongsToGetAssociationMixin<Team>;
   setAway!: BelongsToSetAssociationMixin<Team, string>;
 
+  // Belongs to player
+  getAcceptedBy!: BelongsToGetAssociationMixin<Player>;
+  setAcceptedBy!: BelongsToSetAssociationMixin<Player, string>;
+
+  // Belongs to player
+  getEnteredBy!: BelongsToGetAssociationMixin<Player>;
+  setEnteredBy!: BelongsToSetAssociationMixin<Player, string>;
+
   // Has one EncounterChange
   getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
   setEncounterChange!: HasOneSetAssociationMixin<EncounterChange, string>;
@@ -286,6 +365,14 @@ export class EncounterCompetition extends Model<
   getGameLeader!: BelongsToGetAssociationMixin<Player>;
   setGameLeader!: BelongsToSetAssociationMixin<Player, string>;
 
+  // Belongs to HomeCaptain
+  getTempHomeCaptain!: BelongsToGetAssociationMixin<Player>;
+  setTempHomeCaptain!: BelongsToSetAssociationMixin<Player, string>;
+
+  // Belongs to AwayCaptain
+  getTempAwayCaptain!: BelongsToGetAssociationMixin<Player>;
+  setTempAwayCaptain!: BelongsToSetAssociationMixin<Player, string>;
+
   // Has many Assemblie
   getAssemblies!: HasManyGetAssociationsMixin<Assembly>;
   setAssemblies!: HasManySetAssociationsMixin<Assembly, string>;
@@ -296,6 +383,10 @@ export class EncounterCompetition extends Model<
   hasAssembly!: HasManyHasAssociationMixin<Assembly, string>;
   hasAssemblies!: HasManyHasAssociationsMixin<Assembly, string>;
   countAssemblies!: HasManyCountAssociationsMixin;
+
+  // Has one Location
+  getGameLeaderComment!: BelongsToGetAssociationMixin<Comment>;
+  setGameLeaderComment!: BelongsToSetAssociationMixin<Comment, string>;
 
   // Has many HomeComment
   getHomeComments!: HasManyGetAssociationsMixin<Comment>;
@@ -319,6 +410,10 @@ export class EncounterCompetition extends Model<
   hasAwayComments!: HasManyHasAssociationsMixin<Comment, string>;
   countAwayComments!: HasManyCountAssociationsMixin;
 
+  // Has one EncounterComment
+  getEncounterComment!: BelongsToGetAssociationMixin<Comment>;
+  setEncounterComment!: BelongsToSetAssociationMixin<Comment, string>;
+
   // Has many HomeCommentsChange
   getHomeCommentsChanges!: HasManyGetAssociationsMixin<Comment>;
   setHomeCommentsChanges!: HasManySetAssociationsMixin<Comment, string>;
@@ -340,4 +435,67 @@ export class EncounterCompetition extends Model<
   hasAwayCommentsChange!: HasManyHasAssociationMixin<Comment, string>;
   hasAwayCommentsChanges!: HasManyHasAssociationsMixin<Comment, string>;
   countAwayCommentsChanges!: HasManyCountAssociationsMixin;
+}
+
+@InputType()
+export class updateEncounterCompetitionInput {
+  @Field(() => Boolean, { nullable: true })
+  gameLeaderPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  homeCaptainPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  awayCaptainPresent?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  gameLeaderAccepted?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  homeCaptainAccepted?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  awayCaptainAccepted?: boolean;
+
+  @Field(() => String, { nullable: true })
+  startHour?: string;
+
+  @Field(() => String, { nullable: true })
+  endHour?: string;
+
+  @Field(() => String, { nullable: true })
+  shuttle?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  accepted?: boolean;
+
+  @Field(() => String, { nullable: true })
+  acceptedById?: string;
+
+  @Field(() => Date, { nullable: true })
+  acceptedOn?: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  finished?: boolean;
+
+  @Field(() => String, { nullable: true })
+  enteredById?: string;
+
+  @Field(() => Date, { nullable: true })
+  enteredOn?: Date;
+
+  @Field(() => String, { nullable: true })
+  tempHomeCaptainId?: string;
+
+  @Field(() => String, { nullable: true })
+  tempAwayCaptainId?: string;
+}
+
+@InputType()
+export class updateTempTeamCaptainInput {
+  @Field(() => String, { nullable: true })
+  tempHomeCaptainId?: string;
+
+  @Field(() => String, { nullable: true })
+  tempAwayCaptainId?: string;
 }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,13 +14,12 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
   templateUrl: './add.dialog.html',
   styleUrls: ['./add.dialog.scss'],
   imports: [
-    CommonModule,
     TranslatePipe,
     TeamFieldComponent,
     TeamPlayersComponent,
     MatDialogModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
 })
 export class AddDialogComponent {
   public dialogRef = inject<MatDialogRef<AddDialogComponent>>(MatDialogRef<AddDialogComponent>);

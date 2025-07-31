@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,21 +28,20 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     templateUrl: './detail.page.html',
     styleUrls: ['./detail.page.scss'],
     imports: [
-        CommonModule,
-        TranslatePipe,
-        RouterModule,
-        MomentModule,
-        MatIconModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatChipsModule,
-        MatTooltipModule,
-        MatDialogModule,
-        MatDividerModule,
-        PageHeaderComponent,
-        RankingTableComponent,
-        HasClaimComponent,
-    ]
+    TranslatePipe,
+    RouterModule,
+    MomentModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatDialogModule,
+    MatDividerModule,
+    PageHeaderComponent,
+    RankingTableComponent,
+    HasClaimComponent
+]
 })
 export class DetailPageComponent {
   private route = inject(ActivatedRoute);
