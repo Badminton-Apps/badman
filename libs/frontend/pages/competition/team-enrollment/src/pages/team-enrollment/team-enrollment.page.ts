@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnDestroy, OnInit, effect, inject, viewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -69,7 +69,6 @@ export type TeamForm = FormGroup<{
   imports: [
     ClubStepComponent,
     CommentsStepComponent,
-    CommonModule,
     LocationsStepComponent,
     MatButtonModule,
     MatIconModule,
@@ -81,8 +80,8 @@ export type TeamForm = FormGroup<{
     ReactiveFormsModule,
     TeamsStepComponent,
     TeamsTransferStepComponent,
-    TranslatePipe,
-  ],
+    TranslatePipe
+],
 })
 export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   vert_stepper = viewChild.required(MatStepper);

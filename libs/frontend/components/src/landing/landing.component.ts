@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,13 +27,12 @@ import { BetaComponent } from './components';
 @Component({
     selector: 'badman-landing',
     imports: [
-        CommonModule,
-        BetaComponent,
-        TranslatePipe,
-        MatIconModule,
-        UpcomingGamesComponent,
-        RankingTableComponent,
-    ],
+    BetaComponent,
+    TranslatePipe,
+    MatIconModule,
+    UpcomingGamesComponent,
+    RankingTableComponent
+],
     templateUrl: './landing.component.html',
     styleUrls: ['./landing.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush

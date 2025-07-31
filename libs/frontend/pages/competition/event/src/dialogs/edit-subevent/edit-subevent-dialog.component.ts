@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, Signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -34,7 +34,6 @@ const UPDATE_SUBEVENT_COMPETITION = gql`
   templateUrl: './edit-subevent-dialog.component.html',
   styleUrls: ['./edit-subevent-dialog.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TranslatePipe,
     MatDialogModule,
@@ -42,8 +41,8 @@ const UPDATE_SUBEVENT_COMPETITION = gql`
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    EventCompetitionLevelFieldsComponent,
-  ],
+    EventCompetitionLevelFieldsComponent
+],
 })
 export class EditSubeventDialogComponent {
   private dialogRef = inject(MatDialogRef<EditSubeventDialogComponent>);

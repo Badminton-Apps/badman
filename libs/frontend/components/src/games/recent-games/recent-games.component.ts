@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Team } from '@badman/frontend-models';
@@ -8,7 +8,7 @@ import { ListGamesComponent } from './list-games/list-games.component';
 
 @Component({
   selector: 'badman-recent-games',
-  imports: [CommonModule, MomentModule, RouterModule, ListEncountersComponent, ListGamesComponent],
+  imports: [MomentModule, RouterModule, ListEncountersComponent, ListGamesComponent],
   templateUrl: './recent-games.component.html',
   styleUrls: ['./recent-games.component.scss'],
 })

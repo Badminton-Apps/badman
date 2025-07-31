@@ -5,8 +5,8 @@
     "tslib": "^2.3.0",
     "@badman/backend-database": "6.185.0",
     "@badman/utils": "6.185.0",
-    "@nestjs/common": "^10.3.10",
-    "sequelize": "^6.37.3"
+    "@nestjs/common": "^10.4.15",
+    "sequelize": "^6.37.5"
   },
   "type": "commonjs",
   "main": "./src/index.js",

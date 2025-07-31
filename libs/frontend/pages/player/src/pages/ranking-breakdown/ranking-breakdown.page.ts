@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -35,20 +35,19 @@ import {  Ranking } from '@badman/utils';
     templateUrl: './ranking-breakdown.page.html',
     styleUrls: ['./ranking-breakdown.page.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslatePipe,
-        MatIconModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatDialogModule,
-        MatProgressBarModule,
-        ListGamesComponent,
-        PeriodSelectionComponent,
-        RankingEvolutionComponent,
-    ],
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDialogModule,
+    MatProgressBarModule,
+    ListGamesComponent,
+    PeriodSelectionComponent,
+    RankingEvolutionComponent
+],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RankingBreakdownPageComponent {

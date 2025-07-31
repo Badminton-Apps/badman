@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +19,6 @@ import { BehaviorSubject, takeUntil, zip } from 'rxjs';
 
 @Component({
   imports: [
-    CommonModule,
     TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
@@ -31,8 +30,8 @@ import { BehaviorSubject, takeUntil, zip } from 'rxjs';
     MatSelectModule,
     MatTableModule,
     MatInputModule,
-    MatProgressSpinnerModule,
-  ],
+    MatProgressSpinnerModule
+],
   templateUrl: './set-risers-fallers.component.html',
   styleUrls: ['./set-risers-fallers.component.scss'],
 })

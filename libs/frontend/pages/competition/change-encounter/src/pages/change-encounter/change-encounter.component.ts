@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,7 +24,6 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
   templateUrl: './change-encounter.component.html',
   styleUrls: ['./change-encounter.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TranslatePipe,
     MatIconModule,
@@ -32,8 +31,8 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
     SelectTeamComponent,
     SelectSeasonComponent,
     ListEncountersComponent,
-    ShowRequestsComponent,
-  ],
+    ShowRequestsComponent
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeEncounterComponent implements OnInit {

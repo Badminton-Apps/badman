@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const { releaseChangelog, releaseVersion } = require('nx/release');
 const yargs = require('yargs');
+const { hideBin } = require('yargs/helpers');
 const fs = require('fs');
 const path = require('path');
 const runExec = require('./run-exec');
@@ -45,8 +46,8 @@ function updateVersion(filePath, newVersion) {
 
 (async () => {
   try {
-    const options = await yargs
-      .version(false) // don't use the default meaning of version in yargs
+    const options = yargs(hideBin(process.argv))
+      .version(false)
       .option('version', {
         description: 'Explicit version specifier to use, if overriding conventional commits',
         type: 'string',
@@ -66,7 +67,10 @@ function updateVersion(filePath, newVersion) {
     const { workspaceVersion, projectsVersionData } = await releaseVersion({
       dryRun: options.dryRun,
       verbose: options.verbose,
+      version: options.version,
     });
+
+    console.log(`Workspace version: ${workspaceVersion}`);
 
     // update version.json files
     walkDir('./apps', workspaceVersion);
@@ -80,7 +84,7 @@ function updateVersion(filePath, newVersion) {
       dryRun: options.dryRun,
       verbose: options.verbose,
     });
-    core.setOutput("NEW_VERSION", workspaceVersion);
+    core.setOutput('NEW_VERSION', workspaceVersion);
     core.info(`New version: ${workspaceVersion}`);
   } catch (error) {
     core.setFailed(error.message);

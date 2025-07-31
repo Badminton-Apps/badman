@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   PLATFORM_ID,
@@ -37,18 +37,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     templateUrl: './detail.page.html',
     styleUrls: ['./detail.page.scss'],
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslatePipe,
-        MatIconModule,
-        MatButtonModule,
-        MatMenuModule,
-        RecentGamesComponent,
-        UpcomingGamesComponent,
-        PageHeaderComponent,
-        MatDialogModule,
-    ]
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    RecentGamesComponent,
+    UpcomingGamesComponent,
+    PageHeaderComponent,
+    MatDialogModule
+]
 })
 export class DetailPageComponent {
   private apollo = inject(Apollo);

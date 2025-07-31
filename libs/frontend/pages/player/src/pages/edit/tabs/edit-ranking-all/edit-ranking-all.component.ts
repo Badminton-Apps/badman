@@ -123,8 +123,8 @@ export class EditRankingAllComponent implements OnInit {
           map(({ data }) => new Player(data.player)),
           map((player) => {
             const allPlaces: Map<Date, RankingPlace[]> = new Map();
-            allPlaces[Symbol.iterator] = function* () {
-              yield* [...allPlaces.entries()].sort((a, b) => b[0]?.getTime() - a[0]?.getTime());
+            allPlaces[Symbol.iterator] = function () {
+              return [...allPlaces.entries()].sort((a, b) => b[0]?.getTime() - a[0]?.getTime())[Symbol.iterator]();
             };
 
             const sorted = player.rankingPlaces?.sort((a, b) => {

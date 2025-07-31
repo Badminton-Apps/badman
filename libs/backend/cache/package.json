@@ -3,11 +3,11 @@
   "version": "6.185.0",
   "dependencies": {
     "@badman/utils": "6.185.0",
-    "@nestjs/common": "^10.3.10",
-    "@nestjs/cache-manager": "^2.2.2",
-    "@nestjs/config": "^3.2.3",
-    "cache-manager-redis-store": "^3.0.1",
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/cache-manager": "^2.3.0",
+    "@nestjs/config": "^3.3.0",
+    "cache-manager-redis-store": "^3.0.1"
   },
   "type": "commonjs",
   "main": "./src/index.js",

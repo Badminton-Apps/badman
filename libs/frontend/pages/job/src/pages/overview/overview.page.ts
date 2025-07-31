@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, TemplateRef, ViewChild, computed, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,24 +24,23 @@ import { CronJobService } from '../../services/cronjob.service';
     templateUrl: './overview.page.html',
     styleUrls: ['./overview.page.scss'],
     imports: [
-        CommonModule,
-        RouterModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MtxGrid,
-        MomentModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatMenuModule,
-        MatDialogModule,
-        MatDividerModule,
-        MatSlideToggleModule,
-        MatDatepickerModule,
-        PageHeaderComponent,
-    ]
+    RouterModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MtxGrid,
+    MomentModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    PageHeaderComponent
+]
 })
 export class OverviewPageComponent {
   // injects
@@ -83,12 +82,10 @@ export class OverviewPageComponent {
       type: 'button',
       buttons: [
         {
-          type: 'basic',
           text: 'Toogle',
           click: (row) => this.toggleActive(row),
         },
         {
-          type: 'basic',
           text: 'Queue',
           click: (row) => this.openDialog(row),
         },

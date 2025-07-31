@@ -23,11 +23,39 @@
         }
       }
     },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/scripts"],
+    "build": {
+      "executor": "@nx/webpack:webpack",
       "options": {
-        "jestConfig": "apps/scripts/jest.config.ts"
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/scripts/src/main.ts",
+        "tsConfig": "apps/scripts/tsconfig.app.json",
+        "outputPath": "dist/apps/scripts",
+        "webpackConfig": "apps/scripts/webpack.config.js"
+      }
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/scripts",
+        "{workspaceRoot}\\coverage\\apps\\scripts"
+      ],
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     },
     "lint": {

@@ -32,7 +32,7 @@
   .help-text {
     margin: 0.5rem 0 0 0;
     font-size: 0.875rem;
-    color: var(--mdc-theme-text-secondary, rgba(0, 0, 0, 0.6));
+    color: var(--mat-theme-text-secondary, rgba(0, 0, 0, 0.6));
   }
 }
 
@@ -57,7 +57,7 @@
 }
 
 .error-message {
-  color: var(--mdc-theme-error, #f44336);
+  color: var(--mat-theme-error, #f44336);
   margin: 0;
 }
 

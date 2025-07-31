@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ViewEncapsulation, computed, inject, input } from '@angular/core';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 
 @Component({
     selector: 'badman-has-claim',
     templateUrl: './has-claim.component.html',
-    imports: [CommonModule],
+    imports: [],
     encapsulation: ViewEncapsulation.Emulated
 })
 export class HasClaimComponent {

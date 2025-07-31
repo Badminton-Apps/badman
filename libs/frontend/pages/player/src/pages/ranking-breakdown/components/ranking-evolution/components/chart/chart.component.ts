@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ThemeSwitcherService } from '@badman/frontend-components';
 import { RankingSystem } from '@badman/frontend-models';
@@ -17,7 +17,7 @@ import {
     selector: 'badman-chart',
     templateUrl: './chart.component.html',
     styleUrls: ['./chart.component.scss'],
-    imports: [CommonModule, NgApexchartsModule]
+    imports: [NgApexchartsModule]
 })
 export class ChartComponent implements OnInit {
   private themeSwitcher = inject(ThemeSwitcherService);

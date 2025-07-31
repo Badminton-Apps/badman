@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   AfterViewInit,
   Component,
@@ -63,27 +63,26 @@ const FETCH_TOURNAMENTS = gql`
     templateUrl: './overview.page.html',
     styleUrls: ['./overview.page.scss'],
     imports: [
-        CommonModule,
-        RouterModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        MomentModule,
-        HasClaimComponent,
-        MatCardModule,
-        MatButtonModule,
-        MatTableModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatProgressSpinnerModule,
-        MatSlideToggleModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSnackBarModule,
-        MatDialogModule,
-    ]
+    RouterModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    MomentModule,
+    HasClaimComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule,
+    MatDialogModule
+]
 })
 export class OverviewPageComponent implements OnInit, AfterViewInit {
   private seoService = inject(SeoService);

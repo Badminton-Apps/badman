@@ -57,6 +57,9 @@ export class AssemblyInput {
 
   @Field(() => String, { nullable: true })
   description?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  isComplete?: boolean;
 }
 
 @ObjectType()
@@ -84,7 +87,7 @@ export class AssemblyOutput {
 
   @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
   titularsPlayers?: PlayerRankingType[];
-
+  
   systemId?: string;
   titularsPlayerData?: Player[];
   basePlayersData?: EntryCompetitionPlayer[];

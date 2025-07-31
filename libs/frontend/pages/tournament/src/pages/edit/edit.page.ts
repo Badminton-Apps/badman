@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,7 +38,6 @@ export type TournamentEditForm = FormGroup<{
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterModule,
     TranslatePipe,
@@ -49,8 +48,8 @@ export type TournamentEditForm = FormGroup<{
     MatSlideToggleModule,
     MatIconModule,
     MatSnackBarModule,
-    PageHeaderComponent,
-  ],
+    PageHeaderComponent
+],
 })
 export class EditPageComponent {
   private readonly breadcrumbService = inject(BreadcrumbService);

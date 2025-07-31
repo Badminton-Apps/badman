@@ -112,7 +112,7 @@ export class PlayerOrderRule extends Rule {
 
     if (ranking2 < ranking1) {
       return {
-        message: 'all.competition.team-assembly.errors.player-order-single',
+        message: 'all.v1.teamFormation.errors.player-order-single',
         params: {
           game1,
           game2,
@@ -173,7 +173,7 @@ export class PlayerOrderRule extends Rule {
 
     if (d2p1 + d2p2 < d1p1 + d1p2) {
       return {
-        message: 'all.competition.team-assembly.errors.player-order-doubles',
+        message: 'all.v1.teamFormation.errors.player-order-doubles',
         params: {
           game1,
           game2,
@@ -206,7 +206,7 @@ export class PlayerOrderRule extends Rule {
 
       if (highestd2 < highestd1) {
         return {
-          message: 'all.competition.team-assembly.errors.player-order-highest',
+          message: 'all.v1.teamFormation.errors.player-order-highest',
           params: {
             game1,
             game2,

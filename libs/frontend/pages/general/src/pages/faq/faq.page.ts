@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -24,17 +24,16 @@ import { lastValueFrom } from 'rxjs';
     templateUrl: './faq.page.html',
     styleUrls: ['./faq.page.scss'],
     imports: [
-        CommonModule,
-        MatFormFieldModule,
-        HasClaimComponent,
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatInputModule,
-        QuillModule,
-    ],
+    MatFormFieldModule,
+    HasClaimComponent,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatInputModule,
+    QuillModule
+],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaqPageComponent implements OnInit {

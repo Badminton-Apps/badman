@@ -19,7 +19,7 @@ export class TeamBaseIndexRule extends Rule {
         valid: false,
         errors: [
           {
-            message: 'all.competition.team-assembly.errors.team-index',
+            message: 'all.v1.teamFormation.errors.team-index',
             params: {
               teamIndex,
               baseIndex: meta?.competition?.teamIndex,

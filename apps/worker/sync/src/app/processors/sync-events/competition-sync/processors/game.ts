@@ -81,7 +81,8 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     games: Game[],
   ) {
     // only get info for games that have been played
-    if (moment(encounter.date).isAfter(moment())) {
+    const isAFutureEncounter = moment(encounter.date).isAfter(moment());
+    if (isAFutureEncounter) {
       return;
     }
 
