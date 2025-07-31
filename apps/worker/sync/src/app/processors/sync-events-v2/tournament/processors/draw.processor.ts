@@ -1,4 +1,9 @@
-import { DrawTournament, RankingSystem, SubEventTournament } from '@badman/backend-database';
+import {
+  DrawTournament,
+  EventEntry,
+  RankingSystem,
+  SubEventTournament,
+} from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
 import { VisualService, XmlDrawTypeID } from '@badman/backend-visual';
 import { DrawType } from '@badman/utils';
@@ -112,6 +117,19 @@ export class DrawTournamentProcessor {
     if (draw && options.deleteDraw) {
       this.logger.debug(`Deleting draw ${draw.name}`);
 
+      // Clean up EventEntries first
+      const eventEntries = await EventEntry.findAll({
+        where: {
+          drawId: draw.id,
+          entryType: 'tournament',
+        },
+        transaction,
+      });
+
+      for (const entry of eventEntries) {
+        await entry.destroy({ transaction });
+      }
+
       const games = await draw.getGames({
         transaction,
       });
@@ -143,7 +161,7 @@ export class DrawTournamentProcessor {
         id: drawId ? drawId : undefined,
       });
     }
-   
+
     draw.subeventId = subEvent.id;
     draw.visualCode = visualDraw.Code;
     draw.name = visualDraw.Name;
