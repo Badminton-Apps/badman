@@ -3,6 +3,7 @@ import {
   EventCompetition,
   RankingSystem,
   SubEventCompetition,
+  EventEntry,
 } from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
 import { VisualService, XmlGenderID, XmlTournamentEvent } from '@badman/backend-visual';
@@ -299,6 +300,19 @@ export class SubEventCompetitionProcessor {
           for (const dbGame of dbGames) {
             await dbGame.destroy({ transaction });
           }
+        }
+
+        // Clean up EventEntries first
+        const eventEntries = await EventEntry.findAll({
+          where: {
+            drawId: dbDraw.id,
+            entryType: 'competition',
+          },
+          transaction,
+        });
+
+        for (const entry of eventEntries) {
+          await entry.destroy({ transaction });
         }
 
         await dbDraw.destroy({ transaction });
