@@ -2952,6 +2952,7 @@
         "delete": "Delete",
         "setRisersFallers": "Set risers/fallers",
         "openCloseDate": "Open/Close date",
+        "openCloseEncounterChangeDate": "Open / close move encounters",
         "makeOfficial": "Make official",
         "makeUnofficial": "Make unofficial",
         "sync": "Sync",
@@ -3012,6 +3013,24 @@
         "messages": {
           "success": "Open/Close date successfully updated",
           "error": "Error updating open/close date"
+        }
+      },
+      "openCloseEncounterChangeDateDialog": {
+        "title": "Open / close move encounters",
+        "form": {
+          "changeOpenDate": "Open Requests",
+          "changeCloseRequestDatePeriod1": "Close New Requests (Period 1)",
+          "changeCloseDatePeriod1": "Close Accept Requests (Period 1)",
+          "changeCloseRequestDatePeriod2": "Close New Requests (Period 2)",
+          "changeCloseDatePeriod2": "Close Accept Requests (Period 2)"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save"
+        },
+        "messages": {
+          "success": "Dates updated successfully.",
+          "error": "Failed to update dates. Please try again."
         }
       },
       "risersFallersDialog": {
