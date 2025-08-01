@@ -357,7 +357,7 @@
         "courts-hint": "Wijzig het aantal beschikbare velden",
         "title": "Locaties"
       },
-      "mixed-national-teams": "De nationale ploegen worden meegeteld bij de nummering van de gemengde ploegen. (Voorbeeld, je hebt 3 ploegen: Aangevinkt: Nationale 1, Nationale 2, Ploeg 3G’. Uitgevinkt: ‘Nationale 1, Nationale 2, Ploeg 1G’)",
+      "mixed-national-teams": "De nationale ploegen worden meegeteld bij de nummering van de gemengde ploegen. (Voorbeeld, je hebt 3 ploegen: Aangevinkt: Nationale 1, Nationale 2, Ploeg 3G'. Uitgevinkt: 'Nationale 1, Nationale 2, Ploeg 1G')",
       "open": "Open",
       "play-days": "Speeldagen",
       "players": {
@@ -2546,7 +2546,7 @@
           "reports": "Rapporten",
           "copy": "Kopiëren",
           "openCloseSignups": "Inschrijvingen openen/sluiten",
-          "openCloseChangeEncounters": "Wijziging wedstrijd datum openen/sluiten",
+          "openCloseEncounterChangeDate": "Openen/sluiten wedstrijd datums",
           "makeUnofficialTournament": "Maak onofficieel toernooi",
           "delete": "Verwijderen",
           "averageLevel": "Gemiddeld niveau",
@@ -2723,6 +2723,7 @@
         "setRisersFallers": "Stel stijgers/dalers in",
         "openCloseDate": "Openen/sluiten datum",
         "makeOfficial": "Officieel maken",
+        "openCloseEncounterChangeDate": "Openen/sluiten verplaatsen ontmoetingen",
         "makeUnofficial": "Unofficieel maken",
         "sync": "Synchroniseren",
         "messages": {
@@ -2756,6 +2757,24 @@
         },
         "successMessage": "Competitie succesvol verwijderd van platform",
         "errorMessage": "Fout bij het verwijderen van de competitie"
+      },
+      "openCloseEncounterChangeDateDialog": {
+        "title": "Open/sluit verplaatsen ontmoetingen",
+        "form": {
+          "changeOpenDate": "Open aanvragen",
+          "changeCloseRequestDatePeriod1": "Sluit nieuwe aanvragen (periode 1)",
+          "changeCloseDatePeriod1": "Sluit aanvaarde aanvragen (periode 1)",
+          "changeCloseRequestDatePeriod2": "Sluit nieuwe aanvragen (periode 2)",
+          "changeCloseDatePeriod2": "Sluit aanvaarde aanvragen (periode 2)"
+        },
+        "buttons": {
+          "cancel": "Annuleren",
+          "save": "Opslaan"
+        },
+        "messages": {
+          "success": "Datum succesvol bijgewerkt",
+          "error": "Fout bij het bijwerken van de datum. Probeer het opnieuw."
+        }
       },
       "competitionStatusDialog": {
         "title": "Competitie {status} maken?",
