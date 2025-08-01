@@ -205,9 +205,7 @@ export class EncounterChangeCompetitionResolver {
 
         // Remove the selected date from the change dates
         const selectedDate = selectedDates[0];
-        const dateToRemove = dates.find(
-          (d) => d.date?.getTime() === selectedDate.date?.getTime()
-        );
+        const dateToRemove = dates.find((d) => d.date?.getTime() === selectedDate.date?.getTime());
         if (dateToRemove) {
           await dateToRemove.destroy({ transaction });
         }
