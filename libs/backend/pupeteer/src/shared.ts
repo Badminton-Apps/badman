@@ -6,15 +6,18 @@ import { promises as fsPromises } from 'fs';
 let sharedBrowser: Browser | null = null;
 let browserPromise: Promise<Browser> | null = null;
 let browserStartTime = 0;
-const BROWSER_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
+const BROWSER_MAX_AGE_MS = 30 * 60 * 1000; // Reduced to 30 minutes
 const MAX_AGE = BROWSER_MAX_AGE_MS;
-const MAX_PAGES = 50;
-const MAX_INACTIVE = 15 * 60 * 1000; // 15 minutes
+const MAX_PAGES = 20; // Reduced from 50
+const MAX_INACTIVE = 10 * 60 * 1000; // Reduced to 10 minutes
 
 // Track browser activity and requests
 let lastActivityTime = 0;
 let activeRequestCount = 0;
 let isRestarting = false; // Prevent multiple simultaneous restarts
+
+// Memory monitoring
+let memoryCheckInterval: NodeJS.Timeout | null = null;
 
 // Function to decrement active request count
 export function decrementActiveRequestCount(): void {
@@ -26,6 +29,25 @@ export function decrementActiveRequestCount(): void {
 // Function to check if browser is safe to restart
 function isBrowserSafeToRestart(): boolean {
   return activeRequestCount === 0 && !isRestarting;
+}
+
+// Enhanced memory monitoring
+function startMemoryMonitoring(): void {
+  if (memoryCheckInterval) {
+    clearInterval(memoryCheckInterval);
+  }
+
+  memoryCheckInterval = setInterval(() => {
+    const used = process.memoryUsage();
+    const heapUsedMB = Math.round(used.heapUsed / 1024 / 1024);
+
+    // Force restart if memory usage is too high
+    if (heapUsedMB > 1500) {
+      // 1.5GB
+      console.log(`High memory usage detected: ${heapUsedMB}MB, forcing browser restart`);
+      gracefulRestart();
+    }
+  }, 60000); // Check every minute
 }
 
 export async function getBrowser(headless = true, args: string[] = []): Promise<Browser> {
@@ -58,17 +80,22 @@ export async function getBrowser(headless = true, args: string[] = []): Promise<
   browserPromise = createSharedBrowser(headless, args);
   sharedBrowser = await browserPromise;
   browserStartTime = Date.now();
+
+  // Start memory monitoring when browser is created
+  startMemoryMonitoring();
+
   return sharedBrowser;
 }
 
 // Get a new page from the shared browser (more efficient for multiple requests)
 export async function getPage(headless = true, args: string[] = []): Promise<Page> {
   const browser = await getBrowser(headless, args);
-  
+
   // Check memory usage and restart if needed
   try {
     const pages = await browser.pages();
-    if (pages.length > MAX_PAGES) { // Too many pages, restart browser
+    if (pages.length > MAX_PAGES) {
+      // Too many pages, restart browser
       console.log('Too many pages, restarting browser...');
       await browser.close();
       sharedBrowser = null;
@@ -82,34 +109,37 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
     browserPromise = null;
     return await getPage(headless, args); // Recursive call to get fresh browser
   }
-  
+
   const page = await browser.newPage();
-  
+
+  // Set page memory limits
+  await page.setCacheEnabled(false);
+
   // Track when page is closed to update request count
   const originalClose = page.close.bind(page);
   page.close = async () => {
     decrementActiveRequestCount();
     return originalClose();
   };
-  
+
   // Also track page crashes/disconnections
   page.on('close', () => {
     decrementActiveRequestCount();
   });
-  
+
   page.on('error', () => {
     decrementActiveRequestCount();
   });
-  
+
   return page;
 }
 
 async function createSharedBrowser(headless = true, args: string[] = []): Promise<Browser> {
   const puppeteer = await import('puppeteer');
-  
+
   // Create a single user data directory for the shared browser
   const userDataDir = path.resolve('./tmp/chrome-profile-shared');
-  
+
   // Create user data dir with leak detection disabled
   await createUserDataDirWithLeakDetectionDisabled(userDataDir);
 
@@ -126,7 +156,14 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
       '--disable-background-timer-throttling', // Prevent throttling
       '--disable-backgrounding-occluded-windows', // Prevent backgrounding
       '--disable-renderer-backgrounding', // Keep renderer active
-      ...args
+      '--disable-extensions', // Disable extensions to save memory
+      '--disable-plugins', // Disable plugins
+      '--disable-images', // Disable images to save memory
+      '--disable-javascript', // Disable JS if not needed
+      '--disable-web-security', // Disable web security
+      '--disable-features=TranslateUI', // Disable translation UI
+      '--disable-ipc-flooding-protection', // Disable IPC flooding protection
+      ...args,
     ],
     userDataDir,
   });
@@ -136,6 +173,10 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
     sharedBrowser = null;
     browserPromise = null;
     browserStartTime = 0;
+    if (memoryCheckInterval) {
+      clearInterval(memoryCheckInterval);
+      memoryCheckInterval = null;
+    }
   });
 
   return browser;
@@ -156,7 +197,7 @@ export async function createUserDataDirWithLeakDetectionDisabled(dir: string) {
         password_manager_leak_detection: false,
       },
     }),
-    { encoding: 'utf8' }
+    { encoding: 'utf8' },
   );
 }
 
@@ -199,7 +240,6 @@ export async function waitForSelector(
   }
   return element;
 }
-
 
 export async function querySelectorsAll(selectors: string[], frame: Page) {
   for (const selector of selectors) {
@@ -247,19 +287,19 @@ export async function querySelectorAll(selector: string | string[], frame: Page)
     return elements;
   } finally {
     // Clean up all element handles
-    await Promise.all(elements.map(el => el.dispose()));
+    await Promise.all(elements.map((el) => el.dispose()));
   }
 }
 
 export async function waitForFunction(fn: () => unknown, timeout: number) {
   let isActive = true;
   setTimeout(() => {
-    isActive = false;  // This could be called after the function returns
+    isActive = false; // This could be called after the function returns
   }, timeout);
   while (isActive) {
     const result = await fn();
     if (result) {
-      return;  // Function returns but setTimeout callback still executes
+      return; // Function returns but setTimeout callback still executes
     }
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
@@ -268,7 +308,7 @@ export async function waitForFunction(fn: () => unknown, timeout: number) {
 
 export async function waitForSelectors(selectors: string[][], frame: Page, timeout?: number) {
   const errors: Error[] = [];
-  
+
   for (const selector of selectors) {
     try {
       return await waitForSelector(selector, frame, timeout);
@@ -277,12 +317,15 @@ export async function waitForSelectors(selectors: string[][], frame: Page, timeo
       // Don't log every attempt, just collect errors
     }
   }
-  
+
   // This will always execute if no selector is found
   if (errors.length > 0) {
-    console.error('All selectors failed:', errors.map(e => e.message));
+    console.error(
+      'All selectors failed:',
+      errors.map((e) => e.message),
+    );
   }
-  
+
   throw new Error('Could not find element for selectors: ' + JSON.stringify(selectors));
 }
 
@@ -300,6 +343,10 @@ export async function restartBrowser(): Promise<void> {
     sharedBrowser = null;
     browserPromise = null;
     browserStartTime = 0;
+    if (memoryCheckInterval) {
+      clearInterval(memoryCheckInterval);
+      memoryCheckInterval = null;
+    }
   }
 }
 
@@ -308,12 +355,16 @@ async function gracefulRestart(): Promise<void> {
   if (sharedBrowser && isBrowserSafeToRestart()) {
     isRestarting = true;
     console.log('Performing graceful browser restart...');
-    
+
     try {
       await sharedBrowser.close();
       sharedBrowser = null;
       browserPromise = null;
       browserStartTime = 0;
+      if (memoryCheckInterval) {
+        clearInterval(memoryCheckInterval);
+        memoryCheckInterval = null;
+      }
       console.log('Browser restart completed successfully');
     } catch (error) {
       console.log('Error during browser restart:', error);
@@ -329,33 +380,38 @@ async function gracefulRestart(): Promise<void> {
 
 // Export the monitoring function for services to use
 export function startBrowserHealthMonitoring(): () => void {
-  const interval = setInterval(async () => {
-    if (!sharedBrowser) {
-      return; // No browser to check
-    }
+  const interval = setInterval(
+    async () => {
+      if (!sharedBrowser) {
+        return; // No browser to check
+      }
 
-    try {
-      const now = Date.now();
-      const browserAge = now - browserStartTime;
-      const inactiveTime = now - lastActivityTime;
-      const pages = await sharedBrowser.pages();
-      const pageCount = pages.length;
-      
-      // Check multiple conditions
-      const needsRestart = 
-        browserAge > MAX_AGE ||
-        pageCount > MAX_PAGES ||
-        (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart());
-        
-      if (needsRestart) {
-        console.log(`Browser restart needed: age=${browserAge}ms, pages=${pageCount}, inactive=${inactiveTime}ms, activeRequests=${activeRequestCount}`);
+      try {
+        const now = Date.now();
+        const browserAge = now - browserStartTime;
+        const inactiveTime = now - lastActivityTime;
+        const pages = await sharedBrowser.pages();
+        const pageCount = pages.length;
+
+        // Check multiple conditions
+        const needsRestart =
+          browserAge > MAX_AGE ||
+          pageCount > MAX_PAGES ||
+          (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart());
+
+        if (needsRestart) {
+          console.log(
+            `Browser restart needed: age=${browserAge}ms, pages=${pageCount}, inactive=${inactiveTime}ms, activeRequests=${activeRequestCount}`,
+          );
+          await gracefulRestart();
+        }
+      } catch (error) {
+        console.log('Error checking browser health, restarting...', error);
         await gracefulRestart();
       }
-    } catch (error) {
-      console.log('Error checking browser health, restarting...', error);
-      await gracefulRestart();
-    }
-  }, 15 * 60 * 1000); // Check every 15 minutes
+    },
+    10 * 60 * 1000,
+  ); // Check every 10 minutes
 
   // Return cleanup function
   return () => clearInterval(interval);

@@ -15,12 +15,44 @@ import { RedisIoAdapter } from '@badman/backend-websockets';
 import compression from '@fastify/compress';
 import RedisMemoryServer from 'redis-memory-server';
 
+// Set Node.js memory limits
+const v8 = require('v8');
+v8.setFlagsFromString('--max_old_space_size=2048'); // 2GB heap limit
+
+// Memory monitoring
+function monitorMemory() {
+  const used = process.memoryUsage();
+  const logger = new Logger('MemoryMonitor');
+
+  logger.debug(
+    `Memory usage: ${Math.round(used.heapUsed / 1024 / 1024)}MB heap used, ${Math.round(used.heapTotal / 1024 / 1024)}MB heap total`,
+  );
+
+  // Alert if memory usage is high
+  if (used.heapUsed > 1.5 * 1024 * 1024 * 1024) {
+    // 1.5GB - warning threshold
+    logger.warn('High memory usage detected!');
+  }
+
+  // Force restart if memory usage is critical
+  if (used.heapUsed > 1.8 * 1024 * 1024 * 1024) {
+    // 1.8GB - critical threshold
+    logger.error('Critical memory usage detected! Forcing restart...');
+    process.exit(1);
+  }
+}
+
+// Set up memory monitoring
+setInterval(monitorMemory, 30000); // Check every 30 seconds
+
 async function bootstrap() {
   Logger.debug('Starting application');
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({
-      bodyLimit: 10048576,
+      bodyLimit: 5242880, // Reduced to 5MB
+      maxParamLength: 100,
+      logger: false, // Disable Fastify logging to reduce memory usage
     }),
     {
       bufferLogs: true,
@@ -64,7 +96,7 @@ async function bootstrap() {
     origin: function (origin, callback) {
       return callback(null, true);
     },
-    credentials: true, 
+    credentials: true,
     optionsSuccessStatus: 200,
   });
   Logger.debug('Cors enabled');
@@ -102,6 +134,17 @@ async function bootstrap() {
     `🚀 Application is running on: ${await app.getUrl()}. level: ${configService.get('NODE_ENV')}`,
   );
 }
+
+// Global error handlers
+process.on('uncaughtException', (error) => {
+  Logger.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  Logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
+});
 
 try {
   bootstrap();

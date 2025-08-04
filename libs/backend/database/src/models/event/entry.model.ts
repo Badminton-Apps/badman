@@ -1,5 +1,5 @@
 import { getIndexFromPlayers } from '@badman/utils';
-import { Logger, NotFoundException } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import moment from 'moment';
 import {
@@ -198,84 +198,105 @@ export class EventEntry extends Model<
       return;
     }
 
-    const dbSubEvent = await instance.getSubEventCompetition({
-      attributes: [],
-      include: [
-        {
-          model: EventCompetition,
-          attributes: ['season', 'usedRankingUnit', 'usedRankingAmount'],
+    try {
+      const dbSubEvent = await instance.getSubEventCompetition({
+        attributes: [],
+        include: [
+          {
+            model: EventCompetition,
+            attributes: ['season', 'usedRankingUnit', 'usedRankingAmount'],
+          },
+        ],
+      });
+      if (!dbSubEvent) {
+        // Log warning instead of throwing error to prevent sync failures
+        console.warn(
+          `SubEventCompetition not found for entry ${instance.id} - skipping competition index recalculation`,
+        );
+        return;
+      }
+
+      const dbSystem = await RankingSystem.findOne({
+        where: {
+          primary: true,
         },
-      ],
-    });
-    if (!dbSubEvent) {
-      throw new NotFoundException(`${SubEventCompetition.name}: event`);
-    }
+        transaction: options?.transaction,
+      });
 
-    const dbSystem = await RankingSystem.findOne({
-      where: {
-        primary: true,
-      },
-      transaction: options?.transaction,
-    });
+      if (!dbSystem) {
+        console.warn(
+          `Primary RankingSystem not found - skipping competition index recalculation for entry ${instance.id}`,
+        );
+        return;
+      }
 
-    if (!dbSystem) {
-      throw new NotFoundException(`${RankingSystem.name}: primary`);
-    }
+      if (!dbSubEvent.eventCompetition) {
+        console.warn(
+          `EventCompetition not included for SubEventCompetition ${dbSubEvent.id} - skipping competition index recalculation for entry ${instance.id}`,
+        );
+        return;
+      }
 
-    if (!dbSubEvent.eventCompetition) {
-      throw new Error('Did not include eventCompetition');
-    }
+      if (!instance.meta?.competition) {
+        // not a competition meta
+        return;
+      }
 
-    if (!instance.meta?.competition) {
-      // not a competition meta
+      if (
+        !dbSubEvent.eventCompetition.usedRankingUnit ||
+        !dbSubEvent.eventCompetition.usedRankingAmount
+      ) {
+        console.warn(
+          `EventCompetition usedRanking is not set for SubEventCompetition ${dbSubEvent.id} - skipping competition index recalculation for entry ${instance.id}`,
+        );
+        return;
+      }
+
+      const usedRankingDate = moment();
+      usedRankingDate.set('year', dbSubEvent.eventCompetition.season);
+      usedRankingDate.set(
+        dbSubEvent.eventCompetition.usedRankingUnit,
+        dbSubEvent.eventCompetition.usedRankingAmount,
+      );
+
+      const startRanking = usedRankingDate.clone().set('date', 0);
+      const endRanking = usedRankingDate.clone().clone().endOf('month');
+
+      const dbRanking = await RankingPlace.findAll({
+        where: {
+          playerId: instance.meta?.competition?.players?.map((r) => r.id),
+          systemId: dbSystem.id,
+          rankingDate: {
+            [Op.between]: [startRanking.toDate(), endRanking.toDate()],
+          },
+          updatePossible: true,
+        },
+        order: [['rankingDate', 'DESC']],
+        transaction: options?.transaction,
+      });
+
+      instance.meta.competition.players = instance.meta?.competition.players?.map((r) => {
+        const ranking = dbRanking.find((ranking) => ranking.playerId === r.id);
+        return {
+          ...r,
+          single:
+            ((r?.single ?? -1) == -1 ? ranking?.single : r?.single) ?? dbSystem.amountOfLevels,
+          double:
+            ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ?? dbSystem.amountOfLevels,
+          mix: ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
+        };
+      });
+
+      const team = await instance.getTeam();
+      instance.meta.competition.teamIndex = getIndexFromPlayers(
+        team.type,
+        instance.meta?.competition.players,
+      );
+    } catch (error) {
+      // Log error and continue instead of throwing to prevent sync failures
+      console.error(`Error in recalculateCompetitionIndex for entry ${instance.id}: ${error}`);
       return;
     }
-
-    if (
-      !dbSubEvent.eventCompetition.usedRankingUnit ||
-      !dbSubEvent.eventCompetition.usedRankingAmount
-    ) {
-      throw new Error('EventCompetition usedRanking is not set');
-    }
-
-    const usedRankingDate = moment();
-    usedRankingDate.set('year', dbSubEvent.eventCompetition.season);
-    usedRankingDate.set(
-      dbSubEvent.eventCompetition.usedRankingUnit,
-      dbSubEvent.eventCompetition.usedRankingAmount,
-    );
-
-    const startRanking = usedRankingDate.clone().set('date', 0);
-    const endRanking = usedRankingDate.clone().clone().endOf('month');
-
-    const dbRanking = await RankingPlace.findAll({
-      where: {
-        playerId: instance.meta?.competition?.players?.map((r) => r.id),
-        systemId: dbSystem.id,
-        rankingDate: {
-          [Op.between]: [startRanking.toDate(), endRanking.toDate()],
-        },
-        updatePossible: true,
-      },
-      order: [['rankingDate', 'DESC']],
-      transaction: options?.transaction,
-    });
-
-    instance.meta.competition.players = instance.meta?.competition.players?.map((r) => {
-      const ranking = dbRanking.find((ranking) => ranking.playerId === r.id);
-      return {
-        ...r,
-        single: ((r?.single ?? -1) == -1 ? ranking?.single : r?.single) ?? dbSystem.amountOfLevels,
-        double: ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ?? dbSystem.amountOfLevels,
-        mix: ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
-      };
-    });
-
-    const team = await instance.getTeam();
-    instance.meta.competition.teamIndex = getIndexFromPlayers(
-      team.type,
-      instance.meta?.competition.players,
-    );
   }
 }
 

@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "nx",
     "start": "nx serve",
-    "start:prod": "node -r dotenv/config dist/apps/api/main.js",
+    "start:prod": "node --max-old-space-size=2048 --optimize-for-size -r dotenv/config dist/apps/api/main.js",
+    "start:prod:monitored": "node scripts/monitor.js",
     "build": "nx build",
     "nx": "nx",
     "test": "nx test",
@@ -17,9 +18,9 @@
     "start:ranking": "nx run-many --target=serve --projects=worker-ranking,worker-belgium-flanders-places,worker-belgium-flanders-points --parallel",
     "start:client": "nx serve client",
     "publish": "npx --yes tsx tools/scripts/release.ts",
-    "run:worker": "node ./dist/apps/worker/ranking/main.js",
-    "run:belgium-flanders-places": "node ./dist/apps/worker/belgium/flanders/places/main.js",
-    "run:belgium-flanders-points": "node ./dist/apps/worker/belgium/flanders/points/main.js",
+    "run:worker": "node --max-old-space-size=1024 ./dist/apps/worker/ranking/main.js",
+    "run:belgium-flanders-places": "node --max-old-space-size=1024 ./dist/apps/worker/belgium/flanders/places/main.js",
+    "run:belgium-flanders-points": "node --max-old-space-size=1024 ./dist/apps/worker/belgium/flanders/points/main.js",
     "run:ranking": "concurrently \"bun run run:worker\" \"bun run run:belgium-flanders-places\" \"bun run run:belgium-flanders-points\""
   },
   "private": true,
