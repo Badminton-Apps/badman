@@ -1,10 +1,4 @@
-import {
-  DrawTournament,
-  EventEntry,
-  Game,
-  Player,
-  Standing,
-} from '@badman/backend-database';
+import { DrawTournament, EventEntry, Game, Player, Standing } from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
 import { GameStatus } from '@badman/utils';
 import { Process, Processor } from '@nestjs/bull';
@@ -69,18 +63,23 @@ export class DrawStandingTournamentProcessor {
     await this.calculateStandings(games, standings, draw, transaction);
   }
 
-  private async calculateStandings(games: Game[], standings: Map<string, Standing>, draw: DrawTournament, transaction: Transaction) {
+  private async calculateStandings(
+    games: Game[],
+    standings: Map<string, Standing>,
+    draw: DrawTournament,
+    transaction: Transaction,
+  ) {
     for (const game of games) {
       if (game.status == GameStatus.WALKOVER || game.status == GameStatus.NO_MATCH) {
         continue;
       }
 
       const playert1p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1,
       );
 
       const playert2p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1,
       );
 
       if (!playert1p1 || !playert2p1) {
@@ -217,7 +216,7 @@ export class DrawStandingTournamentProcessor {
             'totalPointsWon',
             'totalPointsLost',
           ],
-        }
+        },
       );
     }
   }

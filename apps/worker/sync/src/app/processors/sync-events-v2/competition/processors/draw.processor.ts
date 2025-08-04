@@ -1,4 +1,9 @@
-import { DrawCompetition, RankingSystem, SubEventCompetition } from '@badman/backend-database';
+import {
+  DrawCompetition,
+  EventEntry,
+  RankingSystem,
+  SubEventCompetition,
+} from '@badman/backend-database';
 import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
 import { VisualService, XmlDrawTypeID } from '@badman/backend-visual';
 import { DrawType } from '@badman/utils';
@@ -112,6 +117,19 @@ export class DrawCompetitionProcessor {
     };
     if (draw && options.deleteDraw) {
       this.logger.debug(`Deleting draw ${draw.name}`);
+
+      // Clean up EventEntries first
+      const eventEntries = await EventEntry.findAll({
+        where: {
+          drawId: draw.id,
+          entryType: 'competition',
+        },
+        transaction,
+      });
+
+      for (const entry of eventEntries) {
+        await entry.destroy({ transaction });
+      }
 
       await draw.destroy({ transaction });
       draw = undefined;

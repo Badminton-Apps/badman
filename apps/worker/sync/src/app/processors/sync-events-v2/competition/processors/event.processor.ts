@@ -6,6 +6,7 @@ import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
 import moment from 'moment';
 import { Transaction } from 'sequelize';
+import { EventEntry } from '@badman/backend-database';
 
 @Processor({
   name: SyncQueue,
@@ -203,6 +204,19 @@ export class EventCompetitionProcessor {
       visualCode: dbSubEvent.visualCode,
       draws: [],
     };
+
+    // Explicitly clean up EventEntries first
+    const eventEntries = await EventEntry.findAll({
+      where: {
+        subEventId: dbSubEvent.id,
+        entryType: 'competition',
+      },
+      transaction,
+    });
+
+    for (const entry of eventEntries) {
+      await entry.destroy({ transaction });
+    }
 
     const dbDraws = await dbSubEvent.getDrawCompetitions({
       transaction,
