@@ -8,109 +8,72 @@ module.exports = {
     await queryInterface.sequelize.transaction(async (transaction) => {
       console.log('Starting cleanup of orphaned EventEntry records...');
 
-      // Find all EventEntries with non-null subEventId
-      const entriesWithSubEventId = await queryInterface.sequelize.query(
-        `SELECT id, "subEventId", "entryType" FROM event."Entries" WHERE "subEventId" IS NOT NULL`,
-        { transaction, type: Sequelize.QueryTypes.SELECT },
+      // Step 1: Find and delete orphaned entries with invalid subEventId
+      console.log('Processing entries with subEventId...');
+
+      // Delete tournament entries with invalid subEventId
+      const orphanedTournamentSubEvents = await queryInterface.sequelize.query(
+        `DELETE FROM event."Entries" 
+         WHERE "entryType" = 'tournament' 
+         AND "subEventId" IS NOT NULL 
+         AND "subEventId" NOT IN (SELECT id FROM event."SubEventTournaments")`,
+        { transaction },
       );
-
-      console.log(`Found ${entriesWithSubEventId.length} entries with subEventId`);
-
-      let orphanedSubEventCount = 0;
-
-      for (const entry of entriesWithSubEventId) {
-        let isValid = false;
-
-        if (entry.entryType === 'tournament') {
-          // Check if subEventId exists in SubEventTournaments
-          const subEvent = await queryInterface.sequelize.query(
-            `SELECT id FROM event."SubEventTournaments" WHERE id = :subEventId`,
-            {
-              transaction,
-              type: Sequelize.QueryTypes.SELECT,
-              replacements: { subEventId: entry.subEventId },
-            },
-          );
-          isValid = subEvent.length > 0;
-        } else if (entry.entryType === 'competition') {
-          // Check if subEventId exists in SubEventCompetitions
-          const subEvent = await queryInterface.sequelize.query(
-            `SELECT id FROM event."SubEventCompetitions" WHERE id = :subEventId`,
-            {
-              transaction,
-              type: Sequelize.QueryTypes.SELECT,
-              replacements: { subEventId: entry.subEventId },
-            },
-          );
-          isValid = subEvent.length > 0;
-        }
-
-        if (!isValid) {
-          console.log(`Deleting orphaned entry ${entry.id} with subEventId ${entry.subEventId}`);
-          await queryInterface.sequelize.query(`DELETE FROM event."Entries" WHERE id = :entryId`, {
-            transaction,
-            replacements: { entryId: entry.id },
-          });
-          orphanedSubEventCount++;
-        }
-      }
 
       console.log(
-        `Successfully cleaned up ${orphanedSubEventCount} orphaned entries with invalid subEventId`,
+        `Deleted ${orphanedTournamentSubEvents[1].rowCount} orphaned tournament entries with invalid subEventId`,
       );
 
-      // Find all EventEntries with non-null drawId
-      const entriesWithDrawId = await queryInterface.sequelize.query(
-        `SELECT id, "drawId", "entryType" FROM event."Entries" WHERE "drawId" IS NOT NULL`,
-        { transaction, type: Sequelize.QueryTypes.SELECT },
+      // Delete competition entries with invalid subEventId
+      const orphanedCompetitionSubEvents = await queryInterface.sequelize.query(
+        `DELETE FROM event."Entries" 
+         WHERE "entryType" = 'competition' 
+         AND "subEventId" IS NOT NULL 
+         AND "subEventId" NOT IN (SELECT id FROM event."SubEventCompetitions")`,
+        { transaction },
       );
-
-      console.log(`Found ${entriesWithDrawId.length} entries with drawId`);
-
-      let orphanedDrawCount = 0;
-
-      for (const entry of entriesWithDrawId) {
-        let isValid = false;
-
-        if (entry.entryType === 'tournament') {
-          // Check if drawId exists in DrawTournaments
-          const draw = await queryInterface.sequelize.query(
-            `SELECT id FROM event."DrawTournaments" WHERE id = :drawId`,
-            {
-              transaction,
-              type: Sequelize.QueryTypes.SELECT,
-              replacements: { drawId: entry.drawId },
-            },
-          );
-          isValid = draw.length > 0;
-        } else if (entry.entryType === 'competition') {
-          // Check if drawId exists in DrawCompetitions
-          const draw = await queryInterface.sequelize.query(
-            `SELECT id FROM event."DrawCompetitions" WHERE id = :drawId`,
-            {
-              transaction,
-              type: Sequelize.QueryTypes.SELECT,
-              replacements: { drawId: entry.drawId },
-            },
-          );
-          isValid = draw.length > 0;
-        }
-
-        if (!isValid) {
-          console.log(`Deleting orphaned entry ${entry.id} with drawId ${entry.drawId}`);
-          await queryInterface.sequelize.query(`DELETE FROM event."Entries" WHERE id = :entryId`, {
-            transaction,
-            replacements: { entryId: entry.id },
-          });
-          orphanedDrawCount++;
-        }
-      }
 
       console.log(
-        `Successfully cleaned up ${orphanedDrawCount} orphaned entries with invalid drawId`,
+        `Deleted ${orphanedCompetitionSubEvents[1].rowCount} orphaned competition entries with invalid subEventId`,
       );
+
+      const totalOrphanedSubEvents =
+        orphanedTournamentSubEvents[1].rowCount + orphanedCompetitionSubEvents[1].rowCount;
+
+      // Step 2: Find and delete orphaned entries with invalid drawId
+      console.log('Processing entries with drawId...');
+
+      // Delete tournament entries with invalid drawId
+      const orphanedTournamentDraws = await queryInterface.sequelize.query(
+        `DELETE FROM event."Entries" 
+         WHERE "entryType" = 'tournament' 
+         AND "drawId" IS NOT NULL 
+         AND "drawId" NOT IN (SELECT id FROM event."DrawTournaments")`,
+        { transaction },
+      );
+
       console.log(
-        `Total orphaned entries cleaned up: ${orphanedSubEventCount + orphanedDrawCount}`,
+        `Deleted ${orphanedTournamentDraws[1].rowCount} orphaned tournament entries with invalid drawId`,
+      );
+
+      // Delete competition entries with invalid drawId
+      const orphanedCompetitionDraws = await queryInterface.sequelize.query(
+        `DELETE FROM event."Entries" 
+         WHERE "entryType" = 'competition' 
+         AND "drawId" IS NOT NULL 
+         AND "drawId" NOT IN (SELECT id FROM event."DrawCompetitions")`,
+        { transaction },
+      );
+
+      console.log(
+        `Deleted ${orphanedCompetitionDraws[1].rowCount} orphaned competition entries with invalid drawId`,
+      );
+
+      const totalOrphanedDraws =
+        orphanedTournamentDraws[1].rowCount + orphanedCompetitionDraws[1].rowCount;
+
+      console.log(
+        `Total orphaned entries cleaned up: ${totalOrphanedSubEvents + totalOrphanedDraws}`,
       );
       console.log('Note: No foreign key constraints added due to polymorphic relationship design');
       console.log('Application-level cascade deletion is handled in sync processors');
