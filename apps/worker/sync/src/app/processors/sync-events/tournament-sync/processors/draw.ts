@@ -3,6 +3,7 @@ import {
   EventTournament,
   Game,
   SubEventTournament,
+  EventEntry,
 } from '@badman/backend-database';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -76,6 +77,21 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
         const [first, ...rest] = dbDraws;
         dbDraw = first;
 
+        // Clean up EventEntries for the draws being removed
+        const eventEntries = await EventEntry.findAll({
+          where: {
+            drawId: {
+              [Op.in]: rest.map((e) => e.id),
+            },
+            entryType: 'tournament',
+          },
+          transaction: this.transaction,
+        });
+
+        for (const entry of eventEntries) {
+          await entry.destroy({ transaction: this.transaction });
+        }
+
         await DrawTournament.destroy({
           where: {
             id: {
@@ -110,6 +126,19 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
     // Remove draw that have no visual code
     const removedDraws = draws.filter((i) => i.visualCode === null);
     for (const removed of removedDraws) {
+      // Clean up EventEntries first
+      const eventEntries = await EventEntry.findAll({
+        where: {
+          drawId: removed.id,
+          entryType: 'tournament',
+        },
+        transaction: this.transaction,
+      });
+
+      for (const entry of eventEntries) {
+        await entry.destroy({ transaction: this.transaction });
+      }
+
       const gameIds = (
         await Game.findAll({
           attributes: ['id'],

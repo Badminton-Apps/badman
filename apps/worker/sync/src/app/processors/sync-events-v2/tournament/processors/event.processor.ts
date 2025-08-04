@@ -6,6 +6,7 @@ import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
 import moment, { Moment } from 'moment';
 import { Transaction } from 'sequelize';
+import { EventEntry } from '@badman/backend-database';
 
 @Processor({
   name: SyncQueue,
@@ -119,7 +120,6 @@ export class EventTournamentProcessor {
       });
     }
 
-
     event.name = visualTournament.Name;
     event.firstDay = visualTournament.StartDate;
     event.visualCode = visualTournament.Code;
@@ -208,6 +208,19 @@ export class EventTournamentProcessor {
         games: { id: string; visualCode: string }[];
       }[],
     };
+
+    // Explicitly clean up EventEntries first
+    const eventEntries = await EventEntry.findAll({
+      where: {
+        subEventId: dbSubEvent.id,
+        entryType: 'tournament',
+      },
+      transaction,
+    });
+
+    for (const entry of eventEntries) {
+      await entry.destroy({ transaction });
+    }
 
     const dbDraws = await dbSubEvent.getDrawTournaments({
       transaction,

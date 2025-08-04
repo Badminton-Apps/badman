@@ -1,6 +1,7 @@
 import {
   DrawCompetition,
   EncounterCompetition,
+  EventEntry,
   Game,
   SubEventCompetition,
 } from '@badman/backend-database';
@@ -66,6 +67,21 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
         const [first, ...rest] = dbDraws;
         dbDraw = first;
 
+        // Clean up EventEntries for the draws being removed
+        const eventEntries = await EventEntry.findAll({
+          where: {
+            drawId: {
+              [Op.in]: rest.map((e) => e.id),
+            },
+            entryType: 'competition',
+          },
+          transaction: this.transaction,
+        });
+
+        for (const entry of eventEntries) {
+          await entry.destroy({ transaction: this.transaction });
+        }
+
         await DrawCompetition.destroy({
           where: {
             id: {
@@ -110,6 +126,19 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
     // Remove draw that have no visual code
     const removedDraws = draws.filter((i) => i.visualCode === null);
     for (const removed of removedDraws) {
+      // Clean up EventEntries first
+      const eventEntries = await EventEntry.findAll({
+        where: {
+          drawId: removed.id,
+          entryType: 'competition',
+        },
+        transaction: this.transaction,
+      });
+
+      for (const entry of eventEntries) {
+        await entry.destroy({ transaction: this.transaction });
+      }
+
       const gameIds = (
         await Game.findAll({
           attributes: ['id'],
