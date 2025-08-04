@@ -13,6 +13,7 @@ import {
   RankingPoint,
   RankingSystem,
   SubEventCompetition,
+  EventEntry,
 } from '@badman/backend-database';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
@@ -348,6 +349,19 @@ export class EventCompetitionResolver {
                 transaction,
               });
             }
+          }
+
+          // Clean up EventEntries first
+          const eventEntries = await EventEntry.findAll({
+            where: {
+              drawId: draw.id,
+              entryType: 'competition',
+            },
+            transaction,
+          });
+
+          for (const entry of eventEntries) {
+            await entry.destroy({ transaction });
           }
 
           await draw.destroy({
