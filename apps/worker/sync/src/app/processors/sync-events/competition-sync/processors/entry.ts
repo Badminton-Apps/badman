@@ -326,14 +326,24 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       }
 
       // Only update phone if API provides a non-empty value and it's different from current
-      if (xmlTeam.Phone && xmlTeam.Phone.trim() !== '' && xmlTeam.Phone !== team.phone) {
+      if (
+        xmlTeam.Phone &&
+        typeof xmlTeam.Phone === 'string' &&
+        xmlTeam.Phone.trim() !== '' &&
+        xmlTeam.Phone !== team.phone
+      ) {
         team.phone = xmlTeam.Phone;
         teamUpdated = true;
         this.logger.debug(`Updated team phone for ${team.name}: ${xmlTeam.Phone}`);
       }
 
       // Only update email if API provides a non-empty value and it's different from current
-      if (xmlTeam.Email && xmlTeam.Email.trim() !== '' && xmlTeam.Email !== team.email) {
+      if (
+        xmlTeam.Email &&
+        typeof xmlTeam.Email === 'string' &&
+        xmlTeam.Email.trim() !== '' &&
+        xmlTeam.Email !== team.email
+      ) {
         team.email = xmlTeam.Email;
         teamUpdated = true;
         this.logger.debug(`Updated team email for ${team.name}: ${xmlTeam.Email}`);
