@@ -320,20 +320,20 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       // Update team information if different - only update if API provides non-empty data
       let teamUpdated = false;
 
-      if (xmlTeam.Contact && xmlTeam.Contact.trim() !== '' && xmlTeam.Contact !== team.name) {
+      if (xmlTeam.Contact && `${xmlTeam.Contact}`.trim() !== '' && xmlTeam.Contact !== team.name) {
         // You might want to update contact information here if needed
         this.logger.debug(`Team contact: ${xmlTeam.Contact}`);
       }
 
       // Only update phone if API provides a non-empty value and it's different from current
-      if (xmlTeam.Phone && xmlTeam.Phone.trim() !== '' && xmlTeam.Phone !== team.phone) {
+      if (xmlTeam.Phone && `${xmlTeam.Phone}`.trim() !== '' && xmlTeam.Phone !== team.phone) {
         team.phone = xmlTeam.Phone;
         teamUpdated = true;
         this.logger.debug(`Updated team phone for ${team.name}: ${xmlTeam.Phone}`);
       }
 
       // Only update email if API provides a non-empty value and it's different from current
-      if (xmlTeam.Email && xmlTeam.Email.trim() !== '' && xmlTeam.Email !== team.email) {
+      if (xmlTeam.Email && `${xmlTeam.Email}`.trim() !== '' && xmlTeam.Email !== team.email) {
         team.email = xmlTeam.Email;
         teamUpdated = true;
         this.logger.debug(`Updated team email for ${team.name}: ${xmlTeam.Email}`);
