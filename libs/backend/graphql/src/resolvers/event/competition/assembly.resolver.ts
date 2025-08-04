@@ -26,9 +26,6 @@ export class AssemblyResolver {
     return this.assemblyService.validate(assembly, { playerId: user.id, teamId: assembly.teamId });
   }
 
-
-  
-
   @ResolveField(() => [PlayerRankingType])
   async titularsPlayers(@Parent() assembly: AssemblyOutput): Promise<PlayerRankingType[]> {
     if (!assembly.titularsPlayerData) return [];
@@ -101,7 +98,6 @@ export class AssemblyResolver {
         where: {
           encounterId: assembly.encounterId,
           teamId: assembly.teamId,
-          playerId: user.id,
         },
         defaults: {
           captainId: assembly?.captainId,
