@@ -160,7 +160,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       case XmlGenderID.Mixed:
         return SubEventTypeEnum.MX;
       default:
-        this.logger.warn('No event type found');
+        this.logger.warn(`No event type found for GenderID: ${xmlEvent.GenderID}`);
         return;
     }
   }
