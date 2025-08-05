@@ -88,8 +88,7 @@ export class ClubEncounterService {
     if (this.state().filterOpenRequests === 'noRequests') {
       filtered = filtered.filter((encounter) => encounter.encounterChange?.accepted ?? true);
     }
-    
-    
+
     if (this.state().filterValidGames == 'invalid') {
       filtered = filtered.filter((encounter) => encounter.validateEncounter?.valid == false);
     } else if (this.state().filterValidGames == 'potential') {
@@ -227,6 +226,15 @@ export class ClubEncounterService {
                     id
                     eventType
                     eventId
+                    eventCompetition {
+                      id
+                      name
+                      season
+                      changeCloseRequestDatePeriod1
+                      changeCloseRequestDatePeriod2
+                      changeCloseDatePeriod1
+                      changeCloseDatePeriod2
+                    }
                   }
                 }
                 encounterChange {

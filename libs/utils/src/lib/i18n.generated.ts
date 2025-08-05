@@ -132,11 +132,15 @@ export type I18nTranslations = {
                     "exception-day": string;
                     "invalid": string;
                     "location-no-timeslot": string;
+                    "location-not-found": string;
                     "location-not-free": string;
                     "not-accepted": string;
+                    "past-date": string;
                     "same-club": string;
+                    "same-date": string;
                     "same-semester": string;
                     "same-semester-date": string;
+                    "team-conflict": string;
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
@@ -2849,6 +2853,7 @@ export type I18nTranslations = {
                         "averageLevel": string;
                         "downloadBasePlayers": string;
                         "downloadCPFile": string;
+                        "openCloseEncounterChangeDate": string;
                     };
                     "tableNames": {
                         "F": string;
@@ -3022,6 +3027,7 @@ export type I18nTranslations = {
                     "delete": string;
                     "setRisersFallers": string;
                     "openCloseDate": string;
+                    "openCloseEncounterChangeDate": string;
                     "makeOfficial": string;
                     "makeUnofficial": string;
                     "sync": string;
@@ -3074,6 +3080,24 @@ export type I18nTranslations = {
                     "form": {
                         "openDate": string;
                         "closeDate": string;
+                    };
+                    "buttons": {
+                        "cancel": string;
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                        "error": string;
+                    };
+                };
+                "openCloseEncounterChangeDateDialog": {
+                    "title": string;
+                    "form": {
+                        "changeOpenDate": string;
+                        "changeCloseRequestDatePeriod1": string;
+                        "changeCloseDatePeriod1": string;
+                        "changeCloseRequestDatePeriod2": string;
+                        "changeCloseDatePeriod2": string;
                     };
                     "buttons": {
                         "cancel": string;
