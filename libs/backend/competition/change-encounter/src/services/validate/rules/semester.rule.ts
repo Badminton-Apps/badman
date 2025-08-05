@@ -10,6 +10,11 @@ import { Logger } from '@nestjs/common';
 export type SemesterRuleParams = {
   encounterId: string;
   date?: Date;
+  teamName?: string;
+  semester?: string;
+  season?: number;
+  currentSemester?: string;
+  suggestedSemester?: string;
 };
 
 /**
@@ -37,6 +42,9 @@ export class SemesterRule extends Rule {
         message: 'all.competition.change-encounter.errors.same-semester',
         params: {
           encounterId: encounter.id,
+          teamName: encounter.home?.name || encounter.away?.name,
+          semester: semseter1 ? 'first' : 'second',
+          season: season,
         },
       });
     }
@@ -48,10 +56,13 @@ export class SemesterRule extends Rule {
 
         if (suggestedSemester1 != semseter1) {
           warnings.push({
-            message: 'all.competition.change-encounter.errors.same-semester',
+            message: 'all.competition.change-encounter.errors.same-semester-date',
             params: {
               encounterId: encounter.id,
               date: suggestedDate.date,
+              currentSemester: semseter1 ? 'first' : 'second',
+              suggestedSemester: suggestedSemester1 ? 'first' : 'second',
+              teamName: encounter.home?.name || encounter.away?.name,
             },
           });
         }
