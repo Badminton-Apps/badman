@@ -6,11 +6,16 @@ import {
 } from '../../../models';
 import { Rule } from './_rule.base';
 import { Logger } from '@nestjs/common';
-import e from 'express';
+import moment from 'moment';
 
 export type TeamClubRuleParams = {
   encounterId: string;
   date?: Date;
+  homeTeamName?: string;
+  awayTeamName?: string;
+  clubName?: string;
+  encounterNumber?: number;
+  conflictingEncounters?: number;
 };
 
 /**
@@ -42,6 +47,9 @@ export class TeamClubRule extends Rule {
         message: 'all.competition.change-encounter.errors.same-club',
         params: {
           encounterId: encounter.id,
+          homeTeamName: encounter.home?.name,
+          awayTeamName: encounter.away?.name,
+          clubName: encounter.home?.club?.name || encounter.away?.club?.name,
         },
       });
     }
@@ -81,6 +89,32 @@ export class TeamClubRule extends Rule {
             params: {
               encounterId: workingEncounter.id,
               date: suggestedDate.date,
+              homeTeamName: workingEncounter.home?.name,
+              awayTeamName: workingEncounter.away?.name,
+              clubName: workingEncounter.home?.club?.name || workingEncounter.away?.club?.name,
+            },
+          });
+        }
+
+        // Check if teams have other encounters on the suggested date
+        const conflictingEncounters = encountersSemester.filter(
+          (e) =>
+            moment(e.date).isSame(suggestedDate.date, 'day') &&
+            (e.homeTeamId === workingEncounter.homeTeamId ||
+              e.awayTeamId === workingEncounter.homeTeamId ||
+              e.homeTeamId === workingEncounter.awayTeamId ||
+              e.awayTeamId === workingEncounter.awayTeamId),
+        );
+
+        if (conflictingEncounters.length > 0) {
+          warnings.push({
+            message: 'all.competition.change-encounter.errors.team-conflict' as any,
+            params: {
+              encounterId: workingEncounter.id,
+              date: suggestedDate.date,
+              homeTeamName: workingEncounter.home?.name,
+              awayTeamName: workingEncounter.away?.name,
+              conflictingEncounters: conflictingEncounters.length,
             },
           });
         }

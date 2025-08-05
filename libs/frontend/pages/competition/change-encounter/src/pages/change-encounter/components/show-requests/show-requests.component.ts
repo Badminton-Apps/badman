@@ -48,7 +48,16 @@ import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, lastValueFrom, of } from 'rxjs';
-import { debounceTime, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  filter,
+  map,
+  switchMap,
+  takeUntil,
+  tap,
+  distinctUntilChanged,
+  throttleTime,
+} from 'rxjs/operators';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
 
@@ -217,14 +226,37 @@ export class ShowRequestsComponent implements OnInit {
           this.formGroupRequest.valueChanges
             .pipe(
               takeUntil(this.destroy$),
-              debounceTime(100),
+              debounceTime(500), // Increased from 100ms to 500ms
+              throttleTime(1000), // Maximum 1 validation per second
+              distinctUntilChanged((prev, curr) => {
+                // Only validate if the dates actually changed
+                const prevDates = JSON.stringify(
+                  prev?.dates?.map((d: any) => ({
+                    date: d?.calendar?.date,
+                    locationId: d?.calendar?.locationId,
+                  })),
+                );
+                const currDates = JSON.stringify(
+                  curr?.dates?.map((d: any) => ({
+                    date: d?.calendar?.date,
+                    locationId: d?.calendar?.locationId,
+                  })),
+                );
+                return prevDates === currDates;
+              }),
               switchMap(() => this.validate()),
             )
-            .subscribe((result) => {
-              if (result) {
-                this.validation.set(result);
-              }
-            });
+            .subscribe(
+              (result) => {
+                if (result) {
+                  this.validation.set(result);
+                }
+              },
+              (error) => {
+                console.error('Validation error:', error);
+                // Don't crash the app, just log the error
+              },
+            );
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
         }),
@@ -233,7 +265,7 @@ export class ShowRequestsComponent implements OnInit {
       console.warn(`Dependency ${this.dependsOn()} not found`, this.previous);
     }
   }
-  
+
   getWarnings(date: Date | string) {
     return computed(() =>
       this.warnings().filter(

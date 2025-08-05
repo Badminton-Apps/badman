@@ -16,6 +16,9 @@ type ruleType<T, V> = new () => ValidationRule<
 export abstract class ValidationService<T, V> implements OnApplicationBootstrap {
   private readonly logger = new Logger(ValidationService.name);
   private rules: Map<string, ruleType<T, V>> = new Map();
+  private ruleCache: Map<string, Rule[]> = new Map();
+  private cacheTimeout = 30000; // 30 seconds cache
+  private lastCacheTime = 0;
 
   abstract onApplicationBootstrap(): Promise<void>;
   abstract group: string;
@@ -55,6 +58,36 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
 
   async clearRules(): Promise<void> {
     this.rules.clear();
+    this.ruleCache.clear();
+    this.lastCacheTime = 0;
+  }
+
+  async clearCache(): Promise<void> {
+    this.ruleCache.clear();
+    this.lastCacheTime = 0;
+  }
+
+  private async getCachedRules(): Promise<Rule[]> {
+    const now = Date.now();
+    const cacheKey = this.group;
+
+    // Check if cache is still valid
+    if (this.ruleCache.has(cacheKey) && now - this.lastCacheTime < this.cacheTimeout) {
+      return this.ruleCache.get(cacheKey) || [];
+    }
+
+    // Fetch fresh rules from database
+    const configuredRules = await Rule.findAll({
+      where: {
+        group: this.group,
+      },
+    });
+
+    // Update cache
+    this.ruleCache.set(cacheKey, configuredRules);
+    this.lastCacheTime = now;
+
+    return configuredRules;
   }
 
   async validate(
@@ -73,11 +106,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     }> &
       Partial<T>
   > {
-    const configuredRules = await Rule.findAll({
-      where: {
-        group: this.group,
-      },
-    });
+    const configuredRules = await this.getCachedRules();
 
     // if we provide a team but no club we can fetch it
     if (runFor?.teamId && !runFor.clubId) {
@@ -116,12 +145,12 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
 
         return containsId && !doesntContainsId;
       })) {
-      this.logger.verbose(`Activating rule ${r.name}`);
+      this.logger.debug(`Activating rule ${r.name}`);
 
       activatedRules.push(r);
     }
 
-    this.logger.verbose(`Found ${activatedRules.length} rules for group ${this.group}`);
+    this.logger.debug(`Found ${activatedRules.length} rules for group ${this.group}`);
 
     // fetch all rules for the group
     const validators = activatedRules
