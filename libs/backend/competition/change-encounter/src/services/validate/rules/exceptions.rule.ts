@@ -11,6 +11,10 @@ import { Rule } from './_rule.base';
 export type ExceptionRuleParams = {
   encounterId: string;
   date?: Date;
+  exceptionName?: string;
+  exceptionStart?: string;
+  exceptionEnd?: string;
+  teamName?: string;
 };
 
 /**
@@ -73,6 +77,9 @@ export class ExceptionRule extends Rule {
             params: {
               encounterId: encounterId,
               date: encounteDate,
+              exceptionName: infoEvent.name,
+              exceptionStart: moment(infoEvent.start).format('DD/MM/YYYY'),
+              exceptionEnd: moment(infoEvent.end).format('DD/MM/YYYY'),
             },
           });
         }

@@ -16,6 +16,12 @@ import { Rule } from './_rule.base';
 export type LocationRuleParams = {
   encounterId: string;
   date?: Date;
+  locationName?: string;
+  availableCourts?: number;
+  requiredCourts?: number;
+  conflictingEncounters?: number;
+  timeSlot?: string;
+  dayOfWeek?: string;
 };
 
 /**
@@ -67,6 +73,20 @@ export class LocationRule extends Rule {
       for (const suggestedDate of suggestedDates) {
         if (moment(suggestedDate.date).isSame(encounter.date, 'minute')) {
           // if the suggested date is the same as the current date, we can skip this
+          continue;
+        }
+
+        // Check if the suggested location is available for the suggested date
+        const suggestedLocation = locations.find((l) => l.id === suggestedDate.locationId);
+        if (!suggestedLocation) {
+          warnings.push({
+            message: 'all.competition.change-encounter.errors.location-not-found' as any,
+            params: {
+              encounterId: encounter.id,
+              date: suggestedDate.date,
+              locationName: 'Unknown location',
+            },
+          });
           continue;
         }
 
@@ -133,11 +153,13 @@ export class LocationRule extends Rule {
     const location = locations.find((r) => r.id === locationId);
 
     let slot: AvailabilityDay | null = null;
+    let tzDay = '';
+    let tzTime = '';
 
     for (const availability of location?.availabilities ?? []) {
       const tzDate = moment(encounterDate).tz('Europe/Brussels').locale('en');
-      const tzDay = tzDate.format('dddd').toLowerCase();
-      const tzTime = tzDate.format('HH:mm');
+      tzDay = tzDate.format('dddd').toLowerCase();
+      tzTime = tzDate.format('HH:mm');
 
       const filteredDays = availability.days?.filter((r) => r.day === tzDay);
       const filteredSlots = filteredDays?.find((r) => r.startTime === tzTime);
@@ -161,6 +183,12 @@ export class LocationRule extends Rule {
           params: {
             encounterId: encounterId,
             date: encounterDate,
+            locationName: location?.name,
+            availableCourts: slot?.courts ?? 0,
+            requiredCourts: count * 2,
+            conflictingEncounters: count,
+            timeSlot: `${tzDay} ${tzTime}`,
+            dayOfWeek: tzDay,
           },
         });
       } else if (countWithouteRplaced > (slot?.courts ?? 0) / 2) {
@@ -169,6 +197,12 @@ export class LocationRule extends Rule {
           params: {
             encounterId: encounterId,
             date: encounterDate,
+            locationName: location?.name,
+            availableCourts: slot?.courts ?? 0,
+            requiredCourts: countWithouteRplaced * 2,
+            conflictingEncounters: countWithouteRplaced,
+            timeSlot: `${tzDay} ${tzTime}`,
+            dayOfWeek: tzDay,
           },
         });
       }
@@ -178,6 +212,9 @@ export class LocationRule extends Rule {
         params: {
           encounterId: encounterId,
           date: encounterDate,
+          locationName: location?.name,
+          dayOfWeek: tzDay,
+          timeSlot: tzTime,
         },
       });
     }

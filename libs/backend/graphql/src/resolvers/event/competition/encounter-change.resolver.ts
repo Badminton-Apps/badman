@@ -126,9 +126,14 @@ export class EncounterChangeCompetitionResolver {
 
     const team = newChangeEncounter.home ? await encounter.getHome() : await encounter.getAway();
 
-    if (
-      !(await user.hasAnyPermission([`${team.clubId}_change:encounter`, 'change-any:encounter']))
-    ) {
+    const userHasPermission = await user.hasAnyPermission([
+      `${team.clubId}_change:encounter`,
+      'change-any:encounter',
+    ]);
+
+    this.logger.debug(`userHasPermission: ${userHasPermission}`);
+
+    if (!userHasPermission) {
       throw new UnauthorizedException(`You do not have permission to edit this encounter`);
     }
 
@@ -226,7 +231,12 @@ export class EncounterChangeCompetitionResolver {
             include: [
               {
                 model: EventCompetition,
-                attributes: ['id'],
+                attributes: [
+                  'id',
+                  'season',
+                  'changeCloseRequestDatePeriod1',
+                  'changeCloseRequestDatePeriod2',
+                ],
               },
             ],
           },
@@ -235,17 +245,7 @@ export class EncounterChangeCompetitionResolver {
       });
 
       // can request new dates in timezone europe/brussels
-      const event = await EventCompetition.findByPk(
-        draw?.subEventCompetition?.eventCompetition?.id,
-        {
-          attributes: [
-            'id',
-            'season',
-            'changeCloseRequestDatePeriod1',
-            'changeCloseRequestDatePeriod2',
-          ],
-        },
-      );
+      const event = draw?.subEventCompetition?.eventCompetition;
       const closedDate =
         encounter.date?.getFullYear() === event?.season
           ? event?.changeCloseRequestDatePeriod1
@@ -316,7 +316,57 @@ export class EncounterChangeCompetitionResolver {
       );
 
       if (!encounterChangeDate && !canRequestNewDates) {
-        throw new Error('Cannot request new dates');
+        // Get the event information to provide better error context
+        const encounter = await encounterChange.getEncounter();
+        const draw = await encounter.getDrawCompetition({
+          include: [
+            {
+              model: SubEventCompetition,
+              include: [
+                {
+                  model: EventCompetition,
+                  attributes: [
+                    'id',
+                    'name',
+                    'changeCloseRequestDatePeriod1',
+                    'changeCloseRequestDatePeriod2',
+                    'season',
+                  ],
+                },
+              ],
+            },
+          ],
+        });
+
+        const event = draw?.subEventCompetition?.eventCompetition;
+        this.logger.debug(`event: ${JSON.stringify(event)}`);
+
+        const encounterDateEqualsEventSeason =
+          event?.season &&
+          (encounter.date?.getFullYear() === event?.season ||
+            encounter.date?.getFullYear() === event?.season + 1);
+        this.logger.debug(`encounterDateEqualsEventSeason: ${encounterDateEqualsEventSeason}`);
+        this.logger.debug(
+          `event?.changeCloseRequestDatePeriod1: ${event?.changeCloseRequestDatePeriod1}`,
+        );
+        this.logger.debug(
+          `event?.changeCloseRequestDatePeriod2: ${event?.changeCloseRequestDatePeriod2}`,
+        );
+        const closedDate = encounterDateEqualsEventSeason
+          ? event?.changeCloseRequestDatePeriod1
+          : event?.changeCloseRequestDatePeriod2;
+
+        this.logger.debug(`closedDate: ${closedDate}`);
+
+        const currentDate = moment().tz('europe/brussels');
+        const deadlineDate = moment.tz(closedDate, 'europe/brussels');
+
+        throw new Error(
+          `Cannot request new dates for event "${event?.name || 'Unknown Event'}". The deadline for requesting date changes has passed. ` +
+            `Deadline was: ${deadlineDate.format('DD/MM/YYYY HH:mm')} (${deadlineDate.fromNow()}). ` +
+            `Current time: ${currentDate.format('DD/MM/YYYY HH:mm')}. ` +
+            `Please contact the competition organizer if you need to make changes after the deadline.`,
+        );
       }
 
       // If not create new one

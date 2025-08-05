@@ -11,6 +11,10 @@ import moment from 'moment';
 export type DatePeriodRuleParams = {
   encounterId: string;
   date?: Date;
+  season?: number;
+  periodStart?: string;
+  periodEnd?: string;
+  teamName?: string;
 };
 
 /**
@@ -34,9 +38,33 @@ export class DatePeriodRule extends Rule {
 
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
     if (suggestedDates && encounter) {
-      const warns = suggestedDates.map((suggestedDate) =>
-        this.isBetween(suggestedDate.date, [...period], encounter.id),
-      );
+      const warns = suggestedDates.map((suggestedDate) => {
+        // Check if the suggested date is the same as the current date
+        if (moment(suggestedDate.date).isSame(encounter.date, 'day')) {
+          return {
+            message: 'all.competition.change-encounter.errors.same-date' as any,
+            params: {
+              encounterId: encounter.id,
+              date: suggestedDate.date,
+              currentDate: encounter.date,
+            },
+          } as EncounterValidationError<DatePeriodRuleParams>;
+        }
+
+        // Check if the suggested date is in the past
+        if (moment(suggestedDate.date).isBefore(moment(), 'day')) {
+          return {
+            message: 'all.competition.change-encounter.errors.past-date' as any,
+            params: {
+              encounterId: encounter.id,
+              date: suggestedDate.date,
+              currentDate: moment().toDate(),
+            },
+          } as EncounterValidationError<DatePeriodRuleParams>;
+        }
+
+        return this.isBetween(suggestedDate.date, [...period], encounter.id);
+      });
       for (const warn of warns) {
         if (warn) {
           warnings.push(warn);
@@ -80,6 +108,9 @@ export class DatePeriodRule extends Rule {
         params: {
           encounterId,
           date: date.toDate(),
+          season: date.year(),
+          periodStart: moment(period[0]).format('DD/MM/YYYY'),
+          periodEnd: moment(period[1]).format('DD/MM/YYYY'),
         },
       };
     }
