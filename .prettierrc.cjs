@@ -1,20 +1,32 @@
 // @ts-check
-/// <reference types="@prettier/plugin-pug/src/prettier" />
 
 /**
  * @type {import('prettier').Options}
  */
 module.exports = {
-  plugins: ['@prettier/plugin-pug'],
-  singleQuote: true,
+  // Plugins
+  plugins: ["@prettier/plugin-pug"],
 
+  // Quote settings
+  singleQuote: false, // Using the .cjs setting as it's more common for modern JS
   pugSingleQuote: false,
+
+  // Formatting
+  semi: true,
+  tabWidth: 2,
   printWidth: 100,
+  bracketSpacing: true,
+  bracketSameLine: false,
+  trailingComma: "es5",
+  quoteProps: "as-needed",
+  arrowParens: "always",
+
+  // File-specific overrides
   overrides: [
     {
-      files: '*.html',
+      files: "*.html",
       options: {
-        parser: 'angular',
+        parser: "angular",
       },
     },
   ],

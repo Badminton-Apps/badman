@@ -1,12 +1,37 @@
 {
   "githubPullRequests.ignoredPullRequestBranches": ["develop"],
-  "github-actions.workflows.pinned.workflows": [
-    ".github/workflows/main.yml"
-  ],
+  "github-actions.workflows.pinned.workflows": [".github/workflows/main.yml"],
   "exportall.config.folderListener": [],
   "sonarlint.connectedMode.project": {
     "connectionId": "badman",
     "projectKey": "Badminton-Apps_badman"
   },
-  "nxConsole.generateAiAgentRules": true
+  "nxConsole.generateAiAgentRules": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[pug]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
