@@ -55,22 +55,27 @@ export class NotificationService {
       `[notifyEncounterChange] Starting notification for encounter ${encounter.id}, homeTeamRequests: ${homeTeamRequests}`
     );
 
-    const homeTeam = await encounter.getHome({
+    const homeTeam = await Team.findByPk(encounter.homeTeamId, {
       include: [
         {
-          model: Player,
-          as: "captain",
+          association: "captain",
         },
       ],
     });
-    const awayTeam = await encounter.getAway({
+    const awayTeam = await Team.findByPk(encounter.awayTeamId, {
       include: [
         {
-          model: Player,
-          as: "captain",
+          association: "captain",
         },
       ],
     });
+
+    if (!homeTeam || !awayTeam) {
+      this._logger.error(
+        `[notifyEncounterChange] Teams not found - homeTeamId: ${encounter.homeTeamId}, awayTeamId: ${encounter.awayTeamId}`
+      );
+      return;
+    }
 
     // just make sure the teams are loaded
     encounter.home = homeTeam;
@@ -106,11 +111,6 @@ export class NotificationService {
       this.mailing,
       this.push
     );
-
-    this._logger.debug("In the notifyEncounterChange", newReqTeam.captain?.toJSON());
-    this._logger.debug("In the notifyEncounterChange", newReqTeam.email);
-    this._logger.debug("In the notifyEncounterChange", confReqTeam.captain?.toJSON());
-    this._logger.debug("In the notifyEncounterChange", confReqTeam.email);
 
     // Check for potential duplicate email scenario
     if (
@@ -181,22 +181,27 @@ export class NotificationService {
       this.mailing,
       this.push
     );
-    const homeTeam = await encounter.getHome({
+    const homeTeam = await Team.findByPk(encounter.homeTeamId, {
       include: [
         {
-          model: Player,
-          as: "captain",
+          association: "captain",
         },
       ],
     });
-    const awayTeam = await encounter.getAway({
+    const awayTeam = await Team.findByPk(encounter.awayTeamId, {
       include: [
         {
-          model: Player,
-          as: "captain",
+          association: "captain",
         },
       ],
     });
+
+    if (!homeTeam || !awayTeam) {
+      this._logger.error(
+        `[notifyEncounterChangeFinished] Teams not found - homeTeamId: ${encounter.homeTeamId}, awayTeamId: ${encounter.awayTeamId}`
+      );
+      return;
+    }
 
     // just make sure the teams are loaded
     encounter.home = homeTeam;
@@ -284,8 +289,7 @@ export class NotificationService {
     const homeTeam = await encounter.getHome({
       include: [
         {
-          model: Player,
-          as: "captain",
+          association: "captain",
         },
       ],
     });
@@ -344,8 +348,7 @@ export class NotificationService {
     const awayTeam = await encounter.getAway({
       include: [
         {
-          model: Player,
-          as: "captain",
+          association: "captain",
         },
       ],
     });
@@ -523,11 +526,13 @@ export class NotificationService {
     }
 
     if (!encounter?.home) {
-      encounter.home = await encounter?.getHome();
+      const homeTeam = await Team.findByPk(encounter.homeTeamId);
+      encounter.home = homeTeam as Team | undefined;
     }
 
     if (!encounter?.away) {
-      encounter.away = await encounter?.getAway();
+      const awayTeam = await Team.findByPk(encounter.awayTeamId);
+      encounter.away = awayTeam as Team | undefined;
     }
 
     const urlBadman = `${this.configService.get("CLIENT_URL")}/competition/${
