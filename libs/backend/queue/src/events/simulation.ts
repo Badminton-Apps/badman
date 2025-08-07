@@ -1,8 +1,8 @@
 export enum Simulation {
-  Start = 'StartSimulation',
-  Calculate = 'CalculateSimulation',
-  CalculatePlace = 'CalculatePlace',
-  CalculatePoint = 'CalculatePoint',
+  Start = "StartSimulation",
+  Calculate = "CalculateSimulation",
+  CalculatePlace = "CalculatePlace",
+  CalculatePoint = "CalculatePoint",
 }
 
 export interface SimulationV2Job {

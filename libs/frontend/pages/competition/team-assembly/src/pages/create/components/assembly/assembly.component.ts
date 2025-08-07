@@ -6,8 +6,8 @@ import {
   DragDropModule,
   moveItemInArray,
   transferArrayItem,
-} from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+} from "@angular/cdk/drag-drop";
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
@@ -21,18 +21,18 @@ import {
   TransferState,
   ViewChild,
   output,
-} from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { AuthenticateService } from '@badman/frontend-auth';
-import { HasClaimComponent, PlayerSearchComponent } from '@badman/frontend-components';
-import { RankingSystemService } from '@badman/frontend-graphql';
+} from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { AuthenticateService } from "@badman/frontend-auth";
+import { HasClaimComponent, PlayerSearchComponent } from "@badman/frontend-components";
+import { RankingSystemService } from "@badman/frontend-graphql";
 import {
   Assembly,
   EncounterCompetition,
@@ -41,16 +41,16 @@ import {
   Player,
   Team,
   TeamPlayer,
-} from '@badman/frontend-models';
-import { EditDialogComponent } from '@badman/frontend-team';
-import { DEVICE, transferState } from '@badman/frontend-utils';
-import { TeamMembershipType } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment, { Moment } from 'moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { NgxResize, ResizeResult } from 'ngxtension/resize';
-import { combineLatest, lastValueFrom, of, Subject } from 'rxjs';
+} from "@badman/frontend-models";
+import { EditDialogComponent } from "@badman/frontend-team";
+import { DEVICE, transferState } from "@badman/frontend-utils";
+import { TeamMembershipType } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment, { Moment } from "moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { NgxResize, ResizeResult } from "ngxtension/resize";
+import { combineLatest, lastValueFrom, of, Subject } from "rxjs";
 import {
   distinctUntilChanged,
   map,
@@ -59,10 +59,10 @@ import {
   switchMap,
   takeUntil,
   tap,
-} from 'rxjs/operators';
-import { ValidationMessage, ValidationResult } from '../../models/validation';
-import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
-import { TeamAssemblyPlayerComponent } from '../team-assembly-player';
+} from "rxjs/operators";
+import { ValidationMessage, ValidationResult } from "../../models/validation";
+import { AssemblyMessageComponent } from "../assembly-message/assembly-message.component";
+import { TeamAssemblyPlayerComponent } from "../team-assembly-player";
 
 export const SAVED_ASSEMBLY = gql`
   query SavedAssembly($id: ID!, $where: JSONObject) {
@@ -88,26 +88,26 @@ export const SAVED_ASSEMBLY = gql`
 `;
 
 @Component({
-    selector: 'badman-assembly',
-    imports: [
-        CommonModule,
-        TranslatePipe,
-        TeamAssemblyPlayerComponent,
-        PlayerSearchComponent,
-        AssemblyMessageComponent,
-        HasClaimComponent,
-        NgxResize,
-        MatTooltipModule,
-        DragDropModule,
-        MatDividerModule,
-        MatProgressBarModule,
-        MatSnackBarModule,
-        MatIconModule,
-        MatDialogModule,
-        MatButtonModule,
-    ],
-    templateUrl: './assembly.component.html',
-    styleUrls: ['./assembly.component.scss']
+  selector: "badman-assembly",
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    TeamAssemblyPlayerComponent,
+    PlayerSearchComponent,
+    AssemblyMessageComponent,
+    HasClaimComponent,
+    NgxResize,
+    MatTooltipModule,
+    DragDropModule,
+    MatDividerModule,
+    MatProgressBarModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
+  templateUrl: "./assembly.component.html",
+  styleUrls: ["./assembly.component.scss"],
 })
 export class AssemblyComponent implements OnInit {
   private apollo = inject(Apollo);
@@ -127,10 +127,10 @@ export class AssemblyComponent implements OnInit {
   type = signal<string | undefined>(undefined);
 
   wherePlayer = computed(() => ({
-    gender: this.type() === 'MX' ? undefined : this.type,
+    gender: this.type() === "MX" ? undefined : this.type,
   }));
 
-  @ViewChild('validationOverview')
+  @ViewChild("validationOverview")
   validationTemplateRef?: TemplateRef<HTMLElement>;
 
   validationOverview = output<{
@@ -139,16 +139,16 @@ export class AssemblyComponent implements OnInit {
   }>();
 
   lists = [
-    'playerList',
-    'substitudeList',
-    'single1List',
-    'single2List',
-    'single3List',
-    'single4List',
-    'double1List',
-    'double2List',
-    'double3List',
-    'double4List',
+    "playerList",
+    "substitudeList",
+    "single1List",
+    "single2List",
+    "single3List",
+    "single4List",
+    "double1List",
+    "double2List",
+    "double3List",
+    "double4List",
   ];
 
   single1: TeamPlayer[] = [];
@@ -191,24 +191,24 @@ export class AssemblyComponent implements OnInit {
     players: [],
   };
 
-  captionSingle1Prefix = '';
-  captionSingle2Prefix = '';
-  captionSingle3Prefix = '';
-  captionSingle4Prefix = '';
-  captionDouble1Prefix = '';
-  captionDouble2Prefix = '';
-  captionDouble3Prefix = '';
-  captionDouble4Prefix = '';
+  captionSingle1Prefix = "";
+  captionSingle2Prefix = "";
+  captionSingle3Prefix = "";
+  captionSingle4Prefix = "";
+  captionDouble1Prefix = "";
+  captionDouble2Prefix = "";
+  captionDouble3Prefix = "";
+  captionDouble4Prefix = "";
 
-  captionSingle1 = 'all.competition.team-assembly.single1';
-  captionSingle2 = 'all.competition.team-assembly.single2';
-  captionSingle3 = 'all.competition.team-assembly.single3';
-  captionSingle4 = 'all.competition.team-assembly.single4';
+  captionSingle1 = "all.competition.team-assembly.single1";
+  captionSingle2 = "all.competition.team-assembly.single2";
+  captionSingle3 = "all.competition.team-assembly.single3";
+  captionSingle4 = "all.competition.team-assembly.single4";
 
-  captionDouble1 = 'all.competition.team-assembly.double1';
-  captionDouble2 = 'all.competition.team-assembly.double2';
-  captionDouble3 = 'all.competition.team-assembly.double3';
-  captionDouble4 = 'all.competition.team-assembly.double4';
+  captionDouble1 = "all.competition.team-assembly.double1";
+  captionDouble2 = "all.competition.team-assembly.double2";
+  captionDouble3 = "all.competition.team-assembly.double3";
+  captionDouble4 = "all.competition.team-assembly.double4";
 
   updatedAssembly$ = new Subject();
 
@@ -240,25 +240,25 @@ export class AssemblyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.group().addControl('single1', new FormControl());
-    this.group().addControl('single2', new FormControl());
-    this.group().addControl('single3', new FormControl());
-    this.group().addControl('single4', new FormControl());
-    this.group().addControl('double1', new FormControl());
-    this.group().addControl('double2', new FormControl());
-    this.group().addControl('double3', new FormControl());
-    this.group().addControl('double4', new FormControl());
-    this.group().addControl('subtitudes', new FormControl());
-    this.group().addControl('captain', new FormControl());
+    this.group().addControl("single1", new FormControl());
+    this.group().addControl("single2", new FormControl());
+    this.group().addControl("single3", new FormControl());
+    this.group().addControl("single4", new FormControl());
+    this.group().addControl("double1", new FormControl());
+    this.group().addControl("double2", new FormControl());
+    this.group().addControl("double3", new FormControl());
+    this.group().addControl("double4", new FormControl());
+    this.group().addControl("subtitudes", new FormControl());
+    this.group().addControl("captain", new FormControl());
 
-    const encounterCntrl = this.group().get('encounter');
+    const encounterCntrl = this.group().get("encounter");
     if (!encounterCntrl) {
-      throw new Error('encounter is not set');
+      throw new Error("encounter is not set");
     }
 
-    const teamCntrl = this.group().get('team');
+    const teamCntrl = this.group().get("team");
     if (!teamCntrl) {
-      throw new Error('team is not set');
+      throw new Error("team is not set");
     }
 
     combineLatest([teamCntrl.valueChanges, encounterCntrl.valueChanges.pipe(startWith(undefined))])
@@ -266,7 +266,7 @@ export class AssemblyComponent implements OnInit {
         takeUntil(this.destroy$),
         map(([team, encounter]) => {
           return [team != null, encounter] as const;
-        }),
+        })
       )
       .subscribe(async ([gotRequired, encounter]) => {
         this.gotRequired = gotRequired;
@@ -276,20 +276,20 @@ export class AssemblyComponent implements OnInit {
           this.updatedAssembly$
             .pipe(
               tap(() => {
-                this.group().get('single1')?.setValue(this.single1[0]);
-                this.group().get('single2')?.setValue(this.single2[0]);
-                this.group().get('single3')?.setValue(this.single3[0]);
-                this.group().get('single4')?.setValue(this.single4[0]);
-                this.group().get('double1')?.setValue(this.double1);
-                this.group().get('double2')?.setValue(this.double2);
-                this.group().get('double3')?.setValue(this.double3);
-                this.group().get('double4')?.setValue(this.double4);
-                this.group().get('subtitudes')?.setValue(this.substitutes);
+                this.group().get("single1")?.setValue(this.single1[0]);
+                this.group().get("single2")?.setValue(this.single2[0]);
+                this.group().get("single3")?.setValue(this.single3[0]);
+                this.group().get("single4")?.setValue(this.single4[0]);
+                this.group().get("double1")?.setValue(this.double1);
+                this.group().get("double2")?.setValue(this.double2);
+                this.group().get("double3")?.setValue(this.double3);
+                this.group().get("double4")?.setValue(this.double4);
+                this.group().get("subtitudes")?.setValue(this.substitutes);
                 this._sortLists();
               }),
               switchMap(() => {
                 return this._checkAssembly();
-              }),
+              })
             )
             .subscribe((validation) => this.updateValidations(validation));
 
@@ -302,15 +302,15 @@ export class AssemblyComponent implements OnInit {
     this.loaded = false;
 
     // Clear everything
-    this.group().get('single1')?.reset();
-    this.group().get('single2')?.reset();
-    this.group().get('single3')?.reset();
-    this.group().get('single4')?.reset();
-    this.group().get('double1')?.reset();
-    this.group().get('double2')?.reset();
-    this.group().get('double3')?.reset();
-    this.group().get('double4')?.reset();
-    this.group().get('subtitudes')?.reset();
+    this.group().get("single1")?.reset();
+    this.group().get("single2")?.reset();
+    this.group().get("single3")?.reset();
+    this.group().get("single4")?.reset();
+    this.group().get("double1")?.reset();
+    this.group().get("double2")?.reset();
+    this.group().get("double3")?.reset();
+    this.group().get("double4")?.reset();
+    this.group().get("subtitudes")?.reset();
 
     this.single1 = [];
     this.single2 = [];
@@ -325,8 +325,8 @@ export class AssemblyComponent implements OnInit {
     this.substitutes = [];
 
     // Get values
-    this.club = this.group().get('club')?.value;
-    const teamId = this.group().get('team')?.value;
+    this.club = this.group().get("club")?.value;
+    const teamId = this.group().get("team")?.value;
 
     this._getTeam(teamId, encounterId).subscribe(async (team) => {
       this.type.set(team.type);
@@ -348,20 +348,20 @@ export class AssemblyComponent implements OnInit {
         {
           [TeamMembershipType.REGULAR]: [] as TeamPlayer[],
           [TeamMembershipType.BACKUP]: [] as TeamPlayer[],
-        },
+        }
       );
 
       // Take first of saved if available
       const saved = (await lastValueFrom(this._loadSaved(encounterId, team.captainId)))?.[0];
 
       if (saved?.id) {
-        this.snackBar.open('Saved assembly loaded', undefined, {
+        this.snackBar.open("Saved assembly loaded", undefined, {
           duration: 2000,
         });
       }
 
       this.group()
-        .get('captain')
+        .get("captain")
         ?.setValue(saved?.captainId || team.captainId);
 
       // fetch all players that are in the assembly, but not in the current players list
@@ -383,10 +383,10 @@ export class AssemblyComponent implements OnInit {
             (id) =>
               ![this.players?.BACKUP, this.players?.REGULAR]
                 .flat(1)
-                .find((player) => player?.id === id),
+                .find((player) => player?.id === id)
           )
-          ?.filter((id) => id != null && id !== '' && id !== undefined)
-          .map((id) => this.addPlayer({ id } as Player)),
+          ?.filter((id) => id != null && id !== "" && id !== undefined)
+          .map((id) => this.addPlayer({ id } as Player))
       );
 
       if (saved?.assembly?.double1) {
@@ -484,7 +484,7 @@ export class AssemblyComponent implements OnInit {
             },
           },
         })
-        .pipe(map((x) => new Player(x.data?.player))),
+        .pipe(map((x) => new Player(x.data?.player)))
     );
 
     this.players?.REGULAR?.push(playerRankings as TeamPlayer);
@@ -498,7 +498,7 @@ export class AssemblyComponent implements OnInit {
       players: info.baseTeamPlayers?.map((p) => {
         return {
           ...p,
-          sum: p.single + p.double + ((this.type() ?? 'MX') === 'MX' ? p.mix : 0),
+          sum: p.single + p.double + ((this.type() ?? "MX") === "MX" ? p.mix : 0),
         } as TeamPlayer & {
           single: number;
           double: number;
@@ -512,7 +512,7 @@ export class AssemblyComponent implements OnInit {
       players: info.titularsPlayers?.map((p) => {
         return {
           ...p,
-          sum: p.single + p.double + ((this.type() ?? 'MX') === 'MX' ? p.mix : 0),
+          sum: p.single + p.double + ((this.type() ?? "MX") === "MX" ? p.mix : 0),
         } as TeamPlayer & {
           single: number;
           double: number;
@@ -533,25 +533,25 @@ export class AssemblyComponent implements OnInit {
   }
 
   selectedCaptain(player: Player) {
-    this.group().get('captain')?.setValue(player.id);
+    this.group().get("captain")?.setValue(player.id);
   }
 
   canDropPredicate = (item: CdkDrag, drop: CdkDropList<Player[]>) => {
     const length = drop?.data?.length ?? 0;
 
-    if (drop?.id.includes('single')) {
+    if (drop?.id.includes("single")) {
       if (length >= 1) {
         return false;
       }
     }
 
-    if (drop?.id.includes('double')) {
+    if (drop?.id.includes("double")) {
       if (length >= 2) {
         return false;
       }
     }
 
-    if (drop?.id.includes('substitude')) {
+    if (drop?.id.includes("substitude")) {
       // Check if any of the lists already has the player
       if (
         this.single1.findIndex((x) => x.id == item.data.id) != -1 ||
@@ -571,25 +571,25 @@ export class AssemblyComponent implements OnInit {
       return false;
     }
 
-    if (this.type() == 'MX') {
-      if (drop.id == 'double1List' && item.data.gender == 'F') {
+    if (this.type() == "MX") {
+      if (drop.id == "double1List" && item.data.gender == "F") {
         return false;
-      } else if (drop.id == 'double2List' && item.data.gender == 'M') {
+      } else if (drop.id == "double2List" && item.data.gender == "M") {
         return false;
-      } else if (drop.id == 'double3List' || drop.id == 'double4List') {
-        if (item.data.gender == 'M') {
-          return drop.data.filter((r) => r.gender == 'M').length != 1;
+      } else if (drop.id == "double3List" || drop.id == "double4List") {
+        if (item.data.gender == "M") {
+          return drop.data.filter((r) => r.gender == "M").length != 1;
         } else {
-          return drop.data.filter((r) => r.gender == 'F').length != 1;
+          return drop.data.filter((r) => r.gender == "F").length != 1;
         }
       } else if (
-        (drop.id == 'single1List' || drop.id == 'single2List') &&
-        item.data.gender == 'F'
+        (drop.id == "single1List" || drop.id == "single2List") &&
+        item.data.gender == "F"
       ) {
         return false;
       } else if (
-        (drop.id == 'single3List' || drop.id == 'single4List') &&
-        item.data.gender == 'M'
+        (drop.id == "single3List" || drop.id == "single4List") &&
+        item.data.gender == "M"
       ) {
         return false;
       }
@@ -603,7 +603,7 @@ export class AssemblyComponent implements OnInit {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       if (
-        event.container.id == 'playerList' &&
+        event.container.id == "playerList" &&
         event.container.data?.map((r) => r.id).includes(event.item.data.id)
       ) {
         event.previousContainer.data.splice(event.previousIndex, 1);
@@ -611,7 +611,7 @@ export class AssemblyComponent implements OnInit {
         return;
       }
 
-      if (event.previousContainer.id == 'playerList') {
+      if (event.previousContainer.id == "playerList") {
         const singles = [...this.single1, ...this.single2, ...this.single3, ...this.single4];
         const doubles = [...this.double1, ...this.double2, ...this.double3, ...this.double4];
 
@@ -619,13 +619,13 @@ export class AssemblyComponent implements OnInit {
         const doublesCount = doubles.filter((p) => p.id === event.item.data.id).length;
         if (
           singlesCount > 0 &&
-          event.container.id.includes('single') &&
-          !event.previousContainer.id.includes('single')
+          event.container.id.includes("single") &&
+          !event.previousContainer.id.includes("single")
         ) {
           return;
         }
 
-        if (doublesCount > 1 && event.container.id.includes('double')) {
+        if (doublesCount > 1 && event.container.id.includes("double")) {
           return;
         }
 
@@ -633,18 +633,18 @@ export class AssemblyComponent implements OnInit {
           event.previousContainer.data,
           event.container.data,
           event.previousIndex,
-          event.currentIndex,
+          event.currentIndex
         );
       } else {
         transferArrayItem(
           event.previousContainer.data,
           event.container.data,
           event.previousIndex,
-          event.currentIndex,
+          event.currentIndex
         );
       }
 
-      if (event.container.id !== 'substitudeList') {
+      if (event.container.id !== "substitudeList") {
         this.substitutes = this.substitutes.filter((r) => r.id !== event.item.data.id);
       }
     }
@@ -657,8 +657,8 @@ export class AssemblyComponent implements OnInit {
         team: this.team,
       },
 
-      width: '100%',
-      maxWidth: '600px',
+      width: "100%",
+      maxWidth: "600px",
     });
   }
 
@@ -735,21 +735,21 @@ export class AssemblyComponent implements OnInit {
             transferState(`assemblyTeamKey-${teamId}`, this.stateTransfer, this.platformId),
             map((result) => {
               if (!result?.data.team) {
-                throw new Error('No club');
+                throw new Error("No club");
               }
 
               return new Team(result.data.team);
-            }),
-          ),
-      ),
+            })
+          )
+      )
     );
   }
 
   private _getRankingWhere(encounterId?: string) {
     if (!encounterId) {
       const usedRankingDate = moment();
-      this.startRanking = usedRankingDate.clone().set('date', 0);
-      this.endRanking = usedRankingDate.clone().clone().endOf('month');
+      this.startRanking = usedRankingDate.clone().set("date", 0);
+      this.endRanking = usedRankingDate.clone().clone().endOf("month");
       return of({
         rankingWhere: {
           rankingDate: {
@@ -767,15 +767,15 @@ export class AssemblyComponent implements OnInit {
     return this._getEvent(encounterId).pipe(
       map((event) => {
         if (!event || !event.season || !event.usedRankingUnit || !event.usedRankingAmount) {
-          throw new Error('No event');
+          throw new Error("No event");
         }
 
         const usedRankingDate = moment();
-        usedRankingDate.set('year', event.season);
+        usedRankingDate.set("year", event.season);
         usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);
 
-        this.startRanking = usedRankingDate.clone().set('date', 0);
-        this.endRanking = usedRankingDate.clone().clone().endOf('month');
+        this.startRanking = usedRankingDate.clone().set("date", 0);
+        this.endRanking = usedRankingDate.clone().clone().endOf("month");
 
         return {
           rankingWhere: {
@@ -789,7 +789,7 @@ export class AssemblyComponent implements OnInit {
           },
         };
       }),
-      shareReplay(1),
+      shareReplay(1)
     );
   }
 
@@ -823,16 +823,16 @@ export class AssemblyComponent implements OnInit {
         transferState(
           `eventForEncounter-${encounterCompetitionId}`,
           this.stateTransfer,
-          this.platformId,
+          this.platformId
         ),
         map((result) => result?.data.encounterCompetition?.drawCompetition?.subEventCompetition),
         map((result) => {
           if (!result?.eventCompetition) {
-            throw new Error('No event');
+            throw new Error("No event");
           }
 
           return new EventCompetition(result?.eventCompetition);
-        }),
+        })
       );
   }
 
@@ -874,30 +874,30 @@ export class AssemblyComponent implements OnInit {
         `,
         variables: {
           assembly: {
-            captainId: this.group().get('captain')?.value,
-            teamId: this.group().get('team')?.value,
-            encounterId: this.group().get('encounter')?.value,
+            captainId: this.group().get("captain")?.value,
+            teamId: this.group().get("team")?.value,
+            encounterId: this.group().get("encounter")?.value,
 
-            single1: this.group().get('single1')?.value?.id,
-            single2: this.group().get('single2')?.value?.id,
-            single3: this.group().get('single3')?.value?.id,
-            single4: this.group().get('single4')?.value?.id,
+            single1: this.group().get("single1")?.value?.id,
+            single2: this.group().get("single2")?.value?.id,
+            single3: this.group().get("single3")?.value?.id,
+            single4: this.group().get("single4")?.value?.id,
 
             double1: this.group()
-              .get('double1')
+              .get("double1")
               ?.value?.map((r: Player) => r.id),
             double2: this.group()
-              .get('double2')
+              .get("double2")
               ?.value?.map((r: Player) => r.id),
             double3: this.group()
-              .get('double3')
+              .get("double3")
               ?.value?.map((r: Player) => r.id),
             double4: this.group()
-              .get('double4')
+              .get("double4")
               ?.value?.map((r: Player) => r.id),
 
             subtitudes: this.group()
-              .get('subtitudes')
+              .get("subtitudes")
               ?.value?.map((r: Player) => r.id),
           },
         },
@@ -905,29 +905,29 @@ export class AssemblyComponent implements OnInit {
       .pipe(
         map((result) => {
           if (!result.data.validateAssembly) {
-            throw new Error('No assemblyValidation');
+            throw new Error("No assemblyValidation");
           }
 
           return result.data.validateAssembly;
-        }),
+        })
       );
   }
 
   private _sortLists() {
     const sortList = (a: Player, b: Player) => {
       if (a.gender != b.gender) {
-        return a.gender == 'F' ? -1 : 1;
+        return a.gender == "F" ? -1 : 1;
       }
 
       const playerA =
         (a.lastRanking?.single ?? 12) +
         (a.lastRanking?.double ?? 12) +
-        (this.type() == 'MX' ? a.lastRanking?.mix ?? 12 : 12);
+        (this.type() == "MX" ? (a.lastRanking?.mix ?? 12) : 12);
 
       const playerB =
         (b.lastRanking?.single ?? 12) +
         (b.lastRanking?.double ?? 12) +
-        (this.type() == 'MX' ? b.lastRanking?.mix ?? 12 : 12);
+        (this.type() == "MX" ? (b.lastRanking?.mix ?? 12) : 12);
 
       // If the same return single
       if (playerA == playerB) {
@@ -948,7 +948,7 @@ export class AssemblyComponent implements OnInit {
       if (a.gender == b.gender) {
         return sortDouble(a, b);
       } else {
-        return a.gender == 'F' ? -1 : 1;
+        return a.gender == "F" ? -1 : 1;
       }
     };
 
@@ -959,7 +959,7 @@ export class AssemblyComponent implements OnInit {
     this.double1.sort(sortDouble);
     this.double2.sort(sortDouble);
 
-    if (this.type() == 'MX') {
+    if (this.type() == "MX") {
       this.double3.sort(sortMix);
       this.double4.sort(sortMix);
     } else {
@@ -969,60 +969,60 @@ export class AssemblyComponent implements OnInit {
   }
 
   private _setTranslations() {
-    if (this.type() == 'M') {
-      this.captionSingle1Prefix = 'all.gender.males';
-      this.captionSingle2Prefix = 'all.gender.males';
-      this.captionSingle3Prefix = 'all.gender.males';
-      this.captionSingle4Prefix = 'all.gender.males';
-      this.captionDouble1Prefix = 'all.gender.males';
-      this.captionDouble2Prefix = 'all.gender.males';
-      this.captionDouble3Prefix = 'all.gender.males';
-      this.captionDouble4Prefix = 'all.gender.males';
+    if (this.type() == "M") {
+      this.captionSingle1Prefix = "all.gender.males";
+      this.captionSingle2Prefix = "all.gender.males";
+      this.captionSingle3Prefix = "all.gender.males";
+      this.captionSingle4Prefix = "all.gender.males";
+      this.captionDouble1Prefix = "all.gender.males";
+      this.captionDouble2Prefix = "all.gender.males";
+      this.captionDouble3Prefix = "all.gender.males";
+      this.captionDouble4Prefix = "all.gender.males";
 
       this.captionDouble1 = `all.competition.team-assembly.double1`;
       this.captionDouble2 = `all.competition.team-assembly.double2`;
       this.captionDouble3 = `all.competition.team-assembly.double3`;
       this.captionDouble4 = `all.competition.team-assembly.double4`;
 
-      this.captionSingle1 = 'all.competition.team-assembly.single1';
-      this.captionSingle2 = 'all.competition.team-assembly.single2';
-      this.captionSingle3 = 'all.competition.team-assembly.single3';
-      this.captionSingle4 = 'all.competition.team-assembly.single4';
-    } else if (this.type() == 'F') {
-      this.captionSingle1Prefix = 'all.gender.females';
-      this.captionSingle2Prefix = 'all.gender.females';
-      this.captionSingle3Prefix = 'all.gender.females';
-      this.captionSingle4Prefix = 'all.gender.females';
-      this.captionDouble1Prefix = 'all.gender.females';
-      this.captionDouble2Prefix = 'all.gender.females';
-      this.captionDouble3Prefix = 'all.gender.females';
-      this.captionDouble4Prefix = 'all.gender.females';
+      this.captionSingle1 = "all.competition.team-assembly.single1";
+      this.captionSingle2 = "all.competition.team-assembly.single2";
+      this.captionSingle3 = "all.competition.team-assembly.single3";
+      this.captionSingle4 = "all.competition.team-assembly.single4";
+    } else if (this.type() == "F") {
+      this.captionSingle1Prefix = "all.gender.females";
+      this.captionSingle2Prefix = "all.gender.females";
+      this.captionSingle3Prefix = "all.gender.females";
+      this.captionSingle4Prefix = "all.gender.females";
+      this.captionDouble1Prefix = "all.gender.females";
+      this.captionDouble2Prefix = "all.gender.females";
+      this.captionDouble3Prefix = "all.gender.females";
+      this.captionDouble4Prefix = "all.gender.females";
 
       this.captionDouble1 = `all.competition.team-assembly.double1`;
       this.captionDouble2 = `all.competition.team-assembly.double2`;
       this.captionDouble3 = `all.competition.team-assembly.double3`;
       this.captionDouble4 = `all.competition.team-assembly.double4`;
 
-      this.captionSingle1 = 'all.competition.team-assembly.single1';
-      this.captionSingle2 = 'all.competition.team-assembly.single2';
-      this.captionSingle3 = 'all.competition.team-assembly.single3';
-      this.captionSingle4 = 'all.competition.team-assembly.single4';
+      this.captionSingle1 = "all.competition.team-assembly.single1";
+      this.captionSingle2 = "all.competition.team-assembly.single2";
+      this.captionSingle3 = "all.competition.team-assembly.single3";
+      this.captionSingle4 = "all.competition.team-assembly.single4";
     } else {
-      this.captionDouble1Prefix = '';
-      this.captionDouble2Prefix = '';
-      this.captionDouble3Prefix = '';
-      this.captionDouble4Prefix = '';
+      this.captionDouble1Prefix = "";
+      this.captionDouble2Prefix = "";
+      this.captionDouble3Prefix = "";
+      this.captionDouble4Prefix = "";
 
-      this.captionSingle1Prefix = 'all.gender.males';
-      this.captionSingle2Prefix = 'all.gender.males';
+      this.captionSingle1Prefix = "all.gender.males";
+      this.captionSingle2Prefix = "all.gender.males";
 
-      this.captionSingle3Prefix = 'all.gender.females';
-      this.captionSingle4Prefix = 'all.gender.females';
+      this.captionSingle3Prefix = "all.gender.females";
+      this.captionSingle4Prefix = "all.gender.females";
 
-      this.captionSingle1 = 'all.competition.team-assembly.single1';
-      this.captionSingle2 = 'all.competition.team-assembly.single2';
-      this.captionSingle3 = 'all.competition.team-assembly.single1';
-      this.captionSingle4 = 'all.competition.team-assembly.single2';
+      this.captionSingle1 = "all.competition.team-assembly.single1";
+      this.captionSingle2 = "all.competition.team-assembly.single2";
+      this.captionSingle3 = "all.competition.team-assembly.single1";
+      this.captionSingle4 = "all.competition.team-assembly.single2";
 
       this.captionDouble1 = `all.competition.team-assembly.mix1`;
       this.captionDouble2 = `all.competition.team-assembly.mix2`;
@@ -1035,14 +1035,14 @@ export class AssemblyComponent implements OnInit {
     if (this.players?.REGULAR?.find((p) => p.id === player.id)) {
       return {
         valid: false,
-        message: 'all.player.search.in-list',
+        message: "all.player.search.in-list",
       };
     }
 
     if (this.players?.BACKUP?.find((p) => p.id === player.id)) {
       return {
         valid: false,
-        message: 'all.player.search.backup-player',
+        message: "all.player.search.backup-player",
       };
     }
 
@@ -1071,12 +1071,12 @@ export class AssemblyComponent implements OnInit {
         transferState(`savedAssembly-${encounterId}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data?.encounterCompetition) {
-            throw new Error('No encounterCompetition');
+            throw new Error("No encounterCompetition");
           }
           return result.data.encounterCompetition?.assemblies?.map(
-            (assembly) => new Assembly(assembly),
+            (assembly) => new Assembly(assembly)
           );
-        }),
+        })
       );
   }
 

@@ -1,9 +1,9 @@
-import { Injectable, inject } from '@angular/core';
-import { Metric, onCLS, onFCP, onFID, onLCP, onTTFB } from 'web-vitals';
-import { ANALYTICS_CONFIG_TOKEN, AnalyticsConfig } from '../vitals.module';
+import { Injectable, inject } from "@angular/core";
+import { Metric, onCLS, onFCP, onFID, onLCP, onTTFB } from "web-vitals";
+import { ANALYTICS_CONFIG_TOKEN, AnalyticsConfig } from "../vitals.module";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class WebVitalsService {
   private config = inject<AnalyticsConfig>(ANALYTICS_CONFIG_TOKEN);
@@ -37,29 +37,29 @@ export class WebVitalsService {
 
     const blob = new Blob([new URLSearchParams(body).toString()], {
       // This content type is necessary for `sendBeacon`
-      type: 'application/x-www-form-urlencoded',
+      type: "application/x-www-form-urlencoded",
     });
     if (navigator.sendBeacon) {
       navigator.sendBeacon(this.config.url, blob);
     } else
       fetch(this.config.url, {
         body: blob,
-        method: 'POST',
-        credentials: 'omit',
+        method: "POST",
+        credentials: "omit",
         keepalive: true,
       });
   }
 
   private getConnectionSpeed(): string {
     if (
-      'connection' in navigator &&
-      navigator['connection'] != null &&
-      typeof navigator['connection'] === 'object' &&
-      'effectiveType' in navigator['connection']
+      "connection" in navigator &&
+      navigator["connection"] != null &&
+      typeof navigator["connection"] === "object" &&
+      "effectiveType" in navigator["connection"]
     ) {
-      return (navigator['connection']['effectiveType'] as string) || '';
+      return (navigator["connection"]["effectiveType"] as string) || "";
     }
 
-    return '';
+    return "";
   }
 }

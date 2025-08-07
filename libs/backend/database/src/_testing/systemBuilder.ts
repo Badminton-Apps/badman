@@ -1,8 +1,8 @@
-import { RankingSystems } from '@badman/utils';
-import { RankingSystem } from '../models';
-import { SystemGroupBuilder } from './systemGroupBuilder';
-import { RankingPlaceBuilder } from './rankingPlaceBuilder';
-import { RankingLastPlaceBuilder } from './rankingLastPlaceBuilder';
+import { RankingSystems } from "@badman/utils";
+import { RankingSystem } from "../models";
+import { SystemGroupBuilder } from "./systemGroupBuilder";
+import { RankingPlaceBuilder } from "./rankingPlaceBuilder";
+import { RankingLastPlaceBuilder } from "./rankingLastPlaceBuilder";
 
 export class SystemBuilder {
   private build = false;
@@ -17,7 +17,7 @@ export class SystemBuilder {
     rankingSystem: RankingSystems,
     amountOfLevels: number,
     procentWinning: number,
-    procentWinningPlus1: number,
+    procentWinningPlus1: number
   ) {
     this.system = new RankingSystem({
       rankingSystem,
@@ -31,7 +31,7 @@ export class SystemBuilder {
     rankingSystem: RankingSystems,
     amountOfLevels: number,
     procentWinning: number,
-    procentWinningPlus1: number,
+    procentWinningPlus1: number
   ): SystemBuilder {
     return new SystemBuilder(rankingSystem, amountOfLevels, procentWinning, procentWinningPlus1);
   }
@@ -51,7 +51,7 @@ export class SystemBuilder {
     this.system.calculationIntervalAmount = calculationIntervalAmount;
     return this;
   }
-  WithCalculationIntervalUnit(calculationIntervalUnit: 'months' | 'weeks' | 'days'): SystemBuilder {
+  WithCalculationIntervalUnit(calculationIntervalUnit: "months" | "weeks" | "days"): SystemBuilder {
     this.system.calculationIntervalUnit = calculationIntervalUnit;
     return this;
   }
@@ -59,7 +59,7 @@ export class SystemBuilder {
     this.system.updateIntervalAmount = updateIntervalAmount;
     return this;
   }
-  WithUpdateIntervalUnit(updateIntervalUnit: 'months' | 'weeks' | 'days'): SystemBuilder {
+  WithUpdateIntervalUnit(updateIntervalUnit: "months" | "weeks" | "days"): SystemBuilder {
     this.system.updateIntervalUnit = updateIntervalUnit;
     return this;
   }

@@ -1,5 +1,5 @@
-import { getLetterForRegion, SubEventTypeEnum, UseForTeamName } from '@badman/utils';
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { getLetterForRegion, SubEventTypeEnum, UseForTeamName } from "@badman/utils";
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -27,7 +27,7 @@ import {
   HasOneSetAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
-} from 'sequelize';
+} from "sequelize";
 import {
   BeforeBulkCreate,
   BeforeCreate,
@@ -45,11 +45,11 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { PlayerWithTeamMembershipType } from '../_interception';
-import { Slugify } from '../types';
-import { Relation } from '../wrapper';
-import { Club } from './club.model';
+} from "sequelize-typescript";
+import { PlayerWithTeamMembershipType } from "../_interception";
+import { Slugify } from "../types";
+import { Relation } from "../wrapper";
+import { Club } from "./club.model";
 import {
   EncounterCompetition,
   EventEntry,
@@ -57,16 +57,16 @@ import {
   EventEntryUpdateInput,
   Location,
   SubEventCompetition,
-} from './event';
-import { Player, PlayerTeamInput } from './player.model';
-import { Role } from './security';
-import { TeamPlayerMembership } from './team-player-membership.model';
+} from "./event";
+import { Player, PlayerTeamInput } from "./player.model";
+import { Role } from "./security";
+import { TeamPlayerMembership } from "./team-player-membership.model";
 
 @Table({
   timestamps: true,
-  schema: 'public',
+  schema: "public",
 })
-@ObjectType({ description: 'A Team' })
+@ObjectType({ description: "A Team" })
 
 // This allows typing on the model, but of course adds some typing overhead
 // <
@@ -88,7 +88,7 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   override createdAt?: Date;
 
   @Field(() => String, { nullable: true })
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Column(DataType.STRING)
   name?: string;
 
@@ -108,7 +108,7 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
 
   @Field(() => String, { nullable: true })
   @Column(
-    DataType.ENUM('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'),
+    DataType.ENUM("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday")
   )
   preferredDay?: string;
 
@@ -116,17 +116,17 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   @Column(DataType.STRING)
   abbreviation?: string;
 
-  @HasOne(() => EventEntry, 'teamId')
+  @HasOne(() => EventEntry, "teamId")
   entry?: Relation<EventEntry>;
 
   @Field(() => Club, { nullable: true })
-  @BelongsTo(() => Club, 'clubId')
+  @BelongsTo(() => Club, "clubId")
   club?: Relation<Club>;
 
   @Field(() => ID, { nullable: true })
   @ForeignKey(() => Club)
-  @Unique('unique_constraint')
-  @Index('club_index')
+  @Unique("unique_constraint")
+  @Index("club_index")
   @Column(DataType.UUIDV4)
   clubId?: string;
 
@@ -145,7 +145,7 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   type!: SubEventTypeEnum;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'captainId')
+  @BelongsTo(() => Player, "captainId")
   captain?: Relation<Player>;
 
   @Field(() => ID, { nullable: true })
@@ -153,7 +153,7 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   captainId?: string;
 
   @Field(() => Location, { nullable: true })
-  @BelongsTo(() => Location, 'prefferedLocationId')
+  @BelongsTo(() => Location, "prefferedLocationId")
   prefferedLocation?: Relation<Location>;
 
   @Field(() => ID, { nullable: true })
@@ -161,7 +161,7 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   prefferedLocationId?: string;
 
   @Field(() => Location, { nullable: true })
-  @BelongsTo(() => Location, 'prefferedLocation2Id')
+  @BelongsTo(() => Location, "prefferedLocation2Id")
   prefferedLocation2?: Relation<Location>;
 
   @Field(() => ID, { nullable: true })
@@ -177,22 +177,22 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   phone?: string;
 
   @Field(() => Int)
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Column({ type: DataType.NUMBER, defaultValue: 1 })
   teamNumber!: CreationOptional<number>;
 
-  @HasMany(() => EncounterCompetition, 'homeTeamId')
+  @HasMany(() => EncounterCompetition, "homeTeamId")
   homeEncounters?: Relation<EncounterCompetition>;
 
-  @HasMany(() => EncounterCompetition, 'awayTeamId')
+  @HasMany(() => EncounterCompetition, "awayTeamId")
   awayEncounters?: Relation<EncounterCompetition>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'team',
+      linkType: "team",
     },
   })
   roles?: Relation<Role[]>;
@@ -219,18 +219,18 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
 
     switch (club?.useForTeamName ?? UseForTeamName.NAME) {
       case UseForTeamName.FULL_NAME:
-        instance.name = `${club.fullName} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.fullName} ${instance.teamNumber}${getLetterForRegion(instance.type, "vl")}`;
         break;
       case UseForTeamName.ABBREVIATION:
-        instance.name = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, "vl")}`;
         break;
       case UseForTeamName.NAME:
-        instance.name = `${club.name} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.name} ${instance.teamNumber}${getLetterForRegion(instance.type, "vl")}`;
         break;
 
       default:
       case UseForTeamName.TEAM_NAME:
-        instance.name = `${club.teamName} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.teamName} ${instance.teamNumber}${getLetterForRegion(instance.type, "vl")}`;
         break;
     }
   }
@@ -238,7 +238,7 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   static async generateAbbreviation(instance: Team, options?: CreateOptions, club?: Club) {
     club = club ?? (await instance.getClub({ transaction: options?.transaction }));
 
-    instance.abbreviation = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
+    instance.abbreviation = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, "vl")}`;
   }
   // #endregion
 
@@ -322,17 +322,17 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
 @InputType()
 export class TeamUpdateInput extends PartialType(
   OmitType(Team, [
-    'createdAt',
-    'updatedAt',
-    'club',
-    'players',
-    'captain',
-    'roles',
-    'entry',
-    'prefferedLocation',
-    'prefferedLocation2',
+    "createdAt",
+    "updatedAt",
+    "club",
+    "players",
+    "captain",
+    "roles",
+    "entry",
+    "prefferedLocation",
+    "prefferedLocation2",
   ] as const),
-  InputType,
+  InputType
 ) {
   // Include the entry
   @Field(() => EventEntryUpdateInput, { nullable: true })
@@ -345,8 +345,8 @@ export class TeamUpdateInput extends PartialType(
 
 @InputType()
 export class TeamNewInput extends PartialType(
-  OmitType(TeamUpdateInput, ['id', 'entry', 'players'] as const),
-  InputType,
+  OmitType(TeamUpdateInput, ["id", "entry", "players"] as const),
+  InputType
 ) {
   // Include the entry
   @Field(() => EventEntryNewInput, { nullable: true })

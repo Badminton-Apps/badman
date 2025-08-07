@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   DrawTournament,
   EventEntry,
@@ -6,9 +6,9 @@ import {
   Player,
   RankingSystem,
   SubEventTournament,
-} from '@badman/backend-database';
-import { PointsService } from '@badman/backend-ranking';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+} from "@badman/backend-database";
+import { PointsService } from "@badman/backend-ranking";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -19,18 +19,18 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../../utils';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
+} from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../../utils";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
 
 @InputType()
 export class SyncDrawOptions {
   @Field(() => Boolean, {
     nullable: true,
-    description: 'Deletes the exsiting draw (and childs) and re-creates with the same id',
+    description: "Deletes the exsiting draw (and childs) and re-creates with the same id",
   })
   deleteDraw?: boolean;
 
@@ -51,11 +51,11 @@ export class DrawTournamentResolver {
   constructor(
     private readonly _sequelize: Sequelize,
     private readonly _pointService: PointsService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Query(() => DrawTournament)
-  async drawTournament(@Args('id', { type: () => ID }) id: string): Promise<DrawTournament> {
+  async drawTournament(@Args("id", { type: () => ID }) id: string): Promise<DrawTournament> {
     const draw = await DrawTournament.findByPk(id);
 
     if (!draw) {
@@ -87,10 +87,10 @@ export class DrawTournamentResolver {
   @Mutation(() => Boolean)
   async recalculateDrawTournamentRankingPoints(
     @User() user: Player,
-    @Args('drawId', { type: () => ID }) drawId: string,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+    @Args("drawId", { type: () => ID }) drawId: string,
+    @Args("systemId", { type: () => ID, nullable: true }) systemId: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
@@ -103,7 +103,7 @@ export class DrawTournamentResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
       }
 
       // find all games
@@ -151,15 +151,15 @@ export class DrawTournamentResolver {
   })
   async syncDraw(
     @User() user: Player,
-    @Args('drawId', { type: () => ID, nullable: true }) drawId: string,
-    @Args('drawCode', { type: () => ID, nullable: true }) drawCode: string,
-    @Args('eventId', { type: () => ID, nullable: true }) eventId: string,
-    @Args('eventCode', { type: () => ID, nullable: true }) eventCode: string,
-    @Args('subEventId', { type: () => ID, nullable: true }) subEventId: string,
+    @Args("drawId", { type: () => ID, nullable: true }) drawId: string,
+    @Args("drawCode", { type: () => ID, nullable: true }) drawCode: string,
+    @Args("eventId", { type: () => ID, nullable: true }) eventId: string,
+    @Args("eventCode", { type: () => ID, nullable: true }) eventCode: string,
+    @Args("subEventId", { type: () => ID, nullable: true }) subEventId: string,
 
-    @Args('options', { nullable: true }) options: SyncDrawOptions,
+    @Args("options", { nullable: true }) options: SyncDrawOptions
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['sync:tournament']))) {
+    if (!(await user.hasAnyPermission(["sync:tournament"]))) {
       throw new UnauthorizedException(`You do not have permission to sync tournament`);
     }
 
@@ -170,7 +170,7 @@ export class DrawTournamentResolver {
       !(eventCode && drawCode) &&
       !(subEventId && drawCode)
     ) {
-      throw new Error('Invalid arguments');
+      throw new Error("Invalid arguments");
     }
 
     this._syncQueue.add(
@@ -186,7 +186,7 @@ export class DrawTournamentResolver {
       },
       {
         removeOnComplete: true,
-      },
+      }
     );
 
     return true;

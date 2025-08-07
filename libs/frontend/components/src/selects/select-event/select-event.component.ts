@@ -1,25 +1,25 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, input, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { EventCompetition } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, input, inject } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { EventCompetition } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { Observable } from "rxjs";
+import { map, takeUntil, tap } from "rxjs/operators";
 
 @Component({
-    selector: 'badman-select-event',
-    templateUrl: './select-event.component.html',
-    styleUrls: ['./select-event.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule]
+  selector: "badman-select-event",
+  templateUrl: "./select-event.component.html",
+  styleUrls: ["./select-event.component.scss"],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule],
 })
 export class SelectEventComponent implements OnInit {
   private apollo = inject(Apollo);
   private destroy$ = injectDestroy();
 
-  controlName = input('event');
+  controlName = input("event");
 
   formGroup = input<FormGroup | undefined>();
 
@@ -72,7 +72,7 @@ export class SelectEventComponent implements OnInit {
               this.control().setValue(initialEvent);
             }
           }
-        }),
+        })
       );
   }
 }

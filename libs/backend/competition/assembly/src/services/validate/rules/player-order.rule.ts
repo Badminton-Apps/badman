@@ -1,7 +1,7 @@
-import { Player } from '@badman/backend-database';
-import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
-import { Rule } from './_rule.base';
+import { Player } from "@badman/backend-database";
+import { SubEventTypeEnum } from "@badman/utils";
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export type PlayerOrderRuleSingleParams = {
   player1: Partial<Player> & { ranking: number };
@@ -28,7 +28,7 @@ export type PlayerOrderRuleParams = PlayerOrderRuleSingleParams | PlayerOrderRul
  * Doubles: the team with the lowest ranking should be first, if the ranking is the same, the best player should be first
  */
 export class PlayerOrderRule extends Rule {
-  static override readonly description = 'all.rules.team-assembly.player-order';
+  static override readonly description = "all.rules.team-assembly.player-order";
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { single1, single2, single3, single4, double1, double2, double3, double4, type, system } =
       assembly;
@@ -36,55 +36,55 @@ export class PlayerOrderRule extends Rule {
     let errors = [] as AssemblyValidationError<PlayerOrderRuleParams>[];
 
     if (!system?.amountOfLevels) {
-      throw new Error('System is not defined');
+      throw new Error("System is not defined");
     }
 
-    const s1 = this._checkSingle('single1', 'single2', system.amountOfLevels, single1, single2);
+    const s1 = this._checkSingle("single1", "single2", system.amountOfLevels, single1, single2);
     if (s1) errors.push(s1);
 
-    const s3 = this._checkSingle('single3', 'single4', system.amountOfLevels, single3, single4);
+    const s3 = this._checkSingle("single3", "single4", system.amountOfLevels, single3, single4);
     if (s3) errors.push(s3);
 
     const d3 = this._checkDouble(
-      type == SubEventTypeEnum.MX ? 'mix3' : 'double3',
-      type == SubEventTypeEnum.MX ? 'mix4' : 'double4',
+      type == SubEventTypeEnum.MX ? "mix3" : "double3",
+      type == SubEventTypeEnum.MX ? "mix4" : "double4",
       system?.amountOfLevels,
-      type == SubEventTypeEnum.MX ? 'mix' : 'double',
+      type == SubEventTypeEnum.MX ? "mix" : "double",
       double3,
-      double4,
+      double4
     );
 
     if (d3) errors.push(d3);
 
     if (type !== SubEventTypeEnum.MX) {
       const d1 = this._checkDouble(
-        'double1',
-        'double2',
+        "double1",
+        "double2",
         system?.amountOfLevels,
-        'double',
+        "double",
         double1,
-        double2,
+        double2
       );
       if (d1) errors.push(d1);
 
       const s2 = this._checkSingle(
-        'single2',
-        'single3',
+        "single2",
+        "single3",
 
         system.amountOfLevels,
         single2,
-        single3,
+        single3
       );
 
       if (s2) errors.push(s2);
 
       const d2 = this._checkDouble(
-        'double2',
-        'double3',
+        "double2",
+        "double3",
         system.amountOfLevels,
-        'double',
+        "double",
         double2,
-        double3,
+        double3
       );
 
       if (d2) errors.push(d2);
@@ -103,7 +103,7 @@ export class PlayerOrderRule extends Rule {
     game2: string,
     defaultRanking = 12,
     player1?: Player,
-    player2?: Player,
+    player2?: Player
   ): AssemblyValidationError<PlayerOrderRuleSingleParams> | undefined {
     if (!player1 || !player2) return;
 
@@ -112,7 +112,7 @@ export class PlayerOrderRule extends Rule {
 
     if (ranking2 < ranking1) {
       return {
-        message: 'all.v1.teamFormation.errors.player-order-single',
+        message: "all.v1.teamFormation.errors.player-order-single",
         params: {
           game1,
           game2,
@@ -136,9 +136,9 @@ export class PlayerOrderRule extends Rule {
     game1: string,
     game2: string,
     defaultRanking = 12,
-    type: 'double' | 'mix' = 'double',
+    type: "double" | "mix" = "double",
     double1?: [Player | undefined, Player | undefined] | undefined,
-    double2?: [Player | undefined, Player | undefined] | undefined,
+    double2?: [Player | undefined, Player | undefined] | undefined
   ): AssemblyValidationError<PlayerOrderRuleDoubleParams> | undefined {
     if (!double1 || !double2) return;
     if (!double1[0]?.id || !double1[1]?.id || !double2[0]?.id || !double2[1]?.id) {
@@ -173,7 +173,7 @@ export class PlayerOrderRule extends Rule {
 
     if (d2p1 + d2p2 < d1p1 + d1p2) {
       return {
-        message: 'all.v1.teamFormation.errors.player-order-doubles',
+        message: "all.v1.teamFormation.errors.player-order-doubles",
         params: {
           game1,
           game2,
@@ -206,7 +206,7 @@ export class PlayerOrderRule extends Rule {
 
       if (highestd2 < highestd1) {
         return {
-          message: 'all.v1.teamFormation.errors.player-order-highest',
+          message: "all.v1.teamFormation.errors.player-order-highest",
           params: {
             game1,
             game2,

@@ -1,6 +1,6 @@
-import { sortTeams } from '@badman/utils';
-import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
-import { Rule } from './_rule.base';
+import { sortTeams } from "@badman/utils";
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from "../../../models";
+import { Rule } from "./_rule.base";
 
 /**
  * Checks if a player is in the basePlayers array of 2 teams of the same type
@@ -9,7 +9,7 @@ export class PlayerBaseRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
     const sortedTeamsByTeamNumberAndType = enrollment.teams.sort((a, b) =>
-      sortTeams(a.team, b.team),
+      sortTeams(a.team, b.team)
     );
 
     for (const {
@@ -47,7 +47,7 @@ export class PlayerBaseRule extends Rule {
         for (const otherTeam of otherTeams) {
           if (otherTeam.basePlayers?.find((p) => p.id === player.id)) {
             errors.push({
-              message: 'all.v1.entryTeamDrawer.validation.errors.base-other-team',
+              message: "all.v1.entryTeamDrawer.validation.errors.base-other-team",
               params: {
                 player: {
                   id: player.player?.id,
@@ -68,7 +68,7 @@ export class PlayerBaseRule extends Rule {
         for (const otherTeam of otherTeams) {
           if (otherTeam.basePlayers?.find((p) => p.id === player.id)) {
             warnings.push({
-              message: 'all.v1.entryTeamDrawer.validation.warnings.base-other-team',
+              message: "all.v1.entryTeamDrawer.validation.warnings.base-other-team",
               params: {
                 player: {
                   id: player.player?.id,

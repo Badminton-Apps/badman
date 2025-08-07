@@ -9,8 +9,8 @@
         <mat-icon>chevron_right</mat-icon>
       </button>
       <div>
-        {{ monthNames[firstDayOfMonth.get('month')] | titlecase }}
-        {{ firstDayOfMonth.get('year') }}
+        {{ monthNames[firstDayOfMonth.get("month")] | titlecase }}
+        {{ firstDayOfMonth.get("year") }}
       </div>
     </div>
     <div class="locations" fxLayoutAlign="center center">
@@ -29,7 +29,7 @@
         @if (this.locations) {
           <mat-form-field>
             <mat-label>{{
-              'all.competition.change-encounter.choose-location' | translate
+              "all.competition.change-encounter.choose-location" | translate
             }}</mat-label>
             <mat-select [formControl]="manualLocationControl">
               @for (location of this.locations; track location) {
@@ -39,7 +39,7 @@
           </mat-form-field>
         }
         <mat-form-field>
-          <mat-label>{{ 'all.competition.change-encounter.choose-date' | translate }}</mat-label>
+          <mat-label>{{ "all.competition.change-encounter.choose-date" | translate }}</mat-label>
           <mtx-datetimepicker
             #datetimePicker
             type="datetime"
@@ -126,13 +126,13 @@
                   <span class="time">{{ loc.time }} - </span>
                   <span class="courts">
                     {{
-                      'all.competition.change-encounter.calendar.remaining'
+                      "all.competition.change-encounter.calendar.remaining"
                         | translate: { amount: loc.space }
                     }}
                     @if (loc.requested.length) {
                       <span>
                         ({{
-                          'all.competition.change-encounter.calendar.option'
+                          "all.competition.change-encounter.calendar.option"
                             | translate: { amount: loc.requested.length }
                         }})
                       </span>
@@ -151,7 +151,7 @@
                         </div>
                         <span class="event-name">
                           {{ enc?.home?.name }}
-                          {{ 'all.competition.vs-short' | translate }}
+                          {{ "all.competition.vs-short" | translate }}
                           {{ enc?.away?.name }}
                         </span>
                       </div>
@@ -175,7 +175,7 @@
                         </div>
                         <span class="event-name">
                           {{ enc?.home?.name }}
-                          {{ 'all.competition.vs-short' | translate }}
+                          {{ "all.competition.vs-short" | translate }}
                           {{ enc?.away?.name }}
                         </span>
                       </div>
@@ -199,7 +199,7 @@
                         </div>
                         <span class="event-name">
                           {{ enc?.home?.name }}
-                          {{ 'all.competition.vs-short' | translate }}
+                          {{ "all.competition.vs-short" | translate }}
                           {{ enc?.away?.name }}*
                         </span>
                       </div>
@@ -210,14 +210,14 @@
               <div class="event other-events">
                 @if (dayInfo.other.length > 0) {
                   <small>{{
-                    'all.competition.change-encounter.calendar.other-games' | translate
+                    "all.competition.change-encounter.calendar.other-games" | translate
                   }}</small>
                 }
                 @for (enc of dayInfo.other; track enc) {
                   <div class="event-name">
-                    {{ enc?.date | date: 'HH:mm' }} -
+                    {{ enc?.date | date: "HH:mm" }} -
                     {{ enc?.home?.name }}
-                    {{ 'all.competition.vs-short' | translate }}
+                    {{ "all.competition.vs-short" | translate }}
                     {{ enc?.away?.name }}
                   </div>
                 }

@@ -1,11 +1,11 @@
-import { Logger } from '@nestjs/common';
-import { XMLParser } from 'fast-xml-parser';
+import { Logger } from "@nestjs/common";
+import { XMLParser } from "fast-xml-parser";
 
-import { TwizzitService } from '@badman/backend-twizzit';
-import { Transaction } from 'sequelize';
-import { ProcessStep, Processor } from '../../processing';
-import { Sequelize } from 'sequelize-typescript';
-import { Player } from '@badman/backend-database';
+import { TwizzitService } from "@badman/backend-twizzit";
+import { Transaction } from "sequelize";
+import { ProcessStep, Processor } from "../../processing";
+import { Sequelize } from "sequelize-typescript";
+import { Player } from "@badman/backend-database";
 
 interface OrganisationStepData {
   organisations: { id: string; name: string }[];
@@ -15,8 +15,8 @@ interface SeasonStepData {
   seasons: {
     id: string;
     name: string;
-    'start-date': string;
-    'end-date': string;
+    "start-date": string;
+    "end-date": string;
   }[];
 }
 
@@ -34,11 +34,11 @@ export interface MembershipTypeStepData {
 interface MembershipStepData {
   memberships: {
     id: number;
-    'contact-id': number;
-    'membership-type-id': number;
-    'season-id': number;
-    'start-date': string;
-    'end-date': string;
+    "contact-id": number;
+    "membership-type-id": number;
+    "season-id": number;
+    "start-date": string;
+    "end-date": string;
   }[];
 }
 
@@ -51,19 +51,19 @@ export class TwizzitSyncer {
 
   public readonly processor: Processor;
 
-  readonly STEP_LOGIN = 'login';
-  readonly STEP_SEASONS = 'seasons';
-  readonly STEP_ORGANISATIONS = 'organisations';
-  readonly STEP_MEMBERSHIP_TYPES = 'membership-types';
-  readonly STEP_MEMBERSHIPS = 'membership';
-  readonly STEP_CONTACTS = 'contacts';
-  readonly STEP_TO_PLAYERS = 'players';
+  readonly STEP_LOGIN = "login";
+  readonly STEP_SEASONS = "seasons";
+  readonly STEP_ORGANISATIONS = "organisations";
+  readonly STEP_MEMBERSHIP_TYPES = "membership-types";
+  readonly STEP_MEMBERSHIPS = "membership";
+  readonly STEP_CONTACTS = "contacts";
+  readonly STEP_TO_PLAYERS = "players";
 
   readonly xmlParser: XMLParser;
 
   constructor(
     private _twizzitService: TwizzitService,
-    private readonly _sequelize: Sequelize,
+    private readonly _sequelize: Sequelize
   ) {
     this.processor = new Processor(undefined, { logger: this._logger });
 
@@ -83,7 +83,7 @@ export class TwizzitSyncer {
     return new ProcessStep(this.STEP_LOGIN, async () => {
       const result = await this._twizzitService.getLogin();
       if (result.status !== 200) {
-        throw new Error('Login failed');
+        throw new Error("Login failed");
       }
 
       this._twizzitService.setHeaders(result.data.token);
@@ -100,11 +100,11 @@ export class TwizzitSyncer {
   protected getSeasons(): ProcessStep<SeasonStepData> {
     return new ProcessStep(this.STEP_SEASONS, async () => {
       const { organisations } = this.processor.getData<OrganisationStepData>(
-        this.STEP_ORGANISATIONS,
+        this.STEP_ORGANISATIONS
       );
 
       const result = await this._twizzitService.getSeasons(
-        organisations.map((o) => parseInt(o.id)),
+        organisations.map((o) => parseInt(o.id))
       );
 
       return { seasons: result.data } as SeasonStepData;
@@ -114,11 +114,11 @@ export class TwizzitSyncer {
   protected getMembershipTypes(): ProcessStep<MembershipTypeStepData> {
     return new ProcessStep(this.STEP_MEMBERSHIP_TYPES, async () => {
       const { organisations } = this.processor.getData<OrganisationStepData>(
-        this.STEP_ORGANISATIONS,
+        this.STEP_ORGANISATIONS
       );
 
       const result = await this._twizzitService.getMembershipTypes(
-        organisations.map((o) => parseInt(o.id)),
+        organisations.map((o) => parseInt(o.id))
       );
 
       return { membershipTypes: result.data };
@@ -128,11 +128,11 @@ export class TwizzitSyncer {
   protected getMemberships(): ProcessStep<MembershipStepData> {
     return new ProcessStep(this.STEP_MEMBERSHIPS, async () => {
       const { organisations } = this.processor.getData<OrganisationStepData>(
-        this.STEP_ORGANISATIONS,
+        this.STEP_ORGANISATIONS
       );
 
       const { membershipTypes } = this.processor.getData<MembershipTypeStepData>(
-        this.STEP_MEMBERSHIP_TYPES,
+        this.STEP_MEMBERSHIP_TYPES
       );
 
       const { seasons } = this.processor.getData<SeasonStepData>(this.STEP_SEASONS);
@@ -142,22 +142,22 @@ export class TwizzitSyncer {
       const limit = 100;
       const memberships: {
         id: number;
-        'contact-id': number;
-        'membership-type-id': number;
-        'season-id': number;
-        'start-date': string;
-        'end-date': string;
+        "contact-id": number;
+        "membership-type-id": number;
+        "season-id": number;
+        "start-date": string;
+        "end-date": string;
       }[] = [];
 
       while (true) {
         const result = await this._twizzitService.getMemberships(
           membershipTypes
-            .filter((type) => type.name.NL == 'Competitiespeler')
+            .filter((type) => type.name.NL == "Competitiespeler")
             .map((t) => parseInt(t.id)),
           organisations.map((o) => parseInt(o.id)),
           seasons.map((s) => parseInt(s.id)),
           limit,
-          offset,
+          offset
         );
 
         if (result.data.length === 0) {
@@ -175,7 +175,7 @@ export class TwizzitSyncer {
   protected processContacts(): ProcessStep {
     return new ProcessStep(this.STEP_CONTACTS, async (args?: { transaction?: Transaction }) => {
       const { organisations } = this.processor.getData<OrganisationStepData>(
-        this.STEP_ORGANISATIONS,
+        this.STEP_ORGANISATIONS
       );
       const { memberships } = this.processor.getData<MembershipStepData>(this.STEP_MEMBERSHIPS);
 
@@ -187,9 +187,9 @@ export class TwizzitSyncer {
       for (let i = 0; i < memberships.length; i += 100) {
         const result = await this._twizzitService.getContacts(
           organisations.map((o) => parseInt(o.id)),
-          memberships.slice(i, i + 100).map((m) => m['contact-id']),
+          memberships.slice(i, i + 100).map((m) => m["contact-id"]),
           100,
-          0,
+          0
         );
 
         const contacts = result.data;
@@ -200,8 +200,8 @@ export class TwizzitSyncer {
         const players = await Player.findAll({
           where: {
             memberId: contacts
-              .flatMap((contact) => contact['extra-field-values'])
-              .filter((extraField) => extraField.extraField.name.EN === 'OLDID')
+              .flatMap((contact) => contact["extra-field-values"])
+              .filter((extraField) => extraField.extraField.name.EN === "OLDID")
               .map((extraField) => extraField.value.value),
           },
           transaction: args?.transaction,
@@ -211,23 +211,23 @@ export class TwizzitSyncer {
           const player = players.find(
             (p) =>
               p.memberId ===
-              contact['extra-field-values'].find(
-                (extraField) => extraField.extraField.name.EN === 'OLDID',
-              ).value.value,
+              contact["extra-field-values"].find(
+                (extraField) => extraField.extraField.name.EN === "OLDID"
+              ).value.value
           );
 
           if (!player) {
             // create a new player
             await Player.create(
               {
-                memberId: contact['extra-field-values'].find(
-                  (extraField) => extraField.extraField.name.EN === 'OLDID',
+                memberId: contact["extra-field-values"].find(
+                  (extraField) => extraField.extraField.name.EN === "OLDID"
                 ).value.value,
                 firstName: contact.name,
                 lastName: contact.name,
                 competitionPlayer: true,
               },
-              { transaction: args?.transaction },
+              { transaction: args?.transaction }
             );
           } else {
             player.competitionPlayer = true;
@@ -242,36 +242,36 @@ export class TwizzitSyncer {
 type TwizzitContact = {
   id: number;
   name: string;
-  'date-of-birth': string;
+  "date-of-birth": string;
   gender: string;
   nationality: string;
   language: string;
-  'account-number': string;
-  'registry-number': string;
+  "account-number": string;
+  "registry-number": string;
   number: number;
-  'email-1': {
+  "email-1": {
     target: string;
     email: string;
   };
-  'email-2': {
+  "email-2": {
     target: string;
     email: string;
   };
-  'email-3': {
+  "email-3": {
     target: string;
     email: string;
   };
-  'mobile-1': {
+  "mobile-1": {
     target: string;
     cc: string;
     number: string;
   };
-  'mobile-2': {
+  "mobile-2": {
     target: string;
     cc: string;
     number: string;
   };
-  'mobile-3': {
+  "mobile-3": {
     target: string;
     cc: string;
     number: string;
@@ -293,7 +293,7 @@ type TwizzitContact = {
       FR: string;
     };
   };
-  'extra-field-values': {
+  "extra-field-values": {
     extraField: {
       id: number;
       name: {

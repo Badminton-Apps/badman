@@ -4,13 +4,13 @@ import {
   RankingPlaceNewInput,
   RankingPlaceUpdateInput,
   RankingSystem,
-} from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { User } from '@badman/backend-authorization';
-import { ListArgs } from '../../utils';
-import { getRankingProtected } from '@badman/utils';
+} from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
+import { User } from "@badman/backend-authorization";
+import { ListArgs } from "../../utils";
+import { getRankingProtected } from "@badman/utils";
 
 @Resolver(() => RankingPlace)
 export class RankingPlaceResolver {
@@ -19,7 +19,7 @@ export class RankingPlaceResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => RankingPlace)
-  async rankingPlace(@Args('id', { type: () => ID }) id: string): Promise<RankingPlace> {
+  async rankingPlace(@Args("id", { type: () => ID }) id: string): Promise<RankingPlace> {
     let place = await RankingPlace.findByPk(id);
 
     if (!place) {
@@ -29,7 +29,7 @@ export class RankingPlaceResolver {
     if (!place.single || !place.double || !place.mix) {
       // if one of the levels is not set, get the default from the system
       const system = await RankingSystem.findByPk(place.systemId, {
-        attributes: ['amountOfLevels'],
+        attributes: ["amountOfLevels"],
       });
       if (!system) {
         throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
@@ -50,7 +50,7 @@ export class RankingPlaceResolver {
       if (!place.single || !place.double || !place.mix) {
         // if one of the levels is not set, get the default from the system
         const system = await RankingSystem.findByPk(place.systemId, {
-          attributes: ['amountOfLevels', 'maxDiffLevels'],
+          attributes: ["amountOfLevels", "maxDiffLevels"],
         });
 
         if (!system) {
@@ -77,13 +77,13 @@ export class RankingPlaceResolver {
   @Mutation(() => RankingPlace)
   async updateRankingPlace(
     @User() user: Player,
-    @Args('data')
-    updateRankingPlaceData: RankingPlaceUpdateInput,
+    @Args("data")
+    updateRankingPlaceData: RankingPlaceUpdateInput
   ) {
     if (
       !(await user.hasAnyPermission([
         `${updateRankingPlaceData.playerId}_edit:player`,
-        'edit-any:player',
+        "edit-any:player",
       ]))
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
@@ -119,12 +119,12 @@ export class RankingPlaceResolver {
   @Mutation(() => RankingPlace)
   async newRankingPlace(
     @User() user: Player,
-    @Args('data') newRankingPlaceData: RankingPlaceNewInput,
+    @Args("data") newRankingPlaceData: RankingPlaceNewInput
   ) {
     if (
       !(await user.hasAnyPermission([
         `${newRankingPlaceData.playerId}_edit:player`,
-        'edit-any:player',
+        "edit-any:player",
       ]))
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
@@ -155,7 +155,7 @@ export class RankingPlaceResolver {
     }
   }
   @Mutation(() => Boolean)
-  async removeRankingPlace(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
+  async removeRankingPlace(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
     const rankingPlace = await RankingPlace.findByPk(id);
 
     if (!rankingPlace) {
@@ -163,7 +163,7 @@ export class RankingPlaceResolver {
     }
 
     if (
-      !(await user.hasAnyPermission([`${rankingPlace.playerId}_edit:player`, 'edit-any:player']))
+      !(await user.hasAnyPermission([`${rankingPlace.playerId}_edit:player`, "edit-any:player"]))
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }

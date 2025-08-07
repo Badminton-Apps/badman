@@ -1,12 +1,12 @@
-import { EventTournament, SubEventTournament } from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { VisualService } from '@badman/backend-visual';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
-import moment, { Moment } from 'moment';
-import { Transaction } from 'sequelize';
-import { EventEntry } from '@badman/backend-database';
+import { EventTournament, SubEventTournament } from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { VisualService } from "@badman/backend-visual";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
+import moment, { Moment } from "moment";
+import { Transaction } from "sequelize";
+import { EventEntry } from "@badman/backend-database";
 
 @Processor({
   name: SyncQueue,
@@ -17,7 +17,7 @@ export class EventTournamentProcessor {
   constructor(
     private readonly _transactionManager: TransactionManager,
     private readonly _visualService: VisualService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Process(Sync.ProcessSyncTournamentEvent)
@@ -43,7 +43,7 @@ export class EventTournamentProcessor {
         updateMatches?: boolean;
         updateStanding?: boolean;
       };
-    }>,
+    }>
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
 
@@ -108,8 +108,8 @@ export class EventTournamentProcessor {
     const dates: Moment[] = [];
     for (
       let date = moment(visualTournament.StartDate);
-      date.diff(visualTournament.EndDate, 'days') <= 0;
-      date.add(1, 'days')
+      date.diff(visualTournament.EndDate, "days") <= 0;
+      date.add(1, "days")
     ) {
       dates.push(date.clone());
     }
@@ -123,7 +123,7 @@ export class EventTournamentProcessor {
     event.name = visualTournament.Name;
     event.firstDay = visualTournament.StartDate;
     event.visualCode = visualTournament.Code;
-    event.dates = dates.map((r) => r.toISOString()).join(',');
+    event.dates = dates.map((r) => r.toISOString()).join(",");
     event.tournamentNumber = visualTournament.Number;
 
     event.lastSync = new Date();
@@ -137,7 +137,7 @@ export class EventTournamentProcessor {
         event,
         job.data.transactionId,
         options,
-        existing.subEvents,
+        existing.subEvents
       );
     }
   }
@@ -160,7 +160,7 @@ export class EventTournamentProcessor {
       id: string;
       visualCode: string;
       draws: { id: string; visualCode: string; games: { id: string; visualCode: string }[] }[];
-    }[],
+    }[]
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
     const subEvents = await this._visualService.getSubEvents(eventCode, true);
@@ -213,7 +213,7 @@ export class EventTournamentProcessor {
     const eventEntries = await EventEntry.findAll({
       where: {
         subEventId: dbSubEvent.id,
-        entryType: 'tournament',
+        entryType: "tournament",
       },
       transaction,
     });

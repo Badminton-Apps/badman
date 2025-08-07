@@ -9,9 +9,9 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -32,19 +32,19 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-} from 'sequelize';
-import { Slugify } from '../../../types';
-import { Role } from '../../security';
-import { Location } from '../location.model';
-import { LocationEventTournamentMembership } from './location-event-membership.model';
-import { SubEventTournament } from './sub-event-tournament.model';
-import { Relation } from '../../../wrapper';
+} from "sequelize";
+import { Slugify } from "../../../types";
+import { Role } from "../../security";
+import { Location } from "../location.model";
+import { LocationEventTournamentMembership } from "./location-event-membership.model";
+import { SubEventTournament } from "./sub-event-tournament.model";
+import { Relation } from "../../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 })
-@ObjectType({ description: 'A EventTournament' })
+@ObjectType({ description: "A EventTournament" })
 export class EventTournament extends Model {
   constructor(values?: Partial<EventTournament>, options?: BuildOptions) {
     super(values, options);
@@ -67,12 +67,12 @@ export class EventTournament extends Model {
   @Column(DataType.STRING)
   tournamentNumber?: string;
 
-  @Unique('EventTournaments_unique_constraint')
+  @Unique("EventTournaments_unique_constraint")
   @Field(() => String)
   @Column(DataType.STRING)
   declare name: string;
 
-  @Unique('EventTournaments_unique_constraint')
+  @Unique("EventTournaments_unique_constraint")
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   firstDay?: Date;
@@ -97,12 +97,12 @@ export class EventTournament extends Model {
   locations?: Relation<Location[]>;
 
   @HasMany(() => SubEventTournament, {
-    foreignKey: 'eventId',
-    onDelete: 'CASCADE',
+    foreignKey: "eventId",
+    onDelete: "CASCADE",
   })
   subEventTournaments?: Relation<SubEventTournament[]>;
 
-  @Unique('EventTournaments_unique_constraint')
+  @Unique("EventTournaments_unique_constraint")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   visualCode?: string;
@@ -125,10 +125,10 @@ export class EventTournament extends Model {
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'tournament',
+      linkType: "tournament",
     },
   })
   roles?: Relation<Role[]>;
@@ -171,12 +171,12 @@ export class EventTournament extends Model {
 
 @InputType()
 export class EventTournamentUpdateInput extends PartialType(
-  OmitType(EventTournament, ['createdAt', 'updatedAt', 'roles'] as const),
-  InputType,
+  OmitType(EventTournament, ["createdAt", "updatedAt", "roles"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class EventTournamentNewInput extends PartialType(
-  OmitType(EventTournamentUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(EventTournamentUpdateInput, ["id"] as const),
+  InputType
 ) {}

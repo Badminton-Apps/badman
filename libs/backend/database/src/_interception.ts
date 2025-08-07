@@ -1,4 +1,4 @@
-import { Field, IntersectionType, ObjectType, OmitType } from '@nestjs/graphql';
+import { Field, IntersectionType, ObjectType, OmitType } from "@nestjs/graphql";
 import {
   Club,
   ClubPlayerMembership,
@@ -7,19 +7,19 @@ import {
   RankingPlace,
   Team,
   TeamPlayerMembership,
-} from './models';
+} from "./models";
 
 @ObjectType()
 export class GamePlayerMembershipType extends IntersectionType(
-  OmitType(GamePlayerMembership, ['id'] as const),
-  Player,
+  OmitType(GamePlayerMembership, ["id"] as const),
+  Player
 ) {
   // TODO: move this to rankingplaces?
   @Field(() => RankingPlace, { nullable: true })
   rankingPlace?: RankingPlace;
 }
 
-@ObjectType('ClubWithPlayers')
+@ObjectType("ClubWithPlayers")
 export class ClubWithPlayerMembershipType extends Club {
   @Field(() => ClubPlayerMembership, { nullable: true })
   clubMembership?: ClubPlayerMembership;
@@ -31,19 +31,17 @@ export class ClubWithPlayerMembershipType extends Club {
 //   teamMembership?: ClubTeamMembership;
 // }
 
-
-@ObjectType('PlayerClub')
+@ObjectType("PlayerClub")
 export class PlayerWithClubMembershipType extends Player {
   @Field(() => ClubPlayerMembership, { nullable: true })
   clubMembership?: ClubPlayerMembership;
 }
 
-@ObjectType('PlayerTeam')
+@ObjectType("PlayerTeam")
 export class PlayerWithTeamMembershipType extends Player {
   @Field(() => TeamPlayerMembership, { nullable: true })
   teamMembership?: TeamPlayerMembership;
 }
-
 
 // @ObjectType('PlayerWithGames')
 // export class PlayerWithGamesMembershipType extends Player {
@@ -51,10 +49,8 @@ export class PlayerWithTeamMembershipType extends Player {
 //   games?: GamePlayerMembershipType[];
 // }
 
-
-@ObjectType('TeamPlayers')
+@ObjectType("TeamPlayers")
 export class TeamWithPlayerMembershipType extends Team {
   @Field(() => TeamPlayerMembership, { nullable: true })
   teamMembership?: TeamPlayerMembership;
 }
-

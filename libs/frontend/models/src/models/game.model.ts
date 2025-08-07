@@ -1,7 +1,7 @@
-import { GameStatus, GameType } from '@badman/utils';
-import { DrawTournament, EncounterCompetition } from './events';
-import { GamePlayer } from './player.model';
-import { RankingPoint } from './ranking-point.model';
+import { GameStatus, GameType } from "@badman/utils";
+import { DrawTournament, EncounterCompetition } from "./events";
+import { GamePlayer } from "./player.model";
+import { RankingPoint } from "./ranking-point.model";
 
 export class Game {
   id?: string;
@@ -31,7 +31,7 @@ export class Game {
   tournament?: DrawTournament;
 
   constructor({ ...args }: Partial<Game>) {
-    const parsedType = (args?.gameType as unknown as 'D' | 'MX' | 'S') ?? null;
+    const parsedType = (args?.gameType as unknown as "D" | "MX" | "S") ?? null;
     const parsedStatus = (args?.status as unknown as GameStatus) ?? GameStatus.NORMAL;
 
     this.id = args?.id;

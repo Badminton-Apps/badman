@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,41 +6,41 @@ import {
   OnInit,
   computed,
   inject,
-} from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
-import { ClaimService } from '@badman/frontend-auth';
-import { HasClaimComponent } from '@badman/frontend-components';
+} from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxChange, MatCheckboxModule } from "@angular/material/checkbox";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { RouterModule } from "@angular/router";
+import { ClaimService } from "@badman/frontend-auth";
+import { HasClaimComponent } from "@badman/frontend-components";
 import {
   EncounterChangeDate,
   EncounterCompetition,
   EventCompetition,
   Location,
   Team,
-} from '@badman/frontend-models';
-import { getSeason, getSeasonPeriod, sortTeams } from '@badman/utils';
-import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment-timezone';
-import { lastValueFrom } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { randomLightColor } from 'seed-to-color';
+} from "@badman/frontend-models";
+import { getSeason, getSeasonPeriod, sortTeams } from "@badman/utils";
+import { MtxDatetimepickerModule } from "@ng-matero/extensions/datetimepicker";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment-timezone";
+import { lastValueFrom } from "rxjs";
+import { map } from "rxjs/operators";
+import { randomLightColor } from "seed-to-color";
 
 @Component({
-  selector: 'badman-calendar',
+  selector: "badman-calendar",
   imports: [
     CommonModule,
     RouterModule,
@@ -61,8 +61,8 @@ import { randomLightColor } from 'seed-to-color';
     HasClaimComponent,
     MtxDatetimepickerModule,
   ],
-  templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss'],
+  templateUrl: "./calendar.component.html",
+  styleUrls: ["./calendar.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
@@ -72,7 +72,7 @@ export class CalendarComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly claimService = inject(ClaimService);
 
-  isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
+  isAdmin = computed(() => this.claimService.hasAnyClaims(["change-any:encounter"]));
 
   public data = inject<{
     homeClubId: string;
@@ -96,7 +96,7 @@ export class CalendarComponent implements OnInit {
   public canGoBack = true;
   public canGoForward = true;
 
-  public gridTemplateColumns = '';
+  public gridTemplateColumns = "";
 
   public encounters: Map<string, EncounterCompetition[]> = new Map();
   public availabilities: Map<
@@ -159,7 +159,7 @@ export class CalendarComponent implements OnInit {
     // set date to closes 15 min
     const manualDate = moment(this.data?.date);
     if (manualDate.isValid()) {
-      manualDate.set('minute', Math.ceil(manualDate.get('minute') / 15) * 15);
+      manualDate.set("minute", Math.ceil(manualDate.get("minute") / 15) * 15);
     }
 
     this.manualDateControl = new FormControl(manualDate.toDate());
@@ -169,7 +169,7 @@ export class CalendarComponent implements OnInit {
     if (!this.firstDayOfMonth.isValid()) {
       this.firstDayOfMonth = moment();
     }
-    this.firstDayOfMonth.startOf('month');
+    this.firstDayOfMonth.startOf("month");
     this.season = getSeason(this.firstDayOfMonth);
     this.monthNames = moment.months();
     const weekdays = moment.weekdays();
@@ -199,7 +199,7 @@ export class CalendarComponent implements OnInit {
     }
 
     // filter out dates that are in the exception list
-    const format = moment(d).format('YYYY-MM-DD');
+    const format = moment(d).format("YYYY-MM-DD");
     return !this.exceptions.has(format);
   };
 
@@ -208,8 +208,8 @@ export class CalendarComponent implements OnInit {
     this.homeTeams = await this._getTeams(this.data.homeClubId);
     this.awayTeams = await this._getTeams(this.data.awayClubId);
 
-    this.homeTeamsIds = this.homeTeams.map((t) => t.id ?? '');
-    this.awayTeamsIds = this.awayTeams.map((t) => t.id ?? '');
+    this.homeTeamsIds = this.homeTeams.map((t) => t.id ?? "");
+    this.awayTeamsIds = this.awayTeams.map((t) => t.id ?? "");
 
     this._setColors(this.homeTeams);
     this._showVisible([...this.homeTeams, ...this.awayTeams]);
@@ -224,9 +224,9 @@ export class CalendarComponent implements OnInit {
     const start = this.firstDayOfMonth.clone();
     // Go back untill we get to the first day of the week
     while (start.day() != 1) {
-      start.subtract(1, 'day');
+      start.subtract(1, "day");
     }
-    const end = this.firstDayOfMonth.clone().add(weeks, 'weeks');
+    const end = this.firstDayOfMonth.clone().add(weeks, "weeks");
 
     await this._loadEvent();
     this._loadAvailiblilyBetween(start, end);
@@ -251,7 +251,7 @@ export class CalendarComponent implements OnInit {
 
     // Go back untill we get to the first day of the week
     while (day.day() != 1) {
-      day.subtract(1, 'day');
+      day.subtract(1, "day");
     }
 
     for (let i = 0; i < weeks * 7; i++) {
@@ -260,7 +260,7 @@ export class CalendarComponent implements OnInit {
         info: this._getDayInfo(day.clone().toDate()),
       });
 
-      day.add(1, 'days');
+      day.add(1, "days");
     }
 
     this.days = days;
@@ -281,13 +281,13 @@ export class CalendarComponent implements OnInit {
 
       for (const availibility of availabilities) {
         for (const aDay of availibility.days) {
-          for (let day = start.clone(); day.isBefore(end); day.add(1, 'day')) {
+          for (let day = start.clone(); day.isBefore(end); day.add(1, "day")) {
             const wDay = moment(day);
-            const format = wDay.format('YYYY-MM-DD');
+            const format = wDay.format("YYYY-MM-DD");
 
-            if (wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day) {
+            if (wDay.locale("en").format("dddd").toLocaleLowerCase() === aDay.day) {
               if (aDay.from && aDay.to) {
-                if (!wDay.isBetween(aDay.from, aDay.to, 'day', '[]')) {
+                if (!wDay.isBetween(aDay.from, aDay.to, "day", "[]")) {
                   continue;
                 }
               }
@@ -297,8 +297,8 @@ export class CalendarComponent implements OnInit {
               }
 
               this.availabilities.get(format)?.push({
-                locationId: location.id ?? '',
-                time: aDay.startTime ?? '',
+                locationId: location.id ?? "",
+                time: aDay.startTime ?? "",
                 courts: aDay.courts ?? 0,
               });
             }
@@ -307,13 +307,13 @@ export class CalendarComponent implements OnInit {
               const start = moment(exception.start);
               const end = moment(exception.end);
 
-              if (wDay.isBetween(start, end, 'day', '[]')) {
+              if (wDay.isBetween(start, end, "day", "[]")) {
                 if (!this.exceptions.has(format)) {
                   this.exceptions.set(format, []);
                 }
 
                 this.exceptions.get(format)?.push({
-                  locationId: location.id ?? '',
+                  locationId: location.id ?? "",
                   courts: exception.courts ?? 0,
                 });
               }
@@ -330,15 +330,15 @@ export class CalendarComponent implements OnInit {
 
         // for each day in the exception
         // push the exception to the exceptions map
-        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, 'day')) {
-          const format = day.format('YYYY-MM-DD');
+        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, "day")) {
+          const format = day.format("YYYY-MM-DD");
 
           // clear out the exceptions
           this.exceptions.set(format, []);
 
           for (const location of this.locations) {
             this.exceptions.get(format)?.push({
-              locationId: location.id ?? '',
+              locationId: location.id ?? "",
               courts: exception.courts ?? 0,
             });
           }
@@ -357,7 +357,7 @@ export class CalendarComponent implements OnInit {
       return false;
     }
 
-    const format = moment(d).format('YYYY-MM-DD');
+    const format = moment(d).format("YYYY-MM-DD");
     if (this.exceptions.has(format)) {
       return false;
     }
@@ -380,15 +380,15 @@ export class CalendarComponent implements OnInit {
 
         // for each day in the exception
         // push the exception to the exceptions map
-        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, 'day')) {
-          const format = day.format('YYYY-MM-DD');
+        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, "day")) {
+          const format = day.format("YYYY-MM-DD");
 
           if (!this.dayEvents.has(format)) {
             this.dayEvents.set(format, []);
           }
 
           this.dayEvents.get(format)?.push({
-            name: event.name ?? '',
+            name: event.name ?? "",
             allowCompetition: event.allowCompetition ?? false,
           });
         }
@@ -402,18 +402,18 @@ export class CalendarComponent implements OnInit {
         acc[day.toLocaleLowerCase()] = false;
         return acc;
       },
-      {} as { [key: string]: boolean },
+      {} as { [key: string]: boolean }
     );
 
     for (const day of this.days) {
-      const weekdayName = moment(day.date).format('dddd').toLocaleLowerCase();
+      const weekdayName = moment(day.date).format("dddd").toLocaleLowerCase();
 
       // if we already have activity on this day, skip
       if (hasActivityOnDay[weekdayName]) {
         continue;
       }
 
-      const date = moment(day.date).format('YYYY-MM-DD');
+      const date = moment(day.date).format("YYYY-MM-DD");
       const enc = this.encounters.get(date);
       const locations = day.info.locations;
 
@@ -437,17 +437,17 @@ export class CalendarComponent implements OnInit {
       }
     }
 
-    this.gridTemplateColumns = gridTemplate.join(' ');
+    this.gridTemplateColumns = gridTemplate.join(" ");
   }
 
   private _getWeeksInView() {
     const day = this.firstDayOfMonth.clone();
 
     // Get the last day of the month
-    const lastday = this.firstDayOfMonth.clone().endOf('month');
+    const lastday = this.firstDayOfMonth.clone().endOf("month");
 
     // Go forward untill we get to the last day of the week
-    const daysBetween = lastday.diff(day, 'days');
+    const daysBetween = lastday.diff(day, "days");
 
     // Calculate amount of weeks we need to display
     const weeks = Math.ceil(daysBetween / 7);
@@ -474,7 +474,7 @@ export class CalendarComponent implements OnInit {
             rows: Partial<EncounterCompetition>[];
           };
         }>({
-          fetchPolicy: 'cache-first',
+          fetchPolicy: "cache-first",
           query: gql`
             query GetHomeTeamEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
@@ -527,8 +527,8 @@ export class CalendarComponent implements OnInit {
                   return new EncounterCompetition(e);
                 }) ?? [],
             };
-          }),
-        ),
+          })
+        )
     );
     const awayEncounters = await lastValueFrom(
       this.apollo
@@ -538,7 +538,7 @@ export class CalendarComponent implements OnInit {
             rows: Partial<EncounterCompetition>[];
           };
         }>({
-          fetchPolicy: 'cache-first',
+          fetchPolicy: "cache-first",
           query: gql`
             query GetAwayTeamEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
@@ -594,12 +594,12 @@ export class CalendarComponent implements OnInit {
                   return new EncounterCompetition(e);
                 }) ?? [],
             };
-          }),
-        ),
+          })
+        )
     );
 
     for (const encounter of [...homeEncounters.encounters, ...awayEncounters.encounters]) {
-      const date = moment(encounter.date).format('YYYY-MM-DD');
+      const date = moment(encounter.date).format("YYYY-MM-DD");
 
       if (!this.encounters.has(date)) {
         this.encounters.set(date, []);
@@ -609,7 +609,7 @@ export class CalendarComponent implements OnInit {
 
       if (!encounter.encounterChange?.accepted) {
         for (const request of encounter.encounterChange?.dates ?? []) {
-          const date = moment(request.date).format('YYYY-MM-DD');
+          const date = moment(request.date).format("YYYY-MM-DD");
 
           if (!this.changeRequests.has(date)) {
             this.changeRequests.set(date, []);
@@ -628,7 +628,7 @@ export class CalendarComponent implements OnInit {
         .query<{
           team: Partial<Team>;
         }>({
-          fetchPolicy: 'cache-first',
+          fetchPolicy: "cache-first",
           query: gql`
             query GetHomeTeamsEvent($id: ID!) {
               team(id: $id) {
@@ -660,7 +660,7 @@ export class CalendarComponent implements OnInit {
             id: this.data.homeTeamId,
           },
         })
-        .pipe(map((x) => new Team(x.data.team)?.entry?.subEventCompetition?.eventCompetition)),
+        .pipe(map((x) => new Team(x.data.team)?.entry?.subEventCompetition?.eventCompetition))
     );
   }
 
@@ -668,7 +668,7 @@ export class CalendarComponent implements OnInit {
     return lastValueFrom(
       this.apollo
         .query<{ club: { teams: Team[] } }>({
-          fetchPolicy: 'cache-first',
+          fetchPolicy: "cache-first",
           query: gql`
             query GetClubTeams($clubId: ID!, $season: Int!) {
               club(id: $clubId) {
@@ -692,8 +692,8 @@ export class CalendarComponent implements OnInit {
           map((result) => {
             return result.data?.club.teams?.map((team) => new Team(team));
           }),
-          map((teams) => teams.slice().sort(sortTeams)),
-        ),
+          map((teams) => teams.slice().sort(sortTeams))
+        )
     );
   }
 
@@ -701,7 +701,7 @@ export class CalendarComponent implements OnInit {
     return await lastValueFrom(
       this.apollo
         .query<{ club: { locations: Location[] } }>({
-          fetchPolicy: 'cache-first',
+          fetchPolicy: "cache-first",
           query: gql`
             query GetClubLocation($clubId: ID!, $season: Int!) {
               club(id: $clubId) {
@@ -740,21 +740,21 @@ export class CalendarComponent implements OnInit {
             return result.data?.club?.locations?.map((location) => {
               return new Location(location);
             });
-          }),
-        ),
+          })
+        )
     );
   }
 
   private _setColors(teams: Team[]) {
     for (const team of teams) {
-      this.teamColors.set(team?.id ?? '', `#${randomLightColor(team?.name ?? '')}`);
+      this.teamColors.set(team?.id ?? "", `#${randomLightColor(team?.name ?? "")}`);
     }
   }
 
   private _showVisible(teams: Team[]) {
     const homeTeamsStorage = localStorage
       .getItem(`visible_teams_${this.data.homeClubId}`)
-      ?.split(',');
+      ?.split(",");
 
     const homeTeams = teams
       ?.filter((team) => {
@@ -766,7 +766,7 @@ export class CalendarComponent implements OnInit {
       })
       ?.map((team) => {
         if (!team.id) {
-          throw new Error('Team has no id');
+          throw new Error("Team has no id");
         }
 
         return team.id;
@@ -774,7 +774,7 @@ export class CalendarComponent implements OnInit {
 
     const awayTeamsStorage = localStorage
       .getItem(`visible_teams_${this.data.awayClubId}`)
-      ?.split(',');
+      ?.split(",");
     const awayTeams = teams
       ?.filter((team) => {
         if (awayTeamsStorage && awayTeamsStorage.length > 0 && team.id) {
@@ -786,7 +786,7 @@ export class CalendarComponent implements OnInit {
       })
       ?.map((team) => {
         if (!team.id) {
-          throw new Error('Team has no id');
+          throw new Error("Team has no id");
         }
 
         return team.id;
@@ -799,9 +799,9 @@ export class CalendarComponent implements OnInit {
   }
 
   public increaseMonth() {
-    this.firstDayOfMonth.add(1, 'month');
+    this.firstDayOfMonth.add(1, "month");
 
-    if (this.firstDayOfMonth.isSameOrAfter(this.maxDate, 'month')) {
+    if (this.firstDayOfMonth.isSameOrAfter(this.maxDate, "month")) {
       this.canGoForward = false;
     }
     this.canGoBack = true;
@@ -811,9 +811,9 @@ export class CalendarComponent implements OnInit {
   }
 
   public decreaseMonth() {
-    this.firstDayOfMonth.subtract(1, 'month');
+    this.firstDayOfMonth.subtract(1, "month");
 
-    if (this.firstDayOfMonth.isSameOrBefore(this.minDate, 'month')) {
+    if (this.firstDayOfMonth.isSameOrBefore(this.minDate, "month")) {
       this.canGoBack = false;
     }
     this.canGoForward = true;
@@ -823,7 +823,7 @@ export class CalendarComponent implements OnInit {
   }
 
   public setCurrentMonth() {
-    this.firstDayOfMonth.set('month', moment().get('month'));
+    this.firstDayOfMonth.set("month", moment().get("month"));
 
     this._loadMonth();
   }
@@ -833,53 +833,53 @@ export class CalendarComponent implements OnInit {
 
     if ((space ?? 0) <= 0) {
       this.snack.open(
-        this.translate.instant('all.competition.change-encounter.calendar.no-space'),
-        'Ok',
+        this.translate.instant("all.competition.change-encounter.calendar.no-space"),
+        "Ok",
         {
           // duration: 4000,
-          panelClass: 'error',
-        },
+          panelClass: "error",
+        }
       );
       return;
     }
 
     // check if it the date is not a exception
-    const format = date.format('YYYY-MM-DD');
+    const format = date.format("YYYY-MM-DD");
     const dayEvent = this.dayEvents.get(format);
     if (dayEvent?.some((e) => !e.allowCompetition) ?? false) {
       this.snack.open(
-        this.translate.instant('all.competition.change-encounter.calendar.no-availibility'),
-        'Ok',
+        this.translate.instant("all.competition.change-encounter.calendar.no-availibility"),
+        "Ok",
         {
           // duration: 4000,
-          panelClass: 'error',
-        },
+          panelClass: "error",
+        }
       );
       return;
     }
 
     // check if it is out of season
     const seasonP = getSeasonPeriod(this.season);
-    if (!moment(date).isBetween(seasonP[0], seasonP[1], 'day', '[]')) {
+    if (!moment(date).isBetween(seasonP[0], seasonP[1], "day", "[]")) {
       this.snack.open(
-        this.translate.instant('all.competition.change-encounter.calendar.out-of-season'),
-        'Ok',
+        this.translate.instant("all.competition.change-encounter.calendar.out-of-season"),
+        "Ok",
         {
           // duration: 4000,
-          panelClass: 'error',
-        },
+          panelClass: "error",
+        }
       );
       return;
     }
 
     if (time) {
       // splite time to hour and minute
-      const timeSplit = time?.split(':');
-      const hour = timeSplit?.[0]?.trim() ?? '00';
-      const minute = timeSplit?.[1]?.trim() ?? '00';
+      const timeSplit = time?.split(":");
+      const hour = timeSplit?.[0]?.trim() ?? "00";
+      const minute = timeSplit?.[1]?.trim() ?? "00";
 
-      date.set('hour', +hour);
-      date.set('minute', +minute);
+      date.set("hour", +hour);
+      date.set("minute", +minute);
     }
 
     this.dialogRef.close({
@@ -908,7 +908,7 @@ export class CalendarComponent implements OnInit {
     };
 
     const day = moment(date);
-    const format = day.format('YYYY-MM-DD');
+    const format = day.format("YYYY-MM-DD");
 
     const encounters = this.encounters.get(format);
     const changeRequests = this.changeRequests.get(format);
@@ -939,7 +939,7 @@ export class CalendarComponent implements OnInit {
       for (const exception of exceptions ?? []) {
         // find availibility for location
         const availibilities = dayInfo.locations.filter(
-          (l) => l.locationId === exception.locationId,
+          (l) => l.locationId === exception.locationId
         );
 
         for (const availibility of availibilities) {
@@ -959,11 +959,11 @@ export class CalendarComponent implements OnInit {
           infoIndex = 0;
         } else {
           // convert the date to the brussels time zone
-          const brusselsDate = moment(encounter.date).tz('Europe/Brussels');
-          const time = brusselsDate.format('HH:mm');
+          const brusselsDate = moment(encounter.date).tz("Europe/Brussels");
+          const time = brusselsDate.format("HH:mm");
 
           infoIndex = dayInfo.locations.findIndex(
-            (l) => l.locationId === encounter.locationId && l.time === time,
+            (l) => l.locationId === encounter.locationId && l.time === time
           );
         }
 
@@ -988,8 +988,8 @@ export class CalendarComponent implements OnInit {
           name: event.name,
           color: `#${randomLightColor(event.name)}`,
           tooltip: event.allowCompetition
-            ? ''
-            : 'all.competition.change-encounter.calendar.no-competition',
+            ? ""
+            : "all.competition.change-encounter.calendar.no-competition",
         });
 
         if (!event.allowCompetition) {
@@ -1002,7 +1002,7 @@ export class CalendarComponent implements OnInit {
 
     for (const request of changeRequests ?? []) {
       const infoIndex = dayInfo.locations.findIndex(
-        (l) => l.locationId === request?.request?.locationId,
+        (l) => l.locationId === request?.request?.locationId
       );
 
       if (infoIndex >= 0) {
@@ -1015,9 +1015,9 @@ export class CalendarComponent implements OnInit {
       dayInfo.other = encounters.filter(
         (e) =>
           // exclude all encouters where it is the hometeam
-          !this.homeTeamsIds.includes(e.homeTeamId ?? '') &&
+          !this.homeTeamsIds.includes(e.homeTeamId ?? "") &&
           // others should be visible
-          (this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId)),
+          (this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId))
       );
     }
 
@@ -1026,8 +1026,8 @@ export class CalendarComponent implements OnInit {
 
   private _isVisible(teamId?: string) {
     return (
-      this.visibleTeams?.[this.data.homeClubId]?.includes(teamId ?? '') ||
-      this.visibleTeams?.[this.data.awayClubId]?.includes(teamId ?? '')
+      this.visibleTeams?.[this.data.homeClubId]?.includes(teamId ?? "") ||
+      this.visibleTeams?.[this.data.awayClubId]?.includes(teamId ?? "")
     );
   }
 
@@ -1045,33 +1045,33 @@ export class CalendarComponent implements OnInit {
       this.visibleTeams?.[clubId].splice(this.visibleTeams?.[clubId].indexOf(teamId), 1);
     }
 
-    localStorage.setItem(`visible_teams_${clubId}`, this.visibleTeams?.[clubId]?.join(',') ?? '');
+    localStorage.setItem(`visible_teams_${clubId}`, this.visibleTeams?.[clubId]?.join(",") ?? "");
 
     this._loadMonth();
   }
 
   public showAllTeams(teams: Team[], clubId: string) {
     if (!this.visibleTeams?.[clubId]) {
-      throw new Error('Club not found');
+      throw new Error("Club not found");
     }
 
     this.visibleTeams[clubId] = teams.map((t) => {
       if (!t.id) {
-        throw new Error('Team has no id');
+        throw new Error("Team has no id");
       }
       return t.id;
     });
-    localStorage.setItem(`visible_teams_${clubId}`, this.visibleTeams?.[clubId]?.join(','));
+    localStorage.setItem(`visible_teams_${clubId}`, this.visibleTeams?.[clubId]?.join(","));
 
     this._loadMonth();
   }
 
   public hideAllTeams(clubId: string) {
     if (!this.visibleTeams?.[clubId]) {
-      throw new Error('Club not found');
+      throw new Error("Club not found");
     }
     this.visibleTeams[clubId] = [];
-    localStorage.setItem(`visible_teams_${clubId}`, '');
+    localStorage.setItem(`visible_teams_${clubId}`, "");
     this._loadMonth();
   }
 }

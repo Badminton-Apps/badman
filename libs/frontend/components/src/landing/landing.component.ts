@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,32 +9,32 @@ import {
   effect,
   inject,
   signal,
-} from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { AuthenticateService } from '@badman/frontend-auth';
-import { VERSION_INFO } from '@badman/frontend-html-injects';
-import { Team } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { transferState } from '@badman/frontend-utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { map } from 'rxjs/operators';
-import { UpcomingGamesComponent } from '../games';
-import { RankingTableComponent } from '../ranking-table';
-import { BetaComponent } from './components';
+} from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
+import { AuthenticateService } from "@badman/frontend-auth";
+import { VERSION_INFO } from "@badman/frontend-html-injects";
+import { Team } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { transferState } from "@badman/frontend-utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { map } from "rxjs/operators";
+import { UpcomingGamesComponent } from "../games";
+import { RankingTableComponent } from "../ranking-table";
+import { BetaComponent } from "./components";
 
 @Component({
-    selector: 'badman-landing',
-    imports: [
+  selector: "badman-landing",
+  imports: [
     BetaComponent,
     TranslatePipe,
     MatIconModule,
     UpcomingGamesComponent,
-    RankingTableComponent
-],
-    templateUrl: './landing.component.html',
-    styleUrls: ['./landing.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    RankingTableComponent,
+  ],
+  templateUrl: "./landing.component.html",
+  styleUrls: ["./landing.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent implements OnInit {
   // private
@@ -63,19 +62,19 @@ export class LandingComponent implements OnInit {
           this._loadTeamsForPlayer();
         }
 
-        this.translate.get(['all.landing.title']).subscribe((translations) => {
-          const title = translations['all.landing.title'];
+        this.translate.get(["all.landing.title"]).subscribe((translations) => {
+          const title = translations["all.landing.title"];
           this.seoService.update({
             title,
             description: title,
-            type: 'website',
-            keywords: ['badman', 'badminton'],
+            type: "website",
+            keywords: ["badman", "badminton"],
           });
         });
       },
       {
         injector: this.injector,
-      },
+      }
     );
   }
 
@@ -103,7 +102,7 @@ export class LandingComponent implements OnInit {
       })
       .pipe(
         map((result) => result.data.player.teams?.map((t) => new Team(t))),
-        transferState(`ClubsAndTeams-${this.user()?.id}`, this.stateTransfer, this.platformId),
+        transferState(`ClubsAndTeams-${this.user()?.id}`, this.stateTransfer, this.platformId)
       )
       .subscribe((teams) => {
         if (!teams) {

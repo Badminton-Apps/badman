@@ -1,6 +1,6 @@
-import { DrawTournament } from '../models';
-import { GameBuilder } from './GameBuilder';
-import { SubEventTournamentBuilder } from './eventTournamentSubEventBuilder';
+import { DrawTournament } from "../models";
+import { GameBuilder } from "./GameBuilder";
+import { SubEventTournamentBuilder } from "./eventTournamentSubEventBuilder";
 
 export class DrawTournamentBuilder {
   private build = false;

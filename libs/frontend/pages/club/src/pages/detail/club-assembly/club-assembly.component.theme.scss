@@ -1,13 +1,12 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:color';
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:color";
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-club-assembly {
-    
-    $isDark: map.get($theme, 'is-dark');
+    $isDark: map.get($theme, "is-dark");
 
     $danger-palette: map.get($theme, danger);
     $success-palette: map.get($theme, success);
@@ -29,9 +28,9 @@
       }
       .na {
         @if ($isDark) {
-          color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: -40%);
+          color: color.scale(mat.get-theme-color($theme, foreground, "base"), $lightness: -40%);
         } @else {
-          color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: 60%);
+          color: color.scale(mat.get-theme-color($theme, foreground, "base"), $lightness: 60%);
         }
       }
     }
@@ -40,8 +39,6 @@
 
 @mixin typography($theme) {
   badman-club-assembly {
-    
-
     .caption {
       font: mat.get-theme-typography($theme, caption, font);
     }

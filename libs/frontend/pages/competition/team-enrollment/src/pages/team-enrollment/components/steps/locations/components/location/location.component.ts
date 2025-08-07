@@ -1,30 +1,29 @@
-
-import { Component, OnInit, inject, output } from '@angular/core';
+import { Component, OnInit, inject, output } from "@angular/core";
 import {
   FormArray,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { getNextSeason } from '@badman/utils';
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { getNextSeason } from "@badman/utils";
 
-import { input } from '@angular/core';
-import { DEVICE } from '@badman/frontend-utils';
-import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
-import { Subject } from 'rxjs';
+import { input } from "@angular/core";
+import { DEVICE } from "@badman/frontend-utils";
+import { MtxDatetimepickerModule } from "@ng-matero/extensions/datetimepicker";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MomentModule } from "ngx-moment";
+import { Subject } from "rxjs";
 
 export type LocationavDayType = FormGroup<{
   day: FormControl<string | undefined>;
@@ -60,8 +59,8 @@ export type LocationForm = FormGroup<{
 }>;
 
 @Component({
-    selector: 'badman-location',
-    imports: [
+  selector: "badman-location",
+  imports: [
     TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
@@ -76,10 +75,10 @@ export type LocationForm = FormGroup<{
     MatDividerModule,
     MatTooltipModule,
     MatDatepickerModule,
-    MtxDatetimepickerModule
-],
-    templateUrl: './location.component.html',
-    styleUrls: ['./location.component.scss']
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: "./location.component.html",
+  styleUrls: ["./location.component.scss"],
 })
 export class LocationComponent implements OnInit {
   destroy$ = new Subject<void>();
@@ -91,7 +90,7 @@ export class LocationComponent implements OnInit {
   control = input<LocationAvailibilityForm>();
   protected internalControl!: LocationAvailibilityForm;
 
-  controlName = input('availabilities');
+  controlName = input("availabilities");
 
   whenLocationUpdate = output<void>();
   whenLocationRemove = output<void>();
@@ -122,7 +121,7 @@ export class LocationComponent implements OnInit {
 
     if (!this.internalControl && this.group()) {
       const localControl = this.group().get(
-        this.controlName(),
+        this.controlName()
       ) as FormArray<LocationAvailibilityForm>;
       // there should be one created by default
       this.internalControl = localControl.controls.at(0) as LocationAvailibilityForm;
@@ -140,17 +139,17 @@ export class LocationComponent implements OnInit {
 
     if (this.group() && created) {
       (this.group().get(this.controlName()) as FormArray<LocationAvailibilityForm>).push(
-        this.internalControl,
+        this.internalControl
       );
     }
 
-    this.exceptions = this.internalControl.get('exceptions') as FormArray<LocationExceptionType>;
+    this.exceptions = this.internalControl.get("exceptions") as FormArray<LocationExceptionType>;
 
     if (this.exceptions.length !== 0) {
       this.expanded.exceptions = true;
     }
 
-    this.days = this.internalControl.get('days') as FormArray<LocationavDayType>;
+    this.days = this.internalControl.get("days") as FormArray<LocationavDayType>;
 
     this.showCourts = this.exceptions.value.map((v) => {
       return {
@@ -167,7 +166,7 @@ export class LocationComponent implements OnInit {
         startTime: new FormControl(),
         endTime: new FormControl(),
         courts: new FormControl(),
-      }) as LocationavDayType,
+      }) as LocationavDayType
     );
     this.expanded.days = true;
   }
@@ -182,7 +181,7 @@ export class LocationComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as LocationExceptionType,
+      }) as LocationExceptionType
     );
     this.showCourts.push({
       manualOpen: false,

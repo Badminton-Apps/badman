@@ -5,9 +5,9 @@
     multiple
     formControlName="choices"
   >
-    <mat-button-toggle value="S">{{ 'all.game.types.single' | translate }}</mat-button-toggle>
-    <mat-button-toggle value="D">{{ 'all.game.types.double' | translate }}</mat-button-toggle>
-    <mat-button-toggle value="MX">{{ 'all.game.types.mix' | translate }}</mat-button-toggle>
+    <mat-button-toggle value="S">{{ "all.game.types.single" | translate }}</mat-button-toggle>
+    <mat-button-toggle value="D">{{ "all.game.types.double" | translate }}</mat-button-toggle>
+    <mat-button-toggle value="MX">{{ "all.game.types.mix" | translate }}</mat-button-toggle>
   </mat-button-toggle-group>
 </form>
 @for (game of recentGames.games(); track game.id) {
@@ -17,7 +17,7 @@
       double: game.gameType === 'D',
       mix: game.gameType === 'MX',
       single: game.gameType === 'S',
-      wonByPlayer: getWonStatusForPlayer(game)
+      wonByPlayer: getWonStatusForPlayer(game),
     }"
   >
     @if (getExtra(game); as extra) {
@@ -26,14 +26,14 @@
       </div>
     }
     <div class="game__date">
-      <div>{{ game?.playedAt | amDateFormat: 'llll' }}</div>
+      <div>{{ game?.playedAt | amDateFormat: "llll" }}</div>
     </div>
     <div class="game__play">
       <div
         class="team team1"
         [ngClass]="{
           won: game.winner === 1,
-          isTeamOfPlayer: this.isTeamOfPlayer(game, 1)
+          isTeamOfPlayer: this.isTeamOfPlayer(game, 1),
         }"
       >
         @if (this.getPlayer(game, 1, 1); as p1t1) {
@@ -64,7 +64,7 @@
               [matTooltipPosition]="'right'"
             >
               @if (points.show) {
-                {{ points.points }} {{ 'all.game.points' | translate }}
+                {{ points.points }} {{ "all.game.points" | translate }}
                 @if (points.upgrade) {
                   <mat-icon>arrow_upward</mat-icon>
                 }
@@ -90,7 +90,7 @@
         class="team team2"
         [ngClass]="{
           won: game.winner === 2,
-          isTeamOfPlayer: this.isTeamOfPlayer(game, 2)
+          isTeamOfPlayer: this.isTeamOfPlayer(game, 2),
         }"
       >
         @if (this.getPlayer(game, 1, 2); as p1t2) {
@@ -121,7 +121,7 @@
               [matTooltipPosition]="'left'"
             >
               @if (points.show) {
-                {{ points.points }} {{ 'all.game.points' | translate }}
+                {{ points.points }} {{ "all.game.points" | translate }}
                 @if (points.upgrade) {
                   <mat-icon>arrow_upward</mat-icon>
                 }

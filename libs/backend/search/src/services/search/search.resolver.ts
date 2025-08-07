@@ -1,9 +1,9 @@
-import { Club, EventCompetition, EventTournament, Player } from '@badman/backend-database';
-import { Args, createUnionType, Query, Resolver } from '@nestjs/graphql';
-import { SearchService } from './search.service';
+import { Club, EventCompetition, EventTournament, Player } from "@badman/backend-database";
+import { Args, createUnionType, Query, Resolver } from "@nestjs/graphql";
+import { SearchService } from "./search.service";
 
 export const Search = createUnionType({
-  name: 'search',
+  name: "search",
   types: () => [Player, EventCompetition, EventTournament, Club] as const,
 });
 
@@ -13,7 +13,7 @@ export class SearchResolver {
 
   @Query(() => [Search])
   async search(
-    @Args('query') query: string,
+    @Args("query") query: string
   ): Promise<(Player | Club | EventCompetition | EventTournament)[]> {
     return this._searchService.search(query);
   }

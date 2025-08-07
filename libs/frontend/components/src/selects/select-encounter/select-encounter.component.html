@@ -1,6 +1,6 @@
 <ng-container [formGroup]="group()">
   <mat-form-field>
-    <mat-label>{{ 'all.pickers.select-encounter' | translate }}</mat-label>
+    <mat-label>{{ "all.pickers.select-encounter" | translate }}</mat-label>
     <mat-select
       [formControlName]="this.controlName()"
       [required]="this.required()"
@@ -8,7 +8,7 @@
     >
       @for (encounter of this.encounters$ | async; track encounter) {
         <mat-option [value]="encounter.id">
-          <span>{{ encounter.date | amDateFormat: 'llll' }} </span>
+          <span>{{ encounter.date | amDateFormat: "llll" }} </span>
           <span translate="all.competition.vs"></span>
           @if (encounter.showingForHomeTeam) {
             <span> {{ encounter.away?.name }}</span>
@@ -18,9 +18,9 @@
         </mat-option>
       }
     </mat-select>
-    @if (this.internalControl.hasError('required')) {
+    @if (this.internalControl.hasError("required")) {
       <mat-error>
-        {{ 'all.input.this-required' | translate }}
+        {{ "all.input.this-required" | translate }}
       </mat-error>
     }
   </mat-form-field>

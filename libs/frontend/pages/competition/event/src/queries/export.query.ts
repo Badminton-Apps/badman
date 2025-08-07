@@ -1,4 +1,4 @@
-import { gql } from 'apollo-angular';
+import { gql } from "apollo-angular";
 
 export const EVENT_TEAMS_EXPORT_QUERY = gql`
   query EventCompetitionTeamsExport($id: ID!) {

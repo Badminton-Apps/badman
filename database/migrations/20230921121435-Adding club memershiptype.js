@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,21 +9,21 @@ module.exports = {
         // Add column "date" to entries table
         await queryInterface.addColumn(
           {
-            tableName: 'ClubPlayerMemberships',
-            schema: 'public',
+            tableName: "ClubPlayerMemberships",
+            schema: "public",
           },
-          'membershipType',
+          "membershipType",
           {
-            type: sequelize.DataTypes.ENUM('NORMAL', 'LOAN'),
-            defaultValue: 'NORMAL',
+            type: sequelize.DataTypes.ENUM("NORMAL", "LOAN"),
+            defaultValue: "NORMAL",
             allowNull: false,
           },
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
 
         t.rollback();
       }
@@ -35,22 +35,22 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'ClubPlayerMemberships',
-            schema: 'public',
+            tableName: "ClubPlayerMemberships",
+            schema: "public",
           },
-          'membershipType',
+          "membershipType",
           {
             transaction: t,
-          },
+          }
         );
 
         // delete enum
         await queryInterface.sequelize.query(
           `DROP TYPE "enum_ClubPlayerMemberships_membershipType"`,
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

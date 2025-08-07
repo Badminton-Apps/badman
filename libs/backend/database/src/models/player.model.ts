@@ -1,5 +1,5 @@
-import { TeamMembershipType } from '@badman/utils';
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { TeamMembershipType } from "@badman/utils";
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -25,7 +25,7 @@ import {
   HasOneSetAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
-} from 'sequelize';
+} from "sequelize";
 import {
   BeforeCreate,
   BelongsToMany,
@@ -40,25 +40,25 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { ClubWithPlayerMembershipType, TeamWithPlayerMembershipType } from '../_interception';
-import { Slugify } from '../types';
-import { Relation } from '../wrapper';
-import { ClubPlayerMembership } from './club-player-membership.model';
-import { Club } from './club.model';
-import { Comment } from './comment.model';
-import { EventEntry, Game, GamePlayerMembership } from './event';
-import { Notification, Setting } from './personal';
-import { RankingLastPlace, RankingPlace, RankingPoint } from './ranking';
-import { Claim, PlayerClaimMembership, PlayerRoleMembership, Role } from './security';
-import { TeamPlayerMembership } from './team-player-membership.model';
-import { Team } from './team.model';
+} from "sequelize-typescript";
+import { ClubWithPlayerMembershipType, TeamWithPlayerMembershipType } from "../_interception";
+import { Slugify } from "../types";
+import { Relation } from "../wrapper";
+import { ClubPlayerMembership } from "./club-player-membership.model";
+import { Club } from "./club.model";
+import { Comment } from "./comment.model";
+import { EventEntry, Game, GamePlayerMembership } from "./event";
+import { Notification, Setting } from "./personal";
+import { RankingLastPlace, RankingPlace, RankingPoint } from "./ranking";
+import { Claim, PlayerClaimMembership, PlayerRoleMembership, Role } from "./security";
+import { TeamPlayerMembership } from "./team-player-membership.model";
+import { Team } from "./team.model";
 
 @Table({
   timestamps: true,
-  schema: 'public',
+  schema: "public",
 })
-@ObjectType('Player', { description: 'A player is also a logged in user' })
+@ObjectType("Player", { description: "A player is also a logged in user" })
 export class Player extends Model<InferAttributes<Player>, InferCreationAttributes<Player>> {
   @Field(() => ID)
   @Default(DataType.UUIDV4)
@@ -83,7 +83,7 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  gender?: 'M' | 'F';
+  gender?: "M" | "F";
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
@@ -94,13 +94,13 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
   sub?: string;
 
   @Field(() => [TeamWithPlayerMembershipType], { nullable: true })
-  @HasMany(() => Team, 'captainId')
+  @HasMany(() => Team, "captainId")
   myTeams?: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
-  @HasMany(() => EventEntry, 'player1Id')
+  @HasMany(() => EventEntry, "player1Id")
   entriesP1?: Relation<EventEntry[]>;
 
-  @HasMany(() => EventEntry, 'player2Id')
+  @HasMany(() => EventEntry, "player2Id")
   entriesP2?: Relation<EventEntry[]>;
 
   @Field(() => [EventEntry], { nullable: true })
@@ -109,13 +109,13 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
   }
 
   @Field(() => String, { nullable: true })
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Index
   @Column(DataType.STRING)
   firstName?: string;
 
   @Field(() => String, { nullable: true })
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Index
   @Column(DataType.STRING)
   lastName?: string;
@@ -136,29 +136,29 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
   slug?: string;
 
   @Field(() => String, { nullable: true })
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Index
   @Column(DataType.STRING)
   memberId?: string;
 
   @Field(() => [RankingPoint], { nullable: true })
-  @HasMany(() => RankingPoint, 'playerId')
+  @HasMany(() => RankingPoint, "playerId")
   rankingPoints?: RankingPoint[];
 
   @Field(() => [RankingPlace], { nullable: true })
-  @HasMany(() => RankingPlace, 'playerId')
+  @HasMany(() => RankingPlace, "playerId")
   rankingPlaces?: Relation<RankingPlace[]>;
 
   @Field(() => [RankingLastPlace], { nullable: true })
-  @HasMany(() => RankingLastPlace, 'playerId')
+  @HasMany(() => RankingLastPlace, "playerId")
   rankingLastPlaces?: Relation<RankingLastPlace[]>;
 
   @Field(() => [Comment], { nullable: true })
-  @HasMany(() => Comment, 'playerId')
+  @HasMany(() => Comment, "playerId")
   comments?: Relation<Comment[]>;
 
   @Field(() => [Notification], { nullable: true })
-  @HasMany(() => Notification, 'sendToId')
+  @HasMany(() => Notification, "sendToId")
   notifications?: Relation<Notification[]>;
 
   @Field(() => [TeamWithPlayerMembershipType], { nullable: true })
@@ -308,7 +308,7 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
   static async forceMemberId(player: Player, options: CreateOptions) {
     if ((player.memberId ?? null) === null) {
       let tries = 0;
-      let memberId = '';
+      let memberId = "";
 
       while (tries < 10) {
         memberId = `unknown-${Math.floor(Math.random() * 90000) + 10000}`;
@@ -323,8 +323,8 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
         tries++;
       }
 
-      if (memberId === '') {
-        throw new Error('Could not generate memberId');
+      if (memberId === "") {
+        throw new Error("Could not generate memberId");
       }
 
       player.memberId = memberId;
@@ -396,36 +396,36 @@ export class PagedPlayer {
 @InputType()
 export class PlayerUpdateInput extends PartialType(
   OmitType(Player, [
-    'createdAt',
-    'updatedAt',
-    'teams',
-    'myTeams',
-    'clubs',
-    'roles',
-    'claims',
-    'comments',
-    'rankingPlaces',
-    'rankingPoints',
-    'rankingLastPlaces',
-    'entries',
-    'games',
-    'setting',
-    'comments',
-    'notifications',
+    "createdAt",
+    "updatedAt",
+    "teams",
+    "myTeams",
+    "clubs",
+    "roles",
+    "claims",
+    "comments",
+    "rankingPlaces",
+    "rankingPoints",
+    "rankingLastPlaces",
+    "entries",
+    "games",
+    "setting",
+    "comments",
+    "notifications",
   ] as const),
-  InputType,
+  InputType
 ) {}
 
 @InputType()
 export class PlayerNewInput extends PartialType(
-  OmitType(PlayerUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(PlayerUpdateInput, ["id"] as const),
+  InputType
 ) {}
 
 @ObjectType()
 export class PlayerRankingType extends PartialType(
-  OmitType(PlayerUpdateInput, ['sub', 'permissions'] as const),
-  ObjectType,
+  OmitType(PlayerUpdateInput, ["sub", "permissions"] as const),
+  ObjectType
 ) {
   @Field(() => Number, { nullable: true })
   single?: number;

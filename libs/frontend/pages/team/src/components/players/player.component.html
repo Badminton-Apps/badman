@@ -10,7 +10,7 @@
         >
           @for (type of types; track type) {
             <mat-option [value]="type">
-              {{ 'all.player.' + type | lowercase | translate }}
+              {{ "all.player." + type | lowercase | translate }}
             </mat-option>
           }
         </mat-select>

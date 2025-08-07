@@ -1,7 +1,7 @@
-import { GameType } from '@badman/utils';
-import { SubEvent } from '../sub-event.model';
-import { DrawTournament } from './draw.model';
-import { EventTournament } from './event.model';
+import { GameType } from "@badman/utils";
+import { SubEvent } from "../sub-event.model";
+import { DrawTournament } from "./draw.model";
+import { EventTournament } from "./event.model";
 
 export class SubEventTournament extends SubEvent {
   eventTournament?: EventTournament;

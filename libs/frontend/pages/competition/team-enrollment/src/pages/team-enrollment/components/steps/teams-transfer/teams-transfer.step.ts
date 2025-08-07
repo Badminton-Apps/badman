@@ -1,27 +1,26 @@
-
-import { Component, computed, effect, inject, input, untracked } from '@angular/core';
+import { Component, computed, effect, inject, input, untracked } from "@angular/core";
 import {
   FormArray,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
-import { SubEventTypeEnum, sortTeams } from '@badman/utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { pairwise, startWith, takeUntil } from 'rxjs';
-import { NATIONAL_COUNTS_AS_MIXED, TEAMS } from '../../../../../forms';
-import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
-import { TeamForm } from '../../../team-enrollment.page';
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatListModule } from "@angular/material/list";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { EntryCompetitionPlayer, Team } from "@badman/frontend-models";
+import { SubEventTypeEnum, sortTeams } from "@badman/utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { pairwise, startWith, takeUntil } from "rxjs";
+import { NATIONAL_COUNTS_AS_MIXED, TEAMS } from "../../../../../forms";
+import { TeamEnrollmentDataService } from "../../../service/team-enrollment.service";
+import { TeamForm } from "../../../team-enrollment.page";
 
 @Component({
-  selector: 'badman-teams-transfer-step',
+  selector: "badman-teams-transfer-step",
   imports: [
     MatCheckboxModule,
     MatButtonModule,
@@ -29,10 +28,10 @@ import { TeamForm } from '../../../team-enrollment.page';
     MatProgressBarModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslatePipe
-],
-  templateUrl: './teams-transfer.step.html',
-  styleUrls: ['./teams-transfer.step.scss'],
+    TranslatePipe,
+  ],
+  templateUrl: "./teams-transfer.step.html",
+  styleUrls: ["./teams-transfer.step.scss"],
 })
 export class TeamsTransferStepComponent {
   private readonly destroy$ = injectDestroy();
@@ -58,7 +57,7 @@ export class TeamsTransferStepComponent {
       if (currentSeasonTeam && currentSeasonTeam.name !== lastSeasonTeam.name) {
         return {
           id: lastSeasonTeam.id,
-          name: `${lastSeasonTeam?.name} (${this.translate.instant('all.competition.team-enrollment.transfer.enrolled-as')} ${currentSeasonTeam.name})`,
+          name: `${lastSeasonTeam?.name} (${this.translate.instant("all.competition.team-enrollment.transfer.enrolled-as")} ${currentSeasonTeam.name})`,
         };
       }
 
@@ -66,17 +65,17 @@ export class TeamsTransferStepComponent {
         id: lastSeasonTeam.id,
         name: lastSeasonTeam.name,
       };
-    }),
+    })
   );
 
   newTeams = computed(() =>
-    this.teamsCurrent().filter((team) => !this.teamLastLinks().includes(team.link)),
+    this.teamsCurrent().filter((team) => !this.teamLastLinks().includes(team.link))
   );
   existingLinks = computed(() =>
-    this.teamLastLinks().filter((link) => this.teamsCurrentLinks().includes(link)),
+    this.teamLastLinks().filter((link) => this.teamsCurrentLinks().includes(link))
   );
   nationalCountsAsMixed = computed(
-    () => this.formGroup().get(NATIONAL_COUNTS_AS_MIXED) as FormControl<boolean>,
+    () => this.formGroup().get(NATIONAL_COUNTS_AS_MIXED) as FormControl<boolean>
   );
 
   transferTeamsCtrl = new FormControl<string[]>([], { nonNullable: true });
@@ -87,7 +86,7 @@ export class TeamsTransferStepComponent {
     () =>
       this.formGroup().get(TEAMS) as FormGroup<{
         [key in SubEventTypeEnum]: FormArray<TeamForm>;
-      }>,
+      }>
   );
 
   initialized = false;
@@ -165,7 +164,7 @@ export class TeamsTransferStepComponent {
   }
 
   private _addTeam(team: Team) {
-    const typedControl = this.teams().get(team.type ?? '') as FormArray<TeamForm>;
+    const typedControl = this.teams().get(team.type ?? "") as FormArray<TeamForm>;
 
     let entry: {
       players: EntryCompetitionPlayer[];

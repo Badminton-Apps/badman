@@ -1,1 +1,1 @@
-export type Event = 'S' | 'D' | 'MX';
+export type Event = "S" | "D" | "MX";

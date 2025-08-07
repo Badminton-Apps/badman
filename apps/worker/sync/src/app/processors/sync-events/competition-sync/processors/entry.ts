@@ -1,13 +1,13 @@
-import { Club, EventEntry, Team, Player } from '@badman/backend-database';
-import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { LevelType, runParallel, teamValues } from '@badman/utils';
-import { Logger } from '@nestjs/common';
-import { isArray } from 'class-validator';
-import { Op, WhereOptions } from 'sequelize';
-import moment from 'moment';
-import { StepOptions, StepProcessor } from '../../../../processing';
-import { correctWrongTeams } from '../../../../utils';
-import { DrawStepData } from './draw';
+import { Club, EventEntry, Team, Player } from "@badman/backend-database";
+import { VisualService, XmlItem, XmlTournament } from "@badman/backend-visual";
+import { LevelType, runParallel, teamValues } from "@badman/utils";
+import { Logger } from "@nestjs/common";
+import { isArray } from "class-validator";
+import { Op, WhereOptions } from "sequelize";
+import moment from "moment";
+import { StepOptions, StepProcessor } from "../../../../processing";
+import { correctWrongTeams } from "../../../../utils";
+import { DrawStepData } from "./draw";
 
 export interface EntryStepData {
   entry: EventEntry;
@@ -21,7 +21,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -41,7 +41,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
     this.logger.debug(
-      `Processing entries for draw ${draw.name} - ${subEvent.eventType}, (${internalId})`,
+      `Processing entries for draw ${draw.name} - ${subEvent.eventType}, (${internalId})`
     );
     const event = await subEvent.getEventCompetition({
       transaction: this.transaction,
@@ -68,8 +68,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     // get the teams for the draw
     const teams = new Set<string>(
       xmlDraw.Structure.Item?.map((item) => item.Team?.Name)?.filter(
-        (name): name is string => name?.length > 0,
-      ) ?? [],
+        (name): name is string => name?.length > 0
+      ) ?? []
     );
 
     for (const item of teams) {
@@ -79,8 +79,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         event.state,
         event.teamMatcher,
         event.type,
-        drawEntries?.map((r) => r.teamId ?? '') ?? [],
-        subEventEntries.map((r) => r.teamId ?? '') ?? [],
+        drawEntries?.map((r) => r.teamId ?? "") ?? [],
+        subEventEntries.map((r) => r.teamId ?? "") ?? []
       );
 
       if (!team) {
@@ -130,7 +130,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     for (const entry of entries) {
       if (entry.team?.season !== event.season) {
         this.logger.warn(
-          `Team existed multiple season ${entry.team?.name} (${entry.team?.season})`,
+          `Team existed multiple season ${entry.team?.name} (${entry.team?.season})`
         );
         await entry.destroy({ transaction: this.transaction });
 
@@ -184,7 +184,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       const club = clubs.find((r) => r.state === state);
       if (club) {
         this.logger.debug(
-          `Multiple clubs found ${clubName}, picking the club with state ${state}, club's state ${club?.state}`,
+          `Multiple clubs found ${clubName}, picking the club with state ${state}, club's state ${club?.state}`
         );
         return [club];
       }
@@ -202,7 +202,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     teamMatcher?: string,
     type?: LevelType,
     drawTeamIds?: string[],
-    subEventTeamIds?: string[],
+    subEventTeamIds?: string[]
   ) {
     const name = correctWrongTeams({ name: item })?.name;
     const { clubName, teamNumber, teamType } = teamValues(name, teamMatcher, type);
@@ -299,7 +299,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
       // Find the team in the draw structure by name
       const teamItem = items.find(
-        (item) => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code,
+        (item) => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code
       );
       if (!teamItem?.Team?.Code) {
         this.logger.warn(`Team code not found for ${team.name} in draw structure`);
@@ -309,7 +309,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       // Get team data from the visual API
       const xmlTeam = await this.visualService.getTeam(
         this.visualTournament.Code,
-        teamItem.Team.Code,
+        teamItem.Team.Code
       );
 
       if (!xmlTeam) {
@@ -320,7 +320,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       // Update team information if different - only update if API provides non-empty data
       let teamUpdated = false;
 
-      if (xmlTeam.Contact && xmlTeam.Contact.trim() !== '' && xmlTeam.Contact !== team.name) {
+      if (xmlTeam.Contact && xmlTeam.Contact.trim() !== "" && xmlTeam.Contact !== team.name) {
         // You might want to update contact information here if needed
         this.logger.debug(`Team contact: ${xmlTeam.Contact}`);
       }
@@ -328,8 +328,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       // Only update phone if API provides a non-empty value and it's different from current
       if (
         xmlTeam.Phone &&
-        typeof xmlTeam.Phone === 'string' &&
-        xmlTeam.Phone.trim() !== '' &&
+        typeof xmlTeam.Phone === "string" &&
+        xmlTeam.Phone.trim() !== "" &&
         xmlTeam.Phone !== team.phone
       ) {
         team.phone = xmlTeam.Phone;
@@ -340,8 +340,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       // Only update email if API provides a non-empty value and it's different from current
       if (
         xmlTeam.Email &&
-        typeof xmlTeam.Email === 'string' &&
-        xmlTeam.Email.trim() !== '' &&
+        typeof xmlTeam.Email === "string" &&
+        xmlTeam.Email.trim() !== "" &&
         xmlTeam.Email !== team.email
       ) {
         team.email = xmlTeam.Email;
@@ -360,7 +360,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       if (players && players.length > 0) {
         // PRIORITY 1: Use Visual API data (team + players from endpoint)
         this.logger.debug(
-          `Using Visual API player data for team ${team.name} (${players.length} players)`,
+          `Using Visual API player data for team ${team.name} (${players.length} players)`
         );
 
         // Find existing players by memberId
@@ -373,9 +373,9 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
           },
           include: [
             {
-              association: 'rankingPlaces',
+              association: "rankingPlaces",
               limit: 1,
-              order: [['rankingDate', 'DESC']],
+              order: [["rankingDate", "DESC"]],
             },
           ],
           transaction: this.transaction,
@@ -402,7 +402,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
               return {
                 id: dbPlayer?.id || undefined,
-                gender: (xmlPlayer.GenderID === 1 ? 'M' : 'F') as 'M' | 'F',
+                gender: (xmlPlayer.GenderID === 1 ? "M" : "F") as "M" | "F",
                 single: ranking?.single || 12, // Use current ranking
                 double: ranking?.double || 12,
                 mix: ranking?.mix || 12,
@@ -419,7 +419,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         await entry.save({ transaction: this.transaction });
 
         this.logger.debug(
-          `Updated entry meta with Visual API data: ${players.length} players for team ${team.name}`,
+          `Updated entry meta with Visual API data: ${players.length} players for team ${team.name}`
         );
       } else {
         // PRIORITY 2: Keep existing database data if Visual API has no player data
@@ -427,13 +427,13 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
         if (existingMeta?.competition?.players && existingMeta.competition.players.length > 0) {
           this.logger.debug(
-            `No Visual API player data for team ${team.name}, keeping existing database data (${existingMeta.competition.players.length} players)`,
+            `No Visual API player data for team ${team.name}, keeping existing database data (${existingMeta.competition.players.length} players)`
           );
           // Do nothing - keep existing data as is
         } else {
           // PRIORITY 3: Do nothing if neither Visual API nor database has player data
           this.logger.debug(
-            `No player data available for team ${team.name} from Visual API or database`,
+            `No player data available for team ${team.name} from Visual API or database`
           );
           // Do nothing
         }

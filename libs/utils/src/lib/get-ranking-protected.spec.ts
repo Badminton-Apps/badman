@@ -1,12 +1,12 @@
-import { getRankingProtected } from './get-ranking-protected';
+import { getRankingProtected } from "./get-ranking-protected";
 
-describe('getRanking', () => {
+describe("getRanking", () => {
   const system = {
     amountOfLevels: 12,
     maxDiffLevels: 2,
   };
 
-  it('Should update the single to best ranking + 2', () => {
+  it("Should update the single to best ranking + 2", () => {
     const ranking = {
       single: null,
       double: 2,
@@ -20,7 +20,7 @@ describe('getRanking', () => {
     expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
-  it('Should update the double to best ranking + 2', () => {
+  it("Should update the double to best ranking + 2", () => {
     const ranking = {
       single: 5,
       double: null,
@@ -34,7 +34,7 @@ describe('getRanking', () => {
     expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
-  it('Should update the mix to best ranking + 2', () => {
+  it("Should update the mix to best ranking + 2", () => {
     const ranking = {
       single: 5,
       double: 7,
@@ -48,7 +48,7 @@ describe('getRanking', () => {
     expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
-  it('Should update the mix to best ranking + 2 with undefined', () => {
+  it("Should update the mix to best ranking + 2 with undefined", () => {
     const ranking = {
       single: 5,
       double: 7,
@@ -62,7 +62,7 @@ describe('getRanking', () => {
     expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
-  it('should return the correct ranking when all values are maxlevel', () => {
+  it("should return the correct ranking when all values are maxlevel", () => {
     const ranking = {
       single: 12,
       double: 12,
@@ -76,7 +76,7 @@ describe('getRanking', () => {
     expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
-  it('should return the correct ranking multiple rankings are unkown', () => {
+  it("should return the correct ranking multiple rankings are unkown", () => {
     const ranking = {
       single: 9,
       double: null,
@@ -90,7 +90,7 @@ describe('getRanking', () => {
     expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
-  it('should return the correct ranking with all rankings combined', () => {
+  it("should return the correct ranking with all rankings combined", () => {
     const ranking = {
       single: 10,
       double: 10,

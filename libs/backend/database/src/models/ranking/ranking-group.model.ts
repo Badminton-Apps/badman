@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from "@nestjs/graphql";
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -10,7 +10,7 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BuildOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsToMany,
   Column,
@@ -21,22 +21,22 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 import {
   RankingGroupSubEventCompetitionMembership,
   RankingGroupSubEventTournamentMembership,
   SubEventCompetition,
   SubEventTournament,
-} from '../event';
-import { RankingSystemRankingGroupMembership } from './ranking-group-ranking-system-membership.model';
-import { RankingSystem } from './ranking-system.model';
-import { Relation } from '../../wrapper';
+} from "../event";
+import { RankingSystemRankingGroupMembership } from "./ranking-group-ranking-system-membership.model";
+import { RankingSystem } from "./ranking-system.model";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'ranking',
+  schema: "ranking",
 })
-@ObjectType({ description: 'A RankingGroup' })
+@ObjectType({ description: "A RankingGroup" })
 export class RankingGroup extends Model {
   constructor(values?: Partial<RankingGroup>, options?: BuildOptions) {
     super(values, options);

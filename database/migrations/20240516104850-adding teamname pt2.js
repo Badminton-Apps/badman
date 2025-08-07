@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,10 +9,10 @@ module.exports = {
         // set the useForTeamName column to 'teamName' for all clubs that have currently 'name'
         await queryInterface.sequelize.query(
           'UPDATE "Clubs" SET "useForTeamName" = \'teamName\' WHERE "useForTeamName" = \'name\';',
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -24,10 +24,10 @@ module.exports = {
         // set the useForTeamName column to 'name' for all clubs that have currently 'teamName'
         await queryInterface.sequelize.query(
           'UPDATE "Clubs" SET "useForTeamName" = \'name\' WHERE "useForTeamName" = \'teamName\';',
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

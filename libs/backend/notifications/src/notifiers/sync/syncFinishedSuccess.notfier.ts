@@ -3,10 +3,10 @@ import {
   EventTournament,
   NotificationOptionsTypes,
   Player,
-} from '@badman/backend-database';
-import { RequestOptions } from 'web-push';
-import { Notifier } from '../notifier.base';
-import { type unitOfTime } from 'moment';
+} from "@badman/backend-database";
+import { RequestOptions } from "web-push";
+import { Notifier } from "../notifier.base";
+import { type unitOfTime } from "moment";
 
 export class EventSyncedSuccessNotifier extends Notifier<
   {
@@ -18,23 +18,23 @@ export class EventSyncedSuccessNotifier extends Notifier<
     url: string;
   }
 > {
-  protected linkType = 'event';
-  protected type: keyof NotificationOptionsTypes = 'syncSuccessNotification';
-  protected override allowedInterval = 'minute' as unitOfTime.Diff;
+  protected linkType = "event";
+  protected type: keyof NotificationOptionsTypes = "syncSuccessNotification";
+  protected override allowedInterval = "minute" as unitOfTime.Diff;
 
   private readonly options = (event?: EventCompetition | EventTournament, url?: string) => {
-    let title = 'Synchronisatie succesvol';
-    let body = 'Synchronisatie succesvol';
+    let title = "Synchronisatie succesvol";
+    let body = "Synchronisatie succesvol";
     let actions: { action: string; title: string }[] = [];
     let data: unknown = {};
     if (event) {
       title = `${event.name} succesvol gesynchroniseerd`;
       body = `${event.name} hebben we succesvol gesynchroniseerd`;
-      actions = [{ action: 'goto', title: 'Ga naar event' }];
+      actions = [{ action: "goto", title: "Ga naar event" }];
       data = {
         onActionClick: {
-          default: { operation: 'openWindow', url: url },
-          goto: { operation: 'openWindow', url: url },
+          default: { operation: "openWindow", url: url },
+          goto: { operation: "openWindow", url: url },
         },
       };
     }
@@ -57,7 +57,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
           success: boolean;
         }
       | undefined,
-    args?: { email: string; url: string } | undefined,
+    args?: { email: string; url: string } | undefined
   ) {
     this.logger.debug(`Sending Push to ${player.fullName}`);
     await this.pushService.sendNotification(player, this.options(data?.event, args?.url));
@@ -71,7 +71,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
           success: boolean;
         }
       | undefined,
-    args?: { email: string; url: string } | undefined,
+    args?: { email: string; url: string } | undefined
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
 
@@ -99,7 +99,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
       },
       data?.event,
       true,
-      args?.url,
+      args?.url
     );
   }
 
@@ -108,7 +108,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { event: EventCompetition | EventTournament; success: boolean },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string },
+    args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

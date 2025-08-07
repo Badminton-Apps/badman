@@ -1,25 +1,25 @@
-import { User } from '@badman/backend-authorization';
-import { CompileService } from '@badman/backend-compile';
-import { Logging, Player, RankingLastPlace, Team } from '@badman/backend-database';
-import { I18nTranslations, LoggingAction, gameLabel } from '@badman/utils';
-import { Controller, Logger, Post, Req, Res, StreamableFile } from '@nestjs/common';
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { readFile } from 'fs/promises';
-import moment from 'moment-timezone';
-import { I18nService } from 'nestjs-i18n';
-import { lastValueFrom, take } from 'rxjs';
-import { AssemblyValidationData, AssemblyValidationError } from '../models';
-import { AssemblyValidationService } from '../services';
+import { User } from "@badman/backend-authorization";
+import { CompileService } from "@badman/backend-compile";
+import { Logging, Player, RankingLastPlace, Team } from "@badman/backend-database";
+import { I18nTranslations, LoggingAction, gameLabel } from "@badman/utils";
+import { Controller, Logger, Post, Req, Res, StreamableFile } from "@nestjs/common";
+import { FastifyReply, FastifyRequest } from "fastify";
+import { readFile } from "fs/promises";
+import moment from "moment-timezone";
+import { I18nService } from "nestjs-i18n";
+import { lastValueFrom, take } from "rxjs";
+import { AssemblyValidationData, AssemblyValidationError } from "../models";
+import { AssemblyValidationService } from "../services";
 
 type gameType =
-  | 'single1'
-  | 'single2'
-  | 'single3'
-  | 'single4'
-  | 'double1'
-  | 'double2'
-  | 'double3'
-  | 'double4';
+  | "single1"
+  | "single2"
+  | "single3"
+  | "single4"
+  | "double1"
+  | "double2"
+  | "double3"
+  | "double4";
 
 type inputBody = {
   systemId: string;
@@ -40,7 +40,7 @@ type inputBody = {
 };
 
 @Controller({
-  path: 'pdf/assembly',
+  path: "pdf/assembly",
 })
 export class AssemblyController {
   private readonly logger = new Logger(AssemblyController.name);
@@ -48,27 +48,27 @@ export class AssemblyController {
   constructor(
     private readonly compileService: CompileService,
     private readonly assemblyService: AssemblyValidationService,
-    private readonly i18nService: I18nService<I18nTranslations>,
+    private readonly i18nService: I18nService<I18nTranslations>
   ) {}
 
-  @Post('team')
+  @Post("team")
   async teamAssembly(
     @Req() req: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
-    @User() user: Player,
+    @User() user: Player
   ) {
     // compile the template that returns a buffer of the pdf
     const pdf$ = await this.getTeamAssemblyPdf(req.body as inputBody, user);
 
     if (!pdf$) {
-      throw new Error('Pdf could not be generated');
+      throw new Error("Pdf could not be generated");
     }
 
     // get the buffer from the observable
     const pdf = await lastValueFrom(pdf$);
 
     // set the content type to pdf
-    res.header('Content-Type', 'application/pdf');
+    res.header("Content-Type", "application/pdf");
 
     // write to log
     await Logging.create({
@@ -99,12 +99,12 @@ export class AssemblyController {
       if (data.encounter.homeTeamId == input.teamId) {
         homeTeam = data.team;
         awayTeam = await data.encounter.getAway({
-          attributes: ['id', 'name'],
+          attributes: ["id", "name"],
         });
         isHomeTeam = true;
       } else {
         homeTeam = await data.encounter.getHome({
-          attributes: ['id', 'name'],
+          attributes: ["id", "name"],
         });
         awayTeam = data.team;
         isHomeTeam = false;
@@ -117,13 +117,13 @@ export class AssemblyController {
 
     const captain = await Player.findByPk(input.captainId);
     const logo = await readFile(`${__dirname}/compile/libs/assembly/images/logo.png`, {
-      encoding: 'base64',
+      encoding: "base64",
     });
 
-    const date = moment(data.encounter?.date).tz('Europe/Brussels').format('DD-MM-YYYY HH:mm');
+    const date = moment(data.encounter?.date).tz("Europe/Brussels").format("DD-MM-YYYY HH:mm");
 
     this.logger.debug(
-      `Generating assembly for ${homeTeam.name} vs ${awayTeam?.name ?? 'empty'} on ${date}`,
+      `Generating assembly for ${homeTeam.name} vs ${awayTeam?.name ?? "empty"} on ${date}`
     );
 
     const indexed: string[] = [];
@@ -153,10 +153,10 @@ export class AssemblyController {
       baseIndex: data.meta?.competition?.teamIndex,
       teamIndex: data.teamIndex,
       homeTeam: homeTeam.name,
-      awayTeam: awayTeam?.name ?? 'Onbekend',
+      awayTeam: awayTeam?.name ?? "Onbekend",
       captain: captain?.fullName,
-      generationDate: moment().tz('Europe/Brussels').format('DD-MM-YYYY HH:mm'),
-      rankingDate: moment(data.system?.updateLastUpdate).tz('Europe/Brussels').format('DD-MM-YYYY'),
+      generationDate: moment().tz("Europe/Brussels").format("DD-MM-YYYY HH:mm"),
+      rankingDate: moment(data.system?.updateLastUpdate).tz("Europe/Brussels").format("DD-MM-YYYY"),
       gameLabels: this.getLabels(data),
       doubles: [
         {
@@ -184,7 +184,7 @@ export class AssemblyController {
       ],
       subtitudes: data.subtitudes?.map((player) => this._processPlayer(data, [], [], player)),
       type: data.type,
-      event: `${data.type === 'M' ? 'Heren' : data.type === 'F' ? 'Dames' : 'Gemengd'} ${data.draw?.name}`,
+      event: `${data.type === "M" ? "Heren" : data.type === "F" ? "Dames" : "Gemengd"} ${data.draw?.name}`,
       isHomeTeam: isHomeTeam,
       validation: {
         ...validation,
@@ -202,15 +202,15 @@ export class AssemblyController {
       context.doubles?.find((p) => p?.player2?.exception)
     ) {
       context.exception = this.i18nService.translate(
-        'all.competition.team-assembly.level-exemption',
+        "all.competition.team-assembly.level-exemption"
       );
     }
 
     return this.compileService
-      .toBuffer('assembly', {
+      .toBuffer("assembly", {
         locals: context,
         pdf: {
-          format: 'A4',
+          format: "A4",
           landscape: true,
         },
       })
@@ -220,23 +220,23 @@ export class AssemblyController {
   private translateGame(warn: AssemblyValidationError<unknown>) {
     const params: Record<string, unknown> = (warn.params || {}) as Record<string, unknown>;
 
-    const games = params['game'] as gameType;
+    const games = params["game"] as gameType;
     if (games != undefined) {
-      params['game'] = this.i18nService
+      params["game"] = this.i18nService
         .translate(`all.competition.team-assembly.${games}`)
         .toLocaleLowerCase();
     }
 
-    const games1 = params['game1'] as gameType;
+    const games1 = params["game1"] as gameType;
     if (games1 != undefined) {
-      params['game1'] = this.i18nService
+      params["game1"] = this.i18nService
         .translate(`all.competition.team-assembly.${games1}`)
         .toLocaleLowerCase();
     }
 
-    const games2 = params['game2'] as gameType;
+    const games2 = params["game2"] as gameType;
     if (games2 != undefined) {
-      params['game2'] = this.i18nService
+      params["game2"] = this.i18nService
         .translate(`all.competition.team-assembly.${games2}`)
         .toLocaleLowerCase();
     }
@@ -251,7 +251,7 @@ export class AssemblyController {
       }
 
       const gameLabels = gameLabel(data.subEvent?.eventType, i + 1);
-      let labelMessage = '';
+      let labelMessage = "";
 
       for (const label of gameLabels) {
         if (Number.isInteger(label)) {
@@ -274,7 +274,7 @@ export class AssemblyController {
     data: AssemblyValidationData,
     indexed: string[],
     based: string[],
-    player?: Player,
+    player?: Player
   ):
     | undefined
     | (Partial<Player> & {
@@ -328,23 +328,23 @@ export class AssemblyController {
       prepped.sum =
         (player.rankingPlaces?.[0].single ?? 12) +
         (player.rankingPlaces?.[0].double ?? 12) +
-        (data.type === 'MX' ? (player.rankingPlaces?.[0].mix ?? 12) : 0);
+        (data.type === "MX" ? (player.rankingPlaces?.[0].mix ?? 12) : 0);
 
       prepped.highest =
         Math.min(
           player.rankingPlaces?.[0].single ?? 12,
           player.rankingPlaces?.[0].double ?? 12,
-          data.type === 'MX' ? (player.rankingPlaces?.[0].mix ?? 12) : 12,
+          data.type === "MX" ? (player.rankingPlaces?.[0].mix ?? 12) : 12
         ) ?? 12;
     } else {
-      prepped.sum = data.type === 'MX' ? 36 : 24;
+      prepped.sum = data.type === "MX" ? 36 : 24;
       prepped.highest = 12;
     }
 
     const best = Math.min(
       player.rankingLastPlaces?.[0]?.single ?? 12,
       player.rankingLastPlaces?.[0]?.double ?? 12,
-      data.type === 'MX' ? (player.rankingLastPlaces?.[0]?.mix ?? 12) : 12,
+      data.type === "MX" ? (player.rankingLastPlaces?.[0]?.mix ?? 12) : 12
     );
 
     prepped.exception =

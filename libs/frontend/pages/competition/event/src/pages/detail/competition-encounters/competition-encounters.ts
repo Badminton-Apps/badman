@@ -1,19 +1,19 @@
-import { Component, computed, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Club, EncounterCompetition, Team } from '@badman/frontend-models';
-import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
-import { MtxSelect } from '@ng-matero/extensions/select';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import moment from 'moment';
-import { CompetitionEncounterService } from './competition-encounters.service';
+import { Component, computed, inject } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatSlideToggleChange, MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { Club, EncounterCompetition, Team } from "@badman/frontend-models";
+import { MtxGrid, MtxGridColumn } from "@ng-matero/extensions/grid";
+import { MtxSelect } from "@ng-matero/extensions/select";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import moment from "moment";
+import { CompetitionEncounterService } from "./competition-encounters.service";
 
 @Component({
-  selector: 'badman-competition-encounters',
-  templateUrl: './competition-encounters.html',
-  styleUrls: ['./competition-encounters.scss'],
+  selector: "badman-competition-encounters",
+  templateUrl: "./competition-encounters.html",
+  styleUrls: ["./competition-encounters.scss"],
   imports: [
     FormsModule,
     MatButtonModule,
@@ -38,31 +38,31 @@ export class CompetitionEncountersComponent {
 
   columns: MtxGridColumn<EncounterCompetition>[] = [
     {
-      field: 'home.name',
-      header: this.translate.stream('all.competition.home'),
+      field: "home.name",
+      header: this.translate.stream("all.competition.home"),
       sortable: true,
     },
     {
-      field: 'away.name',
-      header: this.translate.stream('all.competition.away'),
+      field: "away.name",
+      header: this.translate.stream("all.competition.away"),
       sortable: true,
     },
     {
-      field: 'date',
-      header: this.translate.stream('all.competition.date'),
+      field: "date",
+      header: this.translate.stream("all.competition.date"),
       sortable: true,
-      formatter: (enc) => moment(enc.date).format('llll'),
+      formatter: (enc) => moment(enc.date).format("llll"),
     },
     {
-      field: 'originalDate',
-      header: this.translate.stream('all.competition.originalDate'),
+      field: "originalDate",
+      header: this.translate.stream("all.competition.originalDate"),
       sortable: true,
       formatter: (enc) => {
         if (!enc.originalDate || moment(enc.originalDate).isSame(enc.date)) {
-          return '';
+          return "";
         }
 
-        return moment(enc.originalDate).format('llll');
+        return moment(enc.originalDate).format("llll");
       },
     },
   ];

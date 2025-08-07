@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { TwizzitController } from './controllers';
-import { GameExportService, TwizzitService } from './services';
-import { ConfigModule } from '@nestjs/config';
+import { Module } from "@nestjs/common";
+import { TwizzitController } from "./controllers";
+import { GameExportService, TwizzitService } from "./services";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   controllers: [TwizzitController],

@@ -1,6 +1,6 @@
 <div class="comments">
   <h3>
-    {{ 'all.competition.change-encounter.comments' | translate }}
+    {{ "all.competition.change-encounter.comments" | translate }}
   </h3>
   <div id="body">
     @for (comment of comments(); track comment) {
@@ -16,7 +16,7 @@
           </label>
           <span class="message-text">{{ comment.message }}</span>
           <div class="time">
-            {{ comment.createdAt | amDateFormat: 'LLL' }}
+            {{ comment.createdAt | amDateFormat: "LLL" }}
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
   </div>
   <div class="new-comment">
     <mat-form-field>
-      <mat-label>{{ 'all.competition.change-encounter.comment' | translate }}</mat-label>
+      <mat-label>{{ "all.competition.change-encounter.comment" | translate }}</mat-label>
       <textarea matInput [formControl]="this.commentControl" rows="5"></textarea>
     </mat-form-field>
     <button
@@ -33,7 +33,7 @@
       (click)="addComment()"
       [disabled]="this.disabled() ?? false"
     >
-      {{ 'all.button.add-comment' | translate }}
+      {{ "all.button.add-comment" | translate }}
     </button>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from "moment";
 
 export const getSeasonPeriod = (season?: number) => {
   if (!season) {
@@ -30,5 +30,5 @@ export const startOfSeason = (season: number) => {
 };
 
 export const endOfSeason = (season: number) => {
-  return moment([season + 1, 5, 1]).endOf('month');
+  return moment([season + 1, 5, 1]).endOf("month");
 };

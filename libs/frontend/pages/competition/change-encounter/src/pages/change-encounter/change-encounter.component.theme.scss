@@ -1,19 +1,17 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
-@use './components/list-encounters/list-encounters.component.theme.scss' as list-encounters;
-@use './components/show-requests/show-requests.component.theme.scss' as show-requests;
+@use "./components/list-encounters/list-encounters.component.theme.scss" as list-encounters;
+@use "./components/show-requests/show-requests.component.theme.scss" as show-requests;
 
 @mixin color($theme) {
   badman-change-encounter {
     @include list-encounters.color($theme);
     @include show-requests.color($theme);
 
-    
-    
-    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, "disabled-text");
 
     badman-show-requests {
       border-left-color: $border-color;
@@ -26,6 +24,6 @@
   @include show-requests.typography($theme);
 
   // badman-change-encounter {
-    
+
   // }
 }

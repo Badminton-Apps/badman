@@ -4,14 +4,14 @@ import {
   EventEntry,
   Game,
   SubEventCompetition,
-} from '@badman/backend-database';
-import { Op } from 'sequelize';
-import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService, XmlDrawTypeID, XmlTournament } from '@badman/backend-visual';
+} from "@badman/backend-database";
+import { Op } from "sequelize";
+import { StepProcessor, StepOptions } from "../../../../processing";
+import { VisualService, XmlDrawTypeID, XmlTournament } from "@badman/backend-visual";
 
-import { SubEventStepData } from './subEvent';
-import { DrawType, runParallel } from '@badman/utils';
-import { Logger } from '@nestjs/common';
+import { SubEventStepData } from "./subEvent";
+import { DrawType, runParallel } from "@badman/utils";
+import { Logger } from "@nestjs/common";
 
 export interface DrawStepData {
   draw: DrawCompetition;
@@ -25,7 +25,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -61,7 +61,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       if (dbDraws.length === 1) {
         dbDraw = dbDraws[0];
       } else if (dbDraws.length > 1) {
-        this.logger.warn('Having multiple? Removing old');
+        this.logger.warn("Having multiple? Removing old");
 
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbDraws;
@@ -73,7 +73,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
             drawId: {
               [Op.in]: rest.map((e) => e.id),
             },
-            entryType: 'competition',
+            entryType: "competition",
           },
           transaction: this.transaction,
         });
@@ -130,7 +130,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       const eventEntries = await EventEntry.findAll({
         where: {
           drawId: removed.id,
-          entryType: 'competition',
+          entryType: "competition",
         },
         transaction: this.transaction,
       });
@@ -141,7 +141,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
 
       const gameIds = (
         await Game.findAll({
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               attributes: [],

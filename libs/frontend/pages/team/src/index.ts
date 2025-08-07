@@ -1,3 +1,3 @@
-export * from './dialogs';
-export * from './components';
-export * from './team.module';
+export * from "./dialogs";
+export * from "./components";
+export * from "./team.module";

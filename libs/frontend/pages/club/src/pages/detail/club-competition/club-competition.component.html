@@ -6,14 +6,14 @@
     <!-- Position Column -->
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef>
-        {{ 'all.competition.subevent.title' | translate }}
+        {{ "all.competition.subevent.title" | translate }}
       </mat-header-cell>
       <mat-cell *matCellDef="let team">
         <div class="team">
           <span class="team-name">{{ team.name }}</span>
           @if (team?.entry?.meta?.competition?.teamIndex) {
             <span class="team-index"
-              >({{ 'all.team.team-index' | translate }}:{{
+              >({{ "all.team.team-index" | translate }}:{{
                 team?.entry?.meta?.competition?.teamIndex
               }})
             </span>
@@ -68,7 +68,7 @@
         <badman-block class="base">
           <badman-block-header>
             <badman-block-title>{{
-              'all.competition.team-enrollment.players.base' | translate
+              "all.competition.team-enrollment.players.base" | translate
             }}</badman-block-title>
           </badman-block-header>
           <mat-divider />
@@ -87,7 +87,7 @@
         </badman-block>
         <badman-block class="captain">
           <badman-block-header>
-            <badman-block-title>{{ 'all.team.title.base-fields' | translate }}</badman-block-title>
+            <badman-block-title>{{ "all.team.title.base-fields" | translate }}</badman-block-title>
           </badman-block-header>
           <mat-divider />
           <badman-block-content>
@@ -95,19 +95,19 @@
               @if (team?.entry?.meta?.competition?.teamIndex) {
                 <mat-list-item role="listitem">
                   <span matListItemTitle>{{ team?.entry?.meta?.competition?.teamIndex }}</span>
-                  <span matListItemLine>{{ 'all.team.team-index' | translate }}</span>
+                  <span matListItemLine>{{ "all.team.team-index" | translate }}</span>
                 </mat-list-item>
               }
               <mat-list-item role="listitem">
                 <span matListItemTitle>{{ team?.captain?.fullName }}</span>
-                <span matListItemLine>{{ 'all.team.title.captain' | translate }}</span>
+                <span matListItemLine>{{ "all.team.title.captain" | translate }}</span>
               </mat-list-item>
               <mat-list-item role="listitem">
                 <span matListItemTitle
-                  >{{ 'all.days.' + team?.preferredDay | translate }} -
+                  >{{ "all.days." + team?.preferredDay | translate }} -
                   {{ team?.preferredTime }}</span
                 >
-                <span matListItemLine>{{ 'all.team.prefferd.title' | translate }}</span>
+                <span matListItemLine>{{ "all.team.prefferd.title" | translate }}</span>
               </mat-list-item>
             </mat-list>
           </badman-block-content>
@@ -115,7 +115,7 @@
         <badman-block class="validations">
           <badman-block-header>
             <badman-block-title>{{
-              'all.competition.team-enrollment.validations' | translate
+              "all.competition.team-enrollment.validations" | translate
             }}</badman-block-title>
           </badman-block-header>
           <mat-divider />
@@ -143,7 +143,7 @@
               (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) === 0
             ) {
               <div class="no-errors">
-                {{ 'all.competition.team-assembly.errors.none' | translate }}
+                {{ "all.competition.team-assembly.errors.none" | translate }}
               </div>
             }
           </badman-block-content>
@@ -208,37 +208,37 @@
             @for (availibility of location?.availabilities ?? []; track availibility) {
               <div>
                 <h4>
-                  {{ 'all.competition.team-enrollment.play-days' | translate }}
+                  {{ "all.competition.team-enrollment.play-days" | translate }}
                 </h4>
                 <mat-list role="list">
                   @for (day of availibility?.days ?? []; track day) {
                     <mat-list-item role="listitem">
                       <span matListItemTitle>
-                        {{ 'all.days.' + day.day | translate }},
+                        {{ "all.days." + day.day | translate }},
                         {{ day.startTime }}
-                        {{ 'all.ranking.breakdown.untill' | translate }}
+                        {{ "all.ranking.breakdown.untill" | translate }}
                         {{ day.endTime }}</span
                       >
                       <span matListItemLine>
-                        {{ day.courts }} {{ 'all.input.courts' | translate }}
+                        {{ day.courts }} {{ "all.input.courts" | translate }}
                       </span>
                     </mat-list-item>
                   }
                 </mat-list>
                 <h4>
-                  {{ 'all.competition.team-enrollment.exceptions' | translate }}
+                  {{ "all.competition.team-enrollment.exceptions" | translate }}
                 </h4>
                 <mat-list role="list">
                   @for (exception of availibility?.exceptions ?? []; track exception) {
                     <mat-list-item role="listitem">
                       <span matListItemTitle>
-                        {{ exception.start | amDateFormat: 'L' }}
-                        {{ 'all.ranking.breakdown.untill' | translate }}
-                        {{ exception.end | amDateFormat: 'L' }}
+                        {{ exception.start | amDateFormat: "L" }}
+                        {{ "all.ranking.breakdown.untill" | translate }}
+                        {{ exception.end | amDateFormat: "L" }}
                       </span>
                       <span matListItemLine>
                         {{ exception.courts }}
-                        {{ 'all.input.courts' | translate }}
+                        {{ "all.input.courts" | translate }}
                       </span>
                     </mat-list-item>
                   }
@@ -262,7 +262,7 @@
           </badman-block-title>
           <badman-block-subtitle>
             {{ comment.player?.fullName }} -
-            {{ comment.createdAt | amDateFormat: 'LLLL' }}
+            {{ comment.createdAt | amDateFormat: "LLLL" }}
           </badman-block-subtitle>
         </badman-block-header>
         <mat-divider></mat-divider>

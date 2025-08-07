@@ -1,17 +1,16 @@
-
-import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { DrawCompetition, DrawTournament, Location } from '@badman/frontend-models';
-import { NgMapsGoogleModule } from '@ng-maps/google';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
+import { ChangeDetectionStrategy, Component, OnInit, input, inject } from "@angular/core";
+import { RouterModule } from "@angular/router";
+import { DrawCompetition, DrawTournament, Location } from "@badman/frontend-models";
+import { NgMapsGoogleModule } from "@ng-maps/google";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
 
 @Component({
-    selector: 'badman-draw-locations-map',
-    templateUrl: './draw-locations-map.component.html',
-    styleUrls: ['./draw-locations-map.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterModule, TranslatePipe, NgMapsGoogleModule]
+  selector: "badman-draw-locations-map",
+  templateUrl: "./draw-locations-map.component.html",
+  styleUrls: ["./draw-locations-map.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterModule, TranslatePipe, NgMapsGoogleModule],
 })
 export class DrawLocationMapComponent implements OnInit {
   private apollo = inject(Apollo);

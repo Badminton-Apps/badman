@@ -1,16 +1,15 @@
-
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Player } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component, computed, input } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { Player } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
-    selector: 'badman-assembly-player',
-    imports: [TranslatePipe, MatIconModule, MatTooltipModule],
-    templateUrl: './team-assembly-player.component.html',
-    styleUrls: ['./team-assembly-player.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "badman-assembly-player",
+  imports: [TranslatePipe, MatIconModule, MatTooltipModule],
+  templateUrl: "./team-assembly-player.component.html",
+  styleUrls: ["./team-assembly-player.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamAssemblyPlayerComponent {
   player = input.required<Player>();
@@ -19,7 +18,7 @@ export class TeamAssemblyPlayerComponent {
   levelException = input.required<boolean>();
   ranking = computed(() => {
     if (!this.showType()) {
-      if (this.eventType() == 'M' || this.eventType() == 'F') {
+      if (this.eventType() == "M" || this.eventType() == "F") {
         return `${this.player().lastRanking?.single ?? 12} - ${
           this.player().lastRanking?.double ?? 12
         }`;
@@ -29,11 +28,11 @@ export class TeamAssemblyPlayerComponent {
         } - ${this.player().lastRanking?.mix ?? 12}`;
       }
     } else {
-      if (this.showType()?.includes('single')) {
+      if (this.showType()?.includes("single")) {
         return `${this.player().lastRanking?.single ?? 12}`;
       } else if (
-        this.eventType() == 'MX' &&
-        (this.showType() == 'double3' || this.showType() == 'double4')
+        this.eventType() == "MX" &&
+        (this.showType() == "double3" || this.showType() == "double4")
       ) {
         return `${this.player().lastRanking?.mix ?? 12}`;
       } else {

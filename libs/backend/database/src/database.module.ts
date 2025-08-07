@@ -1,13 +1,13 @@
-import { CacheModule } from '@badman/backend-cache';
-import { ConfigType } from '@badman/utils';
-import { Logger, Module, OnModuleInit } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { slugifyModel } from 'sequelize-slugify';
-import { Model, Sequelize } from 'sequelize-typescript';
-import { Club, EventCompetition, EventTournament, Player, Team } from './models';
-import { SequelizeConfigProvider } from './provider';
-import { loadTest } from './_testing/load-test';
+import { CacheModule } from "@badman/backend-cache";
+import { ConfigType } from "@badman/utils";
+import { Logger, Module, OnModuleInit } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { slugifyModel } from "sequelize-slugify";
+import { Model, Sequelize } from "sequelize-typescript";
+import { Club, EventCompetition, EventTournament, Player, Team } from "./models";
+import { SequelizeConfigProvider } from "./provider";
+import { loadTest } from "./_testing/load-test";
 
 @Module({
   imports: [
@@ -26,37 +26,37 @@ export class DatabaseModule implements OnModuleInit {
   // get sequelize instance
   constructor(
     private readonly configService: ConfigService<ConfigType>,
-    private readonly sequelize: Sequelize,
+    private readonly sequelize: Sequelize
   ) {}
 
   async onModuleInit() {
-    if (this.configService.get('NODE_ENV') === 'test') {
+    if (this.configService.get("NODE_ENV") === "test") {
       // initialize test database
-      this.logger.log('Initializing test database');
+      this.logger.log("Initializing test database");
       await this.sequelize.sync({ force: true });
 
       // load test data
-      this.logger.log('Loading test data');
+      this.logger.log("Loading test data");
       await loadTest();
     }
 
     this.sequelize.options.logging = false;
 
-    this.logger.debug('initialize addons');
+    this.logger.debug("initialize addons");
     slugifyModel(Player as unknown as Model, {
-      source: ['firstName', 'lastName', 'memberId'],
+      source: ["firstName", "lastName", "memberId"],
     });
     slugifyModel(EventCompetition as unknown as Model, {
-      source: ['name'],
+      source: ["name"],
     });
     slugifyModel(EventTournament as unknown as Model, {
-      source: ['name'],
+      source: ["name"],
     });
     slugifyModel(Club as unknown as Model, {
-      source: ['name'],
+      source: ["name"],
     });
     slugifyModel(Team as unknown as Model, {
-      source: ['name', 'season'],
+      source: ["name", "season"],
     });
   }
 }

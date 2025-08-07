@@ -1,1 +1,1 @@
-export * from './tournament.module';
+export * from "./tournament.module";

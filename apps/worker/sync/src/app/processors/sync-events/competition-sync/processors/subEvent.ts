@@ -1,16 +1,16 @@
-import { EventCompetition, RankingSystem, SubEventCompetition } from '@badman/backend-database';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
+import { EventCompetition, RankingSystem, SubEventCompetition } from "@badman/backend-database";
+import moment from "moment";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
 import {
   VisualService,
   XmlGenderID,
   XmlTournament,
   XmlTournamentEvent,
-} from '@badman/backend-visual';
+} from "@badman/backend-visual";
 
-import { LevelType, SubEventTypeEnum } from '@badman/utils';
-import { Logger, NotFoundException } from '@nestjs/common';
+import { LevelType, SubEventTypeEnum } from "@badman/utils";
+import { Logger, NotFoundException } from "@nestjs/common";
 
 export interface SubEventStepData {
   subEvent: SubEventCompetition;
@@ -24,7 +24,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -46,7 +46,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
 
     const visualEvents = await this.visualService.getSubEvents(
       this.visualTournament.Code,
-      !canChange,
+      !canChange
     );
     const returnSubEvents: SubEventStepData[] = [];
 
@@ -65,7 +65,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         const [first, ...rest] = dbSubEvents;
         dbSubEvent = first;
 
-        this.logger.warn('Having multiple? Removing old');
+        this.logger.warn("Having multiple? Removing old");
         await SubEventCompetition.destroy({
           where: {
             id: {
@@ -94,16 +94,16 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
           subEvents.find(
             (r) =>
               r.name?.toLowerCase()?.trim() ===
-                xmlEvent.Name.replace(/[ABCDE]+$/gm, '')
+                xmlEvent.Name.replace(/[ABCDE]+$/gm, "")
                   .trim()
-                  ?.toLowerCase() && r.eventType === type,
+                  ?.toLowerCase() && r.eventType === type
           ) ?? null;
       }
 
       if (!dbSubEvent) {
         if (this.existed) {
           this.logger.warn(
-            `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`,
+            `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`
           );
         }
 

@@ -1,4 +1,4 @@
-import { WritableSignal, signal } from '@angular/core';
+import { WritableSignal, signal } from "@angular/core";
 
 /**
  * This variable is used to store the signal

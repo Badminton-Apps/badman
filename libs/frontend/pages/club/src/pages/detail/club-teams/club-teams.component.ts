@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,30 +10,30 @@ import {
   inject,
   input,
   output,
-} from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+} from "@angular/core";
+import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { RouterModule } from "@angular/router";
 import {
   HasClaimComponent,
   LoadingBlockComponent,
   RecentGamesComponent,
-  UpcomingGamesComponent
-} from '@badman/frontend-components';
-import { Team } from '@badman/frontend-models';
-import { DEVICE } from '@badman/frontend-utils';
-import { SubEventTypeEnum } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { startWith, takeUntil } from 'rxjs/operators';
-import { ClubTeamsService } from './club-teams.service';
+  UpcomingGamesComponent,
+} from "@badman/frontend-components";
+import { Team } from "@badman/frontend-models";
+import { DEVICE } from "@badman/frontend-utils";
+import { SubEventTypeEnum } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { startWith, takeUntil } from "rxjs/operators";
+import { ClubTeamsService } from "./club-teams.service";
 
 @Component({
-  selector: 'badman-club-teams',
+  selector: "badman-club-teams",
   imports: [
     ReactiveFormsModule,
     FormsModule,
@@ -46,10 +46,10 @@ import { ClubTeamsService } from './club-teams.service';
     MatButtonToggleModule,
     HasClaimComponent,
     RecentGamesComponent,
-    UpcomingGamesComponent
-],
-  templateUrl: './club-teams.component.html',
-  styleUrls: ['./club-teams.component.scss'],
+    UpcomingGamesComponent,
+  ],
+  templateUrl: "./club-teams.component.html",
+  styleUrls: ["./club-teams.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubTeamsComponent implements OnInit {
@@ -97,13 +97,13 @@ export class ClubTeamsComponent implements OnInit {
   editTeam(team: Team) {
     console.log(this.clubTeamsService.locations());
 
-    import('@badman/frontend-team').then((m) => {
+    import("@badman/frontend-team").then((m) => {
       this.dialog
         .open(m.EditDialogComponent, {
           data: {
             team: team,
             teamNumbers: {
-              [team.type ?? 'M']: this.clubTeamsService
+              [team.type ?? "M"]: this.clubTeamsService
                 .teams?.()
                 ?.filter((t) => t.type == team.type)
                 ?.map((t) => t.teamNumber),
@@ -111,8 +111,8 @@ export class ClubTeamsComponent implements OnInit {
             locations: this.clubTeamsService.locations(),
           },
 
-          width: '100%',
-          maxWidth: '600px',
+          width: "100%",
+          maxWidth: "600px",
         })
         .afterClosed()
         .subscribe(() => {
@@ -122,7 +122,7 @@ export class ClubTeamsComponent implements OnInit {
   }
 
   addTeam() {
-    import('@badman/frontend-team').then((m) => {
+    import("@badman/frontend-team").then((m) => {
       this.dialog
         .open(m.AddDialogComponent, {
           data: {
@@ -151,8 +151,8 @@ export class ClubTeamsComponent implements OnInit {
             locations: this.clubTeamsService.locations(),
           },
           disableClose: true,
-          width: '100%',
-          maxWidth: '600px',
+          width: "100%",
+          maxWidth: "600px",
         })
         .afterClosed()
         .subscribe(() => {

@@ -1,9 +1,9 @@
-import { Club, EventCompetition, Location, Team } from '@badman/backend-database';
-import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment';
-import xlsx from 'xlsx';
-import { CpClub, CpLocation } from './clubs-locations';
-import { autoFilter, autoSize } from '../../../shared/excel';
+import { Club, EventCompetition, Location, Team } from "@badman/backend-database";
+import { Injectable, Logger } from "@nestjs/common";
+import moment from "moment";
+import xlsx from "xlsx";
+import { CpClub, CpLocation } from "./clubs-locations";
+import { autoFilter, autoSize } from "../../../shared/excel";
 
 @Injectable()
 export class AddLocationsId {
@@ -32,12 +32,12 @@ export class AddLocationsId {
   public async encountersWithLocations(
     eventId: string,
     cpClubs: CpClub[],
-    cplocations: CpLocation[],
+    cplocations: CpLocation[]
   ) {
     const event = await EventCompetition.findByPk(eventId);
 
     const teamMatches = xlsx.readFile(
-      `apps/scripts/src/app/scripts/add-locations-to-cp/exportteammatches391192 ${event?.name}.xlsx`,
+      `apps/scripts/src/app/scripts/add-locations-to-cp/exportteammatches391192 ${event?.name}.xlsx`
     );
     const teamMatchesSheet = teamMatches.Sheets[teamMatches.SheetNames[0]];
     const teamMatchesJson = xlsx.utils.sheet_to_json<{
@@ -52,18 +52,18 @@ export class AddLocationsId {
 
     const data: (string | number | boolean)[][] = [
       [
-        'matchid',
-        'Home Club',
-        'Home Team',
-        'Away Team',
-        'Datum',
-        'Locatie ontmoeting',
-        '',
-        '',
-        '',
-        'Locatie Club 1',
-        'Locatie Club 2',
-        'Locatie Club 3',
+        "matchid",
+        "Home Club",
+        "Home Team",
+        "Away Team",
+        "Datum",
+        "Locatie ontmoeting",
+        "",
+        "",
+        "",
+        "Locatie Club 1",
+        "Locatie Club 2",
+        "Locatie Club 3",
       ],
     ];
 
@@ -90,7 +90,7 @@ export class AddLocationsId {
         include: [
           {
             model: Team,
-            as: 'home',
+            as: "home",
             include: [
               {
                 model: Club,
@@ -102,7 +102,7 @@ export class AddLocationsId {
               },
             ],
           },
-          { model: Team, as: 'away' },
+          { model: Team, as: "away" },
         ],
       });
 
@@ -115,12 +115,12 @@ export class AddLocationsId {
       const home = encounter[0].home;
       const away = encounter[0].away;
 
-      if (!teamMatch.team1name.includes(home?.name ?? '')) {
+      if (!teamMatch.team1name.includes(home?.name ?? "")) {
         this.logger.warn(`Home team not found ${teamMatch.team1name}`);
         data.push(this.get_row(teamMatch));
       }
 
-      if (!teamMatch.team2name.includes(away?.name ?? '')) {
+      if (!teamMatch.team2name.includes(away?.name ?? "")) {
         this.logger.warn(`Home team not found ${teamMatch.team2name}`);
         data.push(this.get_row(teamMatch, home));
       }
@@ -134,9 +134,9 @@ export class AddLocationsId {
         continue;
       }
       // parse teamMatch planned time as 'DD-MM-YYYY HH:MM:ss
-      const plannedTime = moment(teamMatch.plannedtime, 'DD-MM-YYYY HH:mm:ss');
+      const plannedTime = moment(teamMatch.plannedtime, "DD-MM-YYYY HH:mm:ss");
 
-      if (!plannedTime.isSame(encounter[0].date, 'minute')) {
+      if (!plannedTime.isSame(encounter[0].date, "minute")) {
         this.logger.warn(`Planned is not the same ${teamMatch.plannedtime} - ${encounter[0].date}`);
       }
 
@@ -162,14 +162,14 @@ export class AddLocationsId {
           usedLocationId = locationForClub.id;
         } else {
           this.logger.warn(
-            `No location found for club ${home?.club?.name} and encounter ${encounter[0].id}`,
+            `No location found for club ${home?.club?.name} and encounter ${encounter[0].id}`
           );
         }
       }
 
       if (!usedLocationId) {
         this.logger.warn(
-          `No location found for club ${home?.club?.name} and encounter ${encounter[0].id}`,
+          `No location found for club ${home?.club?.name} and encounter ${encounter[0].id}`
         );
       }
 
@@ -178,8 +178,8 @@ export class AddLocationsId {
           teamMatch,
           home || null,
           cplocations?.find((l) => l.id == usedLocationId)?.name,
-          home?.club?.locations || [],
-        ),
+          home?.club?.locations || []
+        )
       );
     }
 
@@ -189,7 +189,7 @@ export class AddLocationsId {
     autoSize(ws);
     autoFilter(ws);
 
-    xlsx.utils.book_append_sheet(wb, ws, 'Encounter Data na sync');
+    xlsx.utils.book_append_sheet(wb, ws, "Encounter Data na sync");
     const fileName = `apps/scripts/src/app/scripts/add-locations-to-cp/export-encounters-and-locations-${event?.name}.xlsx`;
     xlsx.writeFile(wb, fileName);
   }
@@ -207,19 +207,19 @@ export class AddLocationsId {
 
     home?: Team | null,
     locationName?: string | undefined,
-    clubLocations?: Location[],
+    clubLocations?: Location[]
   ) {
     return [
       teamMatch.matchid,
-      home?.club?.name || '',
-      teamMatch.team1name || '',
-      teamMatch.team2name || '',
-      teamMatch.plannedtime || '',
-      locationName || '',
-      '',
-      '',
-      '',
-      ...(clubLocations?.map((l) => l.name || '') ?? []),
+      home?.club?.name || "",
+      teamMatch.team1name || "",
+      teamMatch.team2name || "",
+      teamMatch.plannedtime || "",
+      locationName || "",
+      "",
+      "",
+      "",
+      ...(clubLocations?.map((l) => l.name || "") ?? []),
     ];
   }
 }

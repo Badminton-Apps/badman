@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface) => {
@@ -13,7 +13,7 @@ module.exports = {
                 schemaname = 'public' AND 
                 tablename  = 'SequelizeMeta'
             );`,
-          { transaction: t },
+          { transaction: t }
         );
 
         // Check if meta exsists This means we come from an old version of the database,
@@ -2440,10 +2440,10 @@ module.exports = {
                 
                 
                   `,
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -2452,9 +2452,9 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        console.warn('Just delete the DB');
+        console.warn("Just delete the DB");
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

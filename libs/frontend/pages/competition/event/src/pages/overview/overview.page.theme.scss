@@ -1,24 +1,20 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
-@use './competition-events/competition-events.component.theme.scss' as competition-events;
+@use "./competition-events/competition-events.component.theme.scss" as competition-events;
 
 @mixin color($theme) {
   badman-competition-overview {
     @include competition-events.color($theme);
 
-    
     // Background color
-    
   }
 }
 
 @mixin typography($theme) {
   badman-competition-overview {
     @include competition-events.typography($theme);
-
-    
   }
 }

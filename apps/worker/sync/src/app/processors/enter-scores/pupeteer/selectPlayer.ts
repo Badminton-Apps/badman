@@ -1,6 +1,6 @@
-import { Page } from 'puppeteer';
-import { waitForSelectors } from '@badman/backend-pupeteer';
-import { Logger } from '@nestjs/common';
+import { Page } from "puppeteer";
+import { waitForSelectors } from "@badman/backend-pupeteer";
+import { Logger } from "@nestjs/common";
 
 export async function selectPlayer(
   pupeteer: {
@@ -11,13 +11,13 @@ export async function selectPlayer(
     timeout: 5000,
   },
   memberId: string,
-  player: 't1p1' | 't1p2' | 't2p1' | 't2p2',
+  player: "t1p1" | "t1p2" | "t2p1" | "t2p2",
   matchId: string,
-  logger: Logger,
+  logger: Logger
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
   const selector = `#match_${matchId}_${player}`;
   logger.debug(`Selecting player ${memberId} in ${selector}`);
@@ -30,7 +30,7 @@ export async function selectPlayer(
     const targetPage = page;
     const option = await waitForSelectors([[selector]], targetPage, timeout);
 
-    const options = await option.$$('option');
+    const options = await option.$$("option");
     let selectedOption = null;
 
     // pass the single handle below
@@ -53,23 +53,23 @@ export async function selectPlayer(
     }
 
     const optionValue = await page.evaluate((el) => el.value, selectedOption ?? options[3]);
-    console.log('optionValue', optionValue);
+    console.log("optionValue", optionValue);
     // await option.type(optionValue);
-    
+
     await option.focus();
     await option.evaluate((el, value) => {
-        // Cast to HTMLSelectElement to access selectedIndex
-        const select = el as HTMLSelectElement;
-        
-        // Find the index of the option with the matching value
-        const index = Array.from(select.options).findIndex(opt => opt.value === value);
-        if (index !== -1) {
-            select.selectedIndex = index;
-        }
-        
-        // Trigger necessary events
-        select.dispatchEvent(new Event('input', { bubbles: true }));
-        select.dispatchEvent(new Event('change', { bubbles: true }));
+      // Cast to HTMLSelectElement to access selectedIndex
+      const select = el as HTMLSelectElement;
+
+      // Find the index of the option with the matching value
+      const index = Array.from(select.options).findIndex((opt) => opt.value === value);
+      if (index !== -1) {
+        select.selectedIndex = index;
+      }
+
+      // Trigger necessary events
+      select.dispatchEvent(new Event("input", { bubbles: true }));
+      select.dispatchEvent(new Event("change", { bubbles: true }));
     }, optionValue);
   }
 }

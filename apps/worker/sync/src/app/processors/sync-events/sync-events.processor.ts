@@ -1,15 +1,15 @@
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { PointsService } from '@badman/backend-ranking';
-import { VisualService, XmlTournament, XmlTournamentTypeID } from '@badman/backend-visual';
-import { Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job } from 'bull';
-import { Sequelize } from 'sequelize-typescript';
-import { CompetitionSyncer } from './competition-sync';
-import { TournamentSyncer } from './tournament-sync';
-import moment from 'moment';
-import { NotificationService } from '@badman/backend-notifications';
-import { CronJob, EventCompetition, EventTournament } from '@badman/backend-database';
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { PointsService } from "@badman/backend-ranking";
+import { VisualService, XmlTournament, XmlTournamentTypeID } from "@badman/backend-visual";
+import { Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job } from "bull";
+import { Sequelize } from "sequelize-typescript";
+import { CompetitionSyncer } from "./competition-sync";
+import { TournamentSyncer } from "./tournament-sync";
+import moment from "moment";
+import { NotificationService } from "@badman/backend-notifications";
+import { CronJob, EventCompetition, EventTournament } from "@badman/backend-database";
 
 @Processor({
   name: SyncQueue,
@@ -20,17 +20,17 @@ export class SyncEventsProcessor {
 
   private readonly logger = new Logger(SyncEventsProcessor.name);
   private formats = [
-    'https://www.toernooi.nl/sport/league?id=',
-    'https://www.badmintonvlaanderen.be/sport/tournament?id=',
-    'https://www.toernooi.nl/tournament/',
-    'https://www.badmintonvlaanderen.be/tournament/',
+    "https://www.toernooi.nl/sport/league?id=",
+    "https://www.badmintonvlaanderen.be/sport/tournament?id=",
+    "https://www.toernooi.nl/tournament/",
+    "https://www.badmintonvlaanderen.be/tournament/",
   ];
 
   constructor(
     pointService: PointsService,
     private notificationService: NotificationService,
     private visualService: VisualService,
-    private _sequelize: Sequelize,
+    private _sequelize: Sequelize
   ) {
     this._competitionSync = new CompetitionSyncer(this.visualService, pointService);
     this._tournamentSync = new TournamentSyncer(this.visualService, pointService);
@@ -59,17 +59,17 @@ export class SyncEventsProcessor {
       limit: number;
       // the to notifiy user
       userId?: string | string[];
-    }>,
+    }>
   ) {
     const cronJob = await CronJob.findOne({
       where: {
-        'meta.jobName': Sync.SyncEvents,
-        'meta.queueName': SyncQueue,
+        "meta.jobName": Sync.SyncEvents,
+        "meta.queueName": SyncQueue,
       },
     });
 
     if (!cronJob) {
-      throw new Error('Job not found');
+      throw new Error("Job not found");
     }
 
     cronJob.amount++;
@@ -96,7 +96,7 @@ export class SyncEventsProcessor {
         for (let id of job.data?.id as string[]) {
           for (const format of this.formats) {
             if (id.startsWith(format)) {
-              id = id.replace(format, '');
+              id = id.replace(format, "");
               break;
             }
           }
@@ -158,7 +158,7 @@ export class SyncEventsProcessor {
             //   continue;
             // }
 
-            if (!job.data?.skip?.includes('competition')) {
+            if (!job.data?.skip?.includes("competition")) {
               resultData = (await this._competitionSync.process({
                 transaction,
                 xmlTournament,
@@ -166,7 +166,7 @@ export class SyncEventsProcessor {
               })) as { event: EventCompetition };
             }
           } else {
-            if (!job.data?.skip?.includes('tournament')) {
+            if (!job.data?.skip?.includes("tournament")) {
               resultData = (await this._tournamentSync.process({
                 transaction,
                 xmlTournament,
@@ -189,7 +189,7 @@ export class SyncEventsProcessor {
             }
           }
         } catch (e) {
-          this.logger.error('Rollback', e);
+          this.logger.error("Rollback", e);
           await transaction.rollback();
 
           if (job.data?.userId) {
@@ -208,7 +208,7 @@ export class SyncEventsProcessor {
         }
       }
     } catch (e) {
-      this.logger.error('Error', e);
+      this.logger.error("Error", e);
 
       throw e;
     } finally {
@@ -217,6 +217,6 @@ export class SyncEventsProcessor {
       await cronJob.save();
     }
 
-    this.logger.log('Finished sync of Visual scores');
+    this.logger.log("Finished sync of Visual scores");
   }
 }

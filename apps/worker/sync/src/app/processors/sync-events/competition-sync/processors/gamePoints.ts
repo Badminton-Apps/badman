@@ -5,20 +5,20 @@ import {
   Player,
   RankingPoint,
   RankingSystem,
-} from '@badman/backend-database';
+} from "@badman/backend-database";
 
-import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
-import { Logger } from '@nestjs/common';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
-import { runParallel } from '@badman/utils';
+import { PointsService, StartVisualRankingDate } from "@badman/backend-ranking";
+import { Logger } from "@nestjs/common";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
+import { runParallel } from "@badman/utils";
 
 export class CompetitionSyncPointProcessor extends StepProcessor {
   public event?: EventCompetition;
 
   constructor(
     private pointService: PointsService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -48,8 +48,8 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
         for (const rankingSystem of group.rankingSystems ?? []) {
           const encounterIds = (
             await subEvent.getDrawCompetitions({
-              attributes: ['id'],
-              include: [{ model: EncounterCompetition, attributes: ['id'] }],
+              attributes: ["id"],
+              include: [{ model: EncounterCompetition, attributes: ["id"] }],
               transaction: this.transaction,
             })
           )
@@ -62,7 +62,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
           }
 
           const games = await Game.findAll({
-            attributes: ['id', 'winner', 'set1Team1', 'set2Team2', 'playedAt', 'gameType'],
+            attributes: ["id", "winner", "set1Team1", "set2Team2", "playedAt", "gameType"],
             where: {
               linkId: {
                 [Op.in]: encounterIds,
@@ -74,13 +74,13 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
             include: [
               {
                 model: RankingPoint,
-                attributes: ['id'],
+                attributes: ["id"],
                 required: false,
                 where: { systemId: rankingSystem.id },
               },
               {
                 model: Player,
-                attributes: ['id'],
+                attributes: ["id"],
               },
             ],
             transaction: this.transaction,
@@ -90,8 +90,8 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
             games?.map((game) =>
               this.pointService.createRankingPointforGame(rankingSystem, game, {
                 transaction: this.transaction,
-              }),
-            ) ?? [],
+              })
+            ) ?? []
           );
 
           totalGames += games.length;

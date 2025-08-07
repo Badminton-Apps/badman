@@ -1,4 +1,4 @@
-import { LoggedInUser, User } from '@badman/backend-authorization';
+import { LoggedInUser, User } from "@badman/backend-authorization";
 import {
   Claim,
   Club,
@@ -25,14 +25,14 @@ import {
   TeamPlayerMembership,
   TeamWithPlayerMembershipType,
   Role,
-} from '@badman/backend-database';
-import { IsUUID, getSeason, getRankingProtected } from '@badman/utils';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Op } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs, WhereArgs, queryFixer } from '../../utils';
-import { PointsService } from '@badman/backend-ranking';
+} from "@badman/backend-database";
+import { IsUUID, getSeason, getRankingProtected } from "@badman/utils";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Op } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs, WhereArgs, queryFixer } from "../../utils";
+import { PointsService } from "@badman/backend-ranking";
 
 @Resolver(() => Player)
 export class PlayersResolver {
@@ -40,11 +40,11 @@ export class PlayersResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private pointService: PointsService,
+    private pointService: PointsService
   ) {}
 
   @Query(() => Player)
-  async player(@Args('id', { type: () => ID }) id: string): Promise<Player> {
+  async player(@Args("id", { type: () => ID }) id: string): Promise<Player> {
     const player = IsUUID(id)
       ? await Player.findByPk(id)
       : await Player.findOne({
@@ -123,13 +123,13 @@ export class PlayersResolver {
     return player.getPermissions();
   }
 
-  @ResolveField(() => [RankingPlace], { description: 'Default sorting: DESC' })
+  @ResolveField(() => [RankingPlace], { description: "Default sorting: DESC" })
   async rankingPlaces(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<RankingPlace[]> {
     const places = await player.getRankingPlaces({
-      order: [['rankingDate', 'DESC']],
+      order: [["rankingDate", "DESC"]],
       ...ListArgs.toFindOptions(listArgs),
     });
 
@@ -155,14 +155,14 @@ export class PlayersResolver {
   }
 
   @ResolveField(() => [RankingLastPlace], {
-    description: 'Default sorting: DESC',
+    description: "Default sorting: DESC",
   })
   async rankingLastPlaces(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<RankingLastPlace[]> {
     const places = await player.getRankingLastPlaces({
-      order: [['rankingDate', 'DESC']],
+      order: [["rankingDate", "DESC"]],
       ...ListArgs.toFindOptions(listArgs),
     });
 
@@ -196,11 +196,11 @@ export class PlayersResolver {
   async teams(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
-    @Args('season', {
+    @Args("season", {
       nullable: true,
-      description: 'Include the inactive teams (this overwrites the active filter if given)',
+      description: "Include the inactive teams (this overwrites the active filter if given)",
     })
-    season?: number,
+    season?: number
   ): Promise<(Team & { TeamMembership: TeamPlayerMembership })[] | Team[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
 
@@ -216,13 +216,13 @@ export class PlayersResolver {
   async clubs(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
-    @Args('includeHistorical', {
+    @Args("includeHistorical", {
       nullable: true,
-      description: 'Include the historical clubs',
+      description: "Include the historical clubs",
       defaultValue: false,
       type: () => Boolean,
     })
-    historical = false,
+    historical = false
   ): Promise<(Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
 
@@ -243,8 +243,8 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Player)
-  async createPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
-    if (!(await user.hasAnyPermission(['add:player']))) {
+  async createPlayer(@User() user: Player, @Args("data") data: PlayerNewInput) {
+    if (!(await user.hasAnyPermission(["add:player"]))) {
       throw new UnauthorizedException(`You do not have permission to create a player`);
     }
 
@@ -256,7 +256,7 @@ export class PlayersResolver {
         {
           ...data,
         },
-        { transaction },
+        { transaction }
       );
 
       await transaction.commit();
@@ -269,8 +269,8 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Player)
-  async updatePlayer(@User() user: Player, @Args('data') data: PlayerUpdateInput) {
-    if (!(await user.hasAnyPermission([`${data.id}_edit:player`, 'edit-any:player']))) {
+  async updatePlayer(@User() user: Player, @Args("data") data: PlayerUpdateInput) {
+    if (!(await user.hasAnyPermission([`${data.id}_edit:player`, "edit-any:player"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this player`);
     }
 
@@ -298,8 +298,8 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Boolean)
-  async removePlayer(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
-    if (!(await user.hasAnyPermission(['delete:player']))) {
+  async removePlayer(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
+    if (!(await user.hasAnyPermission(["delete:player"]))) {
       throw new UnauthorizedException(`You do not have permission to delete this player`);
     }
 
@@ -329,7 +329,7 @@ export class PlayersResolver {
   @Mutation(() => Player)
   async claimAccount(
     @User() user: LoggedInUser,
-    @Args('playerId') playerId: string,
+    @Args("playerId") playerId: string
   ): Promise<Player> {
     const player = await Player.findByPk(playerId);
     if (!player) {
@@ -337,12 +337,12 @@ export class PlayersResolver {
     }
 
     if (player.sub === user.sub) {
-      throw new Error('You are already claimed ');
+      throw new Error("You are already claimed ");
     }
 
     // check if null or empty
     if ((player.sub?.trim()?.length || 0) > 0) {
-      throw new Error('Player is already claimed by someone else');
+      throw new Error("Player is already claimed by someone else");
     }
 
     player.sub = user.sub;
@@ -352,7 +352,7 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Boolean)
-  async updateSetting(@Args('settings') settingsInput: SettingUpdateInput): Promise<boolean> {
+  async updateSetting(@Args("settings") settingsInput: SettingUpdateInput): Promise<boolean> {
     const user = await Player.findByPk(settingsInput.playerId);
     if (!user) {
       throw new UnauthorizedException();
@@ -387,7 +387,7 @@ export class PlayersResolver {
   @Mutation(() => Boolean)
   async addPushSubScription(
     @User() user: Player,
-    @Args('subscription') subscription: PushSubscriptionInputType,
+    @Args("subscription") subscription: PushSubscriptionInputType
   ): Promise<boolean> {
     if (!user || !user?.id) {
       return false;
@@ -403,12 +403,12 @@ export class PlayersResolver {
 
     // check if the subscription already exists
     const existing = settings?.pushSubscriptions?.find(
-      (sub) => sub.endpoint === subscription.endpoint,
+      (sub) => sub.endpoint === subscription.endpoint
     );
 
     if (!existing) {
       this.logger.debug(
-        `Adding subscription for player ${user.fullName} (${subscription.endpoint})`,
+        `Adding subscription for player ${user.fullName} (${subscription.endpoint})`
       );
       settings.pushSubscriptions.push({
         endpoint: subscription.endpoint,
@@ -418,7 +418,7 @@ export class PlayersResolver {
           auth: subscription.keys?.auth,
         },
       } as PushSubscription);
-      settings.changed('pushSubscriptions', true);
+      settings.changed("pushSubscriptions", true);
       await settings.save();
     }
 
@@ -428,12 +428,12 @@ export class PlayersResolver {
   @Mutation(() => Boolean)
   async recalculatePlayerRankingPoints(
     @User() user: Player,
-    @Args('playerId', { type: () => ID }) playerId: string,
-    @Args('startDate', { nullable: true }) startDate?: Date,
-    @Args('endDate', { nullable: true }) endDate?: Date,
-    @Args('systemId', { nullable: true }) systemId?: string,
+    @Args("playerId", { type: () => ID }) playerId: string,
+    @Args("startDate", { nullable: true }) startDate?: Date,
+    @Args("endDate", { nullable: true }) endDate?: Date,
+    @Args("systemId", { nullable: true }) systemId?: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to resync points`);
     }
 
@@ -451,7 +451,7 @@ export class PlayersResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`No ranking system found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`No ranking system found for ${systemId || "primary"}`);
       }
 
       // find all games
@@ -488,10 +488,10 @@ export class GamePlayersResolver extends PlayersResolver {
   @ResolveField(() => RankingPlace)
   async rankingPlace(
     @Parent() player: Player & { GamePlayerMembership: GamePlayerMembership },
-    @Args() listArgs: WhereArgs,
+    @Args() listArgs: WhereArgs
   ): Promise<RankingPlace> {
     const game = await Game.findByPk(player.GamePlayerMembership.gameId, {
-      attributes: ['playedAt'],
+      attributes: ["playedAt"],
     });
 
     if (!game) {
@@ -504,7 +504,7 @@ export class GamePlayersResolver extends PlayersResolver {
         playerId: player.id,
         rankingDate: { [Op.lte]: game.playedAt },
       },
-      order: [['rankingDate', 'DESC']],
+      order: [["rankingDate", "DESC"]],
       limit: 1,
     });
 
@@ -519,7 +519,7 @@ export class PlayerTeamResolver extends PlayersResolver {
   @ResolveField(() => [RankingLastPlace])
   override async rankingLastPlaces(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<RankingLastPlace[]> {
     const args = ListArgs.toFindOptions(listArgs);
 
@@ -552,14 +552,14 @@ export class PlayerTeamResolver extends PlayersResolver {
   }
 
   @ResolveField(() => [RankingPlace], {
-    description: '(Default) sorting: DESC \n\r(Default) take: 1',
+    description: "(Default) sorting: DESC \n\r(Default) take: 1",
   })
   override async rankingPlaces(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<RankingPlace[]> {
     const args = ListArgs.toFindOptions({
-      order: [{ direction: 'DESC', field: 'rankingDate' }],
+      order: [{ direction: "DESC", field: "rankingDate" }],
       take: 1,
       ...listArgs,
     });
@@ -594,7 +594,7 @@ export class PlayerTeamResolver extends PlayersResolver {
 
   @ResolveField(() => TeamPlayerMembership, { nullable: true })
   async teamMembership(
-    @Parent() player: Player & { TeamPlayerMembership: TeamPlayerMembership },
+    @Parent() player: Player & { TeamPlayerMembership: TeamPlayerMembership }
   ): Promise<TeamPlayerMembership> {
     return player.TeamPlayerMembership;
   }
@@ -604,7 +604,7 @@ export class PlayerTeamResolver extends PlayersResolver {
 export class PlayerClubResolver extends PlayersResolver {
   @ResolveField(() => ClubPlayerMembership, { nullable: true })
   async clubMembership(
-    @Parent() player: Player & { ClubPlayerMembership: ClubPlayerMembership },
+    @Parent() player: Player & { ClubPlayerMembership: ClubPlayerMembership }
   ): Promise<ClubPlayerMembership> {
     return player.ClubPlayerMembership;
   }

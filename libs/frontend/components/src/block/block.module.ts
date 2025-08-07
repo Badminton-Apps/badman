@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule } from "@angular/core";
 import {
   BadmanBlockComponent,
   BadmanBlockTitleDirective,
@@ -14,7 +14,7 @@ import {
   BadmanBlockLgImageDirective,
   BadmanBlockXlImageDirective,
   BadmanBlockAvatarDirective,
-} from './block.component';
+} from "./block.component";
 
 const BLOCK_DIRECTIVES = [
   BadmanBlockComponent,

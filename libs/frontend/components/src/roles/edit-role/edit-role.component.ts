@@ -1,4 +1,3 @@
-
 import {
   Component,
   Injector,
@@ -9,24 +8,24 @@ import {
   computed,
   inject,
   input,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Claim, Player, Role } from '@badman/frontend-models';
-import { SecurityType } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom } from 'rxjs';
-import { groupBy, map, mergeMap, shareReplay, toArray } from 'rxjs/operators';
-import { BadmanBlockModule } from '../../block';
-import { PlayerSearchComponent } from '../../player-search';
-import { ClaimComponent } from '../claim';
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { Claim, Player, Role } from "@badman/frontend-models";
+import { SecurityType } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { lastValueFrom } from "rxjs";
+import { groupBy, map, mergeMap, shareReplay, toArray } from "rxjs/operators";
+import { BadmanBlockModule } from "../../block";
+import { PlayerSearchComponent } from "../../player-search";
+import { ClaimComponent } from "../claim";
 
 const roleQuery = gql`
   query GetRole($id: ID!) {
@@ -47,8 +46,8 @@ const roleQuery = gql`
 `;
 
 @Component({
-    selector: 'badman-edit-role',
-    imports: [
+  selector: "badman-edit-role",
+  imports: [
     TranslatePipe,
     MatButtonModule,
     MatIconModule,
@@ -59,10 +58,10 @@ const roleQuery = gql`
     MatListModule,
     PlayerSearchComponent,
     ClaimComponent,
-    BadmanBlockModule
-],
-    templateUrl: './edit-role.component.html',
-    styleUrls: ['./edit-role.component.scss']
+    BadmanBlockModule,
+  ],
+  templateUrl: "./edit-role.component.html",
+  styleUrls: ["./edit-role.component.scss"],
 })
 export class EditRoleComponent implements OnInit {
   private injector = inject(Injector);
@@ -91,7 +90,7 @@ export class EditRoleComponent implements OnInit {
 
   newClaims?: Claim[];
 
-  @ViewChild('editClaimsTemplate')
+  @ViewChild("editClaimsTemplate")
   editClaimsTemplateRef?: TemplateRef<HTMLElement>;
 
   ngOnInit() {
@@ -105,9 +104,9 @@ export class EditRoleComponent implements OnInit {
         })
         .valueChanges.pipe(
           shareReplay(1),
-          map((result) => new Role(result.data.role)),
+          map((result) => new Role(result.data.role))
         ),
-      { injector: this.injector },
+      { injector: this.injector }
     );
 
     this.claims = toSignal(
@@ -133,18 +132,18 @@ export class EditRoleComponent implements OnInit {
         .pipe(
           map((result) => result.data.claims.map((c) => new Claim(c))),
           mergeMap((claims) => claims ?? []),
-          groupBy((category) => category.category ?? 'Other'),
+          groupBy((category) => category.category ?? "Other"),
           mergeMap((obs) => {
             return obs.pipe(
               toArray(),
               map((items) => {
                 return { category: obs.key, claims: items };
-              }),
+              })
             );
           }),
-          toArray(),
+          toArray()
         ),
-      { injector: this.injector },
+      { injector: this.injector }
     );
   }
 
@@ -204,7 +203,7 @@ export class EditRoleComponent implements OnInit {
               },
             },
           ],
-        }),
+        })
       );
     }
   }
@@ -230,7 +229,7 @@ export class EditRoleComponent implements OnInit {
               },
             },
           ],
-        }),
+        })
       );
     }
   }
@@ -263,7 +262,7 @@ export class EditRoleComponent implements OnInit {
             },
           },
         ],
-      }),
+      })
     );
   }
 }

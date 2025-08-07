@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { EventCompetition } from '@badman/frontend-models';
-import saveAs from 'file-saver';
-import { map, take } from 'rxjs';
-import { CP_CONFIG } from '../cp.module';
-import { ICpConfig } from '../interfaces';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { EventCompetition } from "@badman/frontend-models";
+import saveAs from "file-saver";
+import { map, take } from "rxjs";
+import { CP_CONFIG } from "../cp.module";
+import { ICpConfig } from "../interfaces";
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class CpService {
   private httpClient = inject(HttpClient);
@@ -14,7 +14,7 @@ export class CpService {
 
   downloadCp(event: EventCompetition) {
     if (!event?.id) {
-      throw new Error('Event is not defined');
+      throw new Error("Event is not defined");
     }
 
     return this.httpClient
@@ -22,11 +22,11 @@ export class CpService {
         params: {
           eventId: event.id,
         },
-        responseType: 'blob',
+        responseType: "blob",
       })
       .pipe(
         take(1),
-        map((result) => saveAs(result, `${event.name}.cp`)),
+        map((result) => saveAs(result, `${event.name}.cp`))
       );
   }
 }

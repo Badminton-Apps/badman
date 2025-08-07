@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,17 +9,17 @@ module.exports = {
 
       await queryInterface.renameColumn(
         {
-          tableName: 'EventCompetitions',
-          schema: 'event',
+          tableName: "EventCompetitions",
+          schema: "event",
         },
-        'startYear',
-        'season',
-        { transaction: t },
+        "startYear",
+        "season",
+        { transaction: t }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -29,17 +29,17 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.renameColumn(
         {
-          tableName: 'EventCompetitions',
-          schema: 'event',
+          tableName: "EventCompetitions",
+          schema: "event",
         },
-        'season',
-        'startYear',
-        { transaction: t },
+        "season",
+        "startYear",
+        { transaction: t }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

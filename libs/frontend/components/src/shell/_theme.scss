@@ -1,9 +1,9 @@
-@use './shell/shell.component.theme.scss' as shell;
+@use "./shell/shell.component.theme.scss" as shell;
 
-@use './components/sidebar/user-shortcuts/user-shortcuts.component.theme.scss' as user-shortcuts;
-@use './components/header/search-box/search-box.component.theme.scss' as search-box;
-@use './components/header/logo/logo.component.theme.scss' as logo;
-@use './components/header/notifications/notifications.component.theme.scss' as notifications;
+@use "./components/sidebar/user-shortcuts/user-shortcuts.component.theme.scss" as user-shortcuts;
+@use "./components/header/search-box/search-box.component.theme.scss" as search-box;
+@use "./components/header/logo/logo.component.theme.scss" as logo;
+@use "./components/header/notifications/notifications.component.theme.scss" as notifications;
 
 @mixin theme($theme) {
   @include shell.theme($theme);

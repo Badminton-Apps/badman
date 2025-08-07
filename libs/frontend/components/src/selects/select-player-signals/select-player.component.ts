@@ -1,25 +1,24 @@
-
-import { Component, computed, effect, input, model, untracked } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { Player } from '@badman/frontend-models';
-import { MtxSelectModule } from '@ng-matero/extensions/select';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
-import { SelectPlayersService } from './select-player.service';
+import { Component, computed, effect, input, model, untracked } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { Player } from "@badman/frontend-models";
+import { MtxSelectModule } from "@ng-matero/extensions/select";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Subject } from "rxjs";
+import { SelectPlayersService } from "./select-player.service";
 
 @Component({
-    selector: 'badman-select-player',
-    imports: [
+  selector: "badman-select-player",
+  imports: [
     TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
     MtxSelectModule,
-    TranslatePipe
-],
-    templateUrl: './select-player.component.html',
-    styleUrls: ['./select-player.component.scss']
+    TranslatePipe,
+  ],
+  templateUrl: "./select-player.component.html",
+  styleUrls: ["./select-player.component.scss"],
 })
 export class SelectPlayerSignalsComponent {
   private readonly dataService = new SelectPlayersService();
@@ -28,7 +27,7 @@ export class SelectPlayerSignalsComponent {
   form = this.dataService.filter;
 
   disabled = input(false);
-  label = input('all.pickers.select-player');
+  label = input("all.pickers.select-player");
 
   possiblePlayers = computed(() => {
     let players = this.dataService.players();
@@ -70,12 +69,10 @@ export class SelectPlayerSignalsComponent {
       });
     });
 
-    effect(
-      () => {
-        if (!this.player() && this.possiblePlayers().length > 0) {
-          this.player.set(this.possiblePlayers()[0].id);
-        }
+    effect(() => {
+      if (!this.player() && this.possiblePlayers().length > 0) {
+        this.player.set(this.possiblePlayers()[0].id);
       }
-    );
+    });
   }
 }

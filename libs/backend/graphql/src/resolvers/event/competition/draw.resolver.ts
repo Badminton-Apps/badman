@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   DrawCompetition,
   DrawCompetitionUpdateInput,
@@ -9,16 +9,16 @@ import {
   RankingSystem,
   Standing,
   SubEventCompetition,
-} from '@badman/backend-database';
-import { PointsService } from '@badman/backend-ranking';
-import { sortStanding } from '@badman/utils';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../../utils';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
+} from "@badman/backend-database";
+import { PointsService } from "@badman/backend-ranking";
+import { sortStanding } from "@badman/utils";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../../utils";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
 
 @Resolver(() => DrawCompetition)
 export class DrawCompetitionResolver {
@@ -27,11 +27,11 @@ export class DrawCompetitionResolver {
   constructor(
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    @InjectQueue(SyncQueue) private _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private _syncQueue: Queue
   ) {}
 
   @Query(() => DrawCompetition)
-  async drawCompetition(@Args('id', { type: () => ID }) id: string): Promise<DrawCompetition> {
+  async drawCompetition(@Args("id", { type: () => ID }) id: string): Promise<DrawCompetition> {
     const drawCompetition = await DrawCompetition.findByPk(id);
 
     if (!drawCompetition) {
@@ -58,7 +58,7 @@ export class DrawCompetitionResolver {
   @ResolveField(() => [EncounterCompetition])
   async encounterCompetitions(
     @Parent() draw: DrawCompetition,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<EncounterCompetition[]> {
     return draw.getEncounterCompetitions(ListArgs.toFindOptions(listArgs));
   }
@@ -66,7 +66,7 @@ export class DrawCompetitionResolver {
   @Mutation(() => DrawCompetition)
   async updateDrawCompetition(
     @User() user: Player,
-    @Args('data') updateDrawCompetitionData: DrawCompetitionUpdateInput,
+    @Args("data") updateDrawCompetitionData: DrawCompetitionUpdateInput
   ): Promise<DrawCompetition> {
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
       throw new UnauthorizedException(`You do not have permission to add a competition`);
@@ -120,8 +120,8 @@ export class DrawCompetitionResolver {
 
         // save the standings
         for (const standing of standings) {
-          standing.changed('faller', true);
-          standing.changed('riser', true);
+          standing.changed("faller", true);
+          standing.changed("riser", true);
           await standing.save({ transaction });
         }
       }
@@ -145,8 +145,8 @@ export class DrawCompetitionResolver {
   @Mutation(() => [DrawCompetition])
   async updateDrawCompetitions(
     @User() user: Player,
-    @Args('data', { type: () => [DrawCompetitionUpdateInput] })
-    updateDrawCompetitionData: DrawCompetitionUpdateInput[],
+    @Args("data", { type: () => [DrawCompetitionUpdateInput] })
+    updateDrawCompetitionData: DrawCompetitionUpdateInput[]
   ): Promise<DrawCompetition[]> {
     // update all draw competitions in a transaction
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
@@ -170,10 +170,10 @@ export class DrawCompetitionResolver {
   @Mutation(() => Boolean)
   async recalculateDrawCompetitionRankingPoints(
     @User() user: Player,
-    @Args('drawId', { type: () => ID }) drawId: string,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+    @Args("drawId", { type: () => ID }) drawId: string,
+    @Args("systemId", { type: () => ID, nullable: true }) systemId: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
@@ -186,7 +186,7 @@ export class DrawCompetitionResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
       }
 
       // find all games
@@ -230,14 +230,14 @@ export class DrawCompetitionResolver {
   @Mutation(() => Boolean)
   async recalculateStandingDraw(
     @User() user: Player,
-    @Args('drawId', { type: () => ID }) drawId: string,
+    @Args("drawId", { type: () => ID }) drawId: string
   ) {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
     const draw = await DrawCompetition.findByPk(drawId, {
-      attributes: ['id'],
+      attributes: ["id"],
     });
 
     if (!draw) {
@@ -252,7 +252,7 @@ export class DrawCompetitionResolver {
       {
         removeOnComplete: true,
         removeOnFail: 1,
-      },
+      }
     );
 
     return true;

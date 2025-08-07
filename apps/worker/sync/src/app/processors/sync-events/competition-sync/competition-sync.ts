@@ -1,8 +1,8 @@
-import { PointsService } from '@badman/backend-ranking';
-import { VisualService, XmlTournament } from '@badman/backend-visual';
-import { Logger } from '@nestjs/common';
-import { Transaction } from 'sequelize';
-import { Processor, ProcessStep } from '../../../processing';
+import { PointsService } from "@badman/backend-ranking";
+import { VisualService, XmlTournament } from "@badman/backend-visual";
+import { Logger } from "@nestjs/common";
+import { Transaction } from "sequelize";
+import { Processor, ProcessStep } from "../../../processing";
 import {
   CompetitionSyncCleanupProcessor,
   CompetitionSyncDrawProcessor,
@@ -16,8 +16,8 @@ import {
   CompetitionSyncStandingProcessor,
   CompetitionSyncSubEventProcessor,
   CompetitionSyncEntryProcessor,
-} from './processors';
-import { EventCompetition } from '@badman/backend-database';
+} from "./processors";
+import { EventCompetition } from "@badman/backend-database";
 
 export class CompetitionSyncer {
   private readonly logger = new Logger(CompetitionSyncer.name);
@@ -27,18 +27,18 @@ export class CompetitionSyncer {
 
   public readonly processor: Processor;
 
-  readonly STEP_EVENT = 'event';
-  readonly STEP_SUBEVENT = 'subevent';
-  readonly STEP_RANKING = 'ranking';
-  readonly STEP_DRAW = 'draw';
-  readonly STEP_ENTRY = 'entry';
-  readonly STEP_ENCOUNTER = 'encounter';
-  readonly STEP_ENCOUNTER_LOCATION = 'encounter_location';
-  readonly STEP_PLAYER = 'player';
-  readonly STEP_GAME = 'game';
-  readonly STEP_POINT = 'point';
-  readonly STEP_STANDING = 'standing';
-  readonly STEP_CLEANUP = 'cleanup';
+  readonly STEP_EVENT = "event";
+  readonly STEP_SUBEVENT = "subevent";
+  readonly STEP_RANKING = "ranking";
+  readonly STEP_DRAW = "draw";
+  readonly STEP_ENTRY = "entry";
+  readonly STEP_ENCOUNTER = "encounter";
+  readonly STEP_ENCOUNTER_LOCATION = "encounter_location";
+  readonly STEP_PLAYER = "player";
+  readonly STEP_GAME = "game";
+  readonly STEP_POINT = "point";
+  readonly STEP_STANDING = "standing";
+  readonly STEP_CLEANUP = "cleanup";
 
   private _eventStep!: CompetitionSyncEventProcessor;
   private _subEventStep!: CompetitionSyncSubEventProcessor;
@@ -60,7 +60,7 @@ export class CompetitionSyncer {
     private pointService: PointsService,
     protected options?: {
       newGames?: boolean;
-    },
+    }
   ) {
     this.options = {
       newGames: false,
@@ -97,13 +97,13 @@ export class CompetitionSyncer {
     this._eventStep = new CompetitionSyncEventProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._subEventStep = new CompetitionSyncSubEventProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._rankingStep = new CompetitionSyncRankingProcessor(options);
@@ -111,19 +111,19 @@ export class CompetitionSyncer {
     this._drawStep = new CompetitionSyncDrawProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._entryStep = new CompetitionSyncEntryProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._encounterStep = new CompetitionSyncEncounterProcessor(
       args.xmlTournament,
       this.visualService,
-      { ...options, newGames: this.options?.newGames },
+      { ...options, newGames: this.options?.newGames }
     );
 
     this._encounterLocationStep = new CompetitionSyncEncounterLocationProcessor({
@@ -133,13 +133,13 @@ export class CompetitionSyncer {
     this._playerStep = new CompetitionSyncPlayerProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._gameStep = new CompetitionSyncGameProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._pointStep = new CompetitionSyncPointProcessor(this.pointService, options);

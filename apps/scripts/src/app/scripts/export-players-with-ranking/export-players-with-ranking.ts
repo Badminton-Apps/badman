@@ -1,9 +1,9 @@
-import { Game, Player, RankingPlace, RankingPoint, RankingSystem } from '@badman/backend-database';
-import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import xlsx from 'xlsx';
+import { Game, Player, RankingPlace, RankingPoint, RankingSystem } from "@badman/backend-database";
+import { GameBreakdownType, GameType, getGameResultType } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import moment from "moment";
+import { Op } from "sequelize";
+import xlsx from "xlsx";
 
 @Injectable()
 export class ExportPlayersWithRanking {
@@ -17,7 +17,7 @@ export class ExportPlayersWithRanking {
     });
 
     const players = await Player.findAll({
-      attributes: ['id', 'firstName', 'lastName', 'memberId', 'gender'],
+      attributes: ["id", "firstName", "lastName", "memberId", "gender"],
       where: {
         competitionPlayer: true,
         // memberId: '51648865',
@@ -26,71 +26,71 @@ export class ExportPlayersWithRanking {
       include: [
         {
           attributes: [
-            'id',
-            'single',
-            'double',
-            'mix',
-            'singlePoints',
-            'doublePoints',
-            'mixPoints',
-            'rankingDate',
-            'systemId',
+            "id",
+            "single",
+            "double",
+            "mix",
+            "singlePoints",
+            "doublePoints",
+            "mixPoints",
+            "rankingDate",
+            "systemId",
           ],
           model: RankingPlace,
           where: {
             systemId: primarySystem.id,
             rankingDate: {
-              [Op.in]: ['2024-09-02', '2024-08-12'],
+              [Op.in]: ["2024-09-02", "2024-08-12"],
             },
           },
         },
       ],
       order: [
-        ['lastName', 'ASC'],
-        ['firstName', 'ASC'],
+        ["lastName", "ASC"],
+        ["firstName", "ASC"],
       ],
     });
 
     // write players with ranking to excel
     const wb = xlsx.utils.book_new();
 
-    const singles = await this.mapData(players, primarySystem, 'single');
+    const singles = await this.mapData(players, primarySystem, "single");
     const ws = xlsx.utils.json_to_sheet(singles);
-    xlsx.utils.book_append_sheet(wb, ws, 'Singles');
+    xlsx.utils.book_append_sheet(wb, ws, "Singles");
 
-    const doubles = await this.mapData(players, primarySystem, 'double');
+    const doubles = await this.mapData(players, primarySystem, "double");
     const ws2 = xlsx.utils.json_to_sheet(doubles);
-    xlsx.utils.book_append_sheet(wb, ws2, 'Doubles');
+    xlsx.utils.book_append_sheet(wb, ws2, "Doubles");
 
-    const mix = await this.mapData(players, primarySystem, 'mix');
+    const mix = await this.mapData(players, primarySystem, "mix");
     const ws3 = xlsx.utils.json_to_sheet(mix);
-    xlsx.utils.book_append_sheet(wb, ws3, 'Mix');
+    xlsx.utils.book_append_sheet(wb, ws3, "Mix");
 
-    xlsx.writeFile(wb, 'players-with-ranking.xlsx');
+    xlsx.writeFile(wb, "players-with-ranking.xlsx");
   }
 
   private async mapData(
     players: Player[],
     system: RankingSystem,
-    type: 'single' | 'double' | 'mix',
+    type: "single" | "double" | "mix"
   ) {
     this.logger.debug(`Mapping ${players.length} data for ${type}`);
     const data = [];
     for (const player of players) {
       const rankingSep = player.rankingPlaces.find(
-        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-09-02', 'day'),
+        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame("2024-09-02", "day")
       );
 
       const rankingAug = player.rankingPlaces.find(
-        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame('2024-08-12', 'day'),
+        (rp) => rp.systemId === system.id && moment(rp.rankingDate).isSame("2024-08-12", "day")
       );
 
       const averages = await this.calcaulateAverages(
         player,
         system,
         type,
-        '2024-09-02',
-        rankingSep,
+        "2024-09-02",
+        rankingSep
       );
 
       const pointsNeededForPromotion =
@@ -99,7 +99,7 @@ export class ExportPlayersWithRanking {
         system.pointsToGoDown[system.pointsToGoDown.length - (rankingAug?.[type] ?? 0)];
 
       const shouldHaveGoneUp =
-        rankingSep?.[type + 'Points'] > pointsNeededForPromotion &&
+        rankingSep?.[type + "Points"] > pointsNeededForPromotion &&
         rankingAug?.[type] == rankingSep?.[type];
 
       let shouldHaveGoneDown =
@@ -111,21 +111,21 @@ export class ExportPlayersWithRanking {
         shouldHaveGoneDown,
         type,
         rankingAug,
-        system,
+        system
       );
 
       data.push({
         Name: player.fullName,
         Number: player.memberId,
         Gender: player.gender,
-        ['Ranking sep']: rankingSep?.[type],
-        ['Ranking aug']: rankingAug?.[type],
-        ['Points upgrade']: rankingSep?.[type + 'Points'],
-        ['Points downgrade']: averages.avgDowngrade ? Math.round(averages.avgDowngrade) : '',
-        ['Points needed']: pointsNeededForPromotion,
-        ['Should have gone up']: shouldHaveGoneUp ? 'Yes' : 'No',
-        ['Points needed downgrade']: pointsNeededForDowngrade,
-        ['Should have gone down']: shouldHaveGoneDown ? 'Yes' : 'No',
+        ["Ranking sep"]: rankingSep?.[type],
+        ["Ranking aug"]: rankingAug?.[type],
+        ["Points upgrade"]: rankingSep?.[type + "Points"],
+        ["Points downgrade"]: averages.avgDowngrade ? Math.round(averages.avgDowngrade) : "",
+        ["Points needed"]: pointsNeededForPromotion,
+        ["Should have gone up"]: shouldHaveGoneUp ? "Yes" : "No",
+        ["Points needed downgrade"]: pointsNeededForDowngrade,
+        ["Should have gone down"]: shouldHaveGoneDown ? "Yes" : "No",
       });
     }
     return data;
@@ -135,22 +135,22 @@ export class ExportPlayersWithRanking {
     shouldHaveGoneDown: boolean,
     type: string,
     rankingJul: RankingPlace,
-    system: RankingSystem,
+    system: RankingSystem
   ) {
     if (shouldHaveGoneDown) {
       const ranking = Math.min(rankingJul?.[type] + 1, system.amountOfLevels);
 
-      if (type !== 'single') {
+      if (type !== "single") {
         if (ranking - (rankingJul?.single ?? 0) > system.maxDiffLevels) {
           return false;
         }
       }
-      if (type !== 'double') {
+      if (type !== "double") {
         if (ranking - (rankingJul?.double ?? 0) > system.maxDiffLevels) {
           return false;
         }
       }
-      if (type !== 'mix') {
+      if (type !== "mix") {
         if (ranking - (rankingJul?.mix ?? 0) > system.maxDiffLevels) {
           return false;
         }
@@ -162,18 +162,18 @@ export class ExportPlayersWithRanking {
   private async calcaulateAverages(
     player: Player,
     system: RankingSystem,
-    type: 'single' | 'double' | 'mix',
+    type: "single" | "double" | "mix",
     calcDate: string,
-    rankingPlace: RankingPlace,
+    rankingPlace: RankingPlace
   ) {
     const games = await player.getGames({
       where: {
-        gameType: type == 'single' ? GameType.S : type == 'double' ? GameType.D : GameType.MX,
+        gameType: type == "single" ? GameType.S : type == "double" ? GameType.D : GameType.MX,
         playedAt: {
           [Op.lte]: calcDate,
           [Op.gt]: moment(calcDate)
             .subtract(system.periodAmount, system.periodUnit)
-            .format('YYYY-MM-DD'),
+            .format("YYYY-MM-DD"),
         },
       },
       include: [
@@ -210,16 +210,16 @@ export class ExportPlayersWithRanking {
     games: Game[],
     breakdownInfo: Map<string, GameBreakdown>,
     player: Player,
-    system: RankingSystem,
+    system: RankingSystem
   ) {
     for (const game of games) {
       const me = game.players?.find((x) => x.id == player.id);
       if (!me) {
-        throw new Error('Player not found');
+        throw new Error("Player not found");
       }
       if (!game.gameType) {
         console.warn(`Game ${game.id} has no gameType`);
-        throw new Error('Game has no gameType');
+        throw new Error("Game has no gameType");
       }
 
       const rankingPoint = game.rankingPoints?.find((x) => x.playerId == player.id);
@@ -253,7 +253,7 @@ export class ExportPlayersWithRanking {
   private _determineUsedForRanking(
     games: Game[],
     breakdownInfo: Map<string, GameBreakdown>,
-    system: RankingSystem,
+    system: RankingSystem
   ) {
     let validGamesUpgrade = 0;
     let validGamesDowngrade = 0;
@@ -316,7 +316,7 @@ export class ExportPlayersWithRanking {
     breakdownInfo: Map<string, GameBreakdown>,
     system: RankingSystem,
     rankingPlace: RankingPlace,
-    type: 'single' | 'double' | 'mix',
+    type: "single" | "double" | "mix"
   ) {
     // sort games if used for donwgrade first
     // then first all 0 points,
@@ -404,7 +404,7 @@ export class ExportPlayersWithRanking {
 
       breakdownInfo.set(game.id, info);
     }
-    const level = rankingPlace?.[type ?? 'single'] ?? 12;
+    const level = rankingPlace?.[type ?? "single"] ?? 12;
 
     // set highest avg for upgrade and downgrade
     for (const game of games) {

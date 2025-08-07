@@ -1,23 +1,23 @@
 <form [formGroup]="group()">
-  <p class="description">{{ 'all.input.required' | translate }}</p>
+  <p class="description">{{ "all.input.required" | translate }}</p>
   <div class="name">
     <mat-form-field>
-      <mat-label>{{ 'all.input.name' | translate }}</mat-label>
+      <mat-label>{{ "all.input.name" | translate }}</mat-label>
       <input matInput formControlName="name" alt="name" required />
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>{{ 'all.input.fullName' | translate }}</mat-label>
+      <mat-label>{{ "all.input.fullName" | translate }}</mat-label>
       <input matInput formControlName="fullName" alt="fullName" />
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>{{ 'all.input.teamName' | translate }}</mat-label>
+      <mat-label>{{ "all.input.teamName" | translate }}</mat-label>
       <input matInput formControlName="teamName" alt="teamName" />
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>{{ 'all.input.abbreviation' | translate }}</mat-label>
+      <mat-label>{{ "all.input.abbreviation" | translate }}</mat-label>
       <input matInput formControlName="abbreviation" alt="abbreviation" required />
     </mat-form-field>
   </div>
@@ -31,7 +31,7 @@
 
   <div>
     <mat-form-field>
-      <mat-label>{{ 'all.club.number' | translate }}</mat-label>
+      <mat-label>{{ "all.club.number" | translate }}</mat-label>
       <input matInput formControlName="clubId" alt="clubId" required type="number" />
     </mat-form-field>
   </div>

@@ -5,10 +5,10 @@
     multiple
     formControlName="choices"
   >
-    <mat-button-toggle value="M">{{ 'all.gender.male' | translate }}</mat-button-toggle>
-    <mat-button-toggle value="F">{{ 'all.gender.female' | translate }}</mat-button-toggle>
-    <mat-button-toggle value="MX">{{ 'all.gender.mix' | translate }}</mat-button-toggle>
-    <mat-button-toggle value="NATIONAL">{{ 'all.gender.national' | translate }}</mat-button-toggle>
+    <mat-button-toggle value="M">{{ "all.gender.male" | translate }}</mat-button-toggle>
+    <mat-button-toggle value="F">{{ "all.gender.female" | translate }}</mat-button-toggle>
+    <mat-button-toggle value="MX">{{ "all.gender.mix" | translate }}</mat-button-toggle>
+    <mat-button-toggle value="NATIONAL">{{ "all.gender.national" | translate }}</mat-button-toggle>
   </mat-button-toggle-group>
 </form>
 
@@ -17,7 +17,7 @@
     <div class="title">
       <h3>
         <mat-icon color="primary">groups</mat-icon>
-        {{ 'all.club.titles.teams' | translate }}
+        {{ "all.club.titles.teams" | translate }}
       </h3>
       <badman-has-claim [any]="['edit-any:club', this.clubId() + '_edit:club']">
         <button mat-icon-button (click)="this.addTeam()">
@@ -62,7 +62,7 @@
       <section class="recent-games">
         <h3>
           <mat-icon color="primary">history</mat-icon>
-          {{ 'all.game.recent.title' | translate }}
+          {{ "all.game.recent.title" | translate }}
         </h3>
         @if (isClient) {
           <badman-recent-games
@@ -74,7 +74,7 @@
       <section class="upcoming-games">
         <h3>
           <mat-icon color="primary">calendar_month</mat-icon>
-          {{ 'all.game.upcoming.title' | translate }}
+          {{ "all.game.upcoming.title" | translate }}
         </h3>
         <badman-upcoming-games
           [clubId]="this.clubId()"
@@ -87,7 +87,7 @@
   <section class="teams">
     <h3>
       <mat-icon color="primary">groups</mat-icon>
-      {{ 'all.club.titles.teams' | translate }}
+      {{ "all.club.titles.teams" | translate }}
     </h3>
     <badman-loading-block
       [items]="9"
@@ -100,14 +100,14 @@
     <section class="recent-games">
       <h3>
         <mat-icon color="primary">history</mat-icon>
-        {{ 'all.game.recent.title' | translate }}
+        {{ "all.game.recent.title" | translate }}
       </h3>
       <badman-loading-block height="24px" subHeight="12px" [items]="10" width="400px" />
     </section>
     <section class="upcoming-games">
       <h3>
         <mat-icon color="primary">calendar_month</mat-icon>
-        {{ 'all.game.upcoming.title' | translate }}
+        {{ "all.game.upcoming.title" | translate }}
       </h3>
       <badman-loading-block height="24px" subHeight="12px" [items]="10" width="300px" />
     </section>

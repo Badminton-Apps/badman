@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,13 +8,13 @@ module.exports = {
       try {
         // change encounterChangeConformationNotification to encounterChangeConfirmationNotification
         await queryInterface.renameColumn(
-          { tableName: 'Settings', schema: 'personal' },
-          'encounterChangeConformationNotification',
-          'encounterChangeConfirmationNotification',
-          { transaction: t },
+          { tableName: "Settings", schema: "personal" },
+          "encounterChangeConformationNotification",
+          "encounterChangeConfirmationNotification",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -24,13 +24,13 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.renameColumn(
-          { tableName: 'Settings', schema: 'personal' },
-          'encounterChangeConfirmationNotification',
-          'encounterChangeConformationNotification',
-          { transaction: t },
+          { tableName: "Settings", schema: "personal" },
+          "encounterChangeConfirmationNotification",
+          "encounterChangeConformationNotification",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

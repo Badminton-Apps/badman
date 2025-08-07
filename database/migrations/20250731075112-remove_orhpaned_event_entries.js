@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.sequelize.transaction(async (transaction) => {
-      console.log('Starting cleanup of orphaned EventEntry records...');
+      console.log("Starting cleanup of orphaned EventEntry records...");
 
       // Step 1: Find and delete orphaned entries with invalid subEventId
-      console.log('Processing entries with subEventId...');
+      console.log("Processing entries with subEventId...");
 
       // Delete tournament entries with invalid subEventId
       const orphanedTournamentSubEvents = await queryInterface.sequelize.query(
@@ -17,11 +17,11 @@ module.exports = {
          WHERE "entryType" = 'tournament' 
          AND "subEventId" IS NOT NULL 
          AND "subEventId" NOT IN (SELECT id FROM event."SubEventTournaments")`,
-        { transaction },
+        { transaction }
       );
 
       console.log(
-        `Deleted ${orphanedTournamentSubEvents[1].rowCount} orphaned tournament entries with invalid subEventId`,
+        `Deleted ${orphanedTournamentSubEvents[1].rowCount} orphaned tournament entries with invalid subEventId`
       );
 
       // Delete competition entries with invalid subEventId
@@ -30,18 +30,18 @@ module.exports = {
          WHERE "entryType" = 'competition' 
          AND "subEventId" IS NOT NULL 
          AND "subEventId" NOT IN (SELECT id FROM event."SubEventCompetitions")`,
-        { transaction },
+        { transaction }
       );
 
       console.log(
-        `Deleted ${orphanedCompetitionSubEvents[1].rowCount} orphaned competition entries with invalid subEventId`,
+        `Deleted ${orphanedCompetitionSubEvents[1].rowCount} orphaned competition entries with invalid subEventId`
       );
 
       const totalOrphanedSubEvents =
         orphanedTournamentSubEvents[1].rowCount + orphanedCompetitionSubEvents[1].rowCount;
 
       // Step 2: Find and delete orphaned entries with invalid drawId
-      console.log('Processing entries with drawId...');
+      console.log("Processing entries with drawId...");
 
       // Delete tournament entries with invalid drawId
       const orphanedTournamentDraws = await queryInterface.sequelize.query(
@@ -49,11 +49,11 @@ module.exports = {
          WHERE "entryType" = 'tournament' 
          AND "drawId" IS NOT NULL 
          AND "drawId" NOT IN (SELECT id FROM event."DrawTournaments")`,
-        { transaction },
+        { transaction }
       );
 
       console.log(
-        `Deleted ${orphanedTournamentDraws[1].rowCount} orphaned tournament entries with invalid drawId`,
+        `Deleted ${orphanedTournamentDraws[1].rowCount} orphaned tournament entries with invalid drawId`
       );
 
       // Delete competition entries with invalid drawId
@@ -62,26 +62,26 @@ module.exports = {
          WHERE "entryType" = 'competition' 
          AND "drawId" IS NOT NULL 
          AND "drawId" NOT IN (SELECT id FROM event."DrawCompetitions")`,
-        { transaction },
+        { transaction }
       );
 
       console.log(
-        `Deleted ${orphanedCompetitionDraws[1].rowCount} orphaned competition entries with invalid drawId`,
+        `Deleted ${orphanedCompetitionDraws[1].rowCount} orphaned competition entries with invalid drawId`
       );
 
       const totalOrphanedDraws =
         orphanedTournamentDraws[1].rowCount + orphanedCompetitionDraws[1].rowCount;
 
       console.log(
-        `Total orphaned entries cleaned up: ${totalOrphanedSubEvents + totalOrphanedDraws}`,
+        `Total orphaned entries cleaned up: ${totalOrphanedSubEvents + totalOrphanedDraws}`
       );
-      console.log('Note: No foreign key constraints added due to polymorphic relationship design');
-      console.log('Application-level cascade deletion is handled in sync processors');
+      console.log("Note: No foreign key constraints added due to polymorphic relationship design");
+      console.log("Application-level cascade deletion is handled in sync processors");
     });
   },
 
   down: async (queryInterface, Sequelize) => {
     // No constraints to remove since we didn't add any
-    console.log('Cannot revert this migration');
+    console.log("Cannot revert this migration");
   },
 };

@@ -1,6 +1,6 @@
-import { EncounterCompetition } from '@badman/backend-database';
-import { runParallel } from '@badman/utils';
-import { Page } from 'puppeteer';
+import { EncounterCompetition } from "@badman/backend-database";
+import { runParallel } from "@badman/utils";
+import { Page } from "puppeteer";
 
 export async function enterEditMode(
   pupeteer: {
@@ -10,11 +10,11 @@ export async function enterEditMode(
     page: null,
     timeout: 5000,
   },
-  encounter: EncounterCompetition,
+  encounter: EncounterCompetition
 ) {
   const { page } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
   const matchId = encounter.visualCode;
   const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
@@ -24,7 +24,7 @@ export async function enterEditMode(
     const promises = [];
     promises.push(targetPage.waitForNavigation());
     await targetPage.goto(
-      `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`,
+      `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`
     );
     await runParallel(promises);
   }

@@ -1,4 +1,4 @@
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -19,7 +19,7 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsToMany,
   Column,
@@ -31,20 +31,20 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { RankingSystems, RankingTiming, StartingType } from '@badman/utils';
-import { RankingGroup } from './ranking-group.model';
-import { RankingSystemRankingGroupMembership } from './ranking-group-ranking-system-membership.model';
-import { RankingLastPlace } from './ranking-last-place.model';
-import { RankingPlace } from './ranking-place.model';
-import { RankingPoint } from './ranking-point.model';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { RankingSystems, RankingTiming, StartingType } from "@badman/utils";
+import { RankingGroup } from "./ranking-group.model";
+import { RankingSystemRankingGroupMembership } from "./ranking-group-ranking-system-membership.model";
+import { RankingLastPlace } from "./ranking-last-place.model";
+import { RankingPlace } from "./ranking-place.model";
+import { RankingPoint } from "./ranking-point.model";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'ranking',
+  schema: "ranking",
 })
-@ObjectType({ description: 'A RankingSystem' })
+@ObjectType({ description: "A RankingSystem" })
 export class RankingSystem extends Model {
   constructor(values?: Partial<RankingSystem>, options?: BuildOptions) {
     super(values, options);
@@ -116,12 +116,12 @@ export class RankingSystem extends Model {
   inactivityAmount?: number;
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('months', 'weeks', 'days'))
-  inactivityUnit?: 'months' | 'weeks' | 'days';
+  @Column(DataType.ENUM("months", "weeks", "days"))
+  inactivityUnit?: "months" | "weeks" | "days";
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('freeze', 'decrease'))
-  inactiveBehavior?: 'freeze' | 'decrease';
+  @Column(DataType.ENUM("freeze", "decrease"))
+  inactiveBehavior?: "freeze" | "decrease";
 
   get inactivity(): RankingTiming {
     return {
@@ -129,7 +129,7 @@ export class RankingSystem extends Model {
       unit: this.inactivityUnit,
     };
   }
-  @Default(new Date('2016-08-31T22:00:00.000Z'))
+  @Default(new Date("2016-08-31T22:00:00.000Z"))
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   calculationLastUpdate?: Date;
@@ -140,8 +140,8 @@ export class RankingSystem extends Model {
   @Column(DataType.NUMBER)
   calculationIntervalAmount?: number;
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('months', 'weeks', 'days'))
-  calculationIntervalUnit?: 'months' | 'weeks' | 'days';
+  @Column(DataType.ENUM("months", "weeks", "days"))
+  calculationIntervalUnit?: "months" | "weeks" | "days";
 
   get calculationInterval(): RankingTiming {
     return {
@@ -154,8 +154,8 @@ export class RankingSystem extends Model {
   @Column(DataType.NUMBER)
   periodAmount?: number;
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('months', 'weeks', 'days'))
-  periodUnit?: 'months' | 'weeks' | 'days';
+  @Column(DataType.ENUM("months", "weeks", "days"))
+  periodUnit?: "months" | "weeks" | "days";
 
   get period(): RankingTiming {
     return {
@@ -163,7 +163,7 @@ export class RankingSystem extends Model {
       unit: this.periodUnit,
     };
   }
-  @Default(new Date('2016-08-31T22:00:00.000Z'))
+  @Default(new Date("2016-08-31T22:00:00.000Z"))
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   updateLastUpdate?: Date;
@@ -176,8 +176,8 @@ export class RankingSystem extends Model {
   @Column(DataType.NUMBER)
   updateIntervalAmount?: number;
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('months', 'weeks', 'days'))
-  updateIntervalUnit?: 'months' | 'weeks' | 'days';
+  @Column(DataType.ENUM("months", "weeks", "days"))
+  updateIntervalUnit?: "months" | "weeks" | "days";
 
   get updateInterval(): RankingTiming {
     return {
@@ -187,7 +187,7 @@ export class RankingSystem extends Model {
   }
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
+  @Column(DataType.ENUM("BVL", "ORIGINAL", "LFBB", "VISUAL"))
   rankingSystem?: RankingSystems;
 
   @Field(() => Boolean, { nullable: false })
@@ -228,18 +228,18 @@ export class RankingSystem extends Model {
 
   @Field(() => String, { nullable: true })
   @Column({
-    type: DataType.ENUM('formula', 'tableLFBB', 'tableBVL'),
-    defaultValue: 'formula',
+    type: DataType.ENUM("formula", "tableLFBB", "tableBVL"),
+    defaultValue: "formula",
   })
   startingType?: StartingType;
 
-  @HasMany(() => RankingPoint, 'systemId')
+  @HasMany(() => RankingPoint, "systemId")
   rankingPoints?: Relation<RankingPoint>;
 
-  @HasMany(() => RankingPlace, 'systemId')
+  @HasMany(() => RankingPlace, "systemId")
   places?: Relation<RankingPlace>;
 
-  @HasMany(() => RankingLastPlace, 'systemId')
+  @HasMany(() => RankingLastPlace, "systemId")
   lastPlaces?: Relation<RankingLastPlace>;
 
   @BelongsToMany(() => RankingGroup, () => RankingSystemRankingGroupMembership)
@@ -362,18 +362,17 @@ export class RankingSystem extends Model {
     });
 
     this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map((p) => Math.round(p));
-    
+
     this._levelArrayOneMinus.forEach((x) => {
       this._pointsToGoUp[x] = Math.round(
-        (this._pointsWhenWinningAgainst[x] * this.procentWinning) / 100,
+        (this._pointsWhenWinningAgainst[x] * this.procentWinning) / 100
       );
     });
     this._levelArrayOneMinus.forEach((x) => {
       this._pointsToGoDown[x] = Math.round(
-        (this._pointsWhenWinningAgainst[x + 1] * this.procentLosing) / 100,
+        (this._pointsWhenWinningAgainst[x + 1] * this.procentLosing) / 100
       );
     });
-
   }
 
   private _lfbbCaps() {
@@ -386,14 +385,14 @@ export class RankingSystem extends Model {
     this._pointsToGoDown = this._pointsToGoUp;
   }
   private _originalCaps() {
-    throw new Error('Not implementd');
+    throw new Error("Not implementd");
   }
 }
 
 @InputType()
 export class RankingSystemUpdateInput extends PartialType(
-  OmitType(RankingSystem, ['createdAt', 'updatedAt'] as const),
-  InputType,
+  OmitType(RankingSystem, ["createdAt", "updatedAt"] as const),
+  InputType
 ) {
   @Field(() => [ID], { nullable: true })
   rankingGroupIds?: string[];
@@ -401,6 +400,6 @@ export class RankingSystemUpdateInput extends PartialType(
 
 @InputType()
 export class RankingSystemNewInput extends PartialType(
-  OmitType(RankingSystemUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(RankingSystemUpdateInput, ["id"] as const),
+  InputType
 ) {}

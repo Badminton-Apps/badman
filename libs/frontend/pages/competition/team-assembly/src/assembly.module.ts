@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { CreatePageComponent } from './pages';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterModule, Routes } from "@angular/router";
+import { CreatePageComponent } from "./pages";
 
 const MODULE_ROUTES: Routes = [
   {
-    path: '',
+    path: "",
     component: CreatePageComponent,
     data: { breadcrumb: { skip: true } },
   },

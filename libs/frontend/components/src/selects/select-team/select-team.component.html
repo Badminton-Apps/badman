@@ -1,7 +1,7 @@
 @if (this.group()) {
   <ng-container [formGroup]="group()">
     <mat-form-field>
-      <mat-label>{{ 'all.pickers.select-team' | translate }}</mat-label>
+      <mat-label>{{ "all.pickers.select-team" | translate }}</mat-label>
       <mat-select
         [formControl]="internalControl"
         required
@@ -11,10 +11,10 @@
         @if (this.teams$ | async; as teams) {
           @if (this.multiple()) {
             <button mat-button (click)="selectAll(teams)">
-              {{ 'all.button.all' | translate }}
+              {{ "all.button.all" | translate }}
             </button>
             <button mat-button (click)="deselectAll()">
-              {{ 'all.button.none' | translate }}
+              {{ "all.button.none" | translate }}
             </button>
           }
           @for (group of teams; track group) {
@@ -28,9 +28,9 @@
           }
         }
       </mat-select>
-      @if (internalControl.hasError('required')) {
+      @if (internalControl.hasError("required")) {
         <mat-error>
-          {{ 'all.input.this-required' | translate }}
+          {{ "all.input.this-required" | translate }}
         </mat-error>
       }
     </mat-form-field>

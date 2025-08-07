@@ -6,14 +6,14 @@ import {
   RankingGroup,
   RankingPoint,
   RankingSystem,
-} from '@badman/backend-database';
-import { Badminton, Simulation } from '@badman/backend-queue';
-import { BelgiumFlandersPointsService } from '@badman/belgium-flanders-points';
-import { InjectQueue } from '@nestjs/bull';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Queue } from 'bull';
-import moment from 'moment';
-import { Op, Transaction } from 'sequelize';
+} from "@badman/backend-database";
+import { Badminton, Simulation } from "@badman/backend-queue";
+import { BelgiumFlandersPointsService } from "@badman/belgium-flanders-points";
+import { InjectQueue } from "@nestjs/bull";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Queue } from "bull";
+import moment from "moment";
+import { Op, Transaction } from "sequelize";
 
 /* TODO:
 - [ ] We need to determine which point service / queue to trigger when running the general pointsservice
@@ -26,7 +26,7 @@ export class PointsService {
 
   constructor(
     @InjectQueue(Badminton.Belgium.Flanders.Points) private pointsQueue: Queue,
-    private readonly belgiumFlandersPointsService: BelgiumFlandersPointsService,
+    private readonly belgiumFlandersPointsService: BelgiumFlandersPointsService
   ) {}
 
   public async createRankingPointsForPeriod({
@@ -68,7 +68,7 @@ export class PointsService {
       this._logger.verbose(
         `Truncated ${deleted} RankingPoint for system ${
           where.systemId
-        } and between ${start.toISOString()} and ${stop.toISOString()}`,
+        } and between ${start.toISOString()} and ${stop.toISOString()}`
       );
     }
 
@@ -85,7 +85,7 @@ export class PointsService {
         start,
         stop,
       },
-      options,
+      options
     );
 
     this._logger.debug(`Games: ${games.length}`);
@@ -116,7 +116,7 @@ export class PointsService {
     const duration = moment.duration(moment(endTime).diff(moment(startTime)));
     const average = duration.asMilliseconds() / games.length;
     this._logger.log(
-      `Calculated ${games.length} points in ${duration.asSeconds()} seconds, average ${average} ms per game`,
+      `Calculated ${games.length} points in ${duration.asSeconds()} seconds, average ${average} ms per game`
     );
   }
 
@@ -124,7 +124,7 @@ export class PointsService {
     subEventsC: string[],
     subEventsT: string[],
     { start, stop }: { start: Date; stop: Date },
-    options?: { transaction?: Transaction },
+    options?: { transaction?: Transaction }
   ) {
     const { transaction } = options ?? {};
 
@@ -138,17 +138,17 @@ export class PointsService {
 
     const gamesC = await Game.findAll({
       where,
-      attributes: ['id', 'playedAt', 'gameType', 'winner', 'set1Team1', 'set1Team2'],
+      attributes: ["id", "playedAt", "gameType", "winner", "set1Team1", "set1Team2"],
       include: [
         {
           required: true,
           model: EncounterCompetition,
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               model: DrawCompetition,
               required: true,
-              attributes: ['id'],
+              attributes: ["id"],
               where: {
                 subeventId: subEventsC,
               },
@@ -161,11 +161,11 @@ export class PointsService {
 
     const gamesT = await Game.findAll({
       where,
-      attributes: ['id', 'playedAt', 'gameType', 'winner', 'set1Team1', 'set1Team2'],
+      attributes: ["id", "playedAt", "gameType", "winner", "set1Team1", "set1Team2"],
       include: [
         {
           model: DrawTournament,
-          attributes: ['id'],
+          attributes: ["id"],
           required: true,
           where: {
             subeventId: subEventsT,
@@ -184,7 +184,7 @@ export class PointsService {
     for (const group of groups) {
       const c = await group.getSubEventCompetitions({
         transaction,
-        attributes: ['id'],
+        attributes: ["id"],
       });
 
       if ((c?.length ?? 0) > 0) {
@@ -193,7 +193,7 @@ export class PointsService {
 
       const t = await group.getSubEventTournaments({
         transaction,
-        attributes: ['id'],
+        attributes: ["id"],
       });
       if ((t?.length ?? 0) > 0) {
         subEventsT = subEventsT.concat(t?.map((s) => s.id));
@@ -209,7 +209,7 @@ export class PointsService {
     game: Game,
     options?: {
       transaction?: Transaction;
-    },
+    }
   ) {
     return await this.belgiumFlandersPointsService.createRankingPointforGame(system, game, options);
   }

@@ -1,12 +1,12 @@
-import { Injectable, computed, inject } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup } from '@angular/forms';
-import { FetchPolicy } from '@apollo/client/core';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { Player, Team } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Observable, Subject, combineLatest, merge, of } from 'rxjs';
+import { Injectable, computed, inject } from "@angular/core";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { FormControl, FormGroup } from "@angular/forms";
+import { FetchPolicy } from "@apollo/client/core";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { Player, Team } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Observable, Subject, combineLatest, merge, of } from "rxjs";
 import {
   catchError,
   delay,
@@ -15,7 +15,7 @@ import {
   map,
   startWith,
   switchMap,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 export const PLAYER_QUERY = gql`
   query GetPlayerInfo($id: ID!, $systemId: ID!) {
@@ -62,7 +62,7 @@ export interface PlayerDetailState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class PlayerDetailService {
   private systemService = inject(RankingSystemService);
@@ -76,7 +76,7 @@ export class PlayerDetailService {
   };
 
   filter = new FormGroup({
-    playerId: new FormControl<string>(''),
+    playerId: new FormControl<string>(""),
   });
 
   player = computed(() => this.state().player);
@@ -93,7 +93,7 @@ export class PlayerDetailService {
       ...filter,
       systemId,
     })),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   // sources
@@ -103,20 +103,20 @@ export class PlayerDetailService {
     switchMap((filter) =>
       this.getData(filter.playerId, filter.systemId).pipe(
         map((player) => ({ player, loaded: true, error: null })),
-        startWith({ tournmaent: null, loaded: false, error: null }),
-      ),
+        startWith({ tournmaent: null, loaded: false, error: null })
+      )
     ),
     delay(100), // some delay to show the loading indicator
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
     this.data$,
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false })))
   );
 
   state = signalSlice({
@@ -133,19 +133,19 @@ export class PlayerDetailService {
           switchMap(() => this.loadTeams(_state().player)),
           map((teams) => ({
             teams,
-          })),
+          }))
         ),
 
       removePlayer: (_state, action$: Observable<void>) =>
         action$.pipe(
           switchMap(() => this.removePlayer(_state().player)),
-          switchMap(() => of({ player: null, loaded: false, error: null })),
+          switchMap(() => of({ player: null, loaded: false, error: null }))
         ),
 
       claimAccount: (_state, action$: Observable<void>) =>
         action$.pipe(
           switchMap(() => this.claimAccount(_state().player)),
-          map(() => ({ player: null, loaded: true, error: null })),
+          map(() => ({ player: null, loaded: true, error: null }))
         ),
 
       reCalculatePoints: (
@@ -153,17 +153,17 @@ export class PlayerDetailService {
         action$: Observable<{
           from?: Date;
           to?: Date;
-        } | void>,
+        } | void>
       ) =>
         action$.pipe(
           switchMap((params) =>
             this.reCalculatePoints(
               _state().player,
               params ? params.from : undefined,
-              params ? params.to : undefined,
-            ),
+              params ? params.to : undefined
+            )
           ),
-          map(() => _state()),
+          map(() => _state())
         ),
     },
   });
@@ -171,7 +171,7 @@ export class PlayerDetailService {
   private getData(
     playerId?: string | null,
     systemId?: string | null,
-    fetchPolicy?: FetchPolicy,
+    fetchPolicy?: FetchPolicy
   ): Observable<Player | null> {
     if (!playerId) {
       return of(null);
@@ -189,11 +189,11 @@ export class PlayerDetailService {
       .pipe(
         map((result) => {
           if (!result?.data.player) {
-            throw new Error('No player');
+            throw new Error("No player");
           }
 
           return new Player(result.data.player);
-        }),
+        })
       );
   }
 

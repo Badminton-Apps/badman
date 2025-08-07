@@ -1,21 +1,18 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-logo {
-    
-    
-
     svg {
-      fill: mat.get-theme-color($theme, foreground, 'base');
+      fill: mat.get-theme-color($theme, foreground, "base");
     }
   }
 }
 
 @mixin typography($theme) {
   // badman-logo {
-    
+
   // }
 }

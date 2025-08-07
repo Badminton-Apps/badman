@@ -6,19 +6,19 @@ import {
   HostBinding,
   ViewEncapsulation,
   input,
-} from '@angular/core';
+} from "@angular/core";
 @Component({
-    selector: 'badman-block',
-    templateUrl: './block.component.html',
-    styleUrls: ['./block.component.scss'],
-    exportAs: 'badmanBlock',
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: "badman-block",
+  templateUrl: "./block.component.html",
+  styleUrls: ["./block.component.scss"],
+  exportAs: "badmanBlock",
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class BadmanBlockComponent {
-  @HostBinding('class')
-  hostClass = 'badman-block';
+  @HostBinding("class")
+  hostClass = "badman-block";
 
   // @HostBinding('class.mat-badman-block-outlined')
   // get isOutlined() {
@@ -40,12 +40,12 @@ export class BadmanBlockComponent {
  * BadmanBlockTitle provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-    selector: `badman-block-title, [badman-block-title], [badmanBlockTitle]`,
-    standalone: false
+  selector: `badman-block-title, [badman-block-title], [badmanBlockTitle]`,
+  standalone: false,
 })
 export class BadmanBlockTitleDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-title';
+  @HostBinding("class")
+  hostClass = "badman-block-title";
 }
 
 /**
@@ -54,15 +54,15 @@ export class BadmanBlockTitleDirective {
  * (e.g. `<img badmanBlockLgImage>`).
  */
 @Component({
-    selector: 'badman-block-title-group',
-    templateUrl: './block-title-group.component.html',
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: "badman-block-title-group",
+  templateUrl: "./block-title-group.component.html",
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class BadmanBlockTitleGroupComponent {
-  @HostBinding('class')
-  hostClass = 'badman-block-title-group';
+  @HostBinding("class")
+  hostClass = "badman-block-title-group";
 }
 
 /**
@@ -73,12 +73,12 @@ export class BadmanBlockTitleGroupComponent {
  * BadmanBlockContent provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-    selector: 'badman-block-content',
-    standalone: false
+  selector: "badman-block-content",
+  standalone: false,
 })
 export class BadmanBlockContentDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-content';
+  @HostBinding("class")
+  hostClass = "badman-block-content";
 }
 
 /**
@@ -89,12 +89,12 @@ export class BadmanBlockContentDirective {
  * BadmanBlockSubtitle provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-    selector: `badman-block-subtitle, [badman-block-subtitle], [badmanBlockSubtitle]`,
-    standalone: false
+  selector: `badman-block-subtitle, [badman-block-subtitle], [badmanBlockSubtitle]`,
+  standalone: false,
 })
 export class BadmanBlockSubtitleDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-subtitle';
+  @HostBinding("class")
+  hostClass = "badman-block-subtitle";
 }
 
 /**
@@ -105,25 +105,25 @@ export class BadmanBlockSubtitleDirective {
  * BadmanBlockActions provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-    selector: 'badman-block-actions',
-    exportAs: 'badmanBlockActions',
-    standalone: false
+  selector: "badman-block-actions",
+  exportAs: "badmanBlockActions",
+  standalone: false,
 })
 export class BadmanBlockActionsDirective {
   /** Position of the actions inside the card. */
-  align = input<'start' | 'end'>('start');
+  align = input<"start" | "end">("start");
 
-  @HostBinding('class')
-  hostClass = 'badman-block-actions';
+  @HostBinding("class")
+  hostClass = "badman-block-actions";
 
-  @HostBinding('class.badman-block-actions-align-end')
+  @HostBinding("class.badman-block-actions-align-end")
   get isAtEnd() {
-    return this.align() === 'end';
+    return this.align() === "end";
   }
 
-  @HostBinding('class.badman-block-actions-align-start')
+  @HostBinding("class.badman-block-actions-align-start")
   get isAtStart() {
-    return this.align() === 'start';
+    return this.align() === "start";
   }
 }
 
@@ -136,15 +136,15 @@ export class BadmanBlockActionsDirective {
  * BadmanBlockHeader provides no behaviors, instead serving as a purely visual treatment.
  */
 @Component({
-    selector: 'badman-block-header',
-    templateUrl: './block-header.component.html',
-    encapsulation: ViewEncapsulation.None,
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: "badman-block-header",
+  templateUrl: "./block-header.component.html",
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class BadmanBlockHeaderComponent {
-  @HostBinding('class')
-  hostClass = 'badman-block-header';
+  @HostBinding("class")
+  hostClass = "badman-block-header";
 }
 
 /**
@@ -155,12 +155,12 @@ export class BadmanBlockHeaderComponent {
  * BadmanBlockFooter provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-    selector: 'badman-block-footer',
-    standalone: false
+  selector: "badman-block-footer",
+  standalone: false,
 })
 export class BadmanBlockFooterDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-footer';
+  @HostBinding("class")
+  hostClass = "badman-block-footer";
 }
 
 // TODO(jelbourn): deprecate the "image" selectors to replace with "media".
@@ -177,52 +177,52 @@ export class BadmanBlockFooterDirective {
  * BadmanBlockImage provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-    selector: '[badman-block-image], [badmanBlockImage]',
-    standalone: false
+  selector: "[badman-block-image], [badmanBlockImage]",
+  standalone: false,
 })
 export class BadmanBlockImageDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-image badman-block__media';
+  @HostBinding("class")
+  hostClass = "badman-block-image badman-block__media";
 }
 
 /** Same as `BadmanBlockImage`, but small. */
 @Directive({
-    selector: '[badman-block-sm-image], [badmanBlockImageSmall]',
-    standalone: false
+  selector: "[badman-block-sm-image], [badmanBlockImageSmall]",
+  standalone: false,
 })
 export class BadmanBlockSmImageDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-sm-image badman-block__media';
+  @HostBinding("class")
+  hostClass = "badman-block-sm-image badman-block__media";
 }
 
 /** Same as `BadmanBlockImage`, but medium. */
 @Directive({
-    selector: '[badman-block-md-image], [badmanBlockImageMedium]',
-    standalone: false
+  selector: "[badman-block-md-image], [badmanBlockImageMedium]",
+  standalone: false,
 })
 export class BadmanBlockMdImageDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-md-image badman-block__media';
+  @HostBinding("class")
+  hostClass = "badman-block-md-image badman-block__media";
 }
 
 /** Same as `BadmanBlockImage`, but large. */
 @Directive({
-    selector: '[badman-block-lg-image], [badmanBlockImageLarge]',
-    standalone: false
+  selector: "[badman-block-lg-image], [badmanBlockImageLarge]",
+  standalone: false,
 })
 export class BadmanBlockLgImageDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-lg-image badman-block__media';
+  @HostBinding("class")
+  hostClass = "badman-block-lg-image badman-block__media";
 }
 
 /** Same as `BadmanBlockImage`, but extra-large. */
 @Directive({
-    selector: '[badman-block-xl-image], [badmanBlockImageXLarge]',
-    standalone: false
+  selector: "[badman-block-xl-image], [badmanBlockImageXLarge]",
+  standalone: false,
 })
 export class BadmanBlockXlImageDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-xl-image badman-block__media';
+  @HostBinding("class")
+  hostClass = "badman-block-xl-image badman-block__media";
 }
 
 /**
@@ -235,10 +235,10 @@ export class BadmanBlockXlImageDirective {
  * BadmanBlockAvatar provides no behaviors, instead serving as a purely visual treatment.
  */
 @Directive({
-    selector: '[badman-block-avatar], [badmanBlockAvatar]',
-    standalone: false
+  selector: "[badman-block-avatar], [badmanBlockAvatar]",
+  standalone: false,
 })
 export class BadmanBlockAvatarDirective {
-  @HostBinding('class')
-  hostClass = 'badman-block-avatar';
+  @HostBinding("class")
+  hostClass = "badman-block-avatar";
 }

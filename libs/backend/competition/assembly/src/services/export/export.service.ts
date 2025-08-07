@@ -6,12 +6,12 @@ import {
   RankingSystem,
   Team,
   TeamPlayerMembership,
-} from '@badman/backend-database';
-import { TeamMembershipType } from '@badman/utils';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { WorkBook, utils, write } from 'xlsx';
+} from "@badman/backend-database";
+import { TeamMembershipType } from "@badman/utils";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import moment from "moment";
+import { Op } from "sequelize";
+import { WorkBook, utils, write } from "xlsx";
 
 @Injectable()
 export class AssemblyExportService {
@@ -35,7 +35,7 @@ export class AssemblyExportService {
     await this._addTeams(teams);
     this._addPlayers(players);
 
-    return write(this.workbook, { type: 'buffer', bookType: 'xlsx' });
+    return write(this.workbook, { type: "buffer", bookType: "xlsx" });
   }
 
   private async _addTeams(teams: Team[]) {
@@ -46,23 +46,23 @@ export class AssemblyExportService {
 
       const base =
         teamPlayers?.filter(
-          (p) => p.TeamPlayerMembership.membershipType == TeamMembershipType.REGULAR,
+          (p) => p.TeamPlayerMembership.membershipType == TeamMembershipType.REGULAR
         ) ?? [];
       const replacements =
         teamPlayers?.filter(
-          (p) => p.TeamPlayerMembership.membershipType == TeamMembershipType.BACKUP,
+          (p) => p.TeamPlayerMembership.membershipType == TeamMembershipType.BACKUP
         ) ?? [];
 
       const rows = [];
 
-      rows.push(['Vaste']);
+      rows.push(["Vaste"]);
       for (const player of base) {
         rows.push(this._getPlayerRow(player));
       }
 
       if (replacements.length) {
         rows.push([]);
-        rows.push(['Reserves']);
+        rows.push(["Reserves"]);
 
         for (const player of replacements) {
           rows.push(this._getPlayerRow(player));
@@ -95,11 +95,11 @@ export class AssemblyExportService {
     const ws = utils.json_to_sheet(
       players?.map((p) => ({
         Gender: p.gender,
-        'First Name': p.firstName,
-        'Last Name': p.lastName,
-      })),
+        "First Name": p.firstName,
+        "Last Name": p.lastName,
+      }))
     );
-    utils.book_append_sheet(this.workbook, ws, 'Players');
+    utils.book_append_sheet(this.workbook, ws, "Players");
   }
 
   private async _getPlayers(teams: Team[], season: number) {
@@ -108,7 +108,7 @@ export class AssemblyExportService {
       const teamPlayers = await team.getPlayers({
         include: [
           {
-            attributes: ['id', 'single', 'double', 'mix', 'rankingDate'],
+            attributes: ["id", "single", "double", "mix", "rankingDate"],
             required: false,
             model: RankingLastPlace,
             where: {
@@ -116,7 +116,7 @@ export class AssemblyExportService {
             },
           },
           {
-            attributes: ['id', 'single', 'double', 'mix', 'rankingDate'],
+            attributes: ["id", "single", "double", "mix", "rankingDate"],
             required: false,
             model: RankingPlace,
             limit: 1,
@@ -127,7 +127,7 @@ export class AssemblyExportService {
               },
               updatePossible: true,
             },
-            order: [['rankingDate', 'DESC']],
+            order: [["rankingDate", "DESC"]],
           },
         ],
       });

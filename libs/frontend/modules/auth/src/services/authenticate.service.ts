@@ -1,11 +1,11 @@
-import { Injectable, computed, inject } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
-import { PopupLoginOptions, RedirectLoginOptions } from '@auth0/auth0-spa-js';
-import { Player } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { Observable, from, fromEvent, iif, merge, of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { Injectable, computed, inject } from "@angular/core";
+import { AuthService } from "@auth0/auth0-angular";
+import { PopupLoginOptions, RedirectLoginOptions } from "@auth0/auth0-spa-js";
+import { Player } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { Observable, from, fromEvent, iif, merge, of } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
 
 export interface AuthState {
   user: LoggedinUser | null;
@@ -40,7 +40,7 @@ const PROFILE_QUERY = gql`
   }
 `;
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthenticateService {
   private authService = inject(AuthService);
@@ -59,17 +59,17 @@ export class AuthenticateService {
   // sources
   private loggedIn$ = merge(
     of(null),
-    fromEvent(window, 'online'),
-    fromEvent(window, 'offline'),
+    fromEvent(window, "online"),
+    fromEvent(window, "offline")
   ).pipe(
     map(() => navigator.onLine),
     switchMap((online) =>
       iif(
         () => online,
         this.authService?.isAuthenticated$.pipe(catchError(() => of(false))) ?? of(false),
-        of(false),
-      ),
-    ),
+        of(false)
+      )
+    )
   );
 
   private userLoad$ = this.loggedIn$.pipe(
@@ -79,14 +79,14 @@ export class AuthenticateService {
         this.apollo
           .query<{ me: Partial<Player> }>({
             query: PROFILE_QUERY,
-            fetchPolicy: 'network-only',
+            fetchPolicy: "network-only",
           })
           .pipe(
             switchMap((result) => {
               return (
                 this.authService?.user$.pipe(
                   // return null if there is an error
-                  map((user) => ({ ...user, ...result.data.me })),
+                  map((user) => ({ ...user, ...result.data.me }))
                 ) ?? of({})
               );
             }),
@@ -94,12 +94,12 @@ export class AuthenticateService {
               const user = new LoggedinUser(result as Partial<LoggedinUser>);
               user.loggedIn = true;
               return user;
-            }),
+            })
           ),
-        of({ loggedIn: false } as LoggedinUser),
-      ),
+        of({ loggedIn: false } as LoggedinUser)
+      )
     ),
-    map((user) => ({ user, loaded: true })),
+    map((user) => ({ user, loaded: true }))
   );
 
   //sources
@@ -118,20 +118,20 @@ export class AuthenticateService {
                   logoutParams: {
                     returnTo: window.location.origin,
                   },
-                }),
-              ),
-            ),
+                })
+              )
+            )
           ),
-          map(() => ({ user: null, loaded: false }) as AuthState),
+          map(() => ({ user: null, loaded: false }) as AuthState)
         ),
       login: (_state, action$: Observable<RedirectLoginOptions | PopupLoginOptions | void>) =>
         action$.pipe(
           switchMap(
             (args) =>
               this.authService?.loginWithPopup(args as RedirectLoginOptions | PopupLoginOptions) ??
-              of(),
+              of()
           ),
-          switchMap(() => this.userLoad$),
+          switchMap(() => this.userLoad$)
         ),
     },
   });
@@ -143,15 +143,15 @@ export class AuthenticateService {
           logoutParams: {
             returnTo: window.location.origin,
           },
-        }),
-      ),
+        })
+      )
     );
   }
 
   login(popup = true, args?: RedirectLoginOptions | PopupLoginOptions) {
     return popup
       ? this.authService?.loginWithPopup(args)
-      : this.authService?.loginWithRedirect(args) ?? of();
+      : (this.authService?.loginWithRedirect(args) ?? of());
   }
 }
 

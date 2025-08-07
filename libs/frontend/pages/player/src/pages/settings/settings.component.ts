@@ -1,25 +1,25 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { HasClaimComponent } from '@badman/frontend-components';
-import { Player, Setting } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { AvaliableLanguages, NotificationType } from '@badman/utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable, map, tap } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
+import { CommonModule } from "@angular/common";
+import { ChangeDetectorRef, Component, OnInit, inject } from "@angular/core";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatOptionModule } from "@angular/material/core";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
+import { HasClaimComponent } from "@badman/frontend-components";
+import { Player, Setting } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { AvaliableLanguages, NotificationType } from "@badman/utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { Observable, map, tap } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
 
 @Component({
-  selector: 'badman-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
+  selector: "badman-settings",
+  templateUrl: "./settings.component.html",
+  styleUrls: ["./settings.component.scss"],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -48,24 +48,24 @@ export class SettingsPageComponent implements OnInit {
   notificationType = [
     {
       value: NotificationType.EMAIL,
-      viewValue: 'all.settings.notifications.types.email',
+      viewValue: "all.settings.notifications.types.email",
     },
     {
       value: NotificationType.PUSH,
-      viewValue: 'all.settings.notifications.types.push',
+      viewValue: "all.settings.notifications.types.push",
     },
     // { value: NotificationType.SMS, viewValue: 'all.settings.notifications.types.sms' },
   ];
 
   languageTypes = [
-    { value: AvaliableLanguages.en, viewValue: 'all.settings.languages.en' },
+    { value: AvaliableLanguages.en, viewValue: "all.settings.languages.en" },
     {
       value: AvaliableLanguages.nl_BE,
-      viewValue: 'all.settings.languages.nl_BE',
+      viewValue: "all.settings.languages.nl_BE",
     },
     {
       value: AvaliableLanguages.fr_BE,
-      viewValue: 'all.settings.languages.fr_BE',
+      viewValue: "all.settings.languages.fr_BE",
     },
   ];
 
@@ -74,18 +74,18 @@ export class SettingsPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
-      this.player = data['player'];
+      this.player = data["player"];
       if (!this.player) {
         return;
       }
 
       this.seoService.update({
-        title: this.translate.instant('all.settings.title'),
+        title: this.translate.instant("all.settings.title"),
         description: `Player ${this.player.fullName}`,
-        type: 'website',
-        keywords: ['player', 'badminton'],
+        type: "website",
+        keywords: ["player", "badminton"],
       });
-      this.breadcrumbsService.set('player/:id', this.player.fullName);
+      this.breadcrumbsService.set("player/:id", this.player.fullName);
 
       this.settings$ = this._loadSettings(this.player).pipe(
         tap((setting) => {
@@ -93,33 +93,33 @@ export class SettingsPageComponent implements OnInit {
             return;
           }
           const encounterChangeConfirmationNotificationControl = new FormControl(
-            this.getValues(setting.encounterChangeConfirmationNotification),
+            this.getValues(setting.encounterChangeConfirmationNotification)
           );
 
           const encounterChangeFinishedNotificationControl = new FormControl(
-            this.getValues(setting.encounterChangeFinishedNotification),
+            this.getValues(setting.encounterChangeFinishedNotification)
           );
 
           const encounterChangeNewNotificationControl = new FormControl(
-            this.getValues(setting.encounterChangeNewNotification),
+            this.getValues(setting.encounterChangeNewNotification)
           );
 
           const encounterNotAcceptedNotificationControl = new FormControl(
-            this.getValues(setting.encounterNotAcceptedNotification),
+            this.getValues(setting.encounterNotAcceptedNotification)
           );
 
           const encounterNotEnteredNotificationControl = new FormControl(
-            this.getValues(setting.encounterNotEnteredNotification),
+            this.getValues(setting.encounterNotEnteredNotification)
           );
           const syncSuccessNotification = new FormControl(
-            this.getValues(setting.syncSuccessNotification),
+            this.getValues(setting.syncSuccessNotification)
           );
           const syncFailedNotification = new FormControl(
-            this.getValues(setting.syncFailedNotification),
+            this.getValues(setting.syncFailedNotification)
           );
 
           const clubEnrollmentNotification = new FormControl(
-            this.getValues(setting.clubEnrollmentNotification),
+            this.getValues(setting.clubEnrollmentNotification)
           );
           this.settingsForm = new FormGroup({
             encounterChangeConfirmationNotification: encounterChangeConfirmationNotificationControl,
@@ -132,7 +132,7 @@ export class SettingsPageComponent implements OnInit {
             clubEnrollmentNotification: clubEnrollmentNotification,
             language: new FormControl(setting.language),
           });
-        }),
+        })
       );
     });
   }
@@ -189,42 +189,42 @@ export class SettingsPageComponent implements OnInit {
         variables: {
           encounterChangeConfirmationNotification:
             this.settingsForm
-              .get('encounterChangeConfirmationNotification')
+              .get("encounterChangeConfirmationNotification")
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           encounterChangeFinishedNotification:
             this.settingsForm
-              .get('encounterChangeFinishedNotification')
+              .get("encounterChangeFinishedNotification")
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           encounterChangeNewNotification:
             this.settingsForm
-              .get('encounterChangeNewNotification')
+              .get("encounterChangeNewNotification")
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           encounterNotAcceptedNotification:
             this.settingsForm
-              .get('encounterNotAcceptedNotification')
+              .get("encounterNotAcceptedNotification")
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           encounterNotEnteredNotification:
             this.settingsForm
-              .get('encounterNotEnteredNotification')
+              .get("encounterNotEnteredNotification")
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           syncSuccessNotification:
             this.settingsForm
-              .get('syncSuccessNotification')
+              .get("syncSuccessNotification")
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           syncFailedNotification:
             this.settingsForm
-              .get('syncFailedNotification')
+              .get("syncFailedNotification")
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
-          language: this.settingsForm.get('language')?.value ?? 'en',
+          language: this.settingsForm.get("language")?.value ?? "en",
           playerId: this.player?.id,
         },
       })
       .subscribe(() => {
         this.saving = false;
         this.changeDetectorRef.detectChanges();
-        this.snackBar.open('Saved', undefined, {
+        this.snackBar.open("Saved", undefined, {
           duration: 1000,
-          panelClass: 'success',
+          panelClass: "success",
         });
       });
   }
@@ -258,7 +258,7 @@ export class SettingsPageComponent implements OnInit {
       .pipe(
         map((result) => {
           return new Player(result.data.player)?.setting ?? new Setting({});
-        }),
+        })
       );
   }
 }

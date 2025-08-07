@@ -1,18 +1,18 @@
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { Team } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { Team } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { of } from "rxjs";
+import { map } from "rxjs/operators";
 
 export const loadTeams = (
   apollo: Apollo,
   systemService: RankingSystemService,
 
   clubId?: string | null,
-  season?: number | null,
+  season?: number | null
 ) => {
   if (!clubId || !season) {
-    console.error('No clubId or season provided');
+    console.error("No clubId or season provided");
     return of([]);
   }
 
@@ -20,7 +20,7 @@ export const loadTeams = (
     .query<{
       teams: Team[];
     }>({
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
       query: gql`
         query TeamsForSeason_${season}_${season + 1}($where: JSONObject, $rankingWhere: JSONObject, $order: [SortOrderType!]) {
           teams(where: $where) {
@@ -108,14 +108,14 @@ export const loadTeams = (
         },
         order: [
           {
-            field: 'rankingDate',
-            direction: 'DESC',
+            field: "rankingDate",
+            direction: "DESC",
           },
         ],
       },
     })
     .pipe(
       map((result) => result.data?.teams ?? []),
-      map((result) => result?.map((t) => new Team(t))),
+      map((result) => result?.map((t) => new Team(t)))
     );
 };

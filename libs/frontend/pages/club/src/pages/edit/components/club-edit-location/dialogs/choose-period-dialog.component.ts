@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { TranslatePipe } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
-  selector: 'badman-choose-period-dialog',
+  selector: "badman-choose-period-dialog",
   imports: [
     MatFormFieldModule,
     MatDatepickerModule,
@@ -17,8 +17,8 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatDialogModule,
     MatButtonModule,
   ],
-  templateUrl: './choose-period-dialog.component.html',
-  styleUrl: './choose-period-dialog.component.scss',
+  templateUrl: "./choose-period-dialog.component.html",
+  styleUrl: "./choose-period-dialog.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChoosePeriodDialogComponent {
@@ -33,7 +33,7 @@ export class ChoosePeriodDialogComponent {
     public range: FormGroup<{
       from: FormControl<Date | null>;
       to: FormControl;
-    }>,
+    }>
   ) {
     this.initialRange = new FormGroup({
       from: new FormControl(range.controls.from.value),

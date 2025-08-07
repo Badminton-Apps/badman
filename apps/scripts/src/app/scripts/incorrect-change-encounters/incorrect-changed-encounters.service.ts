@@ -6,13 +6,13 @@ import {
   EventCompetition,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
-import { VisualService } from '@badman/backend-visual';
-import { ChangeEncounterAvailability } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import * as XLSX from 'xlsx';
+} from "@badman/backend-database";
+import { VisualService } from "@badman/backend-visual";
+import { ChangeEncounterAvailability } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import moment from "moment";
+import { Op } from "sequelize";
+import * as XLSX from "xlsx";
 
 @Injectable()
 export class IncorrectEncountersService {
@@ -22,7 +22,7 @@ export class IncorrectEncountersService {
 
   private async getChangeEncounters(startDate: Date, endDate: Date) {
     return EncounterCompetition.findAll({
-      attributes: ['id', 'date', 'originalDate', 'visualCode'],
+      attributes: ["id", "date", "originalDate", "visualCode"],
       where: {
         originalDate: {
           [Op.ne]: null,
@@ -32,18 +32,18 @@ export class IncorrectEncountersService {
         },
       },
       include: [
-        { attributes: ['id', 'name', 'clubId'], model: Team, as: 'home' },
-        { attributes: ['id', 'name', 'clubId'], model: Team, as: 'away' },
+        { attributes: ["id", "name", "clubId"], model: Team, as: "home" },
+        { attributes: ["id", "name", "clubId"], model: Team, as: "away" },
         {
-          attributes: ['id'],
+          attributes: ["id"],
           model: DrawCompetition,
           include: [
             {
-              attributes: ['id'],
+              attributes: ["id"],
               model: SubEventCompetition,
               include: [
                 {
-                  attributes: ['id', 'visualCode'],
+                  attributes: ["id", "visualCode"],
                   model: EventCompetition,
                 },
               ],
@@ -51,7 +51,7 @@ export class IncorrectEncountersService {
           ],
         },
         {
-          attributes: ['id', 'accepted'],
+          attributes: ["id", "accepted"],
           model: EncounterChange,
           include: [
             {
@@ -85,12 +85,12 @@ export class IncorrectEncountersService {
         return false;
       }
 
-      return !dates.some((d) => d.isSame(date, 'minute'));
+      return !dates.some((d) => d.isSame(date, "minute"));
     });
 
     this.logger.debug(`Sending ${filtered.length} changed encounters to visual`);
     const data: unknown[][] = [
-      ['Id', 'Home Team', 'Away Team', 'Link', 'Current date', 'Moved', '# Dates', 'Suggestion(s)'],
+      ["Id", "Home Team", "Away Team", "Link", "Current date", "Moved", "# Dates", "Suggestion(s)"],
     ]; // Array to hold Excel data
 
     for (const encounter of filtered) {
@@ -108,8 +108,8 @@ export class IncorrectEncountersService {
         if ((encounter.encounterChange?.dates?.length ?? 0) > 1) {
           this.logger.log(
             `encounter ${encounter.home?.name} vs ${encounter.away?.name} on ${moment(
-              encounter.date,
-            ).format('DD-MM-YYYY HH:mm')} has multiple dates`,
+              encounter.date
+            ).format("DD-MM-YYYY HH:mm")} has multiple dates`
           );
 
           data.push(this.addRowWithMultipleDates(encounter));
@@ -126,10 +126,10 @@ export class IncorrectEncountersService {
 
         this.logger.log(
           `Sending encounter ${encounter.home?.name} vs ${encounter.away?.name} from ${moment(
-            encounter.date,
+            encounter.date
           ).format(
-            'DD-MM-YYYY HH:mm',
-          )} to date ${moment(firstSuggestion).format('DD-MM-YYYY HH:mm')}`,
+            "DD-MM-YYYY HH:mm"
+          )} to date ${moment(firstSuggestion).format("DD-MM-YYYY HH:mm")}`
         );
 
         data.push(this.addRowWithOneDate(encounter));
@@ -159,7 +159,7 @@ export class IncorrectEncountersService {
   private addRowWithMultipleDates(encounter: EncounterCompetition) {
     // Link
     const link = {
-      t: 'external',
+      t: "external",
       v: `open in badman`,
       l: {
         Target: `https://badman.app/competition/change-encounter?club=${encounter.home?.clubId}&team=${encounter.home?.id}&encounter=${encounter.id}`,
@@ -173,10 +173,10 @@ export class IncorrectEncountersService {
       encounter.home?.name,
       encounter.away?.name,
       link,
-      moment(encounter.date).format('DD-MM-YYYY HH:mm'),
-      'NO',
+      moment(encounter.date).format("DD-MM-YYYY HH:mm"),
+      "NO",
       encounter.encounterChange?.dates?.length ?? 0,
-      ...(encounter.encounterChange?.dates?.map((d) => moment(d.date).format('DD-MM-YYYY HH:mm')) ??
+      ...(encounter.encounterChange?.dates?.map((d) => moment(d.date).format("DD-MM-YYYY HH:mm")) ??
         []),
     ];
   }
@@ -184,7 +184,7 @@ export class IncorrectEncountersService {
   private addRowWithOneDate(encounter: EncounterCompetition) {
     // Link
     const link = {
-      t: 'external',
+      t: "external",
       v: `open in badman`,
       l: {
         Target: `https://badman.app/competition/change-encounter?club=${encounter.home?.clubId}&team=${encounter.home?.id}&encounter=${encounter.id}`,
@@ -198,10 +198,10 @@ export class IncorrectEncountersService {
       encounter.home?.name,
       encounter.away?.name,
       link,
-      moment(encounter.date).format('DD-MM-YYYY HH:mm'),
-      'YES',
+      moment(encounter.date).format("DD-MM-YYYY HH:mm"),
+      "YES",
       encounter.encounterChange?.dates?.length ?? 0,
-      ...(encounter.encounterChange?.dates?.map((d) => moment(d.date).format('DD-MM-YYYY HH:mm')) ??
+      ...(encounter.encounterChange?.dates?.map((d) => moment(d.date).format("DD-MM-YYYY HH:mm")) ??
         []),
     ];
   }
@@ -222,16 +222,16 @@ export class IncorrectEncountersService {
 
     // Autosize columns
     const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
-      data.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
+      data.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0)
     );
-    ws['!cols'] = columnSizes.map((width) => ({ width }));
+    ws["!cols"] = columnSizes.map((width) => ({ width }));
 
     // Enable filtering
-    ws['!autofilter'] = {
-      ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref'] as string)),
+    ws["!autofilter"] = {
+      ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws["!ref"] as string)),
     };
 
-    XLSX.utils.book_append_sheet(wb, ws, 'Encounter Data na sync');
+    XLSX.utils.book_append_sheet(wb, ws, "Encounter Data na sync");
     const fileName = `${season}-incorrect-changed-encounters-pt2.xlsx`;
     XLSX.writeFile(wb, fileName);
   }

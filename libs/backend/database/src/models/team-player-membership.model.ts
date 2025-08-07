@@ -1,6 +1,6 @@
-import { TeamMembershipType } from '@badman/utils';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { BuildOptions } from 'sequelize';
+import { TeamMembershipType } from "@badman/utils";
+import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { BuildOptions } from "sequelize";
 import {
   AllowNull,
   Column,
@@ -13,13 +13,13 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { Relation } from '../wrapper';
-import { Player } from './player.model';
-import { Team } from './team.model';
+} from "sequelize-typescript";
+import { Relation } from "../wrapper";
+import { Player } from "./player.model";
+import { Team } from "./team.model";
 
 @Table({
-  schema: 'public',
+  schema: "public",
 })
 @ObjectType()
 export class TeamPlayerMembership extends Model {
@@ -36,14 +36,14 @@ export class TeamPlayerMembership extends Model {
 
   @ForeignKey(() => Player)
   @AllowNull(false)
-  @Index('player_team_index')
+  @Index("player_team_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   playerId?: string;
 
   @ForeignKey(() => Team)
   @AllowNull(false)
-  @Index('player_team_index')
+  @Index("player_team_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   teamId?: string;
@@ -58,7 +58,7 @@ export class TeamPlayerMembership extends Model {
 
   // Below is a hacky way to make the Unique across FK's + start
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
-  @Unique('TeamPlayerMemberships_teamId_playerId_unique')
+  @Unique("TeamPlayerMemberships_teamId_playerId_unique")
   @AllowNull(false)
   @Column(DataType.DATE)
   start?: Date;

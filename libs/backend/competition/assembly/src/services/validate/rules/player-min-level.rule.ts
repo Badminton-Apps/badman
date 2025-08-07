@@ -1,7 +1,7 @@
-import { Player } from '@badman/backend-database';
-import { Ranking, SubEventTypeEnum } from '@badman/utils';
-import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
-import { Rule } from './_rule.base';
+import { Player } from "@badman/backend-database";
+import { Ranking, SubEventTypeEnum } from "@badman/utils";
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export type PlayerMinLevelRuleParams = {
   player: Partial<Player> & { ranking: number };
@@ -15,7 +15,7 @@ export type PlayerMinLevelRuleParams = {
  * If the player has a level exception, the player is allowed to be better than the max level
  */
 export class PlayerMinLevelRule extends Rule {
-  static override readonly description = 'all.rules.team-assembly.player-min-level';
+  static override readonly description = "all.rules.team-assembly.player-min-level";
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       system,
@@ -38,11 +38,11 @@ export class PlayerMinLevelRule extends Rule {
     let valid = true;
 
     if (!system?.amountOfLevels) {
-      throw new Error('System has no amount of levels');
+      throw new Error("System has no amount of levels");
     }
 
     if (!subEvent?.maxLevel) {
-      throw new Error('Subevent has no max level');
+      throw new Error("Subevent has no max level");
     }
 
     if (team?.teamNumber != 1) {
@@ -75,7 +75,7 @@ export class PlayerMinLevelRule extends Rule {
         if (ranking.single < subEvent.maxLevel && !metaPlayer?.levelException) {
           valid = false;
           errors.push({
-            message: 'all.v1.teamFormation.errors.player-min-level',
+            message: "all.v1.teamFormation.errors.player-min-level",
             params: {
               player: {
                 id: player?.id,
@@ -83,7 +83,7 @@ export class PlayerMinLevelRule extends Rule {
                 ranking: ranking.single,
               },
               minLevel: subEvent.maxLevel,
-              rankingType: 'single',
+              rankingType: "single",
             },
           });
         }
@@ -91,7 +91,7 @@ export class PlayerMinLevelRule extends Rule {
         if (ranking.double < subEvent.maxLevel && !metaPlayer?.levelException) {
           valid = false;
           errors.push({
-            message: 'all.v1.teamFormation.errors.player-min-level',
+            message: "all.v1.teamFormation.errors.player-min-level",
             params: {
               player: {
                 id: player?.id,
@@ -99,7 +99,7 @@ export class PlayerMinLevelRule extends Rule {
                 ranking: ranking.double,
               },
               minLevel: subEvent.maxLevel,
-              rankingType: 'double',
+              rankingType: "double",
             },
           });
         }
@@ -111,7 +111,7 @@ export class PlayerMinLevelRule extends Rule {
         ) {
           valid = false;
           errors.push({
-            message: 'all.v1.teamFormation.errors.player-min-level',
+            message: "all.v1.teamFormation.errors.player-min-level",
             params: {
               player: {
                 id: player?.id,
@@ -119,7 +119,7 @@ export class PlayerMinLevelRule extends Rule {
                 ranking: ranking.mix,
               },
               minLevel: subEvent.maxLevel,
-              rankingType: 'mix',
+              rankingType: "mix",
             },
           });
         }

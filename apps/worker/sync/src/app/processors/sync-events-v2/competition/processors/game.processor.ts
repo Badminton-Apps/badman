@@ -5,22 +5,22 @@ import {
   Player,
   RankingSystem,
   SubEventCompetition,
-} from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { PointsService } from '@badman/backend-ranking';
+} from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { PointsService } from "@badman/backend-ranking";
 import {
   VisualService,
   XmlMatch,
   XmlMatchTypeID,
   XmlPlayer,
   XmlScoreStatus,
-} from '@badman/backend-visual';
-import { GameStatus, GameType, getRankingProtected } from '@badman/utils';
-import { Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job } from 'bull';
-import moment from 'moment-timezone';
-import { Op, Transaction } from 'sequelize';
+} from "@badman/backend-visual";
+import { GameStatus, GameType, getRankingProtected } from "@badman/utils";
+import { Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job } from "bull";
+import moment from "moment-timezone";
+import { Op, Transaction } from "sequelize";
 
 @Processor({
   name: SyncQueue,
@@ -31,7 +31,7 @@ export class GameCompetitionProcessor {
   constructor(
     private readonly _transactionManager: TransactionManager,
     private readonly _visualService: VisualService,
-    private readonly _pointService: PointsService,
+    private readonly _pointService: PointsService
   ) {}
 
   @Process(Sync.ProcessSyncCompetitionGame)
@@ -54,7 +54,7 @@ export class GameCompetitionProcessor {
       options: {
         deleteMatches?: boolean;
       };
-    }>,
+    }>
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
 
@@ -72,26 +72,26 @@ export class GameCompetitionProcessor {
       transaction,
     });
     if (!draw) {
-      throw new Error('Draw not found');
+      throw new Error("Draw not found");
     }
     const subEvent = await SubEventCompetition.findByPk(job.data.subEventId || draw.subeventId, {
       transaction,
     });
     if (!subEvent) {
-      throw new Error('SubEvent not found');
+      throw new Error("SubEvent not found");
     }
 
     if (!job.data.eventCode) {
       const event = await subEvent.getEventCompetition();
       if (!event) {
-        throw new Error('Event not found');
+        throw new Error("Event not found");
       }
 
       job.data.eventCode = event.visualCode;
     }
 
     if (!job.data.eventCode) {
-      throw new Error('Event code is required');
+      throw new Error("Event code is required");
     }
 
     if (!game && job.data.gameCode) {
@@ -123,14 +123,14 @@ export class GameCompetitionProcessor {
     }
 
     if (!gameCode) {
-      throw new Error('game code is required');
+      throw new Error("game code is required");
     }
 
     // we fetch it via the draw because bye's aren't in the game detail
     const xmlGames = await this._visualService.getGames(job.data.eventCode, draw.visualCode, true);
     const xmlGame = xmlGames.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
     if (!xmlGame) {
-      throw new Error('game not found');
+      throw new Error("game not found");
     }
 
     if (!xmlGame.Sets) {
@@ -142,7 +142,7 @@ export class GameCompetitionProcessor {
     }
 
     const playedAt =
-      xmlGame.MatchTime != null ? moment.tz(xmlGame.MatchTime, 'Europe/Brussels').toDate() : null;
+      xmlGame.MatchTime != null ? moment.tz(xmlGame.MatchTime, "Europe/Brussels").toDate() : null;
 
     let gameStatus: GameStatus;
     switch (xmlGame.ScoreStatus) {
@@ -152,7 +152,7 @@ export class GameCompetitionProcessor {
       case XmlScoreStatus.Disqualified:
         gameStatus = GameStatus.DISQUALIFIED;
         break;
-      case XmlScoreStatus['No Match']:
+      case XmlScoreStatus["No Match"]:
         gameStatus = GameStatus.NO_MATCH;
         break;
       case XmlScoreStatus.Walkover:
@@ -193,7 +193,7 @@ export class GameCompetitionProcessor {
     game.gameType = this._getGameType(xmlGame.MatchTypeID);
     game.visualCode = xmlGame.Code;
     game.linkId = draw.id;
-    game.linkType = 'tournament';
+    game.linkType = "tournament";
     game.status = gameStatus;
     game.playedAt = playedAt;
     game.set1Team1 = xmlGame?.Sets?.Set[0]?.Team1;
@@ -211,7 +211,7 @@ export class GameCompetitionProcessor {
     const memberships = await this._createGamePlayers(xmlGame, game, system, transaction);
     await GamePlayerMembership.bulkCreate(memberships, {
       transaction,
-      updateOnDuplicate: ['single', 'double', 'mix'],
+      updateOnDuplicate: ["single", "double", "mix"],
     });
 
     await this._pointService.createRankingPointforGame(system, game, { transaction });
@@ -223,7 +223,7 @@ export class GameCompetitionProcessor {
     xmlGame: XmlMatch,
     game: Game,
     system: RankingSystem,
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const gamePlayers = [];
     game.players = [];
@@ -241,7 +241,7 @@ export class GameCompetitionProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction,
       });
@@ -275,7 +275,7 @@ export class GameCompetitionProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction,
       });
@@ -308,7 +308,7 @@ export class GameCompetitionProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction,
       });
@@ -341,7 +341,7 @@ export class GameCompetitionProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction,
       });

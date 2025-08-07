@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   Component,
   OnInit,
@@ -7,23 +7,23 @@ import {
   input,
   inject,
   output,
-} from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+} from "@angular/core";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute, Router } from '@angular/router';
-import { EncounterCompetition } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
+} from "@angular/material/autocomplete";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectChange, MatSelectModule } from "@angular/material/select";
+import { ActivatedRoute, Router } from "@angular/router";
+import { EncounterCompetition } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { MomentModule } from "ngx-moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
 import {
   Observable,
   combineLatest,
@@ -35,23 +35,23 @@ import {
   startWith,
   switchMap,
   takeUntil,
-} from 'rxjs';
+} from "rxjs";
 
 @Component({
-    selector: 'badman-select-encounter',
-    imports: [
-        CommonModule,
-        MomentModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatSelectModule,
-    ],
-    templateUrl: './select-encounter.component.html',
-    styleUrls: ['./select-encounter.component.scss']
+  selector: "badman-select-encounter",
+  imports: [
+    CommonModule,
+    MomentModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+  ],
+  templateUrl: "./select-encounter.component.html",
+  styleUrls: ["./select-encounter.component.scss"],
 })
 export class SelectEncounterComponent implements OnInit {
   private apollo = inject(Apollo);
@@ -61,15 +61,15 @@ export class SelectEncounterComponent implements OnInit {
   private platformId = inject<string>(PLATFORM_ID);
   private destroy$ = injectDestroy();
 
-  controlName = input('encounter');
+  controlName = input("encounter");
 
   group = input.required<FormGroup>();
 
-  dependsOn = input('team');
+  dependsOn = input("team");
 
   required = input(false);
 
-  updateOn = input(['team']);
+  updateOn = input(["team"]);
 
   updateUrl = input(false);
 
@@ -111,7 +111,7 @@ export class SelectEncounterComponent implements OnInit {
       this.encounters$ = combineLatest([
         previous.valueChanges.pipe(startWith(null)),
         ...updateOnControls.map((control) =>
-          control?.valueChanges?.pipe(startWith(() => control?.value)),
+          control?.valueChanges?.pipe(startWith(() => control?.value))
         ),
       ]).pipe(
         takeUntil(this.destroy$),
@@ -128,22 +128,22 @@ export class SelectEncounterComponent implements OnInit {
           if (next !== null) {
             return (
               this.group()
-                .get('season')
+                .get("season")
                 ?.valueChanges.pipe(
-                  startWith(this.group().get('season')?.value),
-                  switchMap((year) => this._loadEncounters(year, next)),
+                  startWith(this.group().get("season")?.value),
+                  switchMap((year) => this._loadEncounters(year, next))
                 ) ?? of([])
             );
           }
 
           return of([]);
         }),
-        shareReplay(1),
+        shareReplay(1)
       );
 
       this.encounters$.subscribe((encounters) => {
         let foundEncounter: EncounterCompetition | null = null;
-        const encounterId = this.route.snapshot?.queryParamMap?.get('encounter');
+        const encounterId = this.route.snapshot?.queryParamMap?.get("encounter");
 
         if (encounterId && encounters.length > 0) {
           foundEncounter = encounters.find((r) => r.id == encounterId) ?? null;
@@ -196,7 +196,7 @@ export class SelectEncounterComponent implements OnInit {
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams,
-        queryParamsHandling: 'merge',
+        queryParamsHandling: "merge",
       });
     }
   }
@@ -244,7 +244,7 @@ export class SelectEncounterComponent implements OnInit {
         transferState(`teamEncounterKey-${teamId}`, this.transferState, this.platformId),
         map(
           (result) =>
-            result?.data.encounterCompetitions?.rows.map((r) => new EncounterCompetition(r)) ?? [],
+            result?.data.encounterCompetitions?.rows.map((r) => new EncounterCompetition(r)) ?? []
         ),
         map((c) => {
           return c?.map((r) => {
@@ -256,7 +256,7 @@ export class SelectEncounterComponent implements OnInit {
             return r;
           });
         }),
-        map((e) => e?.sort((a, b) => moment(a.date).diff(b.date))),
+        map((e) => e?.sort((a, b) => moment(a.date).diff(b.date)))
       );
   }
 }

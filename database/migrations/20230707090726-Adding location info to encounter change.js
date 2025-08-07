@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,60 +8,60 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterChangeDates',
-            schema: 'event',
+            tableName: "EncounterChangeDates",
+            schema: "event",
           },
-          'locationId',
+          "locationId",
           {
             type: sequelize.DataTypes.UUID,
             allowNull: true,
             references: {
               model: {
-                tableName: 'Locations',
-                schema: 'event',
+                tableName: "Locations",
+                schema: "event",
               },
-              key: 'id',
+              key: "id",
             },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'locationId',
+          "locationId",
           {
             type: sequelize.DataTypes.UUID,
             allowNull: true,
             references: {
               model: {
-                tableName: 'Locations',
-                schema: 'event',
+                tableName: "Locations",
+                schema: "event",
               },
-              key: 'id',
+              key: "id",
             },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         // set homescore to 0 if null
         await queryInterface.sequelize.query(
           `UPDATE "event"."EncounterCompetitions" SET "homeScore" = 0 WHERE "homeScore" IS NULL;`,
-          { transaction: t },
+          { transaction: t }
         );
 
         // set awayscore to 0 if null
         await queryInterface.sequelize.query(
           `UPDATE "event"."EncounterCompetitions" SET "awayScore" = 0 WHERE "awayScore" IS NULL;`,
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -72,22 +72,22 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterChangeDates',
-            schema: 'event',
+            tableName: "EncounterChangeDates",
+            schema: "event",
           },
-          'locationId',
-          { transaction: t },
+          "locationId",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'locationId',
-          { transaction: t },
+          "locationId",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

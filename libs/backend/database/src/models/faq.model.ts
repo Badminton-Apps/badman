@@ -1,12 +1,12 @@
-import { ObjectType, Field, ID, InputType, OmitType, PartialType } from '@nestjs/graphql';
-import { BuildOptions } from 'sequelize';
-import { Table, Default, DataType, IsUUID, PrimaryKey, Column, Model } from 'sequelize-typescript';
+import { ObjectType, Field, ID, InputType, OmitType, PartialType } from "@nestjs/graphql";
+import { BuildOptions } from "sequelize";
+import { Table, Default, DataType, IsUUID, PrimaryKey, Column, Model } from "sequelize-typescript";
 
 @Table({
   timestamps: true,
-  schema: 'public',
+  schema: "public",
 })
-@ObjectType({ description: 'A faq' })
+@ObjectType({ description: "A faq" })
 export class Faq extends Model {
   constructor(values?: Partial<Faq>, options?: BuildOptions) {
     super(values, options);
@@ -36,12 +36,12 @@ export class Faq extends Model {
 
 @InputType()
 export class FaqUpdateInput extends PartialType(
-  OmitType(Faq, ['createdAt', 'updatedAt'] as const),
-  InputType,
+  OmitType(Faq, ["createdAt", "updatedAt"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class FaqNewInput extends PartialType(
-  OmitType(FaqUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(FaqUpdateInput, ["id"] as const),
+  InputType
 ) {}

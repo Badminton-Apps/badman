@@ -1,53 +1,58 @@
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { DetailDrawComponent, DetailPageComponent, EditPageComponent, OverviewPageComponent } from './pages';
-import { DrawResolver, EventResolver } from './resolver';
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import {
+  DetailDrawComponent,
+  DetailPageComponent,
+  EditPageComponent,
+  OverviewPageComponent,
+} from "./pages";
+import { DrawResolver, EventResolver } from "./resolver";
 
 const MODULE_ROUTES: Routes = [
   {
-    path: '',
+    path: "",
     component: OverviewPageComponent,
   },
   {
-    path: ':id',
-    runGuardsAndResolvers: 'always',
+    path: ":id",
+    runGuardsAndResolvers: "always",
     resolve: {
       eventTournament: EventResolver,
     },
     data: {
       breadcrumb: {
-        alias: 'eventTournament',
+        alias: "eventTournament",
       },
     },
     children: [
       {
-        path: '',
-        runGuardsAndResolvers: 'always',
+        path: "",
+        runGuardsAndResolvers: "always",
         component: DetailPageComponent,
       },
       {
-        path: 'edit',
-        runGuardsAndResolvers: 'always',
+        path: "edit",
+        runGuardsAndResolvers: "always",
         component: EditPageComponent,
         data: {
-          breadcrumb: 'Edit',
+          breadcrumb: "Edit",
         },
       },
       {
-        path: 'draw/:id',
-        runGuardsAndResolvers: 'always',
+        path: "draw/:id",
+        runGuardsAndResolvers: "always",
         resolve: {
           drawTournament: DrawResolver,
         },
         data: {
           breadcrumb: {
-            alias: 'drawTournament',
+            alias: "drawTournament",
           },
         },
         children: [
           {
-            path: '',
+            path: "",
             component: DetailDrawComponent,
           },
         ],

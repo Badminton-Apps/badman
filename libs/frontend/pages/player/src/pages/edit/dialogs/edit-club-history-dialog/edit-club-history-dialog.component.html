@@ -10,14 +10,14 @@
     </div>
     <div class="row">
       <mat-slide-toggle [(ngModel)]="this.currentClub" (toggleChange)="this.toggleCurrentClub()">{{
-        'all.club.current' | translate
+        "all.club.current" | translate
       }}</mat-slide-toggle>
     </div>
     <form [formGroup]="this.membershipFormGroup">
       <div class="row">
         <div>
           <mat-form-field>
-            <mat-label>{{ 'all.club.start' | translate }}</mat-label>
+            <mat-label>{{ "all.club.start" | translate }}</mat-label>
             <input matInput [matDatepicker]="start" formControlName="start" />
             <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
             <mat-datepicker #start></mat-datepicker>
@@ -26,7 +26,7 @@
         <div>
           @if (!this.currentClub) {
             <mat-form-field>
-              <mat-label>{{ 'all.club.end' | translate }}</mat-label>
+              <mat-label>{{ "all.club.end" | translate }}</mat-label>
               <input matInput [matDatepicker]="end" formControlName="end" />
               <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
               <mat-datepicker #end></mat-datepicker>
@@ -39,7 +39,7 @@
         <mat-select formControlName="membershipType">
           @for (type of types; track type) {
             <mat-option [value]="type">
-              {{ 'all.club.membership-types.' + type | lowercase | translate }}
+              {{ "all.club.membership-types." + type | lowercase | translate }}
             </mat-option>
           }
         </mat-select>
@@ -47,17 +47,17 @@
 
       <div class="row">
         <mat-slide-toggle formControlName="confirmed">{{
-          'all.club.confirmed' | translate
+          "all.club.confirmed" | translate
         }}</mat-slide-toggle>
       </div>
     </form>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button (click)="this.onDelete()" color="warn">
-      {{ 'all.button.delete' | translate }}
+      {{ "all.button.delete" | translate }}
     </button>
     <button mat-button [mat-dialog-close]="">
-      {{ 'all.button.close' | translate }}
+      {{ "all.button.close" | translate }}
     </button>
     <button
       mat-raised-button
@@ -70,7 +70,7 @@
           : ('all.club.form.invalid' | translate)
       "
     >
-      {{ 'all.button.save' | translate }}
+      {{ "all.button.save" | translate }}
     </button>
   </mat-dialog-actions>
 </div>

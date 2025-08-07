@@ -22,28 +22,28 @@
     <mat-menu #menu="matMenu">
       <form [formGroup]="this.breakdownService.filter">
         <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedUpgrade">
-          {{ 'all.ranking.breakdown.usedForUpgrade' | translate }}:
+          {{ "all.ranking.breakdown.usedForUpgrade" | translate }}:
           {{
             lostGamesUpgrade()
               | i18nPlural
                 : {
-                    '=0': 'all.ranking.breakdown.games.none',
-                    '=1': 'all.ranking.breakdown.games.one',
-                    other: 'all.ranking.breakdown.games.other',
+                    "=0": "all.ranking.breakdown.games.none",
+                    "=1": "all.ranking.breakdown.games.one",
+                    other: "all.ranking.breakdown.games.other",
                   }
               | translate: { count: lostGamesUpgrade() }
           }}
         </mat-slide-toggle>
 
         <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedDowngrade">
-          {{ 'all.ranking.breakdown.usedForDowngrade' | translate }}:
+          {{ "all.ranking.breakdown.usedForDowngrade" | translate }}:
           {{
             lostGamesDowngrade()
               | i18nPlural
                 : {
-                    '=0': 'all.ranking.breakdown.games.none',
-                    '=1': 'all.ranking.breakdown.games.one',
-                    other: 'all.ranking.breakdown.games.other',
+                    "=0": "all.ranking.breakdown.games.none",
+                    "=1": "all.ranking.breakdown.games.one",
+                    other: "all.ranking.breakdown.games.other",
                   }
               | translate: { count: lostGamesDowngrade() }
           }}
@@ -53,14 +53,14 @@
             (click)="$event.stopPropagation()"
             formControlName="includeOutOfScopeDowngrade"
           >
-            {{ 'all.ranking.breakdown.outOfScopeDowngrade' | translate }}:
+            {{ "all.ranking.breakdown.outOfScopeDowngrade" | translate }}:
             {{
               outOfScopeGamesUpgrade()
                 | i18nPlural
                   : {
-                      '=0': 'all.ranking.breakdown.outOfScope.none',
-                      '=1': 'all.ranking.breakdown.outOfScope.one',
-                      other: 'all.ranking.breakdown.outOfScope.other',
+                      "=0": "all.ranking.breakdown.outOfScope.none",
+                      "=1": "all.ranking.breakdown.outOfScope.one",
+                      other: "all.ranking.breakdown.outOfScope.other",
                     }
                 | translate: { count: outOfScopeGamesUpgrade() }
             }}
@@ -70,28 +70,28 @@
             (click)="$event.stopPropagation()"
             formControlName="includeOutOfScopeUpgrade"
           >
-            {{ 'all.ranking.breakdown.outOfScopeUpgrade' | translate }}:
+            {{ "all.ranking.breakdown.outOfScopeUpgrade" | translate }}:
             {{
               outOfScopeGamesDowngrade()
                 | i18nPlural
                   : {
-                      '=0': 'all.ranking.breakdown.outOfScope.none',
-                      '=1': 'all.ranking.breakdown.outOfScope.one',
-                      other: 'all.ranking.breakdown.outOfScope.other',
+                      "=0": "all.ranking.breakdown.outOfScope.none",
+                      "=1": "all.ranking.breakdown.outOfScope.one",
+                      other: "all.ranking.breakdown.outOfScope.other",
                     }
                 | translate: { count: outOfScopeGamesDowngrade() }
             }}
           </mat-slide-toggle>
 
           <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedIgnored">
-            {{ 'all.ranking.breakdown.notUsed' | translate }}:
+            {{ "all.ranking.breakdown.notUsed" | translate }}:
             {{
               lostGamesIgnored()
                 | i18nPlural
                   : {
-                      '=0': 'all.ranking.breakdown.lostGames.none',
-                      '=1': 'all.ranking.breakdown.lostGames.one',
-                      other: 'all.ranking.breakdown.lostGames.other',
+                      "=0": "all.ranking.breakdown.lostGames.none",
+                      "=1": "all.ranking.breakdown.lostGames.one",
+                      other: "all.ranking.breakdown.lostGames.other",
                     }
                 | translate: { count: lostGamesIgnored() }
             }}</mat-slide-toggle
@@ -101,10 +101,10 @@
     </mat-menu>
 
     <button (click)="this.addGame()" mat-stroked-button>
-      {{ 'all.ranking.breakdown.add-game.title' | translate }}
+      {{ "all.ranking.breakdown.add-game.title" | translate }}
     </button>
     <button (click)="this.exportToExcel()" mat-stroked-button>
-      {{ 'all.ranking.breakdown.export.title' | translate }}
+      {{ "all.ranking.breakdown.export.title" | translate }}
     </button>
     <mat-slide-toggle (change)="this.showUpgrade.set($event.checked)" [checked]="this.showUpgrade()"
       >Show upgrade</mat-slide-toggle
@@ -129,13 +129,13 @@
                   corrected: row.devideUpgradeCorrected,
                 }
         "
-        >{{ 'all.button.yes' | translate }}</span
+        >{{ "all.button.yes" | translate }}</span
       >
     } @else {
-      <span>{{ 'all.button.yes' | translate }}</span>
+      <span>{{ "all.button.yes" | translate }}</span>
     }
   } @else {
-    <span>{{ 'all.button.no' | translate }}</span>
+    <span>{{ "all.button.no" | translate }}</span>
   }
 </ng-template>
 <ng-template #gamesDowngradeTmpl let-row let-index="index" let-col="colDef">
@@ -150,13 +150,13 @@
                   corrected: row.devideUpgradeCorrected,
                 }
         "
-        >{{ 'all.button.yes' | translate }}</span
+        >{{ "all.button.yes" | translate }}</span
       >
     } @else {
-      <span>{{ 'all.button.yes' | translate }}</span>
+      <span>{{ "all.button.yes" | translate }}</span>
     }
   } @else {
-    <span>{{ 'all.button.no' | translate }}</span>
+    <span>{{ "all.button.no" | translate }}</span>
   }
 </ng-template>
 
@@ -164,14 +164,14 @@
   <span
     [matTooltip]="getTooltip(row, true, row.usedForUpgrade)"
     matTooltipClass="tooltip-multi-line tooltip-center-text"
-    >{{ row.avgUpgrade | number: '1.0-0' }}</span
+    >{{ row.avgUpgrade | number: "1.0-0" }}</span
   >
 </ng-template>
 <ng-template #avgDowngradeTmpl let-row let-index="index" let-col="colDef">
   <span
     [matTooltip]="getTooltip(row, false, row.usedForDowngrade)"
     matTooltipClass="tooltip-multi-line tooltip-center-text"
-    >{{ row.avgDowngrade | number: '1.0-0' }}</span
+    >{{ row.avgDowngrade | number: "1.0-0" }}</span
   >
 </ng-template>
 

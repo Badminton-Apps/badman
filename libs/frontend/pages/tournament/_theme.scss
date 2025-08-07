@@ -1,8 +1,8 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
-@use './src/pages/overview/overview.page.theme.scss' as overview;
-@use './src/pages/detail/detail.page.theme.scss' as detail;
-@use './src/pages/detail-draw/detail-draw.page.theme.scss' as detail-draw;
+@use "./src/pages/overview/overview.page.theme.scss" as overview;
+@use "./src/pages/detail/detail.page.theme.scss" as detail;
+@use "./src/pages/detail-draw/detail-draw.page.theme.scss" as detail-draw;
 
 @mixin typography($theme) {
   @include detail.typography($theme);

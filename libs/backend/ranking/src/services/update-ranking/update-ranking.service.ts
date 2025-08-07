@@ -1,9 +1,9 @@
-import { Club, ClubPlayerMembership, Player, RankingPlace } from '@badman/backend-database';
-import { ClubMembershipType } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import moment, { Moment } from 'moment';
-import { InferCreationAttributes, Op, Transaction } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
+import { Club, ClubPlayerMembership, Player, RankingPlace } from "@badman/backend-database";
+import { ClubMembershipType } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import moment, { Moment } from "moment";
+import { InferCreationAttributes, Op, Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
 export class UpdateRankingService {
@@ -20,15 +20,15 @@ export class UpdateRankingService {
       updatePossible: false,
       updateClubs: false,
       createNewPlayers: false,
-    },
+    }
   ) {
     const options = this.validateOptions(input, data);
 
-    options.rankingDate = moment(options.rankingDate).startOf('day').toDate();
+    options.rankingDate = moment(options.rankingDate).startOf("day").toDate();
 
     const transaction = await this._sequelize.transaction();
     try {
-      this._logger.log('Start processing export members role per group');
+      this._logger.log("Start processing export members role per group");
 
       const distinctPlayers = await this.fetchDistinctPlayers(data, transaction);
       const newPlayers = this.getNewPlayers(data, distinctPlayers);
@@ -52,7 +52,7 @@ export class UpdateRankingService {
           distinctPlayers,
           options.rankingDate,
           options.rankingSystemId,
-          transaction,
+          transaction
         );
       }
 
@@ -64,15 +64,15 @@ export class UpdateRankingService {
           options.rankingSystemId,
           options.removeAllRanking,
           options.updatePossible,
-          transaction,
+          transaction
         );
       }
 
       await this.updatePlayerGender(data, transaction);
 
-      this._logger.debug('Commit transaction');
+      this._logger.debug("Commit transaction");
       await transaction.commit();
-      this._logger.log('End processing export members role per group');
+      this._logger.log("End processing export members role per group");
     } catch (error) {
       this._logger.error(error);
       await transaction.rollback();
@@ -82,13 +82,13 @@ export class UpdateRankingService {
 
   private validateOptions(options: Partial<Options>, data: MembersRolePerGroupData[]) {
     if (!options.rankingDate) {
-      throw new Error('Ranking date is required');
+      throw new Error("Ranking date is required");
     }
     if (!options.rankingSystemId) {
-      throw new Error('Ranking system id is required');
+      throw new Error("Ranking system id is required");
     }
     if (!data || data.length == 0) {
-      throw new Error('No data to process');
+      throw new Error("No data to process");
     }
 
     return options as Options;
@@ -96,7 +96,7 @@ export class UpdateRankingService {
 
   private async fetchDistinctPlayers(
     data: MembersRolePerGroupData[],
-    transaction?: Transaction,
+    transaction?: Transaction
   ): Promise<Player[]> {
     const distinctPlayers: Player[] = [];
     const distinctIds: string[] = [];
@@ -109,7 +109,7 @@ export class UpdateRankingService {
         .filter((d) => !distinctIds.find((p) => p === d));
 
       const players = await Player.findAll({
-        attributes: ['id', 'memberId', 'competitionPlayer', 'gender', 'firstName', 'lastName'],
+        attributes: ["id", "memberId", "competitionPlayer", "gender", "firstName", "lastName"],
         where: {
           memberId: distinctChunkIds,
         },
@@ -117,7 +117,7 @@ export class UpdateRankingService {
       });
 
       distinctPlayers.push(...players);
-      distinctIds.push(...players.map((p) => p.memberId ?? ''));
+      distinctIds.push(...players.map((p) => p.memberId ?? ""));
     }
 
     return distinctPlayers;
@@ -125,7 +125,7 @@ export class UpdateRankingService {
 
   private getNewPlayers(
     data: MembersRolePerGroupData[],
-    distinctPlayers: Player[],
+    distinctPlayers: Player[]
   ): MembersRolePerGroupData[] {
     return data.filter((d) => !distinctPlayers.find((p) => p.memberId === d.memberId));
   }
@@ -144,20 +144,20 @@ export class UpdateRankingService {
             memberId: newp.memberId,
             firstName: newp.firstName,
             lastName: newp.lastName,
-            gender: newp.gender == 'M' ? 'M' : 'F',
+            gender: newp.gender == "M" ? "M" : "F",
           } as Partial<Player>;
         }),
-        { transaction },
+        { transaction }
       );
     }
   }
 
   private async getNewPlayersFromDb(
     newPlayers: MembersRolePerGroupData[],
-    transaction?: Transaction,
+    transaction?: Transaction
   ): Promise<Player[]> {
     return Player.findAll({
-      attributes: ['id', 'memberId', 'competitionPlayer', 'gender'],
+      attributes: ["id", "memberId", "competitionPlayer", "gender"],
       where: {
         memberId: newPlayers.map((p) => p.memberId),
       },
@@ -167,14 +167,14 @@ export class UpdateRankingService {
 
   private async updateCompetitionStatus(
     data: MembersRolePerGroupData[],
-    transaction?: Transaction,
+    transaction?: Transaction
   ) {
     const memberIdsComp = data
-      ?.filter((p) => p.role === 'Competitiespeler')
+      ?.filter((p) => p.role === "Competitiespeler")
       ?.map((d) => d.memberId);
 
     const newCompPlayers = await Player.findAll({
-      attributes: ['id', 'memberId', 'competitionPlayer'],
+      attributes: ["id", "memberId", "competitionPlayer"],
       where: {
         memberId: {
           [Op.in]: memberIdsComp,
@@ -185,7 +185,7 @@ export class UpdateRankingService {
     });
 
     const removedCompPlayers = await Player.findAll({
-      attributes: ['id', 'memberId', 'competitionPlayer'],
+      attributes: ["id", "memberId", "competitionPlayer"],
       where: {
         memberId: {
           [Op.notIn]: memberIdsComp,
@@ -198,12 +198,12 @@ export class UpdateRankingService {
     await this.setCompetitionStatus(
       newCompPlayers.map((p) => p.id),
       true,
-      transaction,
+      transaction
     );
     await this.setCompetitionStatus(
       removedCompPlayers.map((p) => p.id),
       false,
-      transaction,
+      transaction
     );
   }
 
@@ -211,7 +211,7 @@ export class UpdateRankingService {
     distinctPlayers: Player[],
     rankingDate: Date,
     rankingSystemId: string,
-    transaction?: Transaction,
+    transaction?: Transaction
   ) {
     await RankingPlace.destroy({
       where: {
@@ -230,23 +230,23 @@ export class UpdateRankingService {
     rankingSystemId: string,
     removeAllRanking: boolean,
     updatePossible: boolean,
-    transaction?: Transaction,
+    transaction?: Transaction
   ) {
     const distinctPlayersChunks = this.chunkArray(distinctPlayers, 50);
 
     for (const chunk of distinctPlayersChunks) {
       const places = await RankingPlace.findAll({
         attributes: [
-          'id',
-          'playerId',
-          'systemId',
-          'rankingDate',
-          'single',
-          'singlePoints',
-          'double',
-          'doublePoints',
-          'mix',
-          'mixPoints',
+          "id",
+          "playerId",
+          "systemId",
+          "rankingDate",
+          "single",
+          "singlePoints",
+          "double",
+          "doublePoints",
+          "mix",
+          "mixPoints",
         ],
         where: {
           playerId: chunk?.map((p) => p.id) ?? [],
@@ -294,16 +294,16 @@ export class UpdateRankingService {
         toUpdate.map((p) => p.toJSON()),
         {
           updateOnDuplicate: [
-            'single',
-            'double',
-            'mix',
-            'singlePoints',
-            'doublePoints',
-            'mixPoints',
-            'updatePossible',
+            "single",
+            "double",
+            "mix",
+            "singlePoints",
+            "doublePoints",
+            "mixPoints",
+            "updatePossible",
           ],
           transaction,
-        },
+        }
       );
     }
   }
@@ -311,10 +311,10 @@ export class UpdateRankingService {
   private async updateClubs(
     data: MembersRolePerGroupData[],
     players: Player[],
-    transaction?: Transaction,
+    transaction?: Transaction
   ) {
     const clubs = await Club.findAll({
-      attributes: ['id', 'name', 'fullName'],
+      attributes: ["id", "name", "fullName"],
       transaction,
     });
     const newClubMemberships: InferCreationAttributes<ClubPlayerMembership>[] = [];
@@ -325,7 +325,7 @@ export class UpdateRankingService {
       if (processedPlayers.size % 1000 === 0) {
         const percentage = Math.round((processedPlayers.size / data.length) * 100);
         this._logger.verbose(
-          `Processed ${processedPlayers.size}/${data.length} (${percentage}%) players`,
+          `Processed ${processedPlayers.size}/${data.length} (${percentage}%) players`
         );
       }
 
@@ -340,23 +340,23 @@ export class UpdateRankingService {
         const club = clubs.find(
           (c) =>
             c.name?.toLowerCase() === row.clubName?.toLowerCase() ||
-            c.fullName?.toLowerCase() === row.clubName?.toLowerCase(),
+            c.fullName?.toLowerCase() === row.clubName?.toLowerCase()
         );
         if (club) {
           const playerClubs = (await player.getClubs({
             include: [
               {
                 model: ClubPlayerMembership,
-                as: 'ClubPlayerMembership',
+                as: "ClubPlayerMembership",
                 where: { membershipType: ClubMembershipType.NORMAL },
-                order: [['start', 'DESC']],
+                order: [["start", "DESC"]],
               },
             ],
           })) as (Club & { ClubPlayerMembership: ClubPlayerMembership })[];
 
           // find the expected club
           const activeClub = playerClubs.find(
-            (c) => c.id === club.id && c.ClubPlayerMembership.end === null,
+            (c) => c.id === club.id && c.ClubPlayerMembership.end === null
           );
           const inputStartDate = moment(row.startdate);
 
@@ -369,7 +369,7 @@ export class UpdateRankingService {
               for (const otherClub of playerClubs.filter(
                 (c) =>
                   c.id === club.id &&
-                  c.ClubPlayerMembership.id !== activeClub.ClubPlayerMembership.id,
+                  c.ClubPlayerMembership.id !== activeClub.ClubPlayerMembership.id
               )) {
                 await otherClub.ClubPlayerMembership.destroy({ transaction });
               }
@@ -377,7 +377,7 @@ export class UpdateRankingService {
 
             // check if the club is the same club
             if (activeClub?.id === club.id) {
-              if (!inputStartDate.isSame(activeClub.ClubPlayerMembership.start, 'day')) {
+              if (!inputStartDate.isSame(activeClub.ClubPlayerMembership.start, "day")) {
                 activeClub.ClubPlayerMembership.start = inputStartDate.toDate();
                 await activeClub.ClubPlayerMembership.save({ transaction });
               }
@@ -387,7 +387,7 @@ export class UpdateRankingService {
                 player.id,
                 club.id,
                 inputStartDate,
-                transaction,
+                transaction
               );
 
               if (newMembership) {
@@ -397,9 +397,9 @@ export class UpdateRankingService {
 
             // end other club membership(s)
             for (const otherClub of playerClubs.filter(
-              (c) => c.id !== club.id && c.ClubPlayerMembership.end == null,
+              (c) => c.id !== club.id && c.ClubPlayerMembership.end == null
             )) {
-              otherClub.ClubPlayerMembership.end = inputStartDate.subtract(1, 'day').toDate();
+              otherClub.ClubPlayerMembership.end = inputStartDate.subtract(1, "day").toDate();
               await otherClub.ClubPlayerMembership.save({ transaction });
             }
           } else {
@@ -408,7 +408,7 @@ export class UpdateRankingService {
               player.id,
               club.id,
               inputStartDate,
-              transaction,
+              transaction
             );
 
             if (newMembership) {
@@ -430,11 +430,11 @@ export class UpdateRankingService {
     playerId: string,
     clubId: string,
     inputStartDate: Moment,
-    transaction?: Transaction,
+    transaction?: Transaction
   ) {
     // check if the player has a membership with the same clubId that starts on the same date
     const existingClub = playerClubs.find(
-      (c) => c.id === clubId && inputStartDate.isSame(c.ClubPlayerMembership.start, 'day'),
+      (c) => c.id === clubId && inputStartDate.isSame(c.ClubPlayerMembership.start, "day")
     );
 
     if (existingClub) {
@@ -454,26 +454,26 @@ export class UpdateRankingService {
   }
 
   private async updatePlayerGender(data: MembersRolePerGroupData[], transaction?: Transaction) {
-    const memberIdsMale = data?.filter((p) => p.gender === 'M')?.map((d) => d.memberId);
-    const memberIdsFemale = data?.filter((p) => p.gender === 'V')?.map((d) => d.memberId);
+    const memberIdsMale = data?.filter((p) => p.gender === "M")?.map((d) => d.memberId);
+    const memberIdsFemale = data?.filter((p) => p.gender === "V")?.map((d) => d.memberId);
 
     const wrongMalePlayers = await Player.findAll({
-      attributes: ['id', 'memberId', 'gender'],
+      attributes: ["id", "memberId", "gender"],
       where: {
         memberId: memberIdsMale,
         gender: {
-          [Op.not]: 'M',
+          [Op.not]: "M",
         },
       },
       transaction,
     });
 
     const wrongFemalePlayers = await Player.findAll({
-      attributes: ['id', 'memberId', 'gender'],
+      attributes: ["id", "memberId", "gender"],
       where: {
         memberId: memberIdsFemale,
         gender: {
-          [Op.not]: 'F',
+          [Op.not]: "F",
         },
       },
       transaction,
@@ -481,13 +481,13 @@ export class UpdateRankingService {
 
     await this.setGender(
       wrongMalePlayers.map((p) => p.id),
-      'M',
-      transaction,
+      "M",
+      transaction
     );
     await this.setGender(
       wrongFemalePlayers.map((p) => p.id),
-      'F',
-      transaction,
+      "F",
+      transaction
     );
   }
 
@@ -507,11 +507,11 @@ export class UpdateRankingService {
           id: id,
         },
         transaction,
-      },
+      }
     );
   }
 
-  private async setGender(id: string[], gender: 'M' | 'F', transaction?: Transaction) {
+  private async setGender(id: string[], gender: "M" | "F", transaction?: Transaction) {
     transaction = transaction || (await this._sequelize.transaction());
 
     if (id.length === 0) {
@@ -527,7 +527,7 @@ export class UpdateRankingService {
           id: id,
         },
         transaction,
-      },
+      }
     );
 
     this._logger.verbose(`updated ${changed} player(s) gender to ${gender}`);
@@ -548,7 +548,7 @@ export interface MembersRolePerGroupData {
   firstName: string;
   lastName: string;
   role: string;
-  gender: 'M' | 'V';
+  gender: "M" | "V";
   startdate: Date;
   enddate: Date;
   single: number;

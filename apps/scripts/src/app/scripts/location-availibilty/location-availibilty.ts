@@ -7,10 +7,10 @@ import {
   EventCompetition,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
-import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment';
-import { Sequelize } from 'sequelize-typescript';
+} from "@badman/backend-database";
+import { Injectable, Logger } from "@nestjs/common";
+import moment from "moment";
+import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
 export class CreateLocationAvailibiltyRunner {
@@ -34,7 +34,7 @@ export class CreateLocationAvailibiltyRunner {
         this.logger.verbose(`Fixing availibilty for season ${season}`);
 
         const events = await EventCompetition.findAll({
-          attributes: ['id'],
+          attributes: ["id"],
           where: {
             season,
             official: true,
@@ -42,11 +42,11 @@ export class CreateLocationAvailibiltyRunner {
           include: [
             {
               model: SubEventCompetition,
-              attributes: ['id'],
+              attributes: ["id"],
               include: [
                 {
                   model: DrawCompetition,
-                  attributes: ['id'],
+                  attributes: ["id"],
                 },
               ],
             },
@@ -66,15 +66,15 @@ export class CreateLocationAvailibiltyRunner {
         this.logger.verbose(`Fixing availibilty for ${drawIds.length} draws`);
 
         const encountes = await EncounterCompetition.findAll({
-          attributes: ['id', 'date'],
+          attributes: ["id", "date"],
           where: {
             drawId: drawIds,
           },
           include: [
             {
               model: Team,
-              as: 'home',
-              attributes: ['id', 'clubId'],
+              as: "home",
+              attributes: ["id", "clubId"],
               required: true,
             },
           ],
@@ -85,14 +85,12 @@ export class CreateLocationAvailibiltyRunner {
 
         const clubIds = [
           ...new Set(
-            encountes
-              .map((encounter) => encounter?.home?.clubId)
-              .filter((clubId) => clubId != null),
+            encountes.map((encounter) => encounter?.home?.clubId).filter((clubId) => clubId != null)
           ),
         ];
 
         const clubs = await Club.findAll({
-          attributes: ['id'],
+          attributes: ["id"],
           where: {
             id: clubIds,
           },
@@ -100,7 +98,7 @@ export class CreateLocationAvailibiltyRunner {
             {
               model: Location,
               required: true,
-              attributes: ['id'],
+              attributes: ["id"],
               include: [
                 {
                   model: Availability,
@@ -125,14 +123,14 @@ export class CreateLocationAvailibiltyRunner {
 
           // get all the encounters for this club
           const clubEncounters = encountes.filter(
-            (encounter) => encounter?.home?.clubId === club.id,
+            (encounter) => encounter?.home?.clubId === club.id
           );
 
           // group enocuntesr by day of the week and time
           const groupedEncounters = clubEncounters.reduce(
             (acc, encounter) => {
-              const day = moment(encounter.date).format('dddd').toLowerCase();
-              const time = moment(encounter.date).format('HH:mm');
+              const day = moment(encounter.date).format("dddd").toLowerCase();
+              const time = moment(encounter.date).format("HH:mm");
               const key = `${day}-${time}`;
 
               if (!acc[key]) {
@@ -143,7 +141,7 @@ export class CreateLocationAvailibiltyRunner {
 
               return acc;
             },
-            {} as Record<string, EncounterCompetition[]>,
+            {} as Record<string, EncounterCompetition[]>
           );
 
           // if more then 3 encounters on the same day and time, assume this was a day, create a location availibilty for that location, for that time, for that day of the week
@@ -181,18 +179,18 @@ export class CreateLocationAvailibiltyRunner {
                 continue;
               }
 
-              const day = moment(encounters[0].date).format('dddd').toLowerCase() as
-                | 'monday'
-                | 'tuesday'
-                | 'wednesday'
-                | 'thursday'
-                | 'friday'
-                | 'saturday'
-                | 'sunday';
-              const startTime = moment(encounters[0].date).format('HH:mm');
+              const day = moment(encounters[0].date).format("dddd").toLowerCase() as
+                | "monday"
+                | "tuesday"
+                | "wednesday"
+                | "thursday"
+                | "friday"
+                | "saturday"
+                | "sunday";
+              const startTime = moment(encounters[0].date).format("HH:mm");
 
               const availibiltyDay = availability.days?.find(
-                (d) => d.day === day && d.startTime === startTime,
+                (d) => d.day === day && d.startTime === startTime
               );
 
               if (!availibiltyDay) {
@@ -201,7 +199,7 @@ export class CreateLocationAvailibiltyRunner {
                   startTime,
                 });
 
-                availability.changed('days', true);
+                availability.changed("days", true);
 
                 await availability.save({
                   transaction,

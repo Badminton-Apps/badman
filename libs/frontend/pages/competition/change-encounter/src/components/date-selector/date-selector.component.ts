@@ -1,5 +1,5 @@
-import { FocusMonitor } from '@angular/cdk/a11y';
-import { BooleanInput, coerceBooleanProperty } from '@angular/cdk/coercion';
+import { FocusMonitor } from "@angular/cdk/a11y";
+import { BooleanInput, coerceBooleanProperty } from "@angular/cdk/coercion";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -9,7 +9,7 @@ import {
   Input,
   OnDestroy,
   inject,
-} from '@angular/core';
+} from "@angular/core";
 import {
   ControlValueAccessor,
   FormControl,
@@ -17,22 +17,22 @@ import {
   NgControl,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatFormField, MatFormFieldControl, MAT_FORM_FIELD } from '@angular/material/form-field';
-import moment, { Moment } from 'moment';
-import { Subject } from 'rxjs';
-import { CalendarComponent } from '../calendar';
+} from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
+import { MatFormField, MatFormFieldControl, MAT_FORM_FIELD } from "@angular/material/form-field";
+import moment, { Moment } from "moment";
+import { Subject } from "rxjs";
+import { CalendarComponent } from "../calendar";
 
-import { MomentModule } from 'ngx-moment';
-import { input } from '@angular/core';
+import { MomentModule } from "ngx-moment";
+import { input } from "@angular/core";
 
-const selector = 'badman-date-selector';
+const selector = "badman-date-selector";
 
 @Component({
   selector,
-  templateUrl: './date-selector.component.html',
-  styleUrls: ['./date-selector.component.scss'],
+  templateUrl: "./date-selector.component.html",
+  styleUrls: ["./date-selector.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{ provide: MatFormFieldControl, useExisting: DateSelectorComponent }],
   standalone: true,
@@ -90,14 +90,14 @@ export class DateSelectorComponent
     return !this.dateControl;
   }
 
-  @HostBinding('class.floating')
+  @HostBinding("class.floating")
   get shouldLabelFloat() {
     return this.focused || !this.empty;
   }
 
   @Input()
   get placeholder(): string {
-    return this._placeholder ?? '';
+    return this._placeholder ?? "";
   }
   set placeholder(value: string) {
     this._placeholder = value;
@@ -180,8 +180,8 @@ export class DateSelectorComponent
 
     this._dialog
       .open(CalendarComponent, {
-        width: '95vw',
-        maxWidth: '95vw',
+        width: "95vw",
+        maxWidth: "95vw",
         data: {
           homeClubId: this.homeClubId(),
           awayClubId: this.awayClubId(),
@@ -219,9 +219,9 @@ export class DateSelectorComponent
   }
 
   setDescribedByIds(ids: string[]) {
-    const controlElement = this._elementRef.nativeElement.querySelector('.date-selector-container');
+    const controlElement = this._elementRef.nativeElement.querySelector(".date-selector-container");
     if (controlElement) {
-      controlElement.setAttribute('aria-describedby', ids.join(' '));
+      controlElement.setAttribute("aria-describedby", ids.join(" "));
     }
   }
 
@@ -233,7 +233,7 @@ export class DateSelectorComponent
     date: {
       date: Moment;
       locationId: string;
-    } | null,
+    } | null
   ): void {
     this.value = date;
   }

@@ -1,8 +1,8 @@
-import { EventEntry } from '../models';
-import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
-import { SubEventCompetitionBuilder } from './eventCompetitionSubEventBuilder';
-import { PlayerBuilder } from './playerBuilder';
-import { TeamBuilder } from './teamBuilder';
+import { EventEntry } from "../models";
+import { DrawCompetitionBuilder } from "./eventCompetitionDrawBuilder";
+import { SubEventCompetitionBuilder } from "./eventCompetitionSubEventBuilder";
+import { PlayerBuilder } from "./playerBuilder";
+import { TeamBuilder } from "./teamBuilder";
 
 export class EventCompetitionEntryBuilder {
   private build = false;
@@ -22,7 +22,7 @@ export class EventCompetitionEntryBuilder {
 
   private index = -1;
 
-  constructor(entryType: 'competition' | 'tournament', id?: string) {
+  constructor(entryType: "competition" | "tournament", id?: string) {
     this.entry = new EventEntry({
       id,
       entryType,
@@ -30,8 +30,8 @@ export class EventCompetitionEntryBuilder {
   }
 
   static Create(
-    entryType: 'competition' | 'tournament',
-    id?: string,
+    entryType: "competition" | "tournament",
+    id?: string
   ): EventCompetitionEntryBuilder {
     return new EventCompetitionEntryBuilder(entryType, id);
   }
@@ -40,7 +40,7 @@ export class EventCompetitionEntryBuilder {
     player: PlayerBuilder,
     single: number,
     double: number,
-    mix: number,
+    mix: number
   ): EventCompetitionEntryBuilder {
     this.basePlayers.push({
       player,

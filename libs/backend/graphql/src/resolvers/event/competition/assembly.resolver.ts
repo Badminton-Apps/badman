@@ -1,15 +1,15 @@
-import { AssemblyInput, AssemblyOutput, AssemblyValidationService } from '@badman/backend-assembly';
-import { User } from '@badman/backend-authorization';
+import { AssemblyInput, AssemblyOutput, AssemblyValidationService } from "@badman/backend-assembly";
+import { User } from "@badman/backend-authorization";
 import {
   Assembly,
   Player,
   PlayerRankingType,
   RankingPlace,
   RankingSystem,
-} from '@badman/backend-database';
-import { getRankingProtected, sortPlayers } from '@badman/utils';
-import { Logger, NotFoundException } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+} from "@badman/backend-database";
+import { getRankingProtected, sortPlayers } from "@badman/utils";
+import { Logger, NotFoundException } from "@nestjs/common";
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 
 @Resolver(() => AssemblyOutput)
 export class AssemblyResolver {
@@ -21,7 +21,7 @@ export class AssemblyResolver {
   })
   async validateAssembly(
     @User() user: Player,
-    @Args('assembly') assembly: AssemblyInput,
+    @Args("assembly") assembly: AssemblyInput
   ): Promise<AssemblyOutput> {
     return this.assemblyService.validate(assembly, { playerId: user.id, teamId: assembly.teamId });
   }
@@ -49,7 +49,7 @@ export class AssemblyResolver {
         const place = getRankingProtected(
           assembly.titularsPlayerData?.find((p) => p.id === player.id)?.rankingPlaces?.[0] ??
             ({} as RankingPlace),
-          system,
+          system
         );
 
         return {
@@ -83,14 +83,14 @@ export class AssemblyResolver {
   }
 
   @Mutation(() => Boolean)
-  async createAssembly(@User() user: Player, @Args('assembly') assembly: AssemblyInput) {
-    if (!assembly) throw new Error('Assembly is required');
-    if (!assembly.encounterId) throw new Error('Encounter is required');
-    if (!assembly.teamId) throw new Error('Team is required');
-    if (!user?.id) throw new Error('User is required');
+  async createAssembly(@User() user: Player, @Args("assembly") assembly: AssemblyInput) {
+    if (!assembly) throw new Error("Assembly is required");
+    if (!assembly.encounterId) throw new Error("Encounter is required");
+    if (!assembly.teamId) throw new Error("Team is required");
+    if (!user?.id) throw new Error("User is required");
 
     this.logger.debug(
-      `Saving assembly for encounter ${assembly.encounterId} and team ${assembly.teamId}, by player ${user.fullName}`,
+      `Saving assembly for encounter ${assembly.encounterId} and team ${assembly.teamId}, by player ${user.fullName}`
     );
 
     try {

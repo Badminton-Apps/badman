@@ -1,6 +1,6 @@
-import { EventCompetition, EventTournament } from './events';
-import { Availability } from './availibilty.model';
-import { Club } from './club.model';
+import { EventCompetition, EventTournament } from "./events";
+import { Availability } from "./availibilty.model";
+import { Club } from "./club.model";
 
 export class Location {
   id?: string;

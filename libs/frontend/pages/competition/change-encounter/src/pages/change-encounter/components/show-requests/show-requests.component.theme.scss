@@ -1,25 +1,21 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-show-requests {
-    
-    
-    
-    
-    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
-    $isDark: map.get($theme, 'is-dark');
-    $warn-palette: map.get($theme, 'warn');
+    $border-color: mat.get-theme-color($theme, foreground, "disabled-text");
+    $isDark: map.get($theme, "is-dark");
+    $warn-palette: map.get($theme, "warn");
 
     .comments {
       .message-content {
         border-color: $border-color;
 
         label {
-          background-color: mat.get-theme-color($theme, 'background', 'background');
-          color: mat.get-theme-color($theme, foreground, 'secondary-text');
+          background-color: mat.get-theme-color($theme, "background", "background");
+          color: mat.get-theme-color($theme, foreground, "secondary-text");
         }
       }
     }
@@ -32,8 +28,6 @@
 
 @mixin typography($theme) {
   badman-show-requests {
-    
-
     .caption,
     label {
       font: mat.get-theme-typography($theme, caption, font);

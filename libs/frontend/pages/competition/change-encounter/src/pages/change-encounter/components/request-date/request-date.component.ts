@@ -1,22 +1,21 @@
+import { Component, computed, inject, OnInit, output } from "@angular/core";
+import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSelectModule } from "@angular/material/select";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
-import { Component, computed, inject, OnInit, output } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
-import { input } from '@angular/core';
-import { EncounterCompetition } from '@badman/frontend-models';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { combineLatest, of } from 'rxjs';
-import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
-import { DateSelectorComponent } from '../../../../components';
+import { input } from "@angular/core";
+import { EncounterCompetition } from "@badman/frontend-models";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { combineLatest, of } from "rxjs";
+import { distinctUntilChanged, map, startWith } from "rxjs/operators";
+import { DateSelectorComponent } from "../../../../components";
 
 @Component({
-    selector: 'badman-request-date',
-    imports: [
+  selector: "badman-request-date",
+  imports: [
     DateSelectorComponent,
     ReactiveFormsModule,
     FormsModule,
@@ -25,10 +24,10 @@ import { DateSelectorComponent } from '../../../../components';
     MatIconModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatTooltipModule
-],
-    templateUrl: './request-date.component.html',
-    styleUrls: ['./request-date.component.scss']
+    MatTooltipModule,
+  ],
+  templateUrl: "./request-date.component.html",
+  styleUrls: ["./request-date.component.scss"],
 })
 export class RequestDateComponent implements OnInit {
   showCompact = input<boolean | undefined>(false);
@@ -41,10 +40,10 @@ export class RequestDateComponent implements OnInit {
 
   tootltip = computed<string>(() =>
     this.warnings()
-      ? this.warnings()
+      ? (this.warnings()
           ?.map((w) => this.translate.instant(w.message, w.params))
-          ?.join('\n\r\n\r') ?? ''
-      : '',
+          ?.join("\n\r\n\r") ?? "")
+      : ""
   );
 
   group = input.required<FormGroup>();
@@ -56,31 +55,31 @@ export class RequestDateComponent implements OnInit {
   ngOnInit() {
     combineLatest([
       this.group()
-        .get('availabilityAway')
+        .get("availabilityAway")
         ?.valueChanges.pipe(
-          startWith(this.group().get('availabilityAway')?.value),
+          startWith(this.group().get("availabilityAway")?.value),
           distinctUntilChanged(),
-          map((value) => value == 'POSSIBLE'),
+          map((value) => value == "POSSIBLE")
         ) ?? of(false),
       this.group()
-        .get('availabilityHome')
+        .get("availabilityHome")
         ?.valueChanges.pipe(
-          startWith(this.group().get('availabilityHome')?.value),
+          startWith(this.group().get("availabilityHome")?.value),
           distinctUntilChanged(),
-          map((value) => value == 'POSSIBLE'),
+          map((value) => value == "POSSIBLE")
         ) ?? of(false),
     ]).subscribe(([availabilityAway, availabilityHome]) => {
       if (availabilityAway && availabilityHome) {
         if (this.home()) {
-          this.group().get('selected')?.enable();
+          this.group().get("selected")?.enable();
           this.tootltipSelected = undefined;
         } else {
-          this.group().get('selected')?.disable();
-          this.tootltipSelected = 'all.competition.change-encounter.warnings.home-accept';
+          this.group().get("selected")?.disable();
+          this.tootltipSelected = "all.competition.change-encounter.warnings.home-accept";
         }
       } else {
-        this.group().get('selected')?.disable();
-        this.tootltipSelected = 'all.competition.change-encounter.warnings.missing-availability';
+        this.group().get("selected")?.disable();
+        this.tootltipSelected = "all.competition.change-encounter.warnings.missing-availability";
       }
     });
   }

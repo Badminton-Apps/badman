@@ -1,7 +1,7 @@
 export class Service {
   id?: string;
   name?: string;
-  status?: 'starting' | 'started' | 'stopped';
+  status?: "starting" | "started" | "stopped";
 
   constructor(args: Partial<Service>) {
     this.id = args?.id;

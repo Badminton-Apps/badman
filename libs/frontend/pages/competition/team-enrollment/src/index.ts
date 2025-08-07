@@ -1,1 +1,1 @@
-export * from './team-enrollment.module';
+export * from "./team-enrollment.module";

@@ -4,19 +4,19 @@ import {
   Game,
   RankingSystem,
   SubEventTournament,
-} from '@badman/backend-database';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
+} from "@badman/backend-database";
+import moment from "moment";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
 import {
   VisualService,
   XmlTournament,
   XmlTournamentEvent,
   XmlGameTypeID,
   XmlGenderID,
-} from '@badman/backend-visual';
-import { GameType, SubEventTypeEnum } from '@badman/utils';
-import { Logger } from '@nestjs/common';
+} from "@badman/backend-visual";
+import { GameType, SubEventTypeEnum } from "@badman/utils";
+import { Logger } from "@nestjs/common";
 
 export interface SubEventStepData {
   subEvent: SubEventTournament;
@@ -32,7 +32,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -44,16 +44,16 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
 
   public async process(): Promise<SubEventStepData[]> {
     if (!this.event) {
-      throw new Error('No Event');
+      throw new Error("No Event");
     }
 
     const subEvents = await this.event.getSubEventTournaments({
       transaction: this.transaction,
     });
-    const canChange = moment().subtract(2, 'months').isBefore(this.event.firstDay);
+    const canChange = moment().subtract(2, "months").isBefore(this.event.firstDay);
     const visualEvents = await this.visualService.getSubEvents(
       this.visualTournament.Code,
-      !canChange,
+      !canChange
     );
     const returnSubEvents: SubEventStepData[] = [];
 
@@ -72,7 +72,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
         const [first, ...rest] = dbSubEvents;
         dbSubEvent = first;
 
-        this.logger.warn('Having multiple? Removing old');
+        this.logger.warn("Having multiple? Removing old");
         await SubEventTournament.destroy({
           where: {
             id: {
@@ -86,7 +86,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       if (!dbSubEvent) {
         if (this.existed) {
           this.logger.warn(
-            `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`,
+            `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`
           );
         }
         dbSubEvent = await new SubEventTournament({
@@ -135,7 +135,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
     for (const removed of removedSubEvents) {
       const gameIds = (
         await Game.findAll({
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               attributes: [],
@@ -183,7 +183,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       case XmlGameTypeID.Mixed:
         return GameType.MX;
       default:
-        this.logger.warn('No Game type found');
+        this.logger.warn("No Game type found");
         return;
     }
   }
@@ -199,7 +199,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       case XmlGenderID.Mixed:
         return SubEventTypeEnum.MX;
       default:
-        this.logger.warn('No event type found');
+        this.logger.warn("No event type found");
         return;
     }
   }

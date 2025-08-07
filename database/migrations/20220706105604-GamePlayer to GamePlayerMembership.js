@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
@@ -7,14 +7,14 @@ module.exports = {
       try {
         await queryInterface.renameTable(
           {
-            tableName: 'GamePlayers',
-            schema: 'event',
+            tableName: "GamePlayers",
+            schema: "event",
           },
-          'GamePlayerMemberships',
-          { transaction: t },
+          "GamePlayerMemberships",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -25,14 +25,14 @@ module.exports = {
       try {
         await queryInterface.renameTable(
           {
-            tableName: 'GamePlayerMemberships',
-            schema: 'event',
+            tableName: "GamePlayerMemberships",
+            schema: "event",
           },
-          'GamePlayers',
-          { transaction: t },
+          "GamePlayers",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

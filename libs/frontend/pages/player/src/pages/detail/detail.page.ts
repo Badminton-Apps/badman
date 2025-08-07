@@ -1,15 +1,14 @@
-
-import { Component, Signal, computed, effect, inject, signal, untracked } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, RouterModule } from '@angular/router';
-import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
+import { Component, Signal, computed, effect, inject, signal, untracked } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Router, RouterModule } from "@angular/router";
+import { AuthenticateService, ClaimService } from "@badman/frontend-auth";
 import {
   ConfirmDialogComponent,
   ConfirmDialogModel,
@@ -17,21 +16,21 @@ import {
   PageHeaderComponent,
   RecentGamesComponent,
   UpcomingGamesComponent,
-} from '@badman/frontend-components';
-import { Game } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { injectParams } from 'ngxtension/inject-params';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { ShowLevelComponent } from './components/show-level.component';
-import { PlayerDetailService } from './detail.service';
-import { SelectPeriodDialogComponent } from './dialogs/select-period/select-period.component';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+} from "@badman/frontend-components";
+import { Game } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { injectParams } from "ngxtension/inject-params";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { ShowLevelComponent } from "./components/show-level.component";
+import { PlayerDetailService } from "./detail.service";
+import { SelectPeriodDialogComponent } from "./dialogs/select-period/select-period.component";
+import { DateAdapter, MAT_DATE_LOCALE } from "@angular/material/core";
 
 @Component({
-  selector: 'badman-player-detail',
-  templateUrl: './detail.page.html',
-  styleUrls: ['./detail.page.scss'],
+  selector: "badman-player-detail",
+  templateUrl: "./detail.page.html",
+  styleUrls: ["./detail.page.scss"],
   imports: [
     ReactiveFormsModule,
     RouterModule,
@@ -46,8 +45,8 @@ import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
-    ShowLevelComponent
-],
+    ShowLevelComponent,
+  ],
 })
 export class DetailPageComponent {
   // private
@@ -60,7 +59,7 @@ export class DetailPageComponent {
   private readonly claim = inject(ClaimService);
   private readonly auth = inject(AuthenticateService);
 
-  readonly playerId = injectParams('id') as Signal<string>;
+  readonly playerId = injectParams("id") as Signal<string>;
   private readonly detailService = inject(PlayerDetailService);
 
   private readonly _locale = signal(inject<unknown>(MAT_DATE_LOCALE));
@@ -73,7 +72,7 @@ export class DetailPageComponent {
 
   club = computed(() => this.player()?.club);
   initials = computed(() => {
-    const lastNames = `${this.player()?.lastName}`.split(' ');
+    const lastNames = `${this.player()?.lastName}`.split(" ");
     return `${this.player()?.firstName?.[0]}${lastNames?.[lastNames.length - 1][0]}`.toUpperCase();
   });
 
@@ -83,10 +82,10 @@ export class DetailPageComponent {
     return this.auth.loggedIn() && !this.auth.user()?.id && !this.player()?.sub;
   });
   hasPermission = this.claim.hasAnyClaimsSignal([
-    'edit-any:player',
-    this.player()?.id + '_edit:player',
-    'change:job',
-    're-sync:points',
+    "edit-any:player",
+    this.player()?.id + "_edit:player",
+    "change:job",
+    "re-sync:points",
   ]);
 
   constructor() {
@@ -112,10 +111,10 @@ export class DetailPageComponent {
       this.seoService.update({
         title: `${player.fullName}`,
         description: `Player ${player.fullName}`,
-        type: 'website',
-        keywords: ['player', 'badminton'],
+        type: "website",
+        keywords: ["player", "badminton"],
       });
-      this.breadcrumbService.set('player/:id', player.fullName ?? '');
+      this.breadcrumbService.set("player/:id", player.fullName ?? "");
 
       untracked(() => {
         this.detailService.state.loadTeams();
@@ -125,12 +124,12 @@ export class DetailPageComponent {
 
   getPlayer(game: Game, player: number, team: number) {
     const playerInGame = game.players?.find((p) => p.player === player && p.team === team);
-    return playerInGame?.fullName ?? 'Unknown';
+    return playerInGame?.fullName ?? "Unknown";
   }
 
   async claimAccount() {
     await this.detailService.state.claimAccount();
-    this.snackBar.open(this.translate.instant('all.player.claimed'), 'OK', {
+    this.snackBar.open(this.translate.instant("all.player.claimed"), "OK", {
       duration: 5000,
     });
     window.location.reload();
@@ -138,12 +137,12 @@ export class DetailPageComponent {
 
   removePlayer() {
     const dialogData = new ConfirmDialogModel(
-      'all.club.delete.player.title',
-      'all.club.delete.player.description',
+      "all.club.delete.player.title",
+      "all.club.delete.player.description"
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: '400px',
+      maxWidth: "400px",
       data: dialogData,
     });
 
@@ -154,11 +153,11 @@ export class DetailPageComponent {
 
       await this.detailService.state.removePlayer();
 
-      this.snackBar.open('Deleted', undefined, {
+      this.snackBar.open("Deleted", undefined, {
         duration: 1000,
-        panelClass: 'success',
+        panelClass: "success",
       });
-      this.router.navigate(['/']);
+      this.router.navigate(["/"]);
     });
   }
 

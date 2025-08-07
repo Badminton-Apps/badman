@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,33 +8,33 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'Settings',
-            schema: 'personal',
+            tableName: "Settings",
+            schema: "personal",
           },
-          'syncSuccessNotification',
+          "syncSuccessNotification",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'Settings',
-            schema: 'personal',
+            tableName: "Settings",
+            schema: "personal",
           },
-          'syncFailedNotification',
+          "syncFailedNotification",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -45,23 +45,23 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'Settings',
-            schema: 'personal',
+            tableName: "Settings",
+            schema: "personal",
           },
-          'syncSuccessNotification',
-          { transaction: t },
+          "syncSuccessNotification",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'Settings',
-            schema: 'personal',
+            tableName: "Settings",
+            schema: "personal",
           },
-          'syncFailedNotification',
-          { transaction: t },
+          "syncFailedNotification",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

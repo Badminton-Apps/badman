@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   Component,
   OnChanges,
@@ -10,27 +10,27 @@ import {
   input,
   inject,
   output,
-} from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+} from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import {
   MatAutocompleteActivatedEvent,
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Club, Player } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, ReplaySubject, lastValueFrom, merge, of } from 'rxjs';
-import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { PlayerFieldsComponent } from '../fields';
+} from "@angular/material/autocomplete";
+import { MatButtonModule } from "@angular/material/button";
+import { MatOptionModule } from "@angular/material/core";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { Club, Player } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { Observable, ReplaySubject, lastValueFrom, merge, of } from "rxjs";
+import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from "rxjs/operators";
+import { PlayerFieldsComponent } from "../fields";
 
 @Component({
   imports: [
@@ -47,9 +47,9 @@ import { PlayerFieldsComponent } from '../fields';
     MatProgressBarModule,
     PlayerFieldsComponent,
   ],
-  selector: 'badman-player-search',
-  templateUrl: './player-search.component.html',
-  styleUrls: ['./player-search.component.scss'],
+  selector: "badman-player-search",
+  templateUrl: "./player-search.component.html",
+  styleUrls: ["./player-search.component.scss"],
 })
 export class PlayerSearchComponent implements OnChanges, OnInit {
   private apollo = inject(Apollo);
@@ -58,7 +58,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
   whenSelectPlayer = output<Player>();
 
-  label = input('all.player.search.label');
+  label = input("all.player.search.label");
 
   allowCreation = input(false);
 
@@ -108,17 +108,17 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
 
-  @ViewChild('newPlayer')
+  @ViewChild("newPlayer")
   newPlayerTemplateRef?: TemplateRef<HTMLElement>;
   newPlayerFormGroup!: FormGroup;
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!(changes['player']?.isFirstChange() ?? true)) {
+    if (!(changes["player"]?.isFirstChange() ?? true)) {
       this.setPlayer();
     }
-    if (changes['ignorePlayers']) {
+    if (changes["ignorePlayers"]) {
       this.ignorePlayersIds = (this.ignorePlayers()?.map((r) => r.id) ?? []).filter(
-        (v, i, a) => a.indexOf(v) === i,
+        (v, i, a) => a.indexOf(v) === i
       ) as string[];
     }
   }
@@ -129,9 +129,9 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
     const search$ = this.formControl.valueChanges.pipe(
       takeUntil(this.destroy$),
-      startWith(''),
+      startWith(""),
       filter((x) => !!x),
-      filter((x) => typeof x === 'string'),
+      filter((x) => typeof x === "string"),
       filter((x) => x?.length >= 2),
       debounceTime(600),
       tap(() => (this.loading = true)),
@@ -181,7 +181,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
               query: r,
               results,
             };
-          }),
+          })
         );
       }),
       switchMap((response) => {
@@ -231,11 +231,11 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       }),
       map((result: Player[]) =>
         // Distinct by id
-        result?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index),
+        result?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index)
       ),
       tap(() => {
         this.loading = false;
-      }),
+      })
     ) as Observable<Player[]>;
 
     this.filteredOptions$ = merge(search$, this.clear$);
@@ -246,7 +246,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       .pipe(
         takeUntil(this.destroy$),
         switchMap((p) => {
-          if (typeof p == 'string') {
+          if (typeof p == "string") {
             return lastValueFrom(
               this.apollo
                 .query<{ player: Partial<Player> }>({
@@ -270,11 +270,11 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                     id: p,
                   },
                 })
-                .pipe(map((x) => new Player(x.data?.player))),
+                .pipe(map((x) => new Player(x.data?.player)))
             );
           }
           return of(p);
-        }),
+        })
       )
       .subscribe((player) => {
         if (player) {
@@ -293,7 +293,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       let lastName: string | undefined;
       let memberId: number | undefined;
       if (event.option.value != null) {
-        const spaced = event.option.value.indexOf(' ');
+        const spaced = event.option.value.indexOf(" ");
 
         // if spaced is a number then use it for the memberId
         memberId = parseInt(event.option.value.slice(0, spaced).trim());
@@ -344,7 +344,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                     },
                   },
                 })
-                .pipe(map((x) => new Player(x.data?.createPlayer))),
+                .pipe(map((x) => new Player(x.data?.createPlayer)))
             );
             if (!this.clearOnSelection()) {
               this.formControl.setValue(this.newPlayerFormGroup?.value);
@@ -379,8 +379,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   private _playerSearchWhere(args?: { query?: string; where?: { [key: string]: unknown } }) {
     const parts = args?.query
       ?.toLowerCase()
-      .replace(/[;\\\\/:*?"<>|&',]/, ' ')
-      .split(' ');
+      .replace(/[;\\\\/:*?"<>|&',]/, " ")
+      .split(" ");
     const queries: unknown[] = [];
     if (!parts) {
       return;
@@ -405,7 +405,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
           },
           {
             memberId: {
-              $not: '',
+              $not: "",
             },
           },
         ],

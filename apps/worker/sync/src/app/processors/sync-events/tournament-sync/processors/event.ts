@@ -1,9 +1,9 @@
-import { EventTournament } from '@badman/backend-database';
-import moment, { Moment } from 'moment';
-import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService, XmlTournament } from '@badman/backend-visual';
-import { Logger } from '@nestjs/common';
-import { Op } from 'sequelize';
+import { EventTournament } from "@badman/backend-database";
+import moment, { Moment } from "moment";
+import { StepProcessor, StepOptions } from "../../../../processing";
+import { VisualService, XmlTournament } from "@badman/backend-visual";
+import { Logger } from "@nestjs/common";
+import { Op } from "sequelize";
 
 export interface EventStepData {
   existed: boolean;
@@ -15,7 +15,7 @@ export class TournamentSyncEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -43,8 +43,8 @@ export class TournamentSyncEventProcessor extends StepProcessor {
       const dates: Moment[] = [];
       for (
         let date = moment(this.visualTournament.StartDate);
-        date.diff(this.visualTournament.EndDate, 'days') <= 0;
-        date.add(1, 'days')
+        date.diff(this.visualTournament.EndDate, "days") <= 0;
+        date.add(1, "days")
       ) {
         dates.push(date.clone());
       }
@@ -56,7 +56,7 @@ export class TournamentSyncEventProcessor extends StepProcessor {
         name: visualTournament.Name,
         firstDay: visualTournament.StartDate,
         visualCode: visualTournament.Code,
-        dates: dates.map((r) => r.toISOString()).join(','),
+        dates: dates.map((r) => r.toISOString()).join(","),
         tournamentNumber: visualTournament.Number,
       });
     } else {

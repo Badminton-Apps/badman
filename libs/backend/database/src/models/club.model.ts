@@ -1,5 +1,5 @@
-import { UseForTeamName } from '@badman/utils';
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { UseForTeamName } from "@badman/utils";
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -24,7 +24,7 @@ import {
   InferCreationAttributes,
   Op,
   SaveOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   AfterBulkCreate,
   AfterCreate,
@@ -44,22 +44,22 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { PlayerWithClubMembershipType } from '../_interception';
-import { Slugify } from '../types';
-import { Relation } from '../wrapper';
-import { ClubPlayerMembership } from './club-player-membership.model';
-import { Comment } from './comment.model';
-import { Location } from './event';
-import { Player } from './player.model';
-import { Claim, Role } from './security';
-import { Team } from './team.model';
+} from "sequelize-typescript";
+import { PlayerWithClubMembershipType } from "../_interception";
+import { Slugify } from "../types";
+import { Relation } from "../wrapper";
+import { ClubPlayerMembership } from "./club-player-membership.model";
+import { Comment } from "./comment.model";
+import { Location } from "./event";
+import { Player } from "./player.model";
+import { Claim, Role } from "./security";
+import { Team } from "./team.model";
 
 @Table({
   timestamps: true,
-  schema: 'public',
+  schema: "public",
 })
-@ObjectType({ description: 'A Club' })
+@ObjectType({ description: "A Club" })
 export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<Club>> {
   @Field(() => ID)
   @Default(DataType.UUIDV4)
@@ -74,7 +74,7 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
   @Field(() => Date, { nullable: true })
   declare createdAt?: Date;
 
-  @Unique('club_number_unique')
+  @Unique("club_number_unique")
   @Index
   @AllowNull(false)
   @Field(() => String)
@@ -95,28 +95,28 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
 
   @Default(UseForTeamName.TEAM_NAME)
   @Field(() => String, { defaultValue: UseForTeamName.TEAM_NAME })
-  @Column(DataType.ENUM('name', 'fullName', 'abbreviation', 'teamName'))
+  @Column(DataType.ENUM("name", "fullName", "abbreviation", "teamName"))
   declare useForTeamName?: UseForTeamName;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   declare abbreviation?: string;
 
-  @Unique('club_number_unique')
+  @Unique("club_number_unique")
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
   declare clubId?: number;
 
   @Field(() => [Team], { nullable: true })
-  @HasMany(() => Team, 'clubId')
+  @HasMany(() => Team, "clubId")
   declare teams?: Relation<Team[]>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'club',
+      linkType: "club",
     },
   })
   declare roles?: Relation<Role[]>;
@@ -130,7 +130,7 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
   declare comments?: Relation<Comment[]>;
 
   @Field(() => [Location], { nullable: true })
-  @HasMany(() => Location, 'clubId')
+  @HasMany(() => Location, "clubId")
   declare locations?: Relation<Location[]>;
 
   @Field(() => String, { nullable: true })
@@ -154,7 +154,7 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
   @BeforeCreate
   static setAbbriviation(instance: Club) {
     if (!instance.abbreviation && instance.isNewRecord) {
-      instance.abbreviation = instance?.name?.match(/\b(\w)/g)?.join('') ?? '';
+      instance.abbreviation = instance?.name?.match(/\b(\w)/g)?.join("") ?? "";
     }
   }
 
@@ -185,11 +185,11 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
   static async createBaseRole(instance: Club, options: SaveOptions) {
     const [dbRole, created] = await Role.findOrCreate({
       where: {
-        name: 'Admin',
+        name: "Admin",
         clubId: instance.id,
       },
       defaults: {
-        name: 'Admin',
+        name: "Admin",
       },
       transaction: options.transaction,
     });
@@ -198,7 +198,7 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
       const claims = await Claim.findAll({
         where: {
           type: {
-            [Op.in]: ['club', 'team'],
+            [Op.in]: ["club", "team"],
           },
         },
         transaction: options.transaction,
@@ -274,20 +274,20 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
 @InputType()
 export class ClubUpdateInput extends PartialType(
   OmitType(Club, [
-    'createdAt',
-    'updatedAt',
-    'teams',
-    'roles',
-    'comments',
-    'roles',
-    'players',
-    'locations',
+    "createdAt",
+    "updatedAt",
+    "teams",
+    "roles",
+    "comments",
+    "roles",
+    "players",
+    "locations",
   ] as const),
-  InputType,
+  InputType
 ) {}
 
 @InputType()
 export class ClubNewInput extends PartialType(
-  OmitType(ClubUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(ClubUpdateInput, ["id"] as const),
+  InputType
 ) {}

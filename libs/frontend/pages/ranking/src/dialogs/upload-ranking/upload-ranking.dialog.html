@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{ 'all.ranking.upload.title' | translate }}</h1>
+<h1 mat-dialog-title>{{ "all.ranking.upload.title" | translate }}</h1>
 <div mat-dialog-content>
   <p [innerHTML]="'all.ranking.upload.description' | translate"></p>
   @if (!this.uploadedFile) {
@@ -10,7 +10,7 @@
       (drop)="onFileDrop($event)"
       (click)="onCLick($event)"
     >
-      <p>{{ 'all.ranking.upload.hint' | translate }}</p>
+      <p>{{ "all.ranking.upload.hint" | translate }}</p>
     </div>
   }
   @if (this.uploadedFile) {
@@ -25,7 +25,7 @@
     <h3>Options</h3>
     <div class="options">
       <mat-form-field>
-        <mat-label>{{ 'all.ranking.upload.ranking-date' | translate }}</mat-label>
+        <mat-label>{{ "all.ranking.upload.ranking-date" | translate }}</mat-label>
         <input
           matInput
           [matDatepicker]="picker"
@@ -36,26 +36,26 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
       <mat-checkbox [(ngModel)]="removeAllRanking">{{
-        'all.ranking.upload.remove-current-ranking' | translate
+        "all.ranking.upload.remove-current-ranking" | translate
       }}</mat-checkbox>
       <mat-checkbox [(ngModel)]="competitionStatus">{{
-        'all.ranking.upload.comp-status' | translate
+        "all.ranking.upload.comp-status" | translate
       }}</mat-checkbox>
       <mat-checkbox [(ngModel)]="updateRanking">{{
-        'all.ranking.upload.update-ranking' | translate
+        "all.ranking.upload.update-ranking" | translate
       }}</mat-checkbox>
       <mat-checkbox [(ngModel)]="createNewPlayers">{{
-        'all.ranking.upload.create-new-players' | translate
+        "all.ranking.upload.create-new-players" | translate
       }}</mat-checkbox>
       <mat-checkbox [(ngModel)]="updatePossible">{{
-        'all.ranking.upload.update-possible' | translate
+        "all.ranking.upload.update-possible" | translate
       }}</mat-checkbox>
       <mat-checkbox [(ngModel)]="updateClubs">{{
-        'all.ranking.upload.update-clubs' | translate
+        "all.ranking.upload.update-clubs" | translate
       }}</mat-checkbox>
     </div>
 
-    <h3>{{ 'all.ranking.upload.preview' | translate }}</h3>
+    <h3>{{ "all.ranking.upload.preview" | translate }}</h3>
     <table mat-table [dataSource]="previewData">
       <!-- Position Column -->
       @for (header of headerRow; track header) {

@@ -1,2 +1,2 @@
-export * from './validation.service';
-export * from './_rule.base';
+export * from "./validation.service";
+export * from "./_rule.base";

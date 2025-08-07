@@ -1,6 +1,6 @@
-import { RankingPlace } from '../models';
-import { PlayerBuilder } from './playerBuilder';
-import { SystemBuilder } from './systemBuilder';
+import { RankingPlace } from "../models";
+import { PlayerBuilder } from "./playerBuilder";
+import { SystemBuilder } from "./systemBuilder";
 
 export class RankingPlaceBuilder {
   private build = false;

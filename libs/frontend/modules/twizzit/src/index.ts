@@ -1,3 +1,3 @@
-export * from './twizzit.module';
+export * from "./twizzit.module";
 
-export * from './services';
+export * from "./services";

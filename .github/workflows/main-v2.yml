@@ -6,12 +6,12 @@ on:
     inputs:
       # main branch name
       e2e-tests:
-        description: 'Do e2e tests'
+        description: "Do e2e tests"
         required: true
         default: false
         type: boolean
       cloud-run:
-        description: 'Run with Nx Cloud distributed CI'
+        description: "Run with Nx Cloud distributed CI"
         required: false
         default: true
         type: boolean
@@ -46,7 +46,7 @@ jobs:
           type: now
           from_branch: develop
           target_branch: main
-          message: 'chore(merge): merge develop into main'
+          message: "chore(merge): merge develop into main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/checkout@v4
@@ -184,7 +184,7 @@ jobs:
           type: now
           from_branch: main
           target_branch: develop
-          message: 'chore(merge): merge main into develop'
+          message: "chore(merge): merge main into develop"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       # deploy the new packages

@@ -5,10 +5,10 @@ import {
   RankingPlace,
   RankingPoint,
   RankingSystem,
-} from '@badman/backend-database';
-import { GameStatus, GameType, getRankingProtected, Ranking } from '@badman/utils';
-import { Injectable } from '@nestjs/common';
-import { Op, Transaction } from 'sequelize';
+} from "@badman/backend-database";
+import { GameStatus, GameType, getRankingProtected, Ranking } from "@badman/utils";
+import { Injectable } from "@nestjs/common";
+import { Op, Transaction } from "sequelize";
 
 @Injectable()
 export class BelgiumFlandersPointsService {
@@ -17,7 +17,7 @@ export class BelgiumFlandersPointsService {
     game: Game,
     options?: {
       transaction?: Transaction;
-    },
+    }
   ): Promise<RankingPoint[]> {
     const transaction = options?.transaction;
 
@@ -38,20 +38,16 @@ export class BelgiumFlandersPointsService {
     const gamePlayesr = await this._getPlayersForGame(game, system, transaction);
 
     const player1Team1 = gamePlayesr.find(
-      (player) =>
-        player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 1,
+      (player) => player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 1
     );
     const player2Team1 = gamePlayesr.find(
-      (player) =>
-        player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 2,
+      (player) => player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 2
     );
     const player1Team2 = gamePlayesr.find(
-      (player) =>
-        player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 1,
+      (player) => player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 1
     );
     const player2Team2 = gamePlayesr.find(
-      (player) =>
-        player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 2,
+      (player) => player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 2
     );
 
     const {
@@ -66,7 +62,7 @@ export class BelgiumFlandersPointsService {
       player1Team2,
       player2Team1,
       player2Team2,
-      system,
+      system
     );
 
     if (player1Team1 && player1Team1.id && player1Team1Points != null) {
@@ -78,7 +74,7 @@ export class BelgiumFlandersPointsService {
           gameId: game.id,
           rankingDate: game.playedAt,
           differenceInLevel: player1Team1Points === 0 ? differenceInLevel : 0,
-        }),
+        })
       );
     }
     if (player1Team2 && player1Team2.id && player1Team2Points != null) {
@@ -90,7 +86,7 @@ export class BelgiumFlandersPointsService {
           gameId: game.id,
           rankingDate: game.playedAt,
           differenceInLevel: player1Team2Points === 0 ? differenceInLevel : 0,
-        }),
+        })
       );
     }
     if (player2Team1 && player2Team1.id && player2Team1Points != null) {
@@ -102,7 +98,7 @@ export class BelgiumFlandersPointsService {
           gameId: game.id,
           rankingDate: game.playedAt,
           differenceInLevel: player2Team1Points === 0 ? differenceInLevel : 0,
-        }),
+        })
       );
     }
     if (player2Team2 && player2Team2.id && player2Team2Points != null) {
@@ -114,7 +110,7 @@ export class BelgiumFlandersPointsService {
           gameId: game.id,
           rankingDate: game.playedAt,
           differenceInLevel: player2Team2Points === 0 ? differenceInLevel : 0,
-        }),
+        })
       );
     }
 
@@ -156,7 +152,7 @@ export class BelgiumFlandersPointsService {
     player1Team2: (Player & { GamePlayerMembership: GamePlayerMembership }) | undefined,
     player2Team1: (Player & { GamePlayerMembership: GamePlayerMembership }) | undefined,
     player2Team2: (Player & { GamePlayerMembership: GamePlayerMembership }) | undefined,
-    system: RankingSystem,
+    system: RankingSystem
   ) {
     const points = {
       player1Team1Points: null,
@@ -183,7 +179,7 @@ export class BelgiumFlandersPointsService {
         mix: player1Team1?.GamePlayerMembership.mix,
         double: player1Team1?.GamePlayerMembership.double,
       },
-      system,
+      system
     );
     const rankingPlayer2Team1 = getRankingProtected(
       player2Team1?.rankingPlaces?.[0] ?? {
@@ -191,7 +187,7 @@ export class BelgiumFlandersPointsService {
         mix: player2Team1?.GamePlayerMembership.mix,
         double: player2Team1?.GamePlayerMembership.double,
       },
-      system,
+      system
     );
     const rankingPlayer1Team2 = getRankingProtected(
       player1Team2?.rankingPlaces?.[0] ?? {
@@ -199,7 +195,7 @@ export class BelgiumFlandersPointsService {
         mix: player1Team2?.GamePlayerMembership.mix,
         double: player1Team2?.GamePlayerMembership.double,
       },
-      system,
+      system
     );
     const rankingPlayer2Team2 = getRankingProtected(
       player2Team2?.rankingPlaces?.[0] ?? {
@@ -207,25 +203,25 @@ export class BelgiumFlandersPointsService {
         mix: player2Team2?.GamePlayerMembership.mix,
         double: player2Team2?.GamePlayerMembership.double,
       },
-      system,
+      system
     );
 
     let pointsFrom: Ranking | undefined = undefined;
 
     switch (game.gameType) {
       case GameType.S:
-        pointsFrom = 'single';
+        pointsFrom = "single";
         break;
       case GameType.D:
-        pointsFrom = 'double';
+        pointsFrom = "double";
         break;
       case GameType.MX:
-        pointsFrom = 'mix';
+        pointsFrom = "mix";
         break;
     }
 
     if (pointsFrom === undefined) {
-      throw new Error('No pointsFrom');
+      throw new Error("No pointsFrom");
     }
 
     if (rankingPlayer1Team2) {
@@ -258,7 +254,7 @@ export class BelgiumFlandersPointsService {
       }
     } else if (game.winner === 1) {
       const wonPoints = Math.round(
-        (this._getWinningPoints(system, levelP1T2) + this._getWinningPoints(system, levelP2T2)) / 2,
+        (this._getWinningPoints(system, levelP1T2) + this._getWinningPoints(system, levelP2T2)) / 2
       );
       points.player1Team1Points = wonPoints;
       points.player2Team1Points = wonPoints;
@@ -269,7 +265,7 @@ export class BelgiumFlandersPointsService {
       points.differenceInLevel = (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
     } else {
       const wonPoints = Math.round(
-        (this._getWinningPoints(system, levelP1T1) + this._getWinningPoints(system, levelP2T1)) / 2,
+        (this._getWinningPoints(system, levelP1T1) + this._getWinningPoints(system, levelP2T1)) / 2
       );
       points.player1Team2Points = wonPoints;
       points.player2Team2Points = wonPoints;
@@ -306,11 +302,11 @@ export class BelgiumFlandersPointsService {
     }
 
     return game.getPlayers({
-      attributes: ['id', 'gender'],
+      attributes: ["id", "gender"],
       include: [
         {
           model: RankingPlace,
-          attributes: ['single', 'double', 'mix', 'rankingDate', 'systemId'],
+          attributes: ["single", "double", "mix", "rankingDate", "systemId"],
           required: false,
           where: {
             systemId: system.id,
@@ -318,7 +314,7 @@ export class BelgiumFlandersPointsService {
               [Op.lte]: game.playedAt,
             },
           },
-          order: [['rankingDate', 'DESC']],
+          order: [["rankingDate", "DESC"]],
           limit: 1,
         },
       ],
