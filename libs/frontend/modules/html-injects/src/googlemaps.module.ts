@@ -1,7 +1,7 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Inject, NgModule, PLATFORM_ID, DOCUMENT } from '@angular/core';
-import { GOOGLE_MAPS_API_CONFIG } from '@ng-maps/google';
-import { Libraries, Loader } from '@googlemaps/js-api-loader';
+import { isPlatformBrowser } from "@angular/common";
+import { Inject, NgModule, PLATFORM_ID, DOCUMENT } from "@angular/core";
+import { GOOGLE_MAPS_API_CONFIG } from "@ng-maps/google";
+import { Libraries, Loader } from "@googlemaps/js-api-loader";
 
 export type GooglMapsConfiguration = Readonly<{
   apiKey: string;
@@ -16,12 +16,12 @@ export class GoogleMapsModule {
     @Inject(DOCUMENT)
     d: Document,
     @Inject(GOOGLE_MAPS_API_CONFIG)
-    { apiKey, libraries }: GooglMapsConfiguration,
+    { apiKey, libraries }: GooglMapsConfiguration
   ) {
     if (isPlatformBrowser(platformId)) {
       const loader = new Loader({
         apiKey,
-        version: 'weekly',
+        version: "weekly",
         libraries: libraries ?? ([] as Libraries),
       });
       // Promise

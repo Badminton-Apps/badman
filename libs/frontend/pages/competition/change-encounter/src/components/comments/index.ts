@@ -1,1 +1,1 @@
-export * from './comments.component';
+export * from "./comments.component";

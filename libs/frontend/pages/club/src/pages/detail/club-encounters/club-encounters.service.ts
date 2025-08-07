@@ -1,12 +1,12 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { EncounterCompetition } from '@badman/frontend-models';
-import { getSeasonPeriod, sortTeams } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Observable, Subject, merge } from 'rxjs';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { EncounterCompetition } from "@badman/frontend-models";
+import { getSeasonPeriod, sortTeams } from "@badman/utils";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Observable, Subject, merge } from "rxjs";
 import {
   catchError,
   debounceTime,
@@ -15,7 +15,7 @@ import {
   map,
   startWith,
   switchMap,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 export interface ClubEncounterState {
   encounters: EncounterCompetition[];
@@ -29,11 +29,11 @@ export interface ClubEncounterState {
   filterValidGames: validationFilter;
 }
 
-export type validationFilter = 'all' | 'valid' | 'invalid' | 'potential';
-export type openRequestFilter = 'all' | 'openRequests' | 'noRequests';
+export type validationFilter = "all" | "valid" | "invalid" | "potential";
+export type openRequestFilter = "all" | "openRequests" | "noRequests";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClubEncounterService {
   apollo = inject(Apollo);
@@ -51,8 +51,8 @@ export class ClubEncounterService {
     filterHomeGames: false,
     filterChangedRequest: false,
     filterTeam: null,
-    filterOpenRequests: 'all',
-    filterValidGames: 'all',
+    filterOpenRequests: "all",
+    filterValidGames: "all",
   };
 
   // selectors
@@ -61,13 +61,13 @@ export class ClubEncounterService {
 
     if (this.state().filterHomeGames) {
       filtered = filtered.filter(
-        (encounter) => encounter.home?.clubId === this.filter.value.clubId,
+        (encounter) => encounter.home?.clubId === this.filter.value.clubId
       );
     }
 
     if (this.state().filterChangedRequest) {
       filtered = filtered.filter(
-        (encounter) => !moment(encounter.originalDate ?? encounter.date).isSame(encounter.date),
+        (encounter) => !moment(encounter.originalDate ?? encounter.date).isSame(encounter.date)
       );
     }
 
@@ -75,25 +75,25 @@ export class ClubEncounterService {
       filtered = filtered.filter(
         (encounter) =>
           encounter.home?.id === this.state().filterTeam ||
-          encounter.away?.id === this.state().filterTeam,
+          encounter.away?.id === this.state().filterTeam
       );
     }
 
-    if (this.state().filterOpenRequests === 'openRequests') {
+    if (this.state().filterOpenRequests === "openRequests") {
       filtered = filtered.filter(
-        (encounter) => (encounter.encounterChange?.accepted ?? true) === false,
+        (encounter) => (encounter.encounterChange?.accepted ?? true) === false
       );
     }
 
-    if (this.state().filterOpenRequests === 'noRequests') {
+    if (this.state().filterOpenRequests === "noRequests") {
       filtered = filtered.filter((encounter) => encounter.encounterChange?.accepted ?? true);
     }
 
-    if (this.state().filterValidGames == 'invalid') {
+    if (this.state().filterValidGames == "invalid") {
       filtered = filtered.filter((encounter) => encounter.validateEncounter?.valid == false);
-    } else if (this.state().filterValidGames == 'potential') {
+    } else if (this.state().filterValidGames == "potential") {
       filtered = filtered.filter(
-        (encounter) => (encounter.validateEncounter?.warnings?.length ?? 0) > 0,
+        (encounter) => (encounter.validateEncounter?.warnings?.length ?? 0) > 0
       );
     }
 
@@ -105,7 +105,7 @@ export class ClubEncounterService {
       .encounters.map((encounter) => encounter.home?.club)
       .concat(this.state().encounters.map((encounter) => encounter.away?.club))
       .filter((club) => club !== undefined)
-      .filter((club, index, self) => self.findIndex((c) => c?.id === club?.id) === index),
+      .filter((club, index, self) => self.findIndex((c) => c?.id === club?.id) === index)
   );
 
   teams = computed(() =>
@@ -115,7 +115,7 @@ export class ClubEncounterService {
       .filter((team) => team !== undefined)
       .filter((team) => team.clubId === this.filter.value.clubId)
       .filter((club, index, self) => self.findIndex((c) => c?.id === club?.id) === index)
-      .sort(sortTeams),
+      .sort(sortTeams)
   );
 
   //sources
@@ -123,7 +123,7 @@ export class ClubEncounterService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.clubId),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   private encountersLoaded$ = this.filterChanged$.pipe(
@@ -132,7 +132,7 @@ export class ClubEncounterService {
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
@@ -141,10 +141,10 @@ export class ClubEncounterService {
         encounters,
         filtered: encounters,
         loaded: true,
-      })),
+      }))
     ),
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ encounters: [], teams: [], loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ encounters: [], teams: [], loaded: false })))
   );
 
   state = signalSlice({
@@ -155,31 +155,31 @@ export class ClubEncounterService {
         action$.pipe(
           map((filterTeam) => ({
             filterTeam,
-          })),
+          }))
         ),
       filterOnChangedRequest: (_state, action$: Observable<boolean>) =>
         action$.pipe(
           map((filterChangedRequest) => ({
             filterChangedRequest,
-          })),
+          }))
         ),
       filterOnOpenRequests: (_state, action$: Observable<openRequestFilter>) =>
         action$.pipe(
           map((filterOpenRequests) => ({
             filterOpenRequests,
-          })),
+          }))
         ),
       filterOnHomeGames: (_state, action$: Observable<boolean>) =>
         action$.pipe(
           map((filterHomeGames) => ({
             filterHomeGames,
-          })),
+          }))
         ),
       filterOnValidGames: (_state, action$: Observable<validationFilter>) =>
         action$.pipe(
           map((filterValidGames) => ({
             filterValidGames,
-          })),
+          }))
         ),
     },
   });
@@ -188,7 +188,7 @@ export class ClubEncounterService {
     filter: Partial<{
       clubId: string | null;
       season: number;
-    }>,
+    }>
   ) {
     const period = getSeasonPeriod(filter.season);
 
@@ -264,11 +264,11 @@ export class ClubEncounterService {
             },
             $or: [
               {
-                '$home.clubId$': filter.clubId,
+                "$home.clubId$": filter.clubId,
               },
 
               {
-                '$away.clubId$': filter.clubId,
+                "$away.clubId$": filter.clubId,
               },
             ],
           },
@@ -283,7 +283,7 @@ export class ClubEncounterService {
           return EMPTY;
         }),
         map((result) => result.data?.encounterCompetitions.rows),
-        map((encounters) => encounters?.map((encounter) => new EncounterCompetition(encounter))),
+        map((encounters) => encounters?.map((encounter) => new EncounterCompetition(encounter)))
       );
   }
 

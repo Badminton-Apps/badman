@@ -1,8 +1,8 @@
-import { Player, Setting, Team } from '@badman/backend-database';
-import { NotificationType } from '@badman/utils';
-import { Injectable } from '@nestjs/common';
-import { Sequelize } from 'sequelize-typescript';
-import xlsx from 'xlsx';
+import { Player, Setting, Team } from "@badman/backend-database";
+import { NotificationType } from "@badman/utils";
+import { Injectable } from "@nestjs/common";
+import { Sequelize } from "sequelize-typescript";
+import xlsx from "xlsx";
 
 @Injectable()
 export class EnableNotificationsService {
@@ -19,7 +19,7 @@ export class EnableNotificationsService {
       include: [
         {
           model: Player,
-          as: 'captain',
+          as: "captain",
           include: [
             {
               model: Setting,
@@ -64,8 +64,8 @@ export class EnableNotificationsService {
 
       const wb = xlsx.utils.book_new();
       const ws = xlsx.utils.json_to_sheet(activated);
-      xlsx.utils.book_append_sheet(wb, ws, 'activated');
-      xlsx.writeFile(wb, 'activated.xlsx');
+      xlsx.utils.book_append_sheet(wb, ws, "activated");
+      xlsx.writeFile(wb, "activated.xlsx");
     } catch (e) {
       console.log(e);
       await transaction.rollback();

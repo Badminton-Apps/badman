@@ -1,9 +1,9 @@
-import { ConfigType } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import axios, { AxiosInstance } from 'axios';
-import axiosRateLimit from 'axios-rate-limit';
-import axiosRetry from 'axios-retry';
+import { ConfigType } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import axios, { AxiosInstance } from "axios";
+import axiosRateLimit from "axios-rate-limit";
+import axiosRetry from "axios-retry";
 
 @Injectable()
 export class TwizzitService {
@@ -14,16 +14,16 @@ export class TwizzitService {
   constructor(private _configService: ConfigService<ConfigType>) {
     this._http = axiosRateLimit(
       axios.create({
-        baseURL: this._configService.get('TWIZZIT_API'),
+        baseURL: this._configService.get("TWIZZIT_API"),
       }),
-      { maxRPS: 15 },
+      { maxRPS: 15 }
     );
     axiosRetry(this._http, { retries: this._retries });
 
     // add debug logging
     this._http.interceptors.request.use((request) => {
       this.logger.debug(
-        `Request: ${request.method} ${request.url}, ${JSON.stringify(request.params)}}`,
+        `Request: ${request.method} ${request.url}, ${JSON.stringify(request.params)}}`
       );
       return request;
     });
@@ -37,8 +37,8 @@ export class TwizzitService {
 
   getLogin() {
     return this._http.post(`/v2/api/authenticate`, {
-      username: this._configService.get('TWIZZIT_API_USER'),
-      password: this._configService.get('TWIZZIT_API_PASS'),
+      username: this._configService.get("TWIZZIT_API_USER"),
+      password: this._configService.get("TWIZZIT_API_PASS"),
     });
   }
 
@@ -49,8 +49,8 @@ export class TwizzitService {
   getSeasons(organisationIds: number[]) {
     return this._http.get(`/v2/api/seasons`, {
       params: {
-        'organization-ids': organisationIds,
-        'is-current-season': true,
+        "organization-ids": organisationIds,
+        "is-current-season": true,
       },
     });
   }
@@ -58,8 +58,8 @@ export class TwizzitService {
   getContacts(organisationIds: number[], contactIds: number[], limit: number, offset: number) {
     return this._http.get(`/v2/api/contacts`, {
       params: {
-        'organization-ids': organisationIds,
-        'contact-ids': contactIds,
+        "organization-ids": organisationIds,
+        "contact-ids": contactIds,
         limit,
         offset,
       },
@@ -71,13 +71,13 @@ export class TwizzitService {
     orgIds: number[],
     seasonIds: number[],
     limit: number,
-    offset: number,
+    offset: number
   ) {
     return this._http.get(`/v2/api/memberships`, {
       params: {
-        'membership-type-ids': types,
-        'organization-ids': orgIds,
-        'season-ids': seasonIds,
+        "membership-type-ids": types,
+        "organization-ids": orgIds,
+        "season-ids": seasonIds,
         limit,
         offset,
       },
@@ -87,7 +87,7 @@ export class TwizzitService {
   getMembershipTypes(orgIds: number[]) {
     return this._http.get(`/v2/api/membership-types`, {
       params: {
-        'organization-ids': orgIds,
+        "organization-ids": orgIds,
       },
     });
   }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
@@ -8,38 +8,38 @@ import {
   computed,
   inject,
   signal,
-} from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatRippleModule } from '@angular/material/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { AuthenticateService } from '@badman/frontend-auth';
+} from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatRippleModule } from "@angular/material/core";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
+import { AuthenticateService } from "@badman/frontend-auth";
 import {
   SelectClubComponent,
   SelectEncounterComponent,
   SelectSeasonComponent,
   SelectTeamComponent,
-} from '@badman/frontend-components';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { EncounterCompetition, Player } from '@badman/frontend-models';
-import { PdfService } from '@badman/frontend-pdf';
-import { SeoService } from '@badman/frontend-seo';
-import { getSeason } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { connect } from 'ngxtension/connect';
-import { lastValueFrom } from 'rxjs';
-import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
+} from "@badman/frontend-components";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { EncounterCompetition, Player } from "@badman/frontend-models";
+import { PdfService } from "@badman/frontend-pdf";
+import { SeoService } from "@badman/frontend-seo";
+import { getSeason } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { connect } from "ngxtension/connect";
+import { lastValueFrom } from "rxjs";
+import { AssemblyComponent, SAVED_ASSEMBLY } from "./components";
 
 @Component({
-  selector: 'badman-assembly-create',
-  templateUrl: './create.page.html',
-  styleUrls: ['./create.page.scss'],
+  selector: "badman-assembly-create",
+  templateUrl: "./create.page.html",
+  styleUrls: ["./create.page.scss"],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -73,7 +73,7 @@ export class CreatePageComponent {
   pdfLoading = false;
   saveLoading = false;
 
-  @ViewChild('validationWarnings')
+  @ViewChild("validationWarnings")
   validationWarnings?: TemplateRef<HTMLElement>;
 
   validationOverview?: {
@@ -90,11 +90,11 @@ export class CreatePageComponent {
     this.seoService.update({
       title: `Create assembly`,
       description: `Create assembly`,
-      type: 'website',
-      keywords: ['assembly', 'badminton'],
+      type: "website",
+      keywords: ["assembly", "badminton"],
     });
     // Set for today
-    const queryYear = parseInt(this.route.snapshot.queryParams['season'], 10);
+    const queryYear = parseInt(this.route.snapshot.queryParams["season"], 10);
     const year = isNaN(queryYear) ? getSeason() : queryYear;
     const teamControl = new FormControl();
     const encounterControl = new FormControl();
@@ -147,8 +147,8 @@ export class CreatePageComponent {
     }, 5000);
 
     // Get info
-    const encounterId = this.formGroup?.get('encounter')?.value;
-    let fileName = `${moment().format('YYYY-MM-DD HH:mm')}.pdf`;
+    const encounterId = this.formGroup?.get("encounter")?.value;
+    let fileName = `${moment().format("YYYY-MM-DD HH:mm")}.pdf`;
     if (encounterId) {
       const result = await lastValueFrom(
         this.apollo.query<{
@@ -172,11 +172,11 @@ export class CreatePageComponent {
           variables: {
             id: encounterId,
           },
-        }),
+        })
       );
 
       const encounter = new EncounterCompetition(result.data.encounterCompetition);
-      fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${encounter?.home?.name} vs ${
+      fileName = `${moment(encounter?.date).format("YYYY-MM-DD HH:mm")} - ${encounter?.home?.name} vs ${
         encounter?.away?.name
       }.pdf`;
     }
@@ -185,27 +185,27 @@ export class CreatePageComponent {
     this.pdfService
       .getTeamAssembly({
         systemId: this.systemService.systemId() ?? null,
-        captainId: this.formGroup?.get('captain')?.value,
-        teamId: this.formGroup?.get('team')?.value,
+        captainId: this.formGroup?.get("captain")?.value,
+        teamId: this.formGroup?.get("team")?.value,
         encounterId: encounterId,
 
-        single1: this.formGroup?.get('single1')?.value?.id,
-        single2: this.formGroup?.get('single2')?.value?.id,
-        single3: this.formGroup?.get('single3')?.value?.id,
-        single4: this.formGroup?.get('single4')?.value?.id,
+        single1: this.formGroup?.get("single1")?.value?.id,
+        single2: this.formGroup?.get("single2")?.value?.id,
+        single3: this.formGroup?.get("single3")?.value?.id,
+        single4: this.formGroup?.get("single4")?.value?.id,
 
-        double1: this.formGroup?.get('double1')?.value?.map((r: Player) => r.id),
-        double2: this.formGroup?.get('double2')?.value?.map((r: Player) => r.id),
-        double3: this.formGroup?.get('double3')?.value?.map((r: Player) => r.id),
-        double4: this.formGroup?.get('double4')?.value?.map((r: Player) => r.id),
+        double1: this.formGroup?.get("double1")?.value?.map((r: Player) => r.id),
+        double2: this.formGroup?.get("double2")?.value?.map((r: Player) => r.id),
+        double3: this.formGroup?.get("double3")?.value?.map((r: Player) => r.id),
+        double4: this.formGroup?.get("double4")?.value?.map((r: Player) => r.id),
 
-        subtitudes: this.formGroup?.get('subtitudes')?.value?.map((r: Player) => r.id),
+        subtitudes: this.formGroup?.get("subtitudes")?.value?.map((r: Player) => r.id),
       })
       .subscribe((pdf) => {
         const url = window.URL.createObjectURL(pdf);
-        const downloadLink = document.createElement('a');
+        const downloadLink = document.createElement("a");
         downloadLink.href = url;
-        downloadLink.setAttribute('download', fileName);
+        downloadLink.setAttribute("download", fileName);
         downloadLink.click();
 
         // Reset loading
@@ -233,14 +233,14 @@ export class CreatePageComponent {
         await lastValueFrom(this.saveAssembly());
       }
 
-      this.snackBar.open('Saved', undefined, {
+      this.snackBar.open("Saved", undefined, {
         duration: 2000,
-        panelClass: 'success',
+        panelClass: "success",
       });
     } catch (e) {
-      this.snackBar.open('Failed to save', undefined, {
+      this.snackBar.open("Failed to save", undefined, {
         duration: 2000,
-        panelClass: 'error',
+        panelClass: "error",
       });
     } finally {
       this.saveLoading = false;
@@ -257,30 +257,30 @@ export class CreatePageComponent {
       variables: {
         assembly: {
           systemId: this.systemService.systemId(),
-          captainId: this.formGroup?.get('captain')?.value,
-          teamId: this.formGroup?.get('team')?.value,
-          encounterId: this.formGroup?.get('encounter')?.value,
+          captainId: this.formGroup?.get("captain")?.value,
+          teamId: this.formGroup?.get("team")?.value,
+          encounterId: this.formGroup?.get("encounter")?.value,
 
-          single1: this.formGroup?.get('single1')?.value?.id,
-          single2: this.formGroup?.get('single2')?.value?.id,
-          single3: this.formGroup?.get('single3')?.value?.id,
-          single4: this.formGroup?.get('single4')?.value?.id,
+          single1: this.formGroup?.get("single1")?.value?.id,
+          single2: this.formGroup?.get("single2")?.value?.id,
+          single3: this.formGroup?.get("single3")?.value?.id,
+          single4: this.formGroup?.get("single4")?.value?.id,
 
-          double1: this.formGroup?.get('double1')?.value?.map((r: Player) => r.id),
-          double2: this.formGroup?.get('double2')?.value?.map((r: Player) => r.id),
-          double3: this.formGroup?.get('double3')?.value?.map((r: Player) => r.id),
-          double4: this.formGroup?.get('double4')?.value?.map((r: Player) => r.id),
+          double1: this.formGroup?.get("double1")?.value?.map((r: Player) => r.id),
+          double2: this.formGroup?.get("double2")?.value?.map((r: Player) => r.id),
+          double3: this.formGroup?.get("double3")?.value?.map((r: Player) => r.id),
+          double4: this.formGroup?.get("double4")?.value?.map((r: Player) => r.id),
 
-          subtitudes: this.formGroup?.get('subtitudes')?.value?.map((r: Player) => r.id),
+          subtitudes: this.formGroup?.get("subtitudes")?.value?.map((r: Player) => r.id),
         },
       },
       refetchQueries: () => [
         {
           query: SAVED_ASSEMBLY,
           variables: {
-            id: this.formGroup?.get('encounter')?.value,
+            id: this.formGroup?.get("encounter")?.value,
             where: {
-              captainId: this.formGroup?.get('captain')?.value,
+              captainId: this.formGroup?.get("captain")?.value,
               playerId: this.authenticateService?.user()?.id,
             },
           },

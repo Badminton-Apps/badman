@@ -18,14 +18,14 @@ import {
   SystemGroupBuilder,
   Team,
   TeamBuilder,
-} from '@badman/backend-database';
-import { ConfigModule } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Sequelize } from 'sequelize-typescript';
+} from "@badman/backend-database";
+import { ConfigModule } from "@nestjs/config";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Sequelize } from "sequelize-typescript";
 
-import { LevelType, RankingSystems, SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
-import { AssemblyValidationError } from '../../models';
-import { AssemblyValidationService } from './assembly.service';
+import { LevelType, RankingSystems, SubEventTypeEnum, TeamMembershipType } from "@badman/utils";
+import { AssemblyValidationError } from "../../models";
+import { AssemblyValidationService } from "./assembly.service";
 import {
   PlayerCompStatusRule,
   PlayerCompStatusRuleParams,
@@ -47,9 +47,9 @@ import {
   TeamSubeventIndexRuleParams,
   TeamSubsIndexRule,
   TeamSubsIndexRuleParams,
-} from './rules';
+} from "./rules";
 
-describe('AssemblyValidationService', () => {
+describe("AssemblyValidationService", () => {
   let service: AssemblyValidationService;
   let system: RankingSystem;
   let draw: DrawCompetition;
@@ -63,7 +63,7 @@ describe('AssemblyValidationService', () => {
       providers: [AssemblyValidationService],
       imports: [
         ConfigModule.forRoot({
-          envFilePath: '.env.test',
+          envFilePath: ".env.test",
         }),
         DatabaseModule,
       ],
@@ -82,9 +82,9 @@ describe('AssemblyValidationService', () => {
       .WithGroup(group)
       .Build();
 
-    const drawBuilder = DrawCompetitionBuilder.Create().WithName('Test draw');
+    const drawBuilder = DrawCompetitionBuilder.Create().WithName("Test draw");
 
-    const subEventBuilder = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX, 'Test SubEvent')
+    const subEventBuilder = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX, "Test SubEvent")
       .WithIndex(53, 70)
       .WitnMaxLevel(6);
 
@@ -92,8 +92,8 @@ describe('AssemblyValidationService', () => {
 
     event = await EventCompetitionBuilder.Create(LevelType.PROV)
       .WithYear(2020)
-      .WithUsedRanking({ amount: 4, unit: 'months' })
-      .WithName('Test Event')
+      .WithUsedRanking({ amount: 4, unit: "months" })
+      .WithName("Test Event")
       .WithSubEvent(subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder)))
       .Build();
 
@@ -102,11 +102,11 @@ describe('AssemblyValidationService', () => {
     encounter = await encounterBuilder.Build();
   }, 50000);
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('Doubles Male team checks', () => {
+  describe("Doubles Male team checks", () => {
     let player666: Player;
     let player555: Player;
     let player777: Player;
@@ -119,84 +119,84 @@ describe('AssemblyValidationService', () => {
 
     beforeEach(async () => {
       player111 = await PlayerBuilder.Create()
-        .WithName('player 1 - 1 - 1', 'team 1')
+        .WithName("player 1 - 1 - 1", "team 1")
         .WithCompetitionStatus(false)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(1, 1, 1)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         )
         .Build();
 
       const player555B = PlayerBuilder.Create()
-        .WithName('player 5 - 5 - 5', 'team 1')
+        .WithName("player 5 - 5 - 5", "team 1")
         .WithCompetitionStatus(false)
-        .WithGender('F')
+        .WithGender("F")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(5, 5, 5)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player666B = PlayerBuilder.Create()
-        .WithName('player 6 - 6 - 6', 'team 1')
+        .WithName("player 6 - 6 - 6", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('M')
+        .WithGender("M")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(6, 6, 6)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player777B = PlayerBuilder.Create()
-        .WithName('player 7 - 7 - 7', 'team 1')
+        .WithName("player 7 - 7 - 7", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('M')
+        .WithGender("M")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(7, 7, 7)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player888B = PlayerBuilder.Create()
-        .WithName('player 8 - 8 - 8', 'team 1')
+        .WithName("player 8 - 8 - 8", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('M')
+        .WithGender("M")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(8, 8, 8)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player999B = PlayerBuilder.Create()
-        .WithName('player 9 - 9 - 9', 'team 1')
+        .WithName("player 9 - 9 - 9", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('M')
+        .WithGender("M")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(9, 9, 9)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const teamB = TeamBuilder.Create(SubEventTypeEnum.M)
         .WithTeamNumber(1)
         .WithSeason(event.season)
-        .WithName('team 1');
+        .WithName("team 1");
 
       await ClubBuilder.Create()
-        .WithName('club 1')
+        .WithName("club 1")
         .WithTeam(
           teamB
             .WithPlayer(player777B, TeamMembershipType.REGULAR)
@@ -204,15 +204,15 @@ describe('AssemblyValidationService', () => {
             .WithPlayer(player999B, TeamMembershipType.REGULAR)
             .WithPlayer(player666B, TeamMembershipType.REGULAR)
             .WithEntry(
-              EventCompetitionEntryBuilder.Create('competition')
+              EventCompetitionEntryBuilder.Create("competition")
                 .WithDrawId(draw.id)
                 .WithSubEventId(subEvent.id)
                 .WithBasePlayer(player666B, 6, 6, 6)
                 .WithBasePlayer(player777B, 7, 7, 7)
                 .WithBasePlayer(player888B, 8, 8, 8)
                 .WithBasePlayer(player999B, 9, 9, 9)
-                .WithBaseIndex(60),
-            ),
+                .WithBaseIndex(60)
+            )
         )
         .Build();
 
@@ -225,7 +225,7 @@ describe('AssemblyValidationService', () => {
       team = await teamB.Build();
     });
 
-    it('should be a valid assembly', async () => {
+    it("should be a valid assembly", async () => {
       const validation = await service.validate({
         systemId: system.id,
         teamId: team?.id,
@@ -244,7 +244,7 @@ describe('AssemblyValidationService', () => {
       expect(validation.valid).toBeTruthy();
     });
 
-    describe('Rule [PlayerOrderRule]', () => {
+    describe("Rule [PlayerOrderRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerOrderRule, {
@@ -252,14 +252,14 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
+      describe("valid", () => {
         const valid = [
           [1, 2],
           [2, 3],
           [3, 4],
         ];
 
-        test.each(valid)('Single %p is better then Single %p', async (p1, p2) => {
+        test.each(valid)("Single %p is better then Single %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -271,12 +271,12 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-single"
           );
           expect(error).toBeUndefined();
         });
 
-        test.each(valid)('Double %p is  better then Double %p', async (p1, p2) => {
+        test.each(valid)("Double %p is  better then Double %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -288,12 +288,12 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-doubles"
           );
           expect(error).toBeUndefined();
         });
 
-        test.each(valid)('Double %p is not better then Double %p by level', async (p1, p2) => {
+        test.each(valid)("Double %p is not better then Double %p by level", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -305,20 +305,20 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-highest"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
+      describe("invalid", () => {
         const invalid = [
           [1, 2],
           [2, 3],
           [3, 4],
         ];
 
-        test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
+        test.each(invalid)("Single %p is not better then Single %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -331,20 +331,20 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-single"
           ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`single${p1}`);
-          expect(error?.params?.['game2']).toBe(`single${p2}`);
-          expect(error?.params?.['player1']?.['id']).toBe(player888.id);
-          expect(error?.params?.['player1']?.['ranking']).toBe(8);
+          expect(error?.params?.["game1"]).toBe(`single${p1}`);
+          expect(error?.params?.["game2"]).toBe(`single${p2}`);
+          expect(error?.params?.["player1"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["player1"]?.["ranking"]).toBe(8);
 
-          expect(error?.params?.['player2']?.['id']).toBe(player777.id);
-          expect(error?.params?.['player2']?.['ranking']).toBe(7);
+          expect(error?.params?.["player2"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["player2"]?.["ranking"]).toBe(7);
         });
 
-        test.each(invalid)('Double %p is better then Double %p', async (p1, p2) => {
+        test.each(invalid)("Double %p is better then Double %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -357,26 +357,26 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-doubles"
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`double${p1}`);
-          expect(error?.params?.['game2']).toBe(`double${p2}`);
+          expect(error?.params?.["game1"]).toBe(`double${p1}`);
+          expect(error?.params?.["game2"]).toBe(`double${p2}`);
           // Team 1
-          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team1player1"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["team1player1"]?.["ranking"]).toBe(7);
+          expect(error?.params?.["team1player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team1player2"]?.["ranking"]).toBe(8);
 
           // Team 2
-          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-          expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team2player1"]?.["id"]).toBe(player666.id);
+          expect(error?.params?.["team2player1"]?.["ranking"]).toBe(6);
+          expect(error?.params?.["team2player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team2player2"]?.["ranking"]).toBe(8);
         });
 
-        test.each(invalid)('Double %p is not better then Double %p by level', async (p1, p2) => {
+        test.each(invalid)("Double %p is not better then Double %p by level", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -389,35 +389,35 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-highest"
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`double${p1}`);
-          expect(error?.params?.['game2']).toBe(`double${p2}`);
+          expect(error?.params?.["game1"]).toBe(`double${p1}`);
+          expect(error?.params?.["game2"]).toBe(`double${p2}`);
           // Team 1
-          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team1player1"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["team1player1"]?.["ranking"]).toBe(7);
+          expect(error?.params?.["team1player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team1player2"]?.["ranking"]).toBe(8);
 
           // Team 2
-          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-          expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
-          expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
+          expect(error?.params?.["team2player1"]?.["id"]).toBe(player666.id);
+          expect(error?.params?.["team2player1"]?.["ranking"]).toBe(6);
+          expect(error?.params?.["team2player2"]?.["id"]).toBe(player999.id);
+          expect(error?.params?.["team2player2"]?.["ranking"]).toBe(9);
         });
       });
     });
 
-    describe('Rule [TeamSubeventIndexRule]', () => {
+    describe("Rule [TeamSubeventIndexRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(TeamSubeventIndexRule, {
           activated: true,
         });
       });
-      describe('valid', () => {
-        it('should be valid', async () => {
+      describe("valid", () => {
+        it("should be valid", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -431,14 +431,14 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.team-to-strong',
+            (e) => e.message === "all.v1.teamFormation.errors.team-to-strong"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
-        it('should be invalid if team index lower then the base', async () => {
+      describe("invalid", () => {
+        it("should be invalid if team index lower then the base", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -453,18 +453,18 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.team-to-strong',
+            (e) => e.message === "all.v1.teamFormation.errors.team-to-strong"
           ) as AssemblyValidationError<TeamSubeventIndexRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['teamIndex']).toBe(50);
-          expect(error?.params?.['minIndex']).toBe(53);
-          expect(error?.params?.['maxIndex']).toBe(70);
+          expect(error?.params?.["teamIndex"]).toBe(50);
+          expect(error?.params?.["minIndex"]).toBe(53);
+          expect(error?.params?.["maxIndex"]).toBe(70);
         });
       });
     });
 
-    describe('Rule [TeamSubsIndexRule]', () => {
+    describe("Rule [TeamSubsIndexRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(TeamSubsIndexRule, {
@@ -472,8 +472,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('warning', () => {
-        it.skip('should give warning if the sub is better than one of the players', async () => {
+      describe("warning", () => {
+        it.skip("should give warning if the sub is better than one of the players", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -488,16 +488,16 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const warning = validation.warnings?.find(
-            (e) => e.message === 'all.competition.team-assembly.warnings.subtitute-team-index',
+            (e) => e.message === "all.competition.team-assembly.warnings.subtitute-team-index"
           ) as AssemblyValidationError<TeamSubsIndexRuleParams>;
 
           expect(warning).toBeDefined();
-          expect(warning?.params?.['subtitute']).toBe(player888.id);
+          expect(warning?.params?.["subtitute"]).toBe(player888.id);
         });
       });
     });
 
-    describe('Rule [PlayerCompStatusRule]', () => {
+    describe("Rule [PlayerCompStatusRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerCompStatusRule, {
@@ -505,8 +505,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid', async () => {
+      describe("valid", () => {
+        it("should be valid", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -520,13 +520,13 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
+            (e) => e.message === "all.v1.teamFormation.errors.comp-status-html"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
+      describe("invalid", () => {
         it("should be invalid if the player doesn't have competition status on true ", async () => {
           const validation = await service.validate({
             systemId: system.id,
@@ -542,11 +542,11 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
+            (e) => e.message === "all.v1.teamFormation.errors.comp-status-html"
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
 
         it("should be invalid if the players doesn't have competition status on true ", async () => {
@@ -564,7 +564,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const errors = validation.errors?.filter(
-            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
+            (e) => e.message === "all.v1.teamFormation.errors.comp-status-html"
           );
 
           expect(errors).toBeDefined();
@@ -573,7 +573,7 @@ describe('AssemblyValidationService', () => {
       });
     });
 
-    describe('Rule [PlayerMaxGamesRule]', () => {
+    describe("Rule [PlayerMaxGamesRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerMaxGamesRule, {
@@ -581,8 +581,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid single', async () => {
+      describe("valid", () => {
+        it("should be valid single", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -597,12 +597,12 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-single-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-single-games"
           );
           expect(error).toBeUndefined();
         });
 
-        it('should be valid double', async () => {
+        it("should be valid double", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -617,14 +617,14 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-double-games"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
-        it('should be invalid if the player has more then 1 single game ', async () => {
+      describe("invalid", () => {
+        it("should be invalid if the player has more then 1 single game ", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -639,14 +639,14 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-single-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-single-games"
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
 
-        it('should be invalid if the player has more then 2 doubles', async () => {
+        it("should be invalid if the player has more then 2 doubles", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -661,16 +661,16 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-double-games"
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player666.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player666.id);
         });
       });
     });
 
-    describe('Rule [PlayerGenderRule]', () => {
+    describe("Rule [PlayerGenderRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerGenderRule, {
@@ -678,8 +678,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid single', async () => {
+      describe("valid", () => {
+        it("should be valid single", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -699,18 +699,18 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.v1.teamFormation.errors.player-genders' ||
-              e.message === 'all.v1.teamFormation.errors.player-gender',
+              e.message === "all.v1.teamFormation.errors.player-genders" ||
+              e.message === "all.v1.teamFormation.errors.player-gender"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
+      describe("invalid", () => {
         // const games = [[1], [2], [3], [4]];
         const games = [[2]];
 
-        test.each(games)('should be invalid single if the player the wrong gender', async (g) => {
+        test.each(games)("should be invalid single if the player the wrong gender", async (g) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -722,14 +722,14 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-gender',
+            (e) => e.message === "all.v1.teamFormation.errors.player-gender"
           ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
 
-        test.each(games)('should be invalid double if the player the wrong gender', async (g) => {
+        test.each(games)("should be invalid double if the player the wrong gender", async (g) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -741,17 +741,17 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-gender',
+            (e) => e.message === "all.v1.teamFormation.errors.player-gender"
           ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
       });
     });
   });
 
-  describe('Mixed team checks', () => {
+  describe("Mixed team checks", () => {
     let player555: Player;
 
     let player666: Player;
@@ -764,75 +764,75 @@ describe('AssemblyValidationService', () => {
 
     beforeEach(async () => {
       const player555B = PlayerBuilder.Create()
-        .WithName('player 5 - 5 - 5', 'team 1')
+        .WithName("player 5 - 5 - 5", "team 1")
         .WithCompetitionStatus(false)
-        .WithGender('F')
+        .WithGender("F")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(5, 5, 5)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player666B = PlayerBuilder.Create()
-        .WithName('player 6 - 6 - 6', 'team 1')
+        .WithName("player 6 - 6 - 6", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('M')
+        .WithGender("M")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(6, 6, 6)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player777B = PlayerBuilder.Create()
-        .WithName('player 7 - 7 - 7', 'team 1')
+        .WithName("player 7 - 7 - 7", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('M')
+        .WithGender("M")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(7, 7, 7)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player888B = PlayerBuilder.Create()
-        .WithName('player 8 - 8 - 8', 'team 1')
+        .WithName("player 8 - 8 - 8", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('F')
+        .WithGender("F")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(8, 8, 8)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player999B = PlayerBuilder.Create()
-        .WithName('player 9 - 9 - 9', 'team 1')
+        .WithName("player 9 - 9 - 9", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('F')
+        .WithGender("F")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(9, 9, 9)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const team1B = TeamBuilder.Create(SubEventTypeEnum.MX)
         .WithTeamNumber(1)
         .WithSeason(event.season)
-        .WithName('team 1');
+        .WithName("team 1");
       const team2B = TeamBuilder.Create(SubEventTypeEnum.MX)
         .WithTeamNumber(2)
         .WithSeason(event.season)
-        .WithName('team 2');
+        .WithName("team 2");
 
-      const entry = EventCompetitionEntryBuilder.Create('competition')
+      const entry = EventCompetitionEntryBuilder.Create("competition")
         .WithDrawId(draw.id)
         .WithSubEventId(subEvent.id)
         .WithBasePlayer(player666B, 6, 6, 6)
@@ -842,14 +842,14 @@ describe('AssemblyValidationService', () => {
         .WithBaseIndex(60);
 
       await ClubBuilder.Create()
-        .WithName('club 1')
+        .WithName("club 1")
         .WithTeam(
           team1B
             .WithPlayer(player777B, TeamMembershipType.REGULAR)
             .WithPlayer(player888B, TeamMembershipType.REGULAR)
             .WithPlayer(player999B, TeamMembershipType.REGULAR)
             .WithPlayer(player666B, TeamMembershipType.REGULAR)
-            .WithEntry(entry),
+            .WithEntry(entry)
         )
         .WithTeam(
           team2B
@@ -857,7 +857,7 @@ describe('AssemblyValidationService', () => {
             .WithPlayer(player888B, TeamMembershipType.REGULAR)
             .WithPlayer(player999B, TeamMembershipType.REGULAR)
             .WithPlayer(player666B, TeamMembershipType.REGULAR)
-            .WithEntry(entry),
+            .WithEntry(entry)
         )
         .Build();
 
@@ -870,7 +870,7 @@ describe('AssemblyValidationService', () => {
       team1 = await team1B.Build();
       team2 = await team2B.Build();
     });
-    describe('Rule [PlayerOrderRule]', () => {
+    describe("Rule [PlayerOrderRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerOrderRule, {
@@ -878,8 +878,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('Double 3 is better then Double 4', async () => {
+      describe("valid", () => {
+        it("Double 3 is better then Double 4", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -892,19 +892,19 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-highest"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
+      describe("invalid", () => {
         const invalid = [
           [1, 2],
           [3, 4],
         ];
 
-        test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
+        test.each(invalid)("Single %p is not better then Single %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -917,19 +917,19 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-single"
           ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`single${p1}`);
-          expect(error?.params?.['game2']).toBe(`single${p2}`);
-          expect(error?.params?.['player1']?.['id']).toBe(player888.id);
-          expect(error?.params?.['player1']?.['ranking']).toBe(8);
+          expect(error?.params?.["game1"]).toBe(`single${p1}`);
+          expect(error?.params?.["game2"]).toBe(`single${p2}`);
+          expect(error?.params?.["player1"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["player1"]?.["ranking"]).toBe(8);
 
-          expect(error?.params?.['player2']?.['id']).toBe(player777.id);
-          expect(error?.params?.['player2']?.['ranking']).toBe(7);
+          expect(error?.params?.["player2"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["player2"]?.["ranking"]).toBe(7);
         });
 
-        it('Mixed double is better then other', async () => {
+        it("Mixed double is better then other", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -942,25 +942,25 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-doubles"
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`mix3`);
-          expect(error?.params?.['game2']).toBe(`mix4`);
+          expect(error?.params?.["game1"]).toBe(`mix3`);
+          expect(error?.params?.["game2"]).toBe(`mix4`);
           // Team 1
-          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team1player1"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["team1player1"]?.["ranking"]).toBe(7);
+          expect(error?.params?.["team1player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team1player2"]?.["ranking"]).toBe(8);
 
           // Team 2
-          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-          expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team2player1"]?.["id"]).toBe(player666.id);
+          expect(error?.params?.["team2player1"]?.["ranking"]).toBe(6);
+          expect(error?.params?.["team2player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team2player2"]?.["ranking"]).toBe(8);
         });
 
-        it('Mixed double is better then other by level', async () => {
+        it("Mixed double is better then other by level", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -973,27 +973,27 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-highest"
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`mix3`);
-          expect(error?.params?.['game2']).toBe(`mix4`);
+          expect(error?.params?.["game1"]).toBe(`mix3`);
+          expect(error?.params?.["game2"]).toBe(`mix4`);
           // Team 1
-          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team1player1"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["team1player1"]?.["ranking"]).toBe(7);
+          expect(error?.params?.["team1player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team1player2"]?.["ranking"]).toBe(8);
 
           // Team 2
-          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-          expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
-          expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
+          expect(error?.params?.["team2player1"]?.["id"]).toBe(player666.id);
+          expect(error?.params?.["team2player1"]?.["ranking"]).toBe(6);
+          expect(error?.params?.["team2player2"]?.["id"]).toBe(player999.id);
+          expect(error?.params?.["team2player2"]?.["ranking"]).toBe(9);
         });
       });
     });
 
-    describe('Rule [PlayerMaxGamesRule]', () => {
+    describe("Rule [PlayerMaxGamesRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerMaxGamesRule, {
@@ -1001,8 +1001,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid doubles', async () => {
+      describe("valid", () => {
+        it("should be valid doubles", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -1017,14 +1017,14 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-double-games"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
-        it('should be invalid if the player has more then 1 mixed', async () => {
+      describe("invalid", () => {
+        it("should be invalid if the player has more then 1 mixed", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -1037,16 +1037,16 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-mix-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-mix-games"
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player999.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player999.id);
         });
       });
     });
 
-    describe('Rule [PlayerGenderRule]', () => {
+    describe("Rule [PlayerGenderRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerGenderRule, {
@@ -1054,8 +1054,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid doubles', async () => {
+      describe("valid", () => {
+        it("should be valid doubles", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -1071,15 +1071,15 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.v1.teamFormation.errors.player-genders' ||
-              e.message === 'all.v1.teamFormation.errors.player-gender',
+              e.message === "all.v1.teamFormation.errors.player-genders" ||
+              e.message === "all.v1.teamFormation.errors.player-gender"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
-        it('should be invalid if a mixed 3 has 2 of the same gender', async () => {
+      describe("invalid", () => {
+        it("should be invalid if a mixed 3 has 2 of the same gender", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -1092,15 +1092,15 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-genders',
+            (e) => e.message === "all.v1.teamFormation.errors.player-genders"
           ) as AssemblyValidationError<PlayerGenderRulePartnerParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player2']?.['gender']).toBe(player777.gender);
-          expect(error?.params?.['game']).toBe('double3');
+          expect(error?.params?.["player2"]?.["gender"]).toBe(player777.gender);
+          expect(error?.params?.["game"]).toBe("double3");
         });
 
-        it('should be invalid if a mixed 4 has 2 of the same gender', async () => {
+        it("should be invalid if a mixed 4 has 2 of the same gender", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
@@ -1113,17 +1113,17 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-genders',
+            (e) => e.message === "all.v1.teamFormation.errors.player-genders"
           ) as AssemblyValidationError<PlayerGenderRulePartnerParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player2']?.['gender']).toBe(player999.gender);
-          expect(error?.params?.['game']).toBe('double4');
+          expect(error?.params?.["player2"]?.["gender"]).toBe(player999.gender);
+          expect(error?.params?.["game"]).toBe("double4");
         });
       });
     });
 
-    describe('Rule [PlayerMinLevelRule]', () => {
+    describe("Rule [PlayerMinLevelRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerMinLevelRule, {
@@ -1131,8 +1131,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid', async () => {
+      describe("valid", () => {
+        it("should be valid", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team2?.id,
@@ -1146,13 +1146,13 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
+            (e) => e.message === "all.v1.teamFormation.errors.player-min-level"
           );
           expect(error).toBeUndefined();
         });
 
-        it('first team should always be valid', async () => {
-           const validation = await service.validate({
+        it("first team should always be valid", async () => {
+          const validation = await service.validate({
             systemId: system.id,
             teamId: team1?.id,
             encounterId: encounter.id,
@@ -1165,14 +1165,14 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
+            (e) => e.message === "all.v1.teamFormation.errors.player-min-level"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
-        it('should be invalid if the player has a lower ranking then the subevent ', async () => {
+      describe("invalid", () => {
+        it("should be invalid if the player has a lower ranking then the subevent ", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team2?.id,
@@ -1187,17 +1187,17 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
+            (e) => e.message === "all.v1.teamFormation.errors.player-min-level"
           ) as AssemblyValidationError<PlayerMinLevelRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
       });
     });
   });
 
-  describe('Multiple teams in club', () => {
+  describe("Multiple teams in club", () => {
     let player555: Player;
 
     let playerT1r666: Player;
@@ -1215,115 +1215,115 @@ describe('AssemblyValidationService', () => {
 
     beforeEach(async () => {
       const player555B = PlayerBuilder.Create()
-        .WithName('player 5 - 5 - 5', 'team 1')
+        .WithName("player 5 - 5 - 5", "team 1")
         .WithCompetitionStatus(false)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(5, 5, 5)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const playerT1r666B = PlayerBuilder.Create()
-        .WithName('player 6 - 6 - 6', 'team A')
+        .WithName("player 6 - 6 - 6", "team A")
         .WithCompetitionStatus(true)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(6, 6, 6)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const playerT1r777B = PlayerBuilder.Create()
-        .WithName('player 7 - 7 - 7', 'team A')
+        .WithName("player 7 - 7 - 7", "team A")
         .WithCompetitionStatus(true)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(7, 7, 7)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const playerT1r888B = PlayerBuilder.Create()
-        .WithName('player 8 - 8 - 8', 'team A')
+        .WithName("player 8 - 8 - 8", "team A")
         .WithCompetitionStatus(true)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(8, 8, 8)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const playerT1r999B = PlayerBuilder.Create()
-        .WithName('player 9 - 9 - 9', 'team A')
+        .WithName("player 9 - 9 - 9", "team A")
         .WithCompetitionStatus(true)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(9, 9, 9)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const playerT2r666B = PlayerBuilder.Create()
-        .WithName('player 6 - 6 - 6', 'team B')
+        .WithName("player 6 - 6 - 6", "team B")
         .WithCompetitionStatus(true)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(6, 6, 6)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const playerT2r777B = PlayerBuilder.Create()
-        .WithName('player 7 - 7 - 7', 'team B')
+        .WithName("player 7 - 7 - 7", "team B")
         .WithCompetitionStatus(true)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(7, 7, 7)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const playerT2r888B = PlayerBuilder.Create()
-        .WithName('player 8 - 8 - 8', 'team B')
+        .WithName("player 8 - 8 - 8", "team B")
         .WithCompetitionStatus(true)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(8, 8, 8)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const playerT2r999B = PlayerBuilder.Create()
-        .WithName('player 9 - 9 - 9', 'team B')
+        .WithName("player 9 - 9 - 9", "team B")
         .WithCompetitionStatus(true)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(9, 9, 9)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const teamAB = TeamBuilder.Create(SubEventTypeEnum.M)
         .WithTeamNumber(1)
         .WithSeason(event.season)
-        .WithName('team 1');
+        .WithName("team 1");
       const teamBB = TeamBuilder.Create(SubEventTypeEnum.M)
         .WithTeamNumber(2)
         .WithSeason(event.season)
-        .WithName('team 2');
+        .WithName("team 2");
 
       await ClubBuilder.Create()
-        .WithName('club 1')
+        .WithName("club 1")
         .WithTeam(
           teamAB
             .WithPlayer(playerT1r777B, TeamMembershipType.REGULAR)
@@ -1332,8 +1332,8 @@ describe('AssemblyValidationService', () => {
             .WithPlayer(playerT1r666B, TeamMembershipType.REGULAR)
             .WithEntry(
               EventCompetitionEntryBuilder.Create(
-                'competition',
-                '287a088e-14b1-47c5-9086-e728c6615664',
+                "competition",
+                "287a088e-14b1-47c5-9086-e728c6615664"
               )
                 .WithDrawId(draw.id)
                 .WithSubEventId(subEvent.id)
@@ -1341,8 +1341,8 @@ describe('AssemblyValidationService', () => {
                 .WithBasePlayer(playerT1r777B, 7, 7, 7)
                 .WithBasePlayer(playerT1r888B, 8, 8, 8)
                 .WithBasePlayer(playerT1r999B, 9, 9, 9)
-                .WithBaseIndex(60),
-            ),
+                .WithBaseIndex(60)
+            )
         )
 
         .WithTeam(
@@ -1353,8 +1353,8 @@ describe('AssemblyValidationService', () => {
             .WithPlayer(playerT2r666B, TeamMembershipType.REGULAR)
             .WithEntry(
               EventCompetitionEntryBuilder.Create(
-                'competition',
-                '246f21b8-8eab-4597-b9c5-4ef712991cc3',
+                "competition",
+                "246f21b8-8eab-4597-b9c5-4ef712991cc3"
               )
                 .WithDrawId(draw.id)
                 .WithSubEventId(subEvent.id)
@@ -1362,8 +1362,8 @@ describe('AssemblyValidationService', () => {
                 .WithBasePlayer(playerT2r777B, 7, 7, 7)
                 .WithBasePlayer(playerT2r888B, 8, 8, 8)
                 .WithBasePlayer(playerT2r999B, 9, 9, 9)
-                .WithBaseIndex(60),
-            ),
+                .WithBaseIndex(60)
+            )
         )
         .Build();
 
@@ -1383,7 +1383,7 @@ describe('AssemblyValidationService', () => {
       teamB = await teamBB.Build();
     });
 
-    describe('Rule [TeamBaseIndexRule]', () => {
+    describe("Rule [TeamBaseIndexRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(TeamBaseIndexRule, {
@@ -1391,8 +1391,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('First team is allowed to have higher team index then base', async () => {
+      describe("valid", () => {
+        it("First team is allowed to have higher team index then base", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: teamA?.id,
@@ -1407,12 +1407,12 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.team-index',
+            (e) => e.message === "all.v1.teamFormation.errors.team-index"
           );
           expect(error).toBeUndefined();
         });
 
-        it('Second team not', async () => {
+        it("Second team not", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: teamA?.id,
@@ -1428,8 +1428,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('invalid', () => {
-        it.skip('Second team not', async () => {
+      describe("invalid", () => {
+        it.skip("Second team not", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: teamB?.id,
@@ -1444,17 +1444,17 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.team-index',
+            (e) => e.message === "all.v1.teamFormation.errors.team-index"
           ) as AssemblyValidationError<TeamBaseIndexRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['teamIndex']).toBe(58);
-          expect(error?.params?.['baseIndex']).toBe(60);
+          expect(error?.params?.["teamIndex"]).toBe(58);
+          expect(error?.params?.["baseIndex"]).toBe(60);
         });
       });
     });
 
-    describe('Rule [TeamClubBaseRule]', () => {
+    describe("Rule [TeamClubBaseRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(TeamClubBaseRule, {
@@ -1462,8 +1462,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('invalid', () => {
-        it('Second team not', async () => {
+      describe("invalid", () => {
+        it("Second team not", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: teamA?.id,
@@ -1478,16 +1478,16 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.club-base-other-team',
+            (e) => e.message === "all.v1.teamFormation.errors.club-base-other-team"
           ) as AssemblyValidationError<TeamClubBaseRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(playerT2r666.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(playerT2r666.id);
         });
       });
     });
 
-    describe('Rule [PlayerMinLevelRule]', () => {
+    describe("Rule [PlayerMinLevelRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerMinLevelRule, {
@@ -1495,8 +1495,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid', async () => {
+      describe("valid", () => {
+        it("should be valid", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: teamA?.id,
@@ -1510,13 +1510,13 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
+            (e) => e.message === "all.v1.teamFormation.errors.player-min-level"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
+      describe("invalid", () => {
         it("should be invalid if the player doesn't have competition status on true ", async () => {
           const validation = await service.validate({
             systemId: system.id,
@@ -1532,17 +1532,17 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-min-level',
+            (e) => e.message === "all.v1.teamFormation.errors.player-min-level"
           ) as AssemblyValidationError<PlayerMinLevelRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
       });
     });
   });
 
-  describe('Doubles Female team checks', () => {
+  describe("Doubles Female team checks", () => {
     let player666: Player;
     let player555: Player;
     let player777: Player;
@@ -1555,84 +1555,84 @@ describe('AssemblyValidationService', () => {
 
     beforeEach(async () => {
       player111 = await PlayerBuilder.Create()
-        .WithName('player 1 - 1 - 1', 'team 1')
+        .WithName("player 1 - 1 - 1", "team 1")
         .WithCompetitionStatus(false)
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(1, 1, 1)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         )
         .Build();
 
       const player555B = PlayerBuilder.Create()
-        .WithName('player 5 - 5 - 5', 'team 1')
+        .WithName("player 5 - 5 - 5", "team 1")
         .WithCompetitionStatus(false)
-        .WithGender('M')
+        .WithGender("M")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(5, 5, 5)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player666B = PlayerBuilder.Create()
-        .WithName('player 6 - 6 - 6', 'team 1')
+        .WithName("player 6 - 6 - 6", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('F')
+        .WithGender("F")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(6, 6, 6)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player777B = PlayerBuilder.Create()
-        .WithName('player 7 - 7 - 7', 'team 1')
+        .WithName("player 7 - 7 - 7", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('F')
+        .WithGender("F")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(7, 7, 7)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player888B = PlayerBuilder.Create()
-        .WithName('player 8 - 8 - 8', 'team 1')
+        .WithName("player 8 - 8 - 8", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('F')
+        .WithGender("F")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(8, 8, 8)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const player999B = PlayerBuilder.Create()
-        .WithName('player 9 - 9 - 9', 'team 1')
+        .WithName("player 9 - 9 - 9", "team 1")
         .WithCompetitionStatus(true)
-        .WithGender('F')
+        .WithGender("F")
         .WithRanking(
           RankingPlaceBuilder.Create()
             .WithSystemId(system.id)
             .WithRanking(9, 9, 9)
             .WithUpdatePossible(true)
-            .WithDate(new Date('2020-05-09')),
+            .WithDate(new Date("2020-05-09"))
         );
 
       const teamB = TeamBuilder.Create(SubEventTypeEnum.F)
-        .WithName('team 1')
+        .WithName("team 1")
         .WithSeason(event.season)
         .WithTeamNumber(1);
 
       await ClubBuilder.Create()
-        .WithName('club 1')
+        .WithName("club 1")
         .WithTeam(
           teamB
             .WithPlayer(player777B, TeamMembershipType.REGULAR)
@@ -1640,15 +1640,15 @@ describe('AssemblyValidationService', () => {
             .WithPlayer(player999B, TeamMembershipType.REGULAR)
             .WithPlayer(player666B, TeamMembershipType.REGULAR)
             .WithEntry(
-              EventCompetitionEntryBuilder.Create('competition')
+              EventCompetitionEntryBuilder.Create("competition")
                 .WithDrawId(draw.id)
                 .WithSubEventId(subEvent.id)
                 .WithBasePlayer(player666B, 6, 6, 6)
                 .WithBasePlayer(player777B, 7, 7, 7)
                 .WithBasePlayer(player888B, 8, 8, 8)
                 .WithBasePlayer(player999B, 9, 9, 9)
-                .WithBaseIndex(60),
-            ),
+                .WithBaseIndex(60)
+            )
         )
         .Build();
 
@@ -1661,7 +1661,7 @@ describe('AssemblyValidationService', () => {
       team = await teamB.Build();
     });
 
-    it('should be a valid assembly', async () => {
+    it("should be a valid assembly", async () => {
       const validation = await service.validate({
         systemId: system.id,
         teamId: team?.id,
@@ -1680,7 +1680,7 @@ describe('AssemblyValidationService', () => {
       expect(validation.valid).toBeTruthy();
     });
 
-    describe('Rule [PlayerOrderRule]', () => {
+    describe("Rule [PlayerOrderRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerOrderRule, {
@@ -1688,14 +1688,14 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
+      describe("valid", () => {
         const valid = [
           [1, 2],
           [2, 3],
           [3, 4],
         ];
 
-        test.each(valid)('Single %p is better then Single %p', async (p1, p2) => {
+        test.each(valid)("Single %p is better then Single %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1707,12 +1707,12 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-single"
           );
           expect(error).toBeUndefined();
         });
 
-        test.each(valid)('Double %p is  better then Double %p', async (p1, p2) => {
+        test.each(valid)("Double %p is  better then Double %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1724,12 +1724,12 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-doubles"
           );
           expect(error).toBeUndefined();
         });
 
-        test.each(valid)('Double %p is not better then Double %p by level', async (p1, p2) => {
+        test.each(valid)("Double %p is not better then Double %p by level", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1741,20 +1741,20 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-highest"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
+      describe("invalid", () => {
         const invalid = [
           [1, 2],
           [2, 3],
           [3, 4],
         ];
 
-        test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
+        test.each(invalid)("Single %p is not better then Single %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1767,19 +1767,19 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-single',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-single"
           ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`single${p1}`);
-          expect(error?.params?.['game2']).toBe(`single${p2}`);
-          expect(error?.params?.['player1']?.['id']).toBe(player888.id);
-          expect(error?.params?.['player1']?.['ranking']).toBe(8);
+          expect(error?.params?.["game1"]).toBe(`single${p1}`);
+          expect(error?.params?.["game2"]).toBe(`single${p2}`);
+          expect(error?.params?.["player1"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["player1"]?.["ranking"]).toBe(8);
 
-          expect(error?.params?.['player2']?.['id']).toBe(player777.id);
-          expect(error?.params?.['player2']?.['ranking']).toBe(7);
+          expect(error?.params?.["player2"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["player2"]?.["ranking"]).toBe(7);
         });
 
-        test.each(invalid)('Double %p is better then Double %p', async (p1, p2) => {
+        test.each(invalid)("Double %p is better then Double %p", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1792,25 +1792,25 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-doubles',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-doubles"
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`double${p1}`);
-          expect(error?.params?.['game2']).toBe(`double${p2}`);
+          expect(error?.params?.["game1"]).toBe(`double${p1}`);
+          expect(error?.params?.["game2"]).toBe(`double${p2}`);
           // Team 1
-          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team1player1"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["team1player1"]?.["ranking"]).toBe(7);
+          expect(error?.params?.["team1player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team1player2"]?.["ranking"]).toBe(8);
 
           // Team 2
-          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-          expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team2player1"]?.["id"]).toBe(player666.id);
+          expect(error?.params?.["team2player1"]?.["ranking"]).toBe(6);
+          expect(error?.params?.["team2player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team2player2"]?.["ranking"]).toBe(8);
         });
 
-        test.each(invalid)('Double %p is not better then Double %p by level', async (p1, p2) => {
+        test.each(invalid)("Double %p is not better then Double %p by level", async (p1, p2) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1823,27 +1823,27 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-order-highest',
+            (e) => e.message === "all.v1.teamFormation.errors.player-order-highest"
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
-          expect(error?.params?.['game1']).toBe(`double${p1}`);
-          expect(error?.params?.['game2']).toBe(`double${p2}`);
+          expect(error?.params?.["game1"]).toBe(`double${p1}`);
+          expect(error?.params?.["game2"]).toBe(`double${p2}`);
           // Team 1
-          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          expect(error?.params?.["team1player1"]?.["id"]).toBe(player777.id);
+          expect(error?.params?.["team1player1"]?.["ranking"]).toBe(7);
+          expect(error?.params?.["team1player2"]?.["id"]).toBe(player888.id);
+          expect(error?.params?.["team1player2"]?.["ranking"]).toBe(8);
 
           // Team 2
-          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-          expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
-          expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
+          expect(error?.params?.["team2player1"]?.["id"]).toBe(player666.id);
+          expect(error?.params?.["team2player1"]?.["ranking"]).toBe(6);
+          expect(error?.params?.["team2player2"]?.["id"]).toBe(player999.id);
+          expect(error?.params?.["team2player2"]?.["ranking"]).toBe(9);
         });
       });
     });
 
-    describe('Rule [TeamSubeventIndexRule]', () => {
+    describe("Rule [TeamSubeventIndexRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(TeamSubeventIndexRule, {
@@ -1851,8 +1851,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid', async () => {
+      describe("valid", () => {
+        it("should be valid", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1866,14 +1866,14 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.team-to-strong',
+            (e) => e.message === "all.v1.teamFormation.errors.team-to-strong"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
-        it('should be invalid if team index lower then the base', async () => {
+      describe("invalid", () => {
+        it("should be invalid if team index lower then the base", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1888,18 +1888,18 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.team-to-strong',
+            (e) => e.message === "all.v1.teamFormation.errors.team-to-strong"
           ) as AssemblyValidationError<TeamSubeventIndexRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['teamIndex']).toBe(50);
-          expect(error?.params?.['minIndex']).toBe(53);
-          expect(error?.params?.['maxIndex']).toBe(70);
+          expect(error?.params?.["teamIndex"]).toBe(50);
+          expect(error?.params?.["minIndex"]).toBe(53);
+          expect(error?.params?.["maxIndex"]).toBe(70);
         });
       });
     });
 
-    describe('Rule [PlayerCompStatusRule]', () => {
+    describe("Rule [PlayerCompStatusRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerCompStatusRule, {
@@ -1907,8 +1907,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid', async () => {
+      describe("valid", () => {
+        it("should be valid", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1922,13 +1922,13 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
+            (e) => e.message === "all.v1.teamFormation.errors.comp-status-html"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
+      describe("invalid", () => {
         it("should be invalid if the player doesn't have competition status on true ", async () => {
           const validation = await service.validate({
             systemId: system.id,
@@ -1944,11 +1944,11 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
+            (e) => e.message === "all.v1.teamFormation.errors.comp-status-html"
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
 
         it("should be invalid if the players doesn't have competition status on true ", async () => {
@@ -1966,7 +1966,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const errors = validation.errors?.filter(
-            (e) => e.message === 'all.v1.teamFormation.errors.comp-status-html',
+            (e) => e.message === "all.v1.teamFormation.errors.comp-status-html"
           );
 
           expect(errors).toBeDefined();
@@ -1975,7 +1975,7 @@ describe('AssemblyValidationService', () => {
       });
     });
 
-    describe('Rule [PlayerMaxGamesRule]', () => {
+    describe("Rule [PlayerMaxGamesRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerMaxGamesRule, {
@@ -1983,8 +1983,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid single', async () => {
+      describe("valid", () => {
+        it("should be valid single", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -1999,12 +1999,12 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-single-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-single-games"
           );
           expect(error).toBeUndefined();
         });
 
-        it('should be valid double', async () => {
+        it("should be valid double", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -2019,14 +2019,14 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-double-games"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
-        it('should be invalid if the player has more then 1 single game ', async () => {
+      describe("invalid", () => {
+        it("should be invalid if the player has more then 1 single game ", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -2041,14 +2041,14 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-single-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-single-games"
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
 
-        it('should be invalid if the player has more then 2 doubles', async () => {
+        it("should be invalid if the player has more then 2 doubles", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -2063,16 +2063,16 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-max-double-games',
+            (e) => e.message === "all.v1.teamFormation.errors.player-max-double-games"
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player666.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player666.id);
         });
       });
     });
 
-    describe('Rule [PlayerGenderRule]', () => {
+    describe("Rule [PlayerGenderRule]", () => {
       beforeEach(async () => {
         await service.clearRules();
         await service.registerRule(PlayerGenderRule, {
@@ -2080,8 +2080,8 @@ describe('AssemblyValidationService', () => {
         });
       });
 
-      describe('valid', () => {
-        it('should be valid single', async () => {
+      describe("valid", () => {
+        it("should be valid single", async () => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -2101,18 +2101,18 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.v1.teamFormation.errors.player-genders' ||
-              e.message === 'all.v1.teamFormation.errors.player-gender',
+              e.message === "all.v1.teamFormation.errors.player-genders" ||
+              e.message === "all.v1.teamFormation.errors.player-gender"
           );
           expect(error).toBeUndefined();
         });
       });
 
-      describe('invalid', () => {
+      describe("invalid", () => {
         // const games = [[1], [2], [3], [4]];
         const games = [[2]];
 
-        test.each(games)('should be invalid single if the player the wrong gender', async (g) => {
+        test.each(games)("should be invalid single if the player the wrong gender", async (g) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -2124,14 +2124,14 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-gender',
+            (e) => e.message === "all.v1.teamFormation.errors.player-gender"
           ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
 
-        test.each(games)('should be invalid double if the player the wrong gender', async (g) => {
+        test.each(games)("should be invalid double if the player the wrong gender", async (g) => {
           const validation = await service.validate({
             systemId: system.id,
             teamId: team?.id,
@@ -2143,11 +2143,11 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) => e.message === 'all.v1.teamFormation.errors.player-gender',
+            (e) => e.message === "all.v1.teamFormation.errors.player-gender"
           ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
           expect(error).toBeDefined();
-          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+          expect(error?.params?.["player"]?.["id"]).toBe(player555.id);
         });
       });
     });

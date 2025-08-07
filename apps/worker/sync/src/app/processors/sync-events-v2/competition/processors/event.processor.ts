@@ -1,12 +1,12 @@
-import { EventCompetition, SubEventCompetition } from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { VisualService } from '@badman/backend-visual';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
-import moment from 'moment';
-import { Transaction } from 'sequelize';
-import { EventEntry } from '@badman/backend-database';
+import { EventCompetition, SubEventCompetition } from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { VisualService } from "@badman/backend-visual";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
+import moment from "moment";
+import { Transaction } from "sequelize";
+import { EventEntry } from "@badman/backend-database";
 
 @Processor({
   name: SyncQueue,
@@ -17,7 +17,7 @@ export class EventCompetitionProcessor {
   constructor(
     private readonly _transactionManager: TransactionManager,
     private readonly _visualService: VisualService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Process(Sync.ProcessSyncCompetitionEvent)
@@ -44,7 +44,7 @@ export class EventCompetitionProcessor {
         updateMatches?: boolean;
         updateStanding?: boolean;
       };
-    }>,
+    }>
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
 
@@ -123,8 +123,8 @@ export class EventCompetitionProcessor {
     this.logger.debug(`Event ${event.name} created`);
 
     const enlistingOpen =
-      moment(event.openDate).diff(moment(), 'days') > 0 &&
-      moment(event.closeDate).diff(moment(), 'days') < 0;
+      moment(event.openDate).diff(moment(), "days") > 0 &&
+      moment(event.closeDate).diff(moment(), "days") < 0;
 
     if (enlistingOpen) {
       this.logger.debug(`EventCompetition ${event.name} is open, skipping processing`);
@@ -136,7 +136,7 @@ export class EventCompetitionProcessor {
           event,
           job.data.transactionId,
           options,
-          existing.subEvents,
+          existing.subEvents
         );
       }
     }
@@ -160,7 +160,7 @@ export class EventCompetitionProcessor {
       id: string;
       visualCode: string;
       draws: { id: string; visualCode: string; games: { id: string; visualCode: string }[] }[];
-    }[],
+    }[]
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
     const subEvents = await this._visualService.getSubEvents(eventCode, true);
@@ -209,7 +209,7 @@ export class EventCompetitionProcessor {
     const eventEntries = await EventEntry.findAll({
       where: {
         subEventId: dbSubEvent.id,
-        entryType: 'competition',
+        entryType: "competition",
       },
       transaction,
     });

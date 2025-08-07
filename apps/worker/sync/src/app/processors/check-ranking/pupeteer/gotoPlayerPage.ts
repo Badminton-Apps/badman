@@ -1,6 +1,6 @@
-import { Player } from '@badman/backend-database';
-import { waitForSelector } from '@badman/backend-pupeteer';
-import { Page } from 'puppeteer';
+import { Player } from "@badman/backend-database";
+import { waitForSelector } from "@badman/backend-pupeteer";
+import { Page } from "puppeteer";
 
 export async function getViaRanking(
   pupeteer: {
@@ -10,11 +10,11 @@ export async function getViaRanking(
     page: null,
     timeout: 5000,
   },
-  player: Player,
+  player: Player
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
   const url = `https://www.toernooi.nl/ranking/`;
   let count = 0;
@@ -50,9 +50,9 @@ export async function getViaRanking(
 
   {
     const targetPage = page;
-    const selector = ['#cphPage_cphPage_cphPage_tbxFind'];
+    const selector = ["#cphPage_cphPage_cphPage_tbxFind"];
     const element = await waitForSelector(selector, targetPage, timeout);
-    await element.type(player.memberId ?? '');
+    await element.type(player.memberId ?? "");
   }
 
   {
@@ -60,7 +60,7 @@ export async function getViaRanking(
 
     // count li items
     count = await targetPage.evaluate(() => {
-      return document.querySelectorAll('#ulSearchSuggest > li').length;
+      return document.querySelectorAll("#ulSearchSuggest > li").length;
     });
   }
   // If no results are found, return
@@ -70,7 +70,7 @@ export async function getViaRanking(
 
   {
     const targetPage = page;
-    const selector = ['#ulSearchSuggest > li:nth-child(1) > a'];
+    const selector = ["#ulSearchSuggest > li:nth-child(1) > a"];
     const element = await waitForSelector(selector, targetPage, timeout);
     await element.click({
       offset: {
@@ -83,7 +83,7 @@ export async function getViaRanking(
 
   {
     const targetPage = page;
-    const selector = ['aria/Profiel'];
+    const selector = ["aria/Profiel"];
     const element = await waitForSelector(selector, targetPage, timeout);
     await element.click({
       offset: {

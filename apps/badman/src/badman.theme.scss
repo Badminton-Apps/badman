@@ -1,17 +1,17 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use 'sass:color';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "sass:color";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   // Get the color config from the theme.
 
-  $isDark: map.get($theme, 'is-dark');
+  $isDark: map.get($theme, "is-dark");
 
   // Background color
 
-  $background-color: mat.get-theme-color($theme, 'background', 'app-bar');
+  $background-color: mat.get-theme-color($theme, "background", "app-bar");
 
   $danger-palette: map.get($theme, danger);
   $warn-palette: map.get($theme, warn);

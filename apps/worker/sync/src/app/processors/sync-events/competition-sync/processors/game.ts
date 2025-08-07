@@ -4,7 +4,7 @@ import {
   GamePlayerMembership,
   Player,
   RankingSystem,
-} from '@badman/backend-database';
+} from "@badman/backend-database";
 import {
   VisualService,
   XmlMatch,
@@ -12,14 +12,14 @@ import {
   XmlPlayer,
   XmlScoreStatus,
   XmlTournament,
-} from '@badman/backend-visual';
-import { GameStatus, GameType, getRankingProtected, runParallel } from '@badman/utils';
-import { Logger, NotFoundException } from '@nestjs/common';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
-import { correctWrongPlayers } from '../../../../utils';
-import { EncounterStepData } from './encounter';
+} from "@badman/backend-visual";
+import { GameStatus, GameType, getRankingProtected, runParallel } from "@badman/utils";
+import { Logger, NotFoundException } from "@nestjs/common";
+import moment from "moment";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
+import { correctWrongPlayers } from "../../../../utils";
+import { EncounterStepData } from "./encounter";
 
 export class CompetitionSyncGameProcessor extends StepProcessor {
   public players?: Map<string, Player>;
@@ -31,7 +31,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -78,7 +78,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   private async _processEncounter(
     encounter: EncounterCompetition,
     internalId: number,
-    games: Game[],
+    games: Game[]
   ) {
     // only get info for games that have been played
     const isAFutureEncounter = moment(encounter.date).isAfter(moment());
@@ -86,18 +86,18 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       return;
     }
 
-    const isLastWeek = moment().subtract(1, 'week').isBefore(encounter.date);
+    const isLastWeek = moment().subtract(1, "week").isBefore(encounter.date);
     const result = await this.visualService.getTeamMatch(
       this.visualTournament.Code,
       internalId,
-      !isLastWeek,
+      !isLastWeek
     );
 
     const visualMatch = result.filter((m) => m != null || m != undefined) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
       let game = games.find(
-        (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`,
+        (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
       );
 
       if (!xmlMatch.Sets) {
@@ -118,7 +118,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         case XmlScoreStatus.Disqualified:
           gameStatus = GameStatus.DISQUALIFIED;
           break;
-        case XmlScoreStatus['No Match']:
+        case XmlScoreStatus["No Match"]:
           gameStatus = GameStatus.NO_MATCH;
           break;
         case XmlScoreStatus.Walkover:
@@ -137,7 +137,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           gameType: this._getGameType(xmlMatch.MatchTypeID),
           order: xmlMatch.MatchOrder,
           linkId: encounter.id,
-          linkType: 'competition',
+          linkType: "competition",
           status: gameStatus,
           playedAt: encounter.date,
           set1Team1: xmlMatch?.Sets?.Set?.[0]?.Team1,
@@ -201,11 +201,11 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         const memberships = await this._createGamePlayers(xmlMatch, game);
         await GamePlayerMembership.bulkCreate(memberships, {
           transaction: this.transaction,
-          updateOnDuplicate: ['single', 'double', 'mix'],
+          updateOnDuplicate: ["single", "double", "mix"],
         });
       } catch (e) {
         this.logger.error(
-          `Error on bulk create game player membership: ${e.message}, for game: ${game.id} and ${xmlMatch.Code}`,
+          `Error on bulk create game player membership: ${e.message}, for game: ${game.id} and ${xmlMatch.Code}`
         );
         throw e;
       }
@@ -231,7 +231,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     const team2player2 = this._getPlayer(xmlMatch?.Team2?.Player2);
 
     if (!this._system) {
-      throw new Error('No ranking system');
+      throw new Error("No ranking system");
     }
 
     if (team1player1) {
@@ -242,7 +242,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction: this.transaction,
       });
@@ -276,7 +276,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction: this.transaction,
       });
@@ -309,7 +309,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction: this.transaction,
       });
@@ -342,7 +342,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction: this.transaction,
       });
@@ -407,7 +407,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       returnPlayer = [...(this.players?.values() ?? [])].find(
         (p) =>
           (p.firstName === corrected.firstName && p.lastName === corrected.lastName) ||
-          (p.firstName === corrected.lastName && p.lastName === corrected.firstName),
+          (p.firstName === corrected.lastName && p.lastName === corrected.firstName)
       );
     }
     return returnPlayer;

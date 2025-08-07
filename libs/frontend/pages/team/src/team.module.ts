@@ -1,18 +1,18 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
-import { TeamResolver } from './resolvers';
-import { DetailPageComponent } from './pages';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterModule, Routes } from "@angular/router";
+import { TeamResolver } from "./resolvers";
+import { DetailPageComponent } from "./pages";
 
 const MODULE_ROUTES: Routes = [
   {
-    path: ':id',
+    path: ":id",
     resolve: {
       team: TeamResolver,
     },
     children: [
       {
-        path: '',
+        path: "",
         component: DetailPageComponent,
       },
     ],

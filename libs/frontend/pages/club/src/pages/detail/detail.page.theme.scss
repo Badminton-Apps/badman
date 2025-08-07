@@ -1,13 +1,13 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
-@use './club-players/club-players.component.theme.scss' as club-players;
-@use './club-teams/club-teams.component.theme.scss' as club-teams;
-@use './club-competition/club-competition.component.theme.scss' as club-competition;
-@use './club-assembly/club-assembly.component.theme.scss' as club-assembly;
-@use './club-encounters/club-encounters.theme.scss' as club-encounters;
+@use "./club-players/club-players.component.theme.scss" as club-players;
+@use "./club-teams/club-teams.component.theme.scss" as club-teams;
+@use "./club-competition/club-competition.component.theme.scss" as club-competition;
+@use "./club-assembly/club-assembly.component.theme.scss" as club-assembly;
+@use "./club-encounters/club-encounters.theme.scss" as club-encounters;
 
 @mixin color($theme) {
   badman-club-detail {
@@ -17,11 +17,9 @@
     @include club-assembly.color($theme);
     @include club-encounters.color($theme);
 
-    
-    
-    $isDark: map.get($theme, 'is-dark');
+    $isDark: map.get($theme, "is-dark");
 
-    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, "disabled-text");
   }
 }
 
@@ -32,8 +30,6 @@
     @include club-competition.typography($theme);
     @include club-assembly.typography($theme);
     @include club-encounters.typography($theme);
-
-    
 
     .clubId {
       font: mat.get-theme-typography($theme, caption, font);

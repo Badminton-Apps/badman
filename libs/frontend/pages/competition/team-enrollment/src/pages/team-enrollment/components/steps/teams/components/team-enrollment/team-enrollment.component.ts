@@ -1,4 +1,3 @@
-
 import {
   Component,
   Signal,
@@ -10,40 +9,40 @@ import {
   output,
   signal,
   viewChild,
-} from '@angular/core';
+} from "@angular/core";
 import {
   FormArray,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { ClaimService } from '@badman/frontend-auth';
-import { EnrollmentMessageComponent } from '@badman/frontend-components';
-import { RankingSystemService } from '@badman/frontend-graphql';
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { ClaimService } from "@badman/frontend-auth";
+import { EnrollmentMessageComponent } from "@badman/frontend-components";
+import { RankingSystemService } from "@badman/frontend-graphql";
 import {
   EntryCompetitionPlayer,
   RankingSystem,
   SubEventCompetition,
   Team,
   ValidationMessage,
-} from '@badman/frontend-models';
-import { LevelType, SubEventTypeEnum } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
-import { TeamForm } from '../../../../../team-enrollment.page';
-import { TeamComponent } from '../team';
-import { getNewTypeAndLevel } from '../utils/get-next-level';
+} from "@badman/frontend-models";
+import { LevelType, SubEventTypeEnum } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { TeamEnrollmentDataService } from "../../../../../service/team-enrollment.service";
+import { TeamForm } from "../../../../../team-enrollment.page";
+import { TeamComponent } from "../team";
+import { getNewTypeAndLevel } from "../utils/get-next-level";
 
 @Component({
-    selector: 'badman-team-enrollment',
-    imports: [
+  selector: "badman-team-enrollment",
+  imports: [
     MatFormFieldModule,
     MatSelectModule,
     MatDialogModule,
@@ -54,10 +53,10 @@ import { getNewTypeAndLevel } from '../utils/get-next-level';
     FormsModule,
     TeamComponent,
     EnrollmentMessageComponent,
-    TranslatePipe
-],
-    templateUrl: './team-enrollment.component.html',
-    styleUrls: ['./team-enrollment.component.scss']
+    TranslatePipe,
+  ],
+  templateUrl: "./team-enrollment.component.html",
+  styleUrls: ["./team-enrollment.component.scss"],
 })
 export class TeamEnrollmentComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);
@@ -75,16 +74,16 @@ export class TeamEnrollmentComponent {
     }[]
   >();
 
-  team = computed(() => this.group().get('team') as FormControl<Team>);
+  team = computed(() => this.group().get("team") as FormControl<Team>);
   type = computed(() => this.team().value.type ?? SubEventTypeEnum.M);
-  entry = computed(() => this.group().get('entry') as FormGroup);
-  subEvent = computed(() => this.entry().get('subEventId') as FormControl<string>);
+  entry = computed(() => this.group().get("entry") as FormGroup);
+  subEvent = computed(() => this.entry().get("subEventId") as FormControl<string>);
 
   validation = computed(() =>
-    this.dataService.state.validation()?.find((v) => v.id === this.team().value.id),
+    this.dataService.state.validation()?.find((v) => v.id === this.team().value.id)
   );
   players = computed(
-    () => this.entry().get('players') as FormArray<FormControl<EntryCompetitionPlayer>>,
+    () => this.entry().get("players") as FormArray<FormControl<EntryCompetitionPlayer>>
   );
   subEventsForType = computed(() => this.dataService.state.eventsPerType()[this.type()]);
   maxLevels = computed(() => this._maxLevels(this.subEventsForType()));
@@ -93,19 +92,19 @@ export class TeamEnrollmentComponent {
     const errors = this.validation()?.errors ?? [];
 
     const players = errors
-      .filter((e) => e.message === 'all.competition.team-enrollment.errors.player-min-level')
+      .filter((e) => e.message === "all.competition.team-enrollment.errors.player-min-level")
       .map((e: unknown) => e as { params: { player: { id: string; fullName: string } } })
       .map((e) => e.params.player);
 
     const uniquePlayers = Array.from(new Set(players.map((player) => player.id))).map((id) =>
-      players.find((player) => player.id === id),
+      players.find((player) => player.id === id)
     ) as { id: string; fullName: string }[];
 
     return uniquePlayers;
   });
 
-  requestExceptionTemplateRef = viewChild.required<TemplateRef<HTMLElement>>('requestException');
-  canEnrollInAnyEvent = this.auth.hasClaimSignal('enlist-any-event:team');
+  requestExceptionTemplateRef = viewChild.required<TemplateRef<HTMLElement>>("requestException");
+  canEnrollInAnyEvent = this.auth.hasClaimSignal("enlist-any-event:team");
 
   system = this.systemService.system as Signal<RankingSystem>;
   // using a sinal to trigger the effect if needed
@@ -154,22 +153,20 @@ export class TeamEnrollmentComponent {
   changeTeamNumber = output<Team>();
 
   constructor() {
-    effect(
-      () => {
-        if (this.subEventsForType().length <= 0) {
-          return;
-        }
+    effect(() => {
+      if (this.subEventsForType().length <= 0) {
+        return;
+      }
 
-        // if the this.subEvent().value is not set and the link is not empty, disable the subEvent control
-        if (this.team()?.value.link && !this.subEvent().value) {
-          this.setInitialSubEvent();
-          if (this.subEvent().value && !this.canEnrollInAnyEvent()) {
-            this.automaticallyAssigned.set(true);
-            this.subEvent().disable();
-          }
+      // if the this.subEvent().value is not set and the link is not empty, disable the subEvent control
+      if (this.team()?.value.link && !this.subEvent().value) {
+        this.setInitialSubEvent();
+        if (this.subEvent().value && !this.canEnrollInAnyEvent()) {
+          this.automaticallyAssigned.set(true);
+          this.subEvent().disable();
         }
       }
-    );
+    });
   }
 
   setInitialSubEvent() {
@@ -187,11 +184,11 @@ export class TeamEnrollmentComponent {
       type,
       level,
       entry?.standing?.riser ?? false,
-      entry?.standing?.faller ?? false,
+      entry?.standing?.faller ?? false
     );
 
     const subEventId = subs?.find(
-      (sub) => sub.level === newLevel && sub.eventCompetition?.type === newType,
+      (sub) => sub.level === newLevel && sub.eventCompetition?.type === newType
     )?.id;
 
     if (!subEventId) return;
@@ -205,19 +202,19 @@ export class TeamEnrollmentComponent {
         0,
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
-          ?.map((s) => s.level ?? 0) ?? []),
+          ?.map((s) => s.level ?? 0) ?? [])
       ),
       LIGA: Math.max(
         0,
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
-          ?.map((s) => s.level ?? 0) ?? []),
+          ?.map((s) => s.level ?? 0) ?? [])
       ),
       NATIONAL: Math.max(
         0,
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
-          ?.map((s) => s.level ?? 0) ?? []),
+          ?.map((s) => s.level ?? 0) ?? [])
       ),
     };
   }
@@ -232,7 +229,7 @@ export class TeamEnrollmentComponent {
         data: {
           player: {
             ...player.value,
-            levelExceptionReason: player.value.levelExceptionReason ?? '',
+            levelExceptionReason: player.value.levelExceptionReason ?? "",
           },
         },
       })

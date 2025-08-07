@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   DrawTournament,
   EventTournament,
@@ -10,12 +10,12 @@ import {
   RankingSystem,
   SubEventTournament,
   EventEntry,
-} from '@badman/backend-database';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
-import { IsUUID } from '@badman/utils';
-import { InjectQueue } from '@nestjs/bull';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+} from "@badman/backend-database";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { PointsService, StartVisualRankingDate } from "@badman/backend-ranking";
+import { IsUUID } from "@badman/utils";
+import { InjectQueue } from "@nestjs/bull";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -28,12 +28,12 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { Queue } from 'bull';
-import { Op, Transaction } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../../utils';
-import { SyncSubEventOptions } from './subevent.resolver';
+} from "@nestjs/graphql";
+import { Queue } from "bull";
+import { Op, Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../../utils";
+import { SyncSubEventOptions } from "./subevent.resolver";
 
 @ObjectType()
 export class PagedEventTournament {
@@ -48,7 +48,7 @@ export class PagedEventTournament {
 export class SyncEventOptions extends SyncSubEventOptions {
   @Field(() => Boolean, {
     nullable: true,
-    description: 'Deletes the exsiting event (and childs) and re-creates with the same id',
+    description: "Deletes the exsiting event (and childs) and re-creates with the same id",
   })
   deleteEvent?: boolean;
 
@@ -63,11 +63,11 @@ export class EventTournamentResolver {
   constructor(
     private readonly _sequelize: Sequelize,
     private readonly _pointService: PointsService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Query(() => EventTournament)
-  async eventTournament(@Args('id', { type: () => ID }) id: string): Promise<EventTournament> {
+  async eventTournament(@Args("id", { type: () => ID }) id: string): Promise<EventTournament> {
     const eventTournament = IsUUID(id)
       ? await EventTournament.findByPk(id)
       : await EventTournament.findOne({
@@ -84,7 +84,7 @@ export class EventTournamentResolver {
 
   @Query(() => PagedEventTournament)
   async eventTournaments(
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<{ count: number; rows: EventTournament[] }> {
     return EventTournament.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
@@ -92,7 +92,7 @@ export class EventTournamentResolver {
   @ResolveField(() => [SubEventTournament])
   async subEventTournaments(
     @Parent() event: EventTournament,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<SubEventTournament[]> {
     return event.getSubEventTournaments(ListArgs.toFindOptions(listArgs));
   }
@@ -100,7 +100,7 @@ export class EventTournamentResolver {
   @Mutation(() => EventTournament)
   async updateEventTournament(
     @User() user: Player,
-    @Args('data') updateEventTournamentData: EventTournamentUpdateInput,
+    @Args("data") updateEventTournamentData: EventTournamentUpdateInput
   ): Promise<EventTournament> {
     if (!(await user.hasAnyPermission([`edit-any:tournament`]))) {
       throw new UnauthorizedException(`You do not have permission to add a tournament`);
@@ -146,7 +146,7 @@ export class EventTournamentResolver {
             await this.addGamePointsForSubEvents(
               group,
               subEvents?.map((s) => s.id),
-              transaction,
+              transaction
             );
           }
         } else {
@@ -162,7 +162,7 @@ export class EventTournamentResolver {
             await this.removeGamePointsForSubEvents(
               group,
               subEvents?.map((s) => s.id),
-              transaction,
+              transaction
             );
           }
         }
@@ -193,7 +193,7 @@ export class EventTournamentResolver {
   // }
 
   @Mutation(() => Boolean)
-  async removeEventTournament(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
+  async removeEventTournament(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission([`delete-any:tournament`]))) {
       throw new UnauthorizedException(`You do not have permission to detele a tournament`);
     }
@@ -230,7 +230,7 @@ export class EventTournamentResolver {
           const eventEntries = await EventEntry.findAll({
             where: {
               drawId: draw.id,
-              entryType: 'tournament',
+              entryType: "tournament",
             },
             transaction,
           });
@@ -265,7 +265,7 @@ export class EventTournamentResolver {
   async addGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const systems = await group.getRankingSystems({ transaction });
     const games = await Game.findAll({
@@ -302,14 +302,14 @@ export class EventTournamentResolver {
         promisse.push(
           this._pointService.createRankingPointforGame(system, game, {
             transaction,
-          }),
+          })
         );
       }
 
       await Promise.all(promisse);
 
       this.logger.debug(
-        `Added points for ${games.length} games in system ${system.name}(${system.id})`,
+        `Added points for ${games.length} games in system ${system.name}(${system.id})`
       );
     }
   }
@@ -317,7 +317,7 @@ export class EventTournamentResolver {
   async removeGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const systems = await group.getRankingSystems({ transaction });
 
@@ -346,7 +346,7 @@ export class EventTournamentResolver {
       });
 
       this.logger.debug(
-        `Removed points for ${games.length} games in system ${system.name}(${system.id})`,
+        `Removed points for ${games.length} games in system ${system.name}(${system.id})`
       );
     }
   }
@@ -354,10 +354,10 @@ export class EventTournamentResolver {
   @Mutation(() => Boolean)
   async recalculateEventTournamentRankingPoints(
     @User() user: Player,
-    @Args('eventId', { type: () => ID }) eventId: string,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+    @Args("eventId", { type: () => ID }) eventId: string,
+    @Args("systemId", { type: () => ID, nullable: true }) systemId: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
@@ -370,7 +370,7 @@ export class EventTournamentResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
       }
 
       // find all games
@@ -390,8 +390,8 @@ export class EventTournamentResolver {
         acc.push(
           ...(draw.drawTournaments ?? []).reduce(
             (acc, enc) => acc.concat(enc.games ?? []),
-            [] as Game[],
-          ),
+            [] as Game[]
+          )
         );
         return acc;
       }, [] as Game[]);
@@ -418,18 +418,18 @@ export class EventTournamentResolver {
   @Mutation(() => Boolean)
   async syncEvent(
     @User() user: Player,
-    @Args('eventId', { type: () => ID, nullable: true }) eventId: string,
-    @Args('eventCode', { type: () => ID, nullable: true }) eventCode: string,
+    @Args("eventId", { type: () => ID, nullable: true }) eventId: string,
+    @Args("eventCode", { type: () => ID, nullable: true }) eventCode: string,
 
     // options
-    @Args('options', { nullable: true }) options: SyncEventOptions,
+    @Args("options", { nullable: true }) options: SyncEventOptions
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['sync:tournament']))) {
+    if (!(await user.hasAnyPermission(["sync:tournament"]))) {
       throw new UnauthorizedException(`You do not have permission to sync tournament`);
     }
 
     if (!eventId && !eventCode) {
-      throw new Error('EventId or eventCode must be provided');
+      throw new Error("EventId or eventCode must be provided");
     }
 
     this._syncQueue.add(
@@ -441,7 +441,7 @@ export class EventTournamentResolver {
       },
       {
         removeOnComplete: true,
-      },
+      }
     );
 
     return true;

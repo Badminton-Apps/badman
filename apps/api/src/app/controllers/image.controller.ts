@@ -1,21 +1,21 @@
-import { Controller, Logger } from '@nestjs/common';
-import { existsSync } from 'fs';
-import { join } from 'path';
+import { Controller, Logger } from "@nestjs/common";
+import { existsSync } from "fs";
+import { join } from "path";
 
 @Controller({
-  path: 'image',
+  path: "image",
 })
 export class ImageController {
   private readonly logger = new Logger(ImageController.name);
 
   constructor() {
-    const path = join(__dirname, 'assets', 'PTSans-Regular.ttf');
+    const path = join(__dirname, "assets", "PTSans-Regular.ttf");
 
     // check if file exists
     if (existsSync(path)) {
       // registerFont(path, { family: 'PT Sans' });
     } else {
-      this.logger.warn('Font file does not exist', path);
+      this.logger.warn("Font file does not exist", path);
     }
   }
 
@@ -65,7 +65,7 @@ export class ImageController {
 
   private getMaxNextLine(input: string, maxChars = 17) {
     // Split the string into an array of words.
-    const allWords = input.split(' ');
+    const allWords = input.split(" ");
     // Find the index in the words array at which we should stop or we will exceed
     // maximum characters.
     // Find the index in the words array at which we should stop or we will exceed
@@ -73,20 +73,20 @@ export class ImageController {
       (
         prev: { done: boolean; index: number; position?: number | undefined },
         cur: string,
-        index: number,
+        index: number
       ): { done: boolean; index: number; position?: number | undefined } => {
         if (prev?.done) return prev;
         const endLastWord: number = prev?.position || 0;
         const position: number = endLastWord + 1 + cur.length;
         return position >= maxChars ? { done: true, index } : { done: false, position, index };
       },
-      { done: false, index: -1, position: undefined },
+      { done: false, index: -1, position: undefined }
     );
 
     // Using the index, build a string for this line ...
-    const line = allWords.slice(0, lineIndex.index).join(' ');
+    const line = allWords.slice(0, lineIndex.index).join(" ");
     // And determine what's left.
-    const remainingChars = allWords.slice(lineIndex.index).join(' ');
+    const remainingChars = allWords.slice(lineIndex.index).join(" ");
     // Return the result.
     return { line, remainingChars };
   }
@@ -100,7 +100,7 @@ export class ImageController {
       const secondLine = this.getMaxNextLine(firstLine.remainingChars);
       output = [firstLine.line];
       let fmSecondLine = secondLine.line;
-      if (secondLine.remainingChars.length > 0) fmSecondLine += ' ...';
+      if (secondLine.remainingChars.length > 0) fmSecondLine += " ...";
       output.push(fmSecondLine);
     }
     // If 20 characters or longer, add the entire second line, using a max of half

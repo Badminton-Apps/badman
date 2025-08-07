@@ -1,31 +1,31 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        console.log('Adding column');
+        console.log("Adding column");
 
         // Add column "date" to entries table
         await queryInterface.addColumn(
           {
-            tableName: 'Standings',
-            schema: 'event',
+            tableName: "Standings",
+            schema: "event",
           },
-          'size',
+          "size",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
           {
             transaction: t,
-          },
+          }
         );
 
-        console.log('Done');
+        console.log("Done");
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -36,16 +36,16 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'Entries',
-            schema: 'event',
+            tableName: "Entries",
+            schema: "event",
           },
-          'size',
+          "size",
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

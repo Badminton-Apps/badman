@@ -11,7 +11,7 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -34,21 +34,21 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-} from 'sequelize';
-import { EventTournament } from './event-tournament.model';
-import { RankingGroupSubEventTournamentMembership } from './group-subevent-membership.model';
-import { DrawTournament } from './draw-tournament.model';
-import { RankingGroup } from '../../ranking';
-import { GameType, SubEventTypeEnum } from '@badman/utils';
-import { EventEntry } from '../entry.model';
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { Relation } from '../../../wrapper';
+} from "sequelize";
+import { EventTournament } from "./event-tournament.model";
+import { RankingGroupSubEventTournamentMembership } from "./group-subevent-membership.model";
+import { DrawTournament } from "./draw-tournament.model";
+import { RankingGroup } from "../../ranking";
+import { GameType, SubEventTypeEnum } from "@badman/utils";
+import { EventEntry } from "../entry.model";
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
+import { Relation } from "../../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 })
-@ObjectType({ description: 'A SubEventTournament' })
+@ObjectType({ description: "A SubEventTournament" })
 export class SubEventTournament extends Model {
   constructor(values?: Partial<SubEventTournament>, options?: BuildOptions) {
     super(values, options);
@@ -67,26 +67,26 @@ export class SubEventTournament extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Unique('SubEventTournaments_unique_constraint')
+  @Unique("SubEventTournaments_unique_constraint")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   name?: string;
 
-  @Unique('SubEventTournaments_unique_constraint')
+  @Unique("SubEventTournaments_unique_constraint")
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
+  @Column(DataType.ENUM("M", "F", "MX", "MINIBAD"))
   eventType?: SubEventTypeEnum;
 
-  @Unique('SubEventTournaments_unique_constraint')
+  @Unique("SubEventTournaments_unique_constraint")
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('S', 'D', 'MX'))
+  @Column(DataType.ENUM("S", "D", "MX"))
   gameType?: GameType;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
   level?: number;
 
-  @Unique('SubEventTournaments_unique_constraint')
+  @Unique("SubEventTournaments_unique_constraint")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   visualCode?: string;
@@ -96,29 +96,29 @@ export class SubEventTournament extends Model {
 
   @Field(() => [DrawTournament], { nullable: true })
   @HasMany(() => DrawTournament, {
-    foreignKey: 'subeventId',
-    onDelete: 'CASCADE',
+    foreignKey: "subeventId",
+    onDelete: "CASCADE",
   })
   drawTournaments?: Relation<DrawTournament[]>;
 
   @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
-    foreignKey: 'eventId',
-    onDelete: 'CASCADE',
+    foreignKey: "eventId",
+    onDelete: "CASCADE",
   })
   event?: Relation<EventTournament>;
 
-  @Unique('SubEventTournaments_unique_constraint')
+  @Unique("SubEventTournaments_unique_constraint")
   @ForeignKey(() => EventTournament)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   eventId?: string;
 
   @HasMany(() => EventEntry, {
-    foreignKey: 'subEventId',
-    onDelete: 'CASCADE',
+    foreignKey: "subEventId",
+    onDelete: "CASCADE",
     scope: {
-      entryType: 'tournament',
+      entryType: "tournament",
     },
   })
   eventEntries?: Relation<EventEntry[]>;

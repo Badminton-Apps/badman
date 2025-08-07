@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   Component,
   Injector,
@@ -9,24 +9,24 @@ import {
   inject,
   input,
   signal,
-} from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+} from "@angular/core";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
-import { Club } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { ClubMembershipType } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
+} from "@angular/material/autocomplete";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectChange, MatSelectModule } from "@angular/material/select";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthenticateService, ClaimService } from "@badman/frontend-auth";
+import { Club } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { ClubMembershipType } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
 import {
   BehaviorSubject,
   Observable,
@@ -40,22 +40,22 @@ import {
   switchMap,
   take,
   takeUntil,
-} from 'rxjs';
+} from "rxjs";
 
 @Component({
-    selector: 'badman-select-club',
-    imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        MatSelectModule,
-    ],
-    templateUrl: './select-club.component.html',
-    styleUrls: ['./select-club.component.scss']
+  selector: "badman-select-club",
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+  ],
+  templateUrl: "./select-club.component.html",
+  styleUrls: ["./select-club.component.scss"],
 })
 export class SelectClubComponent implements OnInit {
   private readonly apollo = inject(Apollo);
@@ -74,11 +74,11 @@ export class SelectClubComponent implements OnInit {
   control = input<FormControl<string | null>>();
   protected internalControl!: FormControl<string | null>;
 
-  controlName = input('club');
+  controlName = input("club");
 
-  singleClubPermission = input<string>('');
+  singleClubPermission = input<string>("");
 
-  allClubPermission = input<string>('');
+  allClubPermission = input<string>("");
 
   needsPermission = input(false);
 
@@ -90,8 +90,8 @@ export class SelectClubComponent implements OnInit {
   }
   filteredClubs$?: Observable<Club[]>;
 
-  useAutocomplete = input<boolean | 'auto'>('auto');
-  useAutocompleteSignal = signal<boolean | 'auto'>(this.useAutocomplete());
+  useAutocomplete = input<boolean | "auto">("auto");
+  useAutocompleteSignal = signal<boolean | "auto">(this.useAutocomplete());
 
   autoCompleteTreshold = input(5);
 
@@ -100,7 +100,7 @@ export class SelectClubComponent implements OnInit {
   allowDeselect = input(false);
 
   hasSingleClub = computed(() =>
-    this.claimSerice.hasAllClaims([`*_${this.singleClubPermission()}`]),
+    this.claimSerice.hasAllClaims([`*_${this.singleClubPermission()}`])
   );
 
   hasAllClubs = computed(() => this.claimSerice.hasAllClaims([`${this.allClubPermission()}`]));
@@ -137,7 +137,7 @@ export class SelectClubComponent implements OnInit {
           if (this.needsPermission() && !all) {
             return this.claimSerice.claims$.pipe(
               map((r) => r?.filter((x) => x?.indexOf(this.singleClubPermission()) != -1)),
-              map((r) => r?.map((c) => c?.replace(`_${this.singleClubPermission()}`, ''))),
+              map((r) => r?.map((c) => c?.replace(`_${this.singleClubPermission()}`, ""))),
               switchMap((ids) => {
                 const filtered = allClubs.filter((c) => {
                   if (c.id == null) {
@@ -156,18 +156,18 @@ export class SelectClubComponent implements OnInit {
                   user,
                   params,
                 });
-              }),
+              })
             );
           }
 
           return of({ rows: allClubs, count: allClubs.length, user, params });
-        }),
+        })
       )
       .subscribe(({ rows, user, params }) => {
         this.#clubs.next(rows ?? null);
 
         if (this.internalControl?.value == null) {
-          const paramClubId = params.get('club');
+          const paramClubId = params.get("club");
 
           if (paramClubId) {
             const foundClub = rows?.find((r) => r.id == paramClubId)?.id ?? null;
@@ -183,7 +183,7 @@ export class SelectClubComponent implements OnInit {
                 (c) =>
                   moment(c.clubMembership?.start).isBefore(moment()) &&
                   c.clubMembership?.active &&
-                  c.clubMembership?.membershipType == ClubMembershipType.NORMAL,
+                  c.clubMembership?.membershipType == ClubMembershipType.NORMAL
               )
               ?.map((r) => r.id);
 
@@ -206,7 +206,7 @@ export class SelectClubComponent implements OnInit {
     this.filteredClubs$ = this.internalControl?.valueChanges.pipe(
       takeUntil(this.destroy$),
       startWith(undefined),
-      map((value) => this._filter(value)),
+      map((value) => this._filter(value))
     );
 
     // on startup and control is filled in, when the clubs are loaded select the club
@@ -215,7 +215,7 @@ export class SelectClubComponent implements OnInit {
         .pipe(
           filter((r) => r != null),
           take(1),
-          takeUntil(this.destroy$),
+          takeUntil(this.destroy$)
         )
         .subscribe(() => {
           this.selectClub(this.internalControl?.value, false);
@@ -225,7 +225,7 @@ export class SelectClubComponent implements OnInit {
 
   selectClub(
     event?: MatAutocompleteSelectedEvent | MatSelectChange | string | null,
-    removeOtherParams = true,
+    removeOtherParams = true
   ) {
     let id: string | undefined;
     if (event instanceof MatAutocompleteSelectedEvent) {
@@ -253,8 +253,8 @@ export class SelectClubComponent implements OnInit {
       };
 
       if (removeOtherParams) {
-        queryParams['team'] = undefined;
-        queryParams['encounter'] = undefined;
+        queryParams["team"] = undefined;
+        queryParams["encounter"] = undefined;
       }
 
       // check if the current url is the same as the new url
@@ -264,7 +264,7 @@ export class SelectClubComponent implements OnInit {
         .createUrlTree([], {
           relativeTo: this.activatedRoute,
           queryParams,
-          queryParamsHandling: 'merge',
+          queryParamsHandling: "merge",
         })
         .toString();
 
@@ -275,7 +275,7 @@ export class SelectClubComponent implements OnInit {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams,
-        queryParamsHandling: 'merge',
+        queryParamsHandling: "merge",
       });
     }
   }
@@ -306,11 +306,11 @@ export class SelectClubComponent implements OnInit {
         transferState(`clubsKey`, this.transferState, this.platformId),
         map((result) => {
           if (!result?.data.clubs) {
-            throw new Error('No clubs');
+            throw new Error("No clubs");
           }
           return result.data.clubs.rows.map((c) => new Club(c));
         }),
-        first(),
+        first()
       );
   }
 
@@ -318,10 +318,10 @@ export class SelectClubComponent implements OnInit {
     if (value == null) {
       return this.clubs ?? [];
     }
-    let filterValue = '';
+    let filterValue = "";
 
     if (value instanceof Club) {
-      filterValue = value.id ?? '';
+      filterValue = value.id ?? "";
     } else {
       filterValue = value?.toLowerCase();
     }
@@ -329,15 +329,15 @@ export class SelectClubComponent implements OnInit {
     return (this.clubs ?? []).filter(
       (option) =>
         option?.name?.toLowerCase().includes(filterValue) ||
-        (filterValue.length == 16 && option.id?.toLowerCase().includes(filterValue)),
+        (filterValue.length == 16 && option.id?.toLowerCase().includes(filterValue))
     );
   }
 
   displayFn(value?: string | Club): string {
     if (value instanceof Club) {
-      return value?.name ?? '';
+      return value?.name ?? "";
     } else {
-      return this.clubs?.find((r) => r.id === value)?.name ?? value ?? '';
+      return this.clubs?.find((r) => r.id === value)?.name ?? value ?? "";
     }
   }
 }

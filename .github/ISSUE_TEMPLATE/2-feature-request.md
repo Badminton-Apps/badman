@@ -1,7 +1,7 @@
 ---
 name: "\U0001F680 Feature request"
 about: Suggest a feature for Badvlasim Framework
-title: '[FEATURE] '
+title: "[FEATURE] "
 labels: enhancement
 ---
 

@@ -1,10 +1,10 @@
 <h2 mat-dialog-title>
-  {{ 'all.ranking.breakdown.add-game.title' | translate }}
+  {{ "all.ranking.breakdown.add-game.title" | translate }}
 </h2>
 <mat-dialog-content>
   <form [formGroup]="this.formGroup">
     <mat-slide-toggle formControlName="won">{{
-      'all.ranking.breakdown.add-game.won' | translate
+      "all.ranking.breakdown.add-game.won" | translate
     }}</mat-slide-toggle>
     <div class="game">
       <div class="team1">
@@ -27,7 +27,7 @@
             />
           </mat-form-field>
         </div>
-        @if (this.data.type !== 'single') {
+        @if (this.data.type !== "single") {
           <div class="player2">
             <badman-select-player
               controlName="p2t1"
@@ -69,7 +69,7 @@
             />
           </mat-form-field>
         </div>
-        @if (this.data.type !== 'single') {
+        @if (this.data.type !== "single") {
           <div class="player2">
             <badman-select-player
               controlName="p2t2"
@@ -95,9 +95,9 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="onDismiss()">
-    {{ 'all.button.no' | translate }}
+    {{ "all.button.no" | translate }}
   </button>
   <button mat-raised-button cdkFocusInitial color="primary" (click)="onConfirm()">
-    {{ 'all.button.yes' | translate }}
+    {{ "all.button.yes" | translate }}
   </button>
 </mat-dialog-actions>

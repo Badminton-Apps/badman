@@ -1,6 +1,6 @@
-import { EventType } from '@badman/utils';
-import { EventCompetition, EventTournament } from './events';
-import { ImporterSubEvent } from './imported-sub-event.model';
+import { EventType } from "@badman/utils";
+import { EventCompetition, EventTournament } from "./events";
+import { ImporterSubEvent } from "./imported-sub-event.model";
 export class Imported {
   name?: string;
   id?: string;
@@ -24,7 +24,7 @@ export class Imported {
     this.name = args.name;
     this.id = args.id;
     this.type = args.type;
-    this.dates = dateString?.split(',').map((x) => new Date(x));
+    this.dates = dateString?.split(",").map((x) => new Date(x));
     this.firstDay = args.firstDay != null ? new Date(args.firstDay) : undefined;
     this.datesString = dateString;
     this.fileName = args.fileName;

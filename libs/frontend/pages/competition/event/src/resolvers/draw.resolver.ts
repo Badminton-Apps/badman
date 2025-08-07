@@ -1,9 +1,9 @@
-import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { DrawCompetition } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { first, map } from 'rxjs/operators';
+import { Injectable, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { DrawCompetition } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { first, map } from "rxjs/operators";
 
 @Injectable()
 export class DrawResolver {
@@ -12,7 +12,7 @@ export class DrawResolver {
   private platformId = inject<string>(PLATFORM_ID);
 
   resolve(route: ActivatedRouteSnapshot) {
-    const drawId = route.params['id'];
+    const drawId = route.params["id"];
 
     return this.apollo
       .query<{ drawCompetition: Partial<DrawCompetition> }>({
@@ -64,11 +64,11 @@ export class DrawResolver {
         transferState(`drawKey-${drawId}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.drawCompetition) {
-            throw new Error('No draw found');
+            throw new Error("No draw found");
           }
           return new DrawCompetition(result.data.drawCompetition);
         }),
-        first(),
+        first()
       );
   }
 }

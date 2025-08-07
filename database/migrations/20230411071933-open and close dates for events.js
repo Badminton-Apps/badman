@@ -1,87 +1,87 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
-      console.log('Removing allowEnlisting column');
+      console.log("Removing allowEnlisting column");
 
       await queryInterface.removeColumn(
         {
-          tableName: 'EventCompetitions',
-          schema: 'event',
+          tableName: "EventCompetitions",
+          schema: "event",
         },
-        'allowEnlisting',
-        { transaction: t },
+        "allowEnlisting",
+        { transaction: t }
       );
 
       await queryInterface.removeColumn(
         {
-          tableName: 'EventTournaments',
-          schema: 'event',
+          tableName: "EventTournaments",
+          schema: "event",
         },
-        'allowEnlisting',
-        { transaction: t },
+        "allowEnlisting",
+        { transaction: t }
       );
 
-      console.log('Adding open and close dates for events');
+      console.log("Adding open and close dates for events");
 
       await queryInterface.addColumn(
         {
-          tableName: 'EventCompetitions',
-          schema: 'event',
+          tableName: "EventCompetitions",
+          schema: "event",
         },
-        'openDate',
+        "openDate",
         {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       await queryInterface.addColumn(
         {
-          tableName: 'EventCompetitions',
-          schema: 'event',
+          tableName: "EventCompetitions",
+          schema: "event",
         },
-        'closeDate',
+        "closeDate",
         {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       await queryInterface.addColumn(
         {
-          tableName: 'EventTournaments',
-          schema: 'event',
+          tableName: "EventTournaments",
+          schema: "event",
         },
-        'openDate',
+        "openDate",
         {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       await queryInterface.addColumn(
         {
-          tableName: 'EventTournaments',
-          schema: 'event',
+          tableName: "EventTournaments",
+          schema: "event",
         },
-        'closeDate',
+        "closeDate",
         {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -92,70 +92,70 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'openDate',
-          { transaction: t },
+          "openDate",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'closeDate',
-          { transaction: t },
+          "closeDate",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'EventTournaments',
-            schema: 'event',
+            tableName: "EventTournaments",
+            schema: "event",
           },
-          'openDate',
-          { transaction: t },
+          "openDate",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'EventTournaments',
-            schema: 'event',
+            tableName: "EventTournaments",
+            schema: "event",
           },
-          'closeDate',
-          { transaction: t },
+          "closeDate",
+          { transaction: t }
         );
 
         // Add allowEnlisting column
         await queryInterface.addColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'allowEnlisting',
+          "allowEnlisting",
           {
             type: sequelize.DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'EventTournaments',
-            schema: 'event',
+            tableName: "EventTournaments",
+            schema: "event",
           },
-          'allowEnlisting',
+          "allowEnlisting",
           {
             type: sequelize.DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,27 +6,27 @@ import {
   computed,
   effect,
   inject,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import {
   HasClaimComponent,
   PageHeaderComponent,
   StandingComponent,
-} from '@badman/frontend-components';
-import { DrawTournament, EventTournament, Player } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { BreadcrumbService } from 'xng-breadcrumb';
+} from "@badman/frontend-components";
+import { DrawTournament, EventTournament, Player } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { BreadcrumbService } from "xng-breadcrumb";
 
 @Component({
-  selector: 'badman-detail-draw-tournament',
-  templateUrl: './detail-draw.page.html',
-  styleUrls: ['./detail-draw.page.scss'],
+  selector: "badman-detail-draw-tournament",
+  templateUrl: "./detail-draw.page.html",
+  styleUrls: ["./detail-draw.page.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterModule,
@@ -36,8 +36,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     StandingComponent,
     PageHeaderComponent,
     MatButtonModule,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
 })
 export class DetailDrawComponent {
   private readonly route = inject(ActivatedRoute);
@@ -48,8 +48,8 @@ export class DetailDrawComponent {
 
   private routeData = toSignal(this.route.data);
 
-  drawTournament = computed(() => this.routeData()?.['drawTournament'] as DrawTournament);
-  eventTournament = computed(() => this.routeData()?.['eventTournament'] as EventTournament);
+  drawTournament = computed(() => this.routeData()?.["drawTournament"] as DrawTournament);
+  eventTournament = computed(() => this.routeData()?.["eventTournament"] as EventTournament);
 
   players = computed(
     () =>
@@ -58,7 +58,7 @@ export class DetailDrawComponent {
           return e.players;
         })
         .flat()
-        .filter((p) => p) as Player[],
+        .filter((p) => p) as Player[]
   );
 
   get isClient(): boolean {
@@ -73,11 +73,11 @@ export class DetailDrawComponent {
       this.seoService.update({
         title: drawTournamentName,
         description: `Draw ${drawTournamentName}`,
-        type: 'website',
-        keywords: ['event', 'tournament', 'badminton'],
+        type: "website",
+        keywords: ["event", "tournament", "badminton"],
       });
-      this.breadcrumbService.set('@eventTournament', eventTournamentName);
-      this.breadcrumbService.set('@drawTournament', drawTournamentName);
+      this.breadcrumbService.set("@eventTournament", eventTournamentName);
+      this.breadcrumbService.set("@drawTournament", drawTournamentName);
     });
   }
 

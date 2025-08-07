@@ -1,11 +1,11 @@
-import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Apollo, gql, MutationResult } from 'apollo-angular';
-import { BehaviorSubject, catchError, finalize, forkJoin, map, Observable, tap } from 'rxjs';
+import { SelectionModel } from "@angular/cdk/collections";
+import { AfterViewInit, Component, OnInit, inject } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { Apollo, gql, MutationResult } from "apollo-angular";
+import { BehaviorSubject, catchError, finalize, forkJoin, map, Observable, tap } from "rxjs";
 import {
   EventCompetition,
   RankingGroup,
@@ -13,15 +13,15 @@ import {
   EventTournament,
   SubEventCompetition,
   SubEventTournament,
-} from '@badman/frontend-models';
-import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import { InMemoryCache } from '@apollo/client/cache';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSelectModule } from '@angular/material/select';
+} from "@badman/frontend-models";
+import { APOLLO_CACHE } from "@badman/frontend-graphql";
+import { InMemoryCache } from "@apollo/client/cache";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatSelectModule } from "@angular/material/select";
 
 @Component({
   imports: [
@@ -36,13 +36,13 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule,
     MatTableModule,
   ],
-  templateUrl: './assign-ranking-groups.component.html',
-  styleUrls: ['./assign-ranking-groups.component.scss'],
+  templateUrl: "./assign-ranking-groups.component.html",
+  styleUrls: ["./assign-ranking-groups.component.scss"],
 })
 export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   public data = inject<{ event: EventCompetition | EventTournament }>(MAT_DIALOG_DATA);
   private dialogRef = inject<MatDialogRef<AssignRankingGroupsComponent>>(
-    MatDialogRef<AssignRankingGroupsComponent>,
+    MatDialogRef<AssignRankingGroupsComponent>
   );
   private snackbar = inject(MatSnackBar);
   private cache = inject<InMemoryCache>(APOLLO_CACHE);
@@ -54,7 +54,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   useSame = true;
   selectedGroups: FormControl = new FormControl();
   selection = new Map<string, SelectionModel<SubEvent>>();
-  staticColumns = ['name', 'eventType'];
+  staticColumns = ["name", "eventType"];
   displayedColumns = this.staticColumns;
 
   viewLoaded$ = new BehaviorSubject(0);
@@ -101,13 +101,13 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
           this.groups = groups;
           const unique = [
             ...new Set(
-              subEvents?.map((s) => s.rankingGroups?.map((r: RankingGroup) => r.id)).flat(),
+              subEvents?.map((s) => s.rankingGroups?.map((r: RankingGroup) => r.id)).flat()
             ),
           ];
 
           if (unique.length === 0) {
             // setting default to 'Adults'
-            const adults = groups.find((r) => r.name == 'Adults');
+            const adults = groups.find((r) => r.name == "Adults");
             const key = `group-${adults?.id}`;
             this.selectedGroups.setValue([adults]);
             this.selection.set(key, new SelectionModel<SubEvent>(true, []));
@@ -135,7 +135,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
             this.selectedGroups.setValue(initialGroups);
           }
-        }),
+        })
       );
   }
 
@@ -162,9 +162,9 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   /** The label for the checkbox on the passed row */
   checkboxLabel(groupId: string, row?: SubEvent): string {
     if (!row) {
-      return `${this.isAllSelected(groupId) ? 'select' : 'deselect'} all`;
+      return `${this.isAllSelected(groupId) ? "select" : "deselect"} all`;
     }
-    return `${this.selection.get(groupId)?.isSelected(row) ? 'deselect' : 'select'} row ${row.name}`;
+    return `${this.selection.get(groupId)?.isSelected(row) ? "deselect" : "select"} row ${row.name}`;
   }
 
   async assignRankingGroups() {
@@ -175,7 +175,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
     for (const group of this.groups) {
       if (!group.id) {
-        throw new Error('Group has no id');
+        throw new Error("Group has no id");
       }
       const variables: { [key: string]: string[] | string } = {
         rankingGroupId: group.id,
@@ -184,7 +184,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
       const added: string[] = [];
       for (const subEvent of this.dataSource.data ?? []) {
         if (!subEvent.id) {
-          throw new Error('SubEvent has no id');
+          throw new Error("SubEvent has no id");
         }
 
         if (this.useSame) {
@@ -220,10 +220,10 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
       if (removed.length > 0) {
         if (this.data.event instanceof EventTournament) {
-          variables['tournaments'] = removed;
+          variables["tournaments"] = removed;
         }
         if (this.data.event instanceof EventCompetition) {
-          variables['competitions'] = removed;
+          variables["competitions"] = removed;
         }
 
         mutations.push(
@@ -245,16 +245,16 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
               }
             `,
             variables,
-          }),
+          })
         );
       }
 
       if (added.length > 0) {
         if (this.data.event instanceof EventTournament) {
-          variables['tournaments'] = added;
+          variables["tournaments"] = added;
         }
         if (this.data.event instanceof EventCompetition) {
-          variables['competitions'] = added;
+          variables["competitions"] = added;
         }
 
         mutations.push(
@@ -276,7 +276,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
               }
             `,
             variables,
-          }),
+          })
         );
       }
     }
@@ -284,23 +284,23 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
     forkJoin(mutations)
       .pipe(
         catchError((err) => {
-          console.error('error', err);
-          this.snackbar.open(err.message, 'OK', { duration: 5000 });
+          console.error("error", err);
+          this.snackbar.open(err.message, "OK", { duration: 5000 });
           throw err;
         }),
         finalize(() => {
           this.loading = false;
-        }),
+        })
       )
       .subscribe(() => {
         // Evict cache
         const normalizedIdCompetition = this.cache.identify({
           id: this.data.event.id,
-          __typename: 'EventCompetition',
+          __typename: "EventCompetition",
         });
         const normalizedIdTournament = this.cache.identify({
           id: this.data.event.id,
-          __typename: 'EventTournament',
+          __typename: "EventTournament",
         });
         this.cache.evict({ id: normalizedIdCompetition });
         this.cache.evict({ id: normalizedIdTournament });

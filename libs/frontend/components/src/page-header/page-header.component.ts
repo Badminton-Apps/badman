@@ -1,4 +1,3 @@
-
 import {
   AfterContentInit,
   ChangeDetectionStrategy,
@@ -6,22 +5,22 @@ import {
   ContentChildren,
   ElementRef,
   QueryList,
-} from '@angular/core';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { takeUntil } from 'rxjs';
+} from "@angular/core";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { takeUntil } from "rxjs";
 
 @Component({
-    selector: 'badman-page-header',
-    imports: [],
-    templateUrl: './page-header.component.html',
-    styleUrls: ['./page-header.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "badman-page-header",
+  imports: [],
+  templateUrl: "./page-header.component.html",
+  styleUrls: ["./page-header.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageHeaderComponent implements AfterContentInit {
   private destroy$ = injectDestroy();
   public hasAvatar?: boolean;
 
-  @ContentChildren('avatar') content?: QueryList<ElementRef>;
+  @ContentChildren("avatar") content?: QueryList<ElementRef>;
 
   ngAfterContentInit(): void {
     if (!this.content) return;

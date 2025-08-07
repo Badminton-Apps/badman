@@ -1,10 +1,10 @@
-import { Game, Player, RankingPoint, RankingSystem } from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { ListArgs } from '../../utils';
-import { User } from '@badman/backend-authorization';
-import { Sequelize } from 'sequelize-typescript';
-import { PointsService } from '@badman/backend-ranking';
+import { Game, Player, RankingPoint, RankingSystem } from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { ListArgs } from "../../utils";
+import { User } from "@badman/backend-authorization";
+import { Sequelize } from "sequelize-typescript";
+import { PointsService } from "@badman/backend-ranking";
 
 @Resolver(() => RankingPoint)
 export class RankingPointResolver {
@@ -12,11 +12,11 @@ export class RankingPointResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private pointService: PointsService,
+    private pointService: PointsService
   ) {}
 
   @Query(() => RankingPoint)
-  async rankingPoint(@Args('id', { type: () => ID }) id: string): Promise<RankingPoint> {
+  async rankingPoint(@Args("id", { type: () => ID }) id: string): Promise<RankingPoint> {
     let rankingPoint = await RankingPoint.findByPk(id);
 
     if (!rankingPoint) {
@@ -51,10 +51,10 @@ export class RankingPointResolver {
   @Mutation(() => Boolean)
   async recalculateRankingPoints(
     @User() user: Player,
-    @Args('gameId', { type: () => [ID] }) gameId: string[],
-    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+    @Args("gameId", { type: () => [ID] }) gameId: string[],
+    @Args("systemId", { type: () => ID, nullable: true }) systemId: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
@@ -67,7 +67,7 @@ export class RankingPointResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`No ranking system found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`No ranking system found for ${systemId || "primary"}`);
       }
 
       // find all games

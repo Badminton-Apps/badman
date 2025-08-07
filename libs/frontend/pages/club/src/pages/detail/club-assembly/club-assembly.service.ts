@@ -1,12 +1,12 @@
-import { Injectable, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { Club, Player, Team } from '@badman/frontend-models';
-import { SubEventTypeEnum, getSeason, sortTeams } from '@badman/utils';
-import { TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { signalSlice } from 'ngxtension/signal-slice';
+import { Injectable, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { Club, Player, Team } from "@badman/frontend-models";
+import { SubEventTypeEnum, getSeason, sortTeams } from "@badman/utils";
+import { TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { signalSlice } from "ngxtension/signal-slice";
 import {
   EMPTY,
   Subject,
@@ -20,7 +20,7 @@ import {
   of,
   startWith,
   switchMap,
-} from 'rxjs';
+} from "rxjs";
 
 export interface ClubAssemblyState {
   teams: Team[];
@@ -30,7 +30,7 @@ export interface ClubAssemblyState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClubAssemblyService {
   private readonly apollo = inject(Apollo);
@@ -45,7 +45,7 @@ export class ClubAssemblyService {
   };
 
   filter = new FormGroup({
-    clubId: new FormControl<string>(''),
+    clubId: new FormControl<string>(""),
     season: new FormControl(getSeason()),
     choices: new FormControl<string[]>([]),
   });
@@ -58,7 +58,7 @@ export class ClubAssemblyService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.clubId && filter.clubId.length > 0),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   // sources
@@ -70,22 +70,22 @@ export class ClubAssemblyService {
         map((teams) => teams.sort(sortTeams)),
         switchMap((teams) =>
           this.getPlayers(teams, this.filter.value).pipe(
-            map((players) => ({ teams, players, loaded: true })),
-          ),
-        ),
-      ),
+            map((players) => ({ teams, players, loaded: true }))
+          )
+        )
+      )
     ),
     delay(100), // some delay to show the loading indicator
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
     this.teamsLoaded$,
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false })))
   );
 
   state = signalSlice({
@@ -103,7 +103,7 @@ export class ClubAssemblyService {
       clubId: string | null;
       season: number | null;
       choices: string[] | null;
-    }>,
+    }>
   ) {
     return this.apollo
       .watchQuery<{ teams: Partial<Team>[] }>({
@@ -166,7 +166,7 @@ export class ClubAssemblyService {
       })
       .valueChanges.pipe(
         map((result) => result.data?.teams ?? []),
-        map((result) => result?.map((t) => new Team(t))),
+        map((result) => result?.map((t) => new Team(t)))
       );
   }
 
@@ -176,7 +176,7 @@ export class ClubAssemblyService {
       clubId: string | null;
       season: number | null;
       choices: string[] | null;
-    }>,
+    }>
   ) {
     const events = teams
       ?.map((e) => e?.entry?.subEventCompetition?.eventCompetition)
@@ -188,12 +188,12 @@ export class ClubAssemblyService {
     }
 
     const usedRankingDate = moment();
-    usedRankingDate.set('year', filter.season ?? event?.season ?? getSeason());
+    usedRankingDate.set("year", filter.season ?? event?.season ?? getSeason());
     usedRankingDate.set(event?.usedRankingUnit, event?.usedRankingAmount);
 
     // get first and last of the month
-    const startRanking = moment(usedRankingDate).startOf('month');
-    const endRanking = moment(usedRankingDate).endOf('month');
+    const startRanking = moment(usedRankingDate).startOf("month");
+    const endRanking = moment(usedRankingDate).endOf("month");
 
     return this.apollo
       .watchQuery<{ club: Partial<Club> }>({
@@ -238,18 +238,18 @@ export class ClubAssemblyService {
           },
           order: [
             {
-              field: 'lastName',
-              direction: 'asc',
+              field: "lastName",
+              direction: "asc",
             },
             {
-              field: 'firstName',
-              direction: 'asc',
+              field: "firstName",
+              direction: "asc",
             },
           ],
           orderPlaces: [
             {
-              field: 'rankingDate',
-              direction: 'desc',
+              field: "rankingDate",
+              direction: "desc",
             },
           ],
           rankingWhere: {
@@ -266,7 +266,7 @@ export class ClubAssemblyService {
       .valueChanges.pipe(
         map((result) => {
           if (!result?.data.club) {
-            throw new Error('No club');
+            throw new Error("No club");
           }
           return new Club(result.data.club);
         }),
@@ -279,19 +279,19 @@ export class ClubAssemblyService {
 
               for (const team of teams ?? []) {
                 const sameTypeTeams = teams?.filter((t) => t.type == team.type) ?? [];
-                row[team.name ?? ''] = this.getCanPlay(player, team, sameTypeTeams);
+                row[team.name ?? ""] = this.getCanPlay(player, team, sameTypeTeams);
               }
 
               return row;
-            }) ?? [],
-        ),
+            }) ?? []
+        )
       );
   }
 
   getCanPlay(
     player: Player,
     team: Team,
-    otherTeams: Team[],
+    otherTeams: Team[]
   ): {
     canPlay: CanPlay;
     reason?: string;
@@ -310,11 +310,11 @@ export class ClubAssemblyService {
     }
 
     // We can't play in other gender's team
-    if (player.gender == 'M' && team.type == SubEventTypeEnum.F) {
+    if (player.gender == "M" && team.type == SubEventTypeEnum.F) {
       return {
         canPlay: CanPlay.Na,
         reason: this.translateService.instant(
-          'all.competition.club-assembly.warnings.other-gender',
+          "all.competition.club-assembly.warnings.other-gender",
           {
             player,
             playerGender: this.translateService
@@ -323,14 +323,14 @@ export class ClubAssemblyService {
             teamType: this.translateService
               .instant(`all.team.types.long.${team.type.toUpperCase()}`)
               .toLowerCase(),
-          },
+          }
         ),
       };
-    } else if (player.gender == 'F' && team.type == SubEventTypeEnum.M) {
+    } else if (player.gender == "F" && team.type == SubEventTypeEnum.M) {
       return {
         canPlay: CanPlay.Na,
         reason: this.translateService.instant(
-          'all.competition.club-assembly.warnings.other-gender',
+          "all.competition.club-assembly.warnings.other-gender",
           {
             player,
             playerGender: this.translateService
@@ -339,7 +339,7 @@ export class ClubAssemblyService {
             teamType: this.translateService
               .instant(`all.team.types.long.${team.type.toUpperCase()}`)
               .toLowerCase(),
-          },
+          }
         ),
       };
     }
@@ -348,15 +348,15 @@ export class ClubAssemblyService {
 
     const teamsWherePlayerIsBase = otherTeams?.find((t) =>
       t.entry?.meta?.competition?.players?.find(
-        (p) => p.id == player.id && p.gender == player.gender,
-      ),
+        (p) => p.id == player.id && p.gender == player.gender
+      )
     );
 
     if (teamsWherePlayerIsBase) {
       if ((team.teamNumber ?? 0) > (teamsWherePlayerIsBase?.teamNumber ?? 0)) {
         return {
           canPlay: CanPlay.No,
-          reason: this.translateService.instant('all.competition.club-assembly.warnings.base', {
+          reason: this.translateService.instant("all.competition.club-assembly.warnings.base", {
             player,
           }),
         };
@@ -370,10 +370,10 @@ export class ClubAssemblyService {
         return {
           canPlay: CanPlay.No,
           reason: this.translateService.instant(
-            'all.competition.club-assembly.warnings.base-subevent',
+            "all.competition.club-assembly.warnings.base-subevent",
             {
               player,
-            },
+            }
           ),
         };
       }
@@ -389,37 +389,37 @@ export class ClubAssemblyService {
       const minLevel = Math.min(
         single ?? 12,
         double ?? 12,
-        team.type == SubEventTypeEnum.MX ? mix : 12,
+        team.type == SubEventTypeEnum.MX ? mix : 12
       );
 
       if (event) {
         const types = [];
 
         if (single == minLevel && single < (event.maxLevel ?? 12)) {
-          types.push('single');
+          types.push("single");
         }
 
         if (double == minLevel && double < (event.maxLevel ?? 12)) {
-          types.push('double');
+          types.push("double");
         }
 
         if (team.type == SubEventTypeEnum.MX && mix == minLevel && mix < (event.maxLevel ?? 12)) {
-          types.push('mix');
+          types.push("mix");
         }
 
         if (types.length) {
           return {
             canPlay: CanPlay.No,
             reason: this.translateService.instant(
-              'all.competition.club-assembly.warnings.min-level',
+              "all.competition.club-assembly.warnings.min-level",
               {
                 player,
                 maxLevel: event.maxLevel,
                 level: minLevel,
                 type: types
                   ?.map((t) => this.translateService.instant(`all.game.types.${t}`).toLowerCase())
-                  ?.join(', '),
-              },
+                  ?.join(", "),
+              }
             ),
           };
         }
@@ -438,10 +438,10 @@ export class ClubAssemblyService {
             return {
               canPlay: CanPlay.Maybe,
               reason: this.translateService.instant(
-                'all.competition.club-assembly.warnings.better-meta',
+                "all.competition.club-assembly.warnings.better-meta",
                 {
                   player,
-                },
+                }
               ),
             };
           }

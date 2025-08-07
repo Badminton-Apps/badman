@@ -1,9 +1,9 @@
 <div class="border">
-  <label>{{ 'all.ranking.breakdown.period.title' | translate }}</label>
+  <label>{{ "all.ranking.breakdown.period.title" | translate }}</label>
   <div class="items">
     <div class="period">
-      {{ filter.value.start | amDateFormat: 'DD MMM YYYY' }} -
-      {{ filter.value.end | amDateFormat: 'DD MMM YYYY' }}
+      {{ filter.value.start | amDateFormat: "DD MMM YYYY" }} -
+      {{ filter.value.end | amDateFormat: "DD MMM YYYY" }}
     </div>
 
     <button mat-icon-button [matMenuTriggerFor]="appMenu">
@@ -15,9 +15,9 @@
         </mat-calendar>
         <div class="period-selection-calender-hint">
           <div class="info">
-            <p class="point">{{ 'all.ranking.breakdown.update.point' | translate }}</p>
+            <p class="point">{{ "all.ranking.breakdown.update.point" | translate }}</p>
             <p class="ranking">
-              {{ 'all.ranking.breakdown.update.ranking' | translate }}
+              {{ "all.ranking.breakdown.update.ranking" | translate }}
             </p>
           </div>
         </div>
@@ -31,17 +31,17 @@
 </button>
 <mat-menu #menu="matMenu">
   <button mat-menu-item (click)="lastPointUpdate()">
-    {{ 'all.ranking.breakdown.period.last-point-update' | translate }}
+    {{ "all.ranking.breakdown.period.last-point-update" | translate }}
   </button>
   <button mat-menu-item (click)="lastRankingUpdate()">
-    {{ 'all.ranking.breakdown.period.last-ranking-update' | translate }}
+    {{ "all.ranking.breakdown.period.last-ranking-update" | translate }}
   </button>
   <mat-divider></mat-divider>
   <button mat-menu-item (click)="nextPointUpdate()">
-    {{ 'all.ranking.breakdown.period.next-point-update' | translate }}
+    {{ "all.ranking.breakdown.period.next-point-update" | translate }}
   </button>
   <button mat-menu-item (click)="nextRankingUpdate()">
-    {{ 'all.ranking.breakdown.period.next-ranking-update' | translate }}
+    {{ "all.ranking.breakdown.period.next-ranking-update" | translate }}
   </button>
 </mat-menu>
 <!--  (selectedChange)="select($event, calendar)" -->

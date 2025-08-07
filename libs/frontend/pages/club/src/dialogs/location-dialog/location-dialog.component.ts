@@ -1,22 +1,22 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
-import { Club, Location } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
+import { Component, OnInit, inject } from "@angular/core";
+import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { BehaviorSubject, lastValueFrom, of } from "rxjs";
+import { map, startWith, switchMap } from "rxjs/operators";
+import { Club, Location } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
 
-import { ReactiveFormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { LocationDialogFieldsComponent } from './components';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from "@angular/forms";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MatSelectModule } from "@angular/material/select";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { LocationDialogFieldsComponent } from "./components";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
-    templateUrl: './location-dialog.component.html',
-    styleUrls: ['./location-dialog.component.scss'],
-    imports: [
+  templateUrl: "./location-dialog.component.html",
+  styleUrls: ["./location-dialog.component.scss"],
+  imports: [
     ReactiveFormsModule,
     TranslatePipe,
     MatSelectModule,
@@ -24,19 +24,19 @@ import { MatIconModule } from '@angular/material/icon';
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-    LocationDialogFieldsComponent
-]
+    LocationDialogFieldsComponent,
+  ],
 })
 export class LocationDialogComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<LocationDialogComponent>>(
-    MatDialogRef<LocationDialogComponent>,
+    MatDialogRef<LocationDialogComponent>
   );
   public data = inject<{
     location: Location;
     club: Club;
     compYears: number[];
-    onCreate: 'close' | 'stay';
-    onUpdate: 'close' | 'stay';
+    onCreate: "close" | "stay";
+    onUpdate: "close" | "stay";
     showavailabilities: boolean;
   }>(MAT_DIALOG_DATA);
   private appollo = inject(Apollo);
@@ -87,7 +87,7 @@ export class LocationDialogComponent implements OnInit {
             return of(null);
           }
         }),
-        map((t) => t ?? new Location()),
+        map((t) => t ?? new Location())
       )
       .subscribe((x) => {
         this.location = x;
@@ -96,7 +96,7 @@ export class LocationDialogComponent implements OnInit {
 
   async create(location: Location) {
     if (!this.data.club?.id) {
-      throw new Error('No club');
+      throw new Error("No club");
     }
 
     const newlocation = await lastValueFrom(
@@ -141,10 +141,10 @@ export class LocationDialogComponent implements OnInit {
             },
           },
         })
-        .pipe(map((x) => new Location(x.data?.createLocation))),
+        .pipe(map((x) => new Location(x.data?.createLocation)))
     );
 
-    if (this.data.onCreate === 'close') {
+    if (this.data.onCreate === "close") {
       this.dialogRef.close(newlocation);
     } else {
       this.data.location = newlocation;
@@ -196,10 +196,10 @@ export class LocationDialogComponent implements OnInit {
               },
             },
           })
-          .pipe(map((x) => new Location(x.data?.updateLocation))),
+          .pipe(map((x) => new Location(x.data?.updateLocation)))
       );
 
-      if (this.data.onUpdate === 'close') {
+      if (this.data.onUpdate === "close") {
         this.dialogRef.close(newlocation);
       } else {
         this.update$.next(0);

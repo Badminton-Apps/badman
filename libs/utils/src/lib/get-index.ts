@@ -1,17 +1,17 @@
-import { SubEventTypeEnum } from './enums';
+import { SubEventTypeEnum } from "./enums";
 
 export interface IndexPlayer {
   id?: string;
   single: number;
   double: number;
   mix: number;
-  gender: 'M' | 'F';
+  gender: "M" | "F";
 }
 export const getIndexFromPlayers = (type: SubEventTypeEnum, players: Partial<IndexPlayer>[]) => {
   const rankings: Partial<IndexPlayer>[] = [];
 
   for (const p of players) {
-    if (p && 'lastRanking' in p) {
+    if (p && "lastRanking" in p) {
       if (!p.gender) {
         throw new Error(`Player ${p.id} has no gender`);
       }
@@ -28,9 +28,9 @@ export const getIndexFromPlayers = (type: SubEventTypeEnum, players: Partial<Ind
     }
   }
 
-  if (type !== 'MX') {
+  if (type !== "MX") {
     const bestPlayers = getBestPlayers(type, rankings)?.map(
-      (r) => (r?.single ?? 12) + (r?.double ?? 12),
+      (r) => (r?.single ?? 12) + (r?.double ?? 12)
     );
     let missingIndex = 0;
     if (bestPlayers.length < 4) {
@@ -40,7 +40,7 @@ export const getIndexFromPlayers = (type: SubEventTypeEnum, players: Partial<Ind
     return bestPlayers.reduce((a, b) => a + b, missingIndex);
   } else {
     const bestPlayers = getBestPlayers(type, rankings)?.map(
-      (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12),
+      (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12)
     );
 
     let missingIndex = 0;
@@ -53,7 +53,7 @@ export const getIndexFromPlayers = (type: SubEventTypeEnum, players: Partial<Ind
 };
 
 export const getBestPlayers = (type: SubEventTypeEnum, players: Partial<IndexPlayer>[]) => {
-  if (type !== 'MX') {
+  if (type !== "MX") {
     const bestPlayers = players
       ?.sort((a, b) => {
         const aSum = (a.single ?? 12) + (a.double ?? 12) + (a.mix ?? 12);
@@ -66,7 +66,7 @@ export const getBestPlayers = (type: SubEventTypeEnum, players: Partial<IndexPla
     return bestPlayers;
   } else {
     const bestPlayersMale = players
-      ?.filter((p) => p?.gender == 'M')
+      ?.filter((p) => p?.gender == "M")
       ?.sort((a, b) => {
         const aSum = (a.single ?? 12) + (a.double ?? 12) + (a.mix ?? 12);
         const bSum = (b.single ?? 12) + (b.double ?? 12) + (b.mix ?? 12);
@@ -76,7 +76,7 @@ export const getBestPlayers = (type: SubEventTypeEnum, players: Partial<IndexPla
       ?.slice(0, 2);
 
     const bestPlayersFemale = players
-      ?.filter((p) => p?.gender == 'F')
+      ?.filter((p) => p?.gender == "F")
       ?.sort((a, b) => {
         const aSum = (a.single ?? 12) + (a.double ?? 12) + (a.mix ?? 12);
         const bSum = (b.single ?? 12) + (b.double ?? 12) + (b.mix ?? 12);
@@ -93,9 +93,9 @@ export const getBestPlayers = (type: SubEventTypeEnum, players: Partial<IndexPla
 
 export const getBestPlayersFromTeam = (
   type: SubEventTypeEnum,
-  rankings: Partial<IndexPlayer>[],
+  rankings: Partial<IndexPlayer>[]
 ) => {
-  if (type !== 'MX') {
+  if (type !== "MX") {
     const bestPlayers = getBestPlayers(type, rankings);
     const bestRankings = bestPlayers?.map((r) => (r?.single ?? 12) + (r?.double ?? 12));
 
@@ -111,7 +111,7 @@ export const getBestPlayersFromTeam = (
   } else {
     const bestPlayers = getBestPlayers(type, rankings);
     const bestRankings = bestPlayers?.map(
-      (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12),
+      (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12)
     );
 
     let missingIndex = 0;

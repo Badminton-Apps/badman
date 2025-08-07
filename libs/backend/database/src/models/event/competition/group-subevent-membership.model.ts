@@ -1,11 +1,11 @@
-import { Field, ID } from '@nestjs/graphql';
-import { Column, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { RankingGroup } from '../../ranking';
-import { SubEventCompetition } from './sub-event-competition.model';
+import { Field, ID } from "@nestjs/graphql";
+import { Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { RankingGroup } from "../../ranking";
+import { SubEventCompetition } from "./sub-event-competition.model";
 
 @Table({
   timestamps: false,
-  schema: 'ranking',
+  schema: "ranking",
 })
 export class RankingGroupSubEventCompetitionMembership extends Model {
   @PrimaryKey

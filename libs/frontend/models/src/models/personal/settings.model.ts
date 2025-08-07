@@ -1,4 +1,4 @@
-import { AvaliableLanguages, NotificationType } from '@badman/utils';
+import { AvaliableLanguages, NotificationType } from "@badman/utils";
 export class Setting {
   encounterChangeConfirmationNotification?: NotificationType;
   encounterChangeFinishedNotification?: NotificationType;

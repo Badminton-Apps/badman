@@ -1,6 +1,6 @@
-import { DatabaseModule } from '@badman/backend-database';
-import { Module } from '@nestjs/common';
-import { ServiceResolver } from './service.resolver';
+import { DatabaseModule } from "@badman/backend-database";
+import { Module } from "@nestjs/common";
+import { ServiceResolver } from "./service.resolver";
 
 @Module({
   imports: [DatabaseModule],

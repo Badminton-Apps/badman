@@ -1,12 +1,12 @@
-import { isPlatformServer } from '@angular/common';
-import { TransferState, makeStateKey } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { isPlatformServer } from "@angular/common";
+import { TransferState, makeStateKey } from "@angular/core";
+import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 export function transferState<T>(
   key: string,
   transferStateService: TransferState,
-  platformId: unknown,
+  platformId: unknown
 ): (source: Observable<T | null>) => Observable<T | null> {
   if (!transferStateService) {
     // return (source: Observable<T | null>) => source;
@@ -31,7 +31,7 @@ export function transferState<T>(
               if (isPlatformServer(platformId)) {
                 transferStateService.set(STATE_KEY, teams);
               }
-            }),
+            })
           )
           .subscribe(observer);
       }

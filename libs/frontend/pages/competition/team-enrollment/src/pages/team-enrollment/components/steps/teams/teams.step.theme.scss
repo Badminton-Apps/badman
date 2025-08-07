@@ -1,10 +1,10 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
-@use './components/team/teams.component.theme.scss' as team;
-@use './components/team-enrollment/team-enrollment.component.theme.scss' as team-enrollment;
+@use "./components/team/teams.component.theme.scss" as team;
+@use "./components/team-enrollment/team-enrollment.component.theme.scss" as team-enrollment;
 
 @mixin color($theme) {
   badman-teams-step {

@@ -1,17 +1,13 @@
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-club-fields {
-    
-    
   }
 }
 
 @mixin typography($theme) {
   badman-club-fields {
-    
-
     .description {
       font: mat.get-theme-typography($theme, caption, font);
     }

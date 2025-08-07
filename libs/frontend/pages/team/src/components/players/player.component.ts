@@ -1,40 +1,40 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, input, inject, output } from '@angular/core';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, input, inject, output } from "@angular/core";
 import {
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { RouterModule } from '@angular/router';
-import { PlayerSearchComponent } from '@badman/frontend-components';
-import { Player, TeamPlayer } from '@badman/frontend-models';
-import { TeamMembershipType } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { v4 as uuid } from 'uuid';
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSelectChange, MatSelectModule } from "@angular/material/select";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { RouterModule } from "@angular/router";
+import { PlayerSearchComponent } from "@badman/frontend-components";
+import { Player, TeamPlayer } from "@badman/frontend-models";
+import { TeamMembershipType } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { v4 as uuid } from "uuid";
 
-export const PLAYERS_CONTROL = 'players';
+export const PLAYERS_CONTROL = "players";
 
 @Component({
-    selector: 'badman-team-player',
-    templateUrl: './player.component.html',
-    styleUrls: ['./player.component.scss'],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        TranslatePipe,
-        MatIconModule,
-        MatButtonModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        PlayerSearchComponent,
-    ]
+  selector: "badman-team-player",
+  templateUrl: "./player.component.html",
+  styleUrls: ["./player.component.scss"],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    TranslatePipe,
+    MatIconModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    PlayerSearchComponent,
+  ],
 })
 export class TeamPlayersComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -73,14 +73,14 @@ export class TeamPlayersComponent implements OnInit {
     }
 
     if (this.group()?.value.players?.length > 0) {
-      this.wherePlayer['id'] = {
+      this.wherePlayer["id"] = {
         $notIn: this.group()?.value.players?.map((p: Player) => p.id),
       };
     }
 
     if (this.group()?.value.type) {
-      this.wherePlayer['gender'] =
-        this.group()?.value.type === 'MX' ? undefined : this.group()?.value.type;
+      this.wherePlayer["gender"] =
+        this.group()?.value.type === "MX" ? undefined : this.group()?.value.type;
     }
   }
 
@@ -113,10 +113,10 @@ export class TeamPlayersComponent implements OnInit {
   playerMembershipTypeChanged(player: TeamPlayer, type: MatSelectChange) {
     // find the player in the array and update the type
     const index = this.group()
-      ?.get('players')
+      ?.get("players")
       ?.value.findIndex((p: TeamPlayer) => p.id === player.id);
 
-    const fc = this.group()?.get('players');
+    const fc = this.group()?.get("players");
 
     if (player !== undefined && player !== null && fc) {
       fc.value[index].type = type;

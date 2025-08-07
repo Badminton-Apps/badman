@@ -1,14 +1,14 @@
 // Started from: https://github.com/toondaey/nestjs-compile
 // Imported for eaier use and configuration
 
-import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
-import { COMPILE_OPTIONS_TOKEN } from './constants';
+import { DynamicModule, Module, Provider, Type } from "@nestjs/common";
+import { COMPILE_OPTIONS_TOKEN } from "./constants";
 import {
   CompileModuleRegisterAsyncOptions,
   CompileModuleRegisterOptions,
   CompileOptionsFactory,
-} from './interfaces';
-import { CompileService } from './services';
+} from "./interfaces";
+import { CompileService } from "./services";
 
 @Module({
   controllers: [],

@@ -1,3 +1,3 @@
 // start:ng42.barrel
-export * from './period-selection.component';
+export * from "./period-selection.component";
 // end:ng42.barrel

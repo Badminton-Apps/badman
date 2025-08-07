@@ -9,17 +9,17 @@ import {
   Default,
   DataType,
   Index,
-} from 'sequelize-typescript';
-import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize';
-import { Player } from './player.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Relation } from '../wrapper';
+} from "sequelize-typescript";
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from "sequelize";
+import { Player } from "./player.model";
+import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Relation } from "../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'public',
+  schema: "public",
 })
-@ObjectType({ description: 'A RequestLink' })
+@ObjectType({ description: "A RequestLink" })
 export class RequestLink extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
@@ -38,7 +38,7 @@ export class RequestLink extends Model {
   @Column(DataType.STRING)
   sub?: string;
 
-  @BelongsTo(() => Player, 'playerId')
+  @BelongsTo(() => Player, "playerId")
   player?: Relation<Player>;
 
   @ForeignKey(() => Player)

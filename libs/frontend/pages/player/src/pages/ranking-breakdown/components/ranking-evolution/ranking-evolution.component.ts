@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,21 +7,21 @@ import {
   TransferState,
   input,
   inject,
-} from '@angular/core';
-import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ChartComponent } from './components';
+} from "@angular/core";
+import { Player, RankingPlace, RankingSystem } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { ChartComponent } from "./components";
 
 @Component({
-    selector: 'badman-ranking-evolution',
-    templateUrl: './ranking-evolution.component.html',
-    styleUrls: ['./ranking-evolution.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, TranslatePipe, ChartComponent]
+  selector: "badman-ranking-evolution",
+  templateUrl: "./ranking-evolution.component.html",
+  styleUrls: ["./ranking-evolution.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, TranslatePipe, ChartComponent],
 })
 export class RankingEvolutionComponent implements OnInit {
   private platformId = inject<string>(PLATFORM_ID);
@@ -45,7 +45,7 @@ export class RankingEvolutionComponent implements OnInit {
     this.rankingPlaces$ = this._loadRankingPlaces().pipe(
       map((x) => {
         if (x == null) {
-          throw new Error('invalid evolution');
+          throw new Error("invalid evolution");
         }
 
         return x.reduce(
@@ -55,7 +55,7 @@ export class RankingEvolutionComponent implements OnInit {
               mix: RankingPlaceDetail[];
               double: RankingPlaceDetail[];
             },
-            value,
+            value
           ) => {
             return {
               single: [
@@ -90,9 +90,9 @@ export class RankingEvolutionComponent implements OnInit {
               ],
             };
           },
-          { single: [], double: [], mix: [] },
+          { single: [], double: [], mix: [] }
         );
-      }),
+      })
     );
   }
 
@@ -130,12 +130,12 @@ export class RankingEvolutionComponent implements OnInit {
       })
       .pipe(
         transferState(
-          'player-ranking-places' + this.player().id + this.system().id + '-state',
+          "player-ranking-places" + this.player().id + this.system().id + "-state",
           this.stateTransfer,
-          this.platformId,
+          this.platformId
         ),
         map((x) => x?.data?.player),
-        map((x) => x?.rankingPlaces?.map((x) => new RankingPlace(x))),
+        map((x) => x?.rankingPlaces?.map((x) => new RankingPlace(x)))
       );
   }
 }

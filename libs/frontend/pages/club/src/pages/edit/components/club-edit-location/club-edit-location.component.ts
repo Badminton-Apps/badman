@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -7,34 +6,34 @@ import {
   inject,
   input,
   output,
-} from '@angular/core';
+} from "@angular/core";
 import {
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { BadmanBlockModule, HasClaimComponent } from '@badman/frontend-components';
-import { Club, Location } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, MutationResult, gql } from 'apollo-angular';
-import { Observable, forkJoin } from 'rxjs';
-import { ChoosePeriodDialogComponent } from './dialogs/choose-period-dialog.component';
+} from "@angular/forms";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatButtonModule } from "@angular/material/button";
+import { MatOptionModule } from "@angular/material/core";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { BadmanBlockModule, HasClaimComponent } from "@badman/frontend-components";
+import { Club, Location } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, MutationResult, gql } from "apollo-angular";
+import { Observable, forkJoin } from "rxjs";
+import { ChoosePeriodDialogComponent } from "./dialogs/choose-period-dialog.component";
 
 export type LocationavDayType = FormGroup<{
   day: FormControl<string | undefined>;
@@ -72,11 +71,11 @@ export type LocationForm = FormGroup<{
 }>;
 
 @Component({
-    selector: 'badman-club-edit-location',
-    templateUrl: './club-edit-location.component.html',
-    styleUrls: ['./club-edit-location.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
+  selector: "badman-club-edit-location",
+  templateUrl: "./club-edit-location.component.html",
+  styleUrls: ["./club-edit-location.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
     ReactiveFormsModule,
     MatDividerModule,
     MatMenuModule,
@@ -94,8 +93,8 @@ export type LocationForm = FormGroup<{
     MatDialogModule,
     MatBadgeModule,
     HasClaimComponent,
-    BadmanBlockModule
-]
+    BadmanBlockModule,
+  ],
 })
 export class ClubEditLocationComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
@@ -131,7 +130,7 @@ export class ClubEditLocationComponent implements OnInit {
 
   ngOnInit(): void {
     const availibilty = this.location().availabilities?.find(
-      (availibility) => availibility.season === this.season(),
+      (availibility) => availibility.season === this.season()
     );
 
     this.days = this.formBuilder.array(
@@ -143,8 +142,8 @@ export class ClubEditLocationComponent implements OnInit {
           courts: this.formBuilder.control(day.courts),
           from: this.formBuilder.control(day.from),
           to: this.formBuilder.control(day.to),
-        }),
-      ) ?? [],
+        })
+      ) ?? []
     ) as FormArray<LocationavDayType>;
 
     this.exceptions = this.formBuilder.array(
@@ -153,8 +152,8 @@ export class ClubEditLocationComponent implements OnInit {
           start: this.formBuilder.control(exception.start),
           end: this.formBuilder.control(exception.end),
           courts: this.formBuilder.control(exception.courts),
-        }),
-      ) ?? [],
+        })
+      ) ?? []
     ) as FormArray<LocationExceptionType>;
 
     if (this.control() != undefined) {
@@ -191,7 +190,7 @@ export class ClubEditLocationComponent implements OnInit {
         courts: new FormControl(),
         from: new FormControl(),
         to: new FormControl(),
-      }) as LocationavDayType,
+      }) as LocationavDayType
     );
     this.expanded.days = true;
   }
@@ -206,7 +205,7 @@ export class ClubEditLocationComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as LocationExceptionType,
+      }) as LocationExceptionType
     );
 
     this.showCourts.push({
@@ -226,7 +225,7 @@ export class ClubEditLocationComponent implements OnInit {
     this.dialog
       .open(ChoosePeriodDialogComponent, {
         data: dayControl,
-        maxWidth: '350px',
+        maxWidth: "350px",
       })
       .afterClosed()
       .subscribe(() => {
@@ -256,7 +255,7 @@ export class ClubEditLocationComponent implements OnInit {
               exceptions: availibility?.exceptions,
             },
           },
-        }),
+        })
       );
     } else {
       observables.push(
@@ -277,14 +276,14 @@ export class ClubEditLocationComponent implements OnInit {
               exceptions: availibility.exceptions,
             },
           },
-        }),
+        })
       );
     }
 
     forkJoin(observables).subscribe(() => {
-      this.snackBar.open('Saved', undefined, {
+      this.snackBar.open("Saved", undefined, {
         duration: 1000,
-        panelClass: 'success',
+        panelClass: "success",
       });
     });
   }

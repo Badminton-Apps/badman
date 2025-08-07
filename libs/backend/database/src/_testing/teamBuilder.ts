@@ -1,8 +1,8 @@
-import { SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
-import { Club, Team } from '../models';
-import { ClubBuilder } from './clubBuilder';
-import { EventCompetitionEntryBuilder } from './eventCompetitionEntryBuilder';
-import { PlayerBuilder } from './playerBuilder';
+import { SubEventTypeEnum, TeamMembershipType } from "@badman/utils";
+import { Club, Team } from "../models";
+import { ClubBuilder } from "./clubBuilder";
+import { EventCompetitionEntryBuilder } from "./eventCompetitionEntryBuilder";
+import { PlayerBuilder } from "./playerBuilder";
 
 export class TeamBuilder {
   private build = false;

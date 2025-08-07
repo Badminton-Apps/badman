@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -10,58 +10,58 @@ import {
   ViewChild,
   inject,
   input,
-} from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
-import { Game, GamePlayer } from '@badman/frontend-models';
-import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
-import { LoadingBlockComponent } from '../../../loading-block';
-import { RecentGamesService } from '../recent-games.service';
+} from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatIconModule } from "@angular/material/icon";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { RouterModule } from "@angular/router";
+import { Game, GamePlayer } from "@badman/frontend-models";
+import { GameBreakdownType, GameType, getGameResultType } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MomentModule } from "ngx-moment";
+import { LoadingBlockComponent } from "../../../loading-block";
+import { RecentGamesService } from "../recent-games.service";
 
 @Component({
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslatePipe,
-        MomentModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatChipsModule,
-        MatTooltipModule,
-        MatButtonToggleModule,
-        MatIconModule,
-        LoadingBlockComponent,
-    ],
-    selector: 'badman-list-games',
-    templateUrl: './list-games.component.html',
-    styleUrls: ['./list-games.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslatePipe,
+    MomentModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    LoadingBlockComponent,
+  ],
+  selector: "badman-list-games",
+  templateUrl: "./list-games.component.html",
+  styleUrls: ["./list-games.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   recentGames = inject(RecentGamesService);
 
   playerId = input.required<string>();
 
-  @ViewChild('bottomObserver', { static: false }) bottomObserver!: ElementRef;
+  @ViewChild("bottomObserver", { static: false }) bottomObserver!: ElementRef;
 
   ngOnInit() {
     this.recentGames.filter.setValue({
-      choices: ['S', 'D', 'MX'],
-      playerId: this.playerId() ?? '',
+      choices: ["S", "D", "MX"],
+      playerId: this.playerId() ?? "",
     });
   }
 
   ngAfterViewInit() {
     const options = {
       root: null,
-      rootMargin: '0px',
+      rootMargin: "0px",
       threshold: 1.0,
     };
 
@@ -78,15 +78,15 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!changes['playerId']?.currentValue || !changes['playerId']?.previousValue) {
+    if (!changes["playerId"]?.currentValue || !changes["playerId"]?.previousValue) {
       return;
     }
 
     // Reset the list when the playerId changes
-    if (changes['playerId'].currentValue !== changes['playerId'].previousValue) {
+    if (changes["playerId"].currentValue !== changes["playerId"].previousValue) {
       this.recentGames.filter.patchValue({
-        choices: ['S', 'D', 'MX'],
-        playerId: changes['playerId'].currentValue,
+        choices: ["S", "D", "MX"],
+        playerId: changes["playerId"].currentValue,
       });
     }
   }
@@ -131,16 +131,16 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
 
     switch (result) {
       case GameBreakdownType.WON:
-        tooltip = 'all.ranking.breakdown.usedForDowngrade';
+        tooltip = "all.ranking.breakdown.usedForDowngrade";
         break;
       case GameBreakdownType.LOST_DOWNGRADE:
-        tooltip = 'all.ranking.breakdown.usedForDowngrade';
+        tooltip = "all.ranking.breakdown.usedForDowngrade";
         break;
       case GameBreakdownType.LOST_UPGRADE:
-        tooltip = 'all.ranking.breakdown.usedForUpgrade';
+        tooltip = "all.ranking.breakdown.usedForUpgrade";
         break;
       case GameBreakdownType.LOST_IGNORED:
-        tooltip = 'all.ranking.breakdown.notUsed';
+        tooltip = "all.ranking.breakdown.notUsed";
         break;
     }
 
@@ -155,7 +155,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   getExtra(game: Game) {
-    let title = '';
+    let title = "";
     let link: string[] = [];
 
     if (game.competition) {
@@ -164,22 +164,22 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
         title += ` • ${game.competition.home?.name} vs ${game.competition.away?.name}`;
       }
       link = [
-        '/competition',
-        game.competition.drawCompetition?.subEventCompetition?.eventId ?? '',
-        'draw',
-        game.competition.drawCompetition?.id ?? '',
-        'encounter',
-        game.competition.id ?? '',
+        "/competition",
+        game.competition.drawCompetition?.subEventCompetition?.eventId ?? "",
+        "draw",
+        game.competition.drawCompetition?.id ?? "",
+        "encounter",
+        game.competition.id ?? "",
       ];
     } else if (game.tournament) {
       title += game.tournament?.subEventTournament?.eventTournament?.name;
       title += ` `;
       title += game.tournament?.name;
       link = [
-        '/tournament',
-        game.tournament?.subEventTournament?.eventTournament?.id ?? '',
-        'draw',
-        game.tournament?.id ?? '',
+        "/tournament",
+        game.tournament?.subEventTournament?.eventTournament?.id ?? "",
+        "draw",
+        game.tournament?.id ?? "",
       ];
     }
 
@@ -192,11 +192,11 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   private getGameType(type: GameType) {
     switch (type) {
       case GameType.S:
-        return 'single';
+        return "single";
       case GameType.D:
-        return 'double';
+        return "double";
       case GameType.MX:
-        return 'mix';
+        return "mix";
     }
   }
 }

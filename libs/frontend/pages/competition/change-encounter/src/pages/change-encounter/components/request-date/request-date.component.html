@@ -8,24 +8,24 @@
     formControlName="calendar"
   ></badman-date-selector>
   <mat-form-field class="availability">
-    <mat-label>{{ 'all.competition.home' | translate }}</mat-label>
+    <mat-label>{{ "all.competition.home" | translate }}</mat-label>
     <mat-select formControlName="availabilityHome" required>
       <mat-option value="POSSIBLE">{{
-        'all.competition.change-encounter.possible' | translate
+        "all.competition.change-encounter.possible" | translate
       }}</mat-option>
       <mat-option value="NOT_POSSIBLE">{{
-        'all.competition.change-encounter.not-possible' | translate
+        "all.competition.change-encounter.not-possible" | translate
       }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="availability">
-    <mat-label>{{ 'all.competition.away' | translate }}</mat-label>
+    <mat-label>{{ "all.competition.away" | translate }}</mat-label>
     <mat-select formControlName="availabilityAway" required>
       <mat-option value="POSSIBLE">{{
-        'all.competition.change-encounter.possible' | translate
+        "all.competition.change-encounter.possible" | translate
       }}</mat-option>
       <mat-option value="NOT_POSSIBLE">{{
-        'all.competition.change-encounter.not-possible' | translate
+        "all.competition.change-encounter.not-possible" | translate
       }}</mat-option>
     </mat-select>
   </mat-form-field>
@@ -33,11 +33,11 @@
     <div [matTooltip]="tootltipSelected ?? '' | translate">
       <mat-checkbox class="selected" formControlName="selected">
         @if (this.showCompact()) {
-          {{ 'all.competition.change-encounter.selected' | translate }}
+          {{ "all.competition.change-encounter.selected" | translate }}
         }
       </mat-checkbox>
     </div>
-    @if (!group().get('id')!.value) {
+    @if (!group().get("id")!.value) {
       <div class="delete">
         <button mat-icon-button (click)="removeDate.emit()" type="button">
           <mat-icon>delete</mat-icon>
@@ -53,8 +53,8 @@
     }
     @if (
       encounter().locationId &&
-      this.group().get('calendar')?.value?.locationId &&
-      encounter().locationId !== this.group().get('calendar')?.value?.locationId
+      this.group().get("calendar")?.value?.locationId &&
+      encounter().locationId !== this.group().get("calendar")?.value?.locationId
     ) {
       <div
         class="changed-location"

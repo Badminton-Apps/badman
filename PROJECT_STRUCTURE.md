@@ -21,7 +21,9 @@ Badman is a comprehensive badminton management system built with Angular, Node.j
 ### 🚀 Applications (`apps/`)
 
 #### Main Applications
+
 - **`apps/badman/`** - Primary Angular frontend application
+
   - The main web client for badminton management
   - Material Design UI with PWA capabilities
   - Serves at `http://localhost:3000` in development
@@ -34,11 +36,14 @@ Badman is a comprehensive badminton management system built with Angular, Node.j
   - Serves the main API for the frontend
 
 #### Worker Applications
+
 - **`apps/worker/sync/`** - Data synchronization worker
+
   - Syncs data with external badminton federation systems
   - Handles background data processing tasks
 
 - **`apps/worker/ranking/`** - Ranking calculation worker
+
   - Processes player and team rankings
   - Handles complex ranking algorithms
 
@@ -47,6 +52,7 @@ Badman is a comprehensive badminton management system built with Angular, Node.j
   - **`points/`** - Calculates region-specific point systems
 
 #### Development & Testing
+
 - **`apps/scripts/`** - Development and deployment scripts
 - **`apps/badman-e2e/`** - End-to-end test suite (shared base)
 - **`apps/badman-e2e-desktop/`** - Desktop-specific E2E tests
@@ -57,7 +63,9 @@ Badman is a comprehensive badminton management system built with Angular, Node.j
 The project follows a modular architecture with separate backend and frontend libraries:
 
 #### Backend Libraries (`libs/backend/`)
+
 - **Core Services**:
+
   - `authorization/` - Authentication and permission management
   - `database/` - Database models and ORM configuration
   - `graphql/` - GraphQL schema and resolvers
@@ -65,6 +73,7 @@ The project follows a modular architecture with separate backend and frontend li
   - `queue/` - Background job processing
 
 - **Business Logic**:
+
   - `competition/` - Tournament and competition management
     - `assembly/` - Team assembly logic
     - `change-encounter/` - Match change handling
@@ -75,6 +84,7 @@ The project follows a modular architecture with separate backend and frontend li
   - `mailing/` - Email template and sending
 
 - **External Integrations**:
+
   - `twizzit/` - Integration with Twizzit tournament software
   - `belgium/flanders/` - Belgian Flanders federation integration
     - `games/` - Game data processing
@@ -89,7 +99,9 @@ The project follows a modular architecture with separate backend and frontend li
   - `websockets/` - Real-time communication
 
 #### Frontend Libraries (`libs/frontend/`)
+
 - **Core Modules**:
+
   - `models/` - TypeScript interfaces and data models
   - `graphql/` - GraphQL client and queries
   - `auth/` - Authentication services
@@ -97,6 +109,7 @@ The project follows a modular architecture with separate backend and frontend li
   - `utils/` - Utility functions
 
 - **Feature Pages**:
+
   - `club/` - Club management interface
   - `player/` - Player profiles and management
   - `team/` - Team management
@@ -117,11 +130,13 @@ The project follows a modular architecture with separate backend and frontend li
   - `queue/` - Background task management
 
 #### Shared Libraries
+
 - **`libs/utils/`** - Shared utility functions used across backend and frontend
 
 ### 🗄️ Additional Directories
 
 - **`database/`** - Database configuration and migrations
+
   - `migrations/` - Sequelize database migrations
   - `config/` - Database connection configurations
   - `scripts/` - Database utility scripts
@@ -133,10 +148,10 @@ The project follows a modular architecture with separate backend and frontend li
 - **`tmp/`** - Temporary build files
 - **`types/`** - Global TypeScript type definitions
 
-
 ## 📖 Key Files for New Contributors
 
 ### Configuration Files
+
 - **`nx.json`** - Nx workspace configuration
 - **`package.json`** - Dependencies and scripts
 - **`tsconfig.base.json`** - TypeScript base configuration
@@ -144,12 +159,14 @@ The project follows a modular architecture with separate backend and frontend li
 - **`docker-compose.dev.yml`** - Development environment setup
 
 ### Documentation
+
 - **`README.md`** - Basic setup and development guide
 - **`CONTRIBUTING.md`** - Contribution guidelines and workflow
 - **`CODE_OF_CONDUCT.md`** - Community guidelines
 - **`LICENSE.md`** - Project license
 
 ### Development Helpers
+
 - **`proxy.conf.json`** - Development proxy configuration
 - **`migrations.json`** - Database migration tracking
 - **`schema.gql`** - GraphQL schema definition

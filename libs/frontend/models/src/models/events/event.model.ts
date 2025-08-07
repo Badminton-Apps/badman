@@ -1,6 +1,6 @@
-import { EventType } from '@badman/utils';
-import { EventEntry } from '../entry.model';
-import { Player } from '../player.model';
+import { EventType } from "@badman/utils";
+import { EventEntry } from "../entry.model";
+import { Player } from "../player.model";
 
 export class Event {
   id!: string;
@@ -19,7 +19,7 @@ export class Event {
 
   allowEnlisting?: boolean;
 
-  usedRankingUnit?: 'days' | 'weeks' | 'months';
+  usedRankingUnit?: "days" | "weeks" | "months";
   usedRankingAmount?: number;
 
   eventEntries?: EventEntry[];

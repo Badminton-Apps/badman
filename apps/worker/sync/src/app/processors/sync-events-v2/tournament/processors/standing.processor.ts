@@ -1,10 +1,10 @@
-import { DrawTournament, EventEntry, Game, Player, Standing } from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { GameStatus } from '@badman/utils';
-import { Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, JobId } from 'bull';
-import { Op, Transaction } from 'sequelize';
+import { DrawTournament, EventEntry, Game, Player, Standing } from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { GameStatus } from "@badman/utils";
+import { Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, JobId } from "bull";
+import { Op, Transaction } from "sequelize";
 
 @Processor({
   name: SyncQueue,
@@ -27,7 +27,7 @@ export class DrawStandingTournamentProcessor {
       options: {
         deleteStandings?: boolean;
       };
-    }>,
+    }>
   ): Promise<void> {
     this.logger.debug(`Processing draw standing for draw ${job.data.drawId}`);
     // check evey 3 seconds if the game jobs are finished
@@ -67,7 +67,7 @@ export class DrawStandingTournamentProcessor {
     games: Game[],
     standings: Map<string, Standing>,
     draw: DrawTournament,
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     for (const game of games) {
       if (game.status == GameStatus.WALKOVER || game.status == GameStatus.NO_MATCH) {
@@ -75,11 +75,11 @@ export class DrawStandingTournamentProcessor {
       }
 
       const playert1p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1,
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
       );
 
       const playert2p1 = game.players?.find(
-        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1,
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
       );
 
       if (!playert1p1 || !playert2p1) {
@@ -110,7 +110,7 @@ export class DrawStandingTournamentProcessor {
 
         t2Standing.points += 1;
       } else {
-        this.logger.warn('Game is not finished yet');
+        this.logger.warn("Game is not finished yet");
       }
 
       if ((game.set1Team1 ?? 0) > (game.set1Team2 ?? 0)) {
@@ -203,20 +203,20 @@ export class DrawStandingTournamentProcessor {
         {
           transaction,
           updateOnDuplicate: [
-            'position',
-            'played',
-            'won',
-            'lost',
-            'tied',
-            'points',
-            'gamesWon',
-            'gamesLost',
-            'setsWon',
-            'setsLost',
-            'totalPointsWon',
-            'totalPointsLost',
+            "position",
+            "played",
+            "won",
+            "lost",
+            "tied",
+            "points",
+            "gamesWon",
+            "gamesLost",
+            "setsWon",
+            "setsLost",
+            "totalPointsWon",
+            "totalPointsLost",
           ],
-        },
+        }
       );
     }
   }
@@ -224,7 +224,7 @@ export class DrawStandingTournamentProcessor {
   private async createEntriesAndStanding(
     draw: DrawTournament,
     games: Game[],
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const processed = new Set<string>();
     const standings = new Map<string, Standing>();
@@ -233,18 +233,18 @@ export class DrawStandingTournamentProcessor {
     for (const game of games) {
       const team1p1 = game?.players?.find(
         (player) =>
-          player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 1,
+          player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 1
       )?.id;
 
       const team1p2 = game?.players?.find(
         (player) =>
-          player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 2,
+          player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 2
       )?.id;
 
       if (team1p1 && !processed.has(team1p1)) {
         const entryTeam1 = new EventEntry({
           subEventId: draw.subeventId,
-          entryType: 'tournament',
+          entryType: "tournament",
           drawId: draw.id,
           player1Id: team1p1,
           player2Id: team1p2,
@@ -265,18 +265,18 @@ export class DrawStandingTournamentProcessor {
 
       const team2p1 = game?.players?.find(
         (player) =>
-          player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 1,
+          player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 1
       )?.id;
 
       const team2p2 = game?.players?.find(
         (player) =>
-          player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 2,
+          player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 2
       )?.id;
 
       if (team2p1 && !processed.has(team2p1)) {
         const entryTeam2 = new EventEntry({
           subEventId: draw.subeventId,
-          entryType: 'tournament',
+          entryType: "tournament",
           drawId: draw.id,
           player1Id: team2p1,
           player2Id: team2p2,

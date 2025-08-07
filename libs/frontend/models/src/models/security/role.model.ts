@@ -1,5 +1,5 @@
-import { Player } from '../player.model';
-import { Claim } from './claim.model';
+import { Player } from "../player.model";
+import { Claim } from "./claim.model";
 
 export class Role {
   id?: string;

@@ -18,17 +18,17 @@
   <ng-content subTitle>
     <mat-chip-listbox>
       <mat-chip
-        >{{ 'all.competition.team-enrollment.title' | translate }}:
+        >{{ "all.competition.team-enrollment.title" | translate }}:
         {{
           ((this.eventCompetition()?.allowEnlisting ?? false)
-            ? 'all.competition.team-enrollment.open'
-            : 'all.competition.team-enrollment.closed'
+            ? "all.competition.team-enrollment.open"
+            : "all.competition.team-enrollment.closed"
           ) | translate
         }}</mat-chip
       >
       @if (eventCompetition()?.lastSync) {
         <mat-chip>
-          {{ 'all.event.last-sync' | translate }}: {{ eventCompetition()?.lastSync | amCalendar }}
+          {{ "all.event.last-sync" | translate }}: {{ eventCompetition()?.lastSync | amCalendar }}
         </mat-chip>
       }
     </mat-chip-listbox>
@@ -44,7 +44,7 @@
     <div class="subEvents">
       @for (type of subEvents(); track $index) {
         <div class="type">
-          <h3>{{ 'all.gender.long.' + type.eventType | translate }}</h3>
+          <h3>{{ "all.gender.long." + type.eventType | translate }}</h3>
           @for (sub of type.subEvents; track sub.id) {
             <mat-card class="subEvent">
               <mat-card-header>

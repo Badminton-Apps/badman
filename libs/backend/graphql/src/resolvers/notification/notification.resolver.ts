@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   Club,
   EncounterCompetition,
@@ -7,11 +7,11 @@ import {
   Notification,
   NotificationUpdateInput,
   Player,
-} from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
+} from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../utils";
 
 @Resolver(() => Notification)
 export class NotificationResolver {
@@ -20,7 +20,7 @@ export class NotificationResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Notification)
-  async notification(@Args('id', { type: () => ID }) id: string): Promise<Notification | null> {
+  async notification(@Args("id", { type: () => ID }) id: string): Promise<Notification | null> {
     return await Notification.findByPk(id);
   }
 
@@ -51,8 +51,8 @@ export class NotificationResolver {
 
   @Mutation(() => Notification)
   async updateNotification(
-    @Args('data') updateNotificationData: NotificationUpdateInput,
-    @User() user: Player,
+    @Args("data") updateNotificationData: NotificationUpdateInput,
+    @User() user: Player
   ): Promise<Notification> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -68,14 +68,14 @@ export class NotificationResolver {
 
       await dbNotification.update(
         { ...dbNotification.toJSON(), ...updateNotificationData },
-        { transaction },
+        { transaction }
       );
 
       // await dbNotification.update(notification, { transaction });
       await transaction.commit();
       return dbNotification;
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }

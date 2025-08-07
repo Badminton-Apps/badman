@@ -1,1 +1,1 @@
-export * from './assign-clubs-to-players';
+export * from "./assign-clubs-to-players";

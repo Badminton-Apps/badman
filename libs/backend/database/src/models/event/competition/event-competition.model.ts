@@ -1,5 +1,5 @@
-import { LevelType, UsedRankingTiming } from '@badman/utils';
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { LevelType, UsedRankingTiming } from "@badman/utils";
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -15,7 +15,7 @@ import {
   HasManySetAssociationsMixin,
   InferAttributes,
   InferCreationAttributes,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -28,7 +28,7 @@ import {
   Table,
   TableOptions,
   Unique,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 import {
   AvailabilityExceptionInputType,
   EventCompetitionMetaType,
@@ -37,19 +37,19 @@ import {
   InfoEventInputType,
   InfoEventType,
   Slugify,
-} from '../../../types';
-import { Relation } from '../../../wrapper';
-import { Player } from '../../player.model';
-import { Role } from '../../security';
-import { AvailabilityException } from '../availability.model';
-import { Comment } from './../../comment.model';
-import { SubEventCompetition, SubEventCompetitionUpdateInput } from './sub-event-competition.model';
+} from "../../../types";
+import { Relation } from "../../../wrapper";
+import { Player } from "../../player.model";
+import { Role } from "../../security";
+import { AvailabilityException } from "../availability.model";
+import { Comment } from "./../../comment.model";
+import { SubEventCompetition, SubEventCompetitionUpdateInput } from "./sub-event-competition.model";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 } as TableOptions)
-@ObjectType({ description: 'A EventCompetition' })
+@ObjectType({ description: "A EventCompetition" })
 export class EventCompetition extends Model<
   InferAttributes<EventCompetition>,
   InferCreationAttributes<EventCompetition>
@@ -67,12 +67,12 @@ export class EventCompetition extends Model<
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Unique('EventCompetitions_unique_constraint')
+  @Unique("EventCompetitions_unique_constraint")
   @Field(() => String)
   @Column(DataType.STRING)
   declare name: string;
 
-  @Unique('EventCompetitions_unique_constraint')
+  @Unique("EventCompetitions_unique_constraint")
   @Field(() => Int)
   @Column(DataType.NUMBER)
   declare season: number;
@@ -125,39 +125,39 @@ export class EventCompetition extends Model<
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, {
-    foreignKey: 'contactId',
+    foreignKey: "contactId",
     constraints: false,
   })
   contact?: Relation<Player>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'competition',
+      linkType: "competition",
     },
   })
   comments?: Relation<Comment[]>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'competition',
+      linkType: "competition",
     },
   })
   roles?: Relation<Role[]>;
 
   @Field(() => [SubEventCompetition], { nullable: true })
   @HasMany(() => SubEventCompetition, {
-    foreignKey: 'eventId',
-    onDelete: 'CASCADE',
+    foreignKey: "eventId",
+    onDelete: "CASCADE",
   })
   subEventCompetitions?: Relation<SubEventCompetition[]>;
 
-  @Unique('EventCompetitions_unique_constraint')
+  @Unique("EventCompetitions_unique_constraint")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   visualCode?: string;
@@ -180,14 +180,14 @@ export class EventCompetition extends Model<
   usedRankingAmount?: number;
 
   @Field(() => String)
-  @Column(DataType.ENUM('months', 'weeks', 'days'))
-  usedRankingUnit?: 'months' | 'weeks' | 'days';
+  @Column(DataType.ENUM("months", "weeks", "days"))
+  usedRankingUnit?: "months" | "weeks" | "days";
 
   get usedRanking(): UsedRankingTiming {
     if (!this.usedRankingAmount || !this.usedRankingUnit) {
       return {
         amount: 0,
-        unit: 'days',
+        unit: "days",
       };
     }
 
@@ -205,8 +205,8 @@ export class EventCompetition extends Model<
   official!: boolean;
 
   @Field(() => String, { nullable: true })
-  @Unique('EventCompetitions_unique_constraint')
-  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
+  @Unique("EventCompetitions_unique_constraint")
+  @Column(DataType.ENUM("PROV", "LIGA", "NATIONAL"))
   type!: LevelType;
 
   @Field(() => String, { nullable: true })
@@ -276,17 +276,17 @@ export class EventCompetition extends Model<
 @InputType()
 export class EventCompetitionUpdateInput extends PartialType(
   OmitType(EventCompetition, [
-    'createdAt',
-    'updatedAt',
-    'comments',
-    'subEventCompetitions',
-    'roles',
-    'exceptions',
-    'infoEvents',
-    'contact',
-    'meta',
+    "createdAt",
+    "updatedAt",
+    "comments",
+    "subEventCompetitions",
+    "roles",
+    "exceptions",
+    "infoEvents",
+    "contact",
+    "meta",
   ] as const),
-  InputType,
+  InputType
 ) {
   @Field(() => [AvailabilityExceptionInputType], { nullable: true })
   exceptions?: AvailabilityException[];
@@ -303,8 +303,8 @@ export class EventCompetitionUpdateInput extends PartialType(
 
 @InputType()
 export class EventCompetitionNewInput extends PartialType(
-  OmitType(EventCompetitionUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(EventCompetitionUpdateInput, ["id"] as const),
+  InputType
 ) {}
 
 export interface EventException {

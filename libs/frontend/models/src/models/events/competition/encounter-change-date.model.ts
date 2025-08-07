@@ -1,4 +1,4 @@
-import { ChangeEncounterAvailability } from '@badman/utils';
+import { ChangeEncounterAvailability } from "@badman/utils";
 
 export class EncounterChangeDate {
   id?: string;

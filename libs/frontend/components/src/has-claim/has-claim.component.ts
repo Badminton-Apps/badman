@@ -1,29 +1,28 @@
-
-import { Component, ViewEncapsulation, computed, inject, input } from '@angular/core';
-import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
+import { Component, ViewEncapsulation, computed, inject, input } from "@angular/core";
+import { AuthenticateService, ClaimService } from "@badman/frontend-auth";
 
 @Component({
-    selector: 'badman-has-claim',
-    templateUrl: './has-claim.component.html',
-    imports: [],
-    encapsulation: ViewEncapsulation.Emulated
+  selector: "badman-has-claim",
+  templateUrl: "./has-claim.component.html",
+  imports: [],
+  encapsulation: ViewEncapsulation.Emulated,
 })
 export class HasClaimComponent {
   private readonly claim = inject(ClaimService);
-  private readonly auth = inject(AuthenticateService)
+  private readonly auth = inject(AuthenticateService);
 
   any = input<string | string[]>([]);
   anyArray = computed<string[]>(
-    () => (this.any() instanceof Array ? this.any() : [this.any()]) as string[],
+    () => (this.any() instanceof Array ? this.any() : [this.any()]) as string[]
   );
 
   all = input<string | string[]>([]);
   allArray = computed<string[]>(
-    () => (this.all() instanceof Array ? this.all() : [this.all()]) as string[],
+    () => (this.all() instanceof Array ? this.all() : [this.all()]) as string[]
   );
 
   show = computed(() => {
-    if (!this.auth.user()){
+    if (!this.auth.user()) {
       return false;
     }
 

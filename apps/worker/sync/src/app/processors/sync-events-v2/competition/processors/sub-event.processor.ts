@@ -4,13 +4,13 @@ import {
   RankingSystem,
   SubEventCompetition,
   EventEntry,
-} from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { VisualService, XmlGenderID, XmlTournamentEvent } from '@badman/backend-visual';
-import { SubEventTypeEnum } from '@badman/utils';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
+} from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { VisualService, XmlGenderID, XmlTournamentEvent } from "@badman/backend-visual";
+import { SubEventTypeEnum } from "@badman/utils";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
 
 @Processor({
   name: SyncQueue,
@@ -21,7 +21,7 @@ export class SubEventCompetitionProcessor {
   constructor(
     private readonly _transactionManager: TransactionManager,
     private readonly _visualService: VisualService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Process(Sync.ProcessSyncCompetitionSubEvent)
@@ -64,7 +64,7 @@ export class SubEventCompetitionProcessor {
           games: { id: string; visualCode: string }[];
         }[];
       }[];
-    }>,
+    }>
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
 
@@ -110,7 +110,7 @@ export class SubEventCompetitionProcessor {
     }
 
     if (!event) {
-      throw new Error('Event not found');
+      throw new Error("Event not found");
     }
 
     if (!subEvent && job.data.subEventCode) {
@@ -187,16 +187,16 @@ export class SubEventCompetitionProcessor {
     }
 
     if (!subEventCode) {
-      throw new Error('Sub event code is required');
+      throw new Error("Sub event code is required");
     }
 
     const visualSubEvent = await this._visualService.getSubEvent(
       event.visualCode,
       subEventCode,
-      true,
+      true
     );
     if (!visualSubEvent) {
-      throw new Error('Sub subevent not found');
+      throw new Error("Sub subevent not found");
     }
 
     if (!subEvent) {
@@ -244,7 +244,7 @@ export class SubEventCompetitionProcessor {
         primary.id,
         job.data.transactionId,
         options,
-        existing.draws,
+        existing.draws
       );
     }
   }
@@ -271,7 +271,7 @@ export class SubEventCompetitionProcessor {
         visualCode: string;
         games: { id: string; visualCode: string }[];
       }[];
-    }[],
+    }[]
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
     const draws = await this._visualService.getDraws(eventCode, subEventCode, true);
@@ -306,7 +306,7 @@ export class SubEventCompetitionProcessor {
         const eventEntries = await EventEntry.findAll({
           where: {
             drawId: dbDraw.id,
-            entryType: 'competition',
+            entryType: "competition",
           },
           transaction,
         });

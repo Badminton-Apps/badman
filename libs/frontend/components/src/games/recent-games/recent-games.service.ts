@@ -1,12 +1,12 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { Game } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { connect } from 'ngxtension/connect';
-import { EMPTY, Subject, merge } from 'rxjs';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable, computed, inject, signal } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { Game } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { connect } from "ngxtension/connect";
+import { EMPTY, Subject, merge } from "rxjs";
 import {
   catchError,
   distinctUntilChanged,
@@ -14,8 +14,8 @@ import {
   mergeMap,
   startWith,
   switchMap,
-  throttleTime
-} from 'rxjs/operators';
+  throttleTime,
+} from "rxjs/operators";
 interface RecentGamesState {
   games: Game[];
   loading: boolean;
@@ -25,7 +25,7 @@ interface RecentGamesState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class RecentGamesService {
   private apollo = inject(Apollo);
@@ -34,7 +34,7 @@ export class RecentGamesService {
   private gamesPerPage = 10;
 
   filter = new FormGroup({
-    playerId: new FormControl<string>(''),
+    playerId: new FormControl<string>(""),
     choices: new FormControl<string[]>([]),
   });
 
@@ -56,7 +56,7 @@ export class RecentGamesService {
   //sources
   pagination$ = new Subject<number | null>();
   private error$ = new Subject<string | null>();
-  private filterChanged$ = this.filter.valueChanges.pipe( distinctUntilChanged());
+  private filterChanged$ = this.filter.valueChanges.pipe(distinctUntilChanged());
 
   private gamesLoaded$ = this.filterChanged$.pipe(
     throttleTime(300),
@@ -64,9 +64,9 @@ export class RecentGamesService {
       this.pagination$.pipe(
         startWith(1),
         distinctUntilChanged(),
-        mergeMap(() => this._loadRecentGamesForPlayer(filter)),
-      ),
-    ),
+        mergeMap(() => this._loadRecentGamesForPlayer(filter))
+      )
+    )
   );
 
   constructor() {
@@ -76,9 +76,9 @@ export class RecentGamesService {
         map(() => ({
           loading: true,
           games: [],
-        })),
+        }))
       ),
-      this.error$.pipe(map((error) => ({ error }))),
+      this.error$.pipe(map((error) => ({ error })))
     );
 
     connect(this.state)
@@ -106,7 +106,7 @@ export class RecentGamesService {
       playerId: string | null;
       systemId: string | null;
       choices: string[] | null;
-    }>,
+    }>
   ) {
     if (!filter.playerId) {
       return [];
@@ -119,7 +119,7 @@ export class RecentGamesService {
         };
       }>({
         query: gql`
-        query GamesPage_${this.page()}_${(filter.choices ?? [])?.join('_')}(
+        query GamesPage_${this.page()}_${(filter.choices ?? [])?.join("_")}(
           $id: ID!
           $where: JSONObject
           $whereRanking: JSONObject
@@ -209,10 +209,10 @@ export class RecentGamesService {
           id: filter.playerId,
           where: {
             playedAt: {
-              $lte: moment().format('YYYY-MM-DD HH:mm:ss'),
+              $lte: moment().format("YYYY-MM-DD HH:mm:ss"),
             },
             gameType: {
-              $in: filter?.choices ?? ['S', 'D', 'MX'],
+              $in: filter?.choices ?? ["S", "D", "MX"],
             },
           },
           whereRanking: {
@@ -220,12 +220,12 @@ export class RecentGamesService {
           },
           order: [
             {
-              direction: 'desc',
-              field: 'playedAt',
+              direction: "desc",
+              field: "playedAt",
             },
             {
-              direction: 'desc',
-              field: 'id',
+              direction: "desc",
+              field: "id",
             },
           ],
           skip: (this.page() - 1) * this.gamesPerPage, // Skip the previous pages
@@ -242,7 +242,7 @@ export class RecentGamesService {
         }),
         map((games) => ({
           games,
-        })),
+        }))
       );
   }
 

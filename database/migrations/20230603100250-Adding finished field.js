@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -10,11 +10,11 @@ module.exports = {
 
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
 
-          'finished',
+          "finished",
           {
             type: sequelize.DataTypes.BOOLEAN,
             allowNull: false,
@@ -22,10 +22,10 @@ module.exports = {
           },
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -36,16 +36,16 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'finished',
+          "finished",
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

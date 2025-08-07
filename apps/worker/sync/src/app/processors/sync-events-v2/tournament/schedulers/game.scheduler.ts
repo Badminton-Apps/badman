@@ -1,7 +1,7 @@
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
 
 @Processor({
   name: SyncQueue,
@@ -11,7 +11,7 @@ export class MatchTournamentScheduler {
 
   constructor(
     private readonly _transactionManager: TransactionManager,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Process(Sync.ScheduleSyncTournamentGame)
@@ -24,7 +24,7 @@ export class MatchTournamentScheduler {
       drawId: string;
       gameId: string;
       gameCode: number;
-    }>,
+    }>
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
 
@@ -44,7 +44,7 @@ export class MatchTournamentScheduler {
       }
 
       if (await this._transactionManager.transactionErrored(transactionId)) {
-        throw new Error('Error in transaction');
+        throw new Error("Error in transaction");
       }
 
       await this._transactionManager.commitTransaction(transactionId);

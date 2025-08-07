@@ -1,4 +1,4 @@
-@use './upload-ranking/upload-ranking.dialog.theme.scss' as upload-ranking;
+@use "./upload-ranking/upload-ranking.dialog.theme.scss" as upload-ranking;
 
 @mixin theme($theme) {
   @include upload-ranking.theme($theme);

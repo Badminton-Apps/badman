@@ -1,14 +1,13 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use 'sass:color';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "sass:color";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-list-games {
-    
-    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
-    $isDark: map.get($theme, 'is-dark');
+    $border-color: mat.get-theme-color($theme, foreground, "disabled-text");
+    $isDark: map.get($theme, "is-dark");
 
     $success-palette: map.get($theme, success);
     $danger-palette: map.get($theme, danger);
@@ -43,20 +42,20 @@
 
     .game__extra,
     .game__date {
-      background-color: mat.get-theme-color($theme, 'background', 'background');
+      background-color: mat.get-theme-color($theme, "background", "background");
     }
 
     .game__points {
       @if ($isDark) {
-        color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: -40%);
+        color: color.scale(mat.get-theme-color($theme, foreground, "base"), $lightness: -40%);
       } @else {
-        color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: 60%);
+        color: color.scale(mat.get-theme-color($theme, foreground, "base"), $lightness: 60%);
       }
     }
 
     a {
       text-decoration: none;
-      color: mat.get-theme-color($theme, foreground, 'base');
+      color: mat.get-theme-color($theme, foreground, "base");
     }
   }
 }

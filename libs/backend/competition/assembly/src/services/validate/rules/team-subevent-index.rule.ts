@@ -1,5 +1,5 @@
-import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
-import { Rule } from './_rule.base';
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export type TeamSubeventIndexRuleParams = {
   teamIndex: number;
@@ -10,12 +10,12 @@ export type TeamSubeventIndexRuleParams = {
  * Checks if the teamIndex is not lower then the allowed minIndex of the subevent
  */
 export class TeamSubeventIndexRule extends Rule {
-  static override readonly description = 'all.rules.team-assembly.team-subevent-index';
+  static override readonly description = "all.rules.team-assembly.team-subevent-index";
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { teamIndex, subEvent, previousSeasonTeam, team } = assembly;
 
     if (!subEvent?.minBaseIndex) {
-      throw new Error('Subevent is not defined');
+      throw new Error("Subevent is not defined");
     }
 
     // if team is degraded, it can have a lower index
@@ -38,7 +38,7 @@ export class TeamSubeventIndexRule extends Rule {
         valid: false,
         errors: [
           {
-            message: 'all.v1.teamFormation.errors.team-to-strong',
+            message: "all.v1.teamFormation.errors.team-to-strong",
             params: {
               teamIndex: teamIndex,
               minIndex: subEvent.minBaseIndex,

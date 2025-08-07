@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,21 +6,21 @@ import {
   OnInit,
   input,
   inject,
-} from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ClaimService } from '@badman/frontend-auth';
-import { ClaimComponent } from '@badman/frontend-components';
-import { Claim, Player } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable, combineLatest } from 'rxjs';
-import { groupBy, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
+} from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ClaimService } from "@badman/frontend-auth";
+import { ClaimComponent } from "@badman/frontend-components";
+import { Claim, Player } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { Observable, combineLatest } from "rxjs";
+import { groupBy, map, mergeMap, take, tap, toArray } from "rxjs/operators";
 
 @Component({
-    selector: 'badman-edit-permissions',
-    templateUrl: './edit-permissions.component.html',
-    styleUrls: ['./edit-permissions.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, ClaimComponent]
+  selector: "badman-edit-permissions",
+  templateUrl: "./edit-permissions.component.html",
+  styleUrls: ["./edit-permissions.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, ClaimComponent],
 })
 export class EditPermissionsComponent implements OnInit {
   private apollo = inject(Apollo);
@@ -35,12 +35,12 @@ export class EditPermissionsComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.player()?.id) {
-      throw new Error('No player');
+      throw new Error("No player");
     }
 
     const claims$ = this.apollo
       .query<{ claims: Claim[] }>({
-        fetchPolicy: 'no-cache',
+        fetchPolicy: "no-cache",
         query: gql`
           query Claims($where: JSONObject) {
             claims(where: $where) {
@@ -54,7 +54,7 @@ export class EditPermissionsComponent implements OnInit {
         `,
         variables: {
           where: {
-            type: 'global',
+            type: "global",
           },
         },
       })
@@ -64,7 +64,7 @@ export class EditPermissionsComponent implements OnInit {
       .query<{
         player: { claims: Claim[] };
       }>({
-        fetchPolicy: 'no-cache',
+        fetchPolicy: "no-cache",
         query: gql`
           query PlayerClaims($playerId: ID!) {
             player(id: $playerId) {
@@ -88,16 +88,16 @@ export class EditPermissionsComponent implements OnInit {
     this.claims$ = claims$.pipe(
       take(1),
       mergeMap((res) => res),
-      groupBy((claim) => claim.category ?? 'Other'),
+      groupBy((claim) => claim.category ?? "Other"),
       mergeMap((obs) => {
         return obs.pipe(
           toArray(),
           map((items) => {
             return { category: obs.key, claims: items };
-          }),
+          })
         );
       }),
-      toArray(),
+      toArray()
     );
 
     combineLatest([claims$, playerClaims$]).subscribe(([claims, playerClaims]) => {
@@ -110,10 +110,10 @@ export class EditPermissionsComponent implements OnInit {
 
   claimChanged(claim: Claim, checked: boolean) {
     if (!this.player()?.id) {
-      throw new Error('No player');
+      throw new Error("No player");
     }
     if (!claim?.id) {
-      throw new Error('No claim');
+      throw new Error("No claim");
     }
 
     this.apollo
@@ -132,14 +132,14 @@ export class EditPermissionsComponent implements OnInit {
       .pipe(
         take(1),
         tap(() => {
-          this.claimService.clearUserCache([this.player()?.id ?? '']);
+          this.claimService.clearUserCache([this.player()?.id ?? ""]);
           this.claimService.reloadProfile();
-        }),
+        })
       )
       .subscribe(() => {
-        this._snackBar.open('Saved', undefined, {
+        this._snackBar.open("Saved", undefined, {
           duration: 1000,
-          panelClass: 'success',
+          panelClass: "success",
         });
       });
   }

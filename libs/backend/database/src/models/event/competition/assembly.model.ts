@@ -1,5 +1,5 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { DataTypes } from 'sequelize';
+import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { DataTypes } from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -10,19 +10,19 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
-import { AssemblyType } from '../../../types';
-import { Player } from '../../player.model';
-import { Team } from '../../team.model';
-import { EncounterCompetition } from './encounter-competition.model';
-import { Relation } from '../../../wrapper';
+} from "sequelize-typescript";
+import { AssemblyType } from "../../../types";
+import { Player } from "../../player.model";
+import { Team } from "../../team.model";
+import { EncounterCompetition } from "./encounter-competition.model";
+import { Relation } from "../../../wrapper";
 
 @Table({
   timestamps: true,
-  tableName: 'Assemblies',
-  schema: 'personal',
+  tableName: "Assemblies",
+  schema: "personal",
 })
-@ObjectType({ description: 'A assembly' })
+@ObjectType({ description: "A assembly" })
 export class Assembly extends Model<Assembly> {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
@@ -52,8 +52,8 @@ export class Assembly extends Model<Assembly> {
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
-    foreignKey: 'encounterId',
-    onDelete: 'CASCADE',
+    foreignKey: "encounterId",
+    onDelete: "CASCADE",
   })
   encounterCompetition?: Relation<EncounterCompetition>;
 
@@ -64,8 +64,8 @@ export class Assembly extends Model<Assembly> {
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, {
-    foreignKey: 'teamId',
-    onDelete: 'CASCADE',
+    foreignKey: "teamId",
+    onDelete: "CASCADE",
   })
   team?: Relation<Team>;
 
@@ -76,8 +76,8 @@ export class Assembly extends Model<Assembly> {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, {
-    foreignKey: 'captainId',
-    onDelete: 'CASCADE',
+    foreignKey: "captainId",
+    onDelete: "CASCADE",
   })
   captain?: Relation<Player>;
 
@@ -88,8 +88,8 @@ export class Assembly extends Model<Assembly> {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, {
-    foreignKey: 'playerId',
-    onDelete: 'CASCADE',
+    foreignKey: "playerId",
+    onDelete: "CASCADE",
   })
   player?: Relation<Player>;
 

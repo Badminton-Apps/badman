@@ -1,7 +1,7 @@
-import { Availability, Location } from '@badman/backend-database';
-import { Injectable, Logger } from '@nestjs/common';
-import { Op } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
+import { Availability, Location } from "@badman/backend-database";
+import { Injectable, Logger } from "@nestjs/common";
+import { Op } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
 export class CopyAvailibiltyRunner {
@@ -52,11 +52,11 @@ export class CopyAvailibiltyRunner {
           }).save({ transaction });
         } else if ((existing?.days?.length ?? 0) <= 0) {
           this.logger.verbose(
-            `Days for ${availibilty.locationId} ${existing?.location?.name} ${existing?.days?.length} ${availibilty.days?.length}`,
+            `Days for ${availibilty.locationId} ${existing?.location?.name} ${existing?.days?.length} ${availibilty.days?.length}`
           );
 
           existing.days = availibilty.days;
-          existing.changed('days', true);
+          existing.changed("days", true);
           await existing.save({ transaction });
         }
       }

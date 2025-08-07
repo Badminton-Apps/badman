@@ -1,6 +1,6 @@
-import { EncounterCompetition } from '@badman/backend-database';
-import { runParallel } from '@badman/utils';
-import { Page } from 'puppeteer';
+import { EncounterCompetition } from "@badman/backend-database";
+import { runParallel } from "@badman/utils";
+import { Page } from "puppeteer";
 
 export async function gotoEncounterPage(
   pupeteer: {
@@ -10,21 +10,21 @@ export async function gotoEncounterPage(
     page: null,
     timeout: 5000,
   },
-  encounter: EncounterCompetition,
+  encounter: EncounterCompetition
 ) {
   const { page } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
   const matchId = encounter.visualCode;
   const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
 
   if (!eventId) {
-    throw new Error('No eventId found');
+    throw new Error("No eventId found");
   }
 
   if (!matchId) {
-    throw new Error('No matchId found');
+    throw new Error("No matchId found");
   }
 
   const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;

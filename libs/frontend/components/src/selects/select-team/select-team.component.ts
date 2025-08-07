@@ -1,24 +1,24 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+} from "@angular/material/autocomplete";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
 
-import { input } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticateService } from '@badman/frontend-auth';
-import { Team } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
+import { input } from "@angular/core";
+import { toObservable } from "@angular/core/rxjs-interop";
+import { MatSelectChange, MatSelectModule } from "@angular/material/select";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthenticateService } from "@badman/frontend-auth";
+import { Team } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
 import {
   Observable,
   combineLatest,
@@ -32,23 +32,23 @@ import {
   switchMap,
   take,
   takeUntil,
-} from 'rxjs';
+} from "rxjs";
 
 @Component({
-    selector: 'badman-select-team',
-    imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatAutocompleteModule,
-        MatSelectModule,
-    ],
-    templateUrl: './select-team.component.html',
-    styleUrls: ['./select-team.component.scss']
+  selector: "badman-select-team",
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatSelectModule,
+  ],
+  templateUrl: "./select-team.component.html",
+  styleUrls: ["./select-team.component.scss"],
 })
 export class SelectTeamComponent implements OnInit {
   private apollo = inject(Apollo);
@@ -59,19 +59,19 @@ export class SelectTeamComponent implements OnInit {
   private platformId = inject<string>(PLATFORM_ID);
   private destroy$ = injectDestroy();
 
-  controlName = input('team');
+  controlName = input("team");
 
   group = input.required<FormGroup>();
 
-  dependsOn = input('club');
+  dependsOn = input("club");
 
-  updateOn = input(['club']);
+  updateOn = input(["club"]);
 
   updateUrl = input(false);
 
   multiple = input(false);
 
-  autoSelect = input<'user' | 'all'>('user');
+  autoSelect = input<"user" | "all">("user");
 
   control = input<FormControl<string[] | string | null>>();
   protected internalControl!: FormControl<string[] | string | null>;
@@ -114,7 +114,7 @@ export class SelectTeamComponent implements OnInit {
       this.teams$ = combineLatest([
         previous.valueChanges.pipe(startWith(null)),
         ...updateOnControls.map((control) =>
-          control?.valueChanges?.pipe(startWith(() => control?.value)),
+          control?.valueChanges?.pipe(startWith(() => control?.value))
         ),
       ]).pipe(
         takeUntil(this.destroy$),
@@ -138,27 +138,27 @@ export class SelectTeamComponent implements OnInit {
         map((teams) => {
           const grouped = (teams ?? []).reduce(
             (acc, team) => {
-              const group = team.type ?? 'Other';
+              const group = team.type ?? "Other";
               if (!acc[group]) {
                 acc[group] = [];
               }
               acc[group].push(team);
               return acc;
             },
-            {} as { [key: string]: Team[] },
+            {} as { [key: string]: Team[] }
           );
           return Object.keys(grouped).map((key) => ({
             type: key,
             teams: grouped[key],
           }));
         }),
-        shareReplay(1),
+        shareReplay(1)
       );
 
       this.teams$
         ?.pipe(
           concatMap((teams) =>
-            this.autoSelect() === 'user'
+            this.autoSelect() === "user"
               ? // if authenticated, find where the user is captain
                 this.user$.pipe(
                   switchMap((user) => {
@@ -171,17 +171,17 @@ export class SelectTeamComponent implements OnInit {
                     teams,
                     teamsUser: teamsUser?.[0],
                   })),
-                  take(1),
+                  take(1)
                 )
               : of({
                   teams,
                   teamsUser: undefined,
-                }),
-          ),
+                })
+          )
         )
         .subscribe(({ teams, teamsUser }) => {
           let foundTeam: Team[] | undefined = undefined;
-          const teamId = this.activatedRoute.snapshot?.queryParamMap?.get('team');
+          const teamId = this.activatedRoute.snapshot?.queryParamMap?.get("team");
 
           const allTeams = teams
             ?.map((group) => group.teams)
@@ -190,22 +190,22 @@ export class SelectTeamComponent implements OnInit {
           if (teamId && teams.length > 0) {
             // Check all groups if the team is in there
             foundTeam = allTeams?.filter((team) => team.id == teamId);
-          } else if (this.autoSelect() === 'user') {
+          } else if (this.autoSelect() === "user") {
             foundTeam = teams
               ?.map((group) => group.teams)
               ?.reduce((acc, teams) => acc.concat(teams), [])
               ?.filter((team) => team.id == teamsUser);
-          } else if (this.autoSelect() === 'all') {
+          } else if (this.autoSelect() === "all") {
             foundTeam = allTeams;
           }
 
           if (foundTeam && foundTeam.length > 0) {
             this.internalControl.setValue(
-              this.multiple() ? foundTeam.map((team) => team.id ?? '') : foundTeam[0].id ?? '',
+              this.multiple() ? foundTeam.map((team) => team.id ?? "") : (foundTeam[0].id ?? "")
             );
             this._updateUrl(
-              foundTeam.map((team) => team.id ?? ''),
-              teamId == null,
+              foundTeam.map((team) => team.id ?? ""),
+              teamId == null
             );
           }
         });
@@ -232,11 +232,11 @@ export class SelectTeamComponent implements OnInit {
   private _updateUrl(teamIds: string[], removeOtherParams = false) {
     if (this.updateUrl() && teamIds?.length) {
       const queryParams: { [key: string]: string | undefined } = {
-        [this.controlName()]: teamIds.join(','),
+        [this.controlName()]: teamIds.join(","),
       };
 
       if (removeOtherParams) {
-        queryParams['encounter'] = undefined;
+        queryParams["encounter"] = undefined;
       }
 
       // check if the current url is the same as the new url
@@ -246,7 +246,7 @@ export class SelectTeamComponent implements OnInit {
         .createUrlTree([], {
           relativeTo: this.activatedRoute,
           queryParams,
-          queryParamsHandling: 'merge',
+          queryParamsHandling: "merge",
         })
         .toString();
 
@@ -257,7 +257,7 @@ export class SelectTeamComponent implements OnInit {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams,
-        queryParamsHandling: 'merge',
+        queryParamsHandling: "merge",
       });
     }
   }
@@ -280,13 +280,13 @@ export class SelectTeamComponent implements OnInit {
         `,
         variables: {
           where: {
-            season: this.group().get('season')?.value ?? null,
+            season: this.group().get("season")?.value ?? null,
             clubId: clubId,
           },
           order: [
             {
-              direction: 'ASC',
-              field: 'teamNumber',
+              direction: "ASC",
+              field: "teamNumber",
             },
           ],
         },
@@ -295,10 +295,10 @@ export class SelectTeamComponent implements OnInit {
         transferState(`clubTeamsKey-${clubId}}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.teams) {
-            throw new Error('No club');
+            throw new Error("No club");
           }
           return result.data.teams?.map((team) => new Team(team));
-        }),
+        })
       );
   }
 
@@ -322,16 +322,16 @@ export class SelectTeamComponent implements OnInit {
         transferState(`captainOfTeam-${userId}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.teams) {
-            throw new Error('No club');
+            throw new Error("No club");
           }
           return result.data.teams?.map((team) => team?.id);
-        }),
+        })
       );
   }
 
   selectAll(options: { type: string; teams: Team[] }[]) {
     this.internalControl.setValue(
-      options.map((option) => option.teams?.map((team) => team.id)).flat(),
+      options.map((option) => option.teams?.map((team) => team.id)).flat()
     );
   }
 

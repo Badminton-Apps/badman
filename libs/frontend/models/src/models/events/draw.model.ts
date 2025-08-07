@@ -1,5 +1,5 @@
-import { DrawType } from '@badman/utils';
-import { EventEntry } from '../entry.model';
+import { DrawType } from "@badman/utils";
+import { EventEntry } from "../entry.model";
 
 export class Draw {
   id?: string;

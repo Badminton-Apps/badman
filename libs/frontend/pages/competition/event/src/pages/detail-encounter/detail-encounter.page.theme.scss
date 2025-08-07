@@ -1,23 +1,21 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-detail-encounter {
-    
-    
-    $isDark: map.get($theme, 'is-dark');
+    $isDark: map.get($theme, "is-dark");
 
     a.player {
       text-decoration: none;
-      color: mat.get-theme-color($theme, foreground, 'base');
+      color: mat.get-theme-color($theme, foreground, "base");
     }
   }
 }
 
 @mixin typography($theme) {
   // badman-detail-encounter {
-    
+
   // }
 }

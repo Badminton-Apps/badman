@@ -1,5 +1,5 @@
-import { SecurityType } from '@badman/utils';
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { SecurityType } from "@badman/utils";
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -13,7 +13,7 @@ import {
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   BelongsToMany,
@@ -25,21 +25,21 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
-import { Club } from '../club.model';
-import { EventCompetition, EventTournament } from '../event';
-import { Player } from '../player.model';
-import { Team } from '../team.model';
-import { RoleClaimMembership } from './claim-role-membership.model';
-import { Claim, ClaimUpdateInput } from './claim.model';
-import { PlayerRoleMembership } from './role-player-membership.model';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { Club } from "../club.model";
+import { EventCompetition, EventTournament } from "../event";
+import { Player } from "../player.model";
+import { Team } from "../team.model";
+import { RoleClaimMembership } from "./claim-role-membership.model";
+import { Claim, ClaimUpdateInput } from "./claim.model";
+import { PlayerRoleMembership } from "./role-player-membership.model";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'security',
+  schema: "security",
 })
-@ObjectType({ description: 'A Role' })
+@ObjectType({ description: "A Role" })
 export class Role extends Model {
   constructor(values?: Partial<Role>, options?: BuildOptions) {
     super(values, options);
@@ -79,25 +79,25 @@ export class Role extends Model {
   players?: (Player & { PlayerClaimMembership?: PlayerRoleMembership })[];
 
   @BelongsTo(() => Club, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   club?: Relation<Club>;
 
   @BelongsTo(() => Team, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   team?: Relation<Team>;
 
   @BelongsTo(() => EventCompetition, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   competition?: Relation<EventCompetition>;
 
   @BelongsTo(() => EventTournament, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   tournament?: Relation<EventTournament>;
@@ -113,8 +113,8 @@ export class Role extends Model {
       SecurityType.CLUB,
       SecurityType.TEAM,
       SecurityType.COMPETITION,
-      SecurityType.TOURNAMENT,
-    ),
+      SecurityType.TOURNAMENT
+    )
   )
   linkType?: string;
 
@@ -133,7 +133,7 @@ export class Role extends Model {
   getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
   setPlayer!: BelongsToManySetAssociationsMixin<Player, string>;
   setPlayers!: BelongsToManySetAssociationsMixin<Player, string>;
-  addPlayers!:BelongsToManyAddAssociationsMixin<Player, string>;
+  addPlayers!: BelongsToManyAddAssociationsMixin<Player, string>;
   addPlayer!: BelongsToManyAddAssociationMixin<Player, string>;
   removePlayer!: BelongsToManyRemoveAssociationMixin<Player, string>;
   removePlayers!: BelongsToManyRemoveAssociationsMixin<Player, string>;
@@ -160,8 +160,8 @@ export class Role extends Model {
 
 @InputType()
 export class RoleUpdateInput extends PartialType(
-  OmitType(Role, ['createdAt', 'updatedAt', 'claims'] as const),
-  InputType,
+  OmitType(Role, ["createdAt", "updatedAt", "claims"] as const),
+  InputType
 ) {
   @Field(() => [ClaimUpdateInput])
   claims?: Relation<Claim[]>;
@@ -169,6 +169,6 @@ export class RoleUpdateInput extends PartialType(
 
 @InputType()
 export class RoleNewInput extends PartialType(
-  OmitType(RoleUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(RoleUpdateInput, ["id"] as const),
+  InputType
 ) {}

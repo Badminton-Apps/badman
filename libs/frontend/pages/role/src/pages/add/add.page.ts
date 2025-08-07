@@ -1,18 +1,18 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Claim, Club, Role } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable, groupBy, lastValueFrom, map, mergeMap, toArray } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { RoleFieldsComponent } from '../../components';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { Claim, Club, Role } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { Observable, groupBy, lastValueFrom, map, mergeMap, toArray } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { RoleFieldsComponent } from "../../components";
 
 @Component({
-  templateUrl: './add.page.html',
-  styleUrls: ['./add.page.scss'],
+  templateUrl: "./add.page.html",
+  styleUrls: ["./add.page.scss"],
   imports: [CommonModule, ReactiveFormsModule, RouterModule, RoleFieldsComponent],
 })
 export class AddPageComponent implements OnInit {
@@ -31,17 +31,17 @@ export class AddPageComponent implements OnInit {
     this.role = new Role({});
 
     this.route.data.subscribe((data) => {
-      this.club = data['club'];
+      this.club = data["club"];
 
       const clubName = `${this.club.name}`;
 
       this.seoService.update({
         title: `Adding role to ${clubName}`,
         description: `Adding role to club ${clubName}`,
-        type: 'website',
-        keywords: ['club', 'badminton'],
+        type: "website",
+        keywords: ["club", "badminton"],
       });
-      this.breadcrumbsService.set('@club', clubName);
+      this.breadcrumbsService.set("@club", clubName);
 
       this.claims$ = this._loadClaims();
     });
@@ -63,30 +63,30 @@ export class AddPageComponent implements OnInit {
         `,
         variables: {
           where: {
-            type: ['club', 'team'],
+            type: ["club", "team"],
           },
         },
       })
       .pipe(
-        transferState('clubTeamsKey-' + this.club.id, this.stateTransfer, this.platformId),
+        transferState("clubTeamsKey-" + this.club.id, this.stateTransfer, this.platformId),
         map((x) => x?.data.claims?.map((c) => new Claim(c))),
         mergeMap((claims) => claims ?? []),
-        groupBy((category) => category.category ?? 'Other'),
+        groupBy((category) => category.category ?? "Other"),
         mergeMap((obs) => {
           return obs.pipe(
             toArray(),
             map((items) => {
               return { category: obs.key, claims: items };
-            }),
+            })
           );
         }),
-        toArray(),
+        toArray()
       );
   }
 
   async add(role: Role, club: Club) {
     if (!club?.id) {
-      throw new Error('No role id');
+      throw new Error("No role id");
     }
     await lastValueFrom(
       this.apollo.mutate({
@@ -100,8 +100,8 @@ export class AddPageComponent implements OnInit {
         variables: {
           data: { ...role, clubId: club.id },
         },
-      }),
+      })
     );
-    await this.router.navigate(['/', 'club', club.id, 'edit']);
+    await this.router.navigate(["/", "club", club.id, "edit"]);
   }
 }

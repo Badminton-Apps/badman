@@ -1,15 +1,14 @@
-
-import { Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Component, OnInit, inject } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MtxDatetimepickerModule } from "@ng-matero/extensions/datetimepicker";
+import { TranslatePipe } from "@ngx-translate/core";
 @Component({
-    imports: [
+  imports: [
     TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
@@ -18,14 +17,14 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatDialogModule,
     MatInputModule,
     MatSlideToggleModule,
-    MtxDatetimepickerModule
-],
-    templateUrl: './set-encounter-date.component.html',
-    styleUrls: ['./set-encounter-date.component.scss']
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: "./set-encounter-date.component.html",
+  styleUrls: ["./set-encounter-date.component.scss"],
 })
 export class SetEncounterDateDialogComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<SetEncounterDateDialogComponent>>(
-    MatDialogRef<SetEncounterDateDialogComponent>,
+    MatDialogRef<SetEncounterDateDialogComponent>
   );
   public data = inject<{ date: Date }>(MAT_DIALOG_DATA);
   dateControl?: FormControl;

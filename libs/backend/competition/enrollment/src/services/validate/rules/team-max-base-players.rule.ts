@@ -1,5 +1,5 @@
-import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
-import { Rule } from './_rule.base';
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export class TeamMaxBasePlayersRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
@@ -16,9 +16,9 @@ export class TeamMaxBasePlayersRule extends Rule {
       }
 
       const errors = [] as EnrollmentValidationError[];
-      if (amountOfBasePlayers < (basePlayers?.length ?? 0) ) {
+      if (amountOfBasePlayers < (basePlayers?.length ?? 0)) {
         errors.push({
-          message: 'all.v1.entryTeamDrawer.validation.errors.too-many-base-players',
+          message: "all.v1.entryTeamDrawer.validation.errors.too-many-base-players",
           params: {
             amountOfBasePlayers,
           },
@@ -27,7 +27,7 @@ export class TeamMaxBasePlayersRule extends Rule {
 
       if (amountOfBasePlayers > (basePlayers?.length ?? 0)) {
         errors.push({
-          message: 'all.v1.entryTeamDrawer.validation.errors.too-few-base-players',
+          message: "all.v1.entryTeamDrawer.validation.errors.too-few-base-players",
           params: {
             amountOfBasePlayers,
           },

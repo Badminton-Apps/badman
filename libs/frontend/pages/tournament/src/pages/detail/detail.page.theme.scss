@@ -1,20 +1,17 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-tournament-detail {
-    
     // Background color
-    
-    
 
     .in-between {
-      border-bottom-color: mat.get-theme-color($theme, 'background', 'border');
+      border-bottom-color: mat.get-theme-color($theme, "background", "border");
       .buttons button {
-        border-color: mat.get-theme-color($theme, 'background', 'border');
-        background-color: mat.get-theme-color($theme, 'background', 'background');
+        border-color: mat.get-theme-color($theme, "background", "border");
+        background-color: mat.get-theme-color($theme, "background", "background");
       }
     }
 
@@ -23,7 +20,7 @@
         &,
         &:visited,
         &:hover {
-          color: mat.get-theme-color($theme, foreground, 'base');
+          color: mat.get-theme-color($theme, foreground, "base");
         }
       }
     }
@@ -31,11 +28,10 @@
 }
 
 @mixin typography($theme) {
-  
   badman-tournament-detail {
     .header {
       .name {
-        font: mat.get-theme-typography($theme, 'headline-4', font);
+        font: mat.get-theme-typography($theme, "headline-4", font);
       }
     }
   }

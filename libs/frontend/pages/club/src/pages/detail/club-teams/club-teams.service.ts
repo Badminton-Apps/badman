@@ -1,10 +1,10 @@
-import { Injectable, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Location, Team } from '@badman/frontend-models';
-import { getSeason, sortTeams } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Subject, asyncScheduler, merge, of } from 'rxjs';
+import { Injectable, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { Location, Team } from "@badman/frontend-models";
+import { getSeason, sortTeams } from "@badman/utils";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Subject, asyncScheduler, merge, of } from "rxjs";
 import {
   catchError,
   distinctUntilChanged,
@@ -14,7 +14,7 @@ import {
   startWith,
   switchMap,
   throttleTime,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 export interface ClubTeamsState {
   teams: Team[];
@@ -26,16 +26,16 @@ export interface ClubTeamsState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClubTeamsService {
   private apollo = inject(Apollo);
   private error$ = new Subject<string>();
 
   filter = new FormGroup({
-    clubId: new FormControl<string>(''),
+    clubId: new FormControl<string>(""),
     season: new FormControl(getSeason()),
-    choices: new FormControl<string[]>(['M', 'F', 'MX', 'NATIONAL']),
+    choices: new FormControl<string[]>(["M", "F", "MX", "NATIONAL"]),
   });
 
   // state
@@ -58,7 +58,7 @@ export class ClubTeamsService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.clubId && filter.clubId.length > 0),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   private teamsLoaded$ = this.filterChanged$.pipe(
@@ -71,14 +71,14 @@ export class ClubTeamsService {
           teams: [] as Team[],
           teamsLoaded: false,
           error: null,
-        }),
-      ),
+        })
+      )
     ),
     shareReplay(1),
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   private locationsLoaded$ = this.filterChanged$.pipe(
@@ -89,20 +89,20 @@ export class ClubTeamsService {
         startWith({
           locations: [] as Location[],
           locationsLoaded: false,
-        }),
-      ),
+        })
+      )
     ),
     shareReplay(1),
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
     this.teamsLoaded$,
     this.locationsLoaded$,
-    this.error$.pipe(map((error) => ({ error }))),
+    this.error$.pipe(map((error) => ({ error })))
   );
 
   state = signalSlice({
@@ -120,7 +120,7 @@ export class ClubTeamsService {
       clubId: string | null;
       season: number | null;
       choices: string[] | null;
-    }>,
+    }>
   ) {
     return this.apollo
       .watchQuery<{ teams: Partial<Team>[] }>({
@@ -166,7 +166,7 @@ export class ClubTeamsService {
       })
       .valueChanges.pipe(
         map((result) => result.data?.teams ?? []),
-        map((result) => result?.map((t) => new Team(t))),
+        map((result) => result?.map((t) => new Team(t)))
       );
   }
 
@@ -174,18 +174,18 @@ export class ClubTeamsService {
     filter: Partial<{
       clubId: string | null;
       season: number | null;
-    }>,
+    }>
   ) {
     const { clubId, season } = filter;
 
     if (!clubId || !season) {
-      console.error('No clubId or season provided');
+      console.error("No clubId or season provided");
       return of([]);
     }
 
     return this.apollo
       .query<{ locations: Location[] }>({
-        fetchPolicy: 'network-only',
+        fetchPolicy: "network-only",
         query: gql`
           query Locations($where: JSONObject, $availabilitiesWhere: JSONObject) {
             locations(where: $where) {

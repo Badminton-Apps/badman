@@ -1,8 +1,8 @@
-import { InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ITwizzitConfig } from './interfaces';
+import { InjectionToken, ModuleWithProviders, NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ITwizzitConfig } from "./interfaces";
 
-export const TWIZZIT_CONFIG = new InjectionToken<ITwizzitConfig>('TWIZZIT_CONFIG');
+export const TWIZZIT_CONFIG = new InjectionToken<ITwizzitConfig>("TWIZZIT_CONFIG");
 
 @NgModule({
   imports: [CommonModule],

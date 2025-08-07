@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from "puppeteer";
 
 export async function selectBadmninton(
   pupeteer: {
@@ -7,22 +7,22 @@ export async function selectBadmninton(
   } = {
     page: null,
     timeout: 5000,
-  },
+  }
 ) {
   const { page, timeout } = pupeteer;
 
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
 
   {
     const targetPage = page;
 
     await targetPage.goto(
-      'https://www.toernooi.nl/sportselection/setsportselection/2?returnUrl=%2F',
+      "https://www.toernooi.nl/sportselection/setsportselection/2?returnUrl=%2F",
       {
         timeout,
-      },
+      }
     );
   }
 }

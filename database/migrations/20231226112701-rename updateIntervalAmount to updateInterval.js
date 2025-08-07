@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,28 +7,28 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.renameColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'updateIntervalAmountLastUpdate',
-          'updateLastUpdate',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "updateIntervalAmountLastUpdate",
+          "updateLastUpdate",
+          { transaction: t }
         );
 
         await queryInterface.renameColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'calculationIntervalLastUpdate',
-          'calculationLastUpdate',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "calculationIntervalLastUpdate",
+          "calculationLastUpdate",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'runDate',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "runDate",
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -38,30 +38,30 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.renameColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'updateLastUpdate',
-          'updateIntervalAmountLastUpdate',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "updateLastUpdate",
+          "updateIntervalAmountLastUpdate",
+          { transaction: t }
         );
 
         await queryInterface.renameColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'calculationLastUpdate',
-          'calculationIntervalLastUpdate',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "calculationLastUpdate",
+          "calculationIntervalLastUpdate",
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'runDate',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "runDate",
           {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

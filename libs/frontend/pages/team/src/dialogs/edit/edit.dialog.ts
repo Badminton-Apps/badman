@@ -1,23 +1,22 @@
-
-import { Component, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
 import {
   MAT_DIALOG_DATA,
   MatDialog,
   MatDialogModule,
   MatDialogRef,
-} from '@angular/material/dialog';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-components';
-import { Player, Team, TeamPlayer, Location } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { SubEventType, TeamMembershipType, sortPlayers } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom, map, pairwise, startWith, take } from 'rxjs';
-import { PLAYERS_CONTROL, TeamFieldComponent, TeamPlayersComponent } from '../../components';
+} from "@angular/material/dialog";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { ConfirmDialogComponent, ConfirmDialogModel } from "@badman/frontend-components";
+import { Player, Team, TeamPlayer, Location } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { SubEventType, TeamMembershipType, sortPlayers } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { lastValueFrom, map, pairwise, startWith, take } from "rxjs";
+import { PLAYERS_CONTROL, TeamFieldComponent, TeamPlayersComponent } from "../../components";
 
 const PLAYERS_QUERY = gql`
   query TeamPlayers($teamId: ID!) {
@@ -36,8 +35,8 @@ const PLAYERS_QUERY = gql`
 `;
 
 @Component({
-  templateUrl: './edit.dialog.html',
-  styleUrls: ['./edit.dialog.scss'],
+  templateUrl: "./edit.dialog.html",
+  styleUrls: ["./edit.dialog.scss"],
   imports: [
     TranslatePipe,
     TeamFieldComponent,
@@ -45,8 +44,8 @@ const PLAYERS_QUERY = gql`
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatProgressBarModule
-],
+    MatProgressBarModule,
+  ],
 })
 export class EditDialogComponent {
   private snackBar = inject(MatSnackBar);
@@ -144,7 +143,7 @@ export class EditDialogComponent {
         transferState(`teamPlayers-${this.data.team.id}`, this.stateTransfer, this.platformId),
         map((result) => result?.data.team.players?.map((t) => new TeamPlayer(t))),
         map((players) => players?.sort(sortPlayers) ?? undefined),
-        take(1),
+        take(1)
       );
   }
 
@@ -177,9 +176,9 @@ export class EditDialogComponent {
           },
         },
         refetchQueries: () => [
-          'Team',
-          'Teams',
-          'ClubTeams',
+          "Team",
+          "Teams",
+          "ClubTeams",
           {
             query: PLAYERS_QUERY,
             variables: {
@@ -189,9 +188,9 @@ export class EditDialogComponent {
         ],
       })
       .subscribe(() => {
-        this.snackBar.open('Saved', undefined, {
+        this.snackBar.open("Saved", undefined, {
           duration: 1000,
-          panelClass: 'success',
+          panelClass: "success",
         });
         this.saveing = false;
 
@@ -222,7 +221,7 @@ export class EditDialogComponent {
               },
             },
           ],
-        }),
+        })
       );
     }
   }
@@ -250,7 +249,7 @@ export class EditDialogComponent {
               },
             },
           ],
-        }),
+        })
       );
     }
   }
@@ -292,21 +291,21 @@ export class EditDialogComponent {
         ],
       })
       .subscribe(() => {
-        this.snackBar.open('Saved', undefined, {
+        this.snackBar.open("Saved", undefined, {
           duration: 1000,
-          panelClass: 'success',
+          panelClass: "success",
         });
       });
   }
 
   removeTeam() {
     const dialogData = new ConfirmDialogModel(
-      'all.club.delete.team.title',
-      'all.club.delete.team.description',
+      "all.club.delete.team.title",
+      "all.club.delete.team.description"
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: '400px',
+      maxWidth: "400px",
       data: dialogData,
     });
 
@@ -325,12 +324,12 @@ export class EditDialogComponent {
           variables: {
             id: this.data.team.id,
           },
-          refetchQueries: ['Team', 'Teams', 'ClubTeams'],
+          refetchQueries: ["Team", "Teams", "ClubTeams"],
         })
         .subscribe(() => {
-          this.snackBar.open('Deleted', undefined, {
+          this.snackBar.open("Deleted", undefined, {
             duration: 1000,
-            panelClass: 'success',
+            panelClass: "success",
           });
           this.dialogRef.close();
         });
@@ -340,7 +339,7 @@ export class EditDialogComponent {
   getLocations() {
     return this.apollo
       .query<{ locations: Location[] }>({
-        fetchPolicy: 'network-only',
+        fetchPolicy: "network-only",
         query: gql`
           query Locations($where: JSONObject, $availabilitiesWhere: JSONObject) {
             locations(where: $where) {

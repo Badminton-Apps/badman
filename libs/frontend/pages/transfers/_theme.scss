@@ -1,7 +1,6 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
-@use './src/pages/overview/overview.page.theme.scss' as overview;
-
+@use "./src/pages/overview/overview.page.theme.scss" as overview;
 
 @mixin typography($theme) {
   @include overview.typography($theme);

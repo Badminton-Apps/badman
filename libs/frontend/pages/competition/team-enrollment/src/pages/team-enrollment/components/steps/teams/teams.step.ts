@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectorRef,
   Component,
@@ -12,43 +11,43 @@ import {
   untracked,
   viewChild,
   viewChildren,
-} from '@angular/core';
+} from "@angular/core";
 import {
   FormArray,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Club, EntryCompetitionPlayer, Team } from '@badman/frontend-models';
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { Club, EntryCompetitionPlayer, Team } from "@badman/frontend-models";
 import {
   ClubMembershipType,
   SubEventType,
   SubEventTypeEnum,
   UseForTeamName,
   getLetterForRegion,
-} from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { combineLatest } from 'rxjs';
-import { debounceTime, map, pairwise, startWith, takeUntil } from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid';
-import { LOCATIONS, NATIONAL_COUNTS_AS_MIXED, TEAMS, TRANSFERS_LOANS } from '../../../../../forms';
-import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
-import { TeamForm } from '../../../team-enrollment.page';
-import { TeamEnrollmentComponent } from './components';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+} from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { combineLatest } from "rxjs";
+import { debounceTime, map, pairwise, startWith, takeUntil } from "rxjs/operators";
+import { v4 as uuidv4 } from "uuid";
+import { LOCATIONS, NATIONAL_COUNTS_AS_MIXED, TEAMS, TRANSFERS_LOANS } from "../../../../../forms";
+import { TeamEnrollmentDataService } from "../../../service/team-enrollment.service";
+import { TeamForm } from "../../../team-enrollment.page";
+import { TeamEnrollmentComponent } from "./components";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 @Component({
-  selector: 'badman-teams-step',
+  selector: "badman-teams-step",
   imports: [
     TranslatePipe,
     MatButtonModule,
@@ -62,10 +61,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCheckboxModule,
     ReactiveFormsModule,
     FormsModule,
-    TeamEnrollmentComponent
-],
-  templateUrl: './teams.step.html',
-  styleUrls: ['./teams.step.scss'],
+    TeamEnrollmentComponent,
+  ],
+  templateUrl: "./teams.step.html",
+  styleUrls: ["./teams.step.scss"],
 })
 export class TeamsStepComponent {
   private readonly destroy$ = injectDestroy();
@@ -83,7 +82,7 @@ export class TeamsStepComponent {
     () =>
       this.formGroup().get(TEAMS) as FormGroup<{
         [key in SubEventTypeEnum]: FormArray<TeamForm>;
-      }>,
+      }>
   );
 
   locations = computed(() => this.formGroup().get(LOCATIONS)?.getRawValue());
@@ -92,18 +91,18 @@ export class TeamsStepComponent {
     () =>
       this.formGroup().get(TRANSFERS_LOANS) as FormGroup<{
         [key in ClubMembershipType]: FormControl<string[]>;
-      }>,
+      }>
   );
 
   transfers = computed(
-    () => this.transfersLoans().get(ClubMembershipType.NORMAL) as FormControl<string[]>,
+    () => this.transfersLoans().get(ClubMembershipType.NORMAL) as FormControl<string[]>
   );
   loans = computed(
-    () => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>,
+    () => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>
   );
 
   nationalCountsAsMixed = computed(
-    () => this.formGroup().get(NATIONAL_COUNTS_AS_MIXED) as FormControl<boolean>,
+    () => this.formGroup().get(NATIONAL_COUNTS_AS_MIXED) as FormControl<boolean>
   );
 
   teamNumbers = computed(() => {
@@ -125,7 +124,7 @@ export class TeamsStepComponent {
     read: ElementRef,
   });
 
-  SwitchDialog = viewChild.required<TemplateRef<HTMLElement>>('switch');
+  SwitchDialog = viewChild.required<TemplateRef<HTMLElement>>("switch");
 
   constructor() {
     effect(() => {
@@ -136,7 +135,7 @@ export class TeamsStepComponent {
             this.dataService.state.validateEnrollment({
               teamForm: this.teams().getRawValue(),
               season: this.season(),
-              clubId: this.club()?.id ?? '',
+              clubId: this.club()?.id ?? "",
               transfers: this.transfersLoans().get(ClubMembershipType.NORMAL)?.getRawValue() ?? [],
               loans: this.transfersLoans().get(ClubMembershipType.LOAN)?.getRawValue() ?? [],
             });
@@ -152,9 +151,9 @@ export class TeamsStepComponent {
                 (value.F?.length ?? 0) +
                 (value.M?.length ?? 0) +
                 (value.MX?.length ?? 0) +
-                (value.NATIONAL?.length ?? 0),
+                (value.NATIONAL?.length ?? 0)
             ),
-            pairwise(),
+            pairwise()
           )
           .subscribe(([prev, next]) => {
             if (prev != next) {
@@ -194,10 +193,10 @@ export class TeamsStepComponent {
           players: new FormArray<FormControl<EntryCompetitionPlayer>>([]),
           subEventId: new FormControl(null),
         }),
-      }) as TeamForm,
+      }) as TeamForm
     );
 
-    const ref = this.snackBar.open(`Team ${team.name} added at the end`, 'Scroll naar team', {
+    const ref = this.snackBar.open(`Team ${team.name} added at the end`, "Scroll naar team", {
       duration: 2000,
     });
 
@@ -206,12 +205,12 @@ export class TeamsStepComponent {
         if (!this.teamReferences()) return;
         const teamToScrollTo = this.teamReferences()
           .map((reference) => reference.nativeElement)
-          .find((element) => element.getAttribute('data-anchor') === team.id);
+          .find((element) => element.getAttribute("data-anchor") === team.id);
 
         if (teamToScrollTo) {
           teamToScrollTo.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
+            behavior: "smooth",
+            block: "center",
           });
         }
       }, 100);
@@ -228,7 +227,7 @@ export class TeamsStepComponent {
     const index = teams.controls.findIndex((control) => control.value.team?.id === team.id);
     const form = teams.at(index);
 
-    const ref = this.snackBar.open(`Team ${team.name} removed`, 'Undo', {
+    const ref = this.snackBar.open(`Team ${team.name} removed`, "Undo", {
       duration: 2000,
     });
 
@@ -241,21 +240,21 @@ export class TeamsStepComponent {
   }
 
   private getTeamName(team: Team, club: Club) {
-    let teamName = '';
+    let teamName = "";
     switch (club?.useForTeamName ?? UseForTeamName.TEAM_NAME) {
       case UseForTeamName.FULL_NAME:
-        teamName = `${club.fullName} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
+        teamName = `${club.fullName} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, "vl")}`;
         break;
       case UseForTeamName.ABBREVIATION:
-        teamName = `${club.abbreviation} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
+        teamName = `${club.abbreviation} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, "vl")}`;
         break;
 
       case UseForTeamName.NAME:
-        teamName = `${club.name} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
+        teamName = `${club.name} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, "vl")}`;
         break;
       default:
       case UseForTeamName.TEAM_NAME:
-        teamName = `${club.teamName} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
+        teamName = `${club.teamName} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, "vl")}`;
         break;
     }
 
@@ -277,7 +276,7 @@ export class TeamsStepComponent {
       if (!teams) continue;
 
       for (let i = 0; i < teams.length; i++) {
-        const team = teams.at(i)?.get('team') as FormControl<Team>;
+        const team = teams.at(i)?.get("team") as FormControl<Team>;
         if (!team) continue;
         if (!team.value) continue;
 

@@ -8,14 +8,14 @@ import {
   EventCompetitionBuilder,
   SubEventCompetition,
   SubEventCompetitionBuilder,
-} from '@badman/backend-database';
-import { ConfigModule } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Sequelize } from 'sequelize-typescript';
-import { LevelType, SubEventTypeEnum } from '@badman/utils';
-import { EncounterValidationService } from './encounter.service';
+} from "@badman/backend-database";
+import { ConfigModule } from "@nestjs/config";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Sequelize } from "sequelize-typescript";
+import { LevelType, SubEventTypeEnum } from "@badman/utils";
+import { EncounterValidationService } from "./encounter.service";
 
-describe('EncounterValidationService', () => {
+describe("EncounterValidationService", () => {
   let service: EncounterValidationService;
   let draw: DrawCompetition;
   let event: EventCompetition;
@@ -28,7 +28,7 @@ describe('EncounterValidationService', () => {
       providers: [EncounterValidationService],
       imports: [
         ConfigModule.forRoot({
-          envFilePath: '.env.test',
+          envFilePath: ".env.test",
         }),
         DatabaseModule,
       ],
@@ -40,9 +40,9 @@ describe('EncounterValidationService', () => {
     const sequelize = module.get<Sequelize>(Sequelize);
     await sequelize.sync({ force: true });
 
-    const drawBuilder = DrawCompetitionBuilder.Create().WithName('Test draw');
+    const drawBuilder = DrawCompetitionBuilder.Create().WithName("Test draw");
 
-    const subEventBuilder = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX, 'Test SubEvent')
+    const subEventBuilder = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX, "Test SubEvent")
       .WithIndex(53, 70)
       .WitnMaxLevel(6);
 
@@ -50,8 +50,8 @@ describe('EncounterValidationService', () => {
 
     event = await EventCompetitionBuilder.Create(LevelType.PROV)
       .WithYear(2020)
-      .WithUsedRanking({ amount: 4, unit: 'months' })
-      .WithName('Test Event')
+      .WithUsedRanking({ amount: 4, unit: "months" })
+      .WithName("Test Event")
       .WithSubEvent(subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder)))
       .Build();
 
@@ -60,7 +60,7 @@ describe('EncounterValidationService', () => {
     encounter = await encounterBuilder.Build();
   }, 50000);
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

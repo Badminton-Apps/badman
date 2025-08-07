@@ -1,11 +1,11 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { EncounterCompetition } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { connect } from 'ngxtension/connect';
-import { EMPTY, Subject, merge } from 'rxjs';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable, computed, inject, signal } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { EncounterCompetition } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { connect } from "ngxtension/connect";
+import { EMPTY, Subject, merge } from "rxjs";
 import {
   catchError,
   throttleTime,
@@ -14,7 +14,7 @@ import {
   mergeMap,
   startWith,
   switchMap,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 interface RecentGamesState {
   games: EncounterCompetition[];
   loading: boolean;
@@ -25,7 +25,7 @@ interface RecentGamesState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UpcommingGamesService {
   private apollo = inject(Apollo);
@@ -34,7 +34,7 @@ export class UpcommingGamesService {
 
   filter = new FormGroup({
     teamIds: new FormControl<string[]>([]),
-    clubId: new FormControl<string>(''),
+    clubId: new FormControl<string>(""),
   });
 
   // state
@@ -64,9 +64,9 @@ export class UpcommingGamesService {
       this.pagination$.pipe(
         startWith(1),
         distinctUntilChanged(),
-        mergeMap(() => this._loadUpcomingEncounters(filter)),
-      ),
-    ),
+        mergeMap(() => this._loadUpcomingEncounters(filter))
+      )
+    )
   );
 
   constructor() {
@@ -76,9 +76,9 @@ export class UpcommingGamesService {
         map(() => ({
           loading: true,
           games: [],
-        })),
+        }))
       ),
-      this.error$.pipe(map((error) => ({ error }))),
+      this.error$.pipe(map((error) => ({ error })))
     );
 
     connect(this.state)
@@ -106,7 +106,7 @@ export class UpcommingGamesService {
       teamIds: string[] | null;
       teamId: string | null;
       clubId: string | null;
-    }>,
+    }>
   ) {
     return this.apollo
       .query<{
@@ -164,7 +164,7 @@ export class UpcommingGamesService {
         variables: {
           where: {
             date: {
-              $gte: moment().format('YYYY-MM-DD HH:mm:ss'),
+              $gte: moment().format("YYYY-MM-DD HH:mm:ss"),
             },
             $or: [
               {
@@ -177,8 +177,8 @@ export class UpcommingGamesService {
           },
           order: [
             {
-              direction: 'asc',
-              field: 'date',
+              direction: "asc",
+              field: "date",
             },
           ],
           skip: (this.page() - 1) * this.itemsPerPage, // Skip the previous pages
@@ -192,13 +192,13 @@ export class UpcommingGamesService {
         }),
         map((result) => {
           return result?.data?.encounterCompetitions?.rows?.map(
-            (encounter) => new EncounterCompetition(encounter),
+            (encounter) => new EncounterCompetition(encounter)
           );
         }),
         map((encounters) => this._setHome(filter.clubId, filter.teamId, encounters ?? [])),
         map((games) => ({
           games,
-        })),
+        }))
       );
   }
 
@@ -216,7 +216,7 @@ export class UpcommingGamesService {
   private _setHome(
     clubId: string | null | undefined,
     teamId: string | null | undefined,
-    encounters: EncounterCompetition[],
+    encounters: EncounterCompetition[]
   ) {
     if (!clubId && !teamId) {
       return encounters;

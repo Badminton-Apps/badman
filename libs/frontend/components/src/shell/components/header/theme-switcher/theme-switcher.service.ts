@@ -1,20 +1,20 @@
-import { isPlatformServer } from '@angular/common';
-import { Injectable, PLATFORM_ID, inject, DOCUMENT } from '@angular/core';
-import { Meta } from '@angular/platform-browser';
+import { isPlatformServer } from "@angular/common";
+import { Injectable, PLATFORM_ID, inject, DOCUMENT } from "@angular/core";
+import { Meta } from "@angular/platform-browser";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ThemeSwitcherService {
   private document = inject<Document>(DOCUMENT);
   private _platformId = inject<string>(PLATFORM_ID);
   private meta = inject(Meta);
-  public defaultScheme: 'dark' | 'light' = 'dark';
-  public schemes = ['dark', 'light'] as const;
+  public defaultScheme: "dark" | "light" = "dark";
+  public schemes = ["dark", "light"] as const;
 
-  private colorScheme?: 'dark' | 'light';
+  private colorScheme?: "dark" | "light";
   // Define prefix for clearer and more readable class names in scss files
-  private colorSchemePrefix = 'color-scheme-';
+  private colorSchemePrefix = "color-scheme-";
 
   get currentActive() {
     return this.colorScheme;
@@ -22,25 +22,25 @@ export class ThemeSwitcherService {
 
   _detectPrefersColorScheme() {
     // Detect if prefers-color-scheme is supported
-    if (window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
+    if (window.matchMedia("(prefers-color-scheme)").media !== "not all") {
       // Set colorScheme to Dark if prefers-color-scheme is dark. Otherwise, set it to Light.
-      this.colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
+      this.colorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     } else {
       // If the browser does not support prefers-color-scheme, set the default to dark.
       this.colorScheme = this.defaultScheme;
     }
   }
 
-  _setColorScheme(scheme: 'dark' | 'light') {
+  _setColorScheme(scheme: "dark" | "light") {
     this.colorScheme = scheme;
     // Save prefers-color-scheme to localStorage
-    localStorage.setItem('prefers-color', scheme);
+    localStorage.setItem("prefers-color", scheme);
 
     this.meta.updateTag({
-      name: 'theme-color',
-      content: this.colorScheme === 'dark' ? '#212121' : '#fafafa',
+      name: "theme-color",
+      content: this.colorScheme === "dark" ? "#212121" : "#fafafa",
     });
   }
 
@@ -50,7 +50,7 @@ export class ThemeSwitcherService {
       return;
     }
 
-    const localStorageColorScheme = localStorage.getItem('prefers-color') as 'dark' | 'light';
+    const localStorageColorScheme = localStorage.getItem("prefers-color") as "dark" | "light";
     // Check if any prefers-color-scheme is stored in localStorage
     if (localStorageColorScheme) {
       // Save prefers-color-scheme from localStorage
@@ -62,14 +62,14 @@ export class ThemeSwitcherService {
   }
 
   load() {
-    this.document.body.classList.remove(this.colorSchemePrefix + 'light');
-    this.document.body.classList.remove(this.colorSchemePrefix + 'dark');
+    this.document.body.classList.remove(this.colorSchemePrefix + "light");
+    this.document.body.classList.remove(this.colorSchemePrefix + "dark");
 
     this._getColorScheme();
     this.document.body.classList.add(this.colorSchemePrefix + this.colorScheme);
   }
 
-  update(scheme: 'dark' | 'light') {
+  update(scheme: "dark" | "light") {
     this.document.body.classList.remove(this.colorSchemePrefix + this.colorScheme);
 
     this._setColorScheme(scheme);

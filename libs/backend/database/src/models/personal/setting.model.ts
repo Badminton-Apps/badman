@@ -1,5 +1,5 @@
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import { BuildOptions } from 'sequelize';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
+import { BuildOptions } from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -10,18 +10,18 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
-import { NotificationType } from '@badman/utils';
-import { PushSubscription, PushSubscriptionType } from '../../types';
-import { Player } from '../player.model';
-import { AvaliableLanguages } from '@badman/utils';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { NotificationType } from "@badman/utils";
+import { PushSubscription, PushSubscriptionType } from "../../types";
+import { Player } from "../player.model";
+import { AvaliableLanguages } from "@badman/utils";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'personal',
+  schema: "personal",
 })
-@ObjectType({ description: 'The settings' })
+@ObjectType({ description: "The settings" })
 export class Setting extends Model {
   constructor(values?: Partial<Setting>, options?: BuildOptions) {
     super(values, options);
@@ -49,7 +49,7 @@ export class Setting extends Model {
   language?: AvaliableLanguages;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'playerId')
+  @BelongsTo(() => Player, "playerId")
   player?: Relation<Player>;
 
   @ForeignKey(() => Player)
@@ -97,7 +97,7 @@ export class Setting extends Model {
     defaultValue: NotificationType.NONE,
   })
   encounterChangeFinishedNotification!: NotificationType;
-  
+
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
@@ -136,19 +136,19 @@ export class Setting extends Model {
 
 @InputType()
 export class SettingUpdateInput extends PartialType(
-  OmitType(Setting, ['player', 'pushSubscriptions'] as const),
-  InputType,
+  OmitType(Setting, ["player", "pushSubscriptions"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class SettingNewInput extends PartialType(
-  OmitType(SettingUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(SettingUpdateInput, ["id"] as const),
+  InputType
 ) {}
 
 export class NotificationOptionsTypes extends OmitType(Setting, [
-  'id',
-  'language',
-  'player',
-  'pushSubscriptions',
+  "id",
+  "language",
+  "player",
+  "pushSubscriptions",
 ] as const) {}

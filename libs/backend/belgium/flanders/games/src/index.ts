@@ -1,1 +1,1 @@
-export * from './lib/belgium-flanders-games.module';
+export * from "./lib/belgium-flanders-games.module";
