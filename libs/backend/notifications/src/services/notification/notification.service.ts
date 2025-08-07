@@ -1,7 +1,7 @@
 import {
   EncounterValidationError,
   EncounterValidationService,
-} from '@badman/backend-change-encounter';
+} from "@badman/backend-change-encounter";
 import {
   Availability,
   Club,
@@ -9,15 +9,16 @@ import {
   EventCompetition,
   EventEntry,
   EventTournament,
+  FrontendContextType,
   Player,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
-import { MailingService } from '@badman/backend-mailing';
-import { ConfigType, I18nTranslations, sortTeams } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { I18nService } from 'nestjs-i18n';
+} from "@badman/backend-database";
+import { MailingService } from "@badman/backend-mailing";
+import { ConfigType, I18nTranslations, sortTeams } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { I18nService } from "nestjs-i18n";
 import {
   CompetitionEncounterChangeConfirmationRequestNotifier,
   CompetitionEncounterChangeFinishRequestNotifier,
@@ -28,9 +29,9 @@ import {
   EventSyncedFailedNotifier,
   EventSyncedSuccessNotifier,
   SyncEncounterFailed,
-} from '../../notifiers';
-import { ClubEnrollmentNotifier } from '../../notifiers/clubenrollment';
-import { PushService } from '../push';
+} from "../../notifiers";
+import { ClubEnrollmentNotifier } from "../../notifiers/clubenrollment";
+import { PushService } from "../push";
 
 @Injectable()
 export class NotificationService {
@@ -41,15 +42,20 @@ export class NotificationService {
     private push: PushService,
     private configService: ConfigService<ConfigType>,
     private changeEncounterValidation: EncounterValidationService,
-    private readonly i18nService: I18nService<I18nTranslations>,
+    private readonly i18nService: I18nService<I18nTranslations>
   ) {}
 
-  async notifyEncounterChange(encounter: EncounterCompetition, homeTeamRequests: boolean) {
+  async notifyEncounterChange(
+    encounter: EncounterCompetition,
+    homeTeamRequests: boolean,
+    frontendContext?: FrontendContextType,
+    eventId?: string
+  ) {
     const homeTeam = await encounter.getHome({
       include: [
         {
           model: Player,
-          as: 'captain',
+          as: "captain",
         },
       ],
     });
@@ -57,7 +63,7 @@ export class NotificationService {
       include: [
         {
           model: Player,
-          as: 'captain',
+          as: "captain",
         },
       ],
     });
@@ -66,21 +72,39 @@ export class NotificationService {
     encounter.home = homeTeam;
     encounter.away = awayTeam;
 
+    const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
+
     const newReqTeam = homeTeamRequests ? homeTeam : awayTeam;
     const confReqTeam = homeTeamRequests ? awayTeam : homeTeam;
+
+    // Generate URLs based on who made the request vs who needs to confirm
+    const newReqUrl = await this._getEncounterChangeUrl(
+      encounter,
+      frontendContext,
+      season,
+      newReqTeam,
+      eventId
+    );
+    const confReqUrl = await this._getEncounterChangeUrl(
+      encounter,
+      frontendContext,
+      season,
+      confReqTeam,
+      eventId
+    );
 
     const notifierNew = new CompetitionEncounterChangeNewRequestNotifier(this.mailing, this.push);
     const notifierConform = new CompetitionEncounterChangeConfirmationRequestNotifier(
       this.mailing,
-      this.push,
+      this.push
     );
 
     if (newReqTeam.captain && newReqTeam.email) {
       notifierNew.notify(
         newReqTeam.captain,
         encounter.id,
-        { encounter, isHome: homeTeamRequests },
-        { email: newReqTeam.email },
+        { encounter, isHome: homeTeamRequests, url: newReqUrl },
+        { email: "robert@pandapanda.be" }
       );
     }
 
@@ -88,8 +112,8 @@ export class NotificationService {
       notifierConform.notify(
         confReqTeam.captain,
         encounter.id,
-        { encounter, isHome: !homeTeamRequests },
-        { email: confReqTeam.email },
+        { encounter, isHome: !homeTeamRequests, url: confReqUrl },
+        { email: "robert@pandapanda.be" }
       );
     }
   }
@@ -97,16 +121,18 @@ export class NotificationService {
   async notifyEncounterChangeFinished(
     encounter: EncounterCompetition,
     locationHasChanged: boolean,
+    frontendContext?: FrontendContextType,
+    eventId?: string
   ) {
     const notifierFinished = new CompetitionEncounterChangeFinishRequestNotifier(
       this.mailing,
-      this.push,
+      this.push
     );
     const homeTeam = await encounter.getHome({
       include: [
         {
           model: Player,
-          as: 'captain',
+          as: "captain",
         },
       ],
     });
@@ -114,7 +140,7 @@ export class NotificationService {
       include: [
         {
           model: Player,
-          as: 'captain',
+          as: "captain",
         },
       ],
     });
@@ -123,13 +149,31 @@ export class NotificationService {
     encounter.home = homeTeam;
     encounter.away = awayTeam;
 
+    const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
+
+    // For finished notifications, both teams get the same URL since the change is complete
+    const homeTeamUrl = await this._getEncounterChangeUrl(
+      encounter,
+      frontendContext,
+      season,
+      homeTeam,
+      eventId
+    );
+    const awayTeamUrl = await this._getEncounterChangeUrl(
+      encounter,
+      frontendContext,
+      season,
+      awayTeam,
+      eventId
+    );
+
     if (homeTeam.captain && homeTeam.email) {
       const validation = await this._getValidationMessage(homeTeam);
       notifierFinished.notify(
         homeTeam.captain,
         encounter.id,
-        { encounter, locationHasChanged, isHome: true, validation },
-        { email: homeTeam.email },
+        { encounter, locationHasChanged, isHome: true, validation, url: homeTeamUrl },
+        { email: homeTeam.email }
       );
     }
 
@@ -139,8 +183,8 @@ export class NotificationService {
       notifierFinished.notify(
         awayTeam.captain,
         encounter.id,
-        { encounter, locationHasChanged, isHome: false, validation },
-        { email: awayTeam.email },
+        { encounter, locationHasChanged, isHome: false, validation, url: awayTeamUrl },
+        { email: awayTeam.email }
       );
     }
 
@@ -156,7 +200,7 @@ export class NotificationService {
       include: [
         {
           model: Player,
-          as: 'captain',
+          as: "captain",
         },
       ],
     });
@@ -167,7 +211,7 @@ export class NotificationService {
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
     if (!homeTeam.captain || !homeTeam.email) {
-      this._logger.error('Captain or email not found');
+      this._logger.error("Captain or email not found");
       return;
     }
 
@@ -175,7 +219,7 @@ export class NotificationService {
       homeTeam.captain,
       encounter.id,
       { encounter },
-      { email: homeTeam.email ?? homeTeam.captain?.email, url },
+      { email: homeTeam.email ?? homeTeam.captain?.email, url }
     );
   }
 
@@ -184,7 +228,7 @@ export class NotificationService {
 
     const event = encounter.drawCompetition?.subEventCompetition?.eventCompetition;
     if (!event) {
-      throw new Error('Event not found');
+      throw new Error("Event not found");
     }
 
     // Property was loaded when sending notification
@@ -194,7 +238,7 @@ export class NotificationService {
     const email = event.contactEmail ?? event.contact?.email;
 
     if (!email) {
-      this._logger.error('Email not found');
+      this._logger.error("Email not found");
       return;
     }
 
@@ -210,13 +254,13 @@ export class NotificationService {
   async notifyEncounterNotAccepted(encounter: EncounterCompetition) {
     const notifierNotAccepted = new CompetitionEncounterNotAcceptedNotifier(
       this.mailing,
-      this.push,
+      this.push
     );
     const awayTeam = await encounter.getAway({
       include: [
         {
           model: Player,
-          as: 'captain',
+          as: "captain",
         },
       ],
     });
@@ -231,28 +275,28 @@ export class NotificationService {
         awayTeam.captain,
         encounter.id,
         { encounter },
-        { email: awayTeam.email ?? awayTeam.captain?.email, url },
+        { email: awayTeam.email ?? awayTeam.captain?.email, url }
       );
     }
   }
 
   async notifySyncFinished(
     userId: string,
-    { event, success }: { event?: EventCompetition | EventTournament; success: boolean },
+    { event, success }: { event?: EventCompetition | EventTournament; success: boolean }
   ) {
     const notifierSyncFinished = success
       ? new EventSyncedSuccessNotifier(this.mailing, this.push)
       : new EventSyncedFailedNotifier(this.mailing, this.push);
 
     const user = await Player.findByPk(userId);
-    const url = `${this.configService.get('CLIENT_URL')}/events/${event?.id}`;
+    const url = `${this.configService.get("CLIENT_URL")}/competition/${event?.id}`;
 
     if (user?.email && event?.id && url && user?.slug) {
       notifierSyncFinished.notify(
         user,
         event?.id,
         { event, success },
-        { email: user?.email, url, slug: user?.slug },
+        { email: user?.email, url, slug: user?.slug }
       );
     }
   }
@@ -262,7 +306,7 @@ export class NotificationService {
 
     const user = await Player.findByPk(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     const club = await Club.findByPk(clubId, {
@@ -275,7 +319,7 @@ export class NotificationService {
           include: [
             {
               model: Player,
-              as: 'captain',
+              as: "captain",
             },
             {
               model: EventEntry,
@@ -296,7 +340,7 @@ export class NotificationService {
     });
 
     if (!club) {
-      throw new Error('Club not found');
+      throw new Error("Club not found");
     }
 
     const locations = await club.getLocations({
@@ -308,13 +352,13 @@ export class NotificationService {
       club.teams
         ?.map((team) => team?.entry)
         ?.map((eventEntry) => eventEntry?.subEventCompetition)
-        ?.map((subEvent) => subEvent?.eventId),
+        ?.map((subEvent) => subEvent?.eventId)
     );
 
     const comments = await club.getComments({
       where: {
         linkId: [...eventEntries],
-        linkType: 'competition',
+        linkType: "competition",
       },
       include: [
         {
@@ -354,27 +398,27 @@ export class NotificationService {
     });
 
     club.teams = club?.teams?.sort(sortTeams);
-    const url = `${this.configService.get('CLIENT_URL')}/club/${club.id}`;
+    const url = `${this.configService.get("CLIENT_URL")}/club/${club.id}`;
 
     notifierEnrollment.notify(
       user,
       clubId,
       { club, locations, comments },
-      { email: email || user.email || '', url },
+      { email: email || user.email || "", url },
       {
         email: true,
-      },
+      }
     );
   }
 
   async notifySyncEncounterFailed(
     userId: string,
-    { encounter, url }: { encounter?: EncounterCompetition; url: string },
+    { encounter, url }: { encounter?: EncounterCompetition; url: string }
   ) {
     const notifier = new SyncEncounterFailed(this.mailing, this.push);
 
     if (!encounter) {
-      throw new Error('Encounter not found');
+      throw new Error("Encounter not found");
     }
 
     const user = await Player.findByPk(userId);
@@ -401,46 +445,46 @@ export class NotificationService {
       encounter.away = await encounter?.getAway();
     }
 
-    const urlBadman = `${this.configService.get('CLIENT_URL')}/competition/${
+    const urlBadman = `${this.configService.get("CLIENT_URL")}/competition/${
       encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.id
-    }/draw/${encounter?.drawCompetition?.id}/encounter/${encounter?.id}`;
+    }/draw/${encounter?.drawCompetition?.id}`;
 
     if (user?.email && encounter?.id && url && user?.slug) {
       notifier.notify(
         user,
         encounter.id,
         { encounter, url, urlBadman },
-        { email: user?.email, slug: user?.slug },
+        { email: user?.email, slug: user?.slug }
       );
     }
   }
 
   private async _getValidationMessage(team: Team, captainId?: string) {
     const encountersH = await team.getHomeEncounters({
-      attributes: ['id', 'date'],
+      attributes: ["id", "date"],
 
       include: [
         {
-          association: 'home',
-          attributes: ['id', 'name'],
+          association: "home",
+          attributes: ["id", "name"],
         },
         {
-          association: 'away',
-          attributes: ['id', 'name'],
+          association: "away",
+          attributes: ["id", "name"],
         },
       ],
     });
     const encountersA = await team.getHomeEncounters({
-      attributes: ['id', 'date'],
+      attributes: ["id", "date"],
 
       include: [
         {
-          association: 'home',
-          attributes: ['id', 'name'],
+          association: "home",
+          attributes: ["id", "name"],
         },
         {
-          association: 'away',
-          attributes: ['id', 'name'],
+          association: "away",
+          attributes: ["id", "name"],
         },
       ],
     });
@@ -475,12 +519,48 @@ export class NotificationService {
         errors: error.errors.map((err) =>
           this.i18nService.translate(err.message, {
             args: err.params as never,
-            lang: 'nl_BE',
-          }),
+            lang: "nl_BE",
+          })
         ),
       });
     }
 
     return errors;
+  }
+
+  private async _getEncounterChangeUrl(
+    encounter: EncounterCompetition,
+    frontendContext?: FrontendContextType,
+    season?: number,
+    team?: Team,
+    eventId?: string
+  ): Promise<string> {
+    const baseClientUrl = this.configService.get("CLIENT_URL");
+    const baseLegacyClientUrl = this.configService.get("LEGACY_CLIENT_URL");
+
+    switch (frontendContext) {
+      case "my-club":
+        return `${baseClientUrl}/my-club/${team?.clubId}/change-encounter/${encounter.id}`;
+      case "club":
+        return `${baseClientUrl}/club/${team?.clubId}/change-encounter/${encounter.id}`;
+      case "competition":
+        // Use the provided eventId if available, otherwise fetch it
+        let competitionEventId = eventId;
+        if (!competitionEventId) {
+          const draw = await encounter.getDrawCompetition({
+            include: [
+              {
+                model: SubEventCompetition,
+                attributes: ["id", "eventId"],
+              },
+            ],
+          });
+          competitionEventId = draw?.subEventCompetition?.eventId;
+        }
+        return `${baseClientUrl}/competition/${competitionEventId}/change-encounter/${encounter.id}`;
+      default:
+        // This handles the legacy app, which does not have the context value, and has different routing
+        return `${baseLegacyClientUrl}/competition/change-encounter?club=${team?.clubId}&team=${team?.id}&encounter=${encounter.id}&season=${season}`;
+    }
   }
 }

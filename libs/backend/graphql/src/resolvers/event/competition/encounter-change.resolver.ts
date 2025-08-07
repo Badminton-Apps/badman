@@ -9,9 +9,9 @@ import {
   Logging,
   Player,
   SubEventCompetition,
-} from '@badman/backend-database';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+} from "@badman/backend-database";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -23,19 +23,19 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import moment from 'moment-timezone';
-import { ListArgs } from '../../../utils';
+} from "@nestjs/graphql";
+import moment from "moment-timezone";
+import { ListArgs } from "../../../utils";
 
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 
-import { EncounterValidationService } from '@badman/backend-change-encounter';
-import { NotificationService } from '@badman/backend-notifications';
-import { LoggingAction } from '@badman/utils';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
-import { Transaction } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
+import { EncounterValidationService } from "@badman/backend-change-encounter";
+import { NotificationService } from "@badman/backend-notifications";
+import { LoggingAction } from "@badman/utils";
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
+import { Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 
 @ObjectType()
 export class PagedEncounterChange {
@@ -54,11 +54,11 @@ export class EncounterChangeCompetitionResolver {
     private _sequelize: Sequelize,
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private notificationService: NotificationService,
-    private encounterService: EncounterValidationService,
+    private encounterService: EncounterValidationService
   ) {}
 
   @Query(() => EncounterChange)
-  async encounterChange(@Args('id', { type: () => ID }) id: string): Promise<EncounterChange> {
+  async encounterChange(@Args("id", { type: () => ID }) id: string): Promise<EncounterChange> {
     const encounterCompetition = await EncounterChange.findByPk(id);
 
     if (!encounterCompetition) {
@@ -69,7 +69,7 @@ export class EncounterChangeCompetitionResolver {
 
   @Query(() => PagedEncounterChange)
   async encounterChanges(
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<{ count: number; rows: EncounterChange[] }> {
     return EncounterChange.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
@@ -82,7 +82,7 @@ export class EncounterChangeCompetitionResolver {
   @Mutation(() => EncounterChange)
   async updateEncounterChange(
     @User() user: Player,
-    @Args('data') updateChangeEncounter: EncounterChangeUpdateInput,
+    @Args("data") updateChangeEncounter: EncounterChangeUpdateInput
   ): Promise<EncounterChange> {
     const encounterChange = await EncounterChange.findByPk(updateChangeEncounter.id);
 
@@ -102,7 +102,7 @@ export class EncounterChangeCompetitionResolver {
       !(await user.hasAnyPermission([
         `${homeTeam.clubId}_change:encounter`,
         `${awayTeam.clubId}_change:encounter`,
-        'change-any:encounter',
+        "change-any:encounter",
       ]))
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this encounter`);
@@ -114,13 +114,13 @@ export class EncounterChangeCompetitionResolver {
   @Mutation(() => EncounterChange)
   async addChangeEncounter(
     @User() user: Player,
-    @Args('data') newChangeEncounter: EncounterChangeNewInput,
+    @Args("data") newChangeEncounter: EncounterChangeNewInput
   ): Promise<EncounterChange> {
     const encounter = await EncounterCompetition.findByPk(newChangeEncounter.encounterId);
 
     if (!encounter) {
       throw new NotFoundException(
-        `${EncounterCompetition.name}: ${newChangeEncounter.encounterId}`,
+        `${EncounterCompetition.name}: ${newChangeEncounter.encounterId}`
       );
     }
 
@@ -128,7 +128,7 @@ export class EncounterChangeCompetitionResolver {
 
     const userHasPermission = await user.hasAnyPermission([
       `${team.clubId}_change:encounter`,
-      'change-any:encounter',
+      "change-any:encounter",
     ]);
 
     this.logger.debug(`userHasPermission: ${userHasPermission}`);
@@ -140,6 +140,7 @@ export class EncounterChangeCompetitionResolver {
     const transaction = await this._sequelize.transaction();
     let encounterChange: EncounterChange;
     let locationHasChanged = false;
+    let eventId: string | undefined;
 
     try {
       // Check if encounter has change
@@ -154,14 +155,14 @@ export class EncounterChangeCompetitionResolver {
       }
 
       const dates = await encounterChange.getDates();
-      const isSuperUser = await user.hasAnyPermission(['change-any:encounter']);
+      const isSuperUser = await user.hasAnyPermission(["change-any:encounter"]);
 
       // Set the state if it is the home team or the user has the change-any:encounter permission
       if (newChangeEncounter.accepted && (newChangeEncounter.home || isSuperUser)) {
         const selectedDates = newChangeEncounter.dates?.filter((r) => r.selected === true);
         if (selectedDates?.length !== 1) {
           // Multiple dates were selected
-          throw new Error('Multiple dates selected');
+          throw new Error("Multiple dates selected");
         }
         // Copy original date
         if (encounter.originalDate === null) {
@@ -205,7 +206,7 @@ export class EncounterChangeCompetitionResolver {
           {
             removeOnComplete: true,
             removeOnFail: false,
-          },
+          }
         );
 
         // Remove the selected date from the change dates
@@ -227,25 +228,28 @@ export class EncounterChangeCompetitionResolver {
         include: [
           {
             model: SubEventCompetition,
-            attributes: ['id', 'eventId'],
+            attributes: ["id", "eventId"],
           },
         ],
       });
 
       const event = await EventCompetition.findByPk(draw?.subEventCompetition?.eventId, {
         attributes: [
-          'id',
-          'name',
-          'season',
-          'changeCloseRequestDatePeriod1',
-          'changeCloseRequestDatePeriod2',
+          "id",
+          "name",
+          "season",
+          "changeCloseRequestDatePeriod1",
+          "changeCloseRequestDatePeriod2",
         ],
       });
 
+      // Store the event ID for notifications
+      eventId = event?.id;
+
       // Check if we're getting the right event type
-      if (event && event.constructor.name !== 'EventCompetition') {
+      if (event && event.constructor.name !== "EventCompetition") {
         this.logger.error(
-          `Wrong event type loaded: ${event.constructor.name}. Expected EventCompetition`,
+          `Wrong event type loaded: ${event.constructor.name}. Expected EventCompetition`
         );
         throw new Error(`Invalid event type: ${event.constructor.name}. Expected EventCompetition`);
       }
@@ -253,10 +257,10 @@ export class EncounterChangeCompetitionResolver {
       // Check if the event has the required date fields
       if (!event?.changeCloseRequestDatePeriod1 || !event?.changeCloseRequestDatePeriod2) {
         this.logger.error(
-          `EventCompetition ${event?.id} (${event?.name}) is missing required date fields. Please configure the date change periods in the event settings.`,
+          `EventCompetition ${event?.id} (${event?.name}) is missing required date fields. Please configure the date change periods in the event settings.`
         );
         throw new Error(
-          `Event "${event?.name || 'Unknown Event'}" is not configured for date changes. Please contact the competition organizer to configure the date change periods.`,
+          `Event "${event?.name || "Unknown Event"}" is not configured for date changes. Please contact the competition organizer to configure the date change periods.`
         );
       }
 
@@ -269,8 +273,8 @@ export class EncounterChangeCompetitionResolver {
         ? event?.changeCloseRequestDatePeriod1
         : event?.changeCloseRequestDatePeriod2;
 
-      const currentDate = moment.tz('europe/brussels');
-      const deadlineDate = moment.tz(closedDate, 'europe/brussels');
+      const currentDate = moment.tz("europe/brussels");
+      const deadlineDate = moment.tz(closedDate, "europe/brussels");
 
       const canRequestNewDates = currentDate.isBefore(deadlineDate);
 
@@ -281,13 +285,13 @@ export class EncounterChangeCompetitionResolver {
         dates,
         canRequestNewDates,
         event || null, // Pass the event data to avoid reloading it
-        encounter.date || new Date(), // Pass the encounter date to ensure consistent logic
+        encounter.date || new Date() // Pass the encounter date to ensure consistent logic
       );
 
       // find if any date was selected
       await transaction.commit();
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -299,7 +303,12 @@ export class EncounterChangeCompetitionResolver {
     }
 
     if (newChangeEncounter.accepted) {
-      this.notificationService.notifyEncounterChangeFinished(updatedEncounter, locationHasChanged);
+      this.notificationService.notifyEncounterChangeFinished(
+        updatedEncounter,
+        locationHasChanged,
+        newChangeEncounter.frontendContext,
+        eventId
+      );
 
       // check if the location has changed
       if (locationHasChanged) {
@@ -309,6 +318,8 @@ export class EncounterChangeCompetitionResolver {
       this.notificationService.notifyEncounterChange(
         updatedEncounter,
         newChangeEncounter.home ?? false,
+        newChangeEncounter.frontendContext,
+        eventId
       );
     }
 
@@ -321,7 +332,7 @@ export class EncounterChangeCompetitionResolver {
     existingDates: EncounterChangeDate[],
     canRequestNewDates: boolean,
     event: EventCompetition | null,
-    encounterDate: Date,
+    encounterDate: Date
   ) {
     change.dates = change.dates
       ?.map((r) => {
@@ -335,7 +346,7 @@ export class EncounterChangeCompetitionResolver {
     for (const date of change.dates ?? []) {
       // Check if the encounter has alredy a change for this date
       let encounterChangeDate = existingDates.find(
-        (r) => r.date?.getTime() === date.date?.getTime(),
+        (r) => r.date?.getTime() === date.date?.getTime()
       );
 
       if (!encounterChangeDate && !canRequestNewDates) {
@@ -350,14 +361,14 @@ export class EncounterChangeCompetitionResolver {
           ? event?.changeCloseRequestDatePeriod1
           : event?.changeCloseRequestDatePeriod2;
 
-        const currentDate = moment().tz('europe/brussels');
-        const deadlineDate = moment.tz(closedDate, 'europe/brussels');
+        const currentDate = moment().tz("europe/brussels");
+        const deadlineDate = moment.tz(closedDate, "europe/brussels");
 
         throw new Error(
-          `Cannot request new dates for event "${event?.name || 'Unknown Event'}". The deadline for requesting date changes has passed. ` +
-            `Deadline was: ${deadlineDate.format('DD/MM/YYYY HH:mm')} (${deadlineDate.fromNow()}). ` +
-            `Current time: ${currentDate.format('DD/MM/YYYY HH:mm')}. ` +
-            `Please contact the competition organizer if you need to make changes after the deadline.`,
+          `Cannot request new dates for event "${event?.name || "Unknown Event"}". The deadline for requesting date changes has passed. ` +
+            `Deadline was: ${deadlineDate.format("DD/MM/YYYY HH:mm")} (${deadlineDate.fromNow()}). ` +
+            `Current time: ${currentDate.format("DD/MM/YYYY HH:mm")}. ` +
+            `Please contact the competition organizer if you need to make changes after the deadline.`
         );
       }
 

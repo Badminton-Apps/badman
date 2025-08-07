@@ -1,7 +1,7 @@
-import { EncounterCompetition, NotificationOptionsTypes, Player } from '@badman/backend-database';
-import { Notifier } from '../notifier.base';
-import { unitOfTime } from 'moment';
-import { RequestOptions } from 'web-push';
+import { EncounterCompetition, NotificationOptionsTypes, Player } from "@badman/backend-database";
+import { Notifier } from "../notifier.base";
+import { unitOfTime } from "moment";
+import { RequestOptions } from "web-push";
 
 export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
   encounter: EncounterCompetition;
@@ -11,15 +11,16 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
     encounter: EncounterCompetition;
     errors: string[];
   }[];
+  url: string;
 }> {
-  protected linkType = 'encounterCompetition';
-  protected type: keyof NotificationOptionsTypes = 'encounterChangeFinishedNotification';
-  protected override allowedInterval: unitOfTime.Diff = 'second';
+  protected linkType = "encounterCompetition";
+  protected type: keyof NotificationOptionsTypes = "encounterChangeFinishedNotification";
+  protected override allowedInterval: unitOfTime.Diff = "second";
 
   private readonly options = (encounter: EncounterCompetition) => {
     return {
       notification: {
-        title: 'Verplaatsing afgewerkt',
+        title: "Verplaatsing afgewerkt",
         body: `De verplaatsings aanvraag voor ${encounter.home?.name} - ${encounter.away?.name} is afgewerkt`,
       },
     } as RequestOptions;
@@ -36,9 +37,10 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
         encounter: EncounterCompetition;
         errors: string[];
       }[];
+      url: string;
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string },
+    args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
     await this.pushService.sendNotification(player, this.options(data.encounter));
@@ -55,9 +57,10 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
         encounter: EncounterCompetition;
         errors: string[];
       }[];
+      url: string;
     },
 
-    args?: { email: string },
+    args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
     const email = args?.email ?? player.email;
@@ -82,6 +85,7 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
       data.isHome,
       data.locationHasChanged,
       data.validation,
+      data.url
     );
   }
   notifySms(
@@ -95,9 +99,10 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
         encounter: EncounterCompetition;
         errors: string[];
       }[];
+      url: string;
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string },
+    args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();
