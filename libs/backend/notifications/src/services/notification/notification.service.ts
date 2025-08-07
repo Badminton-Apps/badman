@@ -104,7 +104,7 @@ export class NotificationService {
         newReqTeam.captain,
         encounter.id,
         { encounter, isHome: homeTeamRequests, url: newReqUrl },
-        { email: "robert@pandapanda.be" }
+        { email: newReqTeam.email }
       );
     }
 
@@ -113,7 +113,7 @@ export class NotificationService {
         confReqTeam.captain,
         encounter.id,
         { encounter, isHome: !homeTeamRequests, url: confReqUrl },
-        { email: "robert@pandapanda.be" }
+        { email: confReqTeam.email }
       );
     }
   }
