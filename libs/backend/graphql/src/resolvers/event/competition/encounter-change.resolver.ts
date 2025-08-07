@@ -31,11 +31,11 @@ import { User } from "@badman/backend-authorization";
 
 import { EncounterValidationService } from "@badman/backend-change-encounter";
 import { NotificationService } from "@badman/backend-notifications";
-import { LoggingAction } from "@badman/utils";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
 import { Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
+import { LoggingAction } from "@badman/utils";
 
 @ObjectType()
 export class PagedEncounterChange {
@@ -115,17 +115,34 @@ export class EncounterChangeCompetitionResolver {
   async addChangeEncounter(
     @User() user: Player,
     @Args("data") newChangeEncounter: EncounterChangeNewInput
-  ): Promise<EncounterChange> {
-    const encounter = await EncounterCompetition.findByPk(newChangeEncounter.encounterId);
+  ): Promise<any> {
+    // checks for ecounter in question
+    const encounter = await EncounterCompetition.findByPk(newChangeEncounter.encounterId, {
+      include: [
+        {
+          association: "home",
+        },
+        {
+          association: "away",
+        },
+      ],
+    });
 
+    // throws error if it doesn't exist
     if (!encounter) {
       throw new NotFoundException(
         `${EncounterCompetition.name}: ${newChangeEncounter.encounterId}`
       );
     }
 
-    const team = newChangeEncounter.home ? await encounter.getHome() : await encounter.getAway();
+    // gets the team in question
+    const team = newChangeEncounter.home ? encounter.home : encounter.away;
 
+    if (!team) {
+      throw new NotFoundException("Team not found for this encounter");
+    }
+
+    // checks if the user has permission to edit the encounter
     const userHasPermission = await user.hasAnyPermission([
       `${team.clubId}_change:encounter`,
       "change-any:encounter",
@@ -155,10 +172,10 @@ export class EncounterChangeCompetitionResolver {
       }
 
       const dates = await encounterChange.getDates();
-      const isSuperUser = await user.hasAnyPermission(["change-any:encounter"]);
 
       // Set the state if it is the home team or the user has the change-any:encounter permission
-      if (newChangeEncounter.accepted && (newChangeEncounter.home || isSuperUser)) {
+      if (newChangeEncounter.accepted) {
+        this.logger.debug("accepted action");
         const selectedDates = newChangeEncounter.dates?.filter((r) => r.selected === true);
         if (selectedDates?.length !== 1) {
           // Multiple dates were selected
@@ -218,75 +235,69 @@ export class EncounterChangeCompetitionResolver {
 
         encounterChange.accepted = true;
       } else {
+        this.logger.debug("this is a new change request");
         encounterChange.accepted = false;
+        this.logger.debug(`Change encounter ${encounter.id}: ${encounterChange.accepted}`);
+        // Load the event data directly to ensure we get all the required fields
+        const draw = await encounter.getDrawCompetition({
+          include: [
+            {
+              model: SubEventCompetition,
+              attributes: ["id", "eventId"],
+            },
+          ],
+        });
+        const event = await EventCompetition.findByPk(draw?.subEventCompetition?.eventId, {
+          attributes: [
+            "id",
+            "name",
+            "season",
+            "changeCloseRequestDatePeriod1",
+            "changeCloseRequestDatePeriod2",
+          ],
+        });
+        // Store the event ID for notifications
+        eventId = event?.id;
+        // Check if we're getting the right event type
+        if (event && event.constructor.name !== "EventCompetition") {
+          this.logger.error(
+            `Wrong event type loaded: ${event.constructor.name}. Expected EventCompetition`
+          );
+          throw new Error(
+            `Invalid event type: ${event.constructor.name}. Expected EventCompetition`
+          );
+        }
+        // Check if the event has the required date fields
+        if (!event?.changeCloseRequestDatePeriod1 || !event?.changeCloseRequestDatePeriod2) {
+          this.logger.error(
+            `EventCompetition ${event?.id} (${event?.name}) is missing required date fields. Please configure the date change periods in the event settings.`
+          );
+          throw new Error(
+            `Event "${event?.name || "Unknown Event"}" is not configured for date changes. Please contact the competition organizer to configure the date change periods.`
+          );
+        }
+        const encounterDateEqualsEventSeason =
+          event?.season &&
+          (encounter.date?.getFullYear() === event?.season ||
+            encounter.date?.getFullYear() === event?.season + 1);
+        const closedDate = encounterDateEqualsEventSeason
+          ? event?.changeCloseRequestDatePeriod1
+          : event?.changeCloseRequestDatePeriod2;
+        const currentDate = moment.tz("europe/brussels");
+        const deadlineDate = moment.tz(closedDate, "europe/brussels");
+        const canRequestNewDates = currentDate.isBefore(deadlineDate);
+        await this.changeOrUpdate(
+          encounterChange,
+          newChangeEncounter,
+          transaction,
+          dates,
+          canRequestNewDates,
+          event || null, // Pass the event data to avoid reloading it
+          encounter.date || new Date() // Pass the encounter date to ensure consistent logic
+        );
       }
+
       await encounterChange.save({ transaction });
-      this.logger.debug(`Change encounter ${encounter.id}: ${encounterChange.accepted}`);
-
-      // Load the event data directly to ensure we get all the required fields
-      const draw = await encounter.getDrawCompetition({
-        include: [
-          {
-            model: SubEventCompetition,
-            attributes: ["id", "eventId"],
-          },
-        ],
-      });
-
-      const event = await EventCompetition.findByPk(draw?.subEventCompetition?.eventId, {
-        attributes: [
-          "id",
-          "name",
-          "season",
-          "changeCloseRequestDatePeriod1",
-          "changeCloseRequestDatePeriod2",
-        ],
-      });
-
-      // Store the event ID for notifications
-      eventId = event?.id;
-
-      // Check if we're getting the right event type
-      if (event && event.constructor.name !== "EventCompetition") {
-        this.logger.error(
-          `Wrong event type loaded: ${event.constructor.name}. Expected EventCompetition`
-        );
-        throw new Error(`Invalid event type: ${event.constructor.name}. Expected EventCompetition`);
-      }
-
-      // Check if the event has the required date fields
-      if (!event?.changeCloseRequestDatePeriod1 || !event?.changeCloseRequestDatePeriod2) {
-        this.logger.error(
-          `EventCompetition ${event?.id} (${event?.name}) is missing required date fields. Please configure the date change periods in the event settings.`
-        );
-        throw new Error(
-          `Event "${event?.name || "Unknown Event"}" is not configured for date changes. Please contact the competition organizer to configure the date change periods.`
-        );
-      }
-
-      const encounterDateEqualsEventSeason =
-        event?.season &&
-        (encounter.date?.getFullYear() === event?.season ||
-          encounter.date?.getFullYear() === event?.season + 1);
-
-      const closedDate = encounterDateEqualsEventSeason
-        ? event?.changeCloseRequestDatePeriod1
-        : event?.changeCloseRequestDatePeriod2;
-
-      const currentDate = moment.tz("europe/brussels");
-      const deadlineDate = moment.tz(closedDate, "europe/brussels");
-
-      const canRequestNewDates = currentDate.isBefore(deadlineDate);
-
-      await this.changeOrUpdate(
-        encounterChange,
-        newChangeEncounter,
-        transaction,
-        dates,
-        canRequestNewDates,
-        event || null, // Pass the event data to avoid reloading it
-        encounter.date || new Date() // Pass the encounter date to ensure consistent logic
-      );
 
       // find if any date was selected
       await transaction.commit();
@@ -325,6 +336,7 @@ export class EncounterChangeCompetitionResolver {
 
     return encounterChange;
   }
+
   private async changeOrUpdate(
     encounterChange: EncounterChange,
     change: EncounterChangeNewInput,
