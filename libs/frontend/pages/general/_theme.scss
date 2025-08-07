@@ -1,8 +1,8 @@
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
-@use './src/pages/changelog/changelog.page.theme.scss' as detail;
-@use './src/pages/faq/faq.page.theme.scss' as faq;
+@use "./src/pages/changelog/changelog.page.theme.scss" as detail;
+@use "./src/pages/faq/faq.page.theme.scss" as faq;
 
 @mixin typography($theme) {
   @include detail.typography($theme);

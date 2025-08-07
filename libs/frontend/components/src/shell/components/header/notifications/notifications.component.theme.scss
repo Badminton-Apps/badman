@@ -1,20 +1,17 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:color';
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:color";
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
-  
-  
-  
-  $isDark: map.get($theme, 'is-dark');
+  $isDark: map.get($theme, "is-dark");
 
   // Background color
-  
-  $background-color: mat.get-theme-color($theme, 'background', 'dialog');
 
-  $color: mat.get-theme-color($theme, foreground, 'base');
+  $background-color: mat.get-theme-color($theme, "background", "dialog");
+
+  $color: mat.get-theme-color($theme, foreground, "base");
 
   .notification-overlay {
     background-color: $background-color;
@@ -34,8 +31,6 @@
 }
 
 @mixin typography($theme) {
-  
-
   .notification-overlay {
     font: mat.get-theme-typography($theme, caption, font);
   }

@@ -1,15 +1,15 @@
-import { Club, Player, ClubPlayerMembership } from '@badman/backend-database';
-import { ClubMembershipType } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import { Transaction } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import xlsx from 'xlsx';
+import { Club, Player, ClubPlayerMembership } from "@badman/backend-database";
+import { ClubMembershipType } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import { Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import xlsx from "xlsx";
 
 @Injectable()
 export class UpdaetComPlayers {
   private readonly logger = new Logger(UpdaetComPlayers.name);
   constructor(private _sequelize: Sequelize) {
-    this.logger.log('UpdaetComPlayers');
+    this.logger.log("UpdaetComPlayers");
   }
 
   async process() {
@@ -31,26 +31,26 @@ export class UpdaetComPlayers {
 
   private async newPlayers(transaction: Transaction) {
     const workbook = xlsx.readFile(
-      `apps/scripts/src/app/scripts/update-comp-players/Nieuwe competitiespelers.xlsx`,
+      `apps/scripts/src/app/scripts/update-comp-players/Nieuwe competitiespelers.xlsx`
     );
     const data = xlsx.utils.sheet_to_json<ExcelNewCompPlayers>(
-      workbook.Sheets[workbook.SheetNames[0]],
+      workbook.Sheets[workbook.SheetNames[0]]
     );
     await this.updatePlayers(transaction, data);
   }
   private async existingPlyers(transaction: Transaction) {
     const workbook = xlsx.readFile(
-      `apps/scripts/src/app/scripts/update-comp-players/Omzetten naar competitiespeler in badman.xlsx`,
+      `apps/scripts/src/app/scripts/update-comp-players/Omzetten naar competitiespeler in badman.xlsx`
     );
     const data = xlsx.utils.sheet_to_json<ExcelNewCompPlayers>(
-      workbook.Sheets[workbook.SheetNames[0]],
+      workbook.Sheets[workbook.SheetNames[0]]
     );
     await this.updatePlayers(transaction, data);
   }
 
   private async updatePlayers(
     transaction: Transaction,
-    data: (ExcelNewCompPlayers | ExcelConvertCompPlayers)[],
+    data: (ExcelNewCompPlayers | ExcelConvertCompPlayers)[]
   ) {
     for (const row of data) {
       // find player
@@ -67,11 +67,11 @@ export class UpdaetComPlayers {
             memberId: `${row.Lidnummer}`,
             firstName: row.Voornaam,
             lastName: row.Achternaam,
-            gender: row.Geslacht == 'M' ? 'M' : 'F',
+            gender: row.Geslacht == "M" ? "M" : "F",
           },
           {
             transaction,
-          },
+          }
         );
 
         this.logger.verbose(`Created player ${player.fullName}`);
@@ -106,7 +106,7 @@ export class UpdaetComPlayers {
         //  set an end date on the last day of august
         for (const activeClub of activeClubs.filter((c) => c.id !== club?.id)) {
           this.logger.verbose(
-            `Setting end date for ${player.fullName} in ${activeClub.name} to 31-08-${new Date().getFullYear()}`,
+            `Setting end date for ${player.fullName} in ${activeClub.name} to 31-08-${new Date().getFullYear()}`
           );
           await ClubPlayerMembership.update(
             {
@@ -118,7 +118,7 @@ export class UpdaetComPlayers {
                 playerId: player.id,
               },
               transaction,
-            },
+            }
           );
         }
       }
@@ -134,11 +134,11 @@ export class UpdaetComPlayers {
           },
           {
             transaction,
-          },
+          }
         );
 
         this.logger.verbose(
-          `Assigned ${player.fullName} to ${club.name} (oldClub: ${currentClubs.map((c) => c.name).join(', ')})`,
+          `Assigned ${player.fullName} to ${club.name} (oldClub: ${currentClubs.map((c) => c.name).join(", ")})`
         );
       }
     }
@@ -150,7 +150,7 @@ type ExcelNewCompPlayers = {
   Lidnummer: number;
   Achternaam: string;
   Voornaam: string;
-  Geslacht: 'M' | 'V';
+  Geslacht: "M" | "V";
   Geboortedatum: string;
   Adres: string;
   Postcode: string;
@@ -166,6 +166,6 @@ type ExcelConvertCompPlayers = {
   Lidnummer: number;
   Achternaam: string;
   Voornaam: string;
-  Geslacht: 'M' | 'V';
+  Geslacht: "M" | "V";
   Spelertype: string;
 };

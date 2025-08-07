@@ -1,5 +1,5 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { BuildOptions } from 'sequelize';
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
+import { BuildOptions } from "sequelize";
 import {
   Column,
   DataType,
@@ -8,16 +8,16 @@ import {
   Model,
   Table,
   TableOptions,
-} from 'sequelize-typescript';
-import { Player } from '../player.model';
-import { RankingSystem } from '../ranking';
-import { Game } from './game.model';
+} from "sequelize-typescript";
+import { Player } from "../player.model";
+import { RankingSystem } from "../ranking";
+import { Game } from "./game.model";
 
 @Table({
   timestamps: false,
-  schema: 'event',
+  schema: "event",
 } as TableOptions)
-@ObjectType({ description: 'A GamePlayer' })
+@ObjectType({ description: "A GamePlayer" })
 export class GamePlayerMembership extends Model {
   constructor(values?: Partial<GamePlayerMembership>, options?: BuildOptions) {
     super(values, options);

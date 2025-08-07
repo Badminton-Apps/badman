@@ -10,9 +10,9 @@
           'draw',
           upcoming.drawCompetition?.id,
           'encounter',
-          upcoming.id
+          upcoming.id,
         ]"
-        >{{ upcoming?.date | amDateFormat: 'llll' }}</span
+        >{{ upcoming?.date | amDateFormat: "llll" }}</span
       >
       <span matListItemLine>
         @if (this.upcommingGames.hasHomeTeam()) {
@@ -40,7 +40,7 @@
       <!--  a button to load more -->
       @if (!this.upcommingGames.endReached()) {
         <button mat-button (click)="loadMore()">
-          {{ 'all.competition.load-more' | translate }}
+          {{ "all.competition.load-more" | translate }}
         </button>
       } @else {
         <span
@@ -62,7 +62,7 @@
 
 <ng-template #hasHome let-upcoming="upcoming">
   <span class="location"
-    >{{ 'all.competition.' + (upcoming.showingForHomeTeam ? 'home' : 'away') | translate }}
+    >{{ "all.competition." + (upcoming.showingForHomeTeam ? "home" : "away") | translate }}
     -
   </span>
 
@@ -77,7 +77,7 @@
     }}</a>
   }
 
-  <span>&nbsp;{{ 'all.competition.vs' | translate }}&nbsp;</span>
+  <span>&nbsp;{{ "all.competition.vs" | translate }}&nbsp;</span>
 
   @if (upcoming.showingForHomeTeam && upcoming?.away?.club?.slug) {
     <a [routerLink]="['/club', upcoming.away.club.slug, 'team', upcoming.away?.slug]">{{

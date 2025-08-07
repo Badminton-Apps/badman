@@ -1,11 +1,11 @@
-import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { acceptCookies, getPage, selectBadmninton } from '@badman/backend-pupeteer';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { Process, Processor } from '@nestjs/bull';
-import { Logger, NotFoundException } from '@nestjs/common';
-import { Job } from 'bull';
-import { Page } from 'puppeteer';
-import { getRanking, getViaRanking, searchPlayer } from './pupeteer';
+import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
+import { acceptCookies, getPage, selectBadmninton } from "@badman/backend-pupeteer";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { Process, Processor } from "@nestjs/bull";
+import { Logger, NotFoundException } from "@nestjs/common";
+import { Job } from "bull";
+import { Page } from "puppeteer";
+import { getRanking, getViaRanking, searchPlayer } from "./pupeteer";
 
 @Processor({
   name: SyncQueue,
@@ -14,7 +14,7 @@ export class CheckRankingProcessor {
   private readonly logger = new Logger(CheckRankingProcessor.name);
 
   constructor() {
-    this.logger.debug('Check ranking initialized');
+    this.logger.debug("Check ranking initialized");
   }
 
   @Process({
@@ -55,7 +55,7 @@ export class CheckRankingProcessor {
         systemId: primary.id,
         playerId: player.id,
       },
-      order: [['rankingDate', 'DESC']],
+      order: [["rankingDate", "DESC"]],
     });
 
     if (rankingPlaces.length === 0) {
@@ -70,7 +70,7 @@ export class CheckRankingProcessor {
       await page.setViewport({ width: 1691, height: 1337 });
 
       // Accept cookies
-      await acceptCookies({ page }, {logger: this.logger});
+      await acceptCookies({ page }, { logger: this.logger });
       await selectBadmninton({ page });
 
       // Processing player
@@ -126,9 +126,9 @@ export class CheckRankingProcessor {
         rankingPlace.double = double;
         rankingPlace.mix = mix;
 
-        rankingPlace.changed('single', true);
-        rankingPlace.changed('double', true);
-        rankingPlace.changed('mix', true);
+        rankingPlace.changed("single", true);
+        rankingPlace.changed("double", true);
+        rankingPlace.changed("mix", true);
 
         await rankingPlace.save();
 

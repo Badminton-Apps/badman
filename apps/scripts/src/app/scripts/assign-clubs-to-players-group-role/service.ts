@@ -1,14 +1,14 @@
-import { Club, Player } from '@badman/backend-database';
-import { Injectable, Logger } from '@nestjs/common';
-import { Sequelize } from 'sequelize-typescript';
-import xlsx from 'xlsx';
+import { Club, Player } from "@badman/backend-database";
+import { Injectable, Logger } from "@nestjs/common";
+import { Sequelize } from "sequelize-typescript";
+import xlsx from "xlsx";
 
 @Injectable()
 export class AssignClubToPlayers {
   private readonly logger = new Logger(AssignClubToPlayers.name);
 
   constructor(private _sequelize: Sequelize) {
-    this.logger.log('AssignClubToPlayers');
+    this.logger.log("AssignClubToPlayers");
   }
 
   async process() {
@@ -24,7 +24,7 @@ export class AssignClubToPlayers {
 
   private readExcelFile() {
     const workbook = xlsx.readFile(
-      './apps/scripts/src/app/shared-files/exportMembersRolePerGroup-06052024.xlsx',
+      "./apps/scripts/src/app/shared-files/exportMembersRolePerGroup-06052024.xlsx"
     );
     const sheet_name_list = workbook.SheetNames;
     return xlsx.utils.sheet_to_json<ExcelInput>(workbook.Sheets[sheet_name_list[0]]);
@@ -36,7 +36,7 @@ export class AssignClubToPlayers {
 
   private async getAllClubs() {
     return Club.findAll({
-      attributes: ['id', 'name', 'fullName'],
+      attributes: ["id", "name", "fullName"],
     });
   }
 
@@ -46,9 +46,9 @@ export class AssignClubToPlayers {
       include: [
         {
           model: Club,
-          attributes: ['id', 'name', 'fullName'],
+          attributes: ["id", "name", "fullName"],
           required: false,
-          through: { attributes: ['id', 'active', 'end', 'start', 'confirmed'] },
+          through: { attributes: ["id", "active", "end", "start", "confirmed"] },
         },
       ],
     });
@@ -61,7 +61,7 @@ export class AssignClubToPlayers {
       const club = clubs.find(
         (c) =>
           c.name?.toLowerCase() === row.groupname?.toLowerCase() ||
-          c.fullName?.toLowerCase() === row.groupname?.toLowerCase(),
+          c.fullName?.toLowerCase() === row.groupname?.toLowerCase()
       );
 
       const player = players.find((p) => p.memberId === row.memberid);
@@ -74,12 +74,12 @@ export class AssignClubToPlayers {
             memberId: row.memberid,
             name: player.fullName,
             type: row.TypeName,
-            currentClub: activeClub?.name ?? '',
-            newClub: club.name ?? '',
+            currentClub: activeClub?.name ?? "",
+            newClub: club.name ?? "",
             exportClub: row.groupname,
-            clubId: activeClub?.id ?? '',
+            clubId: activeClub?.id ?? "",
             newClubId: club.id,
-            flemish: row.memberid.startsWith('5'),
+            flemish: row.memberid.startsWith("5"),
           });
         }
       }
@@ -91,15 +91,15 @@ export class AssignClubToPlayers {
   private writeChangesToExcel(changes: ExcelOutput[]) {
     const ws = xlsx.utils.json_to_sheet(changes);
     const wb = xlsx.utils.book_new();
-    xlsx.utils.book_append_sheet(wb, ws, 'changes');
-    xlsx.writeFile(wb, './apps/scripts/src/app/shared-files/club-changes.xlsx');
+    xlsx.utils.book_append_sheet(wb, ws, "changes");
+    xlsx.writeFile(wb, "./apps/scripts/src/app/shared-files/club-changes.xlsx");
   }
 }
 
 type ExcelInput = {
   groupname: string;
   memberid: string;
-  TypeName: 'Recreant' | 'Jeugd' | 'Competitiespeler';
+  TypeName: "Recreant" | "Jeugd" | "Competitiespeler";
 };
 
 type ExcelOutput = {

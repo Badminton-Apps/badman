@@ -29,7 +29,7 @@
     <div class="days">
       <div class="expandable-item" (click)="expanded.days = !expanded.days">
         <div>
-          {{ 'all.locations.days' | translate }}
+          {{ "all.locations.days" | translate }}
         </div>
         @if (!expanded.days) {
           <mat-icon>expand_more</mat-icon>
@@ -45,35 +45,35 @@
             <div [formGroupName]="i" class="availibility">
               <div class="day">
                 <mat-form-field>
-                  <mat-label>{{ 'all.input.day' | translate }}</mat-label>
+                  <mat-label>{{ "all.input.day" | translate }}</mat-label>
                   <mat-select formControlName="day">
-                    <mat-option value="monday">{{ 'all.days.monday' | translate }}</mat-option>
-                    <mat-option value="tuesday">{{ 'all.days.tuesday' | translate }}</mat-option>
+                    <mat-option value="monday">{{ "all.days.monday" | translate }}</mat-option>
+                    <mat-option value="tuesday">{{ "all.days.tuesday" | translate }}</mat-option>
                     <mat-option value="wednesday">{{
-                      'all.days.wednesday' | translate
+                      "all.days.wednesday" | translate
                     }}</mat-option>
-                    <mat-option value="thursday">{{ 'all.days.thursday' | translate }}</mat-option>
-                    <mat-option value="friday">{{ 'all.days.friday' | translate }}</mat-option>
-                    <mat-option value="saturday">{{ 'all.days.saturday' | translate }}</mat-option>
-                    <mat-option value="sunday">{{ 'all.days.sunday' | translate }}</mat-option>
+                    <mat-option value="thursday">{{ "all.days.thursday" | translate }}</mat-option>
+                    <mat-option value="friday">{{ "all.days.friday" | translate }}</mat-option>
+                    <mat-option value="saturday">{{ "all.days.saturday" | translate }}</mat-option>
+                    <mat-option value="sunday">{{ "all.days.sunday" | translate }}</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
               <div class="startTime">
                 <mat-form-field>
-                  <mat-label>{{ 'all.input.start-hour' | translate }}</mat-label>
+                  <mat-label>{{ "all.input.start-hour" | translate }}</mat-label>
                   <input matInput type="time" step="900" formControlName="startTime" />
                 </mat-form-field>
               </div>
               <div class="endTime">
                 <mat-form-field>
-                  <mat-label>{{ 'all.input.end-hour' | translate }}</mat-label>
+                  <mat-label>{{ "all.input.end-hour" | translate }}</mat-label>
                   <input matInput type="time" step="900" formControlName="endTime" />
                 </mat-form-field>
               </div>
               <div class="courts">
                 <mat-form-field>
-                  <mat-label>{{ 'all.input.availible-courts' | translate }}</mat-label>
+                  <mat-label>{{ "all.input.availible-courts" | translate }}</mat-label>
                   <input matInput type="number" formControlName="courts" alt="courts" />
                 </mat-form-field>
               </div>
@@ -85,7 +85,7 @@
                 }
                 @if (isSmallScreen) {
                   <button class="delete-button" mat-stroked-button (click)="removeAvailibility(i)">
-                    {{ 'all.button.delete' | translate }}
+                    {{ "all.button.delete" | translate }}
                   </button>
                 }
               </div>
@@ -94,13 +94,13 @@
         </ng-container>
       </div>
       <button mat-stroked-button (click)="addAvailibility()">
-        {{ 'all.locations.add-day' | translate }}
+        {{ "all.locations.add-day" | translate }}
       </button>
     </div>
     <div class="exceptions">
       <div class="expandable-item" (click)="expanded.exceptions = !expanded.exceptions">
         <div>
-          {{ 'all.locations.exceptions' | translate }}
+          {{ "all.locations.exceptions" | translate }}
         </div>
         @if (!expanded.exceptions) {
           <mat-icon>expand_more</mat-icon>
@@ -110,14 +110,14 @@
         }
       </div>
       <mat-divider></mat-divider>
-      <p class="hint">{{ 'all.locations.hint' | translate }}</p>
+      <p class="hint">{{ "all.locations.hint" | translate }}</p>
       <div [hidden]="!expanded.exceptions">
         <ng-container formArrayName="exceptions">
           @for (day of this.exceptions.controls; track day; let i = $index) {
             <div [formGroupName]="i" class="exception">
               <div class="day">
                 <mat-form-field appearance="outline">
-                  <mat-label>{{ 'all.input.date-range' | translate }}</mat-label>
+                  <mat-label>{{ "all.input.date-range" | translate }}</mat-label>
                   <mat-date-range-input [rangePicker]="picker">
                     <input matStartDate formControlName="start" placeholder="Start date" />
                     <input matEndDate formControlName="end" placeholder="End date" />
@@ -142,7 +142,7 @@
                 <div [hidden]="!this.showCourts[i].manualOpen && !this.showCourts[i].autoOpen">
                   <mat-form-field>
                     <mat-label>{{
-                      'all.competition.team-enrollment.locations.availible-courts' | translate
+                      "all.competition.team-enrollment.locations.availible-courts" | translate
                     }}</mat-label>
                     <input matInput type="number" formControlName="courts" alt="courts" />
                   </mat-form-field>
@@ -158,7 +158,7 @@
         </ng-container>
       </div>
       <button mat-stroked-button (click)="addException()">
-        {{ 'all.locations.add-exception' | translate }}
+        {{ "all.locations.add-exception" | translate }}
       </button>
     </div>
   </ng-container>

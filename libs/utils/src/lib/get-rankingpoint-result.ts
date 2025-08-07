@@ -1,4 +1,4 @@
-import { GameType } from './enums';
+import { GameType } from "./enums";
 
 export const getGameResultType = (
   won: boolean,
@@ -13,24 +13,24 @@ export const getGameResultType = (
       differenceForDowngradeDouble?: number;
       differenceForDowngradeMix?: number;
     };
-  }>,
+  }>
 ): GameBreakdownType => {
   if (won) {
     return GameBreakdownType.WON;
   } else {
     const propDowngrade =
       gameType === GameType.S
-        ? 'differenceForDowngradeSingle'
+        ? "differenceForDowngradeSingle"
         : gameType === GameType.D
-          ? 'differenceForDowngradeDouble'
-          : 'differenceForDowngradeMix';
+          ? "differenceForDowngradeDouble"
+          : "differenceForDowngradeMix";
 
     const propUpgrade =
       gameType === GameType.S
-        ? 'differenceForUpgradeSingle'
+        ? "differenceForUpgradeSingle"
         : gameType === GameType.D
-          ? 'differenceForUpgradeDouble'
-          : 'differenceForUpgradeMix';
+          ? "differenceForUpgradeDouble"
+          : "differenceForUpgradeMix";
 
     const upgrade =
       (rankingPoint?.differenceInLevel ?? 0) >= (rankingPoint?.system?.[propUpgrade] ?? 0) * -1;
@@ -48,8 +48,8 @@ export const getGameResultType = (
 };
 
 export enum GameBreakdownType {
-  WON = 'WON',
-  LOST_UPGRADE = 'LOST_UPGRADE',
-  LOST_DOWNGRADE = 'LOST_DOWNGRADE',
-  LOST_IGNORED = 'LOST_IGNORED'
+  WON = "WON",
+  LOST_UPGRADE = "LOST_UPGRADE",
+  LOST_DOWNGRADE = "LOST_DOWNGRADE",
+  LOST_IGNORED = "LOST_IGNORED",
 }

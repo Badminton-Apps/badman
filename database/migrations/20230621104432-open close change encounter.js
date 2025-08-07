@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,44 +8,44 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'changeOpenDate',
+          "changeOpenDate",
           {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'changeCloseDate',
+          "changeCloseDate",
           {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'changeCloseRequestDate',
+          "changeCloseRequestDate",
           {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -56,32 +56,32 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'changeOpenDate',
-          { transaction: t },
+          "changeOpenDate",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'changeCloseDate',
-          { transaction: t },
+          "changeCloseDate",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'EventCompetitions',
-            schema: 'event',
+            tableName: "EventCompetitions",
+            schema: "event",
           },
-          'changeCloseRequestDate',
-          { transaction: t },
+          "changeCloseRequestDate",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

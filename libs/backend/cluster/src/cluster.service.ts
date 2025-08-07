@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import cluster from 'cluster';
+import { Injectable } from "@nestjs/common";
+import cluster from "cluster";
 
-import * as process from 'node:process';
+import * as process from "node:process";
 
-const numCPUs = parseInt(process.argv[2] || '1');
+const numCPUs = parseInt(process.argv[2] || "1");
 
 @Injectable()
 export class ClusterService {
@@ -15,7 +15,7 @@ export class ClusterService {
         cluster.fork();
       }
 
-      cluster.on('exit', (worker) => {
+      cluster.on("exit", (worker) => {
         console.log(`worker ${worker.process.pid} died`);
       });
     } else {

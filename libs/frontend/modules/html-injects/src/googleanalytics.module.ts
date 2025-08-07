@@ -1,5 +1,12 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Inject, InjectionToken, ModuleWithProviders, NgModule, PLATFORM_ID, DOCUMENT } from '@angular/core';
+import { isPlatformBrowser } from "@angular/common";
+import {
+  Inject,
+  InjectionToken,
+  ModuleWithProviders,
+  NgModule,
+  PLATFORM_ID,
+  DOCUMENT,
+} from "@angular/core";
 
 function scriptconfig(tag: string): string {
   return `
@@ -12,13 +19,13 @@ function scriptconfig(tag: string): string {
 }
 
 export const GOOGLEANALYTICS_CONFIG_TOKEN = new InjectionToken<GoogleAnalyticsConfiguration>(
-  'googleanalytics.config',
+  "googleanalytics.config"
 );
 
 export type GoogleAnalyticsConfiguration = Readonly<{
   enabled: boolean;
   tag: string;
-  scriptType?: 'text/javascript' | string;
+  scriptType?: "text/javascript" | string;
 }>;
 
 @NgModule({})
@@ -29,18 +36,18 @@ export class GoogleAnalyticsModule {
     @Inject(DOCUMENT)
     d: Document,
     @Inject(GOOGLEANALYTICS_CONFIG_TOKEN)
-    { tag, enabled, scriptType }: GoogleAnalyticsConfiguration,
+    { tag, enabled, scriptType }: GoogleAnalyticsConfiguration
   ) {
     if (isPlatformBrowser(platformId) && enabled) {
-      const type = scriptType ?? 'text/javascript';
+      const type = scriptType ?? "text/javascript";
 
-      const ads = d.createElement('script');
+      const ads = d.createElement("script");
       ads.type = type;
       ads.src = `https://www.googletagmanager.com/gtag/js?id=${tag}`;
-      ads.crossOrigin = 'anonymous';
+      ads.crossOrigin = "anonymous";
       d.head.appendChild(ads);
 
-      const script = d.createElement('script');
+      const script = d.createElement("script");
       script.type = type;
       script.innerHTML = scriptconfig(tag);
       d.head.appendChild(script);

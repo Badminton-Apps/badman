@@ -1,4 +1,4 @@
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -12,7 +12,7 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -24,21 +24,24 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 
-import { Relation } from '../../../../wrapper';
-import { EncounterCompetition } from '../encounter-competition.model';
+import { Relation } from "../../../../wrapper";
+import { EncounterCompetition } from "../encounter-competition.model";
 import {
   EncounterChangeDate,
   EncounterChangeDateNewInput,
   EncounterChangeDateUpdateInput,
-} from './encounter-change-date.model';
+} from "./encounter-change-date.model";
+
+// New GraphQL enum type for frontend context with lowercase values
+export type FrontendContextType = "my-club" | "club" | "competition";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 })
-@ObjectType({ description: 'A EncounterChange' })
+@ObjectType({ description: "A EncounterChange" })
 export class EncounterChange extends Model {
   constructor(values?: Partial<EncounterChange>, options?: BuildOptions) {
     super(values, options);
@@ -63,8 +66,8 @@ export class EncounterChange extends Model {
   accepted?: boolean;
 
   @BelongsTo(() => EncounterCompetition, {
-    foreignKey: 'encounterId',
-    onDelete: 'CASCADE',
+    foreignKey: "encounterId",
+    onDelete: "CASCADE",
   })
   encounter?: Relation<EncounterCompetition>;
 
@@ -75,8 +78,8 @@ export class EncounterChange extends Model {
 
   @Field(() => [EncounterChangeDate], { nullable: true })
   @HasMany(() => EncounterChangeDate, {
-    foreignKey: 'encounterChangeId',
-    onDelete: 'CASCADE',
+    foreignKey: "encounterChangeId",
+    onDelete: "CASCADE",
   })
   dates?: Relation<EncounterChangeDate[]>;
 
@@ -98,20 +101,23 @@ export class EncounterChange extends Model {
 
 @InputType()
 export class EncounterChangeUpdateInput extends PartialType(
-  OmitType(EncounterChange, ['createdAt', 'updatedAt', 'dates'] as const),
-  InputType,
+  OmitType(EncounterChange, ["createdAt", "updatedAt", "dates"] as const),
+  InputType
 ) {
   @Field(() => Boolean, { nullable: true })
   home?: boolean;
 
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })
   dates?: Relation<EncounterChangeDate[]>;
+
+  @Field(() => String, { nullable: true })
+  frontendContext?: FrontendContextType;
 }
 
 @InputType()
 export class EncounterChangeNewInput extends PartialType(
-  OmitType(EncounterChangeUpdateInput, ['id', 'dates'] as const),
-  InputType,
+  OmitType(EncounterChangeUpdateInput, ["id", "dates"] as const),
+  InputType
 ) {
   @Field(() => [EncounterChangeDateNewInput], { nullable: true })
   dates?: Relation<EncounterChangeDate[]>;

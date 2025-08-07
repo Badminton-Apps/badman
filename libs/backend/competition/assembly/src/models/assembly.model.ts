@@ -9,10 +9,10 @@ import {
   RankingSystem,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
-import { SubEventTypeEnum } from '@badman/utils';
-import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
-import { AssemblyValidationError } from './error.model';
+} from "@badman/backend-database";
+import { SubEventTypeEnum } from "@badman/utils";
+import { Field, ID, InputType, Int, ObjectType } from "@nestjs/graphql";
+import { AssemblyValidationError } from "./error.model";
 
 @InputType()
 export class AssemblyInput {
@@ -40,19 +40,19 @@ export class AssemblyInput {
   @Field(() => ID, { nullable: true })
   single4?: string;
 
-  @Field(() => [ID], { nullable: 'itemsAndList' })
+  @Field(() => [ID], { nullable: "itemsAndList" })
   double1?: string[];
 
-  @Field(() => [ID], { nullable: 'itemsAndList' })
+  @Field(() => [ID], { nullable: "itemsAndList" })
   double2?: string[];
 
-  @Field(() => [ID], { nullable: 'itemsAndList' })
+  @Field(() => [ID], { nullable: "itemsAndList" })
   double3?: string[];
 
-  @Field(() => [ID], { nullable: 'itemsAndList' })
+  @Field(() => [ID], { nullable: "itemsAndList" })
   double4?: string[];
 
-  @Field(() => [ID], { nullable: 'itemsAndList' })
+  @Field(() => [ID], { nullable: "itemsAndList" })
   subtitudes?: string[];
 
   @Field(() => String, { nullable: true })
@@ -64,16 +64,16 @@ export class AssemblyInput {
 
 @ObjectType()
 export class AssemblyOutput {
-  @Field(() => [AssemblyValidationError], { nullable: 'itemsAndList' })
+  @Field(() => [AssemblyValidationError], { nullable: "itemsAndList" })
   errors?: AssemblyValidationError<unknown>[];
 
-  @Field(() => [AssemblyValidationError], { nullable: 'itemsAndList' })
+  @Field(() => [AssemblyValidationError], { nullable: "itemsAndList" })
   warnings?: AssemblyValidationError<unknown>[];
 
   @Field(() => Boolean, { nullable: true })
   valid!: boolean;
 
-  @Field(() => [String], { nullable: 'itemsAndList' })
+  @Field(() => [String], { nullable: "itemsAndList" })
   validators?: string[];
 
   @Field(() => Int, { nullable: true })
@@ -82,12 +82,12 @@ export class AssemblyOutput {
   @Field(() => Int, { nullable: true })
   titularsIndex?: number;
 
-  @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
+  @Field(() => [PlayerRankingType], { nullable: "itemsAndList" })
   baseTeamPlayers?: PlayerRankingType[];
 
-  @Field(() => [PlayerRankingType], { nullable: 'itemsAndList' })
+  @Field(() => [PlayerRankingType], { nullable: "itemsAndList" })
   titularsPlayers?: PlayerRankingType[];
-  
+
   systemId?: string;
   titularsPlayerData?: Player[];
   basePlayersData?: EntryCompetitionPlayer[];

@@ -1,9 +1,9 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   EncounterValidationInput,
   EncounterValidationOutput,
   EncounterValidationService,
-} from '@badman/backend-change-encounter';
+} from "@badman/backend-change-encounter";
 import {
   Assembly,
   Comment,
@@ -17,11 +17,11 @@ import {
   Team,
   updateEncounterCompetitionInput,
   updateTempTeamCaptainInput,
-} from '@badman/backend-database';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { PointsService } from '@badman/backend-ranking';
-import { InjectQueue } from '@nestjs/bull';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+} from "@badman/backend-database";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { PointsService } from "@badman/backend-ranking";
+import { InjectQueue } from "@nestjs/bull";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -33,10 +33,10 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { Queue } from 'bull';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../../utils';
+} from "@nestjs/graphql";
+import { Queue } from "bull";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../../utils";
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -64,12 +64,12 @@ export class EncounterCompetitionResolver {
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    private encounterValidationService: EncounterValidationService,
+    private encounterValidationService: EncounterValidationService
   ) {}
 
   @Query(() => EncounterCompetition)
   async encounterCompetition(
-    @Args('id', { type: () => ID }) id: string,
+    @Args("id", { type: () => ID }) id: string
   ): Promise<EncounterCompetition> {
     const encounterCompetition = await EncounterCompetition.findByPk(id);
 
@@ -100,25 +100,25 @@ export class EncounterCompetitionResolver {
 
   @Query(() => PagedEncounterCompetition)
   async encounterCompetitions(
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<{ count: number; rows: EncounterCompetition[] }> {
     return EncounterCompetition.findAndCountAll({
       include: [
         {
           model: Team,
-          as: 'home',
+          as: "home",
         },
         {
           model: Team,
-          as: 'away',
+          as: "away",
         },
         {
           model: Game,
-          as: 'games',
+          as: "games",
           include: [
             {
               model: Player,
-              as: 'players',
+              as: "players",
               attributes: [],
             },
           ],
@@ -152,7 +152,7 @@ export class EncounterCompetitionResolver {
   async assemblies(
     @User() user: Player,
     @Parent() encounter: EncounterCompetition,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<Assembly[]> {
     if (!user?.id) {
       return [];
@@ -168,7 +168,7 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => Boolean)
   async isPlayerPlayed(
     @Parent() encounter: EncounterCompetition,
-    @Args('playerId', { type: () => ID, nullable: true }) playerId?: string,
+    @Args("playerId", { type: () => ID, nullable: true }) playerId?: string
   ): Promise<boolean> {
     if (!playerId) {
       return false;
@@ -178,7 +178,7 @@ export class EncounterCompetitionResolver {
       include: [
         {
           model: Player,
-          as: 'players',
+          as: "players",
         },
       ],
     });
@@ -246,7 +246,7 @@ export class EncounterCompetitionResolver {
   async validateEncounter(
     @User() user: Player,
     @Parent() encounter: EncounterCompetition,
-    @Args('validationData', { nullable: true }) data: EncounterValidationInput,
+    @Args("validationData", { nullable: true }) data: EncounterValidationInput
   ): Promise<EncounterValidationOutput> {
     return this.encounterValidationService.validate(
       {
@@ -257,19 +257,19 @@ export class EncounterCompetitionResolver {
         playerId: user.id,
         teamId: data.teamId,
         clubId: data.clubId,
-      },
+      }
     );
   }
 
   @Mutation(() => Boolean)
   async changeDate(
     @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-    @Args('date') date: Date,
+    @Args("id", { type: () => ID }) id: string,
+    @Args("date") date: Date,
 
-    @Args('updateBadman') updateBadman: boolean,
-    @Args('updateVisual') updateVisual: boolean,
-    @Args('closeChangeRequests') closeChangeRequests: boolean,
+    @Args("updateBadman") updateBadman: boolean,
+    @Args("updateVisual") updateVisual: boolean,
+    @Args("closeChangeRequests") closeChangeRequests: boolean
   ) {
     const encounter = await EncounterCompetition.findByPk(id);
 
@@ -277,7 +277,7 @@ export class EncounterCompetitionResolver {
       throw new NotFoundException(`${EncounterCompetition.name}: ${id}`);
     }
 
-    if (!(await user.hasAnyPermission(['change-any:encounter']))) {
+    if (!(await user.hasAnyPermission(["change-any:encounter"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this encounter`);
     }
 
@@ -294,7 +294,7 @@ export class EncounterCompetitionResolver {
         {
           removeOnComplete: true,
           removeOnFail: false,
-        },
+        }
       );
     }
 
@@ -311,10 +311,10 @@ export class EncounterCompetitionResolver {
   @Mutation(() => Boolean)
   async recalculateEncounterCompetitionRankingPoints(
     @User() user: Player,
-    @Args('encounterId', { type: () => ID }) encounterId: string,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+    @Args("encounterId", { type: () => ID }) encounterId: string,
+    @Args("systemId", { type: () => ID, nullable: true }) systemId: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
@@ -327,7 +327,7 @@ export class EncounterCompetitionResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
       }
 
       // find all games
@@ -362,8 +362,8 @@ export class EncounterCompetitionResolver {
 
   @Mutation(() => Boolean)
   async updateGameLeader(
-    @Args('encounterId') encounterId: string,
-    @Args('gameLeaderId') gameLeaderId: string,
+    @Args("encounterId") encounterId: string,
+    @Args("gameLeaderId") gameLeaderId: string
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -386,8 +386,8 @@ export class EncounterCompetitionResolver {
 
   @Mutation(() => Boolean)
   async updateTempTeamCaptain(
-    @Args('encounterId') encounterId: string,
-    @Args('data') updateTempTeamCaptainData: updateTempTeamCaptainInput,
+    @Args("encounterId") encounterId: string,
+    @Args("data") updateTempTeamCaptainData: updateTempTeamCaptainInput
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -411,10 +411,10 @@ export class EncounterCompetitionResolver {
   @Mutation(() => EncounterCompetition)
   async updateEncounterCompetition(
     @User() user: Player,
-    @Args('encounterId') encounterId: string,
-    @Args('data') updateEncounterCompetitionData: updateEncounterCompetitionInput,
+    @Args("encounterId") encounterId: string,
+    @Args("data") updateEncounterCompetitionData: updateEncounterCompetitionInput
   ) {
-    this.logger.log('Updating encounter record with id:', `${encounterId}`);
+    this.logger.log("Updating encounter record with id:", `${encounterId}`);
     const transaction = await this._sequelize.transaction();
     try {
       const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
@@ -425,7 +425,7 @@ export class EncounterCompetitionResolver {
 
       if (
         !(
-          (await user.hasAnyPermission(['change-any:encounter'])) || [
+          (await user.hasAnyPermission(["change-any:encounter"])) || [
             `change-${encounterId}:encounter`,
           ] ||
           encounter.gameLeaderId === user.id
@@ -451,7 +451,7 @@ export class EncounterCompetitionResolver {
           {
             removeOnComplete: true,
             removeOnFail: false,
-          },
+          }
         );
       }
 

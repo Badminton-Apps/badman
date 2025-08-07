@@ -1,23 +1,23 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { LoadingBlockComponent } from '@badman/frontend-components';
-import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
-import { Ranking } from '@badman/utils';
-import { TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { ApexAxisChartSeries, ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
-import { combineLatest, Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { BreadcrumbService } from 'xng-breadcrumb';
+import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { ActivatedRoute, RouterModule } from "@angular/router";
+import { LoadingBlockComponent } from "@badman/frontend-components";
+import { EventCompetition, SubEventCompetition } from "@badman/frontend-models";
+import { Ranking } from "@badman/utils";
+import { TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { ApexAxisChartSeries, ApexOptions, NgApexchartsModule } from "ng-apexcharts";
+import { combineLatest, Observable } from "rxjs";
+import { map, take } from "rxjs/operators";
+import { BreadcrumbService } from "xng-breadcrumb";
 
 @Component({
-  selector: 'badman-competition-detail-avg',
-  templateUrl: './detail-avg.page.html',
-  styleUrls: ['./detail-avg.page.scss'],
+  selector: "badman-competition-detail-avg",
+  templateUrl: "./detail-avg.page.html",
+  styleUrls: ["./detail-avg.page.scss"],
   imports: [
     CommonModule,
     RouterModule,
@@ -36,13 +36,13 @@ export class DetailAvgPageComponent implements OnInit {
   private readonly apollo = inject(Apollo);
   eventCompetition!: EventCompetition;
 
-  genders: ('M' | 'F')[] = ['M', 'F'];
-  chartTypes: Ranking[] = ['single', 'double', 'mix'];
-  eventTypes: ('M' | 'F' | 'MX')[] = ['M', 'F', 'MX'];
+  genders: ("M" | "F")[] = ["M", "F"];
+  chartTypes: Ranking[] = ["single", "double", "mix"];
+  eventTypes: ("M" | "F" | "MX")[] = ["M", "F", "MX"];
 
   chartOptions: ApexOptions = {
     chart: {
-      type: 'line',
+      type: "line",
       height: 350,
       animations: {
         speed: 500,
@@ -53,7 +53,7 @@ export class DetailAvgPageComponent implements OnInit {
     },
     grid: {
       strokeDashArray: 5,
-      borderColor: 'rgba(241, 241, 241, 0.1)',
+      borderColor: "rgba(241, 241, 241, 0.1)",
       xaxis: {
         lines: {
           show: true,
@@ -66,7 +66,7 @@ export class DetailAvgPageComponent implements OnInit {
       },
     },
     stroke: {
-      curve: 'straight',
+      curve: "straight",
       width: 2,
     },
     dataLabels: {
@@ -74,7 +74,7 @@ export class DetailAvgPageComponent implements OnInit {
       formatter: (value: number) => value.toFixed(2),
     },
     theme: {
-      mode: 'dark',
+      mode: "dark",
     },
     xaxis: {
       labels: {
@@ -84,7 +84,7 @@ export class DetailAvgPageComponent implements OnInit {
     yaxis: [
       {
         title: {
-          text: 'Average Level',
+          text: "Average Level",
         },
         min: 1,
         max: 12,
@@ -120,31 +120,31 @@ export class DetailAvgPageComponent implements OnInit {
   ngOnInit(): void {
     combineLatest([
       this.route.data,
-      this.translate.get(['all.competition.title', 'all.competition.avg-level']),
+      this.translate.get(["all.competition.title", "all.competition.avg-level"]),
     ]).subscribe(([data, translations]) => {
-      this.eventCompetition = data['eventCompetition'];
-      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name || '');
-      this.breadcrumbsService.set('competition', translations['all.competition.title']);
+      this.eventCompetition = data["eventCompetition"];
+      this.breadcrumbsService.set("@eventCompetition", this.eventCompetition.name || "");
+      this.breadcrumbsService.set("competition", translations["all.competition.title"]);
       this.breadcrumbsService.set(
-        'competition/:id/avg-level',
-        translations['all.competition.avg-level'],
+        "competition/:id/avg-level",
+        translations["all.competition.avg-level"]
       );
     });
 
     this.subEvents$ = this._getAvgLevel();
   }
 
-  chartXAxis(subEvents: SubEventCompetition[], eventType: 'M' | 'F' | 'MX') {
+  chartXAxis(subEvents: SubEventCompetition[], eventType: "M" | "F" | "MX") {
     return {
       categories: subEvents.filter((s) => s.eventType == eventType).map((s) => s.name),
-    } as ApexOptions['xaxis'];
+    } as ApexOptions["xaxis"];
   }
 
   chartSeries(
     subEvents: SubEventCompetition[],
-    gender: 'M' | 'F',
-    chartType: 'single' | 'double' | 'mix',
-    eventType: 'M' | 'F' | 'MX',
+    gender: "M" | "F",
+    chartType: "single" | "double" | "mix",
+    eventType: "M" | "F" | "MX"
   ) {
     const filteredSubEvents = subEvents.filter((s) => s.eventType == eventType);
 
@@ -164,11 +164,11 @@ export class DetailAvgPageComponent implements OnInit {
 
     return [
       {
-        name: 'Average',
+        name: "Average",
         data: genderData?.map((s) => s.avgerage),
       },
       {
-        name: 'Players',
+        name: "Players",
         data: genderData?.map((s) => s.count),
         show: false,
       },
@@ -176,42 +176,42 @@ export class DetailAvgPageComponent implements OnInit {
   }
 
   chartTitle(
-    gender: 'M' | 'F',
-    chartType: 'single' | 'double' | 'mix',
-    eventType: 'M' | 'F' | 'MX',
+    gender: "M" | "F",
+    chartType: "single" | "double" | "mix",
+    eventType: "M" | "F" | "MX"
   ) {
     return {
       text: `Reeks: ${eventType}, Geslacht: ${gender}, Dicipline: ${chartType}`,
-      align: 'center',
+      align: "center",
       margin: 5,
       style: {
-        fontSize: '14px',
-        fontWeight: 'bold',
+        fontSize: "14px",
+        fontWeight: "bold",
       },
-    } as ApexOptions['title'];
+    } as ApexOptions["title"];
   }
 
   downloadData(subEvents: SubEventCompetition[]) {
     const csv = this.convertToCSV(subEvents);
-    const blob = new Blob([csv], { type: 'text/csv' });
+    const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'data.csv';
+    a.download = "data.csv";
     a.click();
     URL.revokeObjectURL(url);
   }
 
   private convertToCSV(data: SubEventCompetition[]): string {
     const headers = [
-      'name',
-      'gender',
-      'single',
-      'singleCount',
-      'double',
-      'doubleCount',
-      'mix',
-      'mixCount',
+      "name",
+      "gender",
+      "single",
+      "singleCount",
+      "double",
+      "doubleCount",
+      "mix",
+      "mixCount",
     ];
     // const rows = data.map((row) => [row.name, row.data.join(';')]);
     const rows = data
@@ -220,12 +220,12 @@ export class DetailAvgPageComponent implements OnInit {
           return [a.gender, a.single, a.singleCount, a.double, a.doubleCount, a.mix, a.mixCount];
         });
 
-        return data?.map((r) => [`${row.name} - ${row.eventType}`, r.join(',')]);
+        return data?.map((r) => [`${row.name} - ${row.eventType}`, r.join(",")]);
       })
       .flat();
 
     const csvArray = [headers, ...rows];
-    return csvArray.map((row) => row?.join(',')).join('\n');
+    return csvArray.map((row) => row?.join(",")).join("\n");
   }
 
   private _getAvgLevel() {
@@ -262,9 +262,9 @@ export class DetailAvgPageComponent implements OnInit {
         take(1),
         map((result) => {
           return result.data.eventCompetition.subEventCompetitions?.map(
-            (s) => new SubEventCompetition(s),
+            (s) => new SubEventCompetition(s)
           );
-        }),
+        })
       );
   }
 }

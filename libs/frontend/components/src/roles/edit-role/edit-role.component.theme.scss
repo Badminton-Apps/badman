@@ -1,12 +1,12 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-edit-role {
-    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
-    $isDark: map.get($theme, 'is-dark');
+    $border-color: mat.get-theme-color($theme, foreground, "disabled-text");
+    $isDark: map.get($theme, "is-dark");
 
     border-color: $border-color;
 
@@ -20,7 +20,7 @@
   badman-edit-role {
     .general {
       .name {
-        font: mat.get-theme-typography($theme, 'headline-5', font);
+        font: mat.get-theme-typography($theme, "headline-5", font);
 
         .locked .mat-icon {
           font-size: 1rem;

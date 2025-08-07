@@ -3,7 +3,7 @@
     <div class="information">
       <div class="team">
         <div class="container" (ngxResize)="onResized($event)">
-          <label>{{ 'all.competition.team-assembly.players.base' | translate }}</label>
+          <label>{{ "all.competition.team-assembly.players.base" | translate }}</label>
           <div class="index">Index: {{ this.data.state().titulars.index }}</div>
           @for (player of this.data.state().titulars.players; track player.id) {
             <div>
@@ -18,7 +18,7 @@
               @if (notSmallScreen) {
                 <span class="ranking">
                   {{ player?.single ?? 12 }} - {{ player?.double ?? 12 }}
-                  @if (this.data.state['type']() === 'MX') {
+                  @if (this.data.state["type"]() === "MX") {
                     - {{ player?.mix ?? 12 }}
                   }
                   ({{ player?.sum }})
@@ -30,7 +30,7 @@
       </div>
       <div class="base">
         <div class="container">
-          <label>{{ 'all.competition.team-assembly.players.team' | translate }}</label>
+          <label>{{ "all.competition.team-assembly.players.team" | translate }}</label>
           <div class="index">Index: {{ this.data.state().base.index }}</div>
           @for (player of this.data.state().base.players; track player.id) {
             <div>
@@ -46,7 +46,7 @@
               @if (notSmallScreen) {
                 <span class="ranking">
                   {{ player?.single ?? 12 }} - {{ player?.double ?? 12 }}
-                  @if (this.data.state['type']() === 'MX') {
+                  @if (this.data.state["type"]() === "MX") {
                     - {{ player?.mix ?? 12 }}
                   }
                   ({{ player?.sum }})
@@ -58,14 +58,14 @@
       </div>
       <div class="errors">
         <div class="container">
-          <label>{{ 'all.v1.teamFormation.errors.title' | translate }}</label>
+          <label>{{ "all.v1.teamFormation.errors.title" | translate }}</label>
           <ng-container *ngTemplateOutlet="validationOverview"></ng-container>
         </div>
       </div>
     </div>
   </section>
 
-  @for (player of this.data.state['regularPlayers'](); track player.id.id) {
+  @for (player of this.data.state["regularPlayers"](); track player.id.id) {
     <p>{{ player.fullName }}</p>
   }
 
@@ -96,7 +96,7 @@
       }
       @if (this.data.state().errors.length === 0 && this.data.state().warnings.length === 0) {
         <div class="no-errors">
-          {{ 'all.v1.teamFormation.errors.none' | translate }}
+          {{ "all.v1.teamFormation.errors.none" | translate }}
         </div>
       }
     </div>

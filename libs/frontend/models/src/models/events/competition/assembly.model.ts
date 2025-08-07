@@ -1,6 +1,6 @@
-import { Player } from '../../player.model';
-import { Team } from '../../team.model';
-import { EncounterCompetition } from './encounter.model';
+import { Player } from "../../player.model";
+import { Team } from "../../team.model";
+import { EncounterCompetition } from "./encounter.model";
 
 export class Assembly {
   id?: string;

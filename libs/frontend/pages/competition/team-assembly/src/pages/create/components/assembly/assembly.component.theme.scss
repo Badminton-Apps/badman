@@ -1,22 +1,18 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use 'sass:color';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "sass:color";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
-  
-  
   $danger-palette: map.get($theme, danger);
   $warn-palette: map.get($theme, warn);
-  $success-palette: map.get($theme, success);  
-  
-  $isDark: map.get($theme, 'is-dark');
+  $success-palette: map.get($theme, success);
+
+  $isDark: map.get($theme, "is-dark");
 
   badman-assembly {
-    
-
-    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, "disabled-text");
 
     .information {
       .team,
@@ -26,9 +22,9 @@
 
         .ranking {
           @if ($isDark) {
-            color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: -40%);
+            color: color.scale(mat.get-theme-color($theme, foreground, "base"), $lightness: -40%);
           } @else {
-            color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: 60%);
+            color: color.scale(mat.get-theme-color($theme, foreground, "base"), $lightness: 60%);
           }
         }
       }
@@ -39,8 +35,8 @@
     }
 
     label {
-      background-color: mat.get-theme-color($theme, 'background', 'background');
-      color: mat.get-theme-color($theme, foreground, 'secondary-text');
+      background-color: mat.get-theme-color($theme, "background", "background");
+      color: mat.get-theme-color($theme, foreground, "secondary-text");
     }
 
     // Global colors for the validation (because I'm lazy to find out why the dialog is not working)
@@ -60,8 +56,6 @@
 
 @mixin typography($theme) {
   badman-assembly {
-    
-
     label {
       font: mat.get-theme-typography($theme, caption, font);
     }

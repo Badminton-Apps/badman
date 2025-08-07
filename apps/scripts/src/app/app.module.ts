@@ -1,9 +1,9 @@
-import { DatabaseModule } from '@badman/backend-database';
-import { VisualModule } from '@badman/backend-visual';
-import { configSchema, load } from '@badman/utils';
-import { Logger, Module, OnModuleInit } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TwizzitToPlayerDbService } from './scripts';
+import { DatabaseModule } from "@badman/backend-database";
+import { VisualModule } from "@badman/backend-visual";
+import { configSchema, load } from "@badman/utils";
+import { Logger, Module, OnModuleInit } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { TwizzitToPlayerDbService } from "./scripts";
 
 @Module({
   providers: [TwizzitToPlayerDbService],
@@ -23,10 +23,10 @@ export class ScriptModule implements OnModuleInit {
   constructor(private fixer: TwizzitToPlayerDbService) {}
 
   async onModuleInit() {
-    this.logger.log('Running script');
+    this.logger.log("Running script");
 
-    await this.fixer.process(); 
+    await this.fixer.process();
 
-    this.logger.log('Script finished');
+    this.logger.log("Script finished");
   }
 }

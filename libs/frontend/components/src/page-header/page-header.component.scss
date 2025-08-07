@@ -37,7 +37,7 @@
     flex-direction: column;
     justify-content: center;
 
-    .title{
+    .title {
       display: flex;
       flex-direction: row;
       gap: 1rem;
@@ -90,7 +90,7 @@
       align-items: center;
       justify-content: center;
 
-      & > *[role='img'] {
+      & > *[role="img"] {
         width: 16px;
         height: 16px;
         font-size: 16px;

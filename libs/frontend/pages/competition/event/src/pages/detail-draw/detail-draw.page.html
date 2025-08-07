@@ -26,30 +26,29 @@
         <badman-has-claim [all]="['re-sync:points']">
           <button mat-menu-item (click)="reCalculatePoints()">
             <mat-icon>sync</mat-icon>
-            <span>{{ 'all.button.re-sync' | translate }}</span>
+            <span>{{ "all.button.re-sync" | translate }}</span>
           </button>
           <button mat-menu-item (click)="reCalculateStanding()">
             <mat-icon>sync</mat-icon>
-            <span>{{ 'all.button.re-sync-stading' | translate }}</span>
+            <span>{{ "all.button.re-sync-stading" | translate }}</span>
           </button>
         </badman-has-claim>
       </mat-menu>
     </badman-has-claim>
-    
   </div>
 </badman-page-header>
 <section class="standing">
-  <h3>{{ 'all.event.standing.title' | translate }}</h3>
+  <h3>{{ "all.event.standing.title" | translate }}</h3>
   <badman-standing [type]="'team'" [entries]="drawCompetition()?.eventEntries!"></badman-standing>
 </section>
 @if (teams()) {
   <section class="games">
     <section class="recent-games">
-      <h3>{{ 'all.game.recent.title' | translate }}</h3>
+      <h3>{{ "all.game.recent.title" | translate }}</h3>
       <badman-recent-games [teams]="teams()"></badman-recent-games>
     </section>
     <section class="upcoming-games">
-      <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
+      <h3>{{ "all.game.upcoming.title" | translate }}</h3>
       <badman-upcoming-games [teams]="teams()"></badman-upcoming-games>
     </section>
   </section>

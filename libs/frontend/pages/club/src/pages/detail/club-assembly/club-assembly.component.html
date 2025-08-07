@@ -2,7 +2,7 @@
   <section class="teams">
     <h3>
       <mat-icon color="primary">groups</mat-icon>
-      {{ 'all.club.titles.matrix' | translate }}
+      {{ "all.club.titles.matrix" | translate }}
     </h3>
     <mat-progress-bar color="accent" mode="indeterminate"></mat-progress-bar>
   </section>
@@ -12,12 +12,12 @@
     <div class="title">
       <h3>
         <mat-icon color="primary">groups</mat-icon>
-        {{ 'all.club.titles.matrix' | translate }}
+        {{ "all.club.titles.matrix" | translate }}
       </h3>
     </div>
-    <p>{{ 'all.competition.club-assembly.description' | translate }}</p>
+    <p>{{ "all.competition.club-assembly.description" | translate }}</p>
     <p class="caption">
-      {{ 'all.competition.club-assembly.note' | translate }}
+      {{ "all.competition.club-assembly.note" | translate }}
     </p>
     <div class="player-teams-table">
       <table mat-table [dataSource]="clubAssemblyService.players()">
@@ -31,7 +31,7 @@
           <ng-container [matColumnDef]="team.name ?? ''">
             <th mat-header-cell *matHeaderCellDef>{{ team.name }}</th>
             <td mat-cell *matCellDef="let element" class="can-play">
-              @if (element?.[team.name ?? ''].canPlay === canPlay.Yes) {
+              @if (element?.[team.name ?? ""].canPlay === canPlay.Yes) {
                 <mat-icon
                   [ngClass]="{
                     yes: !element?.[team.name ?? ''].base,
@@ -41,17 +41,17 @@
                   >check</mat-icon
                 >
               }
-              @if (element?.[team.name ?? ''].canPlay === canPlay.Maybe) {
+              @if (element?.[team.name ?? ""].canPlay === canPlay.Maybe) {
                 <mat-icon [matTooltip]="element?.[team.name ?? ''].reason" class="maybe"
                   >warning</mat-icon
                 >
               }
-              @if (element?.[team.name ?? ''].canPlay === canPlay.No) {
+              @if (element?.[team.name ?? ""].canPlay === canPlay.No) {
                 <mat-icon [matTooltip]="element?.[team.name ?? ''].reason" class="no"
                   >close</mat-icon
                 >
               }
-              @if (element?.[team.name ?? ''].canPlay === canPlay.Na) {
+              @if (element?.[team.name ?? ""].canPlay === canPlay.Na) {
                 <mat-icon [matTooltip]="element?.[team.name ?? ''].reason" class="na"
                   >remove</mat-icon
                 >

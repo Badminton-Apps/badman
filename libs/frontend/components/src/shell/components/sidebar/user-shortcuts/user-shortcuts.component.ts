@@ -1,27 +1,26 @@
-
-import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { RouterModule } from '@angular/router';
-import { AuthenticateService } from '@badman/frontend-auth';
-import { ClubMembershipType } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output } from "@angular/core";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { RouterModule } from "@angular/router";
+import { AuthenticateService } from "@badman/frontend-auth";
+import { ClubMembershipType } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
-    selector: 'badman-user-shortcuts',
-    imports: [
+  selector: "badman-user-shortcuts",
+  imports: [
     TranslatePipe,
     MatListModule,
     MatDividerModule,
     RouterModule,
     MatExpansionModule,
-    MatIconModule
-],
-    templateUrl: './user-shortcuts.component.html',
-    styleUrls: ['./user-shortcuts.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    MatIconModule,
+  ],
+  templateUrl: "./user-shortcuts.component.html",
+  styleUrls: ["./user-shortcuts.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserShortcutsComponent {
   private readonly authenticateService = inject(AuthenticateService);
@@ -46,7 +45,7 @@ export class UserShortcutsComponent {
         }
 
         return 0;
-      }),
+      })
   );
 
   expanded = {

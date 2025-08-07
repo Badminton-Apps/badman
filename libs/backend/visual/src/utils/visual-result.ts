@@ -137,11 +137,11 @@ export interface XmlTeamMatch {
 }
 
 export enum XmlDrawName {
-  The1StProvincialeA = '1st Provinciale - A',
+  The1StProvincialeA = "1st Provinciale - A",
 }
 
 export enum XmlEventName {
-  The1StProvinciale = '1st Provinciale',
+  The1StProvinciale = "1st Provinciale",
 }
 
 export interface XmlMatch {
@@ -339,5 +339,5 @@ export enum XmlScoreStatus {
   Walkover = 1,
   Retirement = 2,
   Disqualified = 3,
-  'No Match' = 4,
+  "No Match" = 4,
 }

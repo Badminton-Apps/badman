@@ -1,7 +1,7 @@
 //The homepage file contains the locators and goto method call for our test page. Its basically our page object model class
 
-import type { Locator, Page } from '@playwright/test';
-import { acceptCookies, dragDrop, setup } from '../utils';
+import type { Locator, Page } from "@playwright/test";
+import { acceptCookies, dragDrop, setup } from "../utils";
 
 export default class AssemblyPage {
   page: Page;
@@ -35,40 +35,40 @@ export default class AssemblyPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.page.on('dialog', (dialog) => dialog.dismiss());
+    this.page.on("dialog", (dialog) => dialog.dismiss());
 
-    this.clubInput = page.locator('badman-select-club input');
-    this.teamSelect = page.locator('badman-select-team');
-    this.encounterSelect = page.locator('badman-select-encounter');
-    this.seasonSelect = page.locator('badman-select-season');
+    this.clubInput = page.locator("badman-select-club input");
+    this.teamSelect = page.locator("badman-select-team");
+    this.encounterSelect = page.locator("badman-select-encounter");
+    this.seasonSelect = page.locator("badman-select-season");
 
-    this.header = page.locator('h1');
+    this.header = page.locator("h1");
 
-    this.single1List = page.locator('#single1List');
-    this.single2List = page.locator('#single2List');
-    this.single3List = page.locator('#single3List');
-    this.single4List = page.locator('#single4List');
+    this.single1List = page.locator("#single1List");
+    this.single2List = page.locator("#single2List");
+    this.single3List = page.locator("#single3List");
+    this.single4List = page.locator("#single4List");
 
-    this.double1List = page.locator('#double1List');
-    this.double2List = page.locator('#double2List');
-    this.double3List = page.locator('#double3List');
-    this.double4List = page.locator('#double4List');
+    this.double1List = page.locator("#double1List");
+    this.double2List = page.locator("#double2List");
+    this.double3List = page.locator("#double3List");
+    this.double4List = page.locator("#double4List");
 
-    this.validationOverview = page.locator('.validation-overview');
-    this.playerList = page.locator('#playerList');
+    this.validationOverview = page.locator(".validation-overview");
+    this.playerList = page.locator("#playerList");
 
     this.titulars = {
-      index: page.locator('.information').locator('.team').locator('.index'),
-      players: page.locator('.information').locator('.team'),
+      index: page.locator(".information").locator(".team").locator(".index"),
+      players: page.locator(".information").locator(".team"),
     };
 
-    this.overlay = page.locator('.cdk-overlay-container');
+    this.overlay = page.locator(".cdk-overlay-container");
   }
 
   async goto() {
     await setup(this.page);
-    await this.page.goto('/competition/assembly', { waitUntil: 'networkidle' });
-    await this.page.waitForLoadState('networkidle');
+    await this.page.goto("/competition/assembly", { waitUntil: "networkidle" });
+    await this.page.waitForLoadState("networkidle");
 
     // accept cookies
     await acceptCookies(this.page);
@@ -80,15 +80,15 @@ export default class AssemblyPage {
    */
   async selectClub(club: string) {
     await this.clubInput.fill(club);
-    await this.page.keyboard.press('ArrowDown');
-    await this.page.keyboard.press('Enter');
+    await this.page.keyboard.press("ArrowDown");
+    await this.page.keyboard.press("Enter");
 
     await this.page.waitForResponse(
-      (resp) => resp.url().includes('/graphql') && resp.status() === 200,
+      (resp) => resp.url().includes("/graphql") && resp.status() === 200
     );
 
     // wait for season to be loaded
-    await this.seasonSelect.waitFor({ state: 'visible' });
+    await this.seasonSelect.waitFor({ state: "visible" });
   }
 
   /**
@@ -97,10 +97,10 @@ export default class AssemblyPage {
    */
   async selectTeam(team: string) {
     // click on the mat-label in this.teamInput
-    await this.teamSelect.locator('mat-label').click();
+    await this.teamSelect.locator("mat-label").click();
 
     // find team in overlay
-    const teamItem = this.overlay.locator('mat-option').filter({
+    const teamItem = this.overlay.locator("mat-option").filter({
       hasText: team,
     });
 
@@ -125,7 +125,7 @@ export default class AssemblyPage {
    * @param playerName name of the player
    */
   async getPlayer(playerName: string) {
-    return this.playerList.locator('badman-assembly-player').filter({
+    return this.playerList.locator("badman-assembly-player").filter({
       hasText: playerName,
     });
   }

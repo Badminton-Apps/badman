@@ -1,1 +1,1 @@
-export * from './edit-subevent-dialog.component';
+export * from "./edit-subevent-dialog.component";

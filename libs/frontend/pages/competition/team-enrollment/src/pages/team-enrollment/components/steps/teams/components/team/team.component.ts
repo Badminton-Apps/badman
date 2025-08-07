@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
@@ -8,24 +8,24 @@ import {
   inject,
   input,
   output,
-} from '@angular/core';
+} from "@angular/core";
 import {
   FormArray,
   FormBuilder,
   FormControl,
   FormsModule,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { PlayerSearchComponent } from '@badman/frontend-components';
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { PlayerSearchComponent } from "@badman/frontend-components";
 import {
   EntryCompetitionPlayer,
   Player,
@@ -33,17 +33,17 @@ import {
   RankingSystem,
   Team,
   TeamPlayer,
-} from '@badman/frontend-models';
-import { SubEventTypeEnum, TeamMembershipType, getIndexFromPlayers } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
-import { v4 as uuid } from 'uuid';
-import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
+} from "@badman/frontend-models";
+import { SubEventTypeEnum, TeamMembershipType, getIndexFromPlayers } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { Subject, lastValueFrom, startWith, takeUntil } from "rxjs";
+import { v4 as uuid } from "uuid";
+import { TeamEnrollmentDataService } from "../../../../../service/team-enrollment.service";
 
 @Component({
-  selector: 'badman-team',
+  selector: "badman-team",
   imports: [
     CommonModule,
     TranslatePipe,
@@ -60,8 +60,8 @@ import { TeamEnrollmentDataService } from '../../../../../service/team-enrollmen
     MatTooltipModule,
     PlayerSearchComponent,
   ],
-  templateUrl: './team.component.html',
-  styleUrls: ['./team.component.scss'],
+  templateUrl: "./team.component.html",
+  styleUrls: ["./team.component.scss"],
 })
 export class TeamComponent implements OnInit {
   private readonly dataService = inject(TeamEnrollmentDataService);
@@ -83,12 +83,12 @@ export class TeamComponent implements OnInit {
   >();
 
   where = (type: SubEventTypeEnum) => ({
-    gender: type === 'MX' ? undefined : type,
+    gender: type === "MX" ? undefined : type,
   });
 
   teamType = computed(() => {
     if (!this.team()?.value?.type) {
-      throw new Error('No team type');
+      throw new Error("No team type");
     }
 
     return this.team().value.type;
@@ -128,7 +128,7 @@ export class TeamComponent implements OnInit {
   baseIndex = 0;
 
   hasWarning = false;
-  warningMessage = '';
+  warningMessage = "";
 
   ngOnInit(): void {
     this.checkTeam();
@@ -146,7 +146,7 @@ export class TeamComponent implements OnInit {
               single: p.rankingPlaces?.[0]?.single ?? 12,
               double: p.rankingPlaces?.[0]?.double ?? 12,
               mix: p.rankingPlaces?.[0]?.mix ?? 12,
-            })),
+            }))
           );
         }
       });
@@ -172,7 +172,7 @@ export class TeamComponent implements OnInit {
   async addPlayerToTeam(player: Player) {
     // Check if player is already in team
     if (this.team().value.players?.find((p) => p.id === player.id)) {
-      this.snackbar.open('Player is already in team', 'Close', {
+      this.snackbar.open("Player is already in team", "Close", {
         duration: 3000,
       });
       return;
@@ -188,7 +188,7 @@ export class TeamComponent implements OnInit {
           id: uuid(),
           membershipType: TeamMembershipType.REGULAR,
         },
-      }),
+      })
     );
 
     this.team().value.players = newPlayers;
@@ -200,9 +200,9 @@ export class TeamComponent implements OnInit {
   async addBasePlayerToTeam(player: Player) {
     // Check if player is already in team
     if (this.basePlayers().value.find((p) => p.id === player.id)) {
-      this.snackbar.open('Player is already in baseteam', 'Close', {
+      this.snackbar.open("Player is already in baseteam", "Close", {
         duration: 3000,
-        panelClass: 'warn',
+        panelClass: "warn",
       });
       return;
     }
@@ -216,7 +216,7 @@ export class TeamComponent implements OnInit {
     } as EntryCompetitionPlayer;
 
     this.basePlayers().push(
-      this.formBuilder.control(newPlayer) as FormControl<EntryCompetitionPlayer>,
+      this.formBuilder.control(newPlayer) as FormControl<EntryCompetitionPlayer>
     );
 
     this.checkTeam();
@@ -267,14 +267,14 @@ export class TeamComponent implements OnInit {
 
   private checkTeam() {
     this.hasWarning = false;
-    this.warningMessage = '';
+    this.warningMessage = "";
 
     this.baseCount = this.team().value.players?.filter(
-      (p) => p.teamMembership.membershipType === TeamMembershipType.REGULAR,
+      (p) => p.teamMembership.membershipType === TeamMembershipType.REGULAR
     ).length;
 
     this.backupCount = this.team().value.players?.filter(
-      (p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP,
+      (p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP
     ).length;
 
     if (this.locations().length === 1) {
@@ -288,27 +288,27 @@ export class TeamComponent implements OnInit {
     // check if all required fields are set (captainId, preferredDay, prefferdTime, email, phone)
     const warnings = [];
     if (this.team().value.captainId == null) {
-      warnings.push('No captain selected');
+      warnings.push("No captain selected");
     }
 
     if (this.team().value.preferredDay == null) {
-      warnings.push('No preferred day selected');
+      warnings.push("No preferred day selected");
     }
 
     if (this.team().value.preferredTime == null) {
-      warnings.push('No preferred time selected');
+      warnings.push("No preferred time selected");
     }
 
     if (this.team().value.prefferedLocationId == null) {
-      warnings.push('No preferred location selected');
+      warnings.push("No preferred location selected");
     }
 
     if (this.team().value.email == null) {
-      warnings.push('No email selected');
+      warnings.push("No email selected");
     }
 
     if (this.team().value.phone == null) {
-      warnings.push('No phone selected');
+      warnings.push("No phone selected");
     }
 
     this.hasWarning = warnings.length > 0;
@@ -340,12 +340,12 @@ export class TeamComponent implements OnInit {
           },
           order: [
             {
-              field: 'rankingDate',
-              direction: 'DESC',
+              field: "rankingDate",
+              direction: "DESC",
             },
           ],
         },
-      }),
+      })
     );
   }
 }

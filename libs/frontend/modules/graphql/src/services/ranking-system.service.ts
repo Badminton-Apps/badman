@@ -1,12 +1,12 @@
-import { Injectable, computed, inject } from '@angular/core';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable, merge, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Injectable, computed, inject } from "@angular/core";
+import { Apollo, gql } from "apollo-angular";
+import { Observable, merge, of } from "rxjs";
+import { map, switchMap, tap } from "rxjs/operators";
 
-import { RankingSystem } from '@badman/frontend-models';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { ActivatedRoute, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { RankingSystem } from "@badman/frontend-models";
+import { signalSlice } from "ngxtension/signal-slice";
+import { ActivatedRoute, Router } from "@angular/router";
+import { toSignal } from "@angular/core/rxjs-interop";
 
 export interface RankingState {
   rankingSystem: RankingSystem | null;
@@ -46,9 +46,9 @@ const SYSTEM_QUERY = gql`
   }
 `;
 
-const WATCH_SYSTEM_ID_KEY = 'watch.system.id';
+const WATCH_SYSTEM_ID_KEY = "watch.system.id";
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class RankingSystemService {
   private readonly apollo = inject(Apollo);
@@ -56,7 +56,7 @@ export class RankingSystemService {
   private readonly router = inject(Router);
   private queryParams = toSignal(this.route.queryParamMap);
 
-  watchId = computed(() => this.queryParams()?.get('watch'));
+  watchId = computed(() => this.queryParams()?.get("watch"));
 
   // state
   initialState: RankingState = {
@@ -71,7 +71,7 @@ export class RankingSystemService {
 
   // sources
   private servicesLoaded$ = of(sessionStorage.getItem(WATCH_SYSTEM_ID_KEY)).pipe(
-    switchMap((saved) => this._loadSystem(saved)),
+    switchMap((saved) => this._loadSystem(saved))
   );
 
   sources$ = merge(
@@ -79,8 +79,8 @@ export class RankingSystemService {
       map((rankingSystem) => ({
         rankingSystem,
         loaded: true,
-      })),
-    ),
+      }))
+    )
   );
 
   state = signalSlice({
@@ -91,15 +91,15 @@ export class RankingSystemService {
         action$.pipe(
           tap((id) => sessionStorage.setItem(WATCH_SYSTEM_ID_KEY, id)),
           switchMap((id) =>
-            this._loadSystem(id).pipe(map((system) => ({ rankingSystem: system, loaded: true }))),
-          ),
+            this._loadSystem(id).pipe(map((system) => ({ rankingSystem: system, loaded: true })))
+          )
         ),
       clearWatchSystem: (_state, action$: Observable<void>) =>
         action$.pipe(
           tap(() => sessionStorage.removeItem(WATCH_SYSTEM_ID_KEY)),
           switchMap(() =>
-            this._loadSystem(null).pipe(map((system) => ({ rankingSystem: system, loaded: true }))),
-          ),
+            this._loadSystem(null).pipe(map((system) => ({ rankingSystem: system, loaded: true })))
+          )
         ),
       deleteSystem: (_state, action$: Observable<string>) =>
         action$.pipe(
@@ -107,8 +107,8 @@ export class RankingSystemService {
           switchMap((id) => this._deleteSystem(id)),
           // load the default system
           switchMap(() =>
-            this._loadSystem(null).pipe(map((system) => ({ rankingSystem: system, loaded: true }))),
-          ),
+            this._loadSystem(null).pipe(map((system) => ({ rankingSystem: system, loaded: true })))
+          )
         ),
     },
     effects: (state) => ({
@@ -124,7 +124,7 @@ export class RankingSystemService {
           this.router.navigate([], {
             relativeTo: this.route,
             queryParams,
-            queryParamsHandling: 'merge',
+            queryParamsHandling: "merge",
           });
         }
       },

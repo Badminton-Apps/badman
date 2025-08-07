@@ -1,9 +1,9 @@
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -13,17 +13,17 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
-import { EncounterCompetition, EventCompetition, EventTournament } from '../event';
-import { Player } from '../player.model';
-import { Club } from '../club.model';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { EncounterCompetition, EventCompetition, EventTournament } from "../event";
+import { Player } from "../player.model";
+import { Club } from "../club.model";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'personal',
+  schema: "personal",
 })
-@ObjectType({ description: 'The settings' })
+@ObjectType({ description: "The settings" })
 export class Notification extends Model {
   constructor(values?: Partial<Notification>, options?: BuildOptions) {
     super(values, options);
@@ -43,7 +43,7 @@ export class Notification extends Model {
   override createdAt?: Date;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'sendToId')
+  @BelongsTo(() => Player, "sendToId")
   sendTo?: Relation<Player>;
 
   @Field(() => ID, { nullable: true })
@@ -64,28 +64,28 @@ export class Notification extends Model {
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   encounter?: Relation<EncounterCompetition>;
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   competition?: Relation<EventCompetition>;
 
   @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   tournament?: Relation<EventTournament>;
 
   @Field(() => Club, { nullable: true })
   @BelongsTo(() => Club, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   club?: Relation<Club>;
@@ -120,15 +120,15 @@ export class Notification extends Model {
 @InputType()
 export class NotificationUpdateInput extends PartialType(
   OmitType(Notification, [
-    'createdAt',
-    'updatedAt',
-    'encounter',
-    'competition',
-    'tournament',
-    'club',
-    'sendTo',
+    "createdAt",
+    "updatedAt",
+    "encounter",
+    "competition",
+    "tournament",
+    "club",
+    "sendTo",
   ] as const),
-  InputType,
+  InputType
 ) {}
 
 // @InputType()

@@ -1,9 +1,9 @@
-import { DrawCompetition, EncounterCompetition, RankingSystem } from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { VisualService } from '@badman/backend-visual';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
+import { DrawCompetition, EncounterCompetition, RankingSystem } from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { VisualService } from "@badman/backend-visual";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
 
 @Processor({
   name: SyncQueue,
@@ -14,7 +14,7 @@ export class EncounterCompetitionProcessor {
   constructor(
     private readonly _transactionManager: TransactionManager,
     private readonly _visualService: VisualService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Process(Sync.ProcessSyncCompetitionEncounter)
@@ -45,7 +45,7 @@ export class EncounterCompetitionProcessor {
 
       // from parent
       games: { id: string; visualCode: string }[];
-    }>,
+    }>
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
 
@@ -70,14 +70,14 @@ export class EncounterCompetitionProcessor {
       transaction,
     });
     if (!dbDraw) {
-      throw new Error('SubEvent not found');
+      throw new Error("SubEvent not found");
     }
 
     if (!job.data.eventCode) {
       const subEvent = await dbDraw.getSubEventCompetition();
       const event = await subEvent.getEventCompetition();
       if (!event) {
-        throw new Error('Event not found');
+        throw new Error("Event not found");
       }
 
       job.data.eventCode = event.visualCode;
@@ -131,19 +131,19 @@ export class EncounterCompetitionProcessor {
     }
 
     if (!EncounterCode) {
-      throw new Error('Sub Encounter code is required');
+      throw new Error("Sub Encounter code is required");
     }
 
     const visualEncounters = await this._visualService.getGames(
       job.data.eventCode,
       EncounterCode,
-      true,
+      true
     );
 
     const visualEncounter = visualEncounters.find((r) => `${r.Code}` === `${EncounterCode}`);
 
     if (!visualEncounter) {
-      throw new Error('Sub Encounter not found');
+      throw new Error("Sub Encounter not found");
     }
 
     if (!encounter) {
@@ -167,7 +167,7 @@ export class EncounterCompetitionProcessor {
         job.data.rankingSystemId,
         job.data.transactionId,
         existing.games,
-        options,
+        options
       );
     }
 
@@ -192,7 +192,7 @@ export class EncounterCompetitionProcessor {
     games: { id: string; visualCode: string }[],
     options: {
       deleteMatches?: boolean;
-    },
+    }
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
     const matches = await this._visualService.getGames(eventCode, encounterCode, true);

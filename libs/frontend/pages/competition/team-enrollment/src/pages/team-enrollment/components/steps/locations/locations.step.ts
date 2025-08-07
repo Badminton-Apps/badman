@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,32 +6,32 @@ import {
   inject,
   input,
   untracked,
-} from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Location } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { take } from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid';
-import { LOCATIONS } from '../../../../../forms';
-import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
-import { LocationAvailibilityForm, LocationComponent, LocationForm } from './components';
+} from "@angular/core";
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { Location } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { take } from "rxjs/operators";
+import { v4 as uuidv4 } from "uuid";
+import { LOCATIONS } from "../../../../../forms";
+import { TeamEnrollmentDataService } from "../../../service/team-enrollment.service";
+import { LocationAvailibilityForm, LocationComponent, LocationForm } from "./components";
 
 @Component({
-    selector: 'badman-locations-step',
-    imports: [
+  selector: "badman-locations-step",
+  imports: [
     TranslatePipe,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
     MatProgressBarModule,
-    LocationComponent
-],
-    templateUrl: './locations.step.html',
-    styleUrls: ['./locations.step.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    LocationComponent,
+  ],
+  templateUrl: "./locations.step.html",
+  styleUrls: ["./locations.step.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LocationsStepComponent {
   private readonly dialog = inject(MatDialog);
@@ -88,8 +87,8 @@ export class LocationsStepComponent {
                     startTime: this.formBuilder.control(day.startTime),
                     endTime: this.formBuilder.control(day.endTime),
                     courts: this.formBuilder.control(day.courts),
-                  }),
-                ) ?? [],
+                  })
+                ) ?? []
               ),
               exceptions: this.formBuilder.array(
                 availibilty?.exceptions?.map((exception) =>
@@ -97,12 +96,12 @@ export class LocationsStepComponent {
                     start: this.formBuilder.control(exception.start),
                     end: this.formBuilder.control(exception.end),
                     courts: this.formBuilder.control(exception.courts),
-                  }),
-                ) ?? [],
+                  })
+                ) ?? []
               ),
             }) as LocationAvailibilityForm;
 
-            (group.get('availabilities') as FormArray).push(availibyForm);
+            (group.get("availabilities") as FormArray).push(availibyForm);
           }
 
           this.locationForm().push(group as LocationForm);
@@ -112,12 +111,12 @@ export class LocationsStepComponent {
   }
 
   addLocation() {
-    import('@badman/frontend-club').then((m) => {
+    import("@badman/frontend-club").then((m) => {
       const dialogRef = this.dialog.open(m.LocationDialogComponent, {
         data: {
           id: uuidv4(),
           club: this.club(),
-          onCreate: 'close',
+          onCreate: "close",
           showavailabilities: false,
         },
         autoFocus: false,
@@ -141,7 +140,7 @@ export class LocationsStepComponent {
             phone: this.formBuilder.control(location?.phone),
             fax: this.formBuilder.control(location?.fax),
             availabilities: this.formBuilder.array([] as LocationAvailibilityForm[]),
-          }) as LocationForm,
+          }) as LocationForm
         );
       });
     });
@@ -149,18 +148,17 @@ export class LocationsStepComponent {
 
   removeLocation(index: number) {
     this.locationForm().removeAt(index);
-    
   }
 
   editLocation(index: number) {
     const control = this.locationForm().at(index) as FormGroup;
 
-    import('@badman/frontend-club').then((m) => {
+    import("@badman/frontend-club").then((m) => {
       const dialogRef = this.dialog.open(m.LocationDialogComponent, {
         data: {
           location: control.value,
           club: this.club(),
-          onUpdate: 'close',
+          onUpdate: "close",
           showavailabilities: false,
         },
         autoFocus: false,

@@ -1,15 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, input } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { Observable, combineLatest, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { ValidationMessage, ValidationPlayer } from '../../models/validation';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, inject, input } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, combineLatest, of } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
+import { ValidationMessage, ValidationPlayer } from "../../models/validation";
 
 @Component({
-  selector: 'badman-assembly-message',
+  selector: "badman-assembly-message",
   imports: [CommonModule],
-  templateUrl: './assembly-message.component.html',
-  styleUrls: ['./assembly-message.component.scss'],
+  templateUrl: "./assembly-message.component.html",
+  styleUrls: ["./assembly-message.component.scss"],
 })
 export class AssemblyMessageComponent implements OnInit {
   private translate = inject(TranslateService);
@@ -21,14 +21,14 @@ export class AssemblyMessageComponent implements OnInit {
     if (this.validation()?.message == undefined) return;
 
     this.translatedMessage$ = this._getParams().pipe(
-      switchMap((params) => this.translate.get(`${this.validation()?.message}`, params)),
+      switchMap((params) => this.translate.get(`${this.validation()?.message}`, params))
     );
   }
 
   private _getParams() {
     return combineLatest([
-      this._getGame('game1'),
-      this._getGame('game2'),
+      this._getGame("game1"),
+      this._getGame("game2"),
       this._getRequiredGender(),
       this._getPlayers(),
       this._getIndex(),
@@ -41,27 +41,27 @@ export class AssemblyMessageComponent implements OnInit {
         } = {};
 
         if (game1) {
-          params['game1'] = game1.toLowerCase();
+          params["game1"] = game1.toLowerCase();
         }
 
         if (game2) {
-          params['game2'] = game2.toLowerCase();
+          params["game2"] = game2.toLowerCase();
         }
 
         if (gender) {
-          params['gender'] = gender;
+          params["gender"] = gender;
         }
 
-        if (minMax?.['max']) {
-          params['max'] = minMax?.['max'];
+        if (minMax?.["max"]) {
+          params["max"] = minMax?.["max"];
         }
 
         return { ...params, ...players, ...index, ...maxLevel };
-      }),
+      })
     );
   }
 
-  private _getGame(gameKey: 'game1' | 'game2') {
+  private _getGame(gameKey: "game1" | "game2") {
     const game = this.validation()?.params?.[gameKey];
     if (!game) return of(undefined);
 
@@ -69,7 +69,7 @@ export class AssemblyMessageComponent implements OnInit {
   }
 
   private _getRequiredGender() {
-    const gender = this.validation()?.params?.['gender'] as string;
+    const gender = this.validation()?.params?.["gender"] as string;
     if (!gender) return of(undefined);
 
     return of(this._getGender(gender));
@@ -78,10 +78,10 @@ export class AssemblyMessageComponent implements OnInit {
   private _getGender(gender: string) {
     let genderTranslated: string;
     switch (gender) {
-      case 'F':
+      case "F":
         genderTranslated = this.translate.instant(`all.gender.female`);
         break;
-      case 'M':
+      case "M":
         genderTranslated = this.translate.instant(`all.gender.male`);
         break;
       default:
@@ -89,7 +89,7 @@ export class AssemblyMessageComponent implements OnInit {
         break;
     }
 
-    return genderTranslated.toLocaleLowerCase() as 'F' | 'M';
+    return genderTranslated.toLocaleLowerCase() as "F" | "M";
   }
 
   private _getPlayers() {
@@ -97,53 +97,53 @@ export class AssemblyMessageComponent implements OnInit {
       [key: string]: unknown;
     } = {};
 
-    if (this.validation()?.params?.['team1player1']) {
-      const team1player1 = this.validation()?.params?.['team1player1'] as ValidationPlayer;
-      params['team1player1'] = team1player1;
+    if (this.validation()?.params?.["team1player1"]) {
+      const team1player1 = this.validation()?.params?.["team1player1"] as ValidationPlayer;
+      params["team1player1"] = team1player1;
     }
 
-    if (this.validation()?.params?.['team1player2']) {
-      const team1player2 = this.validation()?.params?.['team1player2'] as ValidationPlayer;
-      params['team1player2'] = team1player2;
+    if (this.validation()?.params?.["team1player2"]) {
+      const team1player2 = this.validation()?.params?.["team1player2"] as ValidationPlayer;
+      params["team1player2"] = team1player2;
     }
 
-    if (this.validation()?.params?.['team2player1']) {
-      const team2player1 = this.validation()?.params?.['team2player1'] as ValidationPlayer;
-      params['team2player1'] = team2player1;
+    if (this.validation()?.params?.["team2player1"]) {
+      const team2player1 = this.validation()?.params?.["team2player1"] as ValidationPlayer;
+      params["team2player1"] = team2player1;
     }
 
-    if (this.validation()?.params?.['team2player2']) {
-      const team2player2 = this.validation()?.params?.['team2player2'] as ValidationPlayer;
-      params['team2player2'] = team2player2;
+    if (this.validation()?.params?.["team2player2"]) {
+      const team2player2 = this.validation()?.params?.["team2player2"] as ValidationPlayer;
+      params["team2player2"] = team2player2;
     }
 
-    if (this.validation()?.params?.['player1']) {
-      const player1 = this.validation()?.params?.['player1'] as ValidationPlayer;
+    if (this.validation()?.params?.["player1"]) {
+      const player1 = this.validation()?.params?.["player1"] as ValidationPlayer;
 
       if (player1.gender) {
         player1.gender = this._getGender(player1.gender);
       }
 
-      params['player1'] = player1;
+      params["player1"] = player1;
     }
 
-    if (this.validation()?.params?.['player2']) {
-      const player2 = this.validation()?.params?.['player2'] as ValidationPlayer;
+    if (this.validation()?.params?.["player2"]) {
+      const player2 = this.validation()?.params?.["player2"] as ValidationPlayer;
 
       if (player2.gender) {
         player2.gender = this._getGender(player2.gender);
       }
 
-      params['player2'] = player2;
+      params["player2"] = player2;
     }
 
-    if (this.validation()?.params?.['player']) {
-      const player = this.validation()?.params?.['player'] as ValidationPlayer;
+    if (this.validation()?.params?.["player"]) {
+      const player = this.validation()?.params?.["player"] as ValidationPlayer;
       if (player.gender) {
         player.gender = this._getGender(player.gender);
       }
 
-      params['player'] = player;
+      params["player"] = player;
     }
 
     return of(params);
@@ -154,9 +154,9 @@ export class AssemblyMessageComponent implements OnInit {
       [key: string]: unknown;
     } = {};
 
-    if (this.validation()?.params?.['max']) {
-      const max = this.validation()?.params?.['max'] as ValidationPlayer;
-      params['max'] = max;
+    if (this.validation()?.params?.["max"]) {
+      const max = this.validation()?.params?.["max"] as ValidationPlayer;
+      params["max"] = max;
     }
 
     return of(params);
@@ -167,19 +167,19 @@ export class AssemblyMessageComponent implements OnInit {
       [key: string]: unknown;
     } = {};
 
-    if (this.validation()?.params?.['teamIndex']) {
-      const teamIndex = this.validation()?.params?.['teamIndex'] as ValidationPlayer;
-      params['teamIndex'] = teamIndex;
+    if (this.validation()?.params?.["teamIndex"]) {
+      const teamIndex = this.validation()?.params?.["teamIndex"] as ValidationPlayer;
+      params["teamIndex"] = teamIndex;
     }
 
-    if (this.validation()?.params?.['baseIndex']) {
-      const baseIndex = this.validation()?.params?.['baseIndex'] as ValidationPlayer;
-      params['baseIndex'] = baseIndex;
+    if (this.validation()?.params?.["baseIndex"]) {
+      const baseIndex = this.validation()?.params?.["baseIndex"] as ValidationPlayer;
+      params["baseIndex"] = baseIndex;
     }
 
-    if (this.validation()?.params?.['minIndex']) {
-      const minIndex = this.validation()?.params?.['minIndex'] as ValidationPlayer;
-      params['minIndex'] = minIndex;
+    if (this.validation()?.params?.["minIndex"]) {
+      const minIndex = this.validation()?.params?.["minIndex"] as ValidationPlayer;
+      params["minIndex"] = minIndex;
     }
 
     return of(params);
@@ -190,13 +190,13 @@ export class AssemblyMessageComponent implements OnInit {
       [key: string]: unknown;
     } = {};
 
-    if (this.validation()?.params?.['minLevel']) {
-      const minLevel = this.validation()?.params?.['minLevel'] as ValidationPlayer;
-      params['minLevel'] = minLevel;
+    if (this.validation()?.params?.["minLevel"]) {
+      const minLevel = this.validation()?.params?.["minLevel"] as ValidationPlayer;
+      params["minLevel"] = minLevel;
     }
-    if (this.validation()?.params?.['rankingType']) {
-      const rankingType = this.validation()?.params?.['rankingType'] as ValidationPlayer;
-      params['rankingType'] = this.translate.instant(`all.ranking.${rankingType}`).toLowerCase();
+    if (this.validation()?.params?.["rankingType"]) {
+      const rankingType = this.validation()?.params?.["rankingType"] as ValidationPlayer;
+      params["rankingType"] = this.translate.instant(`all.ranking.${rankingType}`).toLowerCase();
     }
 
     return of(params);

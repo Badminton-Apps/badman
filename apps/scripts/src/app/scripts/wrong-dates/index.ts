@@ -1,1 +1,1 @@
-export * from './wrong-dates.service';
+export * from "./wrong-dates.service";

@@ -1,6 +1,6 @@
-@use '@angular/material' as mat;
-@use './src/pages/detail/detail.page.theme.scss' as detail;
-@use './src/components/fields/fields.component.theme.scss' as fields;
+@use "@angular/material" as mat;
+@use "./src/pages/detail/detail.page.theme.scss" as detail;
+@use "./src/components/fields/fields.component.theme.scss" as fields;
 
 @mixin typography($theme) {
   @include detail.typography($theme);

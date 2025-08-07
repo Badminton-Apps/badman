@@ -2,9 +2,8 @@
   <ng-container [formGroup]="formGroup()">
     <div class="row">
       <button mat-stroked-button (click)="addLocation()">
-        {{ 'all.button.add-location' | translate }}
+        {{ "all.button.add-location" | translate }}
       </button>
-      
     </div>
     <ng-container formArrayName="locations">
       @for (location of this.locationForm().controls; track location; let i = $index) {

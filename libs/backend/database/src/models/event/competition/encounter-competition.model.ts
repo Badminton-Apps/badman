@@ -1,4 +1,4 @@
-import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -16,7 +16,7 @@ import {
   HasOneSetAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -29,23 +29,23 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
-import { Relation } from '../../../wrapper';
-import { Comment } from '../../comment.model';
-import { Notification } from '../../personal';
-import { Player } from '../../player.model';
-import { Team } from '../../team.model';
-import { Game } from '../game.model';
-import { Location } from '../location.model';
-import { Assembly } from './assembly.model';
-import { DrawCompetition } from './draw-competition.model';
-import { EncounterChange } from './encounter-change';
+} from "sequelize-typescript";
+import { Relation } from "../../../wrapper";
+import { Comment } from "../../comment.model";
+import { Notification } from "../../personal";
+import { Player } from "../../player.model";
+import { Team } from "../../team.model";
+import { Game } from "../game.model";
+import { Location } from "../location.model";
+import { Assembly } from "./assembly.model";
+import { DrawCompetition } from "./draw-competition.model";
+import { EncounterChange } from "./encounter-change";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 })
-@ObjectType({ description: 'A EncounterCompetition' })
+@ObjectType({ description: "A EncounterCompetition" })
 export class EncounterCompetition extends Model<
   InferAttributes<EncounterCompetition>,
   InferCreationAttributes<EncounterCompetition>
@@ -72,18 +72,18 @@ export class EncounterCompetition extends Model<
   originalDate?: Date;
 
   @HasMany(() => Game, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'competition',
+      linkType: "competition",
     },
   })
   games?: Relation<Game[]>;
 
   @Field(() => DrawCompetition, { nullable: true })
   @BelongsTo(() => DrawCompetition, {
-    foreignKey: 'drawId',
-    onDelete: 'CASCADE',
+    foreignKey: "drawId",
+    onDelete: "CASCADE",
   })
   drawCompetition?: Relation<DrawCompetition>;
 
@@ -93,7 +93,7 @@ export class EncounterCompetition extends Model<
   drawId?: string;
 
   @Field(() => Team, { nullable: true })
-  @BelongsTo(() => Team, 'homeTeamId')
+  @BelongsTo(() => Team, "homeTeamId")
   home?: Relation<Team>;
 
   @Field(() => Int)
@@ -107,7 +107,7 @@ export class EncounterCompetition extends Model<
   homeTeamId?: string;
 
   @Field(() => Team, { nullable: true })
-  @BelongsTo(() => Team, 'awayTeamId')
+  @BelongsTo(() => Team, "awayTeamId")
   away?: Relation<Team>;
 
   @Field(() => Int)
@@ -121,7 +121,7 @@ export class EncounterCompetition extends Model<
   awayTeamId?: string;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'tempHomeCaptainId')
+  @BelongsTo(() => Player, "tempHomeCaptainId")
   tempHomeCaptain?: Relation<Player>;
 
   @ForeignKey(() => Player)
@@ -130,7 +130,7 @@ export class EncounterCompetition extends Model<
   tempHomeCaptainId?: string;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'tempAwayCaptainId')
+  @BelongsTo(() => Player, "tempAwayCaptainId")
   tempAwayCaptain?: Relation<Player>;
 
   @ForeignKey(() => Player)
@@ -147,7 +147,7 @@ export class EncounterCompetition extends Model<
   visualCode?: string;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'gameLeaderId')
+  @BelongsTo(() => Player, "gameLeaderId")
   gameLeader?: Relation<Player>;
 
   @ForeignKey(() => Player)
@@ -156,11 +156,11 @@ export class EncounterCompetition extends Model<
   gameLeaderId?: string;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'enteredById')
+  @BelongsTo(() => Player, "enteredById")
   enteredBy?: Relation<Player>;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'acceptedById')
+  @BelongsTo(() => Player, "acceptedById")
   acceptedBy?: Relation<Player>;
 
   @Field(() => Boolean, { nullable: false })
@@ -217,15 +217,15 @@ export class EncounterCompetition extends Model<
 
   @Field(() => EncounterChange, { nullable: true })
   @HasOne(() => EncounterChange, {
-    foreignKey: 'encounterId',
-    onDelete: 'CASCADE',
+    foreignKey: "encounterId",
+    onDelete: "CASCADE",
   })
   encounterChange?: Relation<EncounterChange>;
 
   @Field(() => Location, { nullable: true })
   @BelongsTo(() => Location, {
-    foreignKey: 'locationId',
-    onDelete: 'CASCADE',
+    foreignKey: "locationId",
+    onDelete: "CASCADE",
   })
   location?: Relation<Location>;
 
@@ -236,8 +236,8 @@ export class EncounterCompetition extends Model<
 
   @Field(() => Location, { nullable: true })
   @BelongsTo(() => Location, {
-    foreignKey: 'originalLocationId',
-    onDelete: 'CASCADE',
+    foreignKey: "originalLocationId",
+    onDelete: "CASCADE",
   })
   originalLocation?: Relation<Location>;
 
@@ -247,77 +247,77 @@ export class EncounterCompetition extends Model<
   originalLocationId?: string;
 
   @HasMany(() => Notification, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'encounter',
+      linkType: "encounter",
     },
   })
   notifications?: Relation<Notification[]>;
 
   @Field(() => [Assembly], { nullable: true })
   @HasMany(() => Assembly, {
-    foreignKey: 'encounterId',
-    onDelete: 'CASCADE',
+    foreignKey: "encounterId",
+    onDelete: "CASCADE",
   })
   assemblies?: Relation<Assembly[]>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'home_comment',
+      linkType: "home_comment",
     },
   })
   homeComments?: Relation<Comment[]>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'away_comment',
+      linkType: "away_comment",
     },
   })
   awayComments?: Relation<Comment[]>;
 
   @Field(() => Comment, { nullable: true })
   @HasOne(() => Comment, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'game_leader_comment',
+      linkType: "game_leader_comment",
     },
   })
   gameLeaderComment?: Relation<Comment>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'home_comment_change',
+      linkType: "home_comment_change",
     },
   })
   homeCommentsChange?: Relation<Comment[]>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: 'away_comment_change',
+      linkType: "away_comment_change",
     },
   })
   awayCommentsChange?: Relation<Comment[]>;
 
   @Field(() => Comment, { nullable: true })
   @HasOne(() => Comment, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: true,
     scope: {
-      linkType: 'encounter',
+      linkType: "encounter",
     },
   })
   encounterComment?: Relation<Comment>;

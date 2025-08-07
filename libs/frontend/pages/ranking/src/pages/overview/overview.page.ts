@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   Component,
   PLATFORM_ID,
@@ -8,30 +8,30 @@ import {
   effect,
   inject,
   signal,
-} from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
-import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { RankingSystem } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { catchError, filter, map, of, startWith, switchMap, takeUntil, tap } from 'rxjs';
+} from "@angular/core";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTableModule } from "@angular/material/table";
+import { RouterModule } from "@angular/router";
+import { HasClaimComponent, PageHeaderComponent } from "@badman/frontend-components";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { RankingSystem } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { catchError, filter, map, of, startWith, switchMap, takeUntil, tap } from "rxjs";
 
 const FETCH_SYSTEMS = gql`
   query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
@@ -50,30 +50,30 @@ const FETCH_SYSTEMS = gql`
 `;
 
 @Component({
-    selector: 'badman-ranking-overview',
-    templateUrl: './overview.page.html',
-    styleUrls: ['./overview.page.scss'],
-    imports: [
-        CommonModule,
-        RouterModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        FormsModule,
-        MomentModule,
-        MatButtonModule,
-        MatTableModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatMenuModule,
-        MatDialogModule,
-        MatDividerModule,
-        MatSlideToggleModule,
-        MatDatepickerModule,
-        MatSelectModule,
-        PageHeaderComponent,
-        HasClaimComponent,
-    ]
+  selector: "badman-ranking-overview",
+  templateUrl: "./overview.page.html",
+  styleUrls: ["./overview.page.scss"],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    FormsModule,
+    MomentModule,
+    MatButtonModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    PageHeaderComponent,
+    HasClaimComponent,
+  ],
 })
 export class OverviewPageComponent {
   // injects
@@ -93,29 +93,29 @@ export class OverviewPageComponent {
   copyingPoints = signal(false);
 
   displayedColumns: string[] = [
-    'running',
-    'primary',
-    'name',
-    'procentWinning',
-    'procentLosing',
-    'latestXGamesToUse',
-    'calculateUpdates',
-    'options',
+    "running",
+    "primary",
+    "name",
+    "procentWinning",
+    "procentLosing",
+    "latestXGamesToUse",
+    "calculateUpdates",
+    "options",
   ];
   filter = new FormGroup({});
-  @ViewChild('copySystem')
+  @ViewChild("copySystem")
   copySystemTemplateRef?: TemplateRef<HTMLElement>;
   copySystemFormGroup = new FormGroup({
-    start: new FormControl<Date | null>(new Date('2020-09-01')),
+    start: new FormControl<Date | null>(new Date("2020-09-01")),
     end: new FormControl<Date | null>(new Date()),
   });
   showDatePicker = true;
 
-  @ViewChild('copyPoints')
+  @ViewChild("copyPoints")
   copyPointsTemplateRef?: TemplateRef<HTMLElement>;
   copyPointsFormGroup = new FormGroup({
     source: new FormControl<string | null>(null),
-    start: new FormControl<Date | null>(new Date('2020-09-01')),
+    start: new FormControl<Date | null>(new Date("2020-09-01")),
     end: new FormControl<Date | null>(new Date()),
   });
 
@@ -143,7 +143,7 @@ export class OverviewPageComponent {
         transferState(`systens`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.rankingSystems) {
-            throw new Error('No Systems');
+            throw new Error("No Systems");
           }
           return result.data.rankingSystems
             .map((system) => new RankingSystem(system))
@@ -160,7 +160,7 @@ export class OverviewPageComponent {
         }),
         tap(() => {
           this.loading.set(false);
-        }),
+        })
       )
       .subscribe((systems) => {
         this.systems.set(systems);
@@ -169,7 +169,7 @@ export class OverviewPageComponent {
 
   watchSystem(system: RankingSystem) {
     if (!system.id) {
-      console.warn('No system id');
+      console.warn("No system id");
       return;
     }
 
@@ -178,7 +178,7 @@ export class OverviewPageComponent {
 
   deleteSystem(system: RankingSystem) {
     if (!system.id) {
-      console.warn('No system id');
+      console.warn("No system id");
       return;
     }
 
@@ -232,19 +232,19 @@ export class OverviewPageComponent {
         catchError((err) => {
           this.snackBar.open(err.message, undefined, {
             duration: 1000,
-            panelClass: 'error',
+            panelClass: "error",
           });
           return of(null);
-        }),
+        })
       )
       .subscribe((result) => {
         this.copyingSystem.set(false);
         if (!result) {
           return;
         }
-        this.snackBar.open('System copied', undefined, {
+        this.snackBar.open("System copied", undefined, {
           duration: 1000,
-          panelClass: 'success',
+          panelClass: "success",
         });
       });
   }
@@ -297,19 +297,19 @@ export class OverviewPageComponent {
         catchError((err) => {
           this.snackBar.open(err.message, undefined, {
             duration: 1000,
-            panelClass: 'error',
+            panelClass: "error",
           });
           return of(null);
-        }),
+        })
       )
       .subscribe((result) => {
         this.copyingPoints.set(false);
         if (!result) {
           return;
         }
-        this.snackBar.open('System copied', undefined, {
+        this.snackBar.open("System copied", undefined, {
           duration: 1000,
-          panelClass: 'success',
+          panelClass: "success",
         });
       });
   }

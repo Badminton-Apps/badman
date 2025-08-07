@@ -1,5 +1,5 @@
 export enum LevelType {
-  PROV = 'PROV',
-  LIGA = 'LIGA',
-  NATIONAL = 'NATIONAL',
+  PROV = "PROV",
+  LIGA = "LIGA",
+  NATIONAL = "NATIONAL",
 }

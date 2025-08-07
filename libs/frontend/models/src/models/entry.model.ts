@@ -1,8 +1,8 @@
-import { DrawCompetition, DrawTournament, SubEventCompetition, SubEventTournament } from './events';
-import { Player } from './player.model';
-import { Standing } from './standing.model';
-import { Team } from './team.model';
-import { TeamValidationResult } from './validation';
+import { DrawCompetition, DrawTournament, SubEventCompetition, SubEventTournament } from "./events";
+import { Player } from "./player.model";
+import { Standing } from "./standing.model";
+import { Team } from "./team.model";
+import { TeamValidationResult } from "./validation";
 
 export class EventEntry {
   id?: string;
@@ -77,7 +77,7 @@ export interface EntryCompetitionPlayer {
   single: number;
   double: number;
   mix: number;
-  gender: 'M' | 'F';
+  gender: "M" | "F";
   player: Partial<Player>;
   levelException: boolean;
   levelExceptionRequested?: boolean;

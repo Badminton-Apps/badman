@@ -1,9 +1,9 @@
-import { EventCompetition, Player } from '@badman/backend-database';
-import { Op } from 'sequelize';
-import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService, XmlGenderID, XmlTournament } from '@badman/backend-visual';
-import { correctWrongPlayers } from '../../../../utils';
-import { Logger } from '@nestjs/common';
+import { EventCompetition, Player } from "@badman/backend-database";
+import { Op } from "sequelize";
+import { StepProcessor, StepOptions } from "../../../../processing";
+import { VisualService, XmlGenderID, XmlTournament } from "@badman/backend-visual";
+import { correctWrongPlayers } from "../../../../utils";
+import { Logger } from "@nestjs/common";
 
 export class CompetitionSyncPlayerProcessor extends StepProcessor {
   public event?: EventCompetition;
@@ -11,7 +11,7 @@ export class CompetitionSyncPlayerProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -36,8 +36,8 @@ export class CompetitionSyncPlayerProcessor extends StepProcessor {
           lastName: xmlPlayer.Lastname,
           gender:
             xmlPlayer.GenderID === XmlGenderID.Boy || xmlPlayer.GenderID === XmlGenderID.Male
-              ? 'M'
-              : 'F',
+              ? "M"
+              : "F",
         }),
         xmlMemberId: xmlPlayer?.MemberID,
       };
@@ -65,12 +65,12 @@ export class CompetitionSyncPlayerProcessor extends StepProcessor {
           where: {
             [Op.or]: [
               {
-                firstName: xmlPlayer?.player?.firstName ?? '',
-                lastName: xmlPlayer?.player?.lastName ?? '',
+                firstName: xmlPlayer?.player?.firstName ?? "",
+                lastName: xmlPlayer?.player?.lastName ?? "",
               },
               {
-                firstName: xmlPlayer?.player?.lastName ?? '',
-                lastName: xmlPlayer?.player?.firstName ?? '',
+                firstName: xmlPlayer?.player?.lastName ?? "",
+                lastName: xmlPlayer?.player?.firstName ?? "",
               },
             ],
           },

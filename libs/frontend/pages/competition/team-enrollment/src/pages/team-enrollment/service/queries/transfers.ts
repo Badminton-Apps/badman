@@ -1,23 +1,23 @@
-import { Club, ClubPlayer } from '@badman/frontend-models';
-import { endOfSeason, startOfSeason } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Club, ClubPlayer } from "@badman/frontend-models";
+import { endOfSeason, startOfSeason } from "@badman/utils";
+import { Apollo, gql } from "apollo-angular";
+import { of } from "rxjs";
+import { map } from "rxjs/operators";
 
 export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, season?: number) => {
   if (!clubId) {
-    console.error('No clubId or season provided');
+    console.error("No clubId or season provided");
     return of([]);
   }
 
   if (!season) {
-    console.error('No season provided');
+    console.error("No season provided");
     return of([]);
   }
 
   return apollo
     .query<{ club: Partial<Club> }>({
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
       query: gql`
         query GetLoansAndTransfersForSeason${season}($id: ID!, $active: Boolean, $where: JSONObject) {
           club(id: $id) {
@@ -38,7 +38,7 @@ export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, sea
         id: clubId,
         active: false,
         where: {
-          '$ClubPlayerMembership.start$': {
+          "$ClubPlayerMembership.start$": {
             $gte: startOfSeason(season),
             $lte: endOfSeason(season),
           },
@@ -46,6 +46,6 @@ export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, sea
       },
     })
     .pipe(
-      map((result) => (result?.data?.club?.players ?? [])?.map((player) => new ClubPlayer(player))),
+      map((result) => (result?.data?.club?.players ?? [])?.map((player) => new ClubPlayer(player)))
     );
 };

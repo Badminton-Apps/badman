@@ -1,4 +1,4 @@
-import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormControl, ValidatorFn } from "@angular/forms";
 
 // pass in property to validate and list of validators to run on it
 export function validateProperty<T>(property: keyof T, validators: ValidatorFn[]): ValidatorFn {

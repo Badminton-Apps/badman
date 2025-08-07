@@ -4,7 +4,7 @@
       <div class="information">
         <div class="team">
           <div class="container" (ngxResize)="onResized($event)">
-            <label>{{ 'all.competition.team-assembly.players.base' | translate }}</label>
+            <label>{{ "all.competition.team-assembly.players.base" | translate }}</label>
             <div class="index">Index: {{ this.titulars.index }}</div>
             @for (player of this.titulars.players; track player.id) {
               <div>
@@ -19,7 +19,7 @@
                 @if (notSmallScreen) {
                   <span class="ranking">
                     {{ player?.single ?? 12 }} - {{ player?.double ?? 12 }}
-                    @if (this.type() === 'MX') {
+                    @if (this.type() === "MX") {
                       - {{ player?.mix ?? 12 }}
                     }
                     ({{ player?.sum }})
@@ -31,7 +31,7 @@
         </div>
         <div class="base">
           <div class="container">
-            <label>{{ 'all.competition.team-assembly.players.team' | translate }}</label>
+            <label>{{ "all.competition.team-assembly.players.team" | translate }}</label>
             <div class="index">Index: {{ this.base.index }}</div>
             @for (player of this.base.players; track player.id) {
               <div>
@@ -46,7 +46,7 @@
                 @if (notSmallScreen) {
                   <span class="ranking">
                     {{ player?.single ?? 12 }} - {{ player?.double ?? 12 }}
-                    @if (this.type() === 'MX') {
+                    @if (this.type() === "MX") {
                       - {{ player?.mix ?? 12 }}
                     }
                     ({{ player?.sum }})
@@ -58,7 +58,7 @@
         </div>
         <div class="errors">
           <div class="container">
-            <label>{{ 'all.v1.teamFormation.errors.title' | translate }}</label>
+            <label>{{ "all.v1.teamFormation.errors.title" | translate }}</label>
             <ng-container *ngTemplateOutlet="validationOverview"></ng-container>
           </div>
         </div>
@@ -283,7 +283,7 @@
               (cdkDropListDropped)="drop($event)"
               [cdkDropListSortingDisabled]="true"
             >
-              <label>{{ 'all.competition.team-assembly.players.title' | translate }}</label>
+              <label>{{ "all.competition.team-assembly.players.title" | translate }}</label>
               @for (item of this.players.REGULAR; track item.id) {
                 <badman-assembly-player
                   class="drag-item"
@@ -299,7 +299,7 @@
                 <mat-divider></mat-divider>
                 <div class="expandable-item" (click)="showBackup = !showBackup">
                   <div>
-                    {{ 'all.competition.team-assembly.players.backup' | translate }}
+                    {{ "all.competition.team-assembly.players.backup" | translate }}
                   </div>
                   @if (!showBackup) {
                     <mat-icon>expand_more</mat-icon>
@@ -341,10 +341,10 @@
               [any]="[this.group().get('club')?.value + '_edit:team', 'edit-any:club']"
             >
               <p>
-                {{ 'all.competition.team-assembly.change-team' | translate }}
+                {{ "all.competition.team-assembly.change-team" | translate }}
               </p>
               <button mat-stroked-button (click)="this.changeTeam()">
-                {{ 'all.button.edit' | translate }}
+                {{ "all.button.edit" | translate }}
               </button>
             </badman-has-claim>
           </div>
@@ -576,7 +576,7 @@
             [cdkDropListEnterPredicate]="this.canDropPredicate"
             (cdkDropListDropped)="drop($event)"
           >
-            <label>{{ 'all.competition.team-assembly.substitude' | translate }}</label>
+            <label>{{ "all.competition.team-assembly.substitude" | translate }}</label>
             @for (item of substitutes; track item) {
               <badman-assembly-player
                 class="drag-item"
@@ -618,7 +618,7 @@
       }
       @if ((this.errors?.length ?? 0) === 0 && (this.warnings?.length ?? 0) === 0) {
         <div class="no-errors">
-          {{ 'all.v1.teamFormation.errors.none' | translate }}
+          {{ "all.v1.teamFormation.errors.none" | translate }}
         </div>
       }
     </div>

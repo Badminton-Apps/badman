@@ -1,12 +1,11 @@
-
-import { Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Component, OnInit, inject } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MtxDatetimepickerModule } from "@ng-matero/extensions/datetimepicker";
+import { TranslatePipe } from "@ngx-translate/core";
 @Component({
   imports: [
     TranslatePipe,
@@ -17,14 +16,14 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MtxDatetimepickerModule
-],
-  templateUrl: './select-period.component.html',
-  styleUrls: ['./select-period.component.scss'],
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: "./select-period.component.html",
+  styleUrls: ["./select-period.component.scss"],
 })
 export class SelectPeriodDialogComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<SelectPeriodDialogComponent>>(
-    MatDialogRef<SelectPeriodDialogComponent>,
+    MatDialogRef<SelectPeriodDialogComponent>
   );
   fromControl?: FormControl;
   toControl?: FormControl;

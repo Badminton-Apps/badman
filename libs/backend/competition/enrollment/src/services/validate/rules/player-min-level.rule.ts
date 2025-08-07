@@ -1,6 +1,6 @@
-import { SubEventTypeEnum } from '@badman/utils';
-import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
-import { Rule } from './_rule.base';
+import { SubEventTypeEnum } from "@badman/utils";
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from "../../../models";
+import { Rule } from "./_rule.base";
 
 /**
  * Checks if the min level of the subEvent is not crossed
@@ -24,7 +24,7 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             if (player?.levelExceptionRequested) {
               warnings.push({
-                message: 'all.v1.entryTeamDrawer.validation.warnings.player-min-level',
+                message: "all.v1.entryTeamDrawer.validation.warnings.player-min-level",
                 params: {
                   player: {
                     id: player?.id,
@@ -32,12 +32,12 @@ export class PlayerMinLevelRule extends Rule {
                     ranking: player.single,
                   },
                   minLevel: subEvent.maxLevel,
-                  rankingType: 'single',
+                  rankingType: "single",
                 },
               });
             } else {
               errors.push({
-                message: 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
+                message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
                 params: {
                   player: {
                     id: player?.id,
@@ -45,7 +45,7 @@ export class PlayerMinLevelRule extends Rule {
                     ranking: player.single,
                   },
                   minLevel: subEvent.maxLevel,
-                  rankingType: 'single',
+                  rankingType: "single",
                 },
               });
             }
@@ -57,7 +57,7 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             if (player?.levelExceptionRequested) {
               warnings.push({
-                message: 'all.v1.entryTeamDrawer.validation.warnings.player-min-level',
+                message: "all.v1.entryTeamDrawer.validation.warnings.player-min-level",
                 params: {
                   player: {
                     id: player?.id,
@@ -65,12 +65,12 @@ export class PlayerMinLevelRule extends Rule {
                     ranking: player.double,
                   },
                   minLevel: subEvent.maxLevel,
-                  rankingType: 'double',
+                  rankingType: "double",
                 },
               });
             } else {
               errors.push({
-                message: 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
+                message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
                 params: {
                   player: {
                     id: player?.id,
@@ -78,7 +78,7 @@ export class PlayerMinLevelRule extends Rule {
                     ranking: player.double,
                   },
                   minLevel: subEvent.maxLevel,
-                  rankingType: 'double',
+                  rankingType: "double",
                 },
               });
             }
@@ -91,7 +91,7 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             if (player?.levelExceptionRequested) {
               warnings.push({
-                message: 'all.v1.entryTeamDrawer.validation.warnings.player-min-level',
+                message: "all.v1.entryTeamDrawer.validation.warnings.player-min-level",
                 params: {
                   player: {
                     id: player?.id,
@@ -99,12 +99,12 @@ export class PlayerMinLevelRule extends Rule {
                     ranking: player.mix,
                   },
                   minLevel: subEvent.maxLevel,
-                  rankingType: 'mix',
+                  rankingType: "mix",
                 },
               });
             } else {
               errors.push({
-                message: 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
+                message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
                 params: {
                   player: {
                     id: player?.id,
@@ -112,7 +112,7 @@ export class PlayerMinLevelRule extends Rule {
                     ranking: player.mix,
                   },
                   minLevel: subEvent.maxLevel,
-                  rankingType: 'mix',
+                  rankingType: "mix",
                 },
               });
             }
@@ -126,8 +126,8 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             warnings.push({
               message: player.levelExceptionRequested
-                ? 'all.v1.teamFormation.errors.player-min-level'
-                : 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
+                ? "all.v1.teamFormation.errors.player-min-level"
+                : "all.v1.entryTeamDrawer.validation.errors.player-min-level",
               params: {
                 player: {
                   id: player?.id,
@@ -135,7 +135,7 @@ export class PlayerMinLevelRule extends Rule {
                   ranking: player.single,
                 },
                 minLevel: subEvent.maxLevel,
-                rankingType: 'single',
+                rankingType: "single",
               },
             });
           }
@@ -146,8 +146,8 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             warnings.push({
               message: player.levelExceptionRequested
-                ? 'all.v1.teamFormation.errors.player-min-level'
-                : 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
+                ? "all.v1.teamFormation.errors.player-min-level"
+                : "all.v1.entryTeamDrawer.validation.errors.player-min-level",
               params: {
                 player: {
                   id: player?.id,
@@ -155,7 +155,7 @@ export class PlayerMinLevelRule extends Rule {
                   ranking: player.double,
                 },
                 minLevel: subEvent.maxLevel,
-                rankingType: 'double',
+                rankingType: "double",
               },
             });
           }
@@ -167,8 +167,8 @@ export class PlayerMinLevelRule extends Rule {
           ) {
             warnings.push({
               message: player.levelExceptionRequested
-                ? 'all.v1.teamFormation.errors.player-min-level'
-                : 'all.v1.entryTeamDrawer.validation.errors.player-min-level',
+                ? "all.v1.teamFormation.errors.player-min-level"
+                : "all.v1.entryTeamDrawer.validation.errors.player-min-level",
               params: {
                 player: {
                   id: player?.id,
@@ -176,7 +176,7 @@ export class PlayerMinLevelRule extends Rule {
                   ranking: player.mix,
                 },
                 minLevel: subEvent.maxLevel,
-                rankingType: 'mix',
+                rankingType: "mix",
               },
             });
           }

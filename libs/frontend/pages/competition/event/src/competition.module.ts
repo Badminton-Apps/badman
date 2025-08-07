@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '@auth0/auth0-angular';
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "@auth0/auth0-angular";
 import {
   DetailAvgPageComponent,
   DetailDrawCompetitionComponent,
@@ -10,96 +10,95 @@ import {
   EditEncounterComponent,
   EditPageComponent,
   OverviewPageComponent,
-} from './pages';
-import { DrawResolver, EncounterResolver, EventResolver } from './resolvers';
+} from "./pages";
+import { DrawResolver, EncounterResolver, EventResolver } from "./resolvers";
 
 const MODULE_ROUTES: Routes = [
   {
-    path: '',
+    path: "",
     component: OverviewPageComponent,
   },
   {
-    path: 'assembly',
-    loadChildren: () =>
-      import('@badman/frontend-team-assembly').then((m) => m.AssemblyModule),
+    path: "assembly",
+    loadChildren: () => import("@badman/frontend-team-assembly").then((m) => m.AssemblyModule),
   },
   {
-    path: 'enrollment',
+    path: "enrollment",
     loadChildren: () =>
-      import('@badman/frontend-team-enrollment').then((m) => m.TeamEnrollmentModule),
+      import("@badman/frontend-team-enrollment").then((m) => m.TeamEnrollmentModule),
   },
   {
-    path: 'change-encounter',
+    path: "change-encounter",
     loadChildren: () =>
-      import('@badman/frontend-change-encounter').then((m) => m.ChangeEncounterModule),
+      import("@badman/frontend-change-encounter").then((m) => m.ChangeEncounterModule),
   },
   {
-    path: ':id',
+    path: ":id",
     resolve: {
       eventCompetition: EventResolver,
     },
     data: {
       breadcrumb: {
-        alias: 'eventCompetition',
+        alias: "eventCompetition",
       },
     },
     children: [
       {
-        path: '',
+        path: "",
         component: DetailPageComponent,
       },
       {
-        path: 'edit',
+        path: "edit",
         component: EditPageComponent,
         canActivate: [AuthGuard],
         data: {
           claims: {
-            any: ['edit:competition'],
+            any: ["edit:competition"],
           },
         },
       },
       {
-        path: 'avg-level',
+        path: "avg-level",
         component: DetailAvgPageComponent,
         canActivate: [AuthGuard],
         data: {
           claims: {
-            any: ['edit:competition'],
+            any: ["edit:competition"],
           },
         },
       },
       {
-        path: 'draw/:id',
+        path: "draw/:id",
         resolve: {
           drawCompetition: DrawResolver,
         },
         data: {
           breadcrumb: {
-            alias: 'drawCompetition',
+            alias: "drawCompetition",
           },
         },
         children: [
           {
-            path: '',
+            path: "",
             component: DetailDrawCompetitionComponent,
           },
           {
-            path: 'encounter/:id',
+            path: "encounter/:id",
             resolve: {
               encounterCompetition: EncounterResolver,
             },
             data: {
               breadcrumb: {
-                alias: 'encounterCompetition',
+                alias: "encounterCompetition",
               },
             },
             children: [
               {
-                path: '',
+                path: "",
                 component: DetailEncounterComponent,
               },
               {
-                path: 'edit',
+                path: "edit",
                 component: EditEncounterComponent,
               },
             ],

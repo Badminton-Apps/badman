@@ -1,7 +1,5 @@
-@use './upload-transfer-loan/upload-transfer-loan.dialog.theme.scss' as upload-transfer-loan;
-@use './src/dialogs/dialogs.theme.scss' as dialogs;
-
-
+@use "./upload-transfer-loan/upload-transfer-loan.dialog.theme.scss" as upload-transfer-loan;
+@use "./src/dialogs/dialogs.theme.scss" as dialogs;
 
 @mixin typography($theme) {
   @include upload-transfer-loan.typography($theme);

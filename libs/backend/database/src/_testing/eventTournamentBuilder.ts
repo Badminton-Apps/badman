@@ -1,5 +1,5 @@
-import { EventTournament } from '../models';
-import { SubEventTournamentBuilder } from './eventTournamentSubEventBuilder';
+import { EventTournament } from "../models";
+import { SubEventTournamentBuilder } from "./eventTournamentSubEventBuilder";
 
 export class EventTournamentBuilder {
   private build = false;

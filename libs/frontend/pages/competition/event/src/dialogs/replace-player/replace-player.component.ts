@@ -1,24 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
 
-import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { EncounterCompetition, GamePlayer } from "@badman/frontend-models";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
-    selector: 'badman-replace-player',
-    imports: [
-    MatFormFieldModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatButtonModule,
-    TranslatePipe
-],
-    templateUrl: './replace-player.component.html',
-    styleUrls: ['./replace-player.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "badman-replace-player",
+  imports: [MatFormFieldModule, MatSelectModule, MatDialogModule, MatButtonModule, TranslatePipe],
+  templateUrl: "./replace-player.component.html",
+  styleUrls: ["./replace-player.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReplacePlayerComponent implements OnInit {
   public data = inject<{

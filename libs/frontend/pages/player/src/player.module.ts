@@ -1,55 +1,55 @@
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '@badman/frontend-auth';
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "@badman/frontend-auth";
 import {
   DetailPageComponent,
   EditPageComponent,
   RankingBreakdownPageComponent,
   SettingsPageComponent,
-} from './pages';
-import { PlayerResolver } from './resolvers/player.resolver';
+} from "./pages";
+import { PlayerResolver } from "./resolvers/player.resolver";
 
 const MODULE_ROUTES: Routes = [
   {
-    path: '',
-    redirectTo: 'glenn-latomme',
-    pathMatch: 'full',
+    path: "",
+    redirectTo: "glenn-latomme",
+    pathMatch: "full",
     data: { breadcrumb: { skip: true } },
   },
   {
-    path: ':id',
+    path: ":id",
     children: [
       {
-        path: '',
+        path: "",
         component: DetailPageComponent,
       },
       {
-        path: 'edit',
+        path: "edit",
         component: EditPageComponent,
         canActivate: [AuthGuard],
         data: {
           claims: {
-            any: ['[:id]_edit:player', 'edit-any:player'],
+            any: ["[:id]_edit:player", "edit-any:player"],
           },
         },
       },
       {
-        path: 'ranking',
+        path: "ranking",
         children: [
           {
-            path: '',
-            redirectTo: 'single',
-            pathMatch: 'full',
+            path: "",
+            redirectTo: "single",
+            pathMatch: "full",
           },
           {
-            path: ':type',
+            path: ":type",
             component: RankingBreakdownPageComponent,
           },
         ],
       },
       {
-        path: 'settings',
+        path: "settings",
         component: SettingsPageComponent,
       },
     ],

@@ -1,6 +1,6 @@
-import { SyncQueue } from '@badman/backend-queue';
-import { OnGlobalQueueError, OnGlobalQueueFailed, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
+import { SyncQueue } from "@badman/backend-queue";
+import { OnGlobalQueueError, OnGlobalQueueFailed, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
 
 @Processor({
   name: SyncQueue,

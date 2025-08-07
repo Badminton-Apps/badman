@@ -1,20 +1,20 @@
-import { isPlatformBrowser, LOCATION_INITIALIZED } from '@angular/common';
-import { effect, Injector, PLATFORM_ID } from '@angular/core';
-import { DateAdapter } from '@angular/material/core';
-import { AuthenticateService } from '@badman/frontend-auth';
-import { AvaliableLanguages, languages } from '@badman/utils';
-import { MomentDatetimeAdapter } from '@ng-matero/extensions-moment-adapter';
-import { DatetimeAdapter } from '@ng-matero/extensions/core';
-import { TranslateService } from '@ngx-translate/core';
-import moment from 'moment';
-import { lastValueFrom } from 'rxjs';
+import { isPlatformBrowser, LOCATION_INITIALIZED } from "@angular/common";
+import { effect, Injector, PLATFORM_ID } from "@angular/core";
+import { DateAdapter } from "@angular/material/core";
+import { AuthenticateService } from "@badman/frontend-auth";
+import { AvaliableLanguages, languages } from "@badman/utils";
+import { MomentDatetimeAdapter } from "@ng-matero/extensions-moment-adapter";
+import { DatetimeAdapter } from "@ng-matero/extensions/core";
+import { TranslateService } from "@ngx-translate/core";
+import moment from "moment";
+import { lastValueFrom } from "rxjs";
 
 export async function langulageInitializer(
   translate: TranslateService,
   injector: Injector,
   adapter: DateAdapter<unknown, unknown>,
   dateTimeAdapter: DatetimeAdapter<MomentDatetimeAdapter>,
-  authenticateService: AuthenticateService,
+  authenticateService: AuthenticateService
 ) {
   const setLang = async (savedLang?: AvaliableLanguages) => {
     if (!savedLang) {
@@ -33,7 +33,7 @@ export async function langulageInitializer(
       values.adapter,
       adapter,
       dateTimeAdapter,
-      translate,
+      translate
     );
   };
 
@@ -45,7 +45,7 @@ export async function langulageInitializer(
     translate.setDefaultLang(AvaliableLanguages.nl_BE);
 
     let savedLang = isPlatformBrowser(platform)
-      ? (localStorage.getItem('translation.language') as AvaliableLanguages)
+      ? (localStorage.getItem("translation.language") as AvaliableLanguages)
       : undefined;
 
     if (!savedLang && isPlatformBrowser(platform)) {
@@ -60,14 +60,14 @@ export async function langulageInitializer(
         },
         {
           injector,
-        },
+        }
       );
     }
 
     // Set language if saved
     setLang(savedLang ?? AvaliableLanguages.nl_BE);
   } catch (err) {
-    console.error('Error', err);
+    console.error("Error", err);
   }
 }
 
@@ -77,7 +77,7 @@ export async function setLanguage(
   adapterFormat: string,
   dateAdapater: DateAdapter<unknown, unknown>,
   dateTimeAdapter: DatetimeAdapter<MomentDatetimeAdapter>,
-  translateService: TranslateService,
+  translateService: TranslateService
 ) {
   // Set values
   await lastValueFrom(translateService.use(translateFormat));

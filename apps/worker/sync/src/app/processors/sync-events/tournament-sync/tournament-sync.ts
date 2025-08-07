@@ -1,7 +1,7 @@
-import { Logger } from '@nestjs/common';
-import { Transaction } from 'sequelize';
-import { Processor, ProcessStep } from '../../../processing';
-import { VisualService, XmlTournament } from '@badman/backend-visual';
+import { Logger } from "@nestjs/common";
+import { Transaction } from "sequelize";
+import { Processor, ProcessStep } from "../../../processing";
+import { VisualService, XmlTournament } from "@badman/backend-visual";
 import {
   TournamentSyncDrawProcessor,
   TournamentSyncEventProcessor,
@@ -11,9 +11,9 @@ import {
   TournamentSyncRankingProcessor,
   TournamentSyncStandingProcessor,
   TournamentSyncSubEventProcessor,
-} from './processors';
-import { PointsService } from '@badman/backend-ranking';
-import { EventTournament } from '@badman/backend-database';
+} from "./processors";
+import { PointsService } from "@badman/backend-ranking";
+import { EventTournament } from "@badman/backend-database";
 
 export class TournamentSyncer {
   private readonly logger = new Logger(TournamentSyncer.name);
@@ -23,15 +23,15 @@ export class TournamentSyncer {
 
   public readonly processor: Processor;
 
-  readonly STEP_EVENT = 'event';
-  readonly STEP_SUBEVENT = 'subevent';
-  readonly STEP_RANKING = 'ranking';
-  readonly STEP_DRAW = 'draw';
-  readonly STEP_ENCOUNTER = 'encounter';
-  readonly STEP_PLAYER = 'player';
-  readonly STEP_GAME = 'game';
-  readonly STEP_POINT = 'point';
-  readonly STEP_STANDING = 'standing';
+  readonly STEP_EVENT = "event";
+  readonly STEP_SUBEVENT = "subevent";
+  readonly STEP_RANKING = "ranking";
+  readonly STEP_DRAW = "draw";
+  readonly STEP_ENCOUNTER = "encounter";
+  readonly STEP_PLAYER = "player";
+  readonly STEP_GAME = "game";
+  readonly STEP_POINT = "point";
+  readonly STEP_STANDING = "standing";
 
   private _eventStep!: TournamentSyncEventProcessor;
   private _subEventStep!: TournamentSyncSubEventProcessor;
@@ -49,7 +49,7 @@ export class TournamentSyncer {
     private pointService: PointsService,
     protected options?: {
       newGames?: boolean;
-    },
+    }
   ) {
     this.options = {
       newGames: false,
@@ -83,12 +83,12 @@ export class TournamentSyncer {
     this._eventStep = new TournamentSyncEventProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
     this._subEventStep = new TournamentSyncSubEventProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._rankingStep = new TournamentSyncRankingProcessor(options);
@@ -96,13 +96,13 @@ export class TournamentSyncer {
     this._drawStep = new TournamentSyncDrawProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._playerStep = new TournamentSyncPlayerProcessor(
       args.xmlTournament,
       this.visualService,
-      options,
+      options
     );
 
     this._gameStep = new TournamentSyncGameProcessor(args.xmlTournament, this.visualService, {

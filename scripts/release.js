@@ -1,10 +1,10 @@
-const core = require('@actions/core');
-const { releaseChangelog, releaseVersion } = require('nx/release');
-const yargs = require('yargs');
-const { hideBin } = require('yargs/helpers');
-const fs = require('fs');
-const path = require('path');
-const runExec = require('./run-exec');
+const core = require("@actions/core");
+const { releaseChangelog, releaseVersion } = require("nx/release");
+const yargs = require("yargs");
+const { hideBin } = require("yargs/helpers");
+const fs = require("fs");
+const path = require("path");
+const runExec = require("./run-exec");
 
 // Walk through directory recursively
 function walkDir(currentDir, newVersion) {
@@ -13,7 +13,7 @@ function walkDir(currentDir, newVersion) {
 
     if (fs.statSync(filePath).isDirectory()) {
       walkDir(filePath, newVersion);
-    } else if (path.extname(filePath) === '.json' && file === 'version.json') {
+    } else if (path.extname(filePath) === ".json" && file === "version.json") {
       updateVersion(filePath, newVersion);
     }
   });
@@ -23,7 +23,7 @@ function walkDir(currentDir, newVersion) {
 function updateVersion(filePath, newVersion) {
   try {
     // Read file content
-    const content = fs.readFileSync(filePath, 'utf8');
+    const content = fs.readFileSync(filePath, "utf8");
 
     // Parse JSON content
     let data = JSON.parse(content);
@@ -48,19 +48,19 @@ function updateVersion(filePath, newVersion) {
   try {
     const options = yargs(hideBin(process.argv))
       .version(false)
-      .option('version', {
-        description: 'Explicit version specifier to use, if overriding conventional commits',
-        type: 'string',
+      .option("version", {
+        description: "Explicit version specifier to use, if overriding conventional commits",
+        type: "string",
       })
-      .option('dryRun', {
-        alias: 'd',
-        description: 'Whether or not to perform a dry-run of the release process, defaults to true',
-        type: 'boolean',
+      .option("dryRun", {
+        alias: "d",
+        description: "Whether or not to perform a dry-run of the release process, defaults to true",
+        type: "boolean",
         default: true,
       })
-      .option('verbose', {
-        description: 'Whether or not to enable verbose logging, defaults to false',
-        type: 'boolean',
+      .option("verbose", {
+        description: "Whether or not to enable verbose logging, defaults to false",
+        type: "boolean",
         default: false,
       }).argv;
 
@@ -73,7 +73,7 @@ function updateVersion(filePath, newVersion) {
     console.log(`Workspace version: ${workspaceVersion}`);
 
     // update version.json files
-    walkDir('./apps', workspaceVersion);
+    walkDir("./apps", workspaceVersion);
 
     // // add version.json files to git
     await runExec("git add '**/**/version.json'");
@@ -84,7 +84,7 @@ function updateVersion(filePath, newVersion) {
       dryRun: options.dryRun,
       verbose: options.verbose,
     });
-    core.setOutput('NEW_VERSION', workspaceVersion);
+    core.setOutput("NEW_VERSION", workspaceVersion);
     core.info(`New version: ${workspaceVersion}`);
   } catch (error) {
     core.setFailed(error.message);

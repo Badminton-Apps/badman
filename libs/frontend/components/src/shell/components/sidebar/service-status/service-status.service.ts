@@ -1,11 +1,11 @@
-import { Injectable, Signal, inject } from '@angular/core';
-import { Service } from '@badman/frontend-models';
-import { EVENTS, ServiceEvent } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import { Socket } from 'ngx-socket-io';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { merge } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Injectable, Signal, inject } from "@angular/core";
+import { Service } from "@badman/frontend-models";
+import { EVENTS, ServiceEvent } from "@badman/utils";
+import { Apollo, gql } from "apollo-angular";
+import { Socket } from "ngx-socket-io";
+import { signalSlice } from "ngxtension/signal-slice";
+import { merge } from "rxjs";
+import { map } from "rxjs/operators";
 
 export interface ServicesState {
   services: Service[];
@@ -13,7 +13,7 @@ export interface ServicesState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ServiceService {
   socket = inject(Socket);
@@ -57,10 +57,10 @@ export class ServiceService {
 
         return {
           services: state().services.map((item) =>
-            item.id === service.id ? { ...item, status: 'starting' as const } : item,
+            item.id === service.id ? { ...item, status: "starting" as const } : item
           ),
         };
-      }),
+      })
     );
 
   started$ = (state: Signal<ServicesState>) =>
@@ -72,10 +72,10 @@ export class ServiceService {
 
         return {
           services: state().services.map((item) =>
-            item.id === service.id ? { ...item, status: 'started' as const } : item,
+            item.id === service.id ? { ...item, status: "started" as const } : item
           ),
         };
-      }),
+      })
     );
 
   stopped$ = (state: Signal<ServicesState>) =>
@@ -86,18 +86,18 @@ export class ServiceService {
         }
         return {
           services: state().services.map((item) =>
-            item.id === service.id ? { ...item, status: 'stopped' as const } : item,
+            item.id === service.id ? { ...item, status: "stopped" as const } : item
           ),
         };
-      }),
+      })
     );
   sources$ = merge(
     this.servicesLoaded$.pipe(
       map((services) => ({
         services,
         loaded: true,
-      })),
-    ),
+      }))
+    )
   );
 
   state = signalSlice({

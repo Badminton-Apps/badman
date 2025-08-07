@@ -3,13 +3,13 @@ import {
   EventEntry,
   RankingSystem,
   SubEventCompetition,
-} from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { VisualService, XmlDrawTypeID } from '@badman/backend-visual';
-import { DrawType } from '@badman/utils';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
+} from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { VisualService, XmlDrawTypeID } from "@badman/backend-visual";
+import { DrawType } from "@badman/utils";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
 
 @Processor({
   name: SyncQueue,
@@ -20,7 +20,7 @@ export class DrawCompetitionProcessor {
   constructor(
     private readonly _transactionManager: TransactionManager,
     private readonly _visualService: VisualService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Process(Sync.ProcessSyncCompetitionDraw)
@@ -51,7 +51,7 @@ export class DrawCompetitionProcessor {
 
       // from parent
       encounters: { id: string; visualCode: string; games: { id: string; visualCode: string }[] }[];
-    }>,
+    }>
   ): Promise<void> {
     const transaction = await this._transactionManager.getTransaction(job.data.transactionId);
 
@@ -76,13 +76,13 @@ export class DrawCompetitionProcessor {
       transaction,
     });
     if (!subEvent) {
-      throw new Error('SubEvent not found');
+      throw new Error("SubEvent not found");
     }
 
     if (!job.data.eventCode) {
       const event = await subEvent.getEventCompetition();
       if (!event) {
-        throw new Error('Event not found');
+        throw new Error("Event not found");
       }
 
       job.data.eventCode = event.visualCode;
@@ -122,7 +122,7 @@ export class DrawCompetitionProcessor {
       const eventEntries = await EventEntry.findAll({
         where: {
           drawId: draw.id,
-          entryType: 'competition',
+          entryType: "competition",
         },
         transaction,
       });
@@ -137,12 +137,12 @@ export class DrawCompetitionProcessor {
     }
 
     if (!drawCode) {
-      throw new Error('Sub draw code is required');
+      throw new Error("Sub draw code is required");
     }
 
     const visualDraw = await this._visualService.getDraw(job.data.eventCode, drawCode, true);
     if (!visualDraw) {
-      throw new Error('Sub draw not found');
+      throw new Error("Sub draw not found");
     }
 
     if (!draw) {
@@ -179,7 +179,7 @@ export class DrawCompetitionProcessor {
         job.data.rankingSystemId,
         job.data.transactionId,
         existing.encounters,
-        options,
+        options
       );
     }
 
@@ -208,7 +208,7 @@ export class DrawCompetitionProcessor {
     }[],
     options: {
       deleteMatches?: boolean;
-    },
+    }
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
     const matches = await this._visualService.getGames(eventCode, drawCode, true);

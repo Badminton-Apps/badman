@@ -1,13 +1,13 @@
-import { Injectable, inject } from '@angular/core';
-import { Apollo, gql } from 'apollo-angular';
+import { Injectable, inject } from "@angular/core";
+import { Apollo, gql } from "apollo-angular";
 
-import { throttleTime, map, switchMap, take, tap } from 'rxjs/operators';
+import { throttleTime, map, switchMap, take, tap } from "rxjs/operators";
 
-import { SwPush } from '@angular/service-worker';
-import { Claim, Notification } from '@badman/frontend-models';
-import { BehaviorSubject, ReplaySubject, combineLatest, lastValueFrom, of } from 'rxjs';
-import { AuthenticateService } from './authenticate.service';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { SwPush } from "@angular/service-worker";
+import { Claim, Notification } from "@badman/frontend-models";
+import { BehaviorSubject, ReplaySubject, combineLatest, lastValueFrom, of } from "rxjs";
+import { AuthenticateService } from "./authenticate.service";
+import { toObservable } from "@angular/core/rxjs-interop";
 
 const QUERY = gql`
   query GetNotifications($order: [SortOrderType!]) {
@@ -50,7 +50,7 @@ const QUERY = gql`
 `;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class NotificationService {
   private readonly apollo = inject(Apollo);
@@ -60,7 +60,7 @@ export class NotificationService {
   notifications$ = new ReplaySubject<Notification[] | undefined>(1);
   update$ = new BehaviorSubject(null);
   readonly VAPID_PUBLIC_KEY =
-    'BNLv_q5Q5wfDi75nas8b_eZKIKz8QOkgXi-jrKyzzr18AfQCYIhUvswR_AOBZQqEVGi_EGdSBidCK_oYDpy1zXk';
+    "BNLv_q5Q5wfDi75nas8b_eZKIKz8QOkgXi-jrKyzzr18AfQCYIhUvswR_AOBZQqEVGi_EGdSBidCK_oYDpy1zXk";
 
   constructor() {
     combineLatest([toObservable(this.authService.user), this.update$])
@@ -78,18 +78,18 @@ export class NotificationService {
           return this.apollo
             .query<{ me: { notifications: Notification[] } }>({
               query: QUERY,
-              fetchPolicy: 'network-only',
+              fetchPolicy: "network-only",
               variables: {
                 order: [
                   {
-                    direction: 'DESC',
-                    field: 'createdAt',
+                    direction: "DESC",
+                    field: "createdAt",
                   },
                 ],
               },
             })
             .pipe(map((result) => result.data.me?.notifications));
-        }),
+        })
       )
       .subscribe((notifications) => {
         this.notifications$.next(notifications);
@@ -117,7 +117,7 @@ export class NotificationService {
         take(1),
         tap(() => {
           this.update$.next(null);
-        }),
+        })
       );
   }
 
@@ -138,7 +138,7 @@ export class NotificationService {
             variables: {
               subscription: sub,
             },
-          }),
+          })
         );
       } catch (e) {
         console.error(e);

@@ -1,5 +1,5 @@
 // start:ng42.barrel
-export * from './draw.resolver';
-export * from './event.resolver';
-export * from './subevent.resolver';
+export * from "./draw.resolver";
+export * from "./event.resolver";
+export * from "./subevent.resolver";
 // end:ng42.barrel

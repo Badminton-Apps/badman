@@ -1,7 +1,7 @@
-@use '@angular/material' as mat;
-@use './src/pages/add/add.page.theme.scss' as add;
-@use './src/pages/edit/edit.page.theme.scss' as edit;
-@use './src/components/components.theme.scss' as components;
+@use "@angular/material" as mat;
+@use "./src/pages/add/add.page.theme.scss" as add;
+@use "./src/pages/edit/edit.page.theme.scss" as edit;
+@use "./src/components/components.theme.scss" as components;
 
 @mixin typography($theme) {
   @include add.typography($theme);

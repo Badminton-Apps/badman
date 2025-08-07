@@ -1,13 +1,10 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-upcoming-games {
-    
-    
-
     a {
       color: mat.get-theme-color($theme, primary, default);
     }
@@ -16,8 +13,6 @@
 
 @mixin typography($theme) {
   badman-upcoming-games {
-    
-
     .location {
       font: mat.get-theme-typography($theme, caption, font);
     }

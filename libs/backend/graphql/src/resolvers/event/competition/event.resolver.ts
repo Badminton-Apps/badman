@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   Comment,
   DrawCompetition,
@@ -14,12 +14,12 @@ import {
   RankingSystem,
   SubEventCompetition,
   EventEntry,
-} from '@badman/backend-database';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
-import { IsUUID } from '@badman/utils';
-import { InjectQueue } from '@nestjs/bull';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+} from "@badman/backend-database";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { PointsService, StartVisualRankingDate } from "@badman/backend-ranking";
+import { IsUUID } from "@badman/utils";
+import { InjectQueue } from "@nestjs/bull";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -31,11 +31,11 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { Queue } from 'bull';
-import { Op, Transaction } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../../utils';
+} from "@nestjs/graphql";
+import { Queue } from "bull";
+import { Op, Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../../utils";
 
 @ObjectType()
 export class PagedEventCompetition {
@@ -52,11 +52,11 @@ export class EventCompetitionResolver {
   constructor(
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    @InjectQueue(SyncQueue) private _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private _syncQueue: Queue
   ) {}
 
   @Query(() => EventCompetition)
-  async eventCompetition(@Args('id', { type: () => ID }) id: string): Promise<EventCompetition> {
+  async eventCompetition(@Args("id", { type: () => ID }) id: string): Promise<EventCompetition> {
     const eventCompetition = IsUUID(id)
       ? await EventCompetition.findByPk(id)
       : await EventCompetition.findOne({
@@ -73,7 +73,7 @@ export class EventCompetitionResolver {
 
   @Query(() => PagedEventCompetition)
   async eventCompetitions(
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<{ count: number; rows: EventCompetition[] }> {
     return EventCompetition.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
@@ -81,8 +81,8 @@ export class EventCompetitionResolver {
   @Query(() => [Number])
   async eventCompetitionSeasons(): Promise<number[]> {
     return EventCompetition.findAll({
-      attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('season')), 'season']],
-      order: [['season', 'DESC']],
+      attributes: [[Sequelize.fn("DISTINCT", Sequelize.col("season")), "season"]],
+      order: [["season", "DESC"]],
       raw: true,
     }).then((result) => result.map((r) => r.season));
   }
@@ -90,7 +90,7 @@ export class EventCompetitionResolver {
   @ResolveField(() => [SubEventCompetition])
   async subEventCompetitions(
     @Parent() event: EventCompetition,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<SubEventCompetition[]> {
     return event.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
   }
@@ -98,7 +98,7 @@ export class EventCompetitionResolver {
   @ResolveField(() => [Comment])
   async comments(
     @Parent() event: EventCompetition,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<Comment[]> {
     return event.getComments(ListArgs.toFindOptions(listArgs));
   }
@@ -130,7 +130,7 @@ export class EventCompetitionResolver {
   @Mutation(() => EventCompetition)
   async updateEventCompetition(
     @User() user: Player,
-    @Args('data') updateEventCompetitionData: EventCompetitionUpdateInput,
+    @Args("data") updateEventCompetitionData: EventCompetitionUpdateInput
   ): Promise<EventCompetition> {
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
       throw new UnauthorizedException(`You do not have permission to add a competition`);
@@ -185,7 +185,7 @@ export class EventCompetitionResolver {
               await this.addGamePointsForSubEvents(
                 group,
                 subEvents?.map((s) => s.id),
-                transaction,
+                transaction
               );
             }
             this.logger.debug(`Added ranking groups and points`);
@@ -203,7 +203,7 @@ export class EventCompetitionResolver {
               await this.removeGamePointsForSubEvents(
                 group,
                 subEvents?.map((s) => s.id),
-                transaction,
+                transaction
               );
             }
           }
@@ -241,8 +241,8 @@ export class EventCompetitionResolver {
   @Mutation(() => EventCompetition)
   async copyEventCompetition(
     @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-    @Args('year', { type: () => Int }) year: number,
+    @Args("id", { type: () => ID }) id: string,
+    @Args("year", { type: () => Int }) year: number
   ) {
     if (!(await user.hasAnyPermission([`add:competition`]))) {
       throw new UnauthorizedException(`You do not have permission to add a competition`);
@@ -259,7 +259,7 @@ export class EventCompetitionResolver {
       }
 
       const newName = `${eventCompetitionDb.name
-        ?.replace(/(\d{4}-\d{4})/gi, '')
+        ?.replace(/(\d{4}-\d{4})/gi, "")
         .trim()} ${year}-${year + 1}`;
 
       // set values to undefined to avoid copying them
@@ -293,7 +293,7 @@ export class EventCompetitionResolver {
       await transaction.commit();
       return newEventCompetitionDb;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -308,7 +308,7 @@ export class EventCompetitionResolver {
   // }
 
   @Mutation(() => Boolean)
-  async removeEventCompetition(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
+  async removeEventCompetition(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission([`delete:competition`]))) {
       throw new UnauthorizedException(`You do not have permission to delete a competition`);
     }
@@ -355,7 +355,7 @@ export class EventCompetitionResolver {
           const eventEntries = await EventEntry.findAll({
             where: {
               drawId: draw.id,
-              entryType: 'competition',
+              entryType: "competition",
             },
             transaction,
           });
@@ -390,7 +390,7 @@ export class EventCompetitionResolver {
   async addGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const systems = await group.getRankingSystems({ transaction });
     const games = await Game.findAll({
@@ -433,14 +433,14 @@ export class EventCompetitionResolver {
         promisse.push(
           this._pointService.createRankingPointforGame(system, game, {
             transaction,
-          }),
+          })
         );
       }
 
       await Promise.all(promisse);
 
       this.logger.debug(
-        `Added points for ${games.length} games in system ${system.name}(${system.id})`,
+        `Added points for ${games.length} games in system ${system.name}(${system.id})`
       );
     }
   }
@@ -448,7 +448,7 @@ export class EventCompetitionResolver {
   async removeGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const systems = await group.getRankingSystems({ transaction });
 
@@ -483,7 +483,7 @@ export class EventCompetitionResolver {
       });
 
       this.logger.debug(
-        `Removed points for ${games.length} games in system ${system.name}(${system.id})`,
+        `Removed points for ${games.length} games in system ${system.name}(${system.id})`
       );
     }
   }
@@ -491,10 +491,10 @@ export class EventCompetitionResolver {
   @Mutation(() => Boolean)
   async recalculateEventCompetitionRankingPoints(
     @User() user: Player,
-    @Args('eventId', { type: () => ID }) eventId: string,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+    @Args("eventId", { type: () => ID }) eventId: string,
+    @Args("systemId", { type: () => ID, nullable: true }) systemId: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
@@ -507,7 +507,7 @@ export class EventCompetitionResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
       }
 
       // find all games
@@ -536,10 +536,10 @@ export class EventCompetitionResolver {
               ...(draw.encounterCompetitions?.reduce((acc, enc) => {
                 acc.push(...(enc.games ?? []));
                 return acc;
-              }, [] as Game[]) ?? []),
+              }, [] as Game[]) ?? [])
             );
             return acc;
-          }, [] as Game[]) ?? []),
+          }, [] as Game[]) ?? [])
         );
         return acc;
       }, [] as Game[]);
@@ -566,14 +566,14 @@ export class EventCompetitionResolver {
   @Mutation(() => Boolean)
   async recalculateStandingEvent(
     @User() user: Player,
-    @Args('eventId', { type: () => ID }) eventId: string,
+    @Args("eventId", { type: () => ID }) eventId: string
   ) {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
     const event = await EventCompetition.findByPk(eventId, {
-      attributes: ['id'],
+      attributes: ["id"],
     });
 
     if (!event) {
@@ -588,7 +588,7 @@ export class EventCompetitionResolver {
       {
         removeOnComplete: true,
         removeOnFail: 1,
-      },
+      }
     );
 
     return true;

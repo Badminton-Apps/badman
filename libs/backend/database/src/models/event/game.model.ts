@@ -1,5 +1,5 @@
 // import { SocketEmitter, EVENTS } from '../../../sockets';
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -26,7 +26,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   UpdateOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   AfterBulkCreate,
   AfterBulkUpdate,
@@ -45,22 +45,22 @@ import {
   PrimaryKey,
   Table,
   TableOptions,
-} from 'sequelize-typescript';
-import { GameStatus, GameType } from '@badman/utils';
-import { GamePlayerMembershipType } from '../../_interception';
-import { Player } from '../player.model';
-import { RankingPoint } from '../ranking';
-import { EncounterCompetition } from './competition/encounter-competition.model';
-import { Court } from './court.model';
-import { GamePlayerMembership } from './game-player.model';
-import { DrawTournament } from './tournament';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { GameStatus, GameType } from "@badman/utils";
+import { GamePlayerMembershipType } from "../../_interception";
+import { Player } from "../player.model";
+import { RankingPoint } from "../ranking";
+import { EncounterCompetition } from "./competition/encounter-competition.model";
+import { Court } from "./court.model";
+import { GamePlayerMembership } from "./game-player.model";
+import { DrawTournament } from "./tournament";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 } as TableOptions)
-@ObjectType({ description: 'A Game' })
+@ObjectType({ description: "A Game" })
 export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<Game>> {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
@@ -80,11 +80,11 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
   playedAt?: Date;
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('S', 'D', 'MX'))
+  @Column(DataType.ENUM("S", "D", "MX"))
   gameType?: GameType;
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('NORMAL', 'WALKOVER', 'RETIREMENT', 'DISQUALIFIED', 'NO_MATCH'))
+  @Column(DataType.ENUM("NORMAL", "WALKOVER", "RETIREMENT", "DISQUALIFIED", "NO_MATCH"))
   status?: GameStatus;
 
   @Field(() => Int, { nullable: true })
@@ -119,34 +119,34 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
   round?: string;
 
   @Field(() => [RankingPoint], { nullable: true })
-  @HasMany(() => RankingPoint, 'gameId')
+  @HasMany(() => RankingPoint, "gameId")
   rankingPoints?: RankingPoint[];
 
   @Field(() => DrawTournament, { nullable: true })
   @BelongsTo(() => DrawTournament, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   tournament?: Relation<DrawTournament>;
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   competition?: Relation<EncounterCompetition>;
 
-  @Index('game_parent_index')
+  @Index("game_parent_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   linkId?: string;
 
-  @Index('game_parent_index')
+  @Index("game_parent_index")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   linkType?: string;
 
-  @BelongsTo(() => Court, 'courtId')
+  @BelongsTo(() => Court, "courtId")
   court?: Relation<Court>;
 
   @ForeignKey(() => Court)
@@ -203,7 +203,7 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
 
   static async updateEncounterScore(
     encounter: EncounterCompetition,
-    options: CreateOptions | UpdateOptions,
+    options: CreateOptions | UpdateOptions
   ) {
     // If the encounter already has a score, don't update it
     if ((encounter.homeScore ?? 0) + (encounter.awayScore ?? 0) > 0) {
@@ -219,14 +219,14 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
         acc.away += game.winner === 2 ? 1 : 0;
         return acc;
       },
-      { home: 0, away: 0 },
+      { home: 0, away: 0 }
     );
     await encounter.update(
       {
         homeScore: scores.home,
         awayScore: scores.away,
       },
-      { transaction: options.transaction },
+      { transaction: options.transaction }
     );
   }
 
@@ -280,10 +280,20 @@ export class GameNewInputPlayers {
   player!: number;
 }
 
-
 @InputType()
 export class GameUpdateInput extends PartialType(
-  OmitType(Game, ['id', 'visualCode', "rankingPoints", "players", 'competition','linkId', 'linkType', "tournament", "createdAt", "updatedAt"] as const),
+  OmitType(Game, [
+    "id",
+    "visualCode",
+    "rankingPoints",
+    "players",
+    "competition",
+    "linkId",
+    "linkType",
+    "tournament",
+    "createdAt",
+    "updatedAt",
+  ] as const),
   InputType
 ) {
   @Field(() => ID, { nullable: true })
@@ -298,7 +308,7 @@ export class GameUpdateInput extends PartialType(
 
 @InputType()
 export class GameNewInput extends PartialType(
-  OmitType(GameUpdateInput, ['linkId', 'players'] as const),
+  OmitType(GameUpdateInput, ["linkId", "players"] as const),
   InputType
 ) {
   @Field(() => ID, { nullable: true })
@@ -310,5 +320,3 @@ export class GameNewInput extends PartialType(
   @Field(() => [GameNewInputPlayers], { nullable: true })
   players!: GameNewInputPlayers[];
 }
-
-

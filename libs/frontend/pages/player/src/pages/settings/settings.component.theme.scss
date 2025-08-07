@@ -1,7 +1,7 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   // badman-settings {
@@ -11,7 +11,7 @@
 @mixin typography($theme) {
   badman-settings {
     .settings-title {
-      font: mat.get-theme-typography($theme, 'headline-6', font);
+      font: mat.get-theme-typography($theme, "headline-6", font);
     }
   }
 }

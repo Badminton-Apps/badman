@@ -1,7 +1,7 @@
 ---
 name: "\U0001F41E Bug report"
 about: Report a bug in the Badvlasim Framework
-title: '[BUG]'
+title: "[BUG]"
 labels: bug
 ---
 

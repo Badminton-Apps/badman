@@ -1,9 +1,9 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -15,17 +15,17 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
-import { Game } from '../event';
-import { Player } from '../player.model';
-import { RankingSystem } from './ranking-system.model';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { Game } from "../event";
+import { Player } from "../player.model";
+import { RankingSystem } from "./ranking-system.model";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'ranking',
+  schema: "ranking",
 })
-@ObjectType({ description: 'A RankingPoint' })
+@ObjectType({ description: "A RankingPoint" })
 export class RankingPoint extends Model {
   constructor(values?: Partial<RankingPoint>, options?: BuildOptions) {
     super(values, options);
@@ -49,17 +49,17 @@ export class RankingPoint extends Model {
   points?: number;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'playerId')
+  @BelongsTo(() => Player, "playerId")
   player?: Relation<Player>;
 
   @Field(() => Game, { nullable: true })
-  @BelongsTo(() => Game, 'gameId')
+  @BelongsTo(() => Game, "gameId")
   game?: Relation<Game>;
 
   @Field(() => RankingSystem, { nullable: true })
   @BelongsTo(() => RankingSystem, {
-    foreignKey: 'systemId',
-    onDelete: 'CASCADE',
+    foreignKey: "systemId",
+    onDelete: "CASCADE",
   })
   system?: Relation<RankingSystem>;
 
@@ -73,13 +73,13 @@ export class RankingPoint extends Model {
   differenceInLevel?: number;
 
   @ForeignKey(() => RankingSystem)
-  @Index('point_system_index')
+  @Index("point_system_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   systemId?: string;
 
   @ForeignKey(() => Player)
-  @Index('point_system_index')
+  @Index("point_system_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   playerId?: string;

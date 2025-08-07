@@ -1,10 +1,10 @@
-import { Player } from './player.model';
-import { EventCompetition } from './event/competition/event-competition.model';
+import { Player } from "./player.model";
+import { EventCompetition } from "./event/competition/event-competition.model";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -17,16 +17,16 @@ import {
   PrimaryKey,
   Table,
   TableOptions,
-} from 'sequelize-typescript';
-import { EncounterCompetition } from './event';
-import { Club } from './club.model';
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import { Relation } from '../wrapper';
+} from "sequelize-typescript";
+import { EncounterCompetition } from "./event";
+import { Club } from "./club.model";
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
+import { Relation } from "../wrapper";
 
 @Table({
   timestamps: true,
 } as TableOptions)
-@ObjectType({ description: 'A Comment' })
+@ObjectType({ description: "A Comment" })
 export class Comment extends Model {
   constructor(values?: Partial<Comment>, options?: BuildOptions) {
     super(values, options);
@@ -49,7 +49,7 @@ export class Comment extends Model {
   @Column(DataType.TEXT)
   message?: string;
 
-  @BelongsTo(() => Player, 'playerId')
+  @BelongsTo(() => Player, "playerId")
   player?: Relation<Player>;
 
   @ForeignKey(() => Player)
@@ -58,7 +58,7 @@ export class Comment extends Model {
   @Column(DataType.UUIDV4)
   playerId?: string;
 
-  @BelongsTo(() => Club, 'clubId')
+  @BelongsTo(() => Club, "clubId")
   club?: Relation<Club>;
 
   @ForeignKey(() => Club)
@@ -68,23 +68,23 @@ export class Comment extends Model {
   clubId?: string;
 
   @BelongsTo(() => EventCompetition, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   competition?: Relation<EventCompetition>;
 
   @BelongsTo(() => EncounterCompetition, {
-    foreignKey: 'linkId',
+    foreignKey: "linkId",
     constraints: false,
   })
   encounter?: Relation<EncounterCompetition>;
 
-  @Index('comment_index')
+  @Index("comment_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   linkId?: string;
 
-  @Index('comment_index')
+  @Index("comment_index")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   linkType?: string;
@@ -100,12 +100,12 @@ export class Comment extends Model {
 
 @InputType()
 export class CommentUpdateInput extends PartialType(
-  OmitType(Comment, ['createdAt', 'updatedAt', 'club', 'competition', 'encounter'] as const),
-  InputType,
+  OmitType(Comment, ["createdAt", "updatedAt", "club", "competition", "encounter"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class CommentNewInput extends PartialType(
-  OmitType(CommentUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(CommentUpdateInput, ["id"] as const),
+  InputType
 ) {}

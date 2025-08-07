@@ -1,5 +1,5 @@
-import { Player } from '@badman/backend-database';
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { Player } from "@badman/backend-database";
+import { Logger, UnauthorizedException } from "@nestjs/common";
 
 export const canExecute = async (
   user: Player,
@@ -7,12 +7,12 @@ export const canExecute = async (
     anyPermissions?: string[];
     allPermissions?: string[];
   },
-  message?: string,
+  message?: string
 ) => {
   if ((user ?? null) === null) {
     throw new UnauthorizedException({
       code: 401,
-      message: message ?? 'Not authenticated',
+      message: message ?? "Not authenticated",
     });
   }
 

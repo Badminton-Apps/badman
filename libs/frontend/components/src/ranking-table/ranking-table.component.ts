@@ -1,15 +1,14 @@
-
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
-import { TranslateService } from '@ngx-translate/core';
-import { RankingTableService } from './ranking-table.service';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from "@angular/core";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { MtxGrid, MtxGridColumn } from "@ng-matero/extensions/grid";
+import { TranslateService } from "@ngx-translate/core";
+import { RankingTableService } from "./ranking-table.service";
 
 @Component({
-  selector: 'badman-ranking-table',
+  selector: "badman-ranking-table",
   imports: [MtxGrid],
-  templateUrl: './ranking-table.component.html',
-  styleUrls: ['./ranking-table.component.scss'],
+  templateUrl: "./ranking-table.component.html",
+  styleUrls: ["./ranking-table.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RankingTableComponent {
@@ -19,18 +18,18 @@ export class RankingTableComponent {
   id = input<string | null>(null);
 
   columns: MtxGridColumn[] = [
-    { header: this.translate.stream('all.faq.points.table.level'), field: 'level' },
+    { header: this.translate.stream("all.faq.points.table.level"), field: "level" },
     {
-      header: this.translate.stream('all.faq.points.table.points-needed-up'),
-      field: 'pointsToGoUp',
+      header: this.translate.stream("all.faq.points.table.points-needed-up"),
+      field: "pointsToGoUp",
     },
     {
-      header: this.translate.stream('all.faq.points.table.points-needed-down'),
-      field: 'pointsToGoDown',
+      header: this.translate.stream("all.faq.points.table.points-needed-down"),
+      field: "pointsToGoDown",
     },
     {
-      header: this.translate.stream('all.faq.points.table.points-won'),
-      field: 'pointsWhenWinningAgainst',
+      header: this.translate.stream("all.faq.points.table.points-won"),
+      field: "pointsWhenWinningAgainst",
     },
   ];
 

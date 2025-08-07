@@ -1,5 +1,5 @@
 ---
-name: '📚 Docs or badvlasim issue report'
+name: "📚 Docs or badvlasim issue report"
 about: Report an issue in Badvlasim's documentation or https://beta.latomme.org/ application
 ---
 

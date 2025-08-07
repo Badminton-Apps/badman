@@ -3,8 +3,8 @@
  * This is only a minimal backend to get started.
  */
 
-import { NestFactory } from '@nestjs/core';
-import { ScriptModule } from './app/app.module';
+import { NestFactory } from "@nestjs/core";
+import { ScriptModule } from "./app/app.module";
 
 async function bootstrap() {
   await NestFactory.createApplicationContext(ScriptModule);

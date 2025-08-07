@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,27 +7,27 @@ import {
   effect,
   inject,
   input,
-} from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatOptionModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { ClaimService } from '@badman/frontend-auth';
+} from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatOptionModule } from "@angular/material/core";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { ClaimService } from "@badman/frontend-auth";
 import {
   HasClaimComponent,
   SelectCountryComponent,
   SelectCountrystateComponent,
-} from '@badman/frontend-components';
-import { UseForTeamName } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { ClubFieldsForm } from '../../pages';
+} from "@badman/frontend-components";
+import { UseForTeamName } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { ClubFieldsForm } from "../../pages";
 
 @Component({
-    selector: 'badman-club-fields',
-    templateUrl: './club-fields.component.html',
-    styleUrls: ['./club-fields.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
+  selector: "badman-club-fields",
+  templateUrl: "./club-fields.component.html",
+  styleUrls: ["./club-fields.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
     ReactiveFormsModule,
     TranslatePipe,
     FormsModule,
@@ -37,8 +36,8 @@ import { ClubFieldsForm } from '../../pages';
     MatSelectModule,
     HasClaimComponent,
     SelectCountryComponent,
-    SelectCountrystateComponent
-]
+    SelectCountrystateComponent,
+  ],
 })
 export class ClubFieldsComponent implements OnInit {
   private readonly claimService = inject(ClaimService);
@@ -46,30 +45,33 @@ export class ClubFieldsComponent implements OnInit {
 
   group = input.required<ClubFieldsForm>();
 
-  controlName = input('country');
+  controlName = input("country");
 
   exampleTeamName?: string;
 
-  canEditAnyClub = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
+  canEditAnyClub = computed(() => this.claimService.hasAnyClaims(["edit-any:club"]));
 
   ngOnInit() {
-    effect(() => {
-      this.group().disable();
-      if (this.canEditAnyClub()) {
-        this.group().enable();
+    effect(
+      () => {
+        this.group().disable();
+        if (this.canEditAnyClub()) {
+          this.group().enable();
+        }
+      },
+      {
+        injector: this.injector,
       }
-    }, {
-      injector: this.injector,
-    });
+    );
 
     this.group().valueChanges.subscribe(() => this._setExampleTeamName());
 
     this.group()
-      .get('name')
+      .get("name")
       ?.valueChanges.subscribe((r) => {
-        if (!this.group().get('abbreviation')?.touched) {
+        if (!this.group().get("abbreviation")?.touched) {
           const matches = r?.match(/\b(\w)/g) ?? [];
-          this.group().get('abbreviation')?.setValue(matches?.join(''));
+          this.group().get("abbreviation")?.setValue(matches?.join(""));
         }
       });
 
@@ -79,18 +81,18 @@ export class ClubFieldsComponent implements OnInit {
   private _setExampleTeamName() {
     switch (this.group().value.useForTeamName) {
       case UseForTeamName.FULL_NAME:
-        this.exampleTeamName = `${this.group().value.fullName ?? ''} 1G`;
+        this.exampleTeamName = `${this.group().value.fullName ?? ""} 1G`;
         break;
       case UseForTeamName.ABBREVIATION:
-        this.exampleTeamName = `${this.group().value.abbreviation ?? ''} 1G`;
+        this.exampleTeamName = `${this.group().value.abbreviation ?? ""} 1G`;
         break;
       case UseForTeamName.TEAM_NAME:
-        this.exampleTeamName = `${this.group().value.teamName ?? ''} 1G`;
+        this.exampleTeamName = `${this.group().value.teamName ?? ""} 1G`;
         break;
 
       default:
       case UseForTeamName.NAME:
-        this.exampleTeamName = `${this.group().value.name ?? ''} 1G`;
+        this.exampleTeamName = `${this.group().value.name ?? ""} 1G`;
         break;
     }
   }

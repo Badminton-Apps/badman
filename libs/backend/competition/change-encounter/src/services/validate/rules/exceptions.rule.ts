@@ -1,12 +1,12 @@
-import { InfoEvent } from '@badman/backend-database';
-import { Logger } from '@nestjs/common';
-import moment from 'moment';
+import { InfoEvent } from "@badman/backend-database";
+import { Logger } from "@nestjs/common";
+import moment from "moment";
 import {
   EncounterValidationData,
   EncounterValidationError,
   EncounterValidationOutput,
-} from '../../../models';
-import { Rule } from './_rule.base';
+} from "../../../models";
+import { Rule } from "./_rule.base";
 
 export type ExceptionRuleParams = {
   encounterId: string;
@@ -21,7 +21,7 @@ export type ExceptionRuleParams = {
  * Checks if encounters against the same team are in a different semester
  */
 export class ExceptionRule extends Rule {
-  static override readonly description = 'all.rules.change-encounter.exceptions';
+  static override readonly description = "all.rules.change-encounter.exceptions";
   private readonly logger = new Logger(ExceptionRule.name);
 
   async validate(changeEncounter: EncounterValidationData): Promise<EncounterValidationOutput> {
@@ -32,7 +32,7 @@ export class ExceptionRule extends Rule {
     const infoEvents = draw?.subEventCompetition?.eventCompetition?.infoEvents ?? [];
 
     if (!encounter?.date) {
-      throw new Error('No date provided');
+      throw new Error("No date provided");
     }
 
     const error = this.findEncountersOnExceptionDays(encounter.date, encounter.id, infoEvents);
@@ -46,7 +46,7 @@ export class ExceptionRule extends Rule {
         const warning = this.findEncountersOnExceptionDays(
           suggestedDate.date,
           encounter.id,
-          infoEvents,
+          infoEvents
         );
 
         if (warning.length) {
@@ -71,15 +71,15 @@ export class ExceptionRule extends Rule {
 
     for (const infoEvent of infoEvents) {
       if (!(infoEvent.allowCompetition ?? false)) {
-        if (moment(encounteDate).isBetween(infoEvent.start, infoEvent.end, 'day', '[]')) {
+        if (moment(encounteDate).isBetween(infoEvent.start, infoEvent.end, "day", "[]")) {
           warms.push({
-            message: 'all.competition.change-encounter.errors.exception-day',
+            message: "all.competition.change-encounter.errors.exception-day",
             params: {
               encounterId: encounterId,
               date: encounteDate,
               exceptionName: infoEvent.name,
-              exceptionStart: moment(infoEvent.start).format('DD/MM/YYYY'),
-              exceptionEnd: moment(infoEvent.end).format('DD/MM/YYYY'),
+              exceptionStart: moment(infoEvent.start).format("DD/MM/YYYY"),
+              exceptionEnd: moment(infoEvent.end).format("DD/MM/YYYY"),
             },
           });
         }

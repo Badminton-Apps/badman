@@ -1,10 +1,10 @@
-import { Club, ClubPlayerMembership, Player } from '@badman/backend-database';
-import { ClubMembershipType } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment';
-import 'multer';
-import { literal, Op } from 'sequelize';
-import * as XLSX from 'xlsx';
+import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
+import { ClubMembershipType } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import moment from "moment";
+import "multer";
+import { literal, Op } from "sequelize";
+import * as XLSX from "xlsx";
 
 @Injectable()
 export class LoansService {
@@ -14,7 +14,7 @@ export class LoansService {
     const mappedData = await this._readFile(file);
     this.logger.debug(`Processing ${mappedData.length} loans`);
     if (mappedData.length === 0) {
-      this.logger.error('No data found in file');
+      this.logger.error("No data found in file");
       return { message: false };
     }
 
@@ -23,27 +23,27 @@ export class LoansService {
 
   private async _createMemberships(data: Loans[], season: number) {
     const players = await Player.findAll({
-      attributes: ['id', 'memberId', 'firstName', 'lastName'],
+      attributes: ["id", "memberId", "firstName", "lastName"],
       where: {
         memberId: data.map((d) => `${d.Lidnummer}`),
       },
     });
 
     const clubs = await Club.findAll({
-      attributes: ['id', 'name', 'clubId'],
+      attributes: ["id", "name", "clubId"],
       where: {
         clubId: data.map((d) => d.ontLenendeClubNummer),
       },
     });
 
     // We take a month before the start of the season and a month after the end of the season
-    const startDate = moment().set('year', season).startOf('year').set('month', 6).set('date', 1);
+    const startDate = moment().set("year", season).startOf("year").set("month", 6).set("date", 1);
 
     const endDate = moment()
-      .set('year', season + 1)
-      .startOf('year')
-      .set('month', 5)
-      .endOf('month');
+      .set("year", season + 1)
+      .startOf("year")
+      .set("month", 5)
+      .endOf("month");
 
     const memberships = await ClubPlayerMembership.findAll({
       where: {

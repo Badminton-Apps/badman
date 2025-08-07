@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -10,7 +10,7 @@ import {
   inject,
   input,
   signal,
-} from '@angular/core';
+} from "@angular/core";
 import {
   AbstractControl,
   FormArray,
@@ -18,36 +18,36 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { InMemoryCache } from '@apollo/client/cache';
-import { ClaimService } from '@badman/frontend-auth';
-import { HasClaimComponent, SetEncounterDateDialogComponent } from '@badman/frontend-components';
-import { APOLLO_CACHE } from '@badman/frontend-graphql';
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatOptionModule } from "@angular/material/core";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { InMemoryCache } from "@apollo/client/cache";
+import { ClaimService } from "@badman/frontend-auth";
+import { HasClaimComponent, SetEncounterDateDialogComponent } from "@badman/frontend-components";
+import { APOLLO_CACHE } from "@badman/frontend-graphql";
 import {
   Comment,
   EncounterChange,
   EncounterChangeDate,
   EncounterCompetition,
-} from '@badman/frontend-models';
-import { ChangeEncounterAvailability, getSeasonPeriod } from '@badman/utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, lastValueFrom, of } from 'rxjs';
+} from "@badman/frontend-models";
+import { ChangeEncounterAvailability, getSeasonPeriod } from "@badman/utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { MomentModule } from "ngx-moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { Observable, lastValueFrom, of } from "rxjs";
 import {
   debounceTime,
   filter,
@@ -57,9 +57,9 @@ import {
   tap,
   distinctUntilChanged,
   throttleTime,
-} from 'rxjs/operators';
-import { CommentsComponent } from '../../../../components/comments';
-import { RequestDateComponent } from '../request-date/request-date.component';
+} from "rxjs/operators";
+import { CommentsComponent } from "../../../../components/comments";
+import { RequestDateComponent } from "../request-date/request-date.component";
 
 const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
@@ -78,9 +78,9 @@ const CHANGE_QUERY = gql`
 `;
 
 @Component({
-  selector: 'badman-show-requests',
-  templateUrl: './show-requests.component.html',
-  styleUrls: ['./show-requests.component.scss'],
+  selector: "badman-show-requests",
+  templateUrl: "./show-requests.component.html",
+  styleUrls: ["./show-requests.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
@@ -116,13 +116,13 @@ export class ShowRequestsComponent implements OnInit {
   private readonly claimService = inject(ClaimService);
   group = input.required<FormGroup>();
 
-  dependsOn = input('encounter');
+  dependsOn = input("encounter");
 
   formGroupRequest!: FormGroup;
   previous?: AbstractControl;
   dateControls = new FormArray<FormGroup>([]);
   dateControlsNotAvailible = new FormArray<FormGroup>([]);
-  commentControl = new FormControl<string>('');
+  commentControl = new FormControl<string>("");
 
   encounter!: EncounterCompetition;
   home!: boolean;
@@ -131,13 +131,13 @@ export class ShowRequestsComponent implements OnInit {
   requestingClosed = false;
   requestClosing!: moment.Moment;
 
-  isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
+  isAdmin = computed(() => this.claimService.hasAnyClaims(["change-any:encounter"]));
 
   canChangeEncounter = computed<boolean>(() => false);
   comments = signal<Comment[]>([]);
 
   requests$!: Observable<EncounterChange>;
-  @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<unknown>;
+  @ViewChild("confirm", { static: true }) confirmDialog!: TemplateRef<unknown>;
 
   validation = signal<{
     valid: boolean;
@@ -180,7 +180,7 @@ export class ShowRequestsComponent implements OnInit {
           if (encounter == null) {
             this.changeDetector.detectChanges();
           } else {
-            this.home = this.group().get('team')?.value == encounter?.home?.id;
+            this.home = this.group().get("team")?.value == encounter?.home?.id;
           }
         }),
         filter((value) => value !== null),
@@ -189,7 +189,7 @@ export class ShowRequestsComponent implements OnInit {
             return of(
               new EncounterChange({
                 encounter: encounter,
-              }),
+              })
             );
           }
 
@@ -208,8 +208,8 @@ export class ShowRequestsComponent implements OnInit {
                   new EncounterChange({
                     ...x.data?.encounterChange,
                     encounter: encounter,
-                  }),
-              ),
+                  })
+              )
             );
         }),
         tap((encounterChange) => {
@@ -234,17 +234,17 @@ export class ShowRequestsComponent implements OnInit {
                   prev?.dates?.map((d: any) => ({
                     date: d?.calendar?.date,
                     locationId: d?.calendar?.locationId,
-                  })),
+                  }))
                 );
                 const currDates = JSON.stringify(
                   curr?.dates?.map((d: any) => ({
                     date: d?.calendar?.date,
                     locationId: d?.calendar?.locationId,
-                  })),
+                  }))
                 );
                 return prevDates === currDates;
               }),
-              switchMap(() => this.validate()),
+              switchMap(() => this.validate())
             )
             .subscribe(
               (result) => {
@@ -253,13 +253,13 @@ export class ShowRequestsComponent implements OnInit {
                 }
               },
               (error) => {
-                console.error('Validation error:', error);
+                console.error("Validation error:", error);
                 // Don't crash the app, just log the error
-              },
+              }
             );
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
-        }),
+        })
       );
     } else {
       console.warn(`Dependency ${this.dependsOn()} not found`, this.previous);
@@ -270,16 +270,16 @@ export class ShowRequestsComponent implements OnInit {
     return computed(() =>
       this.warnings().filter(
         (r) =>
-          moment(`${r.params['date']}`).isSame(date, 'day') &&
-          r.params['encounterId'] == this.encounter.id,
-      ),
+          moment(`${r.params["date"]}`).isSame(date, "day") &&
+          r.params["encounterId"] == this.encounter.id
+      )
     );
   }
 
   validate() {
     const suggestedDates = this.dateControls
       .getRawValue()
-      .map((r) => r['calendar'])
+      .map((r) => r["calendar"])
       ?.map((r) => ({
         date: r.date,
         locationId: r.locationId,
@@ -313,7 +313,7 @@ export class ShowRequestsComponent implements OnInit {
         variables: {
           encounterId: this.encounter?.id,
           validationData: {
-            teamId: this.group().get('team')?.value,
+            teamId: this.group().get("team")?.value,
             suggestedDates,
           },
         },
@@ -330,14 +330,14 @@ export class ShowRequestsComponent implements OnInit {
     if (dates && dates.length > 0) {
       // get the last date
       lastDate = dates
-        .map((d) => d?.['calendar']?.['date'])
+        .map((d) => d?.["calendar"]?.["date"])
         .reduce((a, b) => (a > b ? a : b), new Date()) as Date;
     }
 
-    let newDate = moment(lastDate).add(1, 'week');
+    let newDate = moment(lastDate).add(1, "week");
     const period = getSeasonPeriod()?.map((d) => moment(d));
     if (newDate.isAfter(period[1])) {
-      newDate = period[1].subtract(1, 'day');
+      newDate = period[1].subtract(1, "day");
     }
 
     const newChange = new EncounterChangeDate({
@@ -364,11 +364,11 @@ export class ShowRequestsComponent implements OnInit {
 
     if (!this.formGroupRequest.valid) {
       this.snackBar.open(
-        this.translate.instant('competition.change-encounter.errors.invalid'),
-        'OK',
+        this.translate.instant("competition.change-encounter.errors.invalid"),
+        "OK",
         {
           duration: 4000,
-        },
+        }
       );
 
       this.formGroupRequest.markAllAsTouched();
@@ -381,8 +381,8 @@ export class ShowRequestsComponent implements OnInit {
     change.encounter = this.encounter;
 
     const dates: EncounterChangeDate[] = [
-      ...(this.formGroupRequest.get('dates')?.getRawValue() ?? []),
-      ...(this.formGroupRequest.get('notAvailibleDates')?.getRawValue() ?? []),
+      ...(this.formGroupRequest.get("dates")?.getRawValue() ?? []),
+      ...(this.formGroupRequest.get("notAvailibleDates")?.getRawValue() ?? []),
     ]?.map(
       (d: {
         availabilityAway: ChangeEncounterAvailability;
@@ -399,7 +399,7 @@ export class ShowRequestsComponent implements OnInit {
           selected: d?.selected,
           date: d?.calendar?.date,
           locationId: d?.calendar?.locationId,
-        }),
+        })
     );
     const ids = dates.map((o) => o.date?.getTime());
     change.dates = dates.filter(({ date }, index) => !ids.includes(date?.getTime(), index + 1));
@@ -409,11 +409,11 @@ export class ShowRequestsComponent implements OnInit {
       if (this.home) {
         // hometeam always needs to add at least one date
         this.snackBar.open(
-          this.translate.instant('competition.change-encounter.errors.select-one-date'),
-          'OK',
+          this.translate.instant("competition.change-encounter.errors.select-one-date"),
+          "OK",
           {
             duration: 4000,
-          },
+          }
         );
         this.running = false;
         return;
@@ -441,13 +441,13 @@ export class ShowRequestsComponent implements OnInit {
                 dates: change.dates,
               },
             },
-          }),
+          })
         );
 
         if (this.encounter.encounterChange?.id) {
           const normalizedAvailibility = this.cache.identify({
             id: this.encounter.encounterChange?.id,
-            __typename: 'EncounterChange',
+            __typename: "EncounterChange",
           });
           this.cache.evict({ id: normalizedAvailibility });
           this.cache.gc();
@@ -465,20 +465,20 @@ export class ShowRequestsComponent implements OnInit {
         });
 
         this.snackBar.open(
-          await this.translate.instant('all.competition.change-encounter.requested'),
-          'OK',
+          await this.translate.instant("all.competition.change-encounter.requested"),
+          "OK",
           {
             duration: 4000,
-          },
+          }
         );
       } catch (error) {
         console.error(error);
         this.snackBar.open(
-          await this.translate.instant('all.competition.change-encounter.requested-failed'),
-          'OK',
+          await this.translate.instant("all.competition.change-encounter.requested-failed"),
+          "OK",
           {
             duration: 4000,
-          },
+          }
         );
       } finally {
         this.running = false;
@@ -524,7 +524,7 @@ export class ShowRequestsComponent implements OnInit {
             accepted: true,
           },
         },
-      }),
+      })
     );
 
     this.previous?.setValue({
@@ -534,14 +534,14 @@ export class ShowRequestsComponent implements OnInit {
       },
     });
 
-    this.formGroupRequest.get('accepted')?.setValue(true);
+    this.formGroupRequest.get("accepted")?.setValue(true);
     this.changeDetector.detectChanges();
   }
 
   reOpen() {
-    this.formGroupRequest.get('accepted')?.setValue(false);
+    this.formGroupRequest.get("accepted")?.setValue(false);
     for (const control of this.dateControls.controls) {
-      control.get('selected')?.setValue(false);
+      control.get("selected")?.setValue(false);
     }
   }
   changeDate() {
@@ -550,7 +550,7 @@ export class ShowRequestsComponent implements OnInit {
       data: {
         date: this.encounter.date,
       },
-      width: '400px',
+      width: "400px",
     });
 
     ref.afterClosed().subscribe((result) => {
@@ -583,7 +583,7 @@ export class ShowRequestsComponent implements OnInit {
             },
           })
           .subscribe(() => {
-            this.snackBar.open(`Dates updated`, 'Close', {
+            this.snackBar.open(`Dates updated`, "Close", {
               duration: 2000,
             });
           });

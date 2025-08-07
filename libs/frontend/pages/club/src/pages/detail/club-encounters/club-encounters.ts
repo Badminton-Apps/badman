@@ -1,27 +1,27 @@
-import { NgClass } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { EncounterCompetition, Team } from '@badman/frontend-models';
-import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
-import { MtxSelectModule } from '@ng-matero/extensions/select';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import moment from 'moment';
+import { NgClass } from "@angular/common";
+import { Component, computed, inject } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSlideToggleChange, MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { EncounterCompetition, Team } from "@badman/frontend-models";
+import { MtxGrid, MtxGridColumn } from "@ng-matero/extensions/grid";
+import { MtxSelectModule } from "@ng-matero/extensions/select";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import moment from "moment";
 import {
   ClubEncounterService,
   openRequestFilter,
   validationFilter,
-} from './club-encounters.service';
-import { map } from 'rxjs';
+} from "./club-encounters.service";
+import { map } from "rxjs";
 
 @Component({
-  selector: 'badman-club-encounters',
-  templateUrl: './club-encounters.html',
-  styleUrls: ['./club-encounters.scss'],
+  selector: "badman-club-encounters",
+  templateUrl: "./club-encounters.html",
+  styleUrls: ["./club-encounters.scss"],
   imports: [
     NgClass,
     FormsModule,
@@ -49,37 +49,37 @@ export class ClubEncountersComponent {
 
   columns: MtxGridColumn<EncounterCompetition>[] = [
     {
-      field: 'home.name',
-      header: this.translate.stream('all.competition.home'),
+      field: "home.name",
+      header: this.translate.stream("all.competition.home"),
       sortable: true,
     },
     {
-      field: 'away.name',
-      header: this.translate.stream('all.competition.away'),
+      field: "away.name",
+      header: this.translate.stream("all.competition.away"),
       sortable: true,
     },
     {
-      field: 'date',
-      header: this.translate.stream('all.competition.date'),
+      field: "date",
+      header: this.translate.stream("all.competition.date"),
       sortable: true,
-      formatter: (enc) => moment(enc.date).format('llll'),
+      formatter: (enc) => moment(enc.date).format("llll"),
     },
 
     {
-      field: 'originalDate',
-      header: this.translate.stream('all.competition.originalDate'),
+      field: "originalDate",
+      header: this.translate.stream("all.competition.originalDate"),
       sortable: true,
       formatter: (enc) => {
         if (!enc.originalDate || moment(enc.originalDate).isSame(enc.date)) {
-          return '';
+          return "";
         }
 
-        return moment(enc.originalDate).format('llll');
+        return moment(enc.originalDate).format("llll");
       },
     },
     {
-      field: 'validation',
-      header: this.translate.stream('all.club.encounters.validation.title'),
+      field: "validation",
+      header: this.translate.stream("all.club.encounters.validation.title"),
     },
   ];
 
@@ -104,28 +104,28 @@ export class ClubEncountersComponent {
   }
 
   getInfo(encounter: EncounterCompetition) {
-    let icon = 'check';
-    let infoClass = 'success';
+    let icon = "check";
+    let infoClass = "success";
     const tooltip = [];
 
     if ((encounter.validateEncounter?.warnings?.length ?? 0) > 0) {
-      infoClass = 'warning';
-      icon = 'warning';
+      infoClass = "warning";
+      icon = "warning";
       tooltip.push(...(encounter.validateEncounter?.warnings.map((e) => e.message) ?? []));
     }
 
     if ((encounter.validateEncounter?.errors?.length ?? 0) > 0) {
-      icon = 'error';
-      infoClass = 'error';
+      icon = "error";
+      infoClass = "error";
 
       tooltip.push(...(encounter.validateEncounter?.errors.map((e) => e.message) ?? []));
     }
 
     // translate all tooltips and join them with a \n\r
     const tooltips = tooltip
-      .filter((t) => (t || '') !== '')
+      .filter((t) => (t || "") !== "")
       .map((t) => this.translate.instant(t))
-      .join('\n\r\n\r');
+      .join("\n\r\n\r");
 
     return {
       icon,

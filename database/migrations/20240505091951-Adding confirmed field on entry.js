@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
-const { type } = require('node:os');
+const { type } = require("node:os");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -10,18 +10,18 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'Entries',
-            schema: 'event',
+            tableName: "Entries",
+            schema: "event",
           },
-          'sendOn',
+          "sendOn",
           {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -32,14 +32,14 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'Entries',
-            schema: 'event',
+            tableName: "Entries",
+            schema: "event",
           },
-          'sendOn',
-          { transaction: t },
+          "sendOn",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

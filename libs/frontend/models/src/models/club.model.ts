@@ -1,9 +1,9 @@
-import { Team } from './team.model';
-import { Player } from './player.model';
-import { Role } from './security';
-import { Location } from './location.model';
-import { ClubMembershipType, UseForTeamName } from '@badman/utils';
-import { Comment } from './comment.model';
+import { Team } from "./team.model";
+import { Player } from "./player.model";
+import { Role } from "./security";
+import { Location } from "./location.model";
+import { ClubMembershipType, UseForTeamName } from "@badman/utils";
+import { Comment } from "./comment.model";
 
 export class Club {
   id!: string;
@@ -51,7 +51,7 @@ export class Club {
         new Location({
           ...p,
           club: this,
-        }),
+        })
     );
     this.comments = args.comments?.map((p) => new Comment(p));
     this.clubMembership = args?.clubMembership

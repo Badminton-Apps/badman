@@ -18,12 +18,12 @@ mixin doublePlayer(double, type, game)
     +emptyPlayer(true).top-double-player(class!=attributes.class)
     +emptyPlayer(false).top-double-player(class!=attributes.class, class={ "border-b-0": game == 4 })
   else
-    if double.player1 == null  || double.player1 == undefined
+    if double.player1 == null || double.player1 == undefined
       +emptyPlayer(true).top-double-player(class!=attributes.class)
     else
       +player(true, double.player1, type).top-double-player(class!=attributes.class)
 
-    if double.player2 == null  || double.player2 == undefined
+    if double.player2 == null || double.player2 == undefined
       +emptyPlayer(false)(class!=attributes.class, class={ "border-b-0": game == 4 })
     else
       +player(false, double.player2, type)(class!=attributes.class, class={ "border-b-0": game == 4 })
@@ -32,7 +32,7 @@ mixin subPlayer(player)
   if player == null || player == undefined
     +emptyPlayer(false)(class!=attributes.class)
   else
-    +player(false, player, 'sub')(class!=attributes.class)
+    +player(false, player, "sub")(class!=attributes.class)
 
 mixin emptyPlayer(ignored)
   //- Adding a class border-bottom-dashed if dashed is true
@@ -49,15 +49,15 @@ mixin player(ignored, player, type)
     if player.exception
       i.pl-1.fas.fa-lock.text-gray-600
   div(class!=attributes.class)
-    if type == 'sub'
+    if type == "sub"
       div #{ player.rankingLastPlace.single }
       div #{ player.rankingLastPlace.double }
       div #{ player.rankingLastPlace.mix }
-    else if type == 'single'
+    else if type == "single"
       | #{ player.rankingLastPlace.single }
-    else if type == 'double'
+    else if type == "double"
       | #{ player.rankingLastPlace.double }
-    else if type == 'mix'
+    else if type == "mix"
       | #{ player.rankingLastPlace.mix }
   div(class!=attributes.class) #{ player.memberId }
   div(class!=attributes.class) #{ player.sum }

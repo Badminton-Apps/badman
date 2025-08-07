@@ -1,6 +1,6 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-@ObjectType({ description: 'A AssemblyType' })
+@ObjectType({ description: "A AssemblyType" })
 export class AssemblyType {
   @Field(() => ID, { nullable: true })
   single1?: string;

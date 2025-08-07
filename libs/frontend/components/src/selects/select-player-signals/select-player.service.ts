@@ -1,10 +1,10 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injector, PLATFORM_ID, TransferState, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Player } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Subject, merge } from 'rxjs';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injector, PLATFORM_ID, TransferState, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { Player } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Subject, merge } from "rxjs";
 import {
   catchError,
   debounceTime,
@@ -13,7 +13,7 @@ import {
   map,
   startWith,
   switchMap,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 interface SelectPlayersState {
   players: Player[];
   loading: boolean;
@@ -30,7 +30,7 @@ export class SelectPlayersService {
     emptyWhere: new FormControl<{
       [key: string]: unknown;
     }>({}),
-    query: new FormControl<string>(''),
+    query: new FormControl<string>(""),
     where: new FormControl<{
       [key: string]: unknown;
     }>({}),
@@ -56,9 +56,9 @@ export class SelectPlayersService {
       (filter) =>
         (filter.query?.length ?? 0) > 2 ||
         Object.keys(filter.where ?? {}).length > 0 ||
-        Object.keys(filter.emptyWhere ?? {}).length > 0,
+        Object.keys(filter.emptyWhere ?? {}).length > 0
     ),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   private playersLoaded$ = this.filterChanged$.pipe(
@@ -67,7 +67,7 @@ export class SelectPlayersService {
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
@@ -75,10 +75,10 @@ export class SelectPlayersService {
       map((players) => ({
         players,
         loading: false,
-      })),
+      }))
     ),
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loading: true }))),
+    this.filterChanged$.pipe(map(() => ({ loading: true })))
   );
 
   state = signalSlice({
@@ -91,7 +91,7 @@ export class SelectPlayersService {
       query: string | null;
       where: { [key: string]: unknown } | null;
       emtpyWhere: { [key: string]: unknown };
-    }>,
+    }>
   ) {
     return this.apollo
       .query<{
@@ -136,10 +136,10 @@ export class SelectPlayersService {
         }),
         map((result) => {
           if (!result?.data.players) {
-            throw new Error('No competitions found');
+            throw new Error("No competitions found");
           }
           return result.data.players.rows.map((row) => new Player(row));
-        }),
+        })
       );
   }
 
@@ -159,7 +159,7 @@ export class SelectPlayersService {
       query: string | null;
       where: { [key: string]: unknown } | null;
       emptyWhere: { [key: string]: unknown };
-    }>,
+    }>
   ) {
     if (!args?.query) {
       return args?.emptyWhere ?? {};
@@ -167,8 +167,8 @@ export class SelectPlayersService {
 
     const parts = args?.query
       ?.toLowerCase()
-      .replace(/[;\\\\/:*?"<>|&',]/, ' ')
-      .split(' ');
+      .replace(/[;\\\\/:*?"<>|&',]/, " ")
+      .split(" ");
     const queries: unknown[] = [];
     if (!parts) {
       return;

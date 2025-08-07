@@ -1,11 +1,11 @@
-import { Player } from '@badman/backend-database';
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { env } from 'process';
-import { getRequest } from '../utils';
+import { Player } from "@badman/backend-database";
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { env } from "process";
+import { getRequest } from "../utils";
 export const User = createParamDecorator(async (data: unknown, context: ExecutionContext) => {
   const request = getRequest(context);
 
-  const user = request['user'];
+  const user = request["user"];
 
   // If we have a user in the request, return it
   if (user?.sub && user?.id) {
@@ -14,8 +14,8 @@ export const User = createParamDecorator(async (data: unknown, context: Executio
 
   // If we don't have a user in the request, set the permissions to return false;
   return {
-    hasAnyPermission: () => env['NODE_ENV'] === 'development' || false,
-    hasAllPermissions: () => env['NODE_ENV'] === 'development' || false,
+    hasAnyPermission: () => env["NODE_ENV"] === "development" || false,
+    hasAllPermissions: () => env["NODE_ENV"] === "development" || false,
     toJSON: () => ({}),
     ...user,
   };

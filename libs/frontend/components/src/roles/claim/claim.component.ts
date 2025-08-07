@@ -1,14 +1,13 @@
-
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Claim } from '@badman/frontend-models';
+import { ChangeDetectionStrategy, Component, input, output } from "@angular/core";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { Claim } from "@badman/frontend-models";
 
 @Component({
-    selector: 'badman-claim',
-    templateUrl: './claim.component.html',
-    styleUrls: ['./claim.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatSlideToggleModule]
+  selector: "badman-claim",
+  templateUrl: "./claim.component.html",
+  styleUrls: ["./claim.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatSlideToggleModule],
 })
 export class ClaimComponent {
   claim = input<Claim>();

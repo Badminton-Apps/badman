@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,37 +8,37 @@ module.exports = {
       // Create latest sync date for competion and tourament events
       await queryInterface.addColumn(
         {
-          tableName: 'EventCompetitions',
-          schema: 'event',
+          tableName: "EventCompetitions",
+          schema: "event",
         },
-        'lastSync',
+        "lastSync",
         {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
         {
           transaction: t,
-        },
+        }
       );
 
       await queryInterface.addColumn(
         {
-          tableName: 'EventTournaments',
-          schema: 'event',
+          tableName: "EventTournaments",
+          schema: "event",
         },
-        'lastSync',
+        "lastSync",
         {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
         {
           transaction: t,
-        },
+        }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -48,29 +48,29 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.removeColumn(
         {
-          tableName: 'EventCompetitions',
-          schema: 'event',
+          tableName: "EventCompetitions",
+          schema: "event",
         },
-        'lastSync',
+        "lastSync",
         {
           transaction: t,
-        },
+        }
       );
 
       await queryInterface.removeColumn(
         {
-          tableName: 'EventTournaments',
-          schema: 'event',
+          tableName: "EventTournaments",
+          schema: "event",
         },
-        'lastSync',
+        "lastSync",
         {
           transaction: t,
-        },
+        }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

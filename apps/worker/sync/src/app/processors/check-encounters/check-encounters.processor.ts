@@ -6,19 +6,19 @@ import {
   Player,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
-import { NotificationService } from '@badman/backend-notifications';
-import { acceptCookies, getPage, signIn } from '@badman/backend-pupeteer';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { SearchService } from '@badman/backend-search';
-import { ConfigType } from '@badman/utils';
-import { Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Job } from 'bull';
-import moment from 'moment';
-import { Page } from 'puppeteer';
-import { Op } from 'sequelize';
+} from "@badman/backend-database";
+import { NotificationService } from "@badman/backend-notifications";
+import { acceptCookies, getPage, signIn } from "@badman/backend-pupeteer";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { SearchService } from "@badman/backend-search";
+import { ConfigType } from "@badman/utils";
+import { Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Job } from "bull";
+import moment from "moment";
+import { Page } from "puppeteer";
+import { Op } from "sequelize";
 import {
   acceptEncounter,
   consentPrivacyAndCookie,
@@ -28,41 +28,41 @@ import {
   detailInfo,
   gotoEncounterPage,
   hasTime,
-} from './pupeteer';
+} from "./pupeteer";
 
 const includes = [
   {
     model: Team,
-    as: 'home',
-    attributes: ['id', 'name'],
+    as: "home",
+    attributes: ["id", "name"],
     required: true,
     include: [
       {
         model: Club,
-        attributes: ['id', 'name', 'slug'],
+        attributes: ["id", "name", "slug"],
       },
     ],
   },
   {
     model: Team,
-    as: 'away',
-    attributes: ['id', 'name'],
+    as: "away",
+    attributes: ["id", "name"],
     required: true,
     include: [
       {
         model: Club,
-        attributes: ['id', 'name', 'slug'],
+        attributes: ["id", "name", "slug"],
       },
     ],
   },
   {
     required: true,
-    attributes: ['id'],
+    attributes: ["id"],
     model: DrawCompetition,
     include: [
       {
         required: true,
-        attributes: ['id', 'eventId'],
+        attributes: ["id", "eventId"],
         model: SubEventCompetition,
       },
     ],
@@ -81,29 +81,29 @@ export class CheckEncounterProcessor {
   constructor(
     private notificationService: NotificationService,
     private searchService: SearchService,
-    private configService: ConfigService<ConfigType>,
+    private configService: ConfigService<ConfigType>
   ) {
-    this._username = configService.get('VR_API_USER');
-    this._password = configService.get('VR_API_PASS');
+    this._username = configService.get("VR_API_USER");
+    this._password = configService.get("VR_API_PASS");
   }
 
   @Process(Sync.CheckEncounters)
   async syncEncounters() {
-    this.logger.log('Syncing encounters');
+    this.logger.log("Syncing encounters");
     let page: Page | undefined;
     const cronJob = await CronJob.findOne({
       where: {
-        'meta.jobName': Sync.CheckEncounters,
-        'meta.queueName': SyncQueue,
+        "meta.jobName": Sync.CheckEncounters,
+        "meta.queueName": SyncQueue,
       },
     });
 
     if (!cronJob) {
-      throw new Error('Job not found');
+      throw new Error("Job not found");
     }
 
     if (cronJob.running) {
-      this.logger.log('Job already running');
+      this.logger.log("Job already running");
       return;
     }
 
@@ -114,10 +114,10 @@ export class CheckEncounterProcessor {
       // get all encounters that are not accepted yet within the last 14 days
 
       const encounters = await EncounterCompetition.findAndCountAll({
-        attributes: ['id', 'visualCode', 'date', 'homeTeamId', 'awayTeamId'],
+        attributes: ["id", "visualCode", "date", "homeTeamId", "awayTeamId"],
         where: {
           date: {
-            [Op.between]: [moment().subtract(14, 'days').toDate(), moment().toDate()],
+            [Op.between]: [moment().subtract(14, "days").toDate(), moment().toDate()],
           },
           acceptedOn: null,
           visualCode: {
@@ -143,7 +143,7 @@ export class CheckEncounterProcessor {
           this.logger.debug(
             `Processing cthunk of ${chunk.length} encounters, ${
               encounters.count - encountersProcessed
-            } encounter left, ${chunks.length - chunksProcessed} chunks left`,
+            } encounter left, ${chunks.length - chunksProcessed} chunks left`
           );
           // Close browser if any
           if (page) {
@@ -155,7 +155,7 @@ export class CheckEncounterProcessor {
           await page.setViewport({ width: 1691, height: 1337 });
 
           // Accept cookies
-          await acceptCookies({ page }, {logger: this.logger});
+          await acceptCookies({ page }, { logger: this.logger });
 
           // Processing encounters
           for (const encounter of chunk) {
@@ -173,7 +173,7 @@ export class CheckEncounterProcessor {
           chunksProcessed++;
         }
       } else {
-        this.logger.debug('No encounters found');
+        this.logger.debug("No encounters found");
       }
     } catch (error) {
       this.logger.error(error);
@@ -188,7 +188,7 @@ export class CheckEncounterProcessor {
       cronJob.running = false;
       await cronJob.save();
 
-      this.logger.log('Synced encounters');
+      this.logger.log("Synced encounters");
     }
 
     return true;
@@ -220,7 +220,7 @@ export class CheckEncounterProcessor {
       await page.setViewport({ width: 1691, height: 1337 });
 
       // Accept cookies
-      await acceptCookies({ page }, {logger: this.logger});
+      await acceptCookies({ page }, { logger: this.logger });
 
       // Processing encounters
       await this._syncEncounter(encounter, page);
@@ -234,7 +234,7 @@ export class CheckEncounterProcessor {
         page.close();
       }
 
-      this.logger.log('Synced encounters');
+      this.logger.log("Synced encounters");
     }
   }
 
@@ -242,15 +242,15 @@ export class CheckEncounterProcessor {
   /// because the nesting gets to deep and we can't parse the data then
   private async loadEvent(encounter: EncounterCompetition) {
     const event = await encounter.drawCompetition.subEventCompetition.getEventCompetition({
-      attributes: ['id', 'visualCode', 'contactEmail', 'name', 'checkEncounterForFilledIn'],
+      attributes: ["id", "visualCode", "contactEmail", "name", "checkEncounterForFilledIn"],
       where: {
         checkEncounterForFilledIn: true,
       },
       include: [
         {
           model: Player,
-          as: 'contact',
-          attributes: ['id', 'email'],
+          as: "contact",
+          attributes: ["id", "email"],
         },
       ],
     });
@@ -265,7 +265,7 @@ export class CheckEncounterProcessor {
 
     await consentPrivacyAndCookie({ page }, { logger: this.logger });
 
-    try { 
+    try {
       const time = await hasTime({ page }, { logger: this.logger });
       if (!time) {
         this.logger.verbose(`Encounter ${encounter.visualCode} has no time`);
@@ -275,10 +275,10 @@ export class CheckEncounterProcessor {
       const { accepted, acceptedOn } = await detailAccepted({ page }, { logger: this.logger });
       const { hasComment } = await detailComment({ page }, { logger: this.logger });
       const enteredMoment = moment(enteredOn);
-      const hoursPassed = moment().diff(encounter.date, 'hour');
+      const hoursPassed = moment().diff(encounter.date, "hour");
 
       this.logger.debug(
-        `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
+        `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`
       );
       // Check if we need to notify the event contact
       if (
@@ -297,23 +297,26 @@ export class CheckEncounterProcessor {
         } else if (!accepted && hoursPassed > 48 && !hasComment) {
           // Check if it falls under the auto accept clubs
           if (encounter.away?.club?.slug && enteredMoment.isValid()) {
-            let hoursPassedEntered = moment().diff(enteredMoment, 'hour');
+            let hoursPassedEntered = moment().diff(enteredMoment, "hour");
             // was entered on time
             const enteredOnTime = enteredMoment.isSameOrBefore(
-              moment(encounter.date).add(36, 'hour'),
+              moment(encounter.date).add(36, "hour")
             );
             if (!enteredOnTime) {
               // if entered late we give it 36 hours to comment after the encounter was filled in
-              hoursPassedEntered = moment().diff(enteredMoment.clone().add(36, 'hour'), 'hour');
+              hoursPassedEntered = moment().diff(enteredMoment.clone().add(36, "hour"), "hour");
             }
 
             // Check if anough time has passed for auto accepting
             if (hoursPassedEntered > 36) {
-              if (this.configService.get<boolean>('VR_ACCEPT_ENCOUNTERS')) {
+              if (this.configService.get<boolean>("VR_ACCEPT_ENCOUNTERS")) {
                 this.logger.debug(
-                  `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
+                  `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`
                 );
-                await signIn({ page }, {username: this._username, password: this._password, logger: this.logger});
+                await signIn(
+                  { page },
+                  { username: this._username, password: this._password, logger: this.logger }
+                );
                 const succesfull = await acceptEncounter({ page }, { logger: this.logger });
                 if (!succesfull) {
                   // we failed to accept the encounter for some reason, notify the user
@@ -322,12 +325,12 @@ export class CheckEncounterProcessor {
                 }
               } else {
                 this.logger.debug(
-                  `Not auto accepting encounters, auto accept is disabled ${encounter.away.name}`,
+                  `Not auto accepting encounters, auto accept is disabled ${encounter.away.name}`
                 );
               }
             } else {
               this.logger.debug(
-                `Not (yet) auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}, entered on ${enteredOn} (${hoursPassedEntered} hours ago))`,
+                `Not (yet) auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}, entered on ${enteredOn} (${hoursPassedEntered} hours ago))`
               );
             }
           } else {
@@ -340,7 +343,7 @@ export class CheckEncounterProcessor {
       if (entered) {
         if (!enteredMoment.isValid()) {
           this.logger.error(
-            `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`,
+            `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`
           );
           return;
         }
@@ -350,11 +353,11 @@ export class CheckEncounterProcessor {
         try {
           const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo(
             { page },
-            { logger: this.logger },
+            { logger: this.logger }
           );
 
           this.logger.debug(
-            `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`,
+            `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`
           );
 
           encounter.startHour = startedOn || undefined;
@@ -370,7 +373,7 @@ export class CheckEncounterProcessor {
                     [Op.ne]: null,
                   },
                 },
-              ],
+              ]
             );
 
             if (gameLeaderPlayer && gameLeaderPlayer.length > 0) {
@@ -392,7 +395,7 @@ export class CheckEncounterProcessor {
 
         if (!acceptedMoment.isValid()) {
           this.logger.error(
-            `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`,
+            `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`
           );
           return;
         }
@@ -406,7 +409,7 @@ export class CheckEncounterProcessor {
       this.logger.error(error);
       const glenn = await Player.findOne({
         where: {
-          slug: 'glenn-latomme',
+          slug: "glenn-latomme",
         },
       });
 

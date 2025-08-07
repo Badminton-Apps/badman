@@ -1,8 +1,8 @@
-import { ArgsType, Field, Int, InputType } from '@nestjs/graphql';
-import { Min } from 'class-validator';
-import { GraphQLJSONObject } from 'graphql-type-json';
-import { FindOptions, WhereOptions } from 'sequelize';
-import { queryFixer } from './queryFixer';
+import { ArgsType, Field, Int, InputType } from "@nestjs/graphql";
+import { Min } from "class-validator";
+import { GraphQLJSONObject } from "graphql-type-json";
+import { FindOptions, WhereOptions } from "sequelize";
+import { queryFixer } from "./queryFixer";
 
 @InputType()
 export class SortOrderType {

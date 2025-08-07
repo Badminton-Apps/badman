@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   Club,
   ClubNewInput,
@@ -13,9 +13,9 @@ import {
   PlayerWithClubMembershipType,
   Role,
   Team,
-} from '@badman/backend-database';
-import { IsUUID } from '@badman/utils';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+} from "@badman/backend-database";
+import { IsUUID } from "@badman/utils";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -27,10 +27,10 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { Op } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
+} from "@nestjs/graphql";
+import { Op } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../utils";
 
 @ObjectType()
 export class PagedClub {
@@ -48,7 +48,7 @@ export class ClubsResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Club)
-  async club(@Args('id', { type: () => ID }) id: string): Promise<Club> {
+  async club(@Args("id", { type: () => ID }) id: string): Promise<Club> {
     // get club
     const club = IsUUID(id)
       ? await Club.findByPk(id)
@@ -93,7 +93,7 @@ export class ClubsResolver {
   async players(
     @Parent() club: Club,
     @Args() listArgs: ListArgs,
-    @Args('active', { type: () => Boolean, nullable: true, defaultValue: true }) active = true,
+    @Args("active", { type: () => Boolean, nullable: true, defaultValue: true }) active = true
   ): Promise<(Player & { ClubMembership: ClubPlayerMembership })[] | Player[] | undefined> {
     const options = ListArgs.toFindOptions(listArgs);
 
@@ -141,14 +141,14 @@ export class ClubsResolver {
     // }
 
     const distinctPlayers = players.filter(
-      (player, index, self) => index === self.findIndex((p) => p.id === player.id),
+      (player, index, self) => index === self.findIndex((p) => p.id === player.id)
     );
     return distinctPlayers;
   }
 
   @Mutation(() => Club)
-  async createClub(@User() user: Player, @Args('data') newClubData: ClubNewInput) {
-    if (!(await user.hasAnyPermission(['add:club']))) {
+  async createClub(@User() user: Player, @Args("data") newClubData: ClubNewInput) {
+    if (!(await user.hasAnyPermission(["add:club"]))) {
       throw new UnauthorizedException(`You do not have permission to add a club`);
     }
 
@@ -156,12 +156,12 @@ export class ClubsResolver {
     const transaction = await this._sequelize.transaction();
     try {
       if (!newClubData.name) {
-        throw new Error('Club name is required');
+        throw new Error("Club name is required");
       }
 
       const clubDb = await Club.create(
         { ...newClubData, name: newClubData.name as string },
-        { transaction },
+        { transaction }
       );
 
       // Commit transaction
@@ -176,8 +176,8 @@ export class ClubsResolver {
   }
 
   @Mutation(() => Club)
-  async removeClub(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
-    if (!(await user.hasAnyPermission(['remove:club']))) {
+  async removeClub(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
+    if (!(await user.hasAnyPermission(["remove:club"]))) {
       throw new UnauthorizedException(`You do not have permission to add a club`);
     }
 
@@ -204,8 +204,8 @@ export class ClubsResolver {
   }
 
   @Mutation(() => Club)
-  async updateClub(@User() user: Player, @Args('data') updateClubData: ClubUpdateInput) {
-    if (!(await user.hasAnyPermission([`${updateClubData.id}_edit:club`, 'edit-any:club']))) {
+  async updateClub(@User() user: Player, @Args("data") updateClubData: ClubUpdateInput) {
+    if (!(await user.hasAnyPermission([`${updateClubData.id}_edit:club`, "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
@@ -247,10 +247,10 @@ export class ClubsResolver {
   @Mutation(() => Boolean)
   async addPlayerToClub(
     @User() user: Player,
-    @Args('data') addPlayerToClubData: ClubPlayerMembershipNewInput,
+    @Args("data") addPlayerToClubData: ClubPlayerMembershipNewInput
   ) {
     if (
-      !(await user.hasAnyPermission([`${addPlayerToClubData.clubId}_edit:club`, 'edit-any:club']))
+      !(await user.hasAnyPermission([`${addPlayerToClubData.clubId}_edit:club`, "edit-any:club"]))
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
@@ -272,7 +272,7 @@ export class ClubsResolver {
         throw new NotFoundException(`${Player.name}: ${addPlayerToClubData.playerId}`);
       }
 
-      const confirmed = await user.hasAnyPermission(['change:transfer']);
+      const confirmed = await user.hasAnyPermission(["change:transfer"]);
 
       // Add player to club
       await club.addPlayer(player, {
@@ -298,18 +298,18 @@ export class ClubsResolver {
   @Mutation(() => Boolean)
   async updateClubPlayerMembership(
     @User() user: Player,
-    @Args('data')
-    updateClubPlayerMembershipData: ClubPlayerMembershipUpdateInput,
+    @Args("data")
+    updateClubPlayerMembershipData: ClubPlayerMembershipUpdateInput
   ) {
     const membership = await ClubPlayerMembership.findByPk(updateClubPlayerMembershipData.id);
 
     if (!membership) {
       throw new NotFoundException(
-        `${ClubPlayerMembership.name}: ${updateClubPlayerMembershipData.id}`,
+        `${ClubPlayerMembership.name}: ${updateClubPlayerMembershipData.id}`
       );
     }
 
-    if (!(await user.hasAnyPermission([`${membership.clubId}_edit:club`, 'edit-any:club']))) {
+    if (!(await user.hasAnyPermission([`${membership.clubId}_edit:club`, "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
@@ -332,14 +332,14 @@ export class ClubsResolver {
   }
 
   @Mutation(() => Boolean)
-  async removePlayerFromClub(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
+  async removePlayerFromClub(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
     const membership = await ClubPlayerMembership.findByPk(id);
 
     if (!membership) {
       throw new NotFoundException(`${ClubPlayerMembership.name}: ${id}`);
     }
 
-    if (!(await user.hasAnyPermission([`${membership.clubId}_edit:club`, 'edit-any:club']))) {
+    if (!(await user.hasAnyPermission([`${membership.clubId}_edit:club`, "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
@@ -377,7 +377,7 @@ export class ClubsResolver {
 export class ClubPlayerResolver extends ClubsResolver {
   @ResolveField(() => ClubPlayerMembership, { nullable: true })
   async clubMembership(
-    @Parent() club: Club & { ClubPlayerMembership: ClubPlayerMembership },
+    @Parent() club: Club & { ClubPlayerMembership: ClubPlayerMembership }
   ): Promise<ClubPlayerMembership> {
     return club.ClubPlayerMembership;
   }

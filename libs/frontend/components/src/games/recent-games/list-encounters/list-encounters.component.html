@@ -10,7 +10,7 @@
           'draw',
           encounter.drawCompetition?.id,
           'encounter',
-          encounter.id
+          encounter.id,
         ]"
       >
         <span matListItemTitle>
@@ -19,16 +19,16 @@
             [ngClass]="{
               won: (encounter.homeScore ?? 0) > (encounter.awayScore ?? 0),
               draw: (encounter.homeScore ?? 0) === (encounter.awayScore ?? 0),
-              lost: (encounter.homeScore ?? 0) < (encounter.awayScore ?? 0)
+              lost: (encounter.homeScore ?? 0) < (encounter.awayScore ?? 0),
             }"
             >{{ encounter.home?.name }}</span
-          >&nbsp;<span>{{ 'all.competition.vs-short' | translate }}</span
+          >&nbsp;<span>{{ "all.competition.vs-short" | translate }}</span
           >&nbsp;<span
             class="away"
             [ngClass]="{
               won: (encounter.awayScore ?? 0) > (encounter.homeScore ?? 0),
               draw: (encounter.awayScore ?? 0) === (encounter.homeScore ?? 0),
-              lost: (encounter.awayScore ?? 0) < (encounter.homeScore ?? 0)
+              lost: (encounter.awayScore ?? 0) < (encounter.homeScore ?? 0),
             }"
             >{{ encounter.away?.name }}</span
           >
@@ -36,7 +36,7 @@
             <span>&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span>
           }
         </span>
-        <span matListItemLine>{{ encounter?.date | amDateFormat: 'llll' }}</span>
+        <span matListItemLine>{{ encounter?.date | amDateFormat: "llll" }}</span>
       </mat-list-item>
     }
   </mat-nav-list>

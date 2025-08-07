@@ -11,7 +11,7 @@ import {
   Table,
   TableOptions,
   Unique,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -25,17 +25,17 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-} from 'sequelize';
-import { Game } from './game.model';
-import { Location } from './location.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Relation } from '../../wrapper';
+} from "sequelize";
+import { Game } from "./game.model";
+import { Location } from "./location.model";
+import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 } as TableOptions)
-@ObjectType({ description: 'A Court' })
+@ObjectType({ description: "A Court" })
 export class Court extends Model {
   constructor(values?: Partial<Court>, options?: BuildOptions) {
     super(values, options);
@@ -54,19 +54,19 @@ export class Court extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   name?: string;
 
-  @HasMany(() => Game, 'courtId')
+  @HasMany(() => Game, "courtId")
   games?: Relation<Game[]>;
 
-  @BelongsTo(() => Location, 'locationId')
+  @BelongsTo(() => Location, "locationId")
   location?: Relation<Location>;
 
   @ForeignKey(() => Location)
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   locationId?: string;

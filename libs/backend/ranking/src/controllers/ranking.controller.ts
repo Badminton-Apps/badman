@@ -1,17 +1,17 @@
-import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
-import { FastifyReply } from 'fastify';
-import fs, { existsSync, mkdirSync, rmdirSync, unlinkSync, writeFileSync } from 'fs';
-import moment from 'moment';
-import { join } from 'path';
-import { Op } from 'sequelize';
+import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
+import { Controller, Get, Logger, Query, Res } from "@nestjs/common";
+import { FastifyReply } from "fastify";
+import fs, { existsSync, mkdirSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
+import moment from "moment";
+import { join } from "path";
+import { Op } from "sequelize";
 
 @Controller({
-  path: 'ranking',
+  path: "ranking",
 })
 export class RankingController {
   private readonly logger = new Logger(RankingController.name);
-  private _resultFolder = join(__dirname, 'results');
+  private _resultFolder = join(__dirname, "results");
 
   constructor() {
     if (existsSync(this._resultFolder)) {
@@ -23,39 +23,39 @@ export class RankingController {
     mkdirSync(this._resultFolder, { recursive: true });
   }
 
-  @Get('export')
+  @Get("export")
   async export(@Res() response: FastifyReply, @Query() query: { systems: string }) {
-    const systemsIds: string[] = query.systems.split(',');
+    const systemsIds: string[] = query.systems.split(",");
 
     const files: string[] = [];
     for (const system of systemsIds) {
       const fileNameSafe =
-        (await RankingSystem.findByPk(system, { attributes: ['name'] }))?.name?.replace(
+        (await RankingSystem.findByPk(system, { attributes: ["name"] }))?.name?.replace(
           /[/\\?%*:|"<>]/g,
-          '-',
-        ) || 'unknown';
+          "-"
+        ) || "unknown";
 
       const endDate = moment(
-        await RankingPlace.max('rankingDate', {
+        await RankingPlace.max("rankingDate", {
           where: { systemId: system, updatePossible: true },
-        }),
+        })
       );
 
       const results = await RankingPlace.findAll({
         attributes: [
-          'single',
-          'double',
-          'mix',
-          'singlePoints',
-          'doublePoints',
-          'mixPoints',
-          'singlePointsDowngrade',
-          'doublePointsDowngrade',
-          'mixPointsDowngrade',
-          'singleInactive',
-          'mixInactive',
-          'doubleInactive',
-          'rankingDate',
+          "single",
+          "double",
+          "mix",
+          "singlePoints",
+          "doublePoints",
+          "mixPoints",
+          "singlePointsDowngrade",
+          "doublePointsDowngrade",
+          "mixPointsDowngrade",
+          "singleInactive",
+          "mixInactive",
+          "doubleInactive",
+          "rankingDate",
         ],
         where: {
           systemId: system,
@@ -65,7 +65,7 @@ export class RankingController {
         include: [
           {
             model: Player,
-            attributes: ['firstName', 'lastName', 'gender', 'memberId'],
+            attributes: ["firstName", "lastName", "gender", "memberId"],
           },
         ],
       });
@@ -82,7 +82,7 @@ export class RankingController {
             ranking.mixInactive
           },${endDate.toISOString()},${ranking.player?.firstName} ${
             ranking.player?.lastName
-          },${ranking.player?.gender},${ranking.player?.memberId}`,
+          },${ranking.player?.gender},${ranking.player?.memberId}`
       );
 
       const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
@@ -93,9 +93,9 @@ export class RankingController {
       writeFileSync(
         outputFile,
         `single, single points, single points downgrade, single inactive, double, double points, double points downgrade, double inactive, mix, mix points, mix points downgrade, mix inactive, rankingDate, name, gender, memberId\n${mapped.join(
-          '\n',
+          "\n"
         )}`,
-        { encoding: 'utf8', flag: 'wx' },
+        { encoding: "utf8", flag: "wx" }
       );
       files.push(fileNameSafe);
       this.logger.log(`Exported ${outputFile}`);
@@ -103,39 +103,39 @@ export class RankingController {
     return this._download(response, files);
   }
 
-  @Get('exportVisual')
+  @Get("exportVisual")
   async exportVisual(@Res() response: FastifyReply, @Query() query: { systems: string }) {
-    const systemsIds: string[] = query.systems.split(',');
+    const systemsIds: string[] = query.systems.split(",");
 
     const files: string[] = [];
     for (const system of systemsIds) {
       const fileNameSafe =
-        (await RankingSystem.findByPk(system, { attributes: ['name'] }))?.name?.replace(
+        (await RankingSystem.findByPk(system, { attributes: ["name"] }))?.name?.replace(
           /[/\\?%*:|"<>]/g,
-          '-',
-        ) || 'unknown';
+          "-"
+        ) || "unknown";
 
       const endDate = moment(
-        await RankingPlace.max('rankingDate', {
+        await RankingPlace.max("rankingDate", {
           where: { systemId: system },
-        }),
+        })
       );
 
       const startDate = moment(
-        await RankingPlace.min('rankingDate', {
+        await RankingPlace.min("rankingDate", {
           where: { systemId: system },
-        }),
+        })
       );
 
       const results = await RankingPlace.findAll({
         attributes: [
-          'single',
-          'double',
-          'mix',
-          'singleInactive',
-          'mixInactive',
-          'doubleInactive',
-          'rankingDate',
+          "single",
+          "double",
+          "mix",
+          "singleInactive",
+          "mixInactive",
+          "doubleInactive",
+          "rankingDate",
         ],
         where: {
           systemId: system,
@@ -147,7 +147,7 @@ export class RankingController {
         include: [
           {
             model: Player,
-            attributes: ['firstName', 'lastName', 'gender', 'memberId'],
+            attributes: ["firstName", "lastName", "gender", "memberId"],
           },
         ],
       });
@@ -156,7 +156,7 @@ export class RankingController {
         .filter((ranking: RankingPlace) => ranking.player?.memberId !== null)
         .filter(
           (ranking: RankingPlace) =>
-            ranking.player?.memberId?.[0] === '5' || ranking.player?.memberId?.[0] === '3',
+            ranking.player?.memberId?.[0] === "5" || ranking.player?.memberId?.[0] === "3"
         )
         .map((ranking: RankingPlace) => {
           const lines = [];
@@ -164,7 +164,7 @@ export class RankingController {
             ranking.player?.firstName
           } ${ranking.player?.lastName},${ranking.player?.gender},${
             ranking.single
-          },${ranking.double},${ranking.mix},${moment(ranking.rankingDate).format('YYYY-MM-DD')}`;
+          },${ranking.double},${ranking.mix},${moment(ranking.rankingDate).format("YYYY-MM-DD")}`;
 
           if (ranking.singleInactive) {
             lines.push([`${baseinfo},1`]);
@@ -190,8 +190,8 @@ export class RankingController {
       }
       writeFileSync(
         outputFile,
-        `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join('\n')}`,
-        { encoding: 'utf8', flag: 'w' },
+        `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join("\n")}`,
+        { encoding: "utf8", flag: "w" }
       );
       files.push(fileNameSafe);
       this.logger.log(`Exported ${outputFile}`);
@@ -200,39 +200,39 @@ export class RankingController {
     return this._download(response, files);
   }
 
-  @Get('exportNotVisual')
+  @Get("exportNotVisual")
   async exportNotVisual(@Res() response: FastifyReply, @Query() query: { systems: string }) {
-    const systemsIds: string[] = query.systems.split(',');
+    const systemsIds: string[] = query.systems.split(",");
 
     const files: string[] = [];
     for (const system of systemsIds) {
       const fileNameSafe =
-        (await RankingSystem.findByPk(system, { attributes: ['name'] }))?.name?.replace(
+        (await RankingSystem.findByPk(system, { attributes: ["name"] }))?.name?.replace(
           /[/\\?%*:|"<>]/g,
-          '-',
-        ) ?? 'unknown';
+          "-"
+        ) ?? "unknown";
 
       const endDate = moment(
-        await RankingPlace.max('rankingDate', {
+        await RankingPlace.max("rankingDate", {
           where: { systemId: system },
-        }),
+        })
       );
 
       const startDate = moment(
-        await RankingPlace.min('rankingDate', {
+        await RankingPlace.min("rankingDate", {
           where: { systemId: system },
-        }),
+        })
       );
 
       const results = await RankingPlace.findAll({
         attributes: [
-          'single',
-          'double',
-          'mix',
-          'singleInactive',
-          'mixInactive',
-          'doubleInactive',
-          'rankingDate',
+          "single",
+          "double",
+          "mix",
+          "singleInactive",
+          "mixInactive",
+          "doubleInactive",
+          "rankingDate",
         ],
         where: {
           systemId: system,
@@ -244,7 +244,7 @@ export class RankingController {
         include: [
           {
             model: Player,
-            attributes: ['firstName', 'lastName', 'gender', 'memberId'],
+            attributes: ["firstName", "lastName", "gender", "memberId"],
           },
         ],
       });
@@ -253,7 +253,7 @@ export class RankingController {
         .filter((ranking: RankingPlace) => ranking.player?.memberId !== null)
         .filter(
           (ranking: RankingPlace) =>
-            ranking.player?.memberId?.[0] !== '5' && ranking.player?.memberId?.[0] !== '3',
+            ranking.player?.memberId?.[0] !== "5" && ranking.player?.memberId?.[0] !== "3"
         )
         .map((ranking: RankingPlace) => {
           const lines = [];
@@ -261,7 +261,7 @@ export class RankingController {
             ranking.player?.firstName
           } ${ranking.player?.lastName},${ranking.player?.gender},${
             ranking.single
-          },${ranking.double},${ranking.mix},${moment(ranking.rankingDate).format('YYYY-MM-DD')}`;
+          },${ranking.double},${ranking.mix},${moment(ranking.rankingDate).format("YYYY-MM-DD")}`;
 
           if (ranking.singleInactive) {
             lines.push([`${baseinfo},1`]);
@@ -289,8 +289,8 @@ export class RankingController {
 
       writeFileSync(
         outputFile,
-        `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join('\n')}`,
-        { encoding: 'utf8', flag: 'w' },
+        `lidnummer, name, gender, single, double, mix, date, reden\n${mapped.join("\n")}`,
+        { encoding: "utf8", flag: "w" }
       );
       files.push(fileNameSafe);
       this.logger.log(`Exported ${outputFile}`);
@@ -301,7 +301,7 @@ export class RankingController {
 
   private async _download(response: FastifyReply, files: string[]) {
     const filename = `export_${moment().toISOString()}`;
-    response.header('Access-Control-Expose-Headers', 'Content-Disposition');
+    response.header("Access-Control-Expose-Headers", "Content-Disposition");
 
     if (files.length > 1) {
       // const exportedfiles = files.map((file) => {
@@ -312,8 +312,8 @@ export class RankingController {
       //   };
       // });assembly.service.spec.ts:306:27
 
-      response.header('Content-Type', 'application/zip');
-      response.header('Content-Disposition', `attachment; filename="${filename}.zip"`);
+      response.header("Content-Type", "application/zip");
+      response.header("Content-Disposition", `attachment; filename="${filename}.zip"`);
       // const zip = archiver('zip', {
       //   zlib: { level: 9 },
       // });
@@ -327,12 +327,12 @@ export class RankingController {
 
       // zip.finalize();
     } else {
-      response.header('Content-Type', 'text/csv');
-      response.header('Content-Disposition', `attachment; filename="${filename + files[0]}.csv"`);
+      response.header("Content-Type", "text/csv");
+      response.header("Content-Disposition", `attachment; filename="${filename + files[0]}.csv"`);
       const outputFile = join(this._resultFolder, `${files[0]}.csv`);
       const stream = fs.createReadStream(outputFile);
 
-      response.type('text/csv').send(stream);
+      response.type("text/csv").send(stream);
     }
 
     // Delete files after 10 minutes

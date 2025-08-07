@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,19 +9,19 @@ module.exports = {
         // add column active to system.cronjobs
         await queryInterface.addColumn(
           {
-            schema: 'system',
-            tableName: 'CronJobs',
+            schema: "system",
+            tableName: "CronJobs",
           },
-          'active',
+          "active",
           {
             type: Sequelize.BOOLEAN,
             defaultValue: false,
             allowNull: false,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -32,14 +32,14 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            schema: 'system',
-            tableName: 'CronJobs',
+            schema: "system",
+            tableName: "CronJobs",
           },
-          'active',
-          { transaction: t },
+          "active",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

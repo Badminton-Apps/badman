@@ -1,14 +1,14 @@
 @if (loaded()) {
   <div class="description">
-    {{ 'all.competition.team-enrollment.select-teams-description' | translate }}
-    <p class="error">{{ 'all.competition.team-enrollment.example-error' | translate }}</p>
-    <p class="warning">{{ 'all.competition.team-enrollment.example-warning' | translate }}</p>
+    {{ "all.competition.team-enrollment.select-teams-description" | translate }}
+    <p class="error">{{ "all.competition.team-enrollment.example-error" | translate }}</p>
+    <p class="warning">{{ "all.competition.team-enrollment.example-warning" | translate }}</p>
   </div>
   <!-- A checkbox to mark if the national teams count as mixed teams for numbering -->
 
   @for (type of eventTypes; track type) {
     <div class="type">
-      <h3>{{ 'all.team.types.long.' + type | translate }}</h3>
+      <h3>{{ "all.team.types.long." + type | translate }}</h3>
       <button mat-icon-button (click)="this.addTeam(type)">
         <mat-icon>add</mat-icon>
       </button>
@@ -16,7 +16,7 @@
     <div class="teams-container">
       @if (getTypeArray(type); as teams) {
         @for (team of teams.controls; track team) {
-          @if (team.get('team')?.value?.id) {
+          @if (team.get("team")?.value?.id) {
             <badman-team-enrollment
               [group]="team"
               [attr.data-anchor]="team.get('team')?.value?.id"
@@ -30,16 +30,16 @@
           }
         }
       } @else {
-        <div class="no-teams">{{ 'all.competition.team-enrollment.no-teams' | translate }}</div>
+        <div class="no-teams">{{ "all.competition.team-enrollment.no-teams" | translate }}</div>
       }
     </div>
 
     <ng-template let-data #switch>
-      <h1 mat-dialog-title>{{ 'all.team.change-number.title' | translate }}</h1>
+      <h1 mat-dialog-title>{{ "all.team.change-number.title" | translate }}</h1>
       <div mat-dialog-content>
-        <p>{{ 'all.team.change-number.description' | translate }}</p>
+        <p>{{ "all.team.change-number.description" | translate }}</p>
         <mat-form-field>
-          <mat-label>{{ 'all.team.change-number.number' | translate }}</mat-label>
+          <mat-label>{{ "all.team.change-number.number" | translate }}</mat-label>
           <mat-select [value]="data.team.teamNumber" #newValue>
             @for (number of data.numbers; track number) {
               <mat-option [value]="number"> {{ number }} </mat-option>
@@ -48,7 +48,7 @@
         </mat-form-field>
       </div>
       <div mat-dialog-actions>
-        <button mat-button [mat-dialog-close]="">{{ 'all.button.cancel' | translate }}</button>
+        <button mat-button [mat-dialog-close]="">{{ "all.button.cancel" | translate }}</button>
         <button
           mat-button
           [mat-dialog-close]="{
@@ -57,7 +57,7 @@
           }"
           cdkFocusInitial
         >
-          {{ 'all.button.save' | translate }}
+          {{ "all.button.save" | translate }}
         </button>
       </div>
     </ng-template>

@@ -1,12 +1,12 @@
 @if (loaded()) {
   <div class="description">
-    {{ 'all.competition.team-enrollment.transfer.transfer-teams-description' | translate }}
+    {{ "all.competition.team-enrollment.transfer.transfer-teams-description" | translate }}
   </div>
 
   <div class="all">
-    <button mat-button (click)="selectAll()">{{ 'all.button.all' | translate }}</button>
+    <button mat-button (click)="selectAll()">{{ "all.button.all" | translate }}</button>
     <button mat-button (click)="deselectAll()">
-      {{ 'all.button.none' | translate }}
+      {{ "all.button.none" | translate }}
     </button>
   </div>
 
@@ -17,7 +17,7 @@
   </mat-selection-list>
 
   @if (newTeams().length > 0) {
-    <h3>{{ 'all.competition.team-enrollment.teams.new-teams' | translate }}</h3>
+    <h3>{{ "all.competition.team-enrollment.teams.new-teams" | translate }}</h3>
     <mat-selection-list>
       @for (team of newTeams(); track team) {
         <mat-list>{{ team.name }}</mat-list>
