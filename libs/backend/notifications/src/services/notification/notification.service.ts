@@ -99,6 +99,11 @@ export class NotificationService {
       this.push
     );
 
+    this._logger.debug("In the notifyEncounterChange", newReqTeam.captain?.toJSON());
+    this._logger.debug("In the notifyEncounterChange", newReqTeam.email);
+    this._logger.debug("In the notifyEncounterChange", confReqTeam.captain?.toJSON());
+    this._logger.debug("In the notifyEncounterChange", confReqTeam.email);
+
     if (newReqTeam.captain && newReqTeam.email) {
       notifierNew.notify(
         newReqTeam.captain,
@@ -108,7 +113,7 @@ export class NotificationService {
       );
     }
 
-    if (confReqTeam.captain && confReqTeam.email) {
+    if (confReqTeam.captain && confReqTeam.email && confReqTeam.email !== newReqTeam.email) {
       notifierConform.notify(
         confReqTeam.captain,
         encounter.id,
@@ -177,7 +182,7 @@ export class NotificationService {
       );
     }
 
-    if (awayTeam.captain && awayTeam.email) {
+    if (awayTeam.captain && awayTeam.email && awayTeam.email !== homeTeam.email) {
       const validation = await this._getValidationMessage(awayTeam);
 
       notifierFinished.notify(
