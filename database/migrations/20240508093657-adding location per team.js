@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
-const { type } = require('node:os');
+const { type } = require("node:os");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -14,61 +14,60 @@ module.exports = {
 
         await queryInterface.addColumn(
           {
-            tableName: 'Teams',
-            schema: 'public',
+            tableName: "Teams",
+            schema: "public",
           },
-          'prefferedLocationId',
+          "prefferedLocationId",
           {
             type: sequelize.DataTypes.UUID,
             references: {
               model: {
-                tableName: 'Locations',
-                schema: 'event',
+                tableName: "Locations",
+                schema: "event",
               },
-              key: 'id',
+              key: "id",
             },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
             allowNull: true,
           },
           {
             transaction: t,
-          },
+          }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'Teams',
-            schema: 'public',
+            tableName: "Teams",
+            schema: "public",
           },
-          'prefferedLocation2Id',
+          "prefferedLocation2Id",
           {
             type: sequelize.DataTypes.UUID,
             references: {
               model: {
-                tableName: 'Locations',
-                schema: 'event',
+                tableName: "Locations",
+                schema: "event",
               },
-              key: 'id',
+              key: "id",
             },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
             allowNull: true,
           },
           {
             transaction: t,
-          },
+          }
         );
 
         await queryInterface.dropTable(
           {
-            tableName: 'TeamLocationCompetitions',
-            schema: 'event',
+            tableName: "TeamLocationCompetitions",
+            schema: "event",
           },
-          { transaction: t },
+          { transaction: t }
         );
 
-        
         const firstPrefferdDone = [];
         const secondPrefferdDone = [];
 
@@ -80,7 +79,7 @@ module.exports = {
           );
         }
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -91,58 +90,58 @@ module.exports = {
       try {
         await queryInterface.createTable(
           {
-            tableName: 'TeamLocationCompetitions',
-            schema: 'event',
+            tableName: "TeamLocationCompetitions",
+            schema: "event",
           },
           {
             teamId: {
               type: sequelize.DataTypes.UUID,
               references: {
                 model: {
-                  tableName: 'Teams',
-                  schema: 'public',
+                  tableName: "Teams",
+                  schema: "public",
                 },
-                key: 'id',
+                key: "id",
               },
-              onUpdate: 'CASCADE',
-              onDelete: 'CASCADE',
+              onUpdate: "CASCADE",
+              onDelete: "CASCADE",
               allowNull: false,
             },
             locationId: {
               type: sequelize.DataTypes.UUID,
               references: {
                 model: {
-                  tableName: 'Locations',
-                  schema: 'event',
+                  tableName: "Locations",
+                  schema: "event",
                 },
-                key: 'id',
+                key: "id",
               },
-              onUpdate: 'CASCADE',
-              onDelete: 'CASCADE',
+              onUpdate: "CASCADE",
+              onDelete: "CASCADE",
               allowNull: false,
             },
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'Teams',
-            schema: 'public',
+            tableName: "Teams",
+            schema: "public",
           },
-          'prefferedLocationId',
-          { transaction: t },
+          "prefferedLocationId",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
           {
-            tableName: 'Teams',
-            schema: 'public',
+            tableName: "Teams",
+            schema: "public",
           },
-          'prefferedLocation2Id',
-          { transaction: t },
+          "prefferedLocation2Id",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

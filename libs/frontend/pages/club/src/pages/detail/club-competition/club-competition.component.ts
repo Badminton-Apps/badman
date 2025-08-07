@@ -1,6 +1,6 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { CdkTableModule } from '@angular/cdk/table';
-import { CdkTreeModule } from '@angular/cdk/tree';
+import { animate, state, style, transition, trigger } from "@angular/animations";
+import { CdkTableModule } from "@angular/cdk/table";
+import { CdkTreeModule } from "@angular/cdk/tree";
 
 import {
   Component,
@@ -12,32 +12,32 @@ import {
   inject,
   input,
   signal,
-} from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { FormGroup } from '@angular/forms';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatRippleModule } from '@angular/material/core';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { BadmanBlockModule, EnrollmentMessageComponent } from '@badman/frontend-components';
-import { Club, Comment, EventCompetition, Location, Team } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { of } from 'rxjs';
-import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
+} from "@angular/core";
+import { toObservable, toSignal } from "@angular/core/rxjs-interop";
+import { FormGroup } from "@angular/forms";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatRippleModule } from "@angular/material/core";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatTableModule } from "@angular/material/table";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { BadmanBlockModule, EnrollmentMessageComponent } from "@badman/frontend-components";
+import { Club, Comment, EventCompetition, Location, Team } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { of } from "rxjs";
+import { filter, map, startWith, switchMap, tap } from "rxjs/operators";
+import { EnrollmentDetailRowDirective } from "./competition-enrollments-detail.component";
 
 @Component({
-  selector: 'badman-club-competition',
+  selector: "badman-club-competition",
   imports: [
     MatTableModule,
     MatExpansionModule,
@@ -56,16 +56,16 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     CdkTreeModule,
     EnrollmentDetailRowDirective,
     EnrollmentMessageComponent,
-    BadmanBlockModule
-],
-  templateUrl: './club-competition.component.html',
-  styleUrls: ['./club-competition.component.scss'],
+    BadmanBlockModule,
+  ],
+  templateUrl: "./club-competition.component.html",
+  styleUrls: ["./club-competition.component.scss"],
   providers: [provideAnimations()],
   animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-      state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    trigger("detailExpand", [
+      state("collapsed", style({ height: "0px", minHeight: "0", visibility: "hidden" })),
+      state("expanded", style({ height: "*", visibility: "visible" })),
+      transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
     ]),
   ],
 })
@@ -87,7 +87,7 @@ export class ClubCompetitionComponent implements OnInit {
   filter = input.required<FormGroup>();
   clubId = input.required<string>();
 
-  displayedColumns: string[] = ['name', 'subevent', 'validations'];
+  displayedColumns: string[] = ["name", "subevent", "validations"];
 
   expanded = {
     days: true,
@@ -101,7 +101,7 @@ export class ClubCompetitionComponent implements OnInit {
   private _setTeams(): void {
     this.teams = toSignal(
       this.filter()
-        ?.get('season')
+        ?.get("season")
         ?.valueChanges?.pipe(
           startWith(this.filter().value.season ?? {}),
           tap(() => {
@@ -175,12 +175,12 @@ export class ClubCompetitionComponent implements OnInit {
               variables: {
                 order: [
                   {
-                    field: 'type',
-                    direction: 'asc',
+                    field: "type",
+                    direction: "asc",
                   },
                   {
-                    field: 'teamNumber',
-                    direction: 'asc',
+                    field: "teamNumber",
+                    direction: "asc",
                   },
                 ],
                 where: {
@@ -202,14 +202,14 @@ export class ClubCompetitionComponent implements OnInit {
             }
 
             this.loading.set(false);
-          }),
+          })
         ) ?? of(undefined),
-      { injector: this.injector },
+      { injector: this.injector }
     );
 
     this.locations = toSignal(
       this.filter()
-        ?.get('season')
+        ?.get("season")
         ?.valueChanges?.pipe(
           startWith(this.filter().value.season ?? {}),
           switchMap((filter) => {
@@ -259,9 +259,9 @@ export class ClubCompetitionComponent implements OnInit {
           }),
 
           map((result) => new Club(result?.data?.club)),
-          map((club) => club?.locations),
+          map((club) => club?.locations)
         ) ?? of(undefined),
-      { injector: this.injector },
+      { injector: this.injector }
     );
 
     this.comments = toSignal(
@@ -297,16 +297,16 @@ export class ClubCompetitionComponent implements OnInit {
                   linkId: eventIds,
                 },
               },
-            }).valueChanges,
+            }).valueChanges
         ),
         map((result) => new Club(result?.data?.club)),
-        map((club) => club?.comments),
+        map((club) => club?.comments)
       ),
-      { injector: this.injector },
+      { injector: this.injector }
     );
   }
 
   getEventName(id: string): string {
-    return this.events?.()?.find((event) => event?.id === id)?.name ?? '';
+    return this.events?.()?.find((event) => event?.id === id)?.name ?? "";
   }
 }

@@ -12,13 +12,13 @@ import {
   Standing,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
-import { ValidationService } from '@badman/backend-validation';
-import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum } from '@badman/utils';
-import { Logger } from '@nestjs/common';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../models';
+} from "@badman/backend-database";
+import { ValidationService } from "@badman/backend-validation";
+import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum } from "@badman/utils";
+import { Logger } from "@nestjs/common";
+import moment from "moment";
+import { Op } from "sequelize";
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../models";
 import {
   PlayerCompStatusRule,
   PlayerGenderRule,
@@ -28,17 +28,17 @@ import {
   TeamBaseIndexRule,
   TeamClubBaseRule,
   TeamSubeventIndexRule,
-} from './rules';
+} from "./rules";
 
 export class AssemblyValidationService extends ValidationService<
   AssemblyValidationData,
   AssemblyValidationError<unknown>
 > {
-  override group = 'team-assembly';
+  override group = "team-assembly";
 
   private readonly _logger = new Logger(AssemblyValidationService.name);
   override async onApplicationBootstrap() {
-    this._logger.log('Initializing rules');
+    this._logger.log("Initializing rules");
 
     await this.clearRules();
 
@@ -51,7 +51,7 @@ export class AssemblyValidationService extends ValidationService<
     await this.registerRule(PlayerMaxGamesRule);
     await this.registerRule(PlayerGenderRule);
 
-    this._logger.log('Rules initialized');
+    this._logger.log("Rules initialized");
   }
   override async fetchData(args: {
     teamId: string;
@@ -85,26 +85,26 @@ export class AssemblyValidationService extends ValidationService<
     const idSubs = args.subtitudes?.filter((p) => p !== undefined && p !== null);
 
     const team = await Team.findByPk(args.teamId, {
-      attributes: ['id', 'name', 'type', 'teamNumber', 'clubId', 'link', 'season'],
+      attributes: ["id", "name", "type", "teamNumber", "clubId", "link", "season"],
     });
 
     if (!team?.season) {
-      throw new Error('Team not found');
+      throw new Error("Team not found");
     }
 
     const previousSeasonTeam = await Team.findOne({
-      attributes: ['id'],
+      attributes: ["id"],
       where: {
         link: team.link,
         season: team.season - 1,
       },
       include: [
         {
-          attributes: ['id'],
+          attributes: ["id"],
           model: EventEntry,
           include: [
             {
-              attributes: ['id', 'faller'],
+              attributes: ["id", "faller"],
               model: Standing,
             },
           ],
@@ -119,10 +119,10 @@ export class AssemblyValidationService extends ValidationService<
 
     if (encounter) {
       draw = await encounter?.getDrawCompetition({
-        attributes: ['id', 'name', 'subeventId'],
+        attributes: ["id", "name", "subeventId"],
       });
       subEvent = await draw?.getSubEventCompetition({
-        attributes: ['id', 'eventId', 'eventType', 'minBaseIndex', 'maxBaseIndex', 'maxLevel'],
+        attributes: ["id", "eventId", "eventType", "minBaseIndex", "maxBaseIndex", "maxLevel"],
       });
     } else {
       const entry = await team.getEntry();
@@ -131,22 +131,22 @@ export class AssemblyValidationService extends ValidationService<
     }
 
     const event = await subEvent?.getEventCompetition({
-      attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'season'],
+      attributes: ["id", "usedRankingUnit", "usedRankingAmount", "season"],
     });
 
     if (!event) {
-      throw new Error('Event not found');
+      throw new Error("Event not found");
     }
 
     const sameYearSubEvents = await EventCompetition.findAll({
-      attributes: ['id'],
+      attributes: ["id"],
       where: {
         season: event?.season,
       },
       include: [
         {
           model: SubEventCompetition,
-          attributes: ['id'],
+          attributes: ["id"],
           required: true,
         },
       ],
@@ -156,7 +156,7 @@ export class AssemblyValidationService extends ValidationService<
 
     // find all same type team's ids for fetching the etnries
     const clubTeams = await Team.findAll({
-      attributes: ['id', 'name', 'teamNumber'],
+      attributes: ["id", "name", "teamNumber"],
       where: {
         clubId: team?.clubId,
         type: type,
@@ -166,7 +166,7 @@ export class AssemblyValidationService extends ValidationService<
 
     // Fetch all the memberships for the same subEvent
     const memberships = await EventEntry.findAll({
-      attributes: ['id', 'teamId', 'subEventId', 'meta'],
+      attributes: ["id", "teamId", "subEventId", "meta"],
       where: {
         teamId: clubTeams?.map((t) => t.id),
         subEventId: sameYearSubEvents
@@ -188,7 +188,7 @@ export class AssemblyValidationService extends ValidationService<
         : await RankingSystem.findOne({ where: { primary: true } });
 
     if (!system) {
-      throw new Error('System not found');
+      throw new Error("System not found");
     }
 
     // Filter out this team's meta
@@ -207,7 +207,7 @@ export class AssemblyValidationService extends ValidationService<
 
     meta.competition.players = getBestPlayers(
       team.type,
-      meta.competition.players,
+      meta.competition.players
     ) as EntryCompetitionPlayer[];
 
     // Other teams meta
@@ -216,27 +216,27 @@ export class AssemblyValidationService extends ValidationService<
       ?.map((m) => m.meta) ?? []) as MetaEntry[];
 
     if (!event.usedRankingUnit || !event.usedRankingAmount) {
-      throw new Error('EventCompetition usedRankingUnit is not set');
+      throw new Error("EventCompetition usedRankingUnit is not set");
     }
 
     const year = event?.season;
     const usedRankingDate = moment();
-    usedRankingDate.set('year', year);
+    usedRankingDate.set("year", year);
     usedRankingDate.set(event?.usedRankingUnit, event?.usedRankingAmount);
 
     // get first and last of the month
-    const startRanking = moment(usedRankingDate).startOf('month');
-    const endRanking = moment(usedRankingDate).endOf('month');
+    const startRanking = moment(usedRankingDate).startOf("month");
+    const endRanking = moment(usedRankingDate).endOf("month");
     const players = idPlayers
       ? await Player.findAll({
           attributes: [
-            'id',
-            'gender',
-            'competitionPlayer',
-            'memberId',
-            'fullName',
-            'firstName',
-            'lastName',
+            "id",
+            "gender",
+            "competitionPlayer",
+            "memberId",
+            "fullName",
+            "firstName",
+            "lastName",
           ],
           where: {
             id: {
@@ -245,7 +245,7 @@ export class AssemblyValidationService extends ValidationService<
           },
           include: [
             {
-              attributes: ['id', 'single', 'double', 'mix', 'rankingDate'],
+              attributes: ["id", "single", "double", "mix", "rankingDate"],
               required: false,
               model: RankingLastPlace,
               where: {
@@ -253,7 +253,7 @@ export class AssemblyValidationService extends ValidationService<
               },
             },
             {
-              attributes: ['id', 'single', 'double', 'mix', 'rankingDate'],
+              attributes: ["id", "single", "double", "mix", "rankingDate"],
               required: false,
               model: RankingPlace,
               limit: 1,
@@ -264,7 +264,7 @@ export class AssemblyValidationService extends ValidationService<
                 systemId: system.id,
                 updatePossible: true,
               },
-              order: [['rankingDate', 'DESC']],
+              order: [["rankingDate", "DESC"]],
             },
           ],
         })
@@ -273,13 +273,13 @@ export class AssemblyValidationService extends ValidationService<
     const subs = idSubs
       ? await Player.findAll({
           attributes: [
-            'id',
-            'gender',
-            'memberId',
-            'competitionPlayer',
-            'fullName',
-            'firstName',
-            'lastName',
+            "id",
+            "gender",
+            "memberId",
+            "competitionPlayer",
+            "fullName",
+            "firstName",
+            "lastName",
           ],
           where: {
             id: {
@@ -288,7 +288,7 @@ export class AssemblyValidationService extends ValidationService<
           },
           include: [
             {
-              attributes: ['id', 'single', 'double', 'mix'],
+              attributes: ["id", "single", "double", "mix"],
               required: false,
               model: RankingLastPlace,
               where: {
@@ -296,7 +296,7 @@ export class AssemblyValidationService extends ValidationService<
               },
             },
             {
-              attributes: ['id', 'single', 'double', 'mix'],
+              attributes: ["id", "single", "double", "mix"],
               required: false,
               model: RankingPlace,
               limit: 1,
@@ -322,7 +322,7 @@ export class AssemblyValidationService extends ValidationService<
           double: rankingPlace?.double ?? system.amountOfLevels,
           mix: rankingPlace?.mix ?? system.amountOfLevels,
         };
-      }),
+      })
     );
 
     return {
@@ -354,19 +354,19 @@ export class AssemblyValidationService extends ValidationService<
         ?.sort(
           (a, b) =>
             (a.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels) -
-            (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels),
+            (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels)
         ) as [Player, Player],
       double2: players
         ?.filter((p) => args.double2?.flat(1)?.includes(p.id))
         ?.sort(
           (a, b) =>
             (a.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels) -
-            (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels),
+            (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels)
         ) as [Player, Player],
       double3: players
         ?.filter((p) => args.double3?.flat(1)?.includes(p.id))
         ?.sort((a, b) => {
-          const ranking = type === SubEventTypeEnum.MX ? 'mix' : 'double';
+          const ranking = type === SubEventTypeEnum.MX ? "mix" : "double";
           return (
             (a.rankingLastPlaces?.[0]?.[ranking] ?? system.amountOfLevels) -
             (b.rankingLastPlaces?.[0]?.[ranking] ?? system.amountOfLevels)
@@ -375,7 +375,7 @@ export class AssemblyValidationService extends ValidationService<
       double4: players
         ?.filter((p) => args.double4?.flat(1)?.includes(p.id))
         ?.sort((a, b) => {
-          const ranking = type === SubEventTypeEnum.MX ? 'mix' : 'double';
+          const ranking = type === SubEventTypeEnum.MX ? "mix" : "double";
           return (
             (a.rankingLastPlaces?.[0]?.[ranking] ?? system.amountOfLevels) -
             (b.rankingLastPlaces?.[0]?.[ranking] ?? system.amountOfLevels)
@@ -415,7 +415,7 @@ export class AssemblyValidationService extends ValidationService<
       playerId?: string;
       teamId?: string;
       clubId?: string;
-    },
+    }
   ) {
     const data = await super.validate(args, {
       ...runFor,

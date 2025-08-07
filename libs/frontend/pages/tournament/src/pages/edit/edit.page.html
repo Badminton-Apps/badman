@@ -1,9 +1,9 @@
 <badman-page-header>
   <ng-container slot="title">
     @if (eventTournament(); as tournament) {
-      {{ 'all.tournament.edit.title' | translate: { name: tournament.name } }}
+      {{ "all.tournament.edit.title" | translate: { name: tournament.name } }}
     } @else {
-      {{ 'all.tournament.edit.loading' | translate }}
+      {{ "all.tournament.edit.loading" | translate }}
     }
   </ng-container>
 
@@ -24,40 +24,40 @@
   @if (loaded()) {
     <form [formGroup]="formGroup" (ngSubmit)="save()" class="tournament-edit-form">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'all.tournament.name' | translate }}</mat-label>
+        <mat-label>{{ "all.tournament.name" | translate }}</mat-label>
         <input matInput formControlName="name" required />
-        @if (formGroup.get('name')?.hasError('required')) {
-          <mat-error>{{ 'all.tournament.edit.name.required' | translate }}</mat-error>
+        @if (formGroup.get("name")?.hasError("required")) {
+          <mat-error>{{ "all.tournament.edit.name.required" | translate }}</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'all.tournament.tournamentNumber' | translate }}</mat-label>
+        <mat-label>{{ "all.tournament.tournamentNumber" | translate }}</mat-label>
         <input matInput formControlName="tournamentNumber" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ 'all.tournament.visualCode' | translate }}</mat-label>
+        <mat-label>{{ "all.tournament.visualCode" | translate }}</mat-label>
         <input matInput formControlName="visualCode" />
       </mat-form-field>
 
       <div class="date-fields">
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'all.tournament.firstDay' | translate }}</mat-label>
+          <mat-label>{{ "all.tournament.firstDay" | translate }}</mat-label>
           <input matInput [matDatepicker]="firstDayPicker" formControlName="firstDay" />
           <mat-datepicker-toggle matIconSuffix [for]="firstDayPicker"></mat-datepicker-toggle>
           <mat-datepicker #firstDayPicker></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'all.tournament.openDate' | translate }}</mat-label>
+          <mat-label>{{ "all.tournament.openDate" | translate }}</mat-label>
           <input matInput [matDatepicker]="openDatePicker" formControlName="openDate" />
           <mat-datepicker-toggle matIconSuffix [for]="openDatePicker"></mat-datepicker-toggle>
           <mat-datepicker #openDatePicker></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'all.tournament.closeDate' | translate }}</mat-label>
+          <mat-label>{{ "all.tournament.closeDate" | translate }}</mat-label>
           <input matInput [matDatepicker]="closeDatePicker" formControlName="closeDate" />
           <mat-datepicker-toggle matIconSuffix [for]="closeDatePicker"></mat-datepicker-toggle>
           <mat-datepicker #closeDatePicker></mat-datepicker>
@@ -66,42 +66,42 @@
 
       <div class="location-fields">
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'all.tournament.state' | translate }}</mat-label>
+          <mat-label>{{ "all.tournament.state" | translate }}</mat-label>
           <input matInput formControlName="state" />
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>{{ 'all.tournament.country' | translate }}</mat-label>
+          <mat-label>{{ "all.tournament.country" | translate }}</mat-label>
           <input matInput formControlName="country" />
         </mat-form-field>
       </div>
 
       <div class="toggle-field">
         <mat-slide-toggle formControlName="official">
-          {{ 'all.tournament.official' | translate }}
+          {{ "all.tournament.official" | translate }}
         </mat-slide-toggle>
       </div>
 
       <div class="form-actions">
         <button mat-raised-button color="primary" type="submit" [disabled]="!isFormValid()">
           <mat-icon>save</mat-icon>
-          {{ 'all.button.save' | translate }}
+          {{ "all.button.save" | translate }}
         </button>
 
         <button mat-button type="button" (click)="cancel()">
-          {{ 'all.button.cancel' | translate }}
+          {{ "all.button.cancel" | translate }}
         </button>
       </div>
     </form>
   } @else {
     <div class="loading-container">
-      <p>{{ 'all.tournament.edit.loading' | translate }}</p>
+      <p>{{ "all.tournament.edit.loading" | translate }}</p>
     </div>
   }
 
   @if (errors()) {
     <div class="error-container">
-      <p class="error-message">{{ 'all.tournament.edit.error' | translate }}</p>
+      <p class="error-message">{{ "all.tournament.edit.error" | translate }}</p>
     </div>
   }
 </div>

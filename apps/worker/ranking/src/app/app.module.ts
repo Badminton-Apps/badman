@@ -1,13 +1,13 @@
-import { CronJob, DatabaseModule, Service } from '@badman/backend-database';
-import { LoggingModule } from '@badman/backend-logging';
-import { QueueModule, RankingQueue } from '@badman/backend-queue';
-import { RankingModule } from '@badman/backend-ranking';
-import { EventsGateway, SocketModule } from '@badman/backend-websockets';
-import { EVENTS, configSchema, load } from '@badman/utils';
-import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import versionPackage from '../version.json';
-import { RankingProcessor } from './processors';
+import { CronJob, DatabaseModule, Service } from "@badman/backend-database";
+import { LoggingModule } from "@badman/backend-logging";
+import { QueueModule, RankingQueue } from "@badman/backend-queue";
+import { RankingModule } from "@badman/backend-ranking";
+import { EventsGateway, SocketModule } from "@badman/backend-websockets";
+import { EVENTS, configSchema, load } from "@badman/utils";
+import { Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import versionPackage from "../version.json";
+import { RankingProcessor } from "./processors";
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { RankingProcessor } from './processors';
     }),
     LoggingModule.forRoot({
       version: versionPackage.version,
-      name: 'worker-ranking',
+      name: "worker-ranking",
     }),
     QueueModule,
     DatabaseModule,
@@ -32,13 +32,13 @@ export class WorkerRankingModule implements OnApplicationBootstrap {
 
   constructor(private readonly gateway: EventsGateway) {}
   async onApplicationBootstrap() {
-    const service = await Service.findOne({ where: { name: 'ranking' } });
+    const service = await Service.findOne({ where: { name: "ranking" } });
     if (!service) {
-      this.logger.error('Could not find sync service');
+      this.logger.error("Could not find sync service");
       return;
     }
 
-    service.status = 'started';
+    service.status = "started";
     await service?.save();
 
     this.gateway.server.emit(EVENTS.SERVICE.SERVICE_STARTED, {
@@ -48,7 +48,7 @@ export class WorkerRankingModule implements OnApplicationBootstrap {
     // Reset all jobs
     const cronJob = await CronJob.findAll({
       where: {
-        'meta.queueName': RankingQueue,
+        "meta.queueName": RankingQueue,
       },
     });
 

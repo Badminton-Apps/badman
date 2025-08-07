@@ -1,7 +1,7 @@
-import { Team } from '../../team.model';
-import { SubEvent } from '../sub-event.model';
-import { DrawCompetition } from './draw.model';
-import { EventCompetition } from './event.model';
+import { Team } from "../../team.model";
+import { SubEvent } from "../sub-event.model";
+import { DrawCompetition } from "./draw.model";
+import { EventCompetition } from "./event.model";
 
 export class SubEventCompetition extends SubEvent {
   teams?: Team[];
@@ -25,14 +25,14 @@ export class SubEventCompetition extends SubEvent {
         new DrawCompetition({
           ...d,
           subEventCompetition: this,
-        }),
+        })
     );
     this.averageLevel = args?.averageLevel?.map((a) => new SubEventCompetitionAverageLevel(a));
   }
 }
 
 export class SubEventCompetitionAverageLevel {
-  gender?: 'M' | 'F';
+  gender?: "M" | "F";
   single?: number;
   singleCount?: number;
   double?: number;

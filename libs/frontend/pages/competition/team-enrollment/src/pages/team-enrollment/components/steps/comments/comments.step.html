@@ -3,7 +3,7 @@
     @if (validTypes().includes(type)) {
       <mat-form-field class="comment" [formGroupName]="type">
         <mat-label>{{
-          'all.competition.team-enrollment.comments.' + type | lowercase | translate
+          "all.competition.team-enrollment.comments." + type | lowercase | translate
         }}</mat-label>
         <textarea
           matInput

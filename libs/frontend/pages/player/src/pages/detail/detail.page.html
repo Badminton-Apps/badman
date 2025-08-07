@@ -33,7 +33,7 @@
           />
         </div>
       }
-      <div class="click-for-breakdown">{{ 'all.ranking.breakdown.hint' | translate }}</div>
+      <div class="click-for-breakdown">{{ "all.ranking.breakdown.hint" | translate }}</div>
     </div>
   </ng-content>
   <ng-content actions>
@@ -44,27 +44,27 @@
       <mat-menu #menu="matMenu">
         @if (this.canClaim()) {
           <button mat-menu-item (click)="this.claimAccount()">
-            {{ 'all.player.menu.claim' | translate }}
+            {{ "all.player.menu.claim" | translate }}
           </button>
         }
         <badman-has-claim [any]="['edit-any:player', this.player()?.id + '_edit:player']">
           <button mat-menu-item [routerLink]="'edit'">
             <mat-icon>edit</mat-icon>
-            <span>{{ 'all.player.menu.edit' | translate }}</span>
+            <span>{{ "all.player.menu.edit" | translate }}</span>
           </button>
         </badman-has-claim>
 
         <badman-has-claim [all]="['re-sync:points']">
           <button mat-menu-item (click)="reCalculatePoints()">
             <mat-icon>sync</mat-icon>
-            <span>{{ 'all.button.re-sync' | translate }}</span>
+            <span>{{ "all.button.re-sync" | translate }}</span>
           </button>
         </badman-has-claim>
 
         <badman-has-claim [any]="['delete:player']">
           <button mat-menu-item (click)="this.removePlayer()">
             <mat-icon>delete</mat-icon>
-            <span>{{ 'all.player.menu.delete' | translate }}</span>
+            <span>{{ "all.player.menu.delete" | translate }}</span>
           </button>
         </badman-has-claim>
       </mat-menu>
@@ -76,14 +76,14 @@
     <section class="recent-games">
       <h3>
         <mat-icon color="primary">history</mat-icon>
-        {{ 'all.game.recent.title' | translate }}
+        {{ "all.game.recent.title" | translate }}
       </h3>
       <badman-recent-games [playerId]="this.player()?.id"></badman-recent-games>
     </section>
     <section class="upcoming-games">
       <h3>
         <mat-icon color="primary">calendar_month</mat-icon>
-        {{ 'all.game.upcoming.title' | translate }}
+        {{ "all.game.upcoming.title" | translate }}
       </h3>
       @if (this.hasTeams()) {
         <badman-upcoming-games [clubId]="club()?.id" [teams]="this.teams()"></badman-upcoming-games>

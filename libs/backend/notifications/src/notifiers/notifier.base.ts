@@ -1,22 +1,22 @@
-import { Player, Notification, NotificationOptionsTypes, Logging } from '@badman/backend-database';
-import { MailingService } from '@badman/backend-mailing';
-import { LoggingAction, NotificationType } from '@badman/utils';
-import { Logger } from '@nestjs/common';
-import { PushService } from '../services';
-import { unitOfTime } from 'moment';
-import moment from 'moment';
+import { Player, Notification, NotificationOptionsTypes, Logging } from "@badman/backend-database";
+import { MailingService } from "@badman/backend-mailing";
+import { LoggingAction, NotificationType } from "@badman/utils";
+import { Logger } from "@nestjs/common";
+import { PushService } from "../services";
+import { unitOfTime } from "moment";
+import moment from "moment";
 
 export abstract class Notifier<T, A = { email: string }> {
   protected readonly logger = new Logger(Notifier.name);
   protected abstract type: keyof NotificationOptionsTypes;
   protected abstract linkType: string;
-  protected allowedInterval: unitOfTime.Diff = 'day';
+  protected allowedInterval: unitOfTime.Diff = "day";
   protected allowedIntervalUnit = 1;
   protected allowedAmount?: number = undefined;
 
   constructor(
     protected mailing: MailingService,
-    protected pushService: PushService,
+    protected pushService: PushService
   ) {}
 
   abstract notifyPush(player: Player, data?: T, args?: A): Promise<void>;
@@ -32,7 +32,7 @@ export abstract class Notifier<T, A = { email: string }> {
       email?: boolean;
       push?: boolean;
       sms?: boolean;
-    },
+    }
   ): Promise<void> {
     if (!player) {
       this.logger.warn(`Player not found`);
@@ -59,7 +59,7 @@ export abstract class Notifier<T, A = { email: string }> {
         linkType: this.linkType,
         type: this.type,
       },
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
     });
     const totalAmount = await Notification.count({
       where: {
@@ -82,20 +82,20 @@ export abstract class Notifier<T, A = { email: string }> {
         this.logger.debug(
           `Notification already sent to ${player.fullName} in the last ${
             this.allowedInterval
-          } (send on: ${lastSend.format('DD-MM-YYYY HH:mm:ss')})`,
+          } (send on: ${lastSend.format("DD-MM-YYYY HH:mm:ss")})`
         );
-        (logAction.meta as any)['reason'] = 'Already sent in the last interval';
-        logAction.changed('meta', true);
+        (logAction.meta as any)["reason"] = "Already sent in the last interval";
+        logAction.changed("meta", true);
         await logAction.save();
         return;
       }
 
       if (this.allowedAmount && totalAmount >= this.allowedAmount) {
         this.logger.debug(
-          `Notification already sent to ${player.fullName} enough (${totalAmount}) times`,
+          `Notification already sent to ${player.fullName} enough (${totalAmount}) times`
         );
-        (logAction.meta as any)['reason'] = 'Already sent enough times';
-        logAction.changed('meta', true);
+        (logAction.meta as any)["reason"] = "Already sent enough times";
+        logAction.changed("meta", true);
         await logAction.save();
         return;
       }

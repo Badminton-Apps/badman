@@ -1,17 +1,17 @@
-import { Comment } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Comment } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { of } from "rxjs";
+import { map } from "rxjs/operators";
 
 export const loadComments = (apollo: Apollo, clubId?: string | null, eventIds?: string[]) => {
   if (!clubId || !eventIds) {
-    console.error('No clubId or season provided');
+    console.error("No clubId or season provided");
     return of([]);
   }
 
   return apollo
     .query<{ comments: Partial<Comment[]> }>({
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
       query: gql`
         query Comments($where: JSONObject) {
           comments(where: $where) {
@@ -24,7 +24,7 @@ export const loadComments = (apollo: Apollo, clubId?: string | null, eventIds?: 
       `,
       variables: {
         where: {
-          linkType: 'competition',
+          linkType: "competition",
           linkId: eventIds,
           clubId,
         },

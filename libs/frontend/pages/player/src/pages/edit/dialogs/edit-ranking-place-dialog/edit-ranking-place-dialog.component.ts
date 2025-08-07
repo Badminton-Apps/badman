@@ -1,28 +1,27 @@
-
-import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from "@angular/core";
 import {
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { RankingPlace, RankingSystem } from '@badman/frontend-models';
-import { RankingSystems } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import moment, { Moment } from 'moment';
+} from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCalendarCellClassFunction, MatDatepickerModule } from "@angular/material/datepicker";
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { RankingPlace, RankingSystem } from "@badman/frontend-models";
+import { RankingSystems } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import moment, { Moment } from "moment";
 
 @Component({
-    templateUrl: './edit-ranking-place-dialog.component.html',
-    styleUrls: ['./edit-ranking-place-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None,
-    imports: [
+  templateUrl: "./edit-ranking-place-dialog.component.html",
+  styleUrls: ["./edit-ranking-place-dialog.component.scss"],
+  encapsulation: ViewEncapsulation.None,
+  imports: [
     MatDialogModule,
     TranslatePipe,
     MatDatepickerModule,
@@ -31,12 +30,12 @@ import moment, { Moment } from 'moment';
     MatButtonModule,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    FormsModule
-]
+    FormsModule,
+  ],
 })
 export class EditRankingPlaceDialogComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<EditRankingPlaceDialogComponent>>(
-    MatDialogRef<EditRankingPlaceDialogComponent>,
+    MatDialogRef<EditRankingPlaceDialogComponent>
   );
   public data = inject<{ place: RankingPlace; system: RankingSystem }>(MAT_DIALOG_DATA);
   rankingPlaceForm: FormGroup = new FormGroup({});
@@ -55,38 +54,38 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
     const updatePossibleControl = new FormControl(this.data.place?.updatePossible);
 
-    this.rankingPlaceForm.addControl('single', singleControl);
-    this.rankingPlaceForm.addControl('double', doubleControl);
-    this.rankingPlaceForm.addControl('mix', mixControl);
+    this.rankingPlaceForm.addControl("single", singleControl);
+    this.rankingPlaceForm.addControl("double", doubleControl);
+    this.rankingPlaceForm.addControl("mix", mixControl);
 
-    this.rankingPlaceForm.addControl('singlePoints', singlePointsControl);
-    this.rankingPlaceForm.addControl('doublePoints', doublePointsControl);
-    this.rankingPlaceForm.addControl('mixPoints', mixPointsControl);
+    this.rankingPlaceForm.addControl("singlePoints", singlePointsControl);
+    this.rankingPlaceForm.addControl("doublePoints", doublePointsControl);
+    this.rankingPlaceForm.addControl("mixPoints", mixPointsControl);
 
-    this.rankingPlaceForm.addControl('rankingDate', rankingDateControl);
-    this.rankingPlaceForm.addControl('updatePossible', updatePossibleControl);
+    this.rankingPlaceForm.addControl("rankingDate", rankingDateControl);
+    this.rankingPlaceForm.addControl("updatePossible", updatePossibleControl);
 
     if (this.data.system) {
       this.dateClass = (cellDate, view) => {
-        if (view === 'month') {
-          const day = cellDate.get('day');
-          const date = cellDate.get('date');
-          const month = cellDate.get('month');
+        if (view === "month") {
+          const day = cellDate.get("day");
+          const date = cellDate.get("date");
+          const month = cellDate.get("month");
 
           if (
             this.data.system?.rankingSystem == RankingSystems.VISUAL ||
             this.data.system?.rankingSystem == RankingSystems.BVL
           ) {
             if (day == 1 && date < 8 && month % (this.data.system.updateIntervalAmount ?? 0) == 0) {
-              return 'date-class-update';
+              return "date-class-update";
             }
           }
         }
 
-        return '';
+        return "";
       };
     } else {
-      this.dateClass = () => '';
+      this.dateClass = () => "";
     }
   }
 
@@ -106,12 +105,12 @@ export class EditRankingPlaceDialogComponent implements OnInit {
       });
 
     if (!compEvent?.season || !compEvent?.usedRankingUnit || !compEvent?.usedRankingAmount) {
-      throw new Error('No event data');
+      throw new Error("No event data");
     }
 
-    date.set('year', compEvent.season);
+    date.set("year", compEvent.season);
     date.set(compEvent.usedRankingUnit, compEvent.usedRankingAmount);
-    date.set('day', 1);
+    date.set("day", 1);
 
     this.rankingPlaceForm.patchValue({
       rankingDate: date,
@@ -121,7 +120,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
   onUpdate() {
     this.dialogRef.close({
-      action: this.data.place?.id ? 'update' : 'new',
+      action: this.data.place?.id ? "update" : "new",
       place: {
         systemId: this.data.system.id,
         ...this.data.place,
@@ -131,7 +130,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
   }
   onDelete() {
     this.dialogRef.close({
-      action: 'remove',
+      action: "remove",
       place: {
         systemId: this.data.system.id,
         ...this.data.place,

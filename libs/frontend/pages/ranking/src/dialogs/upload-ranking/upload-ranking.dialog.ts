@@ -1,27 +1,27 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { RankingSystem } from '@badman/frontend-models';
+import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { RankingSystem } from "@badman/frontend-models";
 
-import { HttpClient, HttpEventType } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
-import { TranslatePipe } from '@ngx-translate/core';
-import { lastValueFrom, Subscription } from 'rxjs';
-import { RANKING_CONFIG } from '../../injection';
-import { IRankingConfig } from '../../interfaces';
+import { HttpClient, HttpEventType } from "@angular/common/http";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTableModule } from "@angular/material/table";
+import { TranslatePipe } from "@ngx-translate/core";
+import { lastValueFrom, Subscription } from "rxjs";
+import { RANKING_CONFIG } from "../../injection";
+import { IRankingConfig } from "../../interfaces";
 
 @Component({
-  selector: 'badman-upload-ranking',
+  selector: "badman-upload-ranking",
   imports: [
     CommonModule,
     TranslatePipe,
@@ -38,15 +38,15 @@ import { IRankingConfig } from '../../interfaces';
     MatFormFieldModule,
     MatDatepickerModule,
   ],
-  templateUrl: './upload-ranking.dialog.html',
-  styleUrls: ['./upload-ranking.dialog.scss'],
+  templateUrl: "./upload-ranking.dialog.html",
+  styleUrls: ["./upload-ranking.dialog.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadRankingDialogComponent {
   private config = inject<IRankingConfig>(RANKING_CONFIG);
   private http = inject(HttpClient);
   public dialogRef = inject<MatDialogRef<UploadRankingDialogComponent>>(
-    MatDialogRef<UploadRankingDialogComponent>,
+    MatDialogRef<UploadRankingDialogComponent>
   );
   public data = inject<{ rankingSystem: RankingSystem }>(MAT_DIALOG_DATA);
   private changeDetectorRef = inject(ChangeDetectorRef);
@@ -96,10 +96,10 @@ export class UploadRankingDialogComponent {
   // on click open file picker and to the file drop logic
   onCLick(event: MouseEvent) {
     event.preventDefault();
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx';
-    input.style.display = 'none';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".xlsx";
+    input.style.display = "none";
     input.onchange = (e) => {
       const target = e.target as HTMLInputElement;
       if (target.files?.length) {
@@ -121,20 +121,20 @@ export class UploadRankingDialogComponent {
     }
 
     const formData = new FormData();
-    formData.append('file', this.uploadedFile, this.uploadedFile.name);
+    formData.append("file", this.uploadedFile, this.uploadedFile.name);
 
-    if (this.uploadedFile.name.indexOf('exportMembersRolePerGroup') !== -1) {
+    if (this.uploadedFile.name.indexOf("exportMembersRolePerGroup") !== -1) {
       this.rankingDate = new Date(
         parseInt(this.uploadedFile.name.slice(-9, -5)),
         parseInt(this.uploadedFile.name.slice(-11, -9)) - 1,
-        parseInt(this.uploadedFile.name.slice(-13, -11)),
+        parseInt(this.uploadedFile.name.slice(-13, -11))
       );
     }
 
     this.uploadProgress$ = this.http
       .post<MembersRolePerGroupData[]>(`${this.config.api}/upload/preview`, formData, {
         reportProgress: true,
-        observe: 'events',
+        observe: "events",
       })
       .subscribe((event) => {
         if (event.type === HttpEventType.Response) {
@@ -153,23 +153,23 @@ export class UploadRankingDialogComponent {
     this.processing = true;
 
     const formData = new FormData();
-    formData.append('file', this.uploadedFile, this.uploadedFile.name);
-    formData.append('rankingSystemId', this.data.rankingSystem.id);
-    formData.append('updateCompStatus', this.competitionStatus.toString());
-    formData.append('updatePossible', this.updatePossible.toString());
-    formData.append('updateRanking', this.updateRanking.toString());
-    formData.append('updateClubs', this.updateClubs.toString());
-    formData.append('removeAllRanking', this.removeAllRanking.toString());
-    formData.append('createNewPlayers', this.createNewPlayers.toString());
-    formData.append('rankingDate', this.rankingDate.toISOString());
+    formData.append("file", this.uploadedFile, this.uploadedFile.name);
+    formData.append("rankingSystemId", this.data.rankingSystem.id);
+    formData.append("updateCompStatus", this.competitionStatus.toString());
+    formData.append("updatePossible", this.updatePossible.toString());
+    formData.append("updateRanking", this.updateRanking.toString());
+    formData.append("updateClubs", this.updateClubs.toString());
+    formData.append("removeAllRanking", this.removeAllRanking.toString());
+    formData.append("createNewPlayers", this.createNewPlayers.toString());
+    formData.append("rankingDate", this.rankingDate.toISOString());
 
     try {
       const result = await lastValueFrom(
-        this.http.post<{ message: boolean }>(`${this.config.api}/upload/process`, formData),
+        this.http.post<{ message: boolean }>(`${this.config.api}/upload/process`, formData)
       );
 
       if (result?.message) {
-        this.snackbar.open('Processing started', undefined, {
+        this.snackbar.open("Processing started", undefined, {
           duration: 5000,
         });
       }

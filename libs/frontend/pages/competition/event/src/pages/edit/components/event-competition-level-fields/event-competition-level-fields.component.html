@@ -9,11 +9,11 @@
   </h3>
   <div class="fields" [style.flex-direction]="this.direction()">
     <mat-form-field>
-      <mat-label>{{ 'all.gender.title' | translate }}</mat-label>
+      <mat-label>{{ "all.gender.title" | translate }}</mat-label>
       <mat-select formControlName="eventType" required>
-        <mat-option value="F">{{ 'all.gender.females' | translate }}</mat-option>
-        <mat-option value="M">{{ 'all.gender.males' | translate }}</mat-option>
-        <mat-option value="MX">{{ 'all.gender.mix' | translate }}</mat-option>
+        <mat-option value="F">{{ "all.gender.females" | translate }}</mat-option>
+        <mat-option value="M">{{ "all.gender.males" | translate }}</mat-option>
+        <mat-option value="MX">{{ "all.gender.mix" | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -23,15 +23,15 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>{{ 'all.competition.subevent.max' | translate }}</mat-label>
+      <mat-label>{{ "all.competition.subevent.max" | translate }}</mat-label>
       <input matInput type="number" formControlName="maxLevel" alt="maxLevel" />
     </mat-form-field>
     <mat-form-field>
-      <mat-label>{{ 'all.competition.subevent.min-base' | translate }}</mat-label>
+      <mat-label>{{ "all.competition.subevent.min-base" | translate }}</mat-label>
       <input matInput type="number" formControlName="minBaseIndex" alt="minBaseIndex" />
     </mat-form-field>
     <mat-form-field>
-      <mat-label>{{ 'all.competition.subevent.max-base' | translate }}</mat-label>
+      <mat-label>{{ "all.competition.subevent.max-base" | translate }}</mat-label>
       <input matInput type="number" formControlName="maxBaseIndex" alt="maxBaseIndex" />
     </mat-form-field>
   </div>

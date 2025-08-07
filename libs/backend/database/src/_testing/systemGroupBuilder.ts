@@ -6,7 +6,7 @@ import {
   SubEventCompetition,
   SubEventTournament,
   RankingGroupSubEventCompetitionMembership,
-} from '../models';
+} from "../models";
 
 export class SystemGroupBuilder {
   private build = false;

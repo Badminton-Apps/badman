@@ -1,25 +1,25 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { RouterModule } from '@angular/router';
+import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { RouterModule } from "@angular/router";
 import {
   BadmanBlockModule,
   LoadingBlockComponent,
   OpenCloseDateDialogComponent,
-} from '@badman/frontend-components';
-import { EventCompetition } from '@badman/frontend-models';
-import { JobsService } from '@badman/frontend-queue';
-import { TranslatePipe } from '@ngx-translate/core';
-import { lastValueFrom } from 'rxjs';
-import { RisersFallersDialogComponent } from '../../../dialogs';
-import { EventMenuComponent } from '../../../menus/event-menu/event-menu.component';
-import { EventOverviewService } from '../overview.service';
+} from "@badman/frontend-components";
+import { EventCompetition } from "@badman/frontend-models";
+import { JobsService } from "@badman/frontend-queue";
+import { TranslatePipe } from "@ngx-translate/core";
+import { lastValueFrom } from "rxjs";
+import { RisersFallersDialogComponent } from "../../../dialogs";
+import { EventMenuComponent } from "../../../menus/event-menu/event-menu.component";
+import { EventOverviewService } from "../overview.service";
 
 @Component({
-  selector: 'badman-competition-events',
+  selector: "badman-competition-events",
   imports: [
     CommonModule,
     RouterModule,
@@ -32,8 +32,8 @@ import { EventOverviewService } from '../overview.service';
     LoadingBlockComponent,
     BadmanBlockModule,
   ],
-  templateUrl: './competition-events.component.html',
-  styleUrls: ['./competition-events.component.scss'],
+  templateUrl: "./competition-events.component.html",
+  styleUrls: ["./competition-events.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompetitionEventsComponent {
@@ -59,7 +59,7 @@ export class CompetitionEventsComponent {
         closeDate: competition.closeDate,
         season: competition.season,
       },
-      width: '400px',
+      width: "400px",
       disableClose: true,
     });
 
@@ -83,7 +83,7 @@ export class CompetitionEventsComponent {
 
   async syncEvent(competition: EventCompetition) {
     if (!competition.visualCode) {
-      console.warn('No visual code');
+      console.warn("No visual code");
       return;
     }
 

@@ -1,10 +1,10 @@
-import { ChangeEncounterAvailability } from '@badman/utils';
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { ChangeEncounterAvailability } from "@badman/utils";
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -15,16 +15,16 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
-import { Relation } from '../../../../wrapper';
-import { Location } from '../../location.model';
-import { EncounterChange } from './encounter-change.model';
+} from "sequelize-typescript";
+import { Relation } from "../../../../wrapper";
+import { Location } from "../../location.model";
+import { EncounterChange } from "./encounter-change.model";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 })
-@ObjectType({ description: 'A EncounterChangeDate' })
+@ObjectType({ description: "A EncounterChangeDate" })
 export class EncounterChangeDate extends Model {
   constructor(values?: Partial<EncounterChangeDate>, options?: BuildOptions) {
     super(values, options);
@@ -48,8 +48,8 @@ export class EncounterChangeDate extends Model {
   selected?: boolean;
 
   @BelongsTo(() => EncounterChange, {
-    foreignKey: 'encounterChangeId',
-    onDelete: 'CASCADE',
+    foreignKey: "encounterChangeId",
+    onDelete: "CASCADE",
   })
   encounterChange?: Relation<EncounterChange>;
 
@@ -63,16 +63,16 @@ export class EncounterChangeDate extends Model {
   date?: Date;
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
+  @Column(DataType.ENUM("POSSIBLE", "NOT_POSSIBLE"))
   availabilityHome?: ChangeEncounterAvailability;
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
+  @Column(DataType.ENUM("POSSIBLE", "NOT_POSSIBLE"))
   availabilityAway?: ChangeEncounterAvailability;
 
   @BelongsTo(() => Location, {
-    foreignKey: 'locationId',
-    onDelete: 'CASCADE',
+    foreignKey: "locationId",
+    onDelete: "CASCADE",
   })
   location?: Relation<Location>;
 
@@ -92,12 +92,12 @@ export class EncounterChangeDate extends Model {
 
 @InputType()
 export class EncounterChangeDateUpdateInput extends PartialType(
-  OmitType(EncounterChangeDate, ['createdAt', 'updatedAt', 'encounterChange', 'location'] as const),
-  InputType,
+  OmitType(EncounterChangeDate, ["createdAt", "updatedAt", "encounterChange", "location"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class EncounterChangeDateNewInput extends PartialType(
-  OmitType(EncounterChangeDateUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(EncounterChangeDateUpdateInput, ["id"] as const),
+  InputType
 ) {}

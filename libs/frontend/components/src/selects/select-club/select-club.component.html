@@ -1,6 +1,6 @@
 @if (!this.useAutocomplete()) {
   <mat-form-field>
-    <mat-label>{{ 'all.pickers.select-club' | translate }}</mat-label>
+    <mat-label>{{ "all.pickers.select-club" | translate }}</mat-label>
     <mat-select
       [formControl]="this.internalControl"
       required
@@ -20,7 +20,7 @@
 }
 @if (this.useAutocomplete()) {
   <mat-form-field>
-    <mat-label>{{ 'all.pickers.select-club' | translate }}</mat-label>
+    <mat-label>{{ "all.pickers.select-club" | translate }}</mat-label>
     <input
       matInput
       [formControl]="this.internalControl"
@@ -43,9 +43,9 @@
         </mat-option>
       }
     </mat-autocomplete>
-    @if (this.control()?.hasError('required')) {
+    @if (this.control()?.hasError("required")) {
       <mat-error>
-        {{ 'all.input.this-required' | translate }}
+        {{ "all.input.this-required" | translate }}
       </mat-error>
     }
   </mat-form-field>

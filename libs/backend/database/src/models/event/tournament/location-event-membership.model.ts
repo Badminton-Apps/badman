@@ -1,11 +1,11 @@
-import { Field, ID } from '@nestjs/graphql';
-import { Column, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { Location } from '../location.model';
-import { EventTournament } from './event-tournament.model';
+import { Field, ID } from "@nestjs/graphql";
+import { Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { Location } from "../location.model";
+import { EventTournament } from "./event-tournament.model";
 
 @Table({
   timestamps: false,
-  schema: 'event',
+  schema: "event",
 })
 export class LocationEventTournamentMembership extends Model {
   @PrimaryKey

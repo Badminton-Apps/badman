@@ -1,5 +1,5 @@
-import { Logger } from '@nestjs/common';
-import { Page } from 'puppeteer';
+import { Logger } from "@nestjs/common";
+import { Page } from "puppeteer";
 
 export async function consentPrivacyAndCookie(
   pupeteer: {
@@ -11,17 +11,17 @@ export async function consentPrivacyAndCookie(
   },
   args?: {
     logger?: Logger;
-  },
+  }
 ) {
   const { logger } = args || {};
-  logger?.verbose('accepting cookies');
+  logger?.verbose("accepting cookies");
   const { page } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
   {
-    const iframeSelector = '/cmp/consentui-';
-    const acceptButtonSelector = '#consentui #buttons .btn.green';
+    const iframeSelector = "/cmp/consentui-";
+    const acceptButtonSelector = "#consentui #buttons .btn.green";
 
     const iframeElement = page.frames().find((frame) => {
       const frameUrl = frame.url();
@@ -30,11 +30,11 @@ export async function consentPrivacyAndCookie(
     });
 
     if (iframeElement) {
-      logger?.verbose('iframe found, clicking accept button');
+      logger?.verbose("iframe found, clicking accept button");
 
       await iframeElement.click(acceptButtonSelector);
     } else {
-      logger?.verbose('iframe not found');
+      logger?.verbose("iframe not found");
     }
   }
 }

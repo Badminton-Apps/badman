@@ -8,15 +8,15 @@ import {
   RankingPoint,
   RankingPlace,
   RankingSystemNewInput,
-} from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { User } from '@badman/backend-authorization';
-import { ListArgs } from '../../utils';
-import { CacheControl } from '../../decorators';
-import { Op, Transaction } from 'sequelize';
-import moment from 'moment';
+} from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
+import { User } from "@badman/backend-authorization";
+import { ListArgs } from "../../utils";
+import { CacheControl } from "../../decorators";
+import { Op, Transaction } from "sequelize";
+import moment from "moment";
 
 @CacheControl({ maxAge: 31536000 })
 @Resolver(() => RankingSystem)
@@ -27,7 +27,7 @@ export class RankingSystemResolver {
 
   @Query(() => RankingSystem)
   async rankingSystem(
-    @Args('id', { type: () => ID, nullable: true }) id?: string,
+    @Args("id", { type: () => ID, nullable: true }) id?: string
   ): Promise<RankingSystem> {
     const rankingSystem =
       (id ?? null) != null
@@ -48,7 +48,7 @@ export class RankingSystemResolver {
   @ResolveField(() => PagedRankingLastPlaces)
   async rankingLastPlaces(
     @Parent() system: RankingSystem,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<{
     count: number;
     rows: RankingLastPlace[];
@@ -64,7 +64,7 @@ export class RankingSystemResolver {
   @ResolveField(() => [RankingGroup])
   async rankingGroups(
     @Parent() system: RankingSystem,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<RankingGroup[]> {
     return system.getRankingGroups(ListArgs.toFindOptions(listArgs));
   }
@@ -72,9 +72,9 @@ export class RankingSystemResolver {
   @Mutation(() => RankingSystem)
   async createRankingSystem(
     @User() user: Player,
-    @Args('data') createRankingSystemData: RankingSystemNewInput,
+    @Args("data") createRankingSystemData: RankingSystemNewInput
   ) {
-    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+    if (!(await user.hasAnyPermission(["edit:ranking"]))) {
       throw new UnauthorizedException(`You do not have permission to create a ranking system`);
     }
 
@@ -88,46 +88,45 @@ export class RankingSystemResolver {
           {
             where: { primary: true },
             transaction,
-          },
+          }
         );
       }
 
+      const newSystem = new RankingSystem({
+        ...createRankingSystemData,
+        id: undefined,
+      });
 
-    const newSystem = new RankingSystem({
-      ...createRankingSystemData,
-      id: undefined, 
-    });
+      await newSystem.save({ transaction });
 
-    await newSystem.save({ transaction });
-
-    // Handle ranking groups
-    const rankingGroupIds = createRankingSystemData.rankingGroupIds;
-    if (rankingGroupIds && rankingGroupIds.length > 0) {
-      for (const groupId of rankingGroupIds) {
-        const dbGroup = await RankingGroup.findByPk(groupId, { transaction });
-        if (!dbGroup) {
-          throw new NotFoundException(`${RankingGroup.name}: ${groupId}`);
+      // Handle ranking groups
+      const rankingGroupIds = createRankingSystemData.rankingGroupIds;
+      if (rankingGroupIds && rankingGroupIds.length > 0) {
+        for (const groupId of rankingGroupIds) {
+          const dbGroup = await RankingGroup.findByPk(groupId, { transaction });
+          if (!dbGroup) {
+            throw new NotFoundException(`${RankingGroup.name}: ${groupId}`);
+          }
+          await newSystem.addRankingGroup(dbGroup, { transaction });
         }
-        await newSystem.addRankingGroup(dbGroup, { transaction });
       }
-    }
 
-    await transaction.commit();
-    this.logger.log(`Created system ${newSystem.name}`);
-    return newSystem;
-  } catch (error) {
-    this.logger.error('rollback', error);
-    await transaction.rollback();
-    throw error;
+      await transaction.commit();
+      this.logger.log(`Created system ${newSystem.name}`);
+      return newSystem;
+    } catch (error) {
+      this.logger.error("rollback", error);
+      await transaction.rollback();
+      throw error;
+    }
   }
-}
 
   @Mutation(() => RankingSystem)
   async updateRankingSystem(
     @User() user: Player,
-    @Args('data') updateRankingSystemData: RankingSystemUpdateInput,
+    @Args("data") updateRankingSystemData: RankingSystemUpdateInput
   ) {
-    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+    if (!(await user.hasAnyPermission(["edit:ranking"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     // Do transaction
@@ -153,7 +152,7 @@ export class RankingSystemResolver {
               },
             },
             transaction,
-          },
+          }
         );
       }
 
@@ -163,9 +162,9 @@ export class RankingSystemResolver {
       if (rankingGroupIds) {
         const currentGroups = await dbSystem.getRankingGroups({ transaction });
 
-        const currentGroupIds = currentGroups.map(group => group.id);
-        const groupsToAdd = rankingGroupIds.filter(id => !currentGroupIds.includes(id));
-        const groupsToRemove = currentGroupIds.filter(id => !rankingGroupIds.includes(id));
+        const currentGroupIds = currentGroups.map((group) => group.id);
+        const groupsToAdd = rankingGroupIds.filter((id) => !currentGroupIds.includes(id));
+        const groupsToRemove = currentGroupIds.filter((id) => !rankingGroupIds.includes(id));
 
         for (const groupId of groupsToAdd) {
           const dbGroup = await RankingGroup.findByPk(groupId);
@@ -192,7 +191,7 @@ export class RankingSystemResolver {
       await transaction.commit();
       return dbEvent;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -201,10 +200,10 @@ export class RankingSystemResolver {
   @Mutation(() => RankingSystem)
   async addRankingGroupToRankingSystem(
     @User() user: Player,
-    @Args('rankingSystemId', { type: () => ID }) rankingSystemId: string,
-    @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string,
+    @Args("rankingSystemId", { type: () => ID }) rankingSystemId: string,
+    @Args("rankingGroupId", { type: () => ID }) rankingGroupId: string
   ) {
-    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+    if (!(await user.hasAnyPermission(["edit:ranking"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     // Do transaction
@@ -232,7 +231,7 @@ export class RankingSystemResolver {
       await transaction.commit();
       return dbEvent;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -241,10 +240,10 @@ export class RankingSystemResolver {
   @Mutation(() => RankingSystem)
   async removeRankingGroupToRankingSystem(
     @User() user: Player,
-    @Args('rankingSystemId', { type: () => ID }) rankingSystemId: string,
-    @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string,
+    @Args("rankingSystemId", { type: () => ID }) rankingSystemId: string,
+    @Args("rankingGroupId", { type: () => ID }) rankingGroupId: string
   ) {
-    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+    if (!(await user.hasAnyPermission(["edit:ranking"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     // Do transaction
@@ -272,7 +271,7 @@ export class RankingSystemResolver {
       await transaction.commit();
       return dbEvent;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -281,13 +280,13 @@ export class RankingSystemResolver {
   @Mutation(() => RankingSystem)
   async copyRankingSystem(
     @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-    @Args('copyFromStartDate', { type: () => Date, nullable: true })
+    @Args("id", { type: () => ID }) id: string,
+    @Args("copyFromStartDate", { type: () => Date, nullable: true })
     copyFromStartDate?: Date,
-    @Args('copyToEndDate', { type: () => Date, nullable: true })
-    copyToEndDate?: Date,
+    @Args("copyToEndDate", { type: () => Date, nullable: true })
+    copyToEndDate?: Date
   ) {
-    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+    if (!(await user.hasAnyPermission(["edit:ranking"]))) {
       throw new UnauthorizedException(`You do not have permission to copy a system`);
     }
 
@@ -307,7 +306,7 @@ export class RankingSystemResolver {
             [Op.like]: `${dbSystem.name} (V%)%`,
           },
         },
-        order: [['name', 'DESC']],
+        order: [["name", "DESC"]],
         transaction,
       });
 
@@ -351,7 +350,7 @@ export class RankingSystemResolver {
       this.logger.log(`Copied system ${dbSystem.name} to ${newSystem.name}`);
       return dbSystem;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction?.rollback();
       throw e;
     }
@@ -360,14 +359,14 @@ export class RankingSystemResolver {
   @Mutation(() => RankingSystem)
   async copyPlacesPoints(
     @User() user: Player,
-    @Args('source', { type: () => ID }) source: string,
-    @Args('destination', { type: () => ID }) destination: string,
-    @Args('copyFromStartDate', { type: () => Date, nullable: true })
+    @Args("source", { type: () => ID }) source: string,
+    @Args("destination", { type: () => ID }) destination: string,
+    @Args("copyFromStartDate", { type: () => Date, nullable: true })
     copyFromStartDate?: Date,
-    @Args('copyToEndDate', { type: () => Date, nullable: true })
-    copyToEndDate?: Date,
+    @Args("copyToEndDate", { type: () => Date, nullable: true })
+    copyToEndDate?: Date
   ) {
-    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+    if (!(await user.hasAnyPermission(["edit:ranking"]))) {
       throw new UnauthorizedException(`You do not have permission to copy a system`);
     }
 
@@ -392,7 +391,7 @@ export class RankingSystemResolver {
           destinationSystem,
           copyFromStartDate,
           copyToEndDate,
-          transaction,
+          transaction
         );
       }
 
@@ -400,15 +399,15 @@ export class RankingSystemResolver {
       this.logger.log(`Copied places ${sourceSystem.name} to ${destinationSystem.name}`);
       return sourceSystem;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction?.rollback();
       throw e;
     }
   }
 
   @Mutation(() => Boolean)
-  async removeRankingSystem(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
-    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+  async removeRankingSystem(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
+    if (!(await user.hasAnyPermission(["edit:ranking"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     // Do transaction
@@ -427,7 +426,7 @@ export class RankingSystemResolver {
       await transaction.commit();
       return true;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -438,9 +437,11 @@ export class RankingSystemResolver {
     destinationSystem: RankingSystem,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
-    transaction: Transaction,
+    transaction: Transaction
   ) {
-    this.logger.log(`Copy places and points from ${sourceSystem.name} to ${destinationSystem.name}`);
+    this.logger.log(
+      `Copy places and points from ${sourceSystem.name} to ${destinationSystem.name}`
+    );
     await RankingLastPlace.destroy({
       where: {
         systemId: destinationSystem.id,
@@ -496,14 +497,14 @@ export class RankingSystemResolver {
 
     for (const { from, to } of dates) {
       this.logger.debug(
-        `Copy places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`,
+        `Copy places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`
       );
       await this._copyRankingLastPlaces(
         sourceSystem.id,
         destinationSystem.id,
         from,
         to,
-        transaction,
+        transaction
       );
 
       await this._copyRankingPoints(sourceSystem.id, destinationSystem.id, from, to, transaction);
@@ -511,11 +512,13 @@ export class RankingSystemResolver {
       await this._copyRankingPlaces(sourceSystem.id, destinationSystem.id, from, to, transaction);
 
       this.logger.debug(
-        `Copied places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`,
+        `Copied places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`
       );
     }
 
-    this.logger.log(`Copied places and points from ${sourceSystem.name} to ${destinationSystem.name}`);
+    this.logger.log(
+      `Copied places and points from ${sourceSystem.name} to ${destinationSystem.name}`
+    );
   }
 
   private async _copyRankingPlaces(
@@ -523,10 +526,10 @@ export class RankingSystemResolver {
     newSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
-    transaction: Transaction | undefined,
+    transaction: Transaction | undefined
   ) {
     this.logger.verbose(
-      `Copy places from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
+      `Copy places from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`
     );
 
     // get all column names
@@ -538,18 +541,18 @@ export class RankingSystemResolver {
       AND table_name   = 'RankingPlaces'
     `,
       {
-        type: 'SELECT',
+        type: "SELECT",
         transaction,
-      },
+      }
     )) as { column_name: string }[];
 
     await this._sequelize.query(
       `
       CREATE TEMPORARY TABLE temp_places AS
       SELECT  uuid_generate_v4() as "id", ${columns
-        .filter((c) => c.column_name !== 'id')
+        .filter((c) => c.column_name !== "id")
         .map((c) => `"${c.column_name}"`)
-        .join(', ')}
+        .join(", ")}
       FROM "ranking"."RankingPlaces"
       WHERE "systemId" = '${currenSystemId}'
       AND "rankingDate" > '${copyFromStartDate?.toISOString()}' AND  "rankingDate" <= '${copyToEndDate?.toISOString()}'
@@ -557,7 +560,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
 
     this.logger.verbose(`Created temp table`);
@@ -569,7 +572,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
 
     // generate new ids
@@ -583,7 +586,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
 
     this.logger.verbose(`Inserted temp table`);
@@ -595,7 +598,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
   }
 
@@ -604,10 +607,10 @@ export class RankingSystemResolver {
     destinationSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
-    transaction: Transaction | undefined,
+    transaction: Transaction | undefined
   ) {
     this.logger.verbose(
-      `Copy last places from ${sourceSystemId} to ${destinationSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
+      `Copy last places from ${sourceSystemId} to ${destinationSystemId} between ${copyFromStartDate} and ${copyToEndDate}`
     );
 
     // get all column names
@@ -619,25 +622,25 @@ export class RankingSystemResolver {
         AND table_name   = 'RankingLastPlaces'
       `,
       {
-        type: 'SELECT',
+        type: "SELECT",
         transaction,
-      },
+      }
     )) as { column_name: string }[];
 
     await this._sequelize.query(
       `
       CREATE TEMPORARY TABLE temp_last_places AS
       SELECT  uuid_generate_v4() as "id", ${columns
-        .filter((c) => c.column_name !== 'id')
+        .filter((c) => c.column_name !== "id")
         .map((c) => `"${c.column_name}"`)
-        .join(', ')}
+        .join(", ")}
       FROM "ranking"."RankingLastPlaces"
       WHERE "systemId" = '${sourceSystemId}'
       AND "rankingDate" > '${copyFromStartDate?.toISOString()}' AND  "rankingDate" <= '${copyToEndDate?.toISOString()}'
     `,
       {
         transaction,
-      },
+      }
     );
 
     this.logger.verbose(`Created temp table`);
@@ -649,7 +652,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
 
     this.logger.verbose(`Updated temp table`);
@@ -661,7 +664,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
 
     this.logger.verbose(`Inserted temp table`);
@@ -673,7 +676,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
   }
 
@@ -682,10 +685,10 @@ export class RankingSystemResolver {
     newSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
-    transaction: Transaction | undefined,
+    transaction: Transaction | undefined
   ) {
     this.logger.verbose(
-      `Copy Points from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
+      `Copy Points from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`
     );
 
     // get all column names
@@ -697,18 +700,18 @@ export class RankingSystemResolver {
         AND table_name   = 'RankingPoints'
       `,
       {
-        type: 'SELECT',
+        type: "SELECT",
         transaction,
-      },
+      }
     )) as { column_name: string }[];
 
     await this._sequelize.query(
       `
       CREATE TEMPORARY TABLE temp_points AS
       SELECT  uuid_generate_v4() as "id", ${columns
-        .filter((c) => c.column_name !== 'id')
+        .filter((c) => c.column_name !== "id")
         .map((c) => `"${c.column_name}"`)
-        .join(', ')}
+        .join(", ")}
       FROM "ranking"."RankingPoints"
       WHERE "systemId" = '${currenSystemId}'
       AND "rankingDate" > '${copyFromStartDate?.toISOString()}' AND  "rankingDate" <= '${copyToEndDate?.toISOString()}'
@@ -716,7 +719,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
 
     this.logger.verbose(`Created temp table`);
@@ -728,7 +731,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
 
     this.logger.verbose(`Updated temp table`);
@@ -740,7 +743,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
 
     this.logger.verbose(`Inserted temp table`);
@@ -752,7 +755,7 @@ export class RankingSystemResolver {
     `,
       {
         transaction,
-      },
+      }
     );
   }
 
@@ -769,7 +772,7 @@ export class RankingSystemResolver {
 
     while (current < end) {
       const from = moment(current);
-      const to = moment(current).add(1, 'month');
+      const to = moment(current).add(1, "month");
       dates.push({
         from: from.toDate(),
         to: to.toDate(),

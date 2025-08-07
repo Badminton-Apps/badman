@@ -1,6 +1,6 @@
-import { isFirstHigher } from '@badman/utils';
-import { EnrollmentValidationData, RuleResult, EnrollmentValidationError } from '../../../models';
-import { Rule } from './_rule.base';
+import { isFirstHigher } from "@badman/utils";
+import { EnrollmentValidationData, RuleResult, EnrollmentValidationError } from "../../../models";
+import { Rule } from "./_rule.base";
 
 /**
  * If a team was a riser or faller, it should be higher/lower then previous year
@@ -22,20 +22,20 @@ export class TeamRiserFallerRule extends Rule {
 
       if (
         previousSeasonTeam?.entry?.standing?.riser &&
-        isFirstHigher(subEvent, previousSeasonTeam?.entry?.subEventCompetition) !== 'better'
+        isFirstHigher(subEvent, previousSeasonTeam?.entry?.subEventCompetition) !== "better"
       ) {
         errors.push({
-          message: 'all.v1.entryTeamDrawer.validation.errors.riser',
+          message: "all.v1.entryTeamDrawer.validation.errors.riser",
           params: {
             team,
           },
         });
       } else if (
         previousSeasonTeam?.entry?.standing?.faller &&
-        isFirstHigher(subEvent, previousSeasonTeam?.entry?.subEventCompetition) !== 'lower'
+        isFirstHigher(subEvent, previousSeasonTeam?.entry?.subEventCompetition) !== "lower"
       ) {
         errors.push({
-          message: 'all.v1.entryTeamDrawer.validation.errors.faller',
+          message: "all.v1.entryTeamDrawer.validation.errors.faller",
           params: {
             team,
           },

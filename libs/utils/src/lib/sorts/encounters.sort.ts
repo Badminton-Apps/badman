@@ -5,7 +5,7 @@ export const sortEncounters = (
   b: Partial<{
     date: Date;
   }>,
-  order: 'asc' | 'desc' = 'asc',
+  order: "asc" | "desc" = "asc"
 ) => {
   if (!a.date) {
     return 1;
@@ -16,9 +16,9 @@ export const sortEncounters = (
   }
 
   if (a.date < b.date) {
-    return order === 'asc' ? -1 : 1;
+    return order === "asc" ? -1 : 1;
   } else if (a.date > b.date) {
-    return order === 'asc' ? 1 : -1;
+    return order === "asc" ? 1 : -1;
   } else {
     return 0;
   }

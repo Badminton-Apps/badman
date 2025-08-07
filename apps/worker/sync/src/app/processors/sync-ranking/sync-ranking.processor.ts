@@ -1,11 +1,11 @@
-import { SyncQueue, Sync } from '@badman/backend-queue';
-import { VisualService } from '@badman/backend-visual';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
-import { Sequelize } from 'sequelize-typescript';
-import { RankingSyncer } from './ranking-sync';
-import { CronJob } from '@badman/backend-database';
+import { SyncQueue, Sync } from "@badman/backend-queue";
+import { VisualService } from "@badman/backend-visual";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
+import { Sequelize } from "sequelize-typescript";
+import { RankingSyncer } from "./ranking-sync";
+import { CronJob } from "@badman/backend-database";
 
 @Processor({
   name: SyncQueue,
@@ -18,7 +18,7 @@ export class SyncRankingProcessor {
   constructor(
     private _sequelize: Sequelize,
     visualService: VisualService,
-    @InjectQueue(SyncQueue) readonly rankingQ: Queue,
+    @InjectQueue(SyncQueue) readonly rankingQ: Queue
   ) {
     this._rankingSync = new RankingSyncer(visualService, rankingQ);
   }
@@ -27,7 +27,7 @@ export class SyncRankingProcessor {
   async syncRanking(
     job: Job<{
       start: string;
-    }>,
+    }>
   ): Promise<void> {
     this.logger.debug(`Syncing Ranking, data: ${JSON.stringify(job.data)}`);
 
@@ -35,17 +35,17 @@ export class SyncRankingProcessor {
 
     const cronJob = await CronJob.findOne({
       where: {
-        'meta.jobName': Sync.SyncRanking,
-        'meta.queueName': SyncQueue,
+        "meta.jobName": Sync.SyncRanking,
+        "meta.queueName": SyncQueue,
       },
     });
 
     if (!cronJob) {
-      throw new Error('Job not found');
+      throw new Error("Job not found");
     }
 
     if (cronJob.running) {
-      this.logger.log('Job already running');
+      this.logger.log("Job already running");
       return;
     }
 
@@ -58,12 +58,12 @@ export class SyncRankingProcessor {
         ...job.data,
       });
 
-      this.logger.debug('Commiting');
+      this.logger.debug("Commiting");
 
       await transaction.commit();
-      this.logger.debug('Syncing Ranking done');
+      this.logger.debug("Syncing Ranking done");
     } catch (error) {
-      this.logger.error('Rolling back');
+      this.logger.error("Rolling back");
       await transaction.rollback();
       throw error;
     } finally {

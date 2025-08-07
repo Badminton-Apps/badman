@@ -4,18 +4,18 @@ import {
   Player,
   RankingPoint,
   RankingSystem,
-} from '@badman/backend-database';
-import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
-import { Logger } from '@nestjs/common';
+} from "@badman/backend-database";
+import { PointsService, StartVisualRankingDate } from "@badman/backend-ranking";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
+import { Logger } from "@nestjs/common";
 
 export class TournamentSyncPointProcessor extends StepProcessor {
   public event?: EventTournament;
 
   constructor(
     private pointService: PointsService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -44,7 +44,7 @@ export class TournamentSyncPointProcessor extends StepProcessor {
           });
 
           const games = await Game.findAll({
-            attributes: ['id', 'winner', 'set1Team1', 'set2Team2', 'playedAt', 'gameType'],
+            attributes: ["id", "winner", "set1Team1", "set2Team2", "playedAt", "gameType"],
             where: {
               linkId: {
                 [Op.in]: draws.map((e) => e.id),
@@ -56,13 +56,13 @@ export class TournamentSyncPointProcessor extends StepProcessor {
             include: [
               {
                 model: RankingPoint,
-                attributes: ['id'],
+                attributes: ["id"],
                 required: false,
                 where: { systemId: rankingSystem.id },
               },
               {
                 model: Player,
-                attributes: ['id'],
+                attributes: ["id"],
               },
             ],
             transaction: this.transaction,

@@ -1,4 +1,4 @@
-import { GameType } from '../enums';
+import { GameType } from "../enums";
 
 export const sortGames = (
   a: Partial<{
@@ -9,7 +9,7 @@ export const sortGames = (
     playedAt: Date;
     gameType: GameType;
   }>,
-  order: 'asc' | 'desc' = 'desc',
+  order: "asc" | "desc" = "desc"
 ) => {
   if (!a.playedAt) {
     return 1;
@@ -20,9 +20,9 @@ export const sortGames = (
   }
 
   if (a.playedAt < b.playedAt) {
-    return order === 'asc' ? -1 : 1;
+    return order === "asc" ? -1 : 1;
   } else if (a.playedAt > b.playedAt) {
-    return order === 'asc' ? 1 : -1;
+    return order === "asc" ? 1 : -1;
   } else {
     // GameType.S is always the last one
     if (a.gameType === GameType.S && b.gameType !== GameType.S) {

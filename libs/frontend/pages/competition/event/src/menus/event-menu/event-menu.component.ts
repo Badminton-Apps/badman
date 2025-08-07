@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,38 +5,38 @@ import {
   inject,
   input,
   TemplateRef,
-} from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterModule } from '@angular/router';
+} from "@angular/core";
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { Router, RouterModule } from "@angular/router";
 import {
   ConfirmDialogComponent,
   ConfirmDialogModel,
   HasClaimComponent,
   OpenCloseChangeEncounterDateDialogComponent,
   OpenCloseDateDialogComponent,
-} from '@badman/frontend-components';
-import { CpService } from '@badman/frontend-cp';
-import { ExcelService } from '@badman/frontend-excel';
-import { EventCompetition } from '@badman/frontend-models';
-import { JobsService } from '@badman/frontend-queue';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { lastValueFrom, take } from 'rxjs';
+} from "@badman/frontend-components";
+import { CpService } from "@badman/frontend-cp";
+import { ExcelService } from "@badman/frontend-excel";
+import { EventCompetition } from "@badman/frontend-models";
+import { JobsService } from "@badman/frontend-queue";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { lastValueFrom, take } from "rxjs";
 
 @Component({
-  selector: 'badman-event-menu',
+  selector: "badman-event-menu",
   imports: [
     RouterModule,
     TranslatePipe,
@@ -55,10 +54,10 @@ import { lastValueFrom, take } from 'rxjs';
     MatTooltipModule,
     MatSnackBarModule,
     MatTabsModule,
-    HasClaimComponent
-],
-  templateUrl: './event-menu.component.html',
-  styleUrl: './event-menu.component.scss',
+    HasClaimComponent,
+  ],
+  templateUrl: "./event-menu.component.html",
+  styleUrl: "./event-menu.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventMenuComponent {
@@ -77,7 +76,7 @@ export class EventMenuComponent {
   constructor() {
     effect(() => {
       this.copyYearControl.setValue(
-        (this.eventCompetition()?.season ?? new Date().getFullYear()) + 1,
+        (this.eventCompetition()?.season ?? new Date().getFullYear()) + 1
       );
     });
   }
@@ -127,9 +126,9 @@ export class EventMenuComponent {
     const year = await lastValueFrom(
       this.dialog
         .open(templateRef, {
-          width: '300px',
+          width: "300px",
         })
-        .afterClosed(),
+        .afterClosed()
     );
 
     if (!year) {
@@ -150,10 +149,10 @@ export class EventMenuComponent {
           id: this.eventCompetition()?.id,
           year,
         },
-      }),
+      })
     );
 
-    this.router.navigate(['/competition', result.data?.copyEventCompetition?.slug]);
+    this.router.navigate(["/competition", result.data?.copyEventCompetition?.slug]);
   }
 
   setOpenCloseEnrollents() {
@@ -163,9 +162,9 @@ export class EventMenuComponent {
         openDate: this.eventCompetition()?.openDate,
         closeDate: this.eventCompetition()?.closeDate,
         season: this.eventCompetition()?.season,
-        title: 'all.competition.menu.open_close_enrollments',
+        title: "all.competition.menu.open_close_enrollments",
       },
-      width: '400px',
+      width: "400px",
     });
 
     ref.afterClosed().subscribe((result) => {
@@ -196,7 +195,7 @@ export class EventMenuComponent {
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(`Competition ${event?.name} open/close dates updated`, 'Close', {
+            this.matSnackBar.open(`Competition ${event?.name} open/close dates updated`, "Close", {
               duration: 2000,
             });
           });
@@ -214,7 +213,7 @@ export class EventMenuComponent {
         changeCloseRequestDatePeriod1: this.eventCompetition()?.changeCloseRequestDatePeriod1,
         changeCloseRequestDatePeriod2: this.eventCompetition()?.changeCloseRequestDatePeriod2,
       },
-      width: '400px',
+      width: "400px",
     });
 
     ref.afterClosed().subscribe((result) => {
@@ -222,7 +221,7 @@ export class EventMenuComponent {
         const eventCompetition = this.eventCompetition();
 
         if (!eventCompetition) {
-          console.error('Event competition not found');
+          console.error("Event competition not found");
           return;
         }
 
@@ -255,10 +254,10 @@ export class EventMenuComponent {
           .subscribe(() => {
             this.matSnackBar.open(
               `Competition ${eventCompetition.name} open/close dates updated`,
-              'Close',
+              "Close",
               {
                 duration: 2000,
-              },
+              }
             );
           });
       }
@@ -284,17 +283,17 @@ export class EventMenuComponent {
       })
       .subscribe(() => {
         this.matSnackBar.open(
-          `Competition ${this.eventCompetition()?.name} is ${offical ? 'official' : 'unofficial'}`,
-          'Close',
+          `Competition ${this.eventCompetition()?.name} is ${offical ? "official" : "unofficial"}`,
+          "Close",
           {
             duration: 2000,
-          },
+          }
         );
 
         const eventCompetition = this.eventCompetition();
 
         if (!eventCompetition) {
-          console.error('Event competition not found');
+          console.error("Event competition not found");
           return;
         }
         const event = this.eventCompetition();
@@ -308,12 +307,12 @@ export class EventMenuComponent {
 
   removeEvent() {
     const dialogData = new ConfirmDialogModel(
-      'all.competition.delete.title',
-      'all.competition.delete.description',
+      "all.competition.delete.title",
+      "all.competition.delete.description"
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: '400px',
+      maxWidth: "400px",
       data: dialogData,
     });
 
@@ -332,14 +331,14 @@ export class EventMenuComponent {
           variables: {
             id: this.eventCompetition()?.id,
           },
-          refetchQueries: ['EventCompetition'],
+          refetchQueries: ["EventCompetition"],
         })
         .subscribe(() => {
-          this.matSnackBar.open('Deleted', undefined, {
+          this.matSnackBar.open("Deleted", undefined, {
             duration: 1000,
-            panelClass: 'success',
+            panelClass: "success",
           });
-          this.router.navigate(['/competition']);
+          this.router.navigate(["/competition"]);
         });
     });
   }

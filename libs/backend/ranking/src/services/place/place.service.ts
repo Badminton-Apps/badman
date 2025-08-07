@@ -1,11 +1,11 @@
-import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { Badminton, Simulation } from '@badman/backend-queue';
-import { BelgiumFlandersPlacesService } from '@badman/belgium-flanders-places';
-import { InjectQueue } from '@nestjs/bull';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Queue } from 'bull';
-import moment from 'moment';
-import { Transaction } from 'sequelize';
+import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
+import { Badminton, Simulation } from "@badman/backend-queue";
+import { BelgiumFlandersPlacesService } from "@badman/belgium-flanders-places";
+import { InjectQueue } from "@nestjs/bull";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Queue } from "bull";
+import moment from "moment";
+import { Transaction } from "sequelize";
 
 /* TODO:
 - [ ] We need to determine which place service / queue to trigger when running the general placeservice
@@ -18,7 +18,7 @@ export class PlaceService {
 
   constructor(
     @InjectQueue(Badminton.Belgium.Flanders.Places) private placesQueue: Queue,
-    private readonly belgiumFlandersPlaceService: BelgiumFlandersPlacesService,
+    private readonly belgiumFlandersPlaceService: BelgiumFlandersPlacesService
   ) {}
 
   /**
@@ -56,7 +56,7 @@ export class PlaceService {
     if (pointCount > 0) {
       const deleted = await RankingPlace.destroy({ where, transaction });
       this._logger.verbose(
-        `Truncated ${deleted} RankingPlace for system ${where.systemId} and date ${where.rankingDate}`,
+        `Truncated ${deleted} RankingPlace for system ${where.systemId} and date ${where.rankingDate}`
       );
     }
 
@@ -92,7 +92,7 @@ export class PlaceService {
     const duration = moment.duration(moment(endTime).diff(moment(startTime)));
     const average = duration.asMilliseconds() / players.length;
     this._logger.log(
-      `Calculated ${players.length} places in ${duration.asSeconds()} seconds, average ${average} ms per player`,
+      `Calculated ${players.length} places in ${duration.asSeconds()} seconds, average ${average} ms per player`
     );
 
     if (options?.updateRanking) {
@@ -108,7 +108,7 @@ export class PlaceService {
 
     // we require lastRankingPlace to skip players who have never played
     return await Player.findAll({
-      attributes: ['id'],
+      attributes: ["id"],
       where: {
         competitionPlayer: true,
       },
@@ -127,7 +127,7 @@ export class PlaceService {
           updateRanking?: boolean | undefined;
           transaction?: Transaction | undefined;
         }
-      | undefined,
+      | undefined
   ) {
     this.belgiumFlandersPlaceService.newPlaceForPlayer(player, system, stop, start, options);
   }

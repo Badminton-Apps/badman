@@ -1,11 +1,11 @@
-import { Injectable, inject } from '@angular/core';
-import { CronJob, Service } from '@badman/frontend-models';
-import { JobsService } from '@badman/frontend-queue';
-import { Apollo, gql } from 'apollo-angular';
-import { Socket } from 'ngx-socket-io';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { Observable, merge } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Injectable, inject } from "@angular/core";
+import { CronJob, Service } from "@badman/frontend-models";
+import { JobsService } from "@badman/frontend-queue";
+import { Apollo, gql } from "apollo-angular";
+import { Socket } from "ngx-socket-io";
+import { signalSlice } from "ngxtension/signal-slice";
+import { Observable, merge } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 
 export interface CronJobState {
   cronJobs: CronJob[];
@@ -13,7 +13,7 @@ export interface CronJobState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class CronJobService {
   socket = inject(Socket);
@@ -53,7 +53,7 @@ export class CronJobService {
     })
     .pipe(
       map((res) => res.data?.cronJobs?.map((item) => new CronJob(item)) ?? []),
-      map((cronJobs) => cronJobs.sort((a, b) => `${a.name}`.localeCompare(`${b.name}`))),
+      map((cronJobs) => cronJobs.sort((a, b) => `${a.name}`.localeCompare(`${b.name}`)))
     );
 
   sources$ = merge(
@@ -61,8 +61,8 @@ export class CronJobService {
       map((cronJobs) => ({
         cronJobs,
         loaded: true,
-      })),
-    ),
+      }))
+    )
   );
 
   state = signalSlice({

@@ -1,6 +1,6 @@
-import { GameType } from '@badman/utils';
-import { DrawTournament, EncounterCompetition, Game, GamePlayerMembership } from '../models';
-import { PlayerBuilder } from './playerBuilder';
+import { GameType } from "@badman/utils";
+import { DrawTournament, EncounterCompetition, Game, GamePlayerMembership } from "../models";
+import { PlayerBuilder } from "./playerBuilder";
 
 export class GameBuilder {
   private build = false;
@@ -29,8 +29,8 @@ export class GameBuilder {
   }
 
   WithSet(team1Score: number, team2Score: number): GameBuilder {
-    this.game[`set${this.set}Team1` as 'set1Team1' | 'set2Team1' | 'set3Team1'] = team1Score;
-    this.game[`set${this.set}Team2` as 'set1Team2' | 'set2Team2' | 'set3Team2'] = team2Score;
+    this.game[`set${this.set}Team1` as "set1Team1" | "set2Team1" | "set3Team1"] = team1Score;
+    this.game[`set${this.set}Team2` as "set1Team2" | "set2Team2" | "set3Team2"] = team2Score;
     this.set++;
 
     return this;
@@ -38,13 +38,13 @@ export class GameBuilder {
 
   ForCompetition(encounter: EncounterCompetition): GameBuilder {
     this.game.linkId = encounter.id;
-    this.game.linkType = 'competition';
+    this.game.linkType = "competition";
     return this;
   }
 
   ForTournament(draw: DrawTournament): GameBuilder {
     this.game.linkId = draw.id;
-    this.game.linkType = 'tournament';
+    this.game.linkType = "tournament";
     return this;
   }
 

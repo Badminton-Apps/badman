@@ -1,4 +1,4 @@
-import { Location } from '@angular/common';
+import { Location } from "@angular/common";
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -6,20 +6,20 @@ import {
   computed,
   effect,
   inject,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTabsModule } from '@angular/material/tabs';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ClaimService } from '@badman/frontend-auth';
-import { Player } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { TranslatePipe } from '@ngx-translate/core';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { BreadcrumbService } from 'xng-breadcrumb';
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatTabsModule } from "@angular/material/tabs";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { ClaimService } from "@badman/frontend-auth";
+import { Player } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { TranslatePipe } from "@ngx-translate/core";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { distinctUntilChanged, takeUntil } from "rxjs/operators";
+import { BreadcrumbService } from "xng-breadcrumb";
 import {
   EditClubHistoryComponent,
   EditCompetitionStatusComponent,
@@ -27,13 +27,13 @@ import {
   EditPlayerFieldsComponent,
   EditRankingAllComponent,
   EditRankingComponent,
-} from './tabs';
+} from "./tabs";
 
 @Component({
-    selector: 'badman-player-edit',
-    templateUrl: './edit.page.html',
-    styleUrls: ['./edit.page.scss'],
-    imports: [
+  selector: "badman-player-edit",
+  templateUrl: "./edit.page.html",
+  styleUrls: ["./edit.page.scss"],
+  imports: [
     ReactiveFormsModule,
     RouterModule,
     TranslatePipe,
@@ -45,9 +45,9 @@ import {
     EditPlayerFieldsComponent,
     MatIconModule,
     MatTabsModule,
-    MatButtonModule
-],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    MatButtonModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditPageComponent implements AfterViewInit {
   private readonly seoService = inject(SeoService);
@@ -61,26 +61,26 @@ export class EditPageComponent implements AfterViewInit {
 
   private routeData = toSignal(this.route.data);
 
-  player = computed(() => this.routeData()?.['player'] as Player);
+  player = computed(() => this.routeData()?.["player"] as Player);
 
   // player!: Player;
   selectedTabIndex?: number;
 
   hasRankingPermission = computed(() =>
-    this.claimService.hasAnyClaims(['edit:ranking', 'status:competition']),
+    this.claimService.hasAnyClaims(["edit:ranking", "status:competition"])
   );
-  hasClubHistoryPermission = computed(() => this.claimService.hasAnyClaims(['membership:club']));
-  hasPermissionPermission = computed(() => this.claimService.hasAnyClaims(['edit:ranking']));
+  hasClubHistoryPermission = computed(() => this.claimService.hasAnyClaims(["membership:club"]));
+  hasPermissionPermission = computed(() => this.claimService.hasAnyClaims(["edit:ranking"]));
 
   constructor() {
     effect(() => {
       this.seoService.update({
         title: `${this.player().fullName}`,
         description: `Player ${this.player().fullName}`,
-        type: 'website',
-        keywords: ['player', 'badminton'],
+        type: "website",
+        keywords: ["player", "badminton"],
       });
-      this.breadcrumbsService.set('player/:id', this.player().fullName);
+      this.breadcrumbsService.set("player/:id", this.player().fullName);
     });
   }
 
@@ -89,7 +89,7 @@ export class EditPageComponent implements AfterViewInit {
       this.activatedRoute.queryParams
         .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
         .subscribe((params) => {
-          this.selectedTabIndex = params['tab'];
+          this.selectedTabIndex = params["tab"];
         });
     }, 0);
   }

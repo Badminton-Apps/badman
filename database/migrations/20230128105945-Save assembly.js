@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,8 +7,8 @@ module.exports = {
       try {
         await queryInterface.createTable(
           {
-            tableName: 'Assemblies',
-            schema: 'personal',
+            tableName: "Assemblies",
+            schema: "personal",
           },
           {
             id: {
@@ -27,53 +27,53 @@ module.exports = {
               type: Sequelize.UUID,
               references: {
                 model: {
-                  schema: 'event',
-                  tableName: 'EncounterCompetitions',
+                  schema: "event",
+                  tableName: "EncounterCompetitions",
                 },
-                key: 'id',
+                key: "id",
                 deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
               },
-              onUpdate: 'CASCADE',
-              onDelete: 'SET NULL',
+              onUpdate: "CASCADE",
+              onDelete: "SET NULL",
             },
             teamId: {
               type: Sequelize.UUID,
               references: {
                 model: {
-                  schema: 'public',
-                  tableName: 'Teams',
+                  schema: "public",
+                  tableName: "Teams",
                 },
-                key: 'id',
+                key: "id",
                 deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
               },
-              onUpdate: 'CASCADE',
-              onDelete: 'SET NULL',
+              onUpdate: "CASCADE",
+              onDelete: "SET NULL",
             },
             captainId: {
               type: Sequelize.UUID,
               references: {
                 model: {
-                  schema: 'public',
-                  tableName: 'Players',
+                  schema: "public",
+                  tableName: "Players",
                 },
-                key: 'id',
+                key: "id",
                 deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
               },
-              onUpdate: 'CASCADE',
-              onDelete: 'SET NULL',
+              onUpdate: "CASCADE",
+              onDelete: "SET NULL",
             },
             playerId: {
               type: Sequelize.UUID,
               references: {
                 model: {
-                  schema: 'public',
-                  tableName: 'Players',
+                  schema: "public",
+                  tableName: "Players",
                 },
-                key: 'id',
+                key: "id",
                 deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
               },
-              onUpdate: 'CASCADE',
-              onDelete: 'SET NULL',
+              onUpdate: "CASCADE",
+              onDelete: "SET NULL",
             },
             createdAt: {
               allowNull: false,
@@ -86,10 +86,10 @@ module.exports = {
           },
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });
@@ -98,12 +98,12 @@ module.exports = {
     return queryInterface.sequelize.transaction((t) => {
       return queryInterface.dropTable(
         {
-          tableName: 'Assemblies',
-          schema: 'personal',
+          tableName: "Assemblies",
+          schema: "personal",
         },
         {
           transaction: t,
-        },
+        }
       );
     });
   },

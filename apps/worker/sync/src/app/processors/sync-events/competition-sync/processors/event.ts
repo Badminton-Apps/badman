@@ -1,9 +1,9 @@
-import { EventCompetition } from '@badman/backend-database';
-import { VisualService, XmlTournament } from '@badman/backend-visual';
-import { Logger } from '@nestjs/common';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
+import { EventCompetition } from "@badman/backend-database";
+import { VisualService, XmlTournament } from "@badman/backend-visual";
+import { Logger } from "@nestjs/common";
+import moment from "moment";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
 
 export interface EventStepData {
   stop: boolean;
@@ -16,7 +16,7 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -58,8 +58,8 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
     await event.save({ transaction: this.transaction });
 
     const enlistingOpen =
-      moment(event.openDate).diff(moment(), 'days') > 0 &&
-      moment(event.closeDate).diff(moment(), 'days') < 0;
+      moment(event.openDate).diff(moment(), "days") > 0 &&
+      moment(event.closeDate).diff(moment(), "days") < 0;
 
     if (enlistingOpen) {
       this.logger.debug(`EventCompetition ${event.name} is open, skipping processing`);

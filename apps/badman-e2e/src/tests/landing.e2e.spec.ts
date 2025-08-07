@@ -1,13 +1,13 @@
-import { expect } from '@playwright/test';
-import { test } from '../fixture';
+import { expect } from "@playwright/test";
+import { test } from "../fixture";
 
-test('Landing page', async ({ homePage }) => {
+test("Landing page", async ({ homePage }) => {
   // if page is visible
   await expect(homePage.ranking).toBeVisible();
 
   // if header is visible
-  await expect(homePage.ranking.locator('h3')).toContainText('Ranking table');
+  await expect(homePage.ranking.locator("h3")).toContainText("Ranking table");
 
   // should contain 12 rows
-  await expect(homePage.ranking.locator('tbody tr')).toHaveCount(12);
+  await expect(homePage.ranking.locator("tbody tr")).toHaveCount(12);
 });

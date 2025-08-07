@@ -1,28 +1,28 @@
-import { Component, Signal, computed, inject, model } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { Component, Signal, computed, inject, model } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog } from "@angular/material/dialog";
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatInput } from "@angular/material/input";
 import {
   PageHeaderComponent,
   SelectSeasonComponent,
   TriStateCheckboxComponent,
-} from '@badman/frontend-components';
-import { Club, ClubMembership } from '@badman/frontend-models';
-import { ClubMembershipType, getSeason } from '@badman/utils';
-import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
-import { MtxSelect } from '@ng-matero/extensions/select';
-import { TranslatePipe } from '@ngx-translate/core';
-import moment from 'moment';
-import { UploadTransferLoanDialogComponent } from '../dialogs';
-import { TransferLoanService } from './transfer-loan.service';
-import { combineLatest, debounceTime, startWith } from 'rxjs';
+} from "@badman/frontend-components";
+import { Club, ClubMembership } from "@badman/frontend-models";
+import { ClubMembershipType, getSeason } from "@badman/utils";
+import { MtxGrid, MtxGridColumn } from "@ng-matero/extensions/grid";
+import { MtxSelect } from "@ng-matero/extensions/select";
+import { TranslatePipe } from "@ngx-translate/core";
+import moment from "moment";
+import { UploadTransferLoanDialogComponent } from "../dialogs";
+import { TransferLoanService } from "./transfer-loan.service";
+import { combineLatest, debounceTime, startWith } from "rxjs";
 
 @Component({
-  selector: 'badman-ranking-overview',
-  templateUrl: './overview.page.html',
-  styleUrls: ['./overview.page.scss'],
+  selector: "badman-ranking-overview",
+  templateUrl: "./overview.page.html",
+  styleUrls: ["./overview.page.scss"],
   imports: [
     FormsModule,
     MatButtonModule,
@@ -56,14 +56,14 @@ export class OverviewPageComponent {
 
   seasonControl = new FormControl<number>(getSeason()) as FormControl<number>;
   confirmedControl = new FormControl<boolean>(false) as FormControl<boolean>;
-  searchControl = new FormControl<string>('') as FormControl<string>;
+  searchControl = new FormControl<string>("") as FormControl<string>;
   newClubsControl = new FormControl<string[] | null>(null) as FormControl<string[]>;
   currentClubsControl = new FormControl<string[] | null>(null) as FormControl<string[]>;
 
   constructor() {
     // watch for changes in the seasonControl and update the service state
     this.seasonControl.valueChanges.subscribe((season) => {
-      console.log('Season changed:', season);
+      console.log("Season changed:", season);
       if (season) {
         this.searchControl.reset(); // reset the search control when confirmed changes
         this.service.state.setSeason(season);
@@ -72,7 +72,7 @@ export class OverviewPageComponent {
 
     // watch for changes in the confirmedControl and update the service state
     this.confirmedControl.valueChanges.subscribe((confirmed) => {
-      console.log('Confirmed changed:', confirmed);
+      console.log("Confirmed changed:", confirmed);
       this.searchControl.reset(); // reset the search control when confirmed changes
       this.service.state.setConfirmed(confirmed);
     });
@@ -85,9 +85,9 @@ export class OverviewPageComponent {
     ])
       .pipe(debounceTime(300)) // debounce the input for 300ms
       .subscribe(([search, newClubs, currentClubs]) => {
-        console.log('Search changed:', search);
-        console.log('New clubs changed:', newClubs);
-        console.log('Current clubs changed:', currentClubs);
+        console.log("Search changed:", search);
+        console.log("New clubs changed:", newClubs);
+        console.log("Current clubs changed:", currentClubs);
         this.service.state.setFilter({
           search,
           newClubs,
@@ -137,60 +137,60 @@ export class OverviewPageComponent {
   }) as Signal<Club[]>;
 
   columns: MtxGridColumn[] = [
-    { header: 'Name', field: 'player.fullName', sortable: true },
-    { header: 'New club', field: 'club.name', sortable: true },
+    { header: "Name", field: "player.fullName", sortable: true },
+    { header: "New club", field: "club.name", sortable: true },
     {
-      header: 'Current club',
-      field: 'nothing',
+      header: "Current club",
+      field: "nothing",
       formatter: (data) => data.player.clubs?.find((r: Club) => r.clubMembership?.active)?.name,
       sortable: true,
     },
     {
-      header: 'Membership type',
-      field: 'membershipType',
+      header: "Membership type",
+      field: "membershipType",
       formatter: (data) => {
         switch (data.membershipType) {
           case ClubMembershipType.NORMAL:
-            return 'Transfer';
+            return "Transfer";
           case ClubMembershipType.LOAN:
-            return 'Uitlening';
+            return "Uitlening";
           default:
-            return 'Unknown';
+            return "Unknown";
         }
       },
       sortable: true,
     },
     {
-      header: 'Start',
-      field: 'start',
-      formatter: (data) => moment(data.start).format('YYYY-MM-DD HH:mm:ss'),
+      header: "Start",
+      field: "start",
+      formatter: (data) => moment(data.start).format("YYYY-MM-DD HH:mm:ss"),
       sortable: true,
     },
     {
-      header: 'End',
-      field: 'end',
-      formatter: (data) => (data.end ? moment(data.end).format('YYYY-MM-DD HH:mm:ss') : '--'),
+      header: "End",
+      field: "end",
+      formatter: (data) => (data.end ? moment(data.end).format("YYYY-MM-DD HH:mm:ss") : "--"),
       sortable: true,
     },
     {
-      header: 'Operation',
-      field: 'operation',
-      pinned: 'right',
-      right: '0px',
-      type: 'button',
+      header: "Operation",
+      field: "operation",
+      pinned: "right",
+      right: "0px",
+      type: "button",
       buttons: [
         {
-          type: 'icon',
-          text: 'accept',
-          icon: 'check',
-          tooltip: 'accept',
+          type: "icon",
+          text: "accept",
+          icon: "check",
+          tooltip: "accept",
           click: (row) => this.acceptTransfer(row),
         },
         {
-          type: 'icon',
-          text: 'reject',
-          icon: 'close',
-          tooltip: 'reject',
+          type: "icon",
+          text: "reject",
+          icon: "close",
+          tooltip: "reject",
           click: (row) => this.rejectTransfer(row),
         },
       ],

@@ -7,15 +7,15 @@ import {
   SystemBuilder,
   SystemGroupBuilder,
   RankingPlaceBuilder,
-} from '@badman/backend-database';
-import { GameType, RankingSystems } from '@badman/utils';
-import { ConfigModule } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Sequelize } from 'sequelize-typescript';
+} from "@badman/backend-database";
+import { GameType, RankingSystems } from "@badman/utils";
+import { ConfigModule } from "@nestjs/config";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Sequelize } from "sequelize-typescript";
 
-import { BelgiumFlandersPointsService } from './belgium-flanders-points.service';
+import { BelgiumFlandersPointsService } from "./belgium-flanders-points.service";
 
-describe('BelgiumFlandersPointsService', () => {
+describe("BelgiumFlandersPointsService", () => {
   let service: BelgiumFlandersPointsService;
   let system: RankingSystem;
   let module: TestingModule;
@@ -26,7 +26,7 @@ describe('BelgiumFlandersPointsService', () => {
       imports: [
         DatabaseModule,
         ConfigModule.forRoot({
-          envFilePath: '.env.test',
+          envFilePath: ".env.test",
         }),
       ],
     }).compile();
@@ -45,15 +45,15 @@ describe('BelgiumFlandersPointsService', () => {
       .Build();
   }, 50000);
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('Single', () => {
-    it('type: S - Won: 1 - LevelDiff: 0', async () => {
+  describe("Single", () => {
+    it("type: S - Won: 1 - LevelDiff: 0", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(1)
         .WithGameType(GameType.S)
         .WithSet(21, 15)
@@ -61,26 +61,26 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b')
-            .WithName('player1', 'team2')
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b")
+            .WithName("player1", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .Build();
 
@@ -91,17 +91,17 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(253);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(0);
     });
 
-    it('type: S - Won: 2 - LevelDiff: 0', async () => {
+    it("type: S - Won: 2 - LevelDiff: 0", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(2)
         .WithSet(15, 21)
         .WithSet(15, 21)
@@ -109,26 +109,26 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b')
-            .WithName('player1', 'team2')
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b")
+            .WithName("player1", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .Build();
 
@@ -139,17 +139,17 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(0);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(253);
     });
 
-    it('type: S - Won: 1 - LevelDiff: +2', async () => {
+    it("type: S - Won: 1 - LevelDiff: +2", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(1)
         .WithSet(21, 15)
         .WithSet(21, 15)
@@ -157,26 +157,26 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(6, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b')
-            .WithName('player1', 'team2')
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b")
+            .WithName("player1", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .Build();
 
@@ -187,18 +187,18 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(253);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(0);
       expect(t2p1Points?.differenceInLevel).toBe(-2);
     });
 
-    it('type: S - Won: 2 - LevelDiff: +2', async () => {
+    it("type: S - Won: 2 - LevelDiff: +2", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(2)
         .WithSet(15, 21)
         .WithSet(15, 21)
@@ -206,26 +206,26 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(6, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b')
-            .WithName('player1', 'team2')
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b")
+            .WithName("player1", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .Build();
 
@@ -236,18 +236,18 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(0);
       expect(t1p1Points?.differenceInLevel).toBe(2);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(570);
       expect(t2p1Points?.differenceInLevel).toBe(0);
     });
-    it('type: S - Won: 2 - LevelDiff: +2 - New player', async () => {
+    it("type: S - Won: 2 - LevelDiff: +2 - New player", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(2)
         .WithSet(15, 21)
         .WithSet(15, 21)
@@ -255,19 +255,19 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(6, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b').WithName('player1', 'team2'),
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b").WithName("player1", "team2")
         )
         .Build();
 
@@ -278,21 +278,21 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(0);
       expect(t1p1Points?.differenceInLevel).toBe(6);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(570);
       expect(t2p1Points?.differenceInLevel).toBe(0);
     });
   });
 
-  describe('Double', () => {
-    it('type: D - Won: 1 - LevelDiff: 0', async () => {
+  describe("Double", () => {
+    it("type: D - Won: 1 - LevelDiff: 0", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(1)
         .WithGameType(GameType.D)
         .WithSet(21, 15)
@@ -300,50 +300,50 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           1,
           2,
-          PlayerBuilder.Create('0d5ba7bc-7bc7-42c6-b96f-8572674c3289')
-            .WithName('player2', 'team1')
+          PlayerBuilder.Create("0d5ba7bc-7bc7-42c6-b96f-8572674c3289")
+            .WithName("player2", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 5, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b')
-            .WithName('player1', 'team2')
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b")
+            .WithName("player1", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           2,
-          PlayerBuilder.Create('0d91912b-d31c-4d02-915e-ef00007c9ca6')
-            .WithName('player2', 'team2')
+          PlayerBuilder.Create("0d91912b-d31c-4d02-915e-ef00007c9ca6")
+            .WithName("player2", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 5, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .Build();
 
@@ -354,21 +354,21 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(4);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(554);
-      const t1p2Points = points.find((p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289');
+      const t1p2Points = points.find((p) => p.playerId === "0d5ba7bc-7bc7-42c6-b96f-8572674c3289");
       expect(t1p2Points?.points).toBe(554);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(0);
-      const t2p2Points = points.find((p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6');
+      const t2p2Points = points.find((p) => p.playerId === "0d91912b-d31c-4d02-915e-ef00007c9ca6");
       expect(t2p2Points?.points).toBe(0);
     });
 
-    it('type: D - Won: 2 - LevelDiff: 0', async () => {
+    it("type: D - Won: 2 - LevelDiff: 0", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(2)
         .WithSet(15, 21)
         .WithSet(15, 21)
@@ -376,50 +376,50 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           1,
           2,
-          PlayerBuilder.Create('0d5ba7bc-7bc7-42c6-b96f-8572674c3289')
-            .WithName('player2', 'team1')
+          PlayerBuilder.Create("0d5ba7bc-7bc7-42c6-b96f-8572674c3289")
+            .WithName("player2", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 5, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b')
-            .WithName('player1', 'team2')
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b")
+            .WithName("player1", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           2,
-          PlayerBuilder.Create('0d91912b-d31c-4d02-915e-ef00007c9ca6')
-            .WithName('player2', 'team2')
+          PlayerBuilder.Create("0d91912b-d31c-4d02-915e-ef00007c9ca6")
+            .WithName("player2", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 5, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .Build();
 
@@ -430,21 +430,21 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(4);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(0);
-      const t1p2Points = points.find((p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289');
+      const t1p2Points = points.find((p) => p.playerId === "0d5ba7bc-7bc7-42c6-b96f-8572674c3289");
       expect(t1p2Points?.points).toBe(0);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(554);
-      const t2p2Points = points.find((p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6');
+      const t2p2Points = points.find((p) => p.playerId === "0d91912b-d31c-4d02-915e-ef00007c9ca6");
       expect(t2p2Points?.points).toBe(554);
     });
 
-    it('type: D - Won: 1 - LevelDiff: +2', async () => {
+    it("type: D - Won: 1 - LevelDiff: +2", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(1)
         .WithSet(21, 15)
         .WithSet(21, 15)
@@ -452,50 +452,50 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 6, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           1,
           2,
-          PlayerBuilder.Create('0d5ba7bc-7bc7-42c6-b96f-8572674c3289')
-            .WithName('player2', 'team1')
+          PlayerBuilder.Create("0d5ba7bc-7bc7-42c6-b96f-8572674c3289")
+            .WithName("player2", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 6, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b')
-            .WithName('player1', 'team2')
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b")
+            .WithName("player1", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           2,
-          PlayerBuilder.Create('0d91912b-d31c-4d02-915e-ef00007c9ca6')
-            .WithName('player2', 'team2')
+          PlayerBuilder.Create("0d91912b-d31c-4d02-915e-ef00007c9ca6")
+            .WithName("player2", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .Build();
 
@@ -506,25 +506,25 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(4);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(253);
       expect(t1p1Points?.differenceInLevel).toBe(0);
-      const t1p2Points = points.find((p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289');
+      const t1p2Points = points.find((p) => p.playerId === "0d5ba7bc-7bc7-42c6-b96f-8572674c3289");
       expect(t1p2Points?.points).toBe(253);
       expect(t1p2Points?.differenceInLevel).toBe(0);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(0);
       expect(t2p1Points?.differenceInLevel).toBe(-2);
-      const t2p2Points = points.find((p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6');
+      const t2p2Points = points.find((p) => p.playerId === "0d91912b-d31c-4d02-915e-ef00007c9ca6");
       expect(t2p2Points?.points).toBe(0);
       expect(t2p2Points?.differenceInLevel).toBe(-2);
     });
 
-    it('type: D - Won: 2 - LevelDiff: +2', async () => {
+    it("type: D - Won: 2 - LevelDiff: +2", async () => {
       // Arrange
       const game1 = await GameBuilder.Create()
-        .WithDate(new Date('2021-10-15'))
+        .WithDate(new Date("2021-10-15"))
         .WithWinner(2)
         .WithSet(15, 21)
         .WithSet(15, 21)
@@ -532,50 +532,50 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           1,
           1,
-          PlayerBuilder.Create('3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e')
-            .WithName('player1', 'team1')
+          PlayerBuilder.Create("3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e")
+            .WithName("player1", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 6, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           1,
           2,
-          PlayerBuilder.Create('0d5ba7bc-7bc7-42c6-b96f-8572674c3289')
-            .WithName('player2', 'team1')
+          PlayerBuilder.Create("0d5ba7bc-7bc7-42c6-b96f-8572674c3289")
+            .WithName("player2", "team1")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 6, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b')
-            .WithName('player1', 'team2')
+          PlayerBuilder.Create("e7010758-286c-441a-b942-96d49446cb4b")
+            .WithName("player1", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .WithPlayer(
           2,
           2,
-          PlayerBuilder.Create('0d91912b-d31c-4d02-915e-ef00007c9ca6')
-            .WithName('player2', 'team2')
+          PlayerBuilder.Create("0d91912b-d31c-4d02-915e-ef00007c9ca6")
+            .WithName("player2", "team2")
             .WithRanking(
               RankingPlaceBuilder.Create()
                 .WithSystemId(system.id)
                 .WithRanking(8, 8, 8)
-                .WithDate(new Date('2021-10-10')),
-            ),
+                .WithDate(new Date("2021-10-10"))
+            )
         )
         .Build();
 
@@ -586,17 +586,17 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(4);
 
-      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
+      const t1p1Points = points.find((p) => p.playerId === "3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e");
       expect(t1p1Points?.points).toBe(0);
       expect(t1p1Points?.differenceInLevel).toBe(2);
-      const t1p2Points = points.find((p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289');
+      const t1p2Points = points.find((p) => p.playerId === "0d5ba7bc-7bc7-42c6-b96f-8572674c3289");
       expect(t1p2Points?.points).toBe(0);
       expect(t1p2Points?.differenceInLevel).toBe(2);
 
-      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
+      const t2p1Points = points.find((p) => p.playerId === "e7010758-286c-441a-b942-96d49446cb4b");
       expect(t2p1Points?.points).toBe(570);
       expect(t2p1Points?.differenceInLevel).toBe(0);
-      const t2p2Points = points.find((p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6');
+      const t2p2Points = points.find((p) => p.playerId === "0d91912b-d31c-4d02-915e-ef00007c9ca6");
       expect(t2p2Points?.points).toBe(570);
       expect(t2p2Points?.differenceInLevel).toBe(0);
     });

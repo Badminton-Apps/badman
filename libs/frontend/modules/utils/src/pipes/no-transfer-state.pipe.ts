@@ -1,5 +1,5 @@
-import { isPlatformServer } from '@angular/common';
-import { Observable } from 'rxjs';
+import { isPlatformServer } from "@angular/common";
+import { Observable } from "rxjs";
 
 export function noTransferState<T>(platformId: string) {
   return (source: Observable<T | null>) => {

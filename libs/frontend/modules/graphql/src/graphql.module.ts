@@ -1,19 +1,19 @@
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { inject, InjectionToken, Injector, isDevMode, PLATFORM_ID } from '@angular/core';
-import { ApolloLink, InMemoryCache } from '@apollo/client/core';
-import { loadDevMessages, loadErrorMessages } from '@apollo/client/dev';
-import { setContext } from '@apollo/client/link/context';
-import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries';
-import { AuthService } from '@auth0/auth0-angular';
-import { provideApollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular/http';
-import { sha256 } from 'crypto-hash';
-import { lastValueFrom } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { inject, InjectionToken, Injector, isDevMode, PLATFORM_ID } from "@angular/core";
+import { ApolloLink, InMemoryCache } from "@apollo/client/core";
+import { loadDevMessages, loadErrorMessages } from "@apollo/client/dev";
+import { setContext } from "@apollo/client/link/context";
+import { createPersistedQueryLink } from "@apollo/client/link/persisted-queries";
+import { AuthService } from "@auth0/auth0-angular";
+import { provideApollo } from "apollo-angular";
+import { HttpLink } from "apollo-angular/http";
+import { sha256 } from "crypto-hash";
+import { lastValueFrom } from "rxjs";
+import { take } from "rxjs/operators";
 
-export const APOLLO_CACHE = new InjectionToken<InMemoryCache>('apollo-cache');
-export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>('graphql.config');
+export const APOLLO_CACHE = new InjectionToken<InMemoryCache>("apollo-cache");
+export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>("graphql.config");
 
 export type GraphqlConfiguration = Readonly<{
   api: string;
@@ -25,15 +25,15 @@ export function createApollo(
   cache: InMemoryCache,
   injector: Injector,
   platformId: string,
-  config: GraphqlConfiguration,
+  config: GraphqlConfiguration
 ) {
-  if (config.api === '') {
-    throw new Error('GraphQL API URL is not set');
+  if (config.api === "") {
+    throw new Error("GraphQL API URL is not set");
   }
 
   const basic = setContext(() => ({
     headers: {
-      Accept: 'charset=utf-8',
+      Accept: "charset=utf-8",
     },
   }));
 
@@ -58,8 +58,8 @@ export function createApollo(
     return {
       headers: {
         ...headers,
-        Accept: 'application/json; charset=utf-8',
-        'X-App-Magic': '1',
+        Accept: "application/json; charset=utf-8",
+        "X-App-Magic": "1",
       },
     };
   });
@@ -104,22 +104,22 @@ export function provideGraphQL(config: GraphqlConfiguration) {
       useValue: new InMemoryCache({
         typePolicies: {
           GamePlayerMembershipType: {
-            keyFields: ['id', 'team', 'player'],
+            keyFields: ["id", "team", "player"],
           },
           ClubWithPlayerMembershipType: {
-            keyFields: [['clubMembership', ['id']], 'id'],
+            keyFields: [["clubMembership", ["id"]], "id"],
           },
           ClubWithPlayers: {
-            keyFields: [['clubMembership', ['id']], 'id'],
+            keyFields: [["clubMembership", ["id"]], "id"],
           },
           PlayerWithClubMembershipType: {
-            keyFields: [['clubMembership', ['id']], 'id'],
+            keyFields: [["clubMembership", ["id"]], "id"],
           },
           PlayerWithTeamMembershipType: {
-            keyFields: [['teamMembership', ['id']], 'id'],
+            keyFields: [["teamMembership", ["id"]], "id"],
           },
           PlayerTeam: {
-            keyFields: [['teamMembership', ['id']], 'id'],
+            keyFields: [["teamMembership", ["id"]], "id"],
           },
           EntryCompetitionPlayersType: {
             keyFields: false,

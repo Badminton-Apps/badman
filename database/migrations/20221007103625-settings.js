@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         // create settings schema
-        await queryInterface.createSchema('personal', { transaction: t });
+        await queryInterface.createSchema("personal", { transaction: t });
 
         // create notifications table
         // flagged enum for mail and notification:
         // - encounter entered
         // - encounter accepted
         await queryInterface.createTable(
-          { tableName: 'Settings', schema: 'personal' },
+          { tableName: "Settings", schema: "personal" },
           {
             id: {
               type: sequelize.DataTypes.STRING,
@@ -24,10 +24,10 @@ module.exports = {
               allowNull: false,
               references: {
                 model: {
-                  tableName: 'Players',
-                  schema: 'public',
+                  tableName: "Players",
+                  schema: "public",
                 },
-                key: 'id',
+                key: "id",
               },
             },
             pushSubscriptions: {
@@ -63,17 +63,17 @@ module.exports = {
               allowNull: false,
             },
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         // index on playerid
-        await queryInterface.addIndex({ tableName: 'Settings', schema: 'personal' }, ['playerId'], {
+        await queryInterface.addIndex({ tableName: "Settings", schema: "personal" }, ["playerId"], {
           transaction: t,
         });
 
         // notification table
         await queryInterface.createTable(
-          { tableName: 'Notifications', schema: 'personal' },
+          { tableName: "Notifications", schema: "personal" },
           {
             id: {
               type: sequelize.DataTypes.STRING,
@@ -84,10 +84,10 @@ module.exports = {
               allowNull: false,
               references: {
                 model: {
-                  tableName: 'Players',
-                  schema: 'public',
+                  tableName: "Players",
+                  schema: "public",
                 },
-                key: 'id',
+                key: "id",
               },
             },
             type: {
@@ -120,28 +120,28 @@ module.exports = {
             createdAt: sequelize.DataTypes.DATE,
             updatedAt: sequelize.DataTypes.DATE,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         // expand encounter with scores entered and scores accepted columns
         await queryInterface.addColumn(
-          { tableName: 'EncounterCompetitions', schema: 'event' },
-          'accepted',
+          { tableName: "EncounterCompetitions", schema: "event" },
+          "accepted",
           {
             type: sequelize.DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         // set all accepted encounters to true before 2022-10-08
         await queryInterface.sequelize.query(
           `UPDATE "event"."EncounterCompetitions" SET "accepted" = true WHERE "accepted" IS NULL AND "createdAt" < '2022-10-08'`,
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -150,18 +150,18 @@ module.exports = {
   down: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       // drop settings schema
-      await queryInterface.dropSchema('personal', { transaction: t });
+      await queryInterface.dropSchema("personal", { transaction: t });
 
       // drop encounter accepted column
       await queryInterface.removeColumn(
-        { tableName: 'EncounterCompetitions', schema: 'event' },
-        'accepted',
-        { transaction: t },
+        { tableName: "EncounterCompetitions", schema: "event" },
+        "accepted",
+        { transaction: t }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

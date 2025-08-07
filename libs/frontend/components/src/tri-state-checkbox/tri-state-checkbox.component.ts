@@ -1,13 +1,13 @@
-import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, forwardRef, Input } from "@angular/core";
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from "@angular/forms";
 import {
   MatCheckboxDefaultOptions,
   MAT_CHECKBOX_DEFAULT_OPTIONS,
   MatCheckboxModule,
-} from '@angular/material/checkbox';
+} from "@angular/material/checkbox";
 
 @Component({
-  selector: 'badman-tri-state-checkbox',
+  selector: "badman-tri-state-checkbox",
   template: `<mat-checkbox
     [ngModel]="value"
     (click)="next()"
@@ -25,7 +25,7 @@ import {
     },
     {
       provide: MAT_CHECKBOX_DEFAULT_OPTIONS,
-      useValue: { clickAction: 'noop' } as MatCheckboxDefaultOptions,
+      useValue: { clickAction: "noop" } as MatCheckboxDefaultOptions,
     },
   ],
   standalone: true,

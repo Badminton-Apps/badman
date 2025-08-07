@@ -1,4 +1,3 @@
-
 import {
   Component,
   Injector,
@@ -8,25 +7,25 @@ import {
   computed,
   effect,
   inject,
-  signal
-} from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { EventCompetition, EventEntry, Location } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { map, switchMap } from 'rxjs';
+  signal,
+} from "@angular/core";
+import { toObservable, toSignal } from "@angular/core/rxjs-interop";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { EventCompetition, EventEntry, Location } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { map, switchMap } from "rxjs";
 
-import { input } from '@angular/core';
-import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
-import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { input } from "@angular/core";
+import { GoogleMapsModule, MapInfoWindow, MapMarker } from "@angular/google-maps";
+import { MatCheckboxChange, MatCheckboxModule } from "@angular/material/checkbox";
 
 @Component({
-    selector: 'badman-competition-map',
-    imports: [GoogleMapsModule, MatProgressBarModule, MatCheckboxModule],
-    templateUrl: './competition-map.component.html',
-    styleUrls: ['./competition-map.component.scss'],
-    providers: [provideAnimations()]
+  selector: "badman-competition-map",
+  imports: [GoogleMapsModule, MatProgressBarModule, MatCheckboxModule],
+  templateUrl: "./competition-map.component.html",
+  styleUrls: ["./competition-map.component.scss"],
+  providers: [provideAnimations()],
 })
 export class CompetitionMapComponent implements OnInit {
   @ViewChild(MapInfoWindow) infoWindow?: MapInfoWindow;
@@ -94,7 +93,7 @@ export class CompetitionMapComponent implements OnInit {
         .valueChanges.pipe(map((res) => new EventCompetition(res.data.eventCompetition))),
       {
         injector: this.injector,
-      },
+      }
     );
 
     this.locations = toSignal(
@@ -124,7 +123,7 @@ export class CompetitionMapComponent implements OnInit {
                 subEventId: subEvents,
               },
             },
-          }),
+          })
         ),
         map((res) => res.data.eventEntries),
         map((eventEntries) => {
@@ -166,15 +165,15 @@ export class CompetitionMapComponent implements OnInit {
                 season: this.eventCompetition?.()?.season,
               },
             },
-          }),
+          })
         ),
         map((res) => res.data.locations),
         map((locations) => locations.map((location) => new Location(location))),
-        map((locations) => locations.filter((location) => location.availabilities?.length > 0)),
+        map((locations) => locations.filter((location) => location.availabilities?.length > 0))
       ),
       {
         injector: this.injector,
-      },
+      }
     ) as Signal<Location[]>;
 
     effect(
@@ -185,12 +184,12 @@ export class CompetitionMapComponent implements OnInit {
 
         this.subEvents.set(
           (this.eventCompetition?.()?.subEventCompetitions?.map((subEvent) => subEvent.id) ??
-            []) as string[],
+            []) as string[]
         );
       },
       {
         injector: this.injector,
-      },
+      }
     );
   }
 

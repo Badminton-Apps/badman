@@ -1,5 +1,5 @@
-import { Player } from './player.model';
-import { RankingSystem } from './ranking-system.model';
+import { Player } from "./player.model";
+import { RankingSystem } from "./ranking-system.model";
 
 export class RankingPlace {
   id?: string;

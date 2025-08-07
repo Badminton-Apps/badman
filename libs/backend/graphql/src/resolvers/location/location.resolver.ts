@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   Availability,
   Club,
@@ -6,8 +6,8 @@ import {
   LocationNewInput,
   LocationUpdateInput,
   Player,
-} from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+} from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -19,10 +19,10 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { Point } from 'geojson';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
+} from "@nestjs/graphql";
+import { Point } from "geojson";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../utils";
 
 @ObjectType()
 export class Coordinates {
@@ -40,7 +40,7 @@ export class LocationResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Location)
-  async location(@Args('id', { type: () => ID }) id: string): Promise<Location | null> {
+  async location(@Args("id", { type: () => ID }) id: string): Promise<Location | null> {
     return Location.findByPk(id);
   }
 
@@ -60,7 +60,7 @@ export class LocationResolver {
   @ResolveField(() => [Availability])
   async availabilities(
     @Parent() location: Location,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<Availability[]> {
     return location.getAvailabilities(ListArgs.toFindOptions(listArgs));
   }
@@ -72,8 +72,8 @@ export class LocationResolver {
 
   @Mutation(() => Location)
   async createLocation(
-    @Args('data') newLocationData: LocationNewInput,
-    @User() user: Player,
+    @Args("data") newLocationData: LocationNewInput,
+    @User() user: Player
   ): Promise<Location> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -85,7 +85,7 @@ export class LocationResolver {
         throw new NotFoundException(`${Club.name}: ${newLocationData.clubId}`);
       }
 
-      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club']))) {
+      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:location`, "edit-any:club"]))) {
         throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
@@ -94,7 +94,7 @@ export class LocationResolver {
           ...newLocationData,
           coordinates: newLocationData.coordinates
             ? ({
-                type: 'Point',
+                type: "Point",
                 coordinates: [
                   newLocationData.coordinates.longitude,
                   newLocationData.coordinates.latitude,
@@ -102,13 +102,13 @@ export class LocationResolver {
               } as Point)
             : undefined,
         },
-        { transaction },
+        { transaction }
       );
 
       await transaction.commit();
       return dbLocation;
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -116,8 +116,8 @@ export class LocationResolver {
 
   @Mutation(() => Location)
   async updateLocation(
-    @Args('data') updateLocationData: LocationUpdateInput,
-    @User() user: Player,
+    @Args("data") updateLocationData: LocationUpdateInput,
+    @User() user: Player
   ): Promise<Location> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -127,7 +127,7 @@ export class LocationResolver {
         throw new NotFoundException(`${Location.name}: ${updateLocationData.id}`);
       }
 
-      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club']))) {
+      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, "edit-any:club"]))) {
         throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
@@ -137,7 +137,7 @@ export class LocationResolver {
           ...updateLocationData,
           coordinates: updateLocationData.coordinates
             ? ({
-                type: 'Point',
+                type: "Point",
                 coordinates: [
                   updateLocationData.coordinates.longitude,
                   updateLocationData.coordinates.latitude,
@@ -145,14 +145,14 @@ export class LocationResolver {
               } as Point)
             : undefined,
         },
-        { transaction },
+        { transaction }
       );
 
       // await dbLocation.update(location, { transaction });
       await transaction.commit();
       return dbLocation;
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -160,8 +160,8 @@ export class LocationResolver {
 
   @Mutation(() => Boolean)
   async removeLocation(
-    @Args('id', { type: () => ID }) id: string,
-    @User() user: Player,
+    @Args("id", { type: () => ID }) id: string,
+    @User() user: Player
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -171,7 +171,7 @@ export class LocationResolver {
         throw new NotFoundException(`${Location.name}: ${id}`);
       }
 
-      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club']))) {
+      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, "edit-any:club"]))) {
         throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
@@ -179,7 +179,7 @@ export class LocationResolver {
       await transaction.commit();
       return true;
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }

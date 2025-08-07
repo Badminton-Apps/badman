@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,27 +8,27 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'originalLocationId',
+          "originalLocationId",
           {
             type: sequelize.DataTypes.UUID,
             allowNull: true,
             references: {
               model: {
-                tableName: 'Locations',
-                schema: 'event',
+                tableName: "Locations",
+                schema: "event",
               },
-              key: 'id',
+              key: "id",
             },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -39,14 +39,14 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'originalLocationId',
-          { transaction: t },
+          "originalLocationId",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

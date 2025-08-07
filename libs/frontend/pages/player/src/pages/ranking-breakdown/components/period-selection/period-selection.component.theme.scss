@@ -1,20 +1,20 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-period-selection {
-    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, "disabled-text");
 
     .border {
       border-color: $border-color;
-      background-color: mat.get-theme-color($theme, 'background', 'background');
+      background-color: mat.get-theme-color($theme, "background", "background");
     }
 
     label {
-      background-color: mat.get-theme-color($theme, 'background', 'background');
-      color: mat.get-theme-color($theme, foreground, 'secondary-text');
+      background-color: mat.get-theme-color($theme, "background", "background");
+      color: mat.get-theme-color($theme, foreground, "secondary-text");
     }
   }
 

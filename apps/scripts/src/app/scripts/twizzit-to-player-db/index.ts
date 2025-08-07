@@ -1,1 +1,1 @@
-export * from './twizzit-to-player-db';
+export * from "./twizzit-to-player-db";

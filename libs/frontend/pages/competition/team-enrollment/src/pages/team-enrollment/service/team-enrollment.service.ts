@@ -1,9 +1,9 @@
-import { Injectable, computed, effect, inject } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import { Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Injectable, computed, effect, inject } from "@angular/core";
+import { Apollo } from "apollo-angular";
+import { Observable } from "rxjs";
+import { map, switchMap, tap } from "rxjs/operators";
 
-import { RankingSystemService } from '@badman/frontend-graphql';
+import { RankingSystemService } from "@badman/frontend-graphql";
 import {
   Club,
   ClubPlayer,
@@ -13,25 +13,25 @@ import {
   SubEventCompetition,
   Team,
   TeamValidationResult,
-} from '@badman/frontend-models';
+} from "@badman/frontend-models";
 import {
   ClubMembershipType,
   LevelType,
   SubEventTypeEnum,
   sortSubEventOrder,
   sortTeams,
-} from '@badman/utils';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { TeamFormValue } from '../team-enrollment.page';
-import { loadClub } from './queries/club';
-import { loadComments } from './queries/comments';
-import { loadEvents } from './queries/events';
-import { loadLocations } from './queries/locations';
-import { loadTeams } from './queries/teams';
-import { loadTransersAndLoans } from './queries/transfers';
-import { validateEnrollment } from './queries/validate';
-import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
-import { toSignal } from '@angular/core/rxjs-interop';
+} from "@badman/utils";
+import { signalSlice } from "ngxtension/signal-slice";
+import { TeamFormValue } from "../team-enrollment.page";
+import { loadClub } from "./queries/club";
+import { loadComments } from "./queries/comments";
+import { loadEvents } from "./queries/events";
+import { loadLocations } from "./queries/locations";
+import { loadTeams } from "./queries/teams";
+import { loadTransersAndLoans } from "./queries/transfers";
+import { validateEnrollment } from "./queries/validate";
+import { AuthenticateService, ClaimService } from "@badman/frontend-auth";
+import { toSignal } from "@angular/core/rxjs-interop";
 
 interface TeamEnrollmentState {
   club: Club | null;
@@ -53,17 +53,17 @@ interface TeamEnrollmentState {
   loadedComments: boolean;
 }
 
-const CLUBS_KEY = 'clubs.id';
+const CLUBS_KEY = "clubs.id";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class TeamEnrollmentDataService {
   private readonly apollo = inject(Apollo);
   private readonly systemService = inject(RankingSystemService);
   private readonly claimService = inject(ClaimService);
 
-  isAdmin = this.claimService.hasClaimSignal('enlist-any:team');
+  isAdmin = this.claimService.hasClaimSignal("enlist-any:team");
 
   // state
   initialState: TeamEnrollmentState = {
@@ -107,25 +107,25 @@ export class TeamEnrollmentDataService {
 
         return {
           [SubEventTypeEnum.M]: subEvents
-            .filter((subEvent) => subEvent.eventType === 'M')
+            .filter((subEvent) => subEvent.eventType === "M")
             .sort(sortSubEventOrder),
           [SubEventTypeEnum.F]: subEvents
-            .filter((subEvent) => subEvent.eventType === 'F')
+            .filter((subEvent) => subEvent.eventType === "F")
             .sort(sortSubEventOrder),
           [SubEventTypeEnum.MX]: subEvents
             .filter(
               (subEvent) =>
-                subEvent?.eventType === 'MX' &&
+                subEvent?.eventType === "MX" &&
                 subEvent?.eventCompetition?.type &&
-                subEvent?.eventCompetition?.type != LevelType.NATIONAL,
+                subEvent?.eventCompetition?.type != LevelType.NATIONAL
             )
             .sort(sortSubEventOrder),
           [SubEventTypeEnum.NATIONAL]: subEvents
             .filter(
               (subEvent) =>
-                subEvent?.eventType === 'MX' &&
+                subEvent?.eventType === "MX" &&
                 subEvent?.eventCompetition?.type &&
-                subEvent?.eventCompetition?.type == LevelType.NATIONAL,
+                subEvent?.eventCompetition?.type == LevelType.NATIONAL
             )
             .sort(sortSubEventOrder),
         };
@@ -139,7 +139,7 @@ export class TeamEnrollmentDataService {
         action$.pipe(
           map((season) => ({
             season,
-          })),
+          }))
         ),
       setClub: (_state, action$: Observable<string>) =>
         action$.pipe(
@@ -149,14 +149,14 @@ export class TeamEnrollmentDataService {
             const season = this.state().season;
 
             if (!club || !club.state || !season) {
-              console.warn('setClub', 'no club, state or season');
+              console.warn("setClub", "no club, state or season");
               return;
             }
 
             this.state.loadTeams({ clubId: club.id, season });
             this.state.loadTransersAndLoans({ clubId: club.id, season });
             this.state.loadLocations({ clubId: club.id, season });
-            this.state.loadEvents({ state: club.state , season });
+            this.state.loadEvents({ state: club.state, season });
           }),
           map((club) => ({
             club,
@@ -169,7 +169,7 @@ export class TeamEnrollmentDataService {
             loadedTransfers: false,
             loadedLocations: false,
             loadedComments: false,
-          })),
+          }))
         ),
 
       clear: (_state, action$: Observable<void>) =>
@@ -185,20 +185,20 @@ export class TeamEnrollmentDataService {
             loadedTransfers: false,
             loadedLocations: false,
             loadedComments: false,
-          })),
+          }))
         ),
 
       // Load stuff
       loadTeams: (_state, action$: Observable<{ clubId: string; season: number }>) =>
         action$.pipe(
           switchMap(({ clubId, season }) =>
-            loadTeams(this.apollo, this.systemService, clubId, season),
+            loadTeams(this.apollo, this.systemService, clubId, season)
           ),
           map((teams) => {
             const club = _state().club;
 
             if (!club) {
-              throw new Error('Club not found');
+              throw new Error("Club not found");
             }
 
             club.teams =
@@ -209,7 +209,7 @@ export class TeamEnrollmentDataService {
                 teams?.filter((team) => team.season === _state().season)?.sort(sortTeams) ?? [],
               loadedTeams: true,
             };
-          }),
+          })
         ),
       loadLocations: (_state, action$: Observable<{ clubId: string; season: number }>) =>
         action$.pipe(
@@ -219,18 +219,18 @@ export class TeamEnrollmentDataService {
             const season = _state().season;
 
             if (!club) {
-              throw new Error('Club not found');
+              throw new Error("Club not found");
             }
 
             if (!season) {
-              throw new Error('Season not found');
+              throw new Error("Season not found");
             }
 
             club.locations = locations;
 
             for (const location of locations) {
               const curr = location.availabilities.filter(
-                (availability) => availability.season === season,
+                (availability) => availability.season === season
               );
 
               if (curr.length === 0) {
@@ -251,7 +251,7 @@ export class TeamEnrollmentDataService {
               club,
               loadedLocations: true,
             };
-          }),
+          })
         ),
 
       loadTransersAndLoans: (_state, action$: Observable<{ clubId: string; season: number }>) =>
@@ -259,13 +259,13 @@ export class TeamEnrollmentDataService {
           switchMap(({ clubId, season }) => loadTransersAndLoans(this.apollo, clubId, season)),
           map((transfers) => ({
             transfers: transfers.filter(
-              (player) => player.clubMembership.membershipType === ClubMembershipType.NORMAL,
+              (player) => player.clubMembership.membershipType === ClubMembershipType.NORMAL
             ),
             loans: transfers.filter(
-              (player) => player.clubMembership.membershipType === ClubMembershipType.LOAN,
+              (player) => player.clubMembership.membershipType === ClubMembershipType.LOAN
             ),
             loadedTransfers: true,
-          })),
+          }))
         ),
 
       loadEvents: (_state, action$: Observable<{ state: string; season: number }>) =>
@@ -275,7 +275,7 @@ export class TeamEnrollmentDataService {
             const club = this.state().club;
 
             if (!club || events.length <= 0) {
-              console.warn('loadEvents', 'no club or events');
+              console.warn("loadEvents", "no club or events");
               return;
             }
 
@@ -286,7 +286,7 @@ export class TeamEnrollmentDataService {
           }),
           map((events) => ({
             events,
-          })),
+          }))
         ),
 
       loadComments: (_state, action$: Observable<{ clubId: string; eventIds: string[] }>) =>
@@ -295,7 +295,7 @@ export class TeamEnrollmentDataService {
           map((comments) => ({
             comments,
             loadedComments: true,
-          })),
+          }))
         ),
 
       validateEnrollment: (
@@ -306,15 +306,15 @@ export class TeamEnrollmentDataService {
           clubId: string;
           transfers?: string[];
           loans?: string[];
-        }>,
+        }>
       ) =>
         action$.pipe(
           switchMap(({ teamForm, season, clubId, transfers, loans }) =>
-            validateEnrollment(this.apollo, teamForm, season, clubId, transfers, loans),
+            validateEnrollment(this.apollo, teamForm, season, clubId, transfers, loans)
           ),
           map((validation) => ({
             validation,
-          })),
+          }))
         ),
     },
   });

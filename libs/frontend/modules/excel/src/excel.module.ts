@@ -1,8 +1,8 @@
-import { InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IExcelConfig } from './interfaces';
+import { InjectionToken, ModuleWithProviders, NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { IExcelConfig } from "./interfaces";
 
-export const EXCEL_CONFIG = new InjectionToken<IExcelConfig>('EXCEL_CONFIG');
+export const EXCEL_CONFIG = new InjectionToken<IExcelConfig>("EXCEL_CONFIG");
 
 @NgModule({
   imports: [CommonModule],

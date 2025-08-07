@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { FaqPageComponent, ChangelogPageComponent } from './pages';
-import { FaqResolver } from './resolvers';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { RouterModule } from "@angular/router";
+import { FaqPageComponent, ChangelogPageComponent } from "./pages";
+import { FaqResolver } from "./resolvers";
 
 @NgModule({
   providers: [FaqResolver],
@@ -10,14 +10,14 @@ import { FaqResolver } from './resolvers';
     CommonModule,
     RouterModule.forChild([
       {
-        path: 'faq',
+        path: "faq",
         component: FaqPageComponent,
         resolve: {
           faqs: FaqResolver,
         },
       },
       {
-        path: 'changelog',
+        path: "changelog",
         component: ChangelogPageComponent,
       },
     ]),

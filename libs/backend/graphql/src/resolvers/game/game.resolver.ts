@@ -10,25 +10,28 @@ import {
   GameNewInput,
   GameUpdateInput,
   RankingLastPlace,
-} from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { ListArgs } from '../../utils';
-import { getRankingProtected } from '@badman/utils';
-import { User } from '@badman/backend-authorization';
-import { InjectQueue } from '@nestjs/bull';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { Queue } from 'bull';
+} from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { ListArgs } from "../../utils";
+import { getRankingProtected } from "@badman/utils";
+import { User } from "@badman/backend-authorization";
+import { InjectQueue } from "@nestjs/bull";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { Queue } from "bull";
 
-import { Sequelize } from 'sequelize-typescript';
+import { Sequelize } from "sequelize-typescript";
 
 @Resolver(() => Game)
 export class GamesResolver {
   private readonly logger = new Logger(GamesResolver.name);
-  constructor(private _sequelize: Sequelize, @InjectQueue(SyncQueue) private readonly _syncQueue: Queue) {}
-  
+  constructor(
+    private _sequelize: Sequelize,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
+  ) {}
+
   @Query(() => Game)
-  async game(@Args('id', { type: () => ID }) id: string): Promise<Game> {
+  async game(@Args("id", { type: () => ID }) id: string): Promise<Game> {
     const game = await Game.findByPk(id);
 
     if (!game) {
@@ -43,17 +46,16 @@ export class GamesResolver {
       subQuery: false,
       include: [
         {
-          model:EncounterCompetition,
-          as: 'competition',
+          model: EncounterCompetition,
+          as: "competition",
         },
         {
           model: Player,
-          as: 'players',
+          as: "players",
         },
-      ], 
-      ...ListArgs.toFindOptions(listArgs)
-    }
-    );
+      ],
+      ...ListArgs.toFindOptions(listArgs),
+    });
   }
 
   @ResolveField(() => [RankingPoint])
@@ -63,7 +65,7 @@ export class GamesResolver {
 
   @ResolveField(() => EncounterCompetition)
   async competition(@Parent() game: Game): Promise<EncounterCompetition | null> {
-    if (game.linkType == 'competition') {
+    if (game.linkType == "competition") {
       return game.getCompetition();
     }
     return null;
@@ -71,7 +73,7 @@ export class GamesResolver {
 
   @ResolveField(() => DrawTournament)
   async tournament(@Parent() game: Game): Promise<DrawTournament | null> {
-    if (game.linkType == 'tournament') {
+    if (game.linkType == "tournament") {
       return game.getTournament();
     }
 
@@ -92,7 +94,7 @@ export class GamesResolver {
           gamePlayer.GamePlayerMembership.double == null ||
           gamePlayer.GamePlayerMembership.mix == null
         );
-      },
+      }
     );
 
     let system: RankingSystem | null = null;
@@ -107,7 +109,7 @@ export class GamesResolver {
     return players?.map((gamePlayer: Player & { GamePlayerMembership: GamePlayerMembership }) => {
       if (hasNull) {
         if (!system) {
-          throw new NotFoundException('No primary ranking system found');
+          throw new NotFoundException("No primary ranking system found");
         }
 
         const place = getRankingProtected(gamePlayer.GamePlayerMembership, system);
@@ -129,7 +131,7 @@ export class GamesResolver {
   }
 
   @Mutation(() => Game)
-  async createGame(@Args('data') newGameData: GameNewInput, @User() user: Player): Promise<Game> {
+  async createGame(@Args("data") newGameData: GameNewInput, @User() user: Player): Promise<Game> {
     const transaction = await this._sequelize.transaction();
     try {
       const encounter = await EncounterCompetition.findByPk(newGameData.linkId, {
@@ -141,10 +143,10 @@ export class GamesResolver {
       }
 
       if (encounter.gameLeaderId !== user.id) {
-        throw new NotFoundException('You are not the game leader');
+        throw new NotFoundException("You are not the game leader");
       }
 
-      const gameData = {...newGameData};
+      const gameData = { ...newGameData };
 
       const game = await Game.create(
         {
@@ -162,7 +164,7 @@ export class GamesResolver {
           order: gameData.order,
           status: gameData.status,
         },
-        { transaction },
+        { transaction }
       );
 
       if (gameData.players) {
@@ -178,40 +180,49 @@ export class GamesResolver {
             },
             transaction,
           });
-          await GamePlayerMembership.create({
-            playerId: player.id,
-            gameId: game.id,
-            team: player.team,
-            player: player.player,
-            systemId: system?.id,
-            single: ranking?.single,
-            double: ranking?.double,
-            mix: ranking?.mix,
-          }, {
-            transaction,
-          });
+          await GamePlayerMembership.create(
+            {
+              playerId: player.id,
+              gameId: game.id,
+              team: player.team,
+              player: player.player,
+              systemId: system?.id,
+              single: ranking?.single,
+              double: ranking?.double,
+              mix: ranking?.mix,
+            },
+            {
+              transaction,
+            }
+          );
         }
       }
 
       // if game is not a draw, update the score of the encounter
-      if (gameData.winner !== 0){
-        await encounter.update({
-          ...(gameData.winner === 1 ? { homeScore: encounter.homeScore + 1 } : {}),
-          ...(gameData.winner === 2 ? { awayScore: encounter.awayScore + 1 } : {}),
-        }, {transaction});
+      if (gameData.winner !== 0) {
+        await encounter.update(
+          {
+            ...(gameData.winner === 1 ? { homeScore: encounter.homeScore + 1 } : {}),
+            ...(gameData.winner === 2 ? { awayScore: encounter.awayScore + 1 } : {}),
+          },
+          { transaction }
+        );
       }
 
       await transaction.commit();
       return game;
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }
   }
 
   @Mutation(() => Game)
-  async updateGame(@Args('data') updateGameData: GameUpdateInput, @User() user: Player): Promise<Game> {
+  async updateGame(
+    @Args("data") updateGameData: GameUpdateInput,
+    @User() user: Player
+  ): Promise<Game> {
     const transaction = await this._sequelize.transaction();
     try {
       const encounter = await EncounterCompetition.findByPk(updateGameData.linkId, {
@@ -223,10 +234,10 @@ export class GamesResolver {
       }
 
       if (encounter.gameLeaderId !== user.id) {
-        throw new NotFoundException('You are not the game leader');
+        throw new NotFoundException("You are not the game leader");
       }
 
-      const gameData = {...updateGameData};
+      const gameData = { ...updateGameData };
 
       const game = await Game.findByPk(gameData.gameId, {
         transaction,
@@ -234,9 +245,9 @@ export class GamesResolver {
           /* This is to ensure that the frontend can update game records that originated from toernooi.nl */
           {
             model: Player,
-            through: { attributes: ['team', 'player', 'single', 'double', 'mix'] }
-          }
-        ]
+            through: { attributes: ["team", "player", "single", "double", "mix"] },
+          },
+        ],
       });
 
       if (!game) {
@@ -257,12 +268,12 @@ export class GamesResolver {
           gameType: gameData.gameType,
           winner: gameData.winner,
         },
-        { transaction },
+        { transaction }
       );
 
       // if the game has no players, and there are players in the request, add the players to the game.
       // this is only used in cases when the frontend is updating a game record orginating from toernooi.nl
-      if (gameData.players && game.players?.length === 0 ) {
+      if (gameData.players && game.players?.length === 0) {
         for (const player of gameData.players) {
           const system = await RankingSystem.findOne({
             where: {
@@ -275,34 +286,50 @@ export class GamesResolver {
             },
             transaction,
           });
-          await GamePlayerMembership.create({
-            playerId: player.id,
-            gameId: game.id,
-            team: player.team,
-            player: player.player,
-            systemId: system?.id,
-            single: ranking?.single,
-            double: ranking?.double,
-            mix: ranking?.mix,
-          }, {
-            transaction,
-          });
+          await GamePlayerMembership.create(
+            {
+              playerId: player.id,
+              gameId: game.id,
+              team: player.team,
+              player: player.player,
+              systemId: system?.id,
+              single: ranking?.single,
+              double: ranking?.double,
+              mix: ranking?.mix,
+            },
+            {
+              transaction,
+            }
+          );
         }
       }
 
       // if game is not a draw, update the score of the encounter
-      if (gameData.winner !== 0 && oldGameWinner !== gameData.winner){
+      if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
         // updates the score of the encounter, and if the winner changes for whatever reason, the score is corrected on both sides
-        await encounter.update({
-          ...(gameData.winner === 1 ? { homeScore: encounter.homeScore + 1, ...(oldGameWinner === 2 ? {awayScore: encounter.awayScore - 1} : {}) } : {}),
-          ...(gameData.winner === 2 ? { awayScore: encounter.awayScore + 1, ...(oldGameWinner === 1 ? {homeScore: encounter.homeScore - 1} : {}) } : {}),
-        }, {transaction});
+        await encounter.update(
+          {
+            ...(gameData.winner === 1
+              ? {
+                  homeScore: encounter.homeScore + 1,
+                  ...(oldGameWinner === 2 ? { awayScore: encounter.awayScore - 1 } : {}),
+                }
+              : {}),
+            ...(gameData.winner === 2
+              ? {
+                  awayScore: encounter.awayScore + 1,
+                  ...(oldGameWinner === 1 ? { homeScore: encounter.homeScore - 1 } : {}),
+                }
+              : {}),
+          },
+          { transaction }
+        );
       }
 
       await transaction.commit();
       return updatedGame;
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -311,12 +338,12 @@ export class GamesResolver {
   @Mutation(() => Boolean)
   async syncGame(
     @User() user: Player,
-    @Args('gameId', { type: () => ID, nullable: true }) gameId: string,
+    @Args("gameId", { type: () => ID, nullable: true }) gameId: string,
 
-    @Args('drawId', { type: () => ID, nullable: true }) drawId: string,
-    @Args('gameCode', { type: () => ID, nullable: true }) gameCode: string,
+    @Args("drawId", { type: () => ID, nullable: true }) drawId: string,
+    @Args("gameCode", { type: () => ID, nullable: true }) gameCode: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['sync:tournament', 'sync:competition']))) {
+    if (!(await user.hasAnyPermission(["sync:tournament", "sync:competition"]))) {
       throw new UnauthorizedException(`You do not have permission to sync tournament`);
     }
 
@@ -329,7 +356,7 @@ export class GamesResolver {
       },
       {
         removeOnComplete: true,
-      },
+      }
     );
 
     return true;

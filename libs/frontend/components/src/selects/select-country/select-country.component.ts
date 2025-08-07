@@ -1,22 +1,21 @@
-
-import { Component, OnInit, input } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { TranslatePipe } from '@ngx-translate/core';
-import countriesList from './countries.json';
+import { Component, OnInit, input } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { MatSelectModule } from "@angular/material/select";
+import { TranslatePipe } from "@ngx-translate/core";
+import countriesList from "./countries.json";
 
 @Component({
-    selector: 'badman-select-country',
-    imports: [MatSelectModule, TranslatePipe, ReactiveFormsModule],
-    templateUrl: './select-country.component.html',
-    styleUrls: ['./select-country.component.scss']
+  selector: "badman-select-country",
+  imports: [MatSelectModule, TranslatePipe, ReactiveFormsModule],
+  templateUrl: "./select-country.component.html",
+  styleUrls: ["./select-country.component.scss"],
 })
 export class SelectCountryComponent implements OnInit {
   countries = countriesList?.map((country) => country.code);
 
   group = input.required<FormGroup>();
 
-  controlName = input('country');
+  controlName = input("country");
 
   control = input<FormControl<string | null>>();
   protected internalControl!: FormControl<string | null>;
@@ -31,7 +30,7 @@ export class SelectCountryComponent implements OnInit {
     }
 
     if (!this.internalControl) {
-      this.internalControl = new FormControl<string | null>('be');
+      this.internalControl = new FormControl<string | null>("be");
     }
 
     if (this.group()) {
@@ -39,7 +38,7 @@ export class SelectCountryComponent implements OnInit {
     }
 
     // Currently, we only support Belgium
-    this.internalControl.setValue('be');
+    this.internalControl.setValue("be");
     this.internalControl.disable();
   }
 }

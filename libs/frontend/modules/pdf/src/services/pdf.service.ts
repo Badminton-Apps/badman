@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { IPdfConfig } from '../interfaces';
-import { PDF_CONFIG } from '../pdf.module';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { IPdfConfig } from "../interfaces";
+import { PDF_CONFIG } from "../pdf.module";
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class PdfService {
   private httpClient = inject(HttpClient);
@@ -28,7 +28,7 @@ export class PdfService {
     subtitudes: string[];
   }) {
     return this.httpClient.post(`${this.config.api}/assembly/team`, input, {
-      responseType: 'blob',
+      responseType: "blob",
     });
   }
 }

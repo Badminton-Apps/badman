@@ -1,55 +1,55 @@
-import { Readable } from 'stream';
-import { ConfigService } from '@nestjs/config';
-import { ModuleMetadata, FactoryProvider } from '@nestjs/common';
-import { Type } from '@nestjs/common';
-import { Options as JuiceOptions } from 'juice';
-import { Observable } from 'rxjs';
-import { PDFOptions } from 'puppeteer';
+import { Readable } from "stream";
+import { ConfigService } from "@nestjs/config";
+import { ModuleMetadata, FactoryProvider } from "@nestjs/common";
+import { Type } from "@nestjs/common";
+import { Options as JuiceOptions } from "juice";
+import { Observable } from "rxjs";
+import { PDFOptions } from "puppeteer";
 
 export type engine =
-  | 'arc-templates'
-  | 'atpl'
-  | 'bracket'
-  | 'dot'
-  | 'dust'
-  | 'eco'
-  | 'ejs'
-  | 'ect'
-  | 'haml'
-  | 'haml-coffee'
-  | 'hamlet'
-  | 'handlebars'
-  | 'hogan'
-  | 'htmling'
-  | 'jade'
-  | 'jazz'
-  | 'jqtpl'
-  | 'just'
-  | 'liquid'
-  | 'liquor'
-  | 'lodash'
-  | 'marko'
-  | 'mote'
-  | 'mustache'
-  | 'nunjucks'
-  | 'plates'
-  | 'pug'
-  | 'qejs'
-  | 'ractive'
-  | 'razor'
-  | 'react'
-  | 'slm'
-  | 'squirrelly'
-  | 'swig'
-  | 'teacup'
-  | 'templayed'
-  | 'toffee'
-  | 'twig'
-  | 'underscore'
-  | 'vash'
-  | 'velocityjs'
-  | 'walrus'
-  | 'whiskers';
+  | "arc-templates"
+  | "atpl"
+  | "bracket"
+  | "dot"
+  | "dust"
+  | "eco"
+  | "ejs"
+  | "ect"
+  | "haml"
+  | "haml-coffee"
+  | "hamlet"
+  | "handlebars"
+  | "hogan"
+  | "htmling"
+  | "jade"
+  | "jazz"
+  | "jqtpl"
+  | "just"
+  | "liquid"
+  | "liquor"
+  | "lodash"
+  | "marko"
+  | "mote"
+  | "mustache"
+  | "nunjucks"
+  | "plates"
+  | "pug"
+  | "qejs"
+  | "ractive"
+  | "razor"
+  | "react"
+  | "slm"
+  | "squirrelly"
+  | "swig"
+  | "teacup"
+  | "templayed"
+  | "toffee"
+  | "twig"
+  | "underscore"
+  | "vash"
+  | "velocityjs"
+  | "walrus"
+  | "whiskers";
 
 type ViewEngineOptions = {
   cache: boolean;
@@ -73,13 +73,13 @@ export interface CompileOptionsFactory {
   createCompileOptions(): CompileModuleOptions;
 }
 
-export interface CompileModuleRegisterAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+export interface CompileModuleRegisterAsyncOptions extends Pick<ModuleMetadata, "imports"> {
   isGlobal?: boolean;
   useClass?: Type<CompileOptionsFactory>;
   useExisting?: Type<CompileOptionsFactory>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useFactory?:  (...args: any[]) => CompileModuleOptions;
-  inject?: FactoryProvider['inject'];
+  useFactory?: (...args: any[]) => CompileModuleOptions;
+  inject?: FactoryProvider["inject"];
 }
 
 export interface ViewOptions {

@@ -1,21 +1,20 @@
-
-import { Component, OnInit, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { InMemoryCache } from '@apollo/client/cache';
-import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import { DrawCompetition, EventCompetition, SubEventCompetition } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { BehaviorSubject, takeUntil, zip } from 'rxjs';
+import { Component, OnInit, inject } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatSelectModule } from "@angular/material/select";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { InMemoryCache } from "@apollo/client/cache";
+import { APOLLO_CACHE } from "@badman/frontend-graphql";
+import { DrawCompetition, EventCompetition, SubEventCompetition } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { BehaviorSubject, takeUntil, zip } from "rxjs";
 
 @Component({
   imports: [
@@ -30,15 +29,15 @@ import { BehaviorSubject, takeUntil, zip } from 'rxjs';
     MatSelectModule,
     MatTableModule,
     MatInputModule,
-    MatProgressSpinnerModule
-],
-  templateUrl: './set-risers-fallers.component.html',
-  styleUrls: ['./set-risers-fallers.component.scss'],
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: "./set-risers-fallers.component.html",
+  styleUrls: ["./set-risers-fallers.component.scss"],
 })
 export class RisersFallersDialogComponent implements OnInit {
   private cache = inject<InMemoryCache>(APOLLO_CACHE);
   public dialogRef = inject<MatDialogRef<RisersFallersDialogComponent>>(
-    MatDialogRef<RisersFallersDialogComponent>,
+    MatDialogRef<RisersFallersDialogComponent>
   );
   public data = inject<{ event: EventCompetition }>(MAT_DIALOG_DATA);
   private apollo = inject(Apollo);
@@ -47,7 +46,7 @@ export class RisersFallersDialogComponent implements OnInit {
   originalData!: DrawCompetition[];
 
   useSame = true;
-  staticColumns = ['name', 'risers', 'fallers'];
+  staticColumns = ["name", "risers", "fallers"];
   displayedColumns = this.staticColumns;
 
   viewLoaded$ = new BehaviorSubject(0);
@@ -80,12 +79,12 @@ export class RisersFallersDialogComponent implements OnInit {
           },
           order: [
             {
-              direction: 'asc',
-              field: 'eventType',
+              direction: "asc",
+              field: "eventType",
             },
             {
-              direction: 'asc',
-              field: 'level',
+              direction: "asc",
+              field: "level",
             },
           ],
         },
@@ -93,7 +92,7 @@ export class RisersFallersDialogComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         const subEvents = result.data.subEventCompetitions?.map(
-          (subEvent) => new SubEventCompetition(subEvent),
+          (subEvent) => new SubEventCompetition(subEvent)
         );
 
         const drawCompetitions = subEvents
@@ -102,7 +101,7 @@ export class RisersFallersDialogComponent implements OnInit {
 
         this.dataSource = new MatTableDataSource(drawCompetitions);
         this.originalData = drawCompetitions.map(
-          (drawCompetition) => ({ ...drawCompetition }) as DrawCompetition,
+          (drawCompetition) => ({ ...drawCompetition }) as DrawCompetition
         );
       });
   }
@@ -112,7 +111,7 @@ export class RisersFallersDialogComponent implements OnInit {
     // find all draw competitions with changed risers/fallers
     const changedDrawCompetitions = this.dataSource.data.filter((drawCompetition) => {
       const originalDrawCompetition = this.originalData.find(
-        (originalDrawCompetition) => originalDrawCompetition.id === drawCompetition.id,
+        (originalDrawCompetition) => originalDrawCompetition.id === drawCompetition.id
       );
 
       return (

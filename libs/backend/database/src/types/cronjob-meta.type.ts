@@ -1,6 +1,6 @@
-import { Field, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 
-@ObjectType({ description: 'A Meta' })
+@ObjectType({ description: "A Meta" })
 export class CronJobMetaType {
   @Field(() => String, { nullable: true })
   jobName?: string;
@@ -16,5 +16,5 @@ export class CronJobMetaType {
 @InputType()
 export class CronJobMetaInputType extends PartialType(
   OmitType(CronJobMetaType, [] as const),
-  InputType,
+  InputType
 ) {}

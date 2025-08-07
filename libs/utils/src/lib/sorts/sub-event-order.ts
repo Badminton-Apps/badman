@@ -1,4 +1,4 @@
-import { LevelType } from '../enums';
+import { LevelType } from "../enums";
 
 const typeOrder = {
   NATIONAL: 1,
@@ -22,35 +22,35 @@ export const isFirstHigher = (subEvent1?: SubEventSortInput, subEvent2?: SubEven
     !subEvent2?.eventCompetition.type ||
     !subEvent2?.level
   ) {
-    return 'same';
+    return "same";
   }
 
   if (
     subEvent1.eventCompetition.type === subEvent2.eventCompetition.type &&
     subEvent1.level === subEvent2.level
   ) {
-    return 'same';
+    return "same";
   }
 
   if (typeOrder[subEvent1.eventCompetition.type] < typeOrder[subEvent2.eventCompetition.type]) {
-    return 'better';
+    return "better";
   } else if (
     typeOrder[subEvent1.eventCompetition.type] === typeOrder[subEvent2.eventCompetition.type]
   ) {
     if (subEvent1?.level < subEvent2?.level) {
-      return 'better';
+      return "better";
     }
   }
 
-  return 'lower';
+  return "lower";
 };
 
 export const sortSubEventOrder = (a: SubEventSortInput, b: SubEventSortInput) => {
   // returns better, same or lower
   const order = isFirstHigher(a, b);
-  if (order === 'better') {
+  if (order === "better") {
     return -1;
-  } else if (order === 'same') {
+  } else if (order === "same") {
     return 0;
   }
   return 1;

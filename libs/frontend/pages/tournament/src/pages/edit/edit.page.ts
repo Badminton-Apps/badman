@@ -1,23 +1,22 @@
-
-import { Component, computed, effect, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Router, RouterModule } from '@angular/router';
-import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
-import { EventTournament } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectParams } from 'ngxtension/inject-params';
-import { lastValueFrom } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { TournamentDetailService } from '../detail/detail.service';
+import { Component, computed, effect, inject } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { Router, RouterModule } from "@angular/router";
+import { HasClaimComponent, PageHeaderComponent } from "@badman/frontend-components";
+import { EventTournament } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { injectParams } from "ngxtension/inject-params";
+import { lastValueFrom } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { TournamentDetailService } from "../detail/detail.service";
 
 export type TournamentEditForm = FormGroup<{
   id: FormControl<string>;
@@ -34,9 +33,9 @@ export type TournamentEditForm = FormGroup<{
 }>;
 
 @Component({
-  selector: 'badman-tournament-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
+  selector: "badman-tournament-edit",
+  templateUrl: "./edit.page.html",
+  styleUrls: ["./edit.page.scss"],
   imports: [
     ReactiveFormsModule,
     RouterModule,
@@ -48,8 +47,8 @@ export type TournamentEditForm = FormGroup<{
     MatSlideToggleModule,
     MatIconModule,
     MatSnackBarModule,
-    PageHeaderComponent
-],
+    PageHeaderComponent,
+  ],
 })
 export class EditPageComponent {
   private readonly breadcrumbService = inject(BreadcrumbService);
@@ -63,9 +62,10 @@ export class EditPageComponent {
   eventTournament = this.detailService.tournament;
   loaded = this.detailService.loaded;
   errors = this.detailService.error;
-  private readonly eventId = injectParams('id');  formGroup: TournamentEditForm = new FormGroup({
-    id: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  private readonly eventId = injectParams("id");
+  formGroup: TournamentEditForm = new FormGroup({
+    id: new FormControl("", { nonNullable: true, validators: [Validators.required] }),
+    name: new FormControl("", { nonNullable: true, validators: [Validators.required] }),
     tournamentNumber: new FormControl<number | null>(null),
     firstDay: new FormControl<Date | null>(null),
     openDate: new FormControl<Date | null>(null),
@@ -99,17 +99,20 @@ export class EditPageComponent {
         this.updateSeoAndBreadcrumbs(tournament);
       }
     });
-  }  private populateForm(tournament: EventTournament): void {
+  }
+  private populateForm(tournament: EventTournament): void {
     this.formGroup.patchValue({
       id: tournament.id,
-      name: tournament.name || '',
+      name: tournament.name || "",
       tournamentNumber: tournament.tournamentNumber || null,
       firstDay: tournament.firstDay ? new Date(tournament.firstDay) : null,
       openDate: tournament.openDate ? new Date(tournament.openDate) : null,
       closeDate: tournament.closeDate ? new Date(tournament.closeDate) : null,
       visualCode: tournament.visualCode || null,
       official: tournament.official || false,
-      dates: tournament.dates ? tournament.dates.map(d => new Date(d).toISOString()).join(',') : null,
+      dates: tournament.dates
+        ? tournament.dates.map((d) => new Date(d).toISOString()).join(",")
+        : null,
       state: tournament.state || null,
       country: tournament.country || null,
     });
@@ -120,23 +123,24 @@ export class EditPageComponent {
     this.seoService.update({
       title: `Edit ${tournamentName}`,
       description: `Edit tournament ${tournamentName}`,
-      type: 'website',
-      keywords: ['event', 'tournament', 'badminton', 'edit'],
+      type: "website",
+      keywords: ["event", "tournament", "badminton", "edit"],
     });
-    this.breadcrumbService.set('@eventTournament', tournamentName);
+    this.breadcrumbService.set("@eventTournament", tournamentName);
   }
 
   async save(): Promise<void> {
     if (!this.formGroup.valid) {
-      this.snackBar.open('Please fix the form errors', 'Close', { duration: 3000 });
+      this.snackBar.open("Please fix the form errors", "Close", { duration: 3000 });
       return;
     }
 
     const formValue = this.formGroup.value;
-    
+
     try {
       await lastValueFrom(
-        this.apollo.mutate<{ updateEventTournament: EventTournament }>({          mutation: gql`
+        this.apollo.mutate<{ updateEventTournament: EventTournament }>({
+          mutation: gql`
             mutation UpdateEventTournament($data: EventTournamentUpdateInput!) {
               updateEventTournament(data: $data) {
                 id
@@ -152,7 +156,8 @@ export class EditPageComponent {
                 country
               }
             }
-          `,          variables: {
+          `,
+          variables: {
             data: {
               id: formValue.id,
               name: formValue.name,
@@ -167,25 +172,25 @@ export class EditPageComponent {
               country: formValue.country,
             },
           },
-        }),
+        })
       );
 
-      this.snackBar.open('Tournament updated successfully', 'Close', { duration: 3000 });
-      
+      this.snackBar.open("Tournament updated successfully", "Close", { duration: 3000 });
+
       // Navigate back to tournament detail page
-      await this.router.navigate(['/tournament', formValue.id]);
+      await this.router.navigate(["/tournament", formValue.id]);
     } catch (error) {
-      console.error('Error updating tournament:', error);
-      this.snackBar.open('Failed to update tournament', 'Close', { duration: 3000 });
+      console.error("Error updating tournament:", error);
+      this.snackBar.open("Failed to update tournament", "Close", { duration: 3000 });
     }
   }
 
   cancel(): void {
     const tournamentId = this.formGroup.value.id;
     if (tournamentId) {
-      this.router.navigate(['/tournament', tournamentId]);
+      this.router.navigate(["/tournament", tournamentId]);
     } else {
-      this.router.navigate(['/tournament']);
+      this.router.navigate(["/tournament"]);
     }
   }
 }

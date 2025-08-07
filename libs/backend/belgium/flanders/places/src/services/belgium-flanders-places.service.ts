@@ -1,8 +1,8 @@
-import { Player, RankingPlace, RankingPoint, RankingSystem } from '@badman/backend-database';
-import { GameType, getRankingProtected } from '@badman/utils';
-import { Injectable } from '@nestjs/common';
-import moment from 'moment';
-import { Op, Transaction } from 'sequelize';
+import { Player, RankingPlace, RankingPoint, RankingSystem } from "@badman/backend-database";
+import { GameType, getRankingProtected } from "@badman/utils";
+import { Injectable } from "@nestjs/common";
+import moment from "moment";
+import { Op, Transaction } from "sequelize";
 
 @Injectable()
 export class BelgiumFlandersPlacesService {
@@ -16,7 +16,7 @@ export class BelgiumFlandersPlacesService {
           updateRanking?: boolean | undefined;
           transaction?: Transaction | undefined;
         }
-      | undefined,
+      | undefined
   ) {
     let lastRankings = await player.getRankingPlaces({
       where: {
@@ -26,7 +26,7 @@ export class BelgiumFlandersPlacesService {
         },
       },
       transaction: options?.transaction,
-      order: [['rankingDate', 'DESC']],
+      order: [["rankingDate", "DESC"]],
       limit: 1,
     });
 
@@ -122,7 +122,7 @@ export class BelgiumFlandersPlacesService {
       lastRanking: number;
       lastRankingInactive: boolean;
       transaction?: Transaction;
-    },
+    }
   ) {
     const { transaction, start, stop, lastRanking, lastRankingInactive, gameType, updateRanking } =
       options ?? {};
@@ -143,7 +143,7 @@ export class BelgiumFlandersPlacesService {
     const { upgrade, downgrade } = this._calculatePoints(
       system,
       games?.map((g) => g.rankingPoints?.[0])?.filter((g) => g != undefined) ?? [],
-      gameType,
+      gameType
     );
 
     const result = {
@@ -161,10 +161,10 @@ export class BelgiumFlandersPlacesService {
         // If you are marked as inactive
         if (inactive) {
           switch (system.inactiveBehavior) {
-            case 'freeze':
+            case "freeze":
               level = lastRanking;
               break;
-            case 'decrease':
+            case "decrease":
             default:
               level = lastRankingInactive ? lastRanking : lastRanking + 2;
               break;
@@ -191,36 +191,36 @@ export class BelgiumFlandersPlacesService {
       start?: Date;
       stop?: Date;
       gameType?: GameType;
-    },
+    }
   ) {
     const { transaction } = options ?? {};
 
     const where: { [key: string]: unknown } = {};
 
     if (options.start && options.stop) {
-      where['playedAt'] = {
+      where["playedAt"] = {
         [Op.between]: [options.start?.toISOString(), options.stop?.toISOString()],
       };
     } else if (options.start) {
-      where['playedAt'] = {
+      where["playedAt"] = {
         [Op.gte]: options.start?.toISOString(),
       };
     } else if (options.stop) {
-      where['playedAt'] = {
+      where["playedAt"] = {
         [Op.lte]: options.stop?.toISOString(),
       };
     }
 
     if (options.gameType) {
-      where['gameType'] = options.gameType;
+      where["gameType"] = options.gameType;
     }
 
     return await player.getGames({
-      attributes: ['id'],
+      attributes: ["id"],
       where,
       include: [
         {
-          attributes: ['id', 'points', 'differenceInLevel'],
+          attributes: ["id", "points", "differenceInLevel"],
           required: true,
           model: RankingPoint,
           where: {
@@ -229,7 +229,7 @@ export class BelgiumFlandersPlacesService {
           },
         },
       ],
-      order: [['playedAt', 'DESC']],
+      order: [["playedAt", "DESC"]],
       transaction,
     });
   }
@@ -243,7 +243,7 @@ export class BelgiumFlandersPlacesService {
       start?: Date;
       stop?: Date;
       gameType?: GameType;
-    },
+    }
   ) {
     if (!system.inactivityAmount || !system.inactivityUnit || !system.gamesForInactivty) {
       return false;
@@ -274,21 +274,21 @@ export class BelgiumFlandersPlacesService {
 
     const propDowngrade =
       gameType === GameType.S
-        ? 'differenceForDowngradeSingle'
+        ? "differenceForDowngradeSingle"
         : gameType === GameType.D
-          ? 'differenceForDowngradeDouble'
-          : 'differenceForDowngradeMix';
+          ? "differenceForDowngradeDouble"
+          : "differenceForDowngradeMix";
 
     const propUpgrade =
       gameType === GameType.S
-        ? 'differenceForUpgradeSingle'
+        ? "differenceForUpgradeSingle"
         : gameType === GameType.D
-          ? 'differenceForUpgradeDouble'
-          : 'differenceForUpgradeMix';
+          ? "differenceForUpgradeDouble"
+          : "differenceForUpgradeMix";
 
     // difference is a negative number when layers are higher
     let pointsForUpgrade = points.filter(
-      (x) => (x.differenceInLevel ?? 0) >= (system[propUpgrade] ?? 0) * -1,
+      (x) => (x.differenceInLevel ?? 0) >= (system[propUpgrade] ?? 0) * -1
     );
 
     // Filter out when there is a limit to use
@@ -300,12 +300,12 @@ export class BelgiumFlandersPlacesService {
 
     const pointsUpgrade = this._findPointsAverage(
       pointsForUpgrade,
-      system.minNumberOfGamesUsedForUpgrade,
+      system.minNumberOfGamesUsedForUpgrade
     );
 
     // difference is a negative number when layers are higher
     let pointsForDowngrade = points.filter(
-      (x) => (x.differenceInLevel ?? 0) >= (system[propDowngrade] ?? 0) * -1,
+      (x) => (x.differenceInLevel ?? 0) >= (system[propDowngrade] ?? 0) * -1
     );
 
     // Filter out when there is a limit to use
@@ -317,7 +317,7 @@ export class BelgiumFlandersPlacesService {
 
     const pointsDowngrade = this._findPointsAverage(
       pointsForDowngrade,
-      system.minNumberOfGamesUsedForDowngrade,
+      system.minNumberOfGamesUsedForDowngrade
     );
 
     return {
@@ -357,7 +357,7 @@ export class BelgiumFlandersPlacesService {
     system: RankingSystem,
     pointsUpgrade: number,
     pointsDowngrade: number,
-    currentLevel: number,
+    currentLevel: number
   ): number {
     let topLevelByUpgradePoints = 1;
     let bottomLevelByDowngradePoints = system.amountOfLevels;

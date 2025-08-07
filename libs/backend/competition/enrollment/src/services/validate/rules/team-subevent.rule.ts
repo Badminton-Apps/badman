@@ -1,5 +1,5 @@
-import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
-import { Rule } from './_rule.base';
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export class TeamSubEventRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
@@ -12,7 +12,7 @@ export class TeamSubEventRule extends Rule {
       const errors = [] as EnrollmentValidationError[];
       if (!subEvent) {
         errors.push({
-          message: 'all.v1.entryTeamDrawer.validation.errors.no-subevent',
+          message: "all.v1.entryTeamDrawer.validation.errors.no-subevent",
         });
       }
 

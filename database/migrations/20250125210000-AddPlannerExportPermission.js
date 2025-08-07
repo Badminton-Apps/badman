@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
 const claims = [
   {
-    id: 'b8f1c2a3-8e7d-4c93-9d2f-1e3b4c5d6e7f',
-    name: 'export-planner:competition',
-    description: 'Export planner data for competition',
-    category: 'competitions',
-    type: 'global',
+    id: "b8f1c2a3-8e7d-4c93-9d2f-1e3b4c5d6e7f",
+    name: "export-planner:competition",
+    description: "Export planner data for competition",
+    category: "competitions",
+    type: "global",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -20,16 +20,16 @@ module.exports = {
         // Add the new export permission
         await queryInterface.bulkInsert(
           {
-            tableName: 'Claims',
-            schema: 'security',
+            tableName: "Claims",
+            schema: "security",
           },
           claims,
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });
@@ -40,8 +40,8 @@ module.exports = {
         // Remove the new export permission
         await queryInterface.bulkDelete(
           {
-            tableName: 'Claims',
-            schema: 'security',
+            tableName: "Claims",
+            schema: "security",
           },
           {
             id: {
@@ -50,10 +50,10 @@ module.exports = {
           },
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

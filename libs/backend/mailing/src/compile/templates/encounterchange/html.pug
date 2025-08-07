@@ -12,16 +12,8 @@ block content
       br
       | Wij willen u graag informeren dat er een aanvraag tot wijziging van de aankomende ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name } is binnengekomen.
     p
-      if isHome
-        a(
-          href=`${clientUrl}/competition/change-encounter?club=${encounter.home.clubId}&team=${encounter.home.id}&encounter=${encounter.id}&season=${season}`
-        )
-          | Klik hier om het verzoek te bekijken
-      else
-        a(
-          href=`${clientUrl}/competition/change-encounter?club=${encounter.away.clubId}&team=${encounter.away.id}&encounter=${encounter.id}&season=${season}`
-        )
-          | Klik hier om het verzoek te bekijken
+      a(href=url)
+        | Klik hier om het verzoek te bekijken
 
     br
     br

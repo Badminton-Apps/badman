@@ -1,29 +1,29 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, input } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatListModule } from '@angular/material/list';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Club, Player } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { BehaviorSubject, Observable, map, switchMap } from 'rxjs';
-import { EditClubHistoryDialogComponent } from '../../dialogs';
+import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, Component, OnInit, inject, input } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatListModule } from "@angular/material/list";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Club, Player } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { BehaviorSubject, Observable, map, switchMap } from "rxjs";
+import { EditClubHistoryDialogComponent } from "../../dialogs";
 
 @Component({
-    selector: 'badman-edit-club-history',
-    templateUrl: './edit-club-history.component.html',
-    styleUrls: ['./edit-club-history.component.scss'],
-    imports: [
-        CommonModule,
-        MatListModule,
-        TranslatePipe,
-        MomentModule,
-        MatDialogModule,
-        MatButtonModule,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "badman-edit-club-history",
+  templateUrl: "./edit-club-history.component.html",
+  styleUrls: ["./edit-club-history.component.scss"],
+  imports: [
+    CommonModule,
+    MatListModule,
+    TranslatePipe,
+    MomentModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditClubHistoryComponent implements OnInit {
   private appollo = inject(Apollo);
@@ -62,21 +62,21 @@ export class EditClubHistoryComponent implements OnInit {
     this.clubs$ = this.update$.pipe(
       switchMap(() =>
         this.appollo.query<{ player: { clubs: Partial<Club>[] } }>({
-          fetchPolicy: 'no-cache',
+          fetchPolicy: "no-cache",
           query: this.fetchPlayer,
           variables: {
             playerId: this.player().id,
             includeHistorical: true,
           },
-        }),
+        })
       ),
       map((r) => r?.data?.player?.clubs.map((c) => new Club(c))),
       map((r) =>
         r.sort(
           (a, b) =>
-            (b?.clubMembership?.start?.getTime() ?? 0) - (a?.clubMembership?.start?.getTime() ?? 0),
-        ),
-      ),
+            (b?.clubMembership?.start?.getTime() ?? 0) - (a?.clubMembership?.start?.getTime() ?? 0)
+        )
+      )
     );
   }
 
@@ -89,7 +89,7 @@ export class EditClubHistoryComponent implements OnInit {
       .afterClosed()
       .subscribe((r) => {
         switch (r?.action) {
-          case 'update':
+          case "update":
             this.appollo
               .mutate<{ updateClubPlayerMembership: boolean }>({
                 mutation: gql`
@@ -103,13 +103,13 @@ export class EditClubHistoryComponent implements OnInit {
               })
               .subscribe(() => {
                 this.update$.next(null);
-                this._snackBar.open('Saved', undefined, {
+                this._snackBar.open("Saved", undefined, {
                   duration: 1000,
-                  panelClass: 'success',
+                  panelClass: "success",
                 });
               });
             break;
-          case 'delete':
+          case "delete":
             this.appollo
               .mutate<{ deleteClubMembership: boolean }>({
                 mutation: gql`
@@ -123,13 +123,13 @@ export class EditClubHistoryComponent implements OnInit {
               })
               .subscribe(() => {
                 this.update$.next(null);
-                this._snackBar.open('removed', undefined, {
+                this._snackBar.open("removed", undefined, {
                   duration: 1000,
-                  panelClass: 'success',
+                  panelClass: "success",
                 });
               });
             break;
-          case 'create':
+          case "create":
             this.appollo
               .mutate<{ addPlayerToClub: boolean }>({
                 mutation: gql`
@@ -143,9 +143,9 @@ export class EditClubHistoryComponent implements OnInit {
               })
               .subscribe(() => {
                 this.update$.next(null);
-                this._snackBar.open('Created', undefined, {
+                this._snackBar.open("Created", undefined, {
                   duration: 1000,
-                  panelClass: 'success',
+                  panelClass: "success",
                 });
               });
             break;

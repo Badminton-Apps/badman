@@ -4,14 +4,14 @@ import {
   Game,
   SubEventTournament,
   EventEntry,
-} from '@badman/backend-database';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
-import { VisualService, XmlDrawTypeID, XmlTournament } from '@badman/backend-visual';
-import { SubEventStepData } from './subEvent';
-import { DrawType, runParallel } from '@badman/utils';
-import { Logger, NotFoundException } from '@nestjs/common';
+} from "@badman/backend-database";
+import moment from "moment";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
+import { VisualService, XmlDrawTypeID, XmlTournament } from "@badman/backend-visual";
+import { SubEventStepData } from "./subEvent";
+import { DrawType, runParallel } from "@badman/utils";
+import { Logger, NotFoundException } from "@nestjs/common";
 
 export interface DrawStepData {
   draw: DrawTournament;
@@ -26,7 +26,7 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options: StepOptions,
+    options: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -55,11 +55,11 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
     const draws = await subEvent.getDrawTournaments({
       transaction: this.transaction,
     });
-    const canChange = moment().subtract(1, 'month').isBefore(this.event.firstDay);
+    const canChange = moment().subtract(1, "month").isBefore(this.event.firstDay);
     const visualDraws = await this.visualService.getDraws(
       this.visualTournament.Code,
       internalId,
-      !canChange,
+      !canChange
     );
     for (const xmlDraw of visualDraws) {
       if (!xmlDraw) {
@@ -71,7 +71,7 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
       if (dbDraws.length === 1) {
         dbDraw = dbDraws[0];
       } else if (dbDraws.length > 1) {
-        this.logger.warn('Having multiple? Removing old');
+        this.logger.warn("Having multiple? Removing old");
 
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbDraws;
@@ -83,7 +83,7 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
             drawId: {
               [Op.in]: rest.map((e) => e.id),
             },
-            entryType: 'tournament',
+            entryType: "tournament",
           },
           transaction: this.transaction,
         });
@@ -130,7 +130,7 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
       const eventEntries = await EventEntry.findAll({
         where: {
           drawId: removed.id,
-          entryType: 'tournament',
+          entryType: "tournament",
         },
         transaction: this.transaction,
       });
@@ -141,7 +141,7 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
 
       const gameIds = (
         await Game.findAll({
-          attributes: ['id'],
+          attributes: ["id"],
           where: {
             linkId: removed.id,
           },

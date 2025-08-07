@@ -1,9 +1,9 @@
-import { EventTournament, Player } from '@badman/backend-database';
-import { Op } from 'sequelize';
-import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService, XmlTournament, XmlGenderID } from '@badman/backend-visual';
-import { correctWrongPlayers } from '../../../../utils';
-import { Logger } from '@nestjs/common';
+import { EventTournament, Player } from "@badman/backend-database";
+import { Op } from "sequelize";
+import { StepProcessor, StepOptions } from "../../../../processing";
+import { VisualService, XmlTournament, XmlGenderID } from "@badman/backend-visual";
+import { correctWrongPlayers } from "../../../../utils";
+import { Logger } from "@nestjs/common";
 
 export class TournamentSyncPlayerProcessor extends StepProcessor {
   public event?: EventTournament;
@@ -11,7 +11,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions,
+    options?: StepOptions
   ) {
     if (!options) {
       options = {};
@@ -37,8 +37,8 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
           lastName: xmlPlayer.Lastname,
           gender:
             xmlPlayer.GenderID === XmlGenderID.Boy || xmlPlayer.GenderID === XmlGenderID.Male
-              ? 'M'
-              : 'F',
+              ? "M"
+              : "F",
         }),
         xmlMemberId: xmlPlayer?.MemberID,
       };
@@ -66,12 +66,12 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
           where: {
             [Op.or]: [
               {
-                firstName: xmlPlayer?.player?.firstName ?? '',
-                lastName: xmlPlayer?.player?.lastName ?? '',
+                firstName: xmlPlayer?.player?.firstName ?? "",
+                lastName: xmlPlayer?.player?.lastName ?? "",
               },
               {
-                firstName: xmlPlayer?.player?.lastName ?? '',
-                lastName: xmlPlayer?.player?.firstName ?? '',
+                firstName: xmlPlayer?.player?.lastName ?? "",
+                lastName: xmlPlayer?.player?.firstName ?? "",
               },
             ],
           },
@@ -96,7 +96,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
 
       if (!key) {
         this.logger.warn(
-          `Could not find key for player ${xmlPlayer?.player?.firstName} ${xmlPlayer?.player?.lastName}`,
+          `Could not find key for player ${xmlPlayer?.player?.firstName} ${xmlPlayer?.player?.lastName}`
         );
         continue;
       }

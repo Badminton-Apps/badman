@@ -1,1 +1,1 @@
-export * from './langulage.initializer';
+export * from "./langulage.initializer";

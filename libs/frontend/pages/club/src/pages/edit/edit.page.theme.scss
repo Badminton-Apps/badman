@@ -1,18 +1,15 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
-@use './components/club-edit-location/club-edit-location.component.theme.scss' as club-edit-location;
-@use './components/club-edit-team/club-edit-team.component.theme.scss' as club-edit-team;
+@use "./components/club-edit-location/club-edit-location.component.theme.scss" as club-edit-location;
+@use "./components/club-edit-team/club-edit-team.component.theme.scss" as club-edit-team;
 
 @mixin color($theme) {
   badman-club-edit {
     @include club-edit-location.color($theme);
     @include club-edit-team.color($theme);
-
-    
-    
   }
 }
 
@@ -20,7 +17,5 @@
   badman-club-edit {
     @include club-edit-location.typography($theme);
     @include club-edit-team.typography($theme);
-
-    
   }
 }

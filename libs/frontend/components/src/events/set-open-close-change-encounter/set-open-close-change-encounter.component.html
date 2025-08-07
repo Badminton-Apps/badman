@@ -1,12 +1,12 @@
 <h2 mat-dialog-title>
-  {{ 'all.competition.menu.open_close_change-encounters' | translate }}
+  {{ "all.competition.menu.open_close_change-encounters" | translate }}
 </h2>
 <mat-dialog-content>
   <!-- date time picker -->
   @if (openControl) {
     <div>
       <mat-form-field>
-        <mat-label>{{ 'all.competition.open-close.open-requests' | translate }}</mat-label>
+        <mat-label>{{ "all.competition.open-close.open-requests" | translate }}</mat-label>
 
         <mtx-datetimepicker
           #datetimePicker
@@ -22,7 +22,7 @@
   @if (changeCloseRequestDatePeriod1Control) {
     <div>
       <mat-form-field>
-        <mat-label>{{ 'all.competition.open-close.close-new-requets' | translate }}</mat-label>
+        <mat-label>{{ "all.competition.open-close.close-new-requets" | translate }}</mat-label>
         <mtx-datetimepicker
           #datetimePicker
           type="datetime"
@@ -42,7 +42,7 @@
   @if (changeCloseDatePeriod1Control) {
     <div>
       <mat-form-field>
-        <mat-label>{{ 'all.competition.open-close.close-accept-requests' | translate }}</mat-label>
+        <mat-label>{{ "all.competition.open-close.close-accept-requests" | translate }}</mat-label>
         <mtx-datetimepicker
           #datetimePicker
           type="datetime"
@@ -65,7 +65,7 @@
   @if (changeCloseRequestDatePeriod2Control) {
     <div>
       <mat-form-field>
-        <mat-label>{{ 'all.competition.open-close.close-new-requets' | translate }}</mat-label>
+        <mat-label>{{ "all.competition.open-close.close-new-requets" | translate }}</mat-label>
         <mtx-datetimepicker
           #datetimePicker
           type="datetime"
@@ -85,7 +85,7 @@
   @if (changeCloseDatePeriod2Control) {
     <div>
       <mat-form-field>
-        <mat-label>{{ 'all.competition.open-close.close-accept-requests' | translate }}</mat-label>
+        <mat-label>{{ "all.competition.open-close.close-accept-requests" | translate }}</mat-label>
         <mtx-datetimepicker
           #datetimePicker
           type="datetime"
@@ -105,9 +105,9 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close]="">
-    {{ 'all.button.close' | translate }}
+    {{ "all.button.close" | translate }}
   </button>
   <button mat-raised-button color="primary" (click)="this.save()">
-    {{ 'all.button.save' | translate }}
+    {{ "all.button.save" | translate }}
   </button>
 </mat-dialog-actions>

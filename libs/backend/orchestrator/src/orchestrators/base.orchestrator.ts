@@ -1,12 +1,12 @@
-import { Service } from '@badman/backend-database';
-import { EventsGateway } from '@badman/backend-websockets';
-import { ConfigType, EVENTS } from '@badman/utils';
-import { Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Cron } from '@nestjs/schedule';
-import { Queue } from 'bull';
-import { Services } from '../services';
-import { RenderService } from '../services/render.service';
+import { Service } from "@badman/backend-database";
+import { EventsGateway } from "@badman/backend-websockets";
+import { ConfigType, EVENTS } from "@badman/utils";
+import { Logger, OnModuleInit } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Cron } from "@nestjs/schedule";
+import { Queue } from "bull";
+import { Services } from "../services";
+import { RenderService } from "../services/render.service";
 
 export class OrchestratorBase implements OnModuleInit {
   protected logger = new Logger(OrchestratorBase.name);
@@ -19,9 +19,9 @@ export class OrchestratorBase implements OnModuleInit {
     protected readonly configService: ConfigService<ConfigType>,
     private readonly gateway: EventsGateway,
     private readonly queue: Queue,
-    private readonly renderService: RenderService,
+    private readonly renderService: RenderService
   ) {
-    const configuredTimeout = this.configService.get<string>('RENDER_WAIT_TIME');
+    const configuredTimeout = this.configService.get<string>("RENDER_WAIT_TIME");
 
     if (configuredTimeout) {
       this.timeoutTime = parseInt(configuredTimeout);
@@ -30,8 +30,8 @@ export class OrchestratorBase implements OnModuleInit {
 
   async onModuleInit() {
     if (
-      this.configService.get<string>('NODE_ENV') === 'development' ||
-      this.configService.get<string>('NODE_ENV') === 'test'
+      this.configService.get<string>("NODE_ENV") === "development" ||
+      this.configService.get<string>("NODE_ENV") === "test"
     ) {
       return;
     }
@@ -39,15 +39,15 @@ export class OrchestratorBase implements OnModuleInit {
     await this._updateStatuses();
 
     this.logger.debug(
-      `[${this.serviceName}] Updated status to ${this.hasStarted ? 'started' : 'stopped'}`,
+      `[${this.serviceName}] Updated status to ${this.hasStarted ? "started" : "stopped"}`
     );
   }
 
-  @Cron('*/1 * * * *')
+  @Cron("*/1 * * * *")
   async checkQueue() {
     if (
-      this.configService.get<string>('NODE_ENV') === 'development' ||
-      this.configService.get<string>('NODE_ENV') === 'test'
+      this.configService.get<string>("NODE_ENV") === "development" ||
+      this.configService.get<string>("NODE_ENV") === "test"
     ) {
       return;
     }
@@ -82,7 +82,7 @@ export class OrchestratorBase implements OnModuleInit {
     if (!service) {
       service = await Service.create({
         name: this.serviceName,
-        status: 'stopped',
+        status: "stopped",
       });
     }
 
@@ -97,14 +97,14 @@ export class OrchestratorBase implements OnModuleInit {
     }
     const render = await this.renderService.getService(service);
 
-    if (render.suspended === 'suspended') {
-      service.status = 'stopped';
+    if (render.suspended === "suspended") {
+      service.status = "stopped";
       this.gateway.server?.emit(EVENTS.SERVICE.SERVICE_STOPPED, {
         id: service.id,
         service: this.serviceName,
       });
     } else {
-      service.status = 'started';
+      service.status = "started";
       this.hasStarted = true;
       this.startTime = new Date();
 
@@ -126,7 +126,7 @@ export class OrchestratorBase implements OnModuleInit {
 
       if (!this.hasStarted) {
         this.logger.debug(
-          `[${this.serviceName}] Found ${counts.waiting} waiting and ${counts.active} active jobs in queue, starting worker`,
+          `[${this.serviceName}] Found ${counts.waiting} waiting and ${counts.active} active jobs in queue, starting worker`
         );
         this.startServer();
         this.hasStarted = true;

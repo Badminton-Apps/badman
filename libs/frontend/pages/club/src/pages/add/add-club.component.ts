@@ -1,13 +1,13 @@
-import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { lastValueFrom } from 'rxjs';
-import { Club } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
+import { Component, inject } from "@angular/core";
+import { Router } from "@angular/router";
+import { lastValueFrom } from "rxjs";
+import { Club } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
 
 @Component({
-    templateUrl: './add-club.component.html',
-    styleUrls: ['./add-club.component.scss'],
-    standalone: false
+  templateUrl: "./add-club.component.html",
+  styleUrls: ["./add-club.component.scss"],
+  standalone: false,
 })
 export class AddClubComponent {
   private apollo = inject(Apollo);
@@ -33,8 +33,8 @@ export class AddClubComponent {
             ...this.club,
           },
         },
-      }),
+      })
     );
-    this.router.navigate(['club', newClub.data?.createClub.id]);
+    this.router.navigate(["club", newClub.data?.createClub.id]);
   }
 }

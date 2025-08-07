@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   Club,
   DrawCompetition,
@@ -12,23 +12,23 @@ import {
   SubEventCompetition,
   SubEventTournament,
   Team,
-} from '@badman/backend-database';
-import { EnrollmentValidationService, TeamEnrollmentOutput } from '@badman/backend-enrollment';
-import { NotificationService } from '@badman/backend-notifications';
-import { LoggingAction, TeamMembershipType } from '@badman/utils';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { ListArgs } from '../../utils';
+} from "@badman/backend-database";
+import { EnrollmentValidationService, TeamEnrollmentOutput } from "@badman/backend-enrollment";
+import { NotificationService } from "@badman/backend-notifications";
+import { LoggingAction, TeamMembershipType } from "@badman/utils";
+import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { ListArgs } from "../../utils";
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
   constructor(
     private notificationService: NotificationService,
-    private enrollmentService: EnrollmentValidationService,
+    private enrollmentService: EnrollmentValidationService
   ) {}
 
   @Query(() => EventEntry)
-  async eventEntry(@Args('id', { type: () => ID }) id: string): Promise<EventEntry> {
+  async eventEntry(@Args("id", { type: () => ID }) id: string): Promise<EventEntry> {
     const eventEntry = await EventEntry.findByPk(id);
 
     if (!eventEntry) {
@@ -79,7 +79,7 @@ export class EventEntryResolver {
     description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
   })
   async enrollmentValidation(
-    @Parent() eventEntry: EventEntry,
+    @Parent() eventEntry: EventEntry
   ): Promise<TeamEnrollmentOutput | null> {
     const team = await eventEntry.getTeam();
     const teamsOfClub = await Team.findAll({
@@ -87,7 +87,7 @@ export class EventEntryResolver {
         clubId: team.clubId,
         season: team.season,
       },
-      include: [{ model: Player, as: 'players' }, { model: EventEntry }],
+      include: [{ model: Player, as: "players" }, { model: EventEntry }],
     });
 
     const validation = await this.enrollmentService.fetchAndValidate(
@@ -111,7 +111,7 @@ export class EventEntryResolver {
         clubId: team.clubId,
         season: team.season,
       },
-      EnrollmentValidationService.defaultValidators(),
+      EnrollmentValidationService.defaultValidators()
     );
 
     return validation.teams?.find((t) => t.id === team.id) ?? null;
@@ -120,11 +120,11 @@ export class EventEntryResolver {
   @Mutation(() => Boolean)
   async finishEventEntry(
     @User() user: Player,
-    @Args('clubId', { type: () => ID }) clubId: string,
-    @Args('season', { type: () => Int }) season: number,
-    @Args('email', { type: () => String }) email: string,
+    @Args("clubId", { type: () => ID }) clubId: string,
+    @Args("season", { type: () => Int }) season: number,
+    @Args("email", { type: () => String }) email: string
   ) {
-    if (!(await user.hasAnyPermission([clubId + '_edit:club', 'edit-any:club']))) {
+    if (!(await user.hasAnyPermission([clubId + "_edit:club", "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to enroll a club`);
     }
 
@@ -157,8 +157,6 @@ export class EventEntryResolver {
       team.entry.sendOn = new Date();
       await team.entry.save();
     }
-
-   
 
     await Logging.create({
       action: LoggingAction.EnrollmentSubmitted,

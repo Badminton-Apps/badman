@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   DrawCompetition,
   DrawTournament,
@@ -11,13 +11,13 @@ import {
   RankingPoint,
   SubEventCompetition,
   SubEventTournament,
-} from '@badman/backend-database';
-import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Op, Transaction } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
+} from "@badman/backend-database";
+import { PointsService, StartVisualRankingDate } from "@badman/backend-ranking";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Op, Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../utils";
 
 @Resolver(() => RankingGroup)
 export class RankingGroupsResolver {
@@ -25,11 +25,11 @@ export class RankingGroupsResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private _pointService: PointsService,
+    private _pointService: PointsService
   ) {}
 
   @Query(() => RankingGroup)
-  async rankingGroup(@Args('id', { type: () => ID }) id: string): Promise<RankingGroup> {
+  async rankingGroup(@Args("id", { type: () => ID }) id: string): Promise<RankingGroup> {
     const rankingSystemGroup = await RankingGroup.findByPk(id);
 
     if (!rankingSystemGroup) {
@@ -46,7 +46,7 @@ export class RankingGroupsResolver {
   @ResolveField(() => [SubEventCompetition])
   async subEventCompetitions(
     @Parent() group: RankingGroup,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<SubEventCompetition[]> {
     return group.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
   }
@@ -54,7 +54,7 @@ export class RankingGroupsResolver {
   @ResolveField(() => [SubEventTournament])
   async subEventTournaments(
     @Parent() group: RankingGroup,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<SubEventTournament[]> {
     return group.getSubEventTournaments(ListArgs.toFindOptions(listArgs));
   }
@@ -62,15 +62,15 @@ export class RankingGroupsResolver {
   @Mutation(() => RankingGroup)
   async addSubEventsToRankingGroup(
     @User() user: Player,
-    @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string,
-    @Args('competitions', { type: () => [ID], nullable: true })
+    @Args("rankingGroupId", { type: () => ID }) rankingGroupId: string,
+    @Args("competitions", { type: () => [ID], nullable: true })
     competitions: string[],
-    @Args('tournaments', { type: () => [ID], nullable: true })
-    tournaments: string[],
+    @Args("tournaments", { type: () => [ID], nullable: true })
+    tournaments: string[]
   ) {
-    if (!(await user.hasAnyPermission(['add:event']))) {
+    if (!(await user.hasAnyPermission(["add:event"]))) {
       throw new UnauthorizedException(
-        `You do not have permission to add subevents to a ranking group`,
+        `You do not have permission to add subevents to a ranking group`
       );
     }
     // Do transaction
@@ -101,7 +101,7 @@ export class RankingGroupsResolver {
       await transaction.commit();
       return dbGroup;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -110,15 +110,15 @@ export class RankingGroupsResolver {
   @Mutation(() => RankingGroup)
   async removeSubEventsToRankingGroup(
     @User() user: Player,
-    @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string,
-    @Args('competitions', { type: () => [ID], nullable: true })
+    @Args("rankingGroupId", { type: () => ID }) rankingGroupId: string,
+    @Args("competitions", { type: () => [ID], nullable: true })
     competitions: string[],
-    @Args('tournaments', { type: () => [ID], nullable: true })
-    tournaments: string[],
+    @Args("tournaments", { type: () => [ID], nullable: true })
+    tournaments: string[]
   ) {
-    if (!(await user.hasAnyPermission(['remove:event']))) {
+    if (!(await user.hasAnyPermission(["remove:event"]))) {
       throw new UnauthorizedException(
-        `You do not have permission to remove subevents to a ranking group`,
+        `You do not have permission to remove subevents to a ranking group`
       );
     }
     // Do transaction
@@ -149,7 +149,7 @@ export class RankingGroupsResolver {
       await transaction.commit();
       return dbGroup;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -220,7 +220,7 @@ export class RankingGroupsResolver {
   async addGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const systems = await group.getRankingSystems({ transaction });
     const games = (
@@ -298,7 +298,7 @@ export class RankingGroupsResolver {
   async removeGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const systems = await group.getRankingSystems({ transaction });
 
@@ -350,7 +350,7 @@ export class RankingGroupsResolver {
       });
 
       this.logger.debug(
-        `Removed points for ${games.length} games in system ${system.name}(${system.id})`,
+        `Removed points for ${games.length} games in system ${system.name}(${system.id})`
       );
     }
   }

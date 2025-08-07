@@ -1,15 +1,15 @@
-import { EventCompetition, Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { Injectable, Logger } from '@nestjs/common';
-import * as XLSX from 'xlsx';
-import { Sequelize } from 'sequelize-typescript';
-import { Transaction } from 'sequelize';
-import moment from 'moment';
-import { sortPlaces } from '@badman/utils';
+import { EventCompetition, Player, RankingPlace, RankingSystem } from "@badman/backend-database";
+import { Injectable, Logger } from "@nestjs/common";
+import * as XLSX from "xlsx";
+import { Sequelize } from "sequelize-typescript";
+import { Transaction } from "sequelize";
+import moment from "moment";
+import { sortPlaces } from "@badman/utils";
 
 @Injectable()
 export class ResyncBaseTeamsService {
   private readonly logger = new Logger(ResyncBaseTeamsService.name);
-  private readonly rankingDate = moment('2022-05-09').toDate();
+  private readonly rankingDate = moment("2022-05-09").toDate();
 
   constructor(private _sequelize: Sequelize) {}
 
@@ -17,11 +17,11 @@ export class ResyncBaseTeamsService {
     const transaction = await this._sequelize.transaction();
 
     try {
-      this.logger.log('Starting resync');
+      this.logger.log("Starting resync");
       await this.setPlayerIndexes(transaction);
       await this.reacalc(transaction);
       await transaction.commit();
-      this.logger.log('Done');
+      this.logger.log("Done");
     } catch (e) {
       await transaction.rollback();
       throw e;
@@ -29,7 +29,7 @@ export class ResyncBaseTeamsService {
   }
 
   private async setPlayerIndexes(transaction?: Transaction) {
-    const workbook = XLSX.readFile('./Lijst_index_seizoen_2022-2023.xlsx');
+    const workbook = XLSX.readFile("./Lijst_index_seizoen_2022-2023.xlsx");
     const rows = XLSX.utils.sheet_to_json<Row>(workbook.Sheets[workbook.SheetNames[0]]);
 
     const primarySystem = await RankingSystem.findOne({
@@ -40,24 +40,24 @@ export class ResyncBaseTeamsService {
     });
 
     if (!primarySystem) {
-      throw new Error('No primary ranking system found');
+      throw new Error("No primary ranking system found");
     }
 
     for (const row of rows) {
       let p = await Player.findOne({
         where: {
-          memberId: row['Lidnummer'],
+          memberId: row["Lidnummer"],
         },
         transaction,
       });
 
       if (!p) {
-        if (row['Type'] == 'Competitiespeler') {
-          this.logger.debug(`Player ${row['Lidnummer']} not found`);
+        if (row["Type"] == "Competitiespeler") {
+          this.logger.debug(`Player ${row["Lidnummer"]} not found`);
           p = new Player({
-            memberId: row['Lidnummer'],
-            firstName: row['Voornaam'],
-            lastName: row['Achternaam'],
+            memberId: row["Lidnummer"],
+            firstName: row["Voornaam"],
+            lastName: row["Achternaam"],
           });
           // await p.save({ transaction });
         } else {
@@ -66,7 +66,7 @@ export class ResyncBaseTeamsService {
         }
       }
 
-      if (row['Type'] == 'Competitiespeler') {
+      if (row["Type"] == "Competitiespeler") {
         p.competitionPlayer = true;
       } else {
         p.competitionPlayer = false;
@@ -87,21 +87,21 @@ export class ResyncBaseTeamsService {
         // get last place
         const place = places.sort(sortPlaces)?.[0];
         if (!place) {
-          throw new Error('No place found');
+          throw new Error("No place found");
         }
 
-        place.single = row['Klassement enkel'];
-        place.double = row['Klassement dubbel'];
-        place.mix = row['Klassement gemengd'];
+        place.single = row["Klassement enkel"];
+        place.double = row["Klassement dubbel"];
+        place.mix = row["Klassement gemengd"];
         await place.save({ transaction });
       } else if (p.competitionPlayer) {
         const rankingPlace = new RankingPlace({
           playerId: p.id,
           systemId: primarySystem.id,
           rankingDate: this.rankingDate,
-          single: row['Klassement enkel'],
-          double: row['Klassement dubbel'],
-          mix: row['Klassement gemengd'],
+          single: row["Klassement enkel"],
+          double: row["Klassement dubbel"],
+          mix: row["Klassement gemengd"],
         });
         await rankingPlace.save({ transaction });
       }
@@ -131,7 +131,7 @@ export class ResyncBaseTeamsService {
         }
 
         for (const entry of entries) {
-          entry.changed('meta', true);
+          entry.changed("meta", true);
           await entry.save({
             transaction,
           });
@@ -146,7 +146,7 @@ interface Row {
   Voornaam: string;
   Achternaam: string;
   Type: string;
-  'Klassement enkel': number;
-  'Klassement dubbel': number;
-  'Klassement gemengd': number;
+  "Klassement enkel": number;
+  "Klassement dubbel": number;
+  "Klassement gemengd": number;
 }

@@ -21,7 +21,7 @@
         <mat-nav-list>
           <mat-list-item (click)="expanded.general = !expanded.general">
             <div class="expandable-item">
-              <div>{{ 'all.shell.sidebar.general.title' | translate }}</div>
+              <div>{{ "all.shell.sidebar.general.title" | translate }}</div>
               @if (!expanded.general) {
                 <mat-icon>expand_more</mat-icon>
               }
@@ -36,19 +36,19 @@
                 mat-list-item
                 (click)="isHandset() && drawer.close()"
                 [routerLink]="['/general', 'faq']"
-                >{{ 'all.shell.sidebar.general.faq' | translate }}</a
+                >{{ "all.shell.sidebar.general.faq" | translate }}</a
               >
               <a
                 mat-list-item
                 (click)="isHandset() && drawer.close()"
                 [routerLink]="['/general', 'changelog']"
-                >{{ 'all.shell.sidebar.general.changelog' | translate }}</a
+                >{{ "all.shell.sidebar.general.changelog" | translate }}</a
               >
             </mat-nav-list>
           </div>
           <mat-list-item (click)="expanded.competition = !expanded.competition">
             <div class="expandable-item">
-              <div>{{ 'all.shell.sidebar.competition.title' | translate }}</div>
+              <div>{{ "all.shell.sidebar.competition.title" | translate }}</div>
               @if (!expanded.competition) {
                 <mat-icon>expand_more</mat-icon>
               } @else {
@@ -62,13 +62,13 @@
                 mat-list-item
                 (click)="isHandset() && drawer.close()"
                 [routerLink]="['/competition']"
-                >{{ 'all.shell.sidebar.competition.overview' | translate }}</a
+                >{{ "all.shell.sidebar.competition.overview" | translate }}</a
               >
               <a
                 mat-list-item
                 (click)="isHandset() && drawer.close()"
                 [routerLink]="['/competition', 'assembly']"
-                >{{ 'all.shell.sidebar.competition.assembly' | translate }}</a
+                >{{ "all.shell.sidebar.competition.assembly" | translate }}</a
               >
               <badman-has-claim [any]="['*_enlist:team', 'enlist-any:team']">
                 @if (this.canEnroll()) {
@@ -76,7 +76,7 @@
                     mat-list-item
                     (click)="isHandset() && drawer.close()"
                     [routerLink]="['/competition', 'enrollment']"
-                    >{{ 'all.shell.sidebar.competition.enrollment' | translate }}</a
+                    >{{ "all.shell.sidebar.competition.enrollment" | translate }}</a
                   >
                 }
               </badman-has-claim>
@@ -85,22 +85,22 @@
                   mat-list-item
                   (click)="isHandset() && drawer.close()"
                   [routerLink]="['/competition', 'change-encounter']"
-                  >{{ 'all.shell.sidebar.competition.change-encounter' | translate }}</a
+                  >{{ "all.shell.sidebar.competition.change-encounter" | translate }}</a
                 >
               </badman-has-claim>
             </mat-nav-list>
           </div>
           <a mat-list-item (click)="isHandset() && drawer.close()" [routerLink]="['/tournament']">{{
-            'all.shell.sidebar.tournament.title' | translate
+            "all.shell.sidebar.tournament.title" | translate
           }}</a>
           <a mat-list-item (click)="isHandset() && drawer.close()" [routerLink]="['/ranking']">{{
-            'all.shell.sidebar.ranking.title' | translate
+            "all.shell.sidebar.ranking.title" | translate
           }}</a>
 
           <badman-has-claim [any]="['change:job', 'change:transfer']">
             <mat-list-item (click)="expanded.admin = !expanded.admin">
               <div class="expandable-item">
-                <div>{{ 'all.shell.sidebar.admin.title' | translate }}</div>
+                <div>{{ "all.shell.sidebar.admin.title" | translate }}</div>
                 @if (!expanded.admin) {
                   <mat-icon>expand_more</mat-icon>
                 } @else {
@@ -115,7 +115,7 @@
                     mat-list-item
                     (click)="isHandset() && drawer.close()"
                     [routerLink]="['/jobs']"
-                    >{{ 'all.shell.sidebar.job.title' | translate }}</a
+                    >{{ "all.shell.sidebar.job.title" | translate }}</a
                   >
                 </badman-has-claim>
                 <badman-has-claim [any]="['change:transfer']">
@@ -123,7 +123,7 @@
                     mat-list-item
                     (click)="isHandset() && drawer.close()"
                     [routerLink]="['/transfers']"
-                    >{{ 'all.shell.sidebar.transfer.title' | translate }}</a
+                    >{{ "all.shell.sidebar.transfer.title" | translate }}</a
                   >
                 </badman-has-claim>
                 <badman-has-claim [any]="['change:rules']">
@@ -131,7 +131,7 @@
                     mat-list-item
                     (click)="isHandset() && drawer.close()"
                     [routerLink]="['/rules']"
-                    >{{ 'all.shell.sidebar.rules.title' | translate }}</a
+                    >{{ "all.shell.sidebar.rules.title" | translate }}</a
                   >
                 </badman-has-claim>
               </mat-nav-list>

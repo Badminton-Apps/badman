@@ -1,29 +1,28 @@
-
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   OnInit,
   inject,
-} from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute } from '@angular/router';
-import { HasClaimComponent } from '@badman/frontend-components';
-import { SeoService } from '@badman/frontend-seo';
-import { Apollo, gql } from 'apollo-angular';
-import { QuillModule } from 'ngx-quill';
-import { lastValueFrom } from 'rxjs';
+} from "@angular/core";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { ActivatedRoute } from "@angular/router";
+import { HasClaimComponent } from "@badman/frontend-components";
+import { SeoService } from "@badman/frontend-seo";
+import { Apollo, gql } from "apollo-angular";
+import { QuillModule } from "ngx-quill";
+import { lastValueFrom } from "rxjs";
 
 @Component({
-    selector: 'badman-faq',
-    templateUrl: './faq.page.html',
-    styleUrls: ['./faq.page.scss'],
-    imports: [
+  selector: "badman-faq",
+  templateUrl: "./faq.page.html",
+  styleUrls: ["./faq.page.scss"],
+  imports: [
     MatFormFieldModule,
     HasClaimComponent,
     MatCardModule,
@@ -32,9 +31,9 @@ import { lastValueFrom } from 'rxjs';
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
-    QuillModule
-],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    QuillModule,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FaqPageComponent implements OnInit {
   questions!: Question[];
@@ -49,20 +48,20 @@ export class FaqPageComponent implements OnInit {
     const formBuilder = inject(FormBuilder);
 
     this.editForm = formBuilder.group({
-      question: '',
-      answer: '',
+      question: "",
+      answer: "",
     });
   }
 
   ngOnInit() {
     this.route.data.subscribe((data) => {
-      this.questions = data['faqs'];
+      this.questions = data["faqs"];
 
       this.seoService.update({
-        title: 'FAQ',
+        title: "FAQ",
         description: `Faq`,
-        type: 'website',
-        keywords: ['FAQ', 'badminton'],
+        type: "website",
+        keywords: ["FAQ", "badminton"],
       });
     });
   }
@@ -77,10 +76,10 @@ export class FaqPageComponent implements OnInit {
 
   async saveEdit(question: Question) {
     this.questionBeingEdited = undefined;
-    question.question = this.editForm?.get('question')?.value;
-    question.answer = this.editForm?.get('answer')?.value;
+    question.question = this.editForm?.get("question")?.value;
+    question.answer = this.editForm?.get("answer")?.value;
 
-    if (question.id !== 'new') {
+    if (question.id !== "new") {
       // Update question
       await lastValueFrom(
         this.apollo.mutate({
@@ -100,7 +99,7 @@ export class FaqPageComponent implements OnInit {
               answer: question.answer,
             },
           },
-        }),
+        })
       );
     } else {
       // Create question
@@ -121,7 +120,7 @@ export class FaqPageComponent implements OnInit {
               answer: question.answer,
             },
           },
-        }),
+        })
       );
       question.id = result.data?.createFaq.id;
     }
@@ -135,22 +134,22 @@ export class FaqPageComponent implements OnInit {
   cancelEdit() {
     this.questionBeingEdited = undefined;
     this.editForm?.reset();
-    if (this.questions[this.questions.length - 1].id === 'new') {
+    if (this.questions[this.questions.length - 1].id === "new") {
       this.questions.pop();
     }
   }
 
   addQuestion() {
     this.questions.push({
-      id: 'new',
-      question: '',
-      answer: '',
+      id: "new",
+      question: "",
+      answer: "",
     });
     this.editQuestion(this.questions[this.questions.length - 1]);
   }
 
   async deleteQuestion(question: Question) {
-    if (question.id === 'new') {
+    if (question.id === "new") {
       this.questions = this.questions.filter((q) => q.id !== question.id);
     } else {
       await lastValueFrom(
@@ -163,7 +162,7 @@ export class FaqPageComponent implements OnInit {
           variables: {
             id: question.id,
           },
-        }),
+        })
       );
 
       this.questions = this.questions.filter((q) => q.id !== question.id);

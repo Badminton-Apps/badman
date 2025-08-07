@@ -1,4 +1,4 @@
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -10,7 +10,7 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BuildOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsToMany,
   Column,
@@ -22,18 +22,18 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { Player } from '../player.model';
-import { PlayerClaimMembership } from './claim-player-membership.model';
-import { RoleClaimMembership } from './claim-role-membership.model';
-import { Role } from './role.model';
-import { SecurityType } from '@badman/utils';
+} from "sequelize-typescript";
+import { Player } from "../player.model";
+import { PlayerClaimMembership } from "./claim-player-membership.model";
+import { RoleClaimMembership } from "./claim-role-membership.model";
+import { Role } from "./role.model";
+import { SecurityType } from "@badman/utils";
 
 @Table({
   timestamps: true,
-  schema: 'security',
+  schema: "security",
 })
-@ObjectType({ description: 'A Claim' })
+@ObjectType({ description: "A Claim" })
 export class Claim extends Model {
   constructor(values?: Partial<Claim>, options?: BuildOptions) {
     super(values, options);
@@ -51,7 +51,7 @@ export class Claim extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Unique('Claims_name_category')
+  @Unique("Claims_name_category")
   @Index
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
@@ -62,7 +62,7 @@ export class Claim extends Model {
   @Column(DataType.STRING)
   description?: string;
 
-  @Unique('Claims_name_category')
+  @Unique("Claims_name_category")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   category?: string;
@@ -101,12 +101,12 @@ export class Claim extends Model {
 }
 @InputType()
 export class ClaimUpdateInput extends PartialType(
-  OmitType(Claim, ['createdAt', 'updatedAt'] as const),
-  InputType,
+  OmitType(Claim, ["createdAt", "updatedAt"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class ClaimNewInput extends PartialType(
-  OmitType(ClaimUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(ClaimUpdateInput, ["id"] as const),
+  InputType
 ) {}

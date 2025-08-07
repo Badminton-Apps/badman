@@ -1,25 +1,25 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use 'sass:color';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "sass:color";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-assembly-player {
-    $isDark: map.get($theme, 'is-dark');
+    $isDark: map.get($theme, "is-dark");
     cursor: pointer;
 
     .ranking {
       @if ($isDark) {
-        color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: -40%);
+        color: color.scale(mat.get-theme-color($theme, foreground, "base"), $lightness: -40%);
       } @else {
-        color: color.scale(mat.get-theme-color($theme, foreground, 'base'), $lightness: 60%);
+        color: color.scale(mat.get-theme-color($theme, foreground, "base"), $lightness: 60%);
       }
     }
 
     &.cdk-drag-preview {
-      background-color: mat.get-theme-color($theme, 'background', 'background');
-      color: mat.get-theme-color($theme, foreground, 'base');
+      background-color: mat.get-theme-color($theme, "background", "background");
+      color: mat.get-theme-color($theme, foreground, "base");
       cursor: grabbing;
     }
   }

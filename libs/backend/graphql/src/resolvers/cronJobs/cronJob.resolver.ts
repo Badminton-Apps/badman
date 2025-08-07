@@ -4,20 +4,23 @@ import {
   CronJobMetaType,
   CronJobUpdateInput,
   Player,
-} from '@badman/backend-database';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { ListArgs } from '../../utils';
-import * as cron from 'cron';
-import { User } from '@badman/backend-authorization';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Sequelize } from 'sequelize-typescript';
-import { CronService } from '@badman/backend-orchestrator';
+} from "@badman/backend-database";
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { ListArgs } from "../../utils";
+import * as cron from "cron";
+import { User } from "@badman/backend-authorization";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Sequelize } from "sequelize-typescript";
+import { CronService } from "@badman/backend-orchestrator";
 
 @Resolver(() => CronJob)
 export class CronJobResolver {
   private readonly logger = new Logger(CronJobResolver.name);
 
-  constructor(private _sequelize: Sequelize, private _cronsService: CronService) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private _cronsService: CronService
+  ) {}
 
   @Query(() => [CronJob])
   async cronJobs(@Args() listArgs: ListArgs): Promise<CronJob[]> {
@@ -33,8 +36,8 @@ export class CronJobResolver {
   }
 
   @Mutation(() => CronJob)
-  async updateCronJob(@User() user: Player, @Args('data') updateCronJobData: CronJobUpdateInput) {
-    if (!(await user.hasAnyPermission(['change:job']))) {
+  async updateCronJob(@User() user: Player, @Args("data") updateCronJobData: CronJobUpdateInput) {
+    if (!(await user.hasAnyPermission(["change:job"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this CronJob`);
     }
 
@@ -51,7 +54,7 @@ export class CronJobResolver {
       const result = await cronJobDb.update(updateCronJobData, { transaction });
 
       // Reinitialize the cron jobs
-      this._cronsService.onModuleInit()
+      this._cronsService.onModuleInit();
 
       // Commit transaction
       await transaction.commit();

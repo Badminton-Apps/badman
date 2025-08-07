@@ -1,4 +1,4 @@
-@use './src/pages/overview/overview.page.theme.scss' as overview;
+@use "./src/pages/overview/overview.page.theme.scss" as overview;
 
 @mixin theme($theme) {
   @include overview.theme($theme);

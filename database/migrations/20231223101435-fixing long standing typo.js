@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,20 +7,20 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.renameColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'caluclationIntervalLastUpdate',
-          'calculationIntervalLastUpdate',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "caluclationIntervalLastUpdate",
+          "calculationIntervalLastUpdate",
+          { transaction: t }
         );
 
         await queryInterface.renameColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'caluclationIntervalAmount',
-          'calculationIntervalAmount',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "caluclationIntervalAmount",
+          "calculationIntervalAmount",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -30,20 +30,20 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.renameColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'calculationIntervalLastUpdate',
-          'caluclationIntervalLastUpdate',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "calculationIntervalLastUpdate",
+          "caluclationIntervalLastUpdate",
+          { transaction: t }
         );
 
         await queryInterface.renameColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'calculationIntervalAmount',
-          'caluclationIntervalAmount',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "calculationIntervalAmount",
+          "caluclationIntervalAmount",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

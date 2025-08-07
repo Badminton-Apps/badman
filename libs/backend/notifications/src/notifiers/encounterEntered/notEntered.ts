@@ -1,6 +1,6 @@
-import { EncounterCompetition, NotificationOptionsTypes, Player } from '@badman/backend-database';
-import { Notifier } from '../notifier.base';
-import * as webPush from 'web-push';
+import { EncounterCompetition, NotificationOptionsTypes, Player } from "@badman/backend-database";
+import { Notifier } from "../notifier.base";
+import * as webPush from "web-push";
 
 export class CompetitionEncounterNotEnteredNotifier extends Notifier<
   {
@@ -11,20 +11,20 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
     url: string;
   }
 > {
-  protected linkType = 'encounterCompetition';
-  protected type: keyof NotificationOptionsTypes = 'encounterNotEnteredNotification';
+  protected linkType = "encounterCompetition";
+  protected type: keyof NotificationOptionsTypes = "encounterNotEnteredNotification";
   protected override allowedAmount = 1;
 
   private readonly options = (url: string, encounter: EncounterCompetition) => {
     return {
       notification: {
-        title: 'Invullen uitslag',
+        title: "Invullen uitslag",
         body: `Resultaat ${encounter.home?.name} tegen ${encounter.away?.name} nog niet ingevuld`,
-        actions: [{ action: 'goto', title: 'Ga naar wedstrijd' }],
+        actions: [{ action: "goto", title: "Ga naar wedstrijd" }],
         data: {
           onActionClick: {
-            default: { operation: 'openWindow', url: url },
-            goto: { operation: 'openWindow', url: url },
+            default: { operation: "openWindow", url: url },
+            goto: { operation: "openWindow", url: url },
           },
         },
       },
@@ -34,11 +34,11 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
   async notifyPush(
     player: Player,
     data: { encounter: EncounterCompetition },
-    args?: { email: string; url: string },
+    args?: { email: string; url: string }
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
     if (!args?.url) {
-      throw new Error('No url provided');
+      throw new Error("No url provided");
     }
 
     await this.pushService.sendNotification(player, this.options(args.url, data.encounter));
@@ -47,7 +47,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
   async notifyEmail(
     player: Player,
     data: { encounter: EncounterCompetition },
-    args?: { email: string; url: string },
+    args?: { email: string; url: string }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
     const email = args?.email ?? player.email;
@@ -62,7 +62,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
     }
 
     if (!args?.url) {
-      throw new Error('No url provided');
+      throw new Error("No url provided");
     }
 
     await this.mailing.sendNotEnterdMail(
@@ -72,7 +72,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
         slug: player.slug,
       },
       data.encounter,
-      args.url,
+      args.url
     );
   }
 
@@ -81,7 +81,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string },
+    args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

@@ -1,11 +1,11 @@
-import { Field } from '@nestjs/graphql';
-import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
-import { Column, DataType, Default, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Field } from "@nestjs/graphql";
+import { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
+import { Column, DataType, Default, IsUUID, Model, PrimaryKey, Table } from "sequelize-typescript";
 
 @Table({
   timestamps: true,
-  schema: 'system',
-  tableName: 'Rules',
+  schema: "system",
+  tableName: "Rules",
 })
 export class Rule extends Model<InferAttributes<Rule>, InferCreationAttributes<Rule>> {
   @Default(DataType.UUIDV4)
@@ -17,7 +17,6 @@ export class Rule extends Model<InferAttributes<Rule>, InferCreationAttributes<R
   declare updatedAt?: Date;
   declare createdAt?: Date;
 
-  
   @Field(() => String)
   @Column(DataType.STRING)
   group!: string;
@@ -38,6 +37,5 @@ export class Rule extends Model<InferAttributes<Rule>, InferCreationAttributes<R
   @Column({
     type: DataType.JSONB,
   })
-  meta?: unknown
+  meta?: unknown;
 }
-

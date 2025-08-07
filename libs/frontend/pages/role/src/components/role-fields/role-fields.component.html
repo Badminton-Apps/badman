@@ -1,7 +1,7 @@
 <form (ngSubmit)="this.update()" [formGroup]="roleForm">
   <p class="description">When field isn't required (see '*') leave empty for disable limitation</p>
   <mat-form-field>
-    <mat-label>{{ 'all.input.name' | translate }}</mat-label>
+    <mat-label>{{ "all.input.name" | translate }}</mat-label>
     <input matInput formControlName="name" alt="name" autocomplete="name" required />
   </mat-form-field>
   @for (group of this.claims(); track group) {
@@ -15,6 +15,6 @@
     }
   }
   <button mat-raised-button color="primary" type="submit">
-    {{ 'all.button.save' | translate }}
+    {{ "all.button.save" | translate }}
   </button>
 </form>

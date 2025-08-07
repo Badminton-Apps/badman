@@ -8,7 +8,7 @@
     <!-- Position Column -->
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef>
-        {{ 'all.competition.subevent.title' | translate }}
+        {{ "all.competition.subevent.title" | translate }}
       </mat-header-cell>
       <mat-cell *matCellDef="let subevent"> {{ subevent.name }} {{ subevent.eventType }} </mat-cell>
     </ng-container>
@@ -16,7 +16,7 @@
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
       <mat-cell *matCellDef="let subevent">
         {{ (subevent.eventEntries ?? []).length }}
-        {{ 'all.competition.team-enrollment.enrollments' | translate }}
+        {{ "all.competition.team-enrollment.enrollments" | translate }}
       </mat-cell>
     </ng-container>
     <ng-container matColumnDef="validations">
@@ -68,7 +68,7 @@
                 {{ entry.team.name }}
                 @if (entry?.meta?.competition?.teamIndex) {
                   <span class="team-index">
-                    ({{ 'all.team.team-index' | translate }}:{{
+                    ({{ "all.team.team-index" | translate }}:{{
                       entry?.meta?.competition?.teamIndex
                     }})
                   </span>
@@ -102,7 +102,7 @@
               <badman-block class="base">
                 <badman-block-header>
                   <badman-block-title>{{
-                    'all.competition.team-enrollment.players.base' | translate
+                    "all.competition.team-enrollment.players.base" | translate
                   }}</badman-block-title>
                 </badman-block-header>
                 <mat-divider />
@@ -123,7 +123,7 @@
               <badman-block class="captain">
                 <badman-block-header>
                   <badman-block-title>{{
-                    'all.team.title.base-fields' | translate
+                    "all.team.title.base-fields" | translate
                   }}</badman-block-title>
                 </badman-block-header>
                 <mat-divider />
@@ -132,19 +132,19 @@
                     @if (entry?.meta?.competition?.teamIndex) {
                       <mat-list-item role="listitem">
                         <span matListItemTitle>{{ entry?.meta?.competition?.teamIndex }}</span>
-                        <span matListItemLine>{{ 'all.team.team-index' | translate }}</span>
+                        <span matListItemLine>{{ "all.team.team-index" | translate }}</span>
                       </mat-list-item>
                     }
                     <mat-list-item role="listitem">
                       <span matListItemTitle>{{ entry?.team?.captain?.fullName }}</span>
-                      <span matListItemLine>{{ 'all.team.title.captain' | translate }}</span>
+                      <span matListItemLine>{{ "all.team.title.captain" | translate }}</span>
                     </mat-list-item>
                     <mat-list-item role="listitem">
                       <span matListItemTitle
-                        >{{ 'all.days.' + entry?.team?.preferredDay | translate }} -
+                        >{{ "all.days." + entry?.team?.preferredDay | translate }} -
                         {{ entry?.team?.preferredTime }}</span
                       >
-                      <span matListItemLine>{{ 'all.team.prefferd.title' | translate }}</span>
+                      <span matListItemLine>{{ "all.team.prefferd.title" | translate }}</span>
                     </mat-list-item>
                   </mat-list>
                 </badman-block-content>
@@ -152,7 +152,7 @@
               <badman-block class="validations">
                 <badman-block-header>
                   <badman-block-title>{{
-                    'all.competition.team-enrollment.validations' | translate
+                    "all.competition.team-enrollment.validations" | translate
                   }}</badman-block-title>
                 </badman-block-header>
                 <mat-divider />
@@ -185,7 +185,7 @@
                     }
                     @if (validation.errors.length === 0 && validation.warnings.length === 0) {
                       <div class="no-errors">
-                        {{ 'all.competition.team-assembly.errors.none' | translate }}
+                        {{ "all.competition.team-assembly.errors.none" | translate }}
                       </div>
                     }
                   }

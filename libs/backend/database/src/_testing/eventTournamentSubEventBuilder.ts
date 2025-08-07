@@ -1,7 +1,7 @@
-import { SubEventTournament } from '../models';
-import { EventTournamentBuilder } from './eventTournamentBuilder';
-import { DrawTournamentBuilder } from './eventTournamentDrawBuilder';
-import { SystemGroupBuilder } from './systemGroupBuilder';
+import { SubEventTournament } from "../models";
+import { EventTournamentBuilder } from "./eventTournamentBuilder";
+import { DrawTournamentBuilder } from "./eventTournamentDrawBuilder";
+import { SystemGroupBuilder } from "./systemGroupBuilder";
 
 export class SubEventTournamentBuilder {
   private build = false;

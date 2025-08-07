@@ -1,12 +1,12 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
-import { ClubMembership } from '@badman/frontend-models';
-import { endOfSeason, getSeason, startOfSeason } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import { Socket } from 'ngx-socket-io';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Observable, Subject, merge } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable, inject, signal } from "@angular/core";
+import { ClubMembership } from "@badman/frontend-models";
+import { endOfSeason, getSeason, startOfSeason } from "@badman/utils";
+import { Apollo, gql } from "apollo-angular";
+import { Socket } from "ngx-socket-io";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Observable, Subject, merge } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
 
 export interface TransferLoanState {
   transferAndLoans: ClubMembership[];
@@ -18,7 +18,7 @@ export interface TransferLoanState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class TransferLoanService {
   socket = inject(Socket);
@@ -44,9 +44,9 @@ export class TransferLoanService {
         transferAndLoans,
         filtered: transferAndLoans,
         loaded: true,
-      })),
+      }))
     ),
-    this.error$.pipe(map((error) => ({ error }))),
+    this.error$.pipe(map((error) => ({ error })))
   );
 
   state = signalSlice({
@@ -63,9 +63,9 @@ export class TransferLoanService {
                 transferAndLoans,
                 filtered: transferAndLoans,
                 loading: false,
-              })),
-            ),
-          ),
+              }))
+            )
+          )
         ),
       deleteMembership: (_state, action$: Observable<Partial<ClubMembership>>) =>
         action$.pipe(
@@ -77,9 +77,9 @@ export class TransferLoanService {
                 transferAndLoans,
                 filtered: transferAndLoans,
                 loading: false,
-              })),
-            ),
-          ),
+              }))
+            )
+          )
         ),
       reload: (_state, action$: Observable<void>) =>
         action$.pipe(
@@ -89,9 +89,9 @@ export class TransferLoanService {
                 transferAndLoans,
                 filtered: transferAndLoans,
                 loading: false,
-              })),
-            ),
-          ),
+              }))
+            )
+          )
         ),
 
       setSeason: (_state, action$: Observable<number>) =>
@@ -103,9 +103,9 @@ export class TransferLoanService {
                 filtered: transferAndLoans,
                 season,
                 loading: false,
-              })),
-            ),
-          ),
+              }))
+            )
+          )
         ),
       setConfirmed: (_state, action$: Observable<boolean | null>) =>
         action$.pipe(
@@ -116,9 +116,9 @@ export class TransferLoanService {
                 filtered: transferAndLoans,
                 confirmed,
                 loading: false,
-              })),
-            ),
-          ),
+              }))
+            )
+          )
         ),
       setFilter: (
         _state,
@@ -126,7 +126,7 @@ export class TransferLoanService {
           search: string;
           newClubs: string[];
           currentClubs: string[];
-        }>,
+        }>
       ) =>
         action$.pipe(
           map((filter) => {
@@ -158,7 +158,7 @@ export class TransferLoanService {
             return {
               filtered,
             };
-          }),
+          })
         ),
     },
   });
@@ -168,7 +168,7 @@ export class TransferLoanService {
       .query<{
         clubPlayerMemberships: { rows: ClubMembership[] };
       }>({
-        fetchPolicy: 'network-only',
+        fetchPolicy: "network-only",
         query: gql`
           query LoansAndTransfers($where: JSONObject) {
             clubPlayerMemberships(where: $where) {
@@ -217,8 +217,8 @@ export class TransferLoanService {
         }),
         map(
           (result) =>
-            result.data.clubPlayerMemberships.rows?.map((r) => new ClubMembership(r)) ?? [],
-        ),
+            result.data.clubPlayerMemberships.rows?.map((r) => new ClubMembership(r)) ?? []
+        )
       );
   }
 
@@ -238,7 +238,7 @@ export class TransferLoanService {
         catchError((err) => {
           this.handleError(err);
           return EMPTY;
-        }),
+        })
       );
   }
 
@@ -258,7 +258,7 @@ export class TransferLoanService {
         catchError((err) => {
           this.handleError(err);
           return EMPTY;
-        }),
+        })
       );
   }
 

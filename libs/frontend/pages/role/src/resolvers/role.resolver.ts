@@ -1,9 +1,9 @@
-import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Role } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { first, map } from 'rxjs/operators';
+import { Injectable, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Role } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { first, map } from "rxjs/operators";
 
 @Injectable()
 export class RoleResolver {
@@ -12,7 +12,7 @@ export class RoleResolver {
   private platformId = inject<string>(PLATFORM_ID);
 
   resolve(route: ActivatedRouteSnapshot) {
-    const roleId = route.params['id'];
+    const roleId = route.params["id"];
 
     return this.apollo
       .query<{ role: Partial<Role> }>({
@@ -32,14 +32,14 @@ export class RoleResolver {
         },
       })
       .pipe(
-        transferState('roleKey-' + roleId, this.stateTransfer, this.platformId),
+        transferState("roleKey-" + roleId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.role) {
-            throw new Error('No role');
+            throw new Error("No role");
           }
           return new Role(result.data.role);
         }),
-        first(),
+        first()
       );
   }
 }

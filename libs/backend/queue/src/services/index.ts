@@ -1,1 +1,1 @@
-export * from './transaction-manger.service';
+export * from "./transaction-manger.service";

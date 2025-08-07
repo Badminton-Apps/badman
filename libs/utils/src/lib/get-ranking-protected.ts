@@ -16,11 +16,11 @@ export function getRankingProtected<
 
   // if no system is provided, throw an error
   if (!system.amountOfLevels) {
-    throw new Error('No amount of levels provided');
+    throw new Error("No amount of levels provided");
   }
 
   if (!system.maxDiffLevels) {
-    throw new Error('No max diff levels provided');
+    throw new Error("No max diff levels provided");
   }
 
   ranking.single = ranking.single || system.amountOfLevels;

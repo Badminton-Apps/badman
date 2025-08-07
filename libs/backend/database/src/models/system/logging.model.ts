@@ -1,5 +1,5 @@
-import { LoggingAction } from '@badman/utils';
-import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { LoggingAction } from "@badman/utils";
+import { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -11,14 +11,14 @@ import {
   Model,
   PrimaryKey,
   Table,
-} from 'sequelize-typescript';
-import { Relation } from '../../wrapper';
-import { Player } from '../player.model';
+} from "sequelize-typescript";
+import { Relation } from "../../wrapper";
+import { Player } from "../player.model";
 
 @Table({
   timestamps: true,
-  schema: 'system',
-  tableName: 'Logs',
+  schema: "system",
+  tableName: "Logs",
 })
 export class Logging extends Model<InferAttributes<Logging>, InferCreationAttributes<Logging>> {
   @Default(DataType.UUIDV4)
@@ -30,7 +30,7 @@ export class Logging extends Model<InferAttributes<Logging>, InferCreationAttrib
   declare updatedAt?: Date;
   declare createdAt?: Date;
 
-  @BelongsTo(() => Player, 'playerId')
+  @BelongsTo(() => Player, "playerId")
   player?: Relation<Player>;
 
   @ForeignKey(() => Player)

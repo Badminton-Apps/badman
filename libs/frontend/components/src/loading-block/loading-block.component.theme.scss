@@ -1,16 +1,16 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use 'sass:color';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "sass:color";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-loading-block {
-    $isDark: map.get($theme, 'is-dark');
-    $background-color: mat.get-theme-color($theme, 'background', 'app-bar');
+    $isDark: map.get($theme, "is-dark");
+    $background-color: mat.get-theme-color($theme, "background", "app-bar");
 
     .padding {
-      background-color: mat.get-theme-color($theme, 'background', 'background');
+      background-color: mat.get-theme-color($theme, "background", "background");
     }
 
     .animation-block {

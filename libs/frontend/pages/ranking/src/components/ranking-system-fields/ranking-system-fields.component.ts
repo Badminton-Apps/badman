@@ -1,22 +1,21 @@
-
-import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
-import { RankingGroup, RankingSystem } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
+import { ChangeDetectionStrategy, Component, OnInit, input, output } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatOptionModule } from "@angular/material/core";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSelectChange, MatSelectModule } from "@angular/material/select";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatTableModule } from "@angular/material/table";
+import { RouterModule } from "@angular/router";
+import { RankingGroup, RankingSystem } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MomentModule } from "ngx-moment";
 
 @Component({
-    imports: [
+  imports: [
     RouterModule,
     TranslatePipe,
     ReactiveFormsModule,
@@ -29,12 +28,12 @@ import { MomentModule } from 'ngx-moment';
     MatMenuModule,
     MatOptionModule,
     MatSelectModule,
-    MatSlideToggleModule
-],
-    selector: 'badman-ranking-system-fields',
-    templateUrl: './ranking-system-fields.component.html',
-    styleUrls: ['./ranking-system-fields.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    MatSlideToggleModule,
+  ],
+  selector: "badman-ranking-system-fields",
+  templateUrl: "./ranking-system-fields.component.html",
+  styleUrls: ["./ranking-system-fields.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RankingSystemFieldsComponent implements OnInit {
   system = input<RankingSystem>({} as RankingSystem);
@@ -66,12 +65,12 @@ export class RankingSystemFieldsComponent implements OnInit {
       latestXGamesToUse: new FormControl(this.system().latestXGamesToUse),
       minNumberOfGamesUsedForUpgrade: new FormControl(
         this.system().minNumberOfGamesUsedForUpgrade,
-        Validators.required,
+        Validators.required
       ),
       maxDiffLevels: new FormControl(this.system().maxDiffLevels, Validators.required),
       updateIntervalAmount: new FormControl(
         this.system().updateIntervalAmount,
-        Validators.required,
+        Validators.required
       ),
       updateIntervalUnit: new FormControl(this.system().updateIntervalUnit, Validators.required),
       updateDayOfWeek: new FormControl(this.system().updateDayOfWeek, Validators.required),
@@ -80,39 +79,39 @@ export class RankingSystemFieldsComponent implements OnInit {
       periodUnit: new FormControl(this.system().periodUnit, Validators.required),
       calculationIntervalAmount: new FormControl(
         this.system().calculationIntervalAmount,
-        Validators.required,
+        Validators.required
       ),
       calculationIntervalUnit: new FormControl(
         this.system().calculationIntervalUnit,
-        Validators.required,
+        Validators.required
       ),
       calculationDayOfWeek: new FormControl(
         this.system().calculationDayOfWeek,
-        Validators.required,
+        Validators.required
       ),
       differenceForDowngradeSingle: new FormControl(
         this.system().differenceForDowngradeSingle,
-        Validators.required,
+        Validators.required
       ),
       differenceForDowngradeDouble: new FormControl(
         this.system().differenceForDowngradeDouble,
-        Validators.required,
+        Validators.required
       ),
       differenceForDowngradeMix: new FormControl(
         this.system().differenceForDowngradeMix,
-        Validators.required,
+        Validators.required
       ),
       differenceForUpgradeSingle: new FormControl(
         this.system().differenceForUpgradeSingle,
-        Validators.required,
+        Validators.required
       ),
       differenceForUpgradeDouble: new FormControl(
         this.system().differenceForUpgradeDouble,
-        Validators.required,
+        Validators.required
       ),
       differenceForUpgradeMix: new FormControl(
         this.system().differenceForUpgradeMix,
-        Validators.required,
+        Validators.required
       ),
       startingType: new FormControl(this.system().startingType, Validators.required),
       primary: new FormControl(this.system().primary),
@@ -130,20 +129,20 @@ export class RankingSystemFieldsComponent implements OnInit {
   onGroupChange(event: MatSelectChange) {
     // find groups added
     const addedGroups: RankingGroup[] = event.value.filter(
-      (group: RankingGroup) => !this.system().rankingGroups?.includes(group),
+      (group: RankingGroup) => !this.system().rankingGroups?.includes(group)
     );
     // find groups removed
     const removedGroups = this.system().rankingGroups?.filter(
-      (group) => !event.value.includes(group),
+      (group) => !event.value.includes(group)
     );
 
     // emit events
     addedGroups?.forEach((group) => {
       if (!this.system().id) {
-        throw new Error('System id is not set');
+        throw new Error("System id is not set");
       }
       if (!group.id) {
-        throw new Error('System id is not set');
+        throw new Error("System id is not set");
       }
 
       this.whenGroupAdded.emit({
@@ -155,10 +154,10 @@ export class RankingSystemFieldsComponent implements OnInit {
     });
     removedGroups?.forEach((group) => {
       if (!this.system().id) {
-        throw new Error('System id is not set');
+        throw new Error("System id is not set");
       }
       if (!group.id) {
-        throw new Error('System id is not set');
+        throw new Error("System id is not set");
       }
       this.whenGroupRemoved.emit({
         groupId: group.id,

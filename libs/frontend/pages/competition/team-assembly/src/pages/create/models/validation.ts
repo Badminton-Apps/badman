@@ -1,4 +1,4 @@
-import { Player } from '@badman/frontend-models';
+import { Player } from "@badman/frontend-models";
 
 export type ValidationResult = {
   baseTeamIndex: number;

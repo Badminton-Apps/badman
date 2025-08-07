@@ -1,5 +1,5 @@
-import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
-import { Rule } from './_rule.base';
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export type TeamBaseIndexRuleParams = {
   teamIndex: number;
@@ -10,7 +10,7 @@ export type TeamBaseIndexRuleParams = {
  * Checks if the teamIndex is beter than the baseIndex
  */
 export class TeamBaseIndexRule extends Rule {
-  static override readonly description = 'all.rules.team-assembly.team-base-index';
+  static override readonly description = "all.rules.team-assembly.team-base-index";
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { team, teamIndex, meta } = assembly;
 
@@ -19,7 +19,7 @@ export class TeamBaseIndexRule extends Rule {
         valid: false,
         errors: [
           {
-            message: 'all.v1.teamFormation.errors.team-index',
+            message: "all.v1.teamFormation.errors.team-index",
             params: {
               teamIndex,
               baseIndex: meta?.competition?.teamIndex,

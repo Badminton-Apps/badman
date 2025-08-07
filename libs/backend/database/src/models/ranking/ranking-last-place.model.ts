@@ -1,9 +1,9 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -16,16 +16,16 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { Player } from '../player.model';
-import { RankingSystem } from './ranking-system.model';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { Player } from "../player.model";
+import { RankingSystem } from "./ranking-system.model";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'ranking',
+  schema: "ranking",
 })
-@ObjectType({ description: 'A RankingLastPlace' })
+@ObjectType({ description: "A RankingLastPlace" })
 export class RankingLastPlace extends Model {
   constructor(values?: Partial<RankingLastPlace>, options?: BuildOptions) {
     super(values, options);
@@ -125,28 +125,28 @@ export class RankingLastPlace extends Model {
   @Column(DataType.BOOLEAN)
   doubleInactive?: boolean;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @ForeignKey(() => Player)
-  @Index('lastPlaces_ranking_index')
+  @Index("lastPlaces_ranking_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   playerId?: string;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @ForeignKey(() => RankingSystem)
-  @Index('lastPlaces_ranking_index')
+  @Index("lastPlaces_ranking_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   systemId?: string;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'playerId')
+  @BelongsTo(() => Player, "playerId")
   player?: Relation<Player>;
 
   @Field(() => RankingSystem, { nullable: true })
   @BelongsTo(() => RankingSystem, {
-    foreignKey: 'systemId',
-    onDelete: 'CASCADE',
+    foreignKey: "systemId",
+    onDelete: "CASCADE",
   })
   rankingSystem?: Relation<RankingSystem>;
 

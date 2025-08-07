@@ -1,17 +1,17 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use 'sass:color';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "sass:color";
+@use "@angular/material" as mat;
 
-@use './list-games/list-games.component.theme.scss' as list-games;
+@use "./list-games/list-games.component.theme.scss" as list-games;
 
 @mixin color($theme) {
   badman-recent-games {
     @include list-games.color($theme);
 
-    $isDark: map.get($theme, 'is-dark');
-    $background-color: mat.get-theme-color($theme, 'background', 'app-bar');
+    $isDark: map.get($theme, "is-dark");
+    $background-color: mat.get-theme-color($theme, "background", "app-bar");
 
     $danger-palette: map.get($theme, danger);
     $warn-palette: map.get($theme, warn);
@@ -68,19 +68,19 @@
           font: mat.get-theme-typography($theme, caption, font);
         }
         .day {
-          font: mat.get-theme-typography($theme, 'body-1', font);
+          font: mat.get-theme-typography($theme, "body-1", font);
         }
       }
 
       .score {
         .home {
-          font: mat.get-theme-typography($theme, 'subtitle-1', font);
+          font: mat.get-theme-typography($theme, "subtitle-1", font);
         }
         .result {
-          font: mat.get-theme-typography($theme, 'headline-4', font);
+          font: mat.get-theme-typography($theme, "headline-4", font);
         }
         .away {
-          font: mat.get-theme-typography($theme, 'subtitle-1', font);
+          font: mat.get-theme-typography($theme, "subtitle-1", font);
         }
       }
     }

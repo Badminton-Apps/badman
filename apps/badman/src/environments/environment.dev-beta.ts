@@ -1,22 +1,22 @@
-import packages from '../version.json';
+import packages from "../version.json";
 
 export const environment = {
   production: true,
-  apiVersion: 'v1',
-  api: 'https://beta.badman.app/api',
-  graphql: 'https://beta.badman.app/graphql',
+  apiVersion: "v1",
+  api: "https://beta.badman.app/api",
+  graphql: "https://beta.badman.app/graphql",
   adsense: {
-    adClient: 'ca-pub-2426855871474715',
+    adClient: "ca-pub-2426855871474715",
     show: true,
   },
   clarity: {
     enbaled: true,
-    projectId: 'eunlmikxb7',
+    projectId: "eunlmikxb7",
   },
   google: {
     ads: {
       enbaled: true,
-      publisherId: 'ca-pub-2426855871474715',
+      publisherId: "ca-pub-2426855871474715",
       debug: false,
       slots: {
         sidebar: 4690724012,
@@ -25,12 +25,12 @@ export const environment = {
     },
     analytics: {
       enbaled: true,
-      tag: 'G-ZB8171V3HR0',
+      tag: "G-ZB8171V3HR0",
     },
   },
   vitals: {
-    url: 'https://vitals.vercel-analytics.com/v1/vitals',
-    analyticsId: 'zKT4xSXr0gDIdX4JmvpaUPwJwMG',
+    url: "https://vitals.vercel-analytics.com/v1/vitals",
+    analyticsId: "zKT4xSXr0gDIdX4JmvpaUPwJwMG",
     enabled: true,
   },
   version: packages.version,

@@ -1,1 +1,1 @@
-export type Relation<T> = T; 
+export type Relation<T> = T;

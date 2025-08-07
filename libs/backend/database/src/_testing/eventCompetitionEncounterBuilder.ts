@@ -1,7 +1,7 @@
-import { EncounterCompetition } from '../models';
-import { GameBuilder } from './GameBuilder';
-import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
-import { TeamBuilder } from './teamBuilder';
+import { EncounterCompetition } from "../models";
+import { GameBuilder } from "./GameBuilder";
+import { DrawCompetitionBuilder } from "./eventCompetitionDrawBuilder";
+import { TeamBuilder } from "./teamBuilder";
 
 export class EncounterCompetitionBuilder {
   private build = false;

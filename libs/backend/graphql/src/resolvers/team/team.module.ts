@@ -1,6 +1,6 @@
-import { DatabaseModule } from '@badman/backend-database';
-import { Module } from '@nestjs/common';
-import { TeamPlayerResolver, TeamsResolver } from './team.resolver';
+import { DatabaseModule } from "@badman/backend-database";
+import { Module } from "@nestjs/common";
+import { TeamPlayerResolver, TeamsResolver } from "./team.resolver";
 
 @Module({
   imports: [DatabaseModule],

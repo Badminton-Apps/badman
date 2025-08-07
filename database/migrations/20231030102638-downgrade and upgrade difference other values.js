@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,63 +7,63 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForDowngradeSingle',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForDowngradeSingle",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForDowngradeDouble',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForDowngradeDouble",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForDowngradeMix',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForDowngradeMix",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForUpgradeSingle',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForUpgradeSingle",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForUpgradeDouble',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForUpgradeDouble",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForUpgradeMix',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForUpgradeMix",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         const [rankingSystems] = await queryInterface.sequelize.query(
           'SELECT * FROM "ranking"."RankingSystems"',
-          { transaction: t },
+          { transaction: t }
         );
 
         for (const rankingSystem of rankingSystems) {
@@ -76,22 +76,22 @@ module.exports = {
               "differenceForUpgradeDouble" = ${rankingSystem.differenceForUpgrade},
               "differenceForUpgradeMix" = ${rankingSystem.differenceForUpgrade}
             WHERE id = '${rankingSystem.id}'`,
-            { transaction: t },
+            { transaction: t }
           );
         }
 
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForDowngrade',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForDowngrade",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForUpgrade',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForUpgrade",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -101,27 +101,27 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForDowngrade',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForDowngrade",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForUpgrade',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForUpgrade",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         const [rankingSystems] = await queryInterface.sequelize.query(
           'SELECT * FROM "ranking"."RankingSystems"',
-          { transaction: t },
+          { transaction: t }
         );
 
         for (const rankingSystem of rankingSystems) {
@@ -130,42 +130,42 @@ module.exports = {
               "differenceForDowngrade" = ${rankingSystem.differenceForDowngradeSingle},
               "differenceForUpgrade" = ${rankingSystem.differenceForUpgradeSingle}
             WHERE id = '${rankingSystem.id}'`,
-            { transaction: t },
+            { transaction: t }
           );
         }
 
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForDowngradeSingle',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForDowngradeSingle",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForDowngradeDouble',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForDowngradeDouble",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForDowngradeMix',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForDowngradeMix",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForUpgradeSingle',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForUpgradeSingle",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForUpgradeDouble',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForUpgradeDouble",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'differenceForUpgradeMix',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "differenceForUpgradeMix",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

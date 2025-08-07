@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,13 +8,13 @@ module.exports = {
       try {
         // create a team-matcher column on the event table
         await queryInterface.addColumn(
-          { tableName: 'EventCompetitions', schema: 'event' },
-          'teamMatcher',
+          { tableName: "EventCompetitions", schema: "event" },
+          "teamMatcher",
           {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         // run update query for some clubs
@@ -28,7 +28,7 @@ module.exports = {
             "slug" = 'la-fine-plume-asbl'
 			      AND "clubId" = 145
 
-          `,
+          `
         );
 
         // run update query for some clubs
@@ -42,10 +42,10 @@ module.exports = {
             "slug" = 'verviers'
 			      AND "clubId" = 19
 
-          `,
+          `
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -56,12 +56,12 @@ module.exports = {
       try {
         // drop team-matcher column
         await queryInterface.removeColumn(
-          { tableName: 'EventCompetitions', schema: 'event' },
-          'teamMatcher',
-          { transaction: t },
+          { tableName: "EventCompetitions", schema: "event" },
+          "teamMatcher",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

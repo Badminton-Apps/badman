@@ -1,4 +1,3 @@
-
 import {
   Component,
   Injector,
@@ -8,26 +7,26 @@ import {
   effect,
   inject,
   signal,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { RankingGroup, RankingSystem } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { lastValueFrom, map, takeUntil } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { RankingSystemFieldsComponent } from '../../components/ranking-system-fields/ranking-system-fields.component';
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTableModule } from "@angular/material/table";
+import { ActivatedRoute, RouterModule } from "@angular/router";
+import { RankingGroup, RankingSystem } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { lastValueFrom, map, takeUntil } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { RankingSystemFieldsComponent } from "../../components/ranking-system-fields/ranking-system-fields.component";
 
 const FETCH_SYSTEM = gql`
   query RankingSystemQuery($id: ID!) {
@@ -77,9 +76,9 @@ const FETCH_SYSTEM = gql`
 `;
 
 @Component({
-  selector: 'badman-ranking-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
+  selector: "badman-ranking-edit",
+  templateUrl: "./edit.page.html",
+  styleUrls: ["./edit.page.scss"],
   imports: [
     RouterModule,
     ReactiveFormsModule,
@@ -91,8 +90,8 @@ const FETCH_SYSTEM = gql`
     MatIconModule,
     MatMenuModule,
     MatSnackBarModule,
-    RankingSystemFieldsComponent
-],
+    RankingSystemFieldsComponent,
+  ],
 })
 export class EditPageComponent {
   // injects
@@ -111,7 +110,7 @@ export class EditPageComponent {
   private routeParams = toSignal(this.route.paramMap);
   private routeData = toSignal(this.route.data);
 
-  systemId = computed(() => this.routeParams()?.get('id') as string);
+  systemId = computed(() => this.routeParams()?.get("id") as string);
   systemName = computed(() => this.system()?.name);
 
   // signals
@@ -120,7 +119,7 @@ export class EditPageComponent {
 
   constructor() {
     if (!this.systemId()) {
-      throw new Error('No system id');
+      throw new Error("No system id");
     }
 
     // Effect on the system id
@@ -134,10 +133,10 @@ export class EditPageComponent {
       this.seoService.update({
         title: `${this.systemName()}`,
         description: `Ranking system ${this.systemName()}`,
-        type: 'website',
-        keywords: ['ranking', 'badminton'],
+        type: "website",
+        keywords: ["ranking", "badminton"],
       });
-      this.breadcrumbsService.set('ranking/:id', `${this.systemName()}`);
+      this.breadcrumbsService.set("ranking/:id", `${this.systemName()}`);
     });
   }
 
@@ -162,11 +161,11 @@ export class EditPageComponent {
             },
           },
         ],
-      }),
+      })
     );
-    this.snackBar.open('Saved', undefined, {
+    this.snackBar.open("Saved", undefined, {
       duration: 1000,
-      panelClass: 'success',
+      panelClass: "success",
     });
   }
 
@@ -187,11 +186,11 @@ export class EditPageComponent {
           rankingSystemId: systemId,
           rankingGroupId: groupId,
         },
-      }),
+      })
     );
-    this.snackBar.open('Saved', undefined, {
+    this.snackBar.open("Saved", undefined, {
       duration: 1000,
-      panelClass: 'success',
+      panelClass: "success",
     });
   }
   async removeGroup({ systemId, groupId }: { systemId: string; groupId: string }) {
@@ -211,11 +210,11 @@ export class EditPageComponent {
           rankingSystemId: systemId,
           rankingGroupId: groupId,
         },
-      }),
+      })
     );
-    this.snackBar.open('Saved', undefined, {
+    this.snackBar.open("Saved", undefined, {
       duration: 1000,
-      panelClass: 'success',
+      panelClass: "success",
     });
   }
 
@@ -231,11 +230,11 @@ export class EditPageComponent {
         takeUntil(this.destroy$),
         map((result) => {
           if (!result?.data.rankingSystem) {
-            throw new Error('No player');
+            throw new Error("No player");
           }
           return new RankingSystem(result.data.rankingSystem);
         }),
-        transferState(`teamsPlayer-${this.systemId()}`, this.stateTransfer, this.platformId),
+        transferState(`teamsPlayer-${this.systemId()}`, this.stateTransfer, this.platformId)
       )
       .subscribe((system) => {
         if (!system) {
@@ -264,11 +263,11 @@ export class EditPageComponent {
         takeUntil(this.destroy$),
         map((result) => {
           if (!result?.data.rankingGroups) {
-            throw new Error('No Systems');
+            throw new Error("No Systems");
           }
           return result.data.rankingGroups.map((group) => new RankingGroup(group));
         }),
-        transferState(`teamsPlayer-${this.systemId()}`, this.stateTransfer, this.platformId),
+        transferState(`teamsPlayer-${this.systemId()}`, this.stateTransfer, this.platformId)
       )
       .subscribe((groups) => {
         if (!groups) {

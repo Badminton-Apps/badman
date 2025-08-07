@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,19 +8,19 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'Settings',
-            schema: 'personal',
+            tableName: "Settings",
+            schema: "personal",
           },
-          'synEncounterFailed',
+          "synEncounterFailed",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 2,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -31,14 +31,14 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'Settings',
-            schema: 'personal',
+            tableName: "Settings",
+            schema: "personal",
           },
-          'synEncounterFailed',
-          { transaction: t },
+          "synEncounterFailed",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

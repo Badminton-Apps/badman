@@ -1,37 +1,37 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { CdkTableModule } from '@angular/cdk/table';
-import { CdkTreeModule } from '@angular/cdk/tree';
+import { animate, state, style, transition, trigger } from "@angular/animations";
+import { CdkTableModule } from "@angular/cdk/table";
+import { CdkTreeModule } from "@angular/cdk/tree";
 
-import { Component, Injector, OnInit, Signal, effect, inject, input, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl } from '@angular/forms';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatCardModule } from '@angular/material/card';
-import { MatRippleModule } from '@angular/material/core';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { Component, Injector, OnInit, Signal, effect, inject, input, signal } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { FormControl } from "@angular/forms";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatCardModule } from "@angular/material/card";
+import { MatRippleModule } from "@angular/material/core";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatTableModule } from "@angular/material/table";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { provideAnimations } from "@angular/platform-browser/animations";
 import {
   BadmanBlockModule,
   EnrollmentMessageComponent,
   LoadingBlockComponent,
   SelectClubComponent,
-} from '@badman/frontend-components';
-import { EventCompetition, EventEntry, TeamValidationResult } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { from } from 'rxjs';
-import { bufferCount, concatMap, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
+} from "@badman/frontend-components";
+import { EventCompetition, EventEntry, TeamValidationResult } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { from } from "rxjs";
+import { bufferCount, concatMap, map, startWith, switchMap, takeUntil, tap } from "rxjs/operators";
+import { EnrollmentDetailRowDirective } from "./competition-enrollments-detail.component";
 
 @Component({
-    selector: 'badman-competition-enrollments',
-    imports: [
+  selector: "badman-competition-enrollments",
+  imports: [
     MatTableModule,
     MatExpansionModule,
     MatCardModule,
@@ -48,18 +48,18 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     SelectClubComponent,
     EnrollmentMessageComponent,
     BadmanBlockModule,
-    LoadingBlockComponent
-],
-    templateUrl: './competition-enrollments.component.html',
-    styleUrls: ['./competition-enrollments.component.scss'],
-    providers: [provideAnimations()],
-    animations: [
-        trigger('detailExpand', [
-            state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
-            state('expanded', style({ height: '*', visibility: 'visible' })),
-            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-        ]),
-    ]
+    LoadingBlockComponent,
+  ],
+  templateUrl: "./competition-enrollments.component.html",
+  styleUrls: ["./competition-enrollments.component.scss"],
+  providers: [provideAnimations()],
+  animations: [
+    trigger("detailExpand", [
+      state("collapsed", style({ height: "0px", minHeight: "0", visibility: "hidden" })),
+      state("expanded", style({ height: "*", visibility: "visible" })),
+      transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)")),
+    ]),
+  ],
 })
 export class CompetitionEnrollmentsComponent implements OnInit {
   // injects
@@ -91,7 +91,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
   eventId = input.required<string>();
   season = input<number | undefined>();
 
-  displayedColumns: string[] = ['name', 'entries', 'validations'];
+  displayedColumns: string[] = ["name", "entries", "validations"];
 
   ngOnInit(): void {
     this._setTeams();
@@ -171,16 +171,16 @@ export class CompetitionEnrollmentsComponent implements OnInit {
                 eventCompetitionId: this.eventId(),
                 order: [
                   {
-                    field: 'eventType',
-                    direction: 'asc',
+                    field: "eventType",
+                    direction: "asc",
                   },
                   {
-                    field: 'level',
-                    direction: 'asc',
+                    field: "level",
+                    direction: "asc",
                   },
                 ],
               },
-            }).valueChanges,
+            }).valueChanges
         ),
         map((result) => {
           if (!this.clubControl.value) {
@@ -191,8 +191,8 @@ export class CompetitionEnrollmentsComponent implements OnInit {
           const filteredSubEventCompetitions =
             result.data.eventCompetition.subEventCompetitions?.filter((subEventCompetition) =>
               subEventCompetition.eventEntries?.some(
-                (eventEntry) => eventEntry.team?.club?.id === this.clubControl.value,
-              ),
+                (eventEntry) => eventEntry.team?.club?.id === this.clubControl.value
+              )
             );
 
           // Filter the eventEntries within each filtered subEventCompetition
@@ -201,7 +201,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
             subEventCompetitions: filteredSubEventCompetitions?.map((subEventCompetition) => ({
               ...subEventCompetition,
               eventEntries: subEventCompetition.eventEntries?.filter(
-                (eventEntry) => eventEntry.team?.club?.id === this.clubControl.value,
+                (eventEntry) => eventEntry.team?.club?.id === this.clubControl.value
               ),
             })),
           };
@@ -211,9 +211,9 @@ export class CompetitionEnrollmentsComponent implements OnInit {
         map((result) => new EventCompetition(result)),
         tap(() => {
           this.loading.set(false);
-        }),
+        })
       ),
-      { injector: this.injector },
+      { injector: this.injector }
     );
 
     effect(
@@ -230,7 +230,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
           .pipe(
             bufferCount(10),
             concatMap((txn) => this.getValidationsForEventEntry(txn)),
-            takeUntil(this.destroy$),
+            takeUntil(this.destroy$)
           )
           .subscribe((results) => {
             this.progress.set(this.progress() + results.length);
@@ -258,7 +258,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
       },
       {
         injector: this.injector,
-      },
+      }
     );
   }
 

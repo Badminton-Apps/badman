@@ -1,26 +1,25 @@
-
-import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { ClaimComponent } from '@badman/frontend-components';
-import { Claim, Role } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, output } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { ClaimComponent } from "@badman/frontend-components";
+import { Claim, Role } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
-    selector: 'badman-role-fields',
-    templateUrl: './role-fields.component.html',
-    styleUrls: ['./role-fields.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
+  selector: "badman-role-fields",
+  templateUrl: "./role-fields.component.html",
+  styleUrls: ["./role-fields.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
     ReactiveFormsModule,
     TranslatePipe,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    ClaimComponent
-]
+    ClaimComponent,
+  ],
 })
 export class RoleFieldsComponent implements OnInit {
   role = input<Role>({} as Role);
@@ -47,7 +46,7 @@ export class RoleFieldsComponent implements OnInit {
 
     for (const claim of this.claims()) {
       this.selectedClaims.push(
-        ...claim.claims.filter((c) => this.role().claims?.some((rc) => rc.name === c.name)),
+        ...claim.claims.filter((c) => this.role().claims?.some((rc) => rc.name === c.name))
       );
     }
   }
@@ -70,7 +69,7 @@ export class RoleFieldsComponent implements OnInit {
             id: c.id,
           };
         }),
-      } );
+      });
     }
   }
 }

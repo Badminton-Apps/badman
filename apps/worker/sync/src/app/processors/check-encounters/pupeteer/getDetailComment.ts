@@ -1,6 +1,6 @@
-import { querySelectorAll } from '@badman/backend-pupeteer';
-import { Page } from 'puppeteer';
-import { Logger } from '@nestjs/common';
+import { querySelectorAll } from "@badman/backend-pupeteer";
+import { Page } from "puppeteer";
+import { Logger } from "@nestjs/common";
 
 export async function detailComment(
   pupeteer: {
@@ -12,16 +12,16 @@ export async function detailComment(
   },
   args?: {
     logger?: Logger;
-  },
+  }
 ) {
   const { logger } = args || {};
-  logger?.verbose('detailComment');
+  logger?.verbose("detailComment");
   const { page } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
 
-  const selector = '.content .wrapper--legacy table';
+  const selector = ".content .wrapper--legacy table";
   {
     let hasComment = false;
     const targetPage = page;
@@ -29,7 +29,7 @@ export async function detailComment(
 
     // iterate over tables find where caption contains 'Opmerkingen'
     for (const table of tables) {
-      const caption = await table.$('caption');
+      const caption = await table.$("caption");
       if (!caption) {
         continue;
       }
@@ -39,12 +39,12 @@ export async function detailComment(
         continue;
       }
 
-      if (captionTxt.indexOf('Opmerkingen') === -1) {
+      if (captionTxt.indexOf("Opmerkingen") === -1) {
         continue;
       }
 
       // if selector exists, check if tbody has more than 1 row
-      const rows = await table.$$('tr');
+      const rows = await table.$$("tr");
       if (rows.length > 1) {
         hasComment = true;
       }

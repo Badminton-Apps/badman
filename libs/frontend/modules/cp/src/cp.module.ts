@@ -1,8 +1,8 @@
-import { InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ICpConfig } from './interfaces';
+import { InjectionToken, ModuleWithProviders, NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { ICpConfig } from "./interfaces";
 
-export const CP_CONFIG = new InjectionToken<ICpConfig>('CP_CONFIG');
+export const CP_CONFIG = new InjectionToken<ICpConfig>("CP_CONFIG");
 
 @NgModule({
   imports: [CommonModule],

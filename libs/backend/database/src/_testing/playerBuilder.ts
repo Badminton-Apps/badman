@@ -1,8 +1,8 @@
-import { TeamMembershipType } from '@badman/utils';
-import { Player } from '../models';
-import { RankingPlaceBuilder } from './rankingPlaceBuilder';
-import { TeamBuilder } from './teamBuilder';
-import { RankingLastPlaceBuilder } from './rankingLastPlaceBuilder';
+import { TeamMembershipType } from "@badman/utils";
+import { Player } from "../models";
+import { RankingPlaceBuilder } from "./rankingPlaceBuilder";
+import { TeamBuilder } from "./teamBuilder";
+import { RankingLastPlaceBuilder } from "./rankingLastPlaceBuilder";
 
 export class PlayerBuilder {
   private build = false;
@@ -46,7 +46,7 @@ export class PlayerBuilder {
     return this;
   }
 
-  WithGender(gender: 'M' | 'F'): PlayerBuilder {
+  WithGender(gender: "M" | "F"): PlayerBuilder {
     this.player.gender = gender;
     return this;
   }

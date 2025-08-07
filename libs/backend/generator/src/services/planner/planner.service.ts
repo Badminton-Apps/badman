@@ -1,5 +1,5 @@
-import { Availability, EventCompetition } from '@badman/backend-database';
-import { Injectable, Logger } from '@nestjs/common';
+import { Availability, EventCompetition } from "@badman/backend-database";
+import { Injectable, Logger } from "@nestjs/common";
 
 @Injectable()
 export class PlannerService {
@@ -85,7 +85,7 @@ export class PlannerService {
           if (!clubs[team.clubId]) {
             const club = await team.getClub();
             const locations = await club.getLocations({
-              include: [{ model: Availability, where: { season} }],
+              include: [{ model: Availability, where: { season } }],
             });
             clubs[team.clubId] = {
               name: club.name,

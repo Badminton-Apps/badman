@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
-const { type } = require('node:os');
+const { type } = require("node:os");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -10,8 +10,8 @@ module.exports = {
       try {
         await queryInterface.createTable(
           {
-            tableName: 'Logs',
-            schema: 'system',
+            tableName: "Logs",
+            schema: "system",
           },
           {
             id: {
@@ -32,13 +32,13 @@ module.exports = {
               type: sequelize.DataTypes.UUID,
               references: {
                 model: {
-                  tableName: 'Players',
-                  schema: 'public',
+                  tableName: "Players",
+                  schema: "public",
                 },
-                key: 'id',
+                key: "id",
               },
-              onUpdate: 'CASCADE',
-              onDelete: 'CASCADE',
+              onUpdate: "CASCADE",
+              onDelete: "CASCADE",
               allowNull: true,
             },
             action: {
@@ -52,21 +52,21 @@ module.exports = {
           },
           {
             transaction: t,
-          },
+          }
         );
         // index on playerid
         await queryInterface.addIndex(
           {
-            tableName: 'Logs',
-            schema: 'system',
+            tableName: "Logs",
+            schema: "system",
           },
-          ['playerId'],
+          ["playerId"],
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -77,15 +77,15 @@ module.exports = {
       try {
         await queryInterface.dropTable(
           {
-            tableName: 'Logs',
-            schema: 'system',
+            tableName: "Logs",
+            schema: "system",
           },
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

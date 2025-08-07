@@ -1,4 +1,4 @@
-import { LevelType } from '@badman/utils';
+import { LevelType } from "@badman/utils";
 
 export const getNewTypeAndLevel = (
   maxLevels: {
@@ -7,7 +7,7 @@ export const getNewTypeAndLevel = (
   type: LevelType,
   level: number,
   riser: boolean,
-  faller: boolean,
+  faller: boolean
 ) => {
   let newType = type;
   let newLevel = level;

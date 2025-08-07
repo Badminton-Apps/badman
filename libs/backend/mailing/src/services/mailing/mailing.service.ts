@@ -1,5 +1,5 @@
-import { EncounterValidationOutput } from '@badman/backend-change-encounter';
-import { CompileOptions, CompileService } from '@badman/backend-compile';
+import { EncounterValidationOutput } from "@badman/backend-change-encounter";
+import { CompileOptions, CompileService } from "@badman/backend-compile";
 import {
   Club,
   Comment,
@@ -7,16 +7,15 @@ import {
   EventCompetition,
   EventTournament,
   Location,
-  Player,
   SubEventCompetition,
-} from '@badman/backend-database';
-import { ConfigType } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { writeFile } from 'fs/promises';
-import moment from 'moment-timezone';
-import nodemailer, { Transporter } from 'nodemailer';
-import { lastValueFrom } from 'rxjs';
+} from "@badman/backend-database";
+import { ConfigType } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { writeFile } from "fs/promises";
+import moment from "moment-timezone";
+import nodemailer, { Transporter } from "nodemailer";
+import { lastValueFrom } from "rxjs";
 
 @Injectable()
 export class MailingService {
@@ -25,25 +24,23 @@ export class MailingService {
   private _mailingEnabled = false;
   private initialized = false;
 
-  private subjectPrefix = '';
+  private subjectPrefix = "";
 
   constructor(
     private compileService: CompileService,
-    private configService: ConfigService<ConfigType>,
+    private configService: ConfigService<ConfigType>
   ) {
-    this.subjectPrefix = this.configService.get<string>('MAIL_SUBJECT_PREFIX') || '';
+    this.subjectPrefix = this.configService.get<string>("MAIL_SUBJECT_PREFIX") || "";
   }
 
   async sendTestMail() {
-    const glenn = await Player.findOne({ where: { slug: 'glenn-latomme' } });
-
     await this._sendMail({
-      from: 'info@badman.app',
-      to: 'glenn.latomme@gmail.com',
-      subject: 'Test mail 2',
-      template: 'test',
+      from: "info@badman.app",
+      to: this.configService.get("DEV_EMAIL_DESTINATION") || "dev@pandapanda.be",
+      subject: "Test mail 2",
+      template: "test",
       context: {
-        settingsSlug: glenn?.slug,
+        settingsSlug: "test-slug",
       },
     } as MailOptions<{
       settingsSlug: string;
@@ -58,18 +55,19 @@ export class MailingService {
     },
     encounter: EncounterCompetition,
     isHome: boolean,
+    url: string
   ) {
     // fetch event
     const event = await encounter.getDrawCompetition({
-      attributes: ['id'],
+      attributes: ["id"],
       include: [
         {
           model: SubEventCompetition,
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               model: EventCompetition,
-              attributes: ['id', 'season'],
+              attributes: ["id", "season"],
             },
           ],
         },
@@ -78,16 +76,17 @@ export class MailingService {
 
     const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
 
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
       subject: `Aanvraag voor ontmoeting tussen ${encounter.home?.name} en ${encounter.away?.name}`,
-      template: 'encounterchange',
+      template: "encounterchange",
       context: {
         captain: to.fullName,
         isHome,
         season: eventCompetition.season,
+        url,
         encounter: {
           ...encounter.toJSON(),
           home: encounter.home?.toJSON(),
@@ -100,6 +99,7 @@ export class MailingService {
       isHome: boolean;
       season: number;
       isChangedLocation: boolean;
+      url: string;
       encounter: EncounterCompetition;
       settingsSlug: string;
     }>;
@@ -115,18 +115,19 @@ export class MailingService {
     },
     encounter: EncounterCompetition,
     isHome: boolean,
+    url: string
   ) {
     // fetch event
     const event = await encounter.getDrawCompetition({
-      attributes: ['id'],
+      attributes: ["id"],
       include: [
         {
           model: SubEventCompetition,
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               model: EventCompetition,
-              attributes: ['id', 'season'],
+              attributes: ["id", "season"],
             },
           ],
         },
@@ -134,16 +135,17 @@ export class MailingService {
     });
 
     const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
       subject: `Aanvraag voor ontmoeting tussen ${encounter.home?.name} en ${encounter.away?.name}`,
-      template: 'encounterchange',
+      template: "encounterchange",
       context: {
         captain: to.fullName,
         isHome,
         season: eventCompetition.season,
+        url,
         encounter: {
           ...encounter.toJSON(),
           home: encounter.home?.toJSON(),
@@ -156,6 +158,7 @@ export class MailingService {
       isHome: boolean;
       season: number;
       isChangedLocation: boolean;
+      url: string;
       encounter: EncounterCompetition;
       settingsSlug: string;
     }>;
@@ -176,21 +179,22 @@ export class MailingService {
       encounter: EncounterCompetition;
       errors: string[];
     }[],
+    url: string
   ) {
     if (!encounter.home || !encounter.away) {
-      throw new Error('Team not found');
+      throw new Error("Team not found");
     }
     // fetch event
     const event = await encounter.getDrawCompetition({
-      attributes: ['id'],
+      attributes: ["id"],
       include: [
         {
           model: SubEventCompetition,
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               model: EventCompetition,
-              attributes: ['id', 'season'],
+              attributes: ["id", "season"],
             },
           ],
         },
@@ -200,17 +204,18 @@ export class MailingService {
     const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
 
     // mail to captain
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
       subject: `Verplaatsings aanvraag ${encounter.home?.name} en ${encounter.away?.name} afgewerkt`,
-      template: 'encounterchangefinished',
+      template: "encounterchangefinished",
       context: {
         captain: to.fullName,
         isHome,
         isChangedLocation,
         season: eventCompetition.season,
+        url,
         validation: validation?.map((v) => ({
           encounter: v.encounter.toJSON(),
           errors: v.errors,
@@ -220,7 +225,7 @@ export class MailingService {
           home: encounter.home.toJSON(),
           away: encounter.away.toJSON(),
         },
-        newDate: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
+        newDate: moment(encounter.date).tz("Europe/Brussels").format("LLLL"),
         settingsSlug: to.slug,
       },
     } as MailOptions<{
@@ -228,6 +233,7 @@ export class MailingService {
       isHome: boolean;
       season: number;
       isChangedLocation: boolean;
+      url: string;
       encounter: EncounterCompetition;
       newDate: string;
       settingsSlug: string;
@@ -243,15 +249,15 @@ export class MailingService {
   async sendLocationChangedMail(encounter: EncounterCompetition) {
     // fetch event
     const event = await encounter.getDrawCompetition({
-      attributes: ['id'],
+      attributes: ["id"],
       include: [
         {
           model: SubEventCompetition,
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               model: EventCompetition,
-              attributes: ['id', 'slug', 'visualCode', 'season', 'name'],
+              attributes: ["id", "slug", "visualCode", "season", "name"],
             },
           ],
         },
@@ -263,12 +269,12 @@ export class MailingService {
     const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
 
     //  mail to reponsible
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const optionsMailResp = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: eventCompetition.contactEmail,
       subject: `Verplaatsings ${encounter.home?.name} en ${encounter.away?.name} heeft andere locatie`,
-      template: 'location-change',
+      template: "location-change",
       context: {
         encounter: {
           ...encounter.toJSON(),
@@ -293,19 +299,19 @@ export class MailingService {
       slug: string;
     },
     encounter: EncounterCompetition,
-    url: string,
+    url: string
   ) {
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
       subject: `Niet ingegeven resultaat ${encounter.home?.name} vs ${encounter.away?.name}`,
-      template: 'notentered',
+      template: "notentered",
       context: {
         encounter: encounter.toJSON(),
         url,
         captain: to.fullName,
-        date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
+        date: moment(encounter.date).tz("Europe/Brussels").format("LLLL"),
         settingsSlug: to.slug,
       },
     } as MailOptions<{
@@ -319,7 +325,6 @@ export class MailingService {
     await this._sendMail(options);
   }
 
-  
   async sendHasCommentMail(
     to: {
       fullName: string;
@@ -327,19 +332,19 @@ export class MailingService {
       slug: string;
     },
     encounter: EncounterCompetition,
-    url: string,
+    url: string
   ) {
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
       subject: `Ontmoeting ${encounter.home?.name} tegen ${encounter.away?.name} heeft een opmerking`,
-      template: 'hasComment',
+      template: "hasComment",
       context: {
         encounter: encounter.toJSON(),
         url,
         contact: to.fullName,
-        date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
+        date: moment(encounter.date).tz("Europe/Brussels").format("LLLL"),
         settingsSlug: to.slug,
       },
     } as MailOptions<{
@@ -360,19 +365,19 @@ export class MailingService {
       slug: string;
     },
     encounter: EncounterCompetition,
-    url: string,
+    url: string
   ) {
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
       subject: `Niet geaccepteerd resultaat ${encounter.home?.name} vs ${encounter.away?.name}`,
-      template: 'notaccepted',
+      template: "notaccepted",
       context: {
         encounter: encounter.toJSON(),
         url,
         captain: to.fullName,
-        date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
+        date: moment(encounter.date).tz("Europe/Brussels").format("LLLL"),
         settingsSlug: to.slug,
       },
     } as MailOptions<{
@@ -394,15 +399,15 @@ export class MailingService {
     },
     club: Club,
     locations: Location[],
-    comments: Comment[],
+    comments: Comment[]
   ) {
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
-      cc: 'jeroen@badmintonvlaanderen.be',
+      cc: "jeroen@badmintonvlaanderen.be",
       subject: `Inschrijving ${club.name}`,
-      template: 'clubenrollment',
+      template: "clubenrollment",
       context: {
         club: club.toJSON(),
         locations: locations.map((l) => l.toJSON()),
@@ -427,14 +432,14 @@ export class MailingService {
     },
     event: EventCompetition | EventTournament,
     success: boolean,
-    url?: string,
+    url?: string
   ) {
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
-      subject: `Synchronisatie ${event.name} was ${success ? 'succesvol' : 'niet succesvol'}`,
-      template: 'syncFinished',
+      subject: `Synchronisatie ${event.name} was ${success ? "succesvol" : "niet succesvol"}`,
+      template: "syncFinished",
       context: {
         event: event.toJSON(),
         url,
@@ -461,14 +466,14 @@ export class MailingService {
     },
     encounter: EncounterCompetition,
     url?: string,
-    urlBadman?: string,
+    urlBadman?: string
   ) {
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
       subject: `Synchronisatie encounter failed`,
-      template: 'synEncounterFailed',
+      template: "synEncounterFailed",
       context: {
         event: encounter.toJSON(),
         url,
@@ -494,14 +499,14 @@ export class MailingService {
       slug: string;
     },
     encounters: EncounterCompetition[],
-    validation: EncounterValidationOutput[],
+    validation: EncounterValidationOutput[]
   ) {
-    moment.locale('nl-be');
+    moment.locale("nl-be");
     const options = {
-      from: 'info@badman.app',
+      from: "info@badman.app",
       to: to.email,
       subject: `Synchronisatie encounter failed`,
-      template: 'synEncounterFailed',
+      template: "synEncounterFailed",
       context: {
         encounters: encounters.map((e) => e.toJSON()),
         validation,
@@ -520,17 +525,16 @@ export class MailingService {
 
   private async _setupMailing() {
     if (this.initialized) return;
-    if ((this.configService.get<boolean>('MAIL_ENABLED') ?? false) == false) {
-      this.logger.debug('Mailing disabled');
+    if ((this.configService.get<boolean>("MAIL_ENABLED") ?? false) == false) {
       return;
     }
 
     const mailConfig = {
-      host: this.configService.get('MAIL_HOST'),
+      host: this.configService.get("MAIL_HOST"),
       port: 465,
       auth: {
-        user: this.configService.get('MAIL_USER'),
-        pass: this.configService.get('MAIL_PASS'),
+        user: this.configService.get("MAIL_USER"),
+        pass: this.configService.get("MAIL_PASS"),
       },
     };
 
@@ -541,18 +545,18 @@ export class MailingService {
 
       if (!verified) {
         this._mailingEnabled = false;
-        this.logger.warn('Mailing disabled due to config setup failing');
+        this.logger.warn("Mailing disabled due to config setup failing");
         return;
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this._transporter.use('compile', (mail: any, callback) => {
+      this._transporter.use("compile", (mail: any, callback) => {
         const template = mail.data.template;
         const context = mail.data.context;
         lastValueFrom(
           this.compileService.toHtml(template, {
             locals: context,
-          }),
+          })
         ).then((html) => {
           mail.data.html = html;
           callback();
@@ -563,15 +567,7 @@ export class MailingService {
       this.initialized = true;
     } catch (e) {
       this._mailingEnabled = false;
-      this.logger.debug({
-        message: 'Mailing not enabled',
-        error: e,
-        mailConfig,
-      });
-
-      this.logger.warn('Mailing disabled due to config setup failing', e);
-    } finally {
-      this.logger.debug(`Mailing enabled: ${this._mailingEnabled}`);
+      this.logger.warn("Mailing disabled due to config setup failing", e);
     }
   }
 
@@ -585,45 +581,53 @@ export class MailingService {
 
     try {
       // add clientUrl to context
-      options.context.clientUrl = this.configService.get('CLIENT_URL') ?? '';
+      options.context.clientUrl = this.configService.get("CLIENT_URL") ?? "";
+
+      // Only save to file if mailing is completely disabled
       if (this._mailingEnabled === false) {
-        this.logger.debug('Mailing disabled');
         const compiled = await lastValueFrom(
           this.compileService.toHtml(options.template, {
             locals: options.context,
-          } as CompileOptions),
+          } as CompileOptions)
         );
 
-        if (this.configService.get<string>('NODE_ENV') === 'development') {
+        if (this.configService.get<string>("NODE_ENV") === "development") {
           await writeFile(`mails/${options.template}.html`, compiled);
-          this.logger.debug(`Mail saved to mail/${options.template}.html`);
         }
 
         return;
       }
 
-      if (this.configService.get('NODE_ENV') !== 'production') {
+      // Apply development email override if not in production
+      if (this.configService.get("NODE_ENV") !== "production") {
         // Check if the to is filled in
         options.to = Array.isArray(options.to) ? options.to : [options.to];
         if (options.to === null || options.to.length === 0) {
-          this.logger.error('no mail adress?', { error: options });
+          this.logger.error("no mail adress?", { error: options });
           return;
         }
         const to = options.to ?? [];
         const cc = ((Array.isArray(options.cc) ? options.cc : [options.cc]) ?? []) as string[];
-        options.to = ['glenn.latomme@gmail.com'];
+
+        // Use DEV_EMAIL_DESTINATION environment variable, fallback to dev@pandapanda.be if not set
+        const devEmailDestination =
+          this.configService.get("DEV_EMAIL_DESTINATION") || "dev@pandapanda.be";
+        options.to = [devEmailDestination];
         options.cc = [];
 
-        options.subject += ` overwritten email original(to: ${to?.join(',')}, cc: ${cc.join(
-          ',',
+        options.subject += ` overwritten email original(to: ${to?.join(",")}, cc: ${cc.join(
+          ","
         )}) `;
       }
 
-      await this._transporter?.sendMail(options);
-      this.logger.debug(`Message sent: ${options.subject}, to: ${options.to}`);
+      if (!this._transporter) {
+        this.logger.error("No transporter available - email not sent");
+        return;
+      }
+
+      await this._transporter.sendMail(options);
     } catch (e) {
-      this.logger.error(e);
-      this.logger.error('Hello', e);
+      this.logger.error("Error sending email:", e);
     }
   }
 }

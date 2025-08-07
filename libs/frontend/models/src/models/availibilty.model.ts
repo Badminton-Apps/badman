@@ -1,4 +1,4 @@
-import { Location } from './location.model';
+import { Location } from "./location.model";
 
 export class Availability {
   id?: string;
@@ -45,7 +45,7 @@ export class InfoEvent {
 }
 
 export class AvailabilityDay {
-  day?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  day?: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
   startTime?: string;
   endTime?: string;
   courts?: number;

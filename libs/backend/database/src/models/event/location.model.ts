@@ -1,5 +1,5 @@
-import { Field, Float, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import type { Point } from 'geojson';
+import { Field, Float, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
+import type { Point } from "geojson";
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -24,7 +24,7 @@ import {
   HasManySetAssociationsMixin,
   InferAttributes,
   InferCreationAttributes,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   BelongsToMany,
@@ -39,20 +39,20 @@ import {
   PrimaryKey,
   Table,
   TableOptions,
-} from 'sequelize-typescript';
-import { Relation } from '../../wrapper';
-import { Club } from '../club.model';
-import { Team } from '../team.model';
-import { Availability } from './availability.model';
-import { Court } from './court.model';
-import { EventTournament } from './tournament';
-import { LocationEventTournamentMembership } from './tournament/location-event-membership.model';
+} from "sequelize-typescript";
+import { Relation } from "../../wrapper";
+import { Club } from "../club.model";
+import { Team } from "../team.model";
+import { Availability } from "./availability.model";
+import { Court } from "./court.model";
+import { EventTournament } from "./tournament";
+import { LocationEventTournamentMembership } from "./tournament/location-event-membership.model";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 } as TableOptions)
-@ObjectType({ description: 'A Location' })
+@ObjectType({ description: "A Location" })
 export class Location extends Model<InferAttributes<Location>, InferCreationAttributes<Location>> {
   @Field(() => ID)
   @Default(DataType.UUIDV4)
@@ -103,20 +103,19 @@ export class Location extends Model<InferAttributes<Location>, InferCreationAttr
   @Column(DataType.STRING)
   fax?: string;
 
-  @Column(DataType.GEOMETRY('POINT', 4326))
+  @Column(DataType.GEOMETRY("POINT", 4326))
   coordinates?: Point;
 
-  @HasMany(() => Team, 'prefferedLocationId')
+  @HasMany(() => Team, "prefferedLocationId")
   teams?: Relation<Team[]>;
 
   @BelongsToMany(() => EventTournament, () => LocationEventTournamentMembership)
   eventTournaments?: Relation<EventTournament[]>;
 
-
-  @HasMany(() => Court, 'locationId')
+  @HasMany(() => Court, "locationId")
   courts?: Court;
 
-  @BelongsTo(() => Club, 'clubId')
+  @BelongsTo(() => Club, "clubId")
   club?: Relation<Club>;
 
   @ForeignKey(() => Club)
@@ -188,8 +187,8 @@ export class PointInput {
 
 @InputType()
 export class LocationUpdateInput extends PartialType(
-  OmitType(Location, ['createdAt', 'updatedAt', 'coordinates'] as const),
-  InputType,
+  OmitType(Location, ["createdAt", "updatedAt", "coordinates"] as const),
+  InputType
 ) {
   @Field(() => PointInput)
   coordinates?: {
@@ -200,6 +199,6 @@ export class LocationUpdateInput extends PartialType(
 
 @InputType()
 export class LocationNewInput extends PartialType(
-  OmitType(LocationUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(LocationUpdateInput, ["id"] as const),
+  InputType
 ) {}

@@ -32,7 +32,7 @@
       [matTooltipDisabled]="!hasWarning"
       matTooltipClass="tooltip-multi-line"
     >
-      {{ 'all.team.title.base-fields' | translate }}
+      {{ "all.team.title.base-fields" | translate }}
       @if (hasWarning) {
         <mat-icon color="warn">warning</mat-icon>
       }
@@ -51,19 +51,19 @@
         <div class="prefferd">
           <div class="row">
             <mat-form-field class="day">
-              <mat-label>{{ 'all.input.day' | translate }}</mat-label>
+              <mat-label>{{ "all.input.day" | translate }}</mat-label>
               <mat-select [required]="true" [(value)]="team().value.preferredDay">
-                <mat-option value="monday">{{ 'all.days.monday' | translate }}</mat-option>
-                <mat-option value="tuesday">{{ 'all.days.tuesday' | translate }}</mat-option>
-                <mat-option value="wednesday">{{ 'all.days.wednesday' | translate }}</mat-option>
-                <mat-option value="thursday">{{ 'all.days.thursday' | translate }}</mat-option>
-                <mat-option value="friday">{{ 'all.days.friday' | translate }}</mat-option>
-                <mat-option value="saturday">{{ 'all.days.saturday' | translate }}</mat-option>
-                <mat-option value="sunday">{{ 'all.days.sunday' | translate }}</mat-option>
+                <mat-option value="monday">{{ "all.days.monday" | translate }}</mat-option>
+                <mat-option value="tuesday">{{ "all.days.tuesday" | translate }}</mat-option>
+                <mat-option value="wednesday">{{ "all.days.wednesday" | translate }}</mat-option>
+                <mat-option value="thursday">{{ "all.days.thursday" | translate }}</mat-option>
+                <mat-option value="friday">{{ "all.days.friday" | translate }}</mat-option>
+                <mat-option value="saturday">{{ "all.days.saturday" | translate }}</mat-option>
+                <mat-option value="sunday">{{ "all.days.sunday" | translate }}</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field class="time">
-              <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
+              <mat-label>{{ "all.input.hour" | translate }}</mat-label>
               <input
                 [required]="true"
                 matInput
@@ -75,7 +75,7 @@
           </div>
           <div class="row">
             <mat-form-field class="location">
-              <mat-label>{{ 'all.input.location' | translate }}</mat-label>
+              <mat-label>{{ "all.input.location" | translate }}</mat-label>
               <mat-select [required]="true" [(value)]="team().value.prefferedLocationId">
                 @for (location of locations(); track location.id) {
                   <mat-option [value]="location?.id">{{ location?.name }}</mat-option>
@@ -85,7 +85,7 @@
           </div>
         </div>
         <div class="captain">
-          <p>{{ 'all.team.title.captain' | translate }}</p>
+          <p>{{ "all.team.title.captain" | translate }}</p>
           <badman-player-search
             [player]="team().value.captainId"
             [includePersonal]="true"
@@ -97,11 +97,11 @@
         </div>
         <div class="contact">
           <mat-form-field class="email">
-            <mat-label>{{ 'all.input.email' | translate }}</mat-label>
+            <mat-label>{{ "all.input.email" | translate }}</mat-label>
             <input matInput type="email" [required]="true" [(ngModel)]="team().value.email" />
           </mat-form-field>
           <mat-form-field class="phone">
-            <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
+            <mat-label>{{ "all.input.phone" | translate }}</mat-label>
             <input matInput [required]="true" [(ngModel)]="team().value.phone" />
           </mat-form-field>
         </div>
@@ -112,13 +112,13 @@
 <div class="normal-players">
   <div class="expandable-item" (click)="expanded.regular = !expanded.regular">
     <div>
-      {{ 'all.player.title' | translate }}
+      {{ "all.player.title" | translate }}
       <span class="count">
         - {{ baseCount }}
-        {{ 'all.competition.team-enrollment.players.regular' | translate }}
+        {{ "all.competition.team-enrollment.players.regular" | translate }}
         @if (backupCount > 0) {
           , {{ backupCount }}
-          {{ 'all.competition.team-enrollment.players.backup' | translate }}
+          {{ "all.competition.team-enrollment.players.backup" | translate }}
         }
       </span>
     </div>
@@ -157,13 +157,13 @@
               <span class="ranking">
                 {{ player.lastRanking?.single }} -
                 {{ player.lastRanking?.double }}
-                @if (type() === 'MX') {
+                @if (type() === "MX") {
                   - {{ player.lastRanking?.mix }}
                 }
                 ({{
                   (player.lastRanking?.single ?? 12) +
                     (player.lastRanking?.double ?? 12) +
-                    (type() === 'MX' ? (player.lastRanking?.mix ?? 12) : 0)
+                    (type() === "MX" ? (player.lastRanking?.mix ?? 12) : 0)
                 }})</span
               >
             </div>
@@ -176,7 +176,7 @@
                 >
                   @for (type of types; track type) {
                     <mat-option [value]="type">
-                      {{ 'all.player.' + type | lowercase | translate }}
+                      {{ "all.player." + type | lowercase | translate }}
                     </mat-option>
                   }
                 </mat-select>
@@ -205,7 +205,7 @@
 <div class="base-players">
   <div class="expandable-item" (click)="expanded.base = !expanded.base">
     <div>
-      {{ 'all.competition.team-enrollment.players.base' | translate }}
+      {{ "all.competition.team-enrollment.players.base" | translate }}
     </div>
     @if (!expanded.base) {
       <mat-icon>expand_more</mat-icon>
@@ -251,10 +251,10 @@
           {{ b.player.fullName }}
           <span class="ranking">
             {{ b.single }} - {{ b.double }}
-            @if (type() === 'MX') {
+            @if (type() === "MX") {
               - {{ b.mix }}
             }
-            ({{ b.single + b.double + (type() === 'MX' ? b.mix : 0) }})</span
+            ({{ b.single + b.double + (type() === "MX" ? b.mix : 0) }})</span
           >
         </div>
         <div class="delete">

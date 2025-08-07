@@ -1,6 +1,6 @@
-import { User } from '@badman/backend-authorization';
-import { Club, ClubPlayerMembership, Player } from '@badman/backend-database';
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import { User } from "@badman/backend-authorization";
+import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
+import { Logger, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -10,8 +10,8 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { ListArgs } from '../../utils';
+} from "@nestjs/graphql";
+import { ListArgs } from "../../utils";
 
 @ObjectType()
 export class PagedClubPlayerMembership {
@@ -29,9 +29,9 @@ export class ClubPlayerMembershipsResolver {
   @Query(() => PagedClubPlayerMembership)
   async clubPlayerMemberships(
     @User() user: Player,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<{ count: number; rows: ClubPlayerMembership[] }> {
-    if (!user || !(await user.hasAnyPermission(['change:transfer']))) {
+    if (!user || !(await user.hasAnyPermission(["change:transfer"]))) {
       throw new UnauthorizedException(`You do not have permission to create a player`);
     }
 

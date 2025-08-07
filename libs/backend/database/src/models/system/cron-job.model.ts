@@ -1,5 +1,5 @@
-import { QueueName, Ranking, Simulation, Sync, UpdateRankingJob } from '@badman/backend-queue';
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { QueueName, Ranking, Simulation, Sync, UpdateRankingJob } from "@badman/backend-queue";
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   Column,
   DataType,
@@ -9,15 +9,15 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { CronJobMetaType } from '../../types';
-import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+} from "sequelize-typescript";
+import { CronJobMetaType } from "../../types";
+import { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
 
 @Table({
   timestamps: true,
-  schema: 'system',
+  schema: "system",
 })
-@ObjectType({ description: 'Cron job' })
+@ObjectType({ description: "Cron job" })
 export class CronJob extends Model<InferAttributes<CronJob>, InferCreationAttributes<CronJob>> {
   @Field(() => ID)
   @Default(DataType.UUIDV4)
@@ -33,16 +33,16 @@ export class CronJob extends Model<InferAttributes<CronJob>, InferCreationAttrib
   declare createdAt?: Date;
 
   @Field(() => String, { nullable: false })
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Column(DataType.STRING)
   declare name: string;
 
   @Field(() => String, { nullable: false })
   @Column(DataType.STRING)
-  type!: 'ranking' | 'sync';
+  type!: "ranking" | "sync";
 
   @Field(() => String, { nullable: false })
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Column(DataType.STRING)
   cronTime!: string;
 
@@ -61,7 +61,7 @@ export class CronJob extends Model<InferAttributes<CronJob>, InferCreationAttrib
   @Column({
     type: DataType.VIRTUAL,
     get(this: CronJob) {
-      const amount = this.getDataValue('amount') ?? 0;
+      const amount = this.getDataValue("amount") ?? 0;
       return amount > 0;
     },
   })
@@ -80,14 +80,14 @@ export class CronJob extends Model<InferAttributes<CronJob>, InferCreationAttrib
 
 @InputType()
 export class CronJobUpdateInput extends PartialType(
-  OmitType(CronJob, ['createdAt', 'updatedAt', 'meta'] as const),
-  InputType,
+  OmitType(CronJob, ["createdAt", "updatedAt", "meta"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class CronJobNewInput extends PartialType(
-  OmitType(CronJobUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(CronJobUpdateInput, ["id"] as const),
+  InputType
 ) {}
 
 export type CronJobMeta = QueueCronJob;

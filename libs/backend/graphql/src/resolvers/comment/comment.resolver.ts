@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   Comment,
   CommentNewInput,
@@ -6,18 +6,18 @@ import {
   EncounterCompetition,
   EventCompetition,
   Player,
-} from '@badman/backend-database';
-import { NotificationService } from '@badman/backend-notifications';
+} from "@badman/backend-database";
+import { NotificationService } from "@badman/backend-notifications";
 import {
   BadRequestException,
   Logger,
   NotFoundException,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Transaction } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
+} from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../utils";
 
 @Resolver(() => Comment)
 export class CommentResolver {
@@ -25,11 +25,11 @@ export class CommentResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private notificationService: NotificationService,
+    private notificationService: NotificationService
   ) {}
 
   @Query(() => Comment)
-  async comment(@Args('id', { type: () => ID }) id: string): Promise<Comment> {
+  async comment(@Args("id", { type: () => ID }) id: string): Promise<Comment> {
     const comment = await Comment.findByPk(id);
 
     if (!comment) {
@@ -50,10 +50,10 @@ export class CommentResolver {
 
   @Mutation(() => Comment)
   async addComment(
-    @Args('data') newCommentData: CommentNewInput,
-    @User() user: Player,
+    @Args("data") newCommentData: CommentNewInput,
+    @User() user: Player
   ): Promise<Comment> {
-    this.logger.log('Adding or updating a comment');
+    this.logger.log("Adding or updating a comment");
     const transaction = await this._sequelize.transaction();
     try {
       if (!newCommentData?.linkType) {
@@ -89,31 +89,31 @@ export class CommentResolver {
       comment.save({ transaction });
 
       switch (newCommentData.linkType) {
-        case 'competition':
+        case "competition":
           if (!(link instanceof EventCompetition)) {
             throw new BadRequestException(`linkType is not competition`);
           }
           await link.addComment(comment, { transaction });
           break;
-        case 'encounterChange':
+        case "encounterChange":
           if (!(link instanceof EncounterCompetition)) {
             throw new BadRequestException(`linkType is not home_comment_chamge`);
           }
           await this.encounterChangeComment(link, comment, user, transaction);
           break;
 
-        case 'encounter':
+        case "encounter":
           if (!(link instanceof EncounterCompetition)) {
             throw new BadRequestException(`linkType is not home_comment_chamge`);
           }
-            await this.encounterComment(link, comment, user, transaction);
+          await this.encounterComment(link, comment, user, transaction);
           break;
       }
 
       await transaction.commit();
       return comment;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -121,8 +121,8 @@ export class CommentResolver {
 
   @Mutation(() => Comment)
   async updateComment(
-    @Args('data') updateCommentData: CommentUpdateInput,
-    @User() user: Player,
+    @Args("data") updateCommentData: CommentUpdateInput,
+    @User() user: Player
   ): Promise<Comment> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -155,13 +155,13 @@ export class CommentResolver {
         { ...dbComment.toJSON(), ...updateCommentData },
         {
           transaction,
-        },
+        }
       );
 
       await transaction.commit();
       return dbComment;
     } catch (e) {
-      this.logger.error('rollback', e);
+      this.logger.error("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -169,11 +169,11 @@ export class CommentResolver {
 
   private getLink(linkType: string, linkId: string) {
     switch (linkType) {
-      case 'competition':
+      case "competition":
         return EventCompetition.findByPk(linkId);
-      case 'encounterChange':
+      case "encounterChange":
         return EncounterCompetition.findByPk(linkId);
-      case 'encounter':
+      case "encounter":
         return EncounterCompetition.findByPk(linkId);
       default:
         throw new NotFoundException(`${linkType}: ${linkId}`);
@@ -184,7 +184,7 @@ export class CommentResolver {
     link: EncounterCompetition,
     comment: Comment,
     user: Player,
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const home = await link.getHome();
     const away = await link.getAway();
@@ -193,7 +193,7 @@ export class CommentResolver {
       !(await user.hasAnyPermission([
         `${home.clubId}_change:encounter`,
         `${away.clubId}_change:encounter`,
-        'change-any:encounter',
+        "change-any:encounter",
       ]))
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this comment`);
@@ -214,7 +214,7 @@ export class CommentResolver {
     link: EncounterCompetition,
     comment: Comment,
     user: Player,
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const home = await link.getHome();
     const away = await link.getAway();
@@ -223,19 +223,19 @@ export class CommentResolver {
       !(await user.hasAnyPermission([
         `${home.clubId}_change:encounter`,
         `${away.clubId}_change:encounter`,
-        'change-any:encounter',
+        "change-any:encounter",
       ]))
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this comment`);
     }
-      if (link.gameLeaderId === comment.playerId) {
-        await link.setGameLeaderComment(comment, { transaction });
-      } else if (home.clubId === comment.clubId) {
-        await link.addHomeComment(comment, { transaction });
-      } else if (away.clubId === comment.clubId) {
-        await link.addAwayComment(comment, { transaction });
-      } else {
-        throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
-      }
+    if (link.gameLeaderId === comment.playerId) {
+      await link.setGameLeaderComment(comment, { transaction });
+    } else if (home.clubId === comment.clubId) {
+      await link.addHomeComment(comment, { transaction });
+    } else if (away.clubId === comment.clubId) {
+      await link.addAwayComment(comment, { transaction });
+    } else {
+      throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
+    }
   }
 }

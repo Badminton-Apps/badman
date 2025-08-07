@@ -1,7 +1,7 @@
-import { getIndexFromPlayers } from '@badman/utils';
-import { Logger, NotFoundException } from '@nestjs/common';
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import moment from 'moment';
+import { getIndexFromPlayers } from "@badman/utils";
+import { Logger, NotFoundException } from "@nestjs/common";
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
+import moment from "moment";
 import {
   BelongsToGetAssociationMixin,
   BelongsToGetAssociationMixinOptions,
@@ -13,7 +13,7 @@ import {
   InferCreationAttributes,
   Op,
   SaveOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   BeforeCreate,
   BeforeUpdate,
@@ -28,22 +28,22 @@ import {
   PrimaryKey,
   Table,
   TableOptions,
-} from 'sequelize-typescript';
-import { EntryMetaType } from '../../types';
-import { Relation } from '../../wrapper';
-import { Player } from '../player.model';
-import { RankingPlace, RankingSystem } from '../ranking';
-import { Team } from '../team.model';
-import { DrawCompetition, EventCompetition, SubEventCompetition } from './competition';
-import { Standing } from './standing.model';
-import { DrawTournament, SubEventTournament } from './tournament';
+} from "sequelize-typescript";
+import { EntryMetaType } from "../../types";
+import { Relation } from "../../wrapper";
+import { Player } from "../player.model";
+import { RankingPlace, RankingSystem } from "../ranking";
+import { Team } from "../team.model";
+import { DrawCompetition, EventCompetition, SubEventCompetition } from "./competition";
+import { Standing } from "./standing.model";
+import { DrawTournament, SubEventTournament } from "./tournament";
 
 @Table({
   timestamps: true,
-  schema: 'event',
-  tableName: 'Entries',
+  schema: "event",
+  tableName: "Entries",
 } as TableOptions)
-@ObjectType({ description: 'A EventEntry' })
+@ObjectType({ description: "A EventEntry" })
 export class EventEntry extends Model<
   InferAttributes<EventEntry>,
   InferCreationAttributes<EventEntry>
@@ -61,7 +61,7 @@ export class EventEntry extends Model<
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @BelongsTo(() => Team, 'teamId')
+  @BelongsTo(() => Team, "teamId")
   team?: Relation<Team>;
 
   @Column(DataType.DATE)
@@ -73,7 +73,7 @@ export class EventEntry extends Model<
   @Column(DataType.UUIDV4)
   teamId?: string;
 
-  @BelongsTo(() => Player, 'player1Id')
+  @BelongsTo(() => Player, "player1Id")
   player1?: Relation<Player>;
 
   @ForeignKey(() => Player)
@@ -81,7 +81,7 @@ export class EventEntry extends Model<
   @Column(DataType.UUIDV4)
   player1Id?: string;
 
-  @BelongsTo(() => Player, 'player2Id')
+  @BelongsTo(() => Player, "player2Id")
   player2?: Relation<Player>;
 
   @ForeignKey(() => Player)
@@ -94,7 +94,7 @@ export class EventEntry extends Model<
   sendOn?: Date;
 
   @BelongsTo(() => SubEventTournament, {
-    foreignKey: 'subEventId',
+    foreignKey: "subEventId",
     constraints: false,
   })
   subEventTournament?: Relation<SubEventTournament>;
@@ -104,14 +104,14 @@ export class EventEntry extends Model<
    */
   @Field(() => DrawTournament, { nullable: true })
   @BelongsTo(() => DrawTournament, {
-    foreignKey: 'drawId',
+    foreignKey: "drawId",
     constraints: false,
   })
   drawTournament?: Relation<DrawTournament>;
 
   @Field(() => SubEventCompetition, { nullable: true })
   @BelongsTo(() => SubEventCompetition, {
-    foreignKey: 'subEventId',
+    foreignKey: "subEventId",
     constraints: false,
   })
   subEventCompetition?: Relation<SubEventCompetition>;
@@ -120,7 +120,7 @@ export class EventEntry extends Model<
    * Draw get's deciede upon draw
    */
   @BelongsTo(() => DrawCompetition, {
-    foreignKey: 'drawId',
+    foreignKey: "drawId",
     constraints: false,
   })
   drawCompetition?: Relation<DrawCompetition>;
@@ -194,7 +194,7 @@ export class EventEntry extends Model<
   @BeforeUpdate
   @BeforeCreate
   static async recalculateCompetitionIndex(instance: EventEntry, options: SaveOptions) {
-    if (!instance.changed('meta')) {
+    if (!instance.changed("meta")) {
       return;
     }
 
@@ -207,7 +207,7 @@ export class EventEntry extends Model<
       include: [
         {
           model: EventCompetition,
-          attributes: ['season', 'usedRankingUnit', 'usedRankingAmount'],
+          attributes: ["season", "usedRankingUnit", "usedRankingAmount"],
         },
       ],
       transaction: options?.transaction,
@@ -216,7 +216,7 @@ export class EventEntry extends Model<
     if (!dbSubEvent) {
       // Log warning instead of throwing error to prevent sync failures
       console.warn(
-        `SubEventCompetition not found for EventEntry ${instance.id}, skipping competition index calculation`,
+        `SubEventCompetition not found for EventEntry ${instance.id}, skipping competition index calculation`
       );
       return;
     }
@@ -234,7 +234,7 @@ export class EventEntry extends Model<
 
     if (!dbSubEvent.eventCompetition) {
       console.warn(
-        `EventCompetition not found for SubEventCompetition ${dbSubEvent.id}, skipping competition index calculation`,
+        `EventCompetition not found for SubEventCompetition ${dbSubEvent.id}, skipping competition index calculation`
       );
       return;
     }
@@ -248,18 +248,18 @@ export class EventEntry extends Model<
       !dbSubEvent.eventCompetition.usedRankingUnit ||
       !dbSubEvent.eventCompetition.usedRankingAmount
     ) {
-      throw new Error('EventCompetition usedRanking is not set');
+      throw new Error("EventCompetition usedRanking is not set");
     }
 
     const usedRankingDate = moment();
-    usedRankingDate.set('year', dbSubEvent.eventCompetition.season);
+    usedRankingDate.set("year", dbSubEvent.eventCompetition.season);
     usedRankingDate.set(
       dbSubEvent.eventCompetition.usedRankingUnit,
-      dbSubEvent.eventCompetition.usedRankingAmount,
+      dbSubEvent.eventCompetition.usedRankingAmount
     );
 
-    const startRanking = usedRankingDate.clone().set('date', 0);
-    const endRanking = usedRankingDate.clone().clone().endOf('month');
+    const startRanking = usedRankingDate.clone().set("date", 0);
+    const endRanking = usedRankingDate.clone().clone().endOf("month");
 
     const dbRanking = await RankingPlace.findAll({
       where: {
@@ -270,7 +270,7 @@ export class EventEntry extends Model<
         },
         updatePossible: true,
       },
-      order: [['rankingDate', 'DESC']],
+      order: [["rankingDate", "DESC"]],
       transaction: options?.transaction,
     });
 
@@ -287,7 +287,7 @@ export class EventEntry extends Model<
     const team = await instance.getTeam();
     instance.meta.competition.teamIndex = getIndexFromPlayers(
       team.type,
-      instance.meta?.competition.players,
+      instance.meta?.competition.players
     );
   }
 }
@@ -307,7 +307,7 @@ export class EventEntryCompetitionPlayerMetaInput {
   mix?: number;
 
   @Field(() => String, { nullable: true })
-  gender?: 'M' | 'F';
+  gender?: "M" | "F";
 
   @Field(() => Boolean, { nullable: true })
   levelException?: boolean;
@@ -345,17 +345,17 @@ export class EventEntryMetaInput {
 @InputType()
 export class EventEntryUpdateInput extends PartialType(
   OmitType(EventEntry, [
-    'createdAt',
-    'updatedAt',
-    'drawCompetition',
-    'subEventCompetition',
-    'drawTournament',
-    'subEventTournament',
-    'standing',
-    'team',
-    'meta',
+    "createdAt",
+    "updatedAt",
+    "drawCompetition",
+    "subEventCompetition",
+    "drawTournament",
+    "subEventTournament",
+    "standing",
+    "team",
+    "meta",
   ] as const),
-  InputType,
+  InputType
 ) {
   @Field(() => EventEntryMetaInput, { nullable: true })
   meta?: EventEntryMetaInput;
@@ -363,8 +363,8 @@ export class EventEntryUpdateInput extends PartialType(
 
 @InputType()
 export class EventEntryNewInput extends PartialType(
-  OmitType(EventEntryUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(EventEntryUpdateInput, ["id"] as const),
+  InputType
 ) {}
 
 export interface MetaEntry {
@@ -386,7 +386,7 @@ export interface EntryCompetitionPlayer {
   single?: number;
   double?: number;
   mix?: number;
-  gender?: 'M' | 'F';
+  gender?: "M" | "F";
   levelException?: boolean;
   levelExceptionRequested?: boolean;
   levelExceptionReason?: string;

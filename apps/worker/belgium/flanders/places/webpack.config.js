@@ -1,10 +1,10 @@
-const { NxWebpackPlugin } = require('@nx/webpack');
-const { join } = require('path');
+const { NxWebpackPlugin } = require("@nx/webpack");
+const { join } = require("path");
 
 module.exports = {
   plugins: [
     new NxWebpackPlugin({
-      outputHashing: 'none',
+      outputHashing: "none",
       optimization: false,
     }),
   ],

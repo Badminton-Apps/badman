@@ -3,12 +3,12 @@ import {
   RankingGroup,
   RankingSystem,
   SubEventTournament,
-} from '@badman/backend-database';
-import { StepOptions, StepProcessor } from '../../../../processing';
+} from "@badman/backend-database";
+import { StepOptions, StepProcessor } from "../../../../processing";
 
-import { Logger, NotFoundException } from '@nestjs/common';
-import { SubEventStepData } from './subEvent';
-import { runParallel } from '@badman/utils';
+import { Logger, NotFoundException } from "@nestjs/common";
+import { SubEventStepData } from "./subEvent";
+import { runParallel } from "@badman/utils";
 
 export class TournamentSyncRankingProcessor extends StepProcessor {
   public event?: EventTournament;
@@ -58,7 +58,7 @@ export class TournamentSyncRankingProcessor extends StepProcessor {
       subEvent: SubEventTournament;
       internalId: number;
     },
-    groups: RankingGroup[],
+    groups: RankingGroup[]
   ) {
     await subEvent.addRankingGroups(groups, { transaction: this.transaction });
   }

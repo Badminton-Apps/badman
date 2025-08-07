@@ -1,15 +1,15 @@
-import { EncounterCompetition } from '@badman/backend-database';
-import { VisualService } from '@badman/backend-visual';
-import { getSeasonPeriod } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment-timezone';
-import { Op } from 'sequelize';
-import xlsx from 'xlsx';
+import { EncounterCompetition } from "@badman/backend-database";
+import { VisualService } from "@badman/backend-visual";
+import { getSeasonPeriod } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import moment from "moment-timezone";
+import { Op } from "sequelize";
+import xlsx from "xlsx";
 
 @Injectable()
 export class WrongDatesService {
   private readonly logger = new Logger(WrongDatesService.name);
-  private visualFormat = 'YYYY-MM-DDTHH:mm:ss';
+  private visualFormat = "YYYY-MM-DDTHH:mm:ss";
 
   constructor(private readonly visualService: VisualService) {}
 
@@ -49,9 +49,13 @@ export class WrongDatesService {
           return;
         }
 
-        const result = await this.visualService.getDate(event.visualCode, encounter.visualCode, false);
+        const result = await this.visualService.getDate(
+          event.visualCode,
+          encounter.visualCode,
+          false
+        );
 
-        const dateBrussels = moment.tz(result, 'Europe/Brussels');
+        const dateBrussels = moment.tz(result, "Europe/Brussels");
 
         if (dateBrussels.isSame(moment(encounter.date))) {
           continue;
@@ -63,8 +67,8 @@ export class WrongDatesService {
         if (dateBrussels.isSame(moment(encounter.originalDate))) {
           notChanged.push(
             `${home.name},${away.name},${dateBrussels.format(
-              this.visualFormat,
-            )},${moment(encounter.date).format(this.visualFormat)}`,
+              this.visualFormat
+            )},${moment(encounter.date).format(this.visualFormat)}`
           );
 
           toChange.push({
@@ -93,10 +97,9 @@ export class WrongDatesService {
     // wirte to xlsx
     const wb = xlsx.utils.book_new();
     const ws = xlsx.utils.json_to_sheet(toChange);
-    xlsx.utils.book_append_sheet(wb, ws, 'To change');
+    xlsx.utils.book_append_sheet(wb, ws, "To change");
     xlsx.writeFile(wb, `wrong-dates-${season}.xlsx`);
-    
 
-    this.logger.log('Done');
+    this.logger.log("Done");
   }
 }

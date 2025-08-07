@@ -1,13 +1,12 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-faq {
-    
     // Background color
-    $border-color: mat.get-theme-color($theme, 'foreground', 'disabled-text');
+    $border-color: mat.get-theme-color($theme, "foreground", "disabled-text");
 
     .editor {
       border: 1px solid $border-color;
@@ -18,7 +17,7 @@
 
 @mixin typography($theme) {
   // badman-faq {
-  //   
+  //
   // }
 }
 

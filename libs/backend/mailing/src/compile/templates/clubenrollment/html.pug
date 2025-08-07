@@ -46,7 +46,7 @@ block content
                   each player in team.entry.meta.competition.players
                     li #{ player.firstName }#{ " " }#{ player.lastName }
                       small #{ " " }(#{ player.memberId })
-                        if team.type == 'MX'
+                        if team.type == "MX"
                           | #{ " " }#{ player.single } - #{ player.double } - #{ player.mix }
                         else
                           | #{ " " }#{ player.single } - #{ player.double }
