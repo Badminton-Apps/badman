@@ -1,6 +1,6 @@
-import { DynamicModule, Module } from '@nestjs/common';
-import { parse } from 'dotenv';
-import fs from 'fs';
+import { DynamicModule, Module } from "@nestjs/common";
+import { parse } from "dotenv";
+import fs from "fs";
 
 @Module({})
 export class CleanEnvironmentModule {
@@ -12,7 +12,7 @@ export class CleanEnvironmentModule {
    */
   static forPredicate(environmentFilePath?: string, predicate?: () => boolean): DynamicModule {
     if (predicate === undefined || predicate()) {
-      const environmentData = fs.readFileSync(environmentFilePath ?? '.env', { encoding: 'utf8' });
+      const environmentData = fs.readFileSync(environmentFilePath ?? ".env", { encoding: "utf8" });
 
       const parsed = new Set(Object.keys(parse(environmentData)));
 

@@ -1,11 +1,11 @@
-import { Game } from '../../game.model';
-import { Team } from '../../team.model';
-import { Location } from '../../location.model';
-import { Assembly } from './assembly.model';
-import { DrawCompetition } from './draw.model';
-import { EncounterChange } from './encounter-change.model';
-import { Player } from '../../player.model';
-import { sortGames } from '@badman/utils';
+import { Game } from "../../game.model";
+import { Team } from "../../team.model";
+import { Location } from "../../location.model";
+import { Assembly } from "./assembly.model";
+import { DrawCompetition } from "./draw.model";
+import { EncounterChange } from "./encounter-change.model";
+import { Player } from "../../player.model";
+import { sortGames } from "@badman/utils";
 
 export class EncounterCompetition {
   id?: string;

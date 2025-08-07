@@ -1,4 +1,3 @@
-
 import {
   Component,
   Injector,
@@ -9,29 +8,23 @@ import {
   inject,
   input,
   model,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute, Router } from '@angular/router';
-import { transferState } from '@badman/frontend-utils';
-import { getSeason } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { map, startWith } from 'rxjs/operators';
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { ActivatedRoute, Router } from "@angular/router";
+import { transferState } from "@badman/frontend-utils";
+import { getSeason } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { map, startWith } from "rxjs/operators";
 
 @Component({
-    selector: 'badman-select-season',
-    imports: [
-    TranslatePipe,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatSelectModule
-],
-    templateUrl: './select-season.component.html',
-    styleUrls: ['./select-season.component.scss']
+  selector: "badman-select-season",
+  imports: [TranslatePipe, ReactiveFormsModule, FormsModule, MatFormFieldModule, MatSelectModule],
+  templateUrl: "./select-season.component.html",
+  styleUrls: ["./select-season.component.scss"],
 })
 export class SelectSeasonComponent implements OnInit {
   private apollo = inject(Apollo);
@@ -42,11 +35,11 @@ export class SelectSeasonComponent implements OnInit {
 
   injector = inject(Injector);
 
-  controlName = input('season');
+  controlName = input("season");
 
   group = input<FormGroup>();
 
-  dependsOn = input('club');
+  dependsOn = input("club");
 
   updateUrl = input(false);
 
@@ -67,7 +60,9 @@ export class SelectSeasonComponent implements OnInit {
     }
 
     if (!this.internalControl) {
-      this.internalControl = new FormControl<number>(this.value() ?? getSeason()) as FormControl<number>;
+      this.internalControl = new FormControl<number>(
+        this.value() ?? getSeason()
+      ) as FormControl<number>;
     }
 
     if (this.group()) {
@@ -100,15 +95,15 @@ export class SelectSeasonComponent implements OnInit {
           transferState(`eventCompetitions-seasons`, this.stateTransfer, this.platformId),
           map((result) => {
             if (!result?.data.eventCompetitionSeasons) {
-              throw new Error('No teams');
+              throw new Error("No teams");
             }
             return result.data.eventCompetitionSeasons;
-          }),
+          })
         ),
       {
         initialValue: [getSeason()],
         injector: this.injector,
-      },
+      }
     );
   }
 
@@ -129,7 +124,7 @@ export class SelectSeasonComponent implements OnInit {
         .createUrlTree([], {
           relativeTo: this.activatedRoute,
           queryParams,
-          queryParamsHandling: 'merge',
+          queryParamsHandling: "merge",
         })
         .toString();
 
@@ -140,7 +135,7 @@ export class SelectSeasonComponent implements OnInit {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams,
-        queryParamsHandling: 'merge',
+        queryParamsHandling: "merge",
       });
     }
   }

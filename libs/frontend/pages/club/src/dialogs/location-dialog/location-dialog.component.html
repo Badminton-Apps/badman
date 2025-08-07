@@ -8,11 +8,11 @@
     ></badman-location-fields>
     @if (location.id && this.data.showavailabilities) {
       <h3 mat-dialog-title>
-        {{ 'all.competition.team-enrollment.availability' | translate }}
+        {{ "all.competition.team-enrollment.availability" | translate }}
       </h3>
       <div class="availibilty" fxLayout="column">
         <mat-form-field fxFlex>
-          <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
+          <mat-label>{{ "all.pickers.select-year" | translate }}</mat-label>
           <mat-select [(value)]="selectedYear">
             @for (year of this.data.compYears; track year) {
               <mat-option [value]="year">
@@ -38,7 +38,7 @@
         [disabled]="!this.location.name"
         (click)="this.create(location)"
       >
-        {{ 'all.button.create' | translate }}
+        {{ "all.button.create" | translate }}
       </button>
     }
     @if (location.id) {
@@ -48,7 +48,7 @@
         [disabled]="!this.location.name"
         (click)="this.update(location)"
       >
-        {{ 'all.button.save' | translate }}
+        {{ "all.button.save" | translate }}
       </button>
     }
     <button mat-button [mat-dialog-close]="location">Close</button>

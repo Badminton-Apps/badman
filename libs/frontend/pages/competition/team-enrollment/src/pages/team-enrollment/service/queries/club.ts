@@ -1,6 +1,6 @@
-import { Club } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { map } from 'rxjs/operators';
+import { Club } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { map } from "rxjs/operators";
 
 export const loadClub = (apollo: Apollo, id?: string | null) => {
   return apollo

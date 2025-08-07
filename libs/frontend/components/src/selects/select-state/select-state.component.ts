@@ -1,17 +1,16 @@
-
-import { Component, OnInit, input } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { TranslatePipe } from '@ngx-translate/core';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { startWith, takeUntil } from 'rxjs/operators';
-import statesList from './states.json';
+import { Component, OnInit, input } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { MatSelectModule } from "@angular/material/select";
+import { TranslatePipe } from "@ngx-translate/core";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { startWith, takeUntil } from "rxjs/operators";
+import statesList from "./states.json";
 
 @Component({
-    selector: 'badman-select-state',
-    imports: [MatSelectModule, TranslatePipe, ReactiveFormsModule],
-    templateUrl: './select-state.component.html',
-    styleUrls: ['./select-state.component.scss']
+  selector: "badman-select-state",
+  imports: [MatSelectModule, TranslatePipe, ReactiveFormsModule],
+  templateUrl: "./select-state.component.html",
+  styleUrls: ["./select-state.component.scss"],
 })
 export class SelectCountrystateComponent implements OnInit {
   private destroy$ = injectDestroy();
@@ -24,9 +23,9 @@ export class SelectCountrystateComponent implements OnInit {
 
   group = input.required<FormGroup>();
 
-  controlName = input('state');
+  controlName = input("state");
 
-  dependsOn = input('country');
+  dependsOn = input("country");
 
   control = input<FormControl<string>>();
   protected internalControl!: FormControl<string | null>;
@@ -43,7 +42,7 @@ export class SelectCountrystateComponent implements OnInit {
 
     if (!this.internalControl) {
       this.internalControl = new FormControl<string | null>(
-        this.canBeEmpty() ? null : 'BE-VOV',
+        this.canBeEmpty() ? null : "BE-VOV"
       ) as FormControl<string | null>;
     }
 

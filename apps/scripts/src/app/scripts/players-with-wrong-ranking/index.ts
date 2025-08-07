@@ -1,1 +1,1 @@
-export * from './players-with-wrong-ranking';
+export * from "./players-with-wrong-ranking";

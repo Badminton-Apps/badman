@@ -1,22 +1,21 @@
 /// <reference types="@types/googlemaps" />
 
-
-import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { Club, Location } from '@badman/frontend-models';
-import { NgMapsPlacesModule } from '@ng-maps/places';
-import { TranslatePipe } from '@ngx-translate/core';
-import { throttleTime } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnInit, input, output } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { Club, Location } from "@badman/frontend-models";
+import { NgMapsPlacesModule } from "@ng-maps/places";
+import { TranslatePipe } from "@ngx-translate/core";
+import { throttleTime } from "rxjs/operators";
 
 @Component({
-  selector: 'badman-location-fields',
-  templateUrl: './location-fields.component.html',
-  styleUrls: ['./location-fields.component.scss'],
+  selector: "badman-location-fields",
+  templateUrl: "./location-fields.component.html",
+  styleUrls: ["./location-fields.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
@@ -26,8 +25,8 @@ import { throttleTime } from 'rxjs/operators';
     MatAutocompleteModule,
     MatButtonModule,
     MatIconModule,
-    NgMapsPlacesModule
-],
+    NgMapsPlacesModule,
+  ],
 })
 export class LocationDialogFieldsComponent implements OnInit {
   location = input<Location>({} as Location);
@@ -38,9 +37,9 @@ export class LocationDialogFieldsComponent implements OnInit {
 
   placesConfig: google.maps.places.AutocompleteOptions = {
     componentRestrictions: {
-      country: 'BE',
+      country: "BE",
     },
-    types: ['establishment'],
+    types: ["establishment"],
   };
 
   locationForm!: FormGroup;
@@ -89,20 +88,20 @@ export class LocationDialogFieldsComponent implements OnInit {
 
   syncAutoComplete($event: google.maps.places.PlaceResult) {
     const city: string | undefined =
-      $event.address_components?.find((r) => r.types.includes('sublocality'))?.long_name ??
-      $event.address_components?.find((r) => r.types.includes('locality'))?.long_name;
+      $event.address_components?.find((r) => r.types.includes("sublocality"))?.long_name ??
+      $event.address_components?.find((r) => r.types.includes("locality"))?.long_name;
 
     const postalcode: string | undefined = $event.address_components?.find((r) =>
-      r.types.includes('postal_code'),
+      r.types.includes("postal_code")
     )?.long_name;
     const state: string | undefined = $event.address_components?.find((r) =>
-      r.types.includes('administrative_area_level_2'),
+      r.types.includes("administrative_area_level_2")
     )?.long_name;
     const street: string | undefined = $event.address_components?.find((r) =>
-      r.types.includes('route'),
+      r.types.includes("route")
     )?.long_name;
     const streetNumber: string | undefined = $event.address_components?.find((r) =>
-      r.types.includes('street_number'),
+      r.types.includes("street_number")
     )?.long_name;
 
     const coordinates = $event.geometry?.location;

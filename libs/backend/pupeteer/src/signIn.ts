@@ -1,6 +1,6 @@
-import { Page } from 'puppeteer';
-import { waitForSelectors } from './shared';
-import { Logger } from '@nestjs/common';
+import { Page } from "puppeteer";
+import { waitForSelectors } from "./shared";
+import { Logger } from "@nestjs/common";
 
 export async function signIn(
   pupeteer: {
@@ -11,29 +11,29 @@ export async function signIn(
     timeout: 5000,
   },
   args: {
-    username: string,
-    password: string,
-    logger?: Logger,
+    username: string;
+    password: string;
+    logger?: Logger;
   }
 ) {
   const { page, timeout } = pupeteer;
   const { username, password, logger } = args || {};
-  logger?.verbose('signIn');
+  logger?.verbose("signIn");
 
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
 
   // Check if user is already signed in by looking for profileMenu button
   try {
-    const profileMenuButton = await page.waitForSelector('#profileMenu', { timeout: 2000 });
+    const profileMenuButton = await page.waitForSelector("#profileMenu", { timeout: 2000 });
     if (profileMenuButton) {
-      logger?.log('User is already signed in (profileMenu found), exiting signIn function');
+      logger?.log("User is already signed in (profileMenu found), exiting signIn function");
       return;
     }
   } catch (error) {
     // profileMenu not found, continue with sign in process
-    logger?.log('User not signed in (profileMenu not found), proceeding with sign in');
+    logger?.log("User not signed in (profileMenu not found), proceeding with sign in");
   }
 
   // LOGIN
@@ -43,11 +43,11 @@ export async function signIn(
     promises.push(targetPage.waitForNavigation());
     const element = await waitForSelectors(
       [
-        ['aria/Log in'],
-        ['body > div.content > div.masthead.masthead--fixed > div.masthead__user > a'],
+        ["aria/Log in"],
+        ["body > div.content > div.masthead.masthead--fixed > div.masthead__user > a"],
       ],
       targetPage,
-      timeout,
+      timeout
     );
     await element.click({ offset: { x: 32.265625, y: 14.078125 } });
     await Promise.all(promises);
@@ -55,15 +55,15 @@ export async function signIn(
 
   {
     const targetPage = page;
-    const element = await waitForSelectors([['aria/Loginnaam'], ['#Login']], targetPage, timeout);
+    const element = await waitForSelectors([["aria/Loginnaam"], ["#Login"]], targetPage, timeout);
     await element.type(username);
   }
   {
     const targetPage = page;
     const element = await waitForSelectors(
-      [['aria/Wachtwoord'], ['#Password']],
+      [["aria/Wachtwoord"], ["#Password"]],
       targetPage,
-      timeout,
+      timeout
     );
     await element.type(password);
   }
@@ -71,7 +71,7 @@ export async function signIn(
     const targetPage = page;
     const promises = [];
     promises.push(targetPage.waitForNavigation());
-    const element = await waitForSelectors([['aria/INLOGGEN'], ['#btnLogin']], targetPage, timeout);
+    const element = await waitForSelectors([["aria/INLOGGEN"], ["#btnLogin"]], targetPage, timeout);
     await element.click({ offset: { x: 50.046875, y: 6.359375 } });
     await Promise.all(promises);
   }

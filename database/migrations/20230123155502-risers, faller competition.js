@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
@@ -8,75 +8,75 @@ module.exports = {
 
       // drop encounter accepted column
       await queryInterface.addColumn(
-        { tableName: 'DrawCompetitions', schema: 'event' },
-        'risers',
+        { tableName: "DrawCompetitions", schema: "event" },
+        "risers",
         {
           type: sequelize.DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 1,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       await queryInterface.addColumn(
-        { tableName: 'DrawCompetitions', schema: 'event' },
-        'fallers',
+        { tableName: "DrawCompetitions", schema: "event" },
+        "fallers",
         {
           type: sequelize.DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 1,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       await queryInterface.addColumn(
-        { tableName: 'DrawTournaments', schema: 'event' },
-        'risers',
+        { tableName: "DrawTournaments", schema: "event" },
+        "risers",
         {
           type: sequelize.DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 1,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       await queryInterface.addColumn(
-        { tableName: 'DrawTournaments', schema: 'event' },
-        'fallers',
+        { tableName: "DrawTournaments", schema: "event" },
+        "fallers",
         {
           type: sequelize.DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 0,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       // drop encounter accepted column
       await queryInterface.addColumn(
-        { tableName: 'Standings', schema: 'event' },
-        'riser',
+        { tableName: "Standings", schema: "event" },
+        "riser",
         {
           type: sequelize.DataTypes.BOOLEAN,
           allowNull: false,
           defaultValue: false,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       await queryInterface.addColumn(
-        { tableName: 'Standings', schema: 'event' },
-        'faller',
+        { tableName: "Standings", schema: "event" },
+        "faller",
         {
           type: sequelize.DataTypes.BOOLEAN,
           allowNull: false,
           defaultValue: false,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -85,39 +85,39 @@ module.exports = {
   down: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.removeColumn(
-        { tableName: 'DrawCompetitions', schema: 'event' },
-        'risers',
-        { transaction: t },
+        { tableName: "DrawCompetitions", schema: "event" },
+        "risers",
+        { transaction: t }
       );
 
       await queryInterface.removeColumn(
-        { tableName: 'DrawCompetitions', schema: 'event' },
-        'fallers',
-        { transaction: t },
+        { tableName: "DrawCompetitions", schema: "event" },
+        "fallers",
+        { transaction: t }
       );
       await queryInterface.removeColumn(
-        { tableName: 'DrawTournaments', schema: 'event' },
-        'risers',
-        { transaction: t },
+        { tableName: "DrawTournaments", schema: "event" },
+        "risers",
+        { transaction: t }
       );
 
       await queryInterface.removeColumn(
-        { tableName: 'DrawTournaments', schema: 'event' },
-        'fallers',
-        { transaction: t },
+        { tableName: "DrawTournaments", schema: "event" },
+        "fallers",
+        { transaction: t }
       );
 
-      await queryInterface.removeColumn({ tableName: 'Standings', schema: 'event' }, 'riser', {
+      await queryInterface.removeColumn({ tableName: "Standings", schema: "event" }, "riser", {
         transaction: t,
       });
 
-      await queryInterface.removeColumn({ tableName: 'Standings', schema: 'event' }, 'faller', {
+      await queryInterface.removeColumn({ tableName: "Standings", schema: "event" }, "faller", {
         transaction: t,
       });
 
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

@@ -1,4 +1,4 @@
-<h1>{{ 'all.competition.team-assembly.title' | translate }}</h1>
+<h1>{{ "all.competition.team-assembly.title" | translate }}</h1>
 @if (this.formGroup) {
   <section class="select-encounter">
     <badman-select-season [group]="formGroup" [updateUrl]="true"></badman-select-season>
@@ -22,7 +22,7 @@
         [class.spinner]="this.pdfLoading"
         [disabled]="this.pdfLoading"
       >
-        {{ 'all.button.download' | translate }}
+        {{ "all.button.download" | translate }}
       </button>
 
       @if (loggedIn()) {
@@ -37,7 +37,7 @@
             (click)="this.save()"
           >
             <mat-icon>save</mat-icon>
-            {{ 'all.button.save' | translate }}
+            {{ "all.button.save" | translate }}
           </button>
         </mat-menu>
       }
@@ -64,9 +64,9 @@
       }
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button [matDialogClose]="true">{{ 'all.button.agree' | translate }}</button>
+      <button mat-button [matDialogClose]="true">{{ "all.button.agree" | translate }}</button>
       <button mat-button matDialogClose color="primary">
-        {{ 'all.button.cancel' | translate }}
+        {{ "all.button.cancel" | translate }}
       </button>
     </mat-dialog-actions>
   </ng-template>

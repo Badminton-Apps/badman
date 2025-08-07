@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,37 +7,37 @@ import {
   inject,
   input,
   output,
-} from '@angular/core';
+} from "@angular/core";
 import {
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ClaimService } from '@badman/frontend-auth';
-import { HasClaimComponent } from '@badman/frontend-components';
-import { Player } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { throttleTime, filter, switchMap } from 'rxjs/operators';
+} from "@angular/forms";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ClaimService } from "@badman/frontend-auth";
+import { HasClaimComponent } from "@badman/frontend-components";
+import { Player } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { throttleTime, filter, switchMap } from "rxjs/operators";
 
 @Component({
-    selector: 'badman-player-fields',
-    templateUrl: './edit-player-fields.component.html',
-    styleUrls: ['./edit-player-fields.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
+  selector: "badman-player-fields",
+  templateUrl: "./edit-player-fields.component.html",
+  styleUrls: ["./edit-player-fields.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
     HasClaimComponent,
     MatSelectModule,
-    TranslatePipe
-]
+    TranslatePipe,
+  ],
 })
 export class EditPlayerFieldsComponent implements OnInit {
   private readonly claimService = inject(ClaimService);
@@ -64,14 +63,14 @@ export class EditPlayerFieldsComponent implements OnInit {
 
     effect(
       () => {
-        if (this.claimService.hasClaim('link:player')) {
+        if (this.claimService.hasClaim("link:player")) {
           memberIdControl.enable();
           subControl.enable();
         }
       },
       {
         injector: this.injector,
-      },
+      }
     );
 
     this.fg = new FormGroup({
@@ -92,7 +91,7 @@ export class EditPlayerFieldsComponent implements OnInit {
             v.lastName !== this.player().lastName ||
             v.memberId !== this.player().memberId ||
             v.sub !== this.player().sub ||
-            v.gender !== this.player().gender,
+            v.gender !== this.player().gender
         ),
         switchMap(() =>
           this.apollo.mutate<{ updatePlayer: Player }>({
@@ -117,13 +116,13 @@ export class EditPlayerFieldsComponent implements OnInit {
                 sub: this.fg.value.sub,
               },
             },
-          }),
-        ),
+          })
+        )
       )
       .subscribe(() => {
-        this._snackBar.open('Saved', undefined, {
+        this._snackBar.open("Saved", undefined, {
           duration: 1000,
-          panelClass: 'success',
+          panelClass: "success",
         });
       });
   }

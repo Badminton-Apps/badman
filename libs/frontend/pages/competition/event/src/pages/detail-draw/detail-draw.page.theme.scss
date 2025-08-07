@@ -1,21 +1,18 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
   badman-detail-draw-competition {
-    
     // Background color
-    
-    
 
     .actions {
       a {
         &,
         &:visited,
         &:hover {
-          color: mat.get-theme-color($theme, foreground, 'base');
+          color: mat.get-theme-color($theme, foreground, "base");
         }
       }
     }
@@ -23,11 +20,10 @@
 }
 
 @mixin typography($theme) {
-  
   badman-detail-draw-competition {
     .header {
       .name {
-        font: mat.get-theme-typography($theme, 'headline-4', font);
+        font: mat.get-theme-typography($theme, "headline-4", font);
       }
     }
   }

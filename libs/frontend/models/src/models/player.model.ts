@@ -1,13 +1,13 @@
-import { Game } from './game.model';
-import { RankingPlace } from './ranking-place.model';
-import moment from 'moment';
-import { Club } from './club.model';
-import { RankingSystem } from './ranking-system.model';
-import { Claim } from './security';
-import { Setting } from './personal';
-import { Notification } from './personal';
-import { ClubMembershipType, TeamMembershipType } from '@badman/utils';
-import { Team } from './team.model';
+import { Game } from "./game.model";
+import { RankingPlace } from "./ranking-place.model";
+import moment from "moment";
+import { Club } from "./club.model";
+import { RankingSystem } from "./ranking-system.model";
+import { Claim } from "./security";
+import { Setting } from "./personal";
+import { Notification } from "./personal";
+import { ClubMembershipType, TeamMembershipType } from "@badman/utils";
+import { Team } from "./team.model";
 
 export class Player {
   id!: string;
@@ -17,7 +17,7 @@ export class Player {
   memberId?: string;
   sub?: string;
   slug?: string;
-  gender?: 'M' | 'F';
+  gender?: "M" | "F";
   avatar?: string;
   firstName?: string;
   lastName?: string;
@@ -117,7 +117,7 @@ export class Player {
       ? this.rankingPlaces?.find((r) => moment(date).isSame(r?.rankingDate))
       : this.rankingPlaces?.[0];
 
-    return type == 'MX'
+    return type == "MX"
       ? (ranking?.single ?? 12) + (ranking?.double ?? 12) + (ranking?.mix ?? 12)
       : (ranking?.single ?? 12) + (ranking?.double ?? 12);
   }
@@ -131,7 +131,7 @@ export class Player {
       return `${this.firstName} ${this.lastName}`;
     }
 
-    return 'N/A';
+    return "N/A";
   }
 }
 

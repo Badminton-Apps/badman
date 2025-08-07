@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         // fetch all players
         const players = await queryInterface.sequelize.query(
           `SELECT * FROM "Players" where "memberId" is not null and "memberId" != '' and "firstName" is not null and "lastName" is not null`,
-          { type: queryInterface.sequelize.QueryTypes.SELECT, transaction: t },
+          { type: queryInterface.sequelize.QueryTypes.SELECT, transaction: t }
         );
 
         // find if any players have the same memberId
@@ -23,7 +23,7 @@ module.exports = {
             replacements: { ids: playersWithSameMemberId.map((p) => p.id) },
             type: queryInterface.sequelize.QueryTypes.SELECT,
             transaction: t,
-          },
+          }
         );
 
         console.log(`Fixing ${playersWithSameMemberId.length} players with same memberId`);
@@ -44,11 +44,11 @@ module.exports = {
           if (!playerToKeep) {
             // find all rankingplaces for any player with the same memberId
             const rankingPlaces = rankingLastPlaces.filter((r) =>
-              some?.map((p) => p.id).includes(r.playerId),
+              some?.map((p) => p.id).includes(r.playerId)
             );
 
             if (rankingPlaces.length === 0) {
-              console.log('No ranking places', player);
+              console.log("No ranking places", player);
             } else {
               // find the lowest ranking place
               const lowestRankingPlace = rankingPlaces.reduce((acc, cur) => {
@@ -73,7 +73,7 @@ module.exports = {
 
           // if no player to keep, use the first player
           if (!playerToKeep) {
-            console.log('No player to keep', player);
+            console.log("No player to keep", player);
             playerToKeep = same[0];
           }
 
@@ -86,7 +86,7 @@ module.exports = {
                 {
                   type: queryInterface.sequelize.QueryTypes.UPDATE,
                   transaction: t,
-                },
+                }
               );
 
               // Update all "event"."EventEntries" where the player has played
@@ -95,7 +95,7 @@ module.exports = {
                 {
                   type: queryInterface.sequelize.QueryTypes.UPDATE,
                   transaction: t,
-                },
+                }
               );
               // Update all "event"."EventEntries" where the player has played
               await queryInterface.sequelize.query(
@@ -103,7 +103,7 @@ module.exports = {
                 {
                   type: queryInterface.sequelize.QueryTypes.UPDATE,
                   transaction: t,
-                },
+                }
               );
 
               // update all "ClubPlayerMemberships" where the player has played
@@ -112,7 +112,7 @@ module.exports = {
                 {
                   type: queryInterface.sequelize.QueryTypes.UPDATE,
                   transaction: t,
-                },
+                }
               );
 
               // Update comments
@@ -121,7 +121,7 @@ module.exports = {
                 {
                   type: queryInterface.sequelize.QueryTypes.UPDATE,
                   transaction: t,
-                },
+                }
               );
 
               // delete all rankingplaces
@@ -130,7 +130,7 @@ module.exports = {
                 {
                   type: queryInterface.sequelize.QueryTypes.DELETE,
                   transaction: t,
-                },
+                }
               );
 
               await queryInterface.sequelize.query(
@@ -138,7 +138,7 @@ module.exports = {
                 {
                   type: queryInterface.sequelize.QueryTypes.DELETE,
                   transaction: t,
-                },
+                }
               );
 
               // delete all game points
@@ -147,7 +147,7 @@ module.exports = {
                 {
                   type: queryInterface.sequelize.QueryTypes.DELETE,
                   transaction: t,
-                },
+                }
               );
 
               await queryInterface.sequelize.query(`DELETE FROM "Players" WHERE "id" = '${p.id}'`, {
@@ -158,7 +158,7 @@ module.exports = {
           }
         }
 
-        console.log('Fixing player names');
+        console.log("Fixing player names");
         // make sure all players's firstname and lastname are in pascal case
         for (const player of players) {
           const firstName = toTitleCase(player.firstName?.toLowerCase());
@@ -174,12 +174,12 @@ module.exports = {
                   firstName,
                   lastName,
                 },
-              },
+              }
             );
           }
         }
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -189,7 +189,7 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

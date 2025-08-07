@@ -1,6 +1,6 @@
-import { SubEventCompetition } from '../competition';
-import { Draw } from '../draw.model';
-import { EncounterCompetition } from './encounter.model';
+import { SubEventCompetition } from "../competition";
+import { Draw } from "../draw.model";
+import { EncounterCompetition } from "./encounter.model";
 
 export class DrawCompetition extends Draw {
   subeventId?: string;

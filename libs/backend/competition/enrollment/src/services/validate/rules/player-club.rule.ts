@@ -1,7 +1,7 @@
-import { Club, ClubPlayerMembership, Player } from '@badman/backend-database';
-import { startOfSeason } from '@badman/utils';
-import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
-import { Rule } from './_rule.base';
+import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
+import { startOfSeason } from "@badman/utils";
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from "../../../models";
+import { Rule } from "./_rule.base";
 
 /**
  * Checks if the players is the correct club for the team
@@ -13,9 +13,9 @@ export class PlayerClubRule extends Rule {
     const playerIds = new Set<string>();
 
     for (const { basePlayers, teamPlayers, backupPlayers } of enrollment.teams) {
-      const baseIds = basePlayers?.map((p) => p.id ?? '') ?? [];
-      const teamIds = teamPlayers?.map((p) => p.id ?? '') ?? [];
-      const backupIds = backupPlayers?.map((p) => p.id ?? '') ?? [];
+      const baseIds = basePlayers?.map((p) => p.id ?? "") ?? [];
+      const teamIds = teamPlayers?.map((p) => p.id ?? "") ?? [];
+      const backupIds = backupPlayers?.map((p) => p.id ?? "") ?? [];
 
       baseIds.forEach((id) => playerIds.add(id));
       teamIds.forEach((id) => playerIds.add(id));
@@ -49,11 +49,11 @@ export class PlayerClubRule extends Rule {
       // All base players should be from the teams's club
       const basePlayerErrors = await this.checkPlayersClub(
         players,
-        basePlayers?.map((p) => p.id ?? '') ?? [],
+        basePlayers?.map((p) => p.id ?? "") ?? [],
         enrollment.club,
         enrollment.season,
         enrollment.loans ?? [],
-        enrollment.transfers ?? [],
+        enrollment.transfers ?? []
       );
 
       if (basePlayerErrors.length > 0) {
@@ -63,19 +63,19 @@ export class PlayerClubRule extends Rule {
       // if teamplayers or backup players are set, they should be from the same club, if not: warning
       const teamPlayerErrors = await this.checkPlayersClub(
         players,
-        teamPlayers?.map((p) => p.id ?? '') ?? [],
+        teamPlayers?.map((p) => p.id ?? "") ?? [],
         enrollment.club,
         enrollment.season,
         enrollment.loans ?? [],
-        enrollment.transfers ?? [],
+        enrollment.transfers ?? []
       );
       const backupPlayerErrors = await this.checkPlayersClub(
         players,
-        backupPlayers?.map((p) => p.id ?? '') ?? [],
+        backupPlayers?.map((p) => p.id ?? "") ?? [],
         enrollment.club,
         enrollment.season,
         enrollment.loans ?? [],
-        enrollment.transfers ?? [],
+        enrollment.transfers ?? []
       );
 
       if (teamPlayerErrors.length > 0) {
@@ -103,7 +103,7 @@ export class PlayerClubRule extends Rule {
     club: Club,
     season: number,
     loans: string[],
-    transfers: string[],
+    transfers: string[]
   ) {
     const startDate = startOfSeason(season).toDate();
 
@@ -128,7 +128,7 @@ export class PlayerClubRule extends Rule {
       // else if the player has no active club
       if (activeClubsInNextSeason.length == 0) {
         return {
-          message: 'all.v1.entryTeamDrawer.validation.errors.player-club-none',
+          message: "all.v1.entryTeamDrawer.validation.errors.player-club-none",
           params: {
             player: {
               fullName: player.fullName,
@@ -152,7 +152,7 @@ export class PlayerClubRule extends Rule {
 
       // else return the error
       return {
-        message: 'all.v1.entryTeamDrawer.validation.errors.player-club',
+        message: "all.v1.entryTeamDrawer.validation.errors.player-club",
         params: {
           player: {
             fullName: player.fullName,

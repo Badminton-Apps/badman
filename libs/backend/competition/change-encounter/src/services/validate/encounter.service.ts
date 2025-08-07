@@ -1,25 +1,25 @@
-import { EncounterCompetition, Location, Team } from '@badman/backend-database';
-import { ValidationService } from '@badman/backend-validation';
-import { Injectable, Logger } from '@nestjs/common';
-import { Op, WhereOptions } from 'sequelize';
+import { EncounterCompetition, Location, Team } from "@badman/backend-database";
+import { ValidationService } from "@badman/backend-validation";
+import { Injectable, Logger } from "@nestjs/common";
+import { Op, WhereOptions } from "sequelize";
 import {
   EncounterValidationOutput,
   EncounterValidationData,
   EncounterValidationError,
-} from '../../models';
-import { DatePeriodRule, ExceptionRule, LocationRule, SemesterRule, TeamClubRule } from './rules';
+} from "../../models";
+import { DatePeriodRule, ExceptionRule, LocationRule, SemesterRule, TeamClubRule } from "./rules";
 
 @Injectable()
 export class EncounterValidationService extends ValidationService<
   EncounterValidationData,
   EncounterValidationError<unknown>
 > {
-  override group = 'change-encounter';
+  override group = "change-encounter";
 
   private readonly _logger = new Logger(EncounterValidationService.name);
 
   override async onApplicationBootstrap() {
-    this._logger.log('Initializing rules');
+    this._logger.log("Initializing rules");
     await this.clearRules();
 
     await this.registerRule(SemesterRule);
@@ -28,7 +28,7 @@ export class EncounterValidationService extends ValidationService<
     await this.registerRule(ExceptionRule);
     await this.registerRule(LocationRule, { activated: false });
 
-    this._logger.log('Rules initialized');
+    this._logger.log("Rules initialized");
   }
 
   override async fetchData(args: {
@@ -41,34 +41,34 @@ export class EncounterValidationService extends ValidationService<
   }): Promise<EncounterValidationData> {
     // get encounters for the team
     const encounter = await EncounterCompetition.findByPk(args.encounterId, {
-      attributes: ['id', 'date', 'drawId', 'locationId', 'homeTeamId', 'awayTeamId'],
-      order: [['date', 'DESC']],
+      attributes: ["id", "date", "drawId", "locationId", "homeTeamId", "awayTeamId"],
+      order: [["date", "DESC"]],
       include: [
         {
-          association: 'home',
-          attributes: ['id', 'clubId'],
+          association: "home",
+          attributes: ["id", "clubId"],
         },
         {
-          association: 'away',
-          attributes: ['id', 'clubId'],
+          association: "away",
+          attributes: ["id", "clubId"],
         },
       ],
     });
 
     if (!encounter) {
-      throw new Error('Encounter not found');
+      throw new Error("Encounter not found");
     }
 
     const draw = await encounter.getDrawCompetition({
-      attributes: ['id', 'name', 'subeventId'],
+      attributes: ["id", "name", "subeventId"],
       include: [
         {
-          association: 'subEventCompetition',
-          attributes: ['id', 'name', 'eventId'],
+          association: "subEventCompetition",
+          attributes: ["id", "name", "eventId"],
           include: [
             {
-              association: 'eventCompetition',
-              attributes: ['id', 'name', 'infoEvents'],
+              association: "eventCompetition",
+              attributes: ["id", "name", "infoEvents"],
             },
           ],
         },
@@ -76,8 +76,8 @@ export class EncounterValidationService extends ValidationService<
     });
 
     const encounters = await draw.getEncounterCompetitions({
-      attributes: ['id', 'date', 'drawId', 'locationId', 'homeTeamId', 'awayTeamId'],
-      order: [['date', 'DESC']],
+      attributes: ["id", "date", "drawId", "locationId", "homeTeamId", "awayTeamId"],
+      order: [["date", "DESC"]],
       where: {
         // filter only on the teams currently changing
         [Op.or]: [
@@ -97,12 +97,12 @@ export class EncounterValidationService extends ValidationService<
       },
       include: [
         {
-          association: 'home',
-          attributes: ['id', 'clubId'],
+          association: "home",
+          attributes: ["id", "clubId"],
         },
         {
-          association: 'away',
-          attributes: ['id', 'clubId'],
+          association: "away",
+          attributes: ["id", "clubId"],
         },
       ],
     });
@@ -125,13 +125,13 @@ export class EncounterValidationService extends ValidationService<
     }
 
     const locations = await Location.findAll({
-      attributes: ['id', 'name'],
+      attributes: ["id", "name"],
       where: {
         id: locationIds,
       },
       include: [
         {
-          association: 'availabilities',
+          association: "availabilities",
           where: {
             season: season,
           },
@@ -167,7 +167,7 @@ export class EncounterValidationService extends ValidationService<
         locationId: string;
       }[];
     },
-    runFor?: { playerId?: string; teamId?: string; clubId?: string },
+    runFor?: { playerId?: string; teamId?: string; clubId?: string }
   ) {
     const data = await super.validate(args, runFor);
 

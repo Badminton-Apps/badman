@@ -5,23 +5,23 @@ import {
   TeamMembershipType,
   getSeason,
   LevelType,
-} from '@badman/utils';
-import { ClubBuilder } from './clubBuilder';
-import { EventCompetitionBuilder } from './eventCompetitionBuilder';
-import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
-import { EncounterCompetitionBuilder } from './eventCompetitionEncounterBuilder';
-import { EventCompetitionEntryBuilder } from './eventCompetitionEntryBuilder';
-import { SubEventCompetitionBuilder } from './eventCompetitionSubEventBuilder';
-import { PlayerBuilder } from './playerBuilder';
-import { RankingPlaceBuilder } from './rankingPlaceBuilder';
-import { SystemBuilder } from './systemBuilder';
-import { SystemGroupBuilder } from './systemGroupBuilder';
-import { TeamBuilder } from './teamBuilder';
-import { Logger } from '@nestjs/common';
+} from "@badman/utils";
+import { ClubBuilder } from "./clubBuilder";
+import { EventCompetitionBuilder } from "./eventCompetitionBuilder";
+import { DrawCompetitionBuilder } from "./eventCompetitionDrawBuilder";
+import { EncounterCompetitionBuilder } from "./eventCompetitionEncounterBuilder";
+import { EventCompetitionEntryBuilder } from "./eventCompetitionEntryBuilder";
+import { SubEventCompetitionBuilder } from "./eventCompetitionSubEventBuilder";
+import { PlayerBuilder } from "./playerBuilder";
+import { RankingPlaceBuilder } from "./rankingPlaceBuilder";
+import { SystemBuilder } from "./systemBuilder";
+import { SystemGroupBuilder } from "./systemGroupBuilder";
+import { TeamBuilder } from "./teamBuilder";
+import { Logger } from "@nestjs/common";
 
 export async function loadTest() {
   const logger = new Logger(`Testing data`);
-  logger.log('Loading test data');
+  logger.log("Loading test data");
 
   const season = getSeason();
   logger.debug(`Current season: ${season}`);
@@ -38,7 +38,7 @@ export async function loadTest() {
     club1.f.player666,
     club1.f.player777,
     club1.m.player888,
-    club1.m.player999,
+    club1.m.player999
   );
   addEntry(
     club1.teamM,
@@ -47,7 +47,7 @@ export async function loadTest() {
     club1.m.player666,
     club1.m.player777,
     club1.m.player888,
-    club1.m.player999,
+    club1.m.player999
   );
   addEntry(
     club1.teamF,
@@ -56,7 +56,7 @@ export async function loadTest() {
     club1.f.player555,
     club1.f.player666,
     club1.f.player777,
-    club1.f.player888,
+    club1.f.player888
   );
 
   addEntry(
@@ -66,7 +66,7 @@ export async function loadTest() {
     club2.f.player666,
     club2.f.player777,
     club2.m.player888,
-    club2.m.player999,
+    club2.m.player999
   );
   addEntry(
     club2.teamM,
@@ -75,7 +75,7 @@ export async function loadTest() {
     club2.m.player666,
     club2.m.player777,
     club2.m.player888,
-    club2.m.player999,
+    club2.m.player999
   );
   addEntry(
     club2.teamF,
@@ -84,19 +84,19 @@ export async function loadTest() {
     club2.f.player555,
     club2.f.player666,
     club2.f.player777,
-    club2.f.player888,
+    club2.f.player888
   );
 
   try {
-    logger.log('Building test data');
-    logger.debug('Building ranking system');
+    logger.log("Building test data");
+    logger.debug("Building ranking system");
     await system.Build();
-    logger.debug('Building event');
+    logger.debug("Building event");
     await event.Build();
 
-    logger.debug('loading club 1');
+    logger.debug("loading club 1");
     await club1.club.Build();
-    logger.debug('loading club 2');
+    logger.debug("loading club 2");
     await club2.club.Build();
 
     // Didn't find any easy way to do this via builder pattern
@@ -112,10 +112,10 @@ export async function loadTest() {
     encounter3.setHome(await club1.teamF.Build());
     encounter3.setAway(await club2.teamF.Build());
 
-    logger.log('Done building test data');
+    logger.log("Done building test data");
   } catch (error) {
     console.error(error);
-    throw new Error('Loading test data failed');
+    throw new Error("Loading test data failed");
   }
 }
 
@@ -124,7 +124,7 @@ function addRankingSystem() {
   const system = SystemBuilder.Create(RankingSystems.BVL, 12, 75, 50)
     .AsPrimary()
     .WithMaxDiffLevels(2)
-    .WithName('Ranking System')
+    .WithName("Ranking System")
     .WithGroup(group);
 
   return system;
@@ -135,11 +135,11 @@ function addEncounters(season: number) {
   const encounterM = EncounterCompetitionBuilder.Create().WithDate(new Date(`${season}-10-15`));
   const encounterF = EncounterCompetitionBuilder.Create().WithDate(new Date(`${season}-10-15`));
 
-  const drawMx = DrawCompetitionBuilder.Create().WithName('Test draw MX');
-  const drawM = DrawCompetitionBuilder.Create().WithName('Test draw M');
-  const drawF = DrawCompetitionBuilder.Create().WithName('Test draw F');
+  const drawMx = DrawCompetitionBuilder.Create().WithName("Test draw MX");
+  const drawM = DrawCompetitionBuilder.Create().WithName("Test draw M");
+  const drawF = DrawCompetitionBuilder.Create().WithName("Test draw F");
 
-  const subEventMX = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX, 'Test SubEvent')
+  const subEventMX = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX, "Test SubEvent")
     .WithIndex(53, 70)
     .WitnMaxLevel(6);
 
@@ -153,8 +153,8 @@ function addEncounters(season: number) {
 
   const event = EventCompetitionBuilder.Create(LevelType.PROV, true, season, {
     amount: 4,
-    unit: 'months',
-  }).WithName('Test Event');
+    unit: "months",
+  }).WithName("Test Event");
 
   event.WithSubEvent(subEventMX);
   event.WithSubEvent(subEventM);
@@ -193,125 +193,125 @@ function addClub(
   system: SystemBuilder,
   season: number,
   clubId?: string,
-  teamId?: string,
+  teamId?: string
 ) {
   const player111F = PlayerBuilder.Create()
-    .WithName('F 1-1-1', name)
+    .WithName("F 1-1-1", name)
     .WithCompetitionStatus(false)
-    .WithGender('F')
+    .WithGender("F")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(1, 1, 1)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
 
   const player555F = PlayerBuilder.Create()
-    .WithName('F 5-5-5', name)
+    .WithName("F 5-5-5", name)
     .WithCompetitionStatus(false)
-    .WithGender('F')
+    .WithGender("F")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(5, 5, 5)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
   const player666F = PlayerBuilder.Create()
-    .WithName('F 6-6-6', name)
+    .WithName("F 6-6-6", name)
     .WithCompetitionStatus(true)
-    .WithGender('F')
+    .WithGender("F")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(6, 6, 6)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
   const player777F = PlayerBuilder.Create()
-    .WithName('F 7-7-7', name)
+    .WithName("F 7-7-7", name)
     .WithCompetitionStatus(true)
-    .WithGender('F')
+    .WithGender("F")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(7, 7, 7)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
   const player888F = PlayerBuilder.Create()
-    .WithName('F 8-8-8', name)
+    .WithName("F 8-8-8", name)
     .WithCompetitionStatus(true)
-    .WithGender('F')
+    .WithGender("F")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(8, 8, 8)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
 
   const player666M = PlayerBuilder.Create()
-    .WithName('M 6-6-6', name)
+    .WithName("M 6-6-6", name)
     .WithCompetitionStatus(true)
-    .WithGender('M')
+    .WithGender("M")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(6, 6, 6)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
 
   const player777M = PlayerBuilder.Create()
-    .WithName('M 7-7-7', name)
+    .WithName("M 7-7-7", name)
     .WithCompetitionStatus(true)
-    .WithGender('M')
+    .WithGender("M")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(7, 7, 7)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
 
   const player888M = PlayerBuilder.Create()
-    .WithName('M 8-8-8', name)
+    .WithName("M 8-8-8", name)
     .WithCompetitionStatus(true)
-    .WithGender('M')
+    .WithGender("M")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(8, 8, 8)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
   const player999M = PlayerBuilder.Create()
-    .WithName('M 9-9-9', name)
+    .WithName("M 9-9-9", name)
     .WithCompetitionStatus(true)
-    .WithGender('M')
+    .WithGender("M")
     .WithRanking(
       RankingPlaceBuilder.Create()
         .WithUpdatePossible(true)
         .ForSystem(system)
         .WithRanking(9, 9, 9)
-        .WithDate(new Date(`${season}-05-09`)),
+        .WithDate(new Date(`${season}-05-09`))
     );
   const teamMx = TeamBuilder.Create(SubEventTypeEnum.MX, teamId)
-    .WithName('team 1G')
+    .WithName("team 1G")
     .WithSeason(season)
     .WithTeamNumber(1);
   const teamM = TeamBuilder.Create(SubEventTypeEnum.M, teamId)
-    .WithName('team 1H')
+    .WithName("team 1H")
     .WithSeason(season)
     .WithTeamNumber(1);
   const teamF = TeamBuilder.Create(SubEventTypeEnum.F, teamId)
-    .WithName('team 1D')
+    .WithName("team 1D")
     .WithSeason(season)
     .WithTeamNumber(1);
 
-  const club = ClubBuilder.Create('Test Club', clubId)
+  const club = ClubBuilder.Create("Test Club", clubId)
     .WithName(name)
     .WithTeamName(name)
     .WithTeam(
@@ -320,14 +320,14 @@ function addClub(
         .WithPlayer(player888M, TeamMembershipType.REGULAR)
         .WithPlayer(player999M, TeamMembershipType.REGULAR)
         .WithPlayer(player666F, TeamMembershipType.REGULAR)
-        .WithPlayer(player111F, TeamMembershipType.REGULAR),
+        .WithPlayer(player111F, TeamMembershipType.REGULAR)
     )
     .WithTeam(
       teamM
         .WithPlayer(player666M, TeamMembershipType.REGULAR)
         .WithPlayer(player777M, TeamMembershipType.REGULAR)
         .WithPlayer(player888M, TeamMembershipType.REGULAR)
-        .WithPlayer(player999M, TeamMembershipType.REGULAR),
+        .WithPlayer(player999M, TeamMembershipType.REGULAR)
     )
     .WithTeam(
       teamF
@@ -335,7 +335,7 @@ function addClub(
         .WithPlayer(player555F, TeamMembershipType.REGULAR)
         .WithPlayer(player666F, TeamMembershipType.REGULAR)
         .WithPlayer(player777F, TeamMembershipType.REGULAR)
-        .WithPlayer(player888F, TeamMembershipType.REGULAR),
+        .WithPlayer(player888F, TeamMembershipType.REGULAR)
     );
 
   return {
@@ -367,16 +367,16 @@ function addEntry(
   player666F: PlayerBuilder,
   player777F: PlayerBuilder,
   player888M: PlayerBuilder,
-  player999M: PlayerBuilder,
+  player999M: PlayerBuilder
 ) {
   team.WithEntry(
-    EventCompetitionEntryBuilder.Create('competition')
+    EventCompetitionEntryBuilder.Create("competition")
       .ForDraw(draw)
       .ForSubEvent(subEvent)
       .WithBasePlayer(player666F, 6, 6, 6)
       .WithBasePlayer(player777F, 7, 7, 7)
       .WithBasePlayer(player888M, 8, 8, 8)
       .WithBasePlayer(player999M, 9, 9, 9)
-      .WithBaseIndex(60),
+      .WithBaseIndex(60)
   );
 }

@@ -20,7 +20,7 @@
   <div class="actions">
     <div class="row">
       <mat-form-field>
-        <mat-label>{{ 'all.pickers.select-team' | translate }}</mat-label>
+        <mat-label>{{ "all.pickers.select-team" | translate }}</mat-label>
         <mtx-select
           [items]="teams()"
           bindLabel="name"
@@ -34,50 +34,50 @@
       <mat-slide-toggle
         [checked]="service.state.filterChangedRequest()"
         (change)="this.toggleOnlyChanged($event)"
-        >{{ 'all.club.encounters.change-date' | translate }}
+        >{{ "all.club.encounters.change-date" | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle
         [checked]="service.state.filterHomeGames()"
         (change)="this.toggleHomeGames($event)"
-        >{{ 'all.club.encounters.home-games' | translate }}
+        >{{ "all.club.encounters.home-games" | translate }}
       </mat-slide-toggle>
 
       <mat-form-field class="open-requests">
-        <mat-label>{{ 'all.club.encounters.open-requests.title' | translate }}</mat-label>
+        <mat-label>{{ "all.club.encounters.open-requests.title" | translate }}</mat-label>
         <mtx-select
           [ngModel]="service.state.filterOpenRequests()"
           (change)="this.filterOpenRequests($event)"
         >
           <mtx-option [value]="'all'">{{
-            'all.club.encounters.open-requests.all' | translate
+            "all.club.encounters.open-requests.all" | translate
           }}</mtx-option>
           <mtx-option [value]="'openRequests'">{{
-            'all.club.encounters.open-requests.open-requests' | translate
+            "all.club.encounters.open-requests.open-requests" | translate
           }}</mtx-option>
           <mtx-option [value]="'noRequests'">{{
-            'all.club.encounters.open-requests.no-requests' | translate
+            "all.club.encounters.open-requests.no-requests" | translate
           }}</mtx-option>
         </mtx-select>
       </mat-form-field>
 
       <!-- dropdown for valid games, invalid, all -->
       <mat-form-field>
-        <mat-label>{{ 'all.club.encounters.validation.title' | translate }}</mat-label>
+        <mat-label>{{ "all.club.encounters.validation.title" | translate }}</mat-label>
         <mtx-select
           [ngModel]="service.state.filterValidGames()"
           (change)="this.filterValidGames($event)"
         >
           <mtx-option [value]="'all'">{{
-            'all.club.encounters.validation.all' | translate
+            "all.club.encounters.validation.all" | translate
           }}</mtx-option>
           <mtx-option [value]="'valid'">{{
-            'all.club.encounters.validation.valid' | translate
+            "all.club.encounters.validation.valid" | translate
           }}</mtx-option>
-           <mtx-option [value]="'potential'">{{
-            'all.club.encounters.validation.potential' | translate
+          <mtx-option [value]="'potential'">{{
+            "all.club.encounters.validation.potential" | translate
           }}</mtx-option>
           <mtx-option [value]="'invalid'">{{
-            'all.club.encounters.validation.invalid' | translate
+            "all.club.encounters.validation.invalid" | translate
           }}</mtx-option>
         </mtx-select>
       </mat-form-field>

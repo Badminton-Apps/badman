@@ -1,15 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnChanges, OnInit, SimpleChanges, inject, input } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
-import { RouterModule } from '@angular/router';
-import { Team } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
-import { LoadingBlockComponent } from '../../loading-block';
-import { UpcommingGamesService } from './upcomming-games.service';
+import { CommonModule } from "@angular/common";
+import { Component, OnChanges, OnInit, SimpleChanges, inject, input } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatListModule } from "@angular/material/list";
+import { RouterModule } from "@angular/router";
+import { Team } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MomentModule } from "ngx-moment";
+import { LoadingBlockComponent } from "../../loading-block";
+import { UpcommingGamesService } from "./upcomming-games.service";
 @Component({
-  selector: 'badman-upcoming-games',
+  selector: "badman-upcoming-games",
   imports: [
     CommonModule,
     MatListModule,
@@ -19,8 +19,8 @@ import { UpcommingGamesService } from './upcomming-games.service';
     RouterModule,
     LoadingBlockComponent,
   ],
-  templateUrl: './upcoming-games.component.html',
-  styleUrls: ['./upcoming-games.component.scss'],
+  templateUrl: "./upcoming-games.component.html",
+  styleUrls: ["./upcoming-games.component.scss"],
 })
 export class UpcomingGamesComponent implements OnInit, OnChanges {
   upcommingGames = inject(UpcommingGamesService);
@@ -34,19 +34,19 @@ export class UpcomingGamesComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
-      !changes['clubid']?.previousValue &&
-      !changes['teamId']?.previousValue &&
-      !changes['teams']?.previousValue
+      !changes["clubid"]?.previousValue &&
+      !changes["teamId"]?.previousValue &&
+      !changes["teams"]?.previousValue
     ) {
       return;
     }
 
     // Reset the list when the id changes
     if (
-      changes['clubid']?.currentValue !== changes['clubid']?.previousValue ||
-      changes['teamId']?.currentValue !== changes['teamId']?.previousValue ||
-      JSON.stringify(changes['teams']?.currentValue) !==
-        JSON.stringify(changes['teams']?.previousValue)
+      changes["clubid"]?.currentValue !== changes["clubid"]?.previousValue ||
+      changes["teamId"]?.currentValue !== changes["teamId"]?.previousValue ||
+      JSON.stringify(changes["teams"]?.currentValue) !==
+        JSON.stringify(changes["teams"]?.previousValue)
     ) {
       this._setIds();
     }
@@ -60,11 +60,11 @@ export class UpcomingGamesComponent implements OnInit, OnChanges {
     }
 
     if (this.teams() instanceof Array) {
-      teamids.push(...(this.teams() as Team[]).map((t) => t.id ?? ''));
+      teamids.push(...(this.teams() as Team[]).map((t) => t.id ?? ""));
     }
     this.upcommingGames.filter.setValue({
       teamIds: teamids,
-      clubId: this.clubId() ?? '',
+      clubId: this.clubId() ?? "",
     });
   }
 

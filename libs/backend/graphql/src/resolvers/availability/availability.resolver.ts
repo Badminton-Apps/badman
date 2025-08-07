@@ -1,4 +1,4 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   Availability,
   AvailabilityNewInput,
@@ -7,11 +7,11 @@ import {
   ExceptionType,
   Location,
   Player,
-} from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
+} from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../utils";
 
 @Resolver(() => Availability)
 export class AvailabilitysResolver {
@@ -20,13 +20,13 @@ export class AvailabilitysResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Availability)
-  async availability(@Args('id', { type: () => ID }) id: string): Promise<Availability | null> {
+  async availability(@Args("id", { type: () => ID }) id: string): Promise<Availability | null> {
     return Availability.findByPk(id);
   }
 
   @Query(() => [Availability])
   async availabilities(
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<{ count: number; rows: Availability[] }> {
     return Availability.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
@@ -54,8 +54,8 @@ export class AvailabilitysResolver {
 
   @Mutation(() => Availability)
   async createAvailability(
-    @Args('data') newAvailibilityData: AvailabilityNewInput,
-    @User() user: Player,
+    @Args("data") newAvailibilityData: AvailabilityNewInput,
+    @User() user: Player
   ): Promise<Availability> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -67,7 +67,7 @@ export class AvailabilitysResolver {
         throw new NotFoundException(`${Location.name}: ${newAvailibilityData.locationId}`);
       }
 
-      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club']))) {
+      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, "edit-any:club"]))) {
         throw new UnauthorizedException(`You do not have permission to change the availiblies`);
       }
 
@@ -76,7 +76,7 @@ export class AvailabilitysResolver {
       await transaction.commit();
       return dbAvailability;
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }
@@ -84,8 +84,8 @@ export class AvailabilitysResolver {
 
   @Mutation(() => Availability)
   async updateAvailability(
-    @Args('data') updateAvailibilityData: AvailabilityUpdateInput,
-    @User() user: Player,
+    @Args("data") updateAvailibilityData: AvailabilityUpdateInput,
+    @User() user: Player
   ): Promise<Availability> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -106,7 +106,7 @@ export class AvailabilitysResolver {
       if (
         !(await user.hasAnyPermission([
           `${dbAvailability.location?.clubId}_edit:location`,
-          'edit-any:club',
+          "edit-any:club",
         ]))
       ) {
         throw new UnauthorizedException(`You do not have permission to change the availiblies`);
@@ -125,13 +125,13 @@ export class AvailabilitysResolver {
 
       await dbAvailability.update(
         { ...dbAvailability.toJSON(), ...updateAvailibilityData },
-        { transaction },
+        { transaction }
       );
 
       await transaction.commit();
       return dbAvailability;
     } catch (e) {
-      this.logger.warn('rollback', e);
+      this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
     }

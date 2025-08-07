@@ -1,45 +1,45 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 import {
   EventCompetition,
   EventEntry,
   Player,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
+} from "@badman/backend-database";
 import {
   EnrollmentInput,
   EnrollmentOutput,
   EnrollmentValidationService,
-} from '@badman/backend-enrollment';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
+} from "@badman/backend-enrollment";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
 
 @Resolver(() => EnrollmentOutput)
 export class EnrollmentResolver {
   private readonly logger = new Logger(EnrollmentResolver.name);
   constructor(
     private enrollmentService: EnrollmentValidationService,
-    private _sequelize: Sequelize,
+    private _sequelize: Sequelize
   ) {}
 
   @Query(() => EnrollmentOutput, {
     description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
   })
   async enrollmentValidation(
-    @Args('enrollment') enrollment: EnrollmentInput,
+    @Args("enrollment") enrollment: EnrollmentInput
   ): Promise<EnrollmentOutput> {
     return this.enrollmentService.fetchAndValidate(
       enrollment,
-      EnrollmentValidationService.defaultValidators(),
+      EnrollmentValidationService.defaultValidators()
     );
   }
 
   @Mutation(() => Boolean)
   async createEnrollment(
     @User() user: Player,
-    @Args('teamId') teamId: string,
-    @Args('subEventId') subEventId: string,
+    @Args("teamId") teamId: string,
+    @Args("subEventId") subEventId: string
   ) {
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
       throw new UnauthorizedException(`You do not have permission to add a competition`);

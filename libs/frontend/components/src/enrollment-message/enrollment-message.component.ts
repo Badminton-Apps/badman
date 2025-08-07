@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, input } from '@angular/core';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, inject, input } from "@angular/core";
 import {
   Club,
   EventCompetition,
@@ -7,16 +7,16 @@ import {
   SubEventCompetition,
   Team,
   ValidationMessage,
-} from '@badman/frontend-models';
-import { TranslateService } from '@ngx-translate/core';
-import { Observable, combineLatest, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+} from "@badman/frontend-models";
+import { TranslateService } from "@ngx-translate/core";
+import { Observable, combineLatest, of } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 
 @Component({
-  selector: 'badman-enrollment-message',
+  selector: "badman-enrollment-message",
   imports: [CommonModule],
-  templateUrl: './enrollment-message.component.html',
-  styleUrls: ['./enrollment-message.component.scss'],
+  templateUrl: "./enrollment-message.component.html",
+  styleUrls: ["./enrollment-message.component.scss"],
 })
 export class EnrollmentMessageComponent implements OnInit {
   private translate = inject(TranslateService);
@@ -30,7 +30,7 @@ export class EnrollmentMessageComponent implements OnInit {
     this.translatedMessage$ = this._getParams().pipe(
       switchMap((params) => {
         return this.translate.get(`${this.validation()?.message}`, params);
-      }),
+      })
     );
   }
 
@@ -51,7 +51,7 @@ export class EnrollmentMessageComponent implements OnInit {
         } = {};
 
         if (gender) {
-          params['gender'] = gender;
+          params["gender"] = gender;
         }
 
         return {
@@ -64,35 +64,35 @@ export class EnrollmentMessageComponent implements OnInit {
           ...event,
           ...counts,
         };
-      }),
+      })
     );
   }
 
   private _getIndex() {
-    const teamIndex = this.validation()?.params?.['teamIndex'] as string;
-    const baseIndex = this.validation()?.params?.['baseIndex'] as string;
-    const minIndex = this.validation()?.params?.['minIndex'] as string;
-    const maxIndex = this.validation()?.params?.['maxIndex'] as string;
+    const teamIndex = this.validation()?.params?.["teamIndex"] as string;
+    const baseIndex = this.validation()?.params?.["baseIndex"] as string;
+    const minIndex = this.validation()?.params?.["minIndex"] as string;
+    const maxIndex = this.validation()?.params?.["maxIndex"] as string;
 
     return of({ teamIndex, minIndex, maxIndex, baseIndex });
   }
 
   private _getClub() {
-    const club = this.validation()?.params?.['club'] as Partial<Club>;
-    const activeClub = this.validation()?.params?.['activeClub'] as Partial<Club>;
+    const club = this.validation()?.params?.["club"] as Partial<Club>;
+    const activeClub = this.validation()?.params?.["activeClub"] as Partial<Club>;
 
     return of({ club, activeClub });
   }
 
   private _getTeam() {
-    const team = this.validation()?.params?.['team'] as Partial<Team>;
+    const team = this.validation()?.params?.["team"] as Partial<Team>;
 
     return of({ team });
   }
 
   private _getCounts() {
-    const maleCount = this.validation()?.params?.['maleCount'] as number;
-    const femaleCount = this.validation()?.params?.['femaleCount'] as number;
+    const maleCount = this.validation()?.params?.["maleCount"] as number;
+    const femaleCount = this.validation()?.params?.["femaleCount"] as number;
 
     return of({ maleCount, femaleCount });
   }
@@ -102,21 +102,21 @@ export class EnrollmentMessageComponent implements OnInit {
       [key: string]: unknown;
     } = {};
 
-    if (this.validation()?.params?.['minLevel']) {
-      const minLevel = this.validation()?.params?.['minLevel'];
-      params['minLevel'] = minLevel;
+    if (this.validation()?.params?.["minLevel"]) {
+      const minLevel = this.validation()?.params?.["minLevel"];
+      params["minLevel"] = minLevel;
     }
-    if (this.validation()?.params?.['rankingType']) {
-      const rankingType = this.validation()?.params?.['rankingType'];
-      params['rankingType'] = this.translate.instant(`all.ranking.${rankingType}`).toLowerCase();
+    if (this.validation()?.params?.["rankingType"]) {
+      const rankingType = this.validation()?.params?.["rankingType"];
+      params["rankingType"] = this.translate.instant(`all.ranking.${rankingType}`).toLowerCase();
     }
 
     return of(params);
   }
 
   private _getEvent() {
-    const event = this.validation()?.params?.['event'] as Partial<EventCompetition>;
-    const subEvent = this.validation()?.params?.['subEvent'] as Partial<SubEventCompetition>;
+    const event = this.validation()?.params?.["event"] as Partial<EventCompetition>;
+    const subEvent = this.validation()?.params?.["subEvent"] as Partial<SubEventCompetition>;
 
     return of({ event, subEvent });
   }
@@ -126,8 +126,8 @@ export class EnrollmentMessageComponent implements OnInit {
       [key: string]: unknown;
     } = {};
 
-    if (this.validation()?.params?.['player']) {
-      let player = this.validation()?.params?.['player'] as Partial<Player>;
+    if (this.validation()?.params?.["player"]) {
+      let player = this.validation()?.params?.["player"] as Partial<Player>;
 
       if (player.gender) {
         player = {
@@ -136,14 +136,14 @@ export class EnrollmentMessageComponent implements OnInit {
         } as Player;
       }
 
-      params['player'] = player;
+      params["player"] = player;
     }
 
     return of(params);
   }
 
   private _getRequiredGender() {
-    const gender = this.validation()?.params?.['gender'] as string;
+    const gender = this.validation()?.params?.["gender"] as string;
     if (!gender) return of(undefined);
 
     return of(this._getGender(gender));
@@ -152,10 +152,10 @@ export class EnrollmentMessageComponent implements OnInit {
   private _getGender(gender: string) {
     let genderTranslated: string;
     switch (gender) {
-      case 'F':
+      case "F":
         genderTranslated = this.translate.instant(`all.gender.female`);
         break;
-      case 'M':
+      case "M":
         genderTranslated = this.translate.instant(`all.gender.male`);
         break;
       default:
@@ -163,6 +163,6 @@ export class EnrollmentMessageComponent implements OnInit {
         break;
     }
 
-    return genderTranslated.toLocaleLowerCase() as 'F' | 'M';
+    return genderTranslated.toLocaleLowerCase() as "F" | "M";
   }
 }

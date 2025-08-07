@@ -1,13 +1,13 @@
-import { CronJob, RankingSystem } from '@badman/backend-database';
-import { RankingQueue, Ranking, SyncQueue, UpdateRankingJob } from '@badman/backend-queue';
-import { ConfigType, getRankingPeriods } from '@badman/utils';
-import { InjectQueue } from '@nestjs/bull';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { SchedulerRegistry } from '@nestjs/schedule';
-import { Queue } from 'bull';
-import { CronJob as Job } from 'cron';
-import moment from 'moment';
+import { CronJob, RankingSystem } from "@badman/backend-database";
+import { RankingQueue, Ranking, SyncQueue, UpdateRankingJob } from "@badman/backend-queue";
+import { ConfigType, getRankingPeriods } from "@badman/utils";
+import { InjectQueue } from "@nestjs/bull";
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { SchedulerRegistry } from "@nestjs/schedule";
+import { Queue } from "bull";
+import { CronJob as Job } from "cron";
+import moment from "moment";
 
 @Injectable()
 export class CronService implements OnModuleInit {
@@ -17,11 +17,11 @@ export class CronService implements OnModuleInit {
     @InjectQueue(SyncQueue) private readonly syncQ: Queue,
     @InjectQueue(RankingQueue) private readonly rankQ: Queue,
     private readonly schedulerRegistry: SchedulerRegistry,
-    readonly configSerive: ConfigService<ConfigType>,
+    readonly configSerive: ConfigService<ConfigType>
   ) {}
 
   async onModuleInit() {
-    this.logger.verbose('Scheduling crons');
+    this.logger.verbose("Scheduling crons");
 
     this._deleteAllJobs();
 
@@ -34,7 +34,7 @@ export class CronService implements OnModuleInit {
   async queueCrons() {
     const syncJobs = await CronJob.findAll({
       where: {
-        type: 'sync',
+        type: "sync",
         active: true,
       },
     });
@@ -47,7 +47,7 @@ export class CronService implements OnModuleInit {
   async queueSystems() {
     const rankingJobs = await CronJob.findAll({
       where: {
-        type: 'ranking',
+        type: "ranking",
         active: true,
       },
     });
@@ -75,7 +75,7 @@ export class CronService implements OnModuleInit {
       try {
         next = value.nextDates(1);
       } catch (e) {
-        next = 'error: next fire date is in the past!';
+        next = "error: next fire date is in the past!";
       }
       this.logger.debug(`job: ${key} -> next: ${next}`);
     });
@@ -105,7 +105,7 @@ export class CronService implements OnModuleInit {
         const queue = this._getQueue(job.meta.queueName);
 
         // if the job is already running, don't queue it again
-        const runningJobs = await queue.getJobs(['active', 'waiting']);
+        const runningJobs = await queue.getJobs(["active", "waiting"]);
         const running = runningJobs.find((j) => j?.name === job.meta?.jobName);
         if (running) {
           this.logger.verbose(`Job ${job.name} already running`);
@@ -117,7 +117,7 @@ export class CronService implements OnModuleInit {
           removeOnComplete: 5,
         });
       },
-      timeZone: 'Europe/Brussels',
+      timeZone: "Europe/Brussels",
     });
 
     this.schedulerRegistry.addCronJob(job.name, j);
@@ -133,7 +133,7 @@ export class CronService implements OnModuleInit {
     for (const system of systems) {
       const jobName = `Update Ranking ${system.name}`;
       const job = jobs.find((j) => j.name === jobName);
-      const cronTime = '0 14 * * *';
+      const cronTime = "0 14 * * *";
 
       if (job) {
         job.cronTime = cronTime;
@@ -144,13 +144,13 @@ export class CronService implements OnModuleInit {
       const [newJob] = await CronJob.findOrCreate({
         where: {
           name: jobName,
-          type: 'ranking',
+          type: "ranking",
         },
         defaults: {
           name: jobName,
           cronTime,
           running: false,
-          type: 'ranking',
+          type: "ranking",
           active: system.calculateUpdates,
           meta: {
             queueName: RankingQueue,
@@ -173,7 +173,7 @@ export class CronService implements OnModuleInit {
     this.logger.verbose(`Removing old jobs`);
 
     // remove jobs starting with name 'Update Ranking" for systems that are not in the database anymore
-    const jobNames = jobs.map((j) => j.name).filter((j) => j.startsWith('Update Ranking'));
+    const jobNames = jobs.map((j) => j.name).filter((j) => j.startsWith("Update Ranking"));
     const systemNames = systems.map((s) => `Update Ranking ${s.name}`);
 
     const toRemove = jobNames.filter((j) => !systemNames.includes(j));
@@ -203,7 +203,7 @@ export class CronService implements OnModuleInit {
         }
 
         const system = await RankingSystem.findByPk(
-          (job.meta.arguments as unknown as { systemId: string }).systemId,
+          (job.meta.arguments as unknown as { systemId: string }).systemId
         );
 
         if (!system) {
@@ -215,18 +215,18 @@ export class CronService implements OnModuleInit {
             system,
             // calculation is always updated when the update is run, so we can check since the last update
             moment(system.calculationLastUpdate),
-            moment(),
+            moment()
           ).length > 0;
 
         if (!hasUpdates) {
-          this.logger.verbose(`No updates for ${job.name} on ${moment().format('llll')}`);
+          this.logger.verbose(`No updates for ${job.name} on ${moment().format("llll")}`);
           return;
         }
 
         const queue = this._getQueue(job.meta.queueName);
 
         // if the job is already running, don't queue it again
-        const runningJobs = await queue.getJobs(['active', 'waiting']);
+        const runningJobs = await queue.getJobs(["active", "waiting"]);
         const running = runningJobs.find((j) => j.name === job.meta?.jobName);
         if (running) {
           this.logger.verbose(`Job ${job.name} already running`);
@@ -238,7 +238,7 @@ export class CronService implements OnModuleInit {
           removeOnComplete: 5,
         });
       },
-      timeZone: 'Europe/Brussels',
+      timeZone: "Europe/Brussels",
     });
 
     this.schedulerRegistry.addCronJob(job.name, j);

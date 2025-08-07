@@ -1,5 +1,5 @@
 export enum Ranking {
-  UpdateRanking = 'UpdateRanking',
+  UpdateRanking = "UpdateRanking",
 }
 
 export interface UpdateRankingJob {

@@ -1,3 +1,3 @@
-export * from './seo.module';
+export * from "./seo.module";
 
-export * from './services/seo.service';
+export * from "./services/seo.service";

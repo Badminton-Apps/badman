@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
-const { query } = require('express');
+const { query } = require("express");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,39 +9,39 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.addColumn(
         {
-          tableName: 'Teams',
-          schema: 'public',
+          tableName: "Teams",
+          schema: "public",
         },
-        'preferredTime2',
+        "preferredTime2",
         {
           type: sequelize.DataTypes.TIME,
           allowNull: true,
         },
-        { transaction: t },
+        { transaction: t }
       );
       await queryInterface.addColumn(
         {
-          tableName: 'Teams',
-          schema: 'public',
+          tableName: "Teams",
+          schema: "public",
         },
-        'preferredDay2',
+        "preferredDay2",
         {
           type: sequelize.DataTypes.ENUM(
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday',
-            'saturday',
-            'sunday',
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
           ),
           allowNull: true,
         },
-        { transaction: t },
+        { transaction: t }
       );
       try {
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -52,26 +52,26 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'Teams',
-            schema: 'public',
+            tableName: "Teams",
+            schema: "public",
           },
-          'preferredTime2',
-          { transaction: t },
+          "preferredTime2",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
           {
-            tableName: 'Teams',
-            schema: 'public',
+            tableName: "Teams",
+            schema: "public",
           },
-          'preferredDay2',
-          { transaction: t },
+          "preferredDay2",
+          { transaction: t }
         );
 
         await queryInterface.sequelize.query(`DROP TYPE "enum_public_Teams_preferredDay2";`, {
           transaction: t,
         });
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

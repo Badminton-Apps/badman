@@ -5,10 +5,10 @@ main();
 
 function main() {
   // check if the args contains a app and store it in a variable]
-  const app = args.find((arg) => arg.includes('--app='))?.replace('--app=', '');
+  const app = args.find((arg) => arg.includes("--app="))?.replace("--app=", "");
 
   if (!app || app.length === 0) {
-    throw new Error('No app provided');
+    throw new Error("No app provided");
   }
 
   const envKey = `${app.toUpperCase()}_HOOK`;
@@ -22,13 +22,13 @@ function main() {
   const hook = process.env[envKey];
 
   if (!hook) {
-    throw new Error('No hook provided');
+    throw new Error("No hook provided");
   }
 
   fetch(hook, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 }

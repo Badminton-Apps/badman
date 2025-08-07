@@ -1,19 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingBlockComponent } from '@badman/frontend-components';
-import { EncounterCompetition } from '@badman/frontend-models';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { combineLatest, of } from 'rxjs';
+import { CommonModule } from "@angular/common";
+import { ChangeDetectorRef, Component, inject, input, OnInit } from "@angular/core";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatSelectModule } from "@angular/material/select";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { ActivatedRoute, Router } from "@angular/router";
+import { LoadingBlockComponent } from "@badman/frontend-components";
+import { EncounterCompetition } from "@badman/frontend-models";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { combineLatest, of } from "rxjs";
 import {
   distinctUntilChanged,
   map,
@@ -21,12 +21,12 @@ import {
   startWith,
   switchMap,
   takeUntil,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 @Component({
-  selector: 'badman-list-encounters',
-  templateUrl: './list-encounters.component.html',
-  styleUrls: ['./list-encounters.component.scss'],
+  selector: "badman-list-encounters",
+  templateUrl: "./list-encounters.component.html",
+  styleUrls: ["./list-encounters.component.scss"],
   imports: [
     CommonModule,
     TranslatePipe,
@@ -50,13 +50,13 @@ export class ListEncountersComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly destroy$ = injectDestroy();
 
-  controlName = input('encounter');
+  controlName = input("encounter");
 
   group = input.required<FormGroup>();
 
-  dependsOn = input('team');
+  dependsOn = input("team");
 
-  updateOn = input(['team', 'season']);
+  updateOn = input(["team", "season"]);
 
   updateUrl = input(false);
 
@@ -87,7 +87,7 @@ export class ListEncountersComponent implements OnInit {
 
     if (!this.internalControl && this.group()) {
       this.internalControl = this.group().get(
-        this.controlName(),
+        this.controlName()
       ) as FormControl<EncounterCompetition>;
     }
 
@@ -111,7 +111,7 @@ export class ListEncountersComponent implements OnInit {
       combineLatest([
         depends.valueChanges.pipe(startWith(null)),
         ...updateOnControls.map((control) =>
-          control?.valueChanges?.pipe(startWith(() => control?.value)),
+          control?.valueChanges?.pipe(startWith(() => control?.value))
         ),
       ])
         .pipe(
@@ -131,7 +131,7 @@ export class ListEncountersComponent implements OnInit {
             } else {
               return of([]);
             }
-          }),
+          })
         )
         .subscribe((encounters) => {
           // the encoutners should be devided in 2 years,
@@ -141,15 +141,19 @@ export class ListEncountersComponent implements OnInit {
           // get the lowest year
           const lowestYear = Math.min(...encounters.map((r) => r.date?.getFullYear() ?? 0));
 
-          this.encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear).map((r) => ({
-            ...r,
-            info: this.getInfo(r),
-          }));
+          this.encountersSem1 = encounters
+            .filter((r) => r.date?.getFullYear() === lowestYear)
+            .map((r) => ({
+              ...r,
+              info: this.getInfo(r),
+            }));
 
-          this.encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear).map((r) => ({
-            ...r,
-            info: this.getInfo(r),
-          }));
+          this.encountersSem2 = encounters
+            .filter((r) => r.date?.getFullYear() !== lowestYear)
+            .map((r) => ({
+              ...r,
+              info: this.getInfo(r),
+            }));
 
           const params = this.activatedRoute.snapshot.queryParams;
 
@@ -162,7 +166,7 @@ export class ListEncountersComponent implements OnInit {
               this.router.navigate([], {
                 relativeTo: this.activatedRoute,
                 queryParams: { encounter: undefined },
-                queryParamsHandling: 'merge',
+                queryParamsHandling: "merge",
               });
             }
           }
@@ -173,36 +177,36 @@ export class ListEncountersComponent implements OnInit {
   }
 
   getInfo(encounter: EncounterCompetition) {
-    let icon = 'check';
-    let infoClass = 'success';
+    let icon = "check";
+    let infoClass = "success";
     let tooltip = [];
 
     // if not accepted, show info icon
     if (!(encounter.encounterChange?.accepted ?? true)) {
-      icon = 'info';
-      infoClass = 'warning';
-      tooltip.push('all.competition.change-encounter.errors.not-accepted');
+      icon = "info";
+      infoClass = "warning";
+      tooltip.push("all.competition.change-encounter.errors.not-accepted");
     }
 
     if ((encounter.validateEncounter?.warnings?.length ?? 0) > 0) {
-      infoClass = 'warning';
-      if (icon == 'check') {
-        icon = 'warning';
+      infoClass = "warning";
+      if (icon == "check") {
+        icon = "warning";
       }
       tooltip = tooltip.concat(encounter.validateEncounter?.warnings.map((e) => e.message) ?? []);
     }
 
     if ((encounter.validateEncounter?.errors?.length ?? 0) > 0) {
-      if (icon == 'check') {
-        icon = 'error';
+      if (icon == "check") {
+        icon = "error";
       }
-      infoClass = 'error';
+      infoClass = "error";
 
       tooltip = tooltip.concat(encounter.validateEncounter?.errors.map((e) => e.message) ?? []);
     }
 
     // translate all tooltips and join them with a \n\r
-    const tooltips = tooltip.map((t) => this.translate.instant(t)).join('\n\r\n\r');
+    const tooltips = tooltip.map((t) => this.translate.instant(t)).join("\n\r\n\r");
 
     return {
       icon,
@@ -213,7 +217,7 @@ export class ListEncountersComponent implements OnInit {
 
   selectEncounter(event: EncounterCompetition) {
     if (!event?.id) {
-      throw new Error('No id');
+      throw new Error("No id");
     }
     this.internalControl.setValue(event);
     this._updateUrl(event.id);
@@ -232,7 +236,7 @@ export class ListEncountersComponent implements OnInit {
         .createUrlTree([], {
           relativeTo: this.activatedRoute,
           queryParams,
-          queryParamsHandling: 'merge',
+          queryParamsHandling: "merge",
         })
         .toString();
 
@@ -243,7 +247,7 @@ export class ListEncountersComponent implements OnInit {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams,
-        queryParamsHandling: 'merge',
+        queryParamsHandling: "merge",
       });
     }
   }
@@ -332,31 +336,31 @@ export class ListEncountersComponent implements OnInit {
           // For easy viewing in network tab
           order: [
             {
-              field: 'date',
-              direction: 'desc',
+              field: "date",
+              direction: "desc",
             },
           ],
         },
       })
       .pipe(
         map((result) =>
-          result.data.encounterCompetitions?.rows?.map((r) => new EncounterCompetition(r)),
+          result.data.encounterCompetitions?.rows?.map((r) => new EncounterCompetition(r))
         ),
         map((e) =>
           e.slice().sort((a, b) => {
             if (!a.date || !b.date) {
-              throw new Error('No date');
+              throw new Error("No date");
             }
 
             return a.date.getTime() - b.date.getTime();
-          }),
+          })
         ),
         map((e) =>
           e?.map((r) => {
             r.showingForHomeTeam = r.home?.id === teamId;
             return r;
-          }),
-        ),
+          })
+        )
       );
   }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,55 +8,53 @@ module.exports = {
       try {
         await queryInterface.renameColumn(
           {
-            schema: 'event',
-            tableName: 'EventCompetitions',
+            schema: "event",
+            tableName: "EventCompetitions",
           },
-          'changeCloseDate',
-          'changeCloseDatePeriod1',
-          { transaction: t },
+          "changeCloseDate",
+          "changeCloseDatePeriod1",
+          { transaction: t }
         );
-        
+
         await queryInterface.renameColumn(
           {
-            schema: 'event',
-            tableName: 'EventCompetitions',
+            schema: "event",
+            tableName: "EventCompetitions",
           },
-          'changeCloseRequestDate',
-          'changeCloseRequestDatePeriod1',
-          { transaction: t },
+          "changeCloseRequestDate",
+          "changeCloseRequestDatePeriod1",
+          { transaction: t }
         );
-        
+
         await queryInterface.addColumn(
           {
-            schema: 'event',
-            tableName: 'EventCompetitions',
+            schema: "event",
+            tableName: "EventCompetitions",
           },
-          'changeCloseDatePeriod2',
+          "changeCloseDatePeriod2",
           {
             type: Sequelize.DATE,
             defaultValue: null,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            schema: 'event',
-            tableName: 'EventCompetitions',
+            schema: "event",
+            tableName: "EventCompetitions",
           },
-          'changeCloseRequestDatePeriod2',
+          "changeCloseRequestDatePeriod2",
           {
             type: Sequelize.DATE,
             defaultValue: null,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
-
-      
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -67,43 +65,43 @@ module.exports = {
       try {
         await queryInterface.renameColumn(
           {
-            schema: 'event',
-            tableName: 'EventCompetitions',
+            schema: "event",
+            tableName: "EventCompetitions",
           },
-          'changeCloseDatePeriod1',
-          'changeCloseDate',
-          { transaction: t },
+          "changeCloseDatePeriod1",
+          "changeCloseDate",
+          { transaction: t }
         );
 
         await queryInterface.renameColumn(
           {
-            schema: 'event',
-            tableName: 'EventCompetitions',
+            schema: "event",
+            tableName: "EventCompetitions",
           },
-          'changeCloseRequestDatePeriod1',
-          'changeCloseRequestDate',
-          { transaction: t },
+          "changeCloseRequestDatePeriod1",
+          "changeCloseRequestDate",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            schema: 'event',
-            tableName: 'EventCompetitions',
+            schema: "event",
+            tableName: "EventCompetitions",
           },
-          'changeCloseDatePeriod2',
-          { transaction: t },
+          "changeCloseDatePeriod2",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            schema: 'event',
-            tableName: 'EventCompetitions',
+            schema: "event",
+            tableName: "EventCompetitions",
           },
-          'changeCloseRequestDatePeriod2',
-          { transaction: t },
+          "changeCloseRequestDatePeriod2",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

@@ -1,6 +1,6 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from "@nestjs/graphql";
 
-@ObjectType({ description: 'A AssemblyType' })
+@ObjectType({ description: "A AssemblyType" })
 export class RuleMetaType {
   @Field(() => [String])
   activatedForUsers?: string[];

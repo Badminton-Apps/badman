@@ -1,11 +1,11 @@
-import { EncounterCompetition } from '@badman/backend-database';
+import { EncounterCompetition } from "@badman/backend-database";
 import {
   EncounterValidationOutput,
   EncounterValidationData,
   EncounterValidationError,
-} from '../../../models';
-import { Rule } from './_rule.base';
-import { Logger } from '@nestjs/common';
+} from "../../../models";
+import { Rule } from "./_rule.base";
+import { Logger } from "@nestjs/common";
 
 export type SemesterRuleParams = {
   encounterId: string;
@@ -21,7 +21,7 @@ export type SemesterRuleParams = {
  * Checks if encounters against the same team are in a different semester
  */
 export class SemesterRule extends Rule {
-  static override readonly description = 'all.rules.change-encounter.semseter';
+  static override readonly description = "all.rules.change-encounter.semseter";
 
   private readonly logger = new Logger(SemesterRule.name);
 
@@ -34,16 +34,16 @@ export class SemesterRule extends Rule {
 
     const error = this.findEncounterInSemseter(
       semseter1 ? encountersSem1 : encountersSem2,
-      encounter,
+      encounter
     );
 
     if (error) {
       errors.push({
-        message: 'all.competition.change-encounter.errors.same-semester',
+        message: "all.competition.change-encounter.errors.same-semester",
         params: {
           encounterId: encounter.id,
           teamName: encounter.home?.name || encounter.away?.name,
-          semester: semseter1 ? 'first' : 'second',
+          semester: semseter1 ? "first" : "second",
           season: season,
         },
       });
@@ -56,12 +56,12 @@ export class SemesterRule extends Rule {
 
         if (suggestedSemester1 != semseter1) {
           warnings.push({
-            message: 'all.competition.change-encounter.errors.same-semester-date',
+            message: "all.competition.change-encounter.errors.same-semester-date",
             params: {
               encounterId: encounter.id,
               date: suggestedDate.date,
-              currentSemester: semseter1 ? 'first' : 'second',
-              suggestedSemester: suggestedSemester1 ? 'first' : 'second',
+              currentSemester: semseter1 ? "first" : "second",
+              suggestedSemester: suggestedSemester1 ? "first" : "second",
               teamName: encounter.home?.name || encounter.away?.name,
             },
           });
@@ -81,7 +81,7 @@ export class SemesterRule extends Rule {
     }
 
     const sameEncounter = encounters.find(
-      (e) => e.homeTeamId === encounter.awayTeamId && e.awayTeamId === encounter.homeTeamId,
+      (e) => e.homeTeamId === encounter.awayTeamId && e.awayTeamId === encounter.homeTeamId
     );
 
     return (sameEncounter && sameEncounter.id !== encounter.id) || false;

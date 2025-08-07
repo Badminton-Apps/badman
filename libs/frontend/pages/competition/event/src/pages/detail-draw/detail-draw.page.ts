@@ -1,30 +1,29 @@
-
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { RouterModule } from "@angular/router";
 import {
   HasClaimComponent,
   PageHeaderComponent,
   RecentGamesComponent,
   StandingComponent,
   UpcomingGamesComponent,
-} from '@badman/frontend-components';
-import { DrawCompetition, EventCompetition, Team } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { injectRouteData } from 'ngxtension/inject-route-data';
-import { take, takeUntil } from 'rxjs/operators';
-import { BreadcrumbService } from 'xng-breadcrumb';
+} from "@badman/frontend-components";
+import { DrawCompetition, EventCompetition, Team } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { injectRouteData } from "ngxtension/inject-route-data";
+import { take, takeUntil } from "rxjs/operators";
+import { BreadcrumbService } from "xng-breadcrumb";
 
 @Component({
-  selector: 'badman-detail-draw-competition',
-  templateUrl: './detail-draw.page.html',
-  styleUrls: ['./detail-draw.page.scss'],
+  selector: "badman-detail-draw-competition",
+  templateUrl: "./detail-draw.page.html",
+  styleUrls: ["./detail-draw.page.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterModule,
@@ -37,8 +36,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
-    MatMenuModule
-],
+    MatMenuModule,
+  ],
 })
 export class DetailDrawCompetitionComponent {
   private readonly destroy$ = injectDestroy();
@@ -47,18 +46,18 @@ export class DetailDrawCompetitionComponent {
   private readonly seoService = inject(SeoService);
   private readonly apollo = inject(Apollo);
 
-  drawCompetition = injectRouteData<DrawCompetition>('drawCompetition');
-  eventCompetition = injectRouteData<EventCompetition>('eventCompetition');
+  drawCompetition = injectRouteData<DrawCompetition>("drawCompetition");
+  eventCompetition = injectRouteData<EventCompetition>("eventCompetition");
   teams = computed(() => this.drawCompetition()?.eventEntries?.map((e) => e.team as Team));
 
   constructor() {
-    const compTitle = 'all.competition.title';
+    const compTitle = "all.competition.title";
 
     this.translateService
       .get([compTitle])
       .pipe(takeUntil(this.destroy$))
       .subscribe((translations) => {
-        this.breadcrumbService.set('competitwion', translations[compTitle]);
+        this.breadcrumbService.set("competitwion", translations[compTitle]);
       });
 
     effect(() => {
@@ -66,11 +65,11 @@ export class DetailDrawCompetitionComponent {
       this.seoService.update({
         title: drawCompetitionName,
         description: `Competition draw ${drawCompetitionName}`,
-        type: 'website',
-        keywords: ['event', 'competition', 'badminton'],
+        type: "website",
+        keywords: ["event", "competition", "badminton"],
       });
-      this.breadcrumbService.set('@eventCompetition', this.eventCompetition()?.name ?? '');
-      this.breadcrumbService.set('@drawCompetition', drawCompetitionName);
+      this.breadcrumbService.set("@eventCompetition", this.eventCompetition()?.name ?? "");
+      this.breadcrumbService.set("@drawCompetition", drawCompetitionName);
     });
   }
 

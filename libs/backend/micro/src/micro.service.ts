@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { RmqContext, RmqOptions, Transport } from '@nestjs/microservices';
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { RmqContext, RmqOptions, Transport } from "@nestjs/microservices";
 
 @Injectable()
 export class MicroService {
@@ -11,7 +11,7 @@ export class MicroService {
     return {
       transport: Transport.RMQ,
       options: {
-        urls: [this.configService.get<string>('RABBIT_MQ_URI')!],
+        urls: [this.configService.get<string>("RABBIT_MQ_URI")!],
         queue: this.configService.get<string>(`RABBIT_MQ_${queue}_QUEUE`),
         noAck,
         persistent: true,

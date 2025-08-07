@@ -1,5 +1,5 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { BuildOptions } from 'sequelize';
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
+import { BuildOptions } from "sequelize";
 import {
   Column,
   DataType,
@@ -10,15 +10,15 @@ import {
   Table,
   TableOptions,
   Unique,
-} from 'sequelize-typescript';
-import { EventImportType } from '@badman/utils';
+} from "sequelize-typescript";
+import { EventImportType } from "@badman/utils";
 
 @Table({
   timestamps: true,
-  tableName: 'Files',
-  schema: 'import',
+  tableName: "Files",
+  schema: "import",
 } as TableOptions)
-@ObjectType({ description: 'A ImporterFile' })
+@ObjectType({ description: "A ImporterFile" })
 export class ImporterFile extends Model {
   constructor(values?: Partial<ImporterFile>, options?: BuildOptions) {
     super(values, options);
@@ -37,17 +37,17 @@ export class ImporterFile extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   name?: string;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('COMPETITION_CP', 'COMPETITION_XML', 'TOURNAMENT'))
+  @Column(DataType.ENUM("COMPETITION_CP", "COMPETITION_XML", "TOURNAMENT"))
   type?: EventImportType;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   firstDay?: Date;

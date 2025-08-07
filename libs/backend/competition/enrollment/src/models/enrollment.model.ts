@@ -5,7 +5,7 @@ import {
   RankingSystem,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
+} from "@badman/backend-database";
 import {
   Field,
   ID,
@@ -15,8 +15,8 @@ import {
   OmitType,
   PartialType,
   PickType,
-} from '@nestjs/graphql';
-import { EnrollmentValidationError } from './error.model';
+} from "@nestjs/graphql";
+import { EnrollmentValidationError } from "./error.model";
 
 @InputType()
 export class EnrollmentInput {
@@ -33,7 +33,7 @@ export class EnrollmentInput {
   season?: number;
 
   @Field(() => [ID], { nullable: true })
-  loans?: string[]; 
+  loans?: string[];
 
   @Field(() => [ID], { nullable: true })
   transfers?: string[];
@@ -41,8 +41,8 @@ export class EnrollmentInput {
 
 @InputType()
 export class EnrollmentInputTeam extends PartialType(
-  PickType(Team, ['id', 'name', 'type', 'link', 'teamNumber'] as const),
-  InputType,
+  PickType(Team, ["id", "name", "type", "link", "teamNumber"] as const),
+  InputType
 ) {
   @Field(() => [ID], { nullable: true })
   basePlayers?: string[];
@@ -68,8 +68,8 @@ export class EnrollmentOutput {
 
 @ObjectType()
 export class PlayerRankingType extends PartialType(
-  OmitType(PlayerUpdateInput, ['sub', 'permissions'] as const),
-  ObjectType,
+  OmitType(PlayerUpdateInput, ["sub", "permissions"] as const),
+  ObjectType
 ) {
   @Field(() => Number)
   single?: number;
@@ -111,10 +111,10 @@ export class TeamEnrollmentOutput {
   @Field(() => Int, { nullable: true })
   maxBaseIndex?: number;
 
-  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
+  @Field(() => [EnrollmentValidationError], { nullable: "itemsAndList" })
   errors?: EnrollmentValidationError[];
 
-  @Field(() => [EnrollmentValidationError], { nullable: 'itemsAndList' })
+  @Field(() => [EnrollmentValidationError], { nullable: "itemsAndList" })
   warnings?: EnrollmentValidationError[];
 
   @Field(() => Boolean)

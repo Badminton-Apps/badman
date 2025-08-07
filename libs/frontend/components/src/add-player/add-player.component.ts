@@ -1,14 +1,13 @@
-
-import { Component, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
-import { Player } from '@badman/frontend-models';
-import { PlayerSearchComponent } from '../player-search';
+import { Component, inject } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MatButtonModule } from "@angular/material/button";
+import { Player } from "@badman/frontend-models";
+import { PlayerSearchComponent } from "../player-search";
 
 @Component({
-  templateUrl: './add-player.component.html',
-  styleUrls: ['./add-player.component.scss'],
+  templateUrl: "./add-player.component.html",
+  styleUrls: ["./add-player.component.scss"],
   imports: [TranslatePipe, MatDialogModule, MatButtonModule, PlayerSearchComponent],
 })
 export class AddPlayerComponent {

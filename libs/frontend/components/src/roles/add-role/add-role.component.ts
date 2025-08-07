@@ -1,17 +1,16 @@
-
-import { Component, inject, input, TemplateRef, ViewChild, output } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { Apollo, gql } from 'apollo-angular';
-import { iif, of, switchMap } from 'rxjs';
+import { Component, inject, input, TemplateRef, ViewChild, output } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { Apollo, gql } from "apollo-angular";
+import { iif, of, switchMap } from "rxjs";
 
 @Component({
-    selector: 'badman-add-role',
-    imports: [MatDialogModule, MatButtonModule, MatIconModule, MatInputModule],
-    templateUrl: './add-role.component.html',
-    styleUrls: ['./add-role.component.scss']
+  selector: "badman-add-role",
+  imports: [MatDialogModule, MatButtonModule, MatIconModule, MatInputModule],
+  templateUrl: "./add-role.component.html",
+  styleUrls: ["./add-role.component.scss"],
 })
 export class AddRoleComponent {
   private apollo = inject(Apollo);
@@ -21,14 +20,14 @@ export class AddRoleComponent {
 
   linkType = input.required<string>();
 
-  @ViewChild('newRoleTemplate')
+  @ViewChild("newRoleTemplate")
   newRoleTemplateRef?: TemplateRef<HTMLElement>;
 
   whenRoleAdded = output();
 
   async addRole() {
     if (!this.newRoleTemplateRef) {
-      throw new Error('No newRoleTemplateRef');
+      throw new Error("No newRoleTemplateRef");
     }
 
     this.dialog
@@ -55,9 +54,9 @@ export class AddRoleComponent {
                 },
               },
             }),
-            of(null),
-          ),
-        ),
+            of(null)
+          )
+        )
       )
       .subscribe(() => {
         this.whenRoleAdded.emit();

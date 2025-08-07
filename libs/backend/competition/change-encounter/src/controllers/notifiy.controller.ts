@@ -1,9 +1,9 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 
-import { EncounterChange, Player, Team } from '@badman/backend-database';
-import { Controller, Get, Logger, Query, UnauthorizedException } from '@nestjs/common';
-import { EncounterValidationOutput } from '../models';
-import { EncounterValidationService } from '../services';
+import { EncounterChange, Player, Team } from "@badman/backend-database";
+import { Controller, Get, Logger, Query, UnauthorizedException } from "@nestjs/common";
+import { EncounterValidationOutput } from "../models";
+import { EncounterValidationService } from "../services";
 
 @Controller()
 export class ChangeEncounterController {
@@ -11,14 +11,14 @@ export class ChangeEncounterController {
 
   constructor(
     // private mailingService: MailingService,
-    private encounterValidationService: EncounterValidationService,
+    private encounterValidationService: EncounterValidationService
   ) {}
 
-  @Get('notify-openrequests')
+  @Get("notify-openrequests")
   async notifyOpenRequset(@User() user: Player, @Query() query: { season: string }) {
     // only allow this for me
-    if (user.slug != 'glenn-latomme') {
-      throw new UnauthorizedException('You do not have permission to do this');
+    if (user.slug != "glenn-latomme") {
+      throw new UnauthorizedException("You do not have permission to do this");
     }
 
     let count = await Team.count({
@@ -35,8 +35,8 @@ export class ChangeEncounterController {
         },
         limit: 50,
         offset: count,
-        order: [['id', 'ASC']],
-        include: [{ model: Player, as: 'captain' }],
+        order: [["id", "ASC"]],
+        include: [{ model: Player, as: "captain" }],
       });
 
       for (const team of teams) {
@@ -52,7 +52,7 @@ export class ChangeEncounterController {
           validation.push(
             await this.encounterValidationService.validate({
               encounterId: encounter.id,
-            }),
+            })
           );
         }
 
@@ -60,7 +60,7 @@ export class ChangeEncounterController {
           validation.push(
             await this.encounterValidationService.validate({
               encounterId: encounter.id,
-            }),
+            })
           );
         }
 

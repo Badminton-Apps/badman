@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,16 +9,16 @@ module.exports = {
         // set all current accepted to true
         await queryInterface.sequelize.query(
           `UPDATE "event"."EncounterChanges" SET "accepted" = true`,
-          { transaction: t },
+          { transaction: t }
         );
 
         // set default column value to false
         await queryInterface.changeColumn(
           {
-            tableName: 'EncounterChanges',
-            schema: 'event',
+            tableName: "EncounterChanges",
+            schema: "event",
           },
-          'accepted',
+          "accepted",
           {
             type: sequelize.DataTypes.BOOLEAN,
             allowNull: false,
@@ -26,10 +26,10 @@ module.exports = {
           },
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -40,20 +40,20 @@ module.exports = {
       try {
         await queryInterface.changeColumn(
           {
-            tableName: 'EncounterChanges',
-            schema: 'event',
+            tableName: "EncounterChanges",
+            schema: "event",
           },
-          'accepted',
+          "accepted",
           {
             type: sequelize.DataTypes.BOOLEAN,
             allowNull: true,
           },
           {
             transaction: t,
-          },
+          }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

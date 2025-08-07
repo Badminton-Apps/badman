@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { EventCompetition } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import saveAs from 'file-saver';
-import { map, take } from 'rxjs/operators';
-import { EXCEL_CONFIG } from '../excel.module';
-import { IExcelConfig } from '../interfaces';
-import * as XLSX from 'xlsx';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { EventCompetition } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import saveAs from "file-saver";
+import { map, take } from "rxjs/operators";
+import { EXCEL_CONFIG } from "../excel.module";
+import { IExcelConfig } from "../interfaces";
+import * as XLSX from "xlsx";
 
 const EVENT_TEAMS_EXPORT_QUERY = gql`
   query EventCompetitionTeamsExport($id: ID!) {
@@ -128,7 +128,7 @@ interface TeamExportData {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ExcelService {
   private httpClient = inject(HttpClient);
@@ -137,7 +137,7 @@ export class ExcelService {
 
   getBaseplayersEnrollment(event: EventCompetition) {
     if (!event?.id) {
-      throw new Error('Event is not defined');
+      throw new Error("Event is not defined");
     }
 
     return this.httpClient
@@ -145,17 +145,17 @@ export class ExcelService {
         params: {
           eventId: event.id,
         },
-        responseType: 'blob',
+        responseType: "blob",
       })
       .pipe(
         take(1),
-        map((result) => saveAs(result, `${event.name}.xlsx`)),
+        map((result) => saveAs(result, `${event.name}.xlsx`))
       );
   }
 
   getTeamsExport(event: EventCompetition) {
     if (!event?.id) {
-      throw new Error('Event is not defined');
+      throw new Error("Event is not defined");
     }
 
     return this.apollo
@@ -164,27 +164,27 @@ export class ExcelService {
       }>({
         query: EVENT_TEAMS_EXPORT_QUERY,
         variables: { id: event.id },
-        fetchPolicy: 'no-cache',
+        fetchPolicy: "no-cache",
       })
       .pipe(
         take(1),
         map((result) => {
           const eventData = result.data.eventCompetition;
-          
+
           // Extract teams data from the event structure
           const teamsData = new Map<string, TeamExportData>();
-          
+
           for (const subEvent of eventData.subEventCompetitions || []) {
             for (const draw of subEvent.drawCompetitions || []) {
               for (const entry of draw.eventEntries || []) {
                 const team = entry.team;
                 if (team && !teamsData.has(team.id)) {
                   teamsData.set(team.id, {
-                    clubId: team.club?.clubId || '',
-                    clubName: team.club?.name || '',
-                    teamName: team.name || '',
-                    preferredDay: team.preferredDay || '',
-                    preferredTime: team.preferredTime || '',
+                    clubId: team.club?.clubId || "",
+                    clubName: team.club?.name || "",
+                    teamName: team.name || "",
+                    preferredDay: team.preferredDay || "",
+                    preferredTime: team.preferredTime || "",
                   });
                 }
               }
@@ -192,16 +192,22 @@ export class ExcelService {
           }
 
           const data = Array.from(teamsData.values());
-          
+
           const excelData = [
-            ['Club ID', 'Clubnaam', 'Ploegnaam', 'Voorkeur speelmoment (dag)', 'Voorkeur speelmoment (tijdstip)'],
-            ...data.map(team => [
+            [
+              "Club ID",
+              "Clubnaam",
+              "Ploegnaam",
+              "Voorkeur speelmoment (dag)",
+              "Voorkeur speelmoment (tijdstip)",
+            ],
+            ...data.map((team) => [
               team.clubId,
               team.clubName,
               team.teamName,
-              team.preferredDay || '',
-              team.preferredTime || ''
-            ])
+              team.preferredDay || "",
+              team.preferredTime || "",
+            ]),
           ];
 
           const wb = XLSX.utils.book_new();
@@ -209,28 +215,33 @@ export class ExcelService {
 
           // Autosize columns
           const columnSizes = excelData[0].map((_, columnIndex) =>
-            excelData.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
+            excelData.reduce(
+              (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
+              0
+            )
           );
-          ws['!cols'] = columnSizes.map((width) => ({ width }));
+          ws["!cols"] = columnSizes.map((width) => ({ width }));
 
           // Enable filtering
-          ws['!autofilter'] = {
-            ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref'] as string)),
+          ws["!autofilter"] = {
+            ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws["!ref"] as string)),
           };
 
-          XLSX.utils.book_append_sheet(wb, ws, 'Teams');
+          XLSX.utils.book_append_sheet(wb, ws, "Teams");
 
-          const buffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
-          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          
+          const buffer = XLSX.write(wb, { type: "array", bookType: "xlsx" });
+          const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+
           saveAs(blob, `${event.name}-teams.xlsx`);
-        }),
+        })
       );
   }
 
   getExceptionsExport(event: EventCompetition) {
     if (!event?.id) {
-      throw new Error('Event is not defined');
+      throw new Error("Event is not defined");
     }
 
     return this.apollo
@@ -239,13 +250,13 @@ export class ExcelService {
       }>({
         query: EVENT_EXCEPTIONS_EXPORT_QUERY,
         variables: { id: event.id },
-        fetchPolicy: 'no-cache',
+        fetchPolicy: "no-cache",
       })
       .pipe(
         take(1),
         map((result) => {
           const eventData = result.data.eventCompetition;
-          
+
           // Extract exceptions data from clubs/locations/availabilities structure
           const exceptionsData: Array<{
             clubId: string;
@@ -254,7 +265,7 @@ export class ExcelService {
             date: string;
             courts: number;
           }> = [];
-          
+
           for (const subEvent of eventData.subEventCompetitions || []) {
             for (const draw of subEvent.drawCompetitions || []) {
               for (const entry of draw.eventEntries || []) {
@@ -269,9 +280,9 @@ export class ExcelService {
                             const dates = this.generateDateRange(exception.start, exception.end);
                             for (const date of dates) {
                               exceptionsData.push({
-                                clubId: team.club.clubId || '',
-                                clubName: team.club.name || '',
-                                locationName: location.name || '',
+                                clubId: team.club.clubId || "",
+                                clubName: team.club.name || "",
+                                locationName: location.name || "",
                                 date: this.formatDateToBelgianTime(date),
                                 courts: exception.courts || 0,
                               });
@@ -287,23 +298,26 @@ export class ExcelService {
           }
 
           // Remove duplicates based on clubId, locationName, and date
-          const uniqueExceptions = exceptionsData.filter((exception, index, self) =>
-            index === self.findIndex(e => 
-              e.clubId === exception.clubId && 
-              e.locationName === exception.locationName && 
-              e.date === exception.date
-            )
+          const uniqueExceptions = exceptionsData.filter(
+            (exception, index, self) =>
+              index ===
+              self.findIndex(
+                (e) =>
+                  e.clubId === exception.clubId &&
+                  e.locationName === exception.locationName &&
+                  e.date === exception.date
+              )
           );
-          
+
           const excelData = [
-            ['Club ID', 'Clubnaam', 'Locatie', 'Datum', 'Velden'],
-            ...uniqueExceptions.map(exception => [
+            ["Club ID", "Clubnaam", "Locatie", "Datum", "Velden"],
+            ...uniqueExceptions.map((exception) => [
               exception.clubId,
               exception.clubName,
               exception.locationName,
               exception.date,
-              exception.courts
-            ])
+              exception.courts,
+            ]),
           ];
 
           const wb = XLSX.utils.book_new();
@@ -311,28 +325,33 @@ export class ExcelService {
 
           // Autosize columns
           const columnSizes = excelData[0].map((_, columnIndex) =>
-            excelData.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
+            excelData.reduce(
+              (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
+              0
+            )
           );
-          ws['!cols'] = columnSizes.map((width) => ({ width }));
+          ws["!cols"] = columnSizes.map((width) => ({ width }));
 
           // Enable filtering
-          ws['!autofilter'] = {
-            ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref'] as string)),
+          ws["!autofilter"] = {
+            ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws["!ref"] as string)),
           };
 
-          XLSX.utils.book_append_sheet(wb, ws, 'Exceptions');
+          XLSX.utils.book_append_sheet(wb, ws, "Exceptions");
 
-          const buffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
-          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          
+          const buffer = XLSX.write(wb, { type: "array", bookType: "xlsx" });
+          const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+
           saveAs(blob, `${event.name}-exceptions.xlsx`);
-        }),
+        })
       );
   }
 
   getLocationsExport(event: EventCompetition) {
     if (!event?.id) {
-      throw new Error('Event is not defined');
+      throw new Error("Event is not defined");
     }
 
     return this.apollo
@@ -341,13 +360,13 @@ export class ExcelService {
       }>({
         query: EVENT_LOCATIONS_EXPORT_QUERY,
         variables: { id: event.id },
-        fetchPolicy: 'no-cache',
+        fetchPolicy: "no-cache",
       })
       .pipe(
         take(1),
         map((result) => {
           const eventData = result.data.eventCompetition;
-          
+
           // Extract locations data from clubs structure
           const locationsData: Array<{
             clubId: string;
@@ -357,7 +376,7 @@ export class ExcelService {
             day: string;
             courts: number;
           }> = [];
-          
+
           for (const subEvent of eventData.subEventCompetitions || []) {
             for (const draw of subEvent.drawCompetitions || []) {
               for (const entry of draw.eventEntries || []) {
@@ -369,19 +388,20 @@ export class ExcelService {
                       location.street,
                       location.streetNumber,
                       location.postalcode,
-                      location.city
+                      location.city,
                     ].filter(Boolean);
-                    const address = addressParts.length > 0 ? addressParts.join(' ') : (location.address || '');
-                    
+                    const address =
+                      addressParts.length > 0 ? addressParts.join(" ") : location.address || "";
+
                     if (location.availabilities) {
                       for (const availability of location.availabilities) {
                         if (availability.days) {
                           for (const day of availability.days) {
                             if (day.day && day.courts) {
                               locationsData.push({
-                                clubId: team.club.clubId || '',
-                                clubName: team.club.name || '',
-                                locationName: location.name || '',
+                                clubId: team.club.clubId || "",
+                                clubName: team.club.name || "",
+                                locationName: location.name || "",
                                 address: address,
                                 day: this.formatDayName(day.day),
                                 courts: day.courts || 0,
@@ -398,24 +418,27 @@ export class ExcelService {
           }
 
           // Remove duplicates based on clubId, locationName, and day
-          const uniqueLocations = locationsData.filter((location, index, self) =>
-            index === self.findIndex(l => 
-              l.clubId === location.clubId && 
-              l.locationName === location.locationName && 
-              l.day === location.day
-            )
+          const uniqueLocations = locationsData.filter(
+            (location, index, self) =>
+              index ===
+              self.findIndex(
+                (l) =>
+                  l.clubId === location.clubId &&
+                  l.locationName === location.locationName &&
+                  l.day === location.day
+              )
           );
-          
+
           const excelData = [
-            ['Club ID', 'Clubnaam', 'Locatie', 'Adres', 'Dag', 'Aantal Velden'],
-            ...uniqueLocations.map(location => [
+            ["Club ID", "Clubnaam", "Locatie", "Adres", "Dag", "Aantal Velden"],
+            ...uniqueLocations.map((location) => [
               location.clubId,
               location.clubName,
               location.locationName,
               location.address,
               location.day,
-              location.courts
-            ])
+              location.courts,
+            ]),
           ];
 
           const wb = XLSX.utils.book_new();
@@ -423,66 +446,74 @@ export class ExcelService {
 
           // Autosize columns
           const columnSizes = excelData[0].map((_, columnIndex) =>
-            excelData.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
+            excelData.reduce(
+              (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
+              0
+            )
           );
-          ws['!cols'] = columnSizes.map((width) => ({ width }));
+          ws["!cols"] = columnSizes.map((width) => ({ width }));
 
           // Enable filtering
-          ws['!autofilter'] = {
-            ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref'] as string)),
+          ws["!autofilter"] = {
+            ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws["!ref"] as string)),
           };
 
-          XLSX.utils.book_append_sheet(wb, ws, 'Locations');
+          XLSX.utils.book_append_sheet(wb, ws, "Locations");
 
-          const buffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
-          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          
+          const buffer = XLSX.write(wb, { type: "array", bookType: "xlsx" });
+          const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+
           saveAs(blob, `${event.name}-locations.xlsx`);
-        }),
+        })
       );
   }
 
   private formatDateToBelgianTime(date: string | Date | undefined): string {
-    if (!date) return '';
-    
+    if (!date) return "";
+
     const dateObj = date instanceof Date ? date : new Date(date);
-    
+
     // Format to Belgian locale (DD/MM/YYYY)
-    return dateObj.toLocaleDateString('nl-BE', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      timeZone: 'Europe/Brussels'
+    return dateObj.toLocaleDateString("nl-BE", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "Europe/Brussels",
     });
   }
 
   private formatDayName(day: string): string {
     const dayMap: { [key: string]: string } = {
-      'monday': 'Maandag',
-      'tuesday': 'Dinsdag',
-      'wednesday': 'Woensdag',
-      'thursday': 'Donderdag',
-      'friday': 'Vrijdag',
-      'saturday': 'Zaterdag',
-      'sunday': 'Zondag'
+      monday: "Maandag",
+      tuesday: "Dinsdag",
+      wednesday: "Woensdag",
+      thursday: "Donderdag",
+      friday: "Vrijdag",
+      saturday: "Zaterdag",
+      sunday: "Zondag",
     };
     return dayMap[day.toLowerCase()] || day;
   }
 
-  private generateDateRange(startDate: string | Date | undefined, endDate: string | Date | undefined): Date[] {
+  private generateDateRange(
+    startDate: string | Date | undefined,
+    endDate: string | Date | undefined
+  ): Date[] {
     if (!startDate) return [];
-    
+
     const start = startDate instanceof Date ? startDate : new Date(startDate);
     const end = endDate ? (endDate instanceof Date ? endDate : new Date(endDate)) : start;
-    
+
     const dates: Date[] = [];
     const currentDate = new Date(start);
-    
+
     while (currentDate <= end) {
       dates.push(new Date(currentDate));
       currentDate.setDate(currentDate.getDate() + 1);
     }
-    
+
     return dates;
   }
 }

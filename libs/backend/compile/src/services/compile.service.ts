@@ -1,22 +1,19 @@
-import { join } from 'path';
+import { join } from "path";
 
-import { Inject, Injectable, Logger, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import consolidate from 'consolidate';
-import juice from 'juice';
-import { Observable, asapScheduler, bindNodeCallback, from, of } from 'rxjs';
-import {
-  mergeMap,
-  take,
-} from 'rxjs/operators';
+import { Inject, Injectable, Logger, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
+import consolidate from "consolidate";
+import juice from "juice";
+import { Observable, asapScheduler, bindNodeCallback, from, of } from "rxjs";
+import { mergeMap, take } from "rxjs/operators";
 
-import { getPage, startBrowserHealthMonitoring } from '@badman/backend-pupeteer';
-import { I18nTranslations } from '@badman/utils';
-import { writeFile } from 'fs/promises';
-import momentTz from 'moment-timezone';
-import { I18nService } from 'nestjs-i18n';
-import { Readable } from 'stream';
-import { COMPILE_OPTIONS_TOKEN } from '../constants';
-import { CompileInterface, CompileModuleOptions, CompileOptions, ViewOptions } from '../interfaces';
+import { getPage, startBrowserHealthMonitoring } from "@badman/backend-pupeteer";
+import { I18nTranslations } from "@badman/utils";
+import { writeFile } from "fs/promises";
+import momentTz from "moment-timezone";
+import { I18nService } from "nestjs-i18n";
+import { Readable } from "stream";
+import { COMPILE_OPTIONS_TOKEN } from "../constants";
+import { CompileInterface, CompileModuleOptions, CompileOptions, ViewOptions } from "../interfaces";
 
 @Injectable()
 export class CompileService implements CompileInterface, OnModuleInit, OnModuleDestroy {
@@ -26,20 +23,22 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
   constructor(
     @Inject(COMPILE_OPTIONS_TOKEN)
     private readonly moduleOptions: CompileModuleOptions,
-    private readonly i18nService: I18nService<I18nTranslations>,
+    private readonly i18nService: I18nService<I18nTranslations>
   ) {}
 
   onModuleInit() {
     // Start browser health monitoring
     this.stopHealthMonitoring = startBrowserHealthMonitoring();
-    this.logger.debug('CompileService initialized - using shared browser management with health monitoring');
+    this.logger.debug(
+      "CompileService initialized - using shared browser management with health monitoring"
+    );
   }
 
   onModuleDestroy() {
     // Clean up health monitoring when service is destroyed
     if (this.stopHealthMonitoring) {
       this.stopHealthMonitoring();
-      this.logger.debug('Browser health monitoring stopped');
+      this.logger.debug("Browser health monitoring stopped");
     }
   }
 
@@ -50,53 +49,53 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
   toReadable(template: string, options?: CompileOptions): Observable<Readable> {
     return this.toHtml(template, options).pipe(
       mergeMap((html: string) => from(this.toPdf(html, options))),
-      mergeMap((pdf: Buffer) => of(Readable.from(pdf))),
+      mergeMap((pdf: Buffer) => of(Readable.from(pdf)))
     );
   }
 
   toBuffer(template: string, options?: CompileOptions): Observable<Buffer> {
     return this.toHtml(template, options).pipe(
-      mergeMap((html: string) => from(this.toPdf(html, options))),
+      mergeMap((html: string) => from(this.toPdf(html, options)))
     );
   }
 
   toHtml(template: string, options?: CompileOptions): Observable<string> {
-    this.logger.debug('Generating html from template');
+    this.logger.debug("Generating html from template");
 
     const path = this.getTemplatePath(template, this.moduleOptions.view);
 
     return this.generateHtmlFromTemplate(path, this.moduleOptions.view, options?.locals).pipe(
       mergeMap((html: string) => of(this.prepareHtmlTemplate(html))),
-      take(1),
+      take(1)
     );
   }
 
   private async toPdf(html: string, options?: CompileOptions): Promise<Buffer> {
-    this.logger.debug('Generating pdf from html');
-    
+    this.logger.debug("Generating pdf from html");
+
     // Use shared browser management
     const page = await getPage();
 
     if (!page) {
-      throw new Error('Page not available');
+      throw new Error("Page not available");
     }
 
-    this.logger.debug('Page created');
+    this.logger.debug("Page created");
 
     /* Wait for the page to load before generating the pdf*/
     await page.setContent(html, {
-      waitUntil: 'networkidle0',
+      waitUntil: "networkidle0",
     });
 
-    this.logger.debug('Page content set');
+    this.logger.debug("Page content set");
 
     /* Wait for the page to load before generating the pdf*/
-    await page.waitForFunction('window.tailwind');
+    await page.waitForFunction("window.tailwind");
 
-    this.logger.debug('Generating pdf');
+    this.logger.debug("Generating pdf");
 
     const pdf = await page.pdf({
-      format: options?.pdf?.format ?? 'A4',
+      format: options?.pdf?.format ?? "A4",
       landscape: options?.pdf?.landscape ?? false,
       printBackground: options?.pdf?.printBackground ?? true,
       scale: options?.pdf?.scale ?? 1,
@@ -105,10 +104,10 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
 
     if ((this.moduleOptions.debug ?? false) === true) {
       // write file in original folder before juice so we can test
-      writeFile(join(this.moduleOptions.view.root, 'generated.pdf'), pdf);
+      writeFile(join(this.moduleOptions.view.root, "generated.pdf"), pdf);
     }
 
-    this.logger.debug('Pdf generated');
+    this.logger.debug("Pdf generated");
 
     await page.close();
 
@@ -116,23 +115,23 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
   }
 
   private getTemplatePath(template: string, { root, extension, engine }: ViewOptions): string {
-    return join(root, 'templates', template, `html.${extension || engine}`);
+    return join(root, "templates", template, `html.${extension || engine}`);
   }
 
   private generateHtmlFromTemplate(
     template: string,
     { engine, engineOptions }: ViewOptions,
-    locals?: unknown,
+    locals?: unknown
   ): Observable<string> {
     const moment = momentTz;
-    moment.tz.setDefault('Europe/Brussels');
-    moment.locale('nl-be');
+    moment.tz.setDefault("Europe/Brussels");
+    moment.locale("nl-be");
 
     const translate = this.i18nService.translate.bind(this.i18nService);
 
-    return bindNodeCallback<[string, ViewOptions['engineOptions'] | undefined], [string]>(
+    return bindNodeCallback<[string, ViewOptions["engineOptions"] | undefined], [string]>(
       consolidate[engine],
-      asapScheduler,
+      asapScheduler
     )(
       template,
       Object.assign(
@@ -141,14 +140,14 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
           translate,
         },
         locals,
-        engineOptions,
-      ),
+        engineOptions
+      )
     );
   }
 
   private prepareHtmlTemplate(html: string): string {
     if ((this.moduleOptions.debug ?? false) === true) {
-      const path = join(this.moduleOptions.view.root, 'un_juiced.html');
+      const path = join(this.moduleOptions.view.root, "un_juiced.html");
       this.logger.debug(`Writing html to file ${path}`);
       // write file in original folder before juice so we can test
       writeFile(path, html);
@@ -158,7 +157,7 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
 
     if ((this.moduleOptions.debug ?? false) === true) {
       // write file in original folder after juice so we can test
-      writeFile(join(this.moduleOptions.view.root, 'juiced.html'), juiced);
+      writeFile(join(this.moduleOptions.view.root, "juiced.html"), juiced);
     }
 
     return juiced;

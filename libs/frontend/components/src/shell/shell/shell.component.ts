@@ -1,15 +1,15 @@
-import { Component, computed, inject, isDevMode, PLATFORM_ID } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { Component, computed, inject, isDevMode, PLATFORM_ID } from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatToolbarModule } from "@angular/material/toolbar";
 
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import {
   ActivationEnd,
   ChildActivationEnd,
@@ -24,23 +24,23 @@ import {
   Router,
   RouterModule,
   Scroll,
-} from '@angular/router';
-import { ServiceWorkerModule, SwUpdate, VersionReadyEvent } from '@angular/service-worker';
-import { ClaimService } from '@badman/frontend-auth';
-import { RankingSystemService } from '@badman/frontend-graphql';
+} from "@angular/router";
+import { ServiceWorkerModule, SwUpdate, VersionReadyEvent } from "@angular/service-worker";
+import { ClaimService } from "@badman/frontend-auth";
+import { RankingSystemService } from "@badman/frontend-graphql";
 import {
   GOOGLEADS_CONFIG_TOKEN,
   GoogleAdsConfiguration,
   VERSION_INFO,
-} from '@badman/frontend-html-injects';
-import { Banner } from '@badman/frontend-models';
-import { DEVICE } from '@badman/frontend-utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { derivedAsync  } from 'ngxtension/derived-async';
-import { filter, map } from 'rxjs/operators';
-import { BreadcrumbComponent, BreadcrumbItemDirective } from 'xng-breadcrumb';
-import { HasClaimComponent } from '../../has-claim';
+} from "@badman/frontend-html-injects";
+import { Banner } from "@badman/frontend-models";
+import { DEVICE } from "@badman/frontend-utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { derivedAsync } from "ngxtension/derived-async";
+import { filter, map } from "rxjs/operators";
+import { BreadcrumbComponent, BreadcrumbItemDirective } from "xng-breadcrumb";
+import { HasClaimComponent } from "../../has-claim";
 import {
   BannerComponent,
   HeaderMenuComponent,
@@ -49,36 +49,36 @@ import {
   SearchBoxComponent,
   ServiceStatusComponent,
   UserShortcutsComponent,
-} from '../components';
+} from "../components";
 @Component({
-    selector: 'badman-shell',
-    imports: [
-        CommonModule,
-        RouterModule,
-        UserShortcutsComponent,
-        HeaderMenuComponent,
-        SearchBoxComponent,
-        BannerComponent,
-        NotificationComponent,
-        LogoComponent,
-        ServiceStatusComponent,
-        ServiceWorkerModule,
-        BreadcrumbComponent,
-        BreadcrumbItemDirective,
-        TranslatePipe,
-        MatSidenavModule,
-        MatSlideToggleModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatListModule,
-        MatButtonModule,
-        MatSnackBarModule,
-        MatProgressBarModule,
-        MatTooltipModule,
-        HasClaimComponent,
-    ],
-    templateUrl: './shell.component.html',
-    styleUrls: ['./shell.component.scss']
+  selector: "badman-shell",
+  imports: [
+    CommonModule,
+    RouterModule,
+    UserShortcutsComponent,
+    HeaderMenuComponent,
+    SearchBoxComponent,
+    BannerComponent,
+    NotificationComponent,
+    LogoComponent,
+    ServiceStatusComponent,
+    ServiceWorkerModule,
+    BreadcrumbComponent,
+    BreadcrumbItemDirective,
+    TranslatePipe,
+    MatSidenavModule,
+    MatSlideToggleModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatListModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    HasClaimComponent,
+  ],
+  templateUrl: "./shell.component.html",
+  styleUrls: ["./shell.component.scss"],
 })
 export class ShellComponent {
   public config = inject<GoogleAdsConfiguration>(GOOGLEADS_CONFIG_TOKEN);
@@ -102,13 +102,13 @@ export class ShellComponent {
 
   banner?: Banner;
 
-  canAnyEnroll = this.auth.hasClaimSignal('enlist-any:team');
-  canViewEnroll = this.auth.hasClaimSignal('*_enlist:team');
+  canAnyEnroll = this.auth.hasClaimSignal("enlist-any:team");
+  canViewEnroll = this.auth.hasClaimSignal("*_enlist:team");
 
-  canAnyChange = this.auth.hasClaimSignal('change-any:encounter');
-  canViewChange = this.auth.hasClaimSignal('*change:encounter');
+  canAnyChange = this.auth.hasClaimSignal("change-any:encounter");
+  canViewChange = this.auth.hasClaimSignal("*change:encounter");
 
-  openEnrollments = derivedAsync (() =>
+  openEnrollments = derivedAsync(() =>
     this.apollo
       .query<{
         eventTournaments: { count: number };
@@ -133,9 +133,9 @@ export class ShellComponent {
         map(
           (events) =>
             (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-            (events?.data?.eventCompetitions?.count ?? 0) != 0,
-        ),
-      ),
+            (events?.data?.eventCompetitions?.count ?? 0) != 0
+        )
+      )
   );
 
   // openChangeEncounter = derivedAsync (() =>
@@ -169,7 +169,7 @@ export class ShellComponent {
   // );
 
   canEnroll = computed(
-    () => this.canAnyEnroll() || (this.canViewEnroll() && this.openEnrollments()),
+    () => this.canAnyEnroll() || (this.canViewEnroll() && this.openEnrollments())
   );
 
   // canChange = computed(
@@ -184,22 +184,22 @@ export class ShellComponent {
       this.config.publisherId,
       this.config.slots.sidebar,
       this.config.enabled,
-      this.config.debug,
+      this.config.debug
     );
 
     if (isPlatformBrowser(this.platformId)) {
       updates.versionUpdates
         .pipe(
-          filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
+          filter((evt): evt is VersionReadyEvent => evt.type === "VERSION_READY"),
           map((evt) => ({
-            type: 'UPDATE_AVAILABLE',
+            type: "UPDATE_AVAILABLE",
             current: evt.currentVersion,
             available: evt.latestVersion,
-          })),
+          }))
         )
         .subscribe(() => {
           snackBar
-            .open(`New version available.`, 'refresh', { duration: 0 })
+            .open(`New version available.`, "refresh", { duration: 0 })
             .onAction()
             .subscribe(() => {
               document.location.reload();

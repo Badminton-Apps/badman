@@ -1,4 +1,4 @@
 export enum ClubMembershipType {
-  NORMAL = 'NORMAL',
-  LOAN = 'LOAN',
+  NORMAL = "NORMAL",
+  LOAN = "LOAN",
 }

@@ -1,10 +1,10 @@
 import {
-    EnrollmentValidationData,
-    EnrollmentValidationError,
-    EnrollmentValidationTeam,
-    RuleResult,
-} from '../../../models';
-import { Rule } from './_rule.base';
+  EnrollmentValidationData,
+  EnrollmentValidationError,
+  EnrollmentValidationTeam,
+  RuleResult,
+} from "../../../models";
+import { Rule } from "./_rule.base";
 
 /**
  * Checks if a player is part of the base of team A and plays in team B as team or backup player
@@ -54,7 +54,7 @@ export class PlayerSubEventRule extends Rule {
 
         // check if any enrollments are for the same subevent but different team
         const enrollmentSameSubEvent = playerInOtherTeam.filter(
-          (en) => en?.subEvent?.id === subEvent.id && en.team?.id !== team.id,
+          (en) => en?.subEvent?.id === subEvent.id && en.team?.id !== team.id
         );
 
         for (const otherTeam of enrollmentSameSubEvent) {

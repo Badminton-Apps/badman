@@ -1,7 +1,7 @@
 @if (this.events() && !loading()) {
   <section class="events">
     <div class="title">
-      <h3>{{ 'all.competition.subevent.title' | translate }}</h3>
+      <h3>{{ "all.competition.subevent.title" | translate }}</h3>
     </div>
     <div class="events-container">
       @for (event of events(); track event) {
@@ -15,9 +15,9 @@
                 event.subEventCompetitions?.length
                   | i18nPlural
                     : {
-                        '=0': 'all.competition.subevent.name.none',
-                        '=1': 'all.competition.subevent.name.singular',
-                        other: 'all.competition.subevent.name.plural',
+                        "=0": "all.competition.subevent.name.none",
+                        "=1": "all.competition.subevent.name.singular",
+                        other: "all.competition.subevent.name.plural",
                       }
                   | translate: { count: event.subEventCompetitions?.length }
               }}
@@ -33,7 +33,7 @@
 }
 @if (loading()) {
   <section class="events">
-    <h3>{{ 'all.club.titles.teams' | translate }}</h3>
+    <h3>{{ "all.club.titles.teams" | translate }}</h3>
     <badman-loading-block [items]="9" height="74px" width="250px" direction="row" />
   </section>
 }

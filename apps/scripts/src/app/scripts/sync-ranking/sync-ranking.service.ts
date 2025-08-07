@@ -1,9 +1,9 @@
-import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { getBrowser, acceptCookies, selectBadmninton } from '@badman/backend-pupeteer';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Browser } from 'puppeteer';
-import { Op } from 'sequelize';
-import { getViaRanking, searchPlayer, getRanking } from './pupeteer';
+import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
+import { getBrowser, acceptCookies, selectBadmninton } from "@badman/backend-pupeteer";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Browser } from "puppeteer";
+import { Op } from "sequelize";
+import { getViaRanking, searchPlayer, getRanking } from "./pupeteer";
 
 @Injectable()
 export class SyncRankingService {
@@ -23,7 +23,7 @@ export class SyncRankingService {
             mix: null,
           },
         ],
-        rankingDate: '2022-09-05T00:00:00.000Z',
+        rankingDate: "2022-09-05T00:00:00.000Z",
       },
     });
 
@@ -50,7 +50,7 @@ export class SyncRankingService {
     });
 
     if (!primary) {
-      throw new NotFoundException('No primary ranking system found');
+      throw new NotFoundException("No primary ranking system found");
     }
 
     if (!player.memberId) {
@@ -64,7 +64,7 @@ export class SyncRankingService {
         systemId: primary.id,
         playerId: player.id,
       },
-      order: [['rankingDate', 'DESC']],
+      order: [["rankingDate", "DESC"]],
     });
 
     if (rankingPlaces.length === 0) {
@@ -82,9 +82,9 @@ export class SyncRankingService {
 
       // Accept cookies
       try {
-        await acceptCookies({ page }, {logger: this.logger});
+        await acceptCookies({ page }, { logger: this.logger });
       } catch (error) {
-        this.logger.error('Error while accepting cookies');
+        this.logger.error("Error while accepting cookies");
       }
       await selectBadmninton({ page });
 
@@ -141,9 +141,9 @@ export class SyncRankingService {
         rankingPlace.double = double;
         rankingPlace.mix = mix;
 
-        rankingPlace.changed('single', true);
-        rankingPlace.changed('double', true);
-        rankingPlace.changed('mix', true);
+        rankingPlace.changed("single", true);
+        rankingPlace.changed("double", true);
+        rankingPlace.changed("mix", true);
 
         await rankingPlace.save();
 

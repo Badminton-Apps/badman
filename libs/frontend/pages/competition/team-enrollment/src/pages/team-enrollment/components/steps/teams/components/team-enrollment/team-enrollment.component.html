@@ -36,7 +36,7 @@
         <div class="exception">
           <button mat-raised-button color="primary" (click)="requestLevelException(exception.id)">
             {{
-              'all.competition.team-enrollment.request-level-exception'
+              "all.competition.team-enrollment.request-level-exception"
                 | translate: { player: exception }
             }}
           </button>
@@ -46,7 +46,7 @@
       <div class="validation-overview">
         @if ((validation()?.errors?.length ?? 0) > 0) {
           <ul class="error-list">
-            @for (error of validation()?.errors; track error.id ) {
+            @for (error of validation()?.errors; track error.id) {
               <li>
                 <badman-enrollment-message [validation]="error"></badman-enrollment-message>
               </li>
@@ -60,7 +60,7 @@
                 <badman-enrollment-message [validation]="warning"></badman-enrollment-message>
 
                 @if (
-                  warning.message === 'all.competition.team-enrollment.warnings.player-min-level'
+                  warning.message === "all.competition.team-enrollment.warnings.player-min-level"
                 ) {
                   <button mat-icon-button (click)="editWarning(warning)">
                     <mat-icon>edit</mat-icon>
@@ -74,7 +74,7 @@
           (validation()?.errors?.length ?? 0) === 0 && (validation()?.warnings?.length ?? 0) === 0
         ) {
           <div class="no-errors">
-            {{ 'all.v1.teamFormation.errors.none' | translate }}
+            {{ "all.v1.teamFormation.errors.none" | translate }}
           </div>
         }
       </div>
@@ -83,13 +83,13 @@
 
   <ng-template #requestException let-data>
     <h2 matDialogTitle>
-      {{ 'all.competition.team-enrollment.players.level-exception.request' | translate }}
+      {{ "all.competition.team-enrollment.players.level-exception.request" | translate }}
     </h2>
     <mat-dialog-content>
       <div class="reason">
         <mat-form-field>
           <mat-label>{{
-            'all.competition.team-enrollment.players.level-exception.reason' | translate
+            "all.competition.team-enrollment.players.level-exception.reason" | translate
           }}</mat-label>
           <textarea matInput #reason [value]="data.player.levelExceptionReason"></textarea>
         </mat-form-field>
@@ -97,10 +97,10 @@
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-raised-button [matDialogClose]="reason" color="primary">
-        {{ 'all.button.save' | translate }}
+        {{ "all.button.save" | translate }}
       </button>
       <button mat-button matDialogClose>
-        {{ 'all.button.cancel' | translate }}
+        {{ "all.button.cancel" | translate }}
       </button>
     </mat-dialog-actions>
   </ng-template>

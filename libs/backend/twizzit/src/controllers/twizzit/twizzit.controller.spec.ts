@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { GameExportService } from '../../services';
-import { TwizzitController } from './twizzit.controller';
+import { Test, TestingModule } from "@nestjs/testing";
+import { GameExportService } from "../../services";
+import { TwizzitController } from "./twizzit.controller";
 
-describe('TwizzitController', () => {
+describe("TwizzitController", () => {
   let controller: TwizzitController;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('TwizzitController', () => {
     controller = module.get<TwizzitController>(TwizzitController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });

@@ -1,6 +1,6 @@
-import { LevelType, UsedRankingTiming } from '@badman/utils';
-import { EventCompetition } from '../models';
-import { SubEventCompetitionBuilder } from './eventCompetitionSubEventBuilder';
+import { LevelType, UsedRankingTiming } from "@badman/utils";
+import { EventCompetition } from "../models";
+import { SubEventCompetitionBuilder } from "./eventCompetitionSubEventBuilder";
 
 export class EventCompetitionBuilder {
   private build = false;
@@ -14,15 +14,15 @@ export class EventCompetitionBuilder {
     official = true,
     season = 2022,
     usedRanking?: UsedRankingTiming,
-    name = 'Test Event',
-    id?: string,
+    name = "Test Event",
+    id?: string
   ) {
     this.event = new EventCompetition({
       id,
       name,
       type,
       official,
-      usedRanking: usedRanking ?? { amount: 0, unit: 'days' },
+      usedRanking: usedRanking ?? { amount: 0, unit: "days" },
       season,
     });
   }
@@ -32,8 +32,8 @@ export class EventCompetitionBuilder {
     official = true,
     season = 2022,
     usedRanking?: UsedRankingTiming,
-    name = 'Test Event',
-    id?: string,
+    name = "Test Event",
+    id?: string
   ): EventCompetitionBuilder {
     return new EventCompetitionBuilder(type, official, season, usedRanking, name, id);
   }

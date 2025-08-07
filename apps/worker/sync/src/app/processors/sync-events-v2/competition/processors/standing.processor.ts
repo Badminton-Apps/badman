@@ -4,13 +4,13 @@ import {
   EventEntry,
   Standing,
   Team,
-} from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { runParallel, sortStanding } from '@badman/utils';
-import { Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, JobId } from 'bull';
-import { Transaction } from 'sequelize';
+} from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { runParallel, sortStanding } from "@badman/utils";
+import { Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, JobId } from "bull";
+import { Transaction } from "sequelize";
 
 @Processor({
   name: SyncQueue,
@@ -34,7 +34,7 @@ export class DrawStandingCompetitionProcessor {
         // don't do this for now
         deleteStandings?: boolean;
       };
-    }>,
+    }>
   ): Promise<void> {
     this.logger.debug(`Processing draw standing for draw ${job.data.drawId}`);
 
@@ -56,7 +56,6 @@ export class DrawStandingCompetitionProcessor {
     }
 
     await this._processEncounters(draw, transaction);
-
 
     this.logger.debug(`Finished processing draw standing for draw ${job.data.drawId}`);
   }
@@ -225,23 +224,23 @@ export class DrawStandingCompetitionProcessor {
         {
           transaction,
           updateOnDuplicate: [
-            'position',
-            'size',
-            'played',
-            'won',
-            'lost',
-            'tied',
-            'points',
-            'gamesWon',
-            'gamesLost',
-            'setsWon',
-            'setsLost',
-            'totalPointsWon',
-            'totalPointsLost',
-            'riser',
-            'faller',
+            "position",
+            "size",
+            "played",
+            "won",
+            "lost",
+            "tied",
+            "points",
+            "gamesWon",
+            "gamesLost",
+            "setsWon",
+            "setsLost",
+            "totalPointsWon",
+            "totalPointsLost",
+            "riser",
+            "faller",
           ],
-        },
+        }
       );
     }
   }
@@ -249,7 +248,7 @@ export class DrawStandingCompetitionProcessor {
   private async _getTeams(
     draw: DrawCompetition,
     encounters: EncounterCompetition[],
-    transaction: Transaction,
+    transaction: Transaction
   ) {
     const teams = new Map<string, Team>();
 
@@ -291,7 +290,7 @@ export class DrawStandingCompetitionProcessor {
           this.logger.error(`Error fetching teams for encounter ${e.id}`, error);
           throw error;
         }
-      }),
+      })
     );
     return [...teams.values()];
   }
@@ -302,7 +301,7 @@ export class DrawStandingCompetitionProcessor {
     await runParallel(
       teams.map(async (team) => {
         teamStandings.set(team.id, await this._standingTeam(draw, team, transaction));
-      }),
+      })
     );
 
     return teamStandings;
@@ -316,14 +315,14 @@ export class DrawStandingCompetitionProcessor {
         this.logger.warn(`No entries found`);
         entryDraw = await new EventEntry({
           subEventId: draw.subeventId,
-          entryType: 'competition',
+          entryType: "competition",
           drawId: draw.id,
           teamId: team.id,
           meta: undefined,
         }).save({ transaction });
       }
 
-      entryDraw.entryType = 'competition';
+      entryDraw.entryType = "competition";
       entryDraw.drawId = draw.id;
 
       await entryDraw.save({ transaction });

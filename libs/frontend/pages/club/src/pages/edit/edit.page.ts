@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   Component,
   PLATFORM_ID,
@@ -7,37 +7,37 @@ import {
   ViewChild,
   effect,
   inject,
-} from '@angular/core';
+} from "@angular/core";
 import {
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { SeoService } from '@badman/frontend-seo';
-import { Apollo, gql } from 'apollo-angular';
+} from "@angular/forms";
+import { MatButtonToggleModule } from "@angular/material/button-toggle";
+import { ActivatedRoute, RouterModule } from "@angular/router";
+import { SeoService } from "@badman/frontend-seo";
+import { Apollo, gql } from "apollo-angular";
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { InMemoryCache } from '@apollo/client/cache';
+import { MatButtonModule } from "@angular/material/button";
+import { MatOptionModule } from "@angular/material/core";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { InMemoryCache } from "@apollo/client/cache";
 import {
   AddRoleComponent,
   EditRoleComponent,
-  HasClaimComponent
-} from '@badman/frontend-components';
-import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import { Club, EntryCompetitionPlayer, Location, Role, Team } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
+  HasClaimComponent,
+} from "@badman/frontend-components";
+import { APOLLO_CACHE } from "@badman/frontend-graphql";
+import { Club, EntryCompetitionPlayer, Location, Role, Team } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
 import {
   SecurityType,
   SubEventType,
@@ -45,12 +45,12 @@ import {
   UseForTeamName,
   getSeason,
   sortTeams,
-} from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { injectParams } from 'ngxtension/inject-params';
-import { BehaviorSubject, Observable, combineLatest, lastValueFrom } from 'rxjs';
+} from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MomentModule } from "ngx-moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { injectParams } from "ngxtension/inject-params";
+import { BehaviorSubject, Observable, combineLatest, lastValueFrom } from "rxjs";
 import {
   distinctUntilChanged,
   filter,
@@ -62,12 +62,12 @@ import {
   takeUntil,
   tap,
   throttleTime,
-} from 'rxjs/operators';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { ClubFieldsComponent } from '../../components';
-import { LocationDialogComponent } from '../../dialogs';
-import { ClubDetailService } from '../../services/club.service';
-import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
+} from "rxjs/operators";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { ClubFieldsComponent } from "../../components";
+import { LocationDialogComponent } from "../../dialogs";
+import { ClubDetailService } from "../../services/club.service";
+import { ClubEditLocationComponent, ClubEditTeamComponent } from "./components";
 export type ClubFieldsForm = FormGroup<{
   id: FormControl<string>;
   name: FormControl<string>;
@@ -81,9 +81,9 @@ export type ClubFieldsForm = FormGroup<{
 }>;
 
 @Component({
-  selector: 'badman-club-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
+  selector: "badman-club-edit",
+  templateUrl: "./edit.page.html",
+  styleUrls: ["./edit.page.scss"],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -122,7 +122,7 @@ export class EditPageComponent {
   private platformId = inject<string>(PLATFORM_ID);
   public securityTypes: typeof SecurityType = SecurityType;
 
-  private readonly clubId = injectParams('id');
+  private readonly clubId = injectParams("id");
   club = this.clubDetailService.club;
 
   private destroy$ = injectDestroy();
@@ -176,7 +176,7 @@ export class EditPageComponent {
   }
 
   // template ref for adding new team
-  @ViewChild('newTeamTemplate', { static: true })
+  @ViewChild("newTeamTemplate", { static: true })
   teamTemplate?: TemplateRef<HTMLElement>;
 
   loadClub(): void {
@@ -185,10 +185,10 @@ export class EditPageComponent {
     this.seoService.update({
       title: clubName,
       description: `Edit club ${clubName}`,
-      type: 'website',
-      keywords: ['club', 'badminton'],
+      type: "website",
+      keywords: ["club", "badminton"],
     });
-    this.breadcrumbsService.set('@club', clubName);
+    this.breadcrumbsService.set("@club", clubName);
 
     this.clubGroup = new FormGroup({
       id: new FormControl(this.club()?.id, [Validators.required]),
@@ -208,7 +208,7 @@ export class EditPageComponent {
         throttleTime(500),
         distinctUntilChanged(),
         skip(1),
-        filter(() => this.clubGroup?.valid ?? false),
+        filter(() => this.clubGroup?.valid ?? false)
       )
       .subscribe((value) => {
         this.save(value as Club);
@@ -216,7 +216,7 @@ export class EditPageComponent {
 
     this.roles$ = combineLatest([this.updateClub$, this.updateRoles$]).pipe(
       takeUntil(this.destroy$),
-      switchMap(([, useCache]) => this._loadRoles(useCache)),
+      switchMap(([, useCache]) => this._loadRoles(useCache))
     );
 
     this._getYears().then((years) => {
@@ -229,14 +229,14 @@ export class EditPageComponent {
     const season$ = this.season.valueChanges.pipe(
       takeUntil(this.destroy$),
       startWith(this.season.value),
-      distinctUntilChanged(),
+      distinctUntilChanged()
     );
 
     this.teamsForSeason$ = combineLatest([season$, this.updateTeams$]).pipe(
       takeUntil(this.destroy$),
       switchMap((season) => {
         return this.apollo.query<{ club: Club }>({
-          fetchPolicy: 'no-cache',
+          fetchPolicy: "no-cache",
           query: gql`
             query GetBasePlayersQuery($id: ID!, $where: JSONObject!) {
               club(id: $id) {
@@ -295,19 +295,19 @@ export class EditPageComponent {
         // initial teamnumbers from 1 to maxlevel
         for (const type of this.eventTypes) {
           const maxLevelM = Math.max(
-            ...(teams?.filter((t) => t.type === type).map((t) => t.teamNumber ?? 0) ?? []),
+            ...(teams?.filter((t) => t.type === type).map((t) => t.teamNumber ?? 0) ?? [])
           );
           this.teamNumbers[type] = Array.from({ length: maxLevelM }, (_, i) => i + 1);
         }
       }),
-      map((teams) => teams.sort(sortTeams)),
+      map((teams) => teams.sort(sortTeams))
     );
 
     this.locationForSeason$ = combineLatest([season$, this.updateLocation$]).pipe(
       takeUntil(this.destroy$),
       switchMap((season) => {
         return this.apollo.query<{ club: Club }>({
-          fetchPolicy: 'no-cache',
+          fetchPolicy: "no-cache",
           query: gql`
             query GetAvailibiltiesForSeason($id: ID!, $where: JSONObject!) {
               club(id: $id) {
@@ -354,14 +354,14 @@ export class EditPageComponent {
       }),
       map((x) => {
         return (x.data.club.locations ?? []).map((t) => new Location(t));
-      }),
+      })
     );
   }
 
   private _loadRoles(useCache = true) {
     return this.apollo
       .query<{ roles: Role[] }>({
-        fetchPolicy: useCache ? 'cache-first' : 'network-only',
+        fetchPolicy: useCache ? "cache-first" : "network-only",
         query: gql`
           query GetClubRoles($where: JSONObject) {
             roles(where: $where) {
@@ -379,7 +379,7 @@ export class EditPageComponent {
         variables: {
           where: {
             linkId: this.club()?.id,
-            linkType: 'club',
+            linkType: "club",
           },
         },
       })
@@ -387,11 +387,11 @@ export class EditPageComponent {
         transferState(`clubRolesKey-${this.club()?.id}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.roles) {
-            throw new Error('No roles');
+            throw new Error("No roles");
           }
 
           return result.data.roles.map((roles) => new Role(roles));
-        }),
+        })
       );
   }
 
@@ -418,15 +418,15 @@ export class EditPageComponent {
         .pipe(
           map((result) => {
             if (!result.data.teams) {
-              throw new Error('No teams');
+              throw new Error("No teams");
             }
             return result.data.teams.map((row) => row?.season as number);
           }),
           // map distinct years
           map((years) => [...new Set(years)]),
           // sort years
-          map((years) => years.sort((a, b) => b - a)),
-        ),
+          map((years) => years.sort((a, b) => b - a))
+        )
     );
   }
 
@@ -443,11 +443,11 @@ export class EditPageComponent {
         variables: {
           data: club,
         },
-      }),
+      })
     );
-    this.snackBar.open('Saved', undefined, {
+    this.snackBar.open("Saved", undefined, {
       duration: 1000,
-      panelClass: 'success',
+      panelClass: "success",
     });
   }
 
@@ -464,7 +464,7 @@ export class EditPageComponent {
 
   async onDeleteLocation(location: Location) {
     if (!location?.id) {
-      throw new Error('No location id');
+      throw new Error("No location id");
     }
     await lastValueFrom(
       this.apollo.mutate({
@@ -474,7 +474,7 @@ export class EditPageComponent {
           }
         `,
         variables: { id: location.id },
-      }),
+      })
     );
 
     this.updateLocation$.next(null);
@@ -485,7 +485,7 @@ export class EditPageComponent {
   }
 
   async addTeam() {
-    import('@badman/frontend-team').then((m) => {
+    import("@badman/frontend-team").then((m) => {
       this.locationForSeason$
         .pipe(
           take(1),
@@ -501,11 +501,11 @@ export class EditPageComponent {
                   locations,
                 },
 
-                width: '100%',
-                maxWidth: '600px',
+                width: "100%",
+                maxWidth: "600px",
               })
-              .afterClosed(),
-          ),
+              .afterClosed()
+          )
         )
         .subscribe(() => {
           this.updateTeams$.next(null);
@@ -515,7 +515,7 @@ export class EditPageComponent {
 
   async onDeleteRole(role: Role) {
     if (!role?.id) {
-      throw new Error('No location id');
+      throw new Error("No location id");
     }
     await lastValueFrom(
       this.apollo.mutate({
@@ -525,7 +525,7 @@ export class EditPageComponent {
           }
         `,
         variables: { id: role.id },
-      }),
+      })
     );
     this._deleteRoleFromCache(role.id);
     this.updateRoles$.next(false);
@@ -533,14 +533,14 @@ export class EditPageComponent {
 
   async onAddBasePlayer(player: Partial<EntryCompetitionPlayer>, team: Team) {
     if (!team?.id) {
-      throw new Error('No team id');
+      throw new Error("No team id");
     }
     if (!player?.id) {
-      throw new Error('No player id');
+      throw new Error("No player id");
     }
 
     if (!team.entry?.subEventCompetition?.id) {
-      throw new Error('No sub event id');
+      throw new Error("No sub event id");
     }
 
     await lastValueFrom(
@@ -561,7 +561,7 @@ export class EditPageComponent {
           subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
-      }),
+      })
     );
     this._deleteTeamFromCache(team.id);
     this.updateTeams$.next(null);
@@ -569,14 +569,14 @@ export class EditPageComponent {
 
   async onDeleteBasePlayer(player: Partial<EntryCompetitionPlayer>, team: Team) {
     if (!team?.id) {
-      throw new Error('No team id');
+      throw new Error("No team id");
     }
     if (!player?.id) {
-      throw new Error('No player id');
+      throw new Error("No player id");
     }
 
     if (!team.entry?.subEventCompetition?.id) {
-      throw new Error('No sub event id');
+      throw new Error("No sub event id");
     }
 
     await lastValueFrom(
@@ -597,7 +597,7 @@ export class EditPageComponent {
           subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
-      }),
+      })
     );
     this._deleteTeamFromCache(team.id);
     this.updateTeams$.next(null);
@@ -605,14 +605,14 @@ export class EditPageComponent {
 
   async onPlayerMetaUpdated(player: Partial<EntryCompetitionPlayer>, team: Team) {
     if (!team?.id) {
-      throw new Error('No team id');
+      throw new Error("No team id");
     }
     if (!player?.id) {
-      throw new Error('No player id');
+      throw new Error("No player id");
     }
 
     if (!team.entry?.subEventCompetition?.id) {
-      throw new Error('No sub event id');
+      throw new Error("No sub event id");
     }
 
     // delete __typename from player
@@ -641,7 +641,7 @@ export class EditPageComponent {
           subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
-      }),
+      })
     );
     this._deleteTeamFromCache(team.id);
     this.updateTeams$.next(null);
@@ -652,7 +652,7 @@ export class EditPageComponent {
       event: string;
       subEvent: string;
     },
-    team: Team,
+    team: Team
   ) {
     this.apollo
       .mutate({
@@ -675,7 +675,7 @@ export class EditPageComponent {
   private _deleteRoleFromCache(role?: string) {
     const normalizedAvailibility = this.cache.identify({
       id: role,
-      __typename: 'Role',
+      __typename: "Role",
     });
     this.cache.evict({ id: normalizedAvailibility });
     this.cache.gc();
@@ -684,7 +684,7 @@ export class EditPageComponent {
   private _deleteTeamFromCache(teamId?: string) {
     const normalizedAvailibility = this.cache.identify({
       id: teamId,
-      __typename: 'Team',
+      __typename: "Team",
     });
     this.cache.evict({ id: normalizedAvailibility });
     this.cache.gc();

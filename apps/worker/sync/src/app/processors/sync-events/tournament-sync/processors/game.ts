@@ -5,23 +5,23 @@ import {
   GamePlayerMembership,
   Player,
   RankingSystem,
-} from '@badman/backend-database';
+} from "@badman/backend-database";
 import {
   VisualService,
   XmlMatch,
   XmlPlayer,
   XmlScoreStatus,
   XmlTournament,
-} from '@badman/backend-visual';
-import { GameStatus, getRankingProtected, runParallel } from '@badman/utils';
-import { Logger, NotFoundException } from '@nestjs/common';
-import moment from 'moment-timezone';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
-import { correctWrongPlayers } from '../../../../utils';
-import { DrawStepData } from './draw';
-import { EventStepData } from './event';
-import { SubEventStepData } from './subEvent';
+} from "@badman/backend-visual";
+import { GameStatus, getRankingProtected, runParallel } from "@badman/utils";
+import { Logger, NotFoundException } from "@nestjs/common";
+import moment from "moment-timezone";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
+import { correctWrongPlayers } from "../../../../utils";
+import { DrawStepData } from "./draw";
+import { EventStepData } from "./event";
+import { SubEventStepData } from "./subEvent";
 
 export interface GameStepOptions {
   newGames?: boolean;
@@ -40,7 +40,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions & GameStepOptions,
+    options?: StepOptions & GameStepOptions
   ) {
     if (!options) {
       options = {};
@@ -76,12 +76,12 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     });
     const subEvent = this.subEvents?.find((sub) => draw.subeventId === sub.subEvent.id)?.subEvent;
 
-    const isLastWeek = moment().subtract(2, 'week').isBefore(this.event.event.firstDay);
+    const isLastWeek = moment().subtract(2, "week").isBefore(this.event.event.firstDay);
 
     const visualMatch = (await this.visualService.getGames(
       this.visualTournament.Code,
       internalId,
-      !isLastWeek,
+      !isLastWeek
     )) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
@@ -89,7 +89,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
 
       const playedAt =
         xmlMatch.MatchTime != null
-          ? moment.tz(xmlMatch.MatchTime, 'Europe/Brussels').toDate()
+          ? moment.tz(xmlMatch.MatchTime, "Europe/Brussels").toDate()
           : this.event.event.firstDay;
 
       // Check if encounter was before last run, skip if only process new events
@@ -114,7 +114,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         case XmlScoreStatus.Disqualified:
           gameStatus = GameStatus.DISQUALIFIED;
           break;
-        case XmlScoreStatus['No Match']:
+        case XmlScoreStatus["No Match"]:
           gameStatus = GameStatus.NO_MATCH;
           break;
         case XmlScoreStatus.Walkover:
@@ -151,7 +151,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           gameType: subEvent?.gameType,
           visualCode: xmlMatch.Code,
           linkId: draw.id,
-          linkType: 'tournament',
+          linkType: "tournament",
           status: gameStatus,
           playedAt,
           set1Team1: xmlMatch?.Sets?.Set[0]?.Team1,
@@ -214,7 +214,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       const memberships = await this._createGamePlayers(xmlMatch, game);
       await GamePlayerMembership.bulkCreate(memberships, {
         transaction: this.transaction,
-        updateOnDuplicate: ['single', 'double', 'mix'],
+        updateOnDuplicate: ["single", "double", "mix"],
       });
     }
 
@@ -238,7 +238,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
 
     if (!this._system) {
-      throw new Error('No ranking system');
+      throw new Error("No ranking system");
     }
 
     if (t1p1) {
@@ -249,7 +249,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction: this.transaction,
       });
@@ -283,7 +283,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction: this.transaction,
       });
@@ -316,7 +316,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction: this.transaction,
       });
@@ -349,7 +349,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
             [Op.lte]: game.playedAt,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         limit: 1,
         transaction: this.transaction,
       });
@@ -399,7 +399,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       returnPlayer = [...(this.players?.values() ?? [])].find(
         (p) =>
           (p.firstName === corrected.firstName && p.lastName === corrected.lastName) ||
-          (p.firstName === corrected.lastName && p.lastName === corrected.firstName),
+          (p.firstName === corrected.lastName && p.lastName === corrected.firstName)
       );
     }
     return returnPlayer;

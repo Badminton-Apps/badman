@@ -1,36 +1,35 @@
+import { Component, Signal, TemplateRef, inject } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
 
-import { Component, Signal, TemplateRef, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatOptionModule } from '@angular/material/core';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Router, RouterModule } from '@angular/router';
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatOptionModule } from "@angular/material/core";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { Router, RouterModule } from "@angular/router";
 import {
   AddRoleComponent,
   EditRoleComponent,
   HasClaimComponent,
   PlayerSearchComponent,
   SelectCountryComponent,
-  SelectCountrystateComponent
-} from '@badman/frontend-components';
-import { EventCompetition, Role } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { LevelType, SecurityType } from '@badman/utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { injectRouteData } from 'ngxtension/inject-route-data';
+  SelectCountrystateComponent,
+} from "@badman/frontend-components";
+import { EventCompetition, Role } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { LevelType, SecurityType } from "@badman/utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { injectRouteData } from "ngxtension/inject-route-data";
 import {
   BehaviorSubject,
   Subject,
@@ -40,10 +39,10 @@ import {
   startWith,
   switchMap,
   takeUntil,
-} from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { EVENT_QUERY } from '../../queries';
-import { EventCompetitionLevelFieldsComponent } from './components';
+} from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { EVENT_QUERY } from "../../queries";
+import { EventCompetitionLevelFieldsComponent } from "./components";
 
 export type ExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
@@ -67,9 +66,9 @@ const roleQuery = gql`
 `;
 
 @Component({
-  selector: 'badman-competition-edit',
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
+  selector: "badman-competition-edit",
+  templateUrl: "./edit.page.html",
+  styleUrls: ["./edit.page.scss"],
   imports: [
     RouterModule,
     TranslatePipe,
@@ -93,8 +92,8 @@ const roleQuery = gql`
     EditRoleComponent,
     SelectCountryComponent,
     SelectCountrystateComponent,
-    PlayerSearchComponent
-],
+    PlayerSearchComponent,
+  ],
 })
 export class EditPageComponent {
   private readonly destroy$ = injectDestroy();
@@ -107,7 +106,7 @@ export class EditPageComponent {
   private readonly apollo = inject(Apollo);
   private readonly dialog = inject(MatDialog);
 
-  eventCompetition = injectRouteData<EventCompetition>('eventCompetition');
+  eventCompetition = injectRouteData<EventCompetition>("eventCompetition");
 
   public securityTypes: typeof SecurityType = SecurityType;
 
@@ -126,11 +125,11 @@ export class EditPageComponent {
   types = Object.keys(LevelType);
 
   constructor() {
-    const compTitle = 'all.competition.title';
+    const compTitle = "all.competition.title";
 
     const eventCompetition = this.eventCompetition();
     if (!eventCompetition) {
-      throw new Error('Event competition not found');
+      throw new Error("Event competition not found");
     }
 
     this.translateService
@@ -139,13 +138,13 @@ export class EditPageComponent {
       .subscribe((translations) => {
         const eventCompetitionName = `${eventCompetition.name}`;
 
-        this.breadcrumbService.set('competition', translations[compTitle]);
-        this.breadcrumbService.set('@eventCompetition', eventCompetitionName);
+        this.breadcrumbService.set("competition", translations[compTitle]);
+        this.breadcrumbService.set("@eventCompetition", eventCompetitionName);
         this.seoService.update({
           title: eventCompetitionName,
           description: `Competition ${eventCompetitionName}`,
-          type: 'website',
-          keywords: ['event', 'competition', 'badminton'],
+          type: "website",
+          keywords: ["event", "competition", "badminton"],
         });
       });
 
@@ -161,14 +160,14 @@ export class EditPageComponent {
               variables: {
                 where: {
                   linkId: eventCompetition.id,
-                  linkType: 'competition',
+                  linkType: "competition",
                 },
               },
-            }).valueChanges,
+            }).valueChanges
         ),
         shareReplay(1),
-        map((result) => result.data?.roles?.map((r) => new Role(r))),
-      ),
+        map((result) => result.data?.roles?.map((r) => new Role(r)))
+      )
     );
   }
 
@@ -180,7 +179,7 @@ export class EditPageComponent {
           end: new FormControl(exception.end, Validators.required),
           courts: new FormControl(exception.courts),
         });
-      }) ?? [],
+      }) ?? []
     ) as FormArray<ExceptionType>;
     this.infoEvents = new FormArray(
       event.infoEvents?.map((infoEvent) => {
@@ -190,7 +189,7 @@ export class EditPageComponent {
           name: new FormControl(infoEvent.name),
           allowCompetition: new FormControl(infoEvent.allowCompetition),
         });
-      }) ?? [],
+      }) ?? []
     ) as FormArray<InfoEventType>;
 
     this.formGroup = new FormGroup({
@@ -229,7 +228,7 @@ export class EditPageComponent {
             minBaseIndex: new FormControl(subEvent.minBaseIndex),
             maxBaseIndex: new FormControl(subEvent.maxBaseIndex),
           });
-        }) ?? [],
+        }) ?? []
       ),
     });
   }
@@ -237,7 +236,7 @@ export class EditPageComponent {
   async copy(templateRef: TemplateRef<object>) {
     this.dialog
       .open(templateRef, {
-        width: '300px',
+        width: "300px",
       })
       .afterClosed()
       .subscribe((r) => {
@@ -258,7 +257,7 @@ export class EditPageComponent {
               },
             })
             .subscribe((r) => {
-              this.router.navigate(['/competition', r.data?.copyEventCompetition?.slug]);
+              this.router.navigate(["/competition", r.data?.copyEventCompetition?.slug]);
             });
         }
       });
@@ -315,11 +314,11 @@ export class EditPageComponent {
             },
           },
         ],
-      }),
+      })
     );
 
     this.saved$.next(this.saved$.value + 1);
-    this.snackBar.open('Saved', undefined, {
+    this.snackBar.open("Saved", undefined, {
       duration: 2000,
     });
   }
@@ -330,7 +329,7 @@ export class EditPageComponent {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as ExceptionType,
+      }) as ExceptionType
     );
   }
 
@@ -345,7 +344,7 @@ export class EditPageComponent {
         end: new FormControl(),
         name: new FormControl(),
         allowCompetition: new FormControl(),
-      }) as InfoEventType,
+      }) as InfoEventType
     );
   }
 

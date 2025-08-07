@@ -1,4 +1,4 @@
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -7,7 +7,7 @@ import {
   Op,
   SaveOptions,
   UpdateOptions,
-} from 'sequelize';
+} from "sequelize";
 import {
   AfterBulkCreate,
   AfterBulkUpdate,
@@ -27,18 +27,18 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { GamePlayerMembership } from '../event';
-import { Player } from '../player.model';
-import { RankingLastPlace } from './ranking-last-place.model';
-import { RankingSystem } from './ranking-system.model';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { GamePlayerMembership } from "../event";
+import { Player } from "../player.model";
+import { RankingLastPlace } from "./ranking-last-place.model";
+import { RankingSystem } from "./ranking-system.model";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'ranking',
+  schema: "ranking",
 })
-@ObjectType({ description: 'A RankingPlace' })
+@ObjectType({ description: "A RankingPlace" })
 export class RankingPlace extends Model {
   constructor(values?: Partial<RankingPlace>, options?: BuildOptions) {
     super(values, options);
@@ -57,10 +57,10 @@ export class RankingPlace extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Index({
-    name: 'ranking_index',
-    using: 'BTREE',
+    name: "ranking_index",
+    using: "BTREE",
   })
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
@@ -147,33 +147,33 @@ export class RankingPlace extends Model {
   @Column(DataType.BOOLEAN)
   updatePossible?: boolean;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @ForeignKey(() => Player)
   @Index({
-    name: 'ranking_index',
-    using: 'BTREE',
+    name: "ranking_index",
+    using: "BTREE",
   })
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   playerId?: string;
 
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @ForeignKey(() => RankingSystem)
   @Index({
-    name: 'ranking_index',
-    using: 'BTREE',
+    name: "ranking_index",
+    using: "BTREE",
   })
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   systemId?: string;
 
   @Field(() => Player, { nullable: true })
-  @BelongsTo(() => Player, 'playerId')
+  @BelongsTo(() => Player, "playerId")
   player?: Relation<Player>;
 
   @BelongsTo(() => RankingSystem, {
-    foreignKey: 'systemId',
-    onDelete: 'CASCADE',
+    foreignKey: "systemId",
+    onDelete: "CASCADE",
   })
   rankingSystem?: Relation<RankingSystem>;
 
@@ -190,13 +190,13 @@ export class RankingPlace extends Model {
   @AfterUpdate
   static async updateLatestRankingsUpdates(
     instances: RankingPlace[] | RankingPlace,
-    options: UpdateOptions,
+    options: UpdateOptions
   ) {
     if (!Array.isArray(instances)) {
       instances = [instances];
     }
 
-    await this.updateLatestRankings(instances, options, 'update');
+    await this.updateLatestRankings(instances, options, "update");
   }
 
   // @BeforeCreate
@@ -251,19 +251,19 @@ export class RankingPlace extends Model {
   @AfterBulkCreate
   static async updateLatestRankingsCreate(
     instances: RankingPlace[] | RankingPlace,
-    options: SaveOptions,
+    options: SaveOptions
   ) {
     if (!Array.isArray(instances)) {
       instances = [instances];
     }
 
-    await this.updateLatestRankings(instances, options, 'create');
+    await this.updateLatestRankings(instances, options, "create");
   }
 
   @AfterDestroy
   static async updateLatestRankingsDestroy(
     instances: RankingPlace[] | RankingPlace,
-    options: DestroyOptions,
+    options: DestroyOptions
   ) {
     if (!Array.isArray(instances)) {
       instances = [instances];
@@ -279,20 +279,20 @@ export class RankingPlace extends Model {
         },
         transaction: options?.transaction,
         limit: 1,
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
       });
       if (lastRanking) {
         currentInstances.push(lastRanking);
       }
     }
 
-    await this.updateLatestRankings(currentInstances, options, 'destroy');
+    await this.updateLatestRankings(currentInstances, options, "destroy");
   }
 
   static async updateLatestRankings(
     instances: RankingPlace[],
     options: SaveOptions | UpdateOptions,
-    type: 'create' | 'update' | 'destroy',
+    type: "create" | "update" | "destroy"
   ) {
     const rankingLastPlaces = instances.map((r) => r.asLastRankingPlace());
     const whereOr = rankingLastPlaces?.map((r) => {
@@ -329,11 +329,11 @@ export class RankingPlace extends Model {
 
     // Filter out if the last ranking is not newer than the current one
     const updateInstances =
-      type == 'create'
+      type == "create"
         ? rankingLastPlaces
         : rankingLastPlaces.filter(
             (l) =>
-              current.findIndex((c) => c.playerId === l.playerId && c.systemId === l.systemId) > -1,
+              current.findIndex((c) => c.playerId === l.playerId && c.systemId === l.systemId) > -1
           );
 
     // Update the last ranking place
@@ -346,32 +346,32 @@ export class RankingPlace extends Model {
       }),
       {
         updateOnDuplicate: [
-          'rankingDate',
-          'singlePoints',
-          'mixPoints',
-          'doublePoints',
-          'gender',
-          'singlePointsDowngrade',
-          'mixPointsDowngrade',
-          'doublePointsDowngrade',
-          'singleRank',
-          'mixRank',
-          'doubleRank',
-          'totalSingleRanking',
-          'totalMixRanking',
-          'totalDoubleRanking',
-          'totalWithinSingleLevel',
-          'totalWithinMixLevel',
-          'totalWithinDoubleLevel',
-          'single',
-          'mix',
-          'double',
-          'singleInactive',
-          'mixInactive',
-          'doubleInactive',
+          "rankingDate",
+          "singlePoints",
+          "mixPoints",
+          "doublePoints",
+          "gender",
+          "singlePointsDowngrade",
+          "mixPointsDowngrade",
+          "doublePointsDowngrade",
+          "singleRank",
+          "mixRank",
+          "doubleRank",
+          "totalSingleRanking",
+          "totalMixRanking",
+          "totalDoubleRanking",
+          "totalWithinSingleLevel",
+          "totalWithinMixLevel",
+          "totalWithinDoubleLevel",
+          "single",
+          "mix",
+          "double",
+          "singleInactive",
+          "mixInactive",
+          "doubleInactive",
         ],
         transaction: options.transaction,
-      },
+      }
     );
   }
 
@@ -388,7 +388,7 @@ export class RankingPlace extends Model {
             },
           },
           limit: 1,
-          order: [['rankingDate', 'ASC']],
+          order: [["rankingDate", "ASC"]],
           transaction: options?.transaction,
         });
 
@@ -430,9 +430,9 @@ export class RankingPlace extends Model {
             };
           }),
           {
-            updateOnDuplicate: ['single', 'double', 'mix'],
+            updateOnDuplicate: ["single", "double", "mix"],
             transaction: options?.transaction,
-          },
+          }
         );
       }
     } catch (e) {
@@ -473,12 +473,12 @@ export class RankingPlace extends Model {
 
 @InputType()
 export class RankingPlaceUpdateInput extends PartialType(
-  OmitType(RankingPlace, ['createdAt', 'updatedAt', 'player', 'rankingSystem'] as const),
-  InputType,
+  OmitType(RankingPlace, ["createdAt", "updatedAt", "player", "rankingSystem"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class RankingPlaceNewInput extends PartialType(
-  OmitType(RankingPlaceUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(RankingPlaceUpdateInput, ["id"] as const),
+  InputType
 ) {}

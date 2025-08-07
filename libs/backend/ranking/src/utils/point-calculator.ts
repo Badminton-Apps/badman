@@ -1,5 +1,5 @@
-import { RankingSystem, Game, Player } from '@badman/backend-database';
-import { GameType, Ranking } from '@badman/utils';
+import { RankingSystem, Game, Player } from "@badman/backend-database";
+import { GameType, Ranking } from "@badman/utils";
 
 export class PointCalculator {
   constructor(private _type: RankingSystem) {}
@@ -9,7 +9,7 @@ export class PointCalculator {
     player1Team1: Player,
     player1Team2: Player,
     player2Team1: Player,
-    player2Team2: Player,
+    player2Team2: Player
   ) {
     const points = {
       player1Team1Points: null,
@@ -46,18 +46,18 @@ export class PointCalculator {
 
     switch (game.gameType) {
       case GameType.S:
-        pointsFrom = 'single';
+        pointsFrom = "single";
         break;
       case GameType.D:
-        pointsFrom = 'double';
+        pointsFrom = "double";
         break;
       case GameType.MX:
-        pointsFrom = 'mix';
+        pointsFrom = "mix";
         break;
     }
 
     if (pointsFrom === undefined) {
-      throw new Error('No pointsFrom');
+      throw new Error("No pointsFrom");
     }
 
     if (rankingPlayer1Team2) {
@@ -91,7 +91,7 @@ export class PointCalculator {
     } else {
       if (game.winner === 1) {
         const wonPoints = Math.round(
-          (this._getWinningPoints(levelP1T2) + this._getWinningPoints(levelP2T2)) / 2,
+          (this._getWinningPoints(levelP1T2) + this._getWinningPoints(levelP2T2)) / 2
         );
         points.player1Team1Points = wonPoints;
         points.player2Team1Points = wonPoints;
@@ -102,7 +102,7 @@ export class PointCalculator {
         points.differenceInLevel = (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
       } else {
         const wonPoints = Math.round(
-          (this._getWinningPoints(levelP1T1) + this._getWinningPoints(levelP2T1)) / 2,
+          (this._getWinningPoints(levelP1T1) + this._getWinningPoints(levelP2T1)) / 2
         );
         points.player1Team2Points = wonPoints;
         points.player2Team2Points = wonPoints;

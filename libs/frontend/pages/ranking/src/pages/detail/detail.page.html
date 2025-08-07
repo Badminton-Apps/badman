@@ -4,7 +4,7 @@
     <mat-chip-listbox>
       <mat-chip
         [matTooltip]="this.rankingSystem().calculationLastUpdate?.toLocaleDateString() ?? ''"
-        >{{ 'all.ranking.last-update' | translate }}:
+        >{{ "all.ranking.last-update" | translate }}:
         {{ this.rankingSystem().calculationLastUpdate | amTimeAgo }}</mat-chip
       >
     </mat-chip-listbox>
@@ -18,7 +18,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="watchSystem()">
         <mat-icon>visibility</mat-icon>
-        {{ 'all.button.watch-system' | translate }}
+        {{ "all.button.watch-system" | translate }}
       </button>
 
       <badman-has-claim [any]="['change:job']">
@@ -35,12 +35,12 @@
       <badman-has-claim [any]="['edit:ranking']">
         <button mat-menu-item [routerLink]="['edit']">
           <mat-icon>edit</mat-icon>
-          {{ 'all.button.edit' | translate }}
+          {{ "all.button.edit" | translate }}
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="deleteSystem()">
           <mat-icon>delete</mat-icon>
-          {{ 'all.button.delete' | translate }}
+          {{ "all.button.delete" | translate }}
         </button>
       </badman-has-claim>
     </mat-menu>

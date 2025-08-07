@@ -1,6 +1,6 @@
-import { DrawCompetition, EncounterCompetition, Location, Team } from '@badman/backend-database';
-import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
-import { EncounterValidationError } from './encounter-validation-error.model';
+import { DrawCompetition, EncounterCompetition, Location, Team } from "@badman/backend-database";
+import { Field, ID, InputType, ObjectType } from "@nestjs/graphql";
+import { EncounterValidationError } from "./encounter-validation-error.model";
 
 @InputType()
 export class EncounterValidationInput {
@@ -25,16 +25,16 @@ export class Suggestions {
 
 @ObjectType()
 export class EncounterValidationOutput {
-  @Field(() => [EncounterValidationError], { nullable: 'itemsAndList' })
+  @Field(() => [EncounterValidationError], { nullable: "itemsAndList" })
   errors?: EncounterValidationError<unknown>[];
 
-  @Field(() => [EncounterValidationError], { nullable: 'itemsAndList' })
+  @Field(() => [EncounterValidationError], { nullable: "itemsAndList" })
   warnings?: EncounterValidationError<unknown>[];
 
   @Field(() => Boolean, { nullable: true })
   valid?: boolean;
 
-  @Field(() => [String], { nullable: 'itemsAndList' })
+  @Field(() => [String], { nullable: "itemsAndList" })
   validators?: string[];
 }
 

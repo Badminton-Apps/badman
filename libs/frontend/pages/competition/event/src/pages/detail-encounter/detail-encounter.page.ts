@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,43 +6,40 @@ import {
   computed,
   effect,
   inject,
-} from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
-import {
-  HasClaimComponent,
-  PageHeaderComponent
-} from '@badman/frontend-components';
+} from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { RouterModule } from "@angular/router";
+import { HasClaimComponent, PageHeaderComponent } from "@badman/frontend-components";
 import {
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
   Game,
   GamePlayer,
-} from '@badman/frontend-models';
-import { JobsService } from '@badman/frontend-queue';
-import { SeoService } from '@badman/frontend-seo';
-import { GameType, gameLabel } from '@badman/utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { injectRouteData } from 'ngxtension/inject-route-data';
-import { lastValueFrom, take } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
+} from "@badman/frontend-models";
+import { JobsService } from "@badman/frontend-queue";
+import { SeoService } from "@badman/frontend-seo";
+import { GameType, gameLabel } from "@badman/utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { injectRouteData } from "ngxtension/inject-route-data";
+import { lastValueFrom, take } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
 
 @Component({
-  selector: 'badman-detail-encounter',
-  templateUrl: './detail-encounter.page.html',
-  styleUrls: ['./detail-encounter.page.scss'],
+  selector: "badman-detail-encounter",
+  templateUrl: "./detail-encounter.page.html",
+  styleUrls: ["./detail-encounter.page.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
@@ -70,9 +67,9 @@ export class DetailEncounterComponent {
   private jobService = inject(JobsService);
   private platformId = inject<string>(PLATFORM_ID);
 
-  encounterCompetition = injectRouteData<EncounterCompetition>('encounterCompetition');
-  drawCompetition = injectRouteData<DrawCompetition>('drawCompetition');
-  eventCompetition = injectRouteData<EventCompetition>('eventCompetition');
+  encounterCompetition = injectRouteData<EncounterCompetition>("encounterCompetition");
+  drawCompetition = injectRouteData<DrawCompetition>("drawCompetition");
+  eventCompetition = injectRouteData<EventCompetition>("eventCompetition");
 
   destroy$ = injectDestroy();
 
@@ -89,18 +86,18 @@ export class DetailEncounterComponent {
       this.seoService.update({
         title: this.encounterCompetitionName(),
         description: `Encounter ${this.encounterCompetitionName()}`,
-        type: 'website',
+        type: "website",
         keywords: [
-          'encounter',
-          'competition',
-          'badminton',
-          this.encounterCompetition()?.home?.name ?? '',
-          this.encounterCompetition()?.away?.name ?? '',
+          "encounter",
+          "competition",
+          "badminton",
+          this.encounterCompetition()?.home?.name ?? "",
+          this.encounterCompetition()?.away?.name ?? "",
         ],
       });
-      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition()?.name ?? '');
-      this.breadcrumbsService.set('@drawCompetition', this.drawCompetition()?.name ?? '');
-      this.breadcrumbsService.set('@encounterCompetition', this.encounterCompetitionName());
+      this.breadcrumbsService.set("@eventCompetition", this.eventCompetition()?.name ?? "");
+      this.breadcrumbsService.set("@drawCompetition", this.drawCompetition()?.name ?? "");
+      this.breadcrumbsService.set("@encounterCompetition", this.encounterCompetitionName());
     });
   }
 
@@ -139,7 +136,7 @@ export class DetailEncounterComponent {
     await lastValueFrom(
       this.jobService.checkNotifications({
         id: id,
-      }),
+      })
     );
   }
 

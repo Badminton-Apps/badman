@@ -1,20 +1,20 @@
-const { NxWebpackPlugin } = require('@nx/webpack');
-const { join } = require('path');
+const { NxWebpackPlugin } = require("@nx/webpack");
+const { join } = require("path");
 
 module.exports = {
   output: {
-    path: join(__dirname, '../../dist/apps/api'),
+    path: join(__dirname, "../../dist/apps/api"),
   },
   plugins: [
     new NxWebpackPlugin({
-      target: 'node',
-      compiler: 'tsc',
-      main: './src/main.ts',
-      tsConfig: './tsconfig.app.json',
-      assets: ['./src/assets'],
-      optimization: process.env['NODE_ENV'] === 'production',
-      outputHashing: 'none',
-      sourceMap: true
+      target: "node",
+      compiler: "tsc",
+      main: "./src/main.ts",
+      tsConfig: "./tsconfig.app.json",
+      assets: ["./src/assets"],
+      optimization: process.env["NODE_ENV"] === "production",
+      outputHashing: "none",
+      sourceMap: true,
     }),
   ],
 };

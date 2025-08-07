@@ -1,5 +1,5 @@
-import { User } from '@badman/backend-authorization';
-import { CACHE_TTL } from '@badman/backend-cache';
+import { User } from "@badman/backend-authorization";
+import { CACHE_TTL } from "@badman/backend-cache";
 import {
   DrawCompetition,
   EncounterCompetition,
@@ -13,18 +13,18 @@ import {
   SubEventCompetition,
   SubEventCompetitionAverageLevel,
   SubEventCompetitionUpdateInput,
-} from '@badman/backend-database';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { PointsService } from '@badman/backend-ranking';
-import { SubEventTypeEnum } from '@badman/utils';
-import { InjectQueue } from '@nestjs/bull';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Queue } from 'bull';
-import { Cache } from 'cache-manager';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../../utils';
+} from "@badman/backend-database";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { PointsService } from "@badman/backend-ranking";
+import { SubEventTypeEnum } from "@badman/utils";
+import { InjectQueue } from "@nestjs/bull";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Inject, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Queue } from "bull";
+import { Cache } from "cache-manager";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../../utils";
 
 @Resolver(() => SubEventCompetition)
 export class SubEventCompetitionResolver {
@@ -34,12 +34,12 @@ export class SubEventCompetitionResolver {
     @Inject(CACHE_MANAGER) private readonly _cacheManager: Cache,
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private _sequelize: Sequelize,
-    private _pointService: PointsService,
+    private _pointService: PointsService
   ) {}
 
   @Query(() => SubEventCompetition)
   async subEventCompetition(
-    @Args('id', { type: () => ID }) id: string,
+    @Args("id", { type: () => ID }) id: string
   ): Promise<SubEventCompetition> {
     const subEventCompetition = await SubEventCompetition.findByPk(id);
 
@@ -62,7 +62,7 @@ export class SubEventCompetitionResolver {
   @ResolveField(() => [DrawCompetition])
   async drawCompetitions(
     @Parent() subEvent: SubEventCompetition,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<DrawCompetition[]> {
     return subEvent.getDrawCompetitions(ListArgs.toFindOptions(listArgs));
   }
@@ -79,11 +79,11 @@ export class SubEventCompetitionResolver {
 
   @ResolveField(() => [SubEventCompetitionAverageLevel], {
     complexity: ({ childComplexity }) => childComplexity * 100,
-    description: 'Get the average level of the players within sub event',
+    description: "Get the average level of the players within sub event",
     nullable: true,
   })
   async averageLevel(
-    @Parent() subEvent: SubEventCompetition,
+    @Parent() subEvent: SubEventCompetition
   ): Promise<SubEventCompetitionAverageLevel[]> {
     const cacheKey = `subevent-competition-average-level-${subEvent.id}`;
     const cached = await this._cacheManager.get<SubEventCompetitionAverageLevel[]>(cacheKey);
@@ -96,17 +96,17 @@ export class SubEventCompetitionResolver {
     // Get the draws and encounters for this sub event
     const draws = await subEvent.getDrawCompetitions();
     const encounters = await Promise.all(draws.map((draw) => draw.getEncounterCompetitions())).then(
-      (encounters) => encounters.flat(),
+      (encounters) => encounters.flat()
     );
 
     // Get all the games for the encounters
     const games = await Promise.all(encounters.map((encounter) => encounter.getGames())).then(
-      (games) => games.flat(),
+      (games) => games.flat()
     );
 
     // get all players
     const players = await Promise.all(games.map((game) => game.getPlayers())).then((players) =>
-      players.flat(),
+      players.flat()
     );
 
     this.logger.debug(`Found ${players.length} players`);
@@ -115,7 +115,7 @@ export class SubEventCompetitionResolver {
     // and store this in a map so we can use it later for calculating a weighted average
     // And also create a set of unique players
     const uniquePlayersMale = new Set([
-      ...players.filter((p) => p.gender == 'M').map((player) => player.id),
+      ...players.filter((p) => p.gender == "M").map((player) => player.id),
     ]);
 
     const countPerMale = new Map();
@@ -125,7 +125,7 @@ export class SubEventCompetitionResolver {
 
     const countPerFemale = new Map();
     const uniquePlayersFeMale = new Set([
-      ...players.filter((p) => p.gender == 'F').map((player) => player.id),
+      ...players.filter((p) => p.gender == "F").map((player) => player.id),
     ]);
 
     uniquePlayersFeMale.forEach((player) => {
@@ -172,7 +172,7 @@ export class SubEventCompetitionResolver {
   private async getMaleAverages(
     primarySystem: RankingSystem,
     uniquePlayersMale: Set<string>,
-    countPerMale: Map<string, number>,
+    countPerMale: Map<string, number>
   ) {
     const rankingPlacesMale = await RankingLastPlace.findAll({
       where: {
@@ -185,7 +185,7 @@ export class SubEventCompetitionResolver {
     let singleMales = 0;
     const averageLevelSingleMale = rankingPlacesMale.reduce((acc, cur) => {
       if (!cur?.playerId) {
-        throw new NotFoundException('No Player id');
+        throw new NotFoundException("No Player id");
       }
       if (!cur?.single) {
         return acc;
@@ -199,7 +199,7 @@ export class SubEventCompetitionResolver {
     let doubleMales = 0;
     const averageLevelDoubleMale = rankingPlacesMale.reduce((acc, cur) => {
       if (!cur?.playerId) {
-        throw new NotFoundException('No Player id');
+        throw new NotFoundException("No Player id");
       }
       if (!cur?.double) {
         return acc;
@@ -213,7 +213,7 @@ export class SubEventCompetitionResolver {
     let mixMales = 0;
     const averageLevelMixedMale = rankingPlacesMale.reduce((acc, cur) => {
       if (!cur?.playerId) {
-        throw new NotFoundException('No Player id');
+        throw new NotFoundException("No Player id");
       }
       if (!cur?.mix) {
         return acc;
@@ -224,7 +224,7 @@ export class SubEventCompetitionResolver {
     }, 0);
 
     return {
-      gender: 'M',
+      gender: "M",
       single: averageLevelSingleMale / (singleMales == 0 ? 1 : singleMales),
       singleCount: singleMales,
       double: averageLevelDoubleMale / (doubleMales == 0 ? 1 : doubleMales),
@@ -244,7 +244,7 @@ export class SubEventCompetitionResolver {
   private async getFemaleAverages(
     primarySystem: RankingSystem,
     uniquePlayersFeMale: Set<string>,
-    countPerFemale: Map<string, number>,
+    countPerFemale: Map<string, number>
   ) {
     const rankingPlacesFemale = await RankingLastPlace.findAll({
       where: {
@@ -256,7 +256,7 @@ export class SubEventCompetitionResolver {
     let singleFemales = 0;
     const averageLevelSingleFemale = rankingPlacesFemale.reduce((acc, cur) => {
       if (!cur?.playerId) {
-        throw new NotFoundException('No Player id');
+        throw new NotFoundException("No Player id");
       }
 
       if (!cur?.single) {
@@ -270,7 +270,7 @@ export class SubEventCompetitionResolver {
     let doubleFemales = 0;
     const averageLevelDoubleFemale = rankingPlacesFemale.reduce((acc, cur) => {
       if (!cur?.playerId) {
-        throw new NotFoundException('No Player id');
+        throw new NotFoundException("No Player id");
       }
 
       if (!cur?.double) {
@@ -284,7 +284,7 @@ export class SubEventCompetitionResolver {
     let mixFemales = 0;
     const averageLevelMixedFemale = rankingPlacesFemale.reduce((acc, cur) => {
       if (!cur?.playerId) {
-        throw new NotFoundException('No Player id');
+        throw new NotFoundException("No Player id");
       }
       if (!cur?.mix) {
         return acc;
@@ -295,7 +295,7 @@ export class SubEventCompetitionResolver {
     }, 0);
 
     return {
-      gender: 'F',
+      gender: "F",
       single: averageLevelSingleFemale / (singleFemales == 0 ? 1 : singleFemales),
       singleCount: singleFemales,
       double: averageLevelDoubleFemale / (doubleFemales == 0 ? 1 : doubleFemales),
@@ -308,10 +308,10 @@ export class SubEventCompetitionResolver {
   @Mutation(() => Boolean)
   async recalculateSubEventCompetitionRankingPoints(
     @User() user: Player,
-    @Args('subEventId', { type: () => ID }) subEventId: string,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+    @Args("subEventId", { type: () => ID }) subEventId: string,
+    @Args("systemId", { type: () => ID, nullable: true }) systemId: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
@@ -324,7 +324,7 @@ export class SubEventCompetitionResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
       }
 
       // find all games
@@ -345,8 +345,8 @@ export class SubEventCompetitionResolver {
         acc.push(
           ...(draw.encounterCompetitions ?? []).reduce(
             (acc, enc) => acc.concat(enc.games ?? []),
-            [] as Game[],
-          ),
+            [] as Game[]
+          )
         );
         return acc;
       }, [] as Game[]);
@@ -373,14 +373,14 @@ export class SubEventCompetitionResolver {
   @Mutation(() => Boolean)
   async recalculateStandingSubEvent(
     @User() user: Player,
-    @Args('subEventId', { type: () => ID }) subEventId: string,
+    @Args("subEventId", { type: () => ID }) subEventId: string
   ) {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
     const event = await SubEventCompetition.findByPk(subEventId, {
-      attributes: ['id'],
+      attributes: ["id"],
     });
 
     if (!event) {
@@ -395,7 +395,7 @@ export class SubEventCompetitionResolver {
       {
         removeOnComplete: true,
         removeOnFail: 1,
-      },
+      }
     );
 
     return true;
@@ -403,9 +403,9 @@ export class SubEventCompetitionResolver {
   @Mutation(() => SubEventCompetition)
   async updateSubEventCompetition(
     @User() user: Player,
-    @Args('data') updateData: SubEventCompetitionUpdateInput,
+    @Args("data") updateData: SubEventCompetitionUpdateInput
   ): Promise<SubEventCompetition> {
-    if (!(await user.hasAnyPermission(['edit:competition']))) {
+    if (!(await user.hasAnyPermission(["edit:competition"]))) {
       throw new UnauthorizedException(`You do not have permission to edit competition`);
     }
 

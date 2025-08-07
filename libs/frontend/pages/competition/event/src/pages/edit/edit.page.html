@@ -50,7 +50,7 @@
 
       <div class="check">
         <mat-slide-toggle formControlName="checkEncounterForFilledIn">{{
-          'all.event.checkEncounterForFilledIn' | translate
+          "all.event.checkEncounterForFilledIn" | translate
         }}</mat-slide-toggle>
       </div>
 
@@ -62,7 +62,7 @@
       </div>
       <div class="actions">
         <button mat-raised-button color="primary" (click)="this.save()">
-          {{ 'all.button.save' | translate }}
+          {{ "all.button.save" | translate }}
         </button>
       </div>
     </div>
@@ -77,7 +77,7 @@
         <div [formGroupName]="i" class="exception">
           <div class="day">
             <mat-form-field>
-              <mat-label>{{ 'all.input.date-range' | translate }}</mat-label>
+              <mat-label>{{ "all.input.date-range" | translate }}</mat-label>
               <mat-date-range-input [rangePicker]="picker">
                 <input matStartDate formControlName="start" placeholder="Start date" />
                 <input matEndDate formControlName="end" placeholder="End date" />
@@ -90,7 +90,7 @@
             <div>
               <mat-form-field>
                 <mat-label>{{
-                  'all.competition.team-enrollment.locations.availible-courts' | translate
+                  "all.competition.team-enrollment.locations.availible-courts" | translate
                 }}</mat-label>
                 <input matInput type="number" formControlName="courts" alt="courts" />
               </mat-form-field>
@@ -106,7 +106,7 @@
       <div class="add">
         <div class="actions">
           <button mat-raised-button color="primary" (click)="this.save()">
-            {{ 'all.button.save' | translate }}
+            {{ "all.button.save" | translate }}
           </button>
         </div>
       </div>
@@ -122,7 +122,7 @@
         <div [formGroupName]="i" class="infoEvents">
           <div class="day">
             <mat-form-field>
-              <mat-label>{{ 'all.input.date-range' | translate }}</mat-label>
+              <mat-label>{{ "all.input.date-range" | translate }}</mat-label>
               <mat-date-range-input [rangePicker]="picker">
                 <input matStartDate formControlName="start" placeholder="Start date" />
                 <input matEndDate formControlName="end" placeholder="End date" />
@@ -134,7 +134,7 @@
           <div class="name">
             <div>
               <mat-form-field>
-                <mat-label>{{ 'all.input.name' | translate }}</mat-label>
+                <mat-label>{{ "all.input.name" | translate }}</mat-label>
                 <input matInput formControlName="name" alt="name" />
               </mat-form-field>
             </div>
@@ -142,7 +142,7 @@
           <div class="allowCompetition">
             <div>
               <mat-checkbox formControlName="allowCompetition">{{
-                'all.competition.allow-competition' | translate
+                "all.competition.allow-competition" | translate
               }}</mat-checkbox>
             </div>
           </div>
@@ -156,7 +156,7 @@
       <div class="add">
         <div class="actions">
           <button mat-raised-button color="primary" (click)="this.save()">
-            {{ 'all.button.save' | translate }}
+            {{ "all.button.save" | translate }}
           </button>
         </div>
       </div>
@@ -173,7 +173,7 @@
     }
     <div class="actions">
       <button mat-raised-button color="primary" (click)="this.save()">
-        {{ 'all.button.save' | translate }}
+        {{ "all.button.save" | translate }}
       </button>
     </div>
   </ng-container>
@@ -185,15 +185,15 @@
       linkType="competition"
       [linkId]="this.eventCompetition()?.id!"
       (whenRoleAdded)="this.roleChanged$.next()"
-      />
-    </h2>
-    @if (this.roles) {
-      <div class="roles">
-        @for (role of this.roles(); track role) {
-          @if (role.id) {
-            <badman-edit-role [roleId]="role.id" [type]="[securityTypes.COMPETITION]" />
-          }
+    />
+  </h2>
+  @if (this.roles) {
+    <div class="roles">
+      @for (role of this.roles(); track role) {
+        @if (role.id) {
+          <badman-edit-role [roleId]="role.id" [type]="[securityTypes.COMPETITION]" />
         }
-      </div>
-    }
-  </badman-has-claim>
+      }
+    </div>
+  }
+</badman-has-claim>

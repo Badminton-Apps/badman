@@ -1,6 +1,6 @@
-import { SubEventTypeEnum, isFirstHigher } from '@badman/utils';
-import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
-import { Rule } from './_rule.base';
+import { SubEventTypeEnum, isFirstHigher } from "@badman/utils";
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export class TeamOrderRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
@@ -25,16 +25,16 @@ export class TeamOrderRule extends Rule {
 
         // find higher teams
         const higherTeams = teams?.filter(
-          (t) => (t?.team?.teamNumber ?? 0) < (teamEnrollment?.team?.teamNumber ?? 0),
+          (t) => (t?.team?.teamNumber ?? 0) < (teamEnrollment?.team?.teamNumber ?? 0)
         );
 
         for (const higherTeam of higherTeams) {
           const subEventDiff = isFirstHigher(higherTeam.subEvent, teamEnrollment.subEvent);
 
           // if next team is in a better subEvent->level than the current team and the teamnumber is higher
-          if (subEventDiff === 'lower') {
+          if (subEventDiff === "lower") {
             errors.push({
-              message: 'all.v1.entryTeamDrawer.validation.errors.team-order',
+              message: "all.v1.entryTeamDrawer.validation.errors.team-order",
               params: {
                 team: higherTeam.team,
               },
@@ -42,11 +42,11 @@ export class TeamOrderRule extends Rule {
           }
 
           if (
-            subEventDiff == 'same' &&
+            subEventDiff == "same" &&
             (teamEnrollment.baseIndex ?? 0) < (higherTeam.baseIndex ?? 0)
           ) {
             warnings.push({
-              message: 'all.v1.entryTeamDrawer.validation.errors.team-order-same-subevent',
+              message: "all.v1.entryTeamDrawer.validation.errors.team-order-same-subevent",
               params: {
                 team: higherTeam.team,
               },

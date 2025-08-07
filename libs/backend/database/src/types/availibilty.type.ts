@@ -1,9 +1,9 @@
-import { Field, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 
-@ObjectType({ description: 'A AvailiblyDay' })
+@ObjectType({ description: "A AvailiblyDay" })
 export class AvailiblyDayType {
   @Field(() => String, { nullable: true })
-  day?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  day?: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
   @Field(() => String, { nullable: true })
   startTime?: string;
   @Field(() => String, { nullable: true })
@@ -21,5 +21,5 @@ export class AvailiblyDayType {
 @InputType()
 export class AvailiblyDayInputType extends PartialType(
   OmitType(AvailiblyDayType, [] as const),
-  InputType,
+  InputType
 ) {}

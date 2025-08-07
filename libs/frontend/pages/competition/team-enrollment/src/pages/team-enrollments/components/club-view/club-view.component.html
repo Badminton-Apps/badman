@@ -54,22 +54,22 @@
                       @for (availibilty of location.availabilities; track availibilty) {
                         <div>
                           <span class="location-sub-title">{{
-                            'competition.enrollment.play-day' | translate
+                            "competition.enrollment.play-day" | translate
                           }}</span>
                           <ul>
                             @for (day of availibilty.days; track day) {
                               <li>
-                                {{ 'all.days.' + day.day | translate }},
+                                {{ "all.days." + day.day | translate }},
                                 {{ day.startTime }}
-                                {{ 'all.ranking.breakdown.untill' | translate }}
+                                {{ "all.ranking.breakdown.untill" | translate }}
                                 {{ day.endTime }}:
                                 {{ day.courts }}
-                                {{ 'all.input.courts' | translate }}
+                                {{ "all.input.courts" | translate }}
                               </li>
                             }
                           </ul>
                           <span class="location-sub-title">{{
-                            'all.competition.team-enrollment.exceptions' | translate
+                            "all.competition.team-enrollment.exceptions" | translate
                           }}</span>
                           @if (!availibilty.exceptions || availibilty.exceptions.length === 0) {
                             <small> <br />Geen uitzonderingen </small>
@@ -77,11 +77,11 @@
                           <ul>
                             @for (exception of availibilty.exceptions; track exception) {
                               <li>
-                                {{ exception.start | amDateFormat: 'LL' }}
-                                {{ 'all.ranking.breakdown.untill' | translate }}
-                                {{ exception.end | amDateFormat: 'LL' }}:
+                                {{ exception.start | amDateFormat: "LL" }}
+                                {{ "all.ranking.breakdown.untill" | translate }}
+                                {{ exception.end | amDateFormat: "LL" }}:
                                 {{ exception.courts }}
-                                {{ 'all.input.courts' | translate }}
+                                {{ "all.input.courts" | translate }}
                               </li>
                             }
                           </ul>

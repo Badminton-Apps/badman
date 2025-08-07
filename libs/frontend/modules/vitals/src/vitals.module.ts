@@ -1,8 +1,8 @@
-import { Inject, InjectionToken, ModuleWithProviders, NgModule, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { WebVitalsService } from './services';
+import { Inject, InjectionToken, ModuleWithProviders, NgModule, PLATFORM_ID } from "@angular/core";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { WebVitalsService } from "./services";
 
-export const ANALYTICS_CONFIG_TOKEN = new InjectionToken<AnalyticsConfig>('analytics.config');
+export const ANALYTICS_CONFIG_TOKEN = new InjectionToken<AnalyticsConfig>("analytics.config");
 
 export type AnalyticsConfig = Readonly<{
   enabled: boolean;
@@ -11,7 +11,7 @@ export type AnalyticsConfig = Readonly<{
   debug?: boolean;
   path?: string;
   params?: { [key: string]: string };
-  scriptType?: 'text/partytown' | 'text/javascript' | string;
+  scriptType?: "text/partytown" | "text/javascript" | string;
 }>;
 
 @NgModule({
@@ -24,7 +24,7 @@ export class AnalyticsModule {
     platformId: string,
     @Inject(ANALYTICS_CONFIG_TOKEN)
     config: AnalyticsConfig,
-    vitals: WebVitalsService,
+    vitals: WebVitalsService
   ) {
     if (isPlatformBrowser(platformId) && config.enabled) {
       vitals.init();

@@ -1,8 +1,8 @@
-import { DrawCompetition, EventCompetition, SubEventCompetition } from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
+import { DrawCompetition, EventCompetition, SubEventCompetition } from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
 
 @Processor({
   name: SyncQueue,
@@ -12,27 +12,27 @@ export class ScheduleRecalculateStandingCompetitionEvent {
 
   constructor(
     private readonly _transactionManager: TransactionManager,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Process(Sync.ScheduleRecalculateStandingCompetitionEvent)
   async ScheduleRecalculateStandingCompetitionEvent(
     job: Job<{
       eventId: string;
-    }>,
+    }>
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
 
     // get all draws for the event
     const event = await EventCompetition.findByPk(job.data.eventId, {
-      attributes: ['id'],
+      attributes: ["id"],
       include: [
         {
-          attributes: ['id'],
+          attributes: ["id"],
           model: SubEventCompetition,
           include: [
             {
-              attributes: ['id'],
+              attributes: ["id"],
               model: DrawCompetition,
             },
           ],
@@ -62,7 +62,7 @@ export class ScheduleRecalculateStandingCompetitionEvent {
       }
 
       if (await this._transactionManager.transactionErrored(transactionId)) {
-        throw new Error('Error in transaction');
+        throw new Error("Error in transaction");
       }
 
       await this._transactionManager.commitTransaction(transactionId);

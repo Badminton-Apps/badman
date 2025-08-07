@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,28 +8,28 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'CronJobs',
-            schema: 'system',
+            tableName: "CronJobs",
+            schema: "system",
           },
-          'amount',
+          "amount",
           {
             type: sequelize.DataTypes.INTEGER,
             defaultValue: 0,
             allowNull: false,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'CronJobs',
-            schema: 'system',
+            tableName: "CronJobs",
+            schema: "system",
           },
-          'running',
-          { transaction: t },
+          "running",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -40,28 +40,28 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'CronJobs',
-            schema: 'system',
+            tableName: "CronJobs",
+            schema: "system",
           },
-          'amount',
-          { transaction: t },
+          "amount",
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'CronJobs',
-            schema: 'system',
+            tableName: "CronJobs",
+            schema: "system",
           },
-          'running',
+          "running",
           {
             type: sequelize.DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull: false,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

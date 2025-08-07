@@ -1,10 +1,10 @@
-import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { RankingSystem } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { first, map } from 'rxjs/operators';
+import { Injectable, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { RankingSystem } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { first, map } from "rxjs/operators";
 
 @Injectable()
 export class RankingSystemResolver {
@@ -14,11 +14,11 @@ export class RankingSystemResolver {
   private platformId = inject<string>(PLATFORM_ID);
 
   resolve(route: ActivatedRouteSnapshot) {
-    const inputId = route.params['id'] as string;
+    const inputId = route.params["id"] as string;
     let systemId: string;
     const loaded = this.raningSystemService.systemId();
 
-    if (inputId == 'primary' && loaded) {
+    if (inputId == "primary" && loaded) {
       systemId = loaded;
     } else {
       systemId = inputId;
@@ -43,14 +43,14 @@ export class RankingSystemResolver {
         },
       })
       .pipe(
-        transferState('rankingKey-' + systemId, this.stateTransfer, this.platformId),
+        transferState("rankingKey-" + systemId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.rankingSystem) {
-            throw new Error('No player');
+            throw new Error("No player");
           }
           return new RankingSystem(result.data.rankingSystem);
         }),
-        first(),
+        first()
       );
   }
 }

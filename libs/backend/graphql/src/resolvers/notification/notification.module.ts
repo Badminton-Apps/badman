@@ -1,6 +1,6 @@
-import { DatabaseModule } from '@badman/backend-database';
-import { Module } from '@nestjs/common';
-import { NotificationResolver } from './notification.resolver';
+import { DatabaseModule } from "@badman/backend-database";
+import { Module } from "@nestjs/common";
+import { NotificationResolver } from "./notification.resolver";
 
 @Module({
   imports: [DatabaseModule],

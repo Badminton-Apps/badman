@@ -1,5 +1,5 @@
-import { Player, RankingLastPlace, RankingSystem } from '@badman/backend-database';
-import { NotFoundException } from '@nestjs/common';
+import { Player, RankingLastPlace, RankingSystem } from "@badman/backend-database";
+import { NotFoundException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -10,8 +10,8 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { ListArgs } from '../../utils';
+} from "@nestjs/graphql";
+import { ListArgs } from "../../utils";
 
 @ObjectType()
 export class PagedLastRankingPlace {
@@ -25,7 +25,7 @@ export class PagedLastRankingPlace {
 @Resolver(() => RankingLastPlace)
 export class LastRankingPlaceResolver {
   @Query(() => RankingLastPlace)
-  async rankingLastPlace(@Args('id', { type: () => ID }) id: string): Promise<RankingLastPlace> {
+  async rankingLastPlace(@Args("id", { type: () => ID }) id: string): Promise<RankingLastPlace> {
     const lastRankingPlace = await RankingLastPlace.findByPk(id);
 
     if (!lastRankingPlace) {

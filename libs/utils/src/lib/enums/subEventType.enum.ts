@@ -1,8 +1,8 @@
 export enum SubEventTypeEnum {
-  M = 'M',
-  F = 'F',
-  MX = 'MX',
-  NATIONAL = 'NATIONAL',
+  M = "M",
+  F = "F",
+  MX = "MX",
+  NATIONAL = "NATIONAL",
 }
 
-export type SubEventType = 'M' | 'F' | 'MX' | 'NATIONAL';
+export type SubEventType = "M" | "F" | "MX" | "NATIONAL";

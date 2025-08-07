@@ -1,5 +1,5 @@
 <badman-page-header>
-  <div title>{{ 'all.ranking.title' | translate }}</div>
+  <div title>{{ "all.ranking.title" | translate }}</div>
   <div actions>
     <button
       (click)="$event.stopPropagation()"
@@ -12,7 +12,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item>
         <mat-icon>add</mat-icon>
-        <span>{{ 'all.ranking.menu.add-ranking' | translate }}</span>
+        <span>{{ "all.ranking.menu.add-ranking" | translate }}</span>
       </button>
     </mat-menu>
   </div>
@@ -40,7 +40,7 @@
   </ng-container>
   <!-- Name Column -->
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'all.input.name' | translate }}</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "all.input.name" | translate }}</th>
     <td mat-cell *matCellDef="let element">
       <a [routerLink]="[element?.id]">{{ element.name }}</a>
     </td>
@@ -68,11 +68,11 @@
       </button>
       <mat-menu #rankingSystemMenu="matMenu">
         <button mat-menu-item (click)="watchSystem(element)">
-          {{ 'all.button.watch-system' | translate }}
+          {{ "all.button.watch-system" | translate }}
         </button>
         <badman-has-claim [any]="['edit:ranking']">
           <button mat-menu-item [routerLink]="[element.id, 'edit']">
-            {{ 'all.button.edit' | translate }}
+            {{ "all.button.edit" | translate }}
           </button>
           <button
             mat-menu-item
@@ -80,7 +80,7 @@
             [class.spinner]="this.copyingSystem()"
             [disabled]="this.copyingSystem()"
           >
-            {{ 'all.button.copy' | translate }}
+            {{ "all.button.copy" | translate }}
           </button>
           <button
             mat-menu-item
@@ -88,11 +88,11 @@
             [class.spinner]="this.copyingPoints()"
             [disabled]="this.copyingPoints()"
           >
-            {{ 'all.ranking.clone-points' | translate }}
+            {{ "all.ranking.clone-points" | translate }}
           </button>
           <mat-divider></mat-divider>
           <button mat-menu-item (click)="deleteSystem(element)">
-            {{ 'all.button.delete' | translate }}
+            {{ "all.button.delete" | translate }}
           </button>
         </badman-has-claim>
       </mat-menu>
@@ -111,7 +111,7 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
 <ng-template #copySystem>
-  <h2 matDialogTitle>{{ 'all.ranking.title' | translate }}</h2>
+  <h2 matDialogTitle>{{ "all.ranking.title" | translate }}</h2>
   <mat-dialog-content>
     <div id="copySystem">
       <mat-slide-toggle [(ngModel)]="showDatePicker">Copy ranking places</mat-slide-toggle>
@@ -125,10 +125,10 @@
           <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
-          @if (copySystemFormGroup.controls.start.hasError('matStartDateInvalid')) {
+          @if (copySystemFormGroup.controls.start.hasError("matStartDateInvalid")) {
             <mat-error>Invalid start date</mat-error>
           }
-          @if (copySystemFormGroup.controls.end.hasError('matEndDateInvalid')) {
+          @if (copySystemFormGroup.controls.end.hasError("matEndDateInvalid")) {
             <mat-error>Invalid end date</mat-error>
           }
         </mat-form-field>
@@ -138,13 +138,13 @@
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-raised-button [matDialogClose]="true" color="primary">
-      {{ 'all.button.create' | translate }}
+      {{ "all.button.create" | translate }}
     </button>
-    <button mat-button matDialogClose>{{ 'all.button.cancel' | translate }}</button>
+    <button mat-button matDialogClose>{{ "all.button.cancel" | translate }}</button>
   </mat-dialog-actions>
 </ng-template>
 <ng-template #copyPoints>
-  <h2 matDialogTitle>{{ 'all.ranking.title' | translate }}</h2>
+  <h2 matDialogTitle>{{ "all.ranking.title" | translate }}</h2>
   <mat-dialog-content>
     <form id="copyPoints" [formGroup]="copyPointsFormGroup">
       <!-- mat selection for systems -->
@@ -169,10 +169,10 @@
             <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-date-range-picker #picker></mat-date-range-picker>
-            @if (copyPointsFormGroup.controls.start.hasError('matStartDateInvalid')) {
+            @if (copyPointsFormGroup.controls.start.hasError("matStartDateInvalid")) {
               <mat-error>Invalid start date</mat-error>
             }
-            @if (copyPointsFormGroup.controls.end.hasError('matEndDateInvalid')) {
+            @if (copyPointsFormGroup.controls.end.hasError("matEndDateInvalid")) {
               <mat-error>Invalid end date</mat-error>
             }
           </mat-form-field>
@@ -183,8 +183,8 @@
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-raised-button [matDialogClose]="true" color="primary">
-      {{ 'all.button.copy' | translate }}
+      {{ "all.button.copy" | translate }}
     </button>
-    <button mat-button matDialogClose>{{ 'all.button.cancel' | translate }}</button>
+    <button mat-button matDialogClose>{{ "all.button.cancel" | translate }}</button>
   </mat-dialog-actions>
 </ng-template>

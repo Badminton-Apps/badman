@@ -1,20 +1,20 @@
-import { isPlatformBrowser, PlatformLocation } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { Meta, Title } from '@angular/platform-browser';
-import { ISeoConfig } from '../interfaces/seo-config.interface';
-import { SEO_CONFIG } from '../seo.module';
+import { isPlatformBrowser, PlatformLocation } from "@angular/common";
+import { inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Meta, Title } from "@angular/platform-browser";
+import { ISeoConfig } from "../interfaces/seo-config.interface";
+import { SEO_CONFIG } from "../seo.module";
 
 type ISeoMetaData = {
   title?: string;
   description?: string;
   keywords?: string[];
   author?: string;
-  type?: 'article' | 'website';
+  type?: "article" | "website";
   image?: string;
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class SeoService {
   private config = inject<ISeoConfig>(SEO_CONFIG);
@@ -24,7 +24,7 @@ export class SeoService {
   private platformLocation = inject(PlatformLocation);
 
   async update(data: ISeoMetaData) {
-    this.setType('website');
+    this.setType("website");
     this.setTitle(data?.title);
     this.setDescription(data?.description);
     this.setKeywords(data?.keywords);
@@ -56,10 +56,10 @@ export class SeoService {
   }
 
   setMetaTag(
-    attr: 'name' | 'property' | 'itemprop',
+    attr: "name" | "property" | "itemprop",
     attrValue: string,
     content?: string | undefined,
-    selector?: string,
+    selector?: string
   ) {
     if (content) {
       this.metaService.updateTag({ [attr]: attrValue, content }, selector);
@@ -69,48 +69,48 @@ export class SeoService {
   }
 
   private setDescription(description?: string): void {
-    this.setMetaTag('name', 'description', description);
-    this.setMetaTag('name', 'twitter:description', description);
-    this.setMetaTag('property', 'og:description', description);
-    this.setMetaTag('itemprop', 'description', description, `itemprop='description'`);
+    this.setMetaTag("name", "description", description);
+    this.setMetaTag("name", "twitter:description", description);
+    this.setMetaTag("property", "og:description", description);
+    this.setMetaTag("itemprop", "description", description, `itemprop='description'`);
   }
 
-  private setType(type?: 'article' | 'website'): void {
-    this.setMetaTag('property', 'og:type', type);
+  private setType(type?: "article" | "website"): void {
+    this.setMetaTag("property", "og:type", type);
   }
 
   private setKeywords(keywords?: string | string[]) {
-    const wordsAsString = keywords instanceof Array ? keywords?.join(',') : keywords;
-    this.setMetaTag('name', 'keywords', wordsAsString);
+    const wordsAsString = keywords instanceof Array ? keywords?.join(",") : keywords;
+    this.setMetaTag("name", "keywords", wordsAsString);
   }
 
   private setAuthor(author?: string) {
-    this.setMetaTag('name', 'author', author);
-    this.setMetaTag('name', 'article:author', author);
+    this.setMetaTag("name", "author", author);
+    this.setMetaTag("name", "article:author", author);
   }
 
   private setSiteName(siteName?: string) {
-    this.setMetaTag('name', 'og:site_name', siteName);
+    this.setMetaTag("name", "og:site_name", siteName);
   }
 
   private setUrl(url: string): void {
-    this.setMetaTag('name', 'og:url', url);
+    this.setMetaTag("name", "og:url", url);
   }
 
   private setTitle(title?: string): void {
     if (title) {
       this.titleService.setTitle(title);
     }
-    this.setMetaTag('name', 'title', title);
-    this.setMetaTag('name', 'twitter:title', title);
-    this.setMetaTag('name', 'twitter:image:alt', title);
-    this.setMetaTag('property', 'og:title', title);
-    this.setMetaTag('property', 'og:image:alt', title);
-    this.setMetaTag('itemprop', 'name', title, `itemprop='name'`);
+    this.setMetaTag("name", "title", title);
+    this.setMetaTag("name", "twitter:title", title);
+    this.setMetaTag("name", "twitter:image:alt", title);
+    this.setMetaTag("property", "og:title", title);
+    this.setMetaTag("property", "og:image:alt", title);
+    this.setMetaTag("itemprop", "name", title, `itemprop='name'`);
   }
 
   private setImage(url?: string): void {
-    this.setMetaTag('name', 'twitter:image', url);
-    this.setMetaTag('property', 'og:image', url, `itemprop='image'`);
+    this.setMetaTag("name", "twitter:image", url);
+    this.setMetaTag("property", "og:image", url, `itemprop='image'`);
   }
 }

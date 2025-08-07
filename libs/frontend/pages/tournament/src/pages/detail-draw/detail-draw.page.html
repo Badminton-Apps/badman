@@ -28,19 +28,19 @@
 </badman-page-header>
 
 @switch (this.drawTournament().type) {
-  @case ('POULE') {
+  @case ("POULE") {
     <badman-standing
       [type]="'players'"
       [entries]="this.drawTournament().eventEntries!"
     ></badman-standing>
   }
-  @case ('KO') {
+  @case ("KO") {
     <badman-standing
       [type]="'players'"
       [entries]="this.drawTournament().eventEntries!"
     ></badman-standing>
   }
-  @case ('QUALIFICATION') {
+  @case ("QUALIFICATION") {
     <badman-standing
       [type]="'players'"
       [entries]="this.drawTournament().eventEntries!"

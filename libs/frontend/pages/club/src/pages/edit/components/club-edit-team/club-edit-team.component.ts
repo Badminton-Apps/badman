@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,32 +7,32 @@ import {
   inject,
   input,
   output,
-} from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { BadmanBlockModule, PlayerSearchComponent } from '@badman/frontend-components';
+} from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { BadmanBlockModule, PlayerSearchComponent } from "@badman/frontend-components";
 import {
   Club,
   EntryCompetitionPlayer,
   Player,
   SubEventCompetition,
   Team,
-} from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import { PickEventDialogComponent } from '../../../../dialogs';
+} from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import { PickEventDialogComponent } from "../../../../dialogs";
 
 @Component({
-    selector: 'badman-club-edit-team',
-    templateUrl: './club-edit-team.component.html',
-    styleUrls: ['./club-edit-team.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
+  selector: "badman-club-edit-team",
+  templateUrl: "./club-edit-team.component.html",
+  styleUrls: ["./club-edit-team.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
     ReactiveFormsModule,
     TranslatePipe,
     MatListModule,
@@ -44,8 +43,8 @@ import { PickEventDialogComponent } from '../../../../dialogs';
     MatMenuModule,
     MatInputModule,
     PlayerSearchComponent,
-    BadmanBlockModule
-]
+    BadmanBlockModule,
+  ],
 })
 export class ClubEditTeamComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
@@ -68,7 +67,7 @@ export class ClubEditTeamComponent implements OnInit {
 
   where!: { [key: string]: unknown };
 
-  @ViewChild('changeRanking')
+  @ViewChild("changeRanking")
   changeRankingTemplateRef?: TemplateRef<HTMLElement>;
   changeRankingFormGroup?: FormGroup;
 
@@ -80,7 +79,7 @@ export class ClubEditTeamComponent implements OnInit {
 
     this.where = {
       gender:
-        this.team().type == 'MX' || this.team().type == 'NATIONAL' ? undefined : this.team().type,
+        this.team().type == "MX" || this.team().type == "NATIONAL" ? undefined : this.team().type,
     };
   }
 
@@ -125,9 +124,9 @@ export class ClubEditTeamComponent implements OnInit {
       if (this.changeRankingFormGroup?.valid) {
         this.whenPlayerMetaUpdated.emit({
           ...player,
-          single: this.changeRankingFormGroup?.get('single')?.value,
-          double: this.changeRankingFormGroup?.get('double')?.value,
-          mix: this.changeRankingFormGroup?.get('mix')?.value,
+          single: this.changeRankingFormGroup?.get("single")?.value,
+          double: this.changeRankingFormGroup?.get("double")?.value,
+          mix: this.changeRankingFormGroup?.get("mix")?.value,
         });
       }
     });

@@ -1,2 +1,2 @@
-export * from './generator.module';
-export * from './services';
+export * from "./generator.module";
+export * from "./services";

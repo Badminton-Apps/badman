@@ -1,4 +1,3 @@
-
 import {
   Component,
   computed,
@@ -8,47 +7,47 @@ import {
   Signal,
   signal,
   TransferState,
-} from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterModule } from '@angular/router';
-import { ClaimService } from '@badman/frontend-auth';
-import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
-import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { sortSubEvents } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-import { injectRouteData } from 'ngxtension/inject-route-data';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { EditSubeventDialogComponent } from '../../dialogs';
-import { EventMenuComponent } from '../../menus/event-menu/event-menu.component';
-import { CompetitionEncountersComponent } from './competition-encounters';
-import { CompetitionEncounterService } from './competition-encounters/competition-encounters.service';
-import { CompetitionEnrollmentsComponent } from './competition-enrollments';
-import { CompetitionMapComponent } from './competition-map';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Apollo } from 'apollo-angular';
-import { EVENT_QUERY } from '../../queries';
-import { transferState } from '@badman/frontend-utils';
-import { map, tap } from 'rxjs';
-import { injectParams } from 'ngxtension/inject-params';
+} from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { Router, RouterModule } from "@angular/router";
+import { ClaimService } from "@badman/frontend-auth";
+import { HasClaimComponent, PageHeaderComponent } from "@badman/frontend-components";
+import { EventCompetition, SubEventCompetition } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { sortSubEvents } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MomentModule } from "ngx-moment";
+import { injectQueryParams } from "ngxtension/inject-query-params";
+import { injectRouteData } from "ngxtension/inject-route-data";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { EditSubeventDialogComponent } from "../../dialogs";
+import { EventMenuComponent } from "../../menus/event-menu/event-menu.component";
+import { CompetitionEncountersComponent } from "./competition-encounters";
+import { CompetitionEncounterService } from "./competition-encounters/competition-encounters.service";
+import { CompetitionEnrollmentsComponent } from "./competition-enrollments";
+import { CompetitionMapComponent } from "./competition-map";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { Apollo } from "apollo-angular";
+import { EVENT_QUERY } from "../../queries";
+import { transferState } from "@badman/frontend-utils";
+import { map, tap } from "rxjs";
+import { injectParams } from "ngxtension/inject-params";
 
 @Component({
-  selector: 'badman-competition-detail',
-  templateUrl: './detail.page.html',
-  styleUrls: ['./detail.page.scss'],
+  selector: "badman-competition-detail",
+  templateUrl: "./detail.page.html",
+  styleUrls: ["./detail.page.scss"],
   imports: [
     RouterModule,
     TranslatePipe,
@@ -71,8 +70,8 @@ import { injectParams } from 'ngxtension/inject-params';
     CompetitionEnrollmentsComponent,
     CompetitionMapComponent,
     CompetitionEncountersComponent,
-    EventMenuComponent
-],
+    EventMenuComponent,
+  ],
 })
 export class DetailPageComponent {
   private readonly seoService = inject(SeoService);
@@ -85,7 +84,7 @@ export class DetailPageComponent {
   private readonly competitionEncounterService = inject(CompetitionEncounterService);
   private readonly stateTransfer = inject(TransferState);
   private readonly platformId = inject<string>(PLATFORM_ID);
-  readonly eventId = injectParams('id') as Signal<string>;
+  readonly eventId = injectParams("id") as Signal<string>;
 
   // signals
   currentTab = signal(0);
@@ -102,20 +101,20 @@ export class DetailPageComponent {
         transferState(`eventKey-${this.eventId()}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.eventCompetition) {
-            throw new Error('No event found!');
+            throw new Error("No event found!");
           }
           return new EventCompetition(result.data.eventCompetition);
-        }),
-      ),
+        })
+      )
   );
-  private readonly quaryTab = injectQueryParams('tab');
+  private readonly quaryTab = injectQueryParams("tab");
 
-  hasPermission = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
+  hasPermission = computed(() => this.claimService.hasAnyClaims(["edit-any:club"]));
   canViewEnrollments = computed(() =>
     this.claimService.hasAnyClaims([
-      'view-any:enrollment-competition',
+      "view-any:enrollment-competition",
       `${this.eventCompetition()?.id}_view:enrollment-competition`,
-    ]),
+    ])
   );
 
   subEvents = computed(() =>
@@ -123,7 +122,7 @@ export class DetailPageComponent {
       ?.subEventCompetitions?.sort(sortSubEvents)
       ?.reduce(
         (acc, subEventCompetition) => {
-          const eventType = subEventCompetition.eventType ?? 'Unknown';
+          const eventType = subEventCompetition.eventType ?? "Unknown";
           const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
           if (subEvents) {
             subEvents.push(subEventCompetition);
@@ -132,8 +131,8 @@ export class DetailPageComponent {
           }
           return acc;
         },
-        [] as { eventType: string; subEvents: SubEventCompetition[] }[],
-      ),
+        [] as { eventType: string; subEvents: SubEventCompetition[] }[]
+      )
   );
 
   constructor() {
@@ -150,10 +149,10 @@ export class DetailPageComponent {
       this.seoService.update({
         title: eventCompetitionName,
         description: `Competition ${eventCompetitionName}`,
-        type: 'website',
-        keywords: ['event', 'competition', 'badminton'],
+        type: "website",
+        keywords: ["event", "competition", "badminton"],
       });
-      this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
+      this.breadcrumbsService.set("@eventCompetition", eventCompetitionName);
     });
 
     effect(() => {
@@ -173,13 +172,13 @@ export class DetailPageComponent {
       queryParams: {
         tab: index === 0 ? undefined : index,
       },
-      queryParamsHandling: 'merge',
+      queryParamsHandling: "merge",
     });
   }
 
   editSubEvent(subEvent: SubEventCompetition) {
     const dialogRef = this.dialog.open(EditSubeventDialogComponent, {
-      width: '500px',
+      width: "500px",
       data: { subEvent },
     });
 

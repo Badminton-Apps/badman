@@ -1,53 +1,53 @@
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '@badman/frontend-auth';
-import { DetailPageComponent, EditPageComponent } from './pages';
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "@badman/frontend-auth";
+import { DetailPageComponent, EditPageComponent } from "./pages";
 
 const MODULE_ROUTES: Routes = [
   {
-    path: '',
-    redirectTo: 'smash-for-fun',
-    pathMatch: 'full',
+    path: "",
+    redirectTo: "smash-for-fun",
+    pathMatch: "full",
     data: { breadcrumb: { skip: true } },
   },
   {
-    path: ':id',
+    path: ":id",
     data: {
       breadcrumb: {
-        alias: 'club',
+        alias: "club",
       },
     },
     children: [
       {
-        path: '',
+        path: "",
         component: DetailPageComponent,
       },
 
       {
-        path: 'edit',
+        path: "edit",
         canActivate: [AuthGuard],
         data: {
           claims: {
-            any: ['[:id]_edit:club', 'edit-any:club'],
+            any: ["[:id]_edit:club", "edit-any:club"],
           },
         },
         children: [
           {
-            path: 'role',
-            loadChildren: () => import('@badman/frontend-role').then((module) => module.RoleModule),
+            path: "role",
+            loadChildren: () => import("@badman/frontend-role").then((module) => module.RoleModule),
           },
           {
-            path: '',
+            path: "",
             component: EditPageComponent,
           },
         ],
       },
 
       {
-        path: 'team',
+        path: "team",
         data: { breadcrumb: { skip: true } },
-        loadChildren: () => import('@badman/frontend-team').then((module) => module.TeamModule),
+        loadChildren: () => import("@badman/frontend-team").then((module) => module.TeamModule),
       },
     ],
   },

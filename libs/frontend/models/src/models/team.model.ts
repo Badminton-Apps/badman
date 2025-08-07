@@ -1,8 +1,8 @@
-import { SubEventTypeEnum } from '@badman/utils';
-import { Club } from './club.model';
-import { EventEntry } from './entry.model';
-import { Location } from './location.model';
-import { Player, TeamPlayer } from './player.model';
+import { SubEventTypeEnum } from "@badman/utils";
+import { Club } from "./club.model";
+import { EventEntry } from "./entry.model";
+import { Location } from "./location.model";
+import { Player, TeamPlayer } from "./player.model";
 
 export class Team {
   id!: string;
@@ -12,18 +12,18 @@ export class Team {
   type?: SubEventTypeEnum;
   teamNumber?: number;
   preferredTime?: string;
-  preferredDay?: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+  preferredDay?: "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday";
   prefferedLocationId?: string;
 
   preferred2Time?: string;
   preferred2Day?:
-    | 'sunday'
-    | 'monday'
-    | 'tuesday'
-    | 'wednesday'
-    | 'thursday'
-    | 'friday'
-    | 'saturday';
+    | "sunday"
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday";
   prefferedLocation2Id?: string;
 
   players!: TeamPlayer[];
@@ -83,10 +83,10 @@ export class Team {
         const player = new TeamPlayer(p);
 
         if (player.lastRanking) {
-          let index = this.type == 'MX' ? 36 : 24;
-          let indexSplit = this.type == 'MX' ? '12-12-12' : '12-12';
+          let index = this.type == "MX" ? 36 : 24;
+          let indexSplit = this.type == "MX" ? "12-12-12" : "12-12";
           if (player.lastRanking) {
-            if (this.type == 'MX') {
+            if (this.type == "MX") {
               index =
                 (player.lastRanking.single ?? 0) +
                 (player.lastRanking.double ?? 0) +
@@ -113,7 +113,7 @@ export class Team {
       return;
     }
 
-    if (this.type !== 'MX') {
+    if (this.type !== "MX") {
       const bestPlayers = basePlayers
         .map((r) => r.index)
         .sort((a, b) => (a ?? 0) - (b ?? 0))
@@ -130,13 +130,13 @@ export class Team {
       const bestPlayers = [
         // 2 best male
         ...basePlayers
-          .filter((p) => p.gender == 'M')
+          .filter((p) => p.gender == "M")
           .map((r) => r.index)
           .sort((a, b) => (a ?? 0) - (b ?? 0))
           .slice(0, 2),
         // 2 best female
         ...basePlayers
-          .filter((p) => p.gender == 'F')
+          .filter((p) => p.gender == "F")
           .map((r) => r.index)
           .sort((a, b) => (a ?? 0) - (b ?? 0))
           .slice(0, 2),

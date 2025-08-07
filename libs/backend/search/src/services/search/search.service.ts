@@ -1,15 +1,15 @@
-import { Club, EventCompetition, EventTournament, Player } from '@badman/backend-database';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Op, WhereOptions } from 'sequelize';
-import { ConfigType } from '@badman/utils';
+import { Club, EventCompetition, EventTournament, Player } from "@badman/backend-database";
+import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Op, WhereOptions } from "sequelize";
+import { ConfigType } from "@badman/utils";
 
 @Injectable()
 export class SearchService {
   private readonly like = Op.iLike;
 
   constructor(private readonly configService: ConfigService<ConfigType>) {
-    if (this.configService.get('DB_DIALECT') === 'sqlite') {
+    if (this.configService.get("DB_DIALECT") === "sqlite") {
       this.like = Op.like;
     }
   }
@@ -35,8 +35,8 @@ export class SearchService {
     return (
       `${query}`
         ?.toLowerCase()
-        ?.replace(/[;\\\\/:*?"<>|&',]/, ' ')
-        ?.split(' ')
+        ?.replace(/[;\\\\/:*?"<>|&',]/, " ")
+        ?.split(" ")
         ?.map((r) => r.trim())
         ?.filter((r) => r?.length > 0)
         ?.filter((r) => (r ?? null) != null) ?? []
@@ -62,7 +62,7 @@ export class SearchService {
 
   async searchCompetitionEvents(
     parts: string[],
-    queries: WhereOptions[] = [],
+    queries: WhereOptions[] = []
   ): Promise<EventCompetition[]> {
     for (const part of parts) {
       queries.push({
@@ -71,7 +71,7 @@ export class SearchService {
     }
 
     return await EventCompetition.findAll({
-      order: [['season', 'DESC']],
+      order: [["season", "DESC"]],
       where: { [Op.and]: queries },
       limit: 100,
     });
@@ -79,7 +79,7 @@ export class SearchService {
 
   async searchTournamnetsEvents(
     parts: string[],
-    queries: WhereOptions[] = [],
+    queries: WhereOptions[] = []
   ): Promise<EventTournament[]> {
     for (const part of parts) {
       queries.push({
@@ -88,7 +88,7 @@ export class SearchService {
     }
 
     return await EventTournament.findAll({
-      order: [['firstDay', 'DESC']],
+      order: [["firstDay", "DESC"]],
       where: { [Op.and]: queries },
       limit: 100,
     });

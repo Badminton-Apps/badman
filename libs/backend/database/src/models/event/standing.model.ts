@@ -1,5 +1,5 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { BuildOptions } from 'sequelize';
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
+import { BuildOptions } from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -11,15 +11,15 @@ import {
   PrimaryKey,
   Table,
   TableOptions,
-} from 'sequelize-typescript';
-import { EventEntry } from './entry.model';
-import { Relation } from '../../wrapper';
+} from "sequelize-typescript";
+import { EventEntry } from "./entry.model";
+import { Relation } from "../../wrapper";
 
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 } as TableOptions)
-@ObjectType({ description: 'A Standing' })
+@ObjectType({ description: "A Standing" })
 export class Standing extends Model {
   constructor(values?: Partial<Standing>, options?: BuildOptions) {
     super(values, options);
@@ -38,7 +38,7 @@ export class Standing extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @BelongsTo(() => EventEntry, 'entryId')
+  @BelongsTo(() => EventEntry, "entryId")
   entry?: Relation<EventEntry>;
 
   @ForeignKey(() => EventEntry)

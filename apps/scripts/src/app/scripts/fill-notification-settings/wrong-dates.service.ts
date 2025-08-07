@@ -1,7 +1,7 @@
-import { Setting, Team } from '@badman/backend-database';
-import { NotificationType } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import { Op } from 'sequelize';
+import { Setting, Team } from "@badman/backend-database";
+import { NotificationType } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import { Op } from "sequelize";
 
 @Injectable()
 export class FillNotification {
@@ -40,6 +40,6 @@ export class FillNotification {
       await settings.save();
     }
 
-    this.logger.log('Done');
+    this.logger.log("Done");
   }
 }

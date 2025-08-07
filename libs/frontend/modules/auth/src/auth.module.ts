@@ -1,11 +1,11 @@
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { ModuleWithProviders, NgModule } from "@angular/core";
 import {
   AuthConfig,
   AuthConfigService,
   AuthHttpInterceptor,
   AuthModule as auth0Module,
-} from '@auth0/auth0-angular';
+} from "@auth0/auth0-angular";
 
 export type AuthConfiguration = Readonly<AuthConfig | undefined>;
 

@@ -5,7 +5,7 @@ export const sortComments = (
   b?: Partial<{
     createdAt: Date;
   }>,
-  order: 'asc' | 'desc' = 'desc',
+  order: "asc" | "desc" = "desc"
 ) => {
   if (!a?.createdAt) {
     return 1;
@@ -16,9 +16,9 @@ export const sortComments = (
   }
 
   if (a.createdAt < b.createdAt) {
-    return order === 'asc' ? -1 : 1;
+    return order === "asc" ? -1 : 1;
   } else if (a.createdAt > b.createdAt) {
-    return order === 'asc' ? 1 : -1;
+    return order === "asc" ? 1 : -1;
   } else {
     return 0;
   }

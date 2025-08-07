@@ -1,5 +1,5 @@
-import { EnrollmentValidationData, RuleResult, EnrollmentValidationError } from '../../../models';
-import { Rule } from './_rule.base';
+import { EnrollmentValidationData, RuleResult, EnrollmentValidationError } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export class TeamBaseIndexRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
@@ -16,7 +16,7 @@ export class TeamBaseIndexRule extends Rule {
       if (team?.teamNumber != 1 && (teamIndex ?? 0) < (baseIndex ?? 0)) {
         teamValid = true;
         warning.push({
-          message: 'all.v1.entryTeamDrawer.validation.errors.team-index',
+          message: "all.v1.entryTeamDrawer.validation.errors.team-index",
           params: {
             teamIndex,
             baseIndex,
@@ -31,7 +31,7 @@ export class TeamBaseIndexRule extends Rule {
       ) {
         teamValid = false;
         errors.push({
-          message: 'all.v1.entryTeamDrawer.validation.errors.first-team-index',
+          message: "all.v1.entryTeamDrawer.validation.errors.first-team-index",
         });
       }
 

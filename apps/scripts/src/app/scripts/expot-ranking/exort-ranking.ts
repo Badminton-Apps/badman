@@ -6,54 +6,54 @@ import {
   RankingLastPlace,
   RankingPoint,
   RankingSystem,
-} from '@badman/backend-database';
+} from "@badman/backend-database";
 import {
   ClubMembershipType,
   GameBreakdownType,
   GameType,
   getGameResultType,
   runParallel,
-} from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import moment from 'moment';
-import { Includeable, Op } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import xlsx from 'xlsx';
-import { autoFilter, autoSize } from '../../../shared/excel';
+} from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import moment from "moment";
+import { Includeable, Op } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import xlsx from "xlsx";
+import { autoFilter, autoSize } from "../../../shared/excel";
 
 @Injectable()
 export class ExportBBFPlayers {
   output: {
-    'First Name'?: string;
-    'Last Name'?: string;
-    'Member id'?: string;
+    "First Name"?: string;
+    "Last Name"?: string;
+    "Member id"?: string;
     Club?: string;
-    'Single Ranking': number;
-    'Single Upgrade'?: number;
-    'Single Upgrade Badman'?: number;
-    'Single Downgrade'?: number;
-    'Double Ranking': number;
-    'Double Upgrade'?: number;
-    'Double Upgrade Badman'?: number;
-    'Double Downgrade'?: number;
-    'Mix ranking': number;
-    'Mix Upgrade'?: number;
-    'Mix Upgrade Badman'?: number;
-    'Mix Downgrade'?: number;
-    'Single # Competition': number;
-    'Single # Tournaments': number;
-    'Single # Total': number;
-    'Double # Competition': number;
-    'Double # Tournament': number;
-    'Double # Total': number;
-    'Mix # Competition': number;
-    'Mix # Tournament': number;
-    'Mix # Total': number;
+    "Single Ranking": number;
+    "Single Upgrade"?: number;
+    "Single Upgrade Badman"?: number;
+    "Single Downgrade"?: number;
+    "Double Ranking": number;
+    "Double Upgrade"?: number;
+    "Double Upgrade Badman"?: number;
+    "Double Downgrade"?: number;
+    "Mix ranking": number;
+    "Mix Upgrade"?: number;
+    "Mix Upgrade Badman"?: number;
+    "Mix Downgrade"?: number;
+    "Single # Competition": number;
+    "Single # Tournaments": number;
+    "Single # Total": number;
+    "Double # Competition": number;
+    "Double # Tournament": number;
+    "Double # Total": number;
+    "Mix # Competition": number;
+    "Mix # Tournament": number;
+    "Mix # Total": number;
   }[] = [];
 
   private readonly logger = new Logger(ExportBBFPlayers.name);
   constructor(private _sequelize: Sequelize) {
-    this.logger.log('ExportBBFPlayers');
+    this.logger.log("ExportBBFPlayers");
   }
 
   async process(season: number, systemId: string) {
@@ -71,7 +71,7 @@ export class ExportBBFPlayers {
         include: [{ model: RankingGroup }],
       });
       if (!system) {
-        throw new Error('No primary ranking system found');
+        throw new Error("No primary ranking system found");
       }
 
       const players = await this.loadPlayers(season, system, debug);
@@ -83,24 +83,24 @@ export class ExportBBFPlayers {
       await runParallel(
         players?.map(async (player) => {
           const compGamesPlayer = compGames.filter((g) =>
-            g.players?.some((p) => p.id == player.id),
+            g.players?.some((p) => p.id == player.id)
           );
           const tournamentGamesPlayer = tournamentGames.filter((g) =>
-            g.players?.some((p) => p.id == player.id),
+            g.players?.some((p) => p.id == player.id)
           );
 
           this.output.push(
-            this.processPlayer(player, compGamesPlayer, tournamentGamesPlayer, system, debug),
+            this.processPlayer(player, compGamesPlayer, tournamentGamesPlayer, system, debug)
           );
 
           if (processedPlayers % 100 === 0) {
             this.logger.verbose(
-              `Processed ${processedPlayers} of ${totalPlayers} (${(processedPlayers / totalPlayers) * 100}%)`,
+              `Processed ${processedPlayers} of ${totalPlayers} (${(processedPlayers / totalPlayers) * 100}%)`
             );
           }
           processedPlayers++;
         }),
-        50,
+        50
       );
 
       const wb = xlsx.utils.book_new();
@@ -109,7 +109,7 @@ export class ExportBBFPlayers {
       autoSize(ws);
       autoFilter(ws);
 
-      xlsx.utils.book_append_sheet(wb, ws, 'Players');
+      xlsx.utils.book_append_sheet(wb, ws, "Players");
 
       xlsx.writeFile(wb, `apps/scripts/src/app/shared-files/${system.name} ${season}.xlsx`);
     } catch (error) {
@@ -122,7 +122,7 @@ export class ExportBBFPlayers {
     compGamesPlayer: Game[],
     tournamentGamesPlayer: Game[],
     system: RankingSystem,
-    debug: boolean,
+    debug: boolean
   ) {
     const lastRanking = player.rankingLastPlaces?.[0];
 
@@ -139,32 +139,32 @@ export class ExportBBFPlayers {
     const gamesMix = [...mixComp, ...mixTournament];
 
     return {
-      'First Name': player.firstName,
-      'Last Name': player.lastName,
-      'Member id': player.memberId,
+      "First Name": player.firstName,
+      "Last Name": player.lastName,
+      "Member id": player.memberId,
       Club: player.clubs?.[0]?.name,
-      'Single Ranking': lastRanking?.single ?? system.amountOfLevels,
+      "Single Ranking": lastRanking?.single ?? system.amountOfLevels,
 
-      'Single Upgrade': lastRanking?.singlePoints,
-      'Single Upgrade Badman': this.getUpgradeAverage(gamesSingle, player, system),
-      'Single Downgrade': debug ? 0 : this.getDowngradeAverage(gamesSingle, player, system),
-      'Double Ranking': lastRanking?.double ?? system.amountOfLevels,
-      'Double Upgrade': lastRanking?.doublePoints,
-      'Double Upgrade Badman': debug ? 0 : this.getUpgradeAverage(gamesDouble, player, system),
-      'Double Downgrade': debug ? 0 : this.getDowngradeAverage(gamesDouble, player, system),
-      'Mix ranking': lastRanking?.mix ?? system.amountOfLevels,
-      'Mix Upgrade': lastRanking?.mixPoints,
-      'Mix Upgrade Badman': debug ? 0 : this.getUpgradeAverage(gamesMix, player, system),
-      'Mix Downgrade': debug ? 0 : this.getDowngradeAverage(gamesMix, player, system),
-      'Single # Competition': singleComp.length,
-      'Single # Tournaments': singleTournament.length,
-      'Single # Total': singleComp.length + singleTournament.length,
-      'Double # Competition': doubleComp.length,
-      'Double # Tournament': doubleTournament.length,
-      'Double # Total': doubleComp.length + doubleTournament.length,
-      'Mix # Competition': mixComp.length,
-      'Mix # Tournament': mixTournament.length,
-      'Mix # Total': mixComp.length + mixTournament.length,
+      "Single Upgrade": lastRanking?.singlePoints,
+      "Single Upgrade Badman": this.getUpgradeAverage(gamesSingle, player, system),
+      "Single Downgrade": debug ? 0 : this.getDowngradeAverage(gamesSingle, player, system),
+      "Double Ranking": lastRanking?.double ?? system.amountOfLevels,
+      "Double Upgrade": lastRanking?.doublePoints,
+      "Double Upgrade Badman": debug ? 0 : this.getUpgradeAverage(gamesDouble, player, system),
+      "Double Downgrade": debug ? 0 : this.getDowngradeAverage(gamesDouble, player, system),
+      "Mix ranking": lastRanking?.mix ?? system.amountOfLevels,
+      "Mix Upgrade": lastRanking?.mixPoints,
+      "Mix Upgrade Badman": debug ? 0 : this.getUpgradeAverage(gamesMix, player, system),
+      "Mix Downgrade": debug ? 0 : this.getDowngradeAverage(gamesMix, player, system),
+      "Single # Competition": singleComp.length,
+      "Single # Tournaments": singleTournament.length,
+      "Single # Total": singleComp.length + singleTournament.length,
+      "Double # Competition": doubleComp.length,
+      "Double # Tournament": doubleTournament.length,
+      "Double # Total": doubleComp.length + doubleTournament.length,
+      "Mix # Competition": mixComp.length,
+      "Mix # Tournament": mixTournament.length,
+      "Mix # Total": mixComp.length + mixTournament.length,
     };
   }
 
@@ -175,11 +175,11 @@ export class ExportBBFPlayers {
     if (debug) {
       orClause.push({
         // always include me for debugging
-        slug: ['erika-verhoeven', 'gunther-van-loco', 'glenn-latomme'],
+        slug: ["erika-verhoeven", "gunther-van-loco", "glenn-latomme"],
       });
     } else {
       const playersxlsx = xlsx.readFile(
-        `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`,
+        `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`
       );
       const playersSheet = playersxlsx.Sheets[playersxlsx.SheetNames[0]];
       let playersJson = xlsx.utils.sheet_to_json<{
@@ -194,14 +194,14 @@ export class ExportBBFPlayers {
       }>(playersSheet);
 
       playersJson = playersJson?.filter(
-        (c) => c.memberid != null && c.memberid != '' && c.memberid != undefined,
+        (c) => c.memberid != null && c.memberid != "" && c.memberid != undefined
       );
       // ?.slice(0, 1000);
       orClause.push({ memberId: playersJson?.map((c) => c.memberid) });
     }
 
     const players = await Player.findAll({
-      attributes: ['id', 'firstName', 'lastName', 'memberId'],
+      attributes: ["id", "firstName", "lastName", "memberId"],
       where: {
         [Op.or]: orClause,
         competitionPlayer: true,
@@ -209,7 +209,7 @@ export class ExportBBFPlayers {
       include: [
         {
           model: Club,
-          attributes: ['id', 'name'],
+          attributes: ["id", "name"],
           through: {
             where: {
               end: null,
@@ -220,15 +220,15 @@ export class ExportBBFPlayers {
         {
           model: RankingLastPlace,
           attributes: [
-            'singlePoints',
-            'mixPoints',
-            'doublePoints',
-            'singlePointsDowngrade',
-            'mixPointsDowngrade',
-            'doublePointsDowngrade',
-            'single',
-            'mix',
-            'double',
+            "singlePoints",
+            "mixPoints",
+            "doublePoints",
+            "singlePointsDowngrade",
+            "mixPointsDowngrade",
+            "doublePointsDowngrade",
+            "single",
+            "mix",
+            "double",
           ],
           where: {
             systemId: system.id,
@@ -244,20 +244,20 @@ export class ExportBBFPlayers {
     const stop = moment(); // system.calculationLastUpdate;
     const start = moment(system.calculationLastUpdate).subtract(
       system.periodAmount,
-      system.periodUnit,
+      system.periodUnit
     );
 
     const sharedInclude = [
       {
         model: Player,
-        attributes: ['id'],
+        attributes: ["id"],
         where: {
           id: players.map((p) => p.id),
         },
       },
       {
         model: RankingPoint,
-        attributes: ['id', 'points', 'systemId', 'playerId', 'differenceInLevel'],
+        attributes: ["id", "points", "systemId", "playerId", "differenceInLevel"],
         where: {
           systemId: system.id,
         },
@@ -269,24 +269,24 @@ export class ExportBBFPlayers {
 
     this.logger.verbose(`Loading competition games`);
     const competitionGames = await Game.findAll({
-      attributes: ['id', 'gameType', 'winner'],
+      attributes: ["id", "gameType", "winner"],
       where: {
         playedAt: {
-          [Op.between]: [start.format('YYYY-MM-DD'), stop.format('YYYY-MM-DD')],
+          [Op.between]: [start.format("YYYY-MM-DD"), stop.format("YYYY-MM-DD")],
         },
-        linkType: 'competition',
+        linkType: "competition",
       },
       include: [...sharedInclude],
     });
 
     this.logger.verbose(`Loading tournament games`);
     const tournamentGames = await Game.findAll({
-      attributes: ['id', 'gameType', 'winner'],
+      attributes: ["id", "gameType", "winner"],
       where: {
         playedAt: {
-          [Op.between]: [start.format('YYYY-MM-DD'), stop.format('YYYY-MM-DD')],
+          [Op.between]: [start.format("YYYY-MM-DD"), stop.format("YYYY-MM-DD")],
         },
-        linkType: 'tournament',
+        linkType: "tournament",
       },
       include: [...sharedInclude],
     });

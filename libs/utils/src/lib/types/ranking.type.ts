@@ -1,1 +1,1 @@
-export type Ranking = 'single' | 'double' | 'mix';
+export type Ranking = "single" | "double" | "mix";

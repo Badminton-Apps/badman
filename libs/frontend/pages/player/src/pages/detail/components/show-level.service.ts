@@ -1,9 +1,9 @@
-import { Injectable, computed, inject } from '@angular/core';
-import { Player, RankingPlace } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Injectable, computed, inject } from "@angular/core";
+import { Player, RankingPlace } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { Observable } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
 
 export interface LevelState {
   rankingPlace: RankingPlace | null;
@@ -11,7 +11,7 @@ export interface LevelState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ShowLevelService {
   apollo = inject(Apollo);
@@ -32,7 +32,7 @@ export class ShowLevelService {
         action$: Observable<{
           id: string;
           systemId: string;
-        }>,
+        }>
       ) =>
         action$.pipe(
           switchMap(({ id, systemId }) =>
@@ -63,7 +63,7 @@ export class ShowLevelService {
                 id,
                 systemId,
               },
-            }),
+            })
           ),
           map((res) => res.data?.player),
           map((player) => ({
@@ -71,7 +71,7 @@ export class ShowLevelService {
               ? new RankingPlace(player.rankingLastPlaces[0])
               : null,
             loaded: true,
-          })),
+          }))
         ),
     },
   });

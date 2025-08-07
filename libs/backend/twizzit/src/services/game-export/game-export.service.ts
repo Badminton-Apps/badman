@@ -4,10 +4,10 @@ import {
   EncounterCompetition,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import moment from 'moment-timezone';
-import { Op } from 'sequelize';
+} from "@badman/backend-database";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import moment from "moment-timezone";
+import { Op } from "sequelize";
 
 @Injectable()
 export class GameExportService {
@@ -23,11 +23,11 @@ export class GameExportService {
     this.logger.log(`Getting games for ${club.name}`);
 
     const teams = await club.getTeams({
-      attributes: ['id'],
+      attributes: ["id"],
     });
 
     const encounters = await EncounterCompetition.findAll({
-      attributes: ['id', 'date', 'homeScore', 'awayScore'],
+      attributes: ["id", "date", "homeScore", "awayScore"],
       where: {
         date: {
           [Op.between]: [moment([year, 8, 1]).toDate(), moment([year + 1, 8, 1]).toDate()],
@@ -46,15 +46,15 @@ export class GameExportService {
         ],
       },
       include: [
-        { attributes: ['id', 'name'], model: Team, as: 'home' },
-        { attributes: ['id', 'name'], model: Team, as: 'away' },
+        { attributes: ["id", "name"], model: Team, as: "home" },
+        { attributes: ["id", "name"], model: Team, as: "away" },
         {
-          attributes: ['id'],
+          attributes: ["id"],
           model: DrawCompetition,
-          include: [{ attributes: ['id', 'eventType'], model: SubEventCompetition }],
+          include: [{ attributes: ["id", "eventType"], model: SubEventCompetition }],
         },
       ],
-      order: [['date', 'ASC']],
+      order: [["date", "ASC"]],
     });
 
     this.logger.log(`Found ${encounters.length} games`);
@@ -63,23 +63,23 @@ export class GameExportService {
 
   async gamesExport(
     year: number,
-    clubId: string,
+    clubId: string
   ): Promise<
     {
-      'Game id': string;
+      "Game id": string;
       Type: string;
       Seizoen: string;
       Datum: string;
-      'Start tijdstip': string;
-      'Eind tijdstip': string;
-      'Tijdstip afspraak': string;
+      "Start tijdstip": string;
+      "Eind tijdstip": string;
+      "Tijdstip afspraak": string;
       Thuisteam: string | undefined;
       Uitteam: string | undefined;
       Resource: null;
-      'Part (%)': null;
+      "Part (%)": null;
       Omschrijving: null;
       Score: string | null;
-      'Score details': null;
+      "Score details": null;
     }[]
   > {
     const games = await this.getGames(year, clubId);
@@ -90,23 +90,23 @@ export class GameExportService {
       const awayTeam = game.away as Team;
 
       return {
-        'Game id': game.id,
-        Type: 'Competitie',
+        "Game id": game.id,
+        Type: "Competitie",
         Seizoen: `${year}-${parseInt(`${year}`) + 1}`,
-        Datum: moment.tz(game.date, 'Europe/Brussels').format('DD/MM/YYYY'),
-        'Start tijdstip': moment.tz(game.date, 'Europe/Brussels').format('HH:mm'),
-        'Eind tijdstip': moment.tz(game.date, 'Europe/Brussels').add(2, 'hours').format('HH:mm'),
-        'Tijdstip afspraak': moment
-          .tz(game.date, 'Europe/Brussels')
-          .subtract(15, 'minute')
-          .format('HH:mm'),
+        Datum: moment.tz(game.date, "Europe/Brussels").format("DD/MM/YYYY"),
+        "Start tijdstip": moment.tz(game.date, "Europe/Brussels").format("HH:mm"),
+        "Eind tijdstip": moment.tz(game.date, "Europe/Brussels").add(2, "hours").format("HH:mm"),
+        "Tijdstip afspraak": moment
+          .tz(game.date, "Europe/Brussels")
+          .subtract(15, "minute")
+          .format("HH:mm"),
         Thuisteam: homeTeam.name,
         Uitteam: awayTeam.name,
         Resource: null,
-        'Part (%)': null,
+        "Part (%)": null,
         Omschrijving: null,
         Score: game.homeScore && game.awayScore ? `${game.homeScore} - ${game.awayScore}` : null,
-        'Score details': null,
+        "Score details": null,
       };
     });
   }

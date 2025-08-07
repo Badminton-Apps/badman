@@ -1,28 +1,27 @@
-
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { ThemeSwitcherService } from '@badman/frontend-components';
-import { RankingSystem } from '@badman/frontend-models';
-import moment from 'moment';
+import { Component, OnInit, ViewChild, inject } from "@angular/core";
+import { ThemeSwitcherService } from "@badman/frontend-components";
+import { RankingSystem } from "@badman/frontend-models";
+import moment from "moment";
 // import { EChartsOption } from 'echarts';
-import { input } from '@angular/core';
+import { input } from "@angular/core";
 import {
   ChartComponent as ApexChartComponent,
   ApexOptions,
   NgApexchartsModule,
   XAxisAnnotations,
   YAxisAnnotations,
-} from 'ng-apexcharts';
+} from "ng-apexcharts";
 
 @Component({
-    selector: 'badman-chart',
-    templateUrl: './chart.component.html',
-    styleUrls: ['./chart.component.scss'],
-    imports: [NgApexchartsModule]
+  selector: "badman-chart",
+  templateUrl: "./chart.component.html",
+  styleUrls: ["./chart.component.scss"],
+  imports: [NgApexchartsModule],
 })
 export class ChartComponent implements OnInit {
   private themeSwitcher = inject(ThemeSwitcherService);
   // options!: EChartsOption;
-  @ViewChild('chart') chart?: ApexChartComponent;
+  @ViewChild("chart") chart?: ApexChartComponent;
   public chartOptions!: Partial<ApexOptions>;
   rankingPlaces = input<
     {
@@ -38,7 +37,7 @@ export class ChartComponent implements OnInit {
 
   system = input.required<RankingSystem>();
 
-  startedCalc = input<moment.Moment>(moment('2023-12-31T23:00:00.000Z'));
+  startedCalc = input<moment.Moment>(moment("2023-12-31T23:00:00.000Z"));
 
   maxPoints = 0;
 
@@ -59,36 +58,36 @@ export class ChartComponent implements OnInit {
       annotations.push({
         y: this.nextLevel,
         yAxisIndex: 1,
-        borderColor: '#696',
+        borderColor: "#696",
         label: {
-          borderColor: '#696',
+          borderColor: "#696",
           style: {
-            color: '#fff',
-            background: '#696',
+            color: "#fff",
+            background: "#696",
           },
-          position: 'center',
-          text: 'Points needed',
+          position: "center",
+          text: "Points needed",
         },
       });
     }
 
-    const isDark = this.themeSwitcher.currentActive == 'dark';
+    const isDark = this.themeSwitcher.currentActive == "dark";
 
     this.chartOptions = {
       series: [
         {
-          type: 'line',
-          name: 'ranking',
+          type: "line",
+          name: "ranking",
           data: this.levelSeries,
         },
         {
-          type: 'area',
-          name: 'points',
+          type: "area",
+          name: "points",
           data: this.pointsSeries,
         },
       ],
       chart: {
-        type: 'rangeArea',
+        type: "rangeArea",
         animations: {
           speed: 500,
         },
@@ -96,7 +95,7 @@ export class ChartComponent implements OnInit {
           enabled: false,
         },
       },
-      colors: ['#d4526e', '#d4526e'],
+      colors: ["#d4526e", "#d4526e"],
       dataLabels: {
         enabled: false,
       },
@@ -104,7 +103,7 @@ export class ChartComponent implements OnInit {
         opacity: [1, 0.15],
       },
       stroke: {
-        curve: ['straight', 'smooth'],
+        curve: ["straight", "smooth"],
         width: [3, 0.2],
       },
       legend: {
@@ -115,25 +114,25 @@ export class ChartComponent implements OnInit {
         text: this.title(),
       },
       xaxis: {
-        type: 'datetime',
+        type: "datetime",
       },
       yaxis: [
         {
           min: 0,
           max: this.system().amountOfLevels,
           reversed: true,
-          seriesName: 'ranking',
+          seriesName: "ranking",
           tickAmount: this.system().amountOfLevels,
         },
         {
           min: 0,
           max: upMax,
           opposite: true,
-          seriesName: 'points',
+          seriesName: "points",
         },
       ],
       theme: {
-        mode: isDark ? 'dark' : 'light',
+        mode: isDark ? "dark" : "light",
       },
       tooltip: {},
       annotations: {
@@ -218,7 +217,7 @@ export class ChartComponent implements OnInit {
         this.lines.push({
           x: updateDate.valueOf(),
           strokeDashArray: 0,
-          borderColor: '#3d99f566',
+          borderColor: "#3d99f566",
         });
 
         updateDate.subtract(this.system().updateIntervalAmount, this.system().updateIntervalUnit);

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,17 +8,17 @@ module.exports = {
       try {
         // add a boolean to the roles table to indicate if the role is locked
         await queryInterface.addColumn(
-          { tableName: 'Roles', schema: 'security' },
-          'locked',
+          { tableName: "Roles", schema: "security" },
+          "locked",
           {
             type: sequelize.DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -27,11 +27,11 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.removeColumn({ tableName: 'Roles', schema: 'security' }, 'locked', {
+        await queryInterface.removeColumn({ tableName: "Roles", schema: "security" }, "locked", {
           transaction: t,
         });
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

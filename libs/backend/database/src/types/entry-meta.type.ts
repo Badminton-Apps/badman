@@ -1,7 +1,7 @@
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import { EntryCompetition, EntryCompetitionPlayer, EntryTournament, Player } from '../models';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
+import { EntryCompetition, EntryCompetitionPlayer, EntryTournament, Player } from "../models";
 
-@ObjectType({ description: 'A Meta' })
+@ObjectType({ description: "A Meta" })
 export class EntryMetaType {
   @Field(() => EntryTournamentType, { nullable: true })
   tournament?: EntryTournament;
@@ -10,13 +10,13 @@ export class EntryMetaType {
   competition?: EntryCompetition;
 }
 
-@ObjectType({ description: 'A EntryTournament' })
+@ObjectType({ description: "A EntryTournament" })
 export class EntryTournamentType {
   @Field(() => Int, { nullable: true })
   place?: number;
 }
 
-@ObjectType({ description: 'A EntryCompetition' })
+@ObjectType({ description: "A EntryCompetition" })
 export class EntryCompetitionType {
   @Field(() => Int, { nullable: true })
   teamIndex?: number;
@@ -25,7 +25,7 @@ export class EntryCompetitionType {
   players?: EntryCompetitionPlayer[];
 }
 
-@ObjectType({ description: 'A EntryCompetitionPlayers' })
+@ObjectType({ description: "A EntryCompetitionPlayers" })
 export class EntryCompetitionPlayersType {
   @Field(() => ID, { nullable: true })
   id?: string;
@@ -40,7 +40,7 @@ export class EntryCompetitionPlayersType {
   mix?: number;
 
   @Field(() => String, { nullable: true })
-  gender?: 'M' | 'F';
+  gender?: "M" | "F";
 
   @Field(() => Player, { nullable: true })
   player?: Player;
@@ -58,6 +58,6 @@ export class EntryCompetitionPlayersType {
 // input type for EntryCmopetitionPlayer
 @InputType()
 export class EntryCompetitionPlayersInputType extends PartialType(
-  OmitType(EntryCompetitionPlayersType, ['player'] as const),
-  InputType,
+  OmitType(EntryCompetitionPlayersType, ["player"] as const),
+  InputType
 ) {}

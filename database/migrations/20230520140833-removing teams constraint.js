@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,11 +7,11 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         // remove the constraint on the teams table teams_unique_constraint
-        await queryInterface.removeConstraint('Teams', 'teams_unique_constraint', {
+        await queryInterface.removeConstraint("Teams", "teams_unique_constraint", {
           transaction: t,
         });
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -20,16 +20,16 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       // add the constraint on the teams table teams_unique_constraint
-      await queryInterface.addConstraint('Teams', {
-        fields: ['clubId', 'season', 'type', 'teamNumber'],
-        type: 'unique',
-        name: 'teams_unique_constraint',
+      await queryInterface.addConstraint("Teams", {
+        fields: ["clubId", "season", "type", "teamNumber"],
+        type: "unique",
+        name: "teams_unique_constraint",
         transaction: t,
       });
 
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

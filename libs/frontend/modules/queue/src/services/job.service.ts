@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { CronJob } from '@badman/frontend-models';
-import { JOBS_CONFIG_TOKEN } from '../injection';
-import { JobsConfiguration } from '../interfaces';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
+import { CronJob } from "@badman/frontend-models";
+import { JOBS_CONFIG_TOKEN } from "../injection";
+import { JobsConfiguration } from "../interfaces";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class JobsService {
   private config = inject<JobsConfiguration>(JOBS_CONFIG_TOKEN);
@@ -13,8 +13,8 @@ export class JobsService {
 
   syncEventById(args: { id: string | string[]; official?: boolean }) {
     return this.http.post(`${this.config.api}/queue-job`, {
-      queue: 'sync',
-      job: 'SyncEvents',
+      queue: "sync",
+      job: "SyncEvents",
       jobArgs: {
         id: args.id,
         official: args.official,
@@ -26,8 +26,8 @@ export class JobsService {
 
   syncRanking() {
     return this.http.post(`${this.config.api}/queue-job`, {
-      queue: 'sync',
-      job: 'SyncRanking',
+      queue: "sync",
+      job: "SyncRanking",
       jobArgs: {},
       removeOnComplete: true,
       removeOnFail: true,
@@ -36,8 +36,8 @@ export class JobsService {
 
   checkNotifications(args: { id: string | string[] }) {
     return this.http.post(`${this.config.api}/queue-job`, {
-      queue: 'sync',
-      job: 'CheckEncounter',
+      queue: "sync",
+      job: "CheckEncounter",
       jobArgs: {
         encounterId: args.id,
       },
@@ -51,7 +51,7 @@ export class JobsService {
     args: {
       removeOnComplete?: boolean;
       removeOnFail?: boolean;
-    },
+    }
   ) {
     return this.http.post(`${this.config.api}/queue-job`, {
       queue: job.meta?.queueName,

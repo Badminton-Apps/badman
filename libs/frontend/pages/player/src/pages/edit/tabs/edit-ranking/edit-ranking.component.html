@@ -2,7 +2,7 @@
   <form [formGroup]="this.rankingForm">
     <div class="row">
       <mat-form-field>
-        <mat-label>{{ 'all.ranking.single' | translate }}</mat-label>
+        <mat-label>{{ "all.ranking.single" | translate }}</mat-label>
         <input
           matInput
           type="number"
@@ -13,7 +13,7 @@
         />
       </mat-form-field>
       <mat-form-field>
-        <mat-label>{{ 'all.ranking.double' | translate }}</mat-label>
+        <mat-label>{{ "all.ranking.double" | translate }}</mat-label>
         <input
           matInput
           type="number"
@@ -24,7 +24,7 @@
         />
       </mat-form-field>
       <mat-form-field>
-        <mat-label>{{ 'all.ranking.mix' | translate }}</mat-label>
+        <mat-label>{{ "all.ranking.mix" | translate }}</mat-label>
         <input matInput type="number" formControlName="mix" alt="mix" autocomplete="mix" required />
       </mat-form-field>
     </div>
@@ -36,7 +36,7 @@
         [color]="'primary'"
         (click)="saveRanking()"
       >
-        {{ 'all.button.save' | translate }}
+        {{ "all.button.save" | translate }}
       </button>
     </div>
   </form>

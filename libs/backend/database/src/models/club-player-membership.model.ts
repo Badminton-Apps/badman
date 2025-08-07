@@ -1,12 +1,12 @@
-import { ClubMembershipType } from '@badman/utils';
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { ClubMembershipType } from "@badman/utils";
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   CreationOptional,
   InferAttributes,
   InferCreationAttributes,
-} from 'sequelize';
+} from "sequelize";
 import {
   AllowNull,
   BelongsTo,
@@ -20,15 +20,15 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { Relation } from '../wrapper';
-import { Club } from './club.model';
-import { Player } from './player.model';
+} from "sequelize-typescript";
+import { Relation } from "../wrapper";
+import { Club } from "./club.model";
+import { Player } from "./player.model";
 
 @Table({
-  schema: 'public',
+  schema: "public",
 })
-@ObjectType({ description: 'A ClubPlayerMembership' })
+@ObjectType({ description: "A ClubPlayerMembership" })
 export class ClubPlayerMembership extends Model<
   InferAttributes<ClubPlayerMembership>,
   InferCreationAttributes<ClubPlayerMembership>
@@ -42,22 +42,22 @@ export class ClubPlayerMembership extends Model<
 
   @ForeignKey(() => Player)
   @AllowNull(false)
-  @Index('player_club_index')
+  @Index("player_club_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   declare playerId?: string;
 
   @ForeignKey(() => Club)
   @AllowNull(false)
-  @Index('player_club_index')
+  @Index("player_club_index")
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   declare clubId?: string;
 
-  @BelongsTo(() => Club, 'clubId')
+  @BelongsTo(() => Club, "clubId")
   declare club?: Relation<Club>;
 
-  @BelongsTo(() => Player, 'playerId')
+  @BelongsTo(() => Player, "playerId")
   declare player?: Relation<Player>;
 
   @Field(() => Date, { nullable: true })
@@ -90,7 +90,7 @@ export class ClubPlayerMembership extends Model<
 
   // Below is a hacky way to make the Unique across FK's + start
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
-  @Unique('ClubPlayerMemberships_playerId_clubId_unique')
+  @Unique("ClubPlayerMemberships_playerId_clubId_unique")
   @AllowNull(false)
   @Field(() => Date, { defaultValue: new Date() })
   @Column(DataType.DATE)
@@ -107,12 +107,12 @@ export class ClubPlayerMembership extends Model<
 
 @InputType()
 export class ClubPlayerMembershipUpdateInput extends PartialType(
-  OmitType(ClubPlayerMembership, ['createdAt', 'updatedAt'] as const),
-  InputType,
+  OmitType(ClubPlayerMembership, ["createdAt", "updatedAt"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class ClubPlayerMembershipNewInput extends PartialType(
-  OmitType(ClubPlayerMembershipUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(ClubPlayerMembershipUpdateInput, ["id"] as const),
+  InputType
 ) {}

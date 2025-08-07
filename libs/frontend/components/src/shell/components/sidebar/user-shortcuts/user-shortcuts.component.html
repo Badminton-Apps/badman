@@ -6,17 +6,17 @@
       [routerLink]="['/player', user()?.slug]"
       routerLinkActive="active"
     >
-      {{ 'all.shell.sidebar.persnal.games' | translate }}
+      {{ "all.shell.sidebar.persnal.games" | translate }}
     </a>
     @if (clubs().length === 1) {
       <a mat-list-item (click)="whenNavigate.emit()" [routerLink]="['/club', clubs()[0].slug]">
-        {{ 'all.shell.sidebar.persnal.club' | translate }}
+        {{ "all.shell.sidebar.persnal.club" | translate }}
       </a>
     }
     @if (clubs().length > 1) {
       <mat-list-item (click)="expanded.club = !expanded.club">
         <div class="expandable-item">
-          <div>{{ 'all.club.titles.plural' | translate }}</div>
+          <div>{{ "all.club.titles.plural" | translate }}</div>
           @if (!expanded.club) {
             <mat-icon>expand_more</mat-icon>
           }
@@ -36,8 +36,8 @@
                 routerLinkActive="active"
               >
                 {{ club.name }}
-                @if (club.clubMembership?.membershipType === 'LOAN') {
-                  <small class="loan">{{ 'all.club.membership-types.loan' | translate }}</small>
+                @if (club.clubMembership?.membershipType === "LOAN") {
+                  <small class="loan">{{ "all.club.membership-types.loan" | translate }}</small>
                 }
               </a>
             </mat-nav-list>

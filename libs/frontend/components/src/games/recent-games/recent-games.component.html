@@ -1,8 +1,8 @@
 @switch (this.type()) {
-  @case ('encounter') {
+  @case ("encounter") {
     <badman-list-encounters [clubId]="this.clubId()" [teams]="this.teams()" />
   }
-  @case ('game') {
+  @case ("game") {
     <badman-list-games [playerId]="this.playerId()!" />
   }
 }

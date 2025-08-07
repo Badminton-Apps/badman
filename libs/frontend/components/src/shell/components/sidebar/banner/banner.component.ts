@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,15 +7,15 @@ import {
   PLATFORM_ID,
   input,
   inject,
-} from '@angular/core';
-import { Banner } from '@badman/frontend-models';
+} from "@angular/core";
+import { Banner } from "@badman/frontend-models";
 
 @Component({
-    selector: 'badman-banner',
-    imports: [],
-    templateUrl: './banner.component.html',
-    styleUrls: ['./banner.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "badman-banner",
+  imports: [],
+  templateUrl: "./banner.component.html",
+  styleUrls: ["./banner.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BannerComponent implements OnInit {
   private elementRef = inject(ElementRef);
@@ -26,13 +26,13 @@ export class BannerComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       // Google no touchy
       const observer = new MutationObserver(() => {
-        this.elementRef.nativeElement.style.height = '';
-        this.elementRef.nativeElement.style.minHeight = '';
+        this.elementRef.nativeElement.style.height = "";
+        this.elementRef.nativeElement.style.minHeight = "";
       });
 
       observer.observe(this.elementRef.nativeElement, {
         attributes: true,
-        attributeFilter: ['style'],
+        attributeFilter: ["style"],
       });
     }
   }

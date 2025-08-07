@@ -1,4 +1,3 @@
-
 import {
   AfterViewInit,
   Component,
@@ -7,38 +6,38 @@ import {
   TransferState,
   ViewChild,
   inject,
-} from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
+} from "@angular/core";
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatSort, MatSortModule } from "@angular/material/sort";
+import { MatTableModule } from "@angular/material/table";
+import { RouterModule } from "@angular/router";
 import {
   AddEventComponent,
   ConfirmDialogComponent,
   ConfirmDialogModel,
   HasClaimComponent,
   OpenCloseDateDialogComponent,
-} from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-queue';
-import { EventTournament } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { transferState } from '@badman/frontend-utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { BehaviorSubject, lastValueFrom, merge } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+} from "@badman/frontend-components";
+import { JobsService } from "@badman/frontend-queue";
+import { EventTournament } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { transferState } from "@badman/frontend-utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { BehaviorSubject, lastValueFrom, merge } from "rxjs";
+import { map, startWith, switchMap } from "rxjs/operators";
 
 const FETCH_TOURNAMENTS = gql`
   query GetEventsTournament($where: JSONObject, $order: [SortOrderType!], $skip: Int, $take: Int) {
@@ -59,10 +58,10 @@ const FETCH_TOURNAMENTS = gql`
 `;
 
 @Component({
-    selector: 'badman-tournament-overview',
-    templateUrl: './overview.page.html',
-    styleUrls: ['./overview.page.scss'],
-    imports: [
+  selector: "badman-tournament-overview",
+  templateUrl: "./overview.page.html",
+  styleUrls: ["./overview.page.scss"],
+  imports: [
     RouterModule,
     TranslatePipe,
     ReactiveFormsModule,
@@ -81,8 +80,8 @@ const FETCH_TOURNAMENTS = gql`
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatDialogModule
-]
+    MatDialogModule,
+  ],
 })
 export class OverviewPageComponent implements OnInit, AfterViewInit {
   private seoService = inject(SeoService);
@@ -90,7 +89,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
   private apollo = inject(Apollo);
   private dialog = inject(MatDialog);
   private matSnackBar = inject(MatSnackBar);
-  displayedColumns: string[] = ['name', 'firstDay', 'official', 'menu'];
+  displayedColumns: string[] = ["name", "firstDay", "official", "menu"];
   private stateTransfer = inject(TransferState);
   private platformId = inject<string>(PLATFORM_ID);
   data: EventTournament[] = [];
@@ -107,7 +106,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     const formBuilder = inject(FormBuilder);
 
     this.filter = formBuilder.group({
-      name: new FormControl(''),
+      name: new FormControl(""),
       official: new FormControl(false),
     });
   }
@@ -116,8 +115,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     this.seoService.update({
       title: `Overview tournament`,
       description: `Overview tournament`,
-      type: 'website',
-      keywords: ['assembly', 'badminton'],
+      type: "website",
+      keywords: ["assembly", "badminton"],
     });
   }
 
@@ -135,7 +134,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
             this.paginator.pageSize,
             this.sort.active,
             this.sort.direction,
-            this.filter.value,
+            this.filter.value
           );
         }),
         map((data) => {
@@ -152,7 +151,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           // would prevent users from re-triggering requests.
           this.paginator.length = data.count;
           return data.items;
-        }),
+        })
       )
       .subscribe((data) => {
         this.data = data;
@@ -168,7 +167,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     filter?: {
       name?: string;
       official?: boolean;
-    },
+    }
   ) {
     const where: {
       official?: boolean;
@@ -183,7 +182,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     };
 
     if (filter?.name) {
-      where['$or'] = [
+      where["$or"] = [
         {
           name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
         },
@@ -202,8 +201,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           where,
           order: [
             {
-              direction: direction || 'desc',
-              field: aort || 'firstDay',
+              direction: direction || "desc",
+              field: aort || "firstDay",
             },
           ],
           take: size,
@@ -214,17 +213,17 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
         transferState(
           `tournaments-${aort}-${direction}-${page}-${filter?.name}-${filter?.official}`,
           this.stateTransfer,
-          this.platformId,
+          this.platformId
         ),
         map((result) => {
           if (!result?.data.eventTournaments) {
-            throw new Error('No tournaments found');
+            throw new Error("No tournaments found");
           }
           return {
             count: result.data.eventTournaments.count,
             items: result.data.eventTournaments.rows.map((team) => new EventTournament(team)),
           };
-        }),
+        })
       );
   }
 
@@ -249,11 +248,11 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       .subscribe(() => {
         this.update$.next(true);
         this.matSnackBar.open(
-          `Tournament ${tournament.name} is ${offical ? 'official' : 'unofficial'}`,
-          'Close',
+          `Tournament ${tournament.name} is ${offical ? "official" : "unofficial"}`,
+          "Close",
           {
             duration: 2000,
-          },
+          }
         );
       });
   }
@@ -262,10 +261,10 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     if (!eventTournament.visualCode) {
       this.matSnackBar.open(
         `Tournament ${eventTournament.name} has no visual code, add it via the "add event" button in the overview page.`,
-        'Close',
+        "Close",
         {
           duration: 2000,
-        },
+        }
       );
 
       return;
@@ -276,7 +275,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
 
   async addEvent() {
     const dialogRef = this.dialog.open(AddEventComponent, {
-      width: '400px',
+      width: "400px",
     });
 
     const result = await lastValueFrom(dialogRef.afterClosed());
@@ -293,7 +292,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
         openDate: tournament.openDate,
         closeDate: tournament.closeDate,
       },
-      width: '400px',
+      width: "400px",
     });
 
     ref.afterClosed().subscribe((result) => {
@@ -321,10 +320,10 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           .subscribe(() => {
             this.matSnackBar.open(
               `Tournament ${tournament.name} open/close dates updated`,
-              'Close',
+              "Close",
               {
                 duration: 2000,
-              },
+              }
             );
           });
       }
@@ -333,12 +332,12 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
 
   removeEvent(tournament: EventTournament) {
     const dialogData = new ConfirmDialogModel(
-      'all.tournament.delete.title',
-      'all.tournament.delete.description',
+      "all.tournament.delete.title",
+      "all.tournament.delete.description"
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: '400px',
+      maxWidth: "400px",
       data: dialogData,
     });
 
@@ -376,8 +375,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
                 },
                 order: [
                   {
-                    direction: this.sort.direction || 'desc',
-                    field: this.sort.active || 'firstDay',
+                    direction: this.sort.direction || "desc",
+                    field: this.sort.active || "firstDay",
                   },
                 ],
                 take: this.paginator.pageSize,
@@ -387,9 +386,9 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           ],
         })
         .subscribe(() => {
-          this.matSnackBar.open('Deleted', undefined, {
+          this.matSnackBar.open("Deleted", undefined, {
             duration: 1000,
-            panelClass: 'success',
+            panelClass: "success",
           });
 
           // this.update$.next(true);

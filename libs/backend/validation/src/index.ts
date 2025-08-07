@@ -1,2 +1,2 @@
-export * from './validation.module';
-export * from './rules'
+export * from "./validation.module";
+export * from "./rules";

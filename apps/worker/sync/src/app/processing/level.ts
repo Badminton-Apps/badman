@@ -1,22 +1,22 @@
-import moment from 'moment';
-import { Op, SaveOptions, Transaction } from 'sequelize';
-import { Game, Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { GameType, getRankingProtected } from '@badman/utils';
+import moment from "moment";
+import { Op, SaveOptions, Transaction } from "sequelize";
+import { Game, Player, RankingPlace, RankingSystem } from "@badman/backend-database";
+import { GameType, getRankingProtected } from "@badman/utils";
 
 export class RankingProcessor {
   static async checkInactive(instances: RankingPlace[], options: SaveOptions) {
     const singleNullInstances = instances.filter(
-      (instance) => instance.single === null || instance.single === undefined,
+      (instance) => instance.single === null || instance.single === undefined
     );
     const doubleNullInstances = instances.filter(
-      (instance) => instance.double === null || instance.double === undefined,
+      (instance) => instance.double === null || instance.double === undefined
     );
     const mixNullInstances = instances.filter(
-      (instance) => instance.mix === null || instance.mix === undefined,
+      (instance) => instance.mix === null || instance.mix === undefined
     );
 
     const systemDisintct = instances.filter(
-      (value, index, self) => self.findIndex((m) => m.systemId === value.systemId) === index,
+      (value, index, self) => self.findIndex((m) => m.systemId === value.systemId) === index
     );
 
     const systems = await RankingSystem.findAll({
@@ -36,7 +36,7 @@ export class RankingProcessor {
       }
 
       const place = await RankingPlace.findOne({
-        attributes: ['id', 'single', 'singleInactive'],
+        attributes: ["id", "single", "singleInactive"],
         where: {
           systemId: instance.systemId,
           playerId: instance.playerId,
@@ -47,18 +47,18 @@ export class RankingProcessor {
             [Op.lt]: instance.rankingDate,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         transaction: options.transaction,
       });
 
       const player = await Player.findByPk(instance.playerId, {
-        attributes: ['id'],
+        attributes: ["id"],
         include: [
           {
-            attributes: ['id'],
+            attributes: ["id"],
             required: false,
             model: Game,
-            as: 'games',
+            as: "games",
             where: {
               gameType: GameType.S,
               playedAt: {
@@ -90,7 +90,7 @@ export class RankingProcessor {
       }
 
       const place = await RankingPlace.findOne({
-        attributes: ['id', 'double', 'doubleInactive'],
+        attributes: ["id", "double", "doubleInactive"],
         where: {
           systemId: instance.systemId,
           playerId: instance.playerId,
@@ -101,18 +101,18 @@ export class RankingProcessor {
             [Op.gt]: instance.rankingDate,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         transaction: options.transaction,
       });
 
       const player = await Player.findByPk(instance.playerId, {
-        attributes: ['id'],
+        attributes: ["id"],
         include: [
           {
-            attributes: ['id'],
+            attributes: ["id"],
             required: false,
             model: Game,
-            as: 'games',
+            as: "games",
             where: {
               gameType: GameType.D,
               playedAt: {
@@ -139,7 +139,7 @@ export class RankingProcessor {
         throw new Error(`No system found for rankingPlace ${instance.id}`);
       }
       const place = await RankingPlace.findOne({
-        attributes: ['id', 'mix', 'mixInactive'],
+        attributes: ["id", "mix", "mixInactive"],
         where: {
           systemId: instance.systemId,
           playerId: instance.playerId,
@@ -150,18 +150,18 @@ export class RankingProcessor {
             [Op.gt]: instance.rankingDate,
           },
         },
-        order: [['rankingDate', 'DESC']],
+        order: [["rankingDate", "DESC"]],
         transaction: options.transaction,
       });
 
       const player = await Player.findByPk(instance.playerId, {
-        attributes: ['id'],
+        attributes: ["id"],
         include: [
           {
-            attributes: ['id'],
+            attributes: ["id"],
             required: false,
             model: Game,
-            as: 'games',
+            as: "games",
             where: {
               gameType: GameType.MX,
               playedAt: {
@@ -187,7 +187,7 @@ export class RankingProcessor {
     rankingSystems?: RankingSystem[],
     args?: {
       transaction?: Transaction;
-    },
+    }
   ): Promise<RankingPlace[]> {
     if ((rankingSystems === undefined || rankingSystems === null) && rankingPoints.length > 0) {
       rankingSystems = await RankingSystem.findAll({
@@ -209,7 +209,7 @@ export class RankingProcessor {
         }
 
         return getRankingProtected(rankingPoint, usedSystem);
-      }),
+      })
     );
   }
 }

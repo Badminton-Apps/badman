@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,20 +10,20 @@ import {
   inject,
   input,
   signal,
-} from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
-import { RouterModule } from '@angular/router';
-import { EncounterCompetition, Game, GamePlayer, Team } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { GameType, gameLabel } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { map, takeUntil } from 'rxjs';
-import { LoadingBlockComponent } from '../../../loading-block';
+} from "@angular/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatListModule } from "@angular/material/list";
+import { RouterModule } from "@angular/router";
+import { EncounterCompetition, Game, GamePlayer, Team } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { GameType, gameLabel } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { MomentModule } from "ngx-moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { map, takeUntil } from "rxjs";
+import { LoadingBlockComponent } from "../../../loading-block";
 
 @Component({
   imports: [
@@ -35,9 +35,9 @@ import { LoadingBlockComponent } from '../../../loading-block';
     MatListModule,
     LoadingBlockComponent,
   ],
-  selector: 'badman-list-encounters',
-  templateUrl: './list-encounters.component.html',
-  styleUrls: ['./list-encounters.component.scss'],
+  selector: "badman-list-encounters",
+  templateUrl: "./list-encounters.component.html",
+  styleUrls: ["./list-encounters.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListEncountersComponent implements OnInit, OnChanges {
@@ -74,7 +74,7 @@ export class ListEncountersComponent implements OnInit, OnChanges {
     }
 
     if (this.teams() instanceof Array) {
-      teamids.push(...(this.teams() as Team[]).map((t) => t.id ?? ''));
+      teamids.push(...(this.teams() as Team[]).map((t) => t.id ?? ""));
     }
 
     this.teamids.set(teamids);
@@ -150,7 +150,7 @@ export class ListEncountersComponent implements OnInit, OnChanges {
         variables: {
           where: {
             date: {
-              $lte: moment().format('YYYY-MM-DD'),
+              $lte: moment().format("YYYY-MM-DD"),
             },
             $or: [
               {
@@ -163,8 +163,8 @@ export class ListEncountersComponent implements OnInit, OnChanges {
           },
           order: [
             {
-              direction: 'desc',
-              field: 'date',
+              direction: "desc",
+              field: "date",
             },
           ],
           take: 10,
@@ -173,17 +173,17 @@ export class ListEncountersComponent implements OnInit, OnChanges {
       .pipe(
         takeUntil(this.destroy$),
         transferState(
-          `recentKey-${this.teamids().join(',') ?? this.clubId()}`,
+          `recentKey-${this.teamids().join(",") ?? this.clubId()}`,
           this.stateTransfer,
-          this.platformId,
+          this.platformId
         ),
         map((result) => {
           return (
             result?.data.encounterCompetitions.rows?.map(
-              (encounter) => new EncounterCompetition(encounter),
+              (encounter) => new EncounterCompetition(encounter)
             ) ?? []
           );
-        }),
+        })
       )
       .subscribe((encounters) => {
         this.recentEncounters.set(encounters);

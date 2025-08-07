@@ -1,25 +1,24 @@
-
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Team, TeamPlayer, Location } from '@badman/frontend-models';
-import { SubEventType, getSeason } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
+import { Component, inject } from "@angular/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Team, TeamPlayer, Location } from "@badman/frontend-models";
+import { SubEventType, getSeason } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { TeamFieldComponent, TeamPlayersComponent } from "../../components";
 
 @Component({
-  templateUrl: './add.dialog.html',
-  styleUrls: ['./add.dialog.scss'],
+  templateUrl: "./add.dialog.html",
+  styleUrls: ["./add.dialog.scss"],
   imports: [
     TranslatePipe,
     TeamFieldComponent,
     TeamPlayersComponent,
     MatDialogModule,
-    MatButtonModule
-],
+    MatButtonModule,
+  ],
 })
 export class AddDialogComponent {
   public dialogRef = inject<MatDialogRef<AddDialogComponent>>(MatDialogRef<AddDialogComponent>);
@@ -89,15 +88,15 @@ export class AddDialogComponent {
           },
           nationalCountsAsMixed: true,
         },
-        refetchQueries: () => ['Team', 'Teams', 'ClubTeams'],
+        refetchQueries: () => ["Team", "Teams", "ClubTeams"],
       })
       // .pipe(switchMap((res) => {
       // save the players?
       //}))
       .subscribe(() => {
-        this.snackBar.open('Saved', undefined, {
+        this.snackBar.open("Saved", undefined, {
           duration: 1000,
-          panelClass: 'success',
+          panelClass: "success",
         });
         this.dialogRef.close();
       });

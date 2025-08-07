@@ -1,17 +1,17 @@
-import { CronJob, DatabaseModule, Service } from '@badman/backend-database';
-import { LoggingModule } from '@badman/backend-logging';
-import { NotificationsModule } from '@badman/backend-notifications';
-import { QueueModule, SyncQueue } from '@badman/backend-queue';
-import { RankingModule } from '@badman/backend-ranking';
-import { SearchModule } from '@badman/backend-search';
-import { TranslateModule } from '@badman/backend-translate';
-import { TwizzitModule } from '@badman/backend-twizzit';
-import { VisualModule } from '@badman/backend-visual';
-import { EventsGateway, SocketModule } from '@badman/backend-websockets';
-import { EVENTS, configSchema, load } from '@badman/utils';
-import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import versionPackage from '../version.json';
+import { CronJob, DatabaseModule, Service } from "@badman/backend-database";
+import { LoggingModule } from "@badman/backend-logging";
+import { NotificationsModule } from "@badman/backend-notifications";
+import { QueueModule, SyncQueue } from "@badman/backend-queue";
+import { RankingModule } from "@badman/backend-ranking";
+import { SearchModule } from "@badman/backend-search";
+import { TranslateModule } from "@badman/backend-translate";
+import { TwizzitModule } from "@badman/backend-twizzit";
+import { VisualModule } from "@badman/backend-visual";
+import { EventsGateway, SocketModule } from "@badman/backend-websockets";
+import { EVENTS, configSchema, load } from "@badman/utils";
+import { Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import versionPackage from "../version.json";
 import {
   CheckEncounterProcessor,
   CheckRankingProcessor,
@@ -34,8 +34,7 @@ import {
   ScheduleRecalculateStandingCompetitionEvent,
   ScheduleRecalculateStandingCompetitionSubEvent,
   DrawStandingCompetitionProcessor,
-
-} from './processors';
+} from "./processors";
 
 @Module({
   providers: [
@@ -66,7 +65,7 @@ import {
     // Standing
     ScheduleRecalculateStandingCompetitionDraw,
     ScheduleRecalculateStandingCompetitionSubEvent,
-    ScheduleRecalculateStandingCompetitionEvent
+    ScheduleRecalculateStandingCompetitionEvent,
   ],
   imports: [
     ConfigModule.forRoot({
@@ -77,7 +76,7 @@ import {
     // Lib modules
     LoggingModule.forRoot({
       version: versionPackage.version,
-      name: 'worker-sync',
+      name: "worker-sync",
     }),
     DatabaseModule,
     RankingModule,
@@ -95,15 +94,15 @@ export class WorkerSyncModule implements OnApplicationBootstrap {
 
   constructor(private readonly gateway: EventsGateway) {}
   async onApplicationBootstrap() {
-    this.logger.log('Starting sync service');
+    this.logger.log("Starting sync service");
 
-    const service = await Service.findOne({ where: { name: 'sync' } });
+    const service = await Service.findOne({ where: { name: "sync" } });
     if (!service) {
-      this.logger.error('Could not find sync service');
+      this.logger.error("Could not find sync service");
       return;
     }
 
-    service.status = 'started';
+    service.status = "started";
     await service?.save();
     this.gateway.server.emit(EVENTS.SERVICE.SERVICE_STARTED, {
       id: service?.id,
@@ -112,7 +111,7 @@ export class WorkerSyncModule implements OnApplicationBootstrap {
     // Reset all jobs
     const cronJob = await CronJob.findAll({
       where: {
-        'meta.queueName': SyncQueue,
+        "meta.queueName": SyncQueue,
       },
     });
 
