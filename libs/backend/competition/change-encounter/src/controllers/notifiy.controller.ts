@@ -36,7 +36,7 @@ export class ChangeEncounterController {
         limit: 50,
         offset: count,
         order: [["id", "ASC"]],
-        include: [{ model: Player, as: "captain" }],
+        include: [{ association: "captain" }],
       });
 
       for (const team of teams) {
