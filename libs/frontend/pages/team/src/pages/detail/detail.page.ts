@@ -1,4 +1,3 @@
-
 import {
   Component,
   PLATFORM_ID,
@@ -8,35 +7,35 @@ import {
   inject,
   signal,
   viewChild,
-} from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { RouterModule } from '@angular/router';
+} from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { RouterModule } from "@angular/router";
 import {
   PageHeaderComponent,
   RecentGamesComponent,
   UpcomingGamesComponent,
-} from '@badman/frontend-components';
-import { EventEntry, Team } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { transferState } from '@badman/frontend-utils';
-import { getSeason } from '@badman/utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { injectRouteData } from 'ngxtension/inject-route-data';
-import { map, takeUntil } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { Clipboard } from '@angular/cdk/clipboard';
-import { MatSnackBar } from '@angular/material/snack-bar';
+} from "@badman/frontend-components";
+import { EventEntry, Team } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { transferState } from "@badman/frontend-utils";
+import { getSeason } from "@badman/utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { injectRouteData } from "ngxtension/inject-route-data";
+import { map, takeUntil } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { Clipboard } from "@angular/cdk/clipboard";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
-    templateUrl: './detail.page.html',
-    styleUrls: ['./detail.page.scss'],
-    imports: [
+  templateUrl: "./detail.page.html",
+  styleUrls: ["./detail.page.scss"],
+  imports: [
     ReactiveFormsModule,
     RouterModule,
     TranslatePipe,
@@ -46,8 +45,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     RecentGamesComponent,
     UpcomingGamesComponent,
     PageHeaderComponent,
-    MatDialogModule
-]
+    MatDialogModule,
+  ],
 })
 export class DetailPageComponent {
   private apollo = inject(Apollo);
@@ -61,11 +60,11 @@ export class DetailPageComponent {
   private translate = inject(TranslateService);
   private destroy$ = injectDestroy();
 
-  calendarTmpl = viewChild.required<TemplateRef<HTMLElement>>('calendar');
+  calendarTmpl = viewChild.required<TemplateRef<HTMLElement>>("calendar");
 
   // route
 
-  team = injectRouteData<Team>('team');
+  team = injectRouteData<Team>("team");
 
   entry = signal<EventEntry | null>(null);
 
@@ -77,11 +76,11 @@ export class DetailPageComponent {
       this.seoService.update({
         title: teamName,
         description: `Team ${teamName}`,
-        type: 'website',
-        keywords: ['team', 'badminton'],
+        type: "website",
+        keywords: ["team", "badminton"],
       });
-      this.breadcrumbService.set('club/:id', clubName);
-      this.breadcrumbService.set('club/:id/team/:id', teamName);
+      this.breadcrumbService.set("club/:id", clubName);
+      this.breadcrumbService.set("club/:id/team/:id", teamName);
 
       this._loadEntry();
     });
@@ -127,7 +126,7 @@ export class DetailPageComponent {
         transferState(
           `teamEntries-${this.team()?.id}-${year}`,
           this.stateTransfer,
-          this.platformId,
+          this.platformId
         ),
         map((result) => {
           if (!result?.data?.team?.entry) {
@@ -135,7 +134,7 @@ export class DetailPageComponent {
           }
 
           return new EventEntry(result?.data?.team?.entry as Partial<EventEntry>);
-        }),
+        })
       )
       .subscribe((entry) => {
         if (!entry) {
@@ -148,12 +147,12 @@ export class DetailPageComponent {
 
   showCalendar() {
     this.dialog.open(this.calendarTmpl(), {
-      panelClass: 'calendar-dialog',
-      maxWidth: '500px',
+      panelClass: "calendar-dialog",
+      maxWidth: "500px",
     });
   }
 
-  copyToClipboard(id?: string, type?: 'team' | 'link') {
+  copyToClipboard(id?: string, type?: "team" | "link") {
     if (!id || !type) {
       return;
     }
@@ -162,7 +161,7 @@ export class DetailPageComponent {
     const url = `${window.location.origin}/api/v1/calendar/team?${type}Id=${id}`;
     this.clipboard.copy(url);
 
-    this.snackbar.open(this.translate.instant('all.player.ical.copied'), 'X', {
+    this.snackbar.open(this.translate.instant("all.player.ical.copied"), "X", {
       duration: 2000,
     });
   }

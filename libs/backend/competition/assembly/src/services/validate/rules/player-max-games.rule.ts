@@ -1,7 +1,7 @@
-import { Player } from '@badman/backend-database';
-import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
-import { Rule } from './_rule.base';
+import { Player } from "@badman/backend-database";
+import { SubEventTypeEnum } from "@badman/utils";
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export type PlayerMaxGamesRuleParams = {
   player: Partial<Player>;
@@ -12,7 +12,7 @@ export type PlayerMaxGamesRuleParams = {
  * Checks if a player has max 1 single game and 2 double game
  */
 export class PlayerMaxGamesRule extends Rule {
-  static override readonly description = 'all.rules.team-assembly.player-max-games';
+  static override readonly description = "all.rules.team-assembly.player-max-games";
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { single1, single2, single3, single4, double1, double2, double3, double4, type } =
       assembly;
@@ -30,7 +30,7 @@ export class PlayerMaxGamesRule extends Rule {
       const found = singlePlayers.filter((p) => p?.id === player?.id);
       if (found.length > 1) {
         errors.push({
-          message: 'all.v1.teamFormation.errors.player-max-single-games',
+          message: "all.v1.teamFormation.errors.player-max-single-games",
           params: {
             player: {
               id: player?.id,
@@ -55,7 +55,7 @@ export class PlayerMaxGamesRule extends Rule {
         const found = mixedPlayers.filter((p) => p.id === player.id);
         if (found.length > 1) {
           errors.push({
-            message: 'all.v1.teamFormation.errors.player-max-mix-games',
+            message: "all.v1.teamFormation.errors.player-max-mix-games",
             params: {
               player: {
                 id: player.id,
@@ -82,7 +82,7 @@ export class PlayerMaxGamesRule extends Rule {
       const found = doublePlayers.filter((p) => p.id === player.id);
       if (found.length > 2) {
         errors.push({
-          message: 'all.v1.teamFormation.errors.player-max-double-games',
+          message: "all.v1.teamFormation.errors.player-max-double-games",
           params: {
             player: {
               id: player.id,

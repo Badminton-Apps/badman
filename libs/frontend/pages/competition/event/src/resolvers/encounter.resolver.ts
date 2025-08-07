@@ -1,9 +1,9 @@
-import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { EncounterCompetition } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { first, map } from 'rxjs/operators';
+import { Injectable, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { EncounterCompetition } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { first, map } from "rxjs/operators";
 
 @Injectable()
 export class EncounterResolver {
@@ -12,7 +12,7 @@ export class EncounterResolver {
   private platformId = inject<string>(PLATFORM_ID);
 
   resolve(route: ActivatedRouteSnapshot) {
-    const encounterId = route.params['id'];
+    const encounterId = route.params["id"];
 
     return this.apollo
       .query<{ encounterCompetition: Partial<EncounterCompetition> }>({
@@ -84,12 +84,12 @@ export class EncounterResolver {
         transferState(`encounterKey-${encounterId}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.encounterCompetition) {
-            throw new Error('No encounter found!');
+            throw new Error("No encounter found!");
           }
           return new EncounterCompetition(result.data.encounterCompetition);
         }),
 
-        first(),
+        first()
       );
   }
 }

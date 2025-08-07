@@ -3,15 +3,15 @@ import {
   EncounterChange,
   EncounterCompetition,
   Location,
-} from '@badman/backend-database';
-import { Logger } from '@nestjs/common';
-import moment from 'moment-timezone';
+} from "@badman/backend-database";
+import { Logger } from "@nestjs/common";
+import moment from "moment-timezone";
 import {
   EncounterValidationOutput,
   EncounterValidationData,
   EncounterValidationError,
-} from '../../../models';
-import { Rule } from './_rule.base';
+} from "../../../models";
+import { Rule } from "./_rule.base";
 
 export type LocationRuleParams = {
   encounterId: string;
@@ -28,7 +28,7 @@ export type LocationRuleParams = {
  * Checks if there are enough locations available for the encounters
  */
 export class LocationRule extends Rule {
-  static override readonly description = 'all.rules.change-encounter.location';
+  static override readonly description = "all.rules.change-encounter.location";
   private readonly logger = new Logger(LocationRule.name);
 
   async validate(changeEncounter: EncounterValidationData): Promise<EncounterValidationOutput> {
@@ -58,7 +58,7 @@ export class LocationRule extends Rule {
       encounter.locationId,
       encounter.id,
       locations,
-      false,
+      false
     );
     if (err.length) {
       errors.push(...err);
@@ -71,7 +71,7 @@ export class LocationRule extends Rule {
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
     if (suggestedDates && encounter) {
       for (const suggestedDate of suggestedDates) {
-        if (moment(suggestedDate.date).isSame(encounter.date, 'minute')) {
+        if (moment(suggestedDate.date).isSame(encounter.date, "minute")) {
           // if the suggested date is the same as the current date, we can skip this
           continue;
         }
@@ -80,11 +80,11 @@ export class LocationRule extends Rule {
         const suggestedLocation = locations.find((l) => l.id === suggestedDate.locationId);
         if (!suggestedLocation) {
           warnings.push({
-            message: 'all.competition.change-encounter.errors.location-not-found' as any,
+            message: "all.competition.change-encounter.errors.location-not-found" as any,
             params: {
               encounterId: encounter.id,
               date: suggestedDate.date,
-              locationName: 'Unknown location',
+              locationName: "Unknown location",
             },
           });
           continue;
@@ -95,7 +95,7 @@ export class LocationRule extends Rule {
           suggestedDate.locationId,
           encounter.id,
           locations,
-          true,
+          true
         );
         if (err.length) {
           warnings.push(...err);
@@ -118,7 +118,7 @@ export class LocationRule extends Rule {
     locationId: string,
     encounterId: string,
     locations: Location[],
-    isSuggested = false,
+    isSuggested = false
   ) {
     const err: EncounterValidationError<LocationRuleParams>[] = [];
     const warn: EncounterValidationError<LocationRuleParams>[] = [];
@@ -128,14 +128,14 @@ export class LocationRule extends Rule {
     }
 
     const encsOnDayAndLocation = await EncounterCompetition.findAll({
-      attributes: ['id'],
+      attributes: ["id"],
       where: {
         locationId: locationId,
         date: encounterDate,
       },
       include: [
         {
-          attributes: ['id', 'accepted'],
+          attributes: ["id", "accepted"],
           model: EncounterChange,
         },
       ],
@@ -153,20 +153,20 @@ export class LocationRule extends Rule {
     const location = locations.find((r) => r.id === locationId);
 
     let slot: AvailabilityDay | null = null;
-    let tzDay = '';
-    let tzTime = '';
+    let tzDay = "";
+    let tzTime = "";
 
     for (const availability of location?.availabilities ?? []) {
-      const tzDate = moment(encounterDate).tz('Europe/Brussels').locale('en');
-      tzDay = tzDate.format('dddd').toLowerCase();
-      tzTime = tzDate.format('HH:mm');
+      const tzDate = moment(encounterDate).tz("Europe/Brussels").locale("en");
+      tzDay = tzDate.format("dddd").toLowerCase();
+      tzTime = tzDate.format("HH:mm");
 
       const filteredDays = availability.days?.filter((r) => r.day === tzDay);
       const filteredSlots = filteredDays?.find((r) => r.startTime === tzTime);
 
       let isOnExceptionDay = false;
       for (const exception of availability.exceptions ?? []) {
-        if (moment(encounterDate).isBetween(exception.start, exception.end, 'day', '[]')) {
+        if (moment(encounterDate).isBetween(exception.start, exception.end, "day", "[]")) {
           isOnExceptionDay = true;
         }
       }
@@ -179,7 +179,7 @@ export class LocationRule extends Rule {
     if (slot) {
       if (count > (slot?.courts ?? 0) / 2) {
         err.push({
-          message: 'all.competition.change-encounter.errors.location-not-free',
+          message: "all.competition.change-encounter.errors.location-not-free",
           params: {
             encounterId: encounterId,
             date: encounterDate,
@@ -193,7 +193,7 @@ export class LocationRule extends Rule {
         });
       } else if (countWithouteRplaced > (slot?.courts ?? 0) / 2) {
         warn.push({
-          message: 'all.competition.change-encounter.errors.location-not-free',
+          message: "all.competition.change-encounter.errors.location-not-free",
           params: {
             encounterId: encounterId,
             date: encounterDate,
@@ -208,7 +208,7 @@ export class LocationRule extends Rule {
       }
     } else {
       err.push({
-        message: 'all.competition.change-encounter.errors.location-no-timeslot',
+        message: "all.competition.change-encounter.errors.location-no-timeslot",
         params: {
           encounterId: encounterId,
           date: encounterDate,

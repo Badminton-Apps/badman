@@ -1,16 +1,16 @@
-import { EventCompetition } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { EventCompetition } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { of } from "rxjs";
+import { map } from "rxjs/operators";
 
 export const loadEvents = (apollo: Apollo, season: number, state: string | null, admin = false) => {
   if (!state) {
-    console.error('No state provided');
+    console.error("No state provided");
     return of([]);
   }
 
   let where: any = {
-    $or: [{ type: 'LIGA' }, { type: 'PROV', state: state }, { type: 'NATIONAL' }],
+    $or: [{ type: "LIGA" }, { type: "PROV", state: state }, { type: "NATIONAL" }],
   };
 
   if (admin) {
@@ -63,6 +63,6 @@ export const loadEvents = (apollo: Apollo, season: number, state: string | null,
       },
     })
     .pipe(
-      map((result) => result.data.eventCompetitions?.rows?.map((e) => new EventCompetition(e))),
+      map((result) => result.data.eventCompetitions?.rows?.map((e) => new EventCompetition(e)))
     );
 };

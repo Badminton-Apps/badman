@@ -1,6 +1,6 @@
-import { Player } from '@badman/backend-database';
-import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
-import { Rule } from './_rule.base';
+import { Player } from "@badman/backend-database";
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../../models";
+import { Rule } from "./_rule.base";
 
 export type TeamClubBaseRuleParams = {
   player: Partial<Player>;
@@ -9,7 +9,7 @@ export type TeamClubBaseRuleParams = {
  * Checks if the player is not in another base team that is higher than the current team or part of the same subevent
  */
 export class TeamClubBaseRule extends Rule {
-  static override readonly description = 'all.rules.team-assembly.team-club-base';
+  static override readonly description = "all.rules.team-assembly.team-club-base";
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       otherMeta,
@@ -36,7 +36,7 @@ export class TeamClubBaseRule extends Rule {
           ...(double2 ?? []),
           ...(double3 ?? []),
           ...(double4 ?? []),
-        ].filter((p) => p != undefined),
+        ].filter((p) => p != undefined)
       ),
     ] as Player[];
 
@@ -67,7 +67,7 @@ export class TeamClubBaseRule extends Rule {
     for (const player of players) {
       if (otherPlayers.includes(player.id)) {
         errors.push({
-          message: 'all.v1.teamFormation.errors.club-base-other-team',
+          message: "all.v1.teamFormation.errors.club-base-other-team",
           params: {
             player: {
               id: player.id,

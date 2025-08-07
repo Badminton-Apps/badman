@@ -1,5 +1,5 @@
 export enum DrawType {
-  KO = 'KO',
-  POULE = 'POULE',
-  QUALIFICATION = 'QUALIFICATION',
+  KO = "KO",
+  POULE = "POULE",
+  QUALIFICATION = "QUALIFICATION",
 }

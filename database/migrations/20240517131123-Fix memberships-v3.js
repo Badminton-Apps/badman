@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
-const { type } = require('node:os');
-const moment = require('moment');
+const { type } = require("node:os");
+const moment = require("moment");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -12,13 +12,13 @@ module.exports = {
         // delete all with no startdate
         await queryInterface.sequelize.query(
           `DELETE FROM "ClubPlayerMemberships" where "start" is null`,
-          { transaction: t },
+          { transaction: t }
         );
 
         // fetch all ClubPlayerMemberships
         const [memberships] = await queryInterface.sequelize.query(
           `SELECT * FROM "ClubPlayerMemberships" where "membershipType" = 'NORMAL' and start < '2024-07-01'`,
-          { transaction: t },
+          { transaction: t }
         );
 
         //  group by player_id
@@ -39,7 +39,7 @@ module.exports = {
         for (const playerId in groupedMemberships) {
           // sort playerMemberships so we process the oldest one first
           const playerMemberships = groupedMemberships[playerId].sort(
-            (a, b) => new Date(a.start) - new Date(b.start),
+            (a, b) => new Date(a.start) - new Date(b.start)
           );
 
           if (playerMemberships.length <= 1) {
@@ -67,7 +67,7 @@ module.exports = {
             const clubMembership = clubOrder[i];
             const startDate = moment.min(clubMembership.map((r) => r.start));
             const endDate = moment.max(
-              clubMembership.filter((r) => r.end != null).map((r) => r.end),
+              clubMembership.filter((r) => r.end != null).map((r) => r.end)
             );
             let currentClub = false;
 
@@ -82,8 +82,8 @@ module.exports = {
             if (i >= 1) {
               const prevMembershipEnd = moment(finalOrder[i - 1].end);
               if (
-                startDate.isSame(prevMembershipEnd.end, 'year') ||
-                startDate.isBefore(prevMembershipEnd.end, 'day')
+                startDate.isSame(prevMembershipEnd.end, "year") ||
+                startDate.isBefore(prevMembershipEnd.end, "day")
               ) {
                 finalOrder[i - 1].end = startDate.toISOString();
               }
@@ -95,23 +95,23 @@ module.exports = {
               end: currentClub ? null : endDate.toISOString(),
             });
           }
-          
+
           await queryInterface.sequelize.query(
             `DELETE FROM "ClubPlayerMemberships" where "playerId" = '${playerMemberships[0].playerId}'`,
-            { transaction: t },
+            { transaction: t }
           );
 
           await queryInterface.bulkInsert(
             {
-              tableName: 'ClubPlayerMemberships',
-              schema: 'public',
+              tableName: "ClubPlayerMemberships",
+              schema: "public",
             },
             finalOrder,
-            { transaction: t },
+            { transaction: t }
           );
         }
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -121,7 +121,7 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

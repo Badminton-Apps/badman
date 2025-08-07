@@ -1,6 +1,6 @@
-import { waitForSelector } from '@badman/backend-pupeteer';
-import { Logger } from '@nestjs/common';
-import { Page } from 'puppeteer';
+import { waitForSelector } from "@badman/backend-pupeteer";
+import { Logger } from "@nestjs/common";
+import { Page } from "puppeteer";
 
 export async function acceptEncounter(
   pupeteer: {
@@ -12,13 +12,13 @@ export async function acceptEncounter(
   },
   args?: {
     logger?: Logger;
-  },
+  }
 ) {
   const { logger } = args || {};
-  logger?.verbose('acceptEncounter');
+  logger?.verbose("acceptEncounter");
   const { page } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
 
   {
@@ -35,7 +35,7 @@ export async function acceptEncounter(
 
       await button.click();
     } catch (error) {
-      logger?.warn('Accept button not found', error);
+      logger?.warn("Accept button not found", error);
       return false;
     }
 

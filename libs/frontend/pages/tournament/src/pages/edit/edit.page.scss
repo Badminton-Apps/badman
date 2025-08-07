@@ -28,7 +28,7 @@
 
 .toggle-field {
   margin: 1rem 0;
-  
+
   .help-text {
     margin: 0.5rem 0 0 0;
     font-size: 0.875rem;
@@ -41,7 +41,7 @@
   gap: 1rem;
   margin-top: 2rem;
   justify-content: flex-start;
-  
+
   button {
     min-width: 120px;
   }
@@ -65,15 +65,15 @@
   .container {
     padding: 0.5rem;
   }
-  
+
   .date-fields,
   .location-fields {
     grid-template-columns: 1fr;
   }
-  
+
   .form-actions {
     flex-direction: column;
-    
+
     button {
       width: 100%;
     }

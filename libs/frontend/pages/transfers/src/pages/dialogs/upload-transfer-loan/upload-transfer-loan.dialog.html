@@ -1,11 +1,11 @@
 <h1 mat-dialog-title>
   {{
-  'all.transfers-loan.upload.title'
-  | translate
-  : {
-  season: this.data.season,
-}
-}}
+    "all.transfers-loan.upload.title"
+      | translate
+        : {
+            season: this.data.season,
+          }
+  }}
 </h1>
 <div mat-dialog-content>
   <p [innerHTML]="'all.transfers-loan.upload.description' | translate"></p>
@@ -17,8 +17,8 @@
       (dragleave)="onDragLeave($event)"
       (drop)="onFileDrop($event)"
       (click)="onCLick($event)"
-      >
-      <p>{{ 'all.transfers-loan.upload.hint' | translate }}</p>
+    >
+      <p>{{ "all.transfers-loan.upload.hint" | translate }}</p>
     </div>
   }
   @if (this.uploadedFile) {
@@ -41,24 +41,22 @@
       <badman-select-season [(value)]="this.data.season"></badman-select-season>
 
       <mat-form-field>
-        <mat-label>{{ 'all.transfers-loan.upload.file-type' | translate }}</mat-label>
+        <mat-label>{{ "all.transfers-loan.upload.file-type" | translate }}</mat-label>
         <mat-select [(value)]="this.transferOrLoan">
           <mat-option [value]="null">{{
-            'all.transfers-loan.upload.unkown' | translate
+            "all.transfers-loan.upload.unkown" | translate
           }}</mat-option>
           <mat-option [value]="'transfer'">{{
-            'all.transfers-loan.upload.transfer-file' | translate
+            "all.transfers-loan.upload.transfer-file" | translate
           }}</mat-option>
           <mat-option [value]="'loan'">{{
-            'all.transfers-loan.upload.loan-file' | translate
+            "all.transfers-loan.upload.loan-file" | translate
           }}</mat-option>
         </mat-select>
       </mat-form-field>
       <!-- show error if the value is null -->
       @if (this.transferOrLoan === null) {
-        <mat-error
-          >{{ 'all.transfers-loan.upload.error' | translate }}
-        </mat-error>
+        <mat-error>{{ "all.transfers-loan.upload.error" | translate }} </mat-error>
       }
     </div>
   }
@@ -71,7 +69,7 @@
     [disabled]="!this.uploadedFile || this.uploading || this.processing"
     color="primary"
     (click)="processData()"
-    >
+  >
     Process
   </button>
 </div>

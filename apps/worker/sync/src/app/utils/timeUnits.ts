@@ -4,7 +4,7 @@
  * @return {?Object} Reallocated time units. NULL on failure.
  */
 export const timeUnits = (
-  ms: number,
+  ms: number
 ): {
   // weeks: number; // Uncomment for weeks
   days: number;
@@ -38,11 +38,11 @@ export const timeUnits = (
     ms: ms, // remainder
     toString: () => {
       const values = timeUnits(ms);
-      if (!values) return '';
+      if (!values) return "";
 
       return Object.values(values)
-        .filter((value) => typeof value !== 'function')
-        .join(', ');
+        .filter((value) => typeof value !== "function")
+        .join(", ");
     },
   };
 };

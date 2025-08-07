@@ -1,12 +1,12 @@
 <h2 mat-dialog-title>
-  {{ 'all.competition.menu.open_close_enrollments' | translate }}
+  {{ "all.competition.menu.open_close_enrollments" | translate }}
 </h2>
 <mat-dialog-content>
   <!-- date time picker -->
   @if (openControl) {
     <div>
       <mat-form-field>
-        <mat-label>{{ 'all.competition.open-close.open-enrollment' | translate }}</mat-label>
+        <mat-label>{{ "all.competition.open-close.open-enrollment" | translate }}</mat-label>
         <mtx-datetimepicker
           #datetimePicker
           type="datetime"
@@ -17,16 +17,16 @@
         <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
 
         @if (openControl.touched && openControl.invalid) {
-          @if (openControl.hasError('required')) {
+          @if (openControl.hasError("required")) {
             <mat-error>
-              {{ 'all.competition.open-close.open-enrollment-required' | translate }}
+              {{ "all.competition.open-close.open-enrollment-required" | translate }}
             </mat-error>
           }
         }
 
         @if (openYearWarning) {
           <mat-hint>
-            {{ 'all.competition.open-close.open-enrollment-year' | translate }}
+            {{ "all.competition.open-close.open-enrollment-year" | translate }}
           </mat-hint>
         }
       </mat-form-field>
@@ -35,7 +35,7 @@
   @if (closeControl) {
     <div>
       <mat-form-field>
-        <mat-label>{{ 'all.competition.open-close.close-enrollment' | translate }}</mat-label>
+        <mat-label>{{ "all.competition.open-close.close-enrollment" | translate }}</mat-label>
         <mtx-datetimepicker
           #datetimePicker
           type="datetime"
@@ -51,16 +51,16 @@
 
         <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
         @if (closeControl.touched && closeControl.invalid) {
-          @if (closeControl.hasError('required')) {
+          @if (closeControl.hasError("required")) {
             <mat-error>
-              {{ 'all.competition.open-close.close-enrollment-required' | translate }}
+              {{ "all.competition.open-close.close-enrollment-required" | translate }}
             </mat-error>
           }
         }
 
         @if (closeYearWarning) {
           <mat-hint>
-            {{ 'all.competition.open-close.close-enrollment-year' | translate }}
+            {{ "all.competition.open-close.close-enrollment-year" | translate }}
           </mat-hint>
         }
       </mat-form-field>
@@ -69,9 +69,9 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close]="">
-    {{ 'all.button.close' | translate }}
+    {{ "all.button.close" | translate }}
   </button>
   <button mat-raised-button color="primary" (click)="this.save()">
-    {{ 'all.button.save' | translate }}
+    {{ "all.button.save" | translate }}
   </button>
 </mat-dialog-actions>

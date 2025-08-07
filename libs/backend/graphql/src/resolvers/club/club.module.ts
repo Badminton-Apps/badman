@@ -1,7 +1,7 @@
-import { DatabaseModule } from '@badman/backend-database';
-import { Module } from '@nestjs/common';
-import { ClubPlayerResolver, ClubsResolver } from './club.resolver';
-import { ClubPlayerMembershipsResolver } from './club-membership.resolver';
+import { DatabaseModule } from "@badman/backend-database";
+import { Module } from "@nestjs/common";
+import { ClubPlayerResolver, ClubsResolver } from "./club.resolver";
+import { ClubPlayerMembershipsResolver } from "./club-membership.resolver";
 
 @Module({
   imports: [DatabaseModule],

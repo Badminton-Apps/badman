@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -7,16 +7,16 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.addColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'minNumberOfGamesUsedForDowngrade',
+          { tableName: "RankingSystems", schema: "ranking" },
+          "minNumberOfGamesUsedForDowngrade",
           {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -26,12 +26,12 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'minNumberOfGamesUsedForDowngrade',
-          { transaction: t },
+          { tableName: "RankingSystems", schema: "ranking" },
+          "minNumberOfGamesUsedForDowngrade",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

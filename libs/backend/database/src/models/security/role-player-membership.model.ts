@@ -1,11 +1,11 @@
-import { Field, ID } from '@nestjs/graphql';
-import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { Player } from '../player.model';
-import { Role } from './role.model';
+import { Field, ID } from "@nestjs/graphql";
+import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Player } from "../player.model";
+import { Role } from "./role.model";
 
 @Table({
   timestamps: true,
-  schema: 'security',
+  schema: "security",
 })
 export class PlayerRoleMembership extends Model {
   @Field(() => Date, { nullable: true })

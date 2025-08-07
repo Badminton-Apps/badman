@@ -1,11 +1,11 @@
-import { CompileModule } from '@badman/backend-compile';
-import { DatabaseModule } from '@badman/backend-database';
-import { ConfigType } from '@badman/utils';
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { join } from 'path';
-import { AssemblyController } from './controllers';
-import { AssemblyExportService, AssemblyValidationService } from './services';
+import { CompileModule } from "@badman/backend-compile";
+import { DatabaseModule } from "@badman/backend-database";
+import { ConfigType } from "@badman/utils";
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { join } from "path";
+import { AssemblyController } from "./controllers";
+import { AssemblyExportService, AssemblyValidationService } from "./services";
 
 @Module({
   imports: [
@@ -15,15 +15,15 @@ import { AssemblyExportService, AssemblyValidationService } from './services';
       useFactory: (configService: ConfigService<ConfigType>) => {
         return {
           view: {
-            root: join(__dirname, 'compile', 'libs', 'assembly'),
-            engine: 'pug',
+            root: join(__dirname, "compile", "libs", "assembly"),
+            engine: "pug",
           },
           juice: {
             webResources: {
               links: true,
             },
           },
-          debug: configService.get('NODE_ENV') === 'development',
+          debug: configService.get("NODE_ENV") === "development",
         };
       },
       inject: [ConfigService],

@@ -1,25 +1,25 @@
-import { isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { ActivatedRoute } from '@angular/router';
-import { GameScoreComponentComponent } from '@badman/frontend-components';
-import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { gameLabel } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { ReplacePlayerComponent } from '../../dialogs';
+import { isPlatformBrowser } from "@angular/common";
+import { ChangeDetectionStrategy, Component, OnInit, PLATFORM_ID, inject } from "@angular/core";
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { ActivatedRoute } from "@angular/router";
+import { GameScoreComponentComponent } from "@badman/frontend-components";
+import { EncounterCompetition, GamePlayer } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { gameLabel } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { ReplacePlayerComponent } from "../../dialogs";
 
 @Component({
-    templateUrl: './edit-encounter.page.html',
-    styleUrls: ['./edit-encounter.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
+  templateUrl: "./edit-encounter.page.html",
+  styleUrls: ["./edit-encounter.page.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
     TranslatePipe,
     MatFormFieldModule,
     MatInputModule,
@@ -27,8 +27,8 @@ import { ReplacePlayerComponent } from '../../dialogs';
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-    GameScoreComponentComponent
-]
+    GameScoreComponentComponent,
+  ],
 })
 export class EditEncounterComponent implements OnInit {
   private seoService = inject(SeoService);
@@ -41,7 +41,7 @@ export class EditEncounterComponent implements OnInit {
   formGroup?: FormGroup;
 
   get games(): FormArray {
-    return this.formGroup?.get('games') as FormArray;
+    return this.formGroup?.get("games") as FormArray;
   }
 
   get isClient(): boolean {
@@ -50,26 +50,26 @@ export class EditEncounterComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
-      this.encounterCompetition = data['encounterCompetition'];
+      this.encounterCompetition = data["encounterCompetition"];
       const encounterCompetitionName = `${this.encounterCompetition.home?.name} vs ${this.encounterCompetition.away?.name}`;
-      const eventCompetitionName = data['eventCompetition']?.name;
-      const drawCompetitionName = data['drawCompetition']?.name;
+      const eventCompetitionName = data["eventCompetition"]?.name;
+      const drawCompetitionName = data["drawCompetition"]?.name;
 
       this.seoService.update({
         title: encounterCompetitionName,
         description: `Encounter ${encounterCompetitionName}`,
-        type: 'website',
+        type: "website",
         keywords: [
-          'encounter',
-          'competition',
-          'badminton',
-          this.encounterCompetition.home?.name ?? '',
-          this.encounterCompetition.away?.name ?? '',
+          "encounter",
+          "competition",
+          "badminton",
+          this.encounterCompetition.home?.name ?? "",
+          this.encounterCompetition.away?.name ?? "",
         ],
       });
-      this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
-      this.breadcrumbsService.set('@drawCompetition', drawCompetitionName);
-      this.breadcrumbsService.set('@encounterCompetition', encounterCompetitionName);
+      this.breadcrumbsService.set("@eventCompetition", eventCompetitionName);
+      this.breadcrumbsService.set("@drawCompetition", drawCompetitionName);
+      this.breadcrumbsService.set("@encounterCompetition", encounterCompetitionName);
 
       this.createForm();
     });
@@ -114,7 +114,7 @@ export class EditEncounterComponent implements OnInit {
             player1: this.formBuilder.control(this.getPlayer(game.players, 2, 1)),
             player2: this.formBuilder.control(this.getPlayer(game.players, 2, 2)),
           }),
-        }),
+        })
       );
     }
     this.formGroup = this.formBuilder.group({
@@ -133,7 +133,7 @@ export class EditEncounterComponent implements OnInit {
     // console.log(this.formGroup?.value); // ['SF', 'NY']
   }
 
-  openDialog(player: GamePlayer, game: number, action: 'injured' | 'quit') {
+  openDialog(player: GamePlayer, game: number, action: "injured" | "quit") {
     this.matdialog.open(ReplacePlayerComponent, {
       data: { player, game, encounter: this.encounterCompetition },
     });

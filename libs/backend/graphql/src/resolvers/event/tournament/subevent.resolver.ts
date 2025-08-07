@@ -6,8 +6,8 @@ import {
   RankingGroup,
   RankingSystem,
   SubEventTournament,
-} from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+} from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -18,21 +18,21 @@ import {
   Query,
   ResolveField,
   Resolver,
-} from '@nestjs/graphql';
-import { ListArgs } from '../../../utils';
-import { User } from '@badman/backend-authorization';
-import { PointsService } from '@badman/backend-ranking';
-import { Sequelize } from 'sequelize-typescript';
-import { SyncQueue, Sync } from '@badman/backend-queue';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
-import { SyncDrawOptions } from './draw.resolver';
+} from "@nestjs/graphql";
+import { ListArgs } from "../../../utils";
+import { User } from "@badman/backend-authorization";
+import { PointsService } from "@badman/backend-ranking";
+import { Sequelize } from "sequelize-typescript";
+import { SyncQueue, Sync } from "@badman/backend-queue";
+import { InjectQueue } from "@nestjs/bull";
+import { Queue } from "bull";
+import { SyncDrawOptions } from "./draw.resolver";
 
 @InputType()
 export class SyncSubEventOptions extends SyncDrawOptions {
   @Field(() => Boolean, {
     nullable: true,
-    description: 'Deletes the exsiting sub-event (and childs) and re-creates with the same id',
+    description: "Deletes the exsiting sub-event (and childs) and re-creates with the same id",
   })
   deleteSubEvent?: boolean;
 
@@ -47,12 +47,12 @@ export class SubEventTournamentResolver {
   constructor(
     private readonly _sequelize: Sequelize,
     private readonly _pointService: PointsService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Query(() => SubEventTournament)
   async subEventTournament(
-    @Args('id', { type: () => ID }) id: string,
+    @Args("id", { type: () => ID }) id: string
   ): Promise<SubEventTournament> {
     const subEventTournament = await SubEventTournament.findByPk(id);
 
@@ -70,7 +70,7 @@ export class SubEventTournamentResolver {
   @ResolveField(() => [DrawTournament])
   async drawTournaments(
     @Parent() subEvent: SubEventTournament,
-    @Args() listArgs: ListArgs,
+    @Args() listArgs: ListArgs
   ): Promise<DrawTournament[]> {
     return subEvent.getDrawTournaments(ListArgs.toFindOptions(listArgs));
   }
@@ -88,10 +88,10 @@ export class SubEventTournamentResolver {
   @Mutation(() => Boolean)
   async recalculateSubEventTournamentwRankingPoints(
     @User() user: Player,
-    @Args('drawId', { type: () => ID }) drawId: string,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+    @Args("drawId", { type: () => ID }) drawId: string,
+    @Args("systemId", { type: () => ID, nullable: true }) systemId: string
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+    if (!(await user.hasAnyPermission(["re-sync:points"]))) {
       throw new UnauthorizedException(`You do not have permission to sync points`);
     }
 
@@ -104,7 +104,7 @@ export class SubEventTournamentResolver {
       });
 
       if (!system) {
-        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
       }
 
       // find all games
@@ -160,21 +160,21 @@ export class SubEventTournamentResolver {
   })
   async syncSubEvent(
     @User() user: Player,
-    @Args('eventId', { type: () => ID, nullable: true }) eventId: string,
-    @Args('eventCode', { type: () => ID, nullable: true }) eventCode: string,
+    @Args("eventId", { type: () => ID, nullable: true }) eventId: string,
+    @Args("eventCode", { type: () => ID, nullable: true }) eventCode: string,
 
-    @Args('subEventId', { type: () => ID, nullable: true }) subEventId: string,
-    @Args('subEventCode', { type: () => ID, nullable: true }) subEventCode: string,
+    @Args("subEventId", { type: () => ID, nullable: true }) subEventId: string,
+    @Args("subEventCode", { type: () => ID, nullable: true }) subEventCode: string,
 
-    @Args('options', { nullable: true }) options: SyncSubEventOptions,
+    @Args("options", { nullable: true }) options: SyncSubEventOptions
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['sync:tournament']))) {
+    if (!(await user.hasAnyPermission(["sync:tournament"]))) {
       throw new UnauthorizedException(`You do not have permission to sync tournament`);
     }
 
     // Any of the following combinations are valid
     if (!subEventId && !(eventId && subEventCode) && !(eventCode && subEventCode)) {
-      throw new Error('Invalid arguments');
+      throw new Error("Invalid arguments");
     }
 
     this._syncQueue.add(
@@ -187,7 +187,7 @@ export class SubEventTournamentResolver {
       },
       {
         removeOnComplete: true,
-      },
+      }
     );
 
     return true;

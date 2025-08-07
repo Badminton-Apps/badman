@@ -7,7 +7,7 @@
       (click)="this.whenUpdated.emit(this.rankingSystemForm.value)"
       [disabled]="!this.rankingSystemForm.valid"
     >
-      {{ 'all.button.save' | translate }}
+      {{ "all.button.save" | translate }}
     </button>
   </div>
   <div class="mat-subheading-2">
@@ -15,7 +15,7 @@
   </div>
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
-      <mat-label>{{ 'all.input.name' | translate }}</mat-label>
+      <mat-label>{{ "all.input.name" | translate }}</mat-label>
       <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
@@ -149,13 +149,13 @@
     <mat-form-field>
       <mat-label>Point update day</mat-label>
       <mat-select formControlName="calculationDayOfWeek">
-        <mat-option [value]="1">{{ 'all.days.monday' | translate }}</mat-option>
-        <mat-option [value]="2">{{ 'all.days.tuesday' | translate }}</mat-option>
-        <mat-option [value]="3">{{ 'all.days.wednesday' | translate }}</mat-option>
-        <mat-option [value]="4">{{ 'all.days.thursday' | translate }}</mat-option>
-        <mat-option [value]="5">{{ 'all.days.friday' | translate }}</mat-option>
-        <mat-option [value]="6">{{ 'all.days.saturday' | translate }}</mat-option>
-        <mat-option [value]="7">{{ 'all.days.sunday' | translate }}</mat-option>
+        <mat-option [value]="1">{{ "all.days.monday" | translate }}</mat-option>
+        <mat-option [value]="2">{{ "all.days.tuesday" | translate }}</mat-option>
+        <mat-option [value]="3">{{ "all.days.wednesday" | translate }}</mat-option>
+        <mat-option [value]="4">{{ "all.days.thursday" | translate }}</mat-option>
+        <mat-option [value]="5">{{ "all.days.friday" | translate }}</mat-option>
+        <mat-option [value]="6">{{ "all.days.saturday" | translate }}</mat-option>
+        <mat-option [value]="7">{{ "all.days.sunday" | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -187,13 +187,13 @@
     <mat-form-field>
       <mat-label>Calculation update day</mat-label>
       <mat-select formControlName="updateDayOfWeek">
-        <mat-option [value]="1">{{ 'all.days.monday' | translate }}</mat-option>
-        <mat-option [value]="2">{{ 'all.days.tuesday' | translate }}</mat-option>
-        <mat-option [value]="3">{{ 'all.days.wednesday' | translate }}</mat-option>
-        <mat-option [value]="4">{{ 'all.days.thursday' | translate }}</mat-option>
-        <mat-option [value]="5">{{ 'all.days.friday' | translate }}</mat-option>
-        <mat-option [value]="6">{{ 'all.days.saturday' | translate }}</mat-option>
-        <mat-option [value]="7">{{ 'all.days.sunday' | translate }}</mat-option>
+        <mat-option [value]="1">{{ "all.days.monday" | translate }}</mat-option>
+        <mat-option [value]="2">{{ "all.days.tuesday" | translate }}</mat-option>
+        <mat-option [value]="3">{{ "all.days.wednesday" | translate }}</mat-option>
+        <mat-option [value]="4">{{ "all.days.thursday" | translate }}</mat-option>
+        <mat-option [value]="5">{{ "all.days.friday" | translate }}</mat-option>
+        <mat-option [value]="6">{{ "all.days.saturday" | translate }}</mat-option>
+        <mat-option [value]="7">{{ "all.days.sunday" | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>

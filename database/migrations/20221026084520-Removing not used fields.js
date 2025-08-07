@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
@@ -7,17 +7,17 @@ module.exports = {
       try {
         // expand encounter with scores entered and scores accepted columns
         await queryInterface.removeColumn(
-          { tableName: 'Notifications', schema: 'personal' },
-          'message',
-          { transaction: t },
+          { tableName: "Notifications", schema: "personal" },
+          "message",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
-          { tableName: 'Notifications', schema: 'personal' },
-          'title',
-          { transaction: t },
+          { tableName: "Notifications", schema: "personal" },
+          "title",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -27,28 +27,28 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       // drop encounter accepted column
       await queryInterface.addColumn(
-        { tableName: 'Notifications', schema: 'personal' },
-        'message',
+        { tableName: "Notifications", schema: "personal" },
+        "message",
         {
           type: sequelize.DataTypes.STRING,
           allowNull: true,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       await queryInterface.addColumn(
-        { tableName: 'Notifications', schema: 'personal' },
-        'title',
+        { tableName: "Notifications", schema: "personal" },
+        "title",
         {
           type: sequelize.DataTypes.STRING,
           allowNull: true,
         },
-        { transaction: t },
+        { transaction: t }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

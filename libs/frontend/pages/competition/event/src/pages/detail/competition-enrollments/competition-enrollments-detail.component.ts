@@ -6,11 +6,11 @@ import {
   TemplateRef,
   ViewContainerRef,
   inject,
-} from '@angular/core';
-import { SubEventCompetition } from '@badman/frontend-models';
+} from "@angular/core";
+import { SubEventCompetition } from "@badman/frontend-models";
 
 @Directive({
-  selector: '[badmanEnrollmentDetailRow]',
+  selector: "[badmanEnrollmentDetailRow]",
   standalone: true,
 })
 export class EnrollmentDetailRowDirective {
@@ -19,7 +19,7 @@ export class EnrollmentDetailRowDirective {
   private tRef?: TemplateRef<SubEventCompetition>;
   private opened = false;
 
-  @HostBinding('class.expanded')
+  @HostBinding("class.expanded")
   get expended(): boolean {
     return this.opened;
   }
@@ -38,7 +38,7 @@ export class EnrollmentDetailRowDirective {
     }
   }
 
-  @HostListener('click')
+  @HostListener("click")
   onClick(): void {
     this.toggle();
   }

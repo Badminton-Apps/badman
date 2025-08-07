@@ -1,12 +1,12 @@
-import { EncounterCompetition, EventCompetition, Game } from '@badman/backend-database';
-import { VisualService, XmlTeamMatch, XmlTournament } from '@badman/backend-visual';
-import { runParallel } from '@badman/utils';
-import { Logger } from '@nestjs/common';
-import moment from 'moment-timezone';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
-import { DrawStepData } from './draw';
-import { EntryStepData } from './entry';
+import { EncounterCompetition, EventCompetition, Game } from "@badman/backend-database";
+import { VisualService, XmlTeamMatch, XmlTournament } from "@badman/backend-visual";
+import { runParallel } from "@badman/utils";
+import { Logger } from "@nestjs/common";
+import moment from "moment-timezone";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
+import { DrawStepData } from "./draw";
+import { EntryStepData } from "./entry";
 
 export interface EncounterStepData {
   encounter: EncounterCompetition;
@@ -27,7 +27,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions & EncounterStepOptions,
+    options?: StepOptions & EncounterStepOptions
   ) {
     if (!options) {
       options = {};
@@ -45,7 +45,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
   private async _processEncounters({ draw, internalId }: DrawStepData) {
     if (!this.event?.season) {
-      throw new Error('No event');
+      throw new Error("No event");
     }
 
     const encounters = await draw.getEncounterCompetitions({
@@ -57,7 +57,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     const visualMatches = (await this.visualService.getGames(
       this.visualTournament.Code,
       internalId,
-      !canChange,
+      !canChange
     )) as XmlTeamMatch[];
 
     for (const xmlTeamMatch of visualMatches) {
@@ -67,7 +67,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
       let matchDate = null;
       if (xmlTeamMatch.MatchTime) {
-        matchDate = moment.tz(xmlTeamMatch.MatchTime, 'Europe/Brussels').toDate();
+        matchDate = moment.tz(xmlTeamMatch.MatchTime, "Europe/Brussels").toDate();
       }
 
       const dbEncounters = encounters.filter((r) => r.visualCode === `${xmlTeamMatch.Code}`);
@@ -80,7 +80,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         const [first, ...rest] = dbEncounters;
         dbEncounter = first;
 
-        this.logger.warn('Having multiple? Removing old');
+        this.logger.warn("Having multiple? Removing old");
         await this._destroyEncounters(rest);
       }
 
@@ -101,7 +101,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         // FInd one with same teams
         dbEncounter =
           encounters.find(
-            (e) => e.homeTeamId === team1?.id && e.awayTeamId === team2?.id && e.drawId === draw.id,
+            (e) => e.homeTeamId === team1?.id && e.awayTeamId === team2?.id && e.drawId === draw.id
           ) || null;
 
         if (!dbEncounter) {
@@ -155,7 +155,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   private async _destroyEncounters(encounter: EncounterCompetition[]) {
     await Game.destroy({
       where: {
-        linkType: 'competition',
+        linkType: "competition",
         linkId: {
           [Op.in]: encounter.map((e) => e.id),
         },
@@ -174,7 +174,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     // remove from db encounters
     this._dbEncounters = this._dbEncounters.filter(
-      (e) => !encounter.find((r) => r.id === e.encounter.id),
+      (e) => !encounter.find((r) => r.id === e.encounter.id)
     );
   }
 }

@@ -1,17 +1,17 @@
-import { Location } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Location } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { of } from "rxjs";
+import { map } from "rxjs/operators";
 
 export const loadLocations = (apollo: Apollo, clubId?: string | null, season?: number | null) => {
   if (!clubId || !season) {
-    console.error('No clubId or season provided');
+    console.error("No clubId or season provided");
     return of([]);
   }
 
   return apollo
     .query<{ locations: Location[] }>({
-      fetchPolicy: 'network-only',
+      fetchPolicy: "network-only",
       query: gql`
         query Locations($where: JSONObject, $availabilitiesWhere: JSONObject) {
           locations(where: $where) {

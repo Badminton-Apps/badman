@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 
-const columnsToAdd = ['tempHomeCaptainId', 'tempAwayCaptainId'];
+const columnsToAdd = ["tempHomeCaptainId", "tempAwayCaptainId"];
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -10,21 +10,21 @@ module.exports = {
       return Promise.all(
         columnsToAdd.map((column) =>
           queryInterface.addColumn(
-            { tableName: 'EncounterCompetitions', schema: 'event' },
+            { tableName: "EncounterCompetitions", schema: "event" },
             column,
             {
               type: Sequelize.DataTypes.UUID,
               allowNull: true,
               references: {
-                model: { tableName: 'Players', schema: 'public' },
-                key: 'id',
+                model: { tableName: "Players", schema: "public" },
+                key: "id",
               },
-              onUpdate: 'CASCADE',
-              onDelete: 'SET NULL',
+              onUpdate: "CASCADE",
+              onDelete: "SET NULL",
             },
-            { transaction: t },
-          ),
-        ),
+            { transaction: t }
+          )
+        )
       );
     });
   },
@@ -34,11 +34,11 @@ module.exports = {
       return Promise.all(
         columnsToAdd.map((column) =>
           queryInterface.removeColumn(
-            { tableName: 'EncounterCompetitions', schema: 'event' },
+            { tableName: "EncounterCompetitions", schema: "event" },
             column,
-            { transaction: t },
-          ),
-        ),
+            { transaction: t }
+          )
+        )
       );
     });
   },

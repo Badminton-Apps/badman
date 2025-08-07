@@ -1,5 +1,5 @@
-import { OverlayModule } from '@angular/cdk/overlay';
-import { CommonModule } from '@angular/common';
+import { OverlayModule } from "@angular/cdk/overlay";
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,23 +7,23 @@ import {
   effect,
   inject,
   signal,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { RouterModule } from '@angular/router';
-import { AuthenticateService, NotificationService } from '@badman/frontend-auth';
-import { Notification } from '@badman/frontend-models';
-import { TranslatePipe } from '@ngx-translate/core';
-import moment from 'moment';
-import { bufferCount, concatMap, delay, forkJoin, from } from 'rxjs';
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { MatBadgeModule } from "@angular/material/badge";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { RouterModule } from "@angular/router";
+import { AuthenticateService, NotificationService } from "@badman/frontend-auth";
+import { Notification } from "@badman/frontend-models";
+import { TranslatePipe } from "@ngx-translate/core";
+import moment from "moment";
+import { bufferCount, concatMap, delay, forkJoin, from } from "rxjs";
 
 @Component({
-  selector: 'badman-notifications',
+  selector: "badman-notifications",
   imports: [
     CommonModule,
     RouterModule,
@@ -36,8 +36,8 @@ import { bufferCount, concatMap, delay, forkJoin, from } from 'rxjs';
     OverlayModule,
     MatListModule,
   ],
-  templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.scss'],
+  templateUrl: "./notifications.component.html",
+  styleUrls: ["./notifications.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationComponent {
@@ -58,27 +58,27 @@ export class NotificationComponent {
 
   getParams(notification: Notification) {
     switch (notification.type) {
-      case 'encounterNotEnteredNotification':
-      case 'encounterNotAccepted':
-      case 'encounterChangeConfirmationNotification':
-      case 'encounterChangeNewNotification':
-      case 'encounterChangeFinishedNotification':
+      case "encounterNotEnteredNotification":
+      case "encounterNotAccepted":
+      case "encounterChangeConfirmationNotification":
+      case "encounterChangeNewNotification":
+      case "encounterChangeFinishedNotification":
         return {
           encounter: {
             ...notification.encounter,
-            date: moment(notification.encounter?.date).format('YYYY-MM-DD'),
+            date: moment(notification.encounter?.date).format("YYYY-MM-DD"),
           },
         };
 
-      case 'syncSuccessNotification':
+      case "syncSuccessNotification":
         return {
           event: notification.competition ?? notification.tournament,
         };
-      case 'syncFailedNotification':
+      case "syncFailedNotification":
         return {
           event: notification.competition ?? notification.tournament,
         };
-      case 'clubEnrollmentNotification':
+      case "clubEnrollmentNotification":
         return {
           club: notification.club,
         };
@@ -93,14 +93,14 @@ export class NotificationComponent {
       this.notifications()
         ?.filter((n) => n.read == false)
         ?.map((notification) =>
-          this.notificationService.readNotification(notification, true).pipe(delay(50)),
+          this.notificationService.readNotification(notification, true).pipe(delay(50))
         ) ?? [];
 
     // process notifications one by one
     from(notificationsToProcess)
       .pipe(
         bufferCount(1),
-        concatMap((buffer) => forkJoin(buffer)),
+        concatMap((buffer) => forkJoin(buffer))
       )
       .subscribe();
   }

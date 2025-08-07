@@ -1,6 +1,6 @@
-import { RankingSystems, StartingType } from '@badman/utils';
-import moment from 'moment';
-import { RankingGroup as RankingGroup } from './group.model';
+import { RankingSystems, StartingType } from "@badman/utils";
+import moment from "moment";
+import { RankingGroup as RankingGroup } from "./group.model";
 
 export class RankingSystem {
   id!: string;
@@ -18,16 +18,16 @@ export class RankingSystem {
   maxLevelDownPerChange?: number;
   gamesForInactivty?: number;
   inactivityAmount?: number;
-  inactivityUnit?: 'months' | 'weeks' | 'days';
+  inactivityUnit?: "months" | "weeks" | "days";
   calculationLastUpdate?: Date;
   calculationIntervalAmount?: number;
-  calculationIntervalUnit?: 'months' | 'weeks' | 'days';
+  calculationIntervalUnit?: "months" | "weeks" | "days";
   updateDayOfWeek?: number;
   periodAmount?: number;
-  periodUnit?: 'months' | 'weeks' | 'days';
+  periodUnit?: "months" | "weeks" | "days";
   updateLastUpdate?: Date;
   updateIntervalAmount?: number;
-  updateIntervalUnit?: 'months' | 'weeks' | 'days';
+  updateIntervalUnit?: "months" | "weeks" | "days";
   calculationDayOfWeek?: number;
   rankingSystem?: RankingSystems;
   primary?: boolean;

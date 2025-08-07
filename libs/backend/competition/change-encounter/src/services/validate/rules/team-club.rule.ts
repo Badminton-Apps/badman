@@ -1,12 +1,12 @@
-import { EncounterCompetition } from '@badman/backend-database';
+import { EncounterCompetition } from "@badman/backend-database";
 import {
   EncounterValidationOutput,
   EncounterValidationData,
   EncounterValidationError,
-} from '../../../models';
-import { Rule } from './_rule.base';
-import { Logger } from '@nestjs/common';
-import moment from 'moment';
+} from "../../../models";
+import { Rule } from "./_rule.base";
+import { Logger } from "@nestjs/common";
+import moment from "moment";
 
 export type TeamClubRuleParams = {
   encounterId: string;
@@ -22,7 +22,7 @@ export type TeamClubRuleParams = {
  * Checks if encounters against the same team are in a different semester
  */
 export class TeamClubRule extends Rule {
-  static override readonly description = 'all.rules.change-encounter.team-club';
+  static override readonly description = "all.rules.change-encounter.team-club";
   private readonly logger = new Logger(TeamClubRule.name);
 
   async validate(changeEncounter: EncounterValidationData): Promise<EncounterValidationOutput> {
@@ -44,7 +44,7 @@ export class TeamClubRule extends Rule {
 
     if (error) {
       errors.push({
-        message: 'all.competition.change-encounter.errors.same-club',
+        message: "all.competition.change-encounter.errors.same-club",
         params: {
           encounterId: encounter.id,
           homeTeamName: encounter.home?.name,
@@ -57,7 +57,7 @@ export class TeamClubRule extends Rule {
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
     if (suggestedDates && encounter.id) {
       if (index == -1) {
-        throw new Error('Working encounter not found');
+        throw new Error("Working encounter not found");
       }
 
       const encountersSemester1 = [...encountersSem1];
@@ -80,12 +80,12 @@ export class TeamClubRule extends Rule {
 
         const warn = this.isSameClubFirst(
           [...encountersSemester, workingEncounter],
-          workingEncounter,
+          workingEncounter
         );
 
         if (warn) {
           warnings.push({
-            message: 'all.competition.change-encounter.errors.same-club',
+            message: "all.competition.change-encounter.errors.same-club",
             params: {
               encounterId: workingEncounter.id,
               date: suggestedDate.date,
@@ -99,16 +99,16 @@ export class TeamClubRule extends Rule {
         // Check if teams have other encounters on the suggested date
         const conflictingEncounters = encountersSemester.filter(
           (e) =>
-            moment(e.date).isSame(suggestedDate.date, 'day') &&
+            moment(e.date).isSame(suggestedDate.date, "day") &&
             (e.homeTeamId === workingEncounter.homeTeamId ||
               e.awayTeamId === workingEncounter.homeTeamId ||
               e.homeTeamId === workingEncounter.awayTeamId ||
-              e.awayTeamId === workingEncounter.awayTeamId),
+              e.awayTeamId === workingEncounter.awayTeamId)
         );
 
         if (conflictingEncounters.length > 0) {
           warnings.push({
-            message: 'all.competition.change-encounter.errors.team-conflict' as any,
+            message: "all.competition.change-encounter.errors.team-conflict" as any,
             params: {
               encounterId: workingEncounter.id,
               date: suggestedDate.date,

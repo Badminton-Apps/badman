@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { CacheStore, CacheModule as nestCache } from '@nestjs/cache-manager';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Module } from "@nestjs/common";
+import { CacheStore, CacheModule as nestCache } from "@nestjs/cache-manager";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import { redisStore } from 'cache-manager-redis-store';
-import { ConfigType } from '@badman/utils';
+import { redisStore } from "cache-manager-redis-store";
+import { ConfigType } from "@badman/utils";
 
 export const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week
 
@@ -12,15 +12,15 @@ export const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week
     nestCache.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<ConfigType>) => {
-        if (configService.get('DB_CACHE') === 'true') {
+        if (configService.get("DB_CACHE") === "true") {
           const redis = (await redisStore({
             socket: {
-              host: configService.get('REDIS_HOST'),
-              port: configService.get<number>('REDIS_PORT'),
+              host: configService.get("REDIS_HOST"),
+              port: configService.get<number>("REDIS_PORT"),
             },
             ttl: CACHE_TTL,
-            password: configService.get('REDIS_PASSWORD'),
-            database: configService.get<number>('REDIS_DATABASE') ?? 0,
+            password: configService.get("REDIS_PASSWORD"),
+            database: configService.get<number>("REDIS_DATABASE") ?? 0,
           })) as unknown as CacheStore;
 
           return {
@@ -30,7 +30,7 @@ export const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week
         } else {
           return {
             ttl: 0,
-            store: 'memory',
+            store: "memory",
           };
         }
       },

@@ -1,5 +1,5 @@
-import { waitForSelector } from '@badman/backend-pupeteer';
-import { Page } from 'puppeteer';
+import { waitForSelector } from "@badman/backend-pupeteer";
+import { Page } from "puppeteer";
 
 export async function getRanking(
   pupeteer: {
@@ -8,11 +8,11 @@ export async function getRanking(
   } = {
     page: null,
     timeout: 5000,
-  },
+  }
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
 
   let single: number | undefined;

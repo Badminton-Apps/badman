@@ -1,27 +1,30 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:color';
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:color";
+@use "sass:map";
+@use "@angular/material" as mat;
 
 @mixin color($theme) {
-  
-  
-  
-  $isDark: map.get($theme, 'is-dark');
+  $isDark: map.get($theme, "is-dark");
 
   badman-upload-ranking {
     .drop-area {
-      border-color: mat.get-theme-color($theme, foreground, 'base');
+      border-color: mat.get-theme-color($theme, foreground, "base");
       p {
-        color: mat.get-theme-color($theme, foreground, 'base');
+        color: mat.get-theme-color($theme, foreground, "base");
       }
 
       &.dragging {
         @if ($isDark) {
-          background-color: color.scale(mat.get-theme-color($theme, 'background', 'background'), $lightness: -40%);
+          background-color: color.scale(
+            mat.get-theme-color($theme, "background", "background"),
+            $lightness: -40%
+          );
         } @else {
-          background-color: color.scale(mat.get-theme-color($theme, 'background', 'background'), $lightness: 60%);
+          background-color: color.scale(
+            mat.get-theme-color($theme, "background", "background"),
+            $lightness: 60%
+          );
         }
       }
     }
@@ -29,7 +32,6 @@
 }
 
 @mixin typography($theme) {
-  
   badman-upload-ranking {
   }
 }

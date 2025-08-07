@@ -1,14 +1,13 @@
-
-import { Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Component, OnInit, inject } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MtxDatetimepickerModule } from "@ng-matero/extensions/datetimepicker";
+import { TranslatePipe } from "@ngx-translate/core";
 @Component({
-    imports: [
+  imports: [
     TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
@@ -16,14 +15,14 @@ import { TranslatePipe } from '@ngx-translate/core';
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MtxDatetimepickerModule
-],
-    templateUrl: './set-open-close-change-encounter.component.html',
-    styleUrls: ['./set-open-close-change-encounter.component.scss']
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: "./set-open-close-change-encounter.component.html",
+  styleUrls: ["./set-open-close-change-encounter.component.scss"],
 })
 export class OpenCloseChangeEncounterDateDialogComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<OpenCloseChangeEncounterDateDialogComponent>>(
-    MatDialogRef<OpenCloseChangeEncounterDateDialogComponent>,
+    MatDialogRef<OpenCloseChangeEncounterDateDialogComponent>
   );
   public data = inject<{
     openDate: Date;
@@ -42,8 +41,12 @@ export class OpenCloseChangeEncounterDateDialogComponent implements OnInit {
     this.openControl = new FormControl(this.data.openDate);
     this.changeCloseDatePeriod1Control = new FormControl(this.data.changeCloseDatePeriod1);
     this.changeCloseDatePeriod2Control = new FormControl(this.data.changeCloseDatePeriod2);
-    this.changeCloseRequestDatePeriod1Control = new FormControl(this.data.changeCloseRequestDatePeriod1);
-    this.changeCloseRequestDatePeriod2Control = new FormControl(this.data.changeCloseRequestDatePeriod2);
+    this.changeCloseRequestDatePeriod1Control = new FormControl(
+      this.data.changeCloseRequestDatePeriod1
+    );
+    this.changeCloseRequestDatePeriod2Control = new FormControl(
+      this.data.changeCloseRequestDatePeriod2
+    );
   }
 
   save() {

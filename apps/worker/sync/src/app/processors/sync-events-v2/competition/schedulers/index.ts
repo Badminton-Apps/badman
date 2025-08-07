@@ -1,2 +1,2 @@
-export * from './full-sync';
-export * from './recalculate-standing';
+export * from "./full-sync";
+export * from "./recalculate-standing";

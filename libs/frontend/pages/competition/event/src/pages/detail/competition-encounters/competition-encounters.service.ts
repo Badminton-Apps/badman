@@ -1,11 +1,11 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { EncounterCompetition, EventCompetition } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Observable, Subject, merge } from 'rxjs';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { EncounterCompetition, EventCompetition } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import moment from "moment";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Observable, Subject, merge } from "rxjs";
 import {
   catchError,
   debounceTime,
@@ -14,7 +14,7 @@ import {
   map,
   startWith,
   switchMap,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 export interface CompetitionEncounterState {
   encounters: EncounterCompetition[];
@@ -28,7 +28,7 @@ export interface CompetitionEncounterState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class CompetitionEncounterService {
   apollo = inject(Apollo);
@@ -56,7 +56,7 @@ export class CompetitionEncounterService {
       filtered = filtered.filter(
         (encounter) =>
           encounter.home?.club?.id === this.state().filterClub ||
-          encounter.away?.club?.id === this.state().filterClub,
+          encounter.away?.club?.id === this.state().filterClub
       );
     }
 
@@ -64,13 +64,13 @@ export class CompetitionEncounterService {
       filtered = filtered.filter(
         (encounter) =>
           encounter.home?.id === this.state().filterTeam ||
-          encounter.away?.id === this.state().filterTeam,
+          encounter.away?.id === this.state().filterTeam
       );
     }
 
     if (this.state().filterChangedRequest) {
       filtered = filtered.filter(
-        (encounter) => !moment(encounter.originalDate ?? encounter.date).isSame(encounter.date),
+        (encounter) => !moment(encounter.originalDate ?? encounter.date).isSame(encounter.date)
       );
     }
 
@@ -86,7 +86,7 @@ export class CompetitionEncounterService {
       .encounters.map((encounter) => encounter.home?.club)
       .concat(this.state().encounters.map((encounter) => encounter.away?.club))
       .filter((club) => club !== undefined)
-      .filter((club, index, self) => self.findIndex((c) => c?.id === club?.id) === index),
+      .filter((club, index, self) => self.findIndex((c) => c?.id === club?.id) === index)
   );
 
   teams = computed(() =>
@@ -94,7 +94,7 @@ export class CompetitionEncounterService {
       .encounters.map((encounter) => encounter.home)
       .concat(this.state().encounters.map((encounter) => encounter.away))
       .filter((team) => team !== undefined)
-      .filter((club, index, self) => self.findIndex((c) => c?.id === club?.id) === index),
+      .filter((club, index, self) => self.findIndex((c) => c?.id === club?.id) === index)
   );
 
   //sources
@@ -102,7 +102,7 @@ export class CompetitionEncounterService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter(() => this.filter.value.eventId !== null),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   private encountersLoaded$ = this.filterChanged$.pipe(
@@ -111,7 +111,7 @@ export class CompetitionEncounterService {
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
@@ -120,10 +120,10 @@ export class CompetitionEncounterService {
         encounters,
         filtered: encounters,
         loaded: true,
-      })),
+      }))
     ),
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ encounters: [], loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ encounters: [], loaded: false })))
   );
 
   state = signalSlice({
@@ -134,25 +134,25 @@ export class CompetitionEncounterService {
         action$.pipe(
           map((filterClub) => ({
             filterClub,
-          })),
+          }))
         ),
       filterOnTeam: (_state, action$: Observable<string>) =>
         action$.pipe(
           map((filterTeam) => ({
             filterTeam,
-          })),
+          }))
         ),
       filterOnChangedRequest: (_state, action$: Observable<boolean>) =>
         action$.pipe(
           map((filterChangedRequest) => ({
             filterChangedRequest,
-          })),
+          }))
         ),
       filterOnOpenRequests: (_state, action$: Observable<boolean>) =>
         action$.pipe(
           map((filterOpenRequests) => ({
             filterOpenRequests,
-          })),
+          }))
         ),
     },
   });
@@ -162,7 +162,7 @@ export class CompetitionEncounterService {
       eventId: string | null;
       clubId: string | null;
       teamId: string | null;
-    }>,
+    }>
   ) {
     return this.apollo
       .query<{ eventCompetition: EventCompetition }>({
@@ -221,16 +221,16 @@ export class CompetitionEncounterService {
         }),
         map((result) => {
           if (!result?.data.eventCompetition) {
-            throw new Error('No event found');
+            throw new Error("No event found");
           }
           return result.data.eventCompetition;
         }),
         map((event) =>
           (event.subEventCompetitions ?? []).flatMap((subEvent) =>
-            (subEvent.drawCompetitions ?? []).flatMap((draw) => draw.encounterCompetitions),
-          ),
+            (subEvent.drawCompetitions ?? []).flatMap((draw) => draw.encounterCompetitions)
+          )
         ),
-        map((encounters) => encounters?.map((encounter) => new EncounterCompetition(encounter))),
+        map((encounters) => encounters?.map((encounter) => new EncounterCompetition(encounter)))
       );
   }
 

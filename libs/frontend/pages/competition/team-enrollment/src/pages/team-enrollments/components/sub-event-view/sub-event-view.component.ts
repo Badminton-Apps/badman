@@ -1,36 +1,36 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Apollo, gql } from 'apollo-angular';
-import { map, Observable, startWith, switchMap } from 'rxjs';
-import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
-import { sortSubEvents } from '@badman/utils';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatCardModule } from '@angular/material/card';
-import { OverlayModule } from '@angular/cdk/overlay';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
+import { Apollo, gql } from "apollo-angular";
+import { map, Observable, startWith, switchMap } from "rxjs";
+import { EventCompetition, SubEventCompetition } from "@badman/frontend-models";
+import { sortSubEvents } from "@badman/utils";
+import { CommonModule } from "@angular/common";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { MatOptionModule } from "@angular/material/core";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatCardModule } from "@angular/material/card";
+import { OverlayModule } from "@angular/cdk/overlay";
 
 @Component({
-    selector: 'badman-sub-event-view',
-    templateUrl: './sub-event-view.component.html',
-    styleUrls: ['./sub-event-view.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatOptionModule,
-        MatSelectModule,
-        MatExpansionModule,
-        MatCardModule,
-        OverlayModule,
-    ]
+  selector: "badman-sub-event-view",
+  templateUrl: "./sub-event-view.component.html",
+  styleUrls: ["./sub-event-view.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatExpansionModule,
+    MatCardModule,
+    OverlayModule,
+  ],
 })
 export class SubEventViewComponent implements OnInit {
   private _apollo = inject(Apollo);
-  overlayOpen = '';
+  overlayOpen = "";
 
   yearControl: FormControl = new FormControl(2022);
   eventControl: FormControl = new FormControl();
@@ -79,7 +79,7 @@ export class SubEventViewComponent implements OnInit {
           variables: {
             competitionEventId: eventId,
           },
-        }),
+        })
       ),
       map((result) => new EventCompetition(result.data.eventCompetition)),
       map((event) => {
@@ -95,7 +95,7 @@ export class SubEventViewComponent implements OnInit {
         });
 
         return event.subEventCompetitions;
-      }),
+      })
     );
 
     this.events$ = this.yearControl.valueChanges.pipe(
@@ -123,9 +123,9 @@ export class SubEventViewComponent implements OnInit {
               closeDate: { $gte: new Date().toISOString() },
             },
           },
-        }),
+        })
       ),
-      map((result) => result.data.eventCompetitions.rows.map((node) => new EventCompetition(node))),
+      map((result) => result.data.eventCompetitions.rows.map((node) => new EventCompetition(node)))
     );
   }
 }

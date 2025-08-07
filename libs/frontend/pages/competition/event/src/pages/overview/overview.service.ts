@@ -1,13 +1,13 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, Injector, PLATFORM_ID, TransferState, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { EventCompetition } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { getSeason } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Observable, Subject, merge, of } from 'rxjs';
-import { catchError, distinctUntilChanged, map, switchMap, throttleTime } from 'rxjs/operators';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable, Injector, PLATFORM_ID, TransferState, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { EventCompetition } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { getSeason } from "@badman/utils";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Observable, Subject, merge, of } from "rxjs";
+import { catchError, distinctUntilChanged, map, switchMap, throttleTime } from "rxjs/operators";
 interface EventOverviewState {
   events: EventCompetition[];
   loading: boolean;
@@ -15,7 +15,7 @@ interface EventOverviewState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class EventOverviewService {
   private apollo = inject(Apollo);
@@ -47,7 +47,7 @@ export class EventOverviewService {
   private eventsLoaded$ = this.filterChanged$.pipe(
     // debounce the filter changes (we don't want it on the loading, thats instant)
     throttleTime(300),
-    switchMap((filter) => this._loadEvents(filter)),
+    switchMap((filter) => this._loadEvents(filter))
   );
 
   sources$ = merge(
@@ -55,10 +55,10 @@ export class EventOverviewService {
       map((events) => ({
         events,
         loading: false,
-      })),
+      }))
     ),
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loading: true }))),
+    this.filterChanged$.pipe(map(() => ({ loading: true })))
   );
 
   state = signalSlice({
@@ -70,8 +70,8 @@ export class EventOverviewService {
           switchMap((event) => this._updateEvent(event)),
           // load the default system
           switchMap(() =>
-            this._loadEvents(this.filter.value).pipe(map((events) => ({ events, loading: false }))),
-          ),
+            this._loadEvents(this.filter.value).pipe(map((events) => ({ events, loading: false })))
+          )
         ),
     },
   });
@@ -80,7 +80,7 @@ export class EventOverviewService {
     filter: Partial<{
       season: number | null;
       official: boolean | null;
-    }>,
+    }>
   ) {
     if (!filter.season) {
       return of([]);
@@ -123,12 +123,12 @@ export class EventOverviewService {
           },
           order: [
             {
-              direction: 'desc',
-              field: 'official',
+              direction: "desc",
+              field: "official",
             },
             {
-              direction: 'desc',
-              field: 'name',
+              direction: "desc",
+              field: "name",
             },
           ],
         },
@@ -141,14 +141,14 @@ export class EventOverviewService {
         transferState(
           `competitions${filter.season}_${filter?.official ?? true}`,
           this.stateTransfer,
-          this.platformId,
+          this.platformId
         ),
         map((result) => {
           if (!result?.data.eventCompetitions) {
-            throw new Error('No competitions found');
+            throw new Error("No competitions found");
           }
           return result.data.eventCompetitions.rows.map((row) => new EventCompetition(row));
-        }),
+        })
       );
   }
 
@@ -170,7 +170,7 @@ export class EventOverviewService {
         catchError((err) => {
           this.handleError(err);
           return EMPTY;
-        }),
+        })
       );
   }
 

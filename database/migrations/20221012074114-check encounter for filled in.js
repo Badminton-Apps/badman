@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
@@ -7,17 +7,17 @@ module.exports = {
       try {
         // expand encounter with scores entered and scores accepted columns
         await queryInterface.addColumn(
-          { tableName: 'EventCompetitions', schema: 'event' },
-          'checkEncounterForFilledIn',
+          { tableName: "EventCompetitions", schema: "event" },
+          "checkEncounterForFilledIn",
           {
             type: sequelize.DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -27,14 +27,14 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       // drop encounter accepted column
       await queryInterface.removeColumn(
-        { tableName: 'EventCompetitions', schema: 'event' },
-        'checkEncounterForFilledIn',
-        { transaction: t },
+        { tableName: "EventCompetitions", schema: "event" },
+        "checkEncounterForFilledIn",
+        { transaction: t }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

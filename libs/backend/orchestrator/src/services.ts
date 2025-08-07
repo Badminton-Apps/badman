@@ -1,1 +1,1 @@
-export type Services = 'ranking' | 'sync';
+export type Services = "ranking" | "sync";

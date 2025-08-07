@@ -1,9 +1,9 @@
-import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { EventTournament } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { map } from 'rxjs/operators';
+import { Injectable, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { EventTournament } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { map } from "rxjs/operators";
 
 export const EVENT_QUERY = gql`
   query EventTournament($id: ID!) {
@@ -47,7 +47,7 @@ export class EventResolver {
   private platformId = inject<string>(PLATFORM_ID);
 
   resolve(route: ActivatedRouteSnapshot) {
-    const eventId = route.params['id'];
+    const eventId = route.params["id"];
 
     return this.apollo
       .watchQuery<{ eventTournament: Partial<EventTournament> }>({
@@ -57,13 +57,13 @@ export class EventResolver {
         },
       })
       .valueChanges.pipe(
-        transferState('eventKey-' + eventId, this.stateTransfer, this.platformId),
+        transferState("eventKey-" + eventId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.eventTournament) {
-            throw new Error('No event found!');
+            throw new Error("No event found!");
           }
           return new EventTournament(result.data.eventTournament);
-        }),
+        })
       );
   }
 }

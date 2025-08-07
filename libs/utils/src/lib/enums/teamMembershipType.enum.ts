@@ -1,4 +1,4 @@
 export enum TeamMembershipType {
-  REGULAR = 'REGULAR',
-  BACKUP = 'BACKUP',
+  REGULAR = "REGULAR",
+  BACKUP = "BACKUP",
 }

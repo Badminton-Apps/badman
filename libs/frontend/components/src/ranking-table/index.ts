@@ -1,1 +1,1 @@
-export * from './ranking-table.component';
+export * from "./ranking-table.component";

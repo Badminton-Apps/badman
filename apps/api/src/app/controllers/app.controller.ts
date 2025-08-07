@@ -1,9 +1,9 @@
-import { User } from '@badman/backend-authorization';
+import { User } from "@badman/backend-authorization";
 
-import { Player } from '@badman/backend-database';
-import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
-import { RankingQueue, SyncQueue } from '@badman/backend-queue';
-import { InjectQueue } from '@nestjs/bull';
+import { Player } from "@badman/backend-database";
+import { CpGeneratorService, PlannerService } from "@badman/backend-generator";
+import { RankingQueue, SyncQueue } from "@badman/backend-queue";
+import { InjectQueue } from "@nestjs/bull";
 import {
   Body,
   Controller,
@@ -14,11 +14,11 @@ import {
   Query,
   Res,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Queue } from 'bull';
-import { FastifyReply } from 'fastify';
-import { createReadStream } from 'fs';
-import { basename, extname } from 'path';
+} from "@nestjs/common";
+import { Queue } from "bull";
+import { FastifyReply } from "fastify";
+import { createReadStream } from "fs";
+import { basename, extname } from "path";
 
 @Controller()
 export class AppController {
@@ -28,10 +28,10 @@ export class AppController {
     @InjectQueue(RankingQueue) private _rankingQueue: Queue,
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private cpGen: CpGeneratorService,
-    private planner: PlannerService,
+    private planner: PlannerService
   ) {}
 
-  @Post('queue-job')
+  @Post("queue-job")
   async getQueueJob(
     @User() user: Player,
     @Body()
@@ -41,14 +41,14 @@ export class AppController {
       jobArgs: { [key: string]: unknown };
       removeOnComplete: boolean;
       removeOnFail: boolean;
-    },
+    }
   ) {
     this.logger.debug(
-      `Adding job ${args.job} to queue ${args.queue} for user ${user?.fullName || 'unknown'}, permissions: ${await user.hasAnyPermission(['change:job'])}`,
+      `Adding job ${args.job} to queue ${args.queue} for user ${user?.fullName || "unknown"}, permissions: ${await user.hasAnyPermission(["change:job"])}`
     );
 
-    if (!(await user.hasAnyPermission(['change:job']))) {
-      throw new UnauthorizedException('You do not have permission to do this');
+    if (!(await user.hasAnyPermission(["change:job"]))) {
+      throw new UnauthorizedException("You do not have permission to do this");
     }
 
     if (!args.jobArgs) {
@@ -56,7 +56,7 @@ export class AppController {
     }
 
     // append the user id to the job args
-    args.jobArgs['userId'] = user.id;
+    args.jobArgs["userId"] = user.id;
 
     switch (args.queue) {
       case SyncQueue:
@@ -70,29 +70,29 @@ export class AppController {
           removeOnFail: args.removeOnFail || 1,
         });
       default:
-        throw new HttpException('Unknown queue', 500);
+        throw new HttpException("Unknown queue", 500);
     }
   }
 
-  @Get('cp')
+  @Get("cp")
   async getCp(@Res() res: FastifyReply, @Query() query: { eventId: string }) {
-    this.logger.debug('Generating CP');
+    this.logger.debug("Generating CP");
     const fileLoc = await this.cpGen.generateCpFile(query.eventId);
     if (!fileLoc) {
-      throw new HttpException('Could not generate CP', 500);
+      throw new HttpException("Could not generate CP", 500);
     }
 
     const file = createReadStream(fileLoc);
     const extension = extname(fileLoc);
     const fileName = basename(fileLoc, extension);
-    res.header('Content-disposition', 'attachment; filename=' + fileName + extension);
+    res.header("Content-disposition", "attachment; filename=" + fileName + extension);
 
     res.type(extension).send(file);
   }
 
-  @Get('planner')
+  @Get("planner")
   async getPlanner(@Res() res: FastifyReply, @Query() query: { season: string }) {
-    this.logger.debug('Generating planner');
+    this.logger.debug("Generating planner");
     const result = await this.planner.getPlannerData(query.season);
 
     this.logger.debug(`Got ${Object.keys(result).length} clubs`);

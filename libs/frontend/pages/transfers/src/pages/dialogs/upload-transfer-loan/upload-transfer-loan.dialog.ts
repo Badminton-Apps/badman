@@ -1,27 +1,27 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 
-import { HttpClient } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
-import { TranslatePipe } from '@ngx-translate/core';
-import { lastValueFrom, Subscription } from 'rxjs';
-import { TRANSFERLOAN_CONFIG } from '../../../injection';
-import { ITransferLoanConfig } from '../../../interfaces/transfer-loan-config.interface';
-import { SelectSeasonComponent } from '@badman/frontend-components';
-import { getSeason } from '@badman/utils';
+import { HttpClient } from "@angular/common/http";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTableModule } from "@angular/material/table";
+import { TranslatePipe } from "@ngx-translate/core";
+import { lastValueFrom, Subscription } from "rxjs";
+import { TRANSFERLOAN_CONFIG } from "../../../injection";
+import { ITransferLoanConfig } from "../../../interfaces/transfer-loan-config.interface";
+import { SelectSeasonComponent } from "@badman/frontend-components";
+import { getSeason } from "@badman/utils";
 
 @Component({
-  selector: 'badman-upload-transfer-loan',
+  selector: "badman-upload-transfer-loan",
   imports: [
     CommonModule,
     TranslatePipe,
@@ -38,15 +38,15 @@ import { getSeason } from '@badman/utils';
     MatSelectModule,
     SelectSeasonComponent,
   ],
-  templateUrl: './upload-transfer-loan.dialog.html',
-  styleUrls: ['./upload-transfer-loan.dialog.scss'],
+  templateUrl: "./upload-transfer-loan.dialog.html",
+  styleUrls: ["./upload-transfer-loan.dialog.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadTransferLoanDialogComponent {
   private config = inject<ITransferLoanConfig>(TRANSFERLOAN_CONFIG);
   private http = inject(HttpClient);
   public dialogRef = inject<MatDialogRef<UploadTransferLoanDialogComponent>>(
-    MatDialogRef<UploadTransferLoanDialogComponent>,
+    MatDialogRef<UploadTransferLoanDialogComponent>
   );
   private changeDetectorRef = inject(ChangeDetectorRef);
   public data = inject<{
@@ -61,7 +61,7 @@ export class UploadTransferLoanDialogComponent {
   uploadedFile?: File;
   uploadProgress$?: Subscription;
 
-  transferOrLoan: 'transfer' | 'loan' | null = null;
+  transferOrLoan: "transfer" | "loan" | null = null;
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -90,10 +90,10 @@ export class UploadTransferLoanDialogComponent {
   // on click open file picker and to the file drop logic
   onCLick(event: MouseEvent) {
     event.preventDefault();
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.xlsx';
-    input.style.display = 'none';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".xlsx";
+    input.style.display = "none";
     input.onchange = (e) => {
       const target = e.target as HTMLInputElement;
       if (target.files?.length) {
@@ -114,13 +114,13 @@ export class UploadTransferLoanDialogComponent {
       return;
     }
 
-    if (this.uploadedFile.name.includes('Transfers')) {
-      this.transferOrLoan = 'transfer';
+    if (this.uploadedFile.name.includes("Transfers")) {
+      this.transferOrLoan = "transfer";
     } else if (
-      this.uploadedFile.name.includes('Loans') ||
-      this.uploadedFile.name.includes('Uitleningen')
+      this.uploadedFile.name.includes("Loans") ||
+      this.uploadedFile.name.includes("Uitleningen")
     ) {
-      this.transferOrLoan = 'loan';
+      this.transferOrLoan = "loan";
     } else {
       this.transferOrLoan = null;
       this.snackbar.open(
@@ -128,7 +128,7 @@ export class UploadTransferLoanDialogComponent {
         undefined,
         {
           duration: 5000,
-        },
+        }
       );
     }
 
@@ -143,17 +143,17 @@ export class UploadTransferLoanDialogComponent {
     this.processing = true;
 
     const formData = new FormData();
-    formData.append('file', this.uploadedFile, this.uploadedFile.name);
-    formData.append('transferOrLoan', this.transferOrLoan);
-    formData.append('season', this.data.season.toString());
+    formData.append("file", this.uploadedFile, this.uploadedFile.name);
+    formData.append("transferOrLoan", this.transferOrLoan);
+    formData.append("season", this.data.season.toString());
 
     try {
       const result = await lastValueFrom(
-        this.http.post<{ message: boolean }>(`${this.config.api}/process`, formData),
+        this.http.post<{ message: boolean }>(`${this.config.api}/process`, formData)
       );
 
       if (result?.message) {
-        this.snackbar.open('Processing started', undefined, {
+        this.snackbar.open("Processing started", undefined, {
           duration: 5000,
         });
       }

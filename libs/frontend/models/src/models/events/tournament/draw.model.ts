@@ -1,6 +1,6 @@
-import { Game } from '../../game.model';
-import { Draw } from '../draw.model';
-import { SubEventTournament } from './sub-event.model';
+import { Game } from "../../game.model";
+import { Draw } from "../draw.model";
+import { SubEventTournament } from "./sub-event.model";
 
 export class DrawTournament extends Draw {
   subEventTournament?: SubEventTournament;

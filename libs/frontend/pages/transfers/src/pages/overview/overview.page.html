@@ -1,5 +1,5 @@
 <badman-page-header>
-  <div title>{{ 'all.transfers-loan.title' | translate }}</div>
+  <div title>{{ "all.transfers-loan.title" | translate }}</div>
 </badman-page-header>
 <mtx-grid
   [showToolbar]="true"
@@ -20,12 +20,12 @@
       <badman-select-season [control]="this.seasonControl" />
 
       <mat-form-field>
-        <mat-label>{{ 'all.transfers-loan.filter.player' | translate }}</mat-label>
+        <mat-label>{{ "all.transfers-loan.filter.player" | translate }}</mat-label>
         <input matInput [formControl]="searchControl" />
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>{{ 'all.transfers-loan.filter.new-club' | translate }}</mat-label>
+        <mat-label>{{ "all.transfers-loan.filter.new-club" | translate }}</mat-label>
         <mtx-select
           [items]="newClubs()"
           bindLabel="name"
@@ -37,7 +37,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>{{ 'all.transfers-loan.filter.current-club' | translate }}</mat-label>
+        <mat-label>{{ "all.transfers-loan.filter.current-club" | translate }}</mat-label>
         <mtx-select
           [items]="currentClubs()"
           bindLabel="name"
@@ -49,7 +49,7 @@
       </mat-form-field>
 
       <badman-tri-state-checkbox [formControl]="this.confirmedControl">{{
-        'all.transfers-loan.filter.only-confirmed' | translate
+        "all.transfers-loan.filter.only-confirmed" | translate
       }}</badman-tri-state-checkbox>
     </div>
 
@@ -61,7 +61,7 @@
         [disabled]="loading()"
         [class.spinner]="loading()"
       >
-        {{ 'all.transfers-loan.buttons.accept-selected' | translate }}
+        {{ "all.transfers-loan.buttons.accept-selected" | translate }}
       </button>
       <button
         mat-stroked-button
@@ -70,11 +70,11 @@
         [disabled]="loading()"
         [class.spinner]="loading()"
       >
-        {{ 'all.transfers-loan.buttons.reject-selected' | translate }}
+        {{ "all.transfers-loan.buttons.reject-selected" | translate }}
       </button>
 
       <button mat-stroked-button color="primary" (click)="openUploadDialog()">
-        {{ 'all.transfers-loan.buttons.upload' | translate }}
+        {{ "all.transfers-loan.buttons.upload" | translate }}
       </button>
     </div>
   </div>

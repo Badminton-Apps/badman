@@ -1,5 +1,5 @@
-import { SubEventCompetition, SubEventTournament } from './events';
-import { RankingSystem } from './ranking-system.model';
+import { SubEventCompetition, SubEventTournament } from "./events";
+import { RankingSystem } from "./ranking-system.model";
 
 export class RankingGroup {
   id?: string;

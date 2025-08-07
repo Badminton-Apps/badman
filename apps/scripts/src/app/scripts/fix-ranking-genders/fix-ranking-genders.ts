@@ -1,6 +1,6 @@
-import { Player, RankingLastPlace, RankingPlace } from '@badman/backend-database';
-import { Logger } from '@nestjs/common';
-import { Sequelize } from 'sequelize-typescript';
+import { Player, RankingLastPlace, RankingPlace } from "@badman/backend-database";
+import { Logger } from "@nestjs/common";
+import { Sequelize } from "sequelize-typescript";
 
 export class FixGendersRunner {
   private readonly logger = new Logger(FixGendersRunner.name);
@@ -13,8 +13,8 @@ export class FixGendersRunner {
       this.logger.verbose(`Fixing LastPlaces`);
 
       const lastplaces = await RankingLastPlace.findAll({
-        attributes: ['id'],
-        include: [{ model: Player, attributes: ['id', 'gender'] }],
+        attributes: ["id"],
+        include: [{ model: Player, attributes: ["id", "gender"] }],
         where: {
           gender: null,
         },
@@ -29,8 +29,8 @@ export class FixGendersRunner {
 
       this.logger.verbose(`Fixing Places`);
       const places = await RankingPlace.findAll({
-        attributes: ['id'],
-        include: [{ model: Player, attributes: ['id', 'gender'] }],
+        attributes: ["id"],
+        include: [{ model: Player, attributes: ["id", "gender"] }],
         where: {
           gender: null,
         },

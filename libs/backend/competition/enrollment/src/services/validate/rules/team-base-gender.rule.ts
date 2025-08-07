@@ -1,6 +1,6 @@
-import { SubEventTypeEnum } from '@badman/utils';
-import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
-import { Rule } from './_rule.base';
+import { SubEventTypeEnum } from "@badman/utils";
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from "../../../models";
+import { Rule } from "./_rule.base";
 
 /**
  * Checks if the players is the correct gender for the baseteam
@@ -19,15 +19,14 @@ export class TeamBaseGenderRule extends Rule {
 
       // if type is mix 2 players should be male and 2 female
       if (team?.type == SubEventTypeEnum.MX) {
-        const malePlayers = basePlayers?.filter((p) => p.gender == 'M') ?? [];
-        const femalePlayers = basePlayers?.filter((p) => p.gender == 'F') ?? [];
+        const malePlayers = basePlayers?.filter((p) => p.gender == "M") ?? [];
+        const femalePlayers = basePlayers?.filter((p) => p.gender == "F") ?? [];
         if (malePlayers.length != 2 || femalePlayers.length != 2) {
           errors.push({
-            message: 'all.v1.entryTeamDrawer.validation.errors.base-gender-mix',
+            message: "all.v1.entryTeamDrawer.validation.errors.base-gender-mix",
             params: {
               maleCount: malePlayers.length,
               femaleCount: femalePlayers.length,
-              
             },
           });
         }

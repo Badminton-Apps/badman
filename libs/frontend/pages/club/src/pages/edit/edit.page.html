@@ -25,7 +25,7 @@
   <badman-has-claim [any]="['change-base:team', club()?.id + '_edit:club', 'edit-any:club']">
     <mat-divider />
     <mat-form-field>
-      <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
+      <mat-label>{{ "all.pickers.select-year" | translate }}</mat-label>
       <mat-select [formControl]="this.season">
         @for (option of this.seasons; track option) {
           <mat-option [value]="option"> {{ option }} </mat-option>

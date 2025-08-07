@@ -1,6 +1,6 @@
-import { EncounterCompetition, NotificationOptionsTypes, Player } from '@badman/backend-database';
-import * as webPush from 'web-push';
-import { Notifier } from '../notifier.base';
+import { EncounterCompetition, NotificationOptionsTypes, Player } from "@badman/backend-database";
+import * as webPush from "web-push";
+import { Notifier } from "../notifier.base";
 
 interface SyncEncounterMeta {
   encounter: EncounterCompetition;
@@ -15,8 +15,8 @@ export class SyncEncounterFailed extends Notifier<
     slug: string;
   }
 > {
-  protected linkType = 'encounter';
-  protected type: keyof NotificationOptionsTypes = 'synEncounterFailed';
+  protected linkType = "encounter";
+  protected type: keyof NotificationOptionsTypes = "synEncounterFailed";
 
   private readonly options = (event: SyncEncounterMeta) => {
     const notification = {
@@ -36,7 +36,7 @@ export class SyncEncounterFailed extends Notifier<
   async notifyEmail(
     player: Player,
     data: SyncEncounterMeta,
-    args?: { email: string },
+    args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
     const email = args?.email ?? player.email;
@@ -63,7 +63,7 @@ export class SyncEncounterFailed extends Notifier<
       },
       data?.encounter,
       data.url,
-      data.urlBadman,
+      data.urlBadman
     );
   }
 
@@ -72,7 +72,7 @@ export class SyncEncounterFailed extends Notifier<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: SyncEncounterMeta,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string },
+    args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

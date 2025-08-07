@@ -1,4 +1,4 @@
-export * from './controllers';
-export * from './services';
+export * from "./controllers";
+export * from "./services";
 
-export * from './twizzit.module';
+export * from "./twizzit.module";

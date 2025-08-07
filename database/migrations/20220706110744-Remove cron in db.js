@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.dropSchema('job', { transaction: t });
+        await queryInterface.dropSchema("job", { transaction: t });
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -16,11 +16,11 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.createSchema('job', { transaction: t });
+        await queryInterface.createSchema("job", { transaction: t });
         await queryInterface.createTable(
           {
-            tableName: 'Crons',
-            schema: 'job',
+            tableName: "Crons",
+            schema: "job",
           },
           {
             id: {
@@ -35,10 +35,10 @@ module.exports = {
             createdAt: sequelize.DataTypes.DATE,
             updatedAt: sequelize.DataTypes.DATE,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

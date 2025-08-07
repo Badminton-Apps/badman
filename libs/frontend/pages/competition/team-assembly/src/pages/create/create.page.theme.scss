@@ -1,10 +1,10 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
-@use './components/assembly/assembly.component.theme' as assembly;
-@use './components/assembly-v2/assembly-v2.component.theme' as assembly-v2;
-@use './components/team-assembly-player/team-assembly-player.component.theme' as
+@use "sass:map";
+@use "@angular/material" as mat;
+@use "./components/assembly/assembly.component.theme" as assembly;
+@use "./components/assembly-v2/assembly-v2.component.theme" as assembly-v2;
+@use "./components/team-assembly-player/team-assembly-player.component.theme" as
   team-assembly-player;
 
 @mixin color($theme) {
@@ -13,10 +13,7 @@
   @include team-assembly-player.color($theme);
 
   badman-assembly-create {
-    
-
-    
-    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, "disabled-text");
 
     .download {
       button {
@@ -37,12 +34,12 @@
 
   badman-assembly-create {
     h1 {
-      font: mat.get-theme-typography($theme, 'headline-4', font);
+      font: mat.get-theme-typography($theme, "headline-4", font);
     }
 
     .download {
       .last-saved {
-        font: mat.get-theme-typography($theme, 'caption', font);
+        font: mat.get-theme-typography($theme, "caption", font);
       }
     }
   }

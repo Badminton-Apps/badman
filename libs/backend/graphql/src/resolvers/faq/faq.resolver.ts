@@ -1,9 +1,9 @@
-import { User } from '@badman/backend-authorization';
-import { Faq, FaqNewInput, FaqUpdateInput, Player } from '@badman/backend-database';
-import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
+import { User } from "@badman/backend-authorization";
+import { Faq, FaqNewInput, FaqUpdateInput, Player } from "@badman/backend-database";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Args, ID, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
+import { ListArgs } from "../../utils";
 
 @Resolver(() => Faq)
 export class FaqResolver {
@@ -12,7 +12,7 @@ export class FaqResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Faq)
-  async faq(@Args('id', { type: () => ID }) id: string): Promise<Faq | null> {
+  async faq(@Args("id", { type: () => ID }) id: string): Promise<Faq | null> {
     return Faq.findByPk(id);
   }
 
@@ -22,8 +22,8 @@ export class FaqResolver {
   }
 
   @Mutation(() => Faq)
-  async createFaq(@User() user: Player, @Args('data') data: FaqNewInput) {
-    if (!(await user.hasAnyPermission(['add:faq']))) {
+  async createFaq(@User() user: Player, @Args("data") data: FaqNewInput) {
+    if (!(await user.hasAnyPermission(["add:faq"]))) {
       throw new UnauthorizedException(`You do not have permission to create a faq`);
     }
 
@@ -35,7 +35,7 @@ export class FaqResolver {
         {
           ...data,
         },
-        { transaction },
+        { transaction }
       );
 
       await transaction.commit();
@@ -48,7 +48,7 @@ export class FaqResolver {
   }
 
   @Mutation(() => Faq)
-  async updateFaq(@User() user: Player, @Args('data') data: FaqUpdateInput) {
+  async updateFaq(@User() user: Player, @Args("data") data: FaqUpdateInput) {
     if (!(await user.hasAnyPermission([`edit:faq`]))) {
       throw new UnauthorizedException(`You do not have permission to edit this faq`);
     }
@@ -77,7 +77,7 @@ export class FaqResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteFaq(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
+  async deleteFaq(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission([`edit:faq`]))) {
       throw new UnauthorizedException(`You do not have permission to delete this faq`);
     }

@@ -1,11 +1,11 @@
-import { DatabaseModule } from '@badman/backend-database';
-import { QueueModule } from '@badman/backend-queue';
-import { Module } from '@nestjs/common';
-import { RankingController, UploadRankingController } from './controllers';
-import { CalculationService, PlaceService, PointsService, UpdateRankingService } from './services';
-import { BelgiumFlandersPlacesModule } from '@badman/belgium-flanders-places';
-import { BelgiumFlandersPointsModule } from '@badman/belgium-flanders-points';
-import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from "@badman/backend-database";
+import { QueueModule } from "@badman/backend-queue";
+import { Module } from "@nestjs/common";
+import { RankingController, UploadRankingController } from "./controllers";
+import { CalculationService, PlaceService, PointsService, UpdateRankingService } from "./services";
+import { BelgiumFlandersPlacesModule } from "@badman/belgium-flanders-places";
+import { BelgiumFlandersPointsModule } from "@badman/belgium-flanders-points";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   controllers: [UploadRankingController, RankingController],

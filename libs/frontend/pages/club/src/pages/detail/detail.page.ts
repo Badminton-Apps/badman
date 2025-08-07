@@ -1,56 +1,56 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from "@angular/core";
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTabsModule } from '@angular/material/tabs';
-import { Router, RouterModule } from '@angular/router';
-import { ClaimService } from '@badman/frontend-auth';
+import { MatButtonModule } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatTabsModule } from "@angular/material/tabs";
+import { Router, RouterModule } from "@angular/router";
+import { ClaimService } from "@badman/frontend-auth";
 import {
   AddPlayerComponent,
   HasClaimComponent,
   PageHeaderComponent,
   SelectSeasonComponent,
-} from '@badman/frontend-components';
-import { TwizzitService } from '@badman/frontend-twizzit';
-import { TranslatePipe } from '@ngx-translate/core';
-import { injectParams } from 'ngxtension/inject-params';
-import { injectQueryParams } from 'ngxtension/inject-query-params';
-import { lastValueFrom } from 'rxjs';
-import { distinctUntilChanged, filter, startWith, take } from 'rxjs/operators';
-import { ClubDetailService } from '../../services/club.service';
+} from "@badman/frontend-components";
+import { TwizzitService } from "@badman/frontend-twizzit";
+import { TranslatePipe } from "@ngx-translate/core";
+import { injectParams } from "ngxtension/inject-params";
+import { injectQueryParams } from "ngxtension/inject-query-params";
+import { lastValueFrom } from "rxjs";
+import { distinctUntilChanged, filter, startWith, take } from "rxjs/operators";
+import { ClubDetailService } from "../../services/club.service";
 
-import { MatDialog } from '@angular/material/dialog';
-import { Player } from '@badman/frontend-models';
-import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
-import { ClubCompetitionComponent } from './club-competition/club-competition.component';
-import { ClubEncountersComponent } from './club-encounters';
-import { ClubPlayersComponent } from './club-players/club-players.component';
-import { ClubTeamsComponent } from './club-teams/club-teams.component';
-import { ClubAssemblyService } from './club-assembly/club-assembly.service';
-import { ClubEncounterService } from './club-encounters/club-encounters.service';
+import { MatDialog } from "@angular/material/dialog";
+import { Player } from "@badman/frontend-models";
+import { ClubAssemblyComponent } from "./club-assembly/club-assembly.component";
+import { ClubCompetitionComponent } from "./club-competition/club-competition.component";
+import { ClubEncountersComponent } from "./club-encounters";
+import { ClubPlayersComponent } from "./club-players/club-players.component";
+import { ClubTeamsComponent } from "./club-teams/club-teams.component";
+import { ClubAssemblyService } from "./club-assembly/club-assembly.service";
+import { ClubEncounterService } from "./club-encounters/club-encounters.service";
 
 @Component({
-    selector: 'badman-club-detail',
-    templateUrl: './detail.page.html',
-    styleUrls: ['./detail.page.scss'],
-    imports: [
-        RouterModule,
-        TranslatePipe,
-        MatMenuModule,
-        MatIcon,
-        MatButtonModule,
-        MatTabsModule,
-        HasClaimComponent,
-        PageHeaderComponent,
-        // tabs
-        ClubTeamsComponent,
-        ClubAssemblyComponent,
-        ClubPlayersComponent,
-        ClubEncountersComponent,
-        ClubCompetitionComponent,
-        SelectSeasonComponent,
-    ]
+  selector: "badman-club-detail",
+  templateUrl: "./detail.page.html",
+  styleUrls: ["./detail.page.scss"],
+  imports: [
+    RouterModule,
+    TranslatePipe,
+    MatMenuModule,
+    MatIcon,
+    MatButtonModule,
+    MatTabsModule,
+    HasClaimComponent,
+    PageHeaderComponent,
+    // tabs
+    ClubTeamsComponent,
+    ClubAssemblyComponent,
+    ClubPlayersComponent,
+    ClubEncountersComponent,
+    ClubCompetitionComponent,
+    SelectSeasonComponent,
+  ],
 })
 export class DetailPageComponent {
   private readonly clubDetailService = inject(ClubDetailService);
@@ -62,8 +62,8 @@ export class DetailPageComponent {
   private readonly router = inject(Router);
   private readonly claimService = inject(ClaimService);
 
-  private readonly clubId = injectParams('id');
-  private readonly quaryTab = injectQueryParams('tab');
+  private readonly clubId = injectParams("id");
+  private readonly quaryTab = injectQueryParams("tab");
 
   currentTab = signal(0);
 
@@ -71,14 +71,14 @@ export class DetailPageComponent {
   filter = this.clubDetailService.filter;
 
   canViewEncounter = computed(() =>
-    this.claimService.hasAnyClaims(['edit-any:club', `${this.club()?.id}_edit:club`]),
+    this.claimService.hasAnyClaims(["edit-any:club", `${this.club()?.id}_edit:club`])
   );
 
   canViewEnrollments = computed(() =>
     this.claimService.hasAnyClaims([
-      'view-any:enrollment-competition',
+      "view-any:enrollment-competition",
       `${this.club()?.id}_view:enrollment-competition`,
-    ]),
+    ])
   );
 
   constructor() {
@@ -111,21 +111,19 @@ export class DetailPageComponent {
         });
     });
 
-    effect(
-      () => {
-        // if the canViewEnrollments is loaded
-        if (this.canViewEncounter?.() || this.canViewEnrollments?.()) {
-          const queryParam = this.quaryTab();
-          if (queryParam) {
-            this.currentTab.set(parseInt(queryParam, 10));
-          }
+    effect(() => {
+      // if the canViewEnrollments is loaded
+      if (this.canViewEncounter?.() || this.canViewEnrollments?.()) {
+        const queryParam = this.quaryTab();
+        if (queryParam) {
+          this.currentTab.set(parseInt(queryParam, 10));
         }
       }
-    );
+    });
   }
 
   async downloadTwizzit() {
-    const season = this.filter.get('season')?.value;
+    const season = this.filter.get("season")?.value;
     const club = this.club();
 
     if (!club || !season) {
@@ -141,7 +139,7 @@ export class DetailPageComponent {
       .afterClosed()
       .pipe(
         take(1),
-        filter((player: Player) => !!player?.memberId),
+        filter((player: Player) => !!player?.memberId)
       )
       .subscribe((player: Player) => {
         this.clubDetailService.state.addPlayer(player);
@@ -153,7 +151,7 @@ export class DetailPageComponent {
       queryParams: {
         tab: index === 0 ? undefined : index,
       },
-      queryParamsHandling: 'merge',
+      queryParamsHandling: "merge",
     });
   }
 }

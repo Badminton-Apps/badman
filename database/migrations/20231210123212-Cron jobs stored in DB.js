@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,15 +8,15 @@ module.exports = {
       try {
         await queryInterface.createTable(
           {
-            tableName: 'CronJobs',
-            schema: 'system',
+            tableName: "CronJobs",
+            schema: "system",
           },
           {
             id: {
               primaryKey: true,
               type: sequelize.UUID,
               allowNull: false,
-              defaultValue: sequelize.fn('uuid_generate_v4'),
+              defaultValue: sequelize.fn("uuid_generate_v4"),
             },
             name: {
               type: sequelize.DataTypes.STRING,
@@ -37,18 +37,18 @@ module.exports = {
             createdAt: {
               type: sequelize.DataTypes.DATE,
               allowNull: false,
-              defaultValue: sequelize.fn('NOW'),
+              defaultValue: sequelize.fn("NOW"),
             },
             updatedAt: {
               type: sequelize.DataTypes.DATE,
               allowNull: false,
-              defaultValue: sequelize.fn('NOW'),
+              defaultValue: sequelize.fn("NOW"),
             },
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -58,11 +58,11 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         await queryInterface.dropTable({
-          tableName: 'CronJobs',
-          schema: 'system',
+          tableName: "CronJobs",
+          schema: "system",
         });
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

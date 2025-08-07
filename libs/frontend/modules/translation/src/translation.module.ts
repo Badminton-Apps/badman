@@ -1,8 +1,8 @@
-import { registerLocaleData } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import myLocaleEn from '@angular/common/locales/en';
-import myLocaleFr from '@angular/common/locales/fr-BE';
-import myLocaleNl from '@angular/common/locales/nl-BE';
+import { registerLocaleData } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
+import myLocaleEn from "@angular/common/locales/en";
+import myLocaleFr from "@angular/common/locales/fr-BE";
+import myLocaleNl from "@angular/common/locales/nl-BE";
 import {
   importProvidersFrom,
   inject,
@@ -10,40 +10,40 @@ import {
   Injector,
   makeEnvironmentProviders,
   provideAppInitializer,
-} from '@angular/core';
-import { MatMomentDateModule, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
-import { AuthenticateService } from '@badman/frontend-auth';
+} from "@angular/core";
+import { MatMomentDateModule, MomentDateAdapter } from "@angular/material-moment-adapter";
+import { DateAdapter, MAT_DATE_LOCALE } from "@angular/material/core";
+import { AuthenticateService } from "@badman/frontend-auth";
 import {
   MomentDatetimeAdapter,
   MtxMomentDatetimeModule,
   provideMomentDatetimeAdapter,
-} from '@ng-matero/extensions-moment-adapter';
-import { DatetimeAdapter } from '@ng-matero/extensions/core';
+} from "@ng-matero/extensions-moment-adapter";
+import { DatetimeAdapter } from "@ng-matero/extensions/core";
 import {
   provideTranslateService,
   TranslateLoader,
   TranslateParser,
   TranslateService,
-} from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { langulageInitializer } from './factory';
-import { ITranslateConfig } from './interfaces';
-import { SingleBracketInterpolation } from './services';
+} from "@ngx-translate/core";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { langulageInitializer } from "./factory";
+import { ITranslateConfig } from "./interfaces";
+import { SingleBracketInterpolation } from "./services";
 
 // Register locales
-import 'moment/locale/fr';
-import 'moment/locale/nl-be';
+import "moment/locale/fr";
+import "moment/locale/nl-be";
 
-registerLocaleData(myLocaleNl, 'nl-BE');
-registerLocaleData(myLocaleFr, 'fr-BE');
-registerLocaleData(myLocaleEn, 'en');
+registerLocaleData(myLocaleNl, "nl-BE");
+registerLocaleData(myLocaleFr, "fr-BE");
+registerLocaleData(myLocaleEn, "en");
 
-export const TRANSLATE_CONFIG = new InjectionToken<ITranslateConfig>('TRANSLATE_CONFIG');
+export const TRANSLATE_CONFIG = new InjectionToken<ITranslateConfig>("TRANSLATE_CONFIG");
 
 export function provideTranslation(config: ITranslateConfig) {
   return makeEnvironmentProviders([
-    { provide: MAT_DATE_LOCALE, useValue: 'nl-BE' }, // or your desired locale
+    { provide: MAT_DATE_LOCALE, useValue: "nl-BE" }, // or your desired locale
     importProvidersFrom(MatMomentDateModule),
     importProvidersFrom(MtxMomentDatetimeModule),
     {
@@ -51,7 +51,7 @@ export function provideTranslation(config: ITranslateConfig) {
       useValue: config,
     },
     provideTranslateService({
-      defaultLanguage: 'en',
+      defaultLanguage: "en",
       parser: {
         provide: TranslateParser,
         useClass: SingleBracketInterpolation,
@@ -59,7 +59,7 @@ export function provideTranslation(config: ITranslateConfig) {
       loader: {
         provide: TranslateLoader,
         useFactory: (http: HttpClient, cfg: ITranslateConfig) =>
-          new TranslateHttpLoader(http, cfg.api, ''),
+          new TranslateHttpLoader(http, cfg.api, ""),
         deps: [HttpClient, TRANSLATE_CONFIG],
       },
     }),
@@ -69,7 +69,7 @@ export function provideTranslation(config: ITranslateConfig) {
         inject(Injector),
         inject(DateAdapter),
         inject(DatetimeAdapter),
-        inject(AuthenticateService),
+        inject(AuthenticateService)
       );
     }),
     {

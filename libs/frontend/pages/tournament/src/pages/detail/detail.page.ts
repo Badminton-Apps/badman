@@ -1,42 +1,41 @@
-
-import { Component, computed, effect, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterModule } from '@angular/router';
+import { Component, computed, effect, inject } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { Router, RouterModule } from "@angular/router";
 import {
   ConfirmDialogComponent,
   ConfirmDialogModel,
   HasClaimComponent,
   OpenCloseDateDialogComponent,
   PageHeaderComponent,
-} from '@badman/frontend-components';
-import { SubEventTournament } from '@badman/frontend-models';
-import { JobsService } from '@badman/frontend-queue';
-import { SeoService } from '@badman/frontend-seo';
-import { sortSubEvents } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
-import { lastValueFrom } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { AssignRankingGroupsComponent } from '../../components';
-import { TournamentDetailService } from './detail.service';
-import { injectParams } from 'ngxtension/inject-params';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Apollo, gql } from 'apollo-angular';
+} from "@badman/frontend-components";
+import { SubEventTournament } from "@badman/frontend-models";
+import { JobsService } from "@badman/frontend-queue";
+import { SeoService } from "@badman/frontend-seo";
+import { sortSubEvents } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MomentModule } from "ngx-moment";
+import { lastValueFrom } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { AssignRankingGroupsComponent } from "../../components";
+import { TournamentDetailService } from "./detail.service";
+import { injectParams } from "ngxtension/inject-params";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { Apollo, gql } from "apollo-angular";
 
 @Component({
-  selector: 'badman-tournament-detail',
-  templateUrl: './detail.page.html',
-  styleUrls: ['./detail.page.scss'],
+  selector: "badman-tournament-detail",
+  templateUrl: "./detail.page.html",
+  styleUrls: ["./detail.page.scss"],
   imports: [
     RouterModule,
     TranslatePipe,
@@ -55,8 +54,8 @@ import { Apollo, gql } from 'apollo-angular';
     MatSnackBarModule,
     PageHeaderComponent,
     HasClaimComponent,
-    MatProgressBarModule
-],
+    MatProgressBarModule,
+  ],
 })
 export class DetailPageComponent {
   private readonly breadcrumbService = inject(BreadcrumbService);
@@ -72,14 +71,14 @@ export class DetailPageComponent {
   eventTournament = this.detailService.tournament;
   loaded = this.detailService.loaded;
   errors = this.detailService.error;
-  private readonly eventId = injectParams('id');
+  private readonly eventId = injectParams("id");
 
   subEvents = computed(() => {
     return this.eventTournament()
       ?.subEventTournaments?.sort(sortSubEvents)
       ?.reduce(
         (acc, subEventTournament) => {
-          const eventType = subEventTournament.eventType ?? 'Unknown';
+          const eventType = subEventTournament.eventType ?? "Unknown";
           const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
           if (subEvents) {
             subEvents.push(subEventTournament);
@@ -88,7 +87,7 @@ export class DetailPageComponent {
           }
           return acc;
         },
-        [] as { eventType: string; subEvents: SubEventTournament[] }[],
+        [] as { eventType: string; subEvents: SubEventTournament[] }[]
       );
   });
 
@@ -111,10 +110,10 @@ export class DetailPageComponent {
       this.seoService.update({
         title: eventTournamentName,
         description: `Tournament ${eventTournamentName}`,
-        type: 'website',
-        keywords: ['event', 'tournament', 'badminton'],
+        type: "website",
+        keywords: ["event", "tournament", "badminton"],
       });
-      this.breadcrumbService.set('@eventTournament', eventTournamentName);
+      this.breadcrumbService.set("@eventTournament", eventTournamentName);
     });
   }
 
@@ -129,7 +128,7 @@ export class DetailPageComponent {
         openDate: this.eventTournament()?.openDate,
         closeDate: this.eventTournament()?.closeDate,
       },
-      width: '400px',
+      width: "400px",
     });
 
     ref.afterClosed().subscribe(async (result) => {
@@ -141,10 +140,10 @@ export class DetailPageComponent {
 
         this.matSnackBar.open(
           `Tournament ${this.eventTournament()?.name} open/close dates updated`,
-          'Close',
+          "Close",
           {
             duration: 2000,
-          },
+          }
         );
       }
     });
@@ -154,11 +153,11 @@ export class DetailPageComponent {
     await this.detailService.state.toggleOfficialStatus();
 
     this.matSnackBar.open(
-      `Tournament ${this.eventTournament()?.name} is ${!this.eventTournament()?.official ? 'official' : 'unofficial'}`,
-      'Close',
+      `Tournament ${this.eventTournament()?.name} is ${!this.eventTournament()?.official ? "official" : "unofficial"}`,
+      "Close",
       {
         duration: 2000,
-      },
+      }
     );
   }
 
@@ -166,10 +165,10 @@ export class DetailPageComponent {
     if (!this.eventTournament()?.visualCode) {
       this.matSnackBar.open(
         `Tournament ${this.eventTournament()?.name} has no visual code, add it via the "add event" button in the overview page.`,
-        'Close',
+        "Close",
         {
           duration: 2000,
-        },
+        }
       );
 
       return;
@@ -195,8 +194,8 @@ export class DetailPageComponent {
   assignRankingGroups() {
     this.dialog
       .open(AssignRankingGroupsComponent, {
-        minWidth: '50vw',
-        maxHeight: '80vh',
+        minWidth: "50vw",
+        maxHeight: "80vh",
         data: {
           event: this.eventTournament,
         },
@@ -209,12 +208,12 @@ export class DetailPageComponent {
 
   removeEvent() {
     const dialogData = new ConfirmDialogModel(
-      'all.tournament.delete.title',
-      'all.tournament.delete.description',
+      "all.tournament.delete.title",
+      "all.tournament.delete.description"
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: '400px',
+      maxWidth: "400px",
       data: dialogData,
     });
 
@@ -225,11 +224,11 @@ export class DetailPageComponent {
 
       await this.detailService.state.removeTournament();
 
-      this.matSnackBar.open('Deleted', undefined, {
+      this.matSnackBar.open("Deleted", undefined, {
         duration: 1000,
-        panelClass: 'success',
+        panelClass: "success",
       });
-      this.router.navigate(['/tournament']);
+      this.router.navigate(["/tournament"]);
     });
   }
 
@@ -238,9 +237,9 @@ export class DetailPageComponent {
   }
 
   syncSubEvent(subEvent: SubEventTournament) {
-    console.log('Syncing sub-event', subEvent);
+    console.log("Syncing sub-event", subEvent);
     if (!subEvent.id) {
-      this.matSnackBar.open(`Tournament ${subEvent?.name} has no sub-event to sync.`, 'Close', {
+      this.matSnackBar.open(`Tournament ${subEvent?.name} has no sub-event to sync.`, "Close", {
         duration: 2000,
       });
       return;

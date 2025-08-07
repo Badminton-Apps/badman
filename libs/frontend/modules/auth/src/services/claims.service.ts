@@ -1,15 +1,15 @@
-import { Injectable, computed, inject } from '@angular/core';
+import { Injectable, computed, inject } from "@angular/core";
 
-import { distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, startWith } from "rxjs/operators";
 
-import { toObservable } from '@angular/core/rxjs-interop';
-import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import { BehaviorSubject, ReplaySubject, combineLatest } from 'rxjs';
-import { AuthenticateService } from './authenticate.service';
-import { derivedAsync } from 'ngxtension/derived-async';
+import { toObservable } from "@angular/core/rxjs-interop";
+import { APOLLO_CACHE } from "@badman/frontend-graphql";
+import { BehaviorSubject, ReplaySubject, combineLatest } from "rxjs";
+import { AuthenticateService } from "./authenticate.service";
+import { derivedAsync } from "ngxtension/derived-async";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClaimService {
   private readonly cache = inject(APOLLO_CACHE);
@@ -27,7 +27,7 @@ export class ClaimService {
         map(([player]) => player?.permissions ?? []),
         distinctUntilChanged((a, b) => a.length === b.length),
         shareReplay(),
-        startWith(undefined),
+        startWith(undefined)
       )
       .subscribe((claims) => {
         this.claims$.next(claims);
@@ -45,7 +45,7 @@ export class ClaimService {
   hasAnyClaims(claims: string[]): boolean {
     return claims.reduce(
       (acc: boolean, claim) => acc || this.includes(this.claims(), claim),
-      false,
+      false
     );
   }
 
@@ -61,8 +61,6 @@ export class ClaimService {
     return computed(() => this.hasAnyClaims(claims));
   }
 
-
-
   reloadProfile(): void {
     this.update$.next(null);
   }
@@ -72,8 +70,8 @@ export class ClaimService {
       return false;
     }
 
-    if (claim.indexOf('*') >= 0) {
-      const found = claims.find((r) => r?.indexOf(claim.replace('*', '')) != -1);
+    if (claim.indexOf("*") >= 0) {
+      const found = claims.find((r) => r?.indexOf(claim.replace("*", "")) != -1);
       return found != null && found != undefined;
     } else {
       return claims?.includes(claim);
@@ -85,7 +83,7 @@ export class ClaimService {
     users.forEach((id) => {
       const normalizedId = this.cache.identify({
         id,
-        __typename: 'Player',
+        __typename: "Player",
       });
       this.cache.evict({ id: normalizedId });
     });

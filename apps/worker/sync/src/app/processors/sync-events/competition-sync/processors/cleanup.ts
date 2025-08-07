@@ -3,10 +3,10 @@ import {
   EncounterCompetition,
   EventCompetition,
   Game,
-} from '@badman/backend-database';
-import { Op } from 'sequelize';
-import { StepOptions, StepProcessor } from '../../../../processing';
-import { Logger } from '@nestjs/common';
+} from "@badman/backend-database";
+import { Op } from "sequelize";
+import { StepOptions, StepProcessor } from "../../../../processing";
+import { Logger } from "@nestjs/common";
 
 export class CompetitionSyncCleanupProcessor extends StepProcessor {
   public event?: EventCompetition;
@@ -22,7 +22,7 @@ export class CompetitionSyncCleanupProcessor extends StepProcessor {
 
   public async process(): Promise<void> {
     if (!this.event) {
-      throw new Error('No Event');
+      throw new Error("No Event");
     }
 
     const subEvents = await this.event.getSubEventCompetitions({
@@ -34,7 +34,7 @@ export class CompetitionSyncCleanupProcessor extends StepProcessor {
     for (const removed of removedSubEvents) {
       const gameIds = (
         await Game.findAll({
-          attributes: ['id'],
+          attributes: ["id"],
           include: [
             {
               attributes: [],

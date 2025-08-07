@@ -1,5 +1,5 @@
 <badman-page-header>
-  <div title>{{ 'all.competition.title' | translate }}</div>
+  <div title>{{ "all.competition.title" | translate }}</div>
 
   <div actions>
     <badman-has-claim [any]="['change:job']">
@@ -16,13 +16,13 @@
         <badman-has-claim [any]="['change:job']">
           <button mat-menu-item (click)="addEvent()">
             <mat-icon>sync</mat-icon>
-            <span>{{ 'all.competition.menu.add-event' | translate }}</span>
+            <span>{{ "all.competition.menu.add-event" | translate }}</span>
           </button>
         </badman-has-claim>
         <badman-has-claim [any]="['export-planner:competition']">
           <button mat-menu-item (click)="exportPlanner()">
             <mat-icon>download</mat-icon>
-            <span>{{ 'all.competition.menu.export-planner' | translate }}</span>
+            <span>{{ "all.competition.menu.export-planner" | translate }}</span>
           </button>
         </badman-has-claim>
       </mat-menu>
@@ -32,8 +32,9 @@
 
 <form [formGroup]="filter" class="filter">
   <badman-select-season type="event" [group]="filter"></badman-select-season>
-  <mat-slide-toggle formControlName="official">{{'all.competition.overview.only-official' | translate}}</mat-slide-toggle>
+  <mat-slide-toggle formControlName="official">{{
+    "all.competition.overview.only-official" | translate
+  }}</mat-slide-toggle>
 </form>
-
 
 <badman-competition-events />

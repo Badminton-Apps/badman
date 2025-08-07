@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
@@ -7,74 +7,74 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'enteredById',
+          "enteredById",
           {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
             references: {
               model: {
-                tableName: 'Players',
-                schema: 'public',
+                tableName: "Players",
+                schema: "public",
               },
-              key: 'id',
+              key: "id",
             },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'acceptedById',
+          "acceptedById",
           {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
             references: {
               model: {
-                tableName: 'Players',
-                schema: 'public',
+                tableName: "Players",
+                schema: "public",
               },
-              key: 'id',
+              key: "id",
             },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'enteredOn',
+          "enteredOn",
           {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'acceptedOn',
+          "acceptedOn",
           {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -85,39 +85,39 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'enteredById',
-          { transaction: t },
+          "enteredById",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'acceptedById',
-          { transaction: t },
+          "acceptedById",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'enteredOn',
-          { transaction: t },
+          "enteredOn",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'acceptedOn',
-          { transaction: t },
+          "acceptedOn",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

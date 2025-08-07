@@ -1,4 +1,4 @@
-import { LevelType, SubEventTypeEnum } from '@badman/utils';
+import { LevelType, SubEventTypeEnum } from "@badman/utils";
 import {
   Field,
   Float,
@@ -8,7 +8,7 @@ import {
   ObjectType,
   OmitType,
   PartialType,
-} from '@nestjs/graphql';
+} from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -33,7 +33,7 @@ import {
   HasManySetAssociationsMixin,
   InferAttributes,
   InferCreationAttributes,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   BelongsToMany,
@@ -47,18 +47,18 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
-import { Relation } from '../../../wrapper';
-import { RankingGroup } from '../../ranking';
-import { EventEntry } from '../entry.model';
-import { DrawCompetition } from './draw-competition.model';
-import { EventCompetition } from './event-competition.model';
-import { RankingGroupSubEventCompetitionMembership } from './group-subevent-membership.model';
+} from "sequelize-typescript";
+import { Relation } from "../../../wrapper";
+import { RankingGroup } from "../../ranking";
+import { EventEntry } from "../entry.model";
+import { DrawCompetition } from "./draw-competition.model";
+import { EventCompetition } from "./event-competition.model";
+import { RankingGroupSubEventCompetitionMembership } from "./group-subevent-membership.model";
 @Table({
   timestamps: true,
-  schema: 'event',
+  schema: "event",
 })
-@ObjectType({ description: 'A SubEventCompetition' })
+@ObjectType({ description: "A SubEventCompetition" })
 export class SubEventCompetition extends Model<
   InferAttributes<SubEventCompetition>,
   InferCreationAttributes<SubEventCompetition>
@@ -76,14 +76,14 @@ export class SubEventCompetition extends Model<
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Unique('SubEventCompetitions_unique_constraint')
+  @Unique("SubEventCompetitions_unique_constraint")
   @Field(() => String)
   @Column(DataType.STRING)
   name!: string;
 
-  @Unique('SubEventCompetitions_unique_constraint')
+  @Unique("SubEventCompetitions_unique_constraint")
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
+  @Column(DataType.ENUM("M", "F", "MX", "MINIBAD"))
   eventType!: SubEventTypeEnum;
 
   @Field(() => Int, { nullable: true })
@@ -106,7 +106,7 @@ export class SubEventCompetition extends Model<
    */
   get levelWithModifier() {
     if (!this.eventCompetition) {
-      throw new Error('EventCompetition is not set');
+      throw new Error("EventCompetition is not set");
     }
 
     let modifier = 0;
@@ -135,10 +135,10 @@ export class SubEventCompetition extends Model<
 
   @Field(() => [EventEntry], { nullable: true })
   @HasMany(() => EventEntry, {
-    foreignKey: 'subEventId',
-    onDelete: 'CASCADE',
+    foreignKey: "subEventId",
+    onDelete: "CASCADE",
     scope: {
-      entryType: 'competition',
+      entryType: "competition",
     },
   })
   eventEntries?: Relation<EventEntry[]>;
@@ -149,25 +149,25 @@ export class SubEventCompetition extends Model<
 
   @Field(() => [DrawCompetition], { nullable: true })
   @HasMany(() => DrawCompetition, {
-    foreignKey: 'subeventId',
-    onDelete: 'CASCADE',
+    foreignKey: "subeventId",
+    onDelete: "CASCADE",
   })
   drawCompetitions?: Relation<DrawCompetition[]>;
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
-    foreignKey: 'eventId',
-    onDelete: 'CASCADE',
+    foreignKey: "eventId",
+    onDelete: "CASCADE",
   })
   eventCompetition?: Relation<EventCompetition>;
 
-  @Unique('SubEventCompetitions_unique_constraint')
+  @Unique("SubEventCompetitions_unique_constraint")
   @ForeignKey(() => EventCompetition)
   @Field(() => ID)
   @Column(DataType.UUIDV4)
   eventId!: string;
 
-  @Unique('SubEventCompetitions_unique_constraint')
+  @Unique("SubEventCompetitions_unique_constraint")
   @Field(() => ID)
   @Column(DataType.UUIDV4)
   visualCode?: string;
@@ -211,10 +211,10 @@ export class SubEventCompetition extends Model<
 }
 
 // A graphql type for showing the average level with the subevent this is for single, double and mixed per gender
-@ObjectType({ description: 'A SubEventCompetition' })
+@ObjectType({ description: "A SubEventCompetition" })
 export class SubEventCompetitionAverageLevel {
   @Field(() => String, { nullable: true })
-  gender!: 'M' | 'F';
+  gender!: "M" | "F";
 
   @Field(() => Float, { nullable: true })
   single?: number;
@@ -235,18 +235,18 @@ export class SubEventCompetitionAverageLevel {
 @InputType()
 export class SubEventCompetitionUpdateInput extends PartialType(
   OmitType(SubEventCompetition, [
-    'createdAt',
-    'updatedAt',
-    'eventCompetition',
-    'eventEntries',
-    'rankingGroups',
-    'drawCompetitions',
+    "createdAt",
+    "updatedAt",
+    "eventCompetition",
+    "eventEntries",
+    "rankingGroups",
+    "drawCompetitions",
   ] as const),
-  InputType,
+  InputType
 ) {}
 
 @InputType()
 export class SubEventCompetitionNewInput extends PartialType(
-  OmitType(SubEventCompetitionUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(SubEventCompetitionUpdateInput, ["id"] as const),
+  InputType
 ) {}

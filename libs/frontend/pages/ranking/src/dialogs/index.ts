@@ -1,3 +1,3 @@
 // start:ng42.barrel
-export * from './upload-ranking';
+export * from "./upload-ranking";
 // end:ng42.barrel

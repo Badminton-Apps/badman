@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
 const claims = [
   {
-    id: 'a6b7c8d9-1e2f-4a5b-9c6d-3e4f5a6b7c8d',
-    name: 'export-locations:competition',
-    description: 'Export locations data for competition',
-    category: 'competitions',
-    type: 'global',
+    id: "a6b7c8d9-1e2f-4a5b-9c6d-3e4f5a6b7c8d",
+    name: "export-locations:competition",
+    description: "Export locations data for competition",
+    category: "competitions",
+    type: "global",
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -19,8 +19,8 @@ module.exports = {
       // Check if claim already exists (without transaction to avoid aborted transaction issues)
       const existingClaims = await queryInterface.sequelize.query(
         `SELECT name FROM "security"."Claims" WHERE name = 'export-locations:competition'`,
-        { 
-          type: queryInterface.sequelize.QueryTypes.SELECT
+        {
+          type: queryInterface.sequelize.QueryTypes.SELECT,
         }
       );
 
@@ -28,17 +28,17 @@ module.exports = {
         // Add the new export-locations permission only if it doesn't exist
         await queryInterface.bulkInsert(
           {
-            tableName: 'Claims',
-            schema: 'security',
+            tableName: "Claims",
+            schema: "security",
           },
           claims
         );
-        console.log('Added export-locations:competition permission');
+        console.log("Added export-locations:competition permission");
       } else {
-        console.log('Export-locations permission already exists, skipping insertion');
+        console.log("Export-locations permission already exists, skipping insertion");
       }
     } catch (err) {
-      console.error('Error adding export-locations permission:', err);
+      console.error("Error adding export-locations permission:", err);
       throw err;
     }
   },
@@ -48,8 +48,8 @@ module.exports = {
         // Remove the export-locations permission
         await queryInterface.bulkDelete(
           {
-            tableName: 'Claims',
-            schema: 'security',
+            tableName: "Claims",
+            schema: "security",
           },
           {
             id: {
@@ -58,11 +58,11 @@ module.exports = {
           },
           {
             transaction: t,
-          },
+          }
         );
-        console.log('Removed export-locations:competition permission');
+        console.log("Removed export-locations:competition permission");
       } catch (err) {
-        console.error('Error removing export-locations permission:', err);
+        console.error("Error removing export-locations permission:", err);
         t.rollback();
       }
     });

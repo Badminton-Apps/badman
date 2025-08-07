@@ -1,2 +1,2 @@
-export * from './competition.module';
-export * from './queries';
+export * from "./competition.module";
+export * from "./queries";

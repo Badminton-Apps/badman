@@ -1,18 +1,17 @@
-
-import { Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { TranslatePipe } from '@ngx-translate/core';
-import moment from 'moment';
-import { Moment } from 'moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { Component, OnInit, inject } from "@angular/core";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MtxDatetimepickerModule } from "@ng-matero/extensions/datetimepicker";
+import { TranslatePipe } from "@ngx-translate/core";
+import moment from "moment";
+import { Moment } from "moment";
+import { injectDestroy } from "ngxtension/inject-destroy";
+import { startWith, takeUntil } from "rxjs/operators";
 @Component({
   imports: [
     TranslatePipe,
@@ -24,15 +23,15 @@ import { startWith, takeUntil } from 'rxjs/operators';
     MatDialogModule,
     MatInputModule,
     MatDatepickerModule,
-    MtxDatetimepickerModule
-],
-  templateUrl: './set-open-close-enrollments.component.html',
-  styleUrls: ['./set-open-close-enrollments.component.scss'],
+    MtxDatetimepickerModule,
+  ],
+  templateUrl: "./set-open-close-enrollments.component.html",
+  styleUrls: ["./set-open-close-enrollments.component.scss"],
 })
 export class OpenCloseDateDialogComponent implements OnInit {
   private readonly destroy$ = injectDestroy();
   public dialogRef = inject<MatDialogRef<OpenCloseDateDialogComponent>>(
-    MatDialogRef<OpenCloseDateDialogComponent>,
+    MatDialogRef<OpenCloseDateDialogComponent>
   );
   public data = inject<{ openDate: Date; closeDate: Date; season: number }>(MAT_DIALOG_DATA);
   openControl?: FormControl;
@@ -52,7 +51,7 @@ export class OpenCloseDateDialogComponent implements OnInit {
           return;
         }
 
-        this.openYearWarning = value.get('year') !== this.data.season;
+        this.openYearWarning = value.get("year") !== this.data.season;
       });
 
     this.closeControl.valueChanges
@@ -62,7 +61,7 @@ export class OpenCloseDateDialogComponent implements OnInit {
           return;
         }
 
-        this.closeYearWarning = value.get('year') !== this.data.season;
+        this.closeYearWarning = value.get("year") !== this.data.season;
       });
   }
 

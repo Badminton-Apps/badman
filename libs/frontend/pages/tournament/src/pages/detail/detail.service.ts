@@ -1,10 +1,10 @@
-import { Injectable, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { FetchPolicy } from '@apollo/client/core';
-import { EventTournament } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Observable, Subject, merge, of } from 'rxjs';
+import { Injectable, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { FetchPolicy } from "@apollo/client/core";
+import { EventTournament } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Observable, Subject, merge, of } from "rxjs";
 import {
   catchError,
   delay,
@@ -12,8 +12,8 @@ import {
   filter,
   map,
   startWith,
-  switchMap
-} from 'rxjs/operators';
+  switchMap,
+} from "rxjs/operators";
 
 export const EVENT_QUERY = gql`
   query EventTournament($id: ID!) {
@@ -52,7 +52,7 @@ export interface TournamentDetailState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class TournamentDetailService {
   private readonly apollo = inject(Apollo);
@@ -64,7 +64,7 @@ export class TournamentDetailService {
   };
 
   filter = new FormGroup({
-    tournamentId: new FormControl<string>(''),
+    tournamentId: new FormControl<string>(""),
   });
 
   tournament = computed(() => this.state().tournament);
@@ -74,7 +74,7 @@ export class TournamentDetailService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.tournamentId && filter.tournamentId.length > 0),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   // sources
@@ -84,20 +84,20 @@ export class TournamentDetailService {
     switchMap((filter) =>
       this.getTournament(filter.tournamentId).pipe(
         map((tournament) => ({ tournament, loaded: true, error: null })),
-        startWith({ tournmaent: null, loaded: false, error: null }),
-      ),
+        startWith({ tournmaent: null, loaded: false, error: null })
+      )
     ),
     delay(100), // some delay to show the loading indicator
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
     this.tournamentLoaded,
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false })))
   );
 
   state = signalSlice({
@@ -113,40 +113,40 @@ export class TournamentDetailService {
         action$.pipe(
           switchMap(() => this.toggleOfficialStatus(_state().tournament)),
           switchMap(() =>
-            this.getTournament(_state().tournament?.id, 'no-cache').pipe(
+            this.getTournament(_state().tournament?.id, "no-cache").pipe(
               map((tournament) => ({ tournament, loaded: true, error: null })),
-              startWith({ tournmaent: null, loaded: false, error: null }),
-            ),
-          ),
+              startWith({ tournmaent: null, loaded: false, error: null })
+            )
+          )
         ),
       setOpenCloseDates: (_state, action$: Observable<{ openDate: string; closeDate: string }>) =>
         action$.pipe(
           switchMap(({ openDate, closeDate }) =>
-            this.setOpenCloseDates(_state().tournament, openDate, closeDate),
+            this.setOpenCloseDates(_state().tournament, openDate, closeDate)
           ),
           switchMap(() =>
-            this.getTournament(_state().tournament?.id, 'no-cache').pipe(
+            this.getTournament(_state().tournament?.id, "no-cache").pipe(
               map((tournament) => ({ tournament, loaded: true, error: null })),
-              startWith({ tournmaent: null, loaded: false, error: null }),
-            ),
-          ),
+              startWith({ tournmaent: null, loaded: false, error: null })
+            )
+          )
         ),
       removeTournament: (_state, action$: Observable<void>) =>
         action$.pipe(
           switchMap(() => this.removeTournament(_state().tournament)),
-          switchMap(() => of({ tournament: null, loaded: false, error: null })),
+          switchMap(() => of({ tournament: null, loaded: false, error: null }))
         ),
       reCalculatePoints: (_state, action$: Observable<void>) =>
         action$.pipe(
           switchMap(() => this.reCalculatePoints(_state().tournament)),
-          map(() => _state()),
+          map(() => _state())
         ),
     },
   });
 
   private getTournament(
     tournamentId?: string | null,
-    fetchPolicy?: FetchPolicy,
+    fetchPolicy?: FetchPolicy
   ): Observable<EventTournament | null> {
     if (!tournamentId) {
       return of(null);
@@ -163,11 +163,11 @@ export class TournamentDetailService {
       .pipe(
         map((result) => {
           if (!result?.data.eventTournament) {
-            throw new Error('No tournament');
+            throw new Error("No tournament");
           }
 
           return new EventTournament(result.data.eventTournament);
-        }),
+        })
       );
   }
 
@@ -218,7 +218,7 @@ export class TournamentDetailService {
   private setOpenCloseDates(
     tournament: EventTournament | null,
     openDate: string,
-    closeDate: string,
+    closeDate: string
   ) {
     return this.apollo.mutate({
       mutation: gql`

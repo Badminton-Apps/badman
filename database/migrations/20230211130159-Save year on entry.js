@@ -1,36 +1,36 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        console.log('Adding column');
+        console.log("Adding column");
 
         // Add column "date" to entries table
         await queryInterface.addColumn(
           {
-            tableName: 'Entries',
-            schema: 'event',
+            tableName: "Entries",
+            schema: "event",
           },
-          'date',
+          "date",
           {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
           {
             transaction: t,
-          },
+          }
         );
 
-        console.log('Getting all Competition Events');
+        console.log("Getting all Competition Events");
         // Get all Competition Events from the database with CompetitionSubEvents
         const competitionEvents = await queryInterface.sequelize.query(
           `SELECT "SubEventCompetitions"."id", "startYear" FROM "event"."EventCompetitions" INNER JOIN "event"."SubEventCompetitions" ON "SubEventCompetitions"."eventId" = "EventCompetitions".id WHERE "EventCompetitions"."startYear" IS NOT NULL`,
           {
             type: queryInterface.sequelize.QueryTypes.SELECT,
             transaction: t,
-          },
+          }
         );
 
         console.log(`Updating entries with ${competitionEvents.length} Competition Events`);
@@ -41,7 +41,7 @@ module.exports = {
             console.log(
               `Progress: %${
                 (competitionEvents.indexOf(competitionEvent) / competitionEvents.length) * 100
-              }`,
+              }`
             );
           }
           await queryInterface.sequelize.query(
@@ -49,18 +49,18 @@ module.exports = {
             {
               type: queryInterface.sequelize.QueryTypes.UPDATE,
               transaction: t,
-            },
+            }
           );
         }
 
-        console.log('Getting all Tournament Events');
+        console.log("Getting all Tournament Events");
         // Get all Tournaments Events from the database with TournamentSubEvents
         const tournamentEvents = await queryInterface.sequelize.query(
           `SELECT "SubEventTournaments"."id", "firstDay" FROM "event"."EventTournaments" INNER JOIN "event"."SubEventTournaments" ON "SubEventTournaments"."eventId" = "EventTournaments"."id" WHERE "EventTournaments"."firstDay" IS NOT NULL`,
           {
             type: queryInterface.sequelize.QueryTypes.SELECT,
             transaction: t,
-          },
+          }
         );
 
         console.log(`Updating entries with ${tournamentEvents.length} Tournament Events`);
@@ -71,7 +71,7 @@ module.exports = {
             console.log(
               `Progress: %${
                 (tournamentEvents.indexOf(tournamentEvent) / tournamentEvents.length) * 100
-              }`,
+              }`
             );
           }
 
@@ -82,13 +82,13 @@ module.exports = {
             {
               type: queryInterface.sequelize.QueryTypes.UPDATE,
               transaction: t,
-            },
+            }
           );
         }
 
-        console.log('Done');
+        console.log("Done");
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -98,18 +98,18 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.removeColumn(
         {
-          tableName: 'Entries',
-          schema: 'event',
+          tableName: "Entries",
+          schema: "event",
         },
-        'date',
+        "date",
         {
           transaction: t,
-        },
+        }
       );
 
       try {
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,21 +8,21 @@ import {
   Signal,
   inject,
   input,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthenticateService } from '@badman/frontend-auth';
-import { Comment, EncounterCompetition } from '@badman/frontend-models';
-import { sortComments } from '@badman/utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { MomentModule } from 'ngx-moment';
-import { Subject, of } from 'rxjs';
-import { catchError, map, startWith, switchMap, take } from 'rxjs/operators';
+} from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { AuthenticateService } from "@badman/frontend-auth";
+import { Comment, EncounterCompetition } from "@badman/frontend-models";
+import { sortComments } from "@badman/utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { MomentModule } from "ngx-moment";
+import { Subject, of } from "rxjs";
+import { catchError, map, startWith, switchMap, take } from "rxjs/operators";
 
 const COMMENTS_QUERY = gql`
   query GetEncounterComments($where: JSONObject) {
@@ -39,20 +39,20 @@ const COMMENTS_QUERY = gql`
 `;
 
 @Component({
-    selector: 'badman-comments',
-    templateUrl: './comments.component.html',
-    styleUrls: ['./comments.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MomentModule,
-        FormsModule,
-        TranslatePipe,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-    ]
+  selector: "badman-comments",
+  templateUrl: "./comments.component.html",
+  styleUrls: ["./comments.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MomentModule,
+    FormsModule,
+    TranslatePipe,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
 })
 export class CommentsComponent implements OnInit, OnChanges {
   // injects
@@ -77,10 +77,10 @@ export class CommentsComponent implements OnInit, OnChanges {
   disabled = input<boolean>();
 
   // forms
-  commentControl = new FormControl<string>('');
+  commentControl = new FormControl<string>("");
 
   ngOnInit(): void {
-    if (this.disabled()){
+    if (this.disabled()) {
       this.commentControl.disable();
     }
 
@@ -97,17 +97,17 @@ export class CommentsComponent implements OnInit, OnChanges {
                 where: {
                   linkId: this.encounter()?.id,
                   linkType: {
-                    $or: ['home_comment_change', 'away_comment_change'],
+                    $or: ["home_comment_change", "away_comment_change"],
                   },
                 },
               },
-            }).valueChanges,
+            }).valueChanges
         ),
-        map((result) => result.data.comments?.map((c) => new Comment(c))?.sort(sortComments)),
+        map((result) => result.data.comments?.map((c) => new Comment(c))?.sort(sortComments))
       ),
       {
         injector: this.injector,
-      },
+      }
     );
   }
 
@@ -137,7 +137,7 @@ export class CommentsComponent implements OnInit, OnChanges {
           data: {
             message: this.commentControl.value,
             linkId: this.encounter()?.id,
-            linkType: 'encounterChange',
+            linkType: "encounterChange",
             clubId: this.clubId(),
           },
         },
@@ -148,7 +148,7 @@ export class CommentsComponent implements OnInit, OnChanges {
               where: {
                 linkId: this.encounter()?.id,
                 linkType: {
-                  $or: ['home_comment_change', 'away_comment_change'],
+                  $or: ["home_comment_change", "away_comment_change"],
                 },
               },
             },
@@ -160,18 +160,18 @@ export class CommentsComponent implements OnInit, OnChanges {
         catchError((err) => {
           console.error(err);
           return of(null);
-        }),
+        })
       )
       .subscribe((result) => {
         if (result && result.data && result.data.addComment) {
           this.snackBar.open(
-            this.translate.instant('all.competition.change-encounter.comment-added'),
-            'OK',
+            this.translate.instant("all.competition.change-encounter.comment-added"),
+            "OK",
             {
               duration: 4000,
-            },
+            }
           );
-          this.commentControl.setValue('');
+          this.commentControl.setValue("");
         }
       });
   }

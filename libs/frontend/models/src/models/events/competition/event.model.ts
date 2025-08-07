@@ -1,8 +1,8 @@
-import { EventType, LevelType, sortSubEvents } from '@badman/utils';
-import { Comment } from '../../comment.model';
-import { Event } from '../event.model';
-import { SubEventCompetition } from './sub-event.model';
-import { Exception, InfoEvent } from '../../availibilty.model';
+import { EventType, LevelType, sortSubEvents } from "@badman/utils";
+import { Comment } from "../../comment.model";
+import { Event } from "../event.model";
+import { SubEventCompetition } from "./sub-event.model";
+import { Exception, InfoEvent } from "../../availibilty.model";
 
 export class EventCompetition extends Event {
   season?: number;

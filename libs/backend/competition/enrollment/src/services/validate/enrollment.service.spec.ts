@@ -18,7 +18,7 @@
 //   EncounterCompetition,
 // } from '@badman/backend-database';
 // import { Sequelize } from 'sequelize-typescript';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from "@nestjs/testing";
 // import { ConfigModule } from '@nestjs/config';
 
 // import {
@@ -33,11 +33,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 //   SubTeamIndexRule,
 // } from './rules';
 // import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
-import { DatabaseModule } from '@badman/backend-database';
-import { ConfigModule } from '@nestjs/config';
-import { EnrollmentValidationService } from './enrollment.service';
+import { DatabaseModule } from "@badman/backend-database";
+import { ConfigModule } from "@nestjs/config";
+import { EnrollmentValidationService } from "./enrollment.service";
 
-describe('EnrollmentValidationService', () => {
+describe("EnrollmentValidationService", () => {
   let service: EnrollmentValidationService;
   // let system: RankingSystem;
   // let draw: DrawCompetition;
@@ -51,7 +51,7 @@ describe('EnrollmentValidationService', () => {
       imports: [
         DatabaseModule,
         ConfigModule.forRoot({
-          envFilePath: '.env.test',
+          envFilePath: ".env.test",
         }),
       ],
     }).compile();
@@ -90,7 +90,7 @@ describe('EnrollmentValidationService', () => {
     //   encounter = await encounterBuilder.Build();
   });
 
-  test('should be defined', () => {
+  test("should be defined", () => {
     expect(service).toBeDefined();
   });
 

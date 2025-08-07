@@ -1,19 +1,19 @@
-import { EncounterCompetition, Location, Team } from '@badman/backend-database';
-import { Controller, Get, Query, Res } from '@nestjs/common';
-import { Response } from 'express';
-import { ICalCalendar } from 'ical-generator';
-import moment from 'moment';
-import { Op } from 'sequelize';
+import { EncounterCompetition, Location, Team } from "@badman/backend-database";
+import { Controller, Get, Query, Res } from "@nestjs/common";
+import { Response } from "express";
+import { ICalCalendar } from "ical-generator";
+import moment from "moment";
+import { Op } from "sequelize";
 
-@Controller('calendar')
+@Controller("calendar")
 export class CalendarController {
-  @Get('team')
+  @Get("team")
   async generateCalendarLink(
     @Query() query: { teamId: string; linkId: string },
-    @Res() res: Response,
+    @Res() res: Response
   ) {
     if (!query.teamId && !query.linkId) {
-      return res.status(400).send('Invalid team or link id');
+      return res.status(400).send("Invalid team or link id");
     }
 
     const team = query.teamId
@@ -21,7 +21,7 @@ export class CalendarController {
       : await Team.findAll({ where: { link: query.linkId } });
 
     if (!team) {
-      return res.status(404).send('Team not found');
+      return res.status(404).send("Team not found");
     }
 
     const ids = Array.isArray(team) ? team.map((t) => t.id) : [team.id];
@@ -34,15 +34,15 @@ export class CalendarController {
       include: [
         {
           model: Location,
-          as: 'location',
+          as: "location",
         },
         {
           model: Team,
-          as: 'home',
+          as: "home",
         },
         {
           model: Team,
-          as: 'away',
+          as: "away",
         },
       ],
     });
@@ -52,18 +52,18 @@ export class CalendarController {
     const events = encounters.map((enc) => ({
       title: `${enc.home.name} vs ${enc.away.name}`,
       startTime: enc.date,
-      endTime: moment(enc.date).add(3, 'hours').toDate(),
-      description: `${enc.home.name} vs ${enc.away.name} on ${moment(enc.date).format('DD/MM/YYYY')}`,
+      endTime: moment(enc.date).add(3, "hours").toDate(),
+      description: `${enc.home.name} vs ${enc.away.name} on ${moment(enc.date).format("DD/MM/YYYY")}`,
       location: enc.location,
     }));
 
     const calendar = new ICalCalendar({
-      name: teamName
+      name: teamName,
     });
 
     events.forEach((event) => {
       calendar.createEvent({
-        timezone: 'Europe/Brussels',
+        timezone: "Europe/Brussels",
         start: event.startTime,
         end: event.endTime,
         summary: event.title,

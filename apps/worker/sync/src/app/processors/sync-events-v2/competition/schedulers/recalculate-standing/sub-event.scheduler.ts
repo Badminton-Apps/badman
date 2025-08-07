@@ -1,8 +1,8 @@
-import { DrawCompetition, SubEventCompetition } from '@badman/backend-database';
-import { Sync, SyncQueue, TransactionManager } from '@badman/backend-queue';
-import { InjectQueue, Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
+import { DrawCompetition, SubEventCompetition } from "@badman/backend-database";
+import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
+import { InjectQueue, Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job, Queue } from "bull";
 
 @Processor({
   name: SyncQueue,
@@ -12,24 +12,24 @@ export class ScheduleRecalculateStandingCompetitionSubEvent {
 
   constructor(
     private readonly _transactionManager: TransactionManager,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
   @Process(Sync.ScheduleRecalculateStandingCompetitionSubEvent)
   async ScheduleRecalculateStandingCompetitionSubEvent(
     job: Job<{
       eventId: string;
-    }>,
+    }>
   ): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
 
     // get all draws for the event
     const subEvent = await SubEventCompetition.findByPk(job.data.eventId, {
-      attributes: ['id'],
+      attributes: ["id"],
 
       include: [
         {
-          attributes: ['id'],
+          attributes: ["id"],
           model: DrawCompetition,
         },
       ],
@@ -53,7 +53,7 @@ export class ScheduleRecalculateStandingCompetitionSubEvent {
       }
 
       if (await this._transactionManager.transactionErrored(transactionId)) {
-        throw new Error('Error in transaction');
+        throw new Error("Error in transaction");
       }
 
       await this._transactionManager.commitTransaction(transactionId);

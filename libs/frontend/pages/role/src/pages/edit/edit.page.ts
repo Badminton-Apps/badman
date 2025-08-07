@@ -1,19 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Claim, Club, Role } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { Observable, lastValueFrom } from 'rxjs';
-import { groupBy, map, mergeMap, toArray } from 'rxjs/operators';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { RoleFieldsComponent } from '../../components';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import { Claim, Club, Role } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { Observable, lastValueFrom } from "rxjs";
+import { groupBy, map, mergeMap, toArray } from "rxjs/operators";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { RoleFieldsComponent } from "../../components";
 
 @Component({
-  templateUrl: './edit.page.html',
-  styleUrls: ['./edit.page.scss'],
+  templateUrl: "./edit.page.html",
+  styleUrls: ["./edit.page.scss"],
   imports: [CommonModule, ReactiveFormsModule, RouterModule, RoleFieldsComponent],
 })
 export class EditPageComponent implements OnInit {
@@ -30,8 +30,8 @@ export class EditPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
-      this.club = data['club'];
-      this.role = data['role'];
+      this.club = data["club"];
+      this.role = data["role"];
 
       const clubName = `${this.club.name}`;
       const roleName = `${this.role.name}`;
@@ -39,11 +39,11 @@ export class EditPageComponent implements OnInit {
       this.seoService.update({
         title: `${roleName} - ${clubName}`,
         description: `Edit role ${roleName} of club ${clubName}`,
-        type: 'website',
-        keywords: ['club', 'badminton'],
+        type: "website",
+        keywords: ["club", "badminton"],
       });
-      this.breadcrumbsService.set('@role', roleName);
-      this.breadcrumbsService.set('@club', clubName);
+      this.breadcrumbsService.set("@role", roleName);
+      this.breadcrumbsService.set("@club", clubName);
 
       this.claims$ = this._loadClaims();
     });
@@ -66,10 +66,10 @@ export class EditPageComponent implements OnInit {
         variables: {
           data: role,
         },
-      }),
+      })
     );
 
-    await this.router.navigate(['/', 'club', club.id, 'edit']);
+    await this.router.navigate(["/", "club", club.id, "edit"]);
   }
 
   private _loadClaims() {
@@ -88,24 +88,24 @@ export class EditPageComponent implements OnInit {
         `,
         variables: {
           where: {
-            type: ['club', 'team'],
+            type: ["club", "team"],
           },
         },
       })
       .pipe(
-        transferState('clubTeamsKey-' + this.club.id, this.stateTransfer, this.platformId),
+        transferState("clubTeamsKey-" + this.club.id, this.stateTransfer, this.platformId),
         map((x) => x?.data.claims?.map((c) => new Claim(c))),
         mergeMap((claims) => claims ?? []),
-        groupBy((category) => category.category ?? 'Other'),
+        groupBy((category) => category.category ?? "Other"),
         mergeMap((obs) => {
           return obs.pipe(
             toArray(),
             map((items) => {
               return { category: obs.key, claims: items };
-            }),
+            })
           );
         }),
-        toArray(),
+        toArray()
       );
   }
 }

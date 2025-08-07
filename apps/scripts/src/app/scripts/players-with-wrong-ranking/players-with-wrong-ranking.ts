@@ -6,11 +6,11 @@ import {
   RankingLastPlace,
   RankingSystem,
   SubEventTournament,
-} from '@badman/backend-database';
-import { GameType, getSeason, getSeasonPeriod } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
-import { Op } from 'sequelize';
-import xlsx from 'xlsx';
+} from "@badman/backend-database";
+import { GameType, getSeason, getSeasonPeriod } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
+import { Op } from "sequelize";
+import xlsx from "xlsx";
 
 /**
 if a player with a ranking 12 has played in any offical tournament where the subEvent has a min ranking of 9 or lower,
@@ -32,7 +32,7 @@ export class PlayersWrongRankingRunner {
     const playerInclude = [
       {
         model: RankingLastPlace,
-        attributes: ['id', 'single', 'double', 'mix'],
+        attributes: ["id", "single", "double", "mix"],
         where: {
           systemId: getPrimaryRanking.id,
           single: 12,
@@ -46,7 +46,7 @@ export class PlayersWrongRankingRunner {
 
     // start by fetching all offical events and their subevents with a min ranking of 9 or lower of last season
     const events = await EventTournament.findAll({
-      attributes: ['id', 'name', 'firstDay'],
+      attributes: ["id", "name", "firstDay"],
       where: {
         firstDay: {
           [Op.between]: [seasonPeriod[0], seasonPeriod[1]],
@@ -56,7 +56,7 @@ export class PlayersWrongRankingRunner {
       include: [
         {
           model: SubEventTournament,
-          attributes: ['id', 'name', 'level', 'gameType'],
+          attributes: ["id", "name", "level", "gameType"],
           where: {
             level: {
               [Op.lt]: 9,
@@ -65,11 +65,11 @@ export class PlayersWrongRankingRunner {
           include: [
             {
               model: DrawTournament,
-              attributes: ['id'],
+              attributes: ["id"],
               include: [
                 {
                   model: EventEntry,
-                  attributes: ['id', 'player1Id', 'player2Id'],
+                  attributes: ["id", "player1Id", "player2Id"],
                 },
               ],
             },
@@ -89,7 +89,7 @@ export class PlayersWrongRankingRunner {
         for (const draw of subEvent.drawTournaments) {
           for (const entry of draw.eventEntries) {
             const entryP = await entry.getPlayers({
-              attributes: ['id', 'memberId', 'firstName', 'lastName'],
+              attributes: ["id", "memberId", "firstName", "lastName"],
               include: playerInclude,
             });
 
@@ -125,7 +125,7 @@ export class PlayersWrongRankingRunner {
                 subEvent.level
               ) {
                 this.logger.verbose(
-                  `Player ${player.memberId} has wrong ranking ${usedLevel} in event ${subEvent.level} (${subEvent.name})`,
+                  `Player ${player.memberId} has wrong ranking ${usedLevel} in event ${subEvent.level} (${subEvent.name})`
                 );
                 players.set(player.memberId, player);
               }
@@ -149,11 +149,11 @@ export class PlayersWrongRankingRunner {
         memberId: player.memberId,
         firstName: player.firstName,
         lastName: player.lastName,
-      })),
+      }))
     );
 
-    xlsx.utils.book_append_sheet(wb, ws, 'players');
-    xlsx.writeFile(wb, 'players-with-wrong-ranking.xlsx');
+    xlsx.utils.book_append_sheet(wb, ws, "players");
+    xlsx.writeFile(wb, "players-with-wrong-ranking.xlsx");
 
     this.logger.verbose(`Done`);
   }

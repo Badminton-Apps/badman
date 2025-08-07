@@ -1,10 +1,10 @@
-import { Injectable, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Club, Player } from '@badman/frontend-models';
-import { getSeason } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Observable, Subject, merge, of } from 'rxjs';
+import { Injectable, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { Club, Player } from "@badman/frontend-models";
+import { getSeason } from "@badman/utils";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Observable, Subject, merge, of } from "rxjs";
 import {
   catchError,
   delay,
@@ -13,7 +13,7 @@ import {
   map,
   startWith,
   switchMap,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 export interface ClubDetailState {
   club: Club | null;
@@ -22,7 +22,7 @@ export interface ClubDetailState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ClubDetailService {
   private readonly apollo = inject(Apollo);
@@ -34,7 +34,7 @@ export class ClubDetailService {
   };
 
   filter = new FormGroup({
-    clubId: new FormControl<string>(''),
+    clubId: new FormControl<string>(""),
     season: new FormControl(getSeason()),
   });
 
@@ -45,7 +45,7 @@ export class ClubDetailService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.clubId && filter.clubId.length > 0),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   // sources
@@ -55,20 +55,20 @@ export class ClubDetailService {
     switchMap((filter) =>
       this.getClub(filter.clubId).pipe(
         map((club) => ({ club, loaded: true, error: null })),
-        startWith({ club: null, loaded: false, error: null }),
-      ),
+        startWith({ club: null, loaded: false, error: null })
+      )
     ),
     delay(100), // some delay to show the loading indicator
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
     this.clubLoaded,
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false })))
   );
 
   state = signalSlice({
@@ -83,7 +83,7 @@ export class ClubDetailService {
       addPlayer: (_state, action$: Observable<Player>) =>
         action$.pipe(
           switchMap((player) => this.addPlayer(_state().club, player)),
-          map(() => _state()),
+          map(() => _state())
         ),
     },
   });
@@ -118,10 +118,10 @@ export class ClubDetailService {
       .pipe(
         map((result) => {
           if (!result?.data.club) {
-            throw new Error('No club');
+            throw new Error("No club");
           }
           return new Club(result.data.club);
-        }),
+        })
       );
   }
 

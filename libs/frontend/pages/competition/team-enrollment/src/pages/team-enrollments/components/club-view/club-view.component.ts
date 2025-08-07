@@ -1,45 +1,45 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Apollo, gql } from 'apollo-angular';
-import { Club, EventCompetition } from '@badman/frontend-models';
-import { combineLatest, map, Observable, startWith, switchMap, tap } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatCardModule } from '@angular/material/card';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MomentModule } from 'ngx-moment';
-import { OverlayModule } from '@angular/cdk/overlay';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
+import { Apollo, gql } from "apollo-angular";
+import { Club, EventCompetition } from "@badman/frontend-models";
+import { combineLatest, map, Observable, startWith, switchMap, tap } from "rxjs";
+import { CommonModule } from "@angular/common";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatOptionModule } from "@angular/material/core";
+import { MatSelectModule } from "@angular/material/select";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatCardModule } from "@angular/material/card";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MomentModule } from "ngx-moment";
+import { OverlayModule } from "@angular/cdk/overlay";
 
 @Component({
-    selector: 'badman-club-view',
-    templateUrl: './club-view.component.html',
-    styleUrls: ['./club-view.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        TranslatePipe,
-        MomentModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatOptionModule,
-        MatSelectModule,
-        MatExpansionModule,
-        MatCardModule,
-        MatIconModule,
-        MatButtonModule,
-        MatProgressBarModule,
-        OverlayModule,
-    ]
+  selector: "badman-club-view",
+  templateUrl: "./club-view.component.html",
+  styleUrls: ["./club-view.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    MomentModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatSelectModule,
+    MatExpansionModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    OverlayModule,
+  ],
 })
 export class ClubViewComponent implements OnInit {
   private _apollo = inject(Apollo);
-  overlayOpen = '';
+  overlayOpen = "";
 
   yearControl: FormControl = new FormControl(2022);
   eventControl: FormControl = new FormControl();
@@ -56,7 +56,7 @@ export class ClubViewComponent implements OnInit {
       tap(() => (this.loading = true)),
 
       switchMap(([eventId]) => {
-        if (eventId == 'all') {
+        if (eventId == "all") {
           return this.events$.pipe(
             map((e) => {
               return {
@@ -66,7 +66,7 @@ export class ClubViewComponent implements OnInit {
                   },
                 },
               };
-            }),
+            })
           );
         } else {
           return this._apollo.query<{
@@ -101,7 +101,7 @@ export class ClubViewComponent implements OnInit {
             ...new Set(
               result.data.eventCompetition.subEventCompetitions
                 ?.map((s) => s?.eventEntries?.map((e) => e.team?.clubId))
-                ?.flat(),
+                ?.flat()
             ),
           ],
         };
@@ -109,7 +109,7 @@ export class ClubViewComponent implements OnInit {
       // Distinct
       switchMap(({ clubIds }) => {
         const clubWhere =
-          this.eventControl.value != 'all'
+          this.eventControl.value != "all"
             ? {
                 id: clubIds,
               }
@@ -191,16 +191,16 @@ export class ClubViewComponent implements OnInit {
       }),
 
       map((result) =>
-        result.data.clubs?.rows.map((node) => new Club(node) as Club & { hasLocation: boolean }),
+        result.data.clubs?.rows.map((node) => new Club(node) as Club & { hasLocation: boolean })
       ),
       map((clubs) => {
         // Sort by name
-        clubs = clubs.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
+        clubs = clubs.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
 
         clubs = clubs.map?.((club) => {
           club.hasLocation =
             club?.locations?.some(
-              (location) => (location?.availabilities?.[0]?.days?.length ?? 0) <= 0,
+              (location) => (location?.availabilities?.[0]?.days?.length ?? 0) <= 0
             ) ?? false;
 
           club.teams = club.teams?.filter((team) => {
@@ -213,7 +213,7 @@ export class ClubViewComponent implements OnInit {
           return (club.teams ?? []).length > 0;
         });
       }),
-      tap(() => (this.loading = false)),
+      tap(() => (this.loading = false))
     );
 
     this.events$ = this.yearControl.valueChanges.pipe(
@@ -244,9 +244,9 @@ export class ClubViewComponent implements OnInit {
               closeDate: { $gte: new Date().toISOString() },
             },
           },
-        }),
+        })
       ),
-      map((result) => result.data.eventCompetitions.rows.map((node) => new EventCompetition(node))),
+      map((result) => result.data.eventCompetitions.rows.map((node) => new EventCompetition(node)))
     );
   }
 }

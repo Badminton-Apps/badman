@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
+require("dotenv").config();
 
 const retries = 5;
 const config = {
@@ -10,10 +10,10 @@ const config = {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     dialect: process.env.DB_DIALECT,
-    migrationStorageTableSchema: 'public',
+    migrationStorageTableSchema: "public",
     logging: false,
     dialectOptions: {
-      ssl: process.env.DB_SSL === 'true',
+      ssl: process.env.DB_SSL === "true",
     },
     retry: {
       max: retries,
@@ -26,10 +26,10 @@ const config = {
     username: process.env.DB_BETA_USER,
     password: process.env.DB_BETA_PASSWORD,
     dialect: process.env.DB_BETA_DIALECT,
-    migrationStorageTableSchema: 'public',
+    migrationStorageTableSchema: "public",
     logging: false,
     dialectOptions: {
-      ssl: process.env.DB_BETA_SSL === 'true',
+      ssl: process.env.DB_BETA_SSL === "true",
     },
     retry: {
       max: retries,
@@ -42,10 +42,10 @@ const config = {
     username: process.env.DB_PROD_USER,
     password: process.env.DB_PROD_PASSWORD,
     dialect: process.env.DB_PROD_DIALECT,
-    migrationStorageTableSchema: 'public',
+    migrationStorageTableSchema: "public",
     logging: false,
     dialectOptions: {
-      ssl: process.env.DB_PROD_SSL === 'true',
+      ssl: process.env.DB_PROD_SSL === "true",
     },
     retry: {
       max: retries,

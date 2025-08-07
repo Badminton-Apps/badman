@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>{{ 'all.locations.period.title' | translate }}</h2>
+<h2 mat-dialog-title>{{ "all.locations.period.title" | translate }}</h2>
 <mat-dialog-content>
-  <p>{{ 'all.locations.period.description' | translate }}</p>
+  <p>{{ "all.locations.period.description" | translate }}</p>
   @if (range) {
     <mat-form-field>
-      <mat-label>{{ 'all.locations.period.label' | translate }}</mat-label>
+      <mat-label>{{ "all.locations.period.label" | translate }}</mat-label>
       <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
         <input matStartDate formControlName="from" placeholder="From date" />
         <input matEndDate formControlName="to" placeholder="To date" />
@@ -12,18 +12,20 @@
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
 
-      @if (range.get('from')?.hasError('matStartDateInvalid')) {
-        <mat-error>{{ 'all.locations.period.errors.invalid-start' | translate }}</mat-error>
+      @if (range.get("from")?.hasError("matStartDateInvalid")) {
+        <mat-error>{{ "all.locations.period.errors.invalid-start" | translate }}</mat-error>
       }
 
-      @if (range.get('to')?.hasError('matEndDateInvalid')) {
-        <mat-error>{{ 'all.locations.period.errors.invalid-end' | translate }}</mat-error>
+      @if (range.get("to")?.hasError("matEndDateInvalid")) {
+        <mat-error>{{ "all.locations.period.errors.invalid-end" | translate }}</mat-error>
       }
     </mat-form-field>
   }
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onClear()">{{'all.button.clear' | translate}}</button>
-  <button mat-button (click)="onCancel()">{{'all.button.cancel' | translate}}</button>
-  <button mat-raised-button color="primary" [matDialogClose]="">{{'all.button.agree' | translate}}</button>
+  <button mat-button (click)="onClear()">{{ "all.button.clear" | translate }}</button>
+  <button mat-button (click)="onCancel()">{{ "all.button.cancel" | translate }}</button>
+  <button mat-raised-button color="primary" [matDialogClose]="">
+    {{ "all.button.agree" | translate }}
+  </button>
 </mat-dialog-actions>

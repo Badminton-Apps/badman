@@ -1,23 +1,19 @@
 // info: https://material.angular.io/guide/theming-your-components
 
-@use 'sass:map';
-@use '@angular/material' as mat;
+@use "sass:map";
+@use "@angular/material" as mat;
 
-@use './components/location/location.component.theme.scss' as location;
+@use "./components/location/location.component.theme.scss" as location;
 
 @mixin color($theme) {
   badman-locations-step {
     @include location.color($theme);
-
-    
   }
 }
 
 @mixin typography($theme) {
   badman-locations-step {
     @include location.typography($theme);
-
-    
 
     .description {
       font: mat.get-theme-typography($theme, caption, font);

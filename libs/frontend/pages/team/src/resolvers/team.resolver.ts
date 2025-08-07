@@ -1,9 +1,9 @@
-import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { Team } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { Apollo, gql } from 'apollo-angular';
-import { first, map } from 'rxjs/operators';
+import { Injectable, PLATFORM_ID, TransferState, inject } from "@angular/core";
+import { ActivatedRouteSnapshot } from "@angular/router";
+import { Team } from "@badman/frontend-models";
+import { transferState } from "@badman/frontend-utils";
+import { Apollo, gql } from "apollo-angular";
+import { first, map } from "rxjs/operators";
 
 @Injectable()
 export class TeamResolver {
@@ -12,7 +12,7 @@ export class TeamResolver {
   private platformId = inject<string>(PLATFORM_ID);
 
   resolve(route: ActivatedRouteSnapshot) {
-    const teamId = route.params['id'];
+    const teamId = route.params["id"];
 
     return this.apollo
       .query<{ team: Partial<Team> }>({
@@ -60,14 +60,14 @@ export class TeamResolver {
         },
       })
       .pipe(
-        transferState('teamKey-' + teamId, this.stateTransfer, this.platformId),
+        transferState("teamKey-" + teamId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.team) {
-            throw new Error('No team');
+            throw new Error("No team");
           }
           return new Team(result.data.team);
         }),
-        first(),
+        first()
       );
   }
 }

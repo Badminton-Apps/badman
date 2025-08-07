@@ -1,9 +1,9 @@
-import { ValidationResult } from '@badman/frontend-models';
-import { SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { TeamFormValue } from '../../team-enrollment.page';
+import { ValidationResult } from "@badman/frontend-models";
+import { SubEventTypeEnum, TeamMembershipType } from "@badman/utils";
+import { Apollo, gql } from "apollo-angular";
+import { of } from "rxjs";
+import { map } from "rxjs/operators";
+import { TeamFormValue } from "../../team-enrollment.page";
 
 export const validateEnrollment = (
   apollo: Apollo,
@@ -12,10 +12,10 @@ export const validateEnrollment = (
   season?: number,
   clubId?: string,
   transfers?: string[],
-  loans?: string[],
+  loans?: string[]
 ) => {
   if (!teamForm || !season) {
-    console.error('No teamForm or season provided');
+    console.error("No teamForm or season provided");
     return of([]);
   }
 
@@ -62,7 +62,7 @@ export const validateEnrollment = (
 
   return apollo
     .query<{ enrollmentValidation: ValidationResult }>({
-      fetchPolicy: 'no-cache',
+      fetchPolicy: "no-cache",
       query: gql`
         query ValidateEnrollment($enrollment: EnrollmentInput!) {
           enrollmentValidation(enrollment: $enrollment) {

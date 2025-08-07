@@ -1,24 +1,23 @@
-
-import { Component, input } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Component, input } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { TranslatePipe } from "@ngx-translate/core";
 
 @Component({
-    selector: 'badman-player-fields',
-    templateUrl: './player-fields.component.html',
-    styleUrls: ['./player-fields.component.scss'],
-    imports: [
+  selector: "badman-player-fields",
+  templateUrl: "./player-fields.component.html",
+  styleUrls: ["./player-fields.component.scss"],
+  imports: [
     ReactiveFormsModule,
     TranslatePipe,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
-]
+    MatSelectModule,
+  ],
 })
 export class PlayerFieldsComponent {
   group = input<FormGroup>(PlayerFieldsComponent.newPlayerForm());
@@ -30,30 +29,30 @@ export class PlayerFieldsComponent {
       gender?: string;
       memberId?: string;
     },
-    group?: FormGroup,
+    group?: FormGroup
   ): FormGroup {
     if (!group) {
       group = new FormGroup({});
     }
 
-    if (group.get('firstName') == null) {
+    if (group.get("firstName") == null) {
       const firstNameControl = new FormControl(inputData?.firstName, Validators.required);
-      group.addControl('firstName', firstNameControl);
+      group.addControl("firstName", firstNameControl);
     }
 
-    if (group.get('lastName') == null) {
+    if (group.get("lastName") == null) {
       const lastNameControl = new FormControl(inputData?.lastName, Validators.required);
-      group.addControl('lastName', lastNameControl);
+      group.addControl("lastName", lastNameControl);
     }
 
-    if (group.get('gender') == null) {
+    if (group.get("gender") == null) {
       const genderControl = new FormControl(inputData?.gender, Validators.required);
-      group.addControl('gender', genderControl);
+      group.addControl("gender", genderControl);
     }
 
-    if (group.get('memberId') == null) {
+    if (group.get("memberId") == null) {
       const memberIdControl = new FormControl(inputData?.memberId, Validators.required);
-      group.addControl('memberId', memberIdControl);
+      group.addControl("memberId", memberIdControl);
     }
 
     return group;

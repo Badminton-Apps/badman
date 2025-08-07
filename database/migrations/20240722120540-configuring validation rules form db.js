@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -8,27 +8,27 @@ module.exports = {
       try {
         await queryInterface.bulkInsert(
           {
-            tableName: 'Claims',
-            schema: 'security',
+            tableName: "Claims",
+            schema: "security",
           },
           [
             {
-              name: 'change:rules',
-              description: 'Allow chaning ruless',
-              category: 'rules',
-              type: 'global',
+              name: "change:rules",
+              description: "Allow chaning ruless",
+              category: "rules",
+              type: "global",
               createdAt: new Date(),
               updatedAt: new Date(),
             },
           ],
-          { transaction: t },
+          { transaction: t }
         );
 
         // create Rule table
         await queryInterface.createTable(
           {
-            tableName: 'Rules',
-            schema: 'system',
+            tableName: "Rules",
+            schema: "system",
           },
           {
             id: {
@@ -65,10 +65,10 @@ module.exports = {
               allowNull: false,
             },
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -80,19 +80,19 @@ module.exports = {
         // remove enlist-any-event:team claim
         await queryInterface.sequelize.query(
           `DELETE FROM "security"."Claims" WHERE name = 'change:rules'`,
-          { transaction: t },
+          { transaction: t }
         );
 
         // drop Rule table
         await queryInterface.dropTable(
           {
-            tableName: 'Rules',
-            schema: 'system',
+            tableName: "Rules",
+            schema: "system",
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

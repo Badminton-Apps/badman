@@ -1,33 +1,32 @@
-
-import { Component, computed, effect, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Component, computed, effect, inject } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { MatButtonModule } from "@angular/material/button";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import {
   HasClaimComponent,
   PageHeaderComponent,
   RankingTableComponent,
-} from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-queue';
-import { RankingSystem } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
-import { TranslatePipe } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
-import { take } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
-import { UploadRankingDialogComponent } from '../../dialogs';
-import { RankingSystemService } from '@badman/frontend-graphql';
+} from "@badman/frontend-components";
+import { JobsService } from "@badman/frontend-queue";
+import { RankingSystem } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
+import { TranslatePipe } from "@ngx-translate/core";
+import { MomentModule } from "ngx-moment";
+import { take } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
+import { UploadRankingDialogComponent } from "../../dialogs";
+import { RankingSystemService } from "@badman/frontend-graphql";
 
 @Component({
-    templateUrl: './detail.page.html',
-    styleUrls: ['./detail.page.scss'],
-    imports: [
+  templateUrl: "./detail.page.html",
+  styleUrls: ["./detail.page.scss"],
+  imports: [
     TranslatePipe,
     RouterModule,
     MomentModule,
@@ -40,8 +39,8 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     MatDividerModule,
     PageHeaderComponent,
     RankingTableComponent,
-    HasClaimComponent
-]
+    HasClaimComponent,
+  ],
 })
 export class DetailPageComponent {
   private route = inject(ActivatedRoute);
@@ -54,7 +53,7 @@ export class DetailPageComponent {
   // route
   private routeData = toSignal(this.route.data);
 
-  rankingSystem = computed(() => this.routeData()?.['rankingSystem'] as RankingSystem);
+  rankingSystem = computed(() => this.routeData()?.["rankingSystem"] as RankingSystem);
   systemName = computed(() => this.rankingSystem()?.name);
 
   constructor() {
@@ -62,10 +61,10 @@ export class DetailPageComponent {
       this.seoService.update({
         title: `${this.systemName()}`,
         description: `Ranking system ${this.systemName()}`,
-        type: 'website',
-        keywords: ['ranking', 'badminton'],
+        type: "website",
+        keywords: ["ranking", "badminton"],
       });
-      this.breadcrumbsService.set('ranking/:id', `${this.systemName()}`);
+      this.breadcrumbsService.set("ranking/:id", `${this.systemName()}`);
     });
   }
 
@@ -84,7 +83,7 @@ export class DetailPageComponent {
 
   watchSystem() {
     if (!this.rankingSystem().id) {
-      console.warn('No system id');
+      console.warn("No system id");
       return;
     }
     this.systemService.state.watchSystem(this.rankingSystem().id);
@@ -92,7 +91,7 @@ export class DetailPageComponent {
 
   deleteSystem() {
     if (!this.rankingSystem().id) {
-      console.warn('No system id');
+      console.warn("No system id");
       return;
     }
     this.systemService.state.deleteSystem(this.rankingSystem().id);

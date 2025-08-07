@@ -1,6 +1,6 @@
-import { Club } from '../club.model';
-import { EncounterCompetition, EventCompetition, EventTournament } from '../events';
-import { Player } from '../player.model';
+import { Club } from "../club.model";
+import { EncounterCompetition, EventCompetition, EventTournament } from "../events";
+import { Player } from "../player.model";
 
 export class Notification {
   id?: string;

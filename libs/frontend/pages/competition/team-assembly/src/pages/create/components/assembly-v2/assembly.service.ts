@@ -1,12 +1,21 @@
-import { Injectable, inject } from '@angular/core';
-import { EncounterCompetition, EventCompetition, Player, Team } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { Observable, delay, distinctUntilChanged, filter, map, shareReplay, switchMap, tap } from 'rxjs';
-import { ValidationMessage, ValidationResult } from '../../models/validation';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import moment from 'moment';
-import { TeamMembershipType } from '@badman/utils';
+import { Injectable, inject } from "@angular/core";
+import { EncounterCompetition, EventCompetition, Player, Team } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import {
+  Observable,
+  delay,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  tap,
+} from "rxjs";
+import { ValidationMessage, ValidationResult } from "../../models/validation";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import moment from "moment";
+import { TeamMembershipType } from "@badman/utils";
 
 export type IndexPlayer = Player & {
   single: number;
@@ -74,7 +83,7 @@ export const SAVED_ASSEMBLY = gql`
 `;
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AssemblyService {
   private apollo = inject(Apollo);
@@ -203,13 +212,13 @@ export class AssemblyService {
           .pipe(
             map((result) => {
               if (!result?.data.team) {
-                throw new Error('No club');
+                throw new Error("No club");
               }
 
               return new Team(result.data.team);
-            }),
-          ),
-      ),
+            })
+          )
+      )
     );
   }
 
@@ -218,15 +227,15 @@ export class AssemblyService {
     return this._getEvent(encounterId).pipe(
       map((event) => {
         if (!event || !event.season || !event.usedRankingUnit || !event.usedRankingAmount) {
-          throw new Error('No event');
+          throw new Error("No event");
         }
 
         const usedRankingDate = moment();
-        usedRankingDate.set('year', event.season);
+        usedRankingDate.set("year", event.season);
         usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);
 
-        const startRanking = usedRankingDate.clone().set('date', 0);
-        const endRanking = usedRankingDate.clone().clone().endOf('month');
+        const startRanking = usedRankingDate.clone().set("date", 0);
+        const endRanking = usedRankingDate.clone().clone().endOf("month");
 
         return {
           rankingWhere: {
@@ -240,7 +249,7 @@ export class AssemblyService {
           },
         };
       }),
-      shareReplay(1),
+      shareReplay(1)
     );
   }
 
@@ -275,13 +284,13 @@ export class AssemblyService {
         map((result) => result?.data.encounterCompetition?.drawCompetition?.subEventCompetition),
         map((result) => {
           if (!result?.eventCompetition) {
-            throw new Error('No event');
+            throw new Error("No event");
           }
 
           // this.type = result?.eventType;
 
           return new EventCompetition(result?.eventCompetition);
-        }),
+        })
       );
   }
 
@@ -294,7 +303,7 @@ export class AssemblyService {
         action$: Observable<{
           teamId: string | undefined;
           encounterId: string | undefined;
-        }>,
+        }>
       ) =>
         action$.pipe(
           delay(1),
@@ -327,8 +336,8 @@ export class AssemblyService {
                 double3: undefined,
                 double4: undefined,
                 loaded: false,
-              }) as AssemblyState,
-          ),
+              }) as AssemblyState
+          )
         ),
 
       validate: (state, action$: Observable<void>) =>
@@ -341,21 +350,21 @@ export class AssemblyService {
                 index: data.data?.validateAssembly.titularsIndex ?? 0,
                 players: data.data?.validateAssembly.titularsPlayers?.map((p) => ({
                   ...p,
-                  sum: p.single + p.double + ((state()?.team?.type ?? 'MX') === 'MX' ? p.mix : 0),
+                  sum: p.single + p.double + ((state()?.team?.type ?? "MX") === "MX" ? p.mix : 0),
                 })),
               },
               base: {
                 index: data.data?.validateAssembly.baseTeamIndex ?? 0,
                 players: data.data?.validateAssembly.baseTeamPlayers?.map((p) => ({
                   ...p,
-                  sum: p.single + p.double + ((state()?.team?.type ?? 'MX') === 'MX' ? p.mix : 0),
+                  sum: p.single + p.double + ((state()?.team?.type ?? "MX") === "MX" ? p.mix : 0),
                 })),
               },
               errors: data.data?.validateAssembly.errors ?? [],
               warnings: data.data?.validateAssembly.warnings ?? [],
               loaded: true,
             } as AssemblyState;
-          }),
+          })
         ),
 
       loadTeam: (state, action$: Observable<void>) =>
@@ -367,7 +376,7 @@ export class AssemblyService {
           }),
           map((data) => ({
             team: new Team(data),
-          })),
+          }))
         ),
 
       setSingle: (_, action$: Observable<{ index: 1 | 2 | 3 | 4; player: Player }>) =>
@@ -377,7 +386,7 @@ export class AssemblyService {
           }),
           map((data) => ({
             [`single${data.index}`]: data.player,
-          })),
+          }))
         ),
 
       setDouble: (
@@ -386,7 +395,7 @@ export class AssemblyService {
           index: 1 | 2 | 3 | 4;
           index2: 0 | 1;
           player: Player | undefined;
-        }>,
+        }>
       ) =>
         action$.pipe(
           tap(() => {
@@ -401,7 +410,7 @@ export class AssemblyService {
             return {
               [key]: current,
             };
-          }),
+          })
         ),
     },
 
@@ -411,11 +420,11 @@ export class AssemblyService {
       metaPlayers: () => state().team?.entry?.meta?.competition?.players ?? [],
       regularPlayers: () =>
         state().team?.players?.filter(
-          (p) => p.teamMembership.membershipType === TeamMembershipType.REGULAR,
+          (p) => p.teamMembership.membershipType === TeamMembershipType.REGULAR
         ) ?? [],
       backupPlayers: () =>
         state().team?.players?.filter(
-          (p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP,
+          (p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP
         ) ?? [],
     }),
   });

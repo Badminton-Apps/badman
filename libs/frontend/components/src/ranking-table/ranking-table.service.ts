@@ -1,9 +1,9 @@
-import { Injectable, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { RankingSystem } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Subject, merge } from 'rxjs';
+import { Injectable, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { RankingSystem } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Subject, merge } from "rxjs";
 import {
   catchError,
   distinctUntilChanged,
@@ -12,7 +12,7 @@ import {
   startWith,
   switchMap,
   throttleTime,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 export interface RankingTableState {
   ranking: RankingSystem | null;
@@ -21,14 +21,14 @@ export interface RankingTableState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class RankingTableService {
   private readonly apollo = inject(Apollo);
   private readonly error$ = new Subject<string>();
 
   filter = new FormGroup({
-    systemId: new FormControl<string>(''),
+    systemId: new FormControl<string>(""),
   });
 
   initialState: RankingTableState = {
@@ -40,7 +40,7 @@ export class RankingTableService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.systemId && filter.systemId.length > 0),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   // sources
@@ -51,13 +51,13 @@ export class RankingTableService {
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
     this.rankingLoaded,
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false })))
   );
 
   state = signalSlice({
@@ -88,7 +88,7 @@ export class RankingTableService {
   private getRanking(
     filter: Partial<{
       systemId: string | null;
-    }>,
+    }>
   ) {
     {
       return this.apollo
@@ -115,7 +115,7 @@ export class RankingTableService {
         })
         .pipe(
           map((result) => result.data?.rankingSystem ?? []),
-          map((result) => new RankingSystem(result)),
+          map((result) => new RankingSystem(result))
         );
     }
   }

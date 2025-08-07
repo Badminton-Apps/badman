@@ -1,5 +1,5 @@
-import { Club } from '../models';
-import { TeamBuilder } from './teamBuilder';
+import { Club } from "../models";
+import { TeamBuilder } from "./teamBuilder";
 
 export class ClubBuilder {
   private build = false;
@@ -8,11 +8,11 @@ export class ClubBuilder {
 
   private teams: TeamBuilder[] = [];
 
-  constructor(name = 'Test Club', id?: string) {
+  constructor(name = "Test Club", id?: string) {
     this.club = new Club({ id, name });
   }
 
-  static Create(name = 'Test Club',id?: string): ClubBuilder {
+  static Create(name = "Test Club", id?: string): ClubBuilder {
     return new ClubBuilder(name, id);
   }
 
@@ -21,7 +21,7 @@ export class ClubBuilder {
 
     return this;
   }
-  
+
   WithTeamName(name: string): this {
     this.club.teamName = name;
 

@@ -1,16 +1,15 @@
-
-import { Component, OnDestroy, OnInit, effect, inject, viewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatStepper, MatStepperModule } from '@angular/material/stepper';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router } from '@angular/router';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from '@badman/frontend-models';
-import { SeoService } from '@badman/frontend-seo';
+import { Component, OnDestroy, OnInit, effect, inject, viewChild } from "@angular/core";
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatStepper, MatStepperModule } from "@angular/material/stepper";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { Router } from "@angular/router";
+import { RankingSystemService } from "@badman/frontend-graphql";
+import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from "@badman/frontend-models";
+import { SeoService } from "@badman/frontend-seo";
 import {
   ClubMembershipType,
   LevelType,
@@ -18,12 +17,12 @@ import {
   endOfSeason,
   getNextSeason,
   startOfSeason,
-} from '@badman/utils';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { NgxJsonViewerModule } from 'ngx-json-viewer';
-import { forkJoin, lastValueFrom } from 'rxjs';
-import { BreadcrumbService } from 'xng-breadcrumb';
+} from "@badman/utils";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { Apollo, gql } from "apollo-angular";
+import { NgxJsonViewerModule } from "ngx-json-viewer";
+import { forkJoin, lastValueFrom } from "rxjs";
+import { BreadcrumbService } from "xng-breadcrumb";
 import {
   CLUB,
   COMMENTS,
@@ -33,7 +32,7 @@ import {
   SEASON,
   TEAMS,
   TRANSFERS_LOANS,
-} from '../../forms';
+} from "../../forms";
 import {
   ClubStepComponent,
   CommentsStepComponent,
@@ -41,10 +40,10 @@ import {
   LocationsStepComponent,
   TeamsStepComponent,
   TeamsTransferStepComponent,
-} from './components';
-import { PlayerTransferStepComponent } from './components/steps/player-transfer';
-import { TeamEnrollmentDataService } from './service/team-enrollment.service';
-import { minAmountOfTeams } from './validators';
+} from "./components";
+import { PlayerTransferStepComponent } from "./components/steps/player-transfer";
+import { TeamEnrollmentDataService } from "./service/team-enrollment.service";
+import { minAmountOfTeams } from "./validators";
 
 export type TeamFormValue = {
   team: Team;
@@ -63,9 +62,9 @@ export type TeamForm = FormGroup<{
 }>;
 
 @Component({
-  selector: 'badman-team-enrollment',
-  templateUrl: './team-enrollment.page.html',
-  styleUrls: ['./team-enrollment.page.scss'],
+  selector: "badman-team-enrollment",
+  templateUrl: "./team-enrollment.page.html",
+  styleUrls: ["./team-enrollment.page.scss"],
   imports: [
     ClubStepComponent,
     CommentsStepComponent,
@@ -80,8 +79,8 @@ export type TeamForm = FormGroup<{
     ReactiveFormsModule,
     TeamsStepComponent,
     TeamsTransferStepComponent,
-    TranslatePipe
-],
+    TranslatePipe,
+  ],
 })
 export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   vert_stepper = viewChild.required(MatStepper);
@@ -108,22 +107,22 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
       [SubEventTypeEnum.MX]: new FormArray<TeamForm>([]),
       [SubEventTypeEnum.NATIONAL]: new FormArray<TeamForm>([]),
     },
-    [Validators.required, minAmountOfTeams(1)],
+    [Validators.required, minAmountOfTeams(1)]
   );
 
   commentsControl = new FormGroup({
     [LevelType.PROV]: new FormGroup({
-      comment: new FormControl(''),
-      id: new FormControl(''),
+      comment: new FormControl(""),
+      id: new FormControl(""),
     }),
     [LevelType.LIGA]: new FormGroup({
-      comment: new FormControl(''),
-      id: new FormControl(''),
+      comment: new FormControl(""),
+      id: new FormControl(""),
     }),
 
     [LevelType.NATIONAL]: new FormGroup({
-      comment: new FormControl(''),
-      id: new FormControl(''),
+      comment: new FormControl(""),
+      id: new FormControl(""),
     }),
   });
 
@@ -166,19 +165,19 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.translate
-      .get(['all.competition.team-enrollment.title', 'all.competition.title'])
+      .get(["all.competition.team-enrollment.title", "all.competition.title"])
       .subscribe((enrollemnt) => {
         this.seoService.update({
-          title: enrollemnt['all.competition.team-enrollment.title'],
-          description: enrollemnt['all.competition.team-enrollment.title'],
-          type: 'website',
-          keywords: ['team', 'enrollemnt'],
+          title: enrollemnt["all.competition.team-enrollment.title"],
+          description: enrollemnt["all.competition.team-enrollment.title"],
+          type: "website",
+          keywords: ["team", "enrollemnt"],
         });
 
-        this.breadcrumbService.set('competition', enrollemnt['all.competition.title']);
+        this.breadcrumbService.set("competition", enrollemnt["all.competition.title"]);
         this.breadcrumbService.set(
-          'competition/enrollment',
-          enrollemnt['all.competition.team-enrollment.title'],
+          "competition/enrollment",
+          enrollemnt["all.competition.team-enrollment.title"]
         );
       });
   }
@@ -223,11 +222,11 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
             data: {
               clubId: club,
               linkId: comments[type].id,
-              linkType: 'competition',
+              linkType: "competition",
               message: comments[type].comment,
             },
           },
-        }),
+        })
       );
     }
 
@@ -257,7 +256,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
                 exceptions: availibility.exceptions,
               },
             },
-          }),
+          })
         );
       } else {
         observables.push(
@@ -278,7 +277,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
                 exceptions: availibility.exceptions,
               },
             },
-          }),
+          })
         );
       }
     }
@@ -322,7 +321,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
               playerId: player,
             },
           },
-        }),
+        })
       );
     }
 
@@ -351,7 +350,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
               playerId: player,
             },
           },
-        }),
+        })
       );
     }
 
@@ -371,7 +370,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
           variables: {
             id: player.clubMembership.id,
           },
-        }),
+        })
       );
     }
 
@@ -383,20 +382,20 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     try {
       await lastValueFrom(await this.save(includeTeams));
 
-      this.snackBar.open(this.translate.instant('all.competition.team-enrollment.saved'), 'Close', {
+      this.snackBar.open(this.translate.instant("all.competition.team-enrollment.saved"), "Close", {
         duration: 2000,
-        panelClass: 'success',
+        panelClass: "success",
       });
 
       this.nextStep();
     } catch (error) {
       this.snackBar.open(
-        this.translate.instant('all.competition.team-enrollment.saved-failed'),
-        'Close',
+        this.translate.instant("all.competition.team-enrollment.saved-failed"),
+        "Close",
         {
           duration: 2000,
-          panelClass: 'error',
-        },
+          panelClass: "error",
+        }
       );
       console.log(error);
     } finally {
@@ -422,23 +421,23 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
             season: this.formGroup.value.season,
             email: this.formGroup.value.email,
           },
-        }),
+        })
       );
 
-      this.snackBar.open(this.translate.instant('all.competition.team-enrollment.saved'), 'Close', {
+      this.snackBar.open(this.translate.instant("all.competition.team-enrollment.saved"), "Close", {
         duration: 2000,
-        panelClass: 'success',
+        panelClass: "success",
       });
 
-      this.router.navigate(['/club', this.formGroup.value.club]);
+      this.router.navigate(["/club", this.formGroup.value.club]);
     } catch (error) {
       this.snackBar.open(
-        this.translate.instant('all.competition.team-enrollment.saved-failed'),
-        'Close',
+        this.translate.instant("all.competition.team-enrollment.saved-failed"),
+        "Close",
         {
           duration: 2000,
-          panelClass: 'error',
-        },
+          panelClass: "error",
+        }
       );
       console.log(error);
     } finally {
@@ -468,7 +467,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
           clubId: this.formGroup.value.club,
           season: this.formGroup.value.season,
         },
-      }),
+      })
     );
 
     // Step 2: Collect all team inputs into one array
@@ -497,7 +496,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
                 mix: number;
                 levelExceptionRequested: boolean;
                 levelExceptionReason: string;
-              },
+              }
             ) => ({
               id: player?.id,
               gender: player?.gender,
@@ -509,7 +508,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
                 (player?.levelExceptionReason?.length ?? 0) > 0
                   ? player?.levelExceptionReason
                   : undefined,
-            }),
+            })
           ) ?? [];
 
         return {
@@ -551,7 +550,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
           nationalCountsAsMixed: this.formGroup.get(NATIONAL_COUNTS_AS_MIXED)?.value,
           teams: teamsInput,
         },
-      }),
+      })
     );
   }
 }

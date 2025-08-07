@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
-const NodeGeocoder = require('node-geocoder');
+const NodeGeocoder = require("node-geocoder");
 const geocoder = NodeGeocoder({
-  provider: 'google',
-  apiKey: '',
+  provider: "google",
+  apiKey: "",
 });
 
 /** @type {import('sequelize-cli').Migration} */
@@ -13,30 +13,30 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         // add PostGIS extension
-        await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis;', {
+        await queryInterface.sequelize.query("CREATE EXTENSION IF NOT EXISTS postgis;", {
           transaction: t,
         });
 
         //  add a geo point column to the locations table
         await queryInterface.addColumn(
           {
-            tableName: 'Locations',
-            schema: 'event',
+            tableName: "Locations",
+            schema: "event",
           },
-          'coordinates',
+          "coordinates",
           {
-            type: sequelize.DataTypes.GEOMETRY('POINT', 4326),
+            type: sequelize.DataTypes.GEOMETRY("POINT", 4326),
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
 
-        console.log('Getting locations');
+        console.log("Getting locations");
 
         // get all locations
         const [locations] = await queryInterface.sequelize.query(
           'select "id", "city", "postalcode", "state", "street", "streetNumber" from "event"."Locations" where "city" is not null and "street" is not null and "clubId" is not null;',
-          { transaction: t },
+          { transaction: t }
         );
 
         console.log(`We have ${locations.length} locations`);
@@ -61,7 +61,7 @@ module.exports = {
           const result = await geocoder.batchGeocode(
             batch.map((location) => {
               return `${location.street} ${location.streetNumber}, ${location.postalcode} ${location.city}, ${location.state}`;
-            }),
+            })
           );
 
           results.push(...result);
@@ -75,7 +75,7 @@ module.exports = {
 
           if (!result.value.length) {
             console.log(
-              `We could not find a location for ${location.street} ${location.streetNumber}, ${location.city}, ${location.state} ${location.postalcode}`,
+              `We could not find a location for ${location.street} ${location.streetNumber}, ${location.city}, ${location.state} ${location.postalcode}`
             );
             return;
           }
@@ -85,11 +85,11 @@ module.exports = {
 
         console.log(`We have ${queries.length} queries`);
 
-        await queryInterface.sequelize.query(queries.join('\n'), {
+        await queryInterface.sequelize.query(queries.join("\n"), {
           transaction: t,
         });
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -101,19 +101,19 @@ module.exports = {
         // remove the geo point column from the locations table
         await queryInterface.removeColumn(
           {
-            tableName: 'Locations',
-            schema: 'event',
+            tableName: "Locations",
+            schema: "event",
           },
-          'coordinates',
-          { transaction: t },
+          "coordinates",
+          { transaction: t }
         );
 
         // remove PostGIS extension
-        await queryInterface.sequelize.query('DROP EXTENSION IF EXISTS postgis;', {
+        await queryInterface.sequelize.query("DROP EXTENSION IF EXISTS postgis;", {
           transaction: t,
         });
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

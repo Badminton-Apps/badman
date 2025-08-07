@@ -1,10 +1,10 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Injector, PLATFORM_ID, TransferState, computed, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Club } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Subject, merge } from 'rxjs';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injector, PLATFORM_ID, TransferState, computed, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { Club } from "@badman/frontend-models";
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Subject, merge } from "rxjs";
 import {
   catchError,
   distinctUntilChanged,
@@ -12,7 +12,7 @@ import {
   startWith,
   switchMap,
   throttleTime,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 interface SelectClubsState {
   clubs: Club[];
   loading: boolean;
@@ -26,7 +26,7 @@ export class SelectClubsService {
   platformId = inject(PLATFORM_ID);
 
   filter = new FormGroup({
-    country: new FormControl<string>('be'),
+    country: new FormControl<string>("be"),
   });
 
   // state
@@ -45,7 +45,7 @@ export class SelectClubsService {
   private error$ = new Subject<string | null>();
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
-    distinctUntilChanged(),
+    distinctUntilChanged()
   );
 
   private clubsLoaded$ = this.filterChanged$.pipe(
@@ -54,7 +54,7 @@ export class SelectClubsService {
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
@@ -62,10 +62,10 @@ export class SelectClubsService {
       map((clubs) => ({
         clubs,
         loading: false,
-      })),
+      }))
     ),
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loading: true }))),
+    this.filterChanged$.pipe(map(() => ({ loading: true })))
   );
 
   state = signalSlice({
@@ -76,7 +76,7 @@ export class SelectClubsService {
   private _loadClubs(
     filter: Partial<{
       country: string | null;
-    }>,
+    }>
   ) {
     return this.apollo
       .query<{
@@ -111,10 +111,10 @@ export class SelectClubsService {
         }),
         map((result) => {
           if (!result?.data.clubs) {
-            throw new Error('No competitions found');
+            throw new Error("No competitions found");
           }
           return result.data.clubs.rows.map((row) => new Club(row));
-        }),
+        })
       );
   }
 

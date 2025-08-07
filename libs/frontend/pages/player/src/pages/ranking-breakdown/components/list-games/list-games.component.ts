@@ -1,5 +1,5 @@
-import { LayoutModule } from '@angular/cdk/layout';
-import { CommonModule } from '@angular/common';
+import { LayoutModule } from "@angular/cdk/layout";
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,48 +9,48 @@ import {
   signal,
   Signal,
   untracked,
-} from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Game, GamePlayer, Player, RankingSystem } from '@badman/frontend-models';
-import { GameBreakdownType, GameType, getGameResultType, Ranking } from '@badman/utils';
-import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import moment, { Moment } from 'moment';
-import { MomentModule } from 'ngx-moment';
-import { derivedAsync } from 'ngxtension/derived-async';
-import { RankingBreakdownService } from '../../services/ranking-breakdown.service';
-import { MatMenuModule } from '@angular/material/menu';
-import * as xlsx from 'xlsx';
-import { AddGameComponent } from '../../dialogs/add-game';
-import { take } from 'rxjs';
-import { injectParams } from 'ngxtension/inject-params';
-import { DEVICE } from '@badman/frontend-utils';
+} from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatTableModule } from "@angular/material/table";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { Game, GamePlayer, Player, RankingSystem } from "@badman/frontend-models";
+import { GameBreakdownType, GameType, getGameResultType, Ranking } from "@badman/utils";
+import { MtxGridColumn, MtxGridModule } from "@ng-matero/extensions/grid";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import moment, { Moment } from "moment";
+import { MomentModule } from "ngx-moment";
+import { derivedAsync } from "ngxtension/derived-async";
+import { RankingBreakdownService } from "../../services/ranking-breakdown.service";
+import { MatMenuModule } from "@angular/material/menu";
+import * as xlsx from "xlsx";
+import { AddGameComponent } from "../../dialogs/add-game";
+import { take } from "rxjs";
+import { injectParams } from "ngxtension/inject-params";
+import { DEVICE } from "@badman/frontend-utils";
 
 @Component({
-    selector: 'badman-list-games',
-    templateUrl: './list-games.component.html',
-    styleUrls: ['./list-games.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        CommonModule,
-        TranslatePipe,
-        ReactiveFormsModule,
-        MomentModule,
-        MatIconModule,
-        MatSlideToggleModule,
-        MatTableModule,
-        MatTooltipModule,
-        MatButtonModule,
-        MatMenuModule,
-        LayoutModule,
-        MtxGridModule,
-    ]
+  selector: "badman-list-games",
+  templateUrl: "./list-games.component.html",
+  styleUrls: ["./list-games.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    TranslatePipe,
+    ReactiveFormsModule,
+    MomentModule,
+    MatIconModule,
+    MatSlideToggleModule,
+    MatTableModule,
+    MatTooltipModule,
+    MatButtonModule,
+    MatMenuModule,
+    LayoutModule,
+    MtxGridModule,
+  ],
 })
 export class ListGamesComponent {
   private translateService = inject(TranslateService);
@@ -64,31 +64,31 @@ export class ListGamesComponent {
   system = input.required<RankingSystem>();
   player = input.required<Player>();
   rankingPlace = computed(() =>
-    this.player()?.rankingLastPlaces?.find((x) => x.systemId == this.system().id),
+    this.player()?.rankingLastPlaces?.find((x) => x.systemId == this.system().id)
   );
 
-  startPeriod = derivedAsync<Moment>(() => this.breakdownService.filter.get('start')?.valueChanges);
-  next = derivedAsync<Moment>(() => this.breakdownService.filter.get('next')?.valueChanges);
-  type = injectParams('type') as Signal<Ranking>;
+  startPeriod = derivedAsync<Moment>(() => this.breakdownService.filter.get("start")?.valueChanges);
+  next = derivedAsync<Moment>(() => this.breakdownService.filter.get("next")?.valueChanges);
+  type = injectParams("type") as Signal<Ranking>;
 
   includedIgnored = derivedAsync<boolean | null>(
-    () => this.breakdownService.filter.get('includedIgnored')?.valueChanges,
+    () => this.breakdownService.filter.get("includedIgnored")?.valueChanges
   );
   includedUpgrade = derivedAsync<boolean | null>(
-    () => this.breakdownService.filter.get('includedUpgrade')?.valueChanges,
+    () => this.breakdownService.filter.get("includedUpgrade")?.valueChanges
   );
   includedDowngrade = derivedAsync<boolean | null>(
-    () => this.breakdownService.filter.get('includedDowngrade')?.valueChanges,
+    () => this.breakdownService.filter.get("includedDowngrade")?.valueChanges
   );
   includeOutOfScopeDowngrade = derivedAsync<boolean | null>(
-    () => this.breakdownService.filter.get('includeOutOfScopeDowngrade')?.valueChanges,
+    () => this.breakdownService.filter.get("includeOutOfScopeDowngrade")?.valueChanges
   );
   includeOutOfScopeUpgrade = derivedAsync<boolean | null>(
-    () => this.breakdownService.filter.get('includeOutOfScopeUpgrade')?.valueChanges,
+    () => this.breakdownService.filter.get("includeOutOfScopeUpgrade")?.valueChanges
   );
 
   includeOutOfScopeWonGames = derivedAsync<boolean | null>(
-    () => this.breakdownService.filter.get('includeOutOfScopeWonGames')?.valueChanges,
+    () => this.breakdownService.filter.get("includeOutOfScopeWonGames")?.valueChanges
   );
 
   currGames = computed(() => {
@@ -172,11 +172,11 @@ export class ListGamesComponent {
       }
 
       return false;
-    }),
+    })
   );
 
   prevGames = computed(() =>
-    this.games().filter((x) => moment(x.playedAt).isBefore(this.startPeriod())),
+    this.games().filter((x) => moment(x.playedAt).isBefore(this.startPeriod()))
   );
 
   lostGamesUpgrade = computed(() => this.currGames().filter((x) => x.usedForUpgrade).length);
@@ -184,19 +184,19 @@ export class ListGamesComponent {
   wonGames = computed(() => this.currGames().filter((x) => x.type == GameBreakdownType.WON).length);
 
   lostGamesIgnored = computed(
-    () => this.currGames().filter((x) => x.type == GameBreakdownType.LOST_IGNORED).length,
+    () => this.currGames().filter((x) => x.type == GameBreakdownType.LOST_IGNORED).length
   );
 
   outOfScopeGamesUpgrade = computed(
     () =>
       this.currGames().filter((x) => x.type == GameBreakdownType.LOST_UPGRADE && !x.usedForUpgrade)
-        .length,
+        .length
   );
   outOfScopeGamesDowngrade = computed(
     () =>
       this.currGames().filter(
-        (x) => x.type == GameBreakdownType.LOST_DOWNGRADE && !x.usedForDowngrade,
-      ).length,
+        (x) => x.type == GameBreakdownType.LOST_DOWNGRADE && !x.usedForDowngrade
+      ).length
   );
 
   showUpgrade = signal(true);
@@ -206,152 +206,152 @@ export class ListGamesComponent {
     () =>
       [
         {
-          field: 'countUpgrade',
-          header: this.translateService.stream('all.ranking.breakdown.countsForUpgrade'),
-          width: '30px',
-          class: 'center-text',
+          field: "countUpgrade",
+          header: this.translateService.stream("all.ranking.breakdown.countsForUpgrade"),
+          width: "30px",
+          class: "center-text",
           hide: this.isMobile() || !this.showUpgrade(),
         },
         {
-          field: 'countDowngrade',
-          header: this.translateService.stream('all.ranking.breakdown.countsForDowngrade'),
-          width: '30px',
-          class: 'center-text',
+          field: "countDowngrade",
+          header: this.translateService.stream("all.ranking.breakdown.countsForDowngrade"),
+          width: "30px",
+          class: "center-text",
           hide: this.isMobile() || !this.showDowngrade(),
         },
         {
-          width: '50px',
-          field: 'dropsNextPeriod',
+          width: "50px",
+          field: "dropsNextPeriod",
           hide: this.isMobile(),
         },
         {
-          header: this.translateService.stream('all.ranking.breakdown.date'),
-          field: 'playedAt',
-          type: 'date',
-          formatter: (x) => moment(x.playedAt).format('llll'),
+          header: this.translateService.stream("all.ranking.breakdown.date"),
+          field: "playedAt",
+          type: "date",
+          formatter: (x) => moment(x.playedAt).format("llll"),
         },
         {
-          header: this.translateService.stream('all.ranking.breakdown.team'),
-          field: 'team',
+          header: this.translateService.stream("all.ranking.breakdown.team"),
+          field: "team",
           formatter: (x) => {
-            let ranking: 'single' | 'double' | 'mix' = 'single';
+            let ranking: "single" | "double" | "mix" = "single";
             switch (x.gameType) {
               case GameType.S:
-                ranking = 'single';
+                ranking = "single";
                 break;
               case GameType.D:
-                ranking = 'double';
+                ranking = "double";
                 break;
 
               case GameType.MX:
-                ranking = 'mix';
+                ranking = "mix";
                 break;
             }
 
-            return x.team?.map((p) => `${p?.fullName} (${p?.[ranking]})`).join('<br/>');
+            return x.team?.map((p) => `${p?.fullName} (${p?.[ranking]})`).join("<br/>");
           },
         },
         {
-          header: this.translateService.stream('all.ranking.breakdown.opponent'),
-          field: 'opponent',
+          header: this.translateService.stream("all.ranking.breakdown.opponent"),
+          field: "opponent",
           formatter: (x) => {
-            let ranking: 'single' | 'double' | 'mix' = 'single';
+            let ranking: "single" | "double" | "mix" = "single";
             switch (x.gameType) {
               case GameType.S:
-                ranking = 'single';
+                ranking = "single";
                 break;
               case GameType.D:
-                ranking = 'double';
+                ranking = "double";
                 break;
 
               case GameType.MX:
-                ranking = 'mix';
+                ranking = "mix";
                 break;
             }
 
-            return x.opponent?.map((p) => `${p?.fullName} (${p?.[ranking]})`).join('<br/>');
+            return x.opponent?.map((p) => `${p?.fullName} (${p?.[ranking]})`).join("<br/>");
           },
         },
-        { header: this.translateService.stream('all.ranking.breakdown.points'), field: 'points' },
+        { header: this.translateService.stream("all.ranking.breakdown.points"), field: "points" },
         {
-          header: this.translateService.stream('all.ranking.breakdown.usedForUpgrade'),
-          field: 'usedForUpgrade',
+          header: this.translateService.stream("all.ranking.breakdown.usedForUpgrade"),
+          field: "usedForUpgrade",
           hide: !this.showUpgrade(),
         },
         {
-          header: this.translateService.stream('all.ranking.breakdown.upgrade-average'),
-          field: 'avgUpgrade',
-          type: 'number',
+          header: this.translateService.stream("all.ranking.breakdown.upgrade-average"),
+          field: "avgUpgrade",
+          type: "number",
           hide: !this.showUpgrade(),
-          formatter: (x) => (x.avgUpgrade ? x.avgUpgrade.toFixed() : ''),
+          formatter: (x) => (x.avgUpgrade ? x.avgUpgrade.toFixed() : ""),
           class: (x) => {
             const classes: string[] = [];
 
             if (x?.highestAvgUpgrade) {
-              classes.push('highest-avg');
+              classes.push("highest-avg");
             }
 
             if (x?.canUpgrade) {
-              classes.push('upgrade');
+              classes.push("upgrade");
             }
 
-            return classes.join(' ');
+            return classes.join(" ");
           },
         },
 
         {
-          header: this.translateService.stream('all.ranking.breakdown.usedForDowngrade'),
-          field: 'usedForDowngrade',
+          header: this.translateService.stream("all.ranking.breakdown.usedForDowngrade"),
+          field: "usedForDowngrade",
           hide: !this.showDowngrade(),
         },
         {
-          header: this.translateService.stream('all.ranking.breakdown.downgrade-average'),
-          field: 'avgDowngrade',
-          type: 'number',
+          header: this.translateService.stream("all.ranking.breakdown.downgrade-average"),
+          field: "avgDowngrade",
+          type: "number",
           hide: !this.showDowngrade(),
-          formatter: (x) => (x.avgDowngrade ? x.avgDowngrade.toFixed() : ''),
+          formatter: (x) => (x.avgDowngrade ? x.avgDowngrade.toFixed() : ""),
           class: (x) => {
             const classes: string[] = [];
 
             if (x?.highestAvgDowngrade) {
-              classes.push('highest-avg');
+              classes.push("highest-avg");
             }
 
             if (x?.canDowngrade) {
-              classes.push('downgrade');
+              classes.push("downgrade");
             }
 
-            return classes.join(' ');
+            return classes.join(" ");
           },
         },
         {
-          header: 'Operation',
-          field: 'operation',
-          pinned: 'right',
-          right: '0px',
-          type: 'button',
+          header: "Operation",
+          field: "operation",
+          pinned: "right",
+          right: "0px",
+          type: "button",
           buttons: [
             {
-              type: 'icon',
-              text: 'delete',
-              icon: 'delete',
-              tooltip: 'delete',
+              type: "icon",
+              text: "delete",
+              icon: "delete",
+              tooltip: "delete",
               click: (row) => this.deleteGame(row),
             },
           ],
         },
-      ] as MtxGridColumn<GameBreakdown>[],
+      ] as MtxGridColumn<GameBreakdown>[]
   );
 
   private _addBreakdownInfo(games: GameBreakdown[]) {
     for (const game of games) {
       const me = game.players?.find((x) => x.id == this.player().id);
       if (!me) {
-        throw new Error('Player not found');
+        throw new Error("Player not found");
       }
       if (!game.gameType) {
         console.warn(`Game ${game.id} has no gameType`);
-        throw new Error('Game has no gameType');
+        throw new Error("Game has no gameType");
       }
 
       const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.player().id);
@@ -497,7 +497,7 @@ export class ListGamesComponent {
       game.avgDowngrade = workingAvgDowngrade;
       game.devideDowngradeCorrected = divider;
     }
-    const level = this.rankingPlace()?.[this.type() ?? 'single'] ?? 12;
+    const level = this.rankingPlace()?.[this.type() ?? "single"] ?? 12;
 
     // set highest avg for upgrade and downgrade
     for (const game of games) {
@@ -529,14 +529,14 @@ export class ListGamesComponent {
   }
 
   getTooltip(game: GameBreakdown, isForUpgrade: boolean, usedPoints: boolean): string {
-    let devider = '';
+    let devider = "";
     let totalPoints = 0;
 
     if (isForUpgrade) {
       totalPoints = game.totalPointsUpgrade ?? 0;
       devider = `${game.devideUpgradeCorrected}`;
       if ((game.devideUpgrade ?? 0) < (game.devideUpgradeCorrected ?? 0)) {
-        devider += `\n\r\n\r${this.translateService.instant('all.ranking.breakdown.corrected', {
+        devider += `\n\r\n\r${this.translateService.instant("all.ranking.breakdown.corrected", {
           original: game.devideUpgrade,
           corrected: game.devideUpgradeCorrected,
         })}`;
@@ -548,7 +548,7 @@ export class ListGamesComponent {
 
     let tooltip = `${totalPoints} / ${devider}`;
 
-    const type = this.type() ?? 'single';
+    const type = this.type() ?? "single";
 
     if (usedPoints) {
       if (isForUpgrade) {
@@ -556,27 +556,27 @@ export class ListGamesComponent {
 
         tooltip += `\n\r\n\r${this.translateService.instant(
           game.canUpgrade
-            ? 'all.ranking.breakdown.can-upgrade'
-            : 'all.ranking.breakdown.can-not-upgrade',
+            ? "all.ranking.breakdown.can-upgrade"
+            : "all.ranking.breakdown.can-not-upgrade",
           {
             level,
             newLevel: level - 1,
             points: this.system().pointsToGoUp?.[(this.system().amountOfLevels ?? 12) - level],
-          },
+          }
         )}`;
       } else {
         const level = this.rankingPlace()?.[type] ?? 12;
 
         tooltip += `\n\r\n\r${this.translateService.instant(
           game.canDowngrade
-            ? 'all.ranking.breakdown.can-downgrade'
-            : 'all.ranking.breakdown.can-not-downgrade',
+            ? "all.ranking.breakdown.can-downgrade"
+            : "all.ranking.breakdown.can-not-downgrade",
           {
             level,
             newLevel: level + 1,
             points:
               this.system().pointsToGoDown?.[(this.system().amountOfLevels ?? 12) - (level + 1)],
-          },
+          }
         )}`;
       }
     }
@@ -592,7 +592,7 @@ export class ListGamesComponent {
     console.log(this.type());
     this.dialog
       .open(AddGameComponent, {
-        minWidth: '450px',
+        minWidth: "450px",
         data: {
           playerId: this.player().id,
           type: this.type(),
@@ -612,61 +612,61 @@ export class ListGamesComponent {
     console.log(this.filterdGames().length);
     const wb = xlsx.utils.book_new();
 
-    const wonTranslation = this.translateService.instant('all.ranking.breakdown.export.WON');
+    const wonTranslation = this.translateService.instant("all.ranking.breakdown.export.WON");
     const lostUpgradeTranslation = this.translateService.instant(
-      'all.ranking.breakdown.export.LOST_UPGRADE',
+      "all.ranking.breakdown.export.LOST_UPGRADE"
     );
     const lostDowngradeTranslation = this.translateService.instant(
-      'all.ranking.breakdown.export.LOST_DOWNGRADE',
+      "all.ranking.breakdown.export.LOST_DOWNGRADE"
     );
     const lostIgnoredTranslation = this.translateService.instant(
-      'all.ranking.breakdown.export.LOST_IGNORED',
+      "all.ranking.breakdown.export.LOST_IGNORED"
     );
     const outOfScopeUpgradeTranslation = this.translateService.instant(
-      'all.ranking.breakdown.outOfScopeUpgrade',
+      "all.ranking.breakdown.outOfScopeUpgrade"
     );
     const outOfScopeDowngradeTranslation = this.translateService.instant(
-      'all.ranking.breakdown.outOfScopeDowngrade',
+      "all.ranking.breakdown.outOfScopeDowngrade"
     );
     const outOfScopeWonTranslation = this.translateService.instant(
-      'all.ranking.breakdown.outOfScopeWonGames',
+      "all.ranking.breakdown.outOfScopeWonGames"
     );
 
-    const dateTranslation = this.translateService.instant('all.ranking.breakdown.export.date');
+    const dateTranslation = this.translateService.instant("all.ranking.breakdown.export.date");
     const player1Translation = this.translateService.instant(
-      'all.ranking.breakdown.export.player1',
+      "all.ranking.breakdown.export.player1"
     );
     const player2Translation = this.translateService.instant(
-      'all.ranking.breakdown.export.player2',
+      "all.ranking.breakdown.export.player2"
     );
     const opponent1Translation = this.translateService.instant(
-      'all.ranking.breakdown.export.opponent1',
+      "all.ranking.breakdown.export.opponent1"
     );
     const opponent2Translation = this.translateService.instant(
-      'all.ranking.breakdown.export.opponent2',
+      "all.ranking.breakdown.export.opponent2"
     );
-    const pointsTranslation = this.translateService.instant('all.ranking.breakdown.export.points');
+    const pointsTranslation = this.translateService.instant("all.ranking.breakdown.export.points");
     const usedForUpgradeTranslation = this.translateService.instant(
-      'all.ranking.breakdown.export.usedForUpgrade',
+      "all.ranking.breakdown.export.usedForUpgrade"
     );
     const usedForDowngradeTranslation = this.translateService.instant(
-      'all.ranking.breakdown.export.usedForDowngrade',
+      "all.ranking.breakdown.export.usedForDowngrade"
     );
     const avgUpgradeTranslation = this.translateService.instant(
-      'all.ranking.breakdown.export.avgUpgrade',
+      "all.ranking.breakdown.export.avgUpgrade"
     );
     const avgDowngradeTranslation = this.translateService.instant(
-      'all.ranking.breakdown.export.avgDowngrade',
+      "all.ranking.breakdown.export.avgDowngrade"
     );
     const countsForTranslation = this.translateService.instant(
-      'all.ranking.breakdown.export.countsFor',
+      "all.ranking.breakdown.export.countsFor"
     );
 
     // Convert JSON data to sheet
     const data = [];
     for (let i = 0; i < this.filterdGames().length; i++) {
       const x = this.filterdGames()[i];
-      let countsFor = '';
+      let countsFor = "";
       switch (x.type) {
         case GameBreakdownType.WON:
           countsFor = wonTranslation;
@@ -696,44 +696,44 @@ export class ListGamesComponent {
 
       let type = this.type();
       if (!type) {
-        type = 'single';
+        type = "single";
       }
 
       data.push({
         [countsForTranslation]: countsFor,
         [dateTranslation]: {
           v: x.playedAt,
-          t: 'd',
+          t: "d",
         },
-        [player1Translation]: `${x.team?.[0]?.fullName} (${x.team?.[0]?.[type] ?? ''})`,
+        [player1Translation]: `${x.team?.[0]?.fullName} (${x.team?.[0]?.[type] ?? ""})`,
         [player2Translation]:
           x.team?.[1]?.fullName != undefined
-            ? `${x.team?.[1]?.fullName} (${x.team?.[1]?.[type] ?? ''})`
-            : '',
-        [opponent1Translation]: `${x.opponent?.[0]?.fullName} (${x.opponent?.[0]?.[type] ?? ''})`,
+            ? `${x.team?.[1]?.fullName} (${x.team?.[1]?.[type] ?? ""})`
+            : "",
+        [opponent1Translation]: `${x.opponent?.[0]?.fullName} (${x.opponent?.[0]?.[type] ?? ""})`,
         [opponent2Translation]:
           x.opponent?.[1]?.fullName != undefined
-            ? `${x.opponent?.[1]?.fullName} (${x.opponent?.[1]?.[type] ?? ''})`
-            : '',
+            ? `${x.opponent?.[1]?.fullName} (${x.opponent?.[1]?.[type] ?? ""})`
+            : "",
 
         [pointsTranslation]: x.points,
 
         // hidden columns
         [usedForUpgradeTranslation]: {
           v: x.usedForUpgrade,
-          t: 'b',
+          t: "b",
         },
         [usedForDowngradeTranslation]: {
           v: x.usedForDowngrade,
-          t: 'b',
+          t: "b",
         },
         [avgUpgradeTranslation]: {
           f: `AVERAGEIF(H2:H${i + 2}, TRUE, G2:G${i + 2})`,
-          z: '0.00',
+          z: "0.00",
         },
         [avgDowngradeTranslation]: {
           f: `AVERAGEIF(I2:I${i + 2}, TRUE, G2:G${i + 2})`,
-          z: '0.00',
+          z: "0.00",
         },
       });
     }
@@ -753,38 +753,38 @@ export class ListGamesComponent {
     const avgDowngradeFormula = `MAX(K2:K${rows})`;
 
     // add 2 empty rows
-    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', '']], {
-      origin: 'A',
+    xlsx.utils.sheet_add_aoa(ws, [["", "", "", "", "", "", ""]], {
+      origin: "A",
     });
-    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', '']], {
-      origin: 'A',
+    xlsx.utils.sheet_add_aoa(ws, [["", "", "", "", "", "", ""]], {
+      origin: "A",
     });
 
     // Add calculated averages to the sheet
-    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', 'Avg. Upgrade', 'Avg. Downgrade']], {
-      origin: 'A',
+    xlsx.utils.sheet_add_aoa(ws, [["", "", "", "", "", "", "Avg. Upgrade", "Avg. Downgrade"]], {
+      origin: "A",
     });
     xlsx.utils.sheet_add_aoa(
       ws,
       [
         [
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
           { f: avgUpgradeFormula },
           { f: avgDowngradeFormula },
         ],
       ],
       {
-        origin: 'A',
-      },
+        origin: "A",
+      }
     );
 
     // debug line
@@ -793,33 +793,33 @@ export class ListGamesComponent {
       ws,
       [
         [
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
           { f: `=${countLostUpgrade}` },
           { f: `=${countLostDowngrade}` },
           { f: `=${countWon}` },
         ],
       ],
       {
-        origin: 'A',
-      },
+        origin: "A",
+      }
     );
     // apply filter on the data range
-    ws['!autofilter'] = { ref: `A1:I${this.filterdGames().length + 1}` };
+    ws["!autofilter"] = { ref: `A1:I${this.filterdGames().length + 1}` };
 
     // Append sheet to workbook
-    xlsx.utils.book_append_sheet(wb, ws, 'Games');
+    xlsx.utils.book_append_sheet(wb, ws, "Games");
 
     // Save the workbook
-    const end = moment(this.breakdownService.filter.get('period')?.get('end')?.value).format(
-      'YYYY-MM-DD',
+    const end = moment(this.breakdownService.filter.get("period")?.get("end")?.value).format(
+      "YYYY-MM-DD"
     );
     xlsx.writeFile(wb, `ranking-breakdown-${this.player()?.fullName}-${end}.xlsx`);
   }

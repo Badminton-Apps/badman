@@ -9,15 +9,15 @@ import {
   Standing,
   SubEventCompetition,
   Team,
-} from '@badman/backend-database';
-import { getSeason, getIndexFromPlayers } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
+} from "@badman/backend-database";
+import { getSeason, getIndexFromPlayers } from "@badman/utils";
+import { Injectable, Logger } from "@nestjs/common";
 import {
   EnrollmentOutput,
   EnrollmentValidationData,
   EnrollmentValidationError,
   TeamEnrollmentOutput,
-} from '../../models';
+} from "../../models";
 import {
   PlayerCompStatusRule,
   PlayerBaseRule,
@@ -31,13 +31,13 @@ import {
   TeamRiserFallerRule,
   TeamSubEventRule,
   TeamMaxBasePlayersRule,
-} from './rules';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { PartialType, PickType } from '@nestjs/graphql';
-import { PlayerClubRule } from './rules/player-club.rule';
-import { TeamBaseGenderRule } from './rules/team-base-gender.rule';
-import { Md5 } from 'ts-md5';
+} from "./rules";
+import moment from "moment";
+import { Op } from "sequelize";
+import { PartialType, PickType } from "@nestjs/graphql";
+import { PlayerClubRule } from "./rules/player-club.rule";
+import { TeamBaseGenderRule } from "./rules/team-base-gender.rule";
+import { Md5 } from "ts-md5";
 
 @Injectable()
 export class EnrollmentValidationService {
@@ -55,7 +55,7 @@ export class EnrollmentValidationService {
       ? await RankingSystem.findByPk(systemId)
       : await RankingSystem.findOne({ where: { primary: true } });
     if (!system) {
-      throw new Error('No ranking system found');
+      throw new Error("No ranking system found");
     }
 
     const club = clubId ? await Club.findByPk(clubId) : null;
@@ -67,7 +67,7 @@ export class EnrollmentValidationService {
     let previousSeasonTeams: Team[] = [];
 
     if (!teams) {
-      throw new Error('No teams found');
+      throw new Error("No teams found");
     }
 
     const teamIdIds = teams.map((t) => t.link) as string[];
@@ -111,7 +111,7 @@ export class EnrollmentValidationService {
           .concat(teams.map((t) => t.backupPlayers))
           .concat(teams.map((t) => t.basePlayers))
           .flat(1)
-          .filter((p) => !instanceOfEntryCompetitionPlayer(p)) as string[],
+          .filter((p) => !instanceOfEntryCompetitionPlayer(p)) as string[]
       ),
     ];
 
@@ -128,11 +128,11 @@ export class EnrollmentValidationService {
     });
 
     const eixistingPlayerIds = [...new Set(existingPlayers.map((p) => p?.id))]?.filter(
-      (p) => p !== null && p !== undefined,
+      (p) => p !== null && p !== undefined
     ) as string[];
 
     const dbPlayers = await Player.findAll({
-      attributes: ['id', 'gender', 'competitionPlayer', 'firstName', 'lastName'],
+      attributes: ["id", "gender", "competitionPlayer", "firstName", "lastName"],
       where: {
         id: stringPlayerIds,
       },
@@ -145,14 +145,14 @@ export class EnrollmentValidationService {
               [Op.lte]: moment([season, 5, 10]).toDate(),
             },
           },
-          order: [['rankingDate', 'DESC']],
+          order: [["rankingDate", "DESC"]],
           limit: 1,
         },
       ],
     });
 
     const dbPlayersEntry = await Player.findAll({
-      attributes: ['id', 'gender', 'competitionPlayer', 'firstName', 'lastName'],
+      attributes: ["id", "gender", "competitionPlayer", "firstName", "lastName"],
       where: {
         id: eixistingPlayerIds,
       },
@@ -165,20 +165,18 @@ export class EnrollmentValidationService {
       transfers: transfers ?? [],
       teams: teams?.map((t) => {
         if (!t.type) {
-          throw new Error('No type found');
+          throw new Error("No type found");
         }
 
         const playersForTeam = this.getPlayers(
           [t.players ?? [], t.backupPlayers ?? [], t.basePlayers ?? []]?.flat(1),
           dbPlayers,
           dbPlayersEntry,
-          system,
+          system
         );
 
         const basePlayers = playersForTeam.filter((p) =>
-          t.basePlayers
-            ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
-            .includes(p.id),
+          t.basePlayers?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id)
         );
 
         // find if there are any exceptions requested
@@ -192,13 +190,13 @@ export class EnrollmentValidationService {
         }
 
         const teamPlayers = playersForTeam.filter((p) =>
-          t.players?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id),
+          t.players?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id)
         );
 
         const backupPlayers = playersForTeam.filter((p) =>
           t.backupPlayers
             ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
-            .includes(p.id),
+            .includes(p.id)
         );
 
         const teamIndex = getIndexFromPlayers(t.type, teamPlayers);
@@ -207,7 +205,7 @@ export class EnrollmentValidationService {
         const preTeam = previousSeasonTeams.find((p) => p.link === t.link);
 
         if (!t.id) {
-          throw new Error('No team id found');
+          throw new Error("No team id found");
         }
 
         return {
@@ -244,7 +242,7 @@ export class EnrollmentValidationService {
    */
   async validate(
     enrollment: EnrollmentValidationData,
-    validators: Rule[],
+    validators: Rule[]
   ): Promise<EnrollmentOutput> {
     // get all errors and warnings from the validators in parallel
     const results = await Promise.all(validators.map((v) => v.validate(enrollment)));
@@ -340,15 +338,15 @@ export class EnrollmentValidationService {
     players: (string | EntryCompetitionPlayer)[],
     withRanking: Player[],
     withoutRanking: Player[],
-    system?: RankingSystem,
+    system?: RankingSystem
   ): EntryCompetitionPlayer[] {
     if (!system) {
-      throw new Error('No ranking system provided');
+      throw new Error("No ranking system provided");
     }
 
     const stringPlayerIds = players.filter((p) => !instanceOfEntryCompetitionPlayer(p)) as string[];
     const eixistingPlayerIds = players.filter((p) =>
-      instanceOfEntryCompetitionPlayer(p),
+      instanceOfEntryCompetitionPlayer(p)
     ) as EntryCompetitionPlayer[];
 
     const addedPlayes: EntryCompetitionPlayer[] = [];
@@ -391,7 +389,7 @@ export class EnrollmentValidationService {
         Math.min(
           ranking?.single ?? system.amountOfLevels,
           ranking?.double ?? system.amountOfLevels,
-          ranking?.mix ?? system.amountOfLevels,
+          ranking?.mix ?? system.amountOfLevels
         ) + 2;
 
       // if the player has a missing rankingplace, we set the lowest possible ranking
@@ -423,7 +421,7 @@ class EnrollmentInput {
 }
 
 class EnrollmentInputTeam extends PartialType(
-  PickType(Team, ['id', 'name', 'type', 'link', 'teamNumber'] as const),
+  PickType(Team, ["id", "name", "type", "link", "teamNumber"] as const)
 ) {
   basePlayers?: (string | EntryCompetitionPlayer)[];
   players?: (string | EntryCompetitionPlayer)[];
@@ -433,7 +431,7 @@ class EnrollmentInputTeam extends PartialType(
 }
 
 const instanceOfEntryCompetitionPlayer = (
-  obj: EntryCompetitionPlayer | string | undefined,
+  obj: EntryCompetitionPlayer | string | undefined
 ): obj is EntryCompetitionPlayer => {
-  return typeof obj !== 'string';
+  return typeof obj !== "string";
 };

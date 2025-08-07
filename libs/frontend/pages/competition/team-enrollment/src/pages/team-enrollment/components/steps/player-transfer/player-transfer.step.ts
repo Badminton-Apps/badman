@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -11,36 +11,36 @@ import {
   signal,
   untracked,
   viewChild,
-} from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { SelectPlayerSignalsComponent } from '@badman/frontend-components';
-import { Player } from '@badman/frontend-models';
-import { ClubMembershipType } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { take } from 'rxjs/operators';
-import { TRANSFERS_LOANS } from '../../../../../forms';
-import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
+} from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { SelectPlayerSignalsComponent } from "@badman/frontend-components";
+import { Player } from "@badman/frontend-models";
+import { ClubMembershipType } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { take } from "rxjs/operators";
+import { TRANSFERS_LOANS } from "../../../../../forms";
+import { TeamEnrollmentDataService } from "../../../service/team-enrollment.service";
 
 @Component({
-    selector: 'badman-player-transfer-step',
-    imports: [
-        CommonModule,
-        MatListModule,
-        MatIconModule,
-        MatButtonModule,
-        MatTooltipModule,
-        MatDialogModule,
-        TranslatePipe,
-        SelectPlayerSignalsComponent,
-    ],
-    templateUrl: './player-transfer.step.html',
-    styleUrls: ['./player-transfer.step.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: "badman-player-transfer-step",
+  imports: [
+    CommonModule,
+    MatListModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    MatDialogModule,
+    TranslatePipe,
+    SelectPlayerSignalsComponent,
+  ],
+  templateUrl: "./player-transfer.step.html",
+  styleUrls: ["./player-transfer.step.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayerTransferStepComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);
@@ -53,33 +53,33 @@ export class PlayerTransferStepComponent {
   loans = this.dataService.state.loans;
   formGroup = input.required<FormGroup>();
 
-  newPlayerTmpl = viewChild.required<TemplateRef<HTMLElement>>('addPlayer');
+  newPlayerTmpl = viewChild.required<TemplateRef<HTMLElement>>("addPlayer");
 
   lockedTransfers = computed(
     () =>
       this.transfers()
         ?.filter((player) => player.clubMembership.confirmed)
-        ?.map((player) => player.id) ?? [],
+        ?.map((player) => player.id) ?? []
   );
 
   lockedLoans = computed(
     () =>
       this.loans()
         ?.filter((player) => player.clubMembership.confirmed)
-        ?.map((player) => player.id) ?? [],
+        ?.map((player) => player.id) ?? []
   );
 
   transfersLoans = computed(
     () =>
       this.formGroup().get(TRANSFERS_LOANS) as FormGroup<{
         [key in ClubMembershipType]: FormControl<string[]>;
-      }>,
+      }>
   );
   transfersControl = computed(
-    () => this.transfersLoans().get(ClubMembershipType.NORMAL) as FormControl<string[]>,
+    () => this.transfersLoans().get(ClubMembershipType.NORMAL) as FormControl<string[]>
   );
   loansControl = computed(
-    () => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>,
+    () => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>
   );
 
   newPlayerId = signal<string | null>(null);
@@ -119,10 +119,10 @@ export class PlayerTransferStepComponent {
     this.loansControl().setValue(loans);
   }
 
-  addNewPlayer(type: 'transfer' | 'loan') {
+  addNewPlayer(type: "transfer" | "loan") {
     this.dialog
       .open(this.newPlayerTmpl(), {
-        minWidth: '500px',
+        minWidth: "500px",
       })
       .afterClosed()
       .pipe(take(1))
@@ -137,10 +137,10 @@ export class PlayerTransferStepComponent {
           return;
         }
 
-        if (type === 'transfer') {
+        if (type === "transfer") {
           // add the transfer to the list
           this.transfersControl().setValue([...this.transfersControl().value, player]);
-        } else if (type === 'loan') {
+        } else if (type === "loan") {
           // add the loan to the list
           this.loansControl().setValue([...this.loansControl().value, player]);
         }
@@ -164,7 +164,7 @@ export class PlayerTransferStepComponent {
     // filter out where active club contains is the current club
     results = results.filter((player) => {
       const activeClubs = player.clubs?.filter(
-        (club) => (club.clubMembership?.active ?? false) == true,
+        (club) => (club.clubMembership?.active ?? false) == true
       );
       // console.log('results', activeClubs, this.club());
       if (activeClubs?.length === 1) {

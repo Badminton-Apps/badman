@@ -1,4 +1,4 @@
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   Column,
   DataType,
@@ -8,13 +8,13 @@ import {
   PrimaryKey,
   Table,
   Unique,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 
 @Table({
   timestamps: true,
-  schema: 'system',
+  schema: "system",
 })
-@ObjectType({ description: 'A Service' })
+@ObjectType({ description: "A Service" })
 export class Service extends Model {
   @Field(() => ID)
   @Default(DataType.UUIDV4)
@@ -30,7 +30,7 @@ export class Service extends Model {
   override createdAt?: Date;
 
   @Field(() => String, { nullable: false })
-  @Unique('unique_constraint')
+  @Unique("unique_constraint")
   @Column(DataType.STRING)
   name!: string;
 
@@ -40,17 +40,17 @@ export class Service extends Model {
 
   @Field(() => String, { nullable: false })
   @Column(DataType.STRING)
-  status!: 'starting' | 'started' | 'stopped';
+  status!: "starting" | "started" | "stopped";
 }
 
 @InputType()
 export class ServiceUpdateInput extends PartialType(
-  OmitType(Service, ['createdAt', 'updatedAt'] as const),
-  InputType,
+  OmitType(Service, ["createdAt", "updatedAt"] as const),
+  InputType
 ) {}
 
 @InputType()
 export class ServiceNewInput extends PartialType(
-  OmitType(ServiceUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(ServiceUpdateInput, ["id"] as const),
+  InputType
 ) {}

@@ -1,11 +1,11 @@
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   CreationOptional,
   InferAttributes,
   InferCreationAttributes,
-} from 'sequelize';
+} from "sequelize";
 import {
   BelongsTo,
   Column,
@@ -17,22 +17,22 @@ import {
   PrimaryKey,
   Table,
   TableOptions,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 import {
   AvailabilityExceptionInputType,
   AvailiblyDayInputType,
   AvailiblyDayType,
   ExceptionType,
-} from '../../types';
-import { Relation } from '../../wrapper';
-import { Location } from './location.model';
+} from "../../types";
+import { Relation } from "../../wrapper";
+import { Location } from "./location.model";
 
 @Table({
   timestamps: true,
-  schema: 'event',
-  tableName: 'Availabilities',
+  schema: "event",
+  tableName: "Availabilities",
 } as TableOptions)
-@ObjectType({ description: 'A Availability' })
+@ObjectType({ description: "A Availability" })
 export class Availability extends Model<
   InferAttributes<Availability>,
   InferCreationAttributes<Availability>
@@ -67,7 +67,7 @@ export class Availability extends Model<
   exceptions?: Relation<AvailabilityException[]>;
 
   @BelongsTo(() => Location, {
-    foreignKey: 'locationId',
+    foreignKey: "locationId",
     constraints: false,
   })
   location?: Relation<Location>;
@@ -89,7 +89,7 @@ export interface AvailabilityException {
 }
 
 export interface AvailabilityDay {
-  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  day: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
   startTime?: string;
   endTime?: string;
   courts?: number;
@@ -100,8 +100,8 @@ export interface AvailabilityDay {
 
 @InputType()
 export class AvailabilityUpdateInput extends PartialType(
-  OmitType(Availability, ['createdAt', 'updatedAt', 'location', 'days', 'exceptions'] as const),
-  InputType,
+  OmitType(Availability, ["createdAt", "updatedAt", "location", "days", "exceptions"] as const),
+  InputType
 ) {
   @Field(() => [AvailiblyDayInputType])
   days?: Relation<AvailabilityDay[]>;
@@ -112,6 +112,6 @@ export class AvailabilityUpdateInput extends PartialType(
 
 @InputType()
 export class AvailabilityNewInput extends PartialType(
-  OmitType(AvailabilityUpdateInput, ['id'] as const),
-  InputType,
+  OmitType(AvailabilityUpdateInput, ["id"] as const),
+  InputType
 ) {}

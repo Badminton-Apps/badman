@@ -1,6 +1,6 @@
-import { Comment } from '../../comment.model';
-import { EncounterChangeDate } from './encounter-change-date.model';
-import { EncounterCompetition } from './encounter.model';
+import { Comment } from "../../comment.model";
+import { EncounterChangeDate } from "./encounter-change-date.model";
+import { EncounterCompetition } from "./encounter.model";
 
 export class EncounterChange {
   id?: string;

@@ -1,9 +1,9 @@
-import { INestApplication } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
-import request from 'supertest';
-import { HealthModule } from '../health.module';
+import { INestApplication } from "@nestjs/common";
+import { Test } from "@nestjs/testing";
+import request from "supertest";
+import { HealthModule } from "../health.module";
 
-describe('HealthController', () => {
+describe("HealthController", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -14,27 +14,27 @@ describe('HealthController', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
   });
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(app).toBeDefined();
   });
 
-  it('/health (GET)', (done) => {
+  it("/health (GET)", (done) => {
     request(app.getHttpServer())
-      .get('/health')
+      .get("/health")
       .expect(503)
       .expect({
-        status: 'error',
+        status: "error",
         info: {},
         error: {
           database: {
-            status: 'down',
-            message: 'Connection provider not found in application context',
+            status: "down",
+            message: "Connection provider not found in application context",
           },
         },
         details: {
           database: {
-            status: 'down',
-            message: 'Connection provider not found in application context',
+            status: "down",
+            message: "Connection provider not found in application context",
           },
         },
       })

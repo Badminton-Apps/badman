@@ -1,7 +1,7 @@
-import { EventCompetition, Player, Team } from '@badman/backend-database';
-import { SubEventTypeEnum, sortPlayers } from '@badman/utils';
-import { Injectable } from '@nestjs/common';
-import * as XLSX from 'xlsx';
+import { EventCompetition, Player, Team } from "@badman/backend-database";
+import { SubEventTypeEnum, sortPlayers } from "@badman/utils";
+import { Injectable } from "@nestjs/common";
+import * as XLSX from "xlsx";
 
 // A excel generation service
 @Injectable()
@@ -10,25 +10,25 @@ export class ExcelService {
     const event = await EventCompetition.findByPk(eventId);
     const subEvents = await event?.getSubEventCompetitions({
       order: [
-        ['eventType', 'ASC'],
-        ['level', 'ASC'],
+        ["eventType", "ASC"],
+        ["level", "ASC"],
       ],
     });
 
     const data: (string | number | undefined)[][] = [
       [
-        'Naam',
-        'Voornaam',
-        'Lidnummer',
-        'Geslacht',
-        'Ploeg',
-        'Enkel',
-        'Dubbel',
-        'Gemengd',
-        'Afdeling',
-        'Reeks',
-        'Somindex gemengde competitie',
-        'Somindex heren-/damescompetitie',
+        "Naam",
+        "Voornaam",
+        "Lidnummer",
+        "Geslacht",
+        "Ploeg",
+        "Enkel",
+        "Dubbel",
+        "Gemengd",
+        "Afdeling",
+        "Reeks",
+        "Somindex gemengde competitie",
+        "Somindex heren-/damescompetitie",
       ],
     ]; // Array to hold Excel data
 
@@ -38,7 +38,7 @@ export class ExcelService {
       for (const draw of draws ?? []) {
         const entries = await draw?.getEventEntries({
           include: [{ model: Team }],
-          order: [['team', 'name', 'ASC']],
+          order: [["team", "name", "ASC"]],
         });
         for (const entry of entries) {
           for (const meta of entry.meta?.competition?.players?.sort(sortPlayers) ?? []) {
@@ -49,7 +49,7 @@ export class ExcelService {
             }
 
             if (!entry.team) {
-              throw new Error('Entry has no team');
+              throw new Error("Entry has no team");
             }
 
             data.push(
@@ -62,8 +62,8 @@ export class ExcelService {
                 subEvent.name,
                 draw.name,
                 subEvent.eventType == SubEventTypeEnum.MX,
-                entry.meta?.competition?.teamIndex,
-              ),
+                entry.meta?.competition?.teamIndex
+              )
             );
           }
         }
@@ -85,18 +85,18 @@ export class ExcelService {
 
     // Autosize columns
     const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
-      data.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
+      data.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0)
     );
-    ws['!cols'] = columnSizes.map((width) => ({ width }));
+    ws["!cols"] = columnSizes.map((width) => ({ width }));
 
     // Enable filtering
-    ws['!autofilter'] = {
-      ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref'] as string)),
+    ws["!autofilter"] = {
+      ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws["!ref"] as string)),
     };
 
-    XLSX.utils.book_append_sheet(wb, ws, 'Enrollment');
+    XLSX.utils.book_append_sheet(wb, ws, "Enrollment");
 
-    const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
     return { buffer, event };
   }
 
@@ -109,21 +109,21 @@ export class ExcelService {
     subEventName: string,
     drawName: string,
     mixed: boolean,
-    teamIndex: number | undefined,
+    teamIndex: number | undefined
   ) {
     return [
       player.lastName,
       player.firstName,
       player.memberId,
-      player.gender === 'M' ? 'M' : 'V',
+      player.gender === "M" ? "M" : "V",
       `${team.name} (${teamIndex})`,
       single,
       double,
       mix,
       subEventName,
-      drawName.replace(subEventName, '').replace('-', '').trim(),
-      mixed ? single + double + mix : '',
-      mixed ? '' : single + double,
+      drawName.replace(subEventName, "").replace("-", "").trim(),
+      mixed ? single + double + mix : "",
+      mixed ? "" : single + double,
     ];
   }
 }

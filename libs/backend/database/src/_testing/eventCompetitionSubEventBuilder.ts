@@ -1,9 +1,9 @@
-import { SubEventTypeEnum } from '@badman/utils';
-import { SubEventCompetition } from '../models';
-import { EventCompetitionBuilder } from './eventCompetitionBuilder';
-import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
-import { SystemGroupBuilder } from './systemGroupBuilder';
-import { EventCompetitionEntryBuilder } from './eventCompetitionEntryBuilder';
+import { SubEventTypeEnum } from "@badman/utils";
+import { SubEventCompetition } from "../models";
+import { EventCompetitionBuilder } from "./eventCompetitionBuilder";
+import { DrawCompetitionBuilder } from "./eventCompetitionDrawBuilder";
+import { SystemGroupBuilder } from "./systemGroupBuilder";
+import { EventCompetitionEntryBuilder } from "./eventCompetitionEntryBuilder";
 
 export class SubEventCompetitionBuilder {
   private build = false;
@@ -16,8 +16,8 @@ export class SubEventCompetitionBuilder {
   constructor(type: SubEventTypeEnum, name?: string, eventId?: string) {
     this.subEvent = new SubEventCompetition({
       eventType: type,
-      name: name ?? 'SubEvent',
-      eventId: eventId ?? '123',
+      name: name ?? "SubEvent",
+      eventId: eventId ?? "123",
       levelWithModifier: 1,
     });
   }

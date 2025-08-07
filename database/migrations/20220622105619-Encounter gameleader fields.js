@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
@@ -7,64 +7,64 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'gameLeaderId',
+          "gameLeaderId",
           {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
             references: {
               model: {
-                tableName: 'Players',
-                schema: 'public',
+                tableName: "Players",
+                schema: "public",
               },
-              key: 'id',
+              key: "id",
             },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
           },
-          { transaction: t },
+          { transaction: t }
         );
 
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'shuttle',
+          "shuttle",
           {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'startHour',
+          "startHour",
           {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
         await queryInterface.addColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'endHour',
+          "endHour",
           {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -75,39 +75,39 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'gameLeaderId',
-          { transaction: t },
+          "gameLeaderId",
+          { transaction: t }
         );
 
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'shuttle',
-          { transaction: t },
+          "shuttle",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'startHour',
-          { transaction: t },
+          "startHour",
+          { transaction: t }
         );
         await queryInterface.removeColumn(
           {
-            tableName: 'EncounterCompetitions',
-            schema: 'event',
+            tableName: "EncounterCompetitions",
+            schema: "event",
           },
-          'endHour',
-          { transaction: t },
+          "endHour",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

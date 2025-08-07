@@ -1,11 +1,11 @@
-import { CronJob } from '@badman/backend-database';
-import { Sync, SyncQueue } from '@badman/backend-queue';
-import { Process, Processor } from '@nestjs/bull';
-import { Logger } from '@nestjs/common';
-import { Job } from 'bull';
-import { Sequelize } from 'sequelize-typescript';
-import { TwizzitSyncer } from './sync-twizzit';
-import { TwizzitService } from '@badman/backend-twizzit';
+import { CronJob } from "@badman/backend-database";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { Process, Processor } from "@nestjs/bull";
+import { Logger } from "@nestjs/common";
+import { Job } from "bull";
+import { Sequelize } from "sequelize-typescript";
+import { TwizzitSyncer } from "./sync-twizzit";
+import { TwizzitService } from "@badman/backend-twizzit";
 
 @Processor({
   name: SyncQueue,
@@ -16,14 +16,14 @@ export class SyncTwizzitProcessor {
 
   constructor(
     private _sequelize: Sequelize,
-    private _twizzitService: TwizzitService,
+    private _twizzitService: TwizzitService
   ) {}
 
   @Process(Sync.SyncTwizzit)
   async syncTwizzit(
     job: Job<{
       start: string;
-    }>,
+    }>
   ): Promise<void> {
     this.logger.debug(`Syncing Ranking, data: ${JSON.stringify(job.data)}`);
 
@@ -31,17 +31,17 @@ export class SyncTwizzitProcessor {
 
     const cronJob = await CronJob.findOne({
       where: {
-        'meta.jobName': Sync.SyncTwizzit,
-        'meta.queueName': SyncQueue,
+        "meta.jobName": Sync.SyncTwizzit,
+        "meta.queueName": SyncQueue,
       },
     });
 
     if (!cronJob) {
-      throw new Error('Job not found');
+      throw new Error("Job not found");
     }
 
     if (cronJob.running) {
-      this.logger.log('Job already running');
+      this.logger.log("Job already running");
       return;
     }
 
@@ -51,19 +51,19 @@ export class SyncTwizzitProcessor {
     try {
       // create syncer
       this._twizzitSyncer = new TwizzitSyncer(this._twizzitService, this._sequelize);
-      
+
       // process
       await this._twizzitSyncer.process({
         transaction,
         ...job.data,
       });
-      
-      this.logger.debug('Commiting');
+
+      this.logger.debug("Commiting");
 
       await transaction.commit();
-      this.logger.debug('Syncing Ranking done');
+      this.logger.debug("Syncing Ranking done");
     } catch (error) {
-      this.logger.error('Rolling back');
+      this.logger.error("Rolling back");
       await transaction.rollback();
       throw error;
     } finally {

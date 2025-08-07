@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, sequelize) => {
@@ -7,20 +7,20 @@ module.exports = {
       try {
         await queryInterface.addColumn(
           {
-            tableName: 'RankingSystems',
-            schema: 'ranking',
+            tableName: "RankingSystems",
+            schema: "ranking",
           },
-          'inactiveBehavior',
+          "inactiveBehavior",
           {
-            type: sequelize.DataTypes.ENUM('freeze', 'decrease'),
+            type: sequelize.DataTypes.ENUM("freeze", "decrease"),
             allowNull: true,
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
           },
-          { transaction: t },
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err?.message ?? err);
+        console.error("We errored with", err?.message ?? err);
         t.rollback();
       }
     });
@@ -31,14 +31,14 @@ module.exports = {
       try {
         await queryInterface.removeColumn(
           {
-            tableName: 'RankingSystems',
-            schema: 'ranking',
+            tableName: "RankingSystems",
+            schema: "ranking",
           },
-          'inactiveBehavior',
-          { transaction: t },
+          "inactiveBehavior",
+          { transaction: t }
         );
       } catch (err) {
-        console.error('We errored with', err);
+        console.error("We errored with", err);
         t.rollback();
       }
     });

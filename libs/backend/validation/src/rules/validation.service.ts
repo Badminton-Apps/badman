@@ -1,6 +1,6 @@
-import { Rule, Team } from '@badman/backend-database';
-import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { ValidationRule } from './_rule.base';
+import { Rule, Team } from "@badman/backend-database";
+import { Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
+import { ValidationRule } from "./_rule.base";
 
 type ruleType<T, V> = new () => ValidationRule<
   T,
@@ -27,7 +27,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
 
   async registerRule(
     rule: ruleType<T, V>,
-    args?: { meta?: object; activated?: boolean },
+    args?: { meta?: object; activated?: boolean }
   ): Promise<void> {
     // find or create rule
     await Rule.findOrCreate({
@@ -96,7 +96,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
       playerId?: string;
       teamId?: string;
       clubId?: string;
-    },
+    }
   ): Promise<
     Partial<{
       valid: boolean;
@@ -111,7 +111,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     // if we provide a team but no club we can fetch it
     if (runFor?.teamId && !runFor.clubId) {
       const team = await Team.findByPk(runFor.teamId, {
-        attributes: ['clubId'],
+        attributes: ["clubId"],
       });
       runFor.clubId = team?.clubId;
     }

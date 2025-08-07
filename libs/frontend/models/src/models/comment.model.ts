@@ -1,4 +1,4 @@
-import { Player } from './player.model';
+import { Player } from "./player.model";
 
 export class Comment {
   id?: string;
@@ -12,7 +12,7 @@ export class Comment {
 
   constructor(args: Partial<Comment>) {
     this.id = args?.id;
-    this.message = args?.message ?? '';
+    this.message = args?.message ?? "";
     this.player = args?.player != null ? new Player(args?.player) : undefined;
     this.playerId = args?.playerId;
     this.clubId = args?.clubId;

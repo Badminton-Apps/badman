@@ -1,5 +1,5 @@
-import { Page } from 'puppeteer';
-import { waitForSelectors } from '@badman/backend-pupeteer';
+import { Page } from "puppeteer";
+import { waitForSelectors } from "@badman/backend-pupeteer";
 
 export async function enterScores(
   pupeteer: {
@@ -11,11 +11,11 @@ export async function enterScores(
   },
   set: number,
   scores: string,
-  matchId: string,
+  matchId: string
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
-    throw new Error('No page provided');
+    throw new Error("No page provided");
   }
   const selector = `#match_${matchId}_set_${set}`;
   {

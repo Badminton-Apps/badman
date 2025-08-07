@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Job, JobId } from 'bull';
-import { Transaction } from 'sequelize';
-import { Sequelize } from 'sequelize-typescript';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable, Logger } from "@nestjs/common";
+import { Job, JobId } from "bull";
+import { Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Transaction manager service
@@ -42,27 +42,27 @@ export class TransactionManager {
         if (completed) {
           statuses.push({
             id: job.id,
-            status: 'completed',
+            status: "completed",
             name: job.name,
           });
         } else if (failed) {
           statuses.push({
             id: job.id,
-            status: 'failed',
+            status: "failed",
             name: job.name,
             error: job.failedReason,
           });
         } else {
           statuses.push({
             id: job.id,
-            status: 'pending',
+            status: "pending",
             name: job.name,
           });
         }
       } catch (error) {
         statuses.push({
           id: job.id,
-          status: 'unknown',
+          status: "unknown",
           name: job.name,
           error,
         });
@@ -75,19 +75,19 @@ export class TransactionManager {
   async transactionFinished(transactionId: string) {
     const statuses = await this.getJobStatuses(transactionId);
 
-    return statuses.every((status) => status.status === 'completed' || status.status === 'failed');
+    return statuses.every((status) => status.status === "completed" || status.status === "failed");
   }
 
   async transactionErrored(transactionId: string) {
     const statuses = await this.getJobStatuses(transactionId);
 
-    return statuses.some((status) => status.status === 'failed');
+    return statuses.some((status) => status.status === "failed");
   }
 
   async failedMessages(transactionId: string) {
     const statuses = await this.getJobStatuses(transactionId);
 
-    return statuses.filter((status) => status.status === 'failed');
+    return statuses.filter((status) => status.status === "failed");
   }
 
   async jobsFinished(transactionId: string, ids: JobId[]) {
@@ -95,7 +95,7 @@ export class TransactionManager {
 
     return statuses
       .filter((status) => ids.includes(status.id))
-      .every((status) => status.status === 'completed' || status.status === 'failed');
+      .every((status) => status.status === "completed" || status.status === "failed");
   }
 
   async transaction(transactionId?: string) {

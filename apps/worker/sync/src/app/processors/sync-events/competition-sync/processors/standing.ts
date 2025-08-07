@@ -5,12 +5,12 @@ import {
   Game,
   Standing,
   Team,
-} from '@badman/backend-database';
-import { StepProcessor, StepOptions } from '../../../../processing';
-import { DrawStepData } from './draw';
-import { EncounterStepData } from './encounter';
-import { runParallel, sortStanding } from '@badman/utils';
-import { Logger } from '@nestjs/common';
+} from "@badman/backend-database";
+import { StepProcessor, StepOptions } from "../../../../processing";
+import { DrawStepData } from "./draw";
+import { EncounterStepData } from "./encounter";
+import { runParallel, sortStanding } from "@badman/utils";
+import { Logger } from "@nestjs/common";
 
 export interface StandingStepOptions {
   newGames?: boolean;
@@ -41,7 +41,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
             ?.filter((g) => g.encounter.drawId === e.draw.id)
             ?.map((r) => r.encounter) ?? [];
         return this._processEncounters(e.draw, filtered);
-      }) ?? [],
+      }) ?? []
     );
   }
 
@@ -213,23 +213,23 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         {
           transaction: this.transaction,
           updateOnDuplicate: [
-            'position',
-            'size',
-            'played',
-            'won',
-            'lost',
-            'tied',
-            'points',
-            'gamesWon',
-            'gamesLost',
-            'setsWon',
-            'setsLost',
-            'totalPointsWon',
-            'totalPointsLost',
-            'riser',
-            'faller',
+            "position",
+            "size",
+            "played",
+            "won",
+            "lost",
+            "tied",
+            "points",
+            "gamesWon",
+            "gamesLost",
+            "setsWon",
+            "setsLost",
+            "totalPointsWon",
+            "totalPointsLost",
+            "riser",
+            "faller",
           ],
-        },
+        }
       );
     }
   }
@@ -275,7 +275,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
           this.logger.error(`Error fetching teams for encounter ${e.id}`, error);
           throw error;
         }
-      }),
+      })
     );
     return [...teams.values()];
   }
@@ -286,7 +286,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
     await runParallel(
       teams.map(async (team) => {
         teamStandings.set(team.id, await this._standingTeam(draw, team));
-      }),
+      })
     );
 
     return teamStandings;
@@ -300,7 +300,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         this.logger.warn(`No entries found`);
         entryDraw = await new EventEntry({
           subEventId: draw.subeventId,
-          entryType: 'competition',
+          entryType: "competition",
           drawId: draw.id,
           teamId: team.id,
           meta: undefined,
@@ -309,7 +309,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         });
       }
 
-      entryDraw.entryType = 'competition';
+      entryDraw.entryType = "competition";
       entryDraw.drawId = draw.id;
 
       await entryDraw.save({

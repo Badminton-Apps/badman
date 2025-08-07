@@ -1,12 +1,12 @@
-import moment from 'moment';
-import { Moment } from 'moment';
+import moment from "moment";
+import { Moment } from "moment";
 
 export class CronJob {
   id?: string;
   name?: string;
   cronTime?: string;
   meta?: QueueCronJob;
-  type?: 'sync' | 'ranking';
+  type?: "sync" | "ranking";
   lastRun?: Moment;
   nextRun?: Moment;
   running?: boolean;
@@ -18,7 +18,7 @@ export class CronJob {
     this.cronTime = args?.cronTime;
     this.meta = {
       ...(args?.meta ?? {}),
-      arguments: JSON.parse((args.meta?.arguments as string) ?? '{}'),
+      arguments: JSON.parse((args.meta?.arguments as string) ?? "{}"),
     } as QueueCronJob;
 
     this.running = args?.running;

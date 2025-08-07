@@ -1,26 +1,25 @@
-
-import { Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { SelectPlayerComponent } from '@badman/frontend-components';
-import { Game, Player, GamePlayer, RankingPoint, RankingSystem } from '@badman/frontend-models';
-import { GameType } from '@badman/utils';
-import { TranslatePipe } from '@ngx-translate/core';
-import { gql } from 'apollo-angular';
-import { DocumentNode } from 'graphql';
-import { v4 as uuidv4 } from 'uuid';
+import { Component, OnInit, inject } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatButtonModule } from "@angular/material/button";
+import { MatOptionModule } from "@angular/material/core";
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { SelectPlayerComponent } from "@badman/frontend-components";
+import { Game, Player, GamePlayer, RankingPoint, RankingSystem } from "@badman/frontend-models";
+import { GameType } from "@badman/utils";
+import { TranslatePipe } from "@ngx-translate/core";
+import { gql } from "apollo-angular";
+import { DocumentNode } from "graphql";
+import { v4 as uuidv4 } from "uuid";
 
 @Component({
-    selector: 'badman-add-game',
-    templateUrl: './add-game.component.html',
-    styleUrls: ['./add-game.component.scss'],
-    imports: [
+  selector: "badman-add-game",
+  templateUrl: "./add-game.component.html",
+  styleUrls: ["./add-game.component.scss"],
+  imports: [
     TranslatePipe,
     ReactiveFormsModule,
     MatDialogModule,
@@ -30,14 +29,14 @@ import { v4 as uuidv4 } from 'uuid';
     MatOptionModule,
     MatInputModule,
     MatButtonModule,
-    SelectPlayerComponent
-]
+    SelectPlayerComponent,
+  ],
 })
 export class AddGameComponent implements OnInit {
   private dialogRef = inject<MatDialogRef<AddGameComponent>>(MatDialogRef<AddGameComponent>);
   public data = inject<{
     playerId: string;
-    type: 'single' | 'double' | 'mix';
+    type: "single" | "double" | "mix";
     system: RankingSystem;
   }>(MAT_DIALOG_DATA);
   formGroup!: FormGroup;
@@ -57,7 +56,7 @@ export class AddGameComponent implements OnInit {
   fragment: DocumentNode;
 
   constructor() {
-    console.log(this.data)
+    console.log(this.data);
 
     this.fragment = gql`
       fragment AddGameInfo on Player {
@@ -132,8 +131,8 @@ export class AddGameComponent implements OnInit {
     const team2 = this.p1t2Level.value + (this.p2t2Level.value ?? 0);
 
     const differenceInLevel = t1won
-      ? (team1 - team2) / (this.data.type == 'single' ? 1 : 2)
-      : (team2 - team1) / (this.data.type == 'single' ? 1 : 2);
+      ? (team1 - team2) / (this.data.type == "single" ? 1 : 2)
+      : (team2 - team1) / (this.data.type == "single" ? 1 : 2);
 
     const p1t1Points = this._getWinningPoints(this.p1t1Level.value);
     const p2t1Points = this._getWinningPoints(this.p2t1Level.value);
@@ -141,8 +140,8 @@ export class AddGameComponent implements OnInit {
     const p1t2Points = this._getWinningPoints(this.p1t2Level.value);
     const p2t2Points = this._getWinningPoints(this.p2t2Level.value);
 
-    const team1Points = this.data.type == 'single' ? p1t1Points : (p1t1Points + p2t1Points) / 2;
-    const team2Points = this.data.type == 'single' ? p1t2Points : (p1t2Points + p2t2Points) / 2;
+    const team1Points = this.data.type == "single" ? p1t1Points : (p1t1Points + p2t1Points) / 2;
+    const team2Points = this.data.type == "single" ? p1t2Points : (p1t2Points + p2t2Points) / 2;
 
     players.push({
       ...(this.p1t1.value as Partial<Player>),
@@ -168,7 +167,7 @@ export class AddGameComponent implements OnInit {
       differenceInLevel: t1won ? differenceInLevel : -differenceInLevel,
     });
 
-    if (this.data.type !== 'single') {
+    if (this.data.type !== "single") {
       players.push({
         ...(this.p2t1.value as Partial<Player>),
         [this.data.type]: this.p2t1Level.value,
@@ -197,9 +196,9 @@ export class AddGameComponent implements OnInit {
     const game = new Game({
       id: uuidv4(),
       gameType:
-        this.data.type == 'single'
+        this.data.type == "single"
           ? GameType.S
-          : this.data.type == 'double'
+          : this.data.type == "double"
             ? GameType.D
             : GameType.MX,
       winner: t1won ? 1 : 0,

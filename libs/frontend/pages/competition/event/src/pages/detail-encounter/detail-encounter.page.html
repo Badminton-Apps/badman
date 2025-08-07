@@ -25,7 +25,7 @@
         <badman-has-claim [all]="['edit:competition']">
           <button mat-menu-item [routerLink]="'edit'">
             <mat-icon>edit</mat-icon>
-            <span>{{ 'all.button.edit' | translate }}</span>
+            <span>{{ "all.button.edit" | translate }}</span>
           </button>
           <button mat-menu-item (click)="syncNotifications()">
             <mat-icon>edit_notifications</mat-icon>
@@ -35,14 +35,14 @@
         <badman-has-claim [all]="['re-sync:points']">
           <button mat-menu-item (click)="reCalculatePoints()">
             <mat-icon>sync</mat-icon>
-            <span>{{ 'all.button.re-sync' | translate }}</span>
+            <span>{{ "all.button.re-sync" | translate }}</span>
           </button>
         </badman-has-claim>
         <badman-has-claim [all]="['edit:competition']">
           <mat-divider></mat-divider>
           <button mat-menu-item>
             <mat-icon>delete</mat-icon>
-            <span>{{ 'all.button.delete' | translate }}</span>
+            <span>{{ "all.button.delete" | translate }}</span>
           </button>
         </badman-has-claim>
       </mat-menu>
@@ -51,7 +51,7 @@
   <ng-content subTitle>
     <mat-chip-listbox>
       @if (encounterCompetition()?.date) {
-        <mat-chip> {{ encounterCompetition()?.date | amDateFormat: 'llll' }}</mat-chip>
+        <mat-chip> {{ encounterCompetition()?.date | amDateFormat: "llll" }}</mat-chip>
       }
       @if (encounterCompetition()?.location?.name) {
         <mat-chip> {{ encounterCompetition()?.location?.name }}</mat-chip>
@@ -90,7 +90,7 @@
           }
         </a>
       }
-      @if (game.gameType !== 'S' && this.getPlayer(game, 2, 1); as playerT1P2) {
+      @if (game.gameType !== "S" && this.getPlayer(game, 2, 1); as playerT1P2) {
         <a class="player player2" [routerLink]="['/player', playerT1P2?.slug]">
           {{ playerT1P2.fullName }}
           @if (this.getRanking(playerT1P2, game); as ranking) {
@@ -115,7 +115,7 @@
           }
         </a>
       }
-      @if (game.gameType !== 'S' && this.getPlayer(game, 2, 2); as playerT2P2) {
+      @if (game.gameType !== "S" && this.getPlayer(game, 2, 2); as playerT2P2) {
         <a class="player player2" [routerLink]="['/player', playerT2P2?.slug]">
           {{ playerT2P2.fullName }}
           @if (this.getRanking(playerT2P2, game); as ranking) {

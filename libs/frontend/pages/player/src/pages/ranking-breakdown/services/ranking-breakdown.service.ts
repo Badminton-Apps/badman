@@ -1,11 +1,11 @@
-import { Injectable, inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Game, Player } from '@badman/frontend-models';
-import { GameType, Ranking } from '@badman/utils';
+import { Injectable, inject } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { Game, Player } from "@badman/frontend-models";
+import { GameType, Ranking } from "@badman/utils";
 
-import { Apollo, gql } from 'apollo-angular';
-import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Observable, Subject, merge } from 'rxjs';
+import { Apollo, gql } from "apollo-angular";
+import { signalSlice } from "ngxtension/signal-slice";
+import { EMPTY, Observable, Subject, merge } from "rxjs";
 import {
   catchError,
   distinctUntilChanged,
@@ -14,7 +14,7 @@ import {
   startWith,
   switchMap,
   throttleTime,
-} from 'rxjs/operators';
+} from "rxjs/operators";
 
 export interface RankingBreakdownState {
   games: Game[];
@@ -23,15 +23,15 @@ export interface RankingBreakdownState {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class RankingBreakdownService {
   private readonly apollo = inject(Apollo);
   private readonly error$ = new Subject<string>();
 
   filter = new FormGroup({
-    systemId: new FormControl<string>(''),
-    playerId: new FormControl<string>(''),
+    systemId: new FormControl<string>(""),
+    playerId: new FormControl<string>(""),
     includedIgnored: new FormControl<boolean>(false),
     includedUpgrade: new FormControl<boolean>(true),
     includedDowngrade: new FormControl<boolean>(false),
@@ -59,7 +59,7 @@ export class RankingBreakdownService {
         !!filter.gameType &&
         !!filter.start &&
         !!filter.end &&
-        !!filter.playerId,
+        !!filter.playerId
     ),
     distinctUntilChanged(
       (a, b) =>
@@ -67,8 +67,8 @@ export class RankingBreakdownService {
         a.gameType === b.gameType &&
         a.start === b.start &&
         a.end === b.end &&
-        a.playerId === b.playerId,
-    ),
+        a.playerId === b.playerId
+    )
   );
 
   // sources
@@ -79,13 +79,13 @@ export class RankingBreakdownService {
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
-    }),
+    })
   );
 
   sources$ = merge(
     this.dataLoaded,
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loaded: false, games: [] }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false, games: [] })))
   );
 
   state = signalSlice({
@@ -101,7 +101,7 @@ export class RankingBreakdownService {
         action$.pipe(
           map(() => {
             return this.initialState;
-          }),
+          })
         ),
       addGame: (_state, action$: Observable<Game>) =>
         action$.pipe(
@@ -110,7 +110,7 @@ export class RankingBreakdownService {
               ..._state(),
               games: [..._state().games, game],
             };
-          }),
+          })
         ),
       removeGame: (_state, action$: Observable<Game>) =>
         action$.pipe(
@@ -119,7 +119,7 @@ export class RankingBreakdownService {
               ..._state(),
               games: _state().games.filter((g) => g.id !== game.id),
             };
-          }),
+          })
         ),
     },
   });
@@ -131,24 +131,24 @@ export class RankingBreakdownService {
       gameType: Ranking | null;
       start: string | null;
       end: string | null;
-    }>,
+    }>
   ) {
     let gameType = GameType.S;
     switch (filter.gameType) {
-      case 'single':
+      case "single":
         gameType = GameType.S;
         break;
-      case 'double':
+      case "double":
         gameType = GameType.D;
         break;
-      case 'mix':
+      case "mix":
         gameType = GameType.MX;
         break;
     }
 
     return this.apollo
       .query<{ player: Player }>({
-        fetchPolicy: 'no-cache',
+        fetchPolicy: "no-cache",
         query: gql`
           query PlayerGames($where: JSONObject, $playerId: ID!, $systemId: ID!) {
             player(id: $playerId) {
