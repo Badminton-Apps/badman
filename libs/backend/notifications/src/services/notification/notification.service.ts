@@ -51,6 +51,10 @@ export class NotificationService {
     frontendContext?: FrontendContextType,
     eventId?: string
   ) {
+    this._logger.log(
+      `[notifyEncounterChange] Starting notification for encounter ${encounter.id}, homeTeamRequests: ${homeTeamRequests}`
+    );
+
     const homeTeam = await encounter.getHome({
       include: [
         {
@@ -76,6 +80,10 @@ export class NotificationService {
 
     const newReqTeam = homeTeamRequests ? homeTeam : awayTeam;
     const confReqTeam = homeTeamRequests ? awayTeam : homeTeam;
+
+    this._logger.log(
+      `[notifyEncounterChange] Teams loaded - newReqTeam: ${newReqTeam.name} (${newReqTeam.email}), confReqTeam: ${confReqTeam.name} (${confReqTeam.email})`
+    );
 
     // Generate URLs based on who made the request vs who needs to confirm
     const newReqUrl = await this._getEncounterChangeUrl(
@@ -104,23 +112,59 @@ export class NotificationService {
     this._logger.debug("In the notifyEncounterChange", confReqTeam.captain?.toJSON());
     this._logger.debug("In the notifyEncounterChange", confReqTeam.email);
 
+    // Check for potential duplicate email scenario
+    if (
+      newReqTeam.email &&
+      confReqTeam.email &&
+      newReqTeam.email.toLowerCase() === confReqTeam.email.toLowerCase()
+    ) {
+      this._logger.warn(
+        `[notifyEncounterChange] Potential duplicate email detected: ${newReqTeam.email} for both teams`
+      );
+    }
+
     if (newReqTeam.captain && newReqTeam.email) {
+      this._logger.log(
+        `[notifyEncounterChange] Sending new request notification to ${newReqTeam.captain.email} (team email: ${newReqTeam.email})`
+      );
       notifierNew.notify(
         newReqTeam.captain,
         encounter.id,
         { encounter, isHome: homeTeamRequests, url: newReqUrl },
         { email: newReqTeam.email }
       );
+    } else {
+      this._logger.warn(
+        `[notifyEncounterChange] Skipping new request notification - captain: ${!!newReqTeam.captain}, email: ${!!newReqTeam.email}`
+      );
     }
 
     if (confReqTeam.captain && confReqTeam.email && confReqTeam.email !== newReqTeam.email) {
+      this._logger.log(
+        `[notifyEncounterChange] Sending confirmation request notification to ${confReqTeam.captain.email} (team email: ${confReqTeam.email})`
+      );
       notifierConform.notify(
         confReqTeam.captain,
         encounter.id,
         { encounter, isHome: !homeTeamRequests, url: confReqUrl },
         { email: confReqTeam.email }
       );
+    } else {
+      const skipReason = !confReqTeam.captain
+        ? "no captain"
+        : !confReqTeam.email
+          ? "no email"
+          : confReqTeam.email === newReqTeam.email
+            ? "duplicate email"
+            : "unknown";
+      this._logger.warn(
+        `[notifyEncounterChange] Skipping confirmation notification - reason: ${skipReason}`
+      );
     }
+
+    this._logger.log(
+      `[notifyEncounterChange] Completed notification for encounter ${encounter.id}`
+    );
   }
 
   async notifyEncounterChangeFinished(
@@ -129,6 +173,10 @@ export class NotificationService {
     frontendContext?: FrontendContextType,
     eventId?: string
   ) {
+    this._logger.log(
+      `[notifyEncounterChangeFinished] Starting finished notification for encounter ${encounter.id}, locationHasChanged: ${locationHasChanged}`
+    );
+
     const notifierFinished = new CompetitionEncounterChangeFinishRequestNotifier(
       this.mailing,
       this.push
@@ -154,6 +202,10 @@ export class NotificationService {
     encounter.home = homeTeam;
     encounter.away = awayTeam;
 
+    this._logger.log(
+      `[notifyEncounterChangeFinished] Teams loaded - homeTeam: ${homeTeam.name} (${homeTeam.email}), awayTeam: ${awayTeam.name} (${awayTeam.email})`
+    );
+
     const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
 
     // For finished notifications, both teams get the same URL since the change is complete
@@ -173,6 +225,9 @@ export class NotificationService {
     );
 
     if (homeTeam.captain && homeTeam.email) {
+      this._logger.log(
+        `[notifyEncounterChangeFinished] Sending finished notification to home team captain ${homeTeam.captain.email} (team email: ${homeTeam.email})`
+      );
       const validation = await this._getValidationMessage(homeTeam);
       notifierFinished.notify(
         homeTeam.captain,
@@ -180,9 +235,16 @@ export class NotificationService {
         { encounter, locationHasChanged, isHome: true, validation, url: homeTeamUrl },
         { email: homeTeam.email }
       );
+    } else {
+      this._logger.warn(
+        `[notifyEncounterChangeFinished] Skipping home team notification - captain: ${!!homeTeam.captain}, email: ${!!homeTeam.email}`
+      );
     }
 
     if (awayTeam.captain && awayTeam.email && awayTeam.email !== homeTeam.email) {
+      this._logger.log(
+        `[notifyEncounterChangeFinished] Sending finished notification to away team captain ${awayTeam.captain.email} (team email: ${awayTeam.email})`
+      );
       const validation = await this._getValidationMessage(awayTeam);
 
       notifierFinished.notify(
@@ -191,11 +253,29 @@ export class NotificationService {
         { encounter, locationHasChanged, isHome: false, validation, url: awayTeamUrl },
         { email: awayTeam.email }
       );
+    } else {
+      const skipReason = !awayTeam.captain
+        ? "no captain"
+        : !awayTeam.email
+          ? "no email"
+          : awayTeam.email === homeTeam.email
+            ? "duplicate email"
+            : "unknown";
+      this._logger.warn(
+        `[notifyEncounterChangeFinished] Skipping away team notification - reason: ${skipReason}`
+      );
     }
 
     if (locationHasChanged) {
+      this._logger.log(
+        `[notifyEncounterChangeFinished] Sending location changed mail for encounter ${encounter.id}`
+      );
       await this.mailing.sendLocationChangedMail(encounter);
     }
+
+    this._logger.log(
+      `[notifyEncounterChangeFinished] Completed finished notification for encounter ${encounter.id}`
+    );
   }
 
   async notifyEncounterNotEntered(encounter: EncounterCompetition) {
