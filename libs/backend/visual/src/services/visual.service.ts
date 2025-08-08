@@ -9,6 +9,7 @@ import { Moment } from "moment";
 import moment from "moment-timezone";
 import { performance } from "perf_hooks";
 import {
+  XmlClub,
   XmlMatch,
   XmlResult,
   XmlTeam,
@@ -59,6 +60,15 @@ export class VisualService {
     );
     const parsed = this._parseResponse(result) as XmlResult;
     return parsed.Team as XmlTeam;
+  }
+
+  async getClubs(tourneyId: string, useCache = true) {
+    const result = await this._getFromApi(
+      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/Club`,
+      useCache
+    );
+    const parsed = this._parseResponse(result) as XmlResult;
+    return this._asArray(parsed.Club) as XmlClub[];
   }
   async getTeamMatch(tourneyId: string, matchId: string | number, useCache = true) {
     const result = await this._getFromApi(

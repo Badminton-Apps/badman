@@ -8,6 +8,7 @@ export interface XmlResult {
   TeamMatch?: XmlTeamMatch[];
   Match?: XmlMatch[];
   Player?: XmlPlayer | XmlPlayer[];
+  Club?: XmlClub | XmlClub[];
   Ranking?: XmlRanking;
   RankingCategory?: XmlRankingCategory[];
   RankingPublication?: XmlRankingPublication[];
@@ -267,6 +268,21 @@ export interface XmlClub {
   Code: string;
   Number: string;
   Name: string;
+  Contact: string;
+  Address: string;
+  Address2: string;
+  Address3: string;
+  PostalCode: string;
+  City: string;
+  State: string;
+  Country: string;
+  Phone: string;
+  Phone2: string;
+  Mobile: string;
+  Fax: string;
+  Fax2: string;
+  Email: string;
+  Website: string;
 }
 
 export interface XmlPlayers {
