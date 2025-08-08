@@ -238,64 +238,63 @@ export class EncounterChangeCompetitionResolver {
         this.logger.debug("this is a new change request");
         encounterChange.accepted = false;
         this.logger.debug(`Change encounter ${encounter.id}: ${encounterChange.accepted}`);
-        // Load the event data directly to ensure we get all the required fields
-        const draw = await encounter.getDrawCompetition({
-          include: [
-            {
-              model: SubEventCompetition,
-              attributes: ["id", "eventId"],
-            },
-          ],
-        });
-        const event = await EventCompetition.findByPk(draw?.subEventCompetition?.eventId, {
-          attributes: [
-            "id",
-            "name",
-            "season",
-            "changeCloseRequestDatePeriod1",
-            "changeCloseRequestDatePeriod2",
-          ],
-        });
-        // Store the event ID for notifications
-        eventId = event?.id;
-        // Check if we're getting the right event type
-        if (event && event.constructor.name !== "EventCompetition") {
-          this.logger.error(
-            `Wrong event type loaded: ${event.constructor.name}. Expected EventCompetition`
-          );
-          throw new Error(
-            `Invalid event type: ${event.constructor.name}. Expected EventCompetition`
-          );
-        }
-        // Check if the event has the required date fields
-        if (!event?.changeCloseRequestDatePeriod1 || !event?.changeCloseRequestDatePeriod2) {
-          this.logger.error(
-            `EventCompetition ${event?.id} (${event?.name}) is missing required date fields. Please configure the date change periods in the event settings.`
-          );
-          throw new Error(
-            `Event "${event?.name || "Unknown Event"}" is not configured for date changes. Please contact the competition organizer to configure the date change periods.`
-          );
-        }
-        const encounterDateEqualsEventSeason =
-          event?.season &&
-          (encounter.date?.getFullYear() === event?.season ||
-            encounter.date?.getFullYear() === event?.season + 1);
-        const closedDate = encounterDateEqualsEventSeason
-          ? event?.changeCloseRequestDatePeriod1
-          : event?.changeCloseRequestDatePeriod2;
-        const currentDate = moment.tz("europe/brussels");
-        const deadlineDate = moment.tz(closedDate, "europe/brussels");
-        const canRequestNewDates = currentDate.isBefore(deadlineDate);
-        await this.changeOrUpdate(
-          encounterChange,
-          newChangeEncounter,
-          transaction,
-          dates,
-          canRequestNewDates,
-          event || null, // Pass the event data to avoid reloading it
-          encounter.date || new Date() // Pass the encounter date to ensure consistent logic
+      }
+
+      // Load the event data directly to ensure we get all the required fields
+      const draw = await encounter.getDrawCompetition({
+        include: [
+          {
+            model: SubEventCompetition,
+            attributes: ["id", "eventId"],
+          },
+        ],
+      });
+      const event = await EventCompetition.findByPk(draw?.subEventCompetition?.eventId, {
+        attributes: [
+          "id",
+          "name",
+          "season",
+          "changeCloseRequestDatePeriod1",
+          "changeCloseRequestDatePeriod2",
+        ],
+      });
+      // Store the event ID for notifications
+      eventId = event?.id;
+      // Check if we're getting the right event type
+      if (event && event.constructor.name !== "EventCompetition") {
+        this.logger.error(
+          `Wrong event type loaded: ${event.constructor.name}. Expected EventCompetition`
+        );
+        throw new Error(`Invalid event type: ${event.constructor.name}. Expected EventCompetition`);
+      }
+      // Check if the event has the required date fields
+      if (!event?.changeCloseRequestDatePeriod1 || !event?.changeCloseRequestDatePeriod2) {
+        this.logger.error(
+          `EventCompetition ${event?.id} (${event?.name}) is missing required date fields. Please configure the date change periods in the event settings.`
+        );
+        throw new Error(
+          `Event "${event?.name || "Unknown Event"}" is not configured for date changes. Please contact the competition organizer to configure the date change periods.`
         );
       }
+      const encounterDateEqualsEventSeason =
+        event?.season &&
+        (encounter.date?.getFullYear() === event?.season ||
+          encounter.date?.getFullYear() === event?.season + 1);
+      const closedDate = encounterDateEqualsEventSeason
+        ? event?.changeCloseRequestDatePeriod1
+        : event?.changeCloseRequestDatePeriod2;
+      const currentDate = moment.tz("europe/brussels");
+      const deadlineDate = moment.tz(closedDate, "europe/brussels");
+      const canRequestNewDates = currentDate.isBefore(deadlineDate);
+      await this.changeOrUpdate(
+        encounterChange,
+        newChangeEncounter,
+        transaction,
+        dates,
+        canRequestNewDates,
+        event || null, // Pass the event data to avoid reloading it
+        encounter.date || new Date() // Pass the encounter date to ensure consistent logic
+      );
 
       await encounterChange.save({ transaction });
 
