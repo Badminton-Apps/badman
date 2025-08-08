@@ -77,7 +77,8 @@ export class SyncDateProcessor {
         const parser = new XMLParser();
 
         const bodyPut = parser.parse(resultPut.data).Result as Result;
-        if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== "Success.") {
+        this.logger.debug(`bodyPut: ${JSON.stringify(bodyPut, null, 2)}`);
+        if (bodyPut.Error?.Code !== 0 || bodyPut.Error?.Message !== "Success.") {
           this.logger.error(options);
           throw new Error(bodyPut.Error?.Message);
         }
