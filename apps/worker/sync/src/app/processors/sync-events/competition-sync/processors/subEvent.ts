@@ -1,4 +1,9 @@
-import { EventCompetition, RankingSystem, SubEventCompetition } from "@badman/backend-database";
+import {
+  EventCompetition,
+  EventEntry,
+  RankingSystem,
+  SubEventCompetition,
+} from "@badman/backend-database";
 import moment from "moment";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
@@ -64,6 +69,15 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         // We have multiple encounters with the same visual code
         const [first, ...rest] = dbSubEvents;
         dbSubEvent = first;
+
+        await EventEntry.destroy({
+          where: {
+            subEventId: {
+              [Op.in]: rest.map((e) => e.id),
+            },
+          },
+          transaction: this.transaction,
+        });
 
         this.logger.warn("Having multiple? Removing old");
         await SubEventCompetition.destroy({
