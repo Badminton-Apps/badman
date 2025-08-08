@@ -72,15 +72,25 @@ export class SyncDateProcessor {
         data: body,
       };
 
-      this.logger.debug(`options: ${JSON.stringify(options, null, 2)}`);
-
       if (this.configService.get("NODE_ENV") === "production") {
         const resultPut = await axios(options);
         const parser = new XMLParser();
 
-        const bodyPut = parser.parse(resultPut.data).Result as Result;
-        this.logger.debug(`bodyPut: ${JSON.stringify(bodyPut, null, 2)}`);
-        if (bodyPut.Error?.Code !== 0 || bodyPut.Error?.Message !== "Success.") {
+        // Check if the response is already an object or needs parsing
+        let bodyPut;
+        if (typeof resultPut.data === "string") {
+          // Parse XML string
+          bodyPut = parser.parse(resultPut.data).Result;
+        } else {
+          // Response is already a JavaScript object
+          bodyPut = resultPut.data.Result;
+        }
+
+        // Check for errors
+        if (
+          (bodyPut.Error?.Code !== 0 && bodyPut.Error?.Code !== "0") ||
+          bodyPut.Error?.Message !== "Success."
+        ) {
           this.logger.error(options);
           throw new Error(bodyPut.Error?.Message);
         }
