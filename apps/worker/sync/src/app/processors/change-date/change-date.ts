@@ -74,7 +74,7 @@ export class SyncDateProcessor {
 
       this.logger.debug(`options: ${JSON.stringify(options, null, 2)}`);
 
-      if (this.configService.get("NODE_ENV") === "development") {
+      if (this.configService.get("NODE_ENV") === "production") {
         const resultPut = await axios(options);
         const parser = new XMLParser();
 
