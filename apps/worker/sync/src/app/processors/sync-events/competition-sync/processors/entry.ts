@@ -1,13 +1,13 @@
 import { Club, EventEntry, Team, Player } from "@badman/backend-database";
-import { VisualService, XmlItem, XmlTournament } from "@badman/backend-visual";
+import { VisualService, XmlClub, XmlItem, XmlTournament } from "@badman/backend-visual";
 import { LevelType, runParallel, teamValues } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { isArray } from "class-validator";
 import { Op, WhereOptions } from "sequelize";
-import moment from "moment";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { correctWrongTeams } from "../../../../utils";
 import { DrawStepData } from "./draw";
+import moment from "moment";
 
 export interface EntryStepData {
   entry: EventEntry;
@@ -56,6 +56,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     });
 
     const xmlDraw = await this.visualService.getDraw(this.visualTournament.Code, internalId);
+    const xmlDrawClubs = await this.visualService.getClubs(this.visualTournament.Code);
 
     if (!xmlDraw) {
       return;
@@ -80,7 +81,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         event.teamMatcher,
         event.type,
         drawEntries?.map((r) => r.teamId ?? "") ?? [],
-        subEventEntries.map((r) => r.teamId ?? "") ?? []
+        subEventEntries.map((r) => r.teamId ?? "") ?? [],
+        xmlDrawClubs
       );
 
       if (!team) {
@@ -148,7 +150,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     }
   }
 
-  private async _getPossibleClubs(clubName: string, state?: string) {
+  private async _getPossibleClubs(clubName: string, state?: string, xmlDrawClubs?: XmlClub[]) {
     const clubs = await Club.findAll({
       where: {
         [Op.or]: [
@@ -202,12 +204,44 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     teamMatcher?: string,
     type?: LevelType,
     drawTeamIds?: string[],
-    subEventTeamIds?: string[]
+    subEventTeamIds?: string[],
+    xmlDrawClubs?: XmlClub[]
   ) {
     const name = correctWrongTeams({ name: item })?.name;
     const { clubName, teamNumber, teamType } = teamValues(name, teamMatcher, type);
 
-    const clubs = await this._getPossibleClubs(clubName, state);
+    const matchingClubs = xmlDrawClubs?.filter((r) => {
+      const normalizedXmlName = r.Name?.toLowerCase().trim();
+      const normalizedClubName = clubName?.toLowerCase().trim();
+      return (
+        normalizedXmlName === normalizedClubName ||
+        normalizedXmlName?.includes(normalizedClubName) ||
+        normalizedClubName?.includes(normalizedXmlName)
+      );
+    });
+
+    let xlmClubName;
+
+    if (matchingClubs?.length === 1) {
+      xlmClubName = matchingClubs[0].Name;
+    } else if (matchingClubs?.length > 1) {
+      this.logger.warn(`Team not found ${item}`);
+      return;
+    }
+
+    let verifiedClubName;
+
+    if (xlmClubName) {
+      verifiedClubName = xlmClubName;
+    } else {
+      verifiedClubName = clubName;
+    }
+
+    this.logger.debug(
+      `Team name: ${name}, Club name: ${clubName}, Team number: ${teamNumber}, Team type: ${teamType}, verifiedClubName: ${verifiedClubName}`
+    );
+
+    const clubs = await this._getPossibleClubs(verifiedClubName, state, xmlDrawClubs);
 
     if (!clubs || clubs.length === 0) {
       this.logger.warn(`Club not found ${clubName} ${state}`);

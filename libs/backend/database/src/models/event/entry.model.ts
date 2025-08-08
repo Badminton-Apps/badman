@@ -198,7 +198,7 @@ export class EventEntry extends Model<
       return;
     }
 
-    const dbSubEvent = await instance.getSubEventCompetition({
+    const dbSubEvent = await SubEventCompetition.findByPk(instance.subEventId, {
       attributes: [],
       include: [
         {
@@ -206,7 +206,9 @@ export class EventEntry extends Model<
           attributes: ["season", "usedRankingUnit", "usedRankingAmount"],
         },
       ],
+      transaction: options?.transaction,
     });
+
     if (!dbSubEvent) {
       throw new NotFoundException(`${SubEventCompetition.name}: event`);
     }
