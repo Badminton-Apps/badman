@@ -198,10 +198,6 @@ export class EventEntry extends Model<
       return;
     }
 
-    if (!instance.subEventId) {
-      return; // No subEventId, skip calculation
-    }
-
     const dbSubEvent = await instance.getSubEventCompetition({
       attributes: [],
       include: [
@@ -210,15 +206,9 @@ export class EventEntry extends Model<
           attributes: ["season", "usedRankingUnit", "usedRankingAmount"],
         },
       ],
-      transaction: options?.transaction,
     });
-
     if (!dbSubEvent) {
-      // Log warning instead of throwing error to prevent sync failures
-      console.warn(
-        `SubEventCompetition not found for EventEntry ${instance.id}, skipping competition index calculation`
-      );
-      return;
+      throw new NotFoundException(`${SubEventCompetition.name}: event`);
     }
 
     const dbSystem = await RankingSystem.findOne({
@@ -233,10 +223,7 @@ export class EventEntry extends Model<
     }
 
     if (!dbSubEvent.eventCompetition) {
-      console.warn(
-        `EventCompetition not found for SubEventCompetition ${dbSubEvent.id}, skipping competition index calculation`
-      );
-      return;
+      throw new Error("Did not include eventCompetition");
     }
 
     if (!instance.meta?.competition) {
@@ -285,6 +272,10 @@ export class EventEntry extends Model<
     });
 
     const team = await instance.getTeam();
+    if (!team) {
+      // If team is null, we can't calculate the team index
+      return;
+    }
     instance.meta.competition.teamIndex = getIndexFromPlayers(
       team.type,
       instance.meta?.competition.players
