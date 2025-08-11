@@ -88,6 +88,7 @@ export class EnterScoresProcessor {
               "set3Team1",
               "set3Team2",
               "gameType",
+              "winner",
             ],
             model: Game,
             include: [
@@ -196,9 +197,11 @@ export class EnterScoresProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      this.logger.log(`Closing browser page...`);
-      await page.close();
-      this.logger.log("Browser closed");
+      if (process.env.NODE_ENV !== "development") {
+        this.logger.log(`Closing browser page...`);
+        await page.close();
+        this.logger.log("Browser closed");
+      }
     }
   }
 }
