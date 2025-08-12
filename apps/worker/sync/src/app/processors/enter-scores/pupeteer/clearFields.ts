@@ -66,6 +66,26 @@ export async function clearFields(
   }
   {
     const targetPage = page;
+
+    // Check if all required form fields exist before attempting to clear them
+    const fieldsExist = await targetPage.evaluate(() => {
+      const field1 = document.getElementById("matchfield_1");
+      const field2 = document.getElementById("matchfield_2");
+      const field3 = document.getElementById("matchfield_3");
+      const field4 = document.getElementById("matchfield_4");
+
+      return field1 && field2 && field3 && field4;
+    });
+
+    if (!fieldsExist) {
+      const error =
+        "Required form fields (matchfield_1, matchfield_2, matchfield_3, matchfield_4) do not exist on the page. Cannot proceed with clearing fields.";
+      logger?.error(error);
+      throw new Error(error);
+    }
+
+    logger?.debug("All required form fields found, clearing values");
+
     await targetPage.evaluate(
       () => ((<HTMLInputElement>document.getElementById("matchfield_1")).value = "")
     );
