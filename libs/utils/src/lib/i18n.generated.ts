@@ -759,7 +759,7 @@ export type I18nTranslations = {
                 "mix": string;
             };
             "messages": {
-                "claimAccountSuccess": string;
+                "claimAccountSuccessc": string;
             };
             "crud": {
                 "title": string;
@@ -1010,6 +1010,17 @@ export type I18nTranslations = {
                 "unknown": string;
             };
             "points": string;
+            "statuses": {
+                "won": string;
+                "lost": string;
+                "draw": string;
+                "forfeit": string;
+                "absence": string;
+                "noPlayers": string;
+                "disqualified": string;
+                "stopped": string;
+                "unknown": string;
+            };
         };
         "ranking": {
             "all-ranking": string;
@@ -1788,6 +1799,17 @@ export type I18nTranslations = {
                 "won": string;
                 "lost": string;
                 "draw": string;
+                "statuses": {
+                    "won": string;
+                    "lost": string;
+                    "draw": string;
+                    "forfeit": string;
+                    "absence": string;
+                    "noPlayers": string;
+                    "disqualified": string;
+                    "stopped": string;
+                    "unknown": string;
+                };
                 "buttons": {
                     "change": string;
                     "create": string;
@@ -3358,6 +3380,8 @@ export type I18nTranslations = {
                             "7": string;
                             "10": string;
                             "12": string;
+                            "106": string;
+                            "107": string;
                         };
                     };
                 };
@@ -3972,6 +3996,22 @@ export type I18nTranslations = {
                 "2Sets": string;
                 "3Sets": string;
                 "saveChanges": string;
+            };
+            "dialogs": {
+                "gameDialog": {
+                    "winnerStatus": {
+                        "1": string;
+                        "2": string;
+                        "4": string;
+                        "5": string;
+                        "6": string;
+                        "7": string;
+                        "10": string;
+                        "12": string;
+                        "106": string;
+                        "107": string;
+                    };
+                };
             };
             "inputs": {
                 "present": string;
