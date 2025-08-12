@@ -93,8 +93,6 @@ export class AssemblyResolver {
       `Saving assembly for encounter ${assembly.encounterId} and team ${assembly.teamId}, by player ${user.fullName}`,
     );
 
-    console.log('Updating or creating assembly: encounterId', assembly.encounterId);
-    console.log('Updating or creating assembly: teamId', assembly.teamId);
     try {
       const [assemblyDb, created] = await Assembly.findOrCreate({
         where: {
@@ -123,8 +121,7 @@ export class AssemblyResolver {
       });
 
       if (!created) {
-        console.log('This assembly already existed, updating it');
-        const result = await assemblyDb.update({
+        return assemblyDb.update({
           captainId: assembly?.captainId ?? assemblyDb.captainId,
           description: assembly?.description ?? assemblyDb.description,
           encounterId: assembly.encounterId ?? assemblyDb.encounterId,
@@ -143,8 +140,6 @@ export class AssemblyResolver {
             subtitudes: assembly?.subtitudes ?? assemblyDb.assembly?.subtitudes,
           },
         });
-        console.log('Result of update', result);
-        return result;
       }
 
       return assemblyDb;
