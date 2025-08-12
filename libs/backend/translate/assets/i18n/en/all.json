@@ -3286,7 +3286,9 @@
             "6": "Not played, no player(s) for {homeTeam}",
             "7": "Not played, no player(s) for {awayTeam}",
             "10": "Not played, no player(s)",
-            "12": "Not played, game abandoned"
+            "12": "Not played, game abandoned",
+            "106": "{homeTeam} disqualified",
+            "107": "{awayTeam} disqualified"
           }
         }
       },

@@ -3069,10 +3069,12 @@
             "2": "{awayTeam} wint",
             "4": "Opgave {homeTeam}",
             "5": "Opgave {awayTeam}",
-            "6": "Niet gespeld, geen speler(s) {homeTeam}",
-            "7": "Niet gespeld, geen speler(s) {awayTeam}",
-            "10": "Niet gespeld, geen speler(s)",
-            "12": "Niet gespeld, wedstrijd gestaakt"
+            "6": "Niet gespeeld, geen speler(s) {homeTeam}",
+            "7": "Niet gespeeld, geen speler(s) {awayTeam}",
+            "10": "Niet gespeeld, geen speler(s)",
+            "12": "Niet gespeeld, wedstrijd gestaakt",
+            "106": "{homeTeam} gediskwalificeerd",
+            "107": "{awayTeam} gediskwalificeerd"
           }
         }
       },
