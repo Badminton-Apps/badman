@@ -2849,6 +2849,7 @@ export type I18nTranslations = {
                         "averageLevel": string;
                         "downloadBasePlayers": string;
                         "downloadCPFile": string;
+                        "openCloseEncounterChangeDate": string;
                     };
                     "tableNames": {
                         "F": string;
@@ -3022,6 +3023,7 @@ export type I18nTranslations = {
                     "delete": string;
                     "setRisersFallers": string;
                     "openCloseDate": string;
+                    "openCloseEncounterChangeDate": string;
                     "makeOfficial": string;
                     "makeUnofficial": string;
                     "sync": string;
@@ -3074,6 +3076,24 @@ export type I18nTranslations = {
                     "form": {
                         "openDate": string;
                         "closeDate": string;
+                    };
+                    "buttons": {
+                        "cancel": string;
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                        "error": string;
+                    };
+                };
+                "openCloseEncounterChangeDateDialog": {
+                    "title": string;
+                    "form": {
+                        "changeOpenDate": string;
+                        "changeCloseRequestDatePeriod1": string;
+                        "changeCloseDatePeriod1": string;
+                        "changeCloseRequestDatePeriod2": string;
+                        "changeCloseDatePeriod2": string;
                     };
                     "buttons": {
                         "cancel": string;
