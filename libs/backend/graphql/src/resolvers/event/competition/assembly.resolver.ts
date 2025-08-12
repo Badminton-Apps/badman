@@ -121,6 +121,9 @@ export class AssemblyResolver {
       });
 
       if (!created) {
+        this.logger.debug(
+          `UPDATED: Assembly for encounter with ID ${assembly.encounterId} existed in the database and will be updated`,
+        );
         return assemblyDb.update({
           captainId: assembly?.captainId ?? assemblyDb.captainId,
           description: assembly?.description ?? assemblyDb.description,
@@ -142,6 +145,9 @@ export class AssemblyResolver {
         });
       }
 
+      this.logger.debug(
+        `CREATED: A new assembly for encounter with ID ${assembly.encounterId} was created.`,
+      );
       return assemblyDb;
     } catch (error) {
       this.logger.error(error);
