@@ -3347,6 +3347,20 @@ export type I18nTranslations = {
                     "3Sets": string;
                     "saveChanges": string;
                 };
+                "dialogs": {
+                    "gameDialog": {
+                        "winnerStatus": {
+                            "1": string;
+                            "2": string;
+                            "4": string;
+                            "5": string;
+                            "6": string;
+                            "7": string;
+                            "10": string;
+                            "12": string;
+                        };
+                    };
+                };
                 "inputs": {
                     "present": string;
                     "confirm": string;
