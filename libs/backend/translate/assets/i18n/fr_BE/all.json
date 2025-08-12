@@ -1230,7 +1230,18 @@
       "label": "Lecteur de recherche",
       "not-found": "Joueur introuvable"
     },
-    "title": "Joueurs"
+    "title": "Joueurs",
+    "statuses": {
+      "won": "Won",
+      "lost": "Lost",
+      "draw": "Draw",
+      "forfeit": "Forfeit",
+      "absence": "Absent",
+      "noPlayers": "Aucun joueur",
+      "disqualified": "Disqualifié",
+      "stopped": "Arrêté",
+      "unknown": "Inconnu"
+    }
   },
   "points": {
     "title": "Tableau des points"

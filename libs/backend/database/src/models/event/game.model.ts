@@ -1,4 +1,5 @@
 // import { SocketEmitter, EVENTS } from '../../../sockets';
+import { GameStatus, GameType } from "@badman/utils";
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
@@ -46,15 +47,14 @@ import {
   Table,
   TableOptions,
 } from "sequelize-typescript";
-import { GameStatus, GameType } from "@badman/utils";
 import { GamePlayerMembershipType } from "../../_interception";
+import { Relation } from "../../wrapper";
 import { Player } from "../player.model";
 import { RankingPoint } from "../ranking";
 import { EncounterCompetition } from "./competition/encounter-competition.model";
 import { Court } from "./court.model";
 import { GamePlayerMembership } from "./game-player.model";
 import { DrawTournament } from "./tournament";
-import { Relation } from "../../wrapper";
 
 export const WINNER_STATUS = {
   HOME_TEAM_WIN: 1,
@@ -241,8 +241,26 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
     });
     const scores = games.reduce(
       (acc, game) => {
-        acc.home += game.winner === 1 ? 1 : 0;
-        acc.away += game.winner === 2 ? 1 : 0;
+        const winsForHome: number[] = [
+          WINNER_STATUS.HOME_TEAM_WIN,
+          WINNER_STATUS.AWAY_TEAM_FORFEIT,
+          WINNER_STATUS.AWAY_TEAM_DISQUALIFIED,
+          WINNER_STATUS.AWAY_TEAM_PLAYER_ABSENT,
+        ];
+        const winsForAway: number[] = [
+          WINNER_STATUS.AWAY_TEAM_WIN,
+          WINNER_STATUS.HOME_TEAM_FORFEIT,
+          WINNER_STATUS.HOME_TEAM_DISQUALIFIED,
+          WINNER_STATUS.HOME_TEAM_PLAYER_ABSENT,
+        ];
+
+        // We don't count WINNER_STATUS.NO_PLAYERS_PRESENT, WINNER_STATUS.GAME_STOPPED
+        // In that case, the sum of the scores will be less than 8
+        const winnerStatus = game.winner;
+        if (winnerStatus) {
+          acc.home += winsForHome.includes(winnerStatus) ? 1 : 0;
+          acc.away += winsForAway.includes(winnerStatus) ? 1 : 0;
+        }
         return acc;
       },
       { home: 0, away: 0 }

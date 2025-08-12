@@ -752,7 +752,7 @@
       "mix": "Mix"
     },
     "messages": {
-      "claimAccountSuccess": "Account claimed successfully"
+      "claimAccountSuccessc": "Account claimed successfully"
     },
     "crud": {
       "title": "Edit profile",
@@ -1782,6 +1782,17 @@
       "won": "Won",
       "lost": "Lost",
       "draw": "Draw",
+      "statuses": {
+        "won": "Won",
+        "lost": "Lost",
+        "draw": "Draw",
+        "forfeit": "Forfeit",
+        "absence": "Absence",
+        "noPlayers": "No players",
+        "disqualified": "Disqualified",
+        "stopped": "Stopped",
+        "unknown": "Unknown"
+      },
       "buttons": {
         "change": "Change",
         "create": "Create",
