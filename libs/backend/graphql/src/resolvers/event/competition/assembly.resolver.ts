@@ -82,7 +82,7 @@ export class AssemblyResolver {
       ?.sort(sortPlayers);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Assembly)
   async createAssembly(@User() user: Player, @Args("assembly") assembly: AssemblyInput) {
     if (!assembly) throw new Error("Assembly is required");
     if (!assembly.encounterId) throw new Error("Encounter is required");
@@ -121,31 +121,37 @@ export class AssemblyResolver {
       });
 
       if (!created) {
-        await assemblyDb.update({
-          captainId: assembly?.captainId,
-          description: assembly?.description,
-          encounterId: assembly.encounterId,
-          teamId: assembly.teamId,
-          playerId: user.id,
-          isComplete: assembly.isComplete,
+        this.logger.debug(
+          `UPDATED: Assembly for encounter with ID ${assembly.encounterId} existed in the database and will be updated`
+        );
+        return assemblyDb.update({
+          captainId: assembly?.captainId ?? assemblyDb.captainId,
+          description: assembly?.description ?? assemblyDb.description,
+          encounterId: assembly.encounterId ?? assemblyDb.encounterId,
+          teamId: assembly.teamId ?? assemblyDb.teamId,
+          playerId: user.id ?? assemblyDb.playerId,
+          isComplete: assembly.isComplete ?? assemblyDb.isComplete,
           assembly: {
-            single1: assembly?.single1 || undefined,
-            single2: assembly?.single2 || undefined,
-            single3: assembly?.single3 || undefined,
-            single4: assembly?.single4 || undefined,
-            double1: assembly?.double1 || [],
-            double2: assembly?.double2 || [],
-            double3: assembly?.double3 || [],
-            double4: assembly?.double4 || [],
-            subtitudes: assembly?.subtitudes || [],
+            single1: assembly?.single1 ?? assemblyDb.assembly?.single1,
+            single2: assembly?.single2 ?? assemblyDb.assembly?.single2,
+            single3: assembly?.single3 ?? assemblyDb.assembly?.single3,
+            single4: assembly?.single4 ?? assemblyDb.assembly?.single4,
+            double1: assembly?.double1 ?? assemblyDb.assembly?.double1,
+            double2: assembly?.double2 ?? assemblyDb.assembly?.double2,
+            double3: assembly?.double3 ?? assemblyDb.assembly?.double3,
+            double4: assembly?.double4 ?? assemblyDb.assembly?.double4,
+            subtitudes: assembly?.subtitudes ?? assemblyDb.assembly?.subtitudes,
           },
         });
       }
 
-      return true;
+      this.logger.debug(
+        `CREATED: A new assembly for encounter with ID ${assembly.encounterId} was created.`
+      );
+      return assemblyDb;
     } catch (error) {
       this.logger.error(error);
-      return false;
+      return null;
     }
   }
 }
