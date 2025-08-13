@@ -210,11 +210,11 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
     // Game.emitSocket(game);
 
     // Update the score of the encounter
-    const competition = await game.getCompetition({
+    const encounterCompetition = await game.getCompetition({
       transaction: options.transaction,
     });
-    if (competition) {
-      await Game.updateEncounterScore(competition, options);
+    if (encounterCompetition && encounterCompetition.finished === false) {
+      await Game.updateEncounterScore(encounterCompetition, options);
     }
   }
 
