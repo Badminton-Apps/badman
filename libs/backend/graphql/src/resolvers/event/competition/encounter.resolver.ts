@@ -434,15 +434,17 @@ export class EncounterCompetitionResolver {
         throw new UnauthorizedException(`You do not have permission to edit this encounter`);
       }
 
-      const shouldUpdateTournooiNL =
-        updateEncounterCompetitionData.finished === true &&
-        updateEncounterCompetitionData.enteredById !== null &&
-        encounter.enteredOn === null &&
-        encounter.finished === false;
+      const encounterChangedToFinished =
+        updateEncounterCompetitionData.finished === true && encounter.finished === false;
+
+      const encounterChangedToEntered =
+        updateEncounterCompetitionData.enteredOn !== null && encounter.enteredOn === null;
+
+      const shouldUpdateToernooiNL = encounterChangedToFinished && encounterChangedToEntered;
 
       const result = await encounter.update(updateEncounterCompetitionData, { transaction });
 
-      if (shouldUpdateTournooiNL) {
+      if (shouldUpdateToernooiNL) {
         await this.syncQueue.add(
           Sync.EnterScores,
           {

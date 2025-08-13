@@ -3276,6 +3276,20 @@
         "3Sets": "3 games",
         "saveChanges": "Save changes"
       },
+      "dialogs": {
+        "gameDialog": {
+          "winnerStatus": {
+            "1": "{homeTeam} wins",
+            "2": "{awayTeam} wins",
+            "4": "Forfeit {homeTeam}",
+            "5": "Forfeit {awayTeam}",
+            "6": "Not played, no player(s) for {homeTeam}",
+            "7": "Not played, no player(s) for {awayTeam}",
+            "10": "Not played, no player(s)",
+            "12": "Not played, game abandoned"
+          }
+        }
+      },
       "inputs": {
         "present": "Present",
         "confirm": "Confirm",

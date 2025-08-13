@@ -88,6 +88,7 @@ export class EnterScoresProcessor {
               "set3Team1",
               "set3Team2",
               "gameType",
+              "winner",
             ],
             model: Game,
             include: [
