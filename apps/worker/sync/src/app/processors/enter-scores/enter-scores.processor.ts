@@ -197,11 +197,9 @@ export class EnterScoresProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      if (process.env.NODE_ENV !== "development") {
-        this.logger.log(`Closing browser page...`);
-        await page.close();
-        this.logger.log("Browser closed");
-      }
+      this.logger.log(`Closing browser page...`);
+      await page.close();
+      this.logger.log("Browser closed");
     }
   }
 }
