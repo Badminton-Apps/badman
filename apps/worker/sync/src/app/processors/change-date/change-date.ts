@@ -36,8 +36,6 @@ export class SyncDateProcessor {
     }
 
     try {
-      this.logger.log(`Changing date for encounter ${job.data.encounterId}`);
-
       // Check if visual reality has same date stored
       const draw = await encounter.getDrawCompetition();
       const subEvent = await draw.getSubEventCompetition();
@@ -51,6 +49,12 @@ export class SyncDateProcessor {
       const url = `${this.configService.get("VR_API")}/Tournament/${event.visualCode}/Match/${
         encounter.visualCode
       }/Date`;
+
+      const toernooiUrl = `https://www.toernooi.nl/sport/matchresult.aspx?id=${event.visualCode}&match=${encounter.visualCode}`;
+
+      this.logger.log(
+        `Changing date for encounter ${job.data.encounterId}. Original date: ${encounter.originalDate}, new date: ${encounter.date}. Toernooi url: ${toernooiUrl}`
+      );
 
       const body = `
     <TournamentMatch>
@@ -73,6 +77,7 @@ export class SyncDateProcessor {
       };
 
       if (this.configService.get("NODE_ENV") === "production") {
+        ``;
         const resultPut = await axios(options);
         const parser = new XMLParser();
 
