@@ -50,7 +50,7 @@ export class SyncDateProcessor {
         encounter.visualCode
       }/Date`;
 
-      const toernooiUrl = `https://www.toernooi.nl/sport/matchresult.aspx?id=${event.visualCode}&match=${encounter.visualCode}`;
+      const toernooiUrl = `https://www.toernooi.nl/sport/teammatch.aspx?id=${event.visualCode}&match=${encounter.visualCode}`;
 
       this.logger.log(
         `Changing date for encounter ${job.data.encounterId}. Original date: ${encounter.originalDate}, new date: ${encounter.date}. Toernooi url: ${toernooiUrl}`
