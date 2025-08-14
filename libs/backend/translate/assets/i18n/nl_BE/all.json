@@ -3062,6 +3062,20 @@
         "3Sets": "3 games",
         "saveChanges": "Wijzigingen opslaan"
       },
+      "dialogs": {
+        "gameDialog": {
+          "winnerStatus": {
+            "1": "{homeTeam} wint",
+            "2": "{awayTeam} wint",
+            "4": "Opgave {homeTeam}",
+            "5": "Opgave {awayTeam}",
+            "6": "Niet gespeld, geen speler(s) {homeTeam}",
+            "7": "Niet gespeld, geen speler(s) {awayTeam}",
+            "10": "Niet gespeld, geen speler(s)",
+            "12": "Niet gespeld, wedstrijd gestaakt"
+          }
+        }
+      },
       "positions": {
         "captain": "Ploegkapitein",
         "gameLeader": "Wedstrijdleider",

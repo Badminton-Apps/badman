@@ -56,6 +56,24 @@ import { GamePlayerMembership } from "./game-player.model";
 import { DrawTournament } from "./tournament";
 import { Relation } from "../../wrapper";
 
+export const WINNER_STATUS = {
+  HOME_TEAM_WIN: 1,
+  AWAY_TEAM_WIN: 2,
+  HOME_TEAM_FORFEIT: 4,
+  AWAY_TEAM_FORFEIT: 5,
+  HOME_TEAM_PLAYER_ABSENT: 6,
+  AWAY_TEAM_PLAYER_ABSENT: 7,
+  NO_PLAYERS_PRESENT: 10,
+  GAME_STOPPED: 12,
+  HOME_TEAM_DISQUALIFIED: 106,
+  AWAY_TEAM_DISQUALIFIED: 107,
+} as const;
+
+/**
+ * Valid winner status values
+ */
+export const VALID_WINNER_VALUES = Object.values(WINNER_STATUS);
+
 @Table({
   timestamps: true,
   schema: "event",
@@ -107,7 +125,15 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
   set3Team2?: number;
 
   @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
+  @Column({
+    type: DataType.NUMBER,
+    validate: {
+      isIn: {
+        args: [VALID_WINNER_VALUES],
+        msg: `Winner must be one of: ${VALID_WINNER_VALUES.join(", ")}. Check the winner status const for more info. These statuses match the winner status in the visual tournament.`,
+      },
+    },
+  })
   winner?: number;
 
   @Field(() => Int, { nullable: true })
@@ -184,11 +210,11 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
     // Game.emitSocket(game);
 
     // Update the score of the encounter
-    const competition = await game.getCompetition({
+    const encounterCompetition = await game.getCompetition({
       transaction: options.transaction,
     });
-    if (competition) {
-      await Game.updateEncounterScore(competition, options);
+    if (encounterCompetition && encounterCompetition.finished === false) {
+      await Game.updateEncounterScore(encounterCompetition, options);
     }
   }
 
