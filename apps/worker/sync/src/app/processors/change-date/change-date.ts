@@ -41,6 +41,11 @@ export class SyncDateProcessor {
       const subEvent = await draw.getSubEventCompetition();
       const event = await subEvent.getEventCompetition();
 
+      if (event.visualCode === null) {
+        this.logger.error(`No visual code found for ${event?.name}`);
+        return;
+      }
+
       const url = `${this.configService.get("VR_API")}/Tournament/${event.visualCode}/Match/${
         encounter.visualCode
       }/Date`;
@@ -50,11 +55,6 @@ export class SyncDateProcessor {
       this.logger.log(
         `Changing date for encounter ${job.data.encounterId}. Original date: ${encounter.originalDate}, new date: ${encounter.date}. Toernooi url: ${toernooiUrl}`
       );
-
-      if (event.visualCode === null) {
-        this.logger.error(`No visual code found for ${event?.name}`);
-        return;
-      }
 
       const body = `
     <TournamentMatch>
