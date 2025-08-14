@@ -1,24 +1,24 @@
+import { User } from "@badman/backend-authorization";
 import {
   DrawTournament,
   EncounterCompetition,
   Game,
-  GamePlayerMembershipType,
+  GameNewInput,
   GamePlayerMembership,
+  GamePlayerMembershipType,
+  GameUpdateInput,
   Player,
+  RankingLastPlace,
   RankingPoint,
   RankingSystem,
-  GameNewInput,
-  GameUpdateInput,
-  RankingLastPlace,
 } from "@badman/backend-database";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { getRankingProtected } from "@badman/utils";
+import { InjectQueue } from "@nestjs/bull";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
-import { ListArgs } from "../../utils";
-import { getRankingProtected } from "@badman/utils";
-import { User } from "@badman/backend-authorization";
-import { InjectQueue } from "@nestjs/bull";
-import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Queue } from "bull";
+import { ListArgs } from "../../utils";
 
 import { Sequelize } from "sequelize-typescript";
 
@@ -198,8 +198,14 @@ export class GamesResolver {
         }
       }
 
+      // Explicit null / undefined check because we do want to pass the check
+      // when the winner is "0"
+      if (gameData.winner !== undefined && gameData.winner !== null) {
+        await Game.updateEncounterScore(encounter, { transaction });
+      }
+
       // if game is not a draw, update the score of the encounter
-      if (gameData.winner !== 0) {
+      /*  if (gameData.winner !== 0) {
         await encounter.update(
           {
             ...(gameData.winner === 1 ? { homeScore: encounter.homeScore + 1 } : {}),
@@ -208,7 +214,7 @@ export class GamesResolver {
           { transaction }
         );
       }
-
+ */
       await transaction.commit();
       return game;
     } catch (e) {
@@ -304,8 +310,12 @@ export class GamesResolver {
         }
       }
 
+      if (gameData.winner !== undefined && gameData.winner !== null) {
+        await Game.updateEncounterScore(encounter, { transaction });
+      }
+
       // if game is not a draw, update the score of the encounter
-      if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
+      /* if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
         // updates the score of the encounter, and if the winner changes for whatever reason, the score is corrected on both sides
         await encounter.update(
           {
@@ -324,7 +334,7 @@ export class GamesResolver {
           },
           { transaction }
         );
-      }
+      } */
 
       await transaction.commit();
       return updatedGame;
