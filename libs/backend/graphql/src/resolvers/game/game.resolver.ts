@@ -1,24 +1,24 @@
+import { User } from "@badman/backend-authorization";
 import {
   DrawTournament,
   EncounterCompetition,
   Game,
-  GamePlayerMembershipType,
+  GameNewInput,
   GamePlayerMembership,
+  GamePlayerMembershipType,
+  GameUpdateInput,
   Player,
+  RankingLastPlace,
   RankingPoint,
   RankingSystem,
-  GameNewInput,
-  GameUpdateInput,
-  RankingLastPlace,
 } from "@badman/backend-database";
+import { Sync, SyncQueue } from "@badman/backend-queue";
+import { getRankingProtected } from "@badman/utils";
+import { InjectQueue } from "@nestjs/bull";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
-import { ListArgs } from "../../utils";
-import { getRankingProtected } from "@badman/utils";
-import { User } from "@badman/backend-authorization";
-import { InjectQueue } from "@nestjs/bull";
-import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Queue } from "bull";
+import { ListArgs } from "../../utils";
 
 import { Sequelize } from "sequelize-typescript";
 
@@ -271,9 +271,17 @@ export class GamesResolver {
         { transaction }
       );
 
-      // if the game has no players, and there are players in the request, add the players to the game.
-      // this is only used in cases when the frontend is updating a game record orginating from toernooi.nl
-      if (gameData.players && game.players?.length === 0) {
+      // if there are players in the request, replace the existing players with the new ones
+      if (gameData.players) {
+        // Delete existing player memberships for this game
+        await GamePlayerMembership.destroy({
+          where: {
+            gameId: game.id,
+          },
+          transaction,
+        });
+
+        // Create new player memberships
         for (const player of gameData.players) {
           const system = await RankingSystem.findOne({
             where: {
