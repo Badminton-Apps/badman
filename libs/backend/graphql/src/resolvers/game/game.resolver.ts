@@ -18,6 +18,7 @@ import { InjectQueue } from "@nestjs/bull";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Queue } from "bull";
+import { Op } from "sequelize";
 import { ListArgs } from "../../utils";
 
 import { Sequelize } from "sequelize-typescript";
@@ -273,43 +274,47 @@ export class GamesResolver {
 
       // if there are players in the request, replace the existing players with the new ones
       if (gameData.players) {
-        // Delete existing player memberships for this game
-        await GamePlayerMembership.destroy({
-          where: {
-            gameId: game.id,
-          },
-          transaction,
-        });
-
-        // Create new player memberships
+        // Prepare player memberships data
+        const playerMemberships = [];
         for (const player of gameData.players) {
-          const system = await RankingSystem.findOne({
-            where: {
-              primary: true,
-            },
-          });
           const ranking = await RankingLastPlace.findOne({
             where: {
               playerId: player.id,
             },
             transaction,
           });
-          await GamePlayerMembership.create(
-            {
-              playerId: player.id,
-              gameId: game.id,
-              team: player.team,
-              player: player.player,
-              systemId: system?.id,
-              single: ranking?.single,
-              double: ranking?.double,
-              mix: ranking?.mix,
-            },
-            {
-              transaction,
-            }
-          );
+
+          const membershipData = {
+            playerId: player.id,
+            gameId: game.id,
+            team: player.team,
+            player: player.player,
+            systemId: player.systemId,
+            single: ranking?.single,
+            double: ranking?.double,
+            mix: ranking?.mix,
+          };
+          playerMemberships.push(membershipData);
         }
+
+        // Use bulkCreate with updateOnDuplicate to handle existing records
+        await GamePlayerMembership.bulkCreate(playerMemberships, {
+          transaction,
+          updateOnDuplicate: ["team", "player", "systemId", "single", "double", "mix"],
+        });
+
+        // Remove any existing memberships that are not in the new list
+        const newPlayerIds = gameData.players.map((p) => p.id);
+
+        await GamePlayerMembership.destroy({
+          where: {
+            gameId: game.id,
+            playerId: {
+              [Op.notIn]: newPlayerIds,
+            },
+          },
+          transaction,
+        });
       }
 
       // if game is not a draw, update the score of the encounter
