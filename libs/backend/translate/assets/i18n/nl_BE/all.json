@@ -738,7 +738,18 @@
       "label": "Zoek speler",
       "not-found": "Speler niet gevonden"
     },
-    "title": "Spelers"
+    "title": "Spelers",
+    "statuses": {
+      "won": "Gewonnen",
+      "lost": "Verloren",
+      "draw": "Gelijk",
+      "forfeit": "Forfait",
+      "absence": "Afwezig",
+      "noPlayers": "Geen spelers",
+      "disqualified": "Gediskwalificeerd",
+      "stopped": "Afgebroken",
+      "unknown": "Onbekend"
+    }
   },
   "points": {
     "title": "Puntentabel"
@@ -1488,6 +1499,17 @@
       "won": "Gewonnen",
       "lost": "Verloren",
       "draw": "Gelijkspel",
+      "statuses": {
+        "won": "Gewonnen",
+        "lost": "Verloren",
+        "draw": "Gelijkspel",
+        "forfeit": "Forfait",
+        "absence": "Afwezig",
+        "noPlayers": "Geen spelers",
+        "disqualified": "Geschorst",
+        "stopped": "Afgebroken",
+        "unknown": "Onbekend"
+      },
       "buttons": {
         "change": "Wijzigen",
         "create": "Aanmaken",
@@ -3069,10 +3091,12 @@
             "2": "{awayTeam} wint",
             "4": "Opgave {homeTeam}",
             "5": "Opgave {awayTeam}",
-            "6": "Niet gespeld, geen speler(s) {homeTeam}",
-            "7": "Niet gespeld, geen speler(s) {awayTeam}",
-            "10": "Niet gespeld, geen speler(s)",
-            "12": "Niet gespeld, wedstrijd gestaakt"
+            "6": "Niet gespeeld, geen speler(s) {homeTeam}",
+            "7": "Niet gespeeld, geen speler(s) {awayTeam}",
+            "10": "Niet gespeeld, geen speler(s)",
+            "12": "Niet gespeeld, wedstrijd gestaakt",
+            "106": "{homeTeam} gediskwalificeerd",
+            "107": "{awayTeam} gediskwalificeerd"
           }
         }
       },
