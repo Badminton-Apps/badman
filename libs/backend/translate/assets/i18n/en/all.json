@@ -752,7 +752,7 @@
       "mix": "Mix"
     },
     "messages": {
-      "claimAccountSuccess": "Account claimed successfully"
+      "claimAccountSuccessc": "Account claimed successfully"
     },
     "crud": {
       "title": "Edit profile",
@@ -1782,6 +1782,17 @@
       "won": "Won",
       "lost": "Lost",
       "draw": "Draw",
+      "statuses": {
+        "won": "Won",
+        "lost": "Lost",
+        "draw": "Draw",
+        "forfeit": "Forfeit",
+        "absence": "Absence",
+        "noPlayers": "No players",
+        "disqualified": "Disqualified",
+        "stopped": "Stopped",
+        "unknown": "Unknown"
+      },
       "buttons": {
         "change": "Change",
         "create": "Create",
@@ -3286,7 +3297,9 @@
             "6": "Not played, no player(s) for {homeTeam}",
             "7": "Not played, no player(s) for {awayTeam}",
             "10": "Not played, no player(s)",
-            "12": "Not played, game abandoned"
+            "12": "Not played, game abandoned",
+            "106": "{homeTeam} disqualified",
+            "107": "{awayTeam} disqualified"
           }
         }
       },
