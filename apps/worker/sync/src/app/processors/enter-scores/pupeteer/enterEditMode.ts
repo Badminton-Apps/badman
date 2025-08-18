@@ -23,9 +23,9 @@ export async function enterEditMode(
     const targetPage = page;
     const promises = [];
     promises.push(targetPage.waitForNavigation());
-    await targetPage.goto(
-      `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`
-    );
+    const url = `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`;
+    console.log(`Entering edit mode for encounter ${matchId} at url ${url}`);
+    await targetPage.goto(url);
     await runParallel(promises);
   }
 }
