@@ -199,8 +199,14 @@ export class GamesResolver {
         }
       }
 
+      // Explicit null / undefined check because we do want to pass the check
+      // when the winner is "0"
+      if (gameData.winner !== undefined && gameData.winner !== null) {
+        await Game.updateEncounterScore(encounter, { transaction });
+      }
+
       // if game is not a draw, update the score of the encounter
-      if (gameData.winner !== 0) {
+      /*  if (gameData.winner !== 0) {
         await encounter.update(
           {
             ...(gameData.winner === 1 ? { homeScore: encounter.homeScore + 1 } : {}),
@@ -209,7 +215,7 @@ export class GamesResolver {
           { transaction }
         );
       }
-
+ */
       await transaction.commit();
       return game;
     } catch (e) {
@@ -317,8 +323,12 @@ export class GamesResolver {
         });
       }
 
+      if (gameData.winner !== undefined && gameData.winner !== null) {
+        await Game.updateEncounterScore(encounter, { transaction });
+      }
+
       // if game is not a draw, update the score of the encounter
-      if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
+      /* if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
         // updates the score of the encounter, and if the winner changes for whatever reason, the score is corrected on both sides
         await encounter.update(
           {
@@ -337,7 +347,7 @@ export class GamesResolver {
           },
           { transaction }
         );
-      }
+      } */
 
       await transaction.commit();
       return updatedGame;
