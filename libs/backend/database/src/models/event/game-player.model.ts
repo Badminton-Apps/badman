@@ -6,12 +6,18 @@ import {
   ForeignKey,
   Index,
   Model,
+  PrimaryKey,
   Table,
   TableOptions,
 } from "sequelize-typescript";
 import { Player } from "../player.model";
 import { RankingSystem } from "../ranking";
 import { Game } from "./game.model";
+
+// Two primary keys: playerId and gameId
+// This is a many-to-many relationship between players and games -> uniqueness is defined by the combination of playerId and gameId
+// this is enforced at the database level by a composite primary key constraint called 'GamePlayers_pkey'
+// (It looks like the table was renamed to GamePlayerMemberships but the constraint wasn't)
 
 @Table({
   timestamps: false,
@@ -24,12 +30,14 @@ export class GamePlayerMembership extends Model {
   }
 
   @Field(() => ID, { nullable: true })
+  @PrimaryKey
   @ForeignKey(() => Player)
   @Index
   @Column(DataType.UUIDV4)
   playerId?: string;
 
   @Field(() => ID, { nullable: true })
+  @PrimaryKey
   @ForeignKey(() => Game)
   @Index
   @Column(DataType.UUIDV4)

@@ -752,7 +752,7 @@
       "mix": "Mix"
     },
     "messages": {
-      "claimAccountSuccess": "Account claimed successfully"
+      "claimAccountSuccessc": "Account claimed successfully"
     },
     "crud": {
       "title": "Edit profile",
@@ -1782,6 +1782,17 @@
       "won": "Won",
       "lost": "Lost",
       "draw": "Draw",
+      "statuses": {
+        "won": "Won",
+        "lost": "Lost",
+        "draw": "Draw",
+        "forfeit": "Forfeit",
+        "absence": "Absence",
+        "noPlayers": "No players",
+        "disqualified": "Disqualified",
+        "stopped": "Stopped",
+        "unknown": "Unknown"
+      },
       "buttons": {
         "change": "Change",
         "create": "Create",
@@ -3275,6 +3286,22 @@
         "2Sets": "2 games",
         "3Sets": "3 games",
         "saveChanges": "Save changes"
+      },
+      "dialogs": {
+        "gameDialog": {
+          "winnerStatus": {
+            "1": "{homeTeam} wins",
+            "2": "{awayTeam} wins",
+            "4": "Forfeit {homeTeam}",
+            "5": "Forfeit {awayTeam}",
+            "6": "Not played, no player(s) for {homeTeam}",
+            "7": "Not played, no player(s) for {awayTeam}",
+            "10": "Not played, no player(s)",
+            "12": "Not played, game abandoned",
+            "106": "{homeTeam} disqualified",
+            "107": "{awayTeam} disqualified"
+          }
+        }
       },
       "inputs": {
         "present": "Present",
