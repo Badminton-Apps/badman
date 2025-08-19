@@ -158,6 +158,7 @@ export class EncounterChangeCompetitionResolver {
     let encounterChange: EncounterChange;
     let locationHasChanged = false;
     let eventId: string | undefined;
+    let shouldCreateSyncJob = false;
 
     try {
       // Check if encounter has change
@@ -173,71 +174,24 @@ export class EncounterChangeCompetitionResolver {
 
       const dates = await encounterChange.getDates();
 
-      // Set the state if it is the home team or the user has the change-any:encounter permission
+      // Handle the encounter change based on acceptance status
       if (newChangeEncounter.accepted) {
-        this.logger.debug("accepted action");
-        const selectedDates = newChangeEncounter.dates?.filter((r) => r.selected === true);
-        if (selectedDates?.length !== 1) {
-          // Multiple dates were selected
-          throw new Error("Multiple dates selected");
-        }
-        // Copy original date
-        if (encounter.originalDate === null) {
-          encounter.originalDate = encounter.date;
-        }
-        // Set date to the selected date
-        encounter.date = selectedDates[0].date;
-
-        // Set location to the selected location
-        if (encounter.locationId != selectedDates[0].locationId) {
-          // store the original location
-          if (encounter.originalLocationId === null) {
-            encounter.originalLocationId = encounter.locationId;
-          }
-
-          // set the new location
-          encounter.locationId = selectedDates[0].locationId;
-          locationHasChanged = true;
-        }
-
-        // Save changes
-        // Must be before Sync Queue is triggered (otherwise wrong date is passed)
-        await encounter.save({ transaction });
-
-        await Logging.create({
-          action: LoggingAction.EncounterChanged,
-          playerId: user.id,
-          meta: {
-            encounterId: encounter.id,
-            date: encounter.date,
-            originalDate: encounter.originalDate,
-          },
-        });
-
-        // Accept
-        await this.syncQueue.add(
-          Sync.ChangeDate,
-          {
-            encounterId: encounter.id,
-          },
-          {
-            removeOnComplete: true,
-            removeOnFail: false,
-          }
+        await this.processAcceptedEncounterChange(
+          encounter,
+          newChangeEncounter,
+          dates,
+          user,
+          transaction
         );
-
-        // Remove the selected date from the change dates
-        const selectedDate = selectedDates[0];
-        const dateToRemove = dates.find((d) => d.date?.getTime() === selectedDate.date?.getTime());
-        if (dateToRemove) {
-          await dateToRemove.destroy({ transaction });
-        }
-
+        locationHasChanged = this.checkIfLocationChanged(encounter);
         encounterChange.accepted = true;
+        shouldCreateSyncJob = true;
+        this.logger.debug(
+          `Will create sync job for encounter ${encounter.id} after transaction commits`
+        );
       } else {
-        this.logger.debug("this is a new change request");
+        this.logger.debug(`Creating new change request for encounter ${encounter.id}`);
         encounterChange.accepted = false;
-        this.logger.debug(`Change encounter ${encounter.id}: ${encounterChange.accepted}`);
       }
 
       // Load the event data directly to ensure we get all the required fields
@@ -304,6 +258,31 @@ export class EncounterChangeCompetitionResolver {
       this.logger.warn("rollback", e);
       await transaction.rollback();
       throw e;
+    }
+
+    // Create sync job AFTER transaction commits to avoid race conditions
+    if (shouldCreateSyncJob) {
+      try {
+        this.logger.debug(`Creating ChangeDate sync job for encounter ${encounter.id}`);
+        await this.syncQueue.add(
+          Sync.ChangeDate,
+          {
+            encounterId: encounter.id,
+          },
+          {
+            removeOnComplete: true,
+            removeOnFail: false,
+          }
+        );
+        this.logger.debug(`Successfully created ChangeDate sync job for encounter ${encounter.id}`);
+      } catch (syncError) {
+        this.logger.error(
+          `Failed to create ChangeDate sync job for encounter ${encounter.id}:`,
+          syncError
+        );
+        // Don't throw here - the database changes are already committed
+        // The job can be manually triggered if needed
+      }
     }
 
     // Notify the user
@@ -410,6 +389,71 @@ export class EncounterChangeCompetitionResolver {
         await date.destroy({ transaction });
       }
     }
+  }
+
+  /**
+   * Process an accepted encounter change by updating dates, locations, and logging
+   */
+  private async processAcceptedEncounterChange(
+    encounter: EncounterCompetition,
+    changeRequest: EncounterChangeNewInput,
+    existingDates: EncounterChangeDate[],
+    user: Player,
+    transaction: Transaction
+  ): Promise<void> {
+    this.logger.debug(`Accepting encounter change for encounter ${encounter.id}`);
+
+    const selectedDates = changeRequest.dates?.filter((r) => r.selected === true);
+    if (selectedDates?.length !== 1) {
+      throw new Error("Multiple dates selected");
+    }
+
+    const selectedDate = selectedDates[0];
+
+    // Update encounter date
+    if (encounter.originalDate === null) {
+      encounter.originalDate = encounter.date;
+    }
+    encounter.date = selectedDate.date;
+
+    // Update encounter location if changed
+    if (encounter.locationId != selectedDate.locationId) {
+      if (encounter.originalLocationId === null) {
+        encounter.originalLocationId = encounter.locationId;
+      }
+      encounter.locationId = selectedDate.locationId;
+    }
+
+    // Save encounter changes
+    await encounter.save({ transaction });
+
+    // Log the change
+    await Logging.create({
+      action: LoggingAction.EncounterChanged,
+      playerId: user.id,
+      meta: {
+        encounterId: encounter.id,
+        date: encounter.date,
+        originalDate: encounter.originalDate,
+      },
+    });
+
+    // Remove the selected date from the change dates
+    const dateToRemove = existingDates.find(
+      (d) => d.date?.getTime() === selectedDate.date?.getTime()
+    );
+    if (dateToRemove) {
+      await dateToRemove.destroy({ transaction });
+    }
+  }
+
+  /**
+   * Check if the encounter location has changed from its original
+   */
+  private checkIfLocationChanged(encounter: EncounterCompetition): boolean {
+    return (
+      encounter.originalLocationId !== null && encounter.originalLocationId !== encounter.locationId
+    );
   }
 }
 
