@@ -261,11 +261,9 @@ export class GamesResolver {
         throw new NotFoundException(`${Game.name}: ${gameData.gameId}`);
       }
 
-      // used to check the current winner of the game against the update data, to see if the score of the new loser needs to drop
-      const oldGameWinner = game.winner;
-
       const updatedGame = await game.update(
         {
+          playedAt: gameData.playedAt,
           set1Team1: gameData.set1Team1,
           set1Team2: gameData.set1Team2,
           set2Team1: gameData.set2Team1,
@@ -326,28 +324,6 @@ export class GamesResolver {
       if (gameData.winner !== undefined && gameData.winner !== null) {
         await Game.updateEncounterScore(encounter, { transaction });
       }
-
-      // if game is not a draw, update the score of the encounter
-      /* if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
-        // updates the score of the encounter, and if the winner changes for whatever reason, the score is corrected on both sides
-        await encounter.update(
-          {
-            ...(gameData.winner === 1
-              ? {
-                  homeScore: encounter.homeScore + 1,
-                  ...(oldGameWinner === 2 ? { awayScore: encounter.awayScore - 1 } : {}),
-                }
-              : {}),
-            ...(gameData.winner === 2
-              ? {
-                  awayScore: encounter.awayScore + 1,
-                  ...(oldGameWinner === 1 ? { homeScore: encounter.homeScore - 1 } : {}),
-                }
-              : {}),
-          },
-          { transaction }
-        );
-      } */
 
       await transaction.commit();
       return updatedGame;
