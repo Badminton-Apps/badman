@@ -1,6 +1,8 @@
 import { Page } from "puppeteer";
 import { waitForSelectors } from "@badman/backend-pupeteer";
 import { Logger } from "@nestjs/common";
+import { selectOptionByValue } from "../utils/selectSelectOption";
+import { addUnknownPlayer } from "./addUnknownPlayer";
 
 export async function selectPlayer(
   pupeteer: {
@@ -41,33 +43,19 @@ export async function selectPlayer(
         continue;
       }
 
-      logger.debug(`optionContent`, optionContent);
-      logger.debug(`memberId`, memberId);
-
-      if (optionContent.indexOf(memberId) > -1) {
+      if (optionContent.includes(memberId)) {
+        logger.debug(`Found player ${memberId} in select with optionContent ${optionContent}`);
         selectedOption = currentOption;
       }
     }
     if (!selectedOption) {
       console.error(`Could not find player ${memberId} in select`);
+      await addUnknownPlayer({ page }, option, memberId, logger);
     }
 
-    const optionValue = await page.evaluate((el) => el.value, selectedOption ?? options[3]);
-
-    await option.focus();
-    await option.evaluate((el, value) => {
-      // Cast to HTMLSelectElement to access selectedIndex
-      const select = el as HTMLSelectElement;
-
-      // Find the index of the option with the matching value
-      const index = Array.from(select.options).findIndex((opt) => opt.value === value);
-      if (index !== -1) {
-        select.selectedIndex = index;
-      }
-
-      // Trigger necessary events
-      select.dispatchEvent(new Event("input", { bubbles: true }));
-      select.dispatchEvent(new Event("change", { bubbles: true }));
-    }, optionValue);
+    if (selectedOption) {
+      const optionValue = await page.evaluate((el) => el.value, selectedOption);
+      await selectOptionByValue(option, optionValue);
+    }
   }
 }
