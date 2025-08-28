@@ -8,7 +8,13 @@ import {
   Team,
 } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
-import { acceptCookies, getPage, signIn } from "@badman/backend-pupeteer";
+import {
+  acceptCookies,
+  getPage,
+  signIn,
+  getBrowser,
+  startBrowserHealthMonitoring,
+} from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { SearchService } from "@badman/backend-search";
 import { ConfigType } from "@badman/utils";
@@ -85,6 +91,9 @@ export class CheckEncounterProcessor {
   ) {
     this._username = configService.get("VR_API_USER");
     this._password = configService.get("VR_API_PASS");
+
+    // Start browser health monitoring
+    startBrowserHealthMonitoring();
   }
 
   @Process(Sync.CheckEncounters)
@@ -178,9 +187,23 @@ export class CheckEncounterProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      // Close browser
-      if (page) {
-        await page.close();
+      try {
+        // Close browser properly
+        if (page) {
+          await page.close();
+
+          // Check if we should close the browser instance
+          const browser = await getBrowser();
+          const pages = await browser.pages();
+          this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+          if (pages.length <= 1) {
+            this.logger.log("Closing browser instance...");
+            await browser.close();
+          }
+        }
+      } catch (error) {
+        this.logger.error("Error during browser cleanup:", error);
       }
 
       cronJob.amount++;
@@ -229,12 +252,26 @@ export class CheckEncounterProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      // Close browser
-      if (page) {
-        page.close();
+      try {
+        // Close browser properly
+        if (page) {
+          await page.close();
+
+          // Check if we should close the browser instance
+          const browser = await getBrowser();
+          const pages = await browser.pages();
+          this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+          if (pages.length <= 1) {
+            this.logger.log("Closing browser instance...");
+            await browser.close();
+          }
+        }
+      } catch (error) {
+        this.logger.error("Error during browser cleanup:", error);
       }
 
-      this.logger.log("Synced encounters");
+      this.logger.log("Synced encounter");
     }
   }
 

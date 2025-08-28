@@ -23,7 +23,7 @@ import {
 } from "./pupeteer";
 import { ConfigType } from "@badman/utils";
 import { enterGames } from "./pupeteer/enterGames";
-import { getPage } from "@badman/backend-pupeteer";
+import { getPage, getBrowser, startBrowserHealthMonitoring } from "@badman/backend-pupeteer";
 
 @Processor({
   name: SyncQueue,
@@ -39,6 +39,19 @@ export class EnterScoresProcessor {
   ) {
     this._username = configService.get("VR_API_USER");
     this._password = configService.get("VR_API_PASS");
+
+    // Start browser health monitoring
+    startBrowserHealthMonitoring();
+
+    // Add memory monitoring
+    setInterval(() => {
+      const used = process.memoryUsage();
+      this.logger.debug("Memory usage:", {
+        rss: Math.round(used.rss / 1024 / 1024) + "MB",
+        heapUsed: Math.round(used.heapUsed / 1024 / 1024) + "MB",
+        heapTotal: Math.round(used.heapTotal / 1024 / 1024) + "MB",
+      });
+    }, 60000); // Every minute
 
     this.logger.debug("Enter scores processor initialized");
   }
@@ -200,10 +213,26 @@ export class EnterScoresProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      if (!visualSyncEnabled) {
-        this.logger.log(`Closing browser page...`);
-        await page.close();
-        this.logger.log("Browser closed");
+      try {
+        if (!visualSyncEnabled) {
+          this.logger.log(`Closing browser page...`);
+          await page?.close();
+
+          // Get browser instance and close it properly
+          const browser = await getBrowser(headlessValue);
+          const pages = await browser.pages();
+          this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+          // If this was the last page, close the browser
+          if (pages.length <= 1) {
+            this.logger.log("Closing browser instance...");
+            await browser.close();
+          }
+
+          this.logger.log("Browser cleanup completed");
+        }
+      } catch (error) {
+        this.logger.error("Error during browser cleanup:", error);
       }
     }
   }
