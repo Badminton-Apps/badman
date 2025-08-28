@@ -16,6 +16,7 @@ import {
   HasOneSetAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
+  Op,
 } from "sequelize";
 import {
   BelongsTo,
@@ -267,6 +268,18 @@ export class EncounterCompetition extends Model<
     foreignKey: "linkId",
     constraints: false,
     scope: {
+      linkType: {
+        [Op.or]: ["home_comment", "away_comment", "game_leader_comment"],
+      },
+    },
+  })
+  confirmComments?: Relation<Comment[]>;
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: "linkId",
+    constraints: false,
+    scope: {
       linkType: "home_comment",
     },
   })
@@ -282,15 +295,15 @@ export class EncounterCompetition extends Model<
   })
   awayComments?: Relation<Comment[]>;
 
-  @Field(() => Comment, { nullable: true })
-  @HasOne(() => Comment, {
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
     foreignKey: "linkId",
     constraints: false,
     scope: {
       linkType: "game_leader_comment",
     },
   })
-  gameLeaderComment?: Relation<Comment>;
+  gameLeaderComments?: Relation<[Comment]>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
@@ -312,15 +325,9 @@ export class EncounterCompetition extends Model<
   })
   awayCommentsChange?: Relation<Comment[]>;
 
-  @Field(() => Comment, { nullable: true })
-  @HasOne(() => Comment, {
-    foreignKey: "linkId",
-    constraints: true,
-    scope: {
-      linkType: "encounter",
-    },
-  })
-  encounterComment?: Relation<Comment>;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.TEXT)
+  comments?: string;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;
@@ -384,9 +391,13 @@ export class EncounterCompetition extends Model<
   hasAssemblies!: HasManyHasAssociationsMixin<Assembly, string>;
   countAssemblies!: HasManyCountAssociationsMixin;
 
-  // Has one Location
-  getGameLeaderComment!: BelongsToGetAssociationMixin<Comment>;
-  setGameLeaderComment!: BelongsToSetAssociationMixin<Comment, string>;
+  // Has many GameLeaderComment
+  getGameLeaderComments!: HasManyGetAssociationsMixin<Comment>;
+  setGameLeaderComments!: HasManySetAssociationsMixin<Comment, string>;
+  addGameLeaderComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addGameLeaderComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeGameLeaderComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeGameLeaderComments!: HasManyRemoveAssociationsMixin<Comment, string>;
 
   // Has many HomeComment
   getHomeComments!: HasManyGetAssociationsMixin<Comment>;
@@ -410,10 +421,6 @@ export class EncounterCompetition extends Model<
   hasAwayComments!: HasManyHasAssociationsMixin<Comment, string>;
   countAwayComments!: HasManyCountAssociationsMixin;
 
-  // Has one EncounterComment
-  getEncounterComment!: BelongsToGetAssociationMixin<Comment>;
-  setEncounterComment!: BelongsToSetAssociationMixin<Comment, string>;
-
   // Has many HomeCommentsChange
   getHomeCommentsChanges!: HasManyGetAssociationsMixin<Comment>;
   setHomeCommentsChanges!: HasManySetAssociationsMixin<Comment, string>;
@@ -435,6 +442,17 @@ export class EncounterCompetition extends Model<
   hasAwayCommentsChange!: HasManyHasAssociationMixin<Comment, string>;
   hasAwayCommentsChanges!: HasManyHasAssociationsMixin<Comment, string>;
   countAwayCommentsChanges!: HasManyCountAssociationsMixin;
+
+  // Has many ConfirmComments
+  getConfirmComments!: HasManyGetAssociationsMixin<Comment>;
+  setConfirmComments!: HasManySetAssociationsMixin<Comment, string>;
+  addConfirmComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addConfirmComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeConfirmComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeConfirmComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasConfirmComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasConfirmComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countConfirmComments!: HasManyCountAssociationsMixin;
 }
 
 @InputType()
@@ -489,6 +507,9 @@ export class updateEncounterCompetitionInput {
 
   @Field(() => String, { nullable: true })
   tempAwayCaptainId?: string;
+
+  @Field(() => String, { nullable: true })
+  comments?: string;
 }
 
 @InputType()

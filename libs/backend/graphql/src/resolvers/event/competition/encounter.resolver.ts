@@ -36,6 +36,7 @@ import {
 } from "@nestjs/graphql";
 import { Queue } from "bull";
 import { Sequelize } from "sequelize-typescript";
+import { QueryTypes, Op } from "sequelize";
 import { ListArgs } from "../../../utils";
 
 @ObjectType()
@@ -77,6 +78,123 @@ export class EncounterCompetitionResolver {
       throw new NotFoundException(id);
     }
     return encounterCompetition;
+  }
+
+  @Query(() => [EncounterCompetition])
+  async playerEncounterCompetitions(
+    @User() user: Player,
+    @Args() listArgs: ListArgs
+  ): Promise<EncounterCompetition[]> {
+    // Use the provided playerId or fall back to the logged-in user's ID
+    const targetPlayerId = user?.id;
+
+    this.logger.log(
+      `[playerEncounterCompetitions] Query for player ${targetPlayerId} - take: ${listArgs.take}, skip: ${listArgs.skip}, order: ${JSON.stringify(listArgs.order)}`
+    );
+
+    if (!targetPlayerId) {
+      this.logger.warn("[playerEncounterCompetitions] No player ID found");
+      return [];
+    }
+    const queryResult = await this._sequelize.query(
+      `
+      SELECT DISTINCT ec.id, ec."date"
+      FROM event."EncounterCompetitions" ec
+      LEFT JOIN "Teams" t_home ON ec."homeTeamId" = t_home.id
+      LEFT JOIN "Teams" t_away ON ec."awayTeamId" = t_away.id
+      LEFT JOIN "TeamPlayerMemberships" tpm_home ON t_home.id = tpm_home."teamId" AND tpm_home."playerId" = :playerId
+      LEFT JOIN "TeamPlayerMemberships" tpm_away ON t_away.id = tpm_away."teamId" AND tpm_away."playerId" = :playerId
+      LEFT JOIN event."Games" g ON g."linkId" = ec.id AND g."linkType" = 'competition'
+      LEFT JOIN event."GamePlayerMemberships" gpm ON g.id = gpm."gameId" AND gpm."playerId" = :playerId
+      WHERE ec."date" IS NOT NULL
+        AND (
+          -- 1. Game Leader
+          ec."gameLeaderId" = :playerId
+          OR
+          -- 2. Temp Captains
+          ec."tempHomeCaptainId" = :playerId
+          OR
+          ec."tempAwayCaptainId" = :playerId
+          OR
+          -- 3. Team Captains
+          t_home."captainId" = :playerId
+          OR
+          t_away."captainId" = :playerId
+          OR
+          -- 4. Team Members (active memberships)
+          (tpm_home."playerId" = :playerId 
+           AND tpm_home."start" <= ec."date"
+           AND (tpm_home."end" IS NULL OR tpm_home."end" >= ec."date"))
+          OR
+          (tpm_away."playerId" = :playerId
+           AND tpm_away."start" <= ec."date"
+           AND (tpm_away."end" IS NULL OR tpm_away."end" >= ec."date"))
+          OR
+          -- 5. Game Players
+          gpm."playerId" = :playerId
+        )
+        AND (
+          -- Must have exactly 8 completed games
+          SELECT COUNT(*)
+          FROM event."Games" g_count
+          WHERE g_count."linkId" = ec.id 
+            AND g_count."linkType" = 'competition'
+            AND g_count."winner" IS NOT NULL 
+            AND g_count."winner" != 0
+        ) = 8
+    `,
+      {
+        replacements: { playerId: targetPlayerId },
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    let rawResults = queryResult as any;
+
+    // Handle case where results are wrapped in a 'stack' property
+    if (rawResults && rawResults.stack && Array.isArray(rawResults.stack)) {
+      rawResults = rawResults.stack;
+    }
+
+    if (!Array.isArray(rawResults)) {
+      this.logger.error(
+        "[playerEncounterCompetitions] Unable to process query results",
+        rawResults
+      );
+      return [];
+    }
+
+    const encounterIds = rawResults.map((row: { id: string; date: string }) => row.id);
+
+    if (encounterIds.length === 0) {
+      this.logger.log("[playerEncounterCompetitions] No encounters found for player");
+      return [];
+    }
+
+    if (!listArgs.take) {
+      listArgs.take = 3;
+    }
+
+    if (!listArgs.skip) {
+      listArgs.skip = 0;
+    }
+
+    if (!listArgs.order) {
+      listArgs.order = [{ field: "date", direction: "DESC" }];
+    }
+
+    const findOptions = ListArgs.toFindOptions(listArgs);
+
+    const encounters = await EncounterCompetition.findAll({
+      ...findOptions,
+      where: {
+        id: {
+          [Op.in]: encounterIds,
+        },
+      },
+    });
+
+    return encounters;
   }
 
   // @Query(() => PagedEncounterCompetition)
@@ -226,8 +344,8 @@ export class EncounterCompetitionResolver {
   }
 
   @ResolveField(() => Comment, { nullable: true })
-  async gameLeaderComment(@Parent() encounter: EncounterCompetition): Promise<Comment> {
-    return encounter.getGameLeaderComment();
+  async gameLeaderComments(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
+    return encounter.getGameLeaderComments();
   }
 
   @ResolveField(() => [Comment], { nullable: true })
@@ -238,6 +356,11 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => [Comment], { nullable: true })
   async awayCommentsChange(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getAwayComments();
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async confirmComments(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
+    return encounter.getConfirmComments() || [];
   }
 
   @ResolveField(() => EncounterValidationOutput, {
