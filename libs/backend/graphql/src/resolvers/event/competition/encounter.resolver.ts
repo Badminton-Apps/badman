@@ -85,116 +85,128 @@ export class EncounterCompetitionResolver {
     @User() user: Player,
     @Args() listArgs: ListArgs
   ): Promise<EncounterCompetition[]> {
-    // Use the provided playerId or fall back to the logged-in user's ID
-    const targetPlayerId = user?.id;
+    try {
+      // Use the provided playerId or fall back to the logged-in user's ID
+      const targetPlayerId = user?.id;
 
-    this.logger.log(
-      `[playerEncounterCompetitions] Query for player ${targetPlayerId} - take: ${listArgs.take}, skip: ${listArgs.skip}, order: ${JSON.stringify(listArgs.order)}`
-    );
-
-    if (!targetPlayerId) {
-      this.logger.warn("[playerEncounterCompetitions] No player ID found");
-      return [];
-    }
-    const queryResult = await this._sequelize.query(
-      `
-      SELECT DISTINCT ec.id, ec."date"
-      FROM event."EncounterCompetitions" ec
-      LEFT JOIN "Teams" t_home ON ec."homeTeamId" = t_home.id
-      LEFT JOIN "Teams" t_away ON ec."awayTeamId" = t_away.id
-      LEFT JOIN "TeamPlayerMemberships" tpm_home ON t_home.id = tpm_home."teamId" AND tpm_home."playerId" = :playerId
-      LEFT JOIN "TeamPlayerMemberships" tpm_away ON t_away.id = tpm_away."teamId" AND tpm_away."playerId" = :playerId
-      LEFT JOIN event."Games" g ON g."linkId" = ec.id AND g."linkType" = 'competition'
-      LEFT JOIN event."GamePlayerMemberships" gpm ON g.id = gpm."gameId" AND gpm."playerId" = :playerId
-      WHERE ec."date" IS NOT NULL
-        AND (
-          -- 1. Game Leader
-          ec."gameLeaderId" = :playerId
-          OR
-          -- 2. Temp Captains
-          ec."tempHomeCaptainId" = :playerId
-          OR
-          ec."tempAwayCaptainId" = :playerId
-          OR
-          -- 3. Team Captains
-          t_home."captainId" = :playerId
-          OR
-          t_away."captainId" = :playerId
-          OR
-          -- 4. Team Members (active memberships)
-          (tpm_home."playerId" = :playerId 
-           AND tpm_home."start" <= ec."date"
-           AND (tpm_home."end" IS NULL OR tpm_home."end" >= ec."date"))
-          OR
-          (tpm_away."playerId" = :playerId
-           AND tpm_away."start" <= ec."date"
-           AND (tpm_away."end" IS NULL OR tpm_away."end" >= ec."date"))
-          OR
-          -- 5. Game Players
-          gpm."playerId" = :playerId
-        )
-        AND (
-          -- Must have exactly 8 completed games
-          SELECT COUNT(*)
-          FROM event."Games" g_count
-          WHERE g_count."linkId" = ec.id 
-            AND g_count."linkType" = 'competition'
-            AND g_count."winner" IS NOT NULL 
-            AND g_count."winner" != 0
-        ) = 8
-    `,
-      {
-        replacements: { playerId: targetPlayerId },
-        type: QueryTypes.SELECT,
-      }
-    );
-
-    let rawResults = queryResult as any;
-
-    // Handle case where results are wrapped in a 'stack' property
-    if (rawResults && rawResults.stack && Array.isArray(rawResults.stack)) {
-      rawResults = rawResults.stack;
-    }
-
-    if (!Array.isArray(rawResults)) {
-      this.logger.error(
-        "[playerEncounterCompetitions] Unable to process query results",
-        rawResults
+      this.logger.log(
+        `[playerEncounterCompetitions] Query for player ${targetPlayerId} - take: ${listArgs.take}, skip: ${listArgs.skip}, order: ${JSON.stringify(listArgs.order)}`
       );
-      return [];
-    }
 
-    const encounterIds = rawResults.map((row: { id: string; date: string }) => row.id);
+      if (!targetPlayerId) {
+        this.logger.warn("[playerEncounterCompetitions] No player ID found");
+        return [];
+      }
 
-    if (encounterIds.length === 0) {
-      this.logger.log("[playerEncounterCompetitions] No encounters found for player");
-      return [];
-    }
+      // Execute the raw query with proper error handling
+      const queryResult = await this._sequelize.query(
+        `
+        SELECT DISTINCT ec.id, ec."date"
+        FROM event."EncounterCompetitions" ec
+        LEFT JOIN "Teams" t_home ON ec."homeTeamId" = t_home.id
+        LEFT JOIN "Teams" t_away ON ec."awayTeamId" = t_away.id
+        LEFT JOIN "TeamPlayerMemberships" tpm_home ON t_home.id = tpm_home."teamId" AND tpm_home."playerId" = :playerId
+        LEFT JOIN "TeamPlayerMemberships" tpm_away ON t_away.id = tpm_away."teamId" AND tpm_away."playerId" = :playerId
+        LEFT JOIN event."Games" g ON g."linkId" = ec.id AND g."linkType" = 'competition'
+        LEFT JOIN event."GamePlayerMemberships" gpm ON g.id = gpm."gameId" AND gpm."playerId" = :playerId
+        WHERE ec."date" IS NOT NULL
+          AND (
+            -- 1. Game Leader
+            ec."gameLeaderId" = :playerId
+            OR
+            -- 2. Temp Captains
+            ec."tempHomeCaptainId" = :playerId
+            OR
+            ec."tempAwayCaptainId" = :playerId
+            OR
+            -- 3. Team Captains
+            t_home."captainId" = :playerId
+            OR
+            t_away."captainId" = :playerId
+            OR
+            -- 4. Team Members (active memberships)
+            (tpm_home."playerId" = :playerId 
+             AND tpm_home."start" <= ec."date"
+             AND (tpm_home."end" IS NULL OR tpm_home."end" >= ec."date"))
+            OR
+            (tpm_away."playerId" = :playerId
+             AND tpm_away."start" <= ec."date"
+             AND (tpm_away."end" IS NULL OR tpm_away."end" >= ec."date"))
+            OR
+            -- 5. Game Players
+            gpm."playerId" = :playerId
+          )
+          AND (
+            -- Must have exactly 8 completed games
+            SELECT COUNT(*)
+            FROM event."Games" g_count
+            WHERE g_count."linkId" = ec.id 
+              AND g_count."linkType" = 'competition'
+              AND g_count."winner" IS NOT NULL 
+              AND g_count."winner" != 0
+          ) = 8
+      `,
+        {
+          replacements: { playerId: targetPlayerId },
+          type: QueryTypes.SELECT,
+        }
+      );
 
-    if (!listArgs.take) {
-      listArgs.take = 3;
-    }
+      // Safely handle the query results
+      if (!Array.isArray(queryResult)) {
+        this.logger.error("[playerEncounterCompetitions] Query result is not an array", {
+          resultType: typeof queryResult,
+          hasStack: "stack" in (queryResult || {}),
+        });
+        return [];
+      }
 
-    if (!listArgs.skip) {
-      listArgs.skip = 0;
-    }
+      // Extract encounter IDs from the results
+      const encounterIds: string[] = [];
+      for (const row of queryResult) {
+        if (row && typeof row === "object" && "id" in row && typeof row.id === "string") {
+          encounterIds.push(row.id);
+        }
+      }
 
-    if (!listArgs.order) {
-      listArgs.order = [{ field: "date", direction: "DESC" }];
-    }
+      if (encounterIds.length === 0) {
+        this.logger.log("[playerEncounterCompetitions] No encounters found for player");
+        return [];
+      }
 
-    const findOptions = ListArgs.toFindOptions(listArgs);
+      // Set default values for pagination
+      const take = listArgs.take || 3;
+      const skip = listArgs.skip || 0;
+      const order = listArgs.order || [{ field: "date", direction: "DESC" }];
 
-    const encounters = await EncounterCompetition.findAll({
-      ...findOptions,
-      where: {
-        id: {
-          [Op.in]: encounterIds,
+      // Create find options with validated parameters
+      const findOptions = ListArgs.toFindOptions({
+        ...listArgs,
+        take,
+        skip,
+        order,
+      });
+
+      // Fetch the actual encounter records
+      const encounters = await EncounterCompetition.findAll({
+        ...findOptions,
+        where: {
+          id: {
+            [Op.in]: encounterIds,
+          },
         },
-      },
-    });
+      });
 
-    return encounters;
+      this.logger.log(
+        `[playerEncounterCompetitions] Returning ${encounters.length} encounters for player ${targetPlayerId}`
+      );
+      return encounters;
+    } catch (error) {
+      this.logger.error("[playerEncounterCompetitions] Error occurred:", error);
+      // Always return an empty array instead of letting the error bubble up
+      // This prevents Content-Type mismatch issues when clients disconnect
+      return [];
+    }
   }
 
   // @Query(() => PagedEncounterCompetition)
@@ -220,50 +232,92 @@ export class EncounterCompetitionResolver {
   async encounterCompetitions(
     @Args() listArgs: ListArgs
   ): Promise<{ count: number; rows: EncounterCompetition[] }> {
-    return EncounterCompetition.findAndCountAll({
-      include: [
-        {
-          model: Team,
-          as: "home",
-        },
-        {
-          model: Team,
-          as: "away",
-        },
-        {
-          model: Game,
-          as: "games",
-          include: [
-            {
-              model: Player,
-              as: "players",
-              attributes: [],
-            },
-          ],
-        },
-      ],
-      ...ListArgs.toFindOptions(listArgs),
-    });
+    try {
+      const result = await EncounterCompetition.findAndCountAll({
+        include: [
+          {
+            model: Team,
+            as: "home",
+          },
+          {
+            model: Team,
+            as: "away",
+          },
+          {
+            model: Game,
+            as: "games",
+            include: [
+              {
+                model: Player,
+                as: "players",
+                attributes: [],
+              },
+            ],
+          },
+        ],
+        ...ListArgs.toFindOptions(listArgs),
+      });
+
+      return result;
+    } catch (error) {
+      this.logger.error("[encounterCompetitions] Error occurred:", error);
+      // Return empty result set instead of letting error bubble up
+      return { count: 0, rows: [] };
+    }
   }
 
   @ResolveField(() => DrawCompetition)
-  async drawCompetition(@Parent() encounter: EncounterCompetition): Promise<DrawCompetition> {
-    return encounter.getDrawCompetition();
+  async drawCompetition(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<DrawCompetition | null> {
+    try {
+      return await encounter.getDrawCompetition();
+    } catch (error) {
+      this.logger.debug(
+        "[drawCompetition] Client disconnected or error occurred:",
+        error instanceof Error ? error.message : String(error)
+      );
+      return null;
+    }
   }
 
   @ResolveField(() => Location)
-  async location(@Parent() encounter: EncounterCompetition): Promise<Location> {
-    return encounter.getLocation();
+  async location(@Parent() encounter: EncounterCompetition): Promise<Location | null> {
+    try {
+      return await encounter.getLocation();
+    } catch (error) {
+      this.logger.debug(
+        "[location] Client disconnected or error occurred:",
+        error instanceof Error ? error.message : String(error)
+      );
+      return null;
+    }
   }
 
   @ResolveField(() => Team)
-  async home(@Parent() encounter: EncounterCompetition): Promise<Team> {
-    return encounter.getHome();
+  async home(@Parent() encounter: EncounterCompetition): Promise<Team | null> {
+    try {
+      return await encounter.getHome();
+    } catch (error) {
+      this.logger.debug(
+        "[home] Client disconnected or error occurred:",
+        error instanceof Error ? error.message : String(error)
+      );
+      return null;
+    }
   }
 
   @ResolveField(() => Team)
-  async away(@Parent() encounter: EncounterCompetition): Promise<Team> {
-    return encounter.getAway();
+  async away(@Parent() encounter: EncounterCompetition): Promise<Team | null> {
+    try {
+      return await encounter.getAway();
+    } catch (error) {
+      this.logger.debug(
+        "[away] Client disconnected or error occurred:",
+        error instanceof Error ? error.message : String(error)
+      );
+      return null;
+    }
   }
 
   @ResolveField(() => [Assembly])
@@ -305,12 +359,28 @@ export class EncounterCompetitionResolver {
 
   @ResolveField(() => [Game])
   async games(@Parent() encounter: EncounterCompetition): Promise<Game[]> {
-    return encounter.getGames();
+    try {
+      return await encounter.getGames();
+    } catch (error) {
+      this.logger.debug(
+        "[games] Client disconnected or error occurred:",
+        error instanceof Error ? error.message : String(error)
+      );
+      return [];
+    }
   }
 
   @ResolveField(() => Player)
-  async gameLeader(@Parent() encounter: EncounterCompetition): Promise<Player> {
-    return encounter.getGameLeader();
+  async gameLeader(@Parent() encounter: EncounterCompetition): Promise<Player | null> {
+    try {
+      return await encounter.getGameLeader();
+    } catch (error) {
+      this.logger.debug(
+        "[gameLeader] Client disconnected or error occurred:",
+        error instanceof Error ? error.message : String(error)
+      );
+      return null;
+    }
   }
 
   @ResolveField(() => Player)

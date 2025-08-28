@@ -281,7 +281,6 @@ export async function enterGames(
       await enterScores({ page }, 3, `${game.set3Team1}-${game.set3Team2}`, matchId);
     }
 
-    console.log("game.winner", game.winner);
     if (game.winner && game.winner > 2 && game.winner !== 0) {
       await enterWinner({ page }, matchId, game.winner, logger);
     }
