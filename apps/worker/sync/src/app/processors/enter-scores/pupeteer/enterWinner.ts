@@ -2,7 +2,7 @@ import { Page } from "puppeteer";
 import { waitForSelectors } from "@badman/backend-pupeteer";
 import { Logger } from "@nestjs/common";
 
-export async function selectPlayer(
+export async function enterWinner(
   pupeteer: {
     page: Page | null;
     timeout?: number;
@@ -10,17 +10,16 @@ export async function selectPlayer(
     page: null,
     timeout: 5000,
   },
-  memberId: string,
-  player: "t1p1" | "t1p2" | "t2p1" | "t2p2",
   matchId: string,
+  winner: number,
   logger: Logger
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
     throw new Error("No page provided");
   }
-  const selector = `#match_${matchId}_${player}`;
-  logger.debug(`Selecting player ${memberId} in ${selector}`);
+  const selector = `#match_${matchId}_winner`;
+  logger.debug(`Selecting winner ${winner} in ${selector}`);
   {
     const targetPage = page;
     const element = await waitForSelectors([[selector]], targetPage, timeout);
@@ -35,30 +34,25 @@ export async function selectPlayer(
 
     // pass the single handle below
     for (const currentOption of options) {
-      const optionContent = await page.evaluate((el) => el.textContent, currentOption);
+      const optionValue: number = await page.evaluate((el) => Number(el.value), currentOption);
 
-      if (!optionContent) {
+      if (!optionValue) {
         continue;
       }
 
-      logger.debug(`optionContent`, optionContent);
-      logger.debug(`memberId`, memberId);
-
-      if (optionContent.indexOf(memberId) > -1) {
-        selectedOption = currentOption;
+      if (optionValue === winner) {
+        selectedOption = await currentOption.evaluate((el) => el.value);
+        break;
       }
     }
     if (!selectedOption) {
-      console.error(`Could not find player ${memberId} in select`);
+      console.error(`Could not find winner ${winner} in select`);
     }
-
-    const optionValue = await page.evaluate((el) => el.value, selectedOption ?? options[3]);
 
     await option.focus();
     await option.evaluate((el, value) => {
       // Cast to HTMLSelectElement to access selectedIndex
       const select = el as HTMLSelectElement;
-
       // Find the index of the option with the matching value
       const index = Array.from(select.options).findIndex((opt) => opt.value === value);
       if (index !== -1) {
@@ -68,6 +62,6 @@ export async function selectPlayer(
       // Trigger necessary events
       select.dispatchEvent(new Event("input", { bubbles: true }));
       select.dispatchEvent(new Event("change", { bubbles: true }));
-    }, optionValue);
+    }, selectedOption);
   }
 }

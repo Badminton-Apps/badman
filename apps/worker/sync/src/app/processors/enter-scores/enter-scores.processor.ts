@@ -23,7 +23,7 @@ import {
 } from "./pupeteer";
 import { ConfigType } from "@badman/utils";
 import { enterGames } from "./pupeteer/enterGames";
-import { getPage } from "@badman/backend-pupeteer";
+import { getPage, getBrowser, startBrowserHealthMonitoring } from "@badman/backend-pupeteer";
 
 @Processor({
   name: SyncQueue,
@@ -34,17 +34,33 @@ export class EnterScoresProcessor {
   private readonly _password?: string;
 
   constructor(
-    configService: ConfigService<ConfigType>,
+    private readonly configService: ConfigService<ConfigType>,
     private readonly _transactionManager: TransactionManager
   ) {
     this._username = configService.get("VR_API_USER");
     this._password = configService.get("VR_API_PASS");
+
+    // Start browser health monitoring
+    startBrowserHealthMonitoring();
+
+    // Add memory monitoring
+    setInterval(() => {
+      const used = process.memoryUsage();
+      this.logger.debug("Memory usage:", {
+        rss: Math.round(used.rss / 1024 / 1024) + "MB",
+        heapUsed: Math.round(used.heapUsed / 1024 / 1024) + "MB",
+        heapTotal: Math.round(used.heapTotal / 1024 / 1024) + "MB",
+      });
+    }, 60000); // Every minute
 
     this.logger.debug("Enter scores processor initialized");
   }
 
   @Process(Sync.EnterScores)
   async enterScores(job: Job<{ encounterId: string }>) {
+    const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED") === true;
+    const enterScoresEnabled = this.configService.get("ENTER_SCORES_ENABLED") === true;
+    const headlessValue = visualSyncEnabled ? false : true;
     if (!this._username || !this._password) {
       this.logger.error("No username or password found");
       return;
@@ -54,7 +70,7 @@ export class EnterScoresProcessor {
     const encounterId = job.data.encounterId;
 
     this.logger.debug("Creating browser");
-    const page = await getPage(true, [
+    const page = await getPage(headlessValue, [
       "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
       "--disable-save-password-bubble",
       "--disable-credentials-enable-service",
@@ -88,6 +104,7 @@ export class EnterScoresProcessor {
               "set3Team1",
               "set3Team2",
               "gameType",
+              "winner",
             ],
             model: Game,
             include: [
@@ -184,7 +201,7 @@ export class EnterScoresProcessor {
       const saveButton = await waitForSelectors([["input#btnSave.button"]], page, 5000);
       if (saveButton) {
         this.logger.debug(`Save button found`);
-        if (nodeEv === "production") {
+        if (nodeEv === "production" || enterScoresEnabled) {
           await saveButton.click();
           this.logger.log(`Save button clicked, waiting for navigation`);
           await page.waitForNavigation({ waitUntil: "networkidle0" });
@@ -196,9 +213,27 @@ export class EnterScoresProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      this.logger.log(`Closing browser page...`);
-      await page.close();
-      this.logger.log("Browser closed");
+      try {
+        if (!visualSyncEnabled) {
+          this.logger.log(`Closing browser page...`);
+          await page?.close();
+
+          // Get browser instance and close it properly
+          const browser = await getBrowser(headlessValue);
+          const pages = await browser.pages();
+          this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+          // If this was the last page, close the browser
+          if (pages.length <= 1) {
+            this.logger.log("Closing browser instance...");
+            await browser.close();
+          }
+
+          this.logger.log("Browser cleanup completed");
+        }
+      } catch (error) {
+        this.logger.error("Error during browser cleanup:", error);
+      }
     }
   }
 }
