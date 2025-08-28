@@ -261,6 +261,8 @@ export class GamesResolver {
         throw new NotFoundException(`${Game.name}: ${gameData.gameId}`);
       }
 
+      const gameHasPlayedAt = game.playedAt !== null;
+
       // used to check the current winner of the game against the update data, to see if the score of the new loser needs to drop
       const oldGameWinner = game.winner;
 
@@ -274,6 +276,7 @@ export class GamesResolver {
           set3Team2: gameData.set3Team2,
           gameType: gameData.gameType,
           winner: gameData.winner,
+          playedAt: gameHasPlayedAt ? game.playedAt : gameData.playedAt,
         },
         { transaction }
       );
