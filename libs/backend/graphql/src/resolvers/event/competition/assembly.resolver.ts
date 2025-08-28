@@ -137,19 +137,33 @@ export class AssemblyResolver {
         if (assembly.teamId !== undefined) updateData.teamId = assembly.teamId;
         if (assembly.isComplete !== undefined) updateData.isComplete = assembly.isComplete;
 
-        // Handle assembly data - only update provided fields
+        // Handle assembly data - ensure all keys are always present
         const currentAssembly = assemblyDb.assembly || {};
-        const updatedAssembly = { ...currentAssembly };
 
+        // Start with a complete structure with all required keys
+        const updatedAssembly = {
+          single1: currentAssembly.single1 || undefined,
+          single2: currentAssembly.single2 || undefined,
+          single3: currentAssembly.single3 || undefined,
+          single4: currentAssembly.single4 || undefined,
+          double1: currentAssembly.double1 || [],
+          double2: currentAssembly.double2 || [],
+          double3: currentAssembly.double3 || [],
+          double4: currentAssembly.double4 || [],
+          subtitudes: currentAssembly.subtitudes || [],
+        };
+
+        // Only update fields that are explicitly provided
         if (assembly.single1 !== undefined) updatedAssembly.single1 = assembly.single1;
         if (assembly.single2 !== undefined) updatedAssembly.single2 = assembly.single2;
         if (assembly.single3 !== undefined) updatedAssembly.single3 = assembly.single3;
         if (assembly.single4 !== undefined) updatedAssembly.single4 = assembly.single4;
-        if (assembly.double1 !== undefined) updatedAssembly.double1 = assembly.double1;
-        if (assembly.double2 !== undefined) updatedAssembly.double2 = assembly.double2;
-        if (assembly.double3 !== undefined) updatedAssembly.double3 = assembly.double3;
-        if (assembly.double4 !== undefined) updatedAssembly.double4 = assembly.double4;
-        if (assembly.subtitudes !== undefined) updatedAssembly.subtitudes = assembly.subtitudes;
+        if (assembly.double1 !== undefined) updatedAssembly.double1 = assembly.double1 || [];
+        if (assembly.double2 !== undefined) updatedAssembly.double2 = assembly.double2 || [];
+        if (assembly.double3 !== undefined) updatedAssembly.double3 = assembly.double3 || [];
+        if (assembly.double4 !== undefined) updatedAssembly.double4 = assembly.double4 || [];
+        if (assembly.subtitudes !== undefined)
+          updatedAssembly.subtitudes = assembly.subtitudes || [];
 
         updateData.assembly = updatedAssembly;
 
