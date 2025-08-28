@@ -190,20 +190,35 @@ export class CheckEncounterProcessor {
       try {
         // Close browser properly
         if (page) {
-          await page.close();
+          try {
+            if (!page.isClosed()) {
+              await page.close();
+            }
+          } catch (pageError) {
+            this.logger.debug("Error closing page (may already be closed):", pageError.message);
+          }
 
           // Check if we should close the browser instance
-          const browser = await getBrowser();
-          const pages = await browser.pages();
-          this.logger.log(`Browser has ${pages.length} pages remaining`);
+          try {
+            const browser = await getBrowser();
+            if (browser && browser.connected) {
+              const pages = await browser.pages();
+              this.logger.log(`Browser has ${pages.length} pages remaining`);
 
-          if (pages.length <= 1) {
-            this.logger.log("Closing browser instance...");
-            await browser.close();
+              if (pages.length <= 1) {
+                this.logger.log("Closing browser instance...");
+                await browser.close();
+              }
+            }
+          } catch (browserError) {
+            this.logger.debug(
+              "Error during browser management (may already be closed):",
+              browserError.message
+            );
           }
         }
       } catch (error) {
-        this.logger.error("Error during browser cleanup:", error);
+        this.logger.debug("Error during browser cleanup:", error.message || error);
       }
 
       cronJob.amount++;
@@ -255,20 +270,35 @@ export class CheckEncounterProcessor {
       try {
         // Close browser properly
         if (page) {
-          await page.close();
+          try {
+            if (!page.isClosed()) {
+              await page.close();
+            }
+          } catch (pageError) {
+            this.logger.debug("Error closing page (may already be closed):", pageError.message);
+          }
 
           // Check if we should close the browser instance
-          const browser = await getBrowser();
-          const pages = await browser.pages();
-          this.logger.log(`Browser has ${pages.length} pages remaining`);
+          try {
+            const browser = await getBrowser();
+            if (browser && browser.connected) {
+              const pages = await browser.pages();
+              this.logger.log(`Browser has ${pages.length} pages remaining`);
 
-          if (pages.length <= 1) {
-            this.logger.log("Closing browser instance...");
-            await browser.close();
+              if (pages.length <= 1) {
+                this.logger.log("Closing browser instance...");
+                await browser.close();
+              }
+            }
+          } catch (browserError) {
+            this.logger.debug(
+              "Error during browser management (may already be closed):",
+              browserError.message
+            );
           }
         }
       } catch (error) {
-        this.logger.error("Error during browser cleanup:", error);
+        this.logger.debug("Error during browser cleanup:", error.message || error);
       }
 
       this.logger.log("Synced encounter");
@@ -310,7 +340,17 @@ export class CheckEncounterProcessor {
       }
       const { entered, enteredOn } = await detailEntered({ page }, { logger: this.logger });
       const { accepted, acceptedOn } = await detailAccepted({ page }, { logger: this.logger });
-      const { hasComment } = await detailComment({ page }, { logger: this.logger });
+      let hasComment = false;
+      try {
+        const result = await detailComment({ page }, { logger: this.logger });
+        hasComment = result.hasComment;
+      } catch (error) {
+        this.logger.warn(
+          `Error checking for comments on encounter ${encounter.visualCode}:`,
+          error.message
+        );
+        // Continue with hasComment = false
+      }
       const enteredMoment = moment(enteredOn);
       const hoursPassed = moment().diff(encounter.date, "hour");
 
