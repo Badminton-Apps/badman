@@ -57,6 +57,7 @@ import { GamePlayerMembership } from "./game-player.model";
 import { DrawTournament } from "./tournament";
 
 export const WINNER_STATUS = {
+  NOT_YET_PLAYED: 0,
   HOME_TEAM_WIN: 1,
   AWAY_TEAM_WIN: 2,
   HOME_TEAM_FORFEIT: 4,
