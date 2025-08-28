@@ -738,7 +738,18 @@
       "label": "Zoek speler",
       "not-found": "Speler niet gevonden"
     },
-    "title": "Spelers"
+    "title": "Spelers",
+    "statuses": {
+      "won": "Gewonnen",
+      "lost": "Verloren",
+      "draw": "Gelijk",
+      "forfeit": "Forfait",
+      "absence": "Afwezig",
+      "noPlayers": "Geen spelers",
+      "disqualified": "Gediskwalificeerd",
+      "stopped": "Afgebroken",
+      "unknown": "Onbekend"
+    }
   },
   "points": {
     "title": "Puntentabel"
@@ -1488,6 +1499,17 @@
       "won": "Gewonnen",
       "lost": "Verloren",
       "draw": "Gelijkspel",
+      "statuses": {
+        "won": "Gewonnen",
+        "lost": "Verloren",
+        "draw": "Gelijkspel",
+        "forfeit": "Forfait",
+        "absence": "Afwezig",
+        "noPlayers": "Geen spelers",
+        "disqualified": "Geschorst",
+        "stopped": "Afgebroken",
+        "unknown": "Onbekend"
+      },
       "buttons": {
         "change": "Wijzigen",
         "create": "Aanmaken",
@@ -3047,7 +3069,7 @@
         "shuttle": {
           "title": "Shuttle",
           "helpText": "Lijst met gehomologeerde shuttles",
-          "helpLink": "https://www.badmintonvlaanderen.be/file/973717/?dl=1"
+          "helpLink": "https://www.badmintonvlaanderen.be/page/27324/Goedgekeurde-shuttles"
         },
         "commentsOptional": "Opmerkingen (optioneel)"
       },
@@ -3061,6 +3083,22 @@
         "2Sets": "2 games",
         "3Sets": "3 games",
         "saveChanges": "Wijzigingen opslaan"
+      },
+      "dialogs": {
+        "gameDialog": {
+          "winnerStatus": {
+            "1": "{homeTeam} wint",
+            "2": "{awayTeam} wint",
+            "4": "Opgave {homeTeam}",
+            "5": "Opgave {awayTeam}",
+            "6": "Niet gespeeld, geen speler(s) {homeTeam}",
+            "7": "Niet gespeeld, geen speler(s) {awayTeam}",
+            "10": "Niet gespeeld, geen speler(s)",
+            "12": "Niet gespeeld, wedstrijd gestaakt",
+            "106": "{homeTeam} gediskwalificeerd",
+            "107": "{awayTeam} gediskwalificeerd"
+          }
+        }
       },
       "positions": {
         "captain": "Ploegkapitein",

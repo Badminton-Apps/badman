@@ -4,6 +4,7 @@ import { Page } from "puppeteer";
 import { selectPlayer } from "./selectPlayer";
 import { enterScores } from "./enterScores";
 import { Transaction } from "sequelize";
+import { enterWinner } from "./enterWinner";
 
 /**
  * Finds the first available game section on the page based on game type
@@ -278,6 +279,10 @@ export async function enterGames(
 
     if (game.set3Team1 && game.set3Team2) {
       await enterScores({ page }, 3, `${game.set3Team1}-${game.set3Team2}`, matchId);
+    }
+
+    if (game.winner && game.winner > 2 && game.winner !== 0) {
+      await enterWinner({ page }, matchId, game.winner, logger);
     }
   }
 

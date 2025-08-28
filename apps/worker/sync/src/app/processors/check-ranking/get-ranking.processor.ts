@@ -1,5 +1,11 @@
 import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
-import { acceptCookies, getPage, selectBadmninton } from "@badman/backend-pupeteer";
+import {
+  acceptCookies,
+  getPage,
+  selectBadmninton,
+  getBrowser,
+  startBrowserHealthMonitoring,
+} from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger, NotFoundException } from "@nestjs/common";
@@ -14,6 +20,8 @@ export class CheckRankingProcessor {
   private readonly logger = new Logger(CheckRankingProcessor.name);
 
   constructor() {
+    // Start browser health monitoring
+    startBrowserHealthMonitoring();
     this.logger.debug("Check ranking initialized");
   }
 
@@ -140,10 +148,25 @@ export class CheckRankingProcessor {
       this.logger.error(error);
       this.logger.error(`Error while processing player ${player.fullName}`);
     } finally {
-      // Close browser
-      if (page) {
-        page.close();
-        this.logger.debug(`Syned ${player.fullName}`);
+      try {
+        // Close browser properly
+        if (page) {
+          await page.close();
+
+          // Check if we should close the browser instance
+          const browser = await getBrowser();
+          const pages = await browser.pages();
+          this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+          if (pages.length <= 1) {
+            this.logger.log("Closing browser instance...");
+            await browser.close();
+          }
+
+          this.logger.debug(`Synced ${player.fullName}`);
+        }
+      } catch (error) {
+        this.logger.error("Error during browser cleanup:", error);
       }
     }
   }

@@ -40,6 +40,8 @@ export const configSchema = Joi.object({
   DB_CACHE: Joi.boolean().default(false),
   DB_CACHE_PREFIX: Joi.string().optional(),
   DB_LOGGING: Joi.boolean().optional(),
+  ENTER_SCORES_ENABLED: Joi.boolean().optional(),
+  VISUAL_SYNC_ENABLED: Joi.boolean().optional(),
   REDIS_DATABASE: Joi.number().integer().optional(),
   REDIS_HOST: Joi.when("DB_CACHE", {
     is: true,
@@ -162,6 +164,7 @@ export const load = () => ({
   PUSH_ENABLED: process.env?.["PUSH_ENABLED"] === "true",
   VR_CHANGE_DATES: process.env?.["VR_CHANGE_DATES"] === "true",
   VR_ACCEPT_ENCOUNTERS: process.env?.["VR_ACCEPT_ENCOUNTERS"] === "true",
+  VISUAL_SYNC_ENABLED: process.env?.["VISUAL_SYNC_ENABLED"] === "true",
 });
 
 export type ConfigType = {
@@ -187,6 +190,8 @@ export type ConfigType = {
   LOGTAIL_TOKEN?: string;
   AUTH0_ISSUER_URL: string;
   AUTH0_AUDIENCE: string;
+  VISUAL_SYNC_ENABLED: boolean;
+  ENTER_SCORES_ENABLED: boolean;
   MAIL_ENABLED: boolean;
   MAIL_PASS?: string;
   MAIL_USER?: string;

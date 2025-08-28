@@ -883,6 +883,22 @@
       "3Sets": "3 games",
       "saveChanges": "Sauvegarder les modifications"
     },
+    "dialogs": {
+      "gameDialog": {
+        "winnerStatus": {
+          "1": "{homeTeam} gagne",
+          "2": "{awayTeam} gagne",
+          "4": "Forfait {homeTeam}",
+          "5": "Forfait {awayTeam}",
+          "6": "Non joué, aucun joueur pour {homeTeam}",
+          "7": "Non joué, aucun joueur pour {awayTeam}",
+          "10": "Non joué, aucun joueur",
+          "12": "Non joué, match abandonné",
+          "106": "{homeTeam} disqualifié",
+          "107": "{awayTeam} disqualifié"
+        }
+      }
+    },
     "inputs": {
       "present": "Présent",
       "confirm": "Confirmer",
@@ -1214,7 +1230,18 @@
       "label": "Lecteur de recherche",
       "not-found": "Joueur introuvable"
     },
-    "title": "Joueurs"
+    "title": "Joueurs",
+    "statuses": {
+      "won": "Won",
+      "lost": "Lost",
+      "draw": "Draw",
+      "forfeit": "Forfeit",
+      "absence": "Absent",
+      "noPlayers": "Aucun joueur",
+      "disqualified": "Disqualifié",
+      "stopped": "Arrêté",
+      "unknown": "Inconnu"
+    }
   },
   "points": {
     "title": "Tableau des points"
