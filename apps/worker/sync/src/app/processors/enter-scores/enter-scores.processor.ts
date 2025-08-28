@@ -34,7 +34,7 @@ export class EnterScoresProcessor {
   private readonly _password?: string;
 
   constructor(
-    configService: ConfigService<ConfigType>,
+    private readonly configService: ConfigService<ConfigType>,
     private readonly _transactionManager: TransactionManager
   ) {
     this._username = configService.get("VR_API_USER");
@@ -45,6 +45,9 @@ export class EnterScoresProcessor {
 
   @Process(Sync.EnterScores)
   async enterScores(job: Job<{ encounterId: string }>) {
+    const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED") === true;
+    const enterScoresEnabled = this.configService.get("ENTER_SCORES_ENABLED") === true;
+    const headlessValue = visualSyncEnabled ? false : true;
     if (!this._username || !this._password) {
       this.logger.error("No username or password found");
       return;
@@ -54,7 +57,7 @@ export class EnterScoresProcessor {
     const encounterId = job.data.encounterId;
 
     this.logger.debug("Creating browser");
-    const page = await getPage(true, [
+    const page = await getPage(headlessValue, [
       "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
       "--disable-save-password-bubble",
       "--disable-credentials-enable-service",
@@ -185,7 +188,7 @@ export class EnterScoresProcessor {
       const saveButton = await waitForSelectors([["input#btnSave.button"]], page, 5000);
       if (saveButton) {
         this.logger.debug(`Save button found`);
-        if (nodeEv === "production") {
+        if (nodeEv === "production" || enterScoresEnabled) {
           await saveButton.click();
           this.logger.log(`Save button clicked, waiting for navigation`);
           await page.waitForNavigation({ waitUntil: "networkidle0" });
@@ -197,9 +200,11 @@ export class EnterScoresProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      this.logger.log(`Closing browser page...`);
-      await page.close();
-      this.logger.log("Browser closed");
+      if (!visualSyncEnabled) {
+        this.logger.log(`Closing browser page...`);
+        await page.close();
+        this.logger.log("Browser closed");
+      }
     }
   }
 }

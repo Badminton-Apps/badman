@@ -101,10 +101,9 @@ export class CommentResolver {
           }
           await this.encounterChangeComment(link, comment, user, transaction);
           break;
-
         case "encounter":
           if (!(link instanceof EncounterCompetition)) {
-            throw new BadRequestException(`linkType is not home_comment_chamge`);
+            throw new BadRequestException(`linkType is not encounter`);
           }
           await this.encounterComment(link, comment, user, transaction);
           break;
@@ -216,20 +215,26 @@ export class CommentResolver {
     user: Player,
     transaction: Transaction
   ) {
+    const encounter = await EncounterCompetition.findByPk(link.id, {
+      transaction,
+    });
+
     const home = await link.getHome();
     const away = await link.getAway();
 
     if (
-      !(await user.hasAnyPermission([
-        `${home.clubId}_change:encounter`,
-        `${away.clubId}_change:encounter`,
-        "change-any:encounter",
-      ]))
+      !(
+        (await user.hasAnyPermission([
+          `${home.clubId}_change:encounter`,
+          `${away.clubId}_change:encounter`,
+          "change-any:encounter",
+        ])) || encounter?.gameLeaderId === comment.playerId
+      )
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this comment`);
     }
     if (link.gameLeaderId === comment.playerId) {
-      await link.setGameLeaderComment(comment, { transaction });
+      await link.addGameLeaderComment(comment, { transaction });
     } else if (home.clubId === comment.clubId) {
       await link.addHomeComment(comment, { transaction });
     } else if (away.clubId === comment.clubId) {
