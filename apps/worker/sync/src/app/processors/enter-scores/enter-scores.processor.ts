@@ -46,11 +46,14 @@ export class EnterScoresProcessor {
     // Add memory monitoring
     setInterval(() => {
       const used = process.memoryUsage();
-      this.logger.debug("Memory usage:", {
-        rss: Math.round(used.rss / 1024 / 1024) + "MB",
-        heapUsed: Math.round(used.heapUsed / 1024 / 1024) + "MB",
-        heapTotal: Math.round(used.heapTotal / 1024 / 1024) + "MB",
-      });
+      this.logger.debug(
+        "Memory usage:",
+        JSON.stringify({
+          rss: Math.round(used.rss / 1024 / 1024) + "MB",
+          heapUsed: Math.round(used.heapUsed / 1024 / 1024) + "MB",
+          heapTotal: Math.round(used.heapTotal / 1024 / 1024) + "MB",
+        })
+      );
     }, 60000); // Every minute
 
     this.logger.debug("Enter scores processor initialized");

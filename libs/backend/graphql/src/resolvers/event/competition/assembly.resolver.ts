@@ -124,25 +124,50 @@ export class AssemblyResolver {
         this.logger.debug(
           `UPDATED: Assembly for encounter with ID ${assembly.encounterId} existed in the database and will be updated`
         );
-        return assemblyDb.update({
-          captainId: assembly?.captainId ?? assemblyDb.captainId,
-          description: assembly?.description ?? assemblyDb.description,
-          encounterId: assembly.encounterId ?? assemblyDb.encounterId,
-          teamId: assembly.teamId ?? assemblyDb.teamId,
-          playerId: user.id ?? assemblyDb.playerId,
-          isComplete: assembly.isComplete ?? assemblyDb.isComplete,
-          assembly: {
-            single1: assembly?.single1 ?? assemblyDb.assembly?.single1,
-            single2: assembly?.single2 ?? assemblyDb.assembly?.single2,
-            single3: assembly?.single3 ?? assemblyDb.assembly?.single3,
-            single4: assembly?.single4 ?? assemblyDb.assembly?.single4,
-            double1: assembly?.double1 ?? assemblyDb.assembly?.double1,
-            double2: assembly?.double2 ?? assemblyDb.assembly?.double2,
-            double3: assembly?.double3 ?? assemblyDb.assembly?.double3,
-            double4: assembly?.double4 ?? assemblyDb.assembly?.double4,
-            subtitudes: assembly?.subtitudes ?? assemblyDb.assembly?.subtitudes,
-          },
-        });
+
+        // Build update object with only provided fields
+        const updateData: Partial<Assembly> = {
+          playerId: user.id, // Always update the player who made the change
+        };
+
+        // Only update fields that are explicitly provided
+        if (assembly.captainId !== undefined) updateData.captainId = assembly.captainId;
+        if (assembly.description !== undefined) updateData.description = assembly.description;
+        if (assembly.encounterId !== undefined) updateData.encounterId = assembly.encounterId;
+        if (assembly.teamId !== undefined) updateData.teamId = assembly.teamId;
+        if (assembly.isComplete !== undefined) updateData.isComplete = assembly.isComplete;
+
+        // Handle assembly data - ensure all keys are always present
+        const currentAssembly = assemblyDb.assembly || {};
+
+        // Start with a complete structure with all required keys
+        const updatedAssembly = {
+          single1: currentAssembly.single1 || undefined,
+          single2: currentAssembly.single2 || undefined,
+          single3: currentAssembly.single3 || undefined,
+          single4: currentAssembly.single4 || undefined,
+          double1: currentAssembly.double1 || [],
+          double2: currentAssembly.double2 || [],
+          double3: currentAssembly.double3 || [],
+          double4: currentAssembly.double4 || [],
+          subtitudes: currentAssembly.subtitudes || [],
+        };
+
+        // Only update fields that are explicitly provided
+        if (assembly.single1 !== undefined) updatedAssembly.single1 = assembly.single1;
+        if (assembly.single2 !== undefined) updatedAssembly.single2 = assembly.single2;
+        if (assembly.single3 !== undefined) updatedAssembly.single3 = assembly.single3;
+        if (assembly.single4 !== undefined) updatedAssembly.single4 = assembly.single4;
+        if (assembly.double1 !== undefined) updatedAssembly.double1 = assembly.double1 || [];
+        if (assembly.double2 !== undefined) updatedAssembly.double2 = assembly.double2 || [];
+        if (assembly.double3 !== undefined) updatedAssembly.double3 = assembly.double3 || [];
+        if (assembly.double4 !== undefined) updatedAssembly.double4 = assembly.double4 || [];
+        if (assembly.subtitudes !== undefined)
+          updatedAssembly.subtitudes = assembly.subtitudes || [];
+
+        updateData.assembly = updatedAssembly;
+
+        return assemblyDb.update(updateData);
       }
 
       this.logger.debug(
