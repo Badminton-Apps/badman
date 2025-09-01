@@ -14,7 +14,7 @@ import {
   Team,
 } from "@badman/backend-database";
 import { ValidationService } from "@badman/backend-validation";
-import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum } from "@badman/utils";
+import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum, IsUUID } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import moment from "moment";
 import { Op } from "sequelize";
@@ -84,9 +84,16 @@ export class AssemblyValidationService extends ValidationService<
 
     const idSubs = args.subtitudes?.filter((p) => p !== undefined && p !== null);
 
-    const team = await Team.findByPk(args.teamId, {
-      attributes: ["id", "name", "type", "teamNumber", "clubId", "link", "season"],
-    });
+    const team = IsUUID(args.teamId)
+      ? await Team.findByPk(args.teamId, {
+          attributes: ["id", "name", "type", "teamNumber", "clubId", "link", "season"],
+        })
+      : await Team.findOne({
+          where: {
+            slug: args.teamId,
+          },
+          attributes: ["id", "name", "type", "teamNumber", "clubId", "link", "season"],
+        });
 
     if (!team?.season) {
       throw new Error("Team not found");
