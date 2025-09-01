@@ -283,8 +283,25 @@ export class GamesResolver {
 
       // if there are players in the request, replace the existing players with the new ones
       if (gameData.players) {
+        // Get existing player memberships for this game
+        const existingMemberships = await GamePlayerMembership.findAll({
+          where: {
+            gameId: game.id,
+          },
+          transaction,
+        });
+
+        // Create a map of existing memberships for quick lookup
+        const existingMembershipMap = new Map();
+        existingMemberships.forEach((membership) => {
+          existingMembershipMap.set(membership.playerId, membership);
+        });
+
         // Prepare player memberships data
-        const playerMemberships = [];
+        const playerMembershipsToCreate = [];
+        const playerMembershipsToUpdate = [];
+        const newPlayerIds = gameData.players.map((p) => p.id);
+
         for (const player of gameData.players) {
           const ranking = await RankingLastPlace.findOne({
             where: {
@@ -303,18 +320,48 @@ export class GamesResolver {
             double: ranking?.double,
             mix: ranking?.mix,
           };
-          playerMemberships.push(membershipData);
+
+          const existingMembership = existingMembershipMap.get(player.id);
+
+          if (existingMembership) {
+            // Check if any fields have changed
+            const hasChanges =
+              existingMembership.team !== membershipData.team ||
+              existingMembership.player !== membershipData.player ||
+              existingMembership.systemId !== membershipData.systemId ||
+              existingMembership.single !== membershipData.single ||
+              existingMembership.double !== membershipData.double ||
+              existingMembership.mix !== membershipData.mix;
+
+            if (hasChanges) {
+              playerMembershipsToUpdate.push(membershipData);
+            }
+            // If no changes, we don't need to do anything for this record
+          } else {
+            // New membership that doesn't exist in database
+            playerMembershipsToCreate.push(membershipData);
+          }
         }
 
-        // Use bulkCreate with updateOnDuplicate to handle existing records
-        await GamePlayerMembership.bulkCreate(playerMemberships, {
-          transaction,
-          updateOnDuplicate: ["team", "player", "systemId", "single", "double", "mix"],
-        });
+        this.logger.debug("playerMembershipsToCreate", JSON.stringify(playerMembershipsToCreate));
+        this.logger.debug("playerMembershipsToUpdate", JSON.stringify(playerMembershipsToUpdate));
+
+        // Create new memberships
+        if (playerMembershipsToCreate.length > 0) {
+          await GamePlayerMembership.bulkCreate(playerMembershipsToCreate, {
+            transaction,
+          });
+        }
+
+        // Update existing memberships that have changes
+        if (playerMembershipsToUpdate.length > 0) {
+          await GamePlayerMembership.bulkCreate(playerMembershipsToUpdate, {
+            transaction,
+            updateOnDuplicate: ["team", "player", "systemId", "single", "double", "mix"],
+          });
+        }
 
         // Remove any existing memberships that are not in the new list
-        const newPlayerIds = gameData.players.map((p) => p.id);
-
         await GamePlayerMembership.destroy({
           where: {
             gameId: game.id,

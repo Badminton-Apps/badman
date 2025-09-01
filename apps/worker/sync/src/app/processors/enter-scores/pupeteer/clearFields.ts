@@ -35,7 +35,7 @@ export async function clearFields(
   {
     const targetPage = page;
     const veldenLegenButton = await waitForSelectors(
-      [['input[value=\\"Velden legen\\"]'], ["#btnResetSubMatches"]],
+      [["#btnResetSubMatches"]],
       targetPage,
       timeout
     );
