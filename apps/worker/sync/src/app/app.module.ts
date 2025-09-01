@@ -1,5 +1,7 @@
 import { CronJob, DatabaseModule, Service } from "@badman/backend-database";
+import { CompileModule } from "@badman/backend-compile";
 import { LoggingModule } from "@badman/backend-logging";
+import { MailingModule } from "@badman/backend-mailing";
 import { NotificationsModule } from "@badman/backend-notifications";
 import { QueueModule, SyncQueue } from "@badman/backend-queue";
 import { RankingModule } from "@badman/backend-ranking";
@@ -8,9 +10,10 @@ import { TranslateModule } from "@badman/backend-translate";
 import { TwizzitModule } from "@badman/backend-twizzit";
 import { VisualModule } from "@badman/backend-visual";
 import { EventsGateway, SocketModule } from "@badman/backend-websockets";
-import { EVENTS, configSchema, load } from "@badman/utils";
+import { EVENTS, configSchema, load, ConfigType } from "@badman/utils";
 import { Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { join } from "path";
 import versionPackage from "../version.json";
 import {
   CheckEncounterProcessor,
@@ -78,7 +81,19 @@ import {
       version: versionPackage.version,
       name: "worker-sync",
     }),
+    CompileModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService<ConfigType>) => ({
+        view: {
+          root: join(__dirname, "compile", "libs", "mailing"),
+          engine: "pug",
+        },
+        debug: configService.get("NODE_ENV") === "development",
+      }),
+      inject: [ConfigService],
+    }),
     DatabaseModule,
+    MailingModule,
     RankingModule,
     QueueModule,
     SearchModule,
