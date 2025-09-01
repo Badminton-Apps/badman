@@ -1,0 +1,41 @@
+extends ../../layouts/layout.pug
+
+block title
+  h1.text-center
+    | Enter Scores Failed
+
+block content
+  p.text-center
+    p
+      | Beste #{ user },
+      br
+      br
+      | Enter Scores Failed
+      br
+      br
+      | Encounter ID: #{ encounterId }
+      br
+      if encounterVisualCode
+        | Visual Code: #{ encounterVisualCode }
+        br
+      | Timestamp: #{ timestamp }
+      br
+      br
+      | The encounter failed to sync to toernooi.nl
+      br
+      br
+      if toernooiUrl
+        | The encounter URL was:
+        br
+        a(href=toernooiUrl, target="_blank") #{ toernooiUrl }
+        br
+        br
+      | Error Details:
+      br
+      pre.error-details #{ error }
+      br
+    p
+      | Met sportieve groeten,
+      br
+      |
+      | Badman
