@@ -8,6 +8,7 @@ import {
 } from "@badman/backend-database";
 import { acceptCookies, signIn, waitForSelectors } from "@badman/backend-pupeteer";
 import { SyncQueue, Sync, TransactionManager } from "@badman/backend-queue";
+import { MailingService } from "@badman/backend-mailing";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -35,7 +36,8 @@ export class EnterScoresProcessor {
 
   constructor(
     private readonly configService: ConfigService<ConfigType>,
-    private readonly _transactionManager: TransactionManager
+    private readonly _transactionManager: TransactionManager,
+    private readonly mailingService: MailingService
   ) {
     this._username = configService.get("VR_API_USER");
     this._password = configService.get("VR_API_PASS");
@@ -59,6 +61,17 @@ export class EnterScoresProcessor {
     this.logger.debug("Enter scores processor initialized");
   }
 
+  private constructToernooiUrl(encounter: EncounterCompetition | null): string | undefined {
+    if (!encounter) return undefined;
+
+    const matchId = encounter.visualCode;
+    const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
+
+    if (!matchId || !eventId) return undefined;
+
+    return `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
+  }
+
   @Process(Sync.EnterScores)
   async enterScores(job: Job<{ encounterId: string }>) {
     const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED") === true;
@@ -71,6 +84,10 @@ export class EnterScoresProcessor {
 
     this.logger.log("Syncing encounters");
     const encounterId = job.data.encounterId;
+    let encounter: EncounterCompetition | null = null; // Declare encounter outside try block
+    const devEmailDestination = this.configService.get<string>("DEV_EMAIL_DESTINATION");
+
+    this.logger.debug(`Dev email destination: ${devEmailDestination}`);
 
     this.logger.debug("Creating browser");
     const page = await getPage(headlessValue, [
@@ -92,7 +109,7 @@ export class EnterScoresProcessor {
       await page.setViewport({ width: 1691, height: 1337 });
 
       this.logger.log("Getting encounter");
-      const encounter = await EncounterCompetition.findByPk(encounterId, {
+      encounter = await EncounterCompetition.findByPk(encounterId, {
         attributes: ["id", "visualCode", "shuttle", "startHour", "endHour"],
         include: [
           {
@@ -209,12 +226,71 @@ export class EnterScoresProcessor {
           this.logger.log(`Save button clicked, waiting for navigation`);
           await page.waitForNavigation({ waitUntil: "networkidle0" });
           this.logger.log(`Navigation completed`);
+
+          // Send success email notification
+          try {
+            const toernooiUrl = this.constructToernooiUrl(encounter);
+            await this.mailingService.sendEnterScoresSuccessMail(
+              encounter.id,
+              {
+                fullName: "Dev team",
+                email: devEmailDestination || "dev@pandapanda.be",
+                slug: "dev",
+              },
+              encounter.visualCode,
+              toernooiUrl
+            );
+            this.logger.log(
+              `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+            );
+          } catch (emailError) {
+            this.logger.error("Failed to send success email:", emailError);
+          }
         } else {
           this.logger.log(`Skipping save button because we are not in production`);
+          try {
+            const toernooiUrl = this.constructToernooiUrl(encounter);
+            await this.mailingService.sendEnterScoresSuccessMail(
+              encounter.id,
+              {
+                fullName: "Dev team",
+                email: devEmailDestination || "dev@pandapanda.be",
+                slug: "dev",
+              },
+              encounter.visualCode,
+              toernooiUrl
+            );
+            this.logger.log(
+              `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+            );
+          } catch (emailError) {
+            this.logger.error("Failed to send success email:", emailError);
+          }
         }
       }
     } catch (error) {
       this.logger.error(error);
+
+      // Send failure email notification
+      try {
+        // Get encounter info for the email, fallback to encounterId if encounter is not available
+        const encounterInfo = encounter?.visualCode || encounterId;
+        const toernooiUrl = this.constructToernooiUrl(encounter);
+        await this.mailingService.sendEnterScoresFailedMail(
+          encounterId,
+          error?.message || String(error),
+          {
+            fullName: "Dev team",
+            email: devEmailDestination || "dev@pandapanda.be",
+            slug: "dev",
+          },
+          encounter?.visualCode,
+          toernooiUrl
+        );
+        this.logger.log(`Failure email sent for encounter ${encounterInfo}`);
+      } catch (emailError) {
+        this.logger.error("Failed to send failure email:", emailError);
+      }
     } finally {
       try {
         if (!visualSyncEnabled) {
