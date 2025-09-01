@@ -1,0 +1,37 @@
+extends ../../layouts/layout.pug
+
+block title
+  h1.text-center
+    | Enter Scores Success
+
+block content
+  p.text-center
+    p
+      | Beste #{ user },
+      br
+      br
+      | Enter Scores Success
+      br
+      br
+      | Encounter ID: #{ encounterId }
+      br
+      if encounterVisualCode
+        | Visual Code: #{ encounterVisualCode }
+        br
+      | Timestamp: #{ timestamp }
+      br
+      br
+      | The encounter has been successfully synced to toernooi.nl
+      br
+      br
+      if toernooiUrl
+        | You can view the encounter at:
+        br
+        a(href=toernooiUrl, target="_blank") #{ toernooiUrl }
+        br
+        br
+    p
+      | Met sportieve groeten,
+      br
+      |
+      | Badman
