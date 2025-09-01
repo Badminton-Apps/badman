@@ -523,6 +523,79 @@ export class MailingService {
     await this._sendMail(options);
   }
 
+  async sendEnterScoresSuccessMail(
+    encounterId: string,
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    encounterVisualCode?: string,
+    toernooiUrl?: string
+  ) {
+    const options = {
+      from: "info@badman.app",
+      to: to.email,
+      subject: `Enter Scores Success - Encounter ${encounterVisualCode || encounterId}`,
+      template: "enterScoresSuccess",
+      context: {
+        encounterId,
+        encounterVisualCode,
+        timestamp: new Date().toISOString(),
+        toernooiUrl,
+        user: to.fullName,
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      encounterId: string;
+      encounterVisualCode?: string;
+      timestamp: string;
+      toernooiUrl?: string;
+      user: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
+  async sendEnterScoresFailedMail(
+    encounterId: string,
+    error: string,
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    encounterVisualCode?: string,
+    toernooiUrl?: string
+  ) {
+    const options = {
+      from: "info@badman.app",
+      to: to.email,
+      subject: `Enter Scores Failed - Encounter ${encounterVisualCode || encounterId}`,
+      template: "enterScoresFailed",
+      context: {
+        encounterId,
+        encounterVisualCode,
+        error,
+        timestamp: new Date().toISOString(),
+        toernooiUrl,
+        user: to.fullName,
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      encounterId: string;
+      encounterVisualCode?: string;
+      error: string;
+      timestamp: string;
+      toernooiUrl?: string;
+      user: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
   private async _setupMailing() {
     if (this.initialized) return;
     if ((this.configService.get<boolean>("MAIL_ENABLED") ?? false) == false) {
