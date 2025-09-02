@@ -162,7 +162,9 @@ export class EnterScoresProcessor {
         return;
       }
 
-      this.logger.log(`Entering scores for ${encounter.visualCode}`);
+      this.logger.log(
+        `Entering scores for following encounter: Visual Code: ${encounter.visualCode}, Encounter id: ${encounterId}`
+      );
 
       await acceptCookies({ page }, { logger: this.logger });
       this.logger.log(`Signing in as ${this._username}`);
@@ -189,7 +191,10 @@ export class EnterScoresProcessor {
         await this._transactionManager.commitTransaction(transactionId);
         this.logger.log("enter games transaction committed successfully");
       } catch (error) {
-        this.logger.error("Error during enterGames, rolling back transaction:", error);
+        this.logger.error(
+          "Error during enterGames, rolling back transaction:",
+          error?.message || error
+        );
         await this._transactionManager.rollbackTransaction(transactionId);
         throw error;
       }
@@ -244,7 +249,7 @@ export class EnterScoresProcessor {
               `Success email sent for encounter ${encounter.visualCode || encounter.id}`
             );
           } catch (emailError) {
-            this.logger.error("Failed to send success email:", emailError);
+            this.logger.error("Failed to send success email:", emailError?.message || emailError);
           }
         } else {
           this.logger.log(`Skipping save button because we are not in production`);
@@ -264,12 +269,12 @@ export class EnterScoresProcessor {
               `Success email sent for encounter ${encounter.visualCode || encounter.id}`
             );
           } catch (emailError) {
-            this.logger.error("Failed to send success email:", emailError);
+            this.logger.error("Failed to send success email:", emailError?.message || emailError);
           }
         }
       }
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error("Error during enter scores process:", error?.message || error);
 
       // Send failure email notification
       try {
@@ -289,7 +294,7 @@ export class EnterScoresProcessor {
         );
         this.logger.log(`Failure email sent for encounter ${encounterInfo}`);
       } catch (emailError) {
-        this.logger.error("Failed to send failure email:", emailError);
+        this.logger.error("Failed to send failure email:", emailError?.message || emailError);
       }
     } finally {
       try {
@@ -311,7 +316,7 @@ export class EnterScoresProcessor {
           this.logger.log("Browser cleanup completed");
         }
       } catch (error) {
-        this.logger.error("Error during browser cleanup:", error);
+        this.logger.error("Error during browser cleanup:", error?.message || error);
       }
     }
   }

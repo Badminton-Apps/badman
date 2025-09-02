@@ -2397,6 +2397,7 @@ export type I18nTranslations = {
                             "status": string;
                             "validation": string;
                             "changeEncounterDate": string;
+                            "view": string;
                         };
                         "encounterState": {
                             "moved": string;

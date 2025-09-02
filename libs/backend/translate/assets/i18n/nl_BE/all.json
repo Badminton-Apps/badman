@@ -2096,7 +2096,8 @@
             "date": "Datum",
             "status": "Status",
             "validation": "Validatie",
-            "changeEncounterDate": "Wijzig wedstrijddatum"
+            "changeEncounterDate": "Wijzig wedstrijddatum",
+            "view": "Bekijk"
           },
           "encounterState": {
             "moved": "Verplaatst",
