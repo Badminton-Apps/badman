@@ -318,8 +318,8 @@ async function gracefulRestart(): Promise<void> {
       browserPromise = null;
       browserStartTime = 0;
       console.log("Browser restart completed successfully");
-    } catch (error) {
-      console.log("Error during browser restart:", error);
+    } catch (error: any) {
+      console.log("Error during browser restart:", error?.message || error);
     } finally {
       isRestarting = false;
     }
@@ -357,8 +357,8 @@ export function startBrowserHealthMonitoring(): () => void {
           );
           await gracefulRestart();
         }
-      } catch (error) {
-        console.log("Error checking browser health, restarting...", error);
+      } catch (error: any) {
+        console.log("Error checking browser health, restarting...", error?.message || error);
         await gracefulRestart();
       }
     },

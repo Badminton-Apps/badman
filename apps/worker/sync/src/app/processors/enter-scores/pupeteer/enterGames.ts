@@ -234,7 +234,7 @@ export async function enterGames(
       (p) => p.GamePlayerMembership.team === 1 && p.GamePlayerMembership.player === 2
     );
 
-    logger?.debug(`t1p2`, t1p2);
+    logger?.debug(`t1p2`, { id: t1p2?.id, memberId: t1p2?.memberId, fullName: t1p2?.fullName });
     if (t1p2) {
       if (!t1p2.memberId) {
         logger?.error(`Player ${t1p2.fullName} has no memberId, skipping`);
@@ -247,7 +247,7 @@ export async function enterGames(
     const t2p1 = game.players?.find(
       (p) => p.GamePlayerMembership.team === 2 && p.GamePlayerMembership.player === 1
     );
-    logger?.debug(`t2p1`, t2p1);
+    logger?.debug(`t2p1`, { id: t2p1?.id, memberId: t2p1?.memberId, fullName: t2p1?.fullName });
     if (t2p1) {
       if (!t2p1.memberId) {
         logger?.error(`Player ${t2p1.fullName} has no memberId, skipping`);
