@@ -2379,7 +2379,8 @@
             "date": "Date",
             "status": "Status",
             "validation": "Validation",
-            "changeEncounterDate": "Change encounter date"
+            "changeEncounterDate": "Change encounter date",
+            "view": "View"
           },
           "encounterState": {
             "moved": "Moved",

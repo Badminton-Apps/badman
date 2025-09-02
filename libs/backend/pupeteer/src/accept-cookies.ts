@@ -41,32 +41,44 @@ export async function acceptCookies(
   {
     const targetPage = page;
     const promises = [];
-    promises.push(targetPage.waitForNavigation());
+    promises.push(targetPage.waitForNavigation({ timeout: (timeout || 5000) * 3 })); // Use 3x timeout for initial navigation
     await targetPage.goto("https://www.toernooi.nl/cookiewall/");
-    await Promise.all(promises);
+    try {
+      await Promise.all(promises);
+    } catch (error: any) {
+      logger?.warn("Initial navigation timeout, continuing anyway:", error?.message || error);
+    }
   }
   {
     const targetPage = page;
     const promises = [];
-    promises.push(targetPage.waitForNavigation());
+    promises.push(targetPage.waitForNavigation({ timeout: (timeout || 5000) * 2 })); // Use 2x timeout for button click navigation
     const element = await waitForSelectors(
       [['button[type="submit"]'], ["button.btn.btn--success.js-accept-basic"]],
       targetPage,
       timeout
     );
     await element.click({ offset: { x: 1.890625, y: 21.453125 } });
-    await Promise.all(promises);
+    try {
+      await Promise.all(promises);
+    } catch (error: any) {
+      logger?.warn("Cookie button navigation timeout, continuing anyway:", error?.message || error);
+    }
   }
 
   {
     const targetPage = page;
     const promises = [];
-    promises.push(targetPage.waitForNavigation());
+    promises.push(targetPage.waitForNavigation({ timeout: (timeout || 5000) * 2 })); // Use 2x timeout for final navigation
 
     // Wait for the page to be idle
     logger?.debug("waiting for network idle");
-    await targetPage.waitForNetworkIdle({ idleTime: 500, timeout: timeout });
-    logger?.debug("network idle");
+    try {
+      await targetPage.waitForNetworkIdle({ idleTime: 500, timeout: timeout });
+      logger?.debug("network idle");
+    } catch (error: any) {
+      logger?.warn("Network idle timeout, continuing anyway:", error?.message || error);
+    }
 
     // Check for consent dialog frame without waiting
     const consentDialogFrame = await targetPage.$(
@@ -96,6 +108,13 @@ export async function acceptCookies(
       }
     } else {
       logger?.debug("No consent dialog frame found, continuing");
+    }
+
+    // Handle any remaining navigation promises
+    try {
+      await Promise.all(promises);
+    } catch (error: any) {
+      logger?.warn("Final navigation timeout, continuing anyway:", error?.message || error);
     }
   }
 }

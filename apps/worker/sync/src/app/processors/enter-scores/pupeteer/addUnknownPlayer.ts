@@ -87,13 +87,13 @@ export async function addUnknownPlayer(
     await page.waitForFunction(
       (substring) => {
         const teamSelect = document.querySelector("#teamplayers");
-        console.log("teamSelect", teamSelect);
+        console.log("teamSelect found:", !!teamSelect);
         if (!teamSelect) return false;
         const options = Array.from(teamSelect.querySelectorAll("option"));
-        console.log("options", options);
+        console.log("options count:", options.length);
         for (const option of options) {
           if (option.textContent && option.textContent.includes(substring)) {
-            console.log("option found", option);
+            console.log("option found with text:", option.textContent);
             return true;
           }
         }
