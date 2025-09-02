@@ -68,10 +68,8 @@ export async function acceptCookies(
 
   {
     const targetPage = page;
-    const promises = [];
-    promises.push(targetPage.waitForNavigation({ timeout: (timeout || 5000) * 2 })); // Use 2x timeout for final navigation
 
-    // Wait for the page to be idle
+    // Wait for the page to be idle first
     logger?.debug("waiting for network idle");
     try {
       await targetPage.waitForNetworkIdle({ idleTime: 500, timeout: timeout });
@@ -95,9 +93,26 @@ export async function acceptCookies(
           });
           if (greenButton) {
             logger?.debug("Found green button in consent dialog, clicking");
+
+            // Set up navigation promise ONLY when we're about to click
+            const navigationPromise = targetPage
+              .waitForNavigation({
+                timeout: (timeout || 5000) * 2,
+              })
+              .catch((error) => {
+                logger?.debug("Navigation after consent click timeout:", error?.message || error);
+                return null; // Don't throw, just return null
+              });
+
             await greenButton.click();
-            // Wait for the dialog to disappear and page to be idle again
-            await targetPage.waitForNetworkIdle({ idleTime: 500, timeout: 5000 });
+
+            // Wait for either navigation or network idle, whichever comes first
+            await Promise.race([
+              navigationPromise,
+              targetPage.waitForNetworkIdle({ idleTime: 500, timeout: 5000 }).catch(() => null),
+            ]);
+
+            logger?.debug("Consent dialog handled successfully");
           }
         } catch (error: any) {
           logger?.debug(
@@ -110,11 +125,12 @@ export async function acceptCookies(
       logger?.debug("No consent dialog frame found, continuing");
     }
 
-    // Handle any remaining navigation promises
+    // Final check to ensure page is ready
     try {
-      await Promise.all(promises);
+      await targetPage.waitForNetworkIdle({ idleTime: 300, timeout: 2000 });
+      logger?.debug("Final network idle check completed");
     } catch (error: any) {
-      logger?.warn("Final navigation timeout, continuing anyway:", error?.message || error);
+      logger?.debug("Final network idle timeout, but continuing:", error?.message || error);
     }
   }
 }
