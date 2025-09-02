@@ -15,6 +15,7 @@ import { Logger } from "@nestjs/common";
 import { Job } from "bull";
 import moment from "moment-timezone";
 import { Op, Transaction } from "sequelize";
+import { reverseMapWinnerValue } from "../../../../utils/mapWinnerValues";
 
 @Processor({
   name: SyncQueue,
@@ -173,27 +174,58 @@ export class GameTournamentProcessor {
         break;
     }
 
+    // Capture original winner state before any updates
+    const originalWinner = game?.winner;
+
     if (!game) {
       game = new Game({
         id: gameId ? gameId : undefined,
       });
     }
 
-    game.round = xmlGame.RoundName;
-    game.order = xmlGame.MatchOrder;
-    game.winner = xmlGame.Winner;
+    // Only update round and order if our database has no existing data
+    if (game.round == null && xmlGame.RoundName != null) {
+      game.round = xmlGame.RoundName;
+    }
+    if (game.order == null && xmlGame.MatchOrder != null) {
+      game.order = xmlGame.MatchOrder;
+    }
+
+    // Only update winner if toernooi.nl has data OR if we have no existing data
+    if (xmlGame.Winner != null || game.winner == null) {
+      game.winner = reverseMapWinnerValue(xmlGame.Winner);
+    }
     game.gameType = subEvent?.gameType;
     game.visualCode = xmlGame.Code;
     game.linkId = draw.id;
     game.linkType = "tournament";
     game.status = gameStatus;
-    game.playedAt = playedAt;
-    game.set1Team1 = xmlGame?.Sets?.Set[0]?.Team1;
-    game.set1Team2 = xmlGame?.Sets?.Set[0]?.Team2;
-    game.set2Team1 = xmlGame?.Sets?.Set[1]?.Team1;
-    game.set2Team2 = xmlGame?.Sets?.Set[1]?.Team2;
-    game.set3Team1 = xmlGame?.Sets?.Set[2]?.Team1;
-    game.set3Team2 = xmlGame?.Sets?.Set[2]?.Team2;
+
+    // Only update playedAt if our database has no existing data
+    if (game.playedAt == null && playedAt != null) {
+      game.playedAt = playedAt;
+    }
+
+    // Only update set scores if toernooi.nl has data or if our system has no data
+    // This prevents overwriting existing scores with empty data from toernooi.nl
+    if (xmlGame?.Sets?.Set[0]?.Team1 != null || game.set1Team1 == null) {
+      game.set1Team1 = xmlGame?.Sets?.Set[0]?.Team1;
+    }
+    if (xmlGame?.Sets?.Set[0]?.Team2 != null || game.set1Team2 == null) {
+      game.set1Team2 = xmlGame?.Sets?.Set[0]?.Team2;
+    }
+    if (xmlGame?.Sets?.Set[1]?.Team1 != null || game.set2Team1 == null) {
+      game.set2Team1 = xmlGame?.Sets?.Set[1]?.Team1;
+    }
+    if (xmlGame?.Sets?.Set[1]?.Team2 != null || game.set2Team2 == null) {
+      game.set2Team2 = xmlGame?.Sets?.Set[1]?.Team2;
+    }
+    if (xmlGame?.Sets?.Set[2]?.Team1 != null || game.set3Team1 == null) {
+      game.set3Team1 = xmlGame?.Sets?.Set[2]?.Team1;
+    }
+    if (xmlGame?.Sets?.Set[2]?.Team2 != null || game.set3Team2 == null) {
+      game.set3Team2 = xmlGame?.Sets?.Set[2]?.Team2;
+    }
 
     await game.save({ transaction });
     const system = await RankingSystem.findByPk(job.data.rankingSystemId, {
@@ -201,10 +233,27 @@ export class GameTournamentProcessor {
     });
 
     const memberships = await this._createGamePlayers(xmlGame, game, system, transaction);
-    await GamePlayerMembership.bulkCreate(memberships, {
-      transaction,
-      updateOnDuplicate: ["single", "double", "mix"],
-    });
+
+    // Only update player memberships if game didn't have a winner BEFORE this sync
+    // If original game had no winner (null/0), create/update memberships
+    // If original game already had a winner, skip (memberships already exist)
+    if (originalWinner == null || originalWinner === 0) {
+      // First destroy any existing memberships to prevent duplicates
+      await GamePlayerMembership.destroy({
+        where: { gameId: game.id },
+        transaction,
+      });
+
+      // Then create new memberships
+      await GamePlayerMembership.bulkCreate(memberships, {
+        transaction,
+        updateOnDuplicate: ["single", "double", "mix"],
+      });
+    } else {
+      this.logger.debug(
+        `Skipping player membership update for game ${game.id} - game already had winner: ${originalWinner}`
+      );
+    }
 
     await this._pointService.createRankingPointforGame(system, game, { transaction });
 
