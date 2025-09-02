@@ -20,6 +20,7 @@ import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { correctWrongPlayers } from "../../../../utils";
 import { EncounterStepData } from "./encounter";
+import { reverseMapWinnerValue } from "../../../../utils/mapWinnerValues";
 
 export class CompetitionSyncGameProcessor extends StepProcessor {
   public players?: Map<string, Player>;
@@ -130,10 +131,13 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           break;
       }
 
+      // Capture original winner state before any updates
+      const originalWinner = game?.winner;
+
       if (!game) {
         game = new Game({
           visualCode: xmlMatch.Code,
-          winner: xmlMatch.Winner,
+          winner: reverseMapWinnerValue(xmlMatch.Winner),
           gameType: this._getGameType(xmlMatch.MatchTypeID),
           order: xmlMatch.MatchOrder,
           linkId: encounter.id,
@@ -148,44 +152,62 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           set3Team2: xmlMatch?.Sets?.Set?.[2]?.Team2,
         });
       } else {
-        if (game.playedAt != encounter.date) {
+        if (game.playedAt == null && encounter.date != null) {
           game.playedAt = encounter.date;
         }
 
-        if (game.order != xmlMatch.MatchOrder) {
+        if (game.order == null && xmlMatch.MatchOrder != null) {
           game.order = xmlMatch.MatchOrder;
         }
 
-        if (game.round != xmlMatch.RoundName) {
+        if (game.round == null && xmlMatch.RoundName != null) {
           game.round = xmlMatch.RoundName;
         }
 
-        if (game.winner != xmlMatch.Winner) {
-          game.winner = xmlMatch.Winner;
+        if (game.winner != reverseMapWinnerValue(xmlMatch.Winner)) {
+          // Only update winner if toernooi.nl has data OR if we have no existing data
+          if (xmlMatch.Winner != null || game.winner == null) {
+            game.winner = reverseMapWinnerValue(xmlMatch.Winner);
+          }
         }
 
+        // Only update set scores if toernooi.nl has data or if our system has no data
+        // This prevents overwriting existing scores with empty data from toernooi.nl
         if (game.set1Team1 != xmlMatch?.Sets?.Set?.[0]?.Team1) {
-          game.set1Team1 = xmlMatch?.Sets?.Set?.[0]?.Team1;
+          // Only update if toernooi.nl has data OR if we have no existing data
+          if (xmlMatch?.Sets?.Set?.[0]?.Team1 != null || game.set1Team1 == null) {
+            game.set1Team1 = xmlMatch?.Sets?.Set?.[0]?.Team1;
+          }
         }
 
         if (game.set1Team2 != xmlMatch?.Sets?.Set?.[0]?.Team2) {
-          game.set1Team2 = xmlMatch?.Sets?.Set?.[0]?.Team2;
+          if (xmlMatch?.Sets?.Set?.[0]?.Team2 != null || game.set1Team2 == null) {
+            game.set1Team2 = xmlMatch?.Sets?.Set?.[0]?.Team2;
+          }
         }
 
         if (game.set2Team1 != xmlMatch?.Sets?.Set?.[1]?.Team1) {
-          game.set2Team1 = xmlMatch?.Sets?.Set?.[1]?.Team1;
+          if (xmlMatch?.Sets?.Set?.[1]?.Team1 != null || game.set2Team1 == null) {
+            game.set2Team1 = xmlMatch?.Sets?.Set?.[1]?.Team1;
+          }
         }
 
         if (game.set2Team2 != xmlMatch?.Sets?.Set?.[1]?.Team2) {
-          game.set2Team2 = xmlMatch?.Sets?.Set?.[1]?.Team2;
+          if (xmlMatch?.Sets?.Set?.[1]?.Team2 != null || game.set2Team2 == null) {
+            game.set2Team2 = xmlMatch?.Sets?.Set?.[1]?.Team2;
+          }
         }
 
         if (game.set3Team1 != xmlMatch?.Sets?.Set?.[2]?.Team1) {
-          game.set3Team1 = xmlMatch?.Sets?.Set?.[2]?.Team1;
+          if (xmlMatch?.Sets?.Set?.[2]?.Team1 != null || game.set3Team1 == null) {
+            game.set3Team1 = xmlMatch?.Sets?.Set?.[2]?.Team1;
+          }
         }
 
         if (game.set3Team2 != xmlMatch?.Sets?.Set?.[2]?.Team2) {
-          game.set3Team2 = xmlMatch?.Sets?.Set?.[2]?.Team2;
+          if (xmlMatch?.Sets?.Set?.[2]?.Team2 != null || game.set3Team2 == null) {
+            game.set3Team2 = xmlMatch?.Sets?.Set?.[2]?.Team2;
+          }
         }
 
         if (game.status !== gameStatus) {
@@ -199,10 +221,27 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
 
       try {
         const memberships = await this._createGamePlayers(xmlMatch, game);
-        await GamePlayerMembership.bulkCreate(memberships, {
-          transaction: this.transaction,
-          updateOnDuplicate: ["single", "double", "mix"],
-        });
+
+        // Only update player memberships if game didn't have a winner BEFORE this sync
+        // If original game had no winner (null/0), create/update memberships
+        // If original game already had a winner, skip (memberships already exist)
+        if (originalWinner == null || originalWinner === 0) {
+          // First destroy any existing memberships to prevent duplicates
+          await GamePlayerMembership.destroy({
+            where: { gameId: game.id },
+            transaction: this.transaction,
+          });
+
+          // Then create new memberships
+          await GamePlayerMembership.bulkCreate(memberships, {
+            transaction: this.transaction,
+            updateOnDuplicate: ["single", "double", "mix"],
+          });
+        } else {
+          this.logger.debug(
+            `Skipping player membership update for game ${game.id} - game already had winner: ${originalWinner}`
+          );
+        }
       } catch (e) {
         this.logger.error(
           `Error on bulk create game player membership: ${e.message}, for game: ${game.id} and ${xmlMatch.Code}`
