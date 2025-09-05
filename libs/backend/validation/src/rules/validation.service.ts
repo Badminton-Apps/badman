@@ -17,13 +17,47 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
   private readonly logger = new Logger(ValidationService.name);
   private rules: Map<string, ruleType<T, V>> = new Map();
   private ruleCache: Map<string, Rule[]> = new Map();
-  private cacheTimeout = 30000; // 30 seconds cache
+  private cacheTimeout = 300000; // 5 minutes cache (increased from 30 seconds)
   private lastCacheTime = 0;
+
+  // Add data caching to prevent expensive fetchData calls
+  private dataCache: Map<string, { data: T; timestamp: number }> = new Map();
+  private dataCacheTimeout = 60000; // 1 minute cache for data
+
+  // Add validation result caching
+  private validationCache: Map<string, { result: any; timestamp: number }> = new Map();
+  private validationCacheTimeout = 30000; // 30 seconds cache for validation results
 
   abstract onApplicationBootstrap(): Promise<void>;
   abstract group: string;
 
   abstract fetchData(args?: unknown): Promise<T>;
+
+  private async getCachedData(args: unknown): Promise<T> {
+    const cacheKey = this.generateDataCacheKey(args);
+    const cachedData = this.dataCache.get(cacheKey);
+
+    if (cachedData && this.isDataCacheValid(cachedData.timestamp)) {
+      return cachedData.data;
+    }
+
+    // Fetch fresh data
+    const data = await this.fetchData(args);
+
+    // Cache the data
+    this.dataCache.set(cacheKey, {
+      data,
+      timestamp: Date.now(),
+    });
+
+    // Cleanup expired caches periodically
+    if (Math.random() < 0.1) {
+      // 10% chance to cleanup on each call
+      this.cleanupExpiredCaches();
+    }
+
+    return data;
+  }
 
   async registerRule(
     rule: ruleType<T, V>,
@@ -64,7 +98,46 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
 
   async clearCache(): Promise<void> {
     this.ruleCache.clear();
+    this.dataCache.clear();
+    this.validationCache.clear();
     this.lastCacheTime = 0;
+  }
+
+  private generateDataCacheKey(args: unknown): string {
+    return JSON.stringify(args);
+  }
+
+  private generateValidationCacheKey(
+    args: unknown,
+    runFor?: { playerId?: string; teamId?: string; clubId?: string }
+  ): string {
+    return JSON.stringify({ args, runFor });
+  }
+
+  private isDataCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.dataCacheTimeout;
+  }
+
+  private isValidationCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.validationCacheTimeout;
+  }
+
+  private cleanupExpiredCaches(): void {
+    const now = Date.now();
+
+    // Clean up data cache
+    for (const [key, value] of this.dataCache.entries()) {
+      if (now - value.timestamp >= this.dataCacheTimeout) {
+        this.dataCache.delete(key);
+      }
+    }
+
+    // Clean up validation cache
+    for (const [key, value] of this.validationCache.entries()) {
+      if (now - value.timestamp >= this.validationCacheTimeout) {
+        this.validationCache.delete(key);
+      }
+    }
   }
 
   private async getCachedRules(): Promise<Rule[]> {
@@ -106,6 +179,14 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     }> &
       Partial<T>
   > {
+    // Check validation cache first
+    const validationCacheKey = this.generateValidationCacheKey(args, runFor);
+    const cachedValidation = this.validationCache.get(validationCacheKey);
+
+    if (cachedValidation && this.isValidationCacheValid(cachedValidation.timestamp)) {
+      return cachedValidation.result;
+    }
+
     const configuredRules = await this.getCachedRules();
 
     // if we provide a team but no club we can fetch it
@@ -165,10 +246,10 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
         return new rule();
       });
 
-    // fetch data
-    const data = await this.fetchData(args);
+    // fetch data using cache
+    const data = await this.getCachedData(args);
 
-    // // get all errors and warnings from the validators in parallel
+    // get all errors and warnings from the validators in parallel
     const results = await Promise.all(validators.map((v) => v.validate(data)));
 
     const errors = results
@@ -180,15 +261,20 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
       ?.flat(1)
       ?.filter((e) => !!e) as V[];
 
-    return {
+    const result = {
       valid: errors.length === 0,
       errors: errors,
       warnings: warnings,
       validators: validators?.map((v) => v.constructor.name),
-      // valid: true,
-      // errors: [],
-      // warnings: [],
       ...(data as T),
     };
+
+    // Cache the validation result
+    this.validationCache.set(validationCacheKey, {
+      result,
+      timestamp: Date.now(),
+    });
+
+    return result;
   }
 }
