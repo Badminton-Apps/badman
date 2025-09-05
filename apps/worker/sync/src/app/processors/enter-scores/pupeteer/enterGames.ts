@@ -1,142 +1,407 @@
-import { Game } from "@badman/backend-database";
+import { EncounterCompetition, Game } from "@badman/backend-database";
 import { Logger } from "@nestjs/common";
 import { Page } from "puppeteer";
 import { selectPlayer } from "./selectPlayer";
-import { enterScores } from "./enterScores";
 import { Transaction } from "sequelize";
+import { SubEventTypeEnum } from "@badman/utils";
+import { enterScores } from "./enterScores";
 import { enterWinner } from "./enterWinner";
 
 /**
- * Finds the first available game section on the page based on game type
- * @param page Puppeteer page object
- * @param gameType The game type ('S', 'D', or 'MX')
- * @param timeout Timeout for element selection
- * @param logger Logger instance for debugging
- * @returns The matchId of the first available game section, or null if not found
+ * Assembly position order for each team type
+ * Defines the order in which assembly positions should be processed for form filling
  */
-async function findFirstAvailableGameSection(
-  pupeteer: {
-    page: Page;
-    timeout?: number;
-  } = {
-    page: null,
-    timeout: 5000,
-  },
-  args: {
-    gameType: string;
-    logger?: Logger;
-  }
-): Promise<string | null> {
-  const { page } = pupeteer;
-  const { gameType, logger } = args || {};
-  try {
-    logger?.verbose("findFirstAvailableGameSection");
-    logger?.debug(`Finding available game section for gameType: ${gameType}`);
+const ASSEMBLY_POSITION_ORDER = {
+  [SubEventTypeEnum.M]: [
+    "double1",
+    "double2",
+    "double3",
+    "double4",
+    "single1",
+    "single2",
+    "single3",
+    "single4",
+  ],
+  [SubEventTypeEnum.F]: [
+    "double1",
+    "double2",
+    "double3",
+    "double4",
+    "single1",
+    "single2",
+    "single3",
+    "single4",
+  ],
+  [SubEventTypeEnum.MX]: [
+    "double1",
+    "double2",
+    "single1",
+    "single3",
+    "single2",
+    "single4",
+    "double3",
+    "double4",
+  ],
+};
 
-    // Determine the submatch row type based on game type
-    let submatchRowType: string;
-    if (gameType === "S") {
-      submatchRowType = "single";
-    } else if (gameType === "D" || gameType === "MX") {
-      submatchRowType = "double";
+/**
+ * Form headers for each team type in order (1-8)
+ * These correspond to the actual headers that appear on the toernooi.nl form
+ * TODO: Update these values to match the actual headers from the toernooi.nl page
+ */
+const TEAM_FORM_HEADERS = {
+  [SubEventTypeEnum.M]: [
+    "HD1", // Game 3 header
+    "HD2", // Game 4 header
+    "HD3", // Game 5 header
+    "HD4", // Game 8 header
+    "HE1", // Game 1 header
+    "HE2", // Game 2 header
+    "HE3", // Game 6 header
+    "HE4", // Game 7 header
+  ],
+  [SubEventTypeEnum.F]: [
+    "DD1", // Game 1 header
+    "DD2", // Game 2 header
+    "DD3", // Game 3 header
+    "DD4", // Game 4 header
+    "DE1", // Game 5 header
+    "DE2", // Game 6 header
+    "DE3", // Game 7 header
+    "DE4", // Game 8 header
+  ],
+  [SubEventTypeEnum.MX]: [
+    "HD", // Game 1 header
+    "DD", // Game 2 header
+    "HE1", // Game 3 header
+    "DE1", // Game 4 header
+    "HE2", // Game 5 header
+    "DE2", // Game 6 header
+    "GD1", // Game 7 header
+    "GD2", // Game 8 header
+  ],
+};
+
+/**
+ * Get the form header for a specific team type and assembly position
+ * @param teamType The type of team (M, F, MX, NATIONAL)
+ * @param assemblyPosition The assembly position (single1, single2, double1, etc.)
+ * @returns The header string for that position, or null if not found
+ */
+const getHeaderForAssemblyPosition = (
+  teamType: SubEventTypeEnum,
+  assemblyPosition: string
+): string | null => {
+  const positionOrder = ASSEMBLY_POSITION_ORDER[teamType];
+  const formHeaders = TEAM_FORM_HEADERS[teamType];
+
+  if (!positionOrder || !formHeaders) {
+    return null;
+  }
+
+  // Find the index of this assembly position in the order
+  const positionIndex = positionOrder.indexOf(assemblyPosition);
+  if (positionIndex === -1) {
+    return null;
+  }
+
+  // Return the corresponding header
+  return formHeaders[positionIndex] || null;
+};
+
+/**
+ * Get all assembly positions in the correct order for processing based on team type
+ * @param teamType The type of team (M, F, MX, NATIONAL)
+ * @returns Array of assembly positions in the order they should be filled
+ */
+const getAssemblyPositionsInOrder = (teamType: SubEventTypeEnum): string[] => {
+  return ASSEMBLY_POSITION_ORDER[teamType] || [];
+};
+
+/**
+ * Match games to assembly positions based on player assignments
+ * @param games Array of games to match
+ * @param assemblies Array of assembly records containing player assignments
+ * @param teamType The team type (M, F, MX, NATIONAL)
+ * @param logger Logger instance for debugging
+ * @returns Map of games with their assembly positions and game types
+ */
+function matchGamesToAssembly(
+  games: Game[],
+  assemblies: any[],
+  teamType: SubEventTypeEnum,
+  encounter: any,
+  logger?: Logger
+): Map<Game, { assemblyPosition: string; gameType: string }> {
+  logger?.debug(`Matching ${games.length} games to assembly for teamType: ${teamType}`);
+
+  const gameAssemblyMap = new Map<Game, { assemblyPosition: string; gameType: string }>();
+
+  if (!assemblies || assemblies.length === 0) {
+    logger?.warn("No assemblies found, cannot match games to assembly");
+    return gameAssemblyMap;
+  }
+
+  // Find the assembly for the home team (the team with the matching type)
+  const homeTeamAssembly = assemblies.find((assembly) => assembly.teamId === encounter.home?.id);
+  const awayTeamAssembly = assemblies.find((assembly) => assembly.teamId === encounter.away?.id);
+
+  logger?.debug("Home team assembly:", homeTeamAssembly?.id, "Team ID:", encounter.home?.id);
+  logger?.debug("Away team assembly:", awayTeamAssembly?.id, "Team ID:", encounter.away?.id);
+
+  const homeAssemblyData = homeTeamAssembly?.assembly;
+  const awayAssemblyData = awayTeamAssembly?.assembly;
+
+  if (!homeAssemblyData || !awayAssemblyData) {
+    logger?.warn("Missing assembly data - Home:", !!homeAssemblyData, "Away:", !!awayAssemblyData);
+    return gameAssemblyMap;
+  }
+
+  logger?.debug("Home assembly data:", homeAssemblyData);
+  logger?.debug("Away assembly data:", awayAssemblyData);
+
+  // Get assembly positions in the correct order for this team type
+  const orderedPositions = getAssemblyPositionsInOrder(teamType);
+
+  // Define assembly positions and their corresponding game types based on team type
+  const assemblyPositions = orderedPositions.map((position) => {
+    let gameType: string;
+
+    if (teamType === SubEventTypeEnum.MX) {
+      // For MX teams, all games are mixed doubles
+      gameType = "MX";
     } else {
-      throw new Error(`Unsupported game type: ${gameType}`);
+      // For M and F teams, singles are S, doubles are D
+      gameType = position.startsWith("single") ? "S" : "D";
     }
 
-    logger?.debug(`Looking for submatch rows with type: ${submatchRowType}`);
+    return { position, gameType };
+  });
 
-    // Find all submatch row elements of the specified type
-    const submatchRows = await page.$$(`tr.submatchrow_${submatchRowType}`);
+  // Keep track of already matched games to prevent double-matching
+  const matchedGameIds = new Set<string>();
 
-    logger?.debug(`Found ${submatchRows.length} submatch rows of type ${submatchRowType}`);
+  // Match games to assembly positions based on players from both teams
+  for (const { position, gameType } of assemblyPositions) {
+    const homePlayerIds = homeAssemblyData[position];
+    const awayPlayerIds = awayAssemblyData[position];
 
-    if (submatchRows.length === 0) {
-      logger?.warn(`No submatch rows found for type ${submatchRowType}`);
+    if (!homePlayerIds || !awayPlayerIds) {
+      logger?.debug(
+        `Missing players for ${position} - Home: ${!!homePlayerIds}, Away: ${!!awayPlayerIds}`
+      );
+      continue;
+    }
+
+    // Convert to arrays if they're not already (doubles are arrays, singles are strings)
+    const homeIds = Array.isArray(homePlayerIds) ? homePlayerIds : [homePlayerIds];
+    const awayIds = Array.isArray(awayPlayerIds) ? awayPlayerIds : [awayPlayerIds];
+
+    // Combine both team's players for this position
+    const allPositionPlayerIds = [...homeIds, ...awayIds];
+
+    logger?.debug(`Looking for game with players for ${position}:`, {
+      home: homeIds,
+      away: awayIds,
+      combined: allPositionPlayerIds,
+    });
+
+    // Find the game that matches these players (and hasn't been matched yet)
+    const matchingGame = games.find((game) => {
+      if (!game.players || game.players.length === 0) {
+        logger?.debug(`Game ${game.id} has no players, skipping`);
+        return false;
+      }
+
+      // Skip if this game was already matched to another position
+      if (matchedGameIds.has(game.id)) {
+        logger?.debug(`Game ${game.id} already matched, skipping`);
+        return false;
+      }
+
+      // Filter out players with no memberId or with "unknown" in their memberId
+      const validPlayers = game.players.filter(
+        (p) => p.memberId && !p.memberId.toString().toLowerCase().includes("unknown")
+      );
+      const gamePlayerIds = validPlayers.map((p) => p.id).filter(Boolean);
+
+      logger?.debug(`Checking game ${game.id} for ${position}:`, {
+        gamePlayerIds,
+        assemblyPlayerIds: allPositionPlayerIds,
+        gamePlayerCount: gamePlayerIds.length,
+        assemblyPlayerCount: allPositionPlayerIds.length,
+      });
+
+      // Check if this game matches the expected players for this position
+      let isMatch = false;
+
+      if (position.startsWith("single")) {
+        // For singles: game should contain exactly 2 players (1 from home + 1 from away)
+        isMatch =
+          allPositionPlayerIds.every((playerId) => gamePlayerIds.includes(playerId)) &&
+          gamePlayerIds.length === 2 &&
+          allPositionPlayerIds.length === 2;
+      } else {
+        // For doubles: game should contain exactly 4 players (2 from home + 2 from away)
+        isMatch =
+          allPositionPlayerIds.every((playerId) => gamePlayerIds.includes(playerId)) &&
+          gamePlayerIds.length === 4 &&
+          allPositionPlayerIds.length === 4;
+      }
+
+      if (isMatch) {
+        logger?.debug(`Found matching game ${game.id} for ${position}`, {
+          gamePlayerIds,
+          assemblyPlayerIds: allPositionPlayerIds,
+          matchType: position.startsWith("single") ? "singles" : "doubles",
+        });
+        return true;
+      }
+
+      return false;
+    });
+
+    if (matchingGame) {
+      gameAssemblyMap.set(matchingGame, { assemblyPosition: position, gameType });
+      matchedGameIds.add(matchingGame.id); // Mark this game as matched
+      logger?.debug(`Matched game ${matchingGame.id} to ${position} (${gameType})`);
+    } else {
+      logger?.warn(`No matching game found for ${position} with players:`, allPositionPlayerIds);
+    }
+  }
+
+  logger?.log(
+    `Successfully matched ${gameAssemblyMap.size}/${games.length} games to assembly positions`
+  );
+  return gameAssemblyMap;
+}
+
+/**
+ * Find a game row by assembly position and team type
+ * @param page Puppeteer page object
+ * @param teamType The type of team (M, F, MX, NATIONAL)
+ * @param assemblyPosition The assembly position (single1, single2, double1, etc.)
+ * @param logger Logger instance for debugging
+ * @returns The matchId if found, null otherwise
+ */
+async function findGameRowByAssemblyPosition(
+  page: Page,
+  teamType: SubEventTypeEnum,
+  assemblyPosition: string,
+  logger?: Logger
+): Promise<string | null> {
+  try {
+    // Get the expected header text for this team type and assembly position
+    const expectedHeader = getHeaderForAssemblyPosition(teamType, assemblyPosition);
+    if (!expectedHeader) {
+      logger?.error(
+        `No header found for teamType ${teamType} and assemblyPosition ${assemblyPosition}`
+      );
       return null;
     }
 
-    // Check each submatch row to find the first one with empty player selections
-    for (let rowIndex = 0; rowIndex < submatchRows.length; rowIndex++) {
-      const submatchRow = submatchRows[rowIndex];
-      logger?.debug(`Checking submatch row ${rowIndex + 1}/${submatchRows.length}`);
+    logger?.debug(
+      `Looking for game row with header: "${expectedHeader}" for teamType: ${teamType}, assemblyPosition: ${assemblyPosition}`
+    );
 
-      // Look for all player selectors within this submatch row
-      let playerSelectorPattern: string;
-      if (gameType === "S") {
-        // Singles games only have t1p1 and t2p1
-        playerSelectorPattern =
-          'select[id^="match_"][id$="_t1p1"], select[id^="match_"][id$="_t2p1"]';
-        logger?.debug(`Singles game: looking for t1p1 and t2p1 selectors`);
-      } else {
-        // Doubles/mixed games have all four player positions
-        playerSelectorPattern =
-          'select[id^="match_"][id$="_t1p1"], select[id^="match_"][id$="_t1p2"], select[id^="match_"][id$="_t2p1"], select[id^="match_"][id$="_t2p2"]';
-        logger?.debug(
-          `Doubles/mixed game: looking for all four player selectors (t1p1, t1p2, t2p1, t2p2)`
-        );
-      }
+    // Find all table rows that contain the expected header text
+    const matchingRows = await page.$$eval(
+      "tr",
+      (rows, headerText) => {
+        const results: { matchId: string; rowIndex: number }[] = [];
 
-      const playerSelectors = await submatchRow.$$(playerSelectorPattern);
+        rows.forEach((row, index) => {
+          // Look for th elements within this row that contain the expected header text
+          const headerCells = Array.from(row.querySelectorAll("th"));
+          for (const headerCell of headerCells) {
+            if (headerCell.textContent?.trim() === headerText) {
+              // Found a matching header, now look for match inputs in this row
+              const matchInputs = row.querySelectorAll('select[id^="match_"]');
+              if (matchInputs.length > 0) {
+                // Extract matchId from the first match input
+                const firstInput = matchInputs[0] as HTMLSelectElement;
+                const match = firstInput.id.match(/^match_(.+)_(t1p1|t1p2|t2p1|t2p2)$/);
+                if (match) {
+                  results.push({ matchId: match[1], rowIndex: index });
+                }
+              }
+              break; // Found the header in this row, no need to check other th elements
+            }
+          }
+        });
 
-      logger?.debug(`Found ${playerSelectors.length} player selectors in row ${rowIndex + 1}`);
+        return results;
+      },
+      expectedHeader
+    );
 
-      if (playerSelectors.length === 0) {
-        logger?.debug(`No player selectors found in row ${rowIndex + 1}, trying next row`);
-        continue; // No player selectors found, try next row
-      }
+    if (matchingRows.length === 0) {
+      logger?.warn(`No rows found with header "${expectedHeader}"`);
+      return null;
+    }
 
-      // Check if all player selectors in this row are empty (no selected value)
-      let allSelectorsEmpty = true;
-      let matchId: string | null = null;
+    if (matchingRows.length > 1) {
+      logger?.warn(`Multiple rows found with header "${expectedHeader}", using the first one`);
+    }
 
-      for (let selectorIndex = 0; selectorIndex < playerSelectors.length; selectorIndex++) {
-        const selector = playerSelectors[selectorIndex];
+    const selectedRow = matchingRows[0];
+    logger?.debug(
+      `Found game row with header "${expectedHeader}" at row index ${selectedRow.rowIndex}, matchId: ${selectedRow.matchId}`
+    );
 
-        // Get the selector ID to extract matchId
-        const selectorId = await page.evaluate((el) => el.id, selector);
-        logger?.debug(`Checking selector ${selectorIndex + 1}: ${selectorId}`);
+    // Verify that this row has empty player selections
+    const isEmpty = await isGameRowEmpty(page, selectedRow.matchId, logger);
+    if (!isEmpty) {
+      logger?.warn(
+        `Game row with header "${expectedHeader}" (matchId: ${selectedRow.matchId}) is not empty`
+      );
+      return null;
+    }
 
-        const match = selectorId.match(/^match_(.+)_(t1p1|t1p2|t2p1|t2p2)$/);
+    return selectedRow.matchId;
+  } catch (error) {
+    logger?.error(
+      `Error finding game row by assembly position for teamType ${teamType}, assemblyPosition ${assemblyPosition}:`,
+      error
+    );
+    return null;
+  }
+}
 
-        if (match && !matchId) {
-          matchId = match[1]; // Store the matchId from the first selector
-          logger?.debug(`Extracted matchId: ${matchId} from selector: ${selectorId}`);
-        }
+/**
+ * Check if a game row is empty (all player selectors have value "0" or empty)
+ * @param page Puppeteer page object
+ * @param matchId The matchId to check
+ * @param logger Logger instance for debugging
+ * @returns True if the row is empty, false otherwise
+ */
+async function isGameRowEmpty(page: Page, matchId: string, logger?: Logger): Promise<boolean> {
+  try {
+    const playerPositions = ["t1p1", "t1p2", "t2p1", "t2p2"];
 
-        // Check if this select element has no selected value
+    for (const position of playerPositions) {
+      const selectorId = `match_${matchId}_${position}`;
+      const selector = await page.$(`#${selectorId}`);
+
+      if (selector) {
         const selectedValue = await page.evaluate((el) => {
           const select = el as HTMLSelectElement;
           return select.value;
         }, selector);
 
-        logger?.debug(`Selector ${selectorId} has selected value: "${selectedValue}"`);
-
-        // If any selector has a selected value other than "0", this row is not empty
+        // If any selector has a value other than "0" or empty, the row is not empty
         if (selectedValue && selectedValue !== "0") {
-          logger?.debug(
-            `Selector ${selectorId} is not empty (value: "${selectedValue}"), row ${rowIndex + 1} is not available`
-          );
-          allSelectorsEmpty = false;
-          break;
+          logger?.debug(`Selector ${selectorId} has value "${selectedValue}", row is not empty`);
+          return false;
         }
-      }
-
-      // If all selectors in this row are empty, we found our available section
-      if (allSelectorsEmpty && matchId) {
-        logger?.debug(
-          `Found available game section with matchId: ${matchId} in row ${rowIndex + 1}`
-        );
-        return matchId;
-      } else if (allSelectorsEmpty && !matchId) {
-        logger?.warn(`Row ${rowIndex + 1} appears empty but no valid matchId could be extracted`);
       }
     }
 
-    logger?.warn(`No empty game sections found for gameType: ${gameType}`);
-    return null; // No empty game sections found
+    logger?.debug(`All selectors for matchId ${matchId} are empty`);
+    return true;
   } catch (error) {
-    logger?.error(`Error finding available game section for gameType ${gameType}:`, error);
-    return null;
+    logger?.error(`Error checking if game row is empty for matchId ${matchId}:`, error);
+    return false;
   }
 }
 
@@ -149,71 +414,107 @@ export async function enterGames(
     timeout: 5000,
   },
   args: {
-    games: Game[];
+    encounter: EncounterCompetition;
     transaction: Transaction;
     logger?: Logger;
   }
 ) {
   const { page, timeout } = pupeteer;
-  const { games, transaction, logger } = args || {};
+  const { encounter, transaction, logger } = args || {};
+  const { games, assemblies } = encounter;
   logger?.verbose("enterGames");
 
   if (!page) {
     throw new Error("No page provided");
   }
 
-  const gamesWithVisualCodeFirst = games.sort((a, b) => {
-    if (a.visualCode && !b.visualCode) return -1;
-    if (!a.visualCode && b.visualCode) return 1;
-    return 0;
-  });
+  // Get team type for assembly matching
+  const teamType: SubEventTypeEnum = encounter.home?.type as SubEventTypeEnum;
 
-  logger?.log(`Entering games`, gamesWithVisualCodeFirst.length);
-  for (const game of gamesWithVisualCodeFirst ?? []) {
-    logger.verbose(`processing game ${game.id}`);
+  if (!teamType) {
+    logger?.error(`No teamType found for encounter, cannot process games`);
+    return;
+  }
+
+  // Match games to assembly positions based on players
+  const gameAssemblyMap = matchGamesToAssembly(games, assemblies, teamType, encounter, logger);
+
+  // Get assembly positions in correct order for processing based on team type
+  const orderedPositions = getAssemblyPositionsInOrder(teamType);
+
+  logger?.log(`Ordered positions: ${orderedPositions}`);
+  logger?.log(`Game assembly map size: ${gameAssemblyMap.size}`);
+  logger?.log(
+    `Game assembly map keys:`,
+    Array.from(gameAssemblyMap.keys()).map((g) => g.id)
+  );
+  logger?.log(`Game assembly map values:`, Array.from(gameAssemblyMap.values()));
+
+  // logger?.log(`Entering games using assembly-based ordering for teamType: ${teamType}`);
+
+  // Process games in assembly order
+  for (const assemblyPosition of orderedPositions) {
+    // Find the game that matches this assembly position
+    const gameEntry = Array.from(gameAssemblyMap.entries()).find(
+      ([game, data]) => data.assemblyPosition === assemblyPosition
+    );
+    if (!gameEntry) {
+      logger?.debug(`No game found for assembly position: ${assemblyPosition}`);
+      continue;
+    }
+    const [game, assemblyData] = gameEntry;
+
+    logger.verbose(`Processing game ${game.id} for assembly position: ${assemblyPosition}`);
     let matchId: string;
 
-    if (game?.visualCode) {
-      // Use the visual code as matchId for games that have it
-      matchId = game.visualCode;
-      logger?.log(`Processing game ${game.order} with visualCode: ${matchId}`);
+    // Always find the correct row based on assembly position to ensure proper ordering
+    logger?.log(`Finding correct game row for ${assemblyPosition} with teamType: ${teamType}`);
+
+    // Use the assembly-based approach to find the correct game row
+    const correctMatchId = await findGameRowByAssemblyPosition(
+      page,
+      teamType,
+      assemblyPosition,
+      logger
+    );
+
+    if (!correctMatchId) {
+      logger?.error(`Could not find game row for assembly position ${assemblyPosition}, skipping`);
+      continue;
+    }
+
+    logger?.debug(
+      `Found correct game row with matchId: ${correctMatchId} for assembly position: ${assemblyPosition}`
+    );
+
+    // Validate and correct the visualCode if necessary
+    if (game?.visualCode && game.visualCode !== correctMatchId) {
+      logger?.warn(
+        `Game ${game.id} had incorrect visualCode: ${game.visualCode}, correcting to: ${correctMatchId}`
+      );
+    } else if (!game?.visualCode) {
+      logger?.log(`Game ${game.id} had no visualCode, setting to: ${correctMatchId}`);
     } else {
-      // Find the first available game section for games without visual code
-      if (!game.gameType) {
-        logger?.error(`Game ${game.order} has no visualCode and no gameType, skipping`);
-        continue;
-      }
+      logger?.debug(`Game ${game.id} already has correct visualCode: ${correctMatchId}`);
+    }
 
-      logger?.log(
-        `Processing game ${game.order} without visualCode, finding available section for gameType: ${game.gameType}`
-      );
-      matchId = await findFirstAvailableGameSection(
-        { page, timeout },
-        { gameType: game.gameType, logger: logger }
-      );
+    // Set the correct matchId
+    matchId = correctMatchId;
+    game.visualCode = correctMatchId;
 
-      if (!matchId) {
-        logger?.error(
-          `Could not find available game section for game ${game.order} with gameType ${game.gameType}, skipping`
+    // Save the corrected visualCode to database if transaction is provided
+    if (transaction && game.id) {
+      try {
+        await game.save({ transaction });
+        logger?.debug(
+          `Saved corrected visualCode ${correctMatchId} to database for game ${game.id}`
         );
-        continue;
-      }
-
-      logger?.debug(`Found available game section with matchId: ${matchId}`);
-
-      // Save the found matchId to the game's visualCode for future reference
-      game.visualCode = matchId;
-      logger?.debug(`Saved matchId ${matchId} to game ${game.order} visualCode`);
-
-      // Save to database if transaction is provided
-      if (transaction && game.id) {
-        try {
-          await game.save({ transaction });
-          logger?.debug(`Saved visualCode ${matchId} to database for game ${game.id}`);
-        } catch (error) {
-          logger?.error(`Failed to save visualCode to database for game ${game.id}:`, error);
-          throw error;
-        }
+      } catch (error) {
+        logger?.error(
+          `Failed to save corrected visualCode to database for game ${game.id}:`,
+          error
+        );
+        throw error;
       }
     }
 
@@ -288,7 +589,8 @@ export async function enterGames(
 
   // Validation step: Check and refill any empty player inputs
   logger?.log("Validating all player inputs...");
-  await validateAndRefillPlayerInputs({ page }, gamesWithVisualCodeFirst, logger);
+  const processedGames = Array.from(gameAssemblyMap.keys());
+  await validateAndRefillPlayerInputs({ page }, processedGames, logger);
 }
 
 /**

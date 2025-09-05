@@ -166,6 +166,11 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           set3Team2: xmlMatch?.Sets?.Set[2]?.Team2,
         });
       } else {
+        // Ensure visualCode is set if it wasn't before (prevents future lookup issues)
+        if (!game.visualCode && xmlMatch.Code) {
+          game.visualCode = xmlMatch.Code;
+        }
+
         if (game.playedAt == null && playedAt != null) {
           game.playedAt = playedAt;
         }

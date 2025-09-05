@@ -7,10 +7,12 @@ import { ConfigType } from "@badman/utils";
 @Injectable()
 export class SearchService {
   private readonly like = Op.iLike;
+  private readonly notLike = Op.notILike;
 
   constructor(private readonly configService: ConfigService<ConfigType>) {
     if (this.configService.get("DB_DIALECT") === "sqlite") {
       this.like = Op.like;
+      this.notLike = Op.notLike;
     }
   }
 
@@ -44,20 +46,44 @@ export class SearchService {
   }
 
   async searchPlayers(parts: string[], queries: WhereOptions[] = []): Promise<Player[]> {
-    for (const part of parts) {
-      queries.push({
-        [Op.or]: [
-          { firstName: { [this.like]: `%${part}%` } },
-          { lastName: { [this.like]: `%${part}%` } },
-          { memberId: { [this.like]: `%${part}%` } },
-        ],
-      });
+    if (parts.length === 0) {
+      return [];
     }
 
-    return await Player.findAll({
-      where: { [Op.and]: queries },
-      limit: 100,
+    // Use LIKE for SQLite, ILIKE for PostgreSQL
+    const likeOperator = this.configService.get("DB_DIALECT") === "sqlite" ? "LIKE" : "ILIKE";
+    const notLikeOperator =
+      this.configService.get("DB_DIALECT") === "sqlite" ? "NOT LIKE" : "NOT ILIKE";
+
+    const searchConditionsSQL = parts
+      .map(
+        (_, index) =>
+          `("firstName" ${likeOperator} :part${index} OR "lastName" ${likeOperator} :part${index} OR "memberId" ${likeOperator} :part${index})`
+      )
+      .join(" AND ");
+
+    const sql = `
+      SELECT * FROM "Players" 
+      WHERE (${searchConditionsSQL})
+        AND "memberId" IS NOT NULL 
+        AND "memberId" != ''
+        AND "memberId" ${notLikeOperator} '%unknown%'
+      LIMIT 100
+    `;
+
+    // Create replacements object
+    const replacements: { [key: string]: string } = {};
+    parts.forEach((part, index) => {
+      replacements[`part${index}`] = `%${part}%`;
     });
+
+    const result = await Player.sequelize?.query(sql, {
+      replacements,
+      model: Player,
+      mapToModel: true,
+    });
+
+    return result || [];
   }
 
   async searchCompetitionEvents(
