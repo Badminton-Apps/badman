@@ -43,13 +43,29 @@ export class PlayersResolver {
     private pointService: PointsService
   ) {}
 
+  private getPlayerFilters() {
+    return {
+      [Op.and]: [
+        { memberId: { [Op.not]: null } },
+        { memberId: { [Op.not]: "" } },
+        { memberId: { [Op.notILike]: "%unknown%" } },
+      ],
+    };
+  }
+
   @Query(() => Player)
   async player(@Args("id", { type: () => ID }) id: string): Promise<Player> {
+    const filters = this.getPlayerFilters();
+
     const player = IsUUID(id)
-      ? await Player.findByPk(id)
+      ? await Player.findOne({
+          where: {
+            [Op.and]: [{ id }, filters],
+          },
+        })
       : await Player.findOne({
           where: {
-            slug: id,
+            [Op.and]: [{ slug: id }, filters],
           },
         });
 
@@ -72,6 +88,14 @@ export class PlayersResolver {
   @Query(() => PagedPlayer)
   async players(@Args() listArgs: ListArgs): Promise<{ count: number; rows: Player[] }> {
     const options = ListArgs.toFindOptions(listArgs);
+    const filters = this.getPlayerFilters();
+
+    if (options.where) {
+      options.where = { [Op.and]: [options.where, filters] };
+    } else {
+      options.where = filters;
+    }
+
     return Player.findAndCountAll(options);
   }
 
