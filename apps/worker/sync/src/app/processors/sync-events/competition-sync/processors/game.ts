@@ -87,6 +87,14 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       return;
     }
 
+    // Protection: Skip sync if encounter is already finished
+    if (encounter.finished) {
+      this.logger.debug(
+        `Skipping game sync for encounter ${encounter.id} - encounter is marked as finished`
+      );
+      return;
+    }
+
     const isLastWeek = moment().subtract(1, "week").isBefore(encounter.date);
     const result = await this.visualService.getTeamMatch(
       this.visualTournament.Code,
@@ -96,10 +104,27 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
 
     const visualMatch = result.filter((m) => m != null || m != undefined) as XmlMatch[];
 
+    // Protection: Compare data completeness between toernooi.nl and local data
+    const shouldSkipSync = this._shouldSkipGameSync(encounter, visualMatch, games);
+    if (shouldSkipSync) {
+      return;
+    }
+
     for (const xmlMatch of visualMatch) {
+      // Try to find existing game with multiple fallback strategies to prevent duplicates
       let game = games.find(
         (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
       );
+
+      // Fallback 1: Try to find by visualCode only if not found by both criteria
+      if (!game) {
+        game = games.find((r) => r.visualCode === `${xmlMatch.Code}`);
+      }
+
+      // Fallback 2: Try to find by order only if visualCode doesn't match
+      if (!game && xmlMatch.MatchOrder != null) {
+        game = games.find((r) => r.order === xmlMatch.MatchOrder && !r.visualCode);
+      }
 
       if (!xmlMatch.Sets) {
         xmlMatch.Sets = { Set: [] };
@@ -152,6 +177,11 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           set3Team2: xmlMatch?.Sets?.Set?.[2]?.Team2,
         });
       } else {
+        // Ensure visualCode is set if it wasn't before (prevents future lookup issues)
+        if (!game.visualCode && xmlMatch.Code) {
+          game.visualCode = xmlMatch.Code;
+        }
+
         if (game.playedAt == null && encounter.date != null) {
           game.playedAt = encounter.date;
         }
@@ -450,5 +480,60 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       );
     }
     return returnPlayer;
+  }
+
+  /**
+   * Determines if game sync should be skipped based on data completeness comparison
+   * between toernooi.nl and local data
+   */
+  private _shouldSkipGameSync(
+    encounter: EncounterCompetition,
+    visualMatches: XmlMatch[],
+    localGames: Game[]
+  ): boolean {
+    // Count complete games in toernooi.nl (games with set scores)
+    const completeVisualGames = visualMatches.filter((xmlMatch) => {
+      const sets = xmlMatch?.Sets?.Set;
+      if (!sets) {
+        return false;
+      }
+
+      // Normalize to array format
+      const setsArray = Array.isArray(sets) ? sets : [sets];
+
+      // Check if any set has scores
+      return setsArray.some(
+        (set) => set?.Team1 != null && set?.Team2 != null && (set.Team1 > 0 || set.Team2 > 0)
+      );
+    }).length;
+
+    // Count complete games in local data (games with set scores and playedAt)
+    const completeLocalGames = localGames.filter((game) => {
+      const hasPlayedAt = game.playedAt != null;
+      const hasWinner = game.winner != null && game.winner > 0;
+      const hasSetScores =
+        (game.set1Team1 != null && game.set1Team2 != null) ||
+        (game.set2Team1 != null && game.set2Team2 != null) ||
+        (game.set3Team1 != null && game.set3Team2 != null);
+
+      return hasPlayedAt && hasSetScores && hasWinner;
+    }).length;
+
+    // Skip sync if local data is more complete than or equal to toernooi.nl data
+    const shouldSkip = completeLocalGames >= completeVisualGames && completeLocalGames > 0;
+
+    if (shouldSkip) {
+      this.logger.debug(
+        `Skipping game sync for encounter ${encounter.id} - local data is more complete ` +
+          `(local: ${completeLocalGames} complete games, toernooi.nl: ${completeVisualGames} complete games)`
+      );
+    } else {
+      this.logger.debug(
+        `Proceeding with game sync for encounter ${encounter.id} - toernooi.nl has more complete data ` +
+          `(local: ${completeLocalGames} complete games, toernooi.nl: ${completeVisualGames} complete games)`
+      );
+    }
+
+    return shouldSkip;
   }
 }
