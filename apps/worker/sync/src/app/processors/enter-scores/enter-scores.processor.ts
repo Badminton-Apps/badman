@@ -5,26 +5,34 @@ import {
   DrawCompetition,
   SubEventCompetition,
   EventCompetition,
+  Assembly,
+  Team,
 } from "@badman/backend-database";
-import { acceptCookies, signIn, waitForSelectors } from "@badman/backend-pupeteer";
 import { SyncQueue, Sync, TransactionManager } from "@badman/backend-queue";
 import { MailingService } from "@badman/backend-mailing";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
+import { ConfigType } from "@badman/utils";
 import {
+  getPage,
+  getBrowser,
+  startBrowserHealthMonitoring,
+  acceptCookies,
+  signIn,
+  waitForSelectors,
+} from "@badman/backend-pupeteer";
+import {
+  enableInputValidation,
   enterEditMode,
-  clearFields,
   enterEndHour,
   enterGameLeader,
   enterShuttle,
   enterStartHour,
-  enableInputValidation,
 } from "./pupeteer";
-import { ConfigType } from "@badman/utils";
+import { clearFields } from "./pupeteer";
 import { enterGames } from "./pupeteer/enterGames";
-import { getPage, getBrowser, startBrowserHealthMonitoring } from "@badman/backend-pupeteer";
 
 @Processor({
   name: SyncQueue,
@@ -110,7 +118,15 @@ export class EnterScoresProcessor {
 
       this.logger.log("Getting encounter");
       encounter = await EncounterCompetition.findByPk(encounterId, {
-        attributes: ["id", "visualCode", "shuttle", "startHour", "endHour"],
+        attributes: [
+          "id",
+          "visualCode",
+          "shuttle",
+          "startHour",
+          "endHour",
+          "homeTeamId",
+          "awayTeamId",
+        ],
         include: [
           {
             attributes: [
@@ -154,8 +170,23 @@ export class EnterScoresProcessor {
             model: Player,
             as: "gameLeader",
           },
+          {
+            model: Assembly,
+          },
+          {
+            model: Team,
+            as: "home",
+            attributes: ["id", "name", "type"],
+          },
+          {
+            model: Team,
+            as: "away",
+            attributes: ["id", "name", "type"],
+          },
         ],
       });
+
+      console.log(encounter?.assemblies);
 
       if (!encounter) {
         this.logger.error(`Encounter ${encounterId} not found`);
@@ -186,7 +217,7 @@ export class EnterScoresProcessor {
       try {
         await enterGames(
           { page },
-          { games: encounter.games, logger: this.logger, transaction: transaction }
+          { encounter: encounter, logger: this.logger, transaction: transaction }
         );
         await this._transactionManager.commitTransaction(transactionId);
         this.logger.log("enter games transaction committed successfully");
