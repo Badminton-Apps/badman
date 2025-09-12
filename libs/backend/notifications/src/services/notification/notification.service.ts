@@ -284,31 +284,34 @@ export class NotificationService {
   }
 
   async notifyEncounterNotEntered(encounter: EncounterCompetition) {
-    const notifierNotEntered = new CompetitionEncounterNotEnteredNotifier(this.mailing, this.push);
+    const devEmailDestination = this.configService.get<string>("DEV_EMAIL_DESTINATION");
 
-    const homeTeam = await encounter.getHome({
-      include: [
-        {
-          association: "captain",
-        },
-      ],
-    });
+    if (!devEmailDestination) {
+      this._logger.error(
+        "DEV_EMAIL_DESTINATION not configured - skipping notifyEncounterNotEntered"
+      );
+      return;
+    }
+
+    const notifierNotEntered = new CompetitionEncounterNotEnteredNotifier(this.mailing, this.push);
 
     // Property was loaded when sending notification
     const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
     const matchId = encounter.visualCode;
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
-    if (!homeTeam.captain || !homeTeam.email) {
-      this._logger.error("Captain or email not found");
-      return;
-    }
+    // Create dev team user object for notification
+    const devUser = {
+      fullName: "Dev Team",
+      email: devEmailDestination,
+      slug: "dev",
+    };
 
     notifierNotEntered.notify(
-      homeTeam.captain,
+      devUser as Player,
       encounter.id,
       { encounter },
-      { email: homeTeam.email ?? homeTeam.captain?.email, url }
+      { email: devEmailDestination, url }
     );
   }
 
@@ -499,17 +502,25 @@ export class NotificationService {
     );
   }
 
-  async notifySyncEncounterFailed(
-    userId: string,
-    { encounter, url }: { encounter?: EncounterCompetition; url: string }
-  ) {
+  async notifySyncEncounterFailed({
+    encounter,
+    url,
+  }: {
+    encounter?: EncounterCompetition;
+    url: string;
+  }) {
     const notifier = new SyncEncounterFailed(this.mailing, this.push);
 
     if (!encounter) {
       throw new Error("Encounter not found");
     }
 
-    const user = await Player.findByPk(userId);
+    const devEmailDestination = this.configService.get<string>("DEV_EMAIL_DESTINATION");
+
+    if (!devEmailDestination) {
+      this._logger.error("DEV_EMAIL_DESTINATION not configured");
+      return;
+    }
 
     if (!encounter?.drawCompetition) {
       encounter.drawCompetition = await encounter?.getDrawCompetition();
@@ -539,12 +550,19 @@ export class NotificationService {
       encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.id
     }/draw/${encounter?.drawCompetition?.id}`;
 
-    if (user?.email && encounter?.id && url && user?.slug) {
+    // Create a dev team user object for notification
+    const devUser = {
+      fullName: "Dev Team",
+      email: devEmailDestination,
+      slug: "dev",
+    };
+
+    if (encounter?.id && url) {
       notifier.notify(
-        user,
+        devUser as Player,
         encounter.id,
         { encounter, url, urlBadman },
-        { email: user?.email, slug: user?.slug }
+        { email: devEmailDestination, slug: "dev" }
       );
     }
   }

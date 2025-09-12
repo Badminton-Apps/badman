@@ -3,6 +3,7 @@ import { CompileModule } from "@badman/backend-compile";
 import { LoggingModule } from "@badman/backend-logging";
 import { MailingModule } from "@badman/backend-mailing";
 import { NotificationsModule } from "@badman/backend-notifications";
+import { PupeteerModule } from "@badman/backend-pupeteer";
 import { QueueModule, SyncQueue } from "@badman/backend-queue";
 import { RankingModule } from "@badman/backend-ranking";
 import { SearchModule } from "@badman/backend-search";
@@ -94,6 +95,7 @@ import {
     }),
     DatabaseModule,
     MailingModule,
+    PupeteerModule,
     RankingModule,
     QueueModule,
     SearchModule,

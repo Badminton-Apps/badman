@@ -11,6 +11,7 @@ import { LoggingModule } from "@badman/backend-logging";
 import { MailingModule } from "@badman/backend-mailing";
 import { NotificationsModule } from "@badman/backend-notifications";
 import { OrchestratorModule } from "@badman/backend-orchestrator";
+import { PupeteerModule } from "@badman/backend-pupeteer";
 import { QueueModule } from "@badman/backend-queue";
 import { SearchModule } from "@badman/backend-search";
 import { TransferLoanModule } from "@badman/backend-transfer-loan";
@@ -63,6 +64,7 @@ console.log("envFilePath", envFilePath, process.env.NODE_ENV);
     MailingModule,
     NotificationsModule,
     GeneratorModule,
+    PupeteerModule,
     SearchModule,
     QueueModule,
     HealthModule,

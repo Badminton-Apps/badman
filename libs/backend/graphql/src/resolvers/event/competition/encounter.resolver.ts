@@ -642,6 +642,7 @@ export class EncounterCompetitionResolver {
           Sync.EnterScores,
           {
             encounterId: encounter.id,
+            concurrency: 1,
           },
           {
             removeOnComplete: true,

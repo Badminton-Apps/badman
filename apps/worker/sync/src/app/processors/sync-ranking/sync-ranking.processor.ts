@@ -23,7 +23,10 @@ export class SyncRankingProcessor {
     this._rankingSync = new RankingSyncer(visualService, rankingQ);
   }
 
-  @Process(Sync.SyncRanking)
+  @Process({
+    name: Sync.SyncRanking,
+    concurrency: 1, // Ensure sequential processing
+  })
   async syncRanking(
     job: Job<{
       start: string;

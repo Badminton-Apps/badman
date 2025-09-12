@@ -36,7 +36,10 @@ export class SyncEventsProcessor {
     this._tournamentSync = new TournamentSyncer(this.visualService, pointService);
   }
 
-  @Process(Sync.SyncEvents)
+  @Process({
+    name: Sync.SyncEvents,
+    concurrency: 1, // Ensure sequential processing
+  })
   async syncEvents(
     job: Job<{
       // Changed after date

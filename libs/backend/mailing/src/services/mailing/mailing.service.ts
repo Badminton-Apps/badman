@@ -683,8 +683,13 @@ export class MailingService {
         const cc = ((Array.isArray(options.cc) ? options.cc : [options.cc]) ?? []) as string[];
 
         // Use DEV_EMAIL_DESTINATION environment variable, fallback to dev@pandapanda.be if not set
-        const devEmailDestination =
-          this.configService.get("DEV_EMAIL_DESTINATION") || "dev@pandapanda.be";
+        const devEmailDestination = this.configService.get("DEV_EMAIL_DESTINATION");
+
+        if (!devEmailDestination) {
+          this.logger.error("DEV_EMAIL_DESTINATION not configured");
+          return;
+        }
+
         options.to = [devEmailDestination];
         options.cc = [];
 
