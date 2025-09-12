@@ -16,9 +16,7 @@ import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 import { ConfigType } from "@badman/utils";
 import {
-  getPage,
-  getBrowser,
-  startBrowserHealthMonitoring,
+  getPageWithCleanup,
   acceptCookies,
   signIn,
   waitForSelectors,
@@ -49,23 +47,6 @@ export class EnterScoresProcessor {
   ) {
     this._username = configService.get("VR_API_USER");
     this._password = configService.get("VR_API_PASS");
-
-    // Start browser health monitoring
-    startBrowserHealthMonitoring();
-
-    // Add memory monitoring
-    setInterval(() => {
-      const used = process.memoryUsage();
-      this.logger.debug(
-        "Memory usage:",
-        JSON.stringify({
-          rss: Math.round(used.rss / 1024 / 1024) + "MB",
-          heapUsed: Math.round(used.heapUsed / 1024 / 1024) + "MB",
-          heapTotal: Math.round(used.heapTotal / 1024 / 1024) + "MB",
-        })
-      );
-    }, 60000); // Every minute
-
     this.logger.debug("Enter scores processor initialized");
   }
 
@@ -80,10 +61,55 @@ export class EnterScoresProcessor {
     return `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
   }
 
-  @Process(Sync.EnterScores)
+  private async validateRowMessages(page: any): Promise<void> {
+    this.logger.log("Validating rows for error messages");
+
+    try {
+      // Look for all divs with class submatchrow_message
+      const errorMessages = await page.evaluate(() => {
+        const messageElements = document.querySelectorAll("div.submatchrow_message");
+        const messages: string[] = [];
+
+        messageElements.forEach((element: Element) => {
+          const text = element.textContent?.trim();
+          if (text) {
+            messages.push(text);
+          }
+        });
+
+        return messages;
+      });
+
+      if (errorMessages.length > 0) {
+        const errorText = errorMessages.join("; ");
+        this.logger.error(`Row validation failed with messages: ${errorText}`);
+        throw new Error(`Row validation failed: ${errorText}`);
+      }
+
+      this.logger.log("Row validation passed - no error messages found");
+    } catch (error) {
+      // Re-throw validation errors
+      if (error instanceof Error && error.message.includes("Row validation failed")) {
+        throw error;
+      }
+
+      // Log and re-throw other errors that might occur during page evaluation
+      this.logger.error("Error during row validation:", error?.message || error);
+      throw new Error(`Row validation error: ${error?.message || String(error)}`);
+    }
+  }
+
+  @Process({
+    name: Sync.EnterScores,
+    concurrency: 1, // Only 1 concurrent job
+  })
   async enterScores(job: Job<{ encounterId: string }>) {
+    this.logger.log(
+      `🚀 Starting EnterScores job ${job.id} for encounter ${job.data.encounterId} (PID: ${process.pid})`
+    );
     const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED") === true;
     const enterScoresEnabled = this.configService.get("ENTER_SCORES_ENABLED") === true;
+    const hangBeforeBrowserCleanup = this.configService.get("HANG_BEFORE_BROWSER_CLEANUP") === true;
     const headlessValue = visualSyncEnabled ? false : true;
     if (!this._username || !this._password) {
       this.logger.error("No username or password found");
@@ -98,7 +124,7 @@ export class EnterScoresProcessor {
     this.logger.debug(`Dev email destination: ${devEmailDestination}`);
 
     this.logger.debug("Creating browser");
-    const page = await getPage(headlessValue, [
+    const pageInstance = await getPageWithCleanup(headlessValue, [
       "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
       "--disable-save-password-bubble",
       "--disable-credentials-enable-service",
@@ -106,6 +132,7 @@ export class EnterScoresProcessor {
       "--password-store=basic",
       "--no-default-browser-check",
     ]);
+    const { page } = pageInstance;
 
     try {
       if (!page) {
@@ -186,8 +213,6 @@ export class EnterScoresProcessor {
         ],
       });
 
-      console.log(encounter?.assemblies);
-
       if (!encounter) {
         this.logger.error(`Encounter ${encounterId} not found`);
         return;
@@ -197,7 +222,23 @@ export class EnterScoresProcessor {
         `Entering scores for following encounter: Visual Code: ${encounter.visualCode}, Encounter id: ${encounterId}`
       );
 
-      await acceptCookies({ page }, { logger: this.logger });
+      // 🔧 FIX: Wrap acceptCookies in specific error handling
+      try {
+        await acceptCookies({ page, timeout: 15000 }, { logger: this.logger });
+        this.logger.log("✅ Cookie acceptance completed successfully");
+      } catch (error: any) {
+        this.logger.error("❌ Cookie acceptance failed:", error?.message || error);
+
+        // Check if this is a critical error that should stop the job
+        if (error?.name === "CookieAcceptanceError") {
+          throw new Error(
+            `Failed to accept cookies: ${error?.message}. This may indicate the website is down or has changed.`
+          );
+        }
+
+        // For other errors, re-throw to maintain existing behavior
+        throw error;
+      }
       this.logger.log(`Signing in as ${this._username}`);
       await signIn(
         { page },
@@ -252,6 +293,9 @@ export class EnterScoresProcessor {
 
       await enableInputValidation({ page }, this.logger);
 
+      // Validate rows for error messages
+      await this.validateRowMessages(page);
+
       const nodeEv = process.env.NODE_ENV;
 
       const saveButton = await waitForSelectors([["input#btnSave.button"]], page, 5000);
@@ -264,43 +308,55 @@ export class EnterScoresProcessor {
           this.logger.log(`Navigation completed`);
 
           // Send success email notification
-          try {
-            const toernooiUrl = this.constructToernooiUrl(encounter);
-            await this.mailingService.sendEnterScoresSuccessMail(
-              encounter.id,
-              {
-                fullName: "Dev team",
-                email: devEmailDestination || "dev@pandapanda.be",
-                slug: "dev",
-              },
-              encounter.visualCode,
-              toernooiUrl
-            );
+          if (devEmailDestination) {
+            try {
+              const toernooiUrl = this.constructToernooiUrl(encounter);
+              await this.mailingService.sendEnterScoresSuccessMail(
+                encounter.id,
+                {
+                  fullName: "Dev team",
+                  email: devEmailDestination,
+                  slug: "dev",
+                },
+                encounter.visualCode,
+                toernooiUrl
+              );
+              this.logger.log(
+                `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+              );
+            } catch (emailError) {
+              this.logger.error("Failed to send success email:", emailError?.message || emailError);
+            }
+          } else {
             this.logger.log(
-              `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+              `Skipping success email notification - no dev email destination configured for encounter ${encounter.visualCode || encounter.id}`
             );
-          } catch (emailError) {
-            this.logger.error("Failed to send success email:", emailError?.message || emailError);
           }
         } else {
           this.logger.log(`Skipping save button because we are not in production`);
-          try {
-            const toernooiUrl = this.constructToernooiUrl(encounter);
-            await this.mailingService.sendEnterScoresSuccessMail(
-              encounter.id,
-              {
-                fullName: "Dev team",
-                email: devEmailDestination || "dev@pandapanda.be",
-                slug: "dev",
-              },
-              encounter.visualCode,
-              toernooiUrl
-            );
+          if (devEmailDestination) {
+            try {
+              const toernooiUrl = this.constructToernooiUrl(encounter);
+              await this.mailingService.sendEnterScoresSuccessMail(
+                encounter.id,
+                {
+                  fullName: "Dev team",
+                  email: devEmailDestination,
+                  slug: "dev",
+                },
+                encounter.visualCode,
+                toernooiUrl
+              );
+              this.logger.log(
+                `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+              );
+            } catch (emailError) {
+              this.logger.error("Failed to send success email:", emailError?.message || emailError);
+            }
+          } else {
             this.logger.log(
-              `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+              `Skipping success email notification - no dev email destination configured for encounter ${encounter.visualCode || encounter.id}`
             );
-          } catch (emailError) {
-            this.logger.error("Failed to send success email:", emailError?.message || emailError);
           }
         }
       }
@@ -308,42 +364,37 @@ export class EnterScoresProcessor {
       this.logger.error("Error during enter scores process:", error?.message || error);
 
       // Send failure email notification
-      try {
-        // Get encounter info for the email, fallback to encounterId if encounter is not available
+      if (devEmailDestination) {
+        try {
+          // Get encounter info for the email, fallback to encounterId if encounter is not available
+          const encounterInfo = encounter?.visualCode || encounterId;
+          const toernooiUrl = this.constructToernooiUrl(encounter);
+          await this.mailingService.sendEnterScoresFailedMail(
+            encounterId,
+            error?.message || String(error),
+            {
+              fullName: "Dev team",
+              email: devEmailDestination,
+              slug: "dev",
+            },
+            encounter?.visualCode,
+            toernooiUrl
+          );
+          this.logger.log(`Failure email sent for encounter ${encounterInfo}`);
+        } catch (emailError) {
+          this.logger.error("Failed to send failure email:", emailError?.message || emailError);
+        }
+      } else {
         const encounterInfo = encounter?.visualCode || encounterId;
-        const toernooiUrl = this.constructToernooiUrl(encounter);
-        await this.mailingService.sendEnterScoresFailedMail(
-          encounterId,
-          error?.message || String(error),
-          {
-            fullName: "Dev team",
-            email: devEmailDestination || "dev@pandapanda.be",
-            slug: "dev",
-          },
-          encounter?.visualCode,
-          toernooiUrl
+        this.logger.log(
+          `Skipping failure email notification - no dev email destination configured for encounter ${encounterInfo}`
         );
-        this.logger.log(`Failure email sent for encounter ${encounterInfo}`);
-      } catch (emailError) {
-        this.logger.error("Failed to send failure email:", emailError?.message || emailError);
       }
     } finally {
       try {
-        if (!visualSyncEnabled) {
-          this.logger.log(`Closing browser page...`);
-          await page?.close();
-
-          // Get browser instance and close it properly
-          const browser = await getBrowser(headlessValue);
-          const pages = await browser.pages();
-          this.logger.log(`Browser has ${pages.length} pages remaining`);
-
-          // If this was the last page, close the browser
-          if (pages.length <= 1) {
-            this.logger.log("Closing browser instance...");
-            await browser.close();
-          }
-
+        if (!hangBeforeBrowserCleanup) {
+          this.logger.log(`Cleaning up browser instance...`);
+          await pageInstance.cleanup();
           this.logger.log("Browser cleanup completed");
         }
       } catch (error) {

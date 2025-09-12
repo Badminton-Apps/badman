@@ -49,6 +49,7 @@ export async function clearFields(
 
     // Click the element
     await veldenLegenButton.click();
+    logger?.debug("Clicked reset sub matches button");
   }
   {
     const targetPage = page;
@@ -63,6 +64,7 @@ export async function clearFields(
       timeout
     );
     await element.click({ offset: { x: 16.859375, y: 7.5 } });
+    logger?.debug("Confirmed dialog to reset fields");
   }
   {
     const targetPage = page;
@@ -98,6 +100,41 @@ export async function clearFields(
     await targetPage.evaluate(
       () => ((<HTMLInputElement>document.getElementById("matchfield_4")).value = "")
     );
+
+    logger?.debug("Cleared matchfield input values");
+
+    // Wait a moment for the reset to take effect
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Verify that player selection dropdowns are actually cleared
+    const remainingSelections = await targetPage.evaluate(() => {
+      const selects = Array.from(
+        document.querySelectorAll(
+          'select[id^="match_"][id$="_t1p1"], select[id^="match_"][id$="_t1p2"], select[id^="match_"][id$="_t2p1"], select[id^="match_"][id$="_t2p2"]'
+        )
+      );
+      const nonEmptySelections: string[] = [];
+
+      selects.forEach((select) => {
+        const htmlSelect = select as HTMLSelectElement;
+        if (htmlSelect.value && htmlSelect.value !== "0") {
+          nonEmptySelections.push(`${htmlSelect.id}="${htmlSelect.value}"`);
+        }
+      });
+
+      return nonEmptySelections;
+    });
+
+    if (remainingSelections.length > 0) {
+      logger?.error(
+        `clearFields verification failed: ${remainingSelections.length} player selections were not cleared: ${remainingSelections.join(", ")}`
+      );
+      throw new Error(
+        `Field clearing failed: ${remainingSelections.length} player selections remain: ${remainingSelections.join(", ")}`
+      );
+    } else {
+      logger?.debug("clearFields verification passed: all player selections are cleared");
+    }
   }
   {
     const targetPage = page;

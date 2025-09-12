@@ -19,7 +19,10 @@ export class SyncTwizzitProcessor {
     private _twizzitService: TwizzitService
   ) {}
 
-  @Process(Sync.SyncTwizzit)
+  @Process({
+    name: Sync.SyncTwizzit,
+    concurrency: 1, // Ensure sequential processing
+  })
   async syncTwizzit(
     job: Job<{
       start: string;

@@ -1,11 +1,5 @@
 import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
-import {
-  acceptCookies,
-  getPage,
-  selectBadmninton,
-  getBrowser,
-  startBrowserHealthMonitoring,
-} from "@badman/backend-pupeteer";
+import { acceptCookies, getPageWithCleanup, selectBadmninton } from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger, NotFoundException } from "@nestjs/common";
@@ -20,21 +14,18 @@ export class CheckRankingProcessor {
   private readonly logger = new Logger(CheckRankingProcessor.name);
 
   constructor() {
-    // Start browser health monitoring
-    startBrowserHealthMonitoring();
     this.logger.debug("Check ranking initialized");
   }
 
   @Process({
     name: Sync.CheckRanking,
-    concurrency: 1,
   })
   async syncRankingJob(job: Job<{ playerId: string }>): Promise<void> {
     this.syncRanking(job.data.playerId);
   }
 
   async syncRanking(playerId: string): Promise<void> {
-    let page: Page | undefined;
+    let pageInstance: { page: Page; cleanup: () => Promise<void> } | undefined;
 
     const player = await Player.findByPk(playerId);
     if (!player) {
@@ -73,7 +64,8 @@ export class CheckRankingProcessor {
 
     try {
       // Create browser
-      page = await getPage();
+      pageInstance = await getPageWithCleanup();
+      const { page } = pageInstance;
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
 
@@ -149,20 +141,10 @@ export class CheckRankingProcessor {
       this.logger.error(`Error while processing player ${player.fullName}`);
     } finally {
       try {
-        // Close browser properly
-        if (page) {
-          await page.close();
-
-          // Check if we should close the browser instance
-          const browser = await getBrowser();
-          const pages = await browser.pages();
-          this.logger.log(`Browser has ${pages.length} pages remaining`);
-
-          if (pages.length <= 1) {
-            this.logger.log("Closing browser instance...");
-            await browser.close();
-          }
-
+        // Clean up browser instance
+        if (pageInstance) {
+          this.logger.log("Cleaning up browser instance...");
+          await pageInstance.cleanup();
           this.logger.debug(`Synced ${player.fullName}`);
         }
       } catch (error) {
