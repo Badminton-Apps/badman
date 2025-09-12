@@ -201,7 +201,7 @@ export type ConfigType = {
   MAIL_SUBJECT_PREFIX?: string;
   DEV_EMAIL_DESTINATION?: string;
   PUSH_ENABLED: boolean;
-  QUEUE_CONCURRENCY: number;
+  MAX_CONCURRENT_WORKER_JOBS: number;
   VAPID_PRIVATE_KEY?: string;
   VAPID_PUBLIC_KEY?: string;
   VR_CHANGE_DATES: boolean;

@@ -38,7 +38,6 @@ export class SyncEventsProcessor {
 
   @Process({
     name: Sync.SyncEvents,
-    concurrency: 1, // Ensure sequential processing
   })
   async syncEvents(
     job: Job<{

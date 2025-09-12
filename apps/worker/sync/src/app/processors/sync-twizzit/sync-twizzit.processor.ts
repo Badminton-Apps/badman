@@ -21,7 +21,6 @@ export class SyncTwizzitProcessor {
 
   @Process({
     name: Sync.SyncTwizzit,
-    concurrency: 1, // Ensure sequential processing
   })
   async syncTwizzit(
     job: Job<{
