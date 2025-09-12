@@ -49,6 +49,7 @@ export async function signIn(
       targetPage,
       timeout
     );
+    if (!element) throw new Error("Login button not found");
     await element.click({ offset: { x: 32.265625, y: 14.078125 } });
     await Promise.all(promises);
   }
@@ -56,6 +57,7 @@ export async function signIn(
   {
     const targetPage = page;
     const element = await waitForSelectors([["aria/Loginnaam"], ["#Login"]], targetPage, timeout);
+    if (!element) throw new Error("Login name input not found");
     await element.type(username);
   }
   {
@@ -65,6 +67,7 @@ export async function signIn(
       targetPage,
       timeout
     );
+    if (!element) throw new Error("Password input not found");
     await element.type(password);
   }
   {
@@ -72,6 +75,7 @@ export async function signIn(
     const promises = [];
     promises.push(targetPage.waitForNavigation());
     const element = await waitForSelectors([["aria/INLOGGEN"], ["#btnLogin"]], targetPage, timeout);
+    if (!element) throw new Error("Login button not found");
     await element.click({ offset: { x: 50.046875, y: 6.359375 } });
     await Promise.all(promises);
   }
