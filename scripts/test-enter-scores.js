@@ -49,7 +49,11 @@ const axios = require("axios");
  * - Monitor browser windows if VISUAL_SYNC_ENABLED=true
  */
 
-const encounterIds = [];
+const encounterIds = [
+  // "33ade599-8009-49d8-9acd-54e1336f9657",
+  // "66835f20-177b-4826-a3ca-ce9e1fb6b487",
+  // "089744c5-225b-4210-92a9-da81b970ebea",
+];
 
 const endpoint = "http://localhost:5010/api/v1/queue-job";
 
