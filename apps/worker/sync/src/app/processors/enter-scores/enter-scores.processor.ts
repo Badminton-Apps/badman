@@ -101,7 +101,6 @@ export class EnterScoresProcessor {
 
   @Process({
     name: Sync.EnterScores,
-    concurrency: 1, // Only 1 concurrent job
   })
   async enterScores(job: Job<{ encounterId: string }>) {
     this.logger.log(

@@ -25,7 +25,6 @@ export class SyncRankingProcessor {
 
   @Process({
     name: Sync.SyncRanking,
-    concurrency: 1, // Ensure sequential processing
   })
   async syncRanking(
     job: Job<{
