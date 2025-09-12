@@ -646,6 +646,9 @@ export class EncounterCompetitionResolver {
           {
             removeOnComplete: true,
             removeOnFail: false,
+            backoff: {
+              type: "exponential",
+            },
           }
         );
       }
