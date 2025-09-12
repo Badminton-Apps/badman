@@ -26,6 +26,11 @@ const BullQueueModules = [
             password: configService.get("REDIS_PASSWORD"),
             db: configService.get<number>("QUEUE_DB") ?? 0,
           },
+          limiter: {
+            max: configService.get<number>("MAX_CONCURRENT_WORKER_JOBS") ?? 1,
+            duration: 60 * 1000,
+            bounceBack: false,
+          },
         };
       },
       inject: [ConfigService],

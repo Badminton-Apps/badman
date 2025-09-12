@@ -41,6 +41,7 @@ export const configSchema = Joi.object({
   DB_CACHE_PREFIX: Joi.string().optional(),
   DB_LOGGING: Joi.boolean().optional(),
   ENTER_SCORES_ENABLED: Joi.boolean().optional(),
+  HANG_BEFORE_BROWSER_CLEANUP: Joi.boolean().optional(),
   VISUAL_SYNC_ENABLED: Joi.boolean().optional(),
   REDIS_DATABASE: Joi.number().integer().optional(),
   REDIS_HOST: Joi.when("DB_CACHE", {
@@ -192,6 +193,7 @@ export type ConfigType = {
   AUTH0_AUDIENCE: string;
   VISUAL_SYNC_ENABLED: boolean;
   ENTER_SCORES_ENABLED: boolean;
+  HANG_BEFORE_BROWSER_CLEANUP: boolean;
   MAIL_ENABLED: boolean;
   MAIL_PASS?: string;
   MAIL_USER?: string;
@@ -199,6 +201,7 @@ export type ConfigType = {
   MAIL_SUBJECT_PREFIX?: string;
   DEV_EMAIL_DESTINATION?: string;
   PUSH_ENABLED: boolean;
+  MAX_CONCURRENT_WORKER_JOBS: number;
   VAPID_PRIVATE_KEY?: string;
   VAPID_PUBLIC_KEY?: string;
   VR_CHANGE_DATES: boolean;
