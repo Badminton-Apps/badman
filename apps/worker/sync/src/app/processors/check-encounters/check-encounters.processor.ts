@@ -8,7 +8,13 @@ import {
   Team,
 } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
-import { acceptCookies, getPageWithCleanup, signIn } from "@badman/backend-pupeteer";
+import {
+  acceptCookies,
+  getPage,
+  signIn,
+  getBrowser,
+  startBrowserHealthMonitoring,
+} from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { SearchService } from "@badman/backend-search";
 import { ConfigType } from "@badman/utils";
@@ -86,15 +92,14 @@ export class CheckEncounterProcessor {
     this._username = configService.get("VR_API_USER");
     this._password = configService.get("VR_API_PASS");
 
-    // Browser instances are now managed per-request
+    // Start browser health monitoring
+    startBrowserHealthMonitoring();
   }
 
   @Process(Sync.CheckEncounters)
   async syncEncounters() {
     this.logger.log("Syncing encounters");
-    let pageInstance: { page: Page; cleanup: () => Promise<void> } | undefined;
-    const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED") === true;
-    const headlessValue = visualSyncEnabled ? false : true;
+    let page: Page | undefined;
     const cronJob = await CronJob.findOne({
       where: {
         "meta.jobName": Sync.CheckEncounters,
@@ -134,17 +139,7 @@ export class CheckEncounterProcessor {
       if (encounters.count > 0) {
         this.logger.debug(`Found ${encounters.count} encounters`);
 
-        // Create a single browser instance for all encounters
-        this.logger.log("Creating single browser instance for all encounters");
-        pageInstance = await getPageWithCleanup(headlessValue);
-        const { page } = pageInstance;
-        page.setDefaultTimeout(10000);
-        await page.setViewport({ width: 1691, height: 1337 });
-
-        // Accept cookies once at the beginning
-        await acceptCookies({ page }, { logger: this.logger });
-
-        // Chunk encounters into groups of 10 for progress reporting
+        // Chunk encounters into groups of 10 create a new browser for each group
         const chunkSize = 10;
         const chunks = [];
         for (let i = 0; i < encounters.count; i += chunkSize) {
@@ -155,12 +150,23 @@ export class CheckEncounterProcessor {
         let chunksProcessed = 0;
         for (const chunk of chunks) {
           this.logger.debug(
-            `Processing chunk of ${chunk.length} encounters, ${
+            `Processing cthunk of ${chunk.length} encounters, ${
               encounters.count - encountersProcessed
-            } encounters left, ${chunks.length - chunksProcessed} chunks left`
+            } encounter left, ${chunks.length - chunksProcessed} chunks left`
           );
+          // Close browser if any
+          if (page) {
+            await page.close();
+          }
 
-          // Process encounters in this chunk using the same browser instance
+          page = await getPage();
+          page.setDefaultTimeout(10000);
+          await page.setViewport({ width: 1691, height: 1337 });
+
+          // Accept cookies
+          await acceptCookies({ page }, { logger: this.logger });
+
+          // Processing encounters
           for (const encounter of chunk) {
             await this.loadEvent(encounter);
             // if event is not found we can't continue
@@ -172,12 +178,9 @@ export class CheckEncounterProcessor {
             encountersProcessed++;
           }
 
+          await page.close();
           chunksProcessed++;
         }
-
-        this.logger.log(
-          `Processed ${encountersProcessed} encounters using single browser instance`
-        );
       } else {
         this.logger.debug("No encounters found");
       }
@@ -185,10 +188,34 @@ export class CheckEncounterProcessor {
       this.logger.error(error);
     } finally {
       try {
-        // Clean up browser instance
-        if (pageInstance) {
-          this.logger.log("Cleaning up browser instance...");
-          await pageInstance.cleanup();
+        // Close browser properly
+        if (page) {
+          try {
+            if (!page.isClosed()) {
+              await page.close();
+            }
+          } catch (pageError) {
+            this.logger.debug("Error closing page (may already be closed):", pageError.message);
+          }
+
+          // Check if we should close the browser instance
+          try {
+            const browser = await getBrowser();
+            if (browser && browser.connected) {
+              const pages = await browser.pages();
+              this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+              if (pages.length <= 1) {
+                this.logger.log("Closing browser instance...");
+                await browser.close();
+              }
+            }
+          } catch (browserError) {
+            this.logger.debug(
+              "Error during browser management (may already be closed):",
+              browserError.message
+            );
+          }
         }
       } catch (error) {
         this.logger.debug("Error during browser cleanup:", error.message || error);
@@ -225,8 +252,7 @@ export class CheckEncounterProcessor {
     }
 
     // Create browser
-    const pageInstance = await getPageWithCleanup();
-    const { page } = pageInstance;
+    const page = await getPage();
     try {
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
@@ -237,13 +263,40 @@ export class CheckEncounterProcessor {
       // Processing encounters
       await this._syncEncounter(encounter, page);
 
-      // Page will be cleaned up in finally block
+      await page.close();
     } catch (error) {
       this.logger.error(error);
     } finally {
       try {
-        // Clean up browser instance
-        await pageInstance.cleanup();
+        // Close browser properly
+        if (page) {
+          try {
+            if (!page.isClosed()) {
+              await page.close();
+            }
+          } catch (pageError) {
+            this.logger.debug("Error closing page (may already be closed):", pageError.message);
+          }
+
+          // Check if we should close the browser instance
+          try {
+            const browser = await getBrowser();
+            if (browser && browser.connected) {
+              const pages = await browser.pages();
+              this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+              if (pages.length <= 1) {
+                this.logger.log("Closing browser instance...");
+                await browser.close();
+              }
+            }
+          } catch (browserError) {
+            this.logger.debug(
+              "Error during browser management (may already be closed):",
+              browserError.message
+            );
+          }
+        }
       } catch (error) {
         this.logger.debug("Error during browser cleanup:", error.message || error);
       }

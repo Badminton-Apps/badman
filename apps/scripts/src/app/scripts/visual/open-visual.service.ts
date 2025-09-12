@@ -1,9 +1,4 @@
-import {
-  acceptCookies,
-  getPageWithCleanup,
-  selectBadmninton,
-  signIn,
-} from "@badman/backend-pupeteer";
+import { acceptCookies, getPage, selectBadmninton, signIn } from "@badman/backend-pupeteer";
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "@badman/utils";
@@ -20,9 +15,7 @@ export class OpenVisualService {
   }
 
   async start(): Promise<void> {
-    const browserInstance = await getPageWithCleanup(false, ["--auto-open-devtools-for-tabs"]);
-    const { page, cleanup } = browserInstance;
-
+    const page = await getPage(false, ["--auto-open-devtools-for-tabs"]);
     try {
       // Create browser
 
@@ -46,13 +39,9 @@ export class OpenVisualService {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      // Proper cleanup of browser and temp directories
-      try {
-        this.logger.log("Cleaning up browser resources...");
-        await cleanup();
-        this.logger.log("Browser cleanup completed");
-      } catch (cleanupError) {
-        this.logger.error("Error during browser cleanup:", cleanupError);
+      // Close browser
+      if (page) {
+        await page.close();
       }
     }
   }
