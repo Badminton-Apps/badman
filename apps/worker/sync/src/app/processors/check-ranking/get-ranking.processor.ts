@@ -1,5 +1,5 @@
 import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
-import { acceptCookies, getPageWithCleanup, selectBadmninton } from "@badman/backend-pupeteer";
+import { acceptCookies, getPage, selectBadmninton } from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger, NotFoundException } from "@nestjs/common";
@@ -19,13 +19,14 @@ export class CheckRankingProcessor {
 
   @Process({
     name: Sync.CheckRanking,
+    concurrency: 1,
   })
   async syncRankingJob(job: Job<{ playerId: string }>): Promise<void> {
     this.syncRanking(job.data.playerId);
   }
 
   async syncRanking(playerId: string): Promise<void> {
-    let pageInstance: { page: Page; cleanup: () => Promise<void> } | undefined;
+    let page: Page | undefined;
 
     const player = await Player.findByPk(playerId);
     if (!player) {
@@ -64,8 +65,7 @@ export class CheckRankingProcessor {
 
     try {
       // Create browser
-      pageInstance = await getPageWithCleanup();
-      const { page } = pageInstance;
+      page = await getPage();
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
 
@@ -141,10 +141,9 @@ export class CheckRankingProcessor {
       this.logger.error(`Error while processing player ${player.fullName}`);
     } finally {
       try {
-        // Clean up browser instance
-        if (pageInstance) {
-          this.logger.log("Cleaning up browser instance...");
-          await pageInstance.cleanup();
+        // Close page properly (let shared browser manage itself)
+        if (page) {
+          await page.close();
           this.logger.debug(`Synced ${player.fullName}`);
         }
       } catch (error) {
