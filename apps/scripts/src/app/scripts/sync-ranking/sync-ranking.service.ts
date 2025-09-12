@@ -1,7 +1,6 @@
 import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
-import { getBrowser, acceptCookies, selectBadmninton } from "@badman/backend-pupeteer";
+import { getPage, acceptCookies, selectBadmninton } from "@badman/backend-pupeteer";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { Browser } from "puppeteer";
 import { Op } from "sequelize";
 import { getViaRanking, searchPlayer, getRanking } from "./pupeteer";
 
@@ -34,8 +33,6 @@ export class SyncRankingService {
   }
 
   async syncRanking(playerId: string): Promise<void> {
-    let browser: Browser | undefined;
-
     const player = await Player.findByPk(playerId);
 
     if (!player) {
@@ -74,9 +71,9 @@ export class SyncRankingService {
 
     try {
       // Create browser
-      browser = await getBrowser();
+      const browserInstance = await getPage();
+      const { page, cleanup } = browserInstance;
 
-      const page = await browser.newPage();
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
 
@@ -155,10 +152,14 @@ export class SyncRankingService {
       this.logger.error(error);
       this.logger.error(`Error while processing player ${player.fullName}`);
     } finally {
-      // Close browser
-      if (browser) {
-        browser.close();
-        this.logger.debug(`Syned ${player.fullName}`);
+      try {
+        // Proper cleanup of browser and temp directories
+        this.logger.log("Cleaning up browser resources...");
+        await cleanup();
+        this.logger.log("Browser cleanup completed");
+        this.logger.debug(`Synced ${player.fullName}`);
+      } catch (cleanupError) {
+        this.logger.error("Error during browser cleanup:", cleanupError);
       }
     }
   }

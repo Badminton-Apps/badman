@@ -309,10 +309,20 @@ async function findGameRowByAssemblyPosition(
       "tr",
       (rows, headerText) => {
         const results: { matchId: string; rowIndex: number }[] = [];
+        const allHeaders: string[] = [];
 
         rows.forEach((row, index) => {
           // Look for th elements within this row that contain the expected header text
           const headerCells = Array.from(row.querySelectorAll("th"));
+
+          // Collect all headers for debugging (only if we have header cells)
+          if (headerCells.length > 0) {
+            headerCells.forEach((cell) => {
+              const text = cell.textContent?.trim();
+              if (text) allHeaders.push(text);
+            });
+          }
+
           for (const headerCell of headerCells) {
             if (headerCell.textContent?.trim() === headerText) {
               // Found a matching header, now look for match inputs in this row
@@ -330,21 +340,36 @@ async function findGameRowByAssemblyPosition(
           }
         });
 
-        return results;
+        return { results, allHeaders: [...new Set(allHeaders)] };
       },
       expectedHeader
     );
 
-    if (matchingRows.length === 0) {
+    // Only log debug info for HD1 and HD2 to avoid spam
+    if (expectedHeader === "HD1" || expectedHeader === "HD2") {
+      logger?.debug(`Headers found on page: ${matchingRows.allHeaders.join(", ")}`);
+      logger?.debug(`Looking for exact match: "${expectedHeader}"`);
+      logger?.debug(
+        `Case-sensitive matches: ${matchingRows.allHeaders.filter((h) => h === expectedHeader).length}`
+      );
+      logger?.debug(
+        `Case-insensitive matches: ${matchingRows.allHeaders.filter((h) => h.toLowerCase() === expectedHeader.toLowerCase()).length}`
+      );
+    }
+
+    if (matchingRows.results.length === 0) {
       logger?.warn(`No rows found with header "${expectedHeader}"`);
+      if (expectedHeader === "HD1" || expectedHeader === "HD2") {
+        logger?.warn(`Available headers: ${matchingRows.allHeaders.join(", ")}`);
+      }
       return null;
     }
 
-    if (matchingRows.length > 1) {
+    if (matchingRows.results.length > 1) {
       logger?.warn(`Multiple rows found with header "${expectedHeader}", using the first one`);
     }
 
-    const selectedRow = matchingRows[0];
+    const selectedRow = matchingRows.results[0];
     logger?.debug(
       `Found game row with header "${expectedHeader}" at row index ${selectedRow.rowIndex}, matchId: ${selectedRow.matchId}`
     );
@@ -352,8 +377,8 @@ async function findGameRowByAssemblyPosition(
     // Verify that this row has empty player selections
     const isEmpty = await isGameRowEmpty(page, selectedRow.matchId, logger);
     if (!isEmpty) {
-      logger?.warn(
-        `Game row with header "${expectedHeader}" (matchId: ${selectedRow.matchId}) is not empty`
+      logger?.error(
+        `Game row with header "${expectedHeader}" (matchId: ${selectedRow.matchId}) is not empty - this suggests the clearFields function did not work properly, or the row was filled by another process. This is a critical error that requires investigation.`
       );
       return null;
     }
@@ -378,6 +403,7 @@ async function findGameRowByAssemblyPosition(
 async function isGameRowEmpty(page: Page, matchId: string, logger?: Logger): Promise<boolean> {
   try {
     const playerPositions = ["t1p1", "t1p2", "t2p1", "t2p2"];
+    const nonEmptySelectors: string[] = [];
 
     for (const position of playerPositions) {
       const selectorId = `match_${matchId}_${position}`;
@@ -391,10 +417,18 @@ async function isGameRowEmpty(page: Page, matchId: string, logger?: Logger): Pro
 
         // If any selector has a value other than "0" or empty, the row is not empty
         if (selectedValue && selectedValue !== "0") {
-          logger?.debug(`Selector ${selectorId} has value "${selectedValue}", row is not empty`);
-          return false;
+          nonEmptySelectors.push(`${selectorId}="${selectedValue}"`);
         }
+      } else {
+        logger?.warn(`Selector #${selectorId} not found on page`);
       }
+    }
+
+    if (nonEmptySelectors.length > 0) {
+      logger?.error(
+        `Row matchId ${matchId} is not empty. Non-empty selectors: ${nonEmptySelectors.join(", ")}`
+      );
+      return false;
     }
 
     logger?.debug(`All selectors for matchId ${matchId} are empty`);
@@ -479,8 +513,9 @@ export async function enterGames(
     );
 
     if (!correctMatchId) {
-      logger?.error(`Could not find game row for assembly position ${assemblyPosition}, skipping`);
-      continue;
+      const errorMessage = `Could not find empty game row for assembly position ${assemblyPosition}. This indicates either the row doesn't exist or it's already filled. Since clearFields() should have cleared all rows, this suggests a critical issue with the clearing process or a race condition.`;
+      logger?.error(errorMessage);
+      throw new Error(errorMessage);
     }
 
     logger?.debug(
