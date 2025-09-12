@@ -1,4 +1,5 @@
 import { DatabaseModule } from "@badman/backend-database";
+import { PupeteerModule } from "@badman/backend-pupeteer";
 import { VisualModule } from "@badman/backend-visual";
 import { configSchema, load } from "@badman/utils";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
@@ -14,6 +15,7 @@ import { TwizzitToPlayerDbService } from "./scripts";
       load: [load],
     }),
     DatabaseModule,
+    PupeteerModule,
     VisualModule,
   ],
 })

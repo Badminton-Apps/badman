@@ -19,7 +19,9 @@ export class SyncTwizzitProcessor {
     private _twizzitService: TwizzitService
   ) {}
 
-  @Process(Sync.SyncTwizzit)
+  @Process({
+    name: Sync.SyncTwizzit,
+  })
   async syncTwizzit(
     job: Job<{
       start: string;

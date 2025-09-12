@@ -36,7 +36,9 @@ export class SyncEventsProcessor {
     this._tournamentSync = new TournamentSyncer(this.visualService, pointService);
   }
 
-  @Process(Sync.SyncEvents)
+  @Process({
+    name: Sync.SyncEvents,
+  })
   async syncEvents(
     job: Job<{
       // Changed after date
