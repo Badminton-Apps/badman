@@ -108,11 +108,104 @@ import {
 })
 export class WorkerSyncModule implements OnApplicationBootstrap {
   protected logger = new Logger(WorkerSyncModule.name);
-
-  constructor(private readonly gateway: EventsGateway) {}
+  constructor(
+    private readonly gateway: EventsGateway,
+    private readonly configService: ConfigService<ConfigType>
+  ) {}
   async onApplicationBootstrap() {
     this.logger.log("Starting sync service");
+    const devEmailDestination = this.configService.get("DEV_EMAIL_DESTINATION");
+    const hangBeforeBrowserCleanup = this.configService.get("HANG_BEFORE_BROWSER_CLEANUP");
+    const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED");
+    const enterScoresEnabled = this.configService.get("ENTER_SCORES_ENABLED");
+    const vrChangeDates = this.configService.get("VR_CHANGE_DATES");
+    const vrAcceptEncounters = this.configService.get("VR_ACCEPT_ENCOUNTERS");
+    this.logger.log("--------------------------------");
+    this.logger.log(`Dev email destination: ${devEmailDestination}`);
+    this.logger.log(`Hang before browser cleanup: ${hangBeforeBrowserCleanup}`);
+    this.logger.log(`Visual sync enabled: ${visualSyncEnabled}`);
+    this.logger.log(`Enter scores enabled: ${enterScoresEnabled}`);
+    this.logger.log(`VR change dates: ${vrChangeDates}`);
+    this.logger.log(`VR accept encounters: ${vrAcceptEncounters}`);
+    this.logger.log("--------------------------------");
 
+    if (hangBeforeBrowserCleanup) {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        "Hang before browser cleanup is enabled, be sure to clean up the browser instances manually after testing"
+      );
+      this.logger.warn("--------------------------------");
+    } else {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        "Hang before browser cleanup is disabled, will clean up the browser instances automatically after testing"
+      );
+      this.logger.warn("--------------------------------");
+    }
+
+    if (visualSyncEnabled) {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        "Visual sync enabled, will show the browser window for debugging during check encounters and enter scores"
+      );
+      this.logger.warn("--------------------------------");
+    } else {
+      this.logger.warn("--------------------------------");
+      this.logger.warn("Visual sync disabled, will run the browser in headless mode");
+      this.logger.warn("--------------------------------");
+    }
+
+    if (enterScoresEnabled) {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        "Enter scores enabled, will save the scores to toernooi.nl.  be careful with this, as this affects production data"
+      );
+      this.logger.warn("--------------------------------");
+    } else {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        "Enter scores disabled, will not save the scores to toernooi.nl.  This is the default behavior, unless node env is set to production"
+      );
+      this.logger.warn("--------------------------------");
+    }
+
+    if (!devEmailDestination) {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        "No dev email destination configured, will not send any emails after sync processes"
+      );
+      this.logger.warn("--------------------------------");
+    } else {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        `Dev email destination configured, will send emails after sync processes to ${devEmailDestination}`
+      );
+      this.logger.warn("--------------------------------");
+    }
+
+    if (vrChangeDates) {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        "VR change dates enabled, will change the dates of the encounters in toernooi.nl after accepting date changes"
+      );
+      this.logger.warn("--------------------------------");
+    } else {
+      this.logger.warn("--------------------------------");
+      this.logger.warn(
+        "VR change dates disabled, will not change the dates of the encounters in toernooi.nl after accepting date changes"
+      );
+      this.logger.warn("--------------------------------");
+    }
+
+    if (vrAcceptEncounters) {
+      this.logger.warn("--------------------------------");
+      this.logger.warn("VR accept encounters enabled, will accept the encounters in toernooi.nl");
+      this.logger.warn("--------------------------------");
+    } else {
+      this.logger.warn("--------------------------------");
+      this.logger.warn("VR accept encounters disabled, will not accept the encounters");
+      this.logger.warn("--------------------------------");
+    }
     const service = await Service.findOne({ where: { name: "sync" } });
     if (!service) {
       this.logger.error("Could not find sync service");
