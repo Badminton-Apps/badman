@@ -15,12 +15,7 @@ import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 import { ConfigType } from "@badman/utils";
-import {
-  getPageWithCleanup,
-  acceptCookies,
-  signIn,
-  waitForSelectors,
-} from "@badman/backend-pupeteer";
+import { getPage, acceptCookies, signIn, waitForSelectors } from "@badman/backend-pupeteer";
 import {
   enableInputValidation,
   enterEditMode,
@@ -123,7 +118,7 @@ export class EnterScoresProcessor {
     this.logger.debug(`Dev email destination: ${devEmailDestination}`);
 
     this.logger.debug("Creating browser");
-    const pageInstance = await getPageWithCleanup(headlessValue, [
+    const page = await getPage(headlessValue, [
       "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
       "--disable-save-password-bubble",
       "--disable-credentials-enable-service",
@@ -131,7 +126,6 @@ export class EnterScoresProcessor {
       "--password-store=basic",
       "--no-default-browser-check",
     ]);
-    const { page } = pageInstance;
 
     try {
       if (!page) {
@@ -392,12 +386,12 @@ export class EnterScoresProcessor {
     } finally {
       try {
         if (!hangBeforeBrowserCleanup) {
-          this.logger.log(`Cleaning up browser instance...`);
-          await pageInstance.cleanup();
-          this.logger.log("Browser cleanup completed");
+          this.logger.log(`Closing page...`);
+          await page.close();
+          this.logger.log("Page cleanup completed");
         }
       } catch (error) {
-        this.logger.error("Error during browser cleanup:", error?.message || error);
+        this.logger.error("Error during page cleanup:", error?.message || error);
       }
     }
   }
