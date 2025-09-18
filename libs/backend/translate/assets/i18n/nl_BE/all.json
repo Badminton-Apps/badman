@@ -3040,9 +3040,9 @@
         "information": "Informatie"
       },
       "prompts": {
-        "confirmPresence": "Is de ploegkapitein, {fullName}, aanwezig voor deze ontmoeting?",
+        "confirmPresence": "Is de {position}, {fullName}, aanwezig voor deze ontmoeting?",
         "cancelPresence": "Wil je de aanwezigheid van {fullName}, annuleren?",
-        "confirmConfirmed": "Bevestigd de ploegkapitein, {fullName}, de uitslag van deze ontmoeting?",
+        "confirmConfirmed": "Bevestigd de {position}, {fullName}, de uitslag van deze ontmoeting?",
         "cancelConfirmed": "Wil je de bevestiging van {fullName} annuleren?"
       },
       "messages": {
@@ -3098,6 +3098,18 @@
             "12": "Niet gespeeld, wedstrijd gestaakt",
             "106": "{homeTeam} gediskwalificeerd",
             "107": "{awayTeam} gediskwalificeerd"
+          },
+          "errors": {
+            "scoreCannotBeNegative": "Score kan niet negatief zijn",
+            "scoreCannotExceed30": "Scores kunnen niet hoger dan 30",
+            "winningTeamMustWinBy2": "Winnend team moet met 2 of meer winnen",
+            "scoreDifferenceMustBe2": "Boven 21 kan het scoreverschil alleen 2 zijn",
+            "invalidScoreInput": "Ongeldige score invoer",
+            "invalidSet1Scores": "Ongeldige set 1 scores",
+            "invalidSet2Scores": "Ongeldige set 2 scores",
+            "invalidSet3Scores": "Ongeldige set 3 scores",
+            "notEnoughGamesPlayed": "Er zijn niet genoeg games gespeeld",
+            "gameValidationError": "Er zijn niet genoeg games gespeeld"
           }
         }
       },
