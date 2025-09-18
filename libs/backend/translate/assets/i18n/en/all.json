@@ -3263,9 +3263,9 @@
         "information": "Information"
       },
       "prompts": {
-        "confirmPresence": "Is the team captain, {fullName}, present for this encounter?",
+        "confirmPresence": "Is the {position}, {fullName}, present for this encounter?",
         "cancelPresence": "Do you want to cancel the presence of {fullName}?",
-        "confirmConfirmed": "Does the team captain, {fullName}, confirm the result of this encounter?",
+        "confirmConfirmed": "Does the {position}, {fullName}, confirm the result of this encounter?",
         "cancelConfirmed": "Do you want to cancel the confirmation of {fullName}?"
       },
       "messages": {
@@ -3301,6 +3301,18 @@
             "12": "Not played, game abandoned",
             "106": "{homeTeam} disqualified",
             "107": "{awayTeam} disqualified"
+          },
+          "errors": {
+            "scoreCannotBeNegative": "Score cannot be negative",
+            "scoreCannotExceed30": "Scores cannot go higher than 30",
+            "winningTeamMustWinBy2": "Winning team must win by 2 or more",
+            "scoreDifferenceMustBe2": "Above 21, the score difference can only be 2",
+            "invalidScoreInput": "Invalid score input",
+            "invalidSet1Scores": "Invalid set 1 scores",
+            "invalidSet2Scores": "Invalid set 2 scores",
+            "invalidSet3Scores": "Invalid set 3 scores",
+            "notEnoughGamesPlayed": "There were not enough games played",
+            "gameValidationError": "There were not enough games played"
           }
         }
       },
