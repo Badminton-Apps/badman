@@ -1,81 +1,57 @@
 import { Club, EventCompetition, EventTournament, Player } from "@badman/backend-database";
-import { Injectable } from "@nestjs/common";
+import { createSearchCondition } from "@badman/backend-utils";
+import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Op, WhereOptions } from "sequelize";
 import { ConfigType } from "@badman/utils";
 
 @Injectable()
 export class SearchService {
-  private readonly like = Op.iLike;
-  private readonly notLike = Op.notILike;
+  private readonly logger = new Logger(SearchService.name);
 
-  constructor(private readonly configService: ConfigService<ConfigType>) {
-    if (this.configService.get("DB_DIALECT") === "sqlite") {
-      this.like = Op.like;
-      this.notLike = Op.notLike;
-    }
-  }
+  constructor(private readonly configService: ConfigService<ConfigType>) {}
 
   async search(query: string): Promise<(Player | Club | EventCompetition | EventTournament)[]> {
-    const parts = this.getParts(query);
-
-    if (parts.length === 0) {
+    if (!query || typeof query !== "string" || query.trim().length === 0) {
       return [];
     }
 
     const results = await Promise.all([
-      this.searchClubs(parts),
-      this.searchPlayers(parts),
-      this.searchCompetitionEvents(parts),
-      this.searchTournamnetsEvents(parts),
+      this.searchClubs(query),
+      this.searchPlayers(query),
+      this.searchCompetitionEvents(query),
+      this.searchTournamnetsEvents(query),
     ]);
 
     return results.flat();
   }
 
-  public getParts(query: string) {
-    return (
-      `${query}`
-        ?.toLowerCase()
-        ?.replace(/[;\\\\/:*?"<>|&',]/, " ")
-        ?.split(" ")
-        ?.map((r) => r.trim())
-        ?.filter((r) => r?.length > 0)
-        ?.filter((r) => (r ?? null) != null) ?? []
-    );
-  }
-
-  async searchPlayers(parts: string[], queries: WhereOptions[] = []): Promise<Player[]> {
-    if (parts.length === 0) {
+  async searchPlayers(query: string): Promise<Player[]> {
+    if (!query || typeof query !== "string" || query.trim().length === 0) {
       return [];
     }
 
-    // Use LIKE for SQLite, ILIKE for PostgreSQL
     const likeOperator = this.configService.get("DB_DIALECT") === "sqlite" ? "LIKE" : "ILIKE";
     const notLikeOperator =
       this.configService.get("DB_DIALECT") === "sqlite" ? "NOT LIKE" : "NOT ILIKE";
 
-    const searchConditionsSQL = parts
-      .map(
-        (_, index) =>
-          `("firstName" ${likeOperator} :part${index} OR "lastName" ${likeOperator} :part${index} OR "memberId" ${likeOperator} :part${index})`
-      )
-      .join(" AND ");
+    const { condition: searchConditionsSQL, replacements } = createSearchCondition(
+      query,
+      ["firstName", "lastName", "memberId"],
+      likeOperator
+    );
+
+    if (!searchConditionsSQL) {
+      return [];
+    }
 
     const sql = `
-      SELECT * FROM "Players" 
+      SELECT * FROM "${Player.schema.name || "public"}"."${Player.tableName}" 
       WHERE (${searchConditionsSQL})
         AND "memberId" IS NOT NULL 
         AND "memberId" != ''
         AND "memberId" ${notLikeOperator} '%unknown%'
       LIMIT 100
     `;
-
-    // Create replacements object
-    const replacements: { [key: string]: string } = {};
-    parts.forEach((part, index) => {
-      replacements[`part${index}`] = `%${part}%`;
-    });
 
     const result = await Player.sequelize?.query(sql, {
       replacements,
@@ -86,53 +62,98 @@ export class SearchService {
     return result || [];
   }
 
-  async searchCompetitionEvents(
-    parts: string[],
-    queries: WhereOptions[] = []
-  ): Promise<EventCompetition[]> {
-    for (const part of parts) {
-      queries.push({
-        [Op.or]: [{ name: { [this.like]: `%${part}%` } }],
-      });
+  async searchCompetitionEvents(query: string): Promise<EventCompetition[]> {
+    if (!query || typeof query !== "string" || query.trim().length === 0) {
+      return [];
     }
 
-    return await EventCompetition.findAll({
-      order: [["season", "DESC"]],
-      where: { [Op.and]: queries },
-      limit: 100,
+    const likeOperator = this.configService.get("DB_DIALECT") === "sqlite" ? "LIKE" : "ILIKE";
+    const { condition: searchConditionsSQL, replacements } = createSearchCondition(
+      query,
+      ["name"],
+      likeOperator
+    );
+
+    if (!searchConditionsSQL) {
+      return [];
+    }
+
+    const sql = `
+      SELECT * FROM "${EventCompetition.options.schema || "public"}"."${EventCompetition.tableName}" 
+      WHERE ${searchConditionsSQL}
+      ORDER BY "season" DESC
+      LIMIT 100
+    `;
+
+    const result = await EventCompetition.sequelize?.query(sql, {
+      replacements,
+      model: EventCompetition,
+      mapToModel: true,
     });
+
+    return result || [];
   }
 
-  async searchTournamnetsEvents(
-    parts: string[],
-    queries: WhereOptions[] = []
-  ): Promise<EventTournament[]> {
-    for (const part of parts) {
-      queries.push({
-        [Op.or]: [{ name: { [this.like]: `%${part}%` } }],
-      });
+  async searchTournamnetsEvents(query: string): Promise<EventTournament[]> {
+    if (!query || typeof query !== "string" || query.trim().length === 0) {
+      return [];
     }
 
-    return await EventTournament.findAll({
-      order: [["firstDay", "DESC"]],
-      where: { [Op.and]: queries },
-      limit: 100,
+    const likeOperator = this.configService.get("DB_DIALECT") === "sqlite" ? "LIKE" : "ILIKE";
+    const { condition: searchConditionsSQL, replacements } = createSearchCondition(
+      query,
+      ["name"],
+      likeOperator
+    );
+
+    if (!searchConditionsSQL) {
+      return [];
+    }
+
+    const sql = `
+      SELECT * FROM "${EventTournament.options.schema || "public"}"."${EventTournament.tableName}" 
+      WHERE ${searchConditionsSQL}
+      ORDER BY "firstDay" DESC
+      LIMIT 100
+    `;
+
+    const result = await EventTournament.sequelize?.query(sql, {
+      replacements,
+      model: EventTournament,
+      mapToModel: true,
     });
+
+    return result || [];
   }
 
-  async searchClubs(parts: string[], queries: WhereOptions[] = []): Promise<Club[]> {
-    for (const part of parts) {
-      queries.push({
-        [Op.or]: [
-          { name: { [this.like]: `%${part}%` } },
-          { abbreviation: { [this.like]: `%${part}%` } },
-        ],
-      });
+  async searchClubs(query: string): Promise<Club[]> {
+    if (!query || typeof query !== "string" || query.trim().length === 0) {
+      return [];
     }
 
-    return await Club.findAll({
-      where: { [Op.and]: queries },
-      limit: 100,
+    const likeOperator = this.configService.get("DB_DIALECT") === "sqlite" ? "LIKE" : "ILIKE";
+    const { condition: searchConditionsSQL, replacements } = createSearchCondition(
+      query,
+      ["name", "abbreviation"],
+      likeOperator
+    );
+
+    if (!searchConditionsSQL) {
+      return [];
+    }
+
+    const sql = `
+      SELECT * FROM "${Club.options.schema || "public"}"."${Club.tableName}" 
+      WHERE ${searchConditionsSQL}
+      LIMIT 100
+    `;
+
+    const result = await Club.sequelize?.query(sql, {
+      replacements,
+      model: Club,
+      mapToModel: true,
     });
+
+    return result || [];
   }
 }
