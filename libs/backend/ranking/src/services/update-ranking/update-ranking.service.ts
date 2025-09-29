@@ -285,26 +285,23 @@ export class UpdateRankingService {
         place.updatePossible = place.updatePossible ? true : updatePossible;
 
         if (place.changed() != false) {
+          // check if to update doesn't already have this player
+          if (toUpdate.find((p) => p.playerId === player.id)) {
+            this._logger.warn(`Player ${player.id} already in update list`);
+            continue;
+          }
+
           this._logger.verbose(`Update ranking place for player: ${player.id}`);
           toUpdate.push(place);
         }
       }
 
-      await RankingPlace.bulkCreate(
-        toUpdate.map((p) => p.toJSON()),
-        {
-          updateOnDuplicate: [
-            "single",
-            "double",
-            "mix",
-            "singlePoints",
-            "doublePoints",
-            "mixPoints",
-            "updatePossible",
-          ],
+      // Use individual upsert operations for PostgreSQL compatibility
+      for (const item of toUpdate) {
+        await RankingPlace.upsert(item.toJSON(), {
           transaction,
-        }
-      );
+        });
+      }
     }
   }
 
