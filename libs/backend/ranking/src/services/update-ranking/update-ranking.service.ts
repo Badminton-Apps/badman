@@ -378,6 +378,11 @@ export class UpdateRankingService {
                 activeClub.ClubPlayerMembership.start = inputStartDate.toDate();
                 await activeClub.ClubPlayerMembership.save({ transaction });
               }
+              // make sure the membership is confirmed
+              if (activeClub.ClubPlayerMembership.confirmed !== true) {
+                activeClub.ClubPlayerMembership.confirmed = true;
+                await activeClub.ClubPlayerMembership.save({ transaction });
+              }
             } else {
               const newMembership = await this.createClubMembership(
                 playerClubs,
@@ -397,6 +402,7 @@ export class UpdateRankingService {
               (c) => c.id !== club.id && c.ClubPlayerMembership.end == null
             )) {
               otherClub.ClubPlayerMembership.end = inputStartDate.subtract(1, "day").toDate();
+              otherClub.ClubPlayerMembership.confirmed = true;
               await otherClub.ClubPlayerMembership.save({ transaction });
             }
           } else {
@@ -437,6 +443,7 @@ export class UpdateRankingService {
     if (existingClub) {
       // activate the existing club membership
       existingClub.ClubPlayerMembership.end = null;
+      existingClub.ClubPlayerMembership.confirmed = true;
       await existingClub.ClubPlayerMembership.save({ transaction });
       return null;
     } else {
@@ -446,6 +453,7 @@ export class UpdateRankingService {
         clubId: clubId,
         start: inputStartDate.toDate(),
         membershipType: ClubMembershipType.NORMAL,
+        confirmed: true,
       } as InferCreationAttributes<ClubPlayerMembership>;
     }
   }
