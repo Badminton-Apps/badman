@@ -373,31 +373,16 @@ export class GamesResolver {
         });
       }
 
-      if (gameData.winner !== undefined && gameData.winner !== null) {
+      const oldGameWinnerIsUndefined = oldGameWinner === undefined || oldGameWinner === null;
+      const newGameWinnerIsDefined = gameData.winner !== undefined && gameData.winner !== null;
+      const newGameWinnerIsDifferent = oldGameWinner !== gameData.winner;
+
+      const shouldUpdateEncounterScore =
+        (oldGameWinnerIsUndefined && newGameWinnerIsDefined) || newGameWinnerIsDifferent;
+
+      if (shouldUpdateEncounterScore) {
         await Game.updateEncounterScore(encounter, { transaction });
       }
-
-      // if game is not a draw, update the score of the encounter
-      /* if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
-        // updates the score of the encounter, and if the winner changes for whatever reason, the score is corrected on both sides
-        await encounter.update(
-          {
-            ...(gameData.winner === 1
-              ? {
-                  homeScore: encounter.homeScore + 1,
-                  ...(oldGameWinner === 2 ? { awayScore: encounter.awayScore - 1 } : {}),
-                }
-              : {}),
-            ...(gameData.winner === 2
-              ? {
-                  awayScore: encounter.awayScore + 1,
-                  ...(oldGameWinner === 1 ? { homeScore: encounter.homeScore - 1 } : {}),
-                }
-              : {}),
-          },
-          { transaction }
-        );
-      } */
 
       await transaction.commit();
       return updatedGame;
