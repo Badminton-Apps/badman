@@ -285,26 +285,23 @@ export class UpdateRankingService {
         place.updatePossible = place.updatePossible ? true : updatePossible;
 
         if (place.changed() != false) {
+          // check if to update doesn't already have this player
+          if (toUpdate.find((p) => p.playerId === player.id)) {
+            this._logger.warn(`Player ${player.id} already in update list`);
+            continue;
+          }
+
           this._logger.verbose(`Update ranking place for player: ${player.id}`);
           toUpdate.push(place);
         }
       }
 
-      await RankingPlace.bulkCreate(
-        toUpdate.map((p) => p.toJSON()),
-        {
-          updateOnDuplicate: [
-            "single",
-            "double",
-            "mix",
-            "singlePoints",
-            "doublePoints",
-            "mixPoints",
-            "updatePossible",
-          ],
+      // Use individual upsert operations for PostgreSQL compatibility
+      for (const item of toUpdate) {
+        await RankingPlace.upsert(item.toJSON(), {
           transaction,
-        }
-      );
+        });
+      }
     }
   }
 
@@ -381,6 +378,11 @@ export class UpdateRankingService {
                 activeClub.ClubPlayerMembership.start = inputStartDate.toDate();
                 await activeClub.ClubPlayerMembership.save({ transaction });
               }
+              // make sure the membership is confirmed
+              if (activeClub.ClubPlayerMembership.confirmed !== true) {
+                activeClub.ClubPlayerMembership.confirmed = true;
+                await activeClub.ClubPlayerMembership.save({ transaction });
+              }
             } else {
               const newMembership = await this.createClubMembership(
                 playerClubs,
@@ -400,6 +402,7 @@ export class UpdateRankingService {
               (c) => c.id !== club.id && c.ClubPlayerMembership.end == null
             )) {
               otherClub.ClubPlayerMembership.end = inputStartDate.subtract(1, "day").toDate();
+              otherClub.ClubPlayerMembership.confirmed = true;
               await otherClub.ClubPlayerMembership.save({ transaction });
             }
           } else {
@@ -440,6 +443,7 @@ export class UpdateRankingService {
     if (existingClub) {
       // activate the existing club membership
       existingClub.ClubPlayerMembership.end = null;
+      existingClub.ClubPlayerMembership.confirmed = true;
       await existingClub.ClubPlayerMembership.save({ transaction });
       return null;
     } else {
@@ -449,6 +453,7 @@ export class UpdateRankingService {
         clubId: clubId,
         start: inputStartDate.toDate(),
         membershipType: ClubMembershipType.NORMAL,
+        confirmed: true,
       } as InferCreationAttributes<ClubPlayerMembership>;
     }
   }
