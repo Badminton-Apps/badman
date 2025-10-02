@@ -3304,6 +3304,7 @@
           },
           "errors": {
             "scoreCannotBeNegative": "Score cannot be negative",
+            "maxScore30MustBe29": "oppenent score must be 29",
             "scoreCannotExceed30": "Scores cannot go higher than 30",
             "winningTeamMustWinBy2": "Winning team must win by 2 or more",
             "scoreDifferenceMustBe2": "Above 21, the score difference can only be 2",
@@ -3312,6 +3313,7 @@
             "invalidSet2Scores": "Invalid set 2 scores",
             "invalidSet3Scores": "Invalid set 3 scores",
             "notEnoughGamesPlayed": "There were not enough games played",
+            "tooManyGamesPlayed": "There were too many games played",
             "gameValidationError": "There were not enough games played"
           }
         }
