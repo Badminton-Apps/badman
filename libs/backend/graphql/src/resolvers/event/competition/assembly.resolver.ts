@@ -111,10 +111,10 @@ export class AssemblyResolver {
             single2: assembly?.single2 || undefined,
             single3: assembly?.single3 || undefined,
             single4: assembly?.single4 || undefined,
-            double1: assembly?.double1 || [],
-            double2: assembly?.double2 || [],
-            double3: assembly?.double3 || [],
-            double4: assembly?.double4 || [],
+            double1: (assembly?.double1 || []).filter((id) => id != null),
+            double2: (assembly?.double2 || []).filter((id) => id != null),
+            double3: (assembly?.double3 || []).filter((id) => id != null),
+            double4: (assembly?.double4 || []).filter((id) => id != null),
             subtitudes: assembly?.subtitudes || [],
           },
         } as Assembly,
@@ -158,10 +158,14 @@ export class AssemblyResolver {
         if (assembly.single2 !== undefined) updatedAssembly.single2 = assembly.single2;
         if (assembly.single3 !== undefined) updatedAssembly.single3 = assembly.single3;
         if (assembly.single4 !== undefined) updatedAssembly.single4 = assembly.single4;
-        if (assembly.double1 !== undefined) updatedAssembly.double1 = assembly.double1 || [];
-        if (assembly.double2 !== undefined) updatedAssembly.double2 = assembly.double2 || [];
-        if (assembly.double3 !== undefined) updatedAssembly.double3 = assembly.double3 || [];
-        if (assembly.double4 !== undefined) updatedAssembly.double4 = assembly.double4 || [];
+        if (assembly.double1 !== undefined)
+          updatedAssembly.double1 = (assembly.double1 || []).filter((id) => id != null);
+        if (assembly.double2 !== undefined)
+          updatedAssembly.double2 = (assembly.double2 || []).filter((id) => id != null);
+        if (assembly.double3 !== undefined)
+          updatedAssembly.double3 = (assembly.double3 || []).filter((id) => id != null);
+        if (assembly.double4 !== undefined)
+          updatedAssembly.double4 = (assembly.double4 || []).filter((id) => id != null);
         if (assembly.subtitudes !== undefined)
           updatedAssembly.subtitudes = assembly.subtitudes || [];
 

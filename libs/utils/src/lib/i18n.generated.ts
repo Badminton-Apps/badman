@@ -3384,6 +3384,20 @@ export type I18nTranslations = {
                             "106": string;
                             "107": string;
                         };
+                        "errors": {
+                            "scoreCannotBeNegative": string;
+                            "maxScore30MustBe29": string;
+                            "scoreCannotExceed30": string;
+                            "winningTeamMustWinBy2": string;
+                            "scoreDifferenceMustBe2": string;
+                            "invalidScoreInput": string;
+                            "invalidSet1Scores": string;
+                            "invalidSet2Scores": string;
+                            "invalidSet3Scores": string;
+                            "notEnoughGamesPlayed": string;
+                            "tooManyGamesPlayed": string;
+                            "gameValidationError": string;
+                        };
                     };
                 };
                 "inputs": {
