@@ -232,16 +232,6 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
     encounter: EncounterCompetition,
     options: CreateOptions | UpdateOptions
   ) {
-    // Leaving this here for reference. We're using this method to update the score of the encounter
-    // when a game is created or updated, so we do want to update the score even if the encounter already
-    // has a score. Wordt case we recalculate the same value?
-
-    /* OLD Comment:  //If the encounter already has a score, don't update it
-    if ((encounter.homeScore ?? 0) + (encounter.awayScore ?? 0) > 0) {
-      return;
-    }
-    */
-
     const games = await encounter.getGames({
       transaction: options.transaction,
     });
@@ -271,16 +261,20 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
       },
       { home: 0, away: 0 }
     );
-    console.log(
-      `Updating encounter score for encounter ${encounter.id} with scores ${scores.home} - ${scores.away}`
-    );
-    await encounter.update(
-      {
-        homeScore: scores.home,
-        awayScore: scores.away,
-      },
-      { transaction: options.transaction }
-    );
+
+    // Only update if scores have actually changed
+    if (encounter.homeScore !== scores.home || encounter.awayScore !== scores.away) {
+      console.log(
+        `Updating encounter score for encounter ${encounter.id} with scores ${scores.home} - ${scores.away}`
+      );
+      await encounter.update(
+        {
+          homeScore: scores.home,
+          awayScore: scores.away,
+        },
+        { transaction: options.transaction }
+      );
+    }
   }
 
   // Has many RankingPoint

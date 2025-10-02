@@ -343,9 +343,6 @@ export class GamesResolver {
           }
         }
 
-        this.logger.debug("playerMembershipsToCreate", JSON.stringify(playerMembershipsToCreate));
-        this.logger.debug("playerMembershipsToUpdate", JSON.stringify(playerMembershipsToUpdate));
-
         // Create new memberships
         if (playerMembershipsToCreate.length > 0) {
           await GamePlayerMembership.bulkCreate(playerMembershipsToCreate, {
@@ -372,32 +369,6 @@ export class GamesResolver {
           transaction,
         });
       }
-
-      if (gameData.winner !== undefined && gameData.winner !== null) {
-        await Game.updateEncounterScore(encounter, { transaction });
-      }
-
-      // if game is not a draw, update the score of the encounter
-      /* if (gameData.winner !== 0 && oldGameWinner !== gameData.winner) {
-        // updates the score of the encounter, and if the winner changes for whatever reason, the score is corrected on both sides
-        await encounter.update(
-          {
-            ...(gameData.winner === 1
-              ? {
-                  homeScore: encounter.homeScore + 1,
-                  ...(oldGameWinner === 2 ? { awayScore: encounter.awayScore - 1 } : {}),
-                }
-              : {}),
-            ...(gameData.winner === 2
-              ? {
-                  awayScore: encounter.awayScore + 1,
-                  ...(oldGameWinner === 1 ? { homeScore: encounter.homeScore - 1 } : {}),
-                }
-              : {}),
-          },
-          { transaction }
-        );
-      } */
 
       await transaction.commit();
       return updatedGame;
