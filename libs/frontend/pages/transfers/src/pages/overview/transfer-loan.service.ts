@@ -30,7 +30,7 @@ export class TransferLoanService {
     error: null,
     loaded: false,
     season: getSeason(),
-    confirmed: null,
+    confirmed: false,
   };
 
   // selectors
@@ -39,7 +39,7 @@ export class TransferLoanService {
   private error$ = new Subject<string | null>();
 
   sources$ = merge(
-    this._loadTransfersAndLoans(this.initialState.season).pipe(
+    this._loadTransfersAndLoans(this.initialState.season, this.initialState.confirmed).pipe(
       map((transferAndLoans) => ({
         transferAndLoans,
         filtered: transferAndLoans,
@@ -58,7 +58,7 @@ export class TransferLoanService {
           switchMap((event) => this._updateTransferOrLoan(event)),
           // load the default system
           switchMap(() =>
-            this._loadTransfersAndLoans(_state().season).pipe(
+            this._loadTransfersAndLoans(_state().season, _state().confirmed).pipe(
               map((transferAndLoans) => ({
                 transferAndLoans,
                 filtered: transferAndLoans,
@@ -72,7 +72,7 @@ export class TransferLoanService {
           switchMap((event) => this._deleteTransferOrLoan(event)),
           // load the default system
           switchMap(() =>
-            this._loadTransfersAndLoans(_state().season).pipe(
+            this._loadTransfersAndLoans(_state().season, _state().confirmed).pipe(
               map((transferAndLoans) => ({
                 transferAndLoans,
                 filtered: transferAndLoans,
@@ -84,7 +84,7 @@ export class TransferLoanService {
       reload: (_state, action$: Observable<void>) =>
         action$.pipe(
           switchMap(() =>
-            this._loadTransfersAndLoans(_state().season).pipe(
+            this._loadTransfersAndLoans(_state().season, _state().confirmed).pipe(
               map((transferAndLoans) => ({
                 transferAndLoans,
                 filtered: transferAndLoans,
@@ -134,7 +134,7 @@ export class TransferLoanService {
 
             let filtered = _state().transferAndLoans;
 
-            if (search.length > 0) {
+            if (search?.length > 0) {
               filtered = filtered.filter((t) => {
                 return (
                   t.player?.fullName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -164,6 +164,8 @@ export class TransferLoanService {
   });
 
   private _loadTransfersAndLoans(season: number, confirmed?: boolean | null) {
+    console.log("Loading transfers and loans for season", season, "confirmed:", confirmed);
+
     return this.apollo
       .query<{
         clubPlayerMemberships: { rows: ClubMembership[] };
