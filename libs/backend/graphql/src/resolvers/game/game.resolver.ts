@@ -343,9 +343,6 @@ export class GamesResolver {
           }
         }
 
-        this.logger.debug("playerMembershipsToCreate", JSON.stringify(playerMembershipsToCreate));
-        this.logger.debug("playerMembershipsToUpdate", JSON.stringify(playerMembershipsToUpdate));
-
         // Create new memberships
         if (playerMembershipsToCreate.length > 0) {
           await GamePlayerMembership.bulkCreate(playerMembershipsToCreate, {
@@ -371,17 +368,6 @@ export class GamesResolver {
           },
           transaction,
         });
-      }
-
-      const oldGameWinnerIsUndefined = oldGameWinner === undefined || oldGameWinner === null;
-      const newGameWinnerIsDefined = gameData.winner !== undefined && gameData.winner !== null;
-      const newGameWinnerIsDifferent = oldGameWinner !== gameData.winner;
-
-      const shouldUpdateEncounterScore =
-        (oldGameWinnerIsUndefined && newGameWinnerIsDefined) || newGameWinnerIsDifferent;
-
-      if (shouldUpdateEncounterScore) {
-        await Game.updateEncounterScore(encounter, { transaction });
       }
 
       await transaction.commit();
