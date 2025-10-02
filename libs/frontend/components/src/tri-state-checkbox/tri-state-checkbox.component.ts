@@ -34,7 +34,7 @@ import {
 export class TriStateCheckboxComponent implements ControlValueAccessor {
   @Input() tape = [null, true, false];
 
-  value: boolean | null = null;
+  value: boolean | null = false;
 
   disabled = false;
 
@@ -42,7 +42,7 @@ export class TriStateCheckboxComponent implements ControlValueAccessor {
   private onTouched!: () => void;
 
   writeValue(value: any) {
-    this.value = value || this.tape[0];
+    this.value = value !== undefined && value !== null ? value : this.tape[0];
   }
 
   setDisabledState(disabled: boolean) {
