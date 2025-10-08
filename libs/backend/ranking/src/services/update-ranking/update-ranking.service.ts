@@ -283,6 +283,9 @@ export class UpdateRankingService {
         place.mix = d.mixed || place.mix;
         place.mixPoints = d.mixedPoints || place.mixPoints;
         place.updatePossible = place.updatePossible ? true : updatePossible;
+        place.playerId = player.id;
+        place.rankingDate = rankingDate;
+        place.systemId = rankingSystemId;
 
         if (place.changed() != false) {
           // check if to update doesn't already have this player
@@ -296,11 +299,23 @@ export class UpdateRankingService {
         }
       }
 
-      // Use individual upsert operations for PostgreSQL compatibility
+      // Use findOrCreate and update for PostgreSQL compatibility
       for (const item of toUpdate) {
-        await RankingPlace.upsert(item.toJSON(), {
+        const itemData = item.toJSON();
+        const [instance, created] = await RankingPlace.findOrCreate({
+          where: {
+            playerId: itemData.playerId,
+            systemId: itemData.systemId,
+            rankingDate: itemData.rankingDate,
+          },
+          defaults: itemData,
           transaction,
         });
+
+        if (!created) {
+          // Update the existing instance with new data
+          await instance.update(itemData, { transaction });
+        }
       }
     }
   }
