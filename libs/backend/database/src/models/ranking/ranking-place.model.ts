@@ -14,8 +14,7 @@ import {
   AfterCreate,
   AfterDestroy,
   AfterUpdate,
-  BeforeBulkCreate,
-  BeforeCreate,
+  AfterUpsert,
   BelongsTo,
   Column,
   DataType,
@@ -238,16 +237,21 @@ export class RankingPlace extends Model {
   // }
 
   @AfterUpdate
+  @AfterUpsert
   @AfterBulkUpdate
   static async updateGames(instances: RankingPlace[] | RankingPlace, options: UpdateOptions) {
     if (!Array.isArray(instances)) {
       instances = [instances];
     }
 
-    await this.updateGameRanking(instances, options);
+    await this.updateGameRanking(
+      instances.filter((r) => r && r?.playerId && r?.systemId && r?.rankingDate),
+      options
+    );
   }
 
   @AfterCreate
+  @AfterUpsert
   @AfterBulkCreate
   static async updateLatestRankingsCreate(
     instances: RankingPlace[] | RankingPlace,
@@ -257,7 +261,11 @@ export class RankingPlace extends Model {
       instances = [instances];
     }
 
-    await this.updateLatestRankings(instances, options, "create");
+    await this.updateLatestRankings(
+      instances.filter((r) => r && r?.playerId && r?.systemId && r?.rankingDate),
+      options,
+      "create"
+    );
   }
 
   @AfterDestroy
@@ -337,42 +345,27 @@ export class RankingPlace extends Model {
           );
 
     // Update the last ranking place
-    await RankingLastPlace.bulkCreate(
-      updateInstances?.filter((x) => {
-        if (x.single === undefined || x.double === undefined || x.mix === undefined) {
-          return false;
-        }
-        return true;
-      }),
-      {
-        updateOnDuplicate: [
-          "rankingDate",
-          "singlePoints",
-          "mixPoints",
-          "doublePoints",
-          "gender",
-          "singlePointsDowngrade",
-          "mixPointsDowngrade",
-          "doublePointsDowngrade",
-          "singleRank",
-          "mixRank",
-          "doubleRank",
-          "totalSingleRanking",
-          "totalMixRanking",
-          "totalDoubleRanking",
-          "totalWithinSingleLevel",
-          "totalWithinMixLevel",
-          "totalWithinDoubleLevel",
-          "single",
-          "mix",
-          "double",
-          "singleInactive",
-          "mixInactive",
-          "doubleInactive",
-        ],
-        transaction: options.transaction,
+    const filteredInstances = updateInstances?.filter((x) => {
+      if (x.single === undefined || x.double === undefined || x.mix === undefined) {
+        return false;
       }
-    );
+      return true;
+    });
+
+    for (const instance of filteredInstances || []) {
+      const [lastPlace, created] = await RankingLastPlace.findOrCreate({
+        where: {
+          playerId: instance.playerId,
+          systemId: instance.systemId,
+        },
+        defaults: instance,
+        transaction: options.transaction,
+      });
+
+      if (!created) {
+        await lastPlace.update(instance, { transaction: options.transaction });
+      }
+    }
   }
 
   static async updateGameRanking(instances: RankingPlace[], options: UpdateOptions) {
@@ -418,7 +411,7 @@ export class RankingPlace extends Model {
           transaction: options?.transaction,
         });
 
-        await GamePlayerMembership.bulkCreate(
+        const gamePlayerMemberships =
           games?.map((g) => {
             return {
               gameId: g.id,
@@ -428,12 +421,22 @@ export class RankingPlace extends Model {
               double: instance.double,
               mix: instance.mix,
             };
-          }),
-          {
-            updateOnDuplicate: ["single", "double", "mix"],
+          }) || [];
+
+        for (const membership of gamePlayerMemberships) {
+          const [playerMembership, created] = await GamePlayerMembership.findOrCreate({
+            where: {
+              playerId: membership.playerId,
+              gameId: membership.gameId,
+            },
+            defaults: membership,
             transaction: options?.transaction,
+          });
+
+          if (!created) {
+            await playerMembership.update(membership, { transaction: options?.transaction });
           }
-        );
+        }
       }
     } catch (e) {
       console.error(e);
