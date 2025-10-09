@@ -37,10 +37,31 @@ export class AssemblyValidationService extends ValidationService<
   override group = "team-assembly";
 
   private readonly _logger = new Logger(AssemblyValidationService.name);
+
+  // OPTIMIZATION: Simple player cache to avoid refetching same players
+  private playerCache = new Map<string, Player>();
+
+  // OPTIMIZATION: Cache for heavy database queries
+  private clubTeamsCache = new Map<string, { teams: Team[]; timestamp: number }>();
+  private seasonSubEventsCache = new Map<
+    string,
+    { subEvents: EventCompetition[]; timestamp: number }
+  >();
+  private membershipCache = new Map<string, { memberships: EventEntry[]; timestamp: number }>();
+
+  private readonly DATA_CACHE_TTL = 30 * 60 * 1000; // 30 minutes for more stable data
   override async onApplicationBootstrap() {
     this._logger.log("Initializing rules");
 
     await this.clearRules();
+
+    // Set up simple cache cleanup every 10 minutes
+    setInterval(
+      () => {
+        this.cleanupPlayerCaches();
+      },
+      10 * 60 * 1000
+    );
 
     await this.registerRule(PlayerCompStatusRule);
     await this.registerRule(TeamBaseIndexRule);
@@ -53,6 +74,225 @@ export class AssemblyValidationService extends ValidationService<
 
     this._logger.log("Rules initialized");
   }
+
+  /**
+   * OPTIMIZATION: Simple cache cleanup
+   */
+  private cleanupPlayerCaches(): void {
+    const now = Date.now();
+
+    // Clean up expired data caches
+    for (const [key, entry] of this.clubTeamsCache.entries()) {
+      if (now - entry.timestamp > this.DATA_CACHE_TTL) {
+        this.clubTeamsCache.delete(key);
+      }
+    }
+    for (const [key, entry] of this.seasonSubEventsCache.entries()) {
+      if (now - entry.timestamp > this.DATA_CACHE_TTL) {
+        this.seasonSubEventsCache.delete(key);
+      }
+    }
+    for (const [key, entry] of this.membershipCache.entries()) {
+      if (now - entry.timestamp > this.DATA_CACHE_TTL) {
+        this.membershipCache.delete(key);
+      }
+    }
+
+    // Keep player cache size reasonable (max 200 players)
+    if (this.playerCache.size > 200) {
+      const entries = Array.from(this.playerCache.entries());
+      this.playerCache.clear();
+      // Keep last 100 entries
+      entries.slice(-100).forEach(([key, player]) => {
+        this.playerCache.set(key, player);
+      });
+      this._logger.debug(`🧹 [CACHE] Cleaned up player cache, kept 100 most recent players`);
+    }
+
+    // Keep data caches reasonable size
+    if (this.clubTeamsCache.size > 20) {
+      const entries = Array.from(this.clubTeamsCache.entries());
+      entries.sort((a, b) => b[1].timestamp - a[1].timestamp);
+      this.clubTeamsCache.clear();
+      entries.slice(0, 10).forEach(([key, entry]) => {
+        this.clubTeamsCache.set(key, entry);
+      });
+      this._logger.debug(`🧹 [CACHE] Cleaned up club teams cache, kept 10 most recent entries`);
+    }
+
+    if (this.seasonSubEventsCache.size > 20) {
+      const entries = Array.from(this.seasonSubEventsCache.entries());
+      entries.sort((a, b) => b[1].timestamp - a[1].timestamp);
+      this.seasonSubEventsCache.clear();
+      entries.slice(0, 10).forEach(([key, entry]) => {
+        this.seasonSubEventsCache.set(key, entry);
+      });
+      this._logger.debug(
+        `🧹 [CACHE] Cleaned up season subevents cache, kept 10 most recent entries`
+      );
+    }
+
+    if (this.membershipCache.size > 20) {
+      const entries = Array.from(this.membershipCache.entries());
+      entries.sort((a, b) => b[1].timestamp - a[1].timestamp);
+      this.membershipCache.clear();
+      entries.slice(0, 10).forEach(([key, entry]) => {
+        this.membershipCache.set(key, entry);
+      });
+      this._logger.debug(`🧹 [CACHE] Cleaned up memberships cache, kept 10 most recent entries`);
+    }
+  }
+
+  /**
+   * OPTIMIZATION: Get player with simple caching
+   */
+  private async getPlayerWithCache(
+    playerId: string,
+    system: RankingSystem,
+    startRanking: moment.Moment,
+    endRanking: moment.Moment
+  ): Promise<Player | null> {
+    // Check cache first
+    if (this.playerCache.has(playerId)) {
+      return this.playerCache.get(playerId)!;
+    }
+
+    // Fetch from database
+    const player = await Player.findByPk(playerId, {
+      attributes: [
+        "id",
+        "gender",
+        "competitionPlayer",
+        "memberId",
+        "fullName",
+        "firstName",
+        "lastName",
+      ],
+      include: [
+        {
+          attributes: ["id", "single", "double", "mix"],
+          required: false,
+          model: RankingLastPlace,
+          where: { systemId: system.id },
+        },
+        {
+          attributes: ["id", "single", "double", "mix"],
+          required: false,
+          model: RankingPlace,
+          limit: 1,
+          where: {
+            rankingDate: { [Op.between]: [startRanking.toDate(), endRanking.toDate()] },
+            systemId: system.id,
+            updatePossible: true,
+          },
+          order: [["rankingDate", "DESC"]],
+          separate: true,
+        },
+      ],
+    });
+
+    if (player) {
+      // Cache the player
+      this.playerCache.set(playerId, player);
+    }
+
+    return player;
+  }
+
+  /**
+   * OPTIMIZATION: Get club teams with caching
+   */
+  private async getClubTeamsWithCache(
+    clubId: string,
+    type: string,
+    season: number
+  ): Promise<Team[]> {
+    const cacheKey = `${clubId}-${type}-${season}`;
+    const cached = this.clubTeamsCache.get(cacheKey);
+
+    if (cached && Date.now() - cached.timestamp < this.DATA_CACHE_TTL) {
+      return cached.teams;
+    }
+
+    const teams = await Team.findAll({
+      attributes: ["id", "name", "teamNumber"],
+      where: { clubId, type, season },
+    });
+
+    this.clubTeamsCache.set(cacheKey, {
+      teams,
+      timestamp: Date.now(),
+    });
+
+    return teams;
+  }
+
+  /**
+   * OPTIMIZATION: Get season subevents with caching
+   */
+  private async getSeasonSubEventsWithCache(season: number): Promise<EventCompetition[]> {
+    const cacheKey = `season-${season}`;
+    const cached = this.seasonSubEventsCache.get(cacheKey);
+
+    if (cached && Date.now() - cached.timestamp < this.DATA_CACHE_TTL) {
+      return cached.subEvents;
+    }
+
+    const subEvents = await EventCompetition.findAll({
+      attributes: ["id"],
+      where: { season },
+      include: [
+        {
+          model: SubEventCompetition,
+          attributes: ["id"],
+          required: true,
+        },
+      ],
+    });
+
+    this.seasonSubEventsCache.set(cacheKey, {
+      subEvents,
+      timestamp: Date.now(),
+    });
+
+    return subEvents;
+  }
+
+  /**
+   * OPTIMIZATION: Get memberships with caching
+   */
+  private async getMembershipsWithCache(
+    clubId: string,
+    season: number,
+    type: string,
+    subEventIds: string[]
+  ): Promise<EventEntry[]> {
+    const cacheKey = `${clubId}-${season}-${type}`;
+    const cached = this.membershipCache.get(cacheKey);
+
+    if (cached && Date.now() - cached.timestamp < this.DATA_CACHE_TTL) {
+      return cached.memberships;
+    }
+
+    // Get club teams first (using cache)
+    const clubTeams = await this.getClubTeamsWithCache(clubId, type, season);
+
+    const memberships = await EventEntry.findAll({
+      attributes: ["id", "teamId", "subEventId", "meta"],
+      where: {
+        teamId: clubTeams.map((t) => t.id),
+        subEventId: subEventIds,
+      },
+    });
+
+    this.membershipCache.set(cacheKey, {
+      memberships,
+      timestamp: Date.now(),
+    });
+
+    return memberships;
+  }
+
   override async fetchData(args: {
     teamId: string;
     encounterId: string;
@@ -100,8 +340,8 @@ export class AssemblyValidationService extends ValidationService<
         : RankingSystem.findOne({ where: { primary: true } }),
     ]);
 
-    if (!team?.season) {
-      throw new Error("Team not found");
+    if (!team?.season || !team.clubId || !team.type) {
+      throw new Error("Team not found or missing required fields");
     }
     if (!system) {
       throw new Error("System not found");
@@ -141,39 +381,23 @@ export class AssemblyValidationService extends ValidationService<
       throw new Error("EventCompetition usedRankingUnit is not set");
     }
 
-    // Parallelize complex data fetching
+    // Parallelize complex data fetching with caching
     const [sameYearSubEvents, clubTeams] = await Promise.all([
-      EventCompetition.findAll({
-        attributes: ["id"],
-        where: { season: event.season },
-        include: [
-          {
-            model: SubEventCompetition,
-            attributes: ["id"],
-            required: true,
-          },
-        ],
-      }),
-      Team.findAll({
-        attributes: ["id", "name", "teamNumber"],
-        where: {
-          clubId: team.clubId,
-          type: team.type,
-          season: event.season,
-        },
-      }),
+      this.getSeasonSubEventsWithCache(event.season),
+      this.getClubTeamsWithCache(team.clubId, team.type, event.season),
     ]);
 
-    // Get memberships
-    const memberships = await EventEntry.findAll({
-      attributes: ["id", "teamId", "subEventId", "meta"],
-      where: {
-        teamId: clubTeams.map((t) => t.id),
-        subEventId: sameYearSubEvents
-          .map((e) => e.subEventCompetitions?.map((s) => s.id))
-          .flat(1) as string[],
-      },
-    });
+    // Get memberships with caching
+    const subEventIds = sameYearSubEvents
+      .map((e) => e.subEventCompetitions?.map((s) => s.id))
+      .flat(1) as string[];
+
+    const memberships = await this.getMembershipsWithCache(
+      team.clubId,
+      event.season,
+      team.type,
+      subEventIds
+    );
 
     // Filter memberships
     const filteredMemberships = memberships.filter((m) => {
@@ -298,82 +522,58 @@ export class AssemblyValidationService extends ValidationService<
     return { draw, subEvent };
   }
 
+  /**
+   * OPTIMIZATION: Fetch players with simple caching
+   */
   private async fetchPlayersWithRankings(
     idPlayers: string[],
     system: RankingSystem,
     startRanking: moment.Moment,
     endRanking: moment.Moment
   ): Promise<Player[]> {
-    return Player.findAll({
-      attributes: [
-        "id",
-        "gender",
-        "competitionPlayer",
-        "memberId",
-        "fullName",
-        "firstName",
-        "lastName",
-      ],
-      where: { id: { [Op.in]: idPlayers } },
-      include: [
-        {
-          attributes: ["id", "single", "double", "mix", "rankingDate"],
-          required: false,
-          model: RankingLastPlace,
-          where: { systemId: system.id },
-        },
-        {
-          attributes: ["id", "single", "double", "mix", "rankingDate"],
-          required: false,
-          model: RankingPlace,
-          limit: 1,
-          where: {
-            rankingDate: { [Op.between]: [startRanking.toDate(), endRanking.toDate()] },
-            systemId: system.id,
-            updatePossible: true,
-          },
-          order: [["rankingDate", "DESC"]],
-        },
-      ],
-    });
+    if (!idPlayers || idPlayers.length === 0) {
+      return [];
+    }
+
+    const results: Player[] = [];
+    const uniquePlayerIds = [...new Set(idPlayers)]; // BUGFIX: Remove duplicates from input
+
+    // Check cache first, then fetch missing players
+    for (const playerId of uniquePlayerIds) {
+      const player = await this.getPlayerWithCache(playerId, system, startRanking, endRanking);
+      if (player) {
+        results.push(player);
+      }
+    }
+
+    return results;
   }
 
+  /**
+   * OPTIMIZATION: Fetch substitute players with simple caching
+   */
   private async fetchSubstitutePlayers(
     idSubs: string[],
     system: RankingSystem,
     startRanking: moment.Moment,
     endRanking: moment.Moment
   ): Promise<Player[]> {
-    return Player.findAll({
-      attributes: [
-        "id",
-        "gender",
-        "memberId",
-        "competitionPlayer",
-        "fullName",
-        "firstName",
-        "lastName",
-      ],
-      where: { id: { [Op.in]: idSubs } },
-      include: [
-        {
-          attributes: ["id", "single", "double", "mix"],
-          required: false,
-          model: RankingLastPlace,
-          where: { systemId: system.id },
-        },
-        {
-          attributes: ["id", "single", "double", "mix"],
-          required: false,
-          model: RankingPlace,
-          limit: 1,
-          where: {
-            rankingDate: { [Op.between]: [startRanking.toDate(), endRanking.toDate()] },
-            systemId: system.id,
-          },
-        },
-      ],
-    });
+    if (!idSubs || idSubs.length === 0) {
+      return [];
+    }
+
+    const results: Player[] = [];
+    const uniquePlayerIds = [...new Set(idSubs)]; // BUGFIX: Remove duplicates from input
+
+    // Use same caching as main players
+    for (const playerId of uniquePlayerIds) {
+      const player = await this.getPlayerWithCache(playerId, system, startRanking, endRanking);
+      if (player) {
+        results.push(player);
+      }
+    }
+
+    return results;
   }
 
   private sortPlayersByRanking(
@@ -386,6 +586,22 @@ export class AssemblyValidationService extends ValidationService<
       const rankingB = b.rankingLastPlaces?.[0]?.[rankingType] ?? system.amountOfLevels;
       return rankingA - rankingB;
     });
+  }
+
+  /**
+   * Log current cache memory usage
+   */
+  private logCacheMemoryUsage(): void {
+    const memoryUsage = process.memoryUsage();
+    const heapUsedMB = Math.round(memoryUsage.heapUsed / 1024 / 1024);
+    const totalCacheSize =
+      this.playerCache.size +
+      this.clubTeamsCache.size +
+      this.seasonSubEventsCache.size +
+      this.membershipCache.size;
+    this._logger.debug(
+      `🧠 [CACHE] Memory - Heap: ${heapUsedMB}MB, Caches: ${this.playerCache.size}p + ${this.clubTeamsCache.size}c + ${this.seasonSubEventsCache.size}s + ${this.membershipCache.size}m = ${totalCacheSize} total`
+    );
   }
 
   /**
@@ -423,6 +639,9 @@ export class AssemblyValidationService extends ValidationService<
       ...runFor,
       teamId: args.teamId,
     });
+
+    // Log cache memory usage after each validation
+    this.logCacheMemoryUsage();
 
     return {
       valid: data.valid,
