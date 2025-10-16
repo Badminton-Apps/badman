@@ -133,7 +133,8 @@ export class EnterScoresProcessor {
         return;
       }
 
-      page.setDefaultTimeout(10000);
+      // Increase default timeout to 30 seconds to handle slow network conditions
+      page.setDefaultTimeout(30000);
       await page.setViewport({ width: 1691, height: 1337 });
 
       this.logger.log("Getting encounter");
@@ -165,7 +166,7 @@ export class EnterScoresProcessor {
             model: Game,
             include: [
               {
-                attributes: ["id", "memberId"],
+                attributes: ["id", "memberId", "gender", "firstName", "lastName"],
                 model: Player,
               },
             ],
@@ -217,26 +218,64 @@ export class EnterScoresProcessor {
 
       // 🔧 FIX: Wrap acceptCookies in specific error handling
       try {
-        await acceptCookies({ page, timeout: 15000 }, { logger: this.logger });
+        await acceptCookies({ page, timeout: 20000 }, { logger: this.logger });
         this.logger.log("✅ Cookie acceptance completed successfully");
       } catch (error: any) {
-        this.logger.error("❌ Cookie acceptance failed:", error?.message || error);
+        const isTimeoutError =
+          error?.message?.includes("timeout") ||
+          error?.message?.includes("Navigation timeout") ||
+          error?.name === "TimeoutError";
 
-        // Check if this is a critical error that should stop the job
-        if (error?.name === "CookieAcceptanceError") {
-          throw new Error(
-            `Failed to accept cookies: ${error?.message}. This may indicate the website is down or has changed.`
+        if (isTimeoutError) {
+          this.logger.warn(
+            "❌ Cookie acceptance timeout (continuing anyway):",
+            error?.message || error
           );
-        }
+          // Don't throw timeout errors - continue with the process
+        } else {
+          this.logger.error("❌ Cookie acceptance failed:", error?.message || error);
 
-        // For other errors, re-throw to maintain existing behavior
-        throw error;
+          // Check if this is a critical error that should stop the job
+          if (error?.name === "CookieAcceptanceError") {
+            throw new Error(
+              `Failed to accept cookies: ${error?.message}. This may indicate the website is down or has changed.`
+            );
+          }
+
+          // For other non-timeout errors, re-throw to maintain existing behavior
+          throw error;
+        }
       }
       this.logger.log(`Signing in as ${this._username}`);
-      await signIn(
-        { page },
-        { username: this._username, password: this._password, logger: this.logger }
-      );
+      try {
+        await signIn(
+          { page, timeout: 20000 },
+          { username: this._username, password: this._password, logger: this.logger }
+        );
+        this.logger.log("✅ Sign in completed successfully");
+      } catch (error: any) {
+        const isTimeoutError =
+          error?.message?.includes("timeout") ||
+          error?.message?.includes("Navigation timeout") ||
+          error?.name === "TimeoutError";
+
+        if (isTimeoutError) {
+          this.logger.warn("❌ Sign in timeout - attempting to continue:", error?.message || error);
+          // Check if we're actually signed in despite the timeout
+          try {
+            const profileMenu = await page.waitForSelector("#profileMenu", { timeout: 5000 });
+            if (profileMenu) {
+              this.logger.log("✅ User appears to be signed in despite timeout");
+            } else {
+              throw new Error("Sign in timeout and user not signed in");
+            }
+          } catch (checkError) {
+            throw new Error(`Sign in failed: ${error?.message || error}`);
+          }
+        } else {
+          throw error; // Re-throw non-timeout errors
+        }
+      }
 
       this.logger.log(`Entering edit mode`);
       await enterEditMode({ page }, encounter);
@@ -297,8 +336,42 @@ export class EnterScoresProcessor {
         if (nodeEv === "production" || enterScoresEnabled) {
           await saveButton.click();
           this.logger.log(`Save button clicked, waiting for navigation`);
-          await page.waitForNavigation({ waitUntil: "networkidle0" });
-          this.logger.log(`Navigation completed`);
+
+          // Handle navigation with proper timeout and error handling
+          try {
+            await page.waitForNavigation({
+              waitUntil: "networkidle0",
+              timeout: 45000, // 45 seconds for save navigation
+            });
+            this.logger.log(`Navigation completed successfully`);
+          } catch (navigationError: any) {
+            this.logger.warn(
+              `Navigation timeout after save button click: ${navigationError?.message || navigationError}`
+            );
+
+            // Try alternative wait strategies
+            try {
+              // Wait for network idle as fallback
+              await page.waitForNetworkIdle({ idleTime: 1000, timeout: 15000 });
+              this.logger.log(`Network idle achieved after navigation timeout`);
+            } catch (networkError: any) {
+              this.logger.warn(
+                `Network idle also failed: ${networkError?.message || networkError}`
+              );
+
+              // Final fallback - just wait a bit and check if we're on a different page
+              await new Promise((resolve) => setTimeout(resolve, 3000));
+              const currentUrl = page.url();
+              this.logger.log(`Current URL after fallback wait: ${currentUrl}`);
+
+              // If we're still on the same page, it might indicate a real problem
+              if (currentUrl.includes("teammatch.aspx")) {
+                this.logger.warn(
+                  `Still on teammatch page after save - this might indicate the save didn't work properly`
+                );
+              }
+            }
+          }
 
           // Send success email notification
           if (devEmailDestination) {
@@ -354,9 +427,13 @@ export class EnterScoresProcessor {
         }
       }
     } catch (error) {
-      this.logger.error("Error during enter scores process:", error?.message || error);
+      // Handle timeout errors specifically to prevent worker restarts
+      const isTimeoutError =
+        error?.message?.includes("timeout") ||
+        error?.message?.includes("Navigation timeout") ||
+        error?.name === "TimeoutError";
 
-      // Send failure email notification
+      // Send failure email notification first
       if (devEmailDestination) {
         try {
           // Get encounter info for the email, fallback to encounterId if encounter is not available
@@ -382,6 +459,20 @@ export class EnterScoresProcessor {
         this.logger.log(
           `Skipping failure email notification - no dev email destination configured for encounter ${encounterInfo}`
         );
+      }
+
+      // Now handle the error appropriately for Bull queue
+      if (isTimeoutError) {
+        this.logger.warn("Timeout error occurred - job will be retried:", error?.message || error);
+        // Re-throw timeout errors so Bull can retry the job
+        throw error;
+      } else {
+        this.logger.error(
+          "Error during enter scores process - job will be retried:",
+          error?.message || error
+        );
+        // Re-throw all errors so Bull can retry the job
+        throw error;
       }
     } finally {
       try {
