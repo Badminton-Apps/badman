@@ -15,7 +15,7 @@ import { Logger } from "@nestjs/common";
 import { Job } from "bull";
 import moment from "moment-timezone";
 import { Op, Transaction } from "sequelize";
-import { WinnerMappingService } from "../../../../utils";
+import { reverseMapWinnerValue } from "../../../../utils/mapWinnerValues";
 
 @Processor({
   name: SyncQueue,
@@ -26,8 +26,7 @@ export class GameTournamentProcessor {
   constructor(
     private readonly _transactionManager: TransactionManager,
     private readonly _visualService: VisualService,
-    private readonly _pointService: PointsService,
-    private readonly _winnerMappingService: WinnerMappingService
+    private readonly _pointService: PointsService
   ) {}
 
   @Process(Sync.ProcessSyncTournamentGame)
@@ -194,7 +193,7 @@ export class GameTournamentProcessor {
 
     // Only update winner if toernooi.nl has data OR if we have no existing data
     if (xmlGame.Winner != null || game.winner == null) {
-      game.winner = this._winnerMappingService.mapToInternalValue(xmlGame.Winner);
+      game.winner = reverseMapWinnerValue(xmlGame.Winner);
     }
     game.gameType = subEvent?.gameType;
     game.visualCode = xmlGame.Code;
