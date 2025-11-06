@@ -20,6 +20,14 @@ import {
   CheckEncounterProcessor,
   CheckRankingProcessor,
   EnterScoresProcessor,
+  EnterScoresRepository,
+  GameAssemblyService,
+  GameDataService,
+  FormMappingService,
+  ToernooiFormService,
+  ToernooiNavigationService,
+  ToernooiPlayerService,
+  ToernooiScoreService,
   EventTournamenScheduler,
   SubEventTournamentScheduler,
   DrawTournamentScheduler,
@@ -39,6 +47,10 @@ import {
   ScheduleRecalculateStandingCompetitionSubEvent,
   DrawStandingCompetitionProcessor,
 } from "./processors";
+import { WinnerMappingService } from "./utils";
+import { EnterScoresBrowserService } from "./processors/enter-scores/browser.service";
+import { EnterScoresValidationService } from "./processors/enter-scores/validation.service";
+import { EnterScoresNotificationService } from "./processors/enter-scores/notification.service";
 
 @Module({
   providers: [
@@ -49,6 +61,17 @@ import {
     SyncEventsProcessor,
     SyncTwizzitProcessor,
     EnterScoresProcessor,
+    EnterScoresRepository,
+    EnterScoresBrowserService,
+    EnterScoresValidationService,
+    EnterScoresNotificationService,
+    GameAssemblyService,
+    GameDataService,
+    FormMappingService,
+    ToernooiFormService,
+    ToernooiNavigationService,
+    ToernooiPlayerService,
+    ToernooiScoreService,
     CheckEncounterProcessor,
     CheckRankingProcessor,
 
@@ -70,6 +93,9 @@ import {
     ScheduleRecalculateStandingCompetitionDraw,
     ScheduleRecalculateStandingCompetitionSubEvent,
     ScheduleRecalculateStandingCompetitionEvent,
+
+    // Shared services
+    WinnerMappingService,
   ],
   imports: [
     ConfigModule.forRoot({
