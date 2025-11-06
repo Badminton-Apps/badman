@@ -2,6 +2,7 @@ import { Logger } from "@nestjs/common";
 import { Transaction } from "sequelize";
 import { Processor, ProcessStep } from "../../../processing";
 import { VisualService, XmlTournament } from "@badman/backend-visual";
+import { WinnerMappingService } from "../../../utils";
 import {
   TournamentSyncDrawProcessor,
   TournamentSyncEventProcessor,
@@ -47,6 +48,7 @@ export class TournamentSyncer {
   constructor(
     private visualService: VisualService,
     private pointService: PointsService,
+    private winnerMappingService: WinnerMappingService,
     protected options?: {
       newGames?: boolean;
     }
@@ -105,10 +107,15 @@ export class TournamentSyncer {
       options
     );
 
-    this._gameStep = new TournamentSyncGameProcessor(args.xmlTournament, this.visualService, {
-      ...options,
-      newGames: this.options?.newGames,
-    });
+    this._gameStep = new TournamentSyncGameProcessor(
+      args.xmlTournament,
+      this.visualService,
+      this.winnerMappingService,
+      {
+        ...options,
+        newGames: this.options?.newGames,
+      }
+    );
 
     this._pointStep = new TournamentSyncPointProcessor(this.pointService, options);
     this._standingStep = new TournamentSyncStandingProcessor({

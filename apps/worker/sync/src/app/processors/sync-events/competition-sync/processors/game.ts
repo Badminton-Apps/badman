@@ -20,7 +20,7 @@ import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { correctWrongPlayers } from "../../../../utils";
 import { EncounterStepData } from "./encounter";
-import { reverseMapWinnerValue } from "../../../../utils/mapWinnerValues";
+import { WinnerMappingService } from "../../../../utils";
 
 export class CompetitionSyncGameProcessor extends StepProcessor {
   public players?: Map<string, Player>;
@@ -32,6 +32,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
+    private readonly winnerMappingService: WinnerMappingService,
     options?: StepOptions
   ) {
     if (!options) {
@@ -162,7 +163,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       if (!game) {
         game = new Game({
           visualCode: xmlMatch.Code,
-          winner: reverseMapWinnerValue(xmlMatch.Winner),
+          winner: this.winnerMappingService.mapToInternalValue(xmlMatch.Winner),
           gameType: this._getGameType(xmlMatch.MatchTypeID),
           order: xmlMatch.MatchOrder,
           linkId: encounter.id,
@@ -194,10 +195,11 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           game.round = xmlMatch.RoundName;
         }
 
-        if (game.winner != reverseMapWinnerValue(xmlMatch.Winner)) {
+        const mappedWinner = this.winnerMappingService.mapToInternalValue(xmlMatch.Winner);
+        if (game.winner != mappedWinner) {
           // Only update winner if toernooi.nl has data OR if we have no existing data
           if (xmlMatch.Winner != null || game.winner == null) {
-            game.winner = reverseMapWinnerValue(xmlMatch.Winner);
+            game.winner = mappedWinner;
           }
         }
 
