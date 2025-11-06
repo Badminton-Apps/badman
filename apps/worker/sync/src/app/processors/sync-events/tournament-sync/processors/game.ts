@@ -18,10 +18,11 @@ import { Logger, NotFoundException } from "@nestjs/common";
 import moment from "moment-timezone";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
-import { correctWrongPlayers, WinnerMappingService } from "../../../../utils";
+import { correctWrongPlayers } from "../../../../utils";
 import { DrawStepData } from "./draw";
 import { EventStepData } from "./event";
 import { SubEventStepData } from "./subEvent";
+import { reverseMapWinnerValue } from "../../../../utils/mapWinnerValues";
 
 export interface GameStepOptions {
   newGames?: boolean;
@@ -40,7 +41,6 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    private readonly winnerMappingService: WinnerMappingService,
     options?: StepOptions & GameStepOptions
   ) {
     if (!options) {
@@ -151,7 +151,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         game = new Game({
           round: xmlMatch.RoundName,
           order: xmlMatch.MatchOrder,
-          winner: this.winnerMappingService.mapToInternalValue(xmlMatch.Winner),
+          winner: reverseMapWinnerValue(xmlMatch.Winner),
           gameType: subEvent?.gameType,
           visualCode: xmlMatch.Code,
           linkId: draw.id,
@@ -183,10 +183,10 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           game.round = xmlMatch.RoundName;
         }
 
-        if (game.winner != this.winnerMappingService.mapToInternalValue(xmlMatch.Winner)) {
+        if (game.winner != reverseMapWinnerValue(xmlMatch.Winner)) {
           // Only update winner if toernooi.nl has data OR if we have no existing data
           if (xmlMatch.Winner != null || game.winner == null) {
-            game.winner = this.winnerMappingService.mapToInternalValue(xmlMatch.Winner);
+            game.winner = reverseMapWinnerValue(xmlMatch.Winner);
           }
         }
 

@@ -18,7 +18,6 @@ import {
   CompetitionSyncEntryProcessor,
 } from "./processors";
 import { EventCompetition } from "@badman/backend-database";
-import { WinnerMappingService } from "../../../utils";
 
 export class CompetitionSyncer {
   private readonly logger = new Logger(CompetitionSyncer.name);
@@ -59,7 +58,6 @@ export class CompetitionSyncer {
   constructor(
     private visualService: VisualService,
     private pointService: PointsService,
-    private winnerMappingService: WinnerMappingService,
     protected options?: {
       newGames?: boolean;
     }
@@ -141,7 +139,6 @@ export class CompetitionSyncer {
     this._gameStep = new CompetitionSyncGameProcessor(
       args.xmlTournament,
       this.visualService,
-      this.winnerMappingService,
       options
     );
 
