@@ -10,6 +10,7 @@ import { TournamentSyncer } from "./tournament-sync";
 import moment from "moment";
 import { NotificationService } from "@badman/backend-notifications";
 import { CronJob, EventCompetition, EventTournament } from "@badman/backend-database";
+import { WinnerMappingService } from "../../utils";
 
 @Processor({
   name: SyncQueue,
@@ -30,10 +31,19 @@ export class SyncEventsProcessor {
     pointService: PointsService,
     private notificationService: NotificationService,
     private visualService: VisualService,
-    private _sequelize: Sequelize
+    private _sequelize: Sequelize,
+    private winnerMappingService: WinnerMappingService
   ) {
-    this._competitionSync = new CompetitionSyncer(this.visualService, pointService);
-    this._tournamentSync = new TournamentSyncer(this.visualService, pointService);
+    this._competitionSync = new CompetitionSyncer(
+      this.visualService,
+      pointService,
+      this.winnerMappingService
+    );
+    this._tournamentSync = new TournamentSyncer(
+      this.visualService,
+      pointService,
+      this.winnerMappingService
+    );
   }
 
   @Process({
