@@ -12,6 +12,7 @@ import {
   acceptCookies,
   getPage,
   signIn,
+  getBrowser,
   startBrowserHealthMonitoring,
 } from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
@@ -149,54 +150,36 @@ export class CheckEncounterProcessor {
         let chunksProcessed = 0;
         for (const chunk of chunks) {
           this.logger.debug(
-            `Processing chunk of ${chunk.length} encounters, ${
+            `Processing cthunk of ${chunk.length} encounters, ${
               encounters.count - encountersProcessed
             } encounter left, ${chunks.length - chunksProcessed} chunks left`
           );
+          // Close browser if any
+          if (page) {
+            await page.close();
+          }
 
-          // Safely close previous page if it exists
-          await this.safeClosePage(page);
-          page = undefined;
+          page = await getPage();
+          page.setDefaultTimeout(10000);
+          await page.setViewport({ width: 1691, height: 1337 });
 
-          try {
-            page = await getPage();
-            page.setDefaultTimeout(10000);
-            await page.setViewport({ width: 1691, height: 1337 });
+          // Accept cookies
+          await acceptCookies({ page }, { logger: this.logger });
 
-            // Accept cookies
-            await acceptCookies({ page }, { logger: this.logger });
-
-            // Processing encounters
-            for (const encounter of chunk) {
-              try {
-                await this.loadEvent(encounter);
-                // if event is not found we can't continue
-                if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition) {
-                  continue;
-                }
-
-                await this._syncEncounter(encounter, page);
-                encountersProcessed++;
-              } catch (encounterError) {
-                this.logger.error(
-                  `Error processing encounter ${encounter.visualCode}:`,
-                  encounterError
-                );
-                // Continue with next encounter
-              }
+          // Processing encounters
+          for (const encounter of chunk) {
+            await this.loadEvent(encounter);
+            // if event is not found we can't continue
+            if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition) {
+              continue;
             }
 
-            // Safely close page after processing chunk
-            await this.safeClosePage(page);
-            page = undefined;
-            chunksProcessed++;
-          } catch (chunkError) {
-            this.logger.error(`Error processing chunk ${chunksProcessed + 1}:`, chunkError);
-            // Ensure page is closed even if chunk processing failed
-            await this.safeClosePage(page);
-            page = undefined;
-            chunksProcessed++;
+            await this._syncEncounter(encounter, page);
+            encountersProcessed++;
           }
+
+          await page.close();
+          chunksProcessed++;
         }
       } else {
         this.logger.debug("No encounters found");
@@ -204,8 +187,39 @@ export class CheckEncounterProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
-      // Final cleanup
-      await this.safeClosePage(page);
+      try {
+        // Close browser properly
+        if (page) {
+          try {
+            if (!page.isClosed()) {
+              await page.close();
+            }
+          } catch (pageError) {
+            this.logger.debug("Error closing page (may already be closed):", pageError.message);
+          }
+
+          // Check if we should close the browser instance
+          try {
+            const browser = await getBrowser();
+            if (browser && browser.connected) {
+              const pages = await browser.pages();
+              this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+              if (pages.length <= 1) {
+                this.logger.log("Closing browser instance...");
+                await browser.close();
+              }
+            }
+          } catch (browserError) {
+            this.logger.debug(
+              "Error during browser management (may already be closed):",
+              browserError.message
+            );
+          }
+        }
+      } catch (error) {
+        this.logger.debug("Error during browser cleanup:", error.message || error);
+      }
 
       cronJob.amount++;
       cronJob.lastRun = new Date();
@@ -237,10 +251,9 @@ export class CheckEncounterProcessor {
       return;
     }
 
-    let page: Page | undefined;
+    // Create browser
+    const page = await getPage();
     try {
-      // Create browser
-      page = await getPage();
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
 
@@ -249,11 +262,45 @@ export class CheckEncounterProcessor {
 
       // Processing encounters
       await this._syncEncounter(encounter, page);
+
+      await page.close();
     } catch (error) {
-      this.logger.error(`Error processing encounter ${encounter.visualCode}:`, error);
+      this.logger.error(error);
     } finally {
-      // Safe cleanup
-      await this.safeClosePage(page);
+      try {
+        // Close browser properly
+        if (page) {
+          try {
+            if (!page.isClosed()) {
+              await page.close();
+            }
+          } catch (pageError) {
+            this.logger.debug("Error closing page (may already be closed):", pageError.message);
+          }
+
+          // Check if we should close the browser instance
+          try {
+            const browser = await getBrowser();
+            if (browser && browser.connected) {
+              const pages = await browser.pages();
+              this.logger.log(`Browser has ${pages.length} pages remaining`);
+
+              if (pages.length <= 1) {
+                this.logger.log("Closing browser instance...");
+                await browser.close();
+              }
+            }
+          } catch (browserError) {
+            this.logger.debug(
+              "Error during browser management (may already be closed):",
+              browserError.message
+            );
+          }
+        }
+      } catch (error) {
+        this.logger.debug("Error during browser cleanup:", error.message || error);
+      }
+
       this.logger.log("Synced encounter");
     }
   }
@@ -279,88 +326,37 @@ export class CheckEncounterProcessor {
     encounter.drawCompetition.subEventCompetition.eventCompetition = event;
   }
 
-  /**
-   * Safely closes a page, handling various error conditions
-   */
-  private async safeClosePage(page: Page | undefined): Promise<void> {
-    if (!page) {
-      return;
-    }
-
-    try {
-      // Check if page is already closed
-      if (page.isClosed()) {
-        this.logger.debug("Page is already closed");
-        return;
-      }
-
-      // Check if browser is still connected
-      const browser = page.browser();
-      if (!browser.connected) {
-        this.logger.debug("Browser is disconnected, cannot close page gracefully");
-        return;
-      }
-
-      // Attempt to close the page
-      await page.close();
-      this.logger.debug("Page closed successfully");
-    } catch (error: any) {
-      // Handle specific error types
-      if (
-        error.message?.includes("Protocol error") ||
-        error.message?.includes("Connection closed")
-      ) {
-        this.logger.debug("Page connection already closed, cleanup not needed");
-      } else if (error.message?.includes("Target closed")) {
-        this.logger.debug("Page target already closed");
-      } else {
-        this.logger.warn("Unexpected error closing page:", error.message || error);
-      }
-    }
-  }
-
   private async _syncEncounter(encounter: EncounterCompetition, page: Page) {
-    let url: string;
+    const url = await gotoEncounterPage({ page }, encounter);
+    this.logger.debug(`Syncing encounter ${url}`);
+
+    await consentPrivacyAndCookie({ page }, { logger: this.logger });
 
     try {
-      // Check if page is still connected before proceeding
-      if (page.isClosed() || !page.browser().connected) {
-        throw new Error("Page or browser connection lost before processing encounter");
-      }
-
-      url = await gotoEncounterPage({ page }, encounter);
-      this.logger.debug(`Syncing encounter ${url}`);
-
-      await consentPrivacyAndCookie({ page }, { logger: this.logger });
-
       const time = await hasTime({ page }, { logger: this.logger });
       if (!time) {
         this.logger.verbose(`Encounter ${encounter.visualCode} has no time`);
         return;
       }
-
       const { entered, enteredOn } = await detailEntered({ page }, { logger: this.logger });
       const { accepted, acceptedOn } = await detailAccepted({ page }, { logger: this.logger });
-
       let hasComment = false;
       try {
         const result = await detailComment({ page }, { logger: this.logger });
         hasComment = result.hasComment;
-      } catch (error: any) {
+      } catch (error) {
         this.logger.warn(
           `Error checking for comments on encounter ${encounter.visualCode}:`,
           error.message
         );
         // Continue with hasComment = false
       }
-
       const enteredMoment = moment(enteredOn);
       const hoursPassed = moment().diff(encounter.date, "hour");
 
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`
       );
-
       // Check if we need to notify the event contact
       if (
         encounter?.drawCompetition?.subEventCompetition?.eventCompetition
@@ -388,37 +384,20 @@ export class CheckEncounterProcessor {
               hoursPassedEntered = moment().diff(enteredMoment.clone().add(36, "hour"), "hour");
             }
 
-            // Check if enough time has passed for auto accepting
+            // Check if anough time has passed for auto accepting
             if (hoursPassedEntered > 36) {
               if (this.configService.get<boolean>("VR_ACCEPT_ENCOUNTERS")) {
                 this.logger.debug(
                   `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`
                 );
-
-                try {
-                  // Check connection before signing in
-                  if (!page.isClosed() && page.browser().connected) {
-                    await signIn(
-                      { page },
-                      { username: this._username, password: this._password, logger: this.logger }
-                    );
-                    const successful = await acceptEncounter({ page }, { logger: this.logger });
-                    if (!successful) {
-                      // we failed to accept the encounter for some reason, notify the user
-                      this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
-                      this.notificationService.notifyEncounterNotAccepted(encounter);
-                    }
-                  } else {
-                    this.logger.warn(
-                      `Cannot auto accept encounter ${encounter.visualCode} - page connection lost`
-                    );
-                    this.notificationService.notifyEncounterNotAccepted(encounter);
-                  }
-                } catch (signInError: any) {
-                  this.logger.error(
-                    `Error during auto accept for encounter ${encounter.visualCode}:`,
-                    signInError.message
-                  );
+                await signIn(
+                  { page },
+                  { username: this._username, password: this._password, logger: this.logger }
+                );
+                const succesfull = await acceptEncounter({ page }, { logger: this.logger });
+                if (!succesfull) {
+                  // we failed to accept the encounter for some reason, notify the user
+                  this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
                   this.notificationService.notifyEncounterNotAccepted(encounter);
                 }
               } else {
@@ -449,47 +428,41 @@ export class CheckEncounterProcessor {
         encounter.enteredOn = enteredMoment.toDate();
 
         try {
-          // Check connection before getting detail info
-          if (!page.isClosed() && page.browser().connected) {
-            const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo(
-              { page },
-              { logger: this.logger }
-            );
+          const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo(
+            { page },
+            { logger: this.logger }
+          );
 
-            this.logger.debug(
-              `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`
-            );
+          this.logger.debug(
+            `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`
+          );
 
-            encounter.startHour = startedOn || undefined;
-            encounter.endHour = endedOn || undefined;
-            encounter.shuttle = usedShuttle || undefined;
+          encounter.startHour = startedOn || undefined;
+          encounter.endHour = endedOn || undefined;
+          encounter.shuttle = usedShuttle || undefined;
 
-            if (gameLeader && gameLeader.length > 0) {
-              const gameLeaderPlayer = await this.searchService.searchPlayers(
-                this.searchService.getParts(gameLeader),
-                [
-                  {
-                    memberId: {
-                      [Op.ne]: null,
-                    },
+          if (gameLeader && gameLeader.length > 0) {
+            const gameLeaderPlayer = await this.searchService.searchPlayers(
+              this.searchService.getParts(gameLeader),
+              [
+                {
+                  memberId: {
+                    [Op.ne]: null,
                   },
-                ]
-              );
+                },
+              ]
+            );
 
-              if (gameLeaderPlayer && gameLeaderPlayer.length > 0) {
-                if (gameLeaderPlayer.length > 1) {
-                  this.logger.warn(`Found multiple players for game leader ${gameLeader}`);
-                } else {
-                  await encounter.setGameLeader(gameLeaderPlayer[0]);
-                }
+            if (gameLeaderPlayer && gameLeaderPlayer.length > 0) {
+              if (gameLeaderPlayer.length > 1) {
+                this.logger.warn(`Found multiple players for game leader ${gameLeader}`);
+              } else {
+                await encounter.setGameLeader(gameLeaderPlayer[0]);
               }
             }
           }
-        } catch (error: any) {
-          this.logger.warn(
-            `Error getting detail info for encounter ${encounter.visualCode}:`,
-            error.message
-          );
+        } catch (error) {
+          this.logger.warn(error);
           // continue, we don't really care about this
         }
       }
@@ -509,29 +482,13 @@ export class CheckEncounterProcessor {
       }
 
       await encounter.save();
-    } catch (error: any) {
-      // Handle connection errors gracefully
-      if (
-        error.message?.includes("Protocol error") ||
-        error.message?.includes("Connection closed")
-      ) {
-        this.logger.error(
-          `Connection lost while processing encounter ${encounter.visualCode}: ${error.message}`
-        );
-      } else {
-        this.logger.error(`Error processing encounter ${encounter.visualCode}:`, error);
-      }
+    } catch (error) {
+      this.logger.error(error);
 
-      // Only notify if we have a URL (meaning we got far enough to navigate)
-      if (url) {
-        await this.notificationService.notifySyncEncounterFailed({
-          url,
-          encounter,
-        });
-      }
-
-      // Re-throw the error so the caller can handle it appropriately
-      throw error;
+      await this.notificationService.notifySyncEncounterFailed({
+        url,
+        encounter,
+      });
     }
   }
 }
