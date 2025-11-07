@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/api/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["scope:app"],
   "targets": {
     "deploy": {
       "executor": "nx:run-commands",
@@ -12,44 +12,15 @@
       }
     },
     "build": {
-      "executor": "@nx/webpack:webpack",
+      "executor": "nx:run-commands",
       "dependsOn": ["^build"],
       "options": {
-        "target": "node",
-        "compiler": "tsc",
-        "main": "apps/api/src/main.ts",
-        "tsConfig": "apps/api/tsconfig.app.json",
-        "assets": [
-          "apps/api/src/assets",
-          {
-            "glob": "**/*",
-            "input": "libs/backend/translate/assets",
-            "output": "assets"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/backend/competition/assembly/src/compile",
-            "output": "compile/libs/assembly"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/backend/mailing/src/compile",
-            "output": "compile/libs/mailing"
-          }
-        ],
-        "outputPath": "dist/apps/api",
-        "webpackConfig": "apps/api/webpack.config.js"
+        "command": "webpack-cli build",
+        "args": ["--node-env=production"]
       },
       "configurations": {
         "development": {
-          "extractLicenses": false,
-          "optimization": false,
-          "sourceMap": true
-        },
-        "production": {
-          "extractLicenses": true,
-          "optimization": true,
-          "sourceMap": false
+          "args": ["--node-env=development"]
         }
       }
     },
