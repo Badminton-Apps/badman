@@ -10,7 +10,7 @@ import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { VisualService, XmlDrawTypeID, XmlTournament } from "@badman/backend-visual";
 import { SubEventStepData } from "./subEvent";
-import { DrawType, runParallel } from "@badman/utils";
+import { DrawType } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
 
 export interface DrawStepData {
@@ -37,7 +37,11 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
   }
 
   public async process(): Promise<DrawStepData[]> {
-    await runParallel(this.subEvents?.map((e) => this._processDraws(e)) ?? []);
+    // Process sequentially to avoid transaction conflicts when errors occur
+    // If one subevent fails and invalidates the transaction, others won't try to use it
+    for (const subEvent of this.subEvents ?? []) {
+      await this._processDraws(subEvent);
+    }
     return this._dbDraws;
   }
 

@@ -1,6 +1,5 @@
 import { EncounterCompetition, EventCompetition, Game } from "@badman/backend-database";
 import { VisualService, XmlTeamMatch, XmlTournament } from "@badman/backend-visual";
-import { runParallel } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import moment from "moment-timezone";
 import { Op } from "sequelize";
@@ -39,7 +38,11 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EncounterStepData[]> {
-    await runParallel(this.draws?.map((e) => this._processEncounters(e)) ?? []);
+    // Process sequentially to avoid transaction conflicts when errors occur
+    // If one draw fails and invalidates the transaction, others won't try to use it
+    for (const draw of this.draws ?? []) {
+      await this._processEncounters(draw);
+    }
     return this._dbEncounters;
   }
 

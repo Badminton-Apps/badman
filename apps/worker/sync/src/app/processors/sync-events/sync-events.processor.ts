@@ -174,6 +174,7 @@ export class SyncEventsProcessor {
     }
 
     const transaction = await this._sequelize.transaction();
+    let transactionRolledBack = false;
 
     try {
       let resultData: { event: EventCompetition | EventTournament } | null = null;
@@ -203,13 +204,29 @@ export class SyncEventsProcessor {
       await this.sendSyncNotifications(jobData.userId, resultData?.event, true);
     } catch (e) {
       this.logger.error("Rollback", e);
-      await transaction.rollback();
+
+      // Safely rollback the transaction - wrap in try-catch to prevent errors during rollback
+      if (!transactionRolledBack) {
+        try {
+          await transaction.rollback();
+          transactionRolledBack = true;
+        } catch (rollbackError) {
+          // Transaction may have already been rolled back or finished
+          this.logger.warn(
+            "Transaction rollback failed (may already be rolled back)",
+            rollbackError
+          );
+          transactionRolledBack = true;
+        }
+      }
 
       await this.sendSyncNotifications(
         jobData.userId,
         { name: xmlTournament.Name } as EventTournament,
         false
       );
+
+      // Re-throw the original error
       throw e;
     }
   }

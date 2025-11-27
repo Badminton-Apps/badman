@@ -13,7 +13,7 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from "@badman/backend-visual";
-import { GameStatus, GameType, getRankingProtected, runParallel } from "@badman/utils";
+import { GameStatus, GameType, getRankingProtected } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
 import moment from "moment";
 import { Op } from "sequelize";
@@ -62,16 +62,16 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    const promisses = this.encounters?.map((e) => {
-      const filtered = games.filter((g) => g.linkId === e.encounter.id);
-      return this._processEncounter(e.encounter, e.internalId, filtered);
-    });
-
-    if (!promisses) {
+    // Process sequentially to avoid transaction conflicts when errors occur
+    // If one encounter fails and invalidates the transaction, others won't try to use it
+    if (!this.encounters) {
       return [];
     }
 
-    await runParallel(promisses);
+    for (const encounter of this.encounters) {
+      const filtered = games.filter((g) => g.linkId === encounter.encounter.id);
+      await this._processEncounter(encounter.encounter, encounter.internalId, filtered);
+    }
 
     return this._games;
   }
