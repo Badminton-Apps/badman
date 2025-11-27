@@ -10,6 +10,7 @@ import { TournamentSyncer } from "./tournament-sync";
 import moment from "moment";
 import { NotificationService } from "@badman/backend-notifications";
 import { CronJob, EventCompetition, EventTournament } from "@badman/backend-database";
+import { SyncEventJobData } from "./types";
 
 @Processor({
   name: SyncQueue,
@@ -39,30 +40,7 @@ export class SyncEventsProcessor {
   @Process({
     name: Sync.SyncEvents,
   })
-  async syncEvents(
-    job: Job<{
-      // Changed after date
-      date?: Date;
-      // Start from certain date
-      startDate?: Date;
-      // Skip types / event names
-      skip: string[];
-      // Search for namne
-      search: string;
-      // Exact id
-      id: string | string[];
-      // Official
-      official?: boolean;
-      // Only types / event names
-      only: string[];
-      // Continue from a previous (failed) run
-      offset: number;
-      // Only process a certain number of events
-      limit: number;
-      // the to notifiy user
-      userId?: string | string[];
-    }>
-  ) {
+  async syncEvents(job: Job<SyncEventJobData>) {
     const cronJob = await CronJob.findOne({
       where: {
         "meta.jobName": Sync.SyncEvents,
@@ -78,136 +56,49 @@ export class SyncEventsProcessor {
     await cronJob.save();
 
     try {
-      // Creates a new date based on either the job's date parameter or the last run time
-      const newDate = moment(job.data?.date ?? cronJob.lastRun);
-      let newEvents: XmlTournament[] = [];
-
-      // Checks if the search term is present in the job data.  If so, we will search for events based on the search term
-      const searchTermPresent = job.data?.search?.length > 0;
-      // Checks if a specific event id is present in the job data.  If so, we will process the event with specified id
-      const idPresent = job.data?.id?.length > 0;
-
-      if (searchTermPresent) {
-        newEvents = newEvents.concat(await this.visualService.searchEvents(job.data?.search));
-      } else if (idPresent) {
-        // If the id is not an array, convert it to an array, so we can loop through it
-        if (!Array.isArray(job.data?.id)) {
-          job.data.id = [job.data.id];
-        }
-
-        for (let id of job.data?.id as string[]) {
-          for (const format of this.formats) {
-            if (id.startsWith(format)) {
-              id = id.replace(format, "");
-              break;
-            }
-          }
-
-          newEvents = newEvents.concat(await this.visualService.getEvent(id));
-        }
-      } else {
-        newEvents = newEvents.concat(await this.visualService.getChangeEvents(newDate));
-      }
-      newEvents = newEvents.sort((a, b) => {
-        return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
+      const { search, id: eventId, date, startDate } = job.data;
+      let newEvents = await this.fetchEventsFromJobData({
+        search,
+        eventId,
+        date,
+        lastRun: cronJob.lastRun,
       });
+
+      newEvents = newEvents.sort((a, b) => moment(a.StartDate).diff(moment(b.StartDate)));
 
       this.logger.verbose(`Found ${newEvents.length} new events`);
 
-      if (job.data?.startDate) {
-        newEvents = newEvents.filter((e) => {
-          return moment(e.StartDate).isSameOrAfter(job.data?.startDate);
-        });
+      if (startDate) {
+        newEvents = newEvents.filter((e) => moment(e.StartDate).isSameOrAfter(startDate));
+        this.logger.verbose(`Found ${newEvents.length} new events after ${startDate}`);
       }
 
-      this.logger.verbose(`Found ${newEvents.length} new events after ${job.data?.startDate}`);
+      const { offset = 0, limit, skip = [], only = [] } = job.data;
 
-      let toProcess = newEvents.length;
-      if (job.data?.limit) {
-        toProcess = job.data?.offset ?? 0 + job.data?.limit;
-      }
+      // Ensure offset doesn't exceed array bounds
+      const safeOffset = Math.min(offset, newEvents.length);
+      const toProcess = limit ? Math.min(safeOffset + limit, newEvents.length) : newEvents.length;
 
-      this.logger.debug(`Processing ${toProcess} events`);
+      this.logger.debug(`Processing ${toProcess} events (offset: ${safeOffset})`);
 
-      for (let i = job.data?.offset ?? 0; i < toProcess; i++) {
+      for (let i = safeOffset; i < toProcess; i++) {
         const xmlTournament = newEvents[i];
         const current = i + 1;
-        const total = toProcess;
-        const percent = Math.round((current / total) * 10000) / 100;
+        const percent = Math.round((current / toProcess) * 10000) / 100;
         job.progress(percent);
-        this.logger.debug(`Processing ${xmlTournament?.Name}, ${percent}% (${i}/${total})`);
+        this.logger.debug(`Processing ${xmlTournament?.Name}, ${percent}% (${i}/${toProcess})`);
 
         // Skip certain event
-        if ((job.data?.skip?.length ?? 0) > 0 && job.data?.skip?.includes(xmlTournament?.Name)) {
+        if (skip.includes(xmlTournament?.Name)) {
           continue;
         }
 
         // Only process certain events
-        if ((job.data?.only?.length ?? 0) > 0 && !job.data?.only?.includes(xmlTournament?.Name)) {
+        if (!only.includes(xmlTournament?.Name)) {
           continue;
         }
 
-        const transaction = await this._sequelize.transaction();
-
-        try {
-          let resultData: { event: EventCompetition | EventTournament } | null = null;
-          if (
-            xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
-            xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
-          ) {
-            // // National is a bit different have to lookinto, temp skip
-            // if (xmlTournament?.Name?.includes('Victor League')) {
-            //   continue;
-            // }
-
-            if (!job.data?.skip?.includes("competition")) {
-              resultData = (await this._competitionSync.process({
-                transaction,
-                xmlTournament,
-                options: { ...job.data },
-              })) as { event: EventCompetition };
-            }
-          } else {
-            if (!job.data?.skip?.includes("tournament")) {
-              resultData = (await this._tournamentSync.process({
-                transaction,
-                xmlTournament,
-                options: { ...job.data },
-              })) as { event: EventTournament };
-            }
-          }
-          this.logger.debug(`Committing transaction`);
-          await transaction.commit();
-          this.logger.log(`Finished ${xmlTournament?.Name}`);
-
-          if (job.data?.userId) {
-            const userIds = Array.isArray(job.data?.userId) ? job.data?.userId : [job.data?.userId];
-
-            for (const userId of userIds) {
-              await this.notificationService.notifySyncFinished(userId, {
-                event: resultData?.event,
-                success: true,
-              });
-            }
-          }
-        } catch (e) {
-          this.logger.error("Rollback", e);
-          await transaction.rollback();
-
-          if (job.data?.userId) {
-            const userIds = Array.isArray(job.data?.userId) ? job.data?.userId : [job.data?.userId];
-
-            for (const userId of userIds) {
-              await this.notificationService.notifySyncFinished(userId, {
-                event: {
-                  name: xmlTournament.Name,
-                } as EventTournament,
-                success: false,
-              });
-            }
-          }
-          throw e;
-        }
+        await this.handleNewEvent(xmlTournament, skip, job.data);
       }
     } catch (e) {
       this.logger.error("Error", e);
@@ -220,5 +111,141 @@ export class SyncEventsProcessor {
     }
 
     this.logger.log("Finished sync of Visual scores");
+  }
+
+  /**
+   * Fetches events from the Visual service based on job data.
+   * Supports three modes:
+   * - Search: searches for events by search term
+   * - Event IDs: fetches specific events by their IDs
+   * - Changed events: fetches events that changed since a given date
+   */
+  private async fetchEventsFromJobData(params: {
+    search?: string;
+    eventId?: string | string[];
+    date?: Date;
+    lastRun?: Date;
+  }): Promise<XmlTournament[]> {
+    const { search, eventId, date, lastRun } = params;
+    let events: XmlTournament[] = [];
+
+    if (search?.length > 0) {
+      events = await this.visualService.searchEvents(search);
+    } else if (eventId?.length > 0) {
+      const jobEventIds = Array.isArray(eventId) ? eventId : [eventId];
+
+      const eventPromises = jobEventIds.map(async (id) => {
+        const processedId = this.removeFormatPrefix(id);
+        return this.visualService.getEvent(processedId);
+      });
+
+      const eventResults = await Promise.all(eventPromises);
+      events = eventResults.flat();
+    } else {
+      // Fetch events that changed since the given date (or last run if no date provided)
+      const newDate = moment(date ?? lastRun);
+      const changedEvents = await this.visualService.getChangeEvents(newDate);
+      events = changedEvents ?? [];
+    }
+
+    return events;
+  }
+
+  /**
+   * Handles processing a single event tournament.
+   * Creates a transaction, syncs the event (competition or tournament),
+   * commits the transaction, and sends notifications.
+   */
+  private async handleNewEvent(
+    xmlTournament: XmlTournament,
+    skip: string[],
+    jobData: SyncEventJobData
+  ): Promise<void> {
+    // Check if we should skip this event type before creating a transaction
+    const isCompetitionType =
+      xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
+      xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament;
+
+    if (isCompetitionType && skip.includes("competition")) {
+      return;
+    }
+    if (!isCompetitionType && skip.includes("tournament")) {
+      return;
+    }
+
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      let resultData: { event: EventCompetition | EventTournament } | null = null;
+      if (isCompetitionType) {
+        // // National is a bit different have to lookinto, temp skip
+        // if (xmlTournament?.Name?.includes('Victor League')) {
+        //   continue;
+        // }
+
+        resultData = (await this._competitionSync.process({
+          transaction,
+          xmlTournament,
+          options: { ...jobData },
+        })) as { event: EventCompetition };
+      } else {
+        resultData = (await this._tournamentSync.process({
+          transaction,
+          xmlTournament,
+          options: { ...jobData },
+        })) as { event: EventTournament };
+      }
+
+      this.logger.debug(`Committing transaction`);
+      await transaction.commit();
+      this.logger.log(`Finished ${xmlTournament?.Name}`);
+
+      await this.sendSyncNotifications(jobData.userId, resultData?.event, true);
+    } catch (e) {
+      this.logger.error("Rollback", e);
+      await transaction.rollback();
+
+      await this.sendSyncNotifications(
+        jobData.userId,
+        { name: xmlTournament.Name } as EventTournament,
+        false
+      );
+      throw e;
+    }
+  }
+
+  /**
+   * Sends sync completion notifications to users.
+   */
+  private async sendSyncNotifications(
+    userId: string | string[] | undefined,
+    event: EventCompetition | EventTournament | undefined,
+    success: boolean
+  ): Promise<void> {
+    if (!userId) {
+      return;
+    }
+
+    const userIds = Array.isArray(userId) ? userId : [userId];
+    const notificationPromises = userIds.map((uid) => {
+      return this.notificationService.notifySyncFinished(uid, {
+        event,
+        success,
+      });
+    });
+    await Promise.all(notificationPromises);
+  }
+
+  /**
+   * Removes the format prefix from an event ID if it exists.
+   * Returns the ID without the prefix, or the original ID if no prefix matches.
+   */
+  private removeFormatPrefix(id: string): string {
+    for (const format of this.formats) {
+      if (id.startsWith(format)) {
+        return id.replace(format, "");
+      }
+    }
+    return id;
   }
 }
