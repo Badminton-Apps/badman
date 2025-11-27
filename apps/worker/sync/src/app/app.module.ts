@@ -114,98 +114,23 @@ export class WorkerSyncModule implements OnApplicationBootstrap {
   ) {}
   async onApplicationBootstrap() {
     this.logger.log("Starting sync service");
+
     const devEmailDestination = this.configService.get("DEV_EMAIL_DESTINATION");
     const hangBeforeBrowserCleanup = this.configService.get("HANG_BEFORE_BROWSER_CLEANUP");
     const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED");
     const enterScoresEnabled = this.configService.get("ENTER_SCORES_ENABLED");
     const vrChangeDates = this.configService.get("VR_CHANGE_DATES");
     const vrAcceptEncounters = this.configService.get("VR_ACCEPT_ENCOUNTERS");
-    this.logger.log("--------------------------------");
-    this.logger.log(`Dev email destination: ${devEmailDestination}`);
-    this.logger.log(`Hang before browser cleanup: ${hangBeforeBrowserCleanup}`);
-    this.logger.log(`Visual sync enabled: ${visualSyncEnabled}`);
-    this.logger.log(`Enter scores enabled: ${enterScoresEnabled}`);
-    this.logger.log(`VR change dates: ${vrChangeDates}`);
-    this.logger.log(`VR accept encounters: ${vrAcceptEncounters}`);
-    this.logger.log("--------------------------------");
 
-    if (hangBeforeBrowserCleanup) {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        "Hang before browser cleanup is enabled, be sure to clean up the browser instances manually after testing"
-      );
-      this.logger.warn("--------------------------------");
-    } else {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        "Hang before browser cleanup is disabled, will clean up the browser instances automatically after testing"
-      );
-      this.logger.warn("--------------------------------");
-    }
+    this.logConfigurationSettings({
+      devEmailDestination,
+      hangBeforeBrowserCleanup,
+      visualSyncEnabled,
+      enterScoresEnabled,
+      vrChangeDates,
+      vrAcceptEncounters,
+    });
 
-    if (visualSyncEnabled) {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        "Visual sync enabled, will show the browser window for debugging during check encounters and enter scores"
-      );
-      this.logger.warn("--------------------------------");
-    } else {
-      this.logger.warn("--------------------------------");
-      this.logger.warn("Visual sync disabled, will run the browser in headless mode");
-      this.logger.warn("--------------------------------");
-    }
-
-    if (enterScoresEnabled) {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        "Enter scores enabled, will save the scores to toernooi.nl.  be careful with this, as this affects production data"
-      );
-      this.logger.warn("--------------------------------");
-    } else {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        "Enter scores disabled, will not save the scores to toernooi.nl.  This is the default behavior, unless node env is set to production"
-      );
-      this.logger.warn("--------------------------------");
-    }
-
-    if (!devEmailDestination) {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        "No dev email destination configured, will not send any emails after sync processes"
-      );
-      this.logger.warn("--------------------------------");
-    } else {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        `Dev email destination configured, will send emails after sync processes to ${devEmailDestination}`
-      );
-      this.logger.warn("--------------------------------");
-    }
-
-    if (vrChangeDates) {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        "VR change dates enabled, will change the dates of the encounters in toernooi.nl after accepting date changes"
-      );
-      this.logger.warn("--------------------------------");
-    } else {
-      this.logger.warn("--------------------------------");
-      this.logger.warn(
-        "VR change dates disabled, will not change the dates of the encounters in toernooi.nl after accepting date changes"
-      );
-      this.logger.warn("--------------------------------");
-    }
-
-    if (vrAcceptEncounters) {
-      this.logger.warn("--------------------------------");
-      this.logger.warn("VR accept encounters enabled, will accept the encounters in toernooi.nl");
-      this.logger.warn("--------------------------------");
-    } else {
-      this.logger.warn("--------------------------------");
-      this.logger.warn("VR accept encounters disabled, will not accept the encounters");
-      this.logger.warn("--------------------------------");
-    }
     const service = await Service.findOne({ where: { name: "sync" } });
     if (!service) {
       this.logger.error("Could not find sync service");
@@ -218,7 +143,14 @@ export class WorkerSyncModule implements OnApplicationBootstrap {
       id: service?.id,
     });
 
-    // Reset all jobs
+    // Reset all job counters to ensure clean state after worker restart
+    // The 'amount' field tracks how many instances of a job are currently running:
+    // - When a job starts: amount++ (incremented in processor)
+    // - When a job finishes: amount-- (decremented in processor)
+    // If the worker crashed or restarted, these counters may be stale (showing jobs
+    // as "running" when they're not). Resetting to 0 ensures accurate tracking.
+    // The job starts later when the cron scheduler triggers it or when it's manually queued.
+
     const cronJob = await CronJob.findAll({
       where: {
         "meta.queueName": SyncQueue,
@@ -226,9 +158,71 @@ export class WorkerSyncModule implements OnApplicationBootstrap {
     });
 
     for (const job of cronJob) {
-      this.logger.log(`Starting cron job ${job.meta.jobName}`);
-      job.amount = 0;
+      this.logger.log(
+        `Resetting counter for cron job ${job.meta.jobName}. Job can now be processed by the worker.`
+      );
+      job.amount = 0; // Reset counter: no jobs are running yet after restart
       job.save();
     }
+  }
+
+  private logConfigurationSettings(config: {
+    devEmailDestination?: string;
+    hangBeforeBrowserCleanup?: boolean;
+    visualSyncEnabled?: boolean;
+    enterScoresEnabled?: boolean;
+    vrChangeDates?: boolean;
+    vrAcceptEncounters?: boolean;
+  }) {
+    this.logger.log("--------------------------------");
+    this.logger.log(`Dev email destination: ${config.devEmailDestination}`);
+    this.logger.log(`Hang before browser cleanup: ${config.hangBeforeBrowserCleanup}`);
+    this.logger.log(`Visual sync enabled: ${config.visualSyncEnabled}`);
+    this.logger.log(`Enter scores enabled: ${config.enterScoresEnabled}`);
+    this.logger.log(`VR change dates: ${config.vrChangeDates}`);
+    this.logger.log(`VR accept encounters: ${config.vrAcceptEncounters}`);
+    this.logger.log("--------------------------------");
+
+    this.logSettingWarning(
+      config.hangBeforeBrowserCleanup,
+      "Hang before browser cleanup is enabled, be sure to clean up the browser instances manually after testing",
+      "Hang before browser cleanup is disabled, will clean up the browser instances automatically after testing"
+    );
+
+    this.logSettingWarning(
+      config.visualSyncEnabled,
+      "Visual sync enabled, will show the browser window for debugging during check encounters and enter scores",
+      "Visual sync disabled, will run the browser in headless mode"
+    );
+
+    this.logSettingWarning(
+      config.enterScoresEnabled,
+      "Enter scores enabled, will save the scores to toernooi.nl.  be careful with this, as this affects production data",
+      "Enter scores disabled, will not save the scores to toernooi.nl.  This is the default behavior, unless node env is set to production"
+    );
+
+    this.logSettingWarning(
+      !!config.devEmailDestination,
+      `Dev email destination configured, will send emails after sync processes to ${config.devEmailDestination}`,
+      "No dev email destination configured, will not send any emails after sync processes"
+    );
+
+    this.logSettingWarning(
+      config.vrChangeDates,
+      "VR change dates enabled, will change the dates of the encounters in toernooi.nl after accepting date changes",
+      "VR change dates disabled, will not change the dates of the encounters in toernooi.nl after accepting date changes"
+    );
+
+    this.logSettingWarning(
+      config.vrAcceptEncounters,
+      "VR accept encounters enabled, will accept the encounters in toernooi.nl",
+      "VR accept encounters disabled, will not accept the encounters"
+    );
+  }
+
+  private logSettingWarning(condition: boolean, enabledMessage: string, disabledMessage: string) {
+    this.logger.warn("--------------------------------");
+    this.logger.warn(condition ? enabledMessage : disabledMessage);
+    this.logger.warn("--------------------------------");
   }
 }
