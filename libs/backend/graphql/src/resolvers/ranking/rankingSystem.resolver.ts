@@ -45,6 +45,17 @@ export class RankingSystemResolver {
     return RankingSystem.findAll(ListArgs.toFindOptions(listArgs));
   }
 
+  @Query(() => RankingSystem)
+  async primaryRankingSystem(): Promise<RankingSystem> {
+    const primaryRankingSystem = await RankingSystem.findOne({ where: { primary: true } });
+    this.logger.debug(`Primary ranking system: ${primaryRankingSystem?.name}`);
+    if (!primaryRankingSystem) {
+      throw new NotFoundException("No primary ranking system found");
+    }
+    this.logger.debug(`Primary ranking system found: ${primaryRankingSystem.name}`);
+    return primaryRankingSystem;
+  }
+
   @ResolveField(() => PagedRankingLastPlaces)
   async rankingLastPlaces(
     @Parent() system: RankingSystem,
