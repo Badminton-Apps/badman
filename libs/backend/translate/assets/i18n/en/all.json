@@ -1839,7 +1839,8 @@
           "deleteSuccess": "Ranking system deleted",
           "deleteError": "Error deleting ranking system"
         },
-        "noRecords": "No records found"
+        "noRecords": "No records found",
+        "seeAllRankingSystems": "See all ranking systems"
       },
       "detailTable": {
         "level": "Level",
