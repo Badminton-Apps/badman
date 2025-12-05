@@ -1556,7 +1556,8 @@
           "deleteSuccess": "Rangschikkingssysteem verwijderd",
           "deleteError": "Fout bij verwijderen van rangschikkingssysteem"
         },
-        "noRecords": "Geen records gevonden"
+        "noRecords": "Geen records gevonden",
+        "seeAllRankingSystems": "Alle rangschikkingssystemen bekijken"
       },
       "detailTable": {
         "level": "Niveau",
