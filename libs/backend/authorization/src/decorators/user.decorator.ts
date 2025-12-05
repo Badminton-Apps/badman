@@ -4,10 +4,9 @@ import { env } from "process";
 import { getRequest } from "../utils";
 export const User = createParamDecorator(async (data: unknown, context: ExecutionContext) => {
   const request = getRequest(context);
-
   const user = request["user"];
 
-  // If we have a user in the request, return it
+  // If we have a user in the request with both sub and id, return it (this is a full Player object)
   if (user?.sub && user?.id) {
     return user;
   }
