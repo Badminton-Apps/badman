@@ -43,6 +43,20 @@ export class AppController {
       removeOnFail: boolean;
     }
   ) {
+    // Check if user is properly authenticated and exists in database
+    if (!user?.id) {
+      this.logger.error(
+        `User authentication failed: user.id is undefined. User object: ${JSON.stringify({
+          sub: user?.sub,
+          hasId: !!user?.id,
+          keys: Object.keys(user || {}),
+        })}`
+      );
+      throw new UnauthorizedException(
+        "User not found in database. Please ensure your account exists in the system."
+      );
+    }
+
     this.logger.debug(
       `User (id: ${user.id}) is trying to add a job to the queue with args: ${JSON.stringify(args)}`
     );
