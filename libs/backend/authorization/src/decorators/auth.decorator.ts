@@ -148,7 +148,9 @@ export class PermGuard implements CanActivate {
       const audience = this.configService.get("AUTH0_AUDIENCE");
       const issuer = `${this.configService.get("AUTH0_ISSUER_URL")}/`;
 
-      this._logger.debug(`Validating token with audience: ${audience}, issuer: ${issuer}`);
+      this._logger.debug(`Validating token. Expecting: audience: ${audience}, issuer: ${issuer}`);
+
+      console.log("Decoded Token:", this.jwtService.decode(token));
 
       const payload = this.jwtService.verify(token, {
         algorithms: ["RS256"],
