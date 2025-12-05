@@ -73,12 +73,20 @@ export class PermGuard implements CanActivate {
           where: { sub: payload.sub },
         });
         if (user) {
+          this._logger.debug(`User found in database: ${user.id} (sub: ${payload.sub})`);
           return user;
+        } else {
+          this._logger.warn(
+            `User not found in database for sub: ${payload.sub}. Token is valid but user record doesn't exist.`
+          );
         }
       } catch (e) {
-        this._logger.error(e);
+        this._logger.error(`Error looking up user with sub ${payload.sub}:`, e);
       }
+    } else {
+      this._logger.warn("Token payload missing 'sub' claim");
     }
+    // Return payload if user not found - this will cause issues downstream but allows debugging
     return payload;
   }
 
