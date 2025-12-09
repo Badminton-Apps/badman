@@ -19,6 +19,8 @@ const {
   createDrawCompetition,
   createOpponentTeam,
   createEncounters,
+  PlayerFactory,
+  addRankingToPlayer,
 } = require("./utils/dist");
 
 /** @type {import('sequelize-cli').Seeder} */
@@ -33,6 +35,7 @@ module.exports = {
     const lastName = process.env.SEED_LAST_NAME || "User";
     const memberId = process.env.SEED_MEMBER_ID || `TEST-${Date.now()}`;
     const gender = process.env.SEED_GENDER || "M";
+    const sub = process.env.SEED_USER_AUTH0_SUB || "";
 
     console.log(`🚀 Starting seed for user: ${userEmail}\n`);
 
@@ -53,46 +56,28 @@ module.exports = {
           firstName,
           lastName,
           memberId,
-          gender
+          gender,
+          true, // competitionPlayer,
+          sub
         );
+
+        // Add ranking to user player
+        await addRankingToPlayer(ctx, user.id);
 
         // Create first club (user's club)
         const clubId = await createClub(ctx, "TEAM AWESOME");
 
         // Create additional players for TEAM AWESOME (need 5 total, user is 1, so create 4 more)
         const teamAwesomePlayers = [user];
-        const teamAwesomePlayerData = [
-          {
-            firstName: "Alice",
-            lastName: "Johnson",
-            email: "alice.johnson@teamawesome.com",
-            gender: "F",
-          },
-          { firstName: "Bob", lastName: "Smith", email: "bob.smith@teamawesome.com", gender: "M" },
-          {
-            firstName: "Charlie",
-            lastName: "Brown",
-            email: "charlie.brown@teamawesome.com",
-            gender: "M",
-          },
-          {
-            firstName: "Diana",
-            lastName: "Williams",
-            email: "diana.williams@teamawesome.com",
-            gender: "F",
-          },
-        ];
+        const additionalPlayers = await PlayerFactory.createForTeam(ctx, "TEAM AWESOME", 4, {
+          gender: "mixed",
+          domain: "teamawesome.com",
+          prefix: "TEST-AWESOME",
+          baseIndex: 0,
+        });
 
-        for (let i = 0; i < teamAwesomePlayerData.length; i++) {
-          const playerData = teamAwesomePlayerData[i];
-          const player = await findOrCreatePlayer(
-            ctx,
-            playerData.email,
-            playerData.firstName,
-            playerData.lastName,
-            `TEST-AWESOME-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}`,
-            playerData.gender
-          );
+        // Add all additional players to club
+        for (const player of additionalPlayers) {
           teamAwesomePlayers.push(player);
           await addPlayerToClub(ctx, clubId, player.id);
         }
@@ -126,41 +111,15 @@ module.exports = {
         const opponentClubId = await createClub(ctx, "THE OPPONENTS");
 
         // Create players for THE OPPONENTS (need 5 players)
-        const opponentPlayers = [];
-        const opponentPlayerData = [
-          { firstName: "Eve", lastName: "Davis", email: "eve.davis@opponents.com", gender: "F" },
-          {
-            firstName: "Frank",
-            lastName: "Miller",
-            email: "frank.miller@opponents.com",
-            gender: "M",
-          },
-          {
-            firstName: "Grace",
-            lastName: "Wilson",
-            email: "grace.wilson@opponents.com",
-            gender: "F",
-          },
-          {
-            firstName: "Henry",
-            lastName: "Moore",
-            email: "henry.moore@opponents.com",
-            gender: "M",
-          },
-          { firstName: "Ivy", lastName: "Taylor", email: "ivy.taylor@opponents.com", gender: "F" },
-        ];
+        const opponentPlayers = await PlayerFactory.createForTeam(ctx, "THE OPPONENTS", 5, {
+          gender: "mixed",
+          domain: "opponents.com",
+          prefix: "TEST-OPPONENTS",
+          baseIndex: 4, // Start from index 4 to avoid name collisions
+        });
 
-        for (let i = 0; i < opponentPlayerData.length; i++) {
-          const playerData = opponentPlayerData[i];
-          const player = await findOrCreatePlayer(
-            ctx,
-            playerData.email,
-            playerData.firstName,
-            playerData.lastName,
-            `TEST-OPPONENTS-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}`,
-            playerData.gender
-          );
-          opponentPlayers.push(player);
+        // Add all players to opponent club
+        for (const player of opponentPlayers) {
           await addPlayerToClub(ctx, opponentClubId, player.id);
         }
 
@@ -350,15 +309,61 @@ module.exports = {
           "Deleted clubs"
         );
 
-        console.log("📍 Step 3.9: Deleting test players...\n");
-        // Delete test players (all players with TEST- memberId or test emails)
-        await safeDelete(
-          `DELETE FROM "Players" 
+        console.log("📍 Step 3.9: Finding test players before cleanup...\n");
+        // Find test players first to get their IDs for ranking cleanup
+        const testPlayers = await sequelize.query(
+          `SELECT id FROM "Players" 
            WHERE ("memberId" LIKE 'TEST-%' OR email LIKE '%@teamawesome.com' OR email LIKE '%@opponents.com')
            AND (email = :userEmail OR "memberId" LIKE 'TEST-%')`,
-          { userEmail },
-          "Deleted test players"
+          {
+            replacements: { userEmail },
+            type: Sequelize.QueryTypes.SELECT,
+          }
         );
+        console.log(`📍 Found ${testPlayers?.length || 0} test players\n`);
+
+        if (testPlayers && testPlayers.length > 0) {
+          const playerIds = testPlayers.map((p) => p.id);
+          const playerPlaceholders = playerIds.map((_, index) => `:playerId${index}`).join(", ");
+          const playerReplacements = playerIds.reduce((acc, id, index) => {
+            acc[`playerId${index}`] = id;
+            return acc;
+          }, {});
+
+          console.log("📍 Step 3.9.1: Deleting ranking points...\n");
+          // Delete ranking points for test players
+          await safeDelete(
+            `DELETE FROM ranking."RankingPoints" WHERE "playerId" IN (${playerPlaceholders})`,
+            playerReplacements,
+            "Deleted ranking points"
+          );
+
+          console.log("📍 Step 3.9.2: Deleting ranking places...\n");
+          // Delete ranking places for test players
+          await safeDelete(
+            `DELETE FROM ranking."RankingPlaces" WHERE "playerId" IN (${playerPlaceholders})`,
+            playerReplacements,
+            "Deleted ranking places"
+          );
+
+          console.log("📍 Step 3.9.3: Deleting ranking last places...\n");
+          // Delete ranking last places for test players
+          await safeDelete(
+            `DELETE FROM ranking."RankingLastPlaces" WHERE "playerId" IN (${playerPlaceholders})`,
+            playerReplacements,
+            "Deleted ranking last places"
+          );
+
+          console.log("📍 Step 3.9.4: Deleting test players...\n");
+          // Delete test players
+          await safeDelete(
+            `DELETE FROM "Players" WHERE id IN (${playerPlaceholders})`,
+            playerReplacements,
+            "Deleted test players"
+          );
+        } else {
+          console.log("ℹ️  No test players found to delete\n");
+        }
 
         console.log("\n✅ Cleanup completed successfully!");
       } else {

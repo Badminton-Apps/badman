@@ -9,6 +9,7 @@ export interface Player {
   lastName: string;
   memberId?: string;
   gender?: string;
+  competitionPlayer?: boolean;
 }
 
 export interface Club {
