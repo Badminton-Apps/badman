@@ -2,10 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = void 0;
 const error_handler_1 = require("./error-handler");
+const team_helpers_1 = require("./team-helpers");
 /**
  * Find or create a player
  */
-async function findOrCreatePlayer(ctx, userEmail, firstName, lastName, memberId, gender) {
+async function findOrCreatePlayer(ctx, userEmail, firstName, lastName, memberId, gender, competitionPlayer, sub) {
     // Check if user already exists
     // Note: QueryTypes.SELECT returns the array directly, not [results, metadata]
     const existingUsers = await ctx.query(`SELECT id, email, "firstName", "lastName" FROM "Players" WHERE email = :email LIMIT 1`, { email: userEmail });
@@ -16,14 +17,16 @@ async function findOrCreatePlayer(ctx, userEmail, firstName, lastName, memberId,
     }
     // Create new player
     console.log("👤 Creating new player...");
-    const user = await ctx.insert(`INSERT INTO "Players" (email, "firstName", "lastName", "memberId", gender, "createdAt", "updatedAt")
-     VALUES (:email, :firstName, :lastName, :memberId, :gender, NOW(), NOW())
+    const user = await ctx.insert(`INSERT INTO "Players" (email, "firstName", "lastName", "memberId", gender, "createdAt", "updatedAt", "competitionPlayer", "sub")
+     VALUES (:email, :firstName, :lastName, :memberId, :gender, NOW(), NOW(),:competitionPlayer, :sub)
      RETURNING id, email, "firstName", "lastName"`, {
         email: userEmail,
         firstName,
         lastName,
         memberId,
         gender,
+        competitionPlayer,
+        sub,
     });
     console.log(`✅ Created new player: ${user.firstName} ${user.lastName} (${user.email})\n`);
     return user;
@@ -53,11 +56,8 @@ async function createClub(ctx, clubName) {
  */
 async function addPlayerToClub(ctx, clubId, playerId) {
     // Check if membership already exists
-    // Note: QueryTypes.SELECT returns the array directly, not [results, metadata]
-    const existing = await ctx.query(`SELECT id FROM "ClubPlayerMemberships" 
-     WHERE "clubId" = :clubId AND "playerId" = :playerId AND "end" IS NULL
-     LIMIT 1`, { clubId, playerId });
-    if (existing && existing.length > 0) {
+    const existing = await (0, team_helpers_1.hasActiveMembership)(ctx, "ClubPlayerMemberships", `"clubId" = :clubId AND "playerId" = :playerId`, { clubId, playerId });
+    if (existing) {
         console.log(`ℹ️  Player already has an active membership with this club\n`);
         return;
     }
@@ -66,12 +66,10 @@ async function addPlayerToClub(ctx, clubId, playerId) {
      VALUES (:clubId, :playerId, NOW(), true, 'NORMAL', NOW(), NOW())
      RETURNING id`, {
         replacements: { clubId, playerId },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         type: ctx.QueryTypes.INSERT,
         transaction: ctx.transaction,
     });
     const result = queryResult[0];
-    console.log("🔍 result:", result);
     // Verify the insert succeeded
     if (!result || !result[0] || !result[0].id) {
         throw new Error("Failed to insert ClubPlayerMembership - no ID returned");
@@ -83,65 +81,27 @@ async function addPlayerToClub(ctx, clubId, playerId) {
  */
 async function createTeam(ctx, clubId, season, captainId) {
     console.log("👥 Creating Team...");
-    // Check if team already exists - wrap in try-catch to catch any errors
-    let existing = null;
-    console.log(`🔍 Checking for existing team: clubId=${clubId}, season=${season}, type=M, teamNumber=1`);
-    // First verify transaction is still valid
-    await ctx.verifyTransaction();
-    console.log("✅ Transaction valid before team check\n");
-    try {
-        // Note: QueryTypes.SELECT returns the array directly, not [results, metadata]
-        existing = await ctx.query(`SELECT id FROM "Teams" 
-       WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
-       LIMIT 1`, { clubId, season, type: "M" });
-        console.log(`🔍 Existing team check result:`, existing);
-        console.log(`🔍 Existing is array:`, Array.isArray(existing));
-        console.log(`🔍 Existing length:`, existing?.length);
-        // Verify transaction is still valid after check query
-        await ctx.verifyTransaction();
-        console.log("✅ Transaction valid after team check\n");
-    }
-    catch (checkErr) {
-        const err = checkErr;
-        console.error("❌ Error checking for existing team:");
-        console.error("  Message:", err.message);
-        console.error("  Code:", err.parent?.code);
-        console.error("  Detail:", err.parent?.detail);
-        console.error("  Constraint:", err.parent?.constraint);
-        console.error("  SQL:", err.sql);
-        console.error("  Full error:", JSON.stringify(err, null, 2));
-        throw err; // Re-throw to abort transaction properly
-    }
+    // Check if team already exists
+    const existing = await ctx.query(`SELECT id FROM "Teams" 
+     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
+     LIMIT 1`, { clubId, season, type: "M" });
     if (existing && existing.length > 0 && existing[0]) {
         console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
         return existing[0].id;
     }
-    // Fetch club name to generate team name
-    // Note: QueryTypes.SELECT returns the array directly, not [results, metadata]
-    const clubData = await ctx.query(`SELECT name, abbreviation FROM "Clubs" WHERE id = :clubId LIMIT 1`, { clubId });
-    if (!clubData || clubData.length === 0) {
-        throw new Error(`Club with id ${clubId} not found`);
-    }
-    const club = clubData[0];
-    const teamNumber = 1;
-    const type = "M";
-    const letter = "H"; // getLetterForRegion("M", "vl") returns "H"
-    // Generate team name from club name
-    const teamName = `${club.name} ${teamNumber}${letter}`;
-    const abbreviation = `${club.abbreviation} ${teamNumber}${letter}`;
-    console.log(`🔍 Generated team name: ${teamName}`);
-    console.log(`🔍 Generated abbreviation: ${abbreviation}`);
+    // Fetch club and generate team name
+    const club = await (0, team_helpers_1.getClubById)(ctx, clubId);
+    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, "M", "H");
     const team = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
      VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
-        type,
+        type: "M",
         season,
         captainId,
         name: teamName,
         abbreviation,
     });
-    console.log("🔍 teamResult:", team);
     const teamId = team.id;
     console.log(`✅ Created Team (${teamId})\n`);
     return teamId;
@@ -151,16 +111,11 @@ async function createTeam(ctx, clubId, season, captainId) {
  */
 async function addPlayerToTeam(ctx, teamId, playerId) {
     // Check if membership already exists
-    // Note: QueryTypes.SELECT returns the array directly, not [results, metadata]
-    const existingMemberships = await ctx.query(`SELECT id FROM "TeamPlayerMemberships" 
-     WHERE "teamId" = :teamId AND "playerId" = :playerId AND "end" IS NULL
-     LIMIT 1`, { teamId, playerId });
-    if (existingMemberships && existingMemberships.length > 0) {
+    const existing = await (0, team_helpers_1.hasActiveMembership)(ctx, "TeamPlayerMemberships", `"teamId" = :teamId AND "playerId" = :playerId`, { teamId, playerId });
+    if (existing) {
         console.log(`ℹ️  Player already has an active membership with this team\n`);
         return;
     }
-    // Note: TeamPlayerMemberships doesn't have an 'active' column
-    // It only has: id, playerId, teamId, membershipType, start, end
     await ctx.rawQuery(`INSERT INTO "TeamPlayerMemberships" ("teamId", "playerId", "start", "membershipType", "createdAt", "updatedAt")
      VALUES (:teamId, :playerId, NOW(), 'REGULAR', NOW(), NOW())`, { teamId, playerId });
     console.log(`✅ Added user to team\n`);
@@ -220,26 +175,14 @@ async function createDrawCompetition(ctx, subEventId, season) {
  */
 async function createOpponentTeam(ctx, clubId, season) {
     console.log("👥 Creating opponent Team...");
-    // Fetch club name to generate team name
-    // Note: QueryTypes.SELECT returns the array directly, not [results, metadata]
-    const clubData = await ctx.query(`SELECT name, abbreviation FROM "Clubs" WHERE id = :clubId LIMIT 1`, { clubId });
-    if (!clubData || clubData.length === 0) {
-        throw new Error(`Club with id ${clubId} not found`);
-    }
-    const club = clubData[0];
-    const teamNumber = 1; // Opponent team is team number 1 (first team of opponent club)
-    const type = "M";
-    const letter = "H"; // getLetterForRegion("M", "vl") returns "H"
-    // Generate team name from club name
-    const teamName = `${club.name} ${teamNumber}${letter}`;
-    const abbreviation = `${club.abbreviation} ${teamNumber}${letter}`;
-    console.log(`🔍 Generated opponent team name: ${teamName}`);
-    console.log(`🔍 Generated opponent abbreviation: ${abbreviation}`);
+    // Fetch club and generate team name
+    const club = await (0, team_helpers_1.getClubById)(ctx, clubId);
+    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, "M", "H");
     const opponentTeam = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
      VALUES (:clubId, :type, :season, 1, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
-        type,
+        type: "M",
         season,
         name: teamName,
         abbreviation,
