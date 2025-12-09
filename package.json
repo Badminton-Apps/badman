@@ -21,6 +21,7 @@
     "run:belgium-flanders-places": "node ./dist/apps/worker/belgium/flanders/places/main.js",
     "run:belgium-flanders-points": "node ./dist/apps/worker/belgium/flanders/points/main.js",
     "run:ranking": "concurrently \"bun run run:worker\" \"bun run run:belgium-flanders-places\" \"bun run run:belgium-flanders-points\"",
+    "seed:build-utils": "tsc --project database/seeders/utils/tsconfig.json",
     "seed:test-data": "npx sequelize-cli db:seed --seed 20250101000000-seed-test-data.js",
     "seed:test-data:undo": "npx sequelize-cli db:seed:undo --seed 20250101000000-seed-test-data.js",
     "seed:all": "npx sequelize-cli db:seed:all",
