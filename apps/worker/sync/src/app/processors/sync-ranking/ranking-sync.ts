@@ -328,6 +328,11 @@ export class RankingSyncer {
       { name: "GD D/DX D", type: "mix", gender: "F", description: "Mixed Doubles (Women)" },
     ];
 
+    // Precompute category map for O(1) lookups instead of O(n) find() calls
+    const categoryMap = new Map<string, string>(
+      (categories || []).map((category) => [category.name, category.code])
+    );
+
     const pointsForCategory = async (
       publication: VisualPublication,
       category: string | null,
@@ -449,7 +454,7 @@ export class RankingSyncer {
       this.logger.debug(`Getting ${config.description} for ${publication.date.format("LLL")}`);
       await pointsForCategory(
         publication,
-        categories?.find((category) => category.name === config.name)?.code ?? null,
+        categoryMap.get(config.name) ?? null,
         rankingPlaces,
         newPlayers,
         config.type as Ranking,
