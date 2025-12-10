@@ -4,7 +4,6 @@ import { VisualService } from "@badman/backend-visual";
 import { RankingSystems, Ranking, Gender } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { Queue } from "bull";
-import { XMLParser } from "fast-xml-parser";
 
 import moment, { Moment } from "moment";
 import { Op, Transaction, Sequelize } from "sequelize";
@@ -43,15 +42,12 @@ export class RankingSyncer {
   readonly STEP_REMOVED = "removed";
   readonly STEP_QUEUE = "queue";
 
-  readonly xmlParser: XMLParser;
-
   constructor(
     private readonly _visualService: VisualService,
     private readonly rankingQ: Queue,
     private readonly _sequelize: Sequelize
   ) {
     this.processor = new Processor(undefined, { logger: this.logger });
-    this.xmlParser = new XMLParser();
 
     this.processor.addStep(this.getRankings());
     this.processor.addStep(this.getCategories());
@@ -169,16 +165,16 @@ export class RankingSyncer {
             date: momentDate,
           } as VisualPublication;
         });
-      pubs = pubs?.slice()?.sort((a, b) => a.date.diff(b.date));
+      pubs = [...(pubs || [])].sort((a, b) => a.date.diff(b.date));
 
       // get latest publication
-      const last = pubs?.slice(-1)?.[0];
+      const last = pubs?.at(-1);
       if (last) {
         // store the latest publication in the calculationLastUpdate
         ranking.system.calculationLastUpdate = last.date.toDate();
       }
 
-      const lastUpdate = pubs?.filter((r) => r.usedForUpdate)?.slice(-1)?.[0];
+      const lastUpdate = pubs?.filter((r) => r.usedForUpdate)?.at(-1);
       if (lastUpdate) {
         // store the latest publication in the calculationLastUpdate
         ranking.system.updateLastUpdate = lastUpdate.date.toDate();
@@ -197,177 +193,6 @@ export class RankingSyncer {
             return momentDate;
           }),
       };
-    });
-  }
-
-  protected getPoints(): ProcessStep {
-    return new ProcessStep(this.STEP_POINTS, async (args: { transaction: Transaction }) => {
-      const ranking = this.processor.getData<RankingStepData>(this.STEP_RANKING);
-
-      const { visiblePublications } =
-        this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ?? {};
-
-      const categories = this.processor.getData<CategoriesStepData[]>(this.STEP_CATEGORIES);
-
-      if (!ranking?.visualCode) {
-        throw new Error("No ranking found");
-      }
-
-      const pointsForCategory = async (
-        publication: VisualPublication,
-        category: string | null,
-        places: Map<string, RankingPlace>,
-        newPlayers: Map<string, Player>,
-        type: Ranking,
-        gender: Gender
-      ) => {
-        if (!category) {
-          this.logger.error(`No category defined?`);
-
-          return;
-        }
-
-        const rankingPoints = await this._visualService.getPoints(
-          ranking.visualCode,
-          publication.code,
-          category
-        );
-
-        const memberIds = rankingPoints?.map(
-          (points) => correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
-        );
-
-        this.logger.debug(
-          `Getting ${memberIds?.length} players for ${publication.name} ${type} ${gender}`
-        );
-
-        const players = await Player.findAll({
-          attributes: ["id", "memberId"],
-          where: {
-            memberId: {
-              [Op.in]: memberIds,
-            },
-          },
-          include: [
-            {
-              required: false,
-              model: RankingLastPlace,
-              where: {
-                systemId: ranking.system.id,
-              },
-              attributes: ["id", "systemId", "single", "double", "mix"],
-            },
-          ],
-          transaction: args.transaction,
-        });
-
-        for (const points of rankingPoints ?? []) {
-          const memberId = correctWrongPlayers({
-            memberId: `${points.Player1.MemberID}`,
-          }).memberId;
-          let foundPlayer = players.find((p) => p.memberId === memberId);
-
-          if (!memberId) {
-            this.logger.error(
-              `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`
-            );
-            continue;
-          }
-
-          if (foundPlayer == null) {
-            foundPlayer = newPlayers.get(memberId);
-          }
-
-          if (foundPlayer == null) {
-            this.logger.log("New player");
-            const [firstName, ...lastName] = points.Player1.Name.split(" ").filter(Boolean);
-
-            foundPlayer = new Player(
-              correctWrongPlayers({
-                memberId,
-                firstName,
-                lastName: lastName.join(" "),
-                gender,
-              })
-            );
-            players.push(foundPlayer);
-
-            if (!foundPlayer.memberId) {
-              this.logger.error(
-                `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`
-              );
-              continue;
-            }
-
-            newPlayers.set(foundPlayer.memberId, foundPlayer);
-          }
-
-          if (!foundPlayer.id) {
-            this.logger.error(`No id found for ${points.Player1.Name} ${points.Player1.MemberID}`);
-            continue;
-          }
-
-          // Check if other publication has create the ranking place
-          if (places.has(foundPlayer.id)) {
-            const place = places.get(foundPlayer.id);
-            place[type] = points.Level;
-            place[`${type}Points`] = points.Totalpoints;
-            place[`${type}Rank`] = points.Rank;
-          } else {
-            const place = new RankingPlace({
-              updatePossible: publication.usedForUpdate,
-              playerId: foundPlayer.id,
-              rankingDate: publication.date.toDate(),
-              [type]: points.Level,
-              [`${type}Points`]: points.Totalpoints,
-              [`${type}Rank`]: points.Rank,
-              systemId: ranking.system.id,
-              gender,
-            });
-
-            places.set(foundPlayer.id, place);
-          }
-        }
-      };
-
-      // Process publications in smaller batches to prevent memory issues
-      const publicationsToProcess =
-        visiblePublications?.filter(
-          (publication) =>
-            publication.date.isAfter(ranking.startDate) &&
-            (!ranking.stopDate || publication.date.isBefore(ranking.stopDate))
-        ) ?? [];
-
-      this.logger.log(`Processing ${publicationsToProcess.length} publications`);
-
-      for (const publication of publicationsToProcess) {
-        try {
-          // Process publications one at a time to manage memory
-          this.logger.log(
-            `Processing publication ${publication.name} (${publication.date.format("YYYY-MM-DD")}) - ${publicationsToProcess.indexOf(publication) + 1}/${publicationsToProcess.length}`
-          );
-
-          if (publication.usedForUpdate) {
-            this.logger.log(
-              `This publication will update rankings: ${publication.date.format("LLL")}`
-            );
-          }
-
-          // Process this single publication completely before moving to next
-          await this.processSinglePublication(publication, categories, ranking, args.transaction);
-
-          // Force garbage collection after each publication
-          if (global.gc) {
-            global.gc();
-          }
-
-          // Add delay between publications to allow memory cleanup
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        } catch (error) {
-          this.logger.error(`Failed to process publication ${publication.name}:`, error);
-          throw error;
-        }
-      }
     });
   }
 
@@ -432,24 +257,23 @@ export class RankingSyncer {
     }
 
     // Process publications in smaller batches to prevent memory issues
-    const publicationsToProcess =
-      visiblePublications?.filter(
-        (publication) =>
-          publication.date.isAfter(ranking.startDate) &&
-          (!ranking.stopDate || publication.date.isBefore(ranking.stopDate))
-      ) ?? [];
+    const publicationsToProcess = (visiblePublications || []).filter(
+      (publication) =>
+        publication.date.isAfter(ranking.startDate) &&
+        (!ranking.stopDate || publication.date.isBefore(ranking.stopDate))
+    );
 
     this.logger.log(
       `Processing ${publicationsToProcess.length} publications with separate transactions`
     );
 
-    for (const publication of publicationsToProcess) {
+    for (const [index, publication] of publicationsToProcess.entries()) {
       // Create a separate transaction for each publication
       const publicationTransaction = await this._sequelize.transaction();
 
       try {
         this.logger.log(
-          `Processing publication ${publication.name} (${publication.date.format("YYYY-MM-DD")}) - ${publicationsToProcess.indexOf(publication) + 1}/${publicationsToProcess.length}`
+          `Processing publication ${publication.name} (${publication.date.format("YYYY-MM-DD")}) - ${index + 1}/${publicationsToProcess.length}`
         );
 
         if (publication.usedForUpdate) {
@@ -697,9 +521,9 @@ export class RankingSyncer {
 
       // For now we only check if it's the last update
 
-      const lastPublication = visiblePublications
-        .slice()
-        ?.sort((a, b) => b.date.valueOf() - a.date.valueOf())?.[0];
+      const lastPublication = [...(visiblePublications || [])].sort(
+        (a, b) => b.date.valueOf() - a.date.valueOf()
+      )?.[0];
 
       if (lastPublication == null) {
         return;
