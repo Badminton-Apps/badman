@@ -347,8 +347,10 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
   // Gets the current ranking for a player, in a given system.
   // Prefers the last ranking place if available, otherwise uses the ranking place.
   async getCurrentRanking(system: string): Promise<RankingPlace | RankingLastPlace | null> {
-    if (!this.rankingPlaces && !this.rankingLastPlaces) {
-      return null;
+    // Load last places if not loaded
+    if (!this.rankingLastPlaces) {
+      const places = await this.getRankingLastPlaces();
+      this.rankingLastPlaces = places;
     }
 
     const lastPlacesInRequestedSystem = (this.rankingLastPlaces ?? []).filter(
