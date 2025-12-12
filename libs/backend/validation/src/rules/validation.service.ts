@@ -249,6 +249,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     // fetch data using cache
     const data = await this.getCachedData(args);
 
+    console.log("DATA FOR ASSEMBLY:", data);
     // get all errors and warnings from the validators in parallel
     const results = await Promise.all(validators.map((v) => v.validate(data)));
 

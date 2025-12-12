@@ -460,15 +460,21 @@ export class AssemblyValidationService extends ValidationService<
         console.log("Ranking single:", ranking?.single);
         console.log("Ranking double:", ranking?.double);
         console.log("Ranking mix:", ranking?.mix);
-        return {
+        const data = {
           id: p.id,
           gender: p.gender,
           single: ranking?.single ?? system.amountOfLevels,
           double: ranking?.double ?? system.amountOfLevels,
           mix: ranking?.mix ?? system.amountOfLevels,
         };
+
+        console.log("DATA:", data);
+        return data;
       })
     );
+
+    console.log("TITULARS TEAM:", titularsTeam);
+    console.log(titularsTeam.players);
 
     return {
       type: team.type,

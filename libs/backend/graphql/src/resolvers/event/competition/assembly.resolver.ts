@@ -46,11 +46,13 @@ export class AssemblyResolver {
 
     return p
       .map((player) => {
-        const place = getRankingProtected(
-          assembly.titularsPlayerData?.find((p) => p.id === player.id)?.rankingPlaces?.[0] ??
-            ({} as RankingPlace),
-          system
-        );
+        const playerData = assembly.titularsPlayerData?.find((p) => p.id === player.id);
+
+        const rankingLastPlace = playerData?.rankingLastPlaces?.[0] ?? ({} as RankingPlace);
+        const rankingPlace = playerData?.rankingPlaces?.[0] ?? ({} as RankingPlace);
+        const ranking = rankingLastPlace ?? rankingPlace;
+
+        const place = getRankingProtected(ranking, system);
 
         return {
           ...player.toJSON(),
