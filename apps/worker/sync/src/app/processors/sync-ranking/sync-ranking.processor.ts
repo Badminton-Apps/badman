@@ -20,7 +20,7 @@ export class SyncRankingProcessor {
     visualService: VisualService,
     @InjectQueue(SyncQueue) readonly rankingQ: Queue
   ) {
-    this._rankingSync = new RankingSyncer(visualService, rankingQ);
+    this._rankingSync = new RankingSyncer(visualService, rankingQ, _sequelize);
   }
 
   @Process({
@@ -28,7 +28,8 @@ export class SyncRankingProcessor {
   })
   async syncRanking(
     job: Job<{
-      start: string;
+      start?: string;
+      stop?: string;
     }>
   ): Promise<void> {
     this.logger.debug(`Syncing Ranking, data: ${JSON.stringify(job.data)}`);
@@ -55,10 +56,20 @@ export class SyncRankingProcessor {
     await cronJob.save();
 
     try {
-      await this._rankingSync.process({
+      // Convert string dates to Date objects
+      const processArgs: { transaction: any; start?: Date; stop?: Date } = {
         transaction,
-        ...job.data,
-      });
+      };
+
+      if (job.data.start) {
+        processArgs.start = new Date(job.data.start);
+      }
+
+      if (job.data.stop) {
+        processArgs.stop = new Date(job.data.stop);
+      }
+
+      await this._rankingSync.process(processArgs);
 
       this.logger.debug("Commiting");
 
