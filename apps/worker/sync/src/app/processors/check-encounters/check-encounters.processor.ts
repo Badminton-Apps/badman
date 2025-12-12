@@ -150,13 +150,17 @@ export class CheckEncounterProcessor {
         let chunksProcessed = 0;
         for (const chunk of chunks) {
           this.logger.debug(
-            `Processing cthunk of ${chunk.length} encounters, ${
+            `Processing chunk of ${chunk.length} encounters, ${
               encounters.count - encountersProcessed
-            } encounter left, ${chunks.length - chunksProcessed} chunks left`
+            } encounters left, ${chunks.length - chunksProcessed} chunks left`
           );
-          // Close browser if any
-          if (page) {
-            await page.close();
+          // Close page from previous chunk if any
+          if (page && !page.isClosed()) {
+            try {
+              await page.close();
+            } catch (e) {
+              this.logger.debug("Error closing previous page:", e.message);
+            }
           }
 
           page = await getPage();
@@ -178,7 +182,6 @@ export class CheckEncounterProcessor {
             encountersProcessed++;
           }
 
-          await page.close();
           chunksProcessed++;
         }
       } else {
@@ -262,8 +265,6 @@ export class CheckEncounterProcessor {
 
       // Processing encounters
       await this._syncEncounter(encounter, page);
-
-      await page.close();
     } catch (error) {
       this.logger.error(error);
     } finally {
