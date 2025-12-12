@@ -262,26 +262,9 @@ export class RankingPlace extends Model {
       instances = [instances];
     }
 
-    const shouldLogByInstances = instances.some(
-      (r) => r.playerId === "27f04f1f-4e59-4ea1-ab22-29c184de26c3"
-    );
-    if (shouldLogByInstances) {
-      const filteredInstances = instances.filter(
-        (r) => r.playerId === "27f04f1f-4e59-4ea1-ab22-29c184de26c3"
-      );
-      console.log("filteredInstances", JSON.stringify(filteredInstances.map((r) => r.toJSON())));
-    }
-
     const instancesToCheck = instances.filter(
       (r) => r && r?.playerId && r?.systemId && r?.rankingDate
     );
-    if (shouldLogByInstances) {
-      const filteredInstances = instancesToCheck.filter(
-        (r) => r.playerId === "27f04f1f-4e59-4ea1-ab22-29c184de26c3"
-      );
-      console.log("instancesToCheck", JSON.stringify(filteredInstances.map((r) => r.toJSON())));
-      console.log(" -------------------------------- ");
-    }
 
     await this.updateLatestRankings(instancesToCheck, options, "create");
   }
@@ -335,7 +318,6 @@ export class RankingPlace extends Model {
       const filter: {
         playerId?: string;
         systemId?: string;
-        rankingDate?: unknown;
       } = {
         playerId: r.playerId,
         systemId: r.systemId,
@@ -344,13 +326,6 @@ export class RankingPlace extends Model {
       return filter;
     });
 
-    const shouldLogByFilter = whereOr.some(
-      (w) => w.playerId === "27f04f1f-4e59-4ea1-ab22-29c184de26c3"
-    );
-    if (shouldLogByFilter) {
-      console.log(`shouldLogByFilter: ${shouldLogByFilter}`, " -------------------------------- ");
-    }
-
     // Find where the last ranking place is not the same as the current one
     const current = await RankingLastPlace.findAll({
       where: {
@@ -358,21 +333,6 @@ export class RankingPlace extends Model {
       },
       transaction: options.transaction,
     });
-
-    const shouldLogByCurrent = current.some(
-      (c) => c.playerId === "27f04f1f-4e59-4ea1-ab22-29c184de26c3"
-    );
-    if (shouldLogByCurrent) {
-      console.log(
-        "current",
-        JSON.stringify(
-          current
-            .filter((c) => c.playerId === "27f04f1f-4e59-4ea1-ab22-29c184de26c3")
-            .map((c) => c.toJSON())
-        )
-      );
-      console.log(" -------------------------------- ");
-    }
 
     // Filter out if the last ranking is not newer than the current one
     const updateInstances =
@@ -383,16 +343,7 @@ export class RankingPlace extends Model {
               current.findIndex((c) => c.playerId === l.playerId && c.systemId === l.systemId) > -1
           );
 
-    // // Update the last ranking place
-    // const filteredInstances = updateInstances?.filter((x) => {
-    //   if (x.single === undefined || x.double === undefined || x.mix === undefined) {
-    //     return false;
-    //   }
-    //   return true;
-    // });
-
     for (const instance of updateInstances || []) {
-      const shouldLog = instance.playerId === "27f04f1f-4e59-4ea1-ab22-29c184de26c3";
       const [lastPlace, created] = await RankingLastPlace.findOrCreate({
         where: {
           playerId: instance.playerId,
@@ -402,23 +353,12 @@ export class RankingPlace extends Model {
         transaction: options.transaction,
       });
 
-      if (shouldLog) {
-        console.log("lastPlace", lastPlace.toJSON());
-        console.log("instance", JSON.stringify(instance));
-        console.log("created", created);
-      }
-
       if (!created) {
         if (
           !lastPlace.rankingDate ||
           !instance.rankingDate ||
           new Date(instance.rankingDate) >= new Date(lastPlace.rankingDate)
         ) {
-          if (shouldLog) {
-            console.log("updating lastPlace", lastPlace.toJSON());
-            console.log("instance", JSON.stringify(instance));
-            console.log(" -------------------------------- ");
-          }
           const updateInstance = Object.fromEntries(
             Object.entries(instance).filter(([_, value]) => value !== undefined && value !== null)
           );
