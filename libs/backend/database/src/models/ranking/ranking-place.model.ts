@@ -257,15 +257,16 @@ export class RankingPlace extends Model {
     instances: RankingPlace[] | RankingPlace,
     options: SaveOptions
   ) {
+    console.log("updateLatestRankingsCreate called");
     if (!Array.isArray(instances)) {
       instances = [instances];
     }
 
-    await this.updateLatestRankings(
-      instances.filter((r) => r && r?.playerId && r?.systemId && r?.rankingDate),
-      options,
-      "create"
+    const instancesToCheck = instances.filter(
+      (r) => r && r?.playerId && r?.systemId && r?.rankingDate
     );
+
+    await this.updateLatestRankings(instancesToCheck, options, "create");
   }
 
   @AfterDestroy
@@ -317,11 +318,9 @@ export class RankingPlace extends Model {
       const filter: {
         playerId?: string;
         systemId?: string;
-        rankingDate?: unknown;
       } = {
         playerId: r.playerId,
         systemId: r.systemId,
-        rankingDate: { [Op.lte]: r.rankingDate?.toISOString() },
       };
 
       return filter;
@@ -344,15 +343,7 @@ export class RankingPlace extends Model {
               current.findIndex((c) => c.playerId === l.playerId && c.systemId === l.systemId) > -1
           );
 
-    // Update the last ranking place
-    const filteredInstances = updateInstances?.filter((x) => {
-      if (x.single === undefined || x.double === undefined || x.mix === undefined) {
-        return false;
-      }
-      return true;
-    });
-
-    for (const instance of filteredInstances || []) {
+    for (const instance of updateInstances || []) {
       const [lastPlace, created] = await RankingLastPlace.findOrCreate({
         where: {
           playerId: instance.playerId,
@@ -363,7 +354,16 @@ export class RankingPlace extends Model {
       });
 
       if (!created) {
-        await lastPlace.update(instance, { transaction: options.transaction });
+        if (
+          !lastPlace.rankingDate ||
+          !instance.rankingDate ||
+          new Date(instance.rankingDate) >= new Date(lastPlace.rankingDate)
+        ) {
+          const updateInstance = Object.fromEntries(
+            Object.entries(instance).filter(([_, value]) => value !== undefined && value !== null)
+          );
+          await lastPlace.update(updateInstance, { transaction: options.transaction });
+        }
       }
     }
   }
