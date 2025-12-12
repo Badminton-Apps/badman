@@ -51,9 +51,14 @@ export class PermGuard implements CanActivate {
     try {
       const payload = await this.validateToken(token);
 
+      if (!payload) {
+        throw new UnauthorizedException("Invalid token");
+      }
+
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request["user"] = await this.validateUser(payload);
+      const user = await this.validateUser(payload);
+      request["user"] = user;
     } catch (e) {
       this._logger.error("Invalid token", e);
       throw new UnauthorizedException();
@@ -67,34 +72,41 @@ export class PermGuard implements CanActivate {
   }
 
   async validateUser(payload: { sub?: string }) {
-    if (payload.sub) {
-      try {
-        const user = await Player.findOne({
-          where: { sub: payload.sub },
-        });
-        if (user) {
-          return user;
-        }
-      } catch (e) {
-        this._logger.error(e);
-      }
+    if (!payload || !payload.sub) {
+      return payload;
     }
+
+    try {
+      const user = await Player.findOne({
+        where: { sub: payload.sub },
+      });
+
+      if (user) return user;
+    } catch (e) {
+      this._logger.error(`Error looking up user with sub "${payload.sub}":`, e);
+    }
+
+    // Return payload if user not found - this will cause issues downstream but allows debugging
     return payload;
   }
 
   async validateToken(token: string) {
     try {
       const publicKey = await this.getPublicKey();
+      const audience = this.configService.get("AUTH0_AUDIENCE");
+      const issuer = `${this.configService.get("AUTH0_ISSUER_URL")}/`;
+
       const payload = this.jwtService.verify(token, {
         algorithms: ["RS256"],
         publicKey,
-        audience: this.configService.get("AUTH0_AUDIENCE"),
-        issuer: `${this.configService.get("AUTH0_ISSUER_URL")}/`,
+        audience,
+        issuer,
       });
       return payload;
     } catch (error) {
       // Handle token validation error
-      this._logger.error(`Error fetching token`, error);
+      this._logger.error(`Error validating token:`, error);
+      throw error; // Re-throw so canActivate can handle it
     }
   }
 

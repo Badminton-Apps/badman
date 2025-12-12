@@ -64,7 +64,6 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
       "inputs": [
         "default",
         "^production",
@@ -79,7 +78,6 @@
         "{workspaceRoot}\\coverage\\apps\\worker\\sync"
       ],
       "options": {
-        "jestConfig": "apps/worker/sync/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
