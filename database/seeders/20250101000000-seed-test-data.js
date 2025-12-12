@@ -23,6 +23,7 @@ const {
   addRankingToPlayer,
 } = require("./utils/dist");
 
+const PLAYERS_ON_TEAM = 8;
 /** @type {import('sequelize-cli').Seeder} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -30,12 +31,20 @@ module.exports = {
     const { QueryTypes } = Sequelize;
 
     // Get user email from environment variable (optional)
-    const userEmail = process.env.SEED_USER_EMAIL || "test@example.com";
-    const firstName = process.env.SEED_FIRST_NAME || "Test";
-    const lastName = process.env.SEED_LAST_NAME || "User";
-    const memberId = process.env.SEED_MEMBER_ID || `TEST-${Date.now()}`;
-    const gender = process.env.SEED_GENDER || "M";
-    const sub = process.env.SEED_USER_AUTH0_SUB || "";
+    const userEmail = process.env.SEED_HOMETEAM_USER_EMAIL || "test@example.com";
+    const firstName = process.env.SEED_HOMETEAM_FIRST_NAME || "Test";
+    const lastName = process.env.SEED_HOMETEAM_LAST_NAME || "User";
+    const memberId = process.env.SEED_HOMETEAM_MEMBER_ID || `TEST-${Date.now()}`;
+    const gender = process.env.SEED_HOMETEAM_GENDER || "M";
+    const sub = process.env.SEED_HOMETEAM_USER_AUTH0_SUB || "";
+
+    // Get opponent user email from environment variable (optional)
+    const opponentUserEmail = process.env.SEED_AWAYTEAM_USER_EMAIL || "opponent@example.com";
+    const opponentFirstName = process.env.SEED_AWAYTEAM_FIRST_NAME || "Opponent";
+    const opponentLastName = process.env.SEED_AWAYTEAM_LAST_NAME || "User";
+    const opponentMemberId = process.env.SEED_AWAYTEAM_MEMBER_ID || `TEST-OPPONENT-${Date.now()}`;
+    const opponentGender = process.env.SEED_AWAYTEAM_GENDER || "M";
+    const opponentSub = process.env.SEED_AWAYTEAM_USER_AUTH0_SUB || "";
 
     console.log(`🚀 Starting seed for user: ${userEmail}\n`);
 
@@ -69,12 +78,17 @@ module.exports = {
 
         // Create additional players for TEAM AWESOME (need 5 total, user is 1, so create 4 more)
         const teamAwesomePlayers = [user];
-        const additionalPlayers = await PlayerFactory.createForTeam(ctx, "TEAM AWESOME", 4, {
-          gender: "mixed",
-          domain: "teamawesome.com",
-          prefix: "TEST-AWESOME",
-          baseIndex: 0,
-        });
+        const additionalPlayers = await PlayerFactory.createForTeam(
+          ctx,
+          "TEAM AWESOME",
+          PLAYERS_ON_TEAM,
+          {
+            gender: "mixed",
+            domain: "teamawesome.com",
+            prefix: "TEST-AWESOME",
+            baseIndex: 0,
+          }
+        );
 
         // Add all additional players to club
         for (const player of additionalPlayers) {
@@ -110,27 +124,54 @@ module.exports = {
         // Create second club (opponent club)
         const opponentClubId = await createClub(ctx, "THE OPPONENTS");
 
-        // Create players for THE OPPONENTS (need 5 players)
-        const opponentPlayers = await PlayerFactory.createForTeam(ctx, "THE OPPONENTS", 5, {
-          gender: "mixed",
-          domain: "opponents.com",
-          prefix: "TEST-OPPONENTS",
-          baseIndex: 4, // Start from index 4 to avoid name collisions
-        });
+        // Find or create opponent user player
+        const opponentUser = await findOrCreatePlayer(
+          ctx,
+          opponentUserEmail,
+          opponentFirstName,
+          opponentLastName,
+          opponentMemberId,
+          opponentGender,
+          true, // competitionPlayer,
+          opponentSub
+        );
 
-        // Add all players to opponent club
-        for (const player of opponentPlayers) {
+        // Add ranking to opponent user player
+        await addRankingToPlayer(ctx, opponentUser.id);
+
+        // Create players for THE OPPONENTS (need 4 more players, opponent user is 1, so create 4 more)
+        const opponentPlayers = [opponentUser];
+        const additionalOpponentPlayers = await PlayerFactory.createForTeam(
+          ctx,
+          "THE OPPONENTS",
+          PLAYERS_ON_TEAM,
+          {
+            gender: "mixed",
+            domain: "opponents.com",
+            prefix: "TEST-OPPONENTS",
+            baseIndex: 4, // Start from index 4 to avoid name collisions
+          }
+        );
+
+        // Add all additional players to opponent club
+        for (const player of additionalOpponentPlayers) {
+          opponentPlayers.push(player);
           await addPlayerToClub(ctx, opponentClubId, player.id);
         }
 
-        // Create opponent team (in the second club) - use first player as captain
+        // Add opponent user to club (if not already added)
+        await addPlayerToClub(ctx, opponentClubId, opponentUser.id);
+
+        // Create opponent team (in the second club) - use opponent user as captain
         const opponentTeamId = await createOpponentTeam(ctx, opponentClubId, season);
 
         // Add all players to opponent team
         for (const player of opponentPlayers) {
           await addPlayerToTeam(ctx, opponentTeamId, player.id);
         }
-        console.log(`✅ Added ${opponentPlayers.length} players to THE OPPONENTS\n`);
+        console.log(
+          `✅ Added ${opponentPlayers.length} players to THE OPPONENTS (including user: ${opponentUserEmail})\n`
+        );
 
         // Create encounters
         await createEncounters(ctx, drawId, teamId, opponentTeamId, season);
@@ -138,8 +179,10 @@ module.exports = {
         console.log("📊 Summary:");
         console.log(`   • Club: TEAM AWESOME (${clubId})`);
         console.log(`   • Team: ${teamId} with ${teamAwesomePlayers.length} players`);
+        console.log(`   • User: ${userEmail}`);
         console.log(`   • Opponent Club: THE OPPONENTS (${opponentClubId})`);
         console.log(`   • Opponent Team: ${opponentTeamId} with ${opponentPlayers.length} players`);
+        console.log(`   • Opponent User: ${opponentUserEmail}`);
         console.log(`   • Event: Test Event ${season} (${eventId})`);
         console.log(`   • SubEvent: Test SubEvent M (${subEventId})`);
         console.log(`   • Draw: Test Draw (${drawId})`);
@@ -157,8 +200,9 @@ module.exports = {
     // Cleanup: Remove test data
     const sequelize = queryInterface.sequelize;
     const userEmail = process.env.SEED_USER_EMAIL || "test@example.com";
+    const opponentUserEmail = process.env.SEED_OPPONENT_USER_EMAIL || "opponent@example.com";
 
-    console.log(`🧹 Cleaning up seed data for user: ${userEmail}\n`);
+    console.log(`🧹 Cleaning up seed data for users: ${userEmail} and ${opponentUserEmail}\n`);
     console.log("📍 Step 1: Starting cleanup process...\n");
 
     // Helper function to safely execute a delete query (without transaction)
@@ -314,9 +358,9 @@ module.exports = {
         const testPlayers = await sequelize.query(
           `SELECT id FROM "Players" 
            WHERE ("memberId" LIKE 'TEST-%' OR email LIKE '%@teamawesome.com' OR email LIKE '%@opponents.com')
-           AND (email = :userEmail OR "memberId" LIKE 'TEST-%')`,
+           AND (email = :userEmail OR email = :opponentUserEmail OR "memberId" LIKE 'TEST-%')`,
           {
-            replacements: { userEmail },
+            replacements: { userEmail, opponentUserEmail },
             type: Sequelize.QueryTypes.SELECT,
           }
         );
