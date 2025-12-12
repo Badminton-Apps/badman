@@ -1857,6 +1857,7 @@ export type I18nTranslations = {
                         "deleteError": string;
                     };
                     "noRecords": string;
+                    "seeAllRankingSystems": string;
                 };
                 "detailTable": {
                     "level": string;

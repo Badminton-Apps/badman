@@ -43,13 +43,35 @@ export class AppController {
       removeOnFail: boolean;
     }
   ) {
+    // Check if user is properly authenticated and exists in database
+    if (!user?.id) {
+      this.logger.error(
+        `User authentication failed: user.id is undefined. User object: ${JSON.stringify({
+          sub: user?.sub,
+          hasId: !!user?.id,
+          keys: Object.keys(user || {}),
+        })}`
+      );
+      throw new UnauthorizedException(
+        "User not found in database. Please ensure your account exists in the system."
+      );
+    }
+
     this.logger.debug(
-      `Adding job ${args.job} to queue ${args.queue} for user ${user?.fullName || "unknown"}, permissions: ${await user.hasAnyPermission(["change:job"])}`
+      `User (id: ${user.id}) is trying to add a job to the queue with args: ${JSON.stringify(args)}`
     );
 
-    if (!(await user.hasAnyPermission(["change:job"]))) {
+    const hasPermission = await user.hasAnyPermission(["change:job"]);
+    if (!hasPermission) {
+      this.logger.debug(
+        `User (id: ${user.id} / ${user?.fullName || "unknown"}) does not have permission to add a job to the queue`
+      );
       throw new UnauthorizedException("You do not have permission to do this");
     }
+
+    this.logger.debug(
+      `Adding job ${args.job} to queue ${args.queue} for user ${user?.fullName || "unknown"}, permissions: ${hasPermission}`
+    );
 
     if (!args.jobArgs) {
       args.jobArgs = {};
