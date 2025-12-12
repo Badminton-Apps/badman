@@ -13,14 +13,49 @@ async function findOrGetPrimaryRankingSystem(ctx) {
     throw new Error("No primary ranking system found. Please create a ranking system first.");
 }
 /**
- * Generate random ranking values (between 1 and 20 for test data)
+ * Generate random ranking values (between 0 and 12, with max difference of 2 between any two values)
  */
 function generateRankingValues(options) {
-    return {
-        single: options?.single ?? Math.floor(Math.random() * 20) + 1,
-        double: options?.double ?? Math.floor(Math.random() * 20) + 1,
-        mix: options?.mix ?? Math.floor(Math.random() * 20) + 1,
-    };
+    // Clamp values to 0-12 range
+    const clamp = (value) => Math.max(0, Math.min(12, value));
+    let single;
+    let double;
+    let mix;
+    if (options?.single !== undefined) {
+        single = clamp(options.single);
+    }
+    else {
+        single = Math.floor(Math.random() * 13); // 0-12 inclusive
+    }
+    if (options?.double !== undefined) {
+        double = clamp(options.double);
+        // Ensure double is within ±2 of single
+        const minDouble = Math.max(0, single - 2);
+        const maxDouble = Math.min(12, single + 2);
+        double = Math.max(minDouble, Math.min(maxDouble, double));
+    }
+    else {
+        // Generate double within ±2 of single
+        const minDouble = Math.max(0, single - 2);
+        const maxDouble = Math.min(12, single + 2);
+        const range = maxDouble - minDouble + 1;
+        double = minDouble + Math.floor(Math.random() * range);
+    }
+    if (options?.mix !== undefined) {
+        mix = clamp(options.mix);
+        // Ensure mix is within ±2 of both single and double
+        const minMix = Math.max(0, single - 2, double - 2);
+        const maxMix = Math.min(12, single + 2, double + 2);
+        mix = Math.max(minMix, Math.min(maxMix, mix));
+    }
+    else {
+        // Generate mix within ±2 of both single and double
+        const minMix = Math.max(0, single - 2, double - 2);
+        const maxMix = Math.min(12, single + 2, double + 2);
+        const range = maxMix - minMix + 1;
+        mix = minMix + Math.floor(Math.random() * range);
+    }
+    return { single, double, mix };
 }
 /**
  * Create a ranking place for a player

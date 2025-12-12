@@ -4,6 +4,7 @@ import {
   Assembly,
   Player,
   PlayerRankingType,
+  RankingLastPlace,
   RankingPlace,
   RankingSystem,
 } from "@badman/backend-database";
@@ -36,6 +37,7 @@ export class AssemblyResolver {
           ?.filter((player) => player != null || player != undefined)
           ?.map((player) => player.id),
       },
+      include: [RankingLastPlace],
     });
 
     const system = await RankingSystem.findByPk(assembly.systemId);
@@ -44,13 +46,10 @@ export class AssemblyResolver {
       throw new NotFoundException(`${RankingSystem.name}: ${assembly.systemId}`);
     }
 
-    return p
-      .map((player) => {
-        const place = getRankingProtected(
-          assembly.titularsPlayerData?.find((p) => p.id === player.id)?.rankingPlaces?.[0] ??
-            ({} as RankingPlace),
-          system
-        );
+    const results = await Promise.all(
+      p.map(async (player) => {
+        const ranking = await player.getCurrentRanking(assembly.systemId ?? "");
+        const place = getRankingProtected(ranking as RankingPlace, system);
 
         return {
           ...player.toJSON(),
@@ -59,27 +58,34 @@ export class AssemblyResolver {
           mix: place?.mix,
         };
       })
-      ?.sort(sortPlayers);
+    );
+
+    return results.sort(sortPlayers);
   }
 
   @ResolveField(() => [PlayerRankingType])
   async baseTeamPlayers(@Parent() assembly: AssemblyOutput): Promise<PlayerRankingType[]> {
     if (!assembly.basePlayersData) return [];
 
-    const p = await Player.findAll({
+    const basePlayers = await Player.findAll({
       where: {
         id: (assembly.basePlayersData?.map((player) => player.id) ?? []) as string[],
       },
+      include: [RankingLastPlace],
     });
 
-    return p
-      .map((player) => ({
-        ...player.toJSON(),
-        single: assembly.basePlayersData?.find((p) => p.id === player.id)?.single,
-        double: assembly.basePlayersData?.find((p) => p.id === player.id)?.double,
-        mix: assembly.basePlayersData?.find((p) => p.id === player.id)?.mix,
-      }))
-      ?.sort(sortPlayers);
+    const playersWithRankings = await Promise.all(
+      basePlayers.map(async (player) => {
+        const ranking = await player.getCurrentRanking(assembly.systemId ?? "");
+        return {
+          ...player.toJSON(),
+          single: ranking?.single,
+          double: ranking?.double,
+          mix: ranking?.mix,
+        };
+      })
+    );
+    return (playersWithRankings || []).sort(sortPlayers);
   }
 
   @Mutation(() => Assembly)

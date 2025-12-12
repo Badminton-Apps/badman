@@ -178,6 +178,7 @@ export class GamesResolver {
           const ranking = await RankingLastPlace.findOne({
             where: {
               playerId: player.id,
+              systemId: system?.id,
             },
             transaction,
           });
