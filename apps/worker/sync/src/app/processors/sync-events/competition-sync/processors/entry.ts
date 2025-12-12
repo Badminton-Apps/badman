@@ -1,6 +1,6 @@
 import { Club, EventEntry, Team, Player } from "@badman/backend-database";
 import { VisualService, XmlClub, XmlItem, XmlTournament } from "@badman/backend-visual";
-import { LevelType, runParallel, teamValues } from "@badman/utils";
+import { LevelType, runParallel, SubEventTypeEnum, teamValues } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { isArray } from "class-validator";
 import { Op, WhereOptions } from "sequelize";
@@ -47,7 +47,6 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
     const subEventEntries = await subEvent.getEventEntries({
-      // include: [{ model: Team }],
       transaction: this.transaction,
     });
 
@@ -150,7 +149,21 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     }
   }
 
-  private async _getPossibleClubs(clubName: string, state?: string, xmlDrawClubs?: XmlClub[]) {
+  private async _getClubByNumber(clubNumber: string | number): Promise<Club | null> {
+    const parsedNumber = typeof clubNumber === "string" ? parseInt(clubNumber, 10) : clubNumber;
+    if (isNaN(parsedNumber)) {
+      return null;
+    }
+
+    const club = await Club.findOne({
+      where: { clubId: parsedNumber },
+      transaction: this.transaction,
+    });
+
+    return club;
+  }
+
+  private async _getPossibleClubs(clubName: string, state?: string) {
     const clubs = await Club.findAll({
       where: {
         [Op.or]: [
@@ -191,7 +204,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         return [club];
       }
     } else {
-      this.logger.warn(`Club not found ${clubName}`);
+      this.logger.warn(`Club not found by name ${clubName}`);
     }
 
     return clubs;
@@ -210,7 +223,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     const name = correctWrongTeams({ name: item })?.name;
     const { clubName, teamNumber, teamType } = teamValues(name, teamMatcher, type);
 
-    const matchingClubs = xmlDrawClubs?.filter((r) => {
+    const matchingXmlClubs = xmlDrawClubs?.filter((r) => {
       const normalizedXmlName = r.Name?.toLowerCase().trim();
       const normalizedClubName = clubName?.toLowerCase().trim();
       return (
@@ -220,44 +233,90 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       );
     });
 
-    let xlmClubName;
+    let club: Club | null = null;
 
-    if (matchingClubs?.length === 1) {
-      xlmClubName = matchingClubs[0].Name;
-    } else if (matchingClubs?.length > 1) {
-      this.logger.warn(`Team not found ${item}`);
-      return;
+    if (matchingXmlClubs?.length === 1 && matchingXmlClubs[0].Number) {
+      club = await this._getClubByNumber(matchingXmlClubs[0].Number);
+      if (club) {
+        this.logger.debug(
+          `Found club by number: ${club.name} (clubId: ${matchingXmlClubs[0].Number}) for team ${name}`
+        );
+      }
+    } else if (matchingXmlClubs && matchingXmlClubs.length > 1) {
+      const matchingByState = matchingXmlClubs.find(
+        (c) => c.State?.toLowerCase() === state?.toLowerCase()
+      );
+      if (matchingByState?.Number) {
+        club = await this._getClubByNumber(matchingByState.Number);
+        if (club) {
+          this.logger.debug(
+            `Found club by number (disambiguated by state): ${club.name} (clubId: ${matchingByState.Number}) for team ${name}`
+          );
+        }
+      }
     }
 
-    let verifiedClubName;
+    if (!club) {
+      const verifiedClubName = matchingXmlClubs?.length === 1 ? matchingXmlClubs[0].Name : clubName;
 
-    if (xlmClubName) {
-      verifiedClubName = xlmClubName;
-    } else {
-      verifiedClubName = clubName;
+      this.logger.debug(
+        `Team name: ${name}, Club name: ${clubName}, Team number: ${teamNumber}, Team type: ${teamType}, verifiedClubName: ${verifiedClubName}`
+      );
+
+      const clubs = await this._getPossibleClubs(verifiedClubName, state);
+
+      if (!clubs || clubs.length === 0) {
+        this.logger.warn(`Club not found ${clubName} ${state}`);
+        return;
+      }
+
+      if (clubs.length === 1) {
+        club = clubs[0];
+      } else {
+        return this._findTeamInClubs(
+          clubs,
+          teamType,
+          teamNumber,
+          season,
+          name,
+          drawTeamIds,
+          subEventTeamIds
+        );
+      }
     }
 
-    this.logger.debug(
-      `Team name: ${name}, Club name: ${clubName}, Team number: ${teamNumber}, Team type: ${teamType}, verifiedClubName: ${verifiedClubName}`
-    );
-
-    const clubs = await this._getPossibleClubs(verifiedClubName, state, xmlDrawClubs);
-
-    if (!clubs || clubs.length === 0) {
+    if (!club) {
       this.logger.warn(`Club not found ${clubName} ${state}`);
       return;
     }
 
+    return this._findOrCreateTeamForClub(
+      club,
+      teamType,
+      teamNumber,
+      season,
+      name,
+      drawTeamIds,
+      subEventTeamIds
+    );
+  }
+
+  private async _findTeamInClubs(
+    clubs: Club[],
+    teamType: SubEventTypeEnum,
+    teamNumber: number | undefined,
+    season: number,
+    name: string,
+    drawTeamIds?: string[],
+    subEventTeamIds?: string[]
+  ): Promise<Team | undefined> {
     let where: WhereOptions = {
       clubId: clubs.map((r) => r.id),
       type: teamType,
     };
 
     if (teamNumber) {
-      where = {
-        ...where,
-        teamNumber,
-      };
+      where = { ...where, teamNumber };
     }
 
     const teams = await Team.findAll({
@@ -265,7 +324,6 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    // find the team where the id is in the draw
     if ((drawTeamIds?.length ?? 0) > 0) {
       const t = teams.filter((r) => drawTeamIds?.includes(r.id));
       if (t.length === 1) {
@@ -273,14 +331,63 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       }
     }
 
-    // try and find with the exact name
     const teamsForSeason = teams.filter((r) => r.season === season);
-    const teamsForSeasonAndname = teamsForSeason.filter((r) => r.name === name);
-    if (teamsForSeasonAndname.length === 1) {
-      return teamsForSeasonAndname[0];
+    const teamsForSeasonAndName = teamsForSeason.filter((r) => r.name === name);
+    if (teamsForSeasonAndName.length === 1) {
+      return teamsForSeasonAndName[0];
     }
 
-    // find the team where the id is in the subEvent
+    if ((subEventTeamIds?.length ?? 0) > 0) {
+      const t = teams.filter((r) => subEventTeamIds?.includes(r.id));
+      if (t.length === 1) {
+        return t[0];
+      }
+    }
+
+    if (teamsForSeason.length === 1) {
+      return teamsForSeason[0];
+    }
+
+    this.logger.warn(`Could not determine unique team from ${clubs.length} clubs for ${name}`);
+    return undefined;
+  }
+
+  private async _findOrCreateTeamForClub(
+    club: Club,
+    teamType: SubEventTypeEnum,
+    teamNumber: number | undefined,
+    season: number,
+    name: string,
+    drawTeamIds?: string[],
+    subEventTeamIds?: string[]
+  ): Promise<Team | undefined> {
+    let where: WhereOptions = {
+      clubId: club.id,
+      type: teamType,
+    };
+
+    if (teamNumber) {
+      where = { ...where, teamNumber };
+    }
+
+    const teams = await Team.findAll({
+      where,
+      transaction: this.transaction,
+    });
+
+    if ((drawTeamIds?.length ?? 0) > 0) {
+      const t = teams.filter((r) => drawTeamIds?.includes(r.id));
+      if (t.length === 1) {
+        return t[0];
+      }
+    }
+
+    const teamsForSeason = teams.filter((r) => r.season === season);
+    const teamsForSeasonAndName = teamsForSeason.filter((r) => r.name === name);
+    if (teamsForSeasonAndName.length === 1) {
+      return teamsForSeasonAndName[0];
+    }
+
     if ((subEventTeamIds?.length ?? 0) > 0) {
       const t = teams.filter((r) => subEventTeamIds?.includes(r.id));
       if (t.length === 1) {
@@ -294,44 +401,37 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     const teamsWithSameName = teams?.filter((r) => r.name === name);
     if (teamsWithSameName?.length === 1) {
+      this.logger.debug(`Creating new team for season ${season} based on existing team ${name}`);
       return new Team({
         type: teamType,
         teamNumber: teamNumber,
         season: season,
-        clubId: teamsWithSameName[0].clubId,
+        clubId: club.id,
         link: teamsWithSameName[0].link,
       }).save({ transaction: this.transaction });
     }
 
-    if (clubs.length === 1) {
-      this.logger.debug(`Creating new team ${clubName} ${teamNumber} ${teamType}`);
-
-      // create a new team
-      return new Team({
-        type: teamType,
-        teamNumber: teamNumber,
-        season: season,
-        clubId: clubs[0].id,
-      }).save({ transaction: this.transaction });
-    }
-
-    this.logger.warn(`Team not found ${clubName} ${teamNumber} ${teamType}`);
+    // Create a new team
+    this.logger.debug(`Creating new team ${club.name} ${teamNumber} ${teamType}`);
+    return new Team({
+      type: teamType,
+      teamNumber: teamNumber,
+      season: season,
+      clubId: club.id,
+    }).save({ transaction: this.transaction });
   }
 
   private async _updateTeamDataFromVisual(team: Team, entry: EventEntry, drawId: number) {
     try {
-      // Extract team code from the visual tournament structure
       const xmlDraw = await this.visualService.getDraw(this.visualTournament.Code, drawId);
       if (!xmlDraw?.Structure?.Item) {
         return;
       }
 
-      // Ensure items is an array
       const items = isArray(xmlDraw.Structure.Item)
         ? xmlDraw.Structure.Item
         : [xmlDraw.Structure.Item as XmlItem];
 
-      // Find the team in the draw structure by name
       const teamItem = items.find(
         (item) => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code
       );
@@ -340,7 +440,6 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         return;
       }
 
-      // Get team data from the visual API
       const xmlTeam = await this.visualService.getTeam(
         this.visualTournament.Code,
         teamItem.Team.Code
@@ -351,22 +450,18 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         return;
       }
 
-      // Update team information if different - only update if API provides non-empty data
       let teamUpdated = false;
 
       if (xmlTeam.Contact && `${xmlTeam.Contact}`.trim() !== "" && xmlTeam.Contact !== team.name) {
-        // You might want to update contact information here if needed
         this.logger.debug(`Team contact: ${xmlTeam.Contact}`);
       }
 
-      // Only update phone if API provides a non-empty value and it's different from current
       if (xmlTeam.Phone && `${xmlTeam.Phone}`.trim() !== "" && xmlTeam.Phone !== team.phone) {
         team.phone = xmlTeam.Phone;
         teamUpdated = true;
         this.logger.debug(`Updated team phone for ${team.name}: ${xmlTeam.Phone}`);
       }
 
-      // Only update email if API provides a non-empty value and it's different from current
       if (xmlTeam.Email && `${xmlTeam.Email}`.trim() !== "" && xmlTeam.Email !== team.email) {
         team.email = xmlTeam.Email;
         teamUpdated = true;
@@ -378,16 +473,13 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         this.logger.debug(`Updated team data for ${team.name}`);
       }
 
-      // Update entry meta with player information - follow priority order
       const players = xmlTeam.Players?.Player;
 
       if (players && players.length > 0) {
-        // PRIORITY 1: Use Visual API data (team + players from endpoint)
         this.logger.debug(
           `Using Visual API player data for team ${team.name} (${players.length} players)`
         );
 
-        // Find existing players by memberId
         const memberIds = players.map((p) => p.MemberID).filter((id) => id);
         const dbPlayers = await Player.findAll({
           where: {
@@ -405,23 +497,18 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
           transaction: this.transaction,
         });
 
-        // Get existing meta to preserve exception data
         const existingMeta = entry.meta || {};
         const existingPlayersMeta = existingMeta.competition?.players || [];
 
-        // Create meta object with Visual API player information
         const entryMeta = {
           ...existingMeta,
           competition: {
             ...existingMeta.competition,
             players: players.map((xmlPlayer) => {
-              // Find existing player in database by memberId
               const dbPlayer = dbPlayers.find((p) => p.memberId === xmlPlayer.MemberID);
 
-              // Find existing player data in current meta to preserve exception values
               const existingPlayerMeta = existingPlayersMeta.find((p) => p.id === dbPlayer?.id);
 
-              // Get ranking values from player's ranking places or use defaults
               const ranking = dbPlayer?.rankingPlaces?.[0];
 
               return {
