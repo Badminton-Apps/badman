@@ -67,20 +67,25 @@ export class AssemblyResolver {
   async baseTeamPlayers(@Parent() assembly: AssemblyOutput): Promise<PlayerRankingType[]> {
     if (!assembly.basePlayersData) return [];
 
-    const p = await Player.findAll({
+    const basePlayers = await Player.findAll({
       where: {
         id: (assembly.basePlayersData?.map((player) => player.id) ?? []) as string[],
       },
+      include: [RankingLastPlace],
     });
 
-    return p
-      .map((player) => ({
-        ...player.toJSON(),
-        single: assembly.basePlayersData?.find((p) => p.id === player.id)?.single,
-        double: assembly.basePlayersData?.find((p) => p.id === player.id)?.double,
-        mix: assembly.basePlayersData?.find((p) => p.id === player.id)?.mix,
-      }))
-      ?.sort(sortPlayers);
+    const playersWithRankings = await Promise.all(
+      basePlayers.map(async (player) => {
+        const ranking = await player.getCurrentRanking(assembly.systemId ?? "");
+        return {
+          ...player.toJSON(),
+          single: ranking?.single,
+          double: ranking?.double,
+          mix: ranking?.mix,
+        };
+      })
+    );
+    return (playersWithRankings || []).sort(sortPlayers);
   }
 
   @Mutation(() => Assembly)

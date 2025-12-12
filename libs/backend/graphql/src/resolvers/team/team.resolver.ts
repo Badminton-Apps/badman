@@ -360,7 +360,9 @@ export class TeamsResolver {
 
           const rankings = await RankingLastPlace.findAll({
             where: {
-              playerId: playerIds,
+              playerId: {
+                [Op.in]: playerIds,
+              },
               systemId: system.id,
             },
             transaction,
@@ -368,7 +370,9 @@ export class TeamsResolver {
 
           const dbPlayers = await Player.findAll({
             where: {
-              id: playerIds,
+              id: {
+                [Op.in]: playerIds,
+              },
             },
             transaction,
           });
