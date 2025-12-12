@@ -311,7 +311,6 @@ export class AssemblyValidationService extends ValidationService<
 
     subtitudes?: string[];
   }): Promise<AssemblyValidationData> {
-    console.log("FETCH DATA FOR ASSEMBLY:", args);
     const idPlayers = [
       args.single1,
       args.single2,

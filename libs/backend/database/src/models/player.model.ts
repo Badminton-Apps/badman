@@ -374,7 +374,7 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
     );
   }
 
-  getHighsetRanking(system: string, max: number): RankingPlace | null {
+  getHighestRanking(system: string, max: number): RankingPlace | null {
     if (!this.rankingPlaces) {
       return null;
     }
