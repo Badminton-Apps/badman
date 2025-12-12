@@ -443,38 +443,20 @@ export class AssemblyValidationService extends ValidationService<
         : Promise.resolve([]),
     ]);
 
-    // Calculate team index
-    const titularsTeam = getBestPlayersFromTeam(
-      team.type,
-      players.map((p) => {
-        console.log("PLAYER:", p, p.id);
-        console.table(p.toJSON());
-        const rankingPlace = p.rankingPlaces?.[0];
-        const rankingLastPlace = p.rankingLastPlaces?.[0];
-
-        console.log("RANKING PLACE:", rankingPlace);
-        console.log("RANKING LAST PLACE:", rankingLastPlace);
-
-        const ranking = rankingLastPlace ?? rankingPlace;
-        console.log("RANKING:", ranking);
-        console.log("Ranking single:", ranking?.single);
-        console.log("Ranking double:", ranking?.double);
-        console.log("Ranking mix:", ranking?.mix);
-        const data = {
+    const playersWithRankings = await Promise.all(
+      players.map(async (p) => {
+        const ranking = await p.getCurrentRanking(system.id);
+        return {
           id: p.id,
           gender: p.gender,
           single: ranking?.single ?? system.amountOfLevels,
           double: ranking?.double ?? system.amountOfLevels,
           mix: ranking?.mix ?? system.amountOfLevels,
         };
-
-        console.log("DATA:", data);
-        return data;
       })
     );
-
-    console.log("TITULARS TEAM:", titularsTeam);
-    console.log(titularsTeam.players);
+    // Calculate team index
+    const titularsTeam = getBestPlayersFromTeam(team.type, playersWithRankings);
 
     return {
       type: team.type,

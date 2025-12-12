@@ -4,6 +4,7 @@ import {
   Assembly,
   Player,
   PlayerRankingType,
+  RankingLastPlace,
   RankingPlace,
   RankingSystem,
 } from "@badman/backend-database";
@@ -36,6 +37,7 @@ export class AssemblyResolver {
           ?.filter((player) => player != null || player != undefined)
           ?.map((player) => player.id),
       },
+      include: [RankingLastPlace],
     });
 
     const system = await RankingSystem.findByPk(assembly.systemId);
@@ -44,15 +46,10 @@ export class AssemblyResolver {
       throw new NotFoundException(`${RankingSystem.name}: ${assembly.systemId}`);
     }
 
-    return p
-      .map((player) => {
-        const playerData = assembly.titularsPlayerData?.find((p) => p.id === player.id);
-
-        const rankingLastPlace = playerData?.rankingLastPlaces?.[0] ?? ({} as RankingPlace);
-        const rankingPlace = playerData?.rankingPlaces?.[0] ?? ({} as RankingPlace);
-        const ranking = rankingLastPlace ?? rankingPlace;
-
-        const place = getRankingProtected(ranking, system);
+    const results = await Promise.all(
+      p.map(async (player) => {
+        const ranking = await player.getCurrentRanking(assembly.systemId ?? "");
+        const place = getRankingProtected(ranking as RankingPlace, system);
 
         return {
           ...player.toJSON(),
@@ -61,7 +58,9 @@ export class AssemblyResolver {
           mix: place?.mix,
         };
       })
-      ?.sort(sortPlayers);
+    );
+
+    return results.sort(sortPlayers);
   }
 
   @ResolveField(() => [PlayerRankingType])

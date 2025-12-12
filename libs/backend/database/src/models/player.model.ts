@@ -344,6 +344,34 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
     return claims as string[];
   }
 
+  // Gets the current ranking for a player, in a given system.
+  // Prefers the last ranking place if available, otherwise uses the ranking place.
+  async getCurrentRanking(system: string): Promise<RankingPlace | RankingLastPlace | null> {
+    if (!this.rankingPlaces && !this.rankingLastPlaces) {
+      return null;
+    }
+
+    const lastPlacesInRequestedSystem = (this.rankingLastPlaces ?? []).filter(
+      (x) => x.systemId === system
+    );
+
+    let rankingEntries = [];
+    if (lastPlacesInRequestedSystem.length === 0) {
+      // Only load ranking places if we don't have any last places
+      const places = await this.getRankingPlaces();
+      const placesInRequestedSystem = places.filter((x) => x.systemId === system);
+      rankingEntries = placesInRequestedSystem;
+    } else {
+      rankingEntries = lastPlacesInRequestedSystem;
+    }
+
+    return (
+      rankingEntries.sort(
+        (a, b) => (a.rankingDate?.getTime() ?? 0) - (b.rankingDate?.getTime() ?? 0)
+      )?.[0] ?? null
+    );
+  }
+
   getHighsetRanking(system: string, max: number): RankingPlace | null {
     if (!this.rankingPlaces) {
       return null;
