@@ -1,20 +1,25 @@
-const { NxWebpackPlugin } = require("@nx/webpack");
+const { composePlugins, withNx } = require("@nx/webpack");
 const { join } = require("path");
 
-module.exports = {
-  output: {
-    path: join(__dirname, "../../dist/apps/api"),
-  },
-  plugins: [
-    new NxWebpackPlugin({
-      target: "node",
-      compiler: "tsc",
-      main: "./src/main.ts",
-      tsConfig: "./tsconfig.app.json",
-      assets: ["./src/assets"],
-      optimization: process.env["NODE_ENV"] === "production",
-      outputHashing: "none",
-      sourceMap: true,
-    }),
-  ],
-};
+module.exports = composePlugins(withNx(), (config) => {
+  return {
+    ...config,
+    // keep existing output, just override path
+    output: {
+      ...config.output,
+      path: join(__dirname, "../../dist/apps/api"),
+    },
+    // keep existing externals and append our own
+    // webpack accepts arrays of externals (objects, functions, regexps, etc.)
+    externals: [
+      ...(Array.isArray(config.externals)
+        ? config.externals
+        : config.externals
+          ? [config.externals]
+          : []),
+      {
+        "node-adodb": "commonjs node-adodb",
+      },
+    ],
+  };
+});
