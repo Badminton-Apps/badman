@@ -45,6 +45,7 @@ export class VisualService {
       parseAttributeValue: true,
     });
   }
+
   async getPlayers(tourneyId: string, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get("VR_API")}/Tournament/${tourneyId}/Player`,
@@ -286,7 +287,10 @@ export class VisualService {
   private async _getFromApi(url: string, useCache = true) {
     const t0 = performance.now();
 
-    if (this._configService.get("NODE_ENV") !== "production") {
+    // Allow disabling cache in development by setting environment variable
+    const disableCacheInDev = this._configService.get("VISUAL_FORCE_CACHE_DEV");
+
+    if (this._configService.get("NODE_ENV") !== "production" && !disableCacheInDev) {
       useCache = true;
       this.logger.debug(`Always using cache on dev`);
     }
