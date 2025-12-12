@@ -491,10 +491,13 @@ export class RankingSyncer {
       await RankingPlace.bulkCreate(chunk, {
         updateOnDuplicate: [
           "updatePossible",
+          "single",
           "singlePoints",
           "singleRank",
+          "double",
           "doublePoints",
           "doubleRank",
+          "mix",
           "mixPoints",
           "mixRank",
         ],
