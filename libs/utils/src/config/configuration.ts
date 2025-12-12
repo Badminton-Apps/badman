@@ -43,6 +43,7 @@ export const configSchema = Joi.object({
   ENTER_SCORES_ENABLED: Joi.boolean().optional(),
   HANG_BEFORE_BROWSER_CLEANUP: Joi.boolean().optional(),
   VISUAL_SYNC_ENABLED: Joi.boolean().optional(),
+  VISUAL_FORCE_CACHE_DEV: Joi.string().valid("true", "false").default("true"),
   REDIS_DATABASE: Joi.number().integer().optional(),
   REDIS_HOST: Joi.when("DB_CACHE", {
     is: true,
@@ -192,6 +193,7 @@ export type ConfigType = {
   AUTH0_ISSUER_URL: string;
   AUTH0_AUDIENCE: string;
   VISUAL_SYNC_ENABLED: boolean;
+  VISUAL_FORCE_CACHE_DEV: string;
   ENTER_SCORES_ENABLED: boolean;
   HANG_BEFORE_BROWSER_CLEANUP: boolean;
   MAIL_ENABLED: boolean;
