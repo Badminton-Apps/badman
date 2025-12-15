@@ -1520,6 +1520,7 @@ export type I18nTranslations = {
                             "EventTournament": string;
                             "EventCompetition": string;
                         };
+                        "moreCharactersRequired": string;
                     };
                 };
             };
