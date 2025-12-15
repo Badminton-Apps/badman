@@ -1219,7 +1219,8 @@
             "Player": "Speler",
             "EventTournament": "Toernooi",
             "EventCompetition": "Competitie"
-          }
+          },
+          "moreCharactersRequired": "Gelieve {minLength} of meer karakters te gebruiken om te zoeken"
         }
       }
     },
