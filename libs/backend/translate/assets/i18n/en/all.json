@@ -1501,7 +1501,8 @@
             "Player": "Player",
             "EventTournament": "Tournament",
             "EventCompetition": "Competition"
-          }
+          },
+          "moreCharactersRequired": "Please use {minLength} or more characters to search"
         }
       }
     },
