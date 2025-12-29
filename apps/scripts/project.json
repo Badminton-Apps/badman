@@ -12,7 +12,8 @@
         "buildTarget": "scripts:build",
         "port": 9240,
         "inspect": "inspect",
-        "host": "0.0.0.0"
+        "host": "0.0.0.0",
+        "watch": true
       },
       "configurations": {
         "development": {

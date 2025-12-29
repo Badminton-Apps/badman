@@ -9,7 +9,8 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "worker-belgium-flanders-points:build"
+        "buildTarget": "worker-belgium-flanders-points:build",
+        "watch": true
       },
       "configurations": {
         "development": {
