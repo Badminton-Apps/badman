@@ -69,10 +69,10 @@ export class SyncRankingService {
       return;
     }
 
+    let page: Awaited<ReturnType<typeof getPage>> | null = null;
     try {
       // Create browser
-      const browserInstance = await getPage();
-      const { page, cleanup } = browserInstance;
+      page = await getPage();
 
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
@@ -153,9 +153,11 @@ export class SyncRankingService {
       this.logger.error(`Error while processing player ${player.fullName}`);
     } finally {
       try {
-        // Proper cleanup of browser and temp directories
+        // Proper cleanup of browser page
         this.logger.log("Cleaning up browser resources...");
-        await cleanup();
+        if (page) {
+          await page.close();
+        }
         this.logger.log("Browser cleanup completed");
         this.logger.debug(`Synced ${player.fullName}`);
       } catch (cleanupError) {
