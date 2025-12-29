@@ -107,30 +107,31 @@ export class EnterScoresProcessor {
     const headlessValue = visualSyncEnabled ? false : true;
     if (!this._username || !this._password) {
       this.logger.error("No username or password found");
-      return;
+      throw new Error("No username or password configured for Visual sync");
     }
 
     this.logger.log("Syncing encounters");
     const encounterId = job.data.encounterId;
     let encounter: EncounterCompetition | null = null; // Declare encounter outside try block
+    let page: Awaited<ReturnType<typeof getPage>> | null = null; // Declare page outside try block
     const devEmailDestination = this.configService.get<string>("DEV_EMAIL_DESTINATION");
 
     this.logger.debug(`Dev email destination: ${devEmailDestination}`);
 
-    this.logger.debug("Creating browser");
-    const page = await getPage(headlessValue, [
-      "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
-      "--disable-save-password-bubble",
-      "--disable-credentials-enable-service",
-      "--disable-credential-saving",
-      "--password-store=basic",
-      "--no-default-browser-check",
-    ]);
-
     try {
+      this.logger.debug("Creating browser");
+      page = await getPage(headlessValue, [
+        "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
+        "--disable-save-password-bubble",
+        "--disable-credentials-enable-service",
+        "--disable-credential-saving",
+        "--password-store=basic",
+        "--no-default-browser-check",
+      ]);
+
       if (!page) {
         this.logger.error("No page found");
-        return;
+        throw new Error("Failed to create browser page");
       }
 
       // Increase default timeout to 30 seconds to handle slow network conditions
@@ -209,7 +210,7 @@ export class EnterScoresProcessor {
 
       if (!encounter) {
         this.logger.error(`Encounter ${encounterId} not found`);
-        return;
+        throw new Error(`Encounter ${encounterId} not found`);
       }
 
       this.logger.log(
@@ -476,7 +477,7 @@ export class EnterScoresProcessor {
       }
     } finally {
       try {
-        if (!hangBeforeBrowserCleanup) {
+        if (!hangBeforeBrowserCleanup && page) {
           this.logger.log(`Closing page...`);
           await page.close();
           this.logger.log("Page cleanup completed");
