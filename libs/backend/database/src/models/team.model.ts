@@ -100,6 +100,16 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   @Column(DataType.TIME)
   preferredTime?: Date;
 
+  /**
+   * CONTEXT:
+   *
+   * Team.link is the cross-season continuity identifier.
+   * When registering a team for a new season, the link should be reused if possible.
+   *
+   * If it's not reused when registering a team for a new season,
+   * previous-season lookups and validation fail silently. The current name "link" is ambiguous.
+   *
+   */
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
