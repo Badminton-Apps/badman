@@ -417,6 +417,7 @@ export type I18nTranslations = {
                 "warnings": {
                     "already-saved": string;
                     "base-other-team": string;
+                    "missing-continuity-link": string;
                     "player-min-level": string;
                     "subtitute-team-index": string;
                     "title": string;
@@ -2804,6 +2805,7 @@ export type I18nTranslations = {
                     "warnings": {
                         "already-saved": string;
                         "base-other-team": string;
+                        "missing-continuity-link": string;
                         "player-min-level": string;
                         "subtitute-team-index": string;
                         "title": string;
