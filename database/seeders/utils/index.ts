@@ -22,6 +22,13 @@ export {
   createEncounters,
 } from "./entity-builders";
 export {
+  ensureRole,
+  ensureClaimId,
+  ensureRoleClaim,
+  ensurePlayerRole,
+  ensureClubAdminPermission,
+} from "./permissions";
+export {
   findOrGetPrimaryRankingSystem,
   createRankingPlace,
   createRankingLastPlace,

@@ -21,6 +21,7 @@ const {
   createEncounters,
   PlayerFactory,
   addRankingToPlayer,
+  ensureClubAdminPermission,
 } = require("./utils/dist");
 
 const PLAYERS_ON_TEAM = 8;
@@ -74,13 +75,13 @@ module.exports = {
         await addRankingToPlayer(ctx, user.id);
 
         // Create first club (user's club)
-        const clubId = await createClub(ctx, "TEAM AWESOME");
+        const clubId = await createClub(ctx, "CLUB AWESOME");
 
-        // Create additional players for TEAM AWESOME (need 5 total, user is 1, so create 4 more)
-        const teamAwesomePlayers = [user];
+        // Create additional players for CLUB AWESOME (need 5 total, user is 1, so create 4 more)
+        const clubAwesomePlayers = [user];
         const additionalPlayers = await PlayerFactory.createForTeam(
           ctx,
-          "TEAM AWESOME",
+          "CLUB AWESOME",
           PLAYERS_ON_TEAM,
           {
             gender: "mixed",
@@ -92,12 +93,13 @@ module.exports = {
 
         // Add all additional players to club
         for (const player of additionalPlayers) {
-          teamAwesomePlayers.push(player);
+          clubAwesomePlayers.push(player);
           await addPlayerToClub(ctx, clubId, player.id);
         }
 
         // Add user to club (if not already added)
         await addPlayerToClub(ctx, clubId, user.id);
+        await ensureClubAdminPermission(ctx, clubId, user.id);
 
         // Verify transaction is still valid by running a simple query
         await ctx.verifyTransaction();
@@ -107,10 +109,10 @@ module.exports = {
         const teamId = await createTeam(ctx, clubId, season, user.id);
 
         // Add all players to team
-        for (const player of teamAwesomePlayers) {
+        for (const player of clubAwesomePlayers) {
           await addPlayerToTeam(ctx, teamId, player.id);
         }
-        console.log(`✅ Added ${teamAwesomePlayers.length} players to TEAM AWESOME\n`);
+        console.log(`✅ Added ${clubAwesomePlayers.length} players to CLUB AWESOME\n`);
 
         // Create event competition
         const eventId = await createEventCompetition(ctx, season);
@@ -177,8 +179,8 @@ module.exports = {
         await createEncounters(ctx, drawId, teamId, opponentTeamId, season);
 
         console.log("📊 Summary:");
-        console.log(`   • Club: TEAM AWESOME (${clubId})`);
-        console.log(`   • Team: ${teamId} with ${teamAwesomePlayers.length} players`);
+        console.log(`   • Club: CLUB AWESOME (${clubId})`);
+        console.log(`   • Team: ${teamId} with ${clubAwesomePlayers.length} players`);
         console.log(`   • User: ${userEmail}`);
         console.log(`   • Opponent Club: THE OPPONENTS (${opponentClubId})`);
         console.log(`   • Opponent Team: ${opponentTeamId} with ${opponentPlayers.length} players`);
@@ -246,7 +248,7 @@ module.exports = {
       // Note: Added createdAt to SELECT for ORDER BY compatibility with DISTINCT
       const clubs = await sequelize.query(
         `SELECT DISTINCT c.id, c."createdAt" FROM "Clubs" c
-         WHERE c.name IN ('TEAM AWESOME', 'THE OPPONENTS')
+         WHERE c.name IN ('CLUB AWESOME', 'THE OPPONENTS')
          ORDER BY c."createdAt" ASC`,
         {
           type: Sequelize.QueryTypes.SELECT,
