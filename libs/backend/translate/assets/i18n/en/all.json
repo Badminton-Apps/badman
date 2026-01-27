@@ -1489,6 +1489,9 @@
         },
         "transfer": {
           "title": "Transfers / loans"
+        },
+        "tooltips": {
+          "registrationClosed": "Registration closed"
         }
       },
       "topBar": {
@@ -1504,6 +1507,12 @@
           },
           "moreCharactersRequired": "Please use {minLength} or more characters to search"
         }
+      }
+    },
+    "enrollment": {
+      "disabled": {
+        "title": "Registration closed",
+        "message": "Registrations are currently closed. Please check back later."
       }
     },
     "player": {

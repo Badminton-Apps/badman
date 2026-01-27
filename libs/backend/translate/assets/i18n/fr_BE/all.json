@@ -1635,5 +1635,20 @@
       "transfer-file": "Transférer le fichier",
       "unkown": "Inconnu"
     }
+  },
+  "v1": {
+    "shell": {
+      "sidebar": {
+        "tooltips": {
+          "registrationClosed": "Inscriptions fermées"
+        }
+      }
+    },
+    "enrollment": {
+      "disabled": {
+        "title": "Inscriptions fermées",
+        "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
+      }
+    }
   }
 }
