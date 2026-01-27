@@ -1508,6 +1508,9 @@ export type I18nTranslations = {
                     "transfer": {
                         "title": string;
                     };
+                    "tooltips": {
+                        "registrationClosed": string;
+                    };
                 };
                 "topBar": {
                     "search": {
@@ -1522,6 +1525,12 @@ export type I18nTranslations = {
                         };
                         "moreCharactersRequired": string;
                     };
+                };
+            };
+            "enrollment": {
+                "disabled": {
+                    "title": string;
+                    "message": string;
                 };
             };
             "player": {

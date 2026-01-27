@@ -1207,6 +1207,9 @@
         },
         "transfer": {
           "title": "Transfers / uitleningen"
+        },
+        "tooltips": {
+          "registrationClosed": "Inschrijvingen gesloten"
         }
       },
       "topBar": {
@@ -1222,6 +1225,12 @@
           },
           "moreCharactersRequired": "Gelieve {minLength} of meer karakters te gebruiken om te zoeken"
         }
+      }
+    },
+    "enrollment": {
+      "disabled": {
+        "title": "Inschrijvingen gesloten",
+        "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
       }
     },
     "player": {
