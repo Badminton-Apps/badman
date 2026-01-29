@@ -141,10 +141,14 @@ async function ensureClubAdminPermission(ctx, clubId, playerId) {
         locked: true,
     });
     console.log(`✅ Created Admin role for club ${clubId} (role ID: ${roleId})\n`);
-    const claimId = await ensureClaimId(ctx, "edit:club");
-    console.log(`✅ Created edit:club claim (claim ID: ${claimId})\n`);
-    await ensureRoleClaim(ctx, roleId, claimId);
+    const clubClaimId = await ensureClaimId(ctx, "edit:club");
+    console.log(`✅ Created edit:club claim (claim ID: ${clubClaimId})\n`);
+    await ensureRoleClaim(ctx, roleId, clubClaimId);
     console.log(`✅ Added edit:club claim to Admin role (role ID: ${roleId})\n`);
+    const locationClaimId = await ensureClaimId(ctx, "edit:location");
+    console.log(`✅ Created edit:location claim (claim ID: ${locationClaimId})\n`);
+    await ensureRoleClaim(ctx, roleId, locationClaimId);
+    console.log(`✅ Added edit:location claim to Admin role (role ID: ${roleId})\n`);
     await ensurePlayerRole(ctx, playerId, roleId);
     console.log(`✅ Added Admin role to player (player ID: ${playerId})\n`);
 }
