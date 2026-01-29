@@ -2606,6 +2606,10 @@
                 "endTime": "End time",
                 "courts": "Courts"
               },
+              "errors": {
+                "courtsMin": "Courts must be greater than 0",
+                "startBeforeEnd": "Start time must be before end time"
+              },
               "buttons": {
                 "cancel": "Cancel",
                 "save": "Save"
