@@ -1533,6 +1533,7 @@ export type I18nTranslations = {
                     "message": string;
                 };
                 "selectedLocationCard": {
+                    "courts": string;
                     "noGameDays": string;
                 };
             };
@@ -2673,6 +2674,11 @@ export type I18nTranslations = {
                                     "start": string;
                                     "end": string;
                                 };
+                                "errors": {
+                                    "startBeforeEnd": string;
+                                    "startRequired": string;
+                                    "endRequired": string;
+                                };
                                 "buttons": {
                                     "cancel": string;
                                     "save": string;
@@ -3593,6 +3599,15 @@ export type I18nTranslations = {
                             "errors": {
                                 "courtsMin": string;
                                 "startBeforeEnd": string;
+                            };
+                        };
+                    };
+                    "exceptions": {
+                        "createDialog": {
+                            "errors": {
+                                "startBeforeEnd": string;
+                                "startRequired": string;
+                                "endRequired": string;
                             };
                         };
                     };

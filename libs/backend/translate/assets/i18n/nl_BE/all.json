@@ -1233,6 +1233,7 @@
         "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
       },
       "selectedLocationCard": {
+        "courts": "{count, plural, one {# terrein} other {# terreinen}}",
         "noGameDays": "Geen speeldagen gevonden."
       }
     },
@@ -2372,6 +2373,11 @@
               "form": {
                 "start": "Start",
                 "end": "Einde"
+              },
+              "errors": {
+                "startBeforeEnd": "De startdatum moet voor de einddatum liggen",
+                "startRequired": "Startdatum is verplicht",
+                "endRequired": "Einddatum is verplicht"
               },
               "buttons": {
                 "cancel": "Annuleren",
