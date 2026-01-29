@@ -1515,6 +1515,7 @@
         "message": "Registrations are currently closed. Please check back later."
       },
       "selectedLocationCard": {
+        "courts": "{count, plural, one {# court} other {# courts}}",
         "noGameDays": "No gamedays found."
       }
     },
@@ -2655,6 +2656,11 @@
               "form": {
                 "start": "Start",
                 "end": "End"
+              },
+              "errors": {
+                "startBeforeEnd": "Start date must be before end date",
+                "startRequired": "Start date is required",
+                "endRequired": "End date is required"
               },
               "buttons": {
                 "cancel": "Cancel",

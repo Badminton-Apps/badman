@@ -1653,6 +1653,15 @@
               "startBeforeEnd": "L'heure de début doit être avant l'heure de fin"
             }
           }
+        },
+        "exceptions": {
+          "createDialog": {
+            "errors": {
+              "startBeforeEnd": "La date de début doit être avant la date de fin",
+              "startRequired": "La date de début est requise",
+              "endRequired": "La date de fin est requise"
+            }
+          }
         }
       }
     },
@@ -1662,6 +1671,7 @@
         "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
       },
       "selectedLocationCard": {
+        "courts": "{count, plural, one {# terrain} other {# terrains}}",
         "noGameDays": "Aucun jour de match trouvé."
       }
     }
