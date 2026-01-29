@@ -1644,6 +1644,18 @@
         }
       }
     },
+    "editClubPage": {
+      "locations": {
+        "gameDays": {
+          "createDialog": {
+            "errors": {
+              "courtsMin": "Le nombre de terrains doit être supérieur à 0",
+              "startBeforeEnd": "L'heure de début doit être avant l'heure de fin"
+            }
+          }
+        }
+      }
+    },
     "enrollment": {
       "disabled": {
         "title": "Inscriptions fermées",

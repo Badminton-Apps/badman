@@ -2623,6 +2623,10 @@ export type I18nTranslations = {
                                     "endTime": string;
                                     "courts": string;
                                 };
+                                "errors": {
+                                    "courtsMin": string;
+                                    "startBeforeEnd": string;
+                                };
                                 "buttons": {
                                     "cancel": string;
                                     "save": string;
@@ -3577,6 +3581,18 @@ export type I18nTranslations = {
                             "messages": {
                                 "success": string;
                                 "error": string;
+                            };
+                        };
+                    };
+                };
+            };
+            "editClubPage": {
+                "locations": {
+                    "gameDays": {
+                        "createDialog": {
+                            "errors": {
+                                "courtsMin": string;
+                                "startBeforeEnd": string;
                             };
                         };
                     };

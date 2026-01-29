@@ -2323,6 +2323,10 @@
                 "endTime": "Eindtijd",
                 "courts": "Velden"
               },
+              "errors": {
+                "courtsMin": "Het aantal velden moet groter zijn dan 0",
+                "startBeforeEnd": "De starttijd moet voor de eindtijd liggen"
+              },
               "buttons": {
                 "cancel": "Annuleren",
                 "save": "Opslaan"
