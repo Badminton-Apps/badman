@@ -1648,6 +1648,9 @@
       "disabled": {
         "title": "Inscriptions fermées",
         "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
+      },
+      "selectedLocationCard": {
+        "noGameDays": "Aucun jour de match trouvé."
       }
     }
   }
