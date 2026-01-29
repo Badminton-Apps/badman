@@ -1231,6 +1231,9 @@
       "disabled": {
         "title": "Inschrijvingen gesloten",
         "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
+      },
+      "selectedLocationCard": {
+        "noGameDays": "Geen speeldagen gevonden."
       }
     },
     "player": {

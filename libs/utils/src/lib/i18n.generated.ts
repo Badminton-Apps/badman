@@ -1532,6 +1532,9 @@ export type I18nTranslations = {
                     "title": string;
                     "message": string;
                 };
+                "selectedLocationCard": {
+                    "noGameDays": string;
+                };
             };
             "player": {
                 "backup": string;
