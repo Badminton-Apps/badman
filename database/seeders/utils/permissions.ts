@@ -1,6 +1,38 @@
 import { randomUUID } from "crypto";
 import { SeederContext } from "./seeder-context";
 
+type RoleSchemaInfo = {
+  hasLocked: boolean;
+  hasLinkColumns: boolean;
+  hasIdDefault: boolean;
+};
+
+async function getRoleSchemaInfo(ctx: SeederContext): Promise<RoleSchemaInfo> {
+  const columns = await ctx.query<{ column_name: string }>(
+    `SELECT column_name
+     FROM information_schema.columns
+     WHERE table_schema = 'security'
+       AND table_name = 'Roles'
+       AND column_name IN ('locked', 'linkId', 'linkType', 'clubId', 'type')`
+  );
+  const columnSet = new Set(columns.map((c) => c.column_name));
+  const [idColumn] = await ctx.query<{ column_default: string | null }>(
+    `SELECT column_default
+     FROM information_schema.columns
+     WHERE table_schema = 'security'
+       AND table_name = 'Roles'
+       AND column_name = 'id'
+     LIMIT 1`
+  );
+
+  return {
+    hasLocked: columnSet.has("locked"),
+    hasLinkColumns: columnSet.has("linkId") && columnSet.has("linkType"),
+    hasIdDefault: !!idColumn?.column_default,
+  };
+}
+
+
 export async function ensureRole(
   ctx: SeederContext,
   {
@@ -17,25 +49,7 @@ export async function ensureRole(
     locked?: boolean;
   }
 ): Promise<string> {
-  const columns = await ctx.query<{ column_name: string }>(
-    `SELECT column_name
-     FROM information_schema.columns
-     WHERE table_schema = 'security'
-       AND table_name = 'Roles'
-       AND column_name IN ('locked', 'linkId', 'linkType', 'clubId', 'type')`
-  );
-  const columnSet = new Set(columns.map((c) => c.column_name));
-  const hasLocked = columnSet.has("locked");
-  const hasLinkColumns = columnSet.has("linkId") && columnSet.has("linkType");
-  const [idColumn] = await ctx.query<{ column_default: string | null }>(
-    `SELECT column_default
-     FROM information_schema.columns
-     WHERE table_schema = 'security'
-       AND table_name = 'Roles'
-       AND column_name = 'id'
-     LIMIT 1`
-  );
-  const hasIdDefault = !!idColumn?.column_default;
+  const { hasLocked, hasLinkColumns, hasIdDefault } = await getRoleSchemaInfo(ctx);
   const roleId = hasIdDefault ? undefined : randomUUID();
 
   const [role] = await ctx.query<{ id: string }>(
@@ -198,10 +212,15 @@ export async function ensureClubAdminPermission(
     locked: true,
   });
   console.log(`✅ Created Admin role for club ${clubId} (role ID: ${roleId})\n`);
-  const claimId = await ensureClaimId(ctx, "edit:club");
-  console.log(`✅ Created edit:club claim (claim ID: ${claimId})\n`);
-  await ensureRoleClaim(ctx, roleId, claimId);
+  const clubClaimId = await ensureClaimId(ctx, "edit:club");
+  console.log(`✅ Created edit:club claim (claim ID: ${clubClaimId})\n`);
+  await ensureRoleClaim(ctx, roleId, clubClaimId);
   console.log(`✅ Added edit:club claim to Admin role (role ID: ${roleId})\n`);
+
+  const locationClaimId = await ensureClaimId(ctx, "edit:location");
+  console.log(`✅ Created edit:location claim (claim ID: ${locationClaimId})\n`);
+  await ensureRoleClaim(ctx, roleId, locationClaimId);
+  console.log(`✅ Added edit:location claim to Admin role (role ID: ${roleId})\n`);
   await ensurePlayerRole(ctx, playerId, roleId);
   console.log(`✅ Added Admin role to player (player ID: ${playerId})\n`);
 }
