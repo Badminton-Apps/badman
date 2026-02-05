@@ -132,7 +132,8 @@ async function createTeam(
   ctx: SeederContext,
   clubId: string,
   season: number,
-  captainId: string
+  captainId: string,
+  teamType: "M" | "F" | "MX" = "M"
 ): Promise<string> {
   console.log("👥 Creating Team...");
 
@@ -159,7 +160,7 @@ async function createTeam(
      RETURNING id`,
     {
       clubId,
-      type: "M",
+      type: teamType,
       season,
       captainId,
       name: teamName,
@@ -311,10 +312,10 @@ async function createEncounters(
   console.log("⚔️ Creating Encounters...");
   const now = new Date();
   const halfCount = Math.floor(encounterCount / 2);
-  
+
   for (let i = 0; i < encounterCount; i++) {
     let encounterDate: Date;
-    
+
     if (i < halfCount) {
       // First half: dates before current date
       // Generate dates going backwards from current date with varying intervals

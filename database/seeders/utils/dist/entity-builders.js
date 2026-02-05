@@ -79,7 +79,7 @@ async function addPlayerToClub(ctx, clubId, playerId) {
 /**
  * Create a team
  */
-async function createTeam(ctx, clubId, season, captainId) {
+async function createTeam(ctx, clubId, season, captainId, teamType = "M") {
     console.log("👥 Creating Team...");
     // Check if team already exists
     const existing = await ctx.query(`SELECT id FROM "Teams" 
@@ -96,7 +96,7 @@ async function createTeam(ctx, clubId, season, captainId) {
      VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
-        type: "M",
+        type: teamType,
         season,
         captainId,
         name: teamName,
