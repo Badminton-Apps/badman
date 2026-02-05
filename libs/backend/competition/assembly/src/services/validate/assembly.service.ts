@@ -50,6 +50,10 @@ export class AssemblyValidationService extends ValidationService<
   private membershipCache = new Map<string, { memberships: EventEntry[]; timestamp: number }>();
 
   private readonly DATA_CACHE_TTL = 30 * 60 * 1000; // 30 minutes for more stable data
+
+  // Rate limiting for cache memory logging (log at most once per 60 seconds)
+  private lastCacheLogTime = 0;
+  private readonly CACHE_LOG_INTERVAL = 60 * 1000; // 60 seconds
   override async onApplicationBootstrap() {
     this._logger.log("Initializing rules");
 
@@ -144,7 +148,118 @@ export class AssemblyValidationService extends ValidationService<
   }
 
   /**
-   * OPTIMIZATION: Get player with simple caching
+   * Get snapshot ranking from player's rankingPlaces
+   *
+   * The rankingPlaces are fetched with a date range filter (startRanking to endRanking)
+   * and ordered by rankingDate DESC, so rankingPlaces[0] is the most recent snapshot
+   * within the season's snapshot period.
+   *
+   * @param player Player with rankingPlaces loaded
+   * @param system Ranking system for fallback default
+   * @returns Snapshot ranking or system default if not available
+   */
+  private getSnapshotRanking(
+    player: Player,
+    system: RankingSystem
+  ): { single: number; double: number; mix: number } {
+    // rankingPlaces[0] is the snapshot ranking from the season start date range
+    // (fetched with order: [["rankingDate", "DESC"]] and date range filter)
+    const snapshot = player.rankingPlaces?.[0];
+
+    return {
+      single: snapshot?.single ?? system.amountOfLevels,
+      double: snapshot?.double ?? system.amountOfLevels,
+      mix: snapshot?.mix ?? system.amountOfLevels,
+    };
+  }
+
+  /**
+   * OPTIMIZATION: Batch fetch players with rankings
+   *
+   * Fetches multiple players in a single query with their ranking data.
+   * Checks cache first and only fetches missing players from database.
+   *
+   * @param playerIds Array of player IDs to fetch
+   * @param system Ranking system for filtering rankings
+   * @param startRanking Start date for snapshot ranking range
+   * @param endRanking End date for snapshot ranking range
+   * @returns Array of players with rankings loaded
+   */
+  private async batchFetchPlayersWithCache(
+    playerIds: string[],
+    system: RankingSystem,
+    startRanking: moment.Moment,
+    endRanking: moment.Moment
+  ): Promise<Player[]> {
+    if (!playerIds || playerIds.length === 0) {
+      return [];
+    }
+
+    const uniquePlayerIds = [...new Set(playerIds)];
+    const results: Player[] = [];
+    const missingIds: string[] = [];
+
+    // Check cache first
+    for (const playerId of uniquePlayerIds) {
+      const cached = this.playerCache.get(playerId);
+      if (cached) {
+        results.push(cached);
+      } else {
+        missingIds.push(playerId);
+      }
+    }
+
+    // Batch fetch missing players
+    if (missingIds.length > 0) {
+      const fetchedPlayers = await Player.findAll({
+        where: {
+          id: missingIds,
+        },
+        attributes: [
+          "id",
+          "gender",
+          "competitionPlayer",
+          "memberId",
+          "fullName",
+          "firstName",
+          "lastName",
+        ],
+        include: [
+          {
+            attributes: ["id", "single", "double", "mix"],
+            required: false,
+            model: RankingLastPlace,
+            where: { systemId: system.id },
+          },
+          {
+            attributes: ["id", "single", "double", "mix"],
+            required: false,
+            model: RankingPlace,
+            limit: 1,
+            where: {
+              rankingDate: { [Op.between]: [startRanking.toDate(), endRanking.toDate()] },
+              systemId: system.id,
+              updatePossible: true,
+            },
+            order: [["rankingDate", "DESC"]],
+            separate: true,
+          },
+        ],
+      });
+
+      // Cache fetched players
+      for (const player of fetchedPlayers) {
+        this.playerCache.set(player.id, player);
+        results.push(player);
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * OPTIMIZATION: Get player with simple caching (kept for backward compatibility)
+   * @deprecated Use batchFetchPlayersWithCache for better performance
    */
   private async getPlayerWithCache(
     playerId: string,
@@ -152,51 +267,13 @@ export class AssemblyValidationService extends ValidationService<
     startRanking: moment.Moment,
     endRanking: moment.Moment
   ): Promise<Player | null> {
-    // Check cache first
-    if (this.playerCache.has(playerId)) {
-      return this.playerCache.get(playerId)!;
-    }
-
-    // Fetch from database
-    const player = await Player.findByPk(playerId, {
-      attributes: [
-        "id",
-        "gender",
-        "competitionPlayer",
-        "memberId",
-        "fullName",
-        "firstName",
-        "lastName",
-      ],
-      include: [
-        {
-          attributes: ["id", "single", "double", "mix"],
-          required: false,
-          model: RankingLastPlace,
-          where: { systemId: system.id },
-        },
-        {
-          attributes: ["id", "single", "double", "mix"],
-          required: false,
-          model: RankingPlace,
-          limit: 1,
-          where: {
-            rankingDate: { [Op.between]: [startRanking.toDate(), endRanking.toDate()] },
-            systemId: system.id,
-            updatePossible: true,
-          },
-          order: [["rankingDate", "DESC"]],
-          separate: true,
-        },
-      ],
-    });
-
-    if (player) {
-      // Cache the player
-      this.playerCache.set(playerId, player);
-    }
-
-    return player;
+    const players = await this.batchFetchPlayersWithCache(
+      [playerId],
+      system,
+      startRanking,
+      endRanking
+    );
+    return players[0] || null;
   }
 
   /**
@@ -416,7 +493,8 @@ export class AssemblyValidationService extends ValidationService<
 
     meta.competition.players = getBestPlayers(
       team.type,
-      meta.competition.players
+      meta.competition.players,
+      system.amountOfLevels
     ) as EntryCompetitionPlayer[];
 
     const otherMeta = (filteredMemberships
@@ -442,20 +520,24 @@ export class AssemblyValidationService extends ValidationService<
         : Promise.resolve([]),
     ]);
 
-    const playersWithRankings = await Promise.all(
-      players.map(async (p) => {
-        const ranking = await p.getCurrentRanking(system.id);
-        return {
-          id: p.id,
-          gender: p.gender,
-          single: ranking?.single ?? system.amountOfLevels,
-          double: ranking?.double ?? system.amountOfLevels,
-          mix: ranking?.mix ?? system.amountOfLevels,
-        };
-      })
-    );
+    // Use snapshot rankings (from season start) for titular index calculation
+    // This ensures team formation uses historical rankings, not current live rankings
+    const playersWithRankings = players.map((p) => {
+      const snapshotRanking = this.getSnapshotRanking(p, system);
+      return {
+        id: p.id,
+        gender: p.gender,
+        single: snapshotRanking.single,
+        double: snapshotRanking.double,
+        mix: snapshotRanking.mix,
+      };
+    });
     // Calculate team index
-    const titularsTeam = getBestPlayersFromTeam(team.type, playersWithRankings);
+    const titularsTeam = getBestPlayersFromTeam(
+      team.type,
+      playersWithRankings,
+      system.amountOfLevels
+    );
 
     return {
       type: team.type,
@@ -523,7 +605,7 @@ export class AssemblyValidationService extends ValidationService<
   }
 
   /**
-   * OPTIMIZATION: Fetch players with simple caching
+   * OPTIMIZATION: Fetch players with batched query and caching
    */
   private async fetchPlayersWithRankings(
     idPlayers: string[],
@@ -535,22 +617,12 @@ export class AssemblyValidationService extends ValidationService<
       return [];
     }
 
-    const results: Player[] = [];
-    const uniquePlayerIds = [...new Set(idPlayers)]; // BUGFIX: Remove duplicates from input
-
-    // Check cache first, then fetch missing players
-    for (const playerId of uniquePlayerIds) {
-      const player = await this.getPlayerWithCache(playerId, system, startRanking, endRanking);
-      if (player) {
-        results.push(player);
-      }
-    }
-
-    return results;
+    // Batch fetch all players (checks cache internally)
+    return this.batchFetchPlayersWithCache(idPlayers, system, startRanking, endRanking);
   }
 
   /**
-   * OPTIMIZATION: Fetch substitute players with simple caching
+   * OPTIMIZATION: Fetch substitute players with batched query and caching
    */
   private async fetchSubstitutePlayers(
     idSubs: string[],
@@ -562,20 +634,30 @@ export class AssemblyValidationService extends ValidationService<
       return [];
     }
 
-    const results: Player[] = [];
-    const uniquePlayerIds = [...new Set(idSubs)]; // BUGFIX: Remove duplicates from input
-
-    // Use same caching as main players
-    for (const playerId of uniquePlayerIds) {
-      const player = await this.getPlayerWithCache(playerId, system, startRanking, endRanking);
-      if (player) {
-        results.push(player);
-      }
-    }
-
-    return results;
+    // Batch fetch all substitute players (checks cache internally)
+    return this.batchFetchPlayersWithCache(idSubs, system, startRanking, endRanking);
   }
 
+  /**
+   * Sort players by ranking for display/ordering purposes within doubles pairs
+   *
+   * IMPORTANT: This method uses CURRENT rankings (rankingLastPlaces) for informational
+   * display and ordering, NOT snapshot rankings. This is intentional:
+   *
+   * - Team index calculations use snapshot rankings (via getSnapshotRanking())
+   * - Player ordering/display uses current rankings (this method)
+   *
+   * This aligns with the requirement: "Match views show current rankings,
+   * without influencing team indices"
+   *
+   * Used to order players within doubles pairs (double1, double2, double3, double4)
+   * for display purposes in the assembly lineup.
+   *
+   * @param players Players to sort
+   * @param system Ranking system for fallback default
+   * @param rankingType Type of ranking to use for sorting
+   * @returns Sorted array of players
+   */
   private sortPlayersByRanking(
     players: Player[],
     system: RankingSystem,
@@ -589,9 +671,16 @@ export class AssemblyValidationService extends ValidationService<
   }
 
   /**
-   * Log current cache memory usage
+   * Log current cache memory usage (rate-limited to avoid performance impact)
    */
   private logCacheMemoryUsage(): void {
+    const now = Date.now();
+    // Rate limit: only log every CACHE_LOG_INTERVAL seconds
+    if (now - this.lastCacheLogTime < this.CACHE_LOG_INTERVAL) {
+      return;
+    }
+    this.lastCacheLogTime = now;
+
     const memoryUsage = process.memoryUsage();
     const heapUsedMB = Math.round(memoryUsage.heapUsed / 1024 / 1024);
     const totalCacheSize =

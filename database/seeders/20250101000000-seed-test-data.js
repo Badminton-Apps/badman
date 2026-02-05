@@ -104,7 +104,7 @@ module.exports = {
         console.log("✅ Transaction is still valid after adding players to club\n");
 
         // Create team
-        const teamId = await createTeam(ctx, clubId, season, user.id);
+        const teamId = await createTeam(ctx, clubId, season, user.id, "MX");
 
         // Add all players to team
         for (const player of teamAwesomePlayers) {
