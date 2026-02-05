@@ -144,6 +144,32 @@ export class AssemblyValidationService extends ValidationService<
   }
 
   /**
+   * Get snapshot ranking from player's rankingPlaces
+   *
+   * The rankingPlaces are fetched with a date range filter (startRanking to endRanking)
+   * and ordered by rankingDate DESC, so rankingPlaces[0] is the most recent snapshot
+   * within the season's snapshot period.
+   *
+   * @param player Player with rankingPlaces loaded
+   * @param system Ranking system for fallback default
+   * @returns Snapshot ranking or system default if not available
+   */
+  private getSnapshotRanking(
+    player: Player,
+    system: RankingSystem
+  ): { single: number; double: number; mix: number } {
+    // rankingPlaces[0] is the snapshot ranking from the season start date range
+    // (fetched with order: [["rankingDate", "DESC"]] and date range filter)
+    const snapshot = player.rankingPlaces?.[0];
+
+    return {
+      single: snapshot?.single ?? system.amountOfLevels,
+      double: snapshot?.double ?? system.amountOfLevels,
+      mix: snapshot?.mix ?? system.amountOfLevels,
+    };
+  }
+
+  /**
    * OPTIMIZATION: Get player with simple caching
    */
   private async getPlayerWithCache(
@@ -443,20 +469,24 @@ export class AssemblyValidationService extends ValidationService<
         : Promise.resolve([]),
     ]);
 
-    const playersWithRankings = await Promise.all(
-      players.map(async (p) => {
-        const ranking = await p.getCurrentRanking(system.id);
-        return {
-          id: p.id,
-          gender: p.gender,
-          single: ranking?.single ?? system.amountOfLevels,
-          double: ranking?.double ?? system.amountOfLevels,
-          mix: ranking?.mix ?? system.amountOfLevels,
-        };
-      })
-    );
+    // Use snapshot rankings (from season start) for titular index calculation
+    // This ensures team formation uses historical rankings, not current live rankings
+    const playersWithRankings = players.map((p) => {
+      const snapshotRanking = this.getSnapshotRanking(p, system);
+      return {
+        id: p.id,
+        gender: p.gender,
+        single: snapshotRanking.single,
+        double: snapshotRanking.double,
+        mix: snapshotRanking.mix,
+      };
+    });
     // Calculate team index
-    const titularsTeam = getBestPlayersFromTeam(team.type, playersWithRankings, system.amountOfLevels);
+    const titularsTeam = getBestPlayersFromTeam(
+      team.type,
+      playersWithRankings,
+      system.amountOfLevels
+    );
 
     return {
       type: team.type,
@@ -577,6 +607,26 @@ export class AssemblyValidationService extends ValidationService<
     return results;
   }
 
+  /**
+   * Sort players by ranking for display/ordering purposes within doubles pairs
+   * 
+   * IMPORTANT: This method uses CURRENT rankings (rankingLastPlaces) for informational
+   * display and ordering, NOT snapshot rankings. This is intentional:
+   * 
+   * - Team index calculations use snapshot rankings (via getSnapshotRanking())
+   * - Player ordering/display uses current rankings (this method)
+   * 
+   * This aligns with the requirement: "Match views show current rankings, 
+   * without influencing team indices"
+   * 
+   * Used to order players within doubles pairs (double1, double2, double3, double4)
+   * for display purposes in the assembly lineup.
+   * 
+   * @param players Players to sort
+   * @param system Ranking system for fallback default
+   * @param rankingType Type of ranking to use for sorting
+   * @returns Sorted array of players
+   */
   private sortPlayersByRanking(
     players: Player[],
     system: RankingSystem,
