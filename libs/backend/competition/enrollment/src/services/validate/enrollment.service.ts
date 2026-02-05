@@ -199,8 +199,8 @@ export class EnrollmentValidationService {
             .includes(p.id)
         );
 
-        const teamIndex = getIndexFromPlayers(t.type, teamPlayers);
-        const baseIndex = getIndexFromPlayers(t.type, basePlayers);
+        const teamIndex = getIndexFromPlayers(t.type, teamPlayers, system.amountOfLevels);
+        const baseIndex = getIndexFromPlayers(t.type, basePlayers, system.amountOfLevels);
 
         const preTeam = previousSeasonTeams.find((p) => p.link === t.link);
 
