@@ -416,7 +416,8 @@ export class AssemblyValidationService extends ValidationService<
 
     meta.competition.players = getBestPlayers(
       team.type,
-      meta.competition.players
+      meta.competition.players,
+      system.amountOfLevels
     ) as EntryCompetitionPlayer[];
 
     const otherMeta = (filteredMemberships
@@ -455,7 +456,7 @@ export class AssemblyValidationService extends ValidationService<
       })
     );
     // Calculate team index
-    const titularsTeam = getBestPlayersFromTeam(team.type, playersWithRankings);
+    const titularsTeam = getBestPlayersFromTeam(team.type, playersWithRankings, system.amountOfLevels);
 
     return {
       type: team.type,
