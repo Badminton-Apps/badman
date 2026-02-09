@@ -39,8 +39,29 @@ export async function signIn(
   // LOGIN
   {
     const targetPage = page;
+    
+    // Validate page state before navigation
+    if (targetPage.isClosed()) {
+      throw new Error("Page is closed, cannot proceed with sign in");
+    }
+    
     const promises = [];
-    promises.push(targetPage.waitForNavigation());
+    const navigationPromise = targetPage
+      .waitForNavigation({
+        timeout: timeout || 5000,
+        waitUntil: "networkidle0",
+      })
+      .catch((error: any) => {
+        // Handle detached frame errors gracefully
+        if (error?.message?.includes("detached") || error?.message?.includes("Frame")) {
+          logger?.warn("Navigation frame detached, page may have already navigated:", error?.message);
+          // Check if we're already on the login page
+          return null;
+        }
+        throw error;
+      });
+    promises.push(navigationPromise);
+    
     const element = await waitForSelectors(
       [
         ["aria/Log in"],
@@ -50,8 +71,21 @@ export async function signIn(
       timeout
     );
     if (!element) throw new Error("Login button not found");
+    
     await element.click({ offset: { x: 32.265625, y: 14.078125 } });
-    await Promise.all(promises);
+    
+    try {
+      await Promise.all(promises);
+    } catch (error: any) {
+      // If navigation failed but page is still usable, continue
+      if (error?.message?.includes("detached") || error?.message?.includes("Frame")) {
+        logger?.warn("Navigation promise failed due to detached frame, continuing:", error?.message);
+        // Wait a bit for page to stabilize
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } else {
+        throw error;
+      }
+    }
   }
 
   {
@@ -72,11 +106,43 @@ export async function signIn(
   }
   {
     const targetPage = page;
+    
+    // Validate page state before navigation
+    if (targetPage.isClosed()) {
+      throw new Error("Page is closed, cannot proceed with login submission");
+    }
+    
     const promises = [];
-    promises.push(targetPage.waitForNavigation());
+    const navigationPromise = targetPage
+      .waitForNavigation({
+        timeout: timeout || 5000,
+        waitUntil: "networkidle0",
+      })
+      .catch((error: any) => {
+        // Handle detached frame errors gracefully
+        if (error?.message?.includes("detached") || error?.message?.includes("Frame")) {
+          logger?.warn("Navigation frame detached during login, page may have already navigated:", error?.message);
+          return null;
+        }
+        throw error;
+      });
+    promises.push(navigationPromise);
+    
     const element = await waitForSelectors([["aria/INLOGGEN"], ["#btnLogin"]], targetPage, timeout);
     if (!element) throw new Error("Login button not found");
     await element.click({ offset: { x: 50.046875, y: 6.359375 } });
-    await Promise.all(promises);
+    
+    try {
+      await Promise.all(promises);
+    } catch (error: any) {
+      // If navigation failed but page is still usable, continue
+      if (error?.message?.includes("detached") || error?.message?.includes("Frame")) {
+        logger?.warn("Login navigation promise failed due to detached frame, continuing:", error?.message);
+        // Wait a bit for page to stabilize
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } else {
+        throw error;
+      }
+    }
   }
 }

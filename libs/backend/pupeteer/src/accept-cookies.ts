@@ -99,8 +99,13 @@ export async function acceptCookies(
                 .waitForNavigation({
                   timeout: (timeout || 5000) * 2,
                 })
-                .catch((error) => {
-                  logger?.debug("Navigation after consent click timeout:", error?.message || error);
+                .catch((error: any) => {
+                  // Handle detached frame errors - this can happen when clicking causes navigation
+                  if (error?.message?.includes("detached") || error?.message?.includes("Frame")) {
+                    logger?.debug("Navigating frame was detached - page may have already navigated:", error?.message || error);
+                  } else {
+                    logger?.debug("Navigation after consent click timeout:", error?.message || error);
+                  }
                   return null; // Don't throw, just return null
                 });
 
@@ -134,10 +139,13 @@ export async function acceptCookies(
       }
     }
   } finally {
+    // Clean up request interception but DON'T close the page
+    // The page needs to remain open for subsequent operations (e.g., signIn)
     if (!page.isClosed()) {
       page.off("request", onRequest);
       await page.setRequestInterception(false).catch(() => null);
-      await page.close();
+      // NOTE: Page cleanup is handled by the caller (e.g., enter-scores.processor.ts)
+      // Do NOT close the page here as it's needed for subsequent operations
     }
   }
 }
