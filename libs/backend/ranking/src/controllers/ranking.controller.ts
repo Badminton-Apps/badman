@@ -1,5 +1,5 @@
 import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
-import { Controller, Get, Logger, Query, Res } from "@nestjs/common";
+import { Controller, Get, Logger, OnModuleDestroy, Query, Res } from "@nestjs/common";
 import { FastifyReply } from "fastify";
 import fs, { existsSync, mkdirSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
 import moment from "moment";
@@ -9,9 +9,10 @@ import { Op } from "sequelize";
 @Controller({
   path: "ranking",
 })
-export class RankingController {
+export class RankingController implements OnModuleDestroy {
   private readonly logger = new Logger(RankingController.name);
   private _resultFolder = join(__dirname, "results");
+  private _cleanupTimeouts = new Set<NodeJS.Timeout>();
 
   constructor() {
     if (existsSync(this._resultFolder)) {
@@ -21,6 +22,15 @@ export class RankingController {
 
     // Recreate
     mkdirSync(this._resultFolder, { recursive: true });
+  }
+
+  onModuleDestroy() {
+    // Clean up all pending cleanup timeouts when module is destroyed
+    for (const timeout of this._cleanupTimeouts) {
+      clearTimeout(timeout);
+    }
+    this._cleanupTimeouts.clear();
+    this.logger.debug("Cleaned up all file cleanup timeouts");
   }
 
   @Get("export")
@@ -336,12 +346,24 @@ export class RankingController {
     }
 
     // Delete files after 10 minutes
-
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       // Cleanup
       for (const file of files) {
-        unlinkSync(join(this._resultFolder, `${file}.csv`));
+        try {
+          const filePath = join(this._resultFolder, `${file}.csv`);
+          if (existsSync(filePath)) {
+            unlinkSync(filePath);
+            this.logger.debug(`Cleaned up file: ${filePath}`);
+          }
+        } catch (error) {
+          this.logger.warn(`Failed to cleanup file ${file}.csv: ${error}`);
+        }
       }
+      // Remove timeout from set after it executes
+      this._cleanupTimeouts.delete(timeout);
     }, 600000);
+
+    // Track timeout for cleanup on module destroy
+    this._cleanupTimeouts.add(timeout);
   }
 }
