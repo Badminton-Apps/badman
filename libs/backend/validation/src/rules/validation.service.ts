@@ -19,6 +19,8 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
   private ruleCache: Map<string, Rule[]> = new Map();
   private cacheTimeout = 300000; // 5 minutes cache (increased from 30 seconds)
   private lastCacheTime = 0;
+  private lastCleanupTime = 0;
+  private cleanupInterval = 30000; // 30 seconds between cache cleanups
 
   // Add data caching to prevent expensive fetchData calls
   private dataCache: Map<string, { data: T; timestamp: number }> = new Map();
@@ -34,6 +36,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
   abstract fetchData(args?: unknown): Promise<T>;
 
   private async getCachedData(args: unknown): Promise<T> {
+    this.maybeCleanupCaches();
     const cacheKey = this.generateDataCacheKey(args);
     const cachedData = this.dataCache.get(cacheKey);
 
@@ -49,12 +52,6 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
       data,
       timestamp: Date.now(),
     });
-
-    // Cleanup expired caches periodically
-    if (Math.random() < 0.1) {
-      // 10% chance to cleanup on each call
-      this.cleanupExpiredCaches();
-    }
 
     return data;
   }
@@ -140,6 +137,14 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     }
   }
 
+  private maybeCleanupCaches(): void {
+    const now = Date.now();
+    if (now - this.lastCleanupTime >= this.cleanupInterval) {
+      this.cleanupExpiredCaches();
+      this.lastCleanupTime = now;
+    }
+  }
+
   private async getCachedRules(): Promise<Rule[]> {
     const now = Date.now();
     const cacheKey = this.group;
@@ -179,6 +184,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     }> &
       Partial<T>
   > {
+    this.maybeCleanupCaches();
     // Check validation cache first
     const validationCacheKey = this.generateValidationCacheKey(args, runFor);
     const cachedValidation = this.validationCache.get(validationCacheKey);
