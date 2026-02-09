@@ -15,7 +15,7 @@ import {
 } from "@badman/backend-database";
 import { ValidationService } from "@badman/backend-validation";
 import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum, IsUUID } from "@badman/utils";
-import { Logger } from "@nestjs/common";
+import { Logger, OnModuleDestroy } from "@nestjs/common";
 import moment from "moment";
 import { Op } from "sequelize";
 import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../models";
@@ -30,10 +30,10 @@ import {
   TeamSubeventIndexRule,
 } from "./rules";
 
-export class AssemblyValidationService extends ValidationService<
-  AssemblyValidationData,
-  AssemblyValidationError<unknown>
-> {
+export class AssemblyValidationService
+  extends ValidationService<AssemblyValidationData, AssemblyValidationError<unknown>>
+  implements OnModuleDestroy
+{
   override group = "team-assembly";
 
   private readonly _logger = new Logger(AssemblyValidationService.name);
@@ -54,13 +54,16 @@ export class AssemblyValidationService extends ValidationService<
   // Rate limiting for cache memory logging (log at most once per 60 seconds)
   private lastCacheLogTime = 0;
   private readonly CACHE_LOG_INTERVAL = 60 * 1000; // 60 seconds
+
+  // Interval ID for cache cleanup
+  private cacheCleanupInterval?: NodeJS.Timeout;
   override async onApplicationBootstrap() {
     this._logger.log("Initializing rules");
 
     await this.clearRules();
 
     // Set up simple cache cleanup every 10 minutes
-    setInterval(
+    this.cacheCleanupInterval = setInterval(
       () => {
         this.cleanupPlayerCaches();
       },
@@ -77,6 +80,14 @@ export class AssemblyValidationService extends ValidationService<
     await this.registerRule(PlayerGenderRule);
 
     this._logger.log("Rules initialized");
+  }
+
+  onModuleDestroy() {
+    // Clean up cache cleanup interval when service is destroyed
+    if (this.cacheCleanupInterval) {
+      clearInterval(this.cacheCleanupInterval);
+      this._logger.debug("Cache cleanup interval cleared");
+    }
   }
 
   /**
