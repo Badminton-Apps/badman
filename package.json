@@ -111,7 +111,7 @@
     "cors": "^2.8.5",
     "crypto-hash": "^3.1.0",
     "express": "4.21.2",
-    "fast-xml-parser": "^4.5.1",
+    "fast-xml-parser": "^5.0.0",
     "fastify": "^4.29.0",
     "fastify-plugin": "^4.5.1",
     "file-saver": "^2.0.5",
