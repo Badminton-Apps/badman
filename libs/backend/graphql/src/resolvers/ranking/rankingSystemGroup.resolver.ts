@@ -12,7 +12,7 @@ import {
   SubEventCompetition,
   SubEventTournament,
 } from "@badman/backend-database";
-import { StartVisualRankingDate } from "@badman/backend-ranking";
+import { PointsService, StartVisualRankingDate } from "@badman/backend-ranking";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Op, Transaction } from "sequelize";
@@ -23,7 +23,10 @@ import { ListArgs } from "../../utils";
 export class RankingGroupsResolver {
   private readonly logger = new Logger(RankingGroupsResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private _pointService: PointsService
+  ) {}
 
   @Query(() => RankingGroup)
   async rankingGroup(@Args("id", { type: () => ID }) id: string): Promise<RankingGroup> {

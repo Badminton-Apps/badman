@@ -12,7 +12,7 @@ import {
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
-import { AllowAnonymous, User } from "@badman/backend-authorization";
+import { User } from "@badman/backend-authorization";
 import { ListArgs } from "../../utils";
 import { CacheControl } from "../../decorators";
 import { Op, Transaction } from "sequelize";
@@ -41,13 +41,11 @@ export class RankingSystemResolver {
   }
 
   @Query(() => [RankingSystem])
-  @AllowAnonymous()
   async rankingSystems(@Args() listArgs: ListArgs): Promise<RankingSystem[]> {
     return RankingSystem.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @Query(() => RankingSystem)
-  @AllowAnonymous()
   async primaryRankingSystem(): Promise<RankingSystem> {
     const primaryRankingSystem = await RankingSystem.findOne({ where: { primary: true } });
     if (!primaryRankingSystem) {
