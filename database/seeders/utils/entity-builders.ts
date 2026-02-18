@@ -132,16 +132,17 @@ async function createTeam(
   ctx: SeederContext,
   clubId: string,
   season: number,
-  captainId: string
+  captainId: string,
+  teamType: "M" | "F" | "MX" = "M"
 ): Promise<string> {
   console.log("👥 Creating Team...");
 
-  // Check if team already exists
+  // Check if team already exists (same club, season, and type)
   const existing = await ctx.query<{ id: string }>(
     `SELECT id FROM "Teams" 
      WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
      LIMIT 1`,
-    { clubId, season, type: "M" }
+    { clubId, season, type: teamType }
   );
 
   if (existing && existing.length > 0 && existing[0]) {
@@ -151,7 +152,7 @@ async function createTeam(
 
   // Fetch club and generate team name
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, "M", "H");
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
 
   const team = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
@@ -159,7 +160,7 @@ async function createTeam(
      RETURNING id`,
     {
       clubId,
-      type: "M",
+      type: teamType,
       season,
       captainId,
       name: teamName,
@@ -272,13 +273,14 @@ async function createDrawCompetition(
 async function createOpponentTeam(
   ctx: SeederContext,
   clubId: string,
-  season: number
+  season: number,
+  teamType: "M" | "F" | "MX" = "M"
 ): Promise<string> {
   console.log("👥 Creating opponent Team...");
 
   // Fetch club and generate team name
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, "M", "H");
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
 
   const opponentTeam = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
@@ -286,7 +288,7 @@ async function createOpponentTeam(
      RETURNING id`,
     {
       clubId,
-      type: "M",
+      type: teamType,
       season,
       name: teamName,
       abbreviation,
@@ -305,23 +307,38 @@ async function createEncounters(
   drawId: string,
   teamId: string,
   opponentTeamId: string,
-  season: number,
   encounterCount = 10
 ): Promise<void> {
   console.log("⚔️ Creating Encounters...");
-  for (let i = 0; i < encounterCount; i++) {
-    // Generate valid dates: start from September (month 9) and increment
-    // Use modulo to wrap months (9-12, then back to 1-12)
-    const monthOffset = Math.floor(i / 2);
-    const month = ((9 + monthOffset - 1) % 12) + 1; // Wrap around 1-12
-    const day = 15 + (i % 15); // Days 15-29 (avoid edge cases)
+  const now = new Date();
+  const halfCount = Math.floor(encounterCount / 2);
 
-    // Create date using Date constructor with year, month (0-indexed), day
-    const encounterDate = new Date(season, month - 1, day);
+  for (let i = 0; i < encounterCount; i++) {
+    let encounterDate: Date;
+
+    if (i < halfCount) {
+      // First half: dates before current date
+      // Generate dates going backwards from current date with varying intervals
+      // Use base interval of 5-6 days plus variation to avoid same weekday
+      const baseDays = (halfCount - i) * 5;
+      const variation = (i % 7) - 3; // Vary by -3 to +3 days
+      const daysBefore = baseDays + variation;
+      encounterDate = new Date(now);
+      encounterDate.setDate(encounterDate.getDate() - daysBefore);
+    } else {
+      // Second half: dates after current date
+      // Generate dates going forwards from current date with varying intervals
+      // Use base interval of 5-6 days plus variation to avoid same weekday
+      const baseDays = (i - halfCount + 1) * 5;
+      const variation = (i % 7) - 3; // Vary by -3 to +3 days
+      const daysAfter = baseDays + variation;
+      encounterDate = new Date(now);
+      encounterDate.setDate(encounterDate.getDate() + daysAfter);
+    }
 
     // Validate the date
     if (isNaN(encounterDate.getTime())) {
-      throw new Error(`Invalid date created: ${season}-${month}-${day}`);
+      throw new Error(`Invalid date created: ${encounterDate}`);
     }
 
     await ctx.rawQuery(

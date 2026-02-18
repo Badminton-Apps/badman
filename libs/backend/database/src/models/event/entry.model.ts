@@ -280,7 +280,8 @@ export class EventEntry extends Model<
     }
     instance.meta.competition.teamIndex = getIndexFromPlayers(
       team.type,
-      instance.meta?.competition.players
+      instance.meta?.competition.players,
+      dbSystem.amountOfLevels
     );
   }
 }

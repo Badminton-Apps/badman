@@ -238,19 +238,23 @@ export class EncounterCompetitionResolver {
           {
             model: Team,
             as: "home",
+            required: false,
           },
           {
             model: Team,
             as: "away",
+            required: false,
           },
           {
             model: Game,
             as: "games",
+            required: false,
             include: [
               {
                 model: Player,
                 as: "players",
                 attributes: [],
+                required: false,
               },
             ],
           },

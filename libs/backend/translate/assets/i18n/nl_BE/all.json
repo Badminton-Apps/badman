@@ -318,7 +318,7 @@
       "enrollments": "Inschrijvingen",
       "errors": {
         "already": "Speler al als titularis aanwezig.",
-        "base-gender-mix": "De basisploeg bevat <strong>{maleCount}</strong> mannen en <strong>{femaleCount}</strong> vrouwen, terwijl die telkens  <strong>2</strong> moet zijn",
+        "base-gender-mix": "De basisploeg bevat <strong>{maleCount}</strong> heren en <strong>{femaleCount}</strong> dames, terwijl die telkens  <strong>2</strong> moet zijn",
         "base-other-team": "<strong>{player.fullName}</strong> kan slechts éénmaal als basisspeler opgegeven worden per competitie",
         "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
@@ -542,7 +542,7 @@
     }
   },
   "gender": {
-    "female": "Vrouw",
+    "female": "Dame",
     "females": "Dames",
     "long": {
       "F": "Dames",
@@ -550,10 +550,10 @@
       "MX": "Gemengd"
     },
     "longs": {
-      "F": "Vrouw",
-      "M": "Man"
+      "F": "Dame",
+      "M": "Heer"
     },
-    "male": "Man",
+    "male": "Heer",
     "males": "Heren",
     "mix": "Gemengd",
     "national": "Nationale",
@@ -1037,14 +1037,14 @@
       "prefferd-encounter": "Voorkeur speelmoment"
     },
     "types": {
-      "female": "Vrouwen",
+      "female": "Dames",
       "long": {
-        "F": "Vrouwen",
-        "M": "Mannen",
+        "F": "Dames",
+        "M": "Heren",
         "MX": "Gemengd",
         "NATIONAL": "National"
       },
-      "male": "Mannen",
+      "male": "Heren",
       "mix": "Gemengd",
       "national": "National",
       "short": {
@@ -1145,6 +1145,26 @@
     }
   },
   "v1": {
+    "enrollment": {
+      "selectedLocationCard": {
+        "courts": "Velden"
+      },
+      "team-enrollment": {
+        "import-existing-optional": "Bestaande importeren (optioneel)",
+        "import-teams": {
+          "title": "Teams importeren",
+          "allTeams": "Alle teams",
+          "categories": {
+            "MX": "Gemengd",
+            "M": "Heren",
+            "F": "Dames",
+            "NATIONAL": "Nationaal"
+          },
+          "cancel": "Annuleren",
+          "import": "Importeren"
+        }
+      }
+    },
     "messages": {
       "buttons": {
         "hide": "Verberg {messageType}",
@@ -1298,8 +1318,8 @@
             "registrationNumber": "Registratienummer"
           },
           "gender": {
-            "M": "Man",
-            "F": "Vrouw"
+            "M": "Heer",
+            "F": "Dame"
           },
           "buttons": {
             "save": "Opslaan"
@@ -1540,8 +1560,8 @@
       },
       "eventTypes": {
         "D": "Dubbel",
-        "F": "Vrouw",
-        "M": "Man",
+        "F": "Dame",
+        "M": "Heer",
         "MX": "Gemengd",
         "S": "Enkel",
         "unknown": "Onbekend"
@@ -1751,30 +1771,30 @@
           "double2": "Dubbel 2",
           "double3": "Dubbel 3",
           "double4": "Dubbel 4",
-          "mix1": "Mannendubbel",
-          "mix2": "Vrouwendubbel",
+          "mix1": "Heren dubbel",
+          "mix2": "Dames dubbel",
           "mix3": "Gemengd 1",
           "mix4": "Gemengd 2",
           "gender": {
-            "female": "Vrouw",
-            "females": "Vrouwen",
+            "female": "Dame",
+            "females": "Dames",
             "long": {
-              "F": "Vrouw",
-              "M": "Man",
+              "F": "Dame",
+              "M": "Heer",
               "MX": "Gemengd"
             },
             "longs": {
-              "F": "Vrouw",
-              "M": "Man"
+              "F": "Dame",
+              "M": "Heer"
             },
-            "male": "Man",
-            "males": "Mannen",
+            "male": "Heer",
+            "males": "Heren",
             "mix": "Gemengd",
             "national": "Nationaal",
             "select": "Selecteer",
             "short": {
-              "female": "V",
-              "male": "M",
+              "female": "D",
+              "male": "H",
               "mix": "MX"
             },
             "title": "Geslacht"
@@ -1792,33 +1812,33 @@
         "noClub": "Team heeft geen club",
         "selectPlayer": "Selecteer speler",
         "categories": {
-          "singleMan": "Enkel Man",
-          "doubleMen": "Dubbel Mannen",
-          "singleWoman": "Enkel Vrouw",
-          "doubleWomen": "Dubbel Vrouwen",
+          "singleMan": "Enkel Heer",
+          "doubleMen": "Dubbel Heren",
+          "singleWoman": "Enkel Dame",
+          "doubleWomen": "Dubbel Dames",
           "mixDouble": "Gemengd Dubbel",
           "subtitudes": "Reservespelers",
           "captainId": "Kapitein"
         },
         "labels": {
-          "singleMan1": "Enkel Man 1",
-          "singleMan2": "Enkel Man 2",
-          "singleMan3": "Enkel Man 3",
-          "singleMan4": "Enkel Man 4",
-          "singleWoman1": "Enkel Vrouw 1",
-          "singleWoman2": "Enkel Vrouw 2",
-          "singleWoman3": "Enkel Vrouw 3",
-          "singleWoman4": "Enkel Vrouw 4",
-          "doubleMen": "Dubbel Mannen",
-          "doubleWomen": "Dubbel Vrouwen",
-          "doubleMen1": "Dubbel Mannen 1",
-          "doubleMen2": "Dubbel Mannen 2",
-          "doubleMen3": "Dubbel Mannen 3",
-          "doubleMen4": "Dubbel Mannen 4",
-          "doubleWomen1": "Dubbel Vrouwen 1",
-          "doubleWomen2": "Dubbel Vrouwen 2",
-          "doubleWomen3": "Dubbel Vrouwen 3",
-          "doubleWomen4": "Dubbel Vrouwen 4",
+          "singleMan1": "Enkel Heren 1",
+          "singleMan2": "Enkel Heren 2",
+          "singleMan3": "Enkel Heren 3",
+          "singleMan4": "Enkel Heren 4",
+          "singleWoman1": "Enkel Dames 1",
+          "singleWoman2": "Enkel Dames 2",
+          "singleWoman3": "Enkel Dames 3",
+          "singleWoman4": "Enkel Dames 4",
+          "doubleMen": "Dubbel Heren",
+          "doubleWomen": "Dubbel Dames",
+          "doubleMen1": "Dubbel Heren 1",
+          "doubleMen2": "Dubbel Heren 2",
+          "doubleMen3": "Dubbel Heren 3",
+          "doubleMen4": "Dubbel Heren 4",
+          "doubleWomen1": "Dubbel Dames 1",
+          "doubleWomen2": "Dubbel Dames 2",
+          "doubleWomen3": "Dubbel Dames 3",
+          "doubleWomen4": "Dubbel Dames 4",
           "mixDouble1": "Gemengd 1",
           "mixDouble2": "Gemengd 2",
           "captainId": "Kapitein",
@@ -1967,8 +1987,8 @@
               "preferredTime": "Gewenste tijd",
               "preferredLocation": "Gewenste locatie",
               "teamType": {
-                "M": "Man",
-                "F": "Vrouw",
+                "M": "Heren",
+                "F": "Dames",
                 "MX": "Gemengd",
                 "NATIONAL": "Nationaal"
               },
@@ -2033,8 +2053,8 @@
         },
         "types": {
           "double": "Dubbel",
-          "female": "Vrouw",
-          "male": "Man",
+          "female": "Dames",
+          "male": "Heren",
           "mix": "Gemengd",
           "single": "Enkel",
           "title": "Wedstrijdtype"
@@ -2044,8 +2064,8 @@
           "M": "Man"
         },
         "teamTypes": {
-          "F": "Vrouw",
-          "M": "Man",
+          "F": "Dames",
+          "M": "Heren",
           "MX": "Gemengd",
           "NATIONAL": "Nationaal"
         }
@@ -2497,10 +2517,16 @@
         "noValidations": "Geen validaties gevonden"
       },
       "noData": "Geen gegevens",
+      "params": {
+        "gender": {
+          "male": "Man",
+          "female": "Vrouw"
+        }
+      },
       "validation": {
         "errors": {
           "already": "Speler is al aanwezig als titularis.",
-          "base-gender-mix": "Het baseteam bestaat uit {maleCount} mannen en {femaleCount} vrouwen, terwijl dit elke keer 2 zou moeten zijn",
+          "base-gender-mix": "Het baseteam bestaat uit {maleCount} heren en {femaleCount} dames, terwijl dit elke keer 2 zou moeten zijn",
           "base-other-team": "{playerFullName} mag slechts eenmaal per competitie als basis speler worden opgegeven",
           "comp-status-base": "Basis speler {playerFullName} is niet gemarkeerd als competitie speler",
           "comp-status-team": "{playerFullName} is niet gemarkeerd als competitie speler",
@@ -2607,8 +2633,8 @@
           "downloadCPFile": "Download CP bestand"
         },
         "tableNames": {
-          "F": "Vrouwen",
-          "M": "Mannen",
+          "F": "Dames",
+          "M": "Heren",
           "MX": "Gemengd"
         },
         "table": {
@@ -2659,7 +2685,7 @@
           },
           "errors": {
             "already": "Speler al als titularis aanwezig",
-            "base-gender-mix": "De basisploeg bevat {maleCount} mannen en {femaleCount} vrouwen, terwijl die telkens 2 moet zijn",
+            "base-gender-mix": "De basisploeg bevat {maleCount} heren en {femaleCount} dames, terwijl die telkens 2 moet zijn",
             "base-other-team": "{playerFullName} kan slechts éénmaal als basisspeler opgegeven worden per competitie",
             "comp-status-base": "Basisspeler {playerFullName} staat niet ingeschreven voor de competitie",
             "comp-status-team": "{playerFullName} staat niet ingeschreven voor de competitie",
@@ -3072,7 +3098,7 @@
       "prompts": {
         "confirmPresence": "Is de {position}, {fullName}, aanwezig voor deze ontmoeting?",
         "cancelPresence": "Wil je de aanwezigheid van {fullName}, annuleren?",
-        "confirmConfirmed": "Bevestigd de {position}, {fullName}, de uitslag van deze ontmoeting?",
+        "confirmConfirmed": "Bevestigt de {position}, {fullName}, de uitslag van deze ontmoeting?",
         "cancelConfirmed": "Wil je de bevestiging van {fullName} annuleren?"
       },
       "messages": {

@@ -66,26 +66,7 @@ export class PlayerGenderRule extends Rule {
       errors.push(...this._checkGender([single1, single2, ...(double1 ?? [])], "M"));
       errors.push(...this._checkGender([single3, single4, ...(double2 ?? [])], "F"));
 
-      if (double4?.[0] && double4?.[1] && double4?.[0].gender == double4?.[1].gender) {
-        errors.push({
-          message: "all.v1.teamFormation.errors.player-genders",
-          params: {
-            game: "double4",
-            player1: {
-              id: double4[0]?.id,
-              fullName: double4[0]?.fullName,
-              gender: double4[0]?.gender,
-            },
-            player2: {
-              id: double4[1]?.id,
-              fullName: double4[1]?.fullName,
-              gender: double4[1]?.gender,
-            },
-          } as PlayerGenderRulePartnerParams,
-        });
-      }
-
-      // in doubles 3 and 4 we should have a F and M player
+      // in doubles 3 and 4 we should have a M and F player (mixed doubles)
       if (double3?.[0] && double3?.[1] && double3?.[0].gender == double3?.[1].gender) {
         errors.push({
           message: "all.v1.teamFormation.errors.player-genders",

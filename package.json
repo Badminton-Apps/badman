@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "nx",
     "start": "nx serve",
-    "start:prod": "node -r dotenv/config dist/apps/api/main.js",
+    "start:prod": "node -r dotenv/config --max-old-space-size=1536 dist/apps/api/main.js",
     "build": "nx build",
     "nx": "nx",
     "test": "nx test",
