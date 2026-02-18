@@ -75,6 +75,39 @@ module.exports = {
         // Add ranking to user player
         await addRankingToPlayer(ctx, user.id);
 
+        // Add edit-any:club and edit:club claims for the user so they can manage all teams under their club
+        const claims = await sequelize.query(
+          `SELECT id, name FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club')`,
+          {
+            type: QueryTypes.SELECT,
+            transaction,
+          }
+        );
+        for (const claim of claims) {
+          const [existing] = await sequelize.query(
+            `SELECT 1 FROM "security"."PlayerClaimMemberships" WHERE "playerId" = :playerId AND "claimId" = :claimId`,
+            {
+              replacements: { playerId: user.id, claimId: claim.id },
+              type: QueryTypes.SELECT,
+              transaction,
+            }
+          );
+          if (!existing) {
+            await sequelize.query(
+              `INSERT INTO "security"."PlayerClaimMemberships" ("playerId", "claimId", "createdAt", "updatedAt")
+               VALUES (:playerId, :claimId, NOW(), NOW())`,
+              {
+                replacements: { playerId: user.id, claimId: claim.id },
+                transaction,
+              }
+            );
+            console.log(`✅ Granted claim "${claim.name}" to user (${userEmail})\n`);
+          }
+        }
+        if (claims.length > 0) {
+          console.log(`✅ Added ${claims.length} club permission claim(s) for user\n`);
+        }
+
         // Create first club (user's club)
         const clubId = await createClub(ctx, "TEAM AWESOME");
 
@@ -123,7 +156,9 @@ module.exports = {
             await addPlayerToTeam(ctx, historicalTeamId, player.id);
           }
         }
-        console.log(`✅ Created 3 historical teams for TEAM AWESOME (season ${previousSeason}): M, F, MX\n`);
+        console.log(
+          `✅ Created 3 historical teams for TEAM AWESOME (season ${previousSeason}): M, F, MX\n`
+        );
 
         // Create event competition
         const eventId = await createEventCompetition(ctx, season);
@@ -235,7 +270,6 @@ module.exports = {
     const sequelize = queryInterface.sequelize;
     const userEmail = process.env.SEED_USER_EMAIL || "test@example.com";
     const opponentUserEmail = process.env.SEED_OPPONENT_USER_EMAIL || "opponent@example.com";
-
     console.log(`🧹 Cleaning up seed data for users: ${userEmail} and ${opponentUserEmail}\n`);
     console.log("📍 Step 1: Starting cleanup process...\n");
 
@@ -385,6 +419,16 @@ module.exports = {
           `DELETE FROM "Clubs" WHERE id IN (${clubPlaceholders})`,
           clubReplacements,
           "Deleted clubs"
+        );
+
+        console.log(
+          "📍 Step 3.8.1: Removing club permission claims (edit-any:club, edit:club)...\n"
+        );
+        await safeDelete(
+          `DELETE FROM "security"."PlayerClaimMemberships"
+           WHERE "claimId" IN (SELECT id FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club'))`,
+          {},
+          "Deleted club permission claims"
         );
 
         console.log("📍 Step 3.9: Finding test players before cleanup...\n");
