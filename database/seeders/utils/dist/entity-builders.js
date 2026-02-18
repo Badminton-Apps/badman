@@ -79,24 +79,24 @@ async function addPlayerToClub(ctx, clubId, playerId) {
 /**
  * Create a team
  */
-async function createTeam(ctx, clubId, season, captainId) {
+async function createTeam(ctx, clubId, season, captainId, teamType = "M") {
     console.log("👥 Creating Team...");
-    // Check if team already exists
+    // Check if team already exists (same club, season, and type)
     const existing = await ctx.query(`SELECT id FROM "Teams" 
      WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
-     LIMIT 1`, { clubId, season, type: "M" });
+     LIMIT 1`, { clubId, season, type: teamType });
     if (existing && existing.length > 0 && existing[0]) {
         console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
         return existing[0].id;
     }
     // Fetch club and generate team name
     const club = await (0, team_helpers_1.getClubById)(ctx, clubId);
-    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, "M", "H");
+    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, teamType, "H");
     const team = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
      VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
-        type: "M",
+        type: teamType,
         season,
         captainId,
         name: teamName,
@@ -173,16 +173,16 @@ async function createDrawCompetition(ctx, subEventId, season) {
 /**
  * Create opponent team
  */
-async function createOpponentTeam(ctx, clubId, season) {
+async function createOpponentTeam(ctx, clubId, season, teamType = "M") {
     console.log("👥 Creating opponent Team...");
     // Fetch club and generate team name
     const club = await (0, team_helpers_1.getClubById)(ctx, clubId);
-    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, "M", "H");
+    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, teamType, "H");
     const opponentTeam = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
      VALUES (:clubId, :type, :season, 1, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
-        type: "M",
+        type: teamType,
         season,
         name: teamName,
         abbreviation,
@@ -194,19 +194,35 @@ async function createOpponentTeam(ctx, clubId, season) {
 /**
  * Create encounters
  */
-async function createEncounters(ctx, drawId, teamId, opponentTeamId, season, encounterCount = 10) {
+async function createEncounters(ctx, drawId, teamId, opponentTeamId, encounterCount = 10) {
     console.log("⚔️ Creating Encounters...");
+    const now = new Date();
+    const halfCount = Math.floor(encounterCount / 2);
     for (let i = 0; i < encounterCount; i++) {
-        // Generate valid dates: start from September (month 9) and increment
-        // Use modulo to wrap months (9-12, then back to 1-12)
-        const monthOffset = Math.floor(i / 2);
-        const month = ((9 + monthOffset - 1) % 12) + 1; // Wrap around 1-12
-        const day = 15 + (i % 15); // Days 15-29 (avoid edge cases)
-        // Create date using Date constructor with year, month (0-indexed), day
-        const encounterDate = new Date(season, month - 1, day);
+        let encounterDate;
+        if (i < halfCount) {
+            // First half: dates before current date
+            // Generate dates going backwards from current date with varying intervals
+            // Use base interval of 5-6 days plus variation to avoid same weekday
+            const baseDays = (halfCount - i) * 5;
+            const variation = (i % 7) - 3; // Vary by -3 to +3 days
+            const daysBefore = baseDays + variation;
+            encounterDate = new Date(now);
+            encounterDate.setDate(encounterDate.getDate() - daysBefore);
+        }
+        else {
+            // Second half: dates after current date
+            // Generate dates going forwards from current date with varying intervals
+            // Use base interval of 5-6 days plus variation to avoid same weekday
+            const baseDays = (i - halfCount + 1) * 5;
+            const variation = (i % 7) - 3; // Vary by -3 to +3 days
+            const daysAfter = baseDays + variation;
+            encounterDate = new Date(now);
+            encounterDate.setDate(encounterDate.getDate() + daysAfter);
+        }
         // Validate the date
         if (isNaN(encounterDate.getTime())) {
-            throw new Error(`Invalid date created: ${season}-${month}-${day}`);
+            throw new Error(`Invalid date created: ${encounterDate}`);
         }
         await ctx.rawQuery(`INSERT INTO event."EncounterCompetitions" 
        ("drawId", "homeTeamId", "awayTeamId", date, "originalDate", "homeScore", "awayScore", 

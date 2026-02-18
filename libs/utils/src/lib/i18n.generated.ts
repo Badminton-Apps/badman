@@ -1445,6 +1445,26 @@ export type I18nTranslations = {
             };
         };
         "v1": {
+            "enrollment": {
+                "selectedLocationCard": {
+                    "courts": string;
+                };
+                "team-enrollment": {
+                    "import-existing-optional": string;
+                    "import-teams": {
+                        "title": string;
+                        "allTeams": string;
+                        "categories": {
+                            "MX": string;
+                            "M": string;
+                            "F": string;
+                            "NATIONAL": string;
+                        };
+                        "cancel": string;
+                        "import": string;
+                    };
+                };
+            };
             "messages": {
                 "buttons": {
                     "hide": string;
@@ -2797,6 +2817,12 @@ export type I18nTranslations = {
                     "noValidations": string;
                 };
                 "noData": string;
+                "params": {
+                    "gender": {
+                        "male": string;
+                        "female": string;
+                    };
+                };
                 "validation": {
                     "errors": {
                         "already": string;
