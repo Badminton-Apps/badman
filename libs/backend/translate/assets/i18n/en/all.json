@@ -1427,6 +1427,25 @@
     }
   },
   "v1": {
+    "enrollment": {
+      "selectedLocationCard": {
+        "courts": "Courts"
+      },
+      "team-enrollment": {
+        "import-existing-optional": "Import existing (optional)",
+        "import-teams": {
+          "title": "Import teams",
+          "allTeams": "All teams",
+          "categories": {
+            "MX": "Mixed",
+            "M": "Men's",
+            "F": "Women's"
+          },
+          "cancel": "Cancel",
+          "import": "Import"
+        }
+      }
+    },
     "messages": {
       "buttons": {
         "hide": "Hide {messageType}",

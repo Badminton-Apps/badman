@@ -1145,6 +1145,25 @@
     }
   },
   "v1": {
+    "enrollment": {
+      "selectedLocationCard": {
+        "courts": "Velden"
+      },
+      "team-enrollment": {
+        "import-existing-optional": "Bestaande importeren (optioneel)",
+        "import-teams": {
+          "title": "Teams importeren",
+          "allTeams": "Alle teams",
+          "categories": {
+            "MX": "Gemengd",
+            "M": "Heren",
+            "F": "Dames"
+          },
+          "cancel": "Annuleren",
+          "import": "Importeren"
+        }
+      }
+    },
     "messages": {
       "buttons": {
         "hide": "Verberg {messageType}",
