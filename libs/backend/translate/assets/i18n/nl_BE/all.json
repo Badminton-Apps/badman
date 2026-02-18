@@ -2530,6 +2530,12 @@
           "subtitute-team-index": "s",
           "title": "Waarschuwingen"
         }
+      },
+      "params": {
+        "gender": {
+          "male": "man",
+          "female": "vrouw"
+        }
       }
     },
     "notFoundPage": {
