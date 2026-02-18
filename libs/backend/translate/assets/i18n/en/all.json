@@ -1439,7 +1439,8 @@
           "categories": {
             "MX": "Mixed",
             "M": "Men's",
-            "F": "Women's"
+            "F": "Women's",
+            "NATIONAL": "National"
           },
           "cancel": "Cancel",
           "import": "Import"
@@ -2777,6 +2778,12 @@
         "noValidations": "No validations found"
       },
       "noData": "No data",
+      "params": {
+        "gender": {
+          "male": "Male",
+          "female": "Female"
+        }
+      },
       "validation": {
         "errors": {
           "already": "Player already present as titular.",
