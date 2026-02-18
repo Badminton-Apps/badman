@@ -56,7 +56,9 @@ module.exports = {
         // Get current season (September to April)
         const now = new Date();
         const season = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+        const previousSeason = season - 1;
         console.log(`📅 Using season: ${season}\n`);
+        console.log(`📅 Using previous season for historical teams: ${previousSeason}\n`);
 
         // Find or create player
         const user = await findOrCreatePlayer(
@@ -111,6 +113,17 @@ module.exports = {
           await addPlayerToTeam(ctx, teamId, player.id);
         }
         console.log(`✅ Added ${teamAwesomePlayers.length} players to TEAM AWESOME\n`);
+
+        // Create three historical teams for TEAM AWESOME (M, F, MX) for previous season
+        const historicalTeamIds = [];
+        for (const teamType of ["M", "F", "MX"]) {
+          const historicalTeamId = await createTeam(ctx, clubId, previousSeason, user.id, teamType);
+          historicalTeamIds.push(historicalTeamId);
+          for (const player of teamAwesomePlayers) {
+            await addPlayerToTeam(ctx, historicalTeamId, player.id);
+          }
+        }
+        console.log(`✅ Created 3 historical teams for TEAM AWESOME (season ${previousSeason}): M, F, MX\n`);
 
         // Create event competition
         const eventId = await createEventCompetition(ctx, season);
@@ -173,6 +186,24 @@ module.exports = {
           `✅ Added ${opponentPlayers.length} players to THE OPPONENTS (including user: ${opponentUserEmail})\n`
         );
 
+        // Create three historical opponent teams (M, F, MX) for previous season
+        const historicalOpponentTeamIds = [];
+        for (const teamType of ["M", "F", "MX"]) {
+          const historicalOpponentTeamId = await createOpponentTeam(
+            ctx,
+            opponentClubId,
+            previousSeason,
+            teamType
+          );
+          historicalOpponentTeamIds.push(historicalOpponentTeamId);
+          for (const player of opponentPlayers) {
+            await addPlayerToTeam(ctx, historicalOpponentTeamId, player.id);
+          }
+        }
+        console.log(
+          `✅ Created 3 historical teams for THE OPPONENTS (season ${previousSeason}): M, F, MX\n`
+        );
+
         // Create encounters
         await createEncounters(ctx, drawId, teamId, opponentTeamId, season);
 
@@ -187,6 +218,9 @@ module.exports = {
         console.log(`   • SubEvent: Test SubEvent M (${subEventId})`);
         console.log(`   • Draw: Test Draw (${drawId})`);
         console.log(`   • Encounters: 10`);
+        console.log(
+          `   • Historical teams (season ${previousSeason}): TEAM AWESOME [${historicalTeamIds.join(", ")}], THE OPPONENTS [${historicalOpponentTeamIds.join(", ")}]`
+        );
         console.log("\n✨ Seed completed successfully!");
       });
     } catch (error) {
