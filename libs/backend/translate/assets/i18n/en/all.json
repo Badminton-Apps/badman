@@ -2793,7 +2793,7 @@
           "none": "No errors found",
           "player-club": "Player {playerFullName} is not part of {clubName} (current club: {activeClubName})",
           "player-club-none": "No club known for player {playerFullName}",
-          "player-gender": "{playerFullName} is a {player.gender} but a {gender} was expected",
+          "player-gender": "{playerFullName} is a {playerGender} but a {gender} was expected",
           "player-min-level": "{playerFullName} has an index of {playerRanking} in {rankingType} and may be at least {minLevel} .",
           "player-subevent": "{playerFullName} is part of the base team {teamName} that also plays in {subEventName} ",
           "riser": "The team should promote, but is not enrolled in a higher series",
@@ -2812,6 +2812,12 @@
           "player-min-level": "Request for exception of player {playerFullName} in {rankingType} has not yet been accepted",
           "subtitute-team-index": "s",
           "title": "Warnings"
+        }
+      },
+      "params": {
+        "gender": {
+          "male": "man",
+          "female": "woman"
         }
       }
     },

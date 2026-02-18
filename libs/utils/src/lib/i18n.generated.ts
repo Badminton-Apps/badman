@@ -2831,6 +2831,12 @@ export type I18nTranslations = {
                         "title": string;
                     };
                 };
+                "params": {
+                    "gender": {
+                        "male": string;
+                        "female": string;
+                    };
+                };
             };
             "notFoundPage": {
                 "title": string;

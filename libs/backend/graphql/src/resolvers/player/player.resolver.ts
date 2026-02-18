@@ -249,8 +249,6 @@ export class PlayersResolver {
     historical = false
   ): Promise<(Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
-    console.log("args", args);
-    console.log("historical", historical);
     if (!historical) {
       const now = new Date();
       args.where = {
@@ -273,11 +271,9 @@ export class PlayersResolver {
         ],
       };
     }
-    const clubs = await player.getClubs({
+    return await player.getClubs({
       ...args,
     });
-    console.log("clubs", clubs);
-    return clubs;
   }
 
   @ResolveField(() => Setting, { nullable: true })

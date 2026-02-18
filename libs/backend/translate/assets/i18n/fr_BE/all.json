@@ -1637,6 +1637,14 @@
     }
   },
   "v1": {
+    "entryTeamDrawer": {
+      "params": {
+        "gender": {
+          "male": "homme",
+          "female": "femme"
+        }
+      }
+    },
     "shell": {
       "sidebar": {
         "tooltips": {
