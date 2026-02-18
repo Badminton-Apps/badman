@@ -173,16 +173,16 @@ async function createDrawCompetition(ctx, subEventId, season) {
 /**
  * Create opponent team
  */
-async function createOpponentTeam(ctx, clubId, season) {
+async function createOpponentTeam(ctx, clubId, season, teamType = "M") {
     console.log("👥 Creating opponent Team...");
     // Fetch club and generate team name
     const club = await (0, team_helpers_1.getClubById)(ctx, clubId);
-    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, "M", "H");
+    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, teamType, "H");
     const opponentTeam = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
      VALUES (:clubId, :type, :season, 1, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
-        type: "M",
+        type: teamType,
         season,
         name: teamName,
         abbreviation,
