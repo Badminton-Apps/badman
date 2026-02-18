@@ -1446,8 +1446,13 @@ export type I18nTranslations = {
         };
         "v1": {
             "enrollment": {
+                "disabled": {
+                    "title": string;
+                    "message": string;
+                };
                 "selectedLocationCard": {
                     "courts": string;
+                    "noGameDays": string;
                 };
                 "team-enrollment": {
                     "import-existing-optional": string;
@@ -1545,16 +1550,6 @@ export type I18nTranslations = {
                         };
                         "moreCharactersRequired": string;
                     };
-                };
-            };
-            "enrollment": {
-                "disabled": {
-                    "title": string;
-                    "message": string;
-                };
-                "selectedLocationCard": {
-                    "courts": string;
-                    "noGameDays": string;
                 };
             };
             "player": {
@@ -2855,12 +2850,6 @@ export type I18nTranslations = {
                         "player-min-level": string;
                         "subtitute-team-index": string;
                         "title": string;
-                    };
-                };
-                "params": {
-                    "gender": {
-                        "male": string;
-                        "female": string;
                     };
                 };
             };
