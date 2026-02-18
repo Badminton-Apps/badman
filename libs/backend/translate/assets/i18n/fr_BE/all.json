@@ -1637,7 +1637,80 @@
     }
   },
   "v1": {
+    "enrollment": {
+      "disabled": {
+        "title": "Inscriptions fermées",
+        "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
+      },
+      "selectedLocationCard": {
+        "courts": "{count, plural, one {# terrain} other {# terrains}}",
+        "noGameDays": "Aucun jour de match trouvé."
+      },
+      "team-enrollment": {
+        "import-existing-optional": "Importer l'existant (optionnel)",
+        "import-teams": {
+          "title": "Importer les équipes",
+          "allTeams": "Toutes les équipes",
+          "categories": {
+            "MX": "Mixte",
+            "M": "Messieurs",
+            "F": "Dames",
+            "NATIONAL": "National"
+          },
+          "cancel": "Annuler",
+          "import": "Importer"
+        }
+      }
+    },
     "entryTeamDrawer": {
+      "sectionTitles": {
+        "basePlayers": "Joueurs de base",
+        "generalInfo": "Infos générales",
+        "validations": "Validations"
+      },
+      "dataKeys": {
+        "teamIndex": "Indice d'équipe",
+        "teamCaptain": "Capitaine",
+        "preferredPlayingTime": "Heure de jeu préférée"
+      },
+      "emptyStates": {
+        "noValidations": "Aucune validation trouvée"
+      },
+      "noData": "Aucune donnée",
+      "validation": {
+        "errors": {
+          "already": "Joueur déjà présent comme titulaire",
+          "base-gender-mix": "L'équipe de base comprend {maleCount} hommes et {femaleCount} femmes, alors qu'il devrait y en avoir 2 chaque fois",
+          "base-other-team": "{playerFullName} ne peut être inscrit comme joueur de base qu'une seule fois par ligue",
+          "comp-status-base": "Le joueur de base {playerFullName} n'est pas inscrit en compétition",
+          "comp-status-team": "{playerFullName} n'est pas inscrit en compétition",
+          "faller": "L'équipe devrait être reléguée mais n'est pas inscrite en série inférieure",
+          "first-team-index": "Une première équipe reléguée ne peut pas aligner une équipe avec un indice inférieur à son indice de base pendant la saison",
+          "no-subevent": "Veuillez choisir une série",
+          "none": "Aucune erreur trouvée",
+          "player-club": "Le joueur {playerFullName} ne fait pas partie de {clubName} (club actuel : {activeClubName})",
+          "player-club-none": "Aucun club connu pour le joueur {playerFullName}",
+          "player-gender": "{playerFullName} est un {playerGender} mais un {gender} était attendu",
+          "player-min-level": "{playerFullName} a un indice de {playerRanking} en {rankingType} et doit être au moins {minLevel}",
+          "player-subevent": "{playerFullName} fait partie de l'équipe de base {teamName} qui joue aussi en {subEventName}",
+          "riser": "L'équipe devrait être promue mais n'est pas inscrite en série supérieure",
+          "team-index": "La composition la plus forte n'est pas possible. L'indice d'équipe est {teamIndex} et l'indice de base est {baseIndex}.",
+          "team-order": "L'équipe {teamName} est en série inférieure mais a un numéro d'équipe plus bas",
+          "team-order-same-subevent": "L'équipe {teamName} a un meilleur indice dans la même série mais a un numéro d'équipe plus bas",
+          "team-to-strong": "L'indice de base {baseIndex} ne peut pas être inférieur à la limite de la division {minIndex}",
+          "team-to-week": "L'indice de départ {baseIndex} ne peut pas dépasser la limite de la division {maxIndex}",
+          "title": "Erreurs",
+          "too-few-base-players": "Trop peu de joueurs de base",
+          "too-many-base-players": "Trop de joueurs de base"
+        },
+        "warnings": {
+          "already-saved": "Les nouvelles modifications ne peuvent pas être enregistrées entre-temps, soumettez à nouveau le formulaire à la dernière étape pour enregistrer",
+          "base-other-team": "{playerFullName} est joueur de base dans une autre équipe",
+          "player-min-level": "Demande d'exception pour {playerFullName} en {rankingType} pas encore acceptée",
+          "subtitute-team-index": "s",
+          "title": "Avertissements"
+        }
+      },
       "params": {
         "gender": {
           "male": "homme",
@@ -1670,31 +1743,6 @@
               "endRequired": "La date de fin est requise"
             }
           }
-        }
-      }
-    },
-    "enrollment": {
-      "disabled": {
-        "title": "Inscriptions fermées",
-        "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
-      },
-      "selectedLocationCard": {
-        "courts": "{count, plural, one {# terrain} other {# terrains}}",
-        "noGameDays": "Aucun jour de match trouvé."
-      },
-      "team-enrollment": {
-        "import-existing-optional": "Importer l'existant (optionnel)",
-        "import-teams": {
-          "title": "Importer les équipes",
-          "allTeams": "Toutes les équipes",
-          "categories": {
-            "MX": "Mixte",
-            "M": "Messieurs",
-            "F": "Dames",
-            "NATIONAL": "National"
-          },
-          "cancel": "Annuler",
-          "import": "Importer"
         }
       }
     }
