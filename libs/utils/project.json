@@ -50,6 +50,14 @@
       "options": {
         "eslintConfig": "libs/utils/eslint.config.js"
       }
+    },
+    "ensure-i18n": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node libs/utils/scripts/ensure-i18n-generated.cjs",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
     }
   }
 }

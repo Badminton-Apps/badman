@@ -1146,8 +1146,13 @@
   },
   "v1": {
     "enrollment": {
+      "disabled": {
+        "title": "Inschrijvingen gesloten",
+        "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
+      },
       "selectedLocationCard": {
-        "courts": "Velden"
+        "courts": "{count, plural, one {# terrein} other {# terreinen}}",
+        "noGameDays": "Geen speeldagen gevonden."
       },
       "team-enrollment": {
         "import-existing-optional": "Bestaande importeren (optioneel)",
@@ -1245,16 +1250,6 @@
           },
           "moreCharactersRequired": "Gelieve {minLength} of meer karakters te gebruiken om te zoeken"
         }
-      }
-    },
-    "enrollment": {
-      "disabled": {
-        "title": "Inschrijvingen gesloten",
-        "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
-      },
-      "selectedLocationCard": {
-        "courts": "{count, plural, one {# terrein} other {# terreinen}}",
-        "noGameDays": "Geen speeldagen gevonden."
       }
     },
     "player": {
@@ -2517,12 +2512,6 @@
         "noValidations": "Geen validaties gevonden"
       },
       "noData": "Geen gegevens",
-      "params": {
-        "gender": {
-          "male": "Man",
-          "female": "Vrouw"
-        }
-      },
       "validation": {
         "errors": {
           "already": "Speler is al aanwezig als titularis.",
