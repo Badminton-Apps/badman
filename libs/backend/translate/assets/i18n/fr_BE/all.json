@@ -1635,5 +1635,26 @@
       "transfer-file": "Transférer le fichier",
       "unkown": "Inconnu"
     }
+  },
+  "v1": {
+    "enrollment": {
+      "selectedLocationCard": {
+        "courts": "Terrains"
+      },
+      "team-enrollment": {
+        "import-existing-optional": "Importer l'existant (optionnel)",
+        "import-teams": {
+          "title": "Importer les équipes",
+          "allTeams": "Toutes les équipes",
+          "categories": {
+            "MX": "Mixte",
+            "M": "Messieurs",
+            "F": "Dames"
+          },
+          "cancel": "Annuler",
+          "import": "Importer"
+        }
+      }
+    }
   }
 }

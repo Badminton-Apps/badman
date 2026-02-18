@@ -1445,6 +1445,25 @@ export type I18nTranslations = {
             };
         };
         "v1": {
+            "enrollment": {
+                "selectedLocationCard": {
+                    "courts": string;
+                };
+                "team-enrollment": {
+                    "import-existing-optional": string;
+                    "import-teams": {
+                        "title": string;
+                        "allTeams": string;
+                        "categories": {
+                            "MX": string;
+                            "M": string;
+                            "F": string;
+                        };
+                        "cancel": string;
+                        "import": string;
+                    };
+                };
+            };
             "messages": {
                 "buttons": {
                     "hide": string;
