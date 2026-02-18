@@ -1637,6 +1637,14 @@
     }
   },
   "v1": {
+    "entryTeamDrawer": {
+      "params": {
+        "gender": {
+          "male": "Homme",
+          "female": "Femme"
+        }
+      }
+    },
     "enrollment": {
       "selectedLocationCard": {
         "courts": "Terrains"
@@ -1649,7 +1657,8 @@
           "categories": {
             "MX": "Mixte",
             "M": "Messieurs",
-            "F": "Dames"
+            "F": "Dames",
+            "NATIONAL": "National"
           },
           "cancel": "Annuler",
           "import": "Importer"

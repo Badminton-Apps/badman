@@ -1458,6 +1458,7 @@ export type I18nTranslations = {
                             "MX": string;
                             "M": string;
                             "F": string;
+                            "NATIONAL": string;
                         };
                         "cancel": string;
                         "import": string;
@@ -2794,6 +2795,12 @@ export type I18nTranslations = {
                     "noValidations": string;
                 };
                 "noData": string;
+                "params": {
+                    "gender": {
+                        "male": string;
+                        "female": string;
+                    };
+                };
                 "validation": {
                     "errors": {
                         "already": string;

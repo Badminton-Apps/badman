@@ -1157,7 +1157,8 @@
           "categories": {
             "MX": "Gemengd",
             "M": "Heren",
-            "F": "Dames"
+            "F": "Dames",
+            "NATIONAL": "Nationaal"
           },
           "cancel": "Annuleren",
           "import": "Importeren"
@@ -2494,6 +2495,12 @@
         "noValidations": "Geen validaties gevonden"
       },
       "noData": "Geen gegevens",
+      "params": {
+        "gender": {
+          "male": "Man",
+          "female": "Vrouw"
+        }
+      },
       "validation": {
         "errors": {
           "already": "Speler is al aanwezig als titularis.",
