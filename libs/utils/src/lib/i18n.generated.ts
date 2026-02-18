@@ -5,4133 +5,4143 @@
 import { Path } from "nestjs-i18n";
 /* prettier-ignore */
 export type I18nTranslations = {
-  all: {
-    button: {
-      add: string;
-      "add-comment": string;
-      "add-location": string;
-      agree: string;
-      all: string;
-      cancel: string;
-      clear: string;
-      clone: string;
-      close: string;
-      copy: string;
-      create: string;
-      delete: string;
-      detail: string;
-      done: string;
-      download: string;
-      edit: string;
-      "merge-accounts": string;
-      next: string;
-      no: string;
-      none: string;
-      "open-in-new-tab": string;
-      prev: string;
-      "re-sync": string;
-      "re-sync-standings": string;
-      save: string;
-      "save-and-continue": string;
-      "set-primary": string;
-      "set-ranking-groups": string;
-      submit: string;
-      "sync-ranking": string;
-      "watch-system": string;
-      yes: string;
-    };
-    club: {
-      confirmed: string;
-      current: string;
-      delete: {
-        player: {
-          description: string;
-          title: string;
+    "all": {
+        "button": {
+            "add": string;
+            "add-comment": string;
+            "add-location": string;
+            "agree": string;
+            "all": string;
+            "cancel": string;
+            "clear": string;
+            "clone": string;
+            "close": string;
+            "copy": string;
+            "create": string;
+            "delete": string;
+            "detail": string;
+            "done": string;
+            "download": string;
+            "edit": string;
+            "merge-accounts": string;
+            "next": string;
+            "no": string;
+            "none": string;
+            "open-in-new-tab": string;
+            "prev": string;
+            "re-sync": string;
+            "re-sync-standings": string;
+            "save": string;
+            "save-and-continue": string;
+            "set-primary": string;
+            "set-ranking-groups": string;
+            "submit": string;
+            "sync-ranking": string;
+            "watch-system": string;
+            "yes": string;
         };
-        team: {
-          description: string;
-          title: string;
-        };
-      };
-      encounters: {
-        "change-date": string;
-        "change-location": string;
-        "change-location-note": string;
-        "home-games": string;
-        "open-requests": {
-          all: string;
-          "no-requests": string;
-          "open-requests": string;
-          title: string;
-        };
-        validation: {
-          all: string;
-          invalid: string;
-          potential: string;
-          title: string;
-          valid: string;
-        };
-      };
-      end: string;
-      hints: {
-        "captain-not-in-role": string;
-        here: string;
-      };
-      "membership-types": {
-        loan: string;
-        normal: string;
-      };
-      menu: {
-        "add-player": string;
-        twizzit: string;
-      };
-      "new-team": string;
-      number: string;
-      start: string;
-      titles: {
-        encounters: string;
-        "encounter-form": string;
-        matrix: string;
-        players: string;
-        plural: string;
-        single: string;
-        teams: string;
-      };
-    };
-    competition: {
-      "allow-competition": string;
-      "avg-level": string;
-      away: string;
-      "change-encounter": {
-        "add-date": string;
-        calendar: {
-          "no-availibility": string;
-          "no-competition": string;
-          "no-space": string;
-          option: string;
-          "other-games": string;
-          "out-of-season": string;
-          remaining: string;
-          removed: string;
-          requested: string;
-        };
-        "choose-date": string;
-        "choose-encounter": string;
-        "choose-location": string;
-        "choose-team": string;
-        "close-change-request": string;
-        comment: string;
-        "comment-added": string;
-        comments: string;
-        dates: string;
-        description: string;
-        "disclaimer-submit": string;
-        errors: {
-          closed: string;
-          "date-out-of-period": string;
-          "exception-day": string;
-          invalid: string;
-          "location-no-timeslot": string;
-          "location-not-found": string;
-          "location-not-free": string;
-          "not-accepted": string;
-          "past-date": string;
-          "same-club": string;
-          "same-date": string;
-          "same-semester": string;
-          "same-semester-date": string;
-          "team-conflict": string;
-          "select-one-date": string;
-          "select-one-date-or-comment": string;
-        };
-        "not-possible": string;
-        possible: string;
-        "re-open": string;
-        "request-finished": string;
-        requested: string;
-        "requested-failed": string;
-        selected: string;
-        "show-not-availible": {
-          plural: string;
-          singular: string;
-        };
-        submit: {
-          description: string;
-          title: string;
-        };
-        title: string;
-        "update-badman": string;
-        "update-visual": string;
-        warnings: {
-          closed: string;
-          closing: string;
-          "home-accept": string;
-          "location-change": string;
-          "missing-availability": string;
-          "selected-different-location": string;
-        };
-      };
-      "club-assembly": {
-        description: string;
-        note: string;
-        warnings: {
-          base: string;
-          "base-subevent": string;
-          "better-meta": string;
-          "min-level": string;
-          "other-gender": string;
-          title: string;
-        };
-      };
-      date: string;
-      delete: {
-        description: string;
-        title: string;
-      };
-      draw: {
-        encounters: string;
-        title: string;
-      };
-      encounters: {
-        "change-date": string;
-        "change-location": string;
-        "change-location-note": string;
-        gameleader: string;
-        "home-games": string;
-        "no-more": string;
-        "open-requests": string;
-        shuttle: string;
-        title: string;
-      };
-      home: string;
-      "last-updated": string;
-      liga: string;
-      "load-more": string;
-      map: {
-        title: string;
-      };
-      menu: {
-        actions: string;
-        "add-event": string;
-        averages: string;
-        copy: string;
-        dates: string;
-        "download-base-players": string;
-        "download-cp": string;
-        "download-teams": string;
-        "download-exceptions": string;
-        "download-locations": string;
-        "export-planner": string;
-        "make-official": string;
-        "new-date": string;
-        "open_close_change-encounters": string;
-        open_close_enrollments: string;
-        reports: string;
-        sync: string;
-        "unmake-official": string;
-      };
-      national: string;
-      "no-more-games": string;
-      note: string;
-      "open-close": {
-        "close-accept-requests": string;
-        "close-enrollment": string;
-        "close-enrollment-required": string;
-        "close-enrollment-year": string;
-        "close-new-requets": string;
-        "open-enrollment": string;
-        "open-enrollment-required": string;
-        "open-enrollment-year": string;
-        "open-requests": string;
-      };
-      originalDate: string;
-      overview: {
-        official: string;
-        "only-official": string;
-      };
-      prov: string;
-      subevent: {
-        max: string;
-        "max-base": string;
-        "min-base": string;
-        name: {
-          none: string;
-          plural: string;
-          singular: string;
-        };
-        title: string;
-      };
-      "team-assembly": {
-        captain: string;
-        "change-team": string;
-        disclaimer: string;
-        double1: string;
-        double2: string;
-        double3: string;
-        double4: string;
-        download: string;
-        errors: {
-          already: string;
-          "club-base-other-team": string;
-          "comp-status": string;
-          "comp-status-html": string;
-          none: string;
-          "not-enough-players": string;
-          "player-above-lower": string;
-          "player-gender": string;
-          "player-genders": string;
-          "player-max-double-games": string;
-          "player-max-mix-games": string;
-          "player-max-mixed-games": string;
-          "player-max-single-games": string;
-          "player-min-level": string;
-          "player-order-doubles": string;
-          "player-order-highest": string;
-          "player-order-single": string;
-          "players-above-lower": string;
-          "team-index": string;
-          "team-to-strong": string;
-          title: string;
-          "to-much": string;
-        };
-        info: string;
-        "level-exemption": string;
-        mix1: string;
-        mix2: string;
-        mix3: string;
-        mix4: string;
-        players: {
-          backup: string;
-          base: string;
-          team: string;
-          title: string;
-        };
-        single1: string;
-        single2: string;
-        single3: string;
-        single4: string;
-        substitude: string;
-        "team-index": string;
-        "team-index-ignored": string;
-        title: string;
-        warnings: {
-          "subtitute-team-index": string;
-        };
-      };
-      "team-enrollment": {
-        close: string;
-        closed: string;
-        comments: {
-          liga: string;
-          nat: string;
-          prov: string;
-          title: string;
-        };
-        enrollments: string;
-        errors: {
-          already: string;
-          "base-gender-mix": string;
-          "base-other-team": string;
-          "comp-status-base": string;
-          "comp-status-team": string;
-          faller: string;
-          "first-team-index": string;
-          "no-subevent": string;
-          none: string;
-          "player-club": string;
-          "player-club-none": string;
-          "player-gender": string;
-          "player-min-level": string;
-          "player-subevent": string;
-          riser: string;
-          "team-index": string;
-          "team-order": string;
-          "team-order-same-subevent": string;
-          "team-to-strong": string;
-          "team-to-week": string;
-          title: string;
-          "too-few-base-players": string;
-          "too-many-base-players": string;
-        };
-        "example-error": string;
-        "example-warning": string;
-        exceptions: string;
-        info: string;
-        "level-exemption": string;
-        "level-exemption-requested": string;
-        loan: {
-          "add-loan": string;
-          "loan-locked": string;
-          "loan-player": string;
-        };
-        locations: {
-          "availible-courts": string;
-          "courts-hint": string;
-          title: string;
-        };
-        "mixed-national-teams": string;
-        open: string;
-        "play-days": string;
-        players: {
-          backup: string;
-          base: string;
-          "level-exception": {
-            reason: string;
-            request: string;
-          };
-          loan: string;
-          regular: string;
-          title: string;
-          transfer: string;
-        };
-        "request-level-exception": string;
-        "save-and-continue-tooltip": string;
-        saved: string;
-        "saved-failed": string;
-        "select-club": string;
-        "select-events": string;
-        "select-location": string;
-        "select-teams": string;
-        "select-teams-description": string;
-        teams: {
-          captain: string;
-          "change-team": string;
-          "new-teams": string;
-          substitude: string;
-          "team-index": string;
-          "team-index-ignored": string;
-        };
-        title: string;
-        transfer: {
-          "add-transfer": string;
-          "enrolled-as": string;
-          loans: string;
-          "transfer-locked": string;
-          "transfer-player": string;
-          "transfer-teams": string;
-          "transfer-teams-description": string;
-          transfers: string;
-          "transfers-players": string;
-        };
-        validations: string;
-        warnings: {
-          "already-saved": string;
-          "base-other-team": string;
-          "player-min-level": string;
-          "subtitute-team-index": string;
-          title: string;
-        };
-      };
-      title: string;
-      type: string;
-      vs: string;
-      "vs-short": string;
-    };
-    countries: {
-      be: {
-        antwerpen: string;
-        "brabant-wallon": string;
-        "brussels-hoofdstedelijk-gewest": string;
-        hainaut: string;
-        liege: string;
-        limburg: string;
-        luxembourg: string;
-        name: string;
-        namur: string;
-        "oost-vlaanderen": string;
-        "vlaams-brabant": string;
-        "west-vlaanderen": string;
-      };
-    };
-    days: {
-      friday: string;
-      monday: string;
-      saturday: string;
-      sunday: string;
-      thursday: string;
-      tuesday: string;
-      wednesday: string;
-    };
-    event: {
-      checkEncounterForFilledIn: string;
-      "last-sync": string;
-      standing: {
-        games: string;
-        lost: string;
-        name: string;
-        played: string;
-        points: string;
-        sets: string;
-        spoiler: string;
-        tied: string;
-        title: string;
-        totalPoints: string;
-        won: string;
-      };
-      type: string;
-      types: {
-        competition: string;
-        tournament: string;
-      };
-      usedRankingNote: string;
-    };
-    evolution: {
-      warning: string;
-    };
-    faq: {
-      info: {
-        description: string;
-        title: string;
-      };
-      legend: string;
-      overview: {
-        description: string;
-        "evolution-1": string;
-        "evolution-2": string;
-        "game-result": string;
-        levels: string;
-        title: string;
-      };
-      points: {
-        table: {
-          level: string;
-          "points-needed-down": string;
-          "points-needed-up": string;
-          "points-won": string;
-        };
-        title: string;
-      };
-      ranking: {
-        description: string;
-        title: string;
-      };
-      title: string;
-      updates: {
-        description: string;
-        title: string;
-      };
-    };
-    game: {
-      bye: string;
-      order: {
-        double: string;
-        female: string;
-        male: string;
-        mix: string;
-        mixed: string;
-        single: string;
-      };
-      points: string;
-      recent: {
-        title: string;
-      };
-      title: string;
-      types: {
-        double: string;
-        female: string;
-        long: {
-          D: string;
-          F: string;
-          M: string;
-          MX: string;
-          S: string;
-        };
-        male: string;
-        mix: string;
-        short: {
-          double: string;
-          female: string;
-          male: string;
-          mix: string;
-          single: string;
-        };
-        single: string;
-        title: string;
-      };
-      unkown: string;
-      upcoming: {
-        title: string;
-      };
-    };
-    gender: {
-      female: string;
-      females: string;
-      long: {
-        F: string;
-        M: string;
-        MX: string;
-      };
-      longs: {
-        F: string;
-        M: string;
-      };
-      male: string;
-      males: string;
-      mix: string;
-      national: string;
-      select: string;
-      short: {
-        female: string;
-        male: string;
-        mix: string;
-      };
-      title: string;
-    };
-    input: {
-      abbreviation: string;
-      "availible-courts": string;
-      city: string;
-      competitionplayer: string;
-      courts: string;
-      date: string;
-      "date-range": string;
-      day: string;
-      email: string;
-      "end-hour": string;
-      error: {
-        email: string;
-        required: string;
-      };
-      fax: string;
-      firstname: string;
-      fullName: string;
-      gender: string;
-      hour: string;
-      lastname: string;
-      latitude: string;
-      location: string;
-      longitude: string;
-      memberId: string;
-      name: string;
-      phone: string;
-      postalcode: string;
-      required: string;
-      select: string;
-      shuttle: string;
-      "start-hour": string;
-      state: string;
-      street: string;
-      streetnumber: string;
-      sub: string;
-      teamName: string;
-      "this-required": string;
-      type: string;
-      year: string;
-    };
-    jobs: {
-      title: string;
-    };
-    landing: {
-      description: string;
-      title: string;
-    };
-    lists: {
-      name: string;
-    };
-    loading: string;
-    locations: {
-      "add-day": string;
-      "add-exception": string;
-      days: string;
-      exceptions: string;
-      hint: string;
-      period: {
-        description: string;
-        errors: {
-          "invalid-end": string;
-          "invalid-start": string;
-        };
-        label: string;
-        title: string;
-        tooltip: string;
-      };
-      title: string;
-    };
-    management: {
-      calculate: string;
-      cleanup: string;
-      download: string;
-      end: string;
-      force: string;
-      "games-to-use": string;
-      import: string;
-      "new-system": string;
-      "number-short": string;
-      "procent-losing-short": string;
-      "procent-winning-short": string;
-      ranking: string;
-      reset: string;
-      select: string;
-      start: string;
-      sync: string;
-    };
-    messages: {
-      buttons: {
-        hide: string;
-        seeAll: string;
-      };
-    };
-    months: {
-      april: string;
-      august: string;
-      december: string;
-      february: string;
-      january: string;
-      june: string;
-      march: string;
-      may: string;
-      november: string;
-      october: string;
-      september: string;
-    };
-    notifications: {
-      noNotifications: string;
-      types: {
-        encounterNotAcceptedNotification: string;
-        encounterNotEnteredNotification: string;
-      };
-    };
-    permission: {
-      "no-perm": string;
-    };
-    pickers: {
-      "end-time": string;
-      none: string;
-      "select-club": string;
-      "select-country": string;
-      "select-encounter": string;
-      "select-end-time": string;
-      "select-event-competition": string;
-      "select-player": string;
-      "select-season": string;
-      "select-start-time": string;
-      "select-state": string;
-      "select-subevent-competition": string;
-      "select-team": string;
-      "select-team-groups": {
-        F: string;
-        M: string;
-        MX: string;
-        NATIONAL: string;
-      };
-      "select-year": string;
-      "start-time": string;
-    };
-    player: {
-      backup: string;
-      base: string;
-      claimed: string;
-      ical: {
-        click: string;
-        copied: string;
-        description: string;
-        linked: string;
-        "team-season": string;
-      };
-      menu: {
-        add: string;
-        claim: string;
-        delete: string;
-        edit: string;
-        recalculatePoints: string;
-      };
-      "no-memberid": string;
-      "no-players": string;
-      "re-calculate": {
-        calculate: string;
-        from: string;
-        title: string;
-        to: string;
-      };
-      regular: string;
-      search: {
-        "backup-player": string;
-        create: string;
-        "in-list": string;
-        label: string;
-        "not-found": string;
-      };
-      title: string;
-      notFound: string;
-      ranking: {
-        single: string;
-        double: string;
-        mix: string;
-      };
-      messages: {
-        claimAccountSuccessc: string;
-      };
-      crud: {
-        title: string;
-        tabs: {
-          player: string;
-          ranking: string;
-          clubHistory: string;
-          permissions: string;
-        };
-        playerForm: {
-          inputs: {
-            name: string;
-            lastName: string;
-            gender: string;
-            memberId: string;
-            registrationNumber: string;
-          };
-          gender: {
-            M: string;
-            F: string;
-          };
-          buttons: {
-            save: string;
-          };
-          messages: {
-            success: string;
-          };
-        };
-        ranking: {
-          lastRanking: {
-            title: string;
-            notFound: string;
-            inputs: {
-              single: string;
-              double: string;
-              mix: string;
-            };
-            messages: {
-              success: string;
-            };
-            buttons: {
-              save: string;
-            };
-          };
-          competitionPlayer: {
-            title: string;
-            inputs: {
-              competitionPlayer: string;
-            };
-            messages: {
-              success: string;
-            };
-            buttons: {
-              save: string;
-            };
-          };
-          allUpdates: {
-            title: string;
-            nextRanking: string;
-            updates: string;
-            buttons: {
-              add: string;
-            };
-            table: {
-              headers: {
-                date: string;
-                single: string;
-                double: string;
-                mix: string;
-                actions: string;
-              };
-              actions: {
-                edit: string;
-                delete: string;
-              };
-            };
-            rankingPlace: {
-              editDialog: {
-                titleEdit: string;
-                titleCreate: string;
-                inputs: {
-                  rankingDate: string;
-                  single: string;
-                  double: string;
-                  mix: string;
-                  singlePoints: string;
-                  doublePoints: string;
-                  mixPoints: string;
-                  updatePossible: string;
+        "club": {
+            "confirmed": string;
+            "current": string;
+            "delete": {
+                "player": {
+                    "description": string;
+                    "title": string;
                 };
-                messages: {
-                  successCreate: string;
-                  successUpdate: string;
+                "team": {
+                    "description": string;
+                    "title": string;
                 };
-                buttons: {
-                  cancel: string;
-                  saveEdit: string;
-                  saveCreate: string;
+            };
+            "encounters": {
+                "change-date": string;
+                "change-location": string;
+                "change-location-note": string;
+                "home-games": string;
+                "open-requests": {
+                    "all": string;
+                    "no-requests": string;
+                    "open-requests": string;
+                    "title": string;
                 };
-              };
-              deleteDialog: {
-                title: string;
-                subTitle: string;
-                messages: {
-                  success: string;
+                "validation": {
+                    "all": string;
+                    "invalid": string;
+                    "potential": string;
+                    "title": string;
+                    "valid": string;
                 };
-                buttons: {
-                  no: string;
-                  yes: string;
+            };
+            "end": string;
+            "hints": {
+                "captain-not-in-role": string;
+                "here": string;
+            };
+            "membership-types": {
+                "loan": string;
+                "normal": string;
+            };
+            "menu": {
+                "add-player": string;
+                "twizzit": string;
+            };
+            "new-team": string;
+            "number": string;
+            "start": string;
+            "titles": {
+                "encounters": string;
+                "encounter-form": string;
+                "matrix": string;
+                "players": string;
+                "plural": string;
+                "single": string;
+                "teams": string;
+            };
+        };
+        "competition": {
+            "allow-competition": string;
+            "avg-level": string;
+            "away": string;
+            "change-encounter": {
+                "add-date": string;
+                "calendar": {
+                    "no-availibility": string;
+                    "no-competition": string;
+                    "no-space": string;
+                    "option": string;
+                    "other-games": string;
+                    "out-of-season": string;
+                    "remaining": string;
+                    "removed": string;
+                    "requested": string;
                 };
-              };
-            };
-          };
-        };
-        clubHistory: {
-          notFound: string;
-          buttons: {
-            add: string;
-          };
-          deleteDialog: {
-            title: string;
-            subTitle: string;
-            messages: {
-              success: string;
-            };
-            buttons: {
-              no: string;
-              yes: string;
-            };
-          };
-          editDialog: {
-            titleAdd: string;
-            titleEdit: string;
-            inputs: {
-              selectClub: string;
-              isCurrentClub: string;
-              start: string;
-              end: string;
-              membershipType: string;
-              confirmed: string;
-            };
-            membershipTypes: {
-              NORMAL: string;
-              LOAN: string;
-            };
-            messages: {
-              successAdd: string;
-              successEdit: string;
-            };
-            buttons: {
-              cancel: string;
-              add: string;
-              edit: string;
-            };
-          };
-          table: {
-            notFound: string;
-            headers: {
-              fullName: string;
-              start: string;
-              end: string;
-              actions: string;
-            };
-            actions: {
-              edit: string;
-              delete: string;
-            };
-          };
-        };
-        permissionsForm: {
-          buttons: {
-            save: string;
-          };
-          messages: {
-            success: string;
-          };
-        };
-        deletePlayer: {
-          title: string;
-          subTitle: string;
-          messages: {
-            success: string;
-          };
-          buttons: {
-            no: string;
-            yes: string;
-          };
-        };
-        recalculatePoints: {
-          title: string;
-          subTitle: string;
-          inputs: {
-            from: string;
-            to: string;
-          };
-          messages: {
-            success: string;
-          };
-          buttons: {
-            close: string;
-            calculate: string;
-          };
-        };
-      };
-      nextEncounterTitle: string;
-      upcomingEncountersTitle: string;
-      noUpcomingEncounters: string;
-      noUpcomingEncounter: string;
-      recentEncountersTitle: string;
-      noRecentEncounters: string;
-      rolePrefix: string;
-      gameLeader: string;
-      unknown: string;
-      captain: string;
-      player: string;
-      date: string;
-      teams: string;
-      against: string;
-      location: string;
-      meetingForm: string;
-      filled: string;
-      notStarted: string;
-      started: string;
-      notFilled: string;
-      notSelected: string;
-      teamFormation: string;
-      teamIsFormed: string;
-      noTeamFormation: string;
-      won: string;
-      lost: string;
-      draw: string;
-      buttons: {
-        change: string;
-        create: string;
-        select: string;
-        edit: string;
-        continue: string;
-        view: string;
-        allEncounters: string;
-        viewEncounterForm: string;
-      };
-      eventTypes: {
-        D: string;
-        F: string;
-        M: string;
-        MX: string;
-        S: string;
-        unknown: string;
-      };
-      points: string;
-      statuses: {
-        won: string;
-        lost: string;
-        draw: string;
-        forfeit: string;
-        absence: string;
-        noPlayers: string;
-        disqualified: string;
-        stopped: string;
-        unknown: string;
-      };
-    };
-    ranking: {
-      "all-ranking": string;
-      breakdown: {
-        "add-game": {
-          p1t1: string;
-          p1t2: string;
-          p2t1: string;
-          p2t2: string;
-          title: string;
-          won: string;
-        };
-        "can-downgrade": string;
-        "can-not-downgrade": string;
-        "can-not-upgrade": string;
-        "can-upgrade": string;
-        corrected: string;
-        countsForDowngrade: string;
-        countsForUpgrade: string;
-        date: string;
-        disclaimer: string;
-        downgrade: string;
-        "downgrade-average": string;
-        "drops-next-period": string;
-        evolution: string;
-        export: {
-          avgDowngrade: string;
-          avgUpgrade: string;
-          countsFor: string;
-          date: string;
-          LOST_DOWNGRADE: string;
-          LOST_IGNORED: string;
-          LOST_UPGRADE: string;
-          opponent1: string;
-          opponent2: string;
-          OUT_SCOPE: string;
-          player1: string;
-          player2: string;
-          points: string;
-          title: string;
-          usedForDowngrade: string;
-          usedForUpgrade: string;
-          WON: string;
-        };
-        games: {
-          none: string;
-          one: string;
-          other: string;
-        };
-        "games-downgrade": string;
-        "games-upgrade": string;
-        hint: string;
-        ignored: string;
-        includeOutOfScope: string;
-        lostGames: {
-          none: string;
-          one: string;
-          other: string;
-        };
-        "no-tean": string;
-        noGames: string;
-        notUsed: string;
-        opponent: string;
-        outOfScope: {
-          none: string;
-          one: string;
-          other: string;
-        };
-        outOfScopeDowngrade: string;
-        outOfScopeUpgrade: string;
-        outOfScopeWonGames: string;
-        period: {
-          "last-point-update": string;
-          "last-ranking-update": string;
-          "next-point-update": string;
-          "next-ranking-update": string;
-          title: string;
-        };
-        points: string;
-        pointsPerGame: string;
-        "removed-games": string;
-        team: string;
-        title: string;
-        untill: string;
-        update: {
-          last: string;
-          point: string;
-          ranking: string;
-        };
-        upgrade: string;
-        "upgrade-average": string;
-        usedForDowngrade: string;
-        usedForUpgrade: string;
-      };
-      "clone-points": string;
-      double: string;
-      "double-points": string;
-      "double-rank": string;
-      inactive: {
-        double: string;
-        mix: string;
-        single: string;
-      };
-      "last-ranking": string;
-      "last-update": string;
-      list: string;
-      "may-ranking": string;
-      menu: {
-        "add-ranking": string;
-        "add-system": string;
-      };
-      mix: string;
-      "mix-points": string;
-      "mix-rank": string;
-      "next-ranking": string;
-      single: string;
-      "single-points": string;
-      "single-rank": string;
-      table: {
-        title: string;
-      };
-      title: string;
-      trending_down: string;
-      trending_up: string;
-      "update-happend": string;
-      updates: string;
-      upload: {
-        "club-end-date": string;
-        "club-start-date": string;
-        "comp-status": string;
-        "create-new-players": string;
-        description: string;
-        hint: string;
-        preview: string;
-        "ranking-date": string;
-        "remove-current-ranking": string;
-        title: string;
-        "update-clubs": string;
-        "update-possible": string;
-        "update-ranking": string;
-      };
-    };
-    rules: {
-      title: string;
-    };
-    search: {
-      placeholder: string;
-      type: {
-        club: string;
-        eventcompetition: string;
-        eventtournament: string;
-        player: string;
-      };
-    };
-    security: {
-      claims: {
-        edit: {
-          title: string;
-        };
-      };
-      roles: {
-        locked: string;
-      };
-    };
-    settings: {
-      general: {
-        title: string;
-      };
-      languages: {
-        en: string;
-        fr_BE: string;
-        nl_BE: string;
-        title: string;
-      };
-      notifications: {
-        disclaimer: string;
-        encounter: {
-          notAcceptedNotification: string;
-          notEnteredNotification: string;
-          title: string;
-        };
-        encounterChange: {
-          confirmationNotification: string;
-          finishedNotification: string;
-          newNotification: string;
-          title: string;
-        };
-        enrollment: {
-          clubenrollment: string;
-          title: string;
-        };
-        messages: {
-          clubEnrollmentNotification: string;
-          encounterChangeConfirmationNotification: string;
-          encounterChangeFinishedNotification: string;
-          encounterChangeNewNotification: string;
-          encounterNotAcceptedNotification: string;
-          encounterNotEnteredNotification: string;
-          syncFailedNotification: string;
-          syncSuccessNotification: string;
-        };
-        sync: {
-          failed: string;
-          success: string;
-          title: string;
-        };
-        title: string;
-        types: {
-          email: string;
-          none: string;
-          push: string;
-          sms: string;
-        };
-      };
-      title: string;
-    };
-    shell: {
-      sidebar: {
-        pages: {
-          myProfile: string;
-          myClub: string;
-          competition: string;
-          ranking: string;
-          enrollment: string;
-          faq: string;
-          settings: string;
-          encounters: string;
-          edit: string;
-          add: string;
-          teamFormation: string;
-          encounterForm: string;
-          confirmEncounter: string;
-        };
-        auth: {
-          logIn: string;
-          logOut: string;
-        };
-        admin: {
-          title: string;
-        };
-        competition: {
-          assembly: string;
-          "change-encounter": string;
-          enrollment: string;
-          overview: string;
-          title: string;
-        };
-        general: {
-          changelog: string;
-          faq: string;
-          title: string;
-        };
-        job: {
-          title: string;
-        };
-        persnal: {
-          club: string;
-          games: string;
-        };
-        ranking: {
-          title: string;
-        };
-        rules: {
-          title: string;
-        };
-        tournament: {
-          title: string;
-        };
-        transfer: {
-          title: string;
-        };
-      };
-      topBar: {
-        search: {
-          placeholder: string;
-          noResults: string;
-          loading: string;
-          categories: {
-            Club: string;
-            Player: string;
-            EventTournament: string;
-            EventCompetition: string;
-          };
-        };
-      };
-    };
-    team: {
-      "change-event": {
-        change: string;
-        pick: string;
-        "select-event-hint": string;
-      };
-      "change-number": {
-        description: string;
-        number: string;
-        title: string;
-        tooltip: string;
-      };
-      "check-players": string;
-      edit: string;
-      location: string;
-      "no-perm": {
-        "email-phone": string;
-      };
-      prefferd: {
-        title: string;
-      };
-      "team-index": string;
-      teams: string;
-      title: {
-        "base-fields": string;
-        captain: string;
-        players: string;
-        "prefferd-encounter": string;
-      };
-      types: {
-        female: string;
-        long: {
-          F: string;
-          M: string;
-          MX: string;
-          NATIONAL: string;
-        };
-        male: string;
-        mix: string;
-        national: string;
-        short: {
-          female: string;
-          male: string;
-          mix: string;
-          national: string;
-        };
-        title: string;
-      };
-      usedForTeam: {
-        description: string;
-        example: string;
-        select: string;
-        title: string;
-      };
-    };
-    themes: {
-      dark: string;
-      light: string;
-    };
-    tournament: {
-      away: string;
-      closeDate: string;
-      delete: {
-        description: string;
-        title: string;
-      };
-      draw: {
-        games: string;
-        title: string;
-      };
-      enrollment: {
-        close: string;
-        closed: string;
-        open: string;
-        title: string;
-      };
-      firstDay: string;
-      home: string;
-      "last-updated": string;
-      "load-more": string;
-      menu: {
-        "add-event": string;
-      };
-      name: string;
-      note: string;
-      official: string;
-      openDate: string;
-      overview: {
-        date: string;
-        menu: {
-          "add-event": string;
-          delete: string;
-          edit: string;
-          "set-open-close": string;
-          sync: string;
-        };
-        name: string;
-        "nothing-found": string;
-        official: string;
-        "only-official": string;
-      };
-      subevent: {
-        max: string;
-        "max-base": string;
-        "min-base": string;
-      };
-      title: string;
-      tournamentNumber: string;
-      type: string;
-      visualCode: string;
-      vs: string;
-      "vs-short": string;
-    };
-    "transfers-loan": {
-      buttons: {
-        "accept-selected": string;
-        "reject-selected": string;
-        upload: string;
-      };
-      filter: {
-        "current-club": string;
-        "new-club": string;
-        "only-confirmed": string;
-        player: string;
-      };
-      title: string;
-      upload: {
-        description: string;
-        error: string;
-        "file-type": string;
-        hint: string;
-        "loan-file": string;
-        title: string;
-        "transfer-file": string;
-        unkown: string;
-      };
-    };
-    v1: {
-      enrollment: {
-        disabled: {
-          title: string;
-          message: string;
-        };
-        selectedLocationCard: {
-          courts: string;
-          noGameDays: string;
-        };
-        "team-enrollment": {
-          "import-existing-optional": string;
-          "import-teams": {
-            title: string;
-            allTeams: string;
-            categories: {
-              MX: string;
-              M: string;
-              F: string;
-              NATIONAL: string;
-            };
-            cancel: string;
-            import: string;
-          };
-        };
-      };
-      messages: {
-        buttons: {
-          hide: string;
-          seeAll: string;
-        };
-      };
-      shell: {
-        sidebar: {
-          pages: {
-            myProfile: string;
-            myClub: string;
-            competition: string;
-            ranking: string;
-            enrollment: string;
-            faq: string;
-            settings: string;
-            encounters: string;
-            edit: string;
-            add: string;
-            teamFormation: string;
-            encounterForm: string;
-            confirmEncounter: string;
-            changeEncounter: string;
-            addProposal: string;
-          };
-          auth: {
-            logIn: string;
-            logOut: string;
-          };
-          admin: {
-            title: string;
-          };
-          competition: {
-            assembly: string;
-            "change-encounter": string;
-            enrollment: string;
-            overview: string;
-            title: string;
-          };
-          general: {
-            changelog: string;
-            faq: string;
-            title: string;
-          };
-          job: {
-            title: string;
-          };
-          persnal: {
-            club: string;
-            games: string;
-          };
-          ranking: {
-            title: string;
-          };
-          rules: {
-            title: string;
-          };
-          tournament: {
-            title: string;
-          };
-          transfer: {
-            title: string;
-          };
-          tooltips: {
-            registrationClosed: string;
-          };
-        };
-        topBar: {
-          search: {
-            placeholder: string;
-            noResults: string;
-            loading: string;
-            categories: {
-              Club: string;
-              Player: string;
-              EventTournament: string;
-              EventCompetition: string;
-            };
-            moreCharactersRequired: string;
-          };
-        };
-      };
-      player: {
-        backup: string;
-        base: string;
-        claimed: string;
-        ical: {
-          click: string;
-          copied: string;
-          description: string;
-          linked: string;
-          "team-season": string;
-        };
-        menu: {
-          add: string;
-          claim: string;
-          delete: string;
-          edit: string;
-          recalculatePoints: string;
-        };
-        "no-memberid": string;
-        "no-players": string;
-        "re-calculate": {
-          calculate: string;
-          from: string;
-          title: string;
-          to: string;
-        };
-        regular: string;
-        search: {
-          "backup-player": string;
-          create: string;
-          "in-list": string;
-          label: string;
-          "not-found": string;
-        };
-        title: string;
-        notFound: string;
-        ranking: {
-          single: string;
-          double: string;
-          mix: string;
-        };
-        messages: {
-          claimAccountSuccess: string;
-        };
-        crud: {
-          title: string;
-          tabs: {
-            player: string;
-            ranking: string;
-            clubHistory: string;
-            permissions: string;
-          };
-          playerForm: {
-            inputs: {
-              name: string;
-              lastName: string;
-              gender: string;
-              memberId: string;
-              registrationNumber: string;
-            };
-            gender: {
-              M: string;
-              F: string;
-            };
-            buttons: {
-              save: string;
-            };
-            messages: {
-              success: string;
-            };
-          };
-          ranking: {
-            lastRanking: {
-              title: string;
-              notFound: string;
-              inputs: {
-                single: string;
-                double: string;
-                mix: string;
-              };
-              messages: {
-                success: string;
-              };
-              buttons: {
-                save: string;
-              };
-            };
-            competitionPlayer: {
-              title: string;
-              inputs: {
-                competitionPlayer: string;
-              };
-              messages: {
-                success: string;
-              };
-              buttons: {
-                save: string;
-              };
-            };
-            allUpdates: {
-              title: string;
-              nextRanking: string;
-              updates: string;
-              buttons: {
-                add: string;
-              };
-              table: {
-                headers: {
-                  date: string;
-                  single: string;
-                  double: string;
-                  mix: string;
-                  actions: string;
+                "choose-date": string;
+                "choose-encounter": string;
+                "choose-location": string;
+                "choose-team": string;
+                "close-change-request": string;
+                "comment": string;
+                "comment-added": string;
+                "comments": string;
+                "dates": string;
+                "description": string;
+                "disclaimer-submit": string;
+                "errors": {
+                    "closed": string;
+                    "date-out-of-period": string;
+                    "exception-day": string;
+                    "invalid": string;
+                    "location-no-timeslot": string;
+                    "location-not-found": string;
+                    "location-not-free": string;
+                    "not-accepted": string;
+                    "past-date": string;
+                    "same-club": string;
+                    "same-date": string;
+                    "same-semester": string;
+                    "same-semester-date": string;
+                    "team-conflict": string;
+                    "select-one-date": string;
+                    "select-one-date-or-comment": string;
                 };
-                actions: {
-                  edit: string;
-                  delete: string;
+                "not-possible": string;
+                "possible": string;
+                "re-open": string;
+                "request-finished": string;
+                "requested": string;
+                "requested-failed": string;
+                "selected": string;
+                "show-not-availible": {
+                    "plural": string;
+                    "singular": string;
                 };
-              };
-              rankingPlace: {
-                editDialog: {
-                  titleEdit: string;
-                  titleCreate: string;
-                  inputs: {
-                    rankingDate: string;
-                    single: string;
-                    double: string;
-                    mix: string;
-                    singlePoints: string;
-                    doublePoints: string;
-                    mixPoints: string;
-                    updatePossible: string;
-                  };
-                  messages: {
-                    successCreate: string;
-                    successUpdate: string;
-                  };
-                  buttons: {
-                    cancel: string;
-                    saveEdit: string;
-                    saveCreate: string;
-                  };
+                "submit": {
+                    "description": string;
+                    "title": string;
                 };
-                deleteDialog: {
-                  title: string;
-                  subTitle: string;
-                  messages: {
-                    success: string;
-                  };
-                  buttons: {
-                    no: string;
-                    yes: string;
-                  };
+                "title": string;
+                "update-badman": string;
+                "update-visual": string;
+                "warnings": {
+                    "closed": string;
+                    "closing": string;
+                    "home-accept": string;
+                    "location-change": string;
+                    "missing-availability": string;
+                    "selected-different-location": string;
                 };
-              };
             };
-          };
-          clubHistory: {
-            notFound: string;
-            buttons: {
-              add: string;
-            };
-            deleteDialog: {
-              title: string;
-              subTitle: string;
-              messages: {
-                success: string;
-              };
-              buttons: {
-                no: string;
-                yes: string;
-              };
-            };
-            editDialog: {
-              titleAdd: string;
-              titleEdit: string;
-              inputs: {
-                selectClub: string;
-                isCurrentClub: string;
-                start: string;
-                end: string;
-                membershipType: string;
-                confirmed: string;
-              };
-              membershipTypes: {
-                NORMAL: string;
-                LOAN: string;
-              };
-              messages: {
-                successAdd: string;
-                successEdit: string;
-              };
-              buttons: {
-                cancel: string;
-                add: string;
-                edit: string;
-              };
-            };
-            table: {
-              notFound: string;
-              headers: {
-                fullName: string;
-                start: string;
-                end: string;
-                actions: string;
-              };
-              actions: {
-                edit: string;
-                delete: string;
-              };
-            };
-          };
-          permissionsForm: {
-            buttons: {
-              save: string;
-            };
-            messages: {
-              success: string;
-            };
-          };
-          deletePlayer: {
-            title: string;
-            subTitle: string;
-            messages: {
-              success: string;
-            };
-            buttons: {
-              no: string;
-              yes: string;
-            };
-          };
-          recalculatePoints: {
-            title: string;
-            subTitle: string;
-            inputs: {
-              from: string;
-              to: string;
-            };
-            messages: {
-              success: string;
-            };
-            buttons: {
-              close: string;
-              calculate: string;
-            };
-          };
-        };
-        nextEncounterTitle: string;
-        upcomingEncountersTitle: string;
-        noUpcomingEncounters: string;
-        noUpcomingEncounter: string;
-        recentEncountersTitle: string;
-        noRecentEncounters: string;
-        rolePrefix: string;
-        clubAdmin: string;
-        gameLeader: string;
-        unknown: string;
-        captain: string;
-        player: string;
-        date: string;
-        teams: string;
-        against: string;
-        location: string;
-        meetingForm: string;
-        filled: string;
-        notStarted: string;
-        started: string;
-        notFilled: string;
-        notSelected: string;
-        teamFormation: string;
-        teamIsFormed: string;
-        teamNotComplete: string;
-        noTeamFormation: string;
-        won: string;
-        lost: string;
-        draw: string;
-        statuses: {
-          won: string;
-          lost: string;
-          draw: string;
-          forfeit: string;
-          absence: string;
-          noPlayers: string;
-          disqualified: string;
-          stopped: string;
-          unknown: string;
-        };
-        buttons: {
-          change: string;
-          create: string;
-          select: string;
-          edit: string;
-          continue: string;
-          view: string;
-          allEncounters: string;
-          viewEncounterForm: string;
-          tooltips: {
-            encounterDateInFuture: string;
-            teamFormationNotComplete: string;
-          };
-        };
-        eventTypes: {
-          D: string;
-          F: string;
-          M: string;
-          MX: string;
-          S: string;
-          unknown: string;
-        };
-        points: string;
-      };
-      rankingPage: {
-        title: string;
-        buttons: {
-          add: string;
-        };
-        overviewTable: {
-          team: string;
-          name: string;
-          win: string;
-          loss: string;
-          gamesToUse: string;
-          calculateUpdates: string;
-          actions: string;
-          actionItems: {
-            watchSystem: string;
-            copyPoints: string;
-            pastePoints: string;
-            edit: string;
-            delete: string;
-            deleteSuccess: string;
-            deleteError: string;
-          };
-          noRecords: string;
-          seeAllRankingSystems: string;
-        };
-        detailTable: {
-          level: string;
-          pointsToGoUp: string;
-          pointsToGoDown: string;
-          pointsWhenWinningAgainst: string;
-          menu: {
-            watchSystem: string;
-            uploadPoints: string;
-            sync: string;
-            edit: string;
-            delete: string;
-            deleteSuccess: string;
-            deleteError: string;
-          };
-          noRecords: string;
-        };
-        editRankingPage: {
-          title: string;
-          success: string;
-          error: string;
-        };
-        addRankingPage: {
-          title: string;
-          success: string;
-          error: string;
-        };
-        form: {
-          title: string;
-          name: string;
-          type: string;
-          amountOfLevels: string;
-          winning: string;
-          winningPlusOne: string;
-          losing: string;
-          gamesToUse: string;
-          minimumGamesForUpgrade: string;
-          diffLevels: string;
-          primary: string;
-          calculateUpdates: string;
-          updateInterval: string;
-          pointUpdate: string;
-          pointPeriod: string;
-          pointUpdateDay: string;
-          rankUpdate: string;
-          rankPeriod: string;
-          calculationUpdateDay: string;
-          periodTotal: string;
-          periodGames: string;
-          upgradeDowngrade: string;
-          differenceForUpgradeSingle: string;
-          differenceForUpgradeDouble: string;
-          differenceForUpgradeMix: string;
-          differenceForDowngradeSingle: string;
-          differenceForDowngradeDouble: string;
-          differenceForDowngradeMix: string;
-          maxLevelUpPerChange: string;
-          maxLevelDownPerChange: string;
-          inactivity: string;
-          inactivityAmount: string;
-          inactivityUnit: string;
-          gamesForInactivity: string;
-          linkToEvents: string;
-          groups: string;
-          periods: {
-            weeks: string;
-            months: string;
-            days: string;
-          };
-          days: {
-            monday: string;
-            tuesday: string;
-            wednesday: string;
-            thursday: string;
-            friday: string;
-            saturday: string;
-            sunday: string;
-          };
-          save: string;
-          cancel: string;
-          add: string;
-        };
-        dialogCopyRankingSystem: {
-          title: string;
-          startDate: string;
-          endDate: string;
-          success: string;
-          error: string;
-          cancel: string;
-          create: string;
-        };
-        dialogCopyPoints: {
-          title: string;
-          startDate: string;
-          endDate: string;
-          success: string;
-          error: string;
-          cancel: string;
-          copy: string;
-        };
-      };
-      encountersPage: {
-        title: string;
-        notFound: string;
-      };
-      playerRanking: {
-        title: string;
-        notFound: string;
-        rankingTooltipMessages: {
-          readyForUpgrade: string;
-          notPossibleToReachRequiredAverage: string;
-          winsNeeded: string;
-        };
-        filters: {
-          ranking: string;
-          rankingOptions: {
-            both: string;
-            upgrade: string;
-            downgrade: string;
-          };
-          gameTypeOptions: {
-            S: string;
-            D: string;
-            MX: string;
-          };
-          gameType: string;
-          period: string;
-          simulateGame: string;
-        };
-        dialog: {
-          title: string;
-          level: string;
-          teamA: string;
-          teamB: string;
-          winner: string;
-          simulate: string;
-          cancel: string;
-        };
-        table: {
-          date: string;
-          team: string;
-          opponent: string;
-          points: string;
-          usedForUpgrade: string;
-          avgUpgrade: string;
-          usedForDowngrade: string;
-          avgDowngrade: string;
-          operation: string;
-          noRecords: string;
-        };
-        rankingUpdate: string;
-        pointsUpdate: string;
-      };
-      teamFormation: {
-        title: string;
-        notFound: string;
-        messages: {
-          saved: string;
-          downloaded: string;
-        };
-        buttons: {
-          cancel: string;
-          save: string;
-          print: string;
-        };
-        info: {
-          title: string;
-          basePlayers: string;
-          titulars: string;
-          errors: string;
-          params: {
-            single1: string;
-            single2: string;
-            single3: string;
-            single4: string;
-            double1: string;
-            double2: string;
-            double3: string;
-            double4: string;
-            mix1: string;
-            mix2: string;
-            mix3: string;
-            mix4: string;
-            gender: {
-              female: string;
-              females: string;
-              long: {
-                F: string;
-                M: string;
-                MX: string;
-              };
-              longs: {
-                F: string;
-                M: string;
-              };
-              male: string;
-              males: string;
-              mix: string;
-              national: string;
-              select: string;
-              short: {
-                female: string;
-                male: string;
-                mix: string;
-              };
-              title: string;
-            };
-            ranking: {
-              single: string;
-              double: string;
-              mix: string;
-            };
-          };
-        };
-        teamFormation: {
-          title: string;
-          disabledTitle: string;
-          noClub: string;
-          selectPlayer: string;
-          categories: {
-            singleMan: string;
-            doubleMen: string;
-            singleWoman: string;
-            doubleWomen: string;
-            mixDouble: string;
-            subtitudes: string;
-            captainId: string;
-          };
-          labels: {
-            singleMan1: string;
-            singleMan2: string;
-            singleMan3: string;
-            singleMan4: string;
-            singleWoman1: string;
-            singleWoman2: string;
-            singleWoman3: string;
-            singleWoman4: string;
-            doubleMen: string;
-            doubleWomen: string;
-            doubleMen1: string;
-            doubleMen2: string;
-            doubleMen3: string;
-            doubleMen4: string;
-            doubleWomen1: string;
-            doubleWomen2: string;
-            doubleWomen3: string;
-            doubleWomen4: string;
-            mixDouble1: string;
-            mixDouble2: string;
-            captainId: string;
-            subtitudes: string;
-          };
-        };
-        errors: {
-          already: string;
-          "club-base-other-team": string;
-          "comp-status": string;
-          "comp-status-html": string;
-          none: string;
-          "not-enough-players": string;
-          "player-above-lower": string;
-          "player-gender": string;
-          "player-genders": string;
-          "player-max-double-games": string;
-          "player-max-mix-games": string;
-          "player-max-mixed-games": string;
-          "player-max-single-games": string;
-          "player-min-level": string;
-          "player-order-doubles": string;
-          "player-order-highest": string;
-          "player-order-single": string;
-          "players-above-lower": string;
-          "team-index": string;
-          "team-to-strong": string;
-          title: string;
-          "to-much": string;
-        };
-        warnings: {
-          "subtitute-team-index": string;
-        };
-      };
-      encounter: {
-        tempTeamCaptain: {
-          dialog: {
-            title: string;
-            buttons: {
-              cancel: string;
-              select: string;
-            };
-            messages: {
-              saved: string;
-            };
-          };
-        };
-        gameLeader: {
-          dialog: {
-            title: string;
-            buttons: {
-              cancel: string;
-              select: string;
-            };
-            messages: {
-              saved: string;
-            };
-          };
-        };
-      };
-      clubPage: {
-        noClubFound: string;
-        actions: {
-          edit: string;
-          addPlayer: string;
-          addPlayerDialog: {
-            title: string;
-            messages: {
-              success: string;
-            };
-            buttons: {
-              cancel: string;
-              addPlayer: string;
-            };
-          };
-          twizzitOverview: string;
-          delete: string;
-          deleteDialog: {
-            title: string;
-            subTitle: string;
-            messages: {
-              success: string;
-            };
-            buttons: {
-              no: string;
-              yes: string;
-            };
-          };
-          messages: {
-            downloadSuccess: string;
-          };
-        };
-        season: string;
-        tabs: {
-          teams: string;
-          assemblyMatrix: string;
-          players: string;
-          encounters: string;
-          teamEnrollment: string;
-        };
-        teams: {
-          title: string;
-          table: {
-            headers: {
-              team: string;
-              type: string;
-              ranking: string;
-              liga: string;
-              actions: string;
-            };
-            noData: string;
-          };
-          actions: {
-            edit: string;
-            delete: string;
-          };
-          addEditTeamDialog: {
-            titleAdd: string;
-            titleEdit: string;
-            steps: {
-              info: string;
-              players: string;
-            };
-            messages: {
-              successAdd: string;
-              successEdit: string;
-            };
-            buttons: {
-              cancel: string;
-              next: string;
-              back: string;
-              editTeam: string;
-              addTeam: string;
-            };
-            teamInfo: {
-              generalInfo: string;
-              teamCaptain: string;
-              preferredPlayingTime: string;
-              form: {
-                type: string;
-                teamNumber: string;
-                season: string;
-                email: string;
-                phone: string;
-                preferredDay: string;
-                preferredTime: string;
-                preferredLocation: string;
-                teamType: {
-                  M: string;
-                  F: string;
-                  MX: string;
-                  NATIONAL: string;
+            "club-assembly": {
+                "description": string;
+                "note": string;
+                "warnings": {
+                    "base": string;
+                    "base-subevent": string;
+                    "better-meta": string;
+                    "min-level": string;
+                    "other-gender": string;
+                    "title": string;
                 };
-                daysOfWeek: {
-                  monday: string;
-                  tuesday: string;
-                  wednesday: string;
-                  thursday: string;
-                  friday: string;
-                  saturday: string;
-                  sunday: string;
+            };
+            "date": string;
+            "delete": {
+                "description": string;
+                "title": string;
+            };
+            "draw": {
+                "encounters": string;
+                "title": string;
+            };
+            "encounters": {
+                "change-date": string;
+                "change-location": string;
+                "change-location-note": string;
+                "gameleader": string;
+                "home-games": string;
+                "no-more": string;
+                "open-requests": string;
+                "shuttle": string;
+                "title": string;
+            };
+            "home": string;
+            "last-updated": string;
+            "liga": string;
+            "load-more": string;
+            "map": {
+                "title": string;
+            };
+            "menu": {
+                "actions": string;
+                "add-event": string;
+                "averages": string;
+                "copy": string;
+                "dates": string;
+                "download-base-players": string;
+                "download-cp": string;
+                "download-teams": string;
+                "download-exceptions": string;
+                "download-locations": string;
+                "export-planner": string;
+                "make-official": string;
+                "new-date": string;
+                "open_close_change-encounters": string;
+                "open_close_enrollments": string;
+                "reports": string;
+                "sync": string;
+                "unmake-official": string;
+            };
+            "national": string;
+            "no-more-games": string;
+            "note": string;
+            "open-close": {
+                "close-accept-requests": string;
+                "close-enrollment": string;
+                "close-enrollment-required": string;
+                "close-enrollment-year": string;
+                "close-new-requets": string;
+                "open-enrollment": string;
+                "open-enrollment-required": string;
+                "open-enrollment-year": string;
+                "open-requests": string;
+            };
+            "originalDate": string;
+            "overview": {
+                "official": string;
+                "only-official": string;
+            };
+            "prov": string;
+            "subevent": {
+                "max": string;
+                "max-base": string;
+                "min-base": string;
+                "name": {
+                    "none": string;
+                    "plural": string;
+                    "singular": string;
                 };
-              };
+                "title": string;
             };
-            players: {
-              addPlayer: string;
-              players: string;
-              form: {
-                membership: string;
-                membershipTypes: {
-                  REGULAR: string;
-                  BACKUP: string;
+            "team-assembly": {
+                "captain": string;
+                "change-team": string;
+                "disclaimer": string;
+                "double1": string;
+                "double2": string;
+                "double3": string;
+                "double4": string;
+                "download": string;
+                "errors": {
+                    "already": string;
+                    "club-base-other-team": string;
+                    "comp-status": string;
+                    "comp-status-html": string;
+                    "none": string;
+                    "not-enough-players": string;
+                    "player-above-lower": string;
+                    "player-gender": string;
+                    "player-genders": string;
+                    "player-max-double-games": string;
+                    "player-max-mix-games": string;
+                    "player-max-mixed-games": string;
+                    "player-max-single-games": string;
+                    "player-min-level": string;
+                    "player-order-doubles": string;
+                    "player-order-highest": string;
+                    "player-order-single": string;
+                    "players-above-lower": string;
+                    "team-index": string;
+                    "team-to-strong": string;
+                    "title": string;
+                    "to-much": string;
                 };
-              };
-              buttons: {
-                addPlayer: string;
-              };
+                "info": string;
+                "level-exemption": string;
+                "mix1": string;
+                "mix2": string;
+                "mix3": string;
+                "mix4": string;
+                "players": {
+                    "backup": string;
+                    "base": string;
+                    "team": string;
+                    "title": string;
+                };
+                "single1": string;
+                "single2": string;
+                "single3": string;
+                "single4": string;
+                "substitude": string;
+                "team-index": string;
+                "team-index-ignored": string;
+                "title": string;
+                "warnings": {
+                    "subtitute-team-index": string;
+                };
             };
-          };
-          deleteTeamDialog: {
-            title: string;
-            subTitle: string;
-            messages: {
-              success: string;
+            "team-enrollment": {
+                "close": string;
+                "closed": string;
+                "comments": {
+                    "liga": string;
+                    "nat": string;
+                    "prov": string;
+                    "title": string;
+                };
+                "enrollments": string;
+                "errors": {
+                    "already": string;
+                    "base-gender-mix": string;
+                    "base-other-team": string;
+                    "comp-status-base": string;
+                    "comp-status-team": string;
+                    "faller": string;
+                    "first-team-index": string;
+                    "no-subevent": string;
+                    "none": string;
+                    "player-club": string;
+                    "player-club-none": string;
+                    "player-gender": string;
+                    "player-min-level": string;
+                    "player-subevent": string;
+                    "riser": string;
+                    "team-index": string;
+                    "team-order": string;
+                    "team-order-same-subevent": string;
+                    "team-to-strong": string;
+                    "team-to-week": string;
+                    "title": string;
+                    "too-few-base-players": string;
+                    "too-many-base-players": string;
+                };
+                "example-error": string;
+                "example-warning": string;
+                "exceptions": string;
+                "info": string;
+                "level-exemption": string;
+                "level-exemption-requested": string;
+                "loan": {
+                    "add-loan": string;
+                    "loan-locked": string;
+                    "loan-player": string;
+                };
+                "locations": {
+                    "availible-courts": string;
+                    "courts-hint": string;
+                    "title": string;
+                };
+                "mixed-national-teams": string;
+                "open": string;
+                "play-days": string;
+                "players": {
+                    "backup": string;
+                    "base": string;
+                    "level-exception": {
+                        "reason": string;
+                        "request": string;
+                    };
+                    "loan": string;
+                    "regular": string;
+                    "title": string;
+                    "transfer": string;
+                };
+                "request-level-exception": string;
+                "save-and-continue-tooltip": string;
+                "saved": string;
+                "saved-failed": string;
+                "select-club": string;
+                "select-events": string;
+                "select-location": string;
+                "select-teams": string;
+                "select-teams-description": string;
+                "teams": {
+                    "captain": string;
+                    "change-team": string;
+                    "new-teams": string;
+                    "substitude": string;
+                    "team-index": string;
+                    "team-index-ignored": string;
+                };
+                "title": string;
+                "transfer": {
+                    "add-transfer": string;
+                    "enrolled-as": string;
+                    "loans": string;
+                    "transfer-locked": string;
+                    "transfer-player": string;
+                    "transfer-teams": string;
+                    "transfer-teams-description": string;
+                    "transfers": string;
+                    "transfers-players": string;
+                };
+                "validations": string;
+                "warnings": {
+                    "already-saved": string;
+                    "base-other-team": string;
+                    "player-min-level": string;
+                    "subtitute-team-index": string;
+                    "title": string;
+                };
             };
-            buttons: {
-              cancel: string;
-              delete: string;
-            };
-          };
+            "title": string;
+            "type": string;
+            "vs": string;
+            "vs-short": string;
         };
-        assemblyMatrix: {
-          teamsFilter: {
-            label: string;
-            options: {
-              ALL: string;
-            };
-          };
-          table: {
-            headers: {
-              players: string;
-            };
-            noData: string;
-          };
-          tooltipMessages: {
-            basePlayer: string;
-            genderError: string;
-            playerOfAnotherTeam: string;
-            playerOfAnotherTeamInSameSeries: string;
-            minLevelError: string;
-            betterMeta: string;
-          };
-          types: {
-            double: string;
-            female: string;
-            male: string;
-            mix: string;
-            single: string;
-            title: string;
-          };
-          gender: {
-            F: string;
-            M: string;
-          };
-          teamTypes: {
-            F: string;
-            M: string;
-            MX: string;
-            NATIONAL: string;
-          };
-        };
-        players: {
-          playersFilter: {
-            teams: {
-              label: string;
-              options: {
-                ALL: string;
-              };
-            };
-            players: {
-              label: string;
-              options: {
-                ALL: string;
-              };
-              loadingText: string;
-              noData: string;
-            };
-          };
-          table: {
-            headers: {
-              name: string;
-              teams: string;
-            };
-            noData: string;
-          };
-        };
-        encounters: {
-          filters: {
-            team: {
-              label: string;
-              options: {
-                ALL: string;
-              };
-            };
-            openRequest: {
-              label: string;
-              options: {
-                ALL: string;
-                openRequests: string;
-                noRequests: string;
-              };
-            };
-            validation: {
-              label: string;
-              options: {
-                ALL: string;
-                valid: string;
-                invalid: string;
-                warnings: string;
-              };
-            };
-            changedDate: string;
-            homeGames: string;
-          };
-          table: {
-            headers: {
-              team: string;
-              opponent: string;
-              homeAway: string;
-              date: string;
-              status: string;
-              validation: string;
-              changeEncounterDate: string;
-              view: string;
-            };
-            encounterState: {
-              moved: string;
-              original: string;
-              inProgress: string;
-            };
-            originalDate: string;
-            home: string;
-            away: string;
-            noData: string;
-          };
-        };
-        teamEnrollment: {
-          teams: {
-            title: string;
-            table: {
-              headers: {
-                teams: string;
-                liga: string;
-                comments: string;
-              };
-              teamIndex: string;
-              noData: string;
-            };
-          };
-          locations: {
-            title: string;
-            locationDrawer: {
-              title: string;
-              buttons: {
-                copyAddress: string;
-              };
-              gameDaysTitle: string;
-              till: string;
-              courts: string;
-              exceptionsTitle: string;
-              daysOfWeek: {
-                monday: string;
-                tuesday: string;
-                wednesday: string;
-                thursday: string;
-                friday: string;
-                saturday: string;
-                sunday: string;
-              };
-            };
-          };
-          comments: {
-            title: string;
-          };
-        };
-        editClubPage: {
-          title: string;
-          tabs: {
-            generalInfo: string;
-            locations: string;
-            basePlayers: string;
-          };
-          generalInfoTab: {
-            title: string;
-            generalForm: {
-              name: string;
-              fullName: string;
-              teamName: string;
-              abbreviation: string;
-              country: string;
-              state: string;
-              states: {
-                antwerpen: string;
+        "countries": {
+            "be": {
+                "antwerpen": string;
                 "brabant-wallon": string;
                 "brussels-hoofdstedelijk-gewest": string;
-                hainaut: string;
-                liege: string;
-                limburg: string;
-                luxembourg: string;
-                name: string;
-                namur: string;
+                "hainaut": string;
+                "liege": string;
+                "limburg": string;
+                "luxembourg": string;
+                "name": string;
+                "namur": string;
                 "oost-vlaanderen": string;
                 "vlaams-brabant": string;
                 "west-vlaanderen": string;
-              };
-              clubId: string;
-              messages: {
-                success: string;
-              };
-              buttons: {
-                save: string;
-              };
             };
-            roles: {
-              title: string;
-              buttons: {
-                addRole: string;
-                addPlayer: string;
-              };
-              messages: {
-                successAddPlayer: string;
-                successRemovePlayer: string;
-                failAddPlayer: string;
-                failRemovePlayer: string;
-              };
-              menu: {
-                edit: string;
-                delete: string;
-              };
-              deleteDialog: {
-                title: string;
-                subTitle: string;
-                messages: {
-                  success: string;
-                };
-                buttons: {
-                  cancel: string;
-                  delete: string;
-                };
-              };
-              addDialog: {
-                title: string;
-                messages: {
-                  success: string;
-                };
-                buttons: {
-                  cancel: string;
-                  addRole: string;
-                };
-              };
-              editDialog: {
-                title: string;
-                messages: {
-                  success: string;
-                };
-                buttons: {
-                  save: string;
-                };
-              };
-            };
-          };
-          locations: {
-            title: string;
-            buttons: {
-              addLocation: string;
-            };
-            location: {
-              addDialog: {
-                title: string;
-                messages: {
-                  success: string;
-                };
-              };
-              editDialog: {
-                title: string;
-                messages: {
-                  success: string;
-                };
-              };
-              deleteDialog: {
-                title: string;
-                subTitle: string;
-                messages: {
-                  success: string;
-                };
-                buttons: {
-                  cancel: string;
-                  delete: string;
-                };
-              };
-              form: {
-                name: string;
-                street: string;
-                streetNumber: string;
-                postalcode: string;
-                city: string;
-                state: string;
-                phone: string;
-                fax: string;
-              };
-              search: {
-                title: string;
-                placeholder: string;
-              };
-              buttons: {
-                cancel: string;
-                save: string;
-                delete: string;
-              };
-            };
-            gameDays: {
-              title: string;
-              buttons: {
-                addGameDay: string;
-              };
-              createDialog: {
-                title: string;
-                messages: {
-                  success: string;
-                };
-                form: {
-                  day: string;
-                  daysOfWeek: {
-                    monday: string;
-                    tuesday: string;
-                    wednesday: string;
-                    thursday: string;
-                    friday: string;
-                    saturday: string;
-                    sunday: string;
-                  };
-                  startTime: string;
-                  endTime: string;
-                  courts: string;
-                };
-                errors: {
-                  courtsMin: string;
-                  startBeforeEnd: string;
-                };
-                buttons: {
-                  cancel: string;
-                  save: string;
-                };
-              };
-              deleteDialog: {
-                title: string;
-                subTitle: string;
-                messages: {
-                  success: string;
-                  error: string;
-                };
-                buttons: {
-                  cancel: string;
-                  delete: string;
-                };
-              };
-              actions: {
-                edit: string;
-                delete: string;
-              };
-              table: {
-                noData: string;
-                headers: {
-                  day: string;
-                  startTime: string;
-                  endTime: string;
-                  courts: string;
-                  actions: string;
-                };
-              };
-            };
-            exceptions: {
-              title: string;
-              buttons: {
-                addException: string;
-              };
-              createDialog: {
-                title: string;
-                messages: {
-                  success: string;
-                };
-                form: {
-                  start: string;
-                  end: string;
-                };
-                errors: {
-                  startBeforeEnd: string;
-                  startRequired: string;
-                  endRequired: string;
-                };
-                buttons: {
-                  cancel: string;
-                  save: string;
-                };
-              };
-              deleteDialog: {
-                title: string;
-                subTitle: string;
-                messages: {
-                  success: string;
-                  error: string;
-                };
-                buttons: {
-                  cancel: string;
-                  delete: string;
-                };
-              };
-              actions: {
-                edit: string;
-                delete: string;
-              };
-              table: {
-                noData: string;
-                headers: {
-                  period: string;
-                  actions: string;
-                };
-              };
-            };
-          };
-          basePlayers: {
-            title: string;
-            buttons: {
-              addTeam: string;
-            };
-            team: {
-              buttons: {
-                addPlayer: string;
-              };
-              list: {
-                noPlayers: string;
-                noSubEvent: string;
-                actions: {
-                  editRanking: string;
-                  toggleLevelExemption: string;
-                  delete: string;
-                };
-              };
-              addPlayerDialog: {
-                title: string;
-                messages: {
-                  success: string;
-                  error: string;
-                  playerAlreadyInTeam: string;
-                };
-                buttons: {
-                  cancel: string;
-                  addPlayer: string;
-                };
-              };
-              deletePlayerDialog: {
-                title: string;
-                subTitle: string;
-                messages: {
-                  success: string;
-                  playerNotFound: string;
-                };
-                buttons: {
-                  cancel: string;
-                  delete: string;
-                };
-              };
-              editPlayerRankingDialog: {
-                title: string;
-                messages: {
-                  success: string;
-                };
-                form: {
-                  single: string;
-                  double: string;
-                  mix: string;
-                };
-                buttons: {
-                  cancel: string;
-                  save: string;
-                };
-              };
-              messages: {
-                levelExemptionUpdated: string;
-                levelExemptionError: string;
-              };
-            };
-          };
         };
-      };
-      filterComponent: {
-        title: string;
-        buttons: {
-          filters: string;
-          cancel: string;
-          apply: string;
+        "days": {
+            "friday": string;
+            "monday": string;
+            "saturday": string;
+            "sunday": string;
+            "thursday": string;
+            "tuesday": string;
+            "wednesday": string;
         };
-      };
-      entryTeamDrawer: {
-        sectionTitles: {
-          basePlayers: string;
-          generalInfo: string;
-          validations: string;
+        "event": {
+            "checkEncounterForFilledIn": string;
+            "last-sync": string;
+            "standing": {
+                "games": string;
+                "lost": string;
+                "name": string;
+                "played": string;
+                "points": string;
+                "sets": string;
+                "spoiler": string;
+                "tied": string;
+                "title": string;
+                "totalPoints": string;
+                "won": string;
+            };
+            "type": string;
+            "types": {
+                "competition": string;
+                "tournament": string;
+            };
+            "usedRankingNote": string;
         };
-        dataKeys: {
-          teamIndex: string;
-          teamCaptain: string;
-          preferredPlayingTime: string;
+        "evolution": {
+            "warning": string;
         };
-        emptyStates: {
-          noValidations: string;
+        "faq": {
+            "info": {
+                "description": string;
+                "title": string;
+            };
+            "legend": string;
+            "overview": {
+                "description": string;
+                "evolution-1": string;
+                "evolution-2": string;
+                "game-result": string;
+                "levels": string;
+                "title": string;
+            };
+            "points": {
+                "table": {
+                    "level": string;
+                    "points-needed-down": string;
+                    "points-needed-up": string;
+                    "points-won": string;
+                };
+                "title": string;
+            };
+            "ranking": {
+                "description": string;
+                "title": string;
+            };
+            "title": string;
+            "updates": {
+                "description": string;
+                "title": string;
+            };
         };
-        noData: string;
-
-        validation: {
-          errors: {
-            already: string;
-            "base-gender-mix": string;
-            "base-other-team": string;
-            "comp-status-base": string;
-            "comp-status-team": string;
-            faller: string;
-            "first-team-index": string;
-            "no-subevent": string;
-            none: string;
-            "player-club": string;
-            "player-club-none": string;
-            "player-gender": string;
-            "player-min-level": string;
-            "player-subevent": string;
-            riser: string;
+        "game": {
+            "bye": string;
+            "order": {
+                "double": string;
+                "female": string;
+                "male": string;
+                "mix": string;
+                "mixed": string;
+                "single": string;
+            };
+            "points": string;
+            "recent": {
+                "title": string;
+            };
+            "title": string;
+            "types": {
+                "double": string;
+                "female": string;
+                "long": {
+                    "D": string;
+                    "F": string;
+                    "M": string;
+                    "MX": string;
+                    "S": string;
+                };
+                "male": string;
+                "mix": string;
+                "short": {
+                    "double": string;
+                    "female": string;
+                    "male": string;
+                    "mix": string;
+                    "single": string;
+                };
+                "single": string;
+                "title": string;
+            };
+            "unkown": string;
+            "upcoming": {
+                "title": string;
+            };
+        };
+        "gender": {
+            "female": string;
+            "females": string;
+            "long": {
+                "F": string;
+                "M": string;
+                "MX": string;
+            };
+            "longs": {
+                "F": string;
+                "M": string;
+            };
+            "male": string;
+            "males": string;
+            "mix": string;
+            "national": string;
+            "select": string;
+            "short": {
+                "female": string;
+                "male": string;
+                "mix": string;
+            };
+            "title": string;
+        };
+        "input": {
+            "abbreviation": string;
+            "availible-courts": string;
+            "city": string;
+            "competitionplayer": string;
+            "courts": string;
+            "date": string;
+            "date-range": string;
+            "day": string;
+            "email": string;
+            "end-hour": string;
+            "error": {
+                "email": string;
+                "required": string;
+            };
+            "fax": string;
+            "firstname": string;
+            "fullName": string;
+            "gender": string;
+            "hour": string;
+            "lastname": string;
+            "latitude": string;
+            "location": string;
+            "longitude": string;
+            "memberId": string;
+            "name": string;
+            "phone": string;
+            "postalcode": string;
+            "required": string;
+            "select": string;
+            "shuttle": string;
+            "start-hour": string;
+            "state": string;
+            "street": string;
+            "streetnumber": string;
+            "sub": string;
+            "teamName": string;
+            "this-required": string;
+            "type": string;
+            "year": string;
+        };
+        "jobs": {
+            "title": string;
+        };
+        "landing": {
+            "description": string;
+            "title": string;
+        };
+        "lists": {
+            "name": string;
+        };
+        "loading": string;
+        "locations": {
+            "add-day": string;
+            "add-exception": string;
+            "days": string;
+            "exceptions": string;
+            "hint": string;
+            "period": {
+                "description": string;
+                "errors": {
+                    "invalid-end": string;
+                    "invalid-start": string;
+                };
+                "label": string;
+                "title": string;
+                "tooltip": string;
+            };
+            "title": string;
+        };
+        "management": {
+            "calculate": string;
+            "cleanup": string;
+            "download": string;
+            "end": string;
+            "force": string;
+            "games-to-use": string;
+            "import": string;
+            "new-system": string;
+            "number-short": string;
+            "procent-losing-short": string;
+            "procent-winning-short": string;
+            "ranking": string;
+            "reset": string;
+            "select": string;
+            "start": string;
+            "sync": string;
+        };
+        "messages": {
+            "buttons": {
+                "hide": string;
+                "seeAll": string;
+            };
+        };
+        "months": {
+            "april": string;
+            "august": string;
+            "december": string;
+            "february": string;
+            "january": string;
+            "june": string;
+            "march": string;
+            "may": string;
+            "november": string;
+            "october": string;
+            "september": string;
+        };
+        "notifications": {
+            "noNotifications": string;
+            "types": {
+                "encounterNotAcceptedNotification": string;
+                "encounterNotEnteredNotification": string;
+            };
+        };
+        "permission": {
+            "no-perm": string;
+        };
+        "pickers": {
+            "end-time": string;
+            "none": string;
+            "select-club": string;
+            "select-country": string;
+            "select-encounter": string;
+            "select-end-time": string;
+            "select-event-competition": string;
+            "select-player": string;
+            "select-season": string;
+            "select-start-time": string;
+            "select-state": string;
+            "select-subevent-competition": string;
+            "select-team": string;
+            "select-team-groups": {
+                "F": string;
+                "M": string;
+                "MX": string;
+                "NATIONAL": string;
+            };
+            "select-year": string;
+            "start-time": string;
+        };
+        "player": {
+            "backup": string;
+            "base": string;
+            "claimed": string;
+            "ical": {
+                "click": string;
+                "copied": string;
+                "description": string;
+                "linked": string;
+                "team-season": string;
+            };
+            "menu": {
+                "add": string;
+                "claim": string;
+                "delete": string;
+                "edit": string;
+                "recalculatePoints": string;
+            };
+            "no-memberid": string;
+            "no-players": string;
+            "re-calculate": {
+                "calculate": string;
+                "from": string;
+                "title": string;
+                "to": string;
+            };
+            "regular": string;
+            "search": {
+                "backup-player": string;
+                "create": string;
+                "in-list": string;
+                "label": string;
+                "not-found": string;
+            };
+            "title": string;
+            "notFound": string;
+            "ranking": {
+                "single": string;
+                "double": string;
+                "mix": string;
+            };
+            "messages": {
+                "claimAccountSuccessc": string;
+            };
+            "crud": {
+                "title": string;
+                "tabs": {
+                    "player": string;
+                    "ranking": string;
+                    "clubHistory": string;
+                    "permissions": string;
+                };
+                "playerForm": {
+                    "inputs": {
+                        "name": string;
+                        "lastName": string;
+                        "gender": string;
+                        "memberId": string;
+                        "registrationNumber": string;
+                    };
+                    "gender": {
+                        "M": string;
+                        "F": string;
+                    };
+                    "buttons": {
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                    };
+                };
+                "ranking": {
+                    "lastRanking": {
+                        "title": string;
+                        "notFound": string;
+                        "inputs": {
+                            "single": string;
+                            "double": string;
+                            "mix": string;
+                        };
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "save": string;
+                        };
+                    };
+                    "competitionPlayer": {
+                        "title": string;
+                        "inputs": {
+                            "competitionPlayer": string;
+                        };
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "save": string;
+                        };
+                    };
+                    "allUpdates": {
+                        "title": string;
+                        "nextRanking": string;
+                        "updates": string;
+                        "buttons": {
+                            "add": string;
+                        };
+                        "table": {
+                            "headers": {
+                                "date": string;
+                                "single": string;
+                                "double": string;
+                                "mix": string;
+                                "actions": string;
+                            };
+                            "actions": {
+                                "edit": string;
+                                "delete": string;
+                            };
+                        };
+                        "rankingPlace": {
+                            "editDialog": {
+                                "titleEdit": string;
+                                "titleCreate": string;
+                                "inputs": {
+                                    "rankingDate": string;
+                                    "single": string;
+                                    "double": string;
+                                    "mix": string;
+                                    "singlePoints": string;
+                                    "doublePoints": string;
+                                    "mixPoints": string;
+                                    "updatePossible": string;
+                                };
+                                "messages": {
+                                    "successCreate": string;
+                                    "successUpdate": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "saveEdit": string;
+                                    "saveCreate": string;
+                                };
+                            };
+                            "deleteDialog": {
+                                "title": string;
+                                "subTitle": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "buttons": {
+                                    "no": string;
+                                    "yes": string;
+                                };
+                            };
+                        };
+                    };
+                };
+                "clubHistory": {
+                    "notFound": string;
+                    "buttons": {
+                        "add": string;
+                    };
+                    "deleteDialog": {
+                        "title": string;
+                        "subTitle": string;
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "no": string;
+                            "yes": string;
+                        };
+                    };
+                    "editDialog": {
+                        "titleAdd": string;
+                        "titleEdit": string;
+                        "inputs": {
+                            "selectClub": string;
+                            "isCurrentClub": string;
+                            "start": string;
+                            "end": string;
+                            "membershipType": string;
+                            "confirmed": string;
+                        };
+                        "membershipTypes": {
+                            "NORMAL": string;
+                            "LOAN": string;
+                        };
+                        "messages": {
+                            "successAdd": string;
+                            "successEdit": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "add": string;
+                            "edit": string;
+                        };
+                    };
+                    "table": {
+                        "notFound": string;
+                        "headers": {
+                            "fullName": string;
+                            "start": string;
+                            "end": string;
+                            "actions": string;
+                        };
+                        "actions": {
+                            "edit": string;
+                            "delete": string;
+                        };
+                    };
+                };
+                "permissionsForm": {
+                    "buttons": {
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                    };
+                };
+                "deletePlayer": {
+                    "title": string;
+                    "subTitle": string;
+                    "messages": {
+                        "success": string;
+                    };
+                    "buttons": {
+                        "no": string;
+                        "yes": string;
+                    };
+                };
+                "recalculatePoints": {
+                    "title": string;
+                    "subTitle": string;
+                    "inputs": {
+                        "from": string;
+                        "to": string;
+                    };
+                    "messages": {
+                        "success": string;
+                    };
+                    "buttons": {
+                        "close": string;
+                        "calculate": string;
+                    };
+                };
+            };
+            "nextEncounterTitle": string;
+            "upcomingEncountersTitle": string;
+            "noUpcomingEncounters": string;
+            "noUpcomingEncounter": string;
+            "recentEncountersTitle": string;
+            "noRecentEncounters": string;
+            "rolePrefix": string;
+            "gameLeader": string;
+            "unknown": string;
+            "captain": string;
+            "player": string;
+            "date": string;
+            "teams": string;
+            "against": string;
+            "location": string;
+            "meetingForm": string;
+            "filled": string;
+            "notStarted": string;
+            "started": string;
+            "notFilled": string;
+            "notSelected": string;
+            "teamFormation": string;
+            "teamIsFormed": string;
+            "noTeamFormation": string;
+            "won": string;
+            "lost": string;
+            "draw": string;
+            "buttons": {
+                "change": string;
+                "create": string;
+                "select": string;
+                "edit": string;
+                "continue": string;
+                "view": string;
+                "allEncounters": string;
+                "viewEncounterForm": string;
+            };
+            "eventTypes": {
+                "D": string;
+                "F": string;
+                "M": string;
+                "MX": string;
+                "S": string;
+                "unknown": string;
+            };
+            "points": string;
+            "statuses": {
+                "won": string;
+                "lost": string;
+                "draw": string;
+                "forfeit": string;
+                "absence": string;
+                "noPlayers": string;
+                "disqualified": string;
+                "stopped": string;
+                "unknown": string;
+            };
+        };
+        "ranking": {
+            "all-ranking": string;
+            "breakdown": {
+                "add-game": {
+                    "p1t1": string;
+                    "p1t2": string;
+                    "p2t1": string;
+                    "p2t2": string;
+                    "title": string;
+                    "won": string;
+                };
+                "can-downgrade": string;
+                "can-not-downgrade": string;
+                "can-not-upgrade": string;
+                "can-upgrade": string;
+                "corrected": string;
+                "countsForDowngrade": string;
+                "countsForUpgrade": string;
+                "date": string;
+                "disclaimer": string;
+                "downgrade": string;
+                "downgrade-average": string;
+                "drops-next-period": string;
+                "evolution": string;
+                "export": {
+                    "avgDowngrade": string;
+                    "avgUpgrade": string;
+                    "countsFor": string;
+                    "date": string;
+                    "LOST_DOWNGRADE": string;
+                    "LOST_IGNORED": string;
+                    "LOST_UPGRADE": string;
+                    "opponent1": string;
+                    "opponent2": string;
+                    "OUT_SCOPE": string;
+                    "player1": string;
+                    "player2": string;
+                    "points": string;
+                    "title": string;
+                    "usedForDowngrade": string;
+                    "usedForUpgrade": string;
+                    "WON": string;
+                };
+                "games": {
+                    "none": string;
+                    "one": string;
+                    "other": string;
+                };
+                "games-downgrade": string;
+                "games-upgrade": string;
+                "hint": string;
+                "ignored": string;
+                "includeOutOfScope": string;
+                "lostGames": {
+                    "none": string;
+                    "one": string;
+                    "other": string;
+                };
+                "no-tean": string;
+                "noGames": string;
+                "notUsed": string;
+                "opponent": string;
+                "outOfScope": {
+                    "none": string;
+                    "one": string;
+                    "other": string;
+                };
+                "outOfScopeDowngrade": string;
+                "outOfScopeUpgrade": string;
+                "outOfScopeWonGames": string;
+                "period": {
+                    "last-point-update": string;
+                    "last-ranking-update": string;
+                    "next-point-update": string;
+                    "next-ranking-update": string;
+                    "title": string;
+                };
+                "points": string;
+                "pointsPerGame": string;
+                "removed-games": string;
+                "team": string;
+                "title": string;
+                "untill": string;
+                "update": {
+                    "last": string;
+                    "point": string;
+                    "ranking": string;
+                };
+                "upgrade": string;
+                "upgrade-average": string;
+                "usedForDowngrade": string;
+                "usedForUpgrade": string;
+            };
+            "clone-points": string;
+            "double": string;
+            "double-points": string;
+            "double-rank": string;
+            "inactive": {
+                "double": string;
+                "mix": string;
+                "single": string;
+            };
+            "last-ranking": string;
+            "last-update": string;
+            "list": string;
+            "may-ranking": string;
+            "menu": {
+                "add-ranking": string;
+                "add-system": string;
+            };
+            "mix": string;
+            "mix-points": string;
+            "mix-rank": string;
+            "next-ranking": string;
+            "single": string;
+            "single-points": string;
+            "single-rank": string;
+            "table": {
+                "title": string;
+            };
+            "title": string;
+            "trending_down": string;
+            "trending_up": string;
+            "update-happend": string;
+            "updates": string;
+            "upload": {
+                "club-end-date": string;
+                "club-start-date": string;
+                "comp-status": string;
+                "create-new-players": string;
+                "description": string;
+                "hint": string;
+                "preview": string;
+                "ranking-date": string;
+                "remove-current-ranking": string;
+                "title": string;
+                "update-clubs": string;
+                "update-possible": string;
+                "update-ranking": string;
+            };
+        };
+        "rules": {
+            "title": string;
+        };
+        "search": {
+            "placeholder": string;
+            "type": {
+                "club": string;
+                "eventcompetition": string;
+                "eventtournament": string;
+                "player": string;
+            };
+        };
+        "security": {
+            "claims": {
+                "edit": {
+                    "title": string;
+                };
+            };
+            "roles": {
+                "locked": string;
+            };
+        };
+        "settings": {
+            "general": {
+                "title": string;
+            };
+            "languages": {
+                "en": string;
+                "fr_BE": string;
+                "nl_BE": string;
+                "title": string;
+            };
+            "notifications": {
+                "disclaimer": string;
+                "encounter": {
+                    "notAcceptedNotification": string;
+                    "notEnteredNotification": string;
+                    "title": string;
+                };
+                "encounterChange": {
+                    "confirmationNotification": string;
+                    "finishedNotification": string;
+                    "newNotification": string;
+                    "title": string;
+                };
+                "enrollment": {
+                    "clubenrollment": string;
+                    "title": string;
+                };
+                "messages": {
+                    "clubEnrollmentNotification": string;
+                    "encounterChangeConfirmationNotification": string;
+                    "encounterChangeFinishedNotification": string;
+                    "encounterChangeNewNotification": string;
+                    "encounterNotAcceptedNotification": string;
+                    "encounterNotEnteredNotification": string;
+                    "syncFailedNotification": string;
+                    "syncSuccessNotification": string;
+                };
+                "sync": {
+                    "failed": string;
+                    "success": string;
+                    "title": string;
+                };
+                "title": string;
+                "types": {
+                    "email": string;
+                    "none": string;
+                    "push": string;
+                    "sms": string;
+                };
+            };
+            "title": string;
+        };
+        "shell": {
+            "sidebar": {
+                "pages": {
+                    "myProfile": string;
+                    "myClub": string;
+                    "competition": string;
+                    "ranking": string;
+                    "enrollment": string;
+                    "faq": string;
+                    "settings": string;
+                    "encounters": string;
+                    "edit": string;
+                    "add": string;
+                    "teamFormation": string;
+                    "encounterForm": string;
+                    "confirmEncounter": string;
+                };
+                "auth": {
+                    "logIn": string;
+                    "logOut": string;
+                };
+                "admin": {
+                    "title": string;
+                };
+                "competition": {
+                    "assembly": string;
+                    "change-encounter": string;
+                    "enrollment": string;
+                    "overview": string;
+                    "title": string;
+                };
+                "general": {
+                    "changelog": string;
+                    "faq": string;
+                    "title": string;
+                };
+                "job": {
+                    "title": string;
+                };
+                "persnal": {
+                    "club": string;
+                    "games": string;
+                };
+                "ranking": {
+                    "title": string;
+                };
+                "rules": {
+                    "title": string;
+                };
+                "tournament": {
+                    "title": string;
+                };
+                "transfer": {
+                    "title": string;
+                };
+            };
+            "topBar": {
+                "search": {
+                    "placeholder": string;
+                    "noResults": string;
+                    "loading": string;
+                    "categories": {
+                        "Club": string;
+                        "Player": string;
+                        "EventTournament": string;
+                        "EventCompetition": string;
+                    };
+                };
+            };
+        };
+        "team": {
+            "change-event": {
+                "change": string;
+                "pick": string;
+                "select-event-hint": string;
+            };
+            "change-number": {
+                "description": string;
+                "number": string;
+                "title": string;
+                "tooltip": string;
+            };
+            "check-players": string;
+            "edit": string;
+            "location": string;
+            "no-perm": {
+                "email-phone": string;
+            };
+            "prefferd": {
+                "title": string;
+            };
             "team-index": string;
-            "team-order": string;
-            "team-order-same-subevent": string;
-            "team-to-strong": string;
-            "team-to-week": string;
-            title: string;
-            "too-few-base-players": string;
-            "too-many-base-players": string;
-          };
-          warnings: {
-            "already-saved": string;
-            "base-other-team": string;
-            "player-min-level": string;
-            "subtitute-team-index": string;
-            title: string;
-          };
-        };
-        params: {
-          gender: {
-            male: string;
-            female: string;
-          };
-        };
-      };
-      notFoundPage: {
-        title: string;
-        buttons: {
-          back: string;
-        };
-      };
-      confirmEncounterPage: {
-        title: string;
-        sectionTitles: {
-          teams: string;
-          confirmation: string;
-          results: string;
-          information: string;
-          submitComment: string;
-        };
-        positions: {
-          captain: string;
-          gameLeader: string;
-          homeCaptain: string;
-          awayCaptain: string;
-        };
-        buttons: {
-          cancel: string;
-          back: string;
-          close: string;
-          confirm: string;
-          submit: string;
-          seeEncounter: string;
-          addComment: string;
-        };
-        inputs: {
-          comment: string;
-          gameLeaderCommentsOptional: string;
-        };
-        messages: {
-          addedComment: string;
-          commentFrom: string;
-        };
-        errors: {
-          errorAddingComment: string;
-        };
-      };
-      competitionDetailPage: {
-        tabs: {
-          divisions: string;
-          encounters: string;
-          teamEnrollments: string;
-        };
-        buttons: {
-          openInToernooiNL: string;
-          view: string;
-          clearFilters: string;
-        };
-        divisions: {
-          actions: {
-            edit: string;
-            sync: string;
-            recalculatePoints: string;
-            actions: string;
-            reports: string;
-            copy: string;
-            openCloseSignups: string;
-            openCloseChangeEncounters: string;
-            makeUnofficialTournament: string;
-            delete: string;
-            averageLevel: string;
-            downloadBasePlayers: string;
-            downloadCPFile: string;
-            openCloseEncounterChangeDate: string;
-          };
-          tableNames: {
-            F: string;
-            M: string;
-            MX: string;
-          };
-          table: {
-            headers: {
-              divisions: string;
-              type: string;
-              numberTeams: string;
-              maxLevel: string;
-              index: string;
-              subdivisions: string;
+            "teams": string;
+            "title": {
+                "base-fields": string;
+                "captain": string;
+                "players": string;
+                "prefferd-encounter": string;
             };
-            noRecords: string;
-          };
-          teamEnrollments: {
-            drawer: {
-              sectionTitles: {
-                primaryPlayers: string;
-                generalInfo: string;
-                validations: string;
-              };
-              dataKeys: {
-                teamIndex: string;
-                teamCaptain: string;
-                preferredPlayingTime: string;
-              };
-              emptyStates: {
-                noValidations: string;
-              };
+            "types": {
+                "female": string;
+                "long": {
+                    "F": string;
+                    "M": string;
+                    "MX": string;
+                    "NATIONAL": string;
+                };
+                "male": string;
+                "mix": string;
+                "national": string;
+                "short": {
+                    "female": string;
+                    "male": string;
+                    "mix": string;
+                    "national": string;
+                };
+                "title": string;
             };
-            table: {
-              headers: {
-                division: string;
-                team: string;
-                index: string;
-                numberSignups: string;
-                messages: string;
-                actions: string;
-              };
-              buttons: {
-                view: string;
-              };
-              messages: {
-                numberErrors: string;
-                numberWarnings: string;
-                loadingEntries: string;
-              };
-              noRecords: string;
+            "usedForTeam": {
+                "description": string;
+                "example": string;
+                "select": string;
+                "title": string;
             };
-            errors: {
-              already: string;
-              "base-gender-mix": string;
-              "base-other-team": string;
-              "comp-status-base": string;
-              "comp-status-team": string;
-              faller: string;
-              "first-team-index": string;
-              "no-subevent": string;
-              none: string;
-              "player-club": string;
-              "player-club-none": string;
-              "player-gender": string;
-              "player-min-level": string;
-              "player-subevent": string;
-              riser: string;
-              "team-index": string;
-              "team-order": string;
-              "team-order-same-subevent": string;
-              "team-to-strong": string;
-              "team-to-week": string;
-              title: string;
-              "too-few-base-players": string;
-              "too-many-base-players": string;
+        };
+        "themes": {
+            "dark": string;
+            "light": string;
+        };
+        "tournament": {
+            "away": string;
+            "closeDate": string;
+            "delete": {
+                "description": string;
+                "title": string;
             };
-          };
-        };
-        encounters: {
-          table: {
-            buttons: {
-              filters: string;
+            "draw": {
+                "games": string;
+                "title": string;
             };
-            headers: {
-              date: string;
-              homeTeam: string;
-              awayTeam: string;
-              originalDate: string;
-              reschedule: string;
+            "enrollment": {
+                "close": string;
+                "closed": string;
+                "open": string;
+                "title": string;
             };
-            tootips: {
-              reschedule: string;
+            "firstDay": string;
+            "home": string;
+            "last-updated": string;
+            "load-more": string;
+            "menu": {
+                "add-event": string;
             };
-            rescheduleStatuses: {
-              rescheduled: string;
-              rescheduleInProgress: string;
-              rescheduleRequested: string;
+            "name": string;
+            "note": string;
+            "official": string;
+            "openDate": string;
+            "overview": {
+                "date": string;
+                "menu": {
+                    "add-event": string;
+                    "delete": string;
+                    "edit": string;
+                    "set-open-close": string;
+                    "sync": string;
+                };
+                "name": string;
+                "nothing-found": string;
+                "official": string;
+                "only-official": string;
             };
-            inputs: {
-              team: string;
-              club: string;
+            "subevent": {
+                "max": string;
+                "max-base": string;
+                "min-base": string;
             };
-            noRecords: string;
-            tooltips: {
-              reschedule: string;
+            "title": string;
+            "tournamentNumber": string;
+            "type": string;
+            "visualCode": string;
+            "vs": string;
+            "vs-short": string;
+        };
+        "transfers-loan": {
+            "buttons": {
+                "accept-selected": string;
+                "reject-selected": string;
+                "upload": string;
             };
-          };
-        };
-        teamEnrollments: {
-          drawer: {
-            sectionTitles: {
-              primaryPlayers: string;
-              generalInfo: string;
-              validations: string;
+            "filter": {
+                "current-club": string;
+                "new-club": string;
+                "only-confirmed": string;
+                "player": string;
             };
-            dataKeys: {
-              teamIndex: string;
-              teamCaptain: string;
-              preferredPlayingTime: string;
+            "title": string;
+            "upload": {
+                "description": string;
+                "error": string;
+                "file-type": string;
+                "hint": string;
+                "loan-file": string;
+                "title": string;
+                "transfer-file": string;
+                "unkown": string;
             };
-            emptyStates: {
-              noValidations: string;
+        };
+        "v1": {
+            "enrollment": {
+                "selectedLocationCard": {
+                    "courts": string;
+                };
+                "team-enrollment": {
+                    "import-existing-optional": string;
+                    "import-teams": {
+                        "title": string;
+                        "allTeams": string;
+                        "categories": {
+                            "MX": string;
+                            "M": string;
+                            "F": string;
+                            "NATIONAL": string;
+                        };
+                        "cancel": string;
+                        "import": string;
+                    };
+                };
             };
-          };
-          table: {
-            headers: {
-              division: string;
-              numberSignups: string;
-              team: string;
-              index: string;
-              messages: string;
-              actions: string;
+            "messages": {
+                "buttons": {
+                    "hide": string;
+                    "seeAll": string;
+                };
             };
-            buttons: {
-              view: string;
+            "shell": {
+                "sidebar": {
+                    "pages": {
+                        "myProfile": string;
+                        "myClub": string;
+                        "competition": string;
+                        "ranking": string;
+                        "enrollment": string;
+                        "faq": string;
+                        "settings": string;
+                        "encounters": string;
+                        "edit": string;
+                        "add": string;
+                        "teamFormation": string;
+                        "encounterForm": string;
+                        "confirmEncounter": string;
+                        "changeEncounter": string;
+                        "addProposal": string;
+                    };
+                    "auth": {
+                        "logIn": string;
+                        "logOut": string;
+                    };
+                    "admin": {
+                        "title": string;
+                    };
+                    "competition": {
+                        "assembly": string;
+                        "change-encounter": string;
+                        "enrollment": string;
+                        "overview": string;
+                        "title": string;
+                    };
+                    "general": {
+                        "changelog": string;
+                        "faq": string;
+                        "title": string;
+                    };
+                    "job": {
+                        "title": string;
+                    };
+                    "persnal": {
+                        "club": string;
+                        "games": string;
+                    };
+                    "ranking": {
+                        "title": string;
+                    };
+                    "rules": {
+                        "title": string;
+                    };
+                    "tournament": {
+                        "title": string;
+                    };
+                    "transfer": {
+                        "title": string;
+                    };
+                    "tooltips": {
+                        "registrationClosed": string;
+                    };
+                };
+                "topBar": {
+                    "search": {
+                        "placeholder": string;
+                        "noResults": string;
+                        "loading": string;
+                        "categories": {
+                            "Club": string;
+                            "Player": string;
+                            "EventTournament": string;
+                            "EventCompetition": string;
+                        };
+                        "moreCharactersRequired": string;
+                    };
+                };
             };
-            messages: {
-              numberErrors: string;
-              numberWarnings: string;
-              loadingEntries: string;
+            "enrollment": {
+                "disabled": {
+                    "title": string;
+                    "message": string;
+                };
+                "selectedLocationCard": {
+                    "courts": string;
+                    "noGameDays": string;
+                };
             };
-            noRecords: string;
-          };
-        };
-      };
-      competitionOverviewPage: {
-        title: string;
-        sectionTitles: {
-          overview: string;
-        };
-        table: {
-          headers: {
-            name: string;
-            start: string;
-            end: string;
-            official: string;
-            actions: string;
-          };
-          divisions: string;
-          inputs: {
-            onlyOfficialCompetitions: string;
-          };
-          buttons: {
-            addCompetition: string;
-            loadMoreCompetitions: string;
-          };
-        };
-        actions: {
-          edit: string;
-          delete: string;
-          setRisersFallers: string;
-          openCloseDate: string;
-          openCloseEncounterChangeDate: string;
-          makeOfficial: string;
-          makeUnofficial: string;
-          sync: string;
-          messages: {
-            syncSuccess: string;
-            syncError: string;
-          };
-        };
-        addCompetitionDialog: {
-          title: string;
-          inputs: {
-            visualCode: string;
-            officialCompetition: string;
-          };
-          buttons: {
-            cancel: string;
-            add: string;
-          };
-          messages: {
-            competitionAdded: string;
-          };
-          errors: {
-            errorAddingCompetition: string;
-          };
-        };
-        deleteCompetitionDialog: {
-          title: string;
-          body: string;
-          buttons: {
-            cancel: string;
-            delete: string;
-          };
-          successMessage: string;
-          errorMessage: string;
-        };
-        competitionStatusDialog: {
-          title: string;
-          text: string;
-          official: string;
-          unofficial: string;
-          buttons: {
-            cancel: string;
-            make: string;
-          };
-          successMessage: string;
-          errorMessage: string;
-        };
-        openCloseDateDialog: {
-          title: string;
-          form: {
-            openDate: string;
-            closeDate: string;
-          };
-          buttons: {
-            cancel: string;
-            save: string;
-          };
-          messages: {
-            success: string;
-            error: string;
-          };
-        };
-        openCloseEncounterChangeDateDialog: {
-          title: string;
-          form: {
-            changeOpenDate: string;
-            changeCloseRequestDatePeriod1: string;
-            changeCloseDatePeriod1: string;
-            changeCloseRequestDatePeriod2: string;
-            changeCloseDatePeriod2: string;
-          };
-          buttons: {
-            cancel: string;
-            save: string;
-          };
-          messages: {
-            success: string;
-            error: string;
-          };
-        };
-        risersFallersDialog: {
-          title: string;
-          risers: string;
-          fallers: string;
-          buttons: {
-            cancel: string;
-            save: string;
-          };
-          messages: {
-            success: string;
-            error: string;
-          };
-        };
-      };
-      drawDetailPage: {
-        sections: {
-          standings: {
-            title: string;
-            actions: {
-              openInToernooiNL: string;
+            "player": {
+                "backup": string;
+                "base": string;
+                "claimed": string;
+                "ical": {
+                    "click": string;
+                    "copied": string;
+                    "description": string;
+                    "linked": string;
+                    "team-season": string;
+                };
+                "menu": {
+                    "add": string;
+                    "claim": string;
+                    "delete": string;
+                    "edit": string;
+                    "recalculatePoints": string;
+                };
+                "no-memberid": string;
+                "no-players": string;
+                "re-calculate": {
+                    "calculate": string;
+                    "from": string;
+                    "title": string;
+                    "to": string;
+                };
+                "regular": string;
+                "search": {
+                    "backup-player": string;
+                    "create": string;
+                    "in-list": string;
+                    "label": string;
+                    "not-found": string;
+                };
+                "title": string;
+                "notFound": string;
+                "ranking": {
+                    "single": string;
+                    "double": string;
+                    "mix": string;
+                };
+                "messages": {
+                    "claimAccountSuccess": string;
+                };
+                "crud": {
+                    "title": string;
+                    "tabs": {
+                        "player": string;
+                        "ranking": string;
+                        "clubHistory": string;
+                        "permissions": string;
+                    };
+                    "playerForm": {
+                        "inputs": {
+                            "name": string;
+                            "lastName": string;
+                            "gender": string;
+                            "memberId": string;
+                            "registrationNumber": string;
+                        };
+                        "gender": {
+                            "M": string;
+                            "F": string;
+                        };
+                        "buttons": {
+                            "save": string;
+                        };
+                        "messages": {
+                            "success": string;
+                        };
+                    };
+                    "ranking": {
+                        "lastRanking": {
+                            "title": string;
+                            "notFound": string;
+                            "inputs": {
+                                "single": string;
+                                "double": string;
+                                "mix": string;
+                            };
+                            "messages": {
+                                "success": string;
+                            };
+                            "buttons": {
+                                "save": string;
+                            };
+                        };
+                        "competitionPlayer": {
+                            "title": string;
+                            "inputs": {
+                                "competitionPlayer": string;
+                            };
+                            "messages": {
+                                "success": string;
+                            };
+                            "buttons": {
+                                "save": string;
+                            };
+                        };
+                        "allUpdates": {
+                            "title": string;
+                            "nextRanking": string;
+                            "updates": string;
+                            "buttons": {
+                                "add": string;
+                            };
+                            "table": {
+                                "headers": {
+                                    "date": string;
+                                    "single": string;
+                                    "double": string;
+                                    "mix": string;
+                                    "actions": string;
+                                };
+                                "actions": {
+                                    "edit": string;
+                                    "delete": string;
+                                };
+                            };
+                            "rankingPlace": {
+                                "editDialog": {
+                                    "titleEdit": string;
+                                    "titleCreate": string;
+                                    "inputs": {
+                                        "rankingDate": string;
+                                        "single": string;
+                                        "double": string;
+                                        "mix": string;
+                                        "singlePoints": string;
+                                        "doublePoints": string;
+                                        "mixPoints": string;
+                                        "updatePossible": string;
+                                    };
+                                    "messages": {
+                                        "successCreate": string;
+                                        "successUpdate": string;
+                                    };
+                                    "buttons": {
+                                        "cancel": string;
+                                        "saveEdit": string;
+                                        "saveCreate": string;
+                                    };
+                                };
+                                "deleteDialog": {
+                                    "title": string;
+                                    "subTitle": string;
+                                    "messages": {
+                                        "success": string;
+                                    };
+                                    "buttons": {
+                                        "no": string;
+                                        "yes": string;
+                                    };
+                                };
+                            };
+                        };
+                    };
+                    "clubHistory": {
+                        "notFound": string;
+                        "buttons": {
+                            "add": string;
+                        };
+                        "deleteDialog": {
+                            "title": string;
+                            "subTitle": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "buttons": {
+                                "no": string;
+                                "yes": string;
+                            };
+                        };
+                        "editDialog": {
+                            "titleAdd": string;
+                            "titleEdit": string;
+                            "inputs": {
+                                "selectClub": string;
+                                "isCurrentClub": string;
+                                "start": string;
+                                "end": string;
+                                "membershipType": string;
+                                "confirmed": string;
+                            };
+                            "membershipTypes": {
+                                "NORMAL": string;
+                                "LOAN": string;
+                            };
+                            "messages": {
+                                "successAdd": string;
+                                "successEdit": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "add": string;
+                                "edit": string;
+                            };
+                        };
+                        "table": {
+                            "notFound": string;
+                            "headers": {
+                                "fullName": string;
+                                "start": string;
+                                "end": string;
+                                "actions": string;
+                            };
+                            "actions": {
+                                "edit": string;
+                                "delete": string;
+                            };
+                        };
+                    };
+                    "permissionsForm": {
+                        "buttons": {
+                            "save": string;
+                        };
+                        "messages": {
+                            "success": string;
+                        };
+                    };
+                    "deletePlayer": {
+                        "title": string;
+                        "subTitle": string;
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "no": string;
+                            "yes": string;
+                        };
+                    };
+                    "recalculatePoints": {
+                        "title": string;
+                        "subTitle": string;
+                        "inputs": {
+                            "from": string;
+                            "to": string;
+                        };
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "close": string;
+                            "calculate": string;
+                        };
+                    };
+                };
+                "nextEncounterTitle": string;
+                "upcomingEncountersTitle": string;
+                "noUpcomingEncounters": string;
+                "noUpcomingEncounter": string;
+                "recentEncountersTitle": string;
+                "noRecentEncounters": string;
+                "rolePrefix": string;
+                "clubAdmin": string;
+                "gameLeader": string;
+                "unknown": string;
+                "captain": string;
+                "player": string;
+                "date": string;
+                "teams": string;
+                "against": string;
+                "location": string;
+                "meetingForm": string;
+                "filled": string;
+                "notStarted": string;
+                "started": string;
+                "notFilled": string;
+                "notSelected": string;
+                "teamFormation": string;
+                "teamIsFormed": string;
+                "teamNotComplete": string;
+                "noTeamFormation": string;
+                "won": string;
+                "lost": string;
+                "draw": string;
+                "statuses": {
+                    "won": string;
+                    "lost": string;
+                    "draw": string;
+                    "forfeit": string;
+                    "absence": string;
+                    "noPlayers": string;
+                    "disqualified": string;
+                    "stopped": string;
+                    "unknown": string;
+                };
+                "buttons": {
+                    "change": string;
+                    "create": string;
+                    "select": string;
+                    "edit": string;
+                    "continue": string;
+                    "view": string;
+                    "allEncounters": string;
+                    "viewEncounterForm": string;
+                    "tooltips": {
+                        "encounterDateInFuture": string;
+                        "teamFormationNotComplete": string;
+                    };
+                };
+                "eventTypes": {
+                    "D": string;
+                    "F": string;
+                    "M": string;
+                    "MX": string;
+                    "S": string;
+                    "unknown": string;
+                };
+                "points": string;
             };
-            table: {
-              headers: {
-                rank: string;
-                status: string;
-                name: string;
-                points: string;
-                played: string;
-                won: string;
-                lost: string;
-                drawn: string;
-                games: string;
-                setsWonLost: string;
-                pointsWonLost: string;
-              };
+            "rankingPage": {
+                "title": string;
+                "buttons": {
+                    "add": string;
+                };
+                "overviewTable": {
+                    "team": string;
+                    "name": string;
+                    "win": string;
+                    "loss": string;
+                    "gamesToUse": string;
+                    "calculateUpdates": string;
+                    "actions": string;
+                    "actionItems": {
+                        "watchSystem": string;
+                        "copyPoints": string;
+                        "pastePoints": string;
+                        "edit": string;
+                        "delete": string;
+                        "deleteSuccess": string;
+                        "deleteError": string;
+                    };
+                    "noRecords": string;
+                    "seeAllRankingSystems": string;
+                };
+                "detailTable": {
+                    "level": string;
+                    "pointsToGoUp": string;
+                    "pointsToGoDown": string;
+                    "pointsWhenWinningAgainst": string;
+                    "menu": {
+                        "watchSystem": string;
+                        "uploadPoints": string;
+                        "sync": string;
+                        "edit": string;
+                        "delete": string;
+                        "deleteSuccess": string;
+                        "deleteError": string;
+                    };
+                    "noRecords": string;
+                };
+                "editRankingPage": {
+                    "title": string;
+                    "success": string;
+                    "error": string;
+                };
+                "addRankingPage": {
+                    "title": string;
+                    "success": string;
+                    "error": string;
+                };
+                "form": {
+                    "title": string;
+                    "name": string;
+                    "type": string;
+                    "amountOfLevels": string;
+                    "winning": string;
+                    "winningPlusOne": string;
+                    "losing": string;
+                    "gamesToUse": string;
+                    "minimumGamesForUpgrade": string;
+                    "diffLevels": string;
+                    "primary": string;
+                    "calculateUpdates": string;
+                    "updateInterval": string;
+                    "pointUpdate": string;
+                    "pointPeriod": string;
+                    "pointUpdateDay": string;
+                    "rankUpdate": string;
+                    "rankPeriod": string;
+                    "calculationUpdateDay": string;
+                    "periodTotal": string;
+                    "periodGames": string;
+                    "upgradeDowngrade": string;
+                    "differenceForUpgradeSingle": string;
+                    "differenceForUpgradeDouble": string;
+                    "differenceForUpgradeMix": string;
+                    "differenceForDowngradeSingle": string;
+                    "differenceForDowngradeDouble": string;
+                    "differenceForDowngradeMix": string;
+                    "maxLevelUpPerChange": string;
+                    "maxLevelDownPerChange": string;
+                    "inactivity": string;
+                    "inactivityAmount": string;
+                    "inactivityUnit": string;
+                    "gamesForInactivity": string;
+                    "linkToEvents": string;
+                    "groups": string;
+                    "periods": {
+                        "weeks": string;
+                        "months": string;
+                        "days": string;
+                    };
+                    "days": {
+                        "monday": string;
+                        "tuesday": string;
+                        "wednesday": string;
+                        "thursday": string;
+                        "friday": string;
+                        "saturday": string;
+                        "sunday": string;
+                    };
+                    "save": string;
+                    "cancel": string;
+                    "add": string;
+                };
+                "dialogCopyRankingSystem": {
+                    "title": string;
+                    "startDate": string;
+                    "endDate": string;
+                    "success": string;
+                    "error": string;
+                    "cancel": string;
+                    "create": string;
+                };
+                "dialogCopyPoints": {
+                    "title": string;
+                    "startDate": string;
+                    "endDate": string;
+                    "success": string;
+                    "error": string;
+                    "cancel": string;
+                    "copy": string;
+                };
             };
-            noRecords: string;
-          };
-          encounters: {
-            title: string;
-            noRecords: string;
-            calendar: {
-              filters: {
-                team: string;
-              };
+            "encountersPage": {
+                "title": string;
+                "notFound": string;
             };
-          };
-        };
-        actions: {
-          syncPoints: string;
-        };
-        messages: {
-          pointsSynced: string;
-          errorSyncingPoints: string;
-        };
-      };
-      editCompetitionPage: {
-        steps: {
-          "0": string;
-          "1": string;
-          "2": string;
-        };
-        general: {
-          sectionTitles: {
-            general: string;
-          };
-          inputs: {
-            name: string;
-            season: string;
-            type: string;
-            contact: string;
-            country: string;
-            province: string;
-            sendNotifications: string;
-            teamMatcherLink: string;
-          };
-          successMessage: string;
-          errorMessage: string;
-        };
-        divisions: {
-          table: {
-            headers: {
-              name: string;
-              type: string;
-              maxLevel: string;
-              index: string;
+            "playerRanking": {
+                "title": string;
+                "notFound": string;
+                "rankingTooltipMessages": {
+                    "readyForUpgrade": string;
+                    "notPossibleToReachRequiredAverage": string;
+                    "winsNeeded": string;
+                };
+                "filters": {
+                    "ranking": string;
+                    "rankingOptions": {
+                        "both": string;
+                        "upgrade": string;
+                        "downgrade": string;
+                    };
+                    "gameTypeOptions": {
+                        "S": string;
+                        "D": string;
+                        "MX": string;
+                    };
+                    "gameType": string;
+                    "period": string;
+                    "simulateGame": string;
+                };
+                "dialog": {
+                    "title": string;
+                    "level": string;
+                    "teamA": string;
+                    "teamB": string;
+                    "winner": string;
+                    "simulate": string;
+                    "cancel": string;
+                };
+                "table": {
+                    "date": string;
+                    "team": string;
+                    "opponent": string;
+                    "points": string;
+                    "usedForUpgrade": string;
+                    "avgUpgrade": string;
+                    "usedForDowngrade": string;
+                    "avgDowngrade": string;
+                    "operation": string;
+                    "noRecords": string;
+                };
+                "rankingUpdate": string;
+                "pointsUpdate": string;
             };
-            actions: {
-              edit: string;
-              delete: string;
-              add: string;
+            "teamFormation": {
+                "title": string;
+                "notFound": string;
+                "messages": {
+                    "saved": string;
+                    "downloaded": string;
+                };
+                "buttons": {
+                    "cancel": string;
+                    "save": string;
+                    "print": string;
+                };
+                "info": {
+                    "title": string;
+                    "basePlayers": string;
+                    "titulars": string;
+                    "errors": string;
+                    "params": {
+                        "single1": string;
+                        "single2": string;
+                        "single3": string;
+                        "single4": string;
+                        "double1": string;
+                        "double2": string;
+                        "double3": string;
+                        "double4": string;
+                        "mix1": string;
+                        "mix2": string;
+                        "mix3": string;
+                        "mix4": string;
+                        "gender": {
+                            "female": string;
+                            "females": string;
+                            "long": {
+                                "F": string;
+                                "M": string;
+                                "MX": string;
+                            };
+                            "longs": {
+                                "F": string;
+                                "M": string;
+                            };
+                            "male": string;
+                            "males": string;
+                            "mix": string;
+                            "national": string;
+                            "select": string;
+                            "short": {
+                                "female": string;
+                                "male": string;
+                                "mix": string;
+                            };
+                            "title": string;
+                        };
+                        "ranking": {
+                            "single": string;
+                            "double": string;
+                            "mix": string;
+                        };
+                    };
+                };
+                "teamFormation": {
+                    "title": string;
+                    "disabledTitle": string;
+                    "noClub": string;
+                    "selectPlayer": string;
+                    "categories": {
+                        "singleMan": string;
+                        "doubleMen": string;
+                        "singleWoman": string;
+                        "doubleWomen": string;
+                        "mixDouble": string;
+                        "subtitudes": string;
+                        "captainId": string;
+                    };
+                    "labels": {
+                        "singleMan1": string;
+                        "singleMan2": string;
+                        "singleMan3": string;
+                        "singleMan4": string;
+                        "singleWoman1": string;
+                        "singleWoman2": string;
+                        "singleWoman3": string;
+                        "singleWoman4": string;
+                        "doubleMen": string;
+                        "doubleWomen": string;
+                        "doubleMen1": string;
+                        "doubleMen2": string;
+                        "doubleMen3": string;
+                        "doubleMen4": string;
+                        "doubleWomen1": string;
+                        "doubleWomen2": string;
+                        "doubleWomen3": string;
+                        "doubleWomen4": string;
+                        "mixDouble1": string;
+                        "mixDouble2": string;
+                        "captainId": string;
+                        "subtitudes": string;
+                    };
+                };
+                "errors": {
+                    "already": string;
+                    "club-base-other-team": string;
+                    "comp-status": string;
+                    "comp-status-html": string;
+                    "none": string;
+                    "not-enough-players": string;
+                    "player-above-lower": string;
+                    "player-gender": string;
+                    "player-genders": string;
+                    "player-max-double-games": string;
+                    "player-max-mix-games": string;
+                    "player-max-mixed-games": string;
+                    "player-max-single-games": string;
+                    "player-min-level": string;
+                    "player-order-doubles": string;
+                    "player-order-highest": string;
+                    "player-order-single": string;
+                    "players-above-lower": string;
+                    "team-index": string;
+                    "team-to-strong": string;
+                    "title": string;
+                    "to-much": string;
+                };
+                "warnings": {
+                    "subtitute-team-index": string;
+                };
             };
-            noRecords: string;
-            addDivisionDialog: {
-              title: string;
-              inputs: {
-                name: string;
-                type: string;
-                level: string;
-                maxLevel: string;
-                minBaseTeamIndex: string;
-                maxBaseTeamIndex: string;
-                index: string;
-              };
-              buttons: {
-                cancel: string;
-                add: string;
-              };
-              messages: {
-                divisionAdded: string;
-              };
-              errors: {
-                errorAddingDivision: string;
-              };
+            "encounter": {
+                "tempTeamCaptain": {
+                    "dialog": {
+                        "title": string;
+                        "buttons": {
+                            "cancel": string;
+                            "select": string;
+                        };
+                        "messages": {
+                            "saved": string;
+                        };
+                    };
+                };
+                "gameLeader": {
+                    "dialog": {
+                        "title": string;
+                        "buttons": {
+                            "cancel": string;
+                            "select": string;
+                        };
+                        "messages": {
+                            "saved": string;
+                        };
+                    };
+                };
             };
-            editDivisionDialog: {
-              title: string;
-              inputs: {
-                name: string;
-                type: string;
-                level: string;
-                maxLevel: string;
-                minBaseTeamIndex: string;
-                maxBaseTeamIndex: string;
-                index: string;
-              };
-              buttons: {
-                cancel: string;
-                add: string;
-              };
-              messages: {
-                divisionAdded: string;
-              };
-              errors: {
-                errorAddingDivision: string;
-              };
+            "clubPage": {
+                "noClubFound": string;
+                "actions": {
+                    "edit": string;
+                    "addPlayer": string;
+                    "addPlayerDialog": {
+                        "title": string;
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "addPlayer": string;
+                        };
+                    };
+                    "twizzitOverview": string;
+                    "delete": string;
+                    "deleteDialog": {
+                        "title": string;
+                        "subTitle": string;
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "no": string;
+                            "yes": string;
+                        };
+                    };
+                    "messages": {
+                        "downloadSuccess": string;
+                    };
+                };
+                "season": string;
+                "tabs": {
+                    "teams": string;
+                    "assemblyMatrix": string;
+                    "players": string;
+                    "encounters": string;
+                    "teamEnrollment": string;
+                };
+                "teams": {
+                    "title": string;
+                    "table": {
+                        "headers": {
+                            "team": string;
+                            "type": string;
+                            "ranking": string;
+                            "liga": string;
+                            "actions": string;
+                        };
+                        "noData": string;
+                    };
+                    "actions": {
+                        "edit": string;
+                        "delete": string;
+                    };
+                    "addEditTeamDialog": {
+                        "titleAdd": string;
+                        "titleEdit": string;
+                        "steps": {
+                            "info": string;
+                            "players": string;
+                        };
+                        "messages": {
+                            "successAdd": string;
+                            "successEdit": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "next": string;
+                            "back": string;
+                            "editTeam": string;
+                            "addTeam": string;
+                        };
+                        "teamInfo": {
+                            "generalInfo": string;
+                            "teamCaptain": string;
+                            "preferredPlayingTime": string;
+                            "form": {
+                                "type": string;
+                                "teamNumber": string;
+                                "season": string;
+                                "email": string;
+                                "phone": string;
+                                "preferredDay": string;
+                                "preferredTime": string;
+                                "preferredLocation": string;
+                                "teamType": {
+                                    "M": string;
+                                    "F": string;
+                                    "MX": string;
+                                    "NATIONAL": string;
+                                };
+                                "daysOfWeek": {
+                                    "monday": string;
+                                    "tuesday": string;
+                                    "wednesday": string;
+                                    "thursday": string;
+                                    "friday": string;
+                                    "saturday": string;
+                                    "sunday": string;
+                                };
+                            };
+                        };
+                        "players": {
+                            "addPlayer": string;
+                            "players": string;
+                            "form": {
+                                "membership": string;
+                                "membershipTypes": {
+                                    "REGULAR": string;
+                                    "BACKUP": string;
+                                };
+                            };
+                            "buttons": {
+                                "addPlayer": string;
+                            };
+                        };
+                    };
+                    "deleteTeamDialog": {
+                        "title": string;
+                        "subTitle": string;
+                        "messages": {
+                            "success": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "delete": string;
+                        };
+                    };
+                };
+                "assemblyMatrix": {
+                    "teamsFilter": {
+                        "label": string;
+                        "options": {
+                            "ALL": string;
+                        };
+                    };
+                    "table": {
+                        "headers": {
+                            "players": string;
+                        };
+                        "noData": string;
+                    };
+                    "tooltipMessages": {
+                        "basePlayer": string;
+                        "genderError": string;
+                        "playerOfAnotherTeam": string;
+                        "playerOfAnotherTeamInSameSeries": string;
+                        "minLevelError": string;
+                        "betterMeta": string;
+                    };
+                    "types": {
+                        "double": string;
+                        "female": string;
+                        "male": string;
+                        "mix": string;
+                        "single": string;
+                        "title": string;
+                    };
+                    "gender": {
+                        "F": string;
+                        "M": string;
+                    };
+                    "teamTypes": {
+                        "F": string;
+                        "M": string;
+                        "MX": string;
+                        "NATIONAL": string;
+                    };
+                };
+                "players": {
+                    "playersFilter": {
+                        "teams": {
+                            "label": string;
+                            "options": {
+                                "ALL": string;
+                            };
+                        };
+                        "players": {
+                            "label": string;
+                            "options": {
+                                "ALL": string;
+                            };
+                            "loadingText": string;
+                            "noData": string;
+                        };
+                    };
+                    "table": {
+                        "headers": {
+                            "name": string;
+                            "teams": string;
+                        };
+                        "noData": string;
+                    };
+                };
+                "encounters": {
+                    "filters": {
+                        "team": {
+                            "label": string;
+                            "options": {
+                                "ALL": string;
+                            };
+                        };
+                        "openRequest": {
+                            "label": string;
+                            "options": {
+                                "ALL": string;
+                                "openRequests": string;
+                                "noRequests": string;
+                            };
+                        };
+                        "validation": {
+                            "label": string;
+                            "options": {
+                                "ALL": string;
+                                "valid": string;
+                                "invalid": string;
+                                "warnings": string;
+                            };
+                        };
+                        "changedDate": string;
+                        "homeGames": string;
+                    };
+                    "table": {
+                        "headers": {
+                            "team": string;
+                            "opponent": string;
+                            "homeAway": string;
+                            "date": string;
+                            "status": string;
+                            "validation": string;
+                            "changeEncounterDate": string;
+                            "view": string;
+                        };
+                        "encounterState": {
+                            "moved": string;
+                            "original": string;
+                            "inProgress": string;
+                        };
+                        "originalDate": string;
+                        "home": string;
+                        "away": string;
+                        "noData": string;
+                    };
+                };
+                "teamEnrollment": {
+                    "teams": {
+                        "title": string;
+                        "table": {
+                            "headers": {
+                                "teams": string;
+                                "liga": string;
+                                "comments": string;
+                            };
+                            "teamIndex": string;
+                            "noData": string;
+                        };
+                    };
+                    "locations": {
+                        "title": string;
+                        "locationDrawer": {
+                            "title": string;
+                            "buttons": {
+                                "copyAddress": string;
+                            };
+                            "gameDaysTitle": string;
+                            "till": string;
+                            "courts": string;
+                            "exceptionsTitle": string;
+                            "daysOfWeek": {
+                                "monday": string;
+                                "tuesday": string;
+                                "wednesday": string;
+                                "thursday": string;
+                                "friday": string;
+                                "saturday": string;
+                                "sunday": string;
+                            };
+                        };
+                    };
+                    "comments": {
+                        "title": string;
+                    };
+                };
+                "editClubPage": {
+                    "title": string;
+                    "tabs": {
+                        "generalInfo": string;
+                        "locations": string;
+                        "basePlayers": string;
+                    };
+                    "generalInfoTab": {
+                        "title": string;
+                        "generalForm": {
+                            "name": string;
+                            "fullName": string;
+                            "teamName": string;
+                            "abbreviation": string;
+                            "country": string;
+                            "state": string;
+                            "states": {
+                                "antwerpen": string;
+                                "brabant-wallon": string;
+                                "brussels-hoofdstedelijk-gewest": string;
+                                "hainaut": string;
+                                "liege": string;
+                                "limburg": string;
+                                "luxembourg": string;
+                                "name": string;
+                                "namur": string;
+                                "oost-vlaanderen": string;
+                                "vlaams-brabant": string;
+                                "west-vlaanderen": string;
+                            };
+                            "clubId": string;
+                            "messages": {
+                                "success": string;
+                            };
+                            "buttons": {
+                                "save": string;
+                            };
+                        };
+                        "roles": {
+                            "title": string;
+                            "buttons": {
+                                "addRole": string;
+                                "addPlayer": string;
+                            };
+                            "messages": {
+                                "successAddPlayer": string;
+                                "successRemovePlayer": string;
+                                "failAddPlayer": string;
+                                "failRemovePlayer": string;
+                            };
+                            "menu": {
+                                "edit": string;
+                                "delete": string;
+                            };
+                            "deleteDialog": {
+                                "title": string;
+                                "subTitle": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "delete": string;
+                                };
+                            };
+                            "addDialog": {
+                                "title": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "addRole": string;
+                                };
+                            };
+                            "editDialog": {
+                                "title": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "buttons": {
+                                    "save": string;
+                                };
+                            };
+                        };
+                    };
+                    "locations": {
+                        "title": string;
+                        "buttons": {
+                            "addLocation": string;
+                        };
+                        "location": {
+                            "addDialog": {
+                                "title": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                            };
+                            "editDialog": {
+                                "title": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                            };
+                            "deleteDialog": {
+                                "title": string;
+                                "subTitle": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "delete": string;
+                                };
+                            };
+                            "form": {
+                                "name": string;
+                                "street": string;
+                                "streetNumber": string;
+                                "postalcode": string;
+                                "city": string;
+                                "state": string;
+                                "phone": string;
+                                "fax": string;
+                            };
+                            "search": {
+                                "title": string;
+                                "placeholder": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "save": string;
+                                "delete": string;
+                            };
+                        };
+                        "gameDays": {
+                            "title": string;
+                            "buttons": {
+                                "addGameDay": string;
+                            };
+                            "createDialog": {
+                                "title": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "form": {
+                                    "day": string;
+                                    "daysOfWeek": {
+                                        "monday": string;
+                                        "tuesday": string;
+                                        "wednesday": string;
+                                        "thursday": string;
+                                        "friday": string;
+                                        "saturday": string;
+                                        "sunday": string;
+                                    };
+                                    "startTime": string;
+                                    "endTime": string;
+                                    "courts": string;
+                                };
+                                "errors": {
+                                    "courtsMin": string;
+                                    "startBeforeEnd": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "save": string;
+                                };
+                            };
+                            "deleteDialog": {
+                                "title": string;
+                                "subTitle": string;
+                                "messages": {
+                                    "success": string;
+                                    "error": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "delete": string;
+                                };
+                            };
+                            "actions": {
+                                "edit": string;
+                                "delete": string;
+                            };
+                            "table": {
+                                "noData": string;
+                                "headers": {
+                                    "day": string;
+                                    "startTime": string;
+                                    "endTime": string;
+                                    "courts": string;
+                                    "actions": string;
+                                };
+                            };
+                        };
+                        "exceptions": {
+                            "title": string;
+                            "buttons": {
+                                "addException": string;
+                            };
+                            "createDialog": {
+                                "title": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "form": {
+                                    "start": string;
+                                    "end": string;
+                                };
+                                "errors": {
+                                    "startBeforeEnd": string;
+                                    "startRequired": string;
+                                    "endRequired": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "save": string;
+                                };
+                            };
+                            "deleteDialog": {
+                                "title": string;
+                                "subTitle": string;
+                                "messages": {
+                                    "success": string;
+                                    "error": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "delete": string;
+                                };
+                            };
+                            "actions": {
+                                "edit": string;
+                                "delete": string;
+                            };
+                            "table": {
+                                "noData": string;
+                                "headers": {
+                                    "period": string;
+                                    "actions": string;
+                                };
+                            };
+                        };
+                    };
+                    "basePlayers": {
+                        "title": string;
+                        "buttons": {
+                            "addTeam": string;
+                        };
+                        "team": {
+                            "buttons": {
+                                "addPlayer": string;
+                            };
+                            "list": {
+                                "noPlayers": string;
+                                "noSubEvent": string;
+                                "actions": {
+                                    "editRanking": string;
+                                    "toggleLevelExemption": string;
+                                    "delete": string;
+                                };
+                            };
+                            "addPlayerDialog": {
+                                "title": string;
+                                "messages": {
+                                    "success": string;
+                                    "error": string;
+                                    "playerAlreadyInTeam": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "addPlayer": string;
+                                };
+                            };
+                            "deletePlayerDialog": {
+                                "title": string;
+                                "subTitle": string;
+                                "messages": {
+                                    "success": string;
+                                    "playerNotFound": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "delete": string;
+                                };
+                            };
+                            "editPlayerRankingDialog": {
+                                "title": string;
+                                "messages": {
+                                    "success": string;
+                                };
+                                "form": {
+                                    "single": string;
+                                    "double": string;
+                                    "mix": string;
+                                };
+                                "buttons": {
+                                    "cancel": string;
+                                    "save": string;
+                                };
+                            };
+                            "messages": {
+                                "levelExemptionUpdated": string;
+                                "levelExemptionError": string;
+                            };
+                        };
+                    };
+                };
             };
-            deleteDivisionDialog: {
-              title: string;
-              body: string;
-              buttons: {
-                cancel: string;
-                delete: string;
-              };
+            "filterComponent": {
+                "title": string;
+                "buttons": {
+                    "filters": string;
+                    "cancel": string;
+                    "apply": string;
+                };
             };
-          };
-        };
-        extra: {
-          sectionTitles: {
-            exceptions: string;
-            info: string;
-            roles: string;
-          };
-          emptyStates: {
-            noExceptions: string;
-            noInfo: string;
-          };
-          inputs: {
-            periodStart: string;
-            periodEnd: string;
-            availableFields: string;
-            name: string;
-            competitionAllowed: string;
-          };
-          inputDescriptions: {
-            exceptions: string;
-            info: string;
-          };
-          buttons: {
-            add: string;
-          };
-          successMessage: string;
-          errorMessage: string;
-        };
-        buttons: {
-          next: string;
-          cancel: string;
-          back: string;
-          save: string;
-          saveChanges: string;
-          finish: string;
-        };
-      };
-      encounterAlerts: {
-        buttons: {
-          seeEncounter: string;
-          seeAllMessages: string;
-          hideMessages: string;
-        };
-        messages: {
-          confirmOrDisputeEncounter: string;
-        };
-        details: {};
-      };
-      encounterFormPage: {
-        title: string;
-        steps: {
-          "0": string;
-          "1": string;
-          "2": string;
-        };
-        sectionTitles: {
-          register: string;
-          teams: string;
-          confirmEncounter: string;
-          confirmPresence: string;
-          cancelPresence: string;
-          confirmConfirmed: string;
-          cancelConfirmed: string;
-          results: string;
-          players: string;
-          information: string;
-        };
-        prompts: {
-          confirmPresence: string;
-          cancelPresence: string;
-          confirmConfirmed: string;
-          cancelConfirmed: string;
-        };
-        messages: {
-          areComments: string;
-          noComments: string;
-          presenceUpdated: string;
-          confirmationUpdated: string;
-          encounterUpdated: string;
-          gameCreated: string;
-          gameUpdated: string;
-        };
-        buttons: {
-          back: string;
-          next: string;
-          submit: string;
-          cancel: string;
-          confirm: string;
-          seeTeamFormation: string;
-          "2Sets": string;
-          "3Sets": string;
-          saveChanges: string;
-        };
-        dialogs: {
-          gameDialog: {
-            winnerStatus: {
-              "1": string;
-              "2": string;
-              "4": string;
-              "5": string;
-              "6": string;
-              "7": string;
-              "10": string;
-              "12": string;
-              "106": string;
-              "107": string;
+            "entryTeamDrawer": {
+                "sectionTitles": {
+                    "basePlayers": string;
+                    "generalInfo": string;
+                    "validations": string;
+                };
+                "dataKeys": {
+                    "teamIndex": string;
+                    "teamCaptain": string;
+                    "preferredPlayingTime": string;
+                };
+                "emptyStates": {
+                    "noValidations": string;
+                };
+                "noData": string;
+                "params": {
+                    "gender": {
+                        "male": string;
+                        "female": string;
+                    };
+                };
+                "validation": {
+                    "errors": {
+                        "already": string;
+                        "base-gender-mix": string;
+                        "base-other-team": string;
+                        "comp-status-base": string;
+                        "comp-status-team": string;
+                        "faller": string;
+                        "first-team-index": string;
+                        "no-subevent": string;
+                        "none": string;
+                        "player-club": string;
+                        "player-club-none": string;
+                        "player-gender": string;
+                        "player-min-level": string;
+                        "player-subevent": string;
+                        "riser": string;
+                        "team-index": string;
+                        "team-order": string;
+                        "team-order-same-subevent": string;
+                        "team-to-strong": string;
+                        "team-to-week": string;
+                        "title": string;
+                        "too-few-base-players": string;
+                        "too-many-base-players": string;
+                    };
+                    "warnings": {
+                        "already-saved": string;
+                        "base-other-team": string;
+                        "player-min-level": string;
+                        "subtitute-team-index": string;
+                        "title": string;
+                    };
+                };
+                "params": {
+                    "gender": {
+                        "male": string;
+                        "female": string;
+                    };
+                };
             };
-            errors: {
-              scoreCannotBeNegative: string;
-              maxScore30MustBe29: string;
-              scoreCannotExceed30: string;
-              winningTeamMustWinBy2: string;
-              scoreDifferenceMustBe2: string;
-              invalidScoreInput: string;
-              invalidSet1Scores: string;
-              invalidSet2Scores: string;
-              invalidSet3Scores: string;
-              notEnoughGamesPlayed: string;
-              tooManyGamesPlayed: string;
-              gameValidationError: string;
+            "notFoundPage": {
+                "title": string;
+                "buttons": {
+                    "back": string;
+                };
             };
-          };
-        };
-        inputs: {
-          present: string;
-          confirm: string;
-          league: string;
-          date: string;
-          players: string;
-          player: string;
-          winner: string;
-          set1: string;
-          set2: string;
-          set3: string;
-          startTime: string;
-          endTime: string;
-          shuttle: {
-            title: string;
-            helpText: string;
-            helpLink: string;
-          };
-          commentsOptional: string;
-        };
-        positions: {
-          captain: string;
-          gameLeader: string;
-          homeCaptain: string;
-          awayCaptain: string;
-        };
-        errors: {
-          presenceNotUpdated: string;
-          confirmationNotUpdated: string;
-          errorCreatingGame: string;
-          errorUpdatingGame: string;
-          encounterNotUpdated: string;
-        };
-      };
-      settings: {
-        title: string;
-        languages: {
-          title: string;
-          options: {
-            en: string;
-            nl_BE: string;
-          };
-        };
-        notifications: {
-          title: string;
-          encounterChangeNewNotification: {
-            title: string;
-            description: string;
-          };
-          encounterChangeFinishedNotification: {
-            title: string;
-            description: string;
-          };
-          encounterChangeConfirmationNotification: {
-            title: string;
-            description: string;
-          };
-          encounterNotEnteredNotification: {
-            title: string;
-            description: string;
-          };
-          encounterNotAcceptedNotification: {
-            title: string;
-            description: string;
-          };
-          syncSuccessNotification: {
-            title: string;
-            description: string;
-          };
-          syncFailedNotification: {
-            title: string;
-            description: string;
-          };
-          clubEnrollmentNotification: {
-            title: string;
-            description: string;
-          };
-          types: {
-            email: string;
-            push: string;
-          };
-        };
-        messages: {
-          success: string;
-          error: string;
-        };
-        buttons: {
-          save: string;
-        };
-      };
-      changeEncounter: {
-        title: string;
-        encounterNotFound: string;
-        proposals: {
-          title: string;
-          proposalPeriod: string;
-          noProposals: string;
-          date: string;
-          time: string;
-          location: string;
-          messages: {
-            proposalAddedSuccess: string;
-            proposalAddedError: string;
-            proposalAcceptedSuccess: string;
-            proposalAcceptedError: string;
-            proposalRejectedSuccess: string;
-            proposalRejectedError: string;
-            proposalDeletedSuccess: string;
-            proposalDeletedError: string;
-            generalError: string;
-          };
-          buttons: {
-            reject: string;
-            accept: string;
-            addProposal: string;
-            delete: string;
-          };
-        };
-        messages: {
-          title: string;
-          noMessages: string;
-          messages: {
-            messageSentSuccess: string;
-            messageSentError: string;
-          };
-          label: string;
-          placeholder: string;
-          proposalPeriodInfo: string;
-        };
-        calendar: {
-          encounterNotFound: string;
-          filter: {
-            labels: {
-              homeTeam: string;
-              awayTeam: string;
+            "confirmEncounterPage": {
+                "title": string;
+                "sectionTitles": {
+                    "teams": string;
+                    "confirmation": string;
+                    "results": string;
+                    "information": string;
+                    "submitComment": string;
+                };
+                "positions": {
+                    "captain": string;
+                    "gameLeader": string;
+                    "homeCaptain": string;
+                    "awayCaptain": string;
+                };
+                "buttons": {
+                    "cancel": string;
+                    "back": string;
+                    "close": string;
+                    "confirm": string;
+                    "submit": string;
+                    "seeEncounter": string;
+                    "addComment": string;
+                };
+                "inputs": {
+                    "comment": string;
+                    "gameLeaderCommentsOptional": string;
+                };
+                "messages": {
+                    "addedComment": string;
+                    "commentFrom": string;
+                };
+                "errors": {
+                    "errorAddingComment": string;
+                };
             };
-            options: {
-              allTeams: string;
+            "competitionDetailPage": {
+                "tabs": {
+                    "divisions": string;
+                    "encounters": string;
+                    "teamEnrollments": string;
+                };
+                "buttons": {
+                    "openInToernooiNL": string;
+                    "view": string;
+                    "clearFilters": string;
+                };
+                "divisions": {
+                    "actions": {
+                        "edit": string;
+                        "sync": string;
+                        "recalculatePoints": string;
+                        "actions": string;
+                        "reports": string;
+                        "copy": string;
+                        "openCloseSignups": string;
+                        "openCloseChangeEncounters": string;
+                        "makeUnofficialTournament": string;
+                        "delete": string;
+                        "averageLevel": string;
+                        "downloadBasePlayers": string;
+                        "downloadCPFile": string;
+                        "openCloseEncounterChangeDate": string;
+                    };
+                    "tableNames": {
+                        "F": string;
+                        "M": string;
+                        "MX": string;
+                    };
+                    "table": {
+                        "headers": {
+                            "divisions": string;
+                            "type": string;
+                            "numberTeams": string;
+                            "maxLevel": string;
+                            "index": string;
+                            "subdivisions": string;
+                        };
+                        "noRecords": string;
+                    };
+                    "teamEnrollments": {
+                        "drawer": {
+                            "sectionTitles": {
+                                "primaryPlayers": string;
+                                "generalInfo": string;
+                                "validations": string;
+                            };
+                            "dataKeys": {
+                                "teamIndex": string;
+                                "teamCaptain": string;
+                                "preferredPlayingTime": string;
+                            };
+                            "emptyStates": {
+                                "noValidations": string;
+                            };
+                        };
+                        "table": {
+                            "headers": {
+                                "division": string;
+                                "team": string;
+                                "index": string;
+                                "numberSignups": string;
+                                "messages": string;
+                                "actions": string;
+                            };
+                            "buttons": {
+                                "view": string;
+                            };
+                            "messages": {
+                                "numberErrors": string;
+                                "numberWarnings": string;
+                                "loadingEntries": string;
+                            };
+                            "noRecords": string;
+                        };
+                        "errors": {
+                            "already": string;
+                            "base-gender-mix": string;
+                            "base-other-team": string;
+                            "comp-status-base": string;
+                            "comp-status-team": string;
+                            "faller": string;
+                            "first-team-index": string;
+                            "no-subevent": string;
+                            "none": string;
+                            "player-club": string;
+                            "player-club-none": string;
+                            "player-gender": string;
+                            "player-min-level": string;
+                            "player-subevent": string;
+                            "riser": string;
+                            "team-index": string;
+                            "team-order": string;
+                            "team-order-same-subevent": string;
+                            "team-to-strong": string;
+                            "team-to-week": string;
+                            "title": string;
+                            "too-few-base-players": string;
+                            "too-many-base-players": string;
+                        };
+                    };
+                };
+                "encounters": {
+                    "table": {
+                        "buttons": {
+                            "filters": string;
+                        };
+                        "headers": {
+                            "date": string;
+                            "homeTeam": string;
+                            "awayTeam": string;
+                            "originalDate": string;
+                            "reschedule": string;
+                        };
+                        "tootips": {
+                            "reschedule": string;
+                        };
+                        "rescheduleStatuses": {
+                            "rescheduled": string;
+                            "rescheduleInProgress": string;
+                            "rescheduleRequested": string;
+                        };
+                        "inputs": {
+                            "team": string;
+                            "club": string;
+                        };
+                        "noRecords": string;
+                        "tooltips": {
+                            "reschedule": string;
+                        };
+                    };
+                };
+                "teamEnrollments": {
+                    "drawer": {
+                        "sectionTitles": {
+                            "primaryPlayers": string;
+                            "generalInfo": string;
+                            "validations": string;
+                        };
+                        "dataKeys": {
+                            "teamIndex": string;
+                            "teamCaptain": string;
+                            "preferredPlayingTime": string;
+                        };
+                        "emptyStates": {
+                            "noValidations": string;
+                        };
+                    };
+                    "table": {
+                        "headers": {
+                            "division": string;
+                            "numberSignups": string;
+                            "team": string;
+                            "index": string;
+                            "messages": string;
+                            "actions": string;
+                        };
+                        "buttons": {
+                            "view": string;
+                        };
+                        "messages": {
+                            "numberErrors": string;
+                            "numberWarnings": string;
+                            "loadingEntries": string;
+                        };
+                        "noRecords": string;
+                    };
+                };
             };
-          };
-          buttons: {
-            close: string;
-          };
-          dayContent: {
-            otherEncounters: string;
-            originalDate: string;
-            proposal: string;
-            buttons: {
-              courtsAvailable: string;
+            "competitionOverviewPage": {
+                "title": string;
+                "sectionTitles": {
+                    "overview": string;
+                };
+                "table": {
+                    "headers": {
+                        "name": string;
+                        "start": string;
+                        "end": string;
+                        "official": string;
+                        "actions": string;
+                    };
+                    "divisions": string;
+                    "inputs": {
+                        "onlyOfficialCompetitions": string;
+                    };
+                    "buttons": {
+                        "addCompetition": string;
+                        "loadMoreCompetitions": string;
+                    };
+                };
+                "actions": {
+                    "edit": string;
+                    "delete": string;
+                    "setRisersFallers": string;
+                    "openCloseDate": string;
+                    "openCloseEncounterChangeDate": string;
+                    "makeOfficial": string;
+                    "makeUnofficial": string;
+                    "sync": string;
+                    "messages": {
+                        "syncSuccess": string;
+                        "syncError": string;
+                    };
+                };
+                "addCompetitionDialog": {
+                    "title": string;
+                    "inputs": {
+                        "visualCode": string;
+                        "officialCompetition": string;
+                    };
+                    "buttons": {
+                        "cancel": string;
+                        "add": string;
+                    };
+                    "messages": {
+                        "competitionAdded": string;
+                    };
+                    "errors": {
+                        "errorAddingCompetition": string;
+                    };
+                };
+                "deleteCompetitionDialog": {
+                    "title": string;
+                    "body": string;
+                    "buttons": {
+                        "cancel": string;
+                        "delete": string;
+                    };
+                    "successMessage": string;
+                    "errorMessage": string;
+                };
+                "competitionStatusDialog": {
+                    "title": string;
+                    "text": string;
+                    "official": string;
+                    "unofficial": string;
+                    "buttons": {
+                        "cancel": string;
+                        "make": string;
+                    };
+                    "successMessage": string;
+                    "errorMessage": string;
+                };
+                "openCloseDateDialog": {
+                    "title": string;
+                    "form": {
+                        "openDate": string;
+                        "closeDate": string;
+                    };
+                    "buttons": {
+                        "cancel": string;
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                        "error": string;
+                    };
+                };
+                "openCloseEncounterChangeDateDialog": {
+                    "title": string;
+                    "form": {
+                        "changeOpenDate": string;
+                        "changeCloseRequestDatePeriod1": string;
+                        "changeCloseDatePeriod1": string;
+                        "changeCloseRequestDatePeriod2": string;
+                        "changeCloseDatePeriod2": string;
+                    };
+                    "buttons": {
+                        "cancel": string;
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                        "error": string;
+                    };
+                };
+                "risersFallersDialog": {
+                    "title": string;
+                    "risers": string;
+                    "fallers": string;
+                    "buttons": {
+                        "cancel": string;
+                        "save": string;
+                    };
+                    "messages": {
+                        "success": string;
+                        "error": string;
+                    };
+                };
             };
-            eventWarning: string;
-            drawer: {
-              courts: string;
-              proposal: string;
-              originalDate: string;
-              availableCourts: string;
-              buttons: {
-                sendRequest: string;
-              };
-              otherEncounters: string;
-              messages: {
-                success: string;
-                error: string;
-              };
+            "drawDetailPage": {
+                "sections": {
+                    "standings": {
+                        "title": string;
+                        "actions": {
+                            "openInToernooiNL": string;
+                        };
+                        "table": {
+                            "headers": {
+                                "rank": string;
+                                "status": string;
+                                "name": string;
+                                "points": string;
+                                "played": string;
+                                "won": string;
+                                "lost": string;
+                                "drawn": string;
+                                "games": string;
+                                "setsWonLost": string;
+                                "pointsWonLost": string;
+                            };
+                        };
+                        "noRecords": string;
+                    };
+                    "encounters": {
+                        "title": string;
+                        "noRecords": string;
+                        "calendar": {
+                            "filters": {
+                                "team": string;
+                            };
+                        };
+                    };
+                };
+                "actions": {
+                    "syncPoints": string;
+                };
+                "messages": {
+                    "pointsSynced": string;
+                    "errorSyncingPoints": string;
+                };
             };
-          };
+            "editCompetitionPage": {
+                "steps": {
+                    "0": string;
+                    "1": string;
+                    "2": string;
+                };
+                "general": {
+                    "sectionTitles": {
+                        "general": string;
+                    };
+                    "inputs": {
+                        "name": string;
+                        "season": string;
+                        "type": string;
+                        "contact": string;
+                        "country": string;
+                        "province": string;
+                        "sendNotifications": string;
+                        "teamMatcherLink": string;
+                    };
+                    "successMessage": string;
+                    "errorMessage": string;
+                };
+                "divisions": {
+                    "table": {
+                        "headers": {
+                            "name": string;
+                            "type": string;
+                            "maxLevel": string;
+                            "index": string;
+                        };
+                        "actions": {
+                            "edit": string;
+                            "delete": string;
+                            "add": string;
+                        };
+                        "noRecords": string;
+                        "addDivisionDialog": {
+                            "title": string;
+                            "inputs": {
+                                "name": string;
+                                "type": string;
+                                "level": string;
+                                "maxLevel": string;
+                                "minBaseTeamIndex": string;
+                                "maxBaseTeamIndex": string;
+                                "index": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "add": string;
+                            };
+                            "messages": {
+                                "divisionAdded": string;
+                            };
+                            "errors": {
+                                "errorAddingDivision": string;
+                            };
+                        };
+                        "editDivisionDialog": {
+                            "title": string;
+                            "inputs": {
+                                "name": string;
+                                "type": string;
+                                "level": string;
+                                "maxLevel": string;
+                                "minBaseTeamIndex": string;
+                                "maxBaseTeamIndex": string;
+                                "index": string;
+                            };
+                            "buttons": {
+                                "cancel": string;
+                                "add": string;
+                            };
+                            "messages": {
+                                "divisionAdded": string;
+                            };
+                            "errors": {
+                                "errorAddingDivision": string;
+                            };
+                        };
+                        "deleteDivisionDialog": {
+                            "title": string;
+                            "body": string;
+                            "buttons": {
+                                "cancel": string;
+                                "delete": string;
+                            };
+                        };
+                    };
+                };
+                "extra": {
+                    "sectionTitles": {
+                        "exceptions": string;
+                        "info": string;
+                        "roles": string;
+                    };
+                    "emptyStates": {
+                        "noExceptions": string;
+                        "noInfo": string;
+                    };
+                    "inputs": {
+                        "periodStart": string;
+                        "periodEnd": string;
+                        "availableFields": string;
+                        "name": string;
+                        "competitionAllowed": string;
+                    };
+                    "inputDescriptions": {
+                        "exceptions": string;
+                        "info": string;
+                    };
+                    "buttons": {
+                        "add": string;
+                    };
+                    "successMessage": string;
+                    "errorMessage": string;
+                };
+                "buttons": {
+                    "next": string;
+                    "cancel": string;
+                    "back": string;
+                    "save": string;
+                    "saveChanges": string;
+                    "finish": string;
+                };
+            };
+            "encounterAlerts": {
+                "buttons": {
+                    "seeEncounter": string;
+                    "seeAllMessages": string;
+                    "hideMessages": string;
+                };
+                "messages": {
+                    "confirmOrDisputeEncounter": string;
+                };
+                "details": {};
+            };
+            "encounterFormPage": {
+                "title": string;
+                "steps": {
+                    "0": string;
+                    "1": string;
+                    "2": string;
+                };
+                "sectionTitles": {
+                    "register": string;
+                    "teams": string;
+                    "confirmEncounter": string;
+                    "confirmPresence": string;
+                    "cancelPresence": string;
+                    "confirmConfirmed": string;
+                    "cancelConfirmed": string;
+                    "results": string;
+                    "players": string;
+                    "information": string;
+                };
+                "prompts": {
+                    "confirmPresence": string;
+                    "cancelPresence": string;
+                    "confirmConfirmed": string;
+                    "cancelConfirmed": string;
+                };
+                "messages": {
+                    "areComments": string;
+                    "noComments": string;
+                    "presenceUpdated": string;
+                    "confirmationUpdated": string;
+                    "encounterUpdated": string;
+                    "gameCreated": string;
+                    "gameUpdated": string;
+                };
+                "buttons": {
+                    "back": string;
+                    "next": string;
+                    "submit": string;
+                    "cancel": string;
+                    "confirm": string;
+                    "seeTeamFormation": string;
+                    "2Sets": string;
+                    "3Sets": string;
+                    "saveChanges": string;
+                };
+                "dialogs": {
+                    "gameDialog": {
+                        "winnerStatus": {
+                            "1": string;
+                            "2": string;
+                            "4": string;
+                            "5": string;
+                            "6": string;
+                            "7": string;
+                            "10": string;
+                            "12": string;
+                            "106": string;
+                            "107": string;
+                        };
+                        "errors": {
+                            "scoreCannotBeNegative": string;
+                            "maxScore30MustBe29": string;
+                            "scoreCannotExceed30": string;
+                            "winningTeamMustWinBy2": string;
+                            "scoreDifferenceMustBe2": string;
+                            "invalidScoreInput": string;
+                            "invalidSet1Scores": string;
+                            "invalidSet2Scores": string;
+                            "invalidSet3Scores": string;
+                            "notEnoughGamesPlayed": string;
+                            "tooManyGamesPlayed": string;
+                            "gameValidationError": string;
+                        };
+                    };
+                };
+                "inputs": {
+                    "present": string;
+                    "confirm": string;
+                    "league": string;
+                    "date": string;
+                    "players": string;
+                    "player": string;
+                    "winner": string;
+                    "set1": string;
+                    "set2": string;
+                    "set3": string;
+                    "startTime": string;
+                    "endTime": string;
+                    "shuttle": {
+                        "title": string;
+                        "helpText": string;
+                        "helpLink": string;
+                    };
+                    "commentsOptional": string;
+                };
+                "positions": {
+                    "captain": string;
+                    "gameLeader": string;
+                    "homeCaptain": string;
+                    "awayCaptain": string;
+                };
+                "errors": {
+                    "presenceNotUpdated": string;
+                    "confirmationNotUpdated": string;
+                    "errorCreatingGame": string;
+                    "errorUpdatingGame": string;
+                    "encounterNotUpdated": string;
+                };
+            };
+            "settings": {
+                "title": string;
+                "languages": {
+                    "title": string;
+                    "options": {
+                        "en": string;
+                        "nl_BE": string;
+                    };
+                };
+                "notifications": {
+                    "title": string;
+                    "encounterChangeNewNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "encounterChangeFinishedNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "encounterChangeConfirmationNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "encounterNotEnteredNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "encounterNotAcceptedNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "syncSuccessNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "syncFailedNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "clubEnrollmentNotification": {
+                        "title": string;
+                        "description": string;
+                    };
+                    "types": {
+                        "email": string;
+                        "push": string;
+                    };
+                };
+                "messages": {
+                    "success": string;
+                    "error": string;
+                };
+                "buttons": {
+                    "save": string;
+                };
+            };
+            "changeEncounter": {
+                "title": string;
+                "encounterNotFound": string;
+                "proposals": {
+                    "title": string;
+                    "proposalPeriod": string;
+                    "noProposals": string;
+                    "date": string;
+                    "time": string;
+                    "location": string;
+                    "messages": {
+                        "proposalAddedSuccess": string;
+                        "proposalAddedError": string;
+                        "proposalAcceptedSuccess": string;
+                        "proposalAcceptedError": string;
+                        "proposalRejectedSuccess": string;
+                        "proposalRejectedError": string;
+                        "proposalDeletedSuccess": string;
+                        "proposalDeletedError": string;
+                        "generalError": string;
+                    };
+                    "buttons": {
+                        "reject": string;
+                        "accept": string;
+                        "addProposal": string;
+                        "delete": string;
+                    };
+                };
+                "messages": {
+                    "title": string;
+                    "noMessages": string;
+                    "messages": {
+                        "messageSentSuccess": string;
+                        "messageSentError": string;
+                    };
+                    "label": string;
+                    "placeholder": string;
+                    "proposalPeriodInfo": string;
+                };
+                "calendar": {
+                    "encounterNotFound": string;
+                    "filter": {
+                        "labels": {
+                            "homeTeam": string;
+                            "awayTeam": string;
+                        };
+                        "options": {
+                            "allTeams": string;
+                        };
+                    };
+                    "buttons": {
+                        "close": string;
+                    };
+                    "dayContent": {
+                        "otherEncounters": string;
+                        "originalDate": string;
+                        "proposal": string;
+                        "buttons": {
+                            "courtsAvailable": string;
+                        };
+                        "eventWarning": string;
+                        "drawer": {
+                            "courts": string;
+                            "proposal": string;
+                            "originalDate": string;
+                            "availableCourts": string;
+                            "buttons": {
+                                "sendRequest": string;
+                            };
+                            "otherEncounters": string;
+                            "messages": {
+                                "success": string;
+                                "error": string;
+                            };
+                        };
+                    };
+                };
+            };
+            "editClubPage": {
+                "locations": {
+                    "gameDays": {
+                        "createDialog": {
+                            "errors": {
+                                "courtsMin": string;
+                                "startBeforeEnd": string;
+                            };
+                        };
+                    };
+                    "exceptions": {
+                        "createDialog": {
+                            "errors": {
+                                "startBeforeEnd": string;
+                                "startRequired": string;
+                                "endRequired": string;
+                            };
+                        };
+                    };
+                };
+            };
         };
-      };
-      editClubPage: {
-        locations: {
-          gameDays: {
-            createDialog: {
-              errors: {
-                courtsMin: string;
-                startBeforeEnd: string;
-              };
+        "confirmEncounterPage": {
+            "title": string;
+            "sectionTitles": {
+                "teams": string;
+                "confirmation": string;
+                "results": string;
+                "information": string;
+                "submitComment": string;
             };
-          };
-          exceptions: {
-            createDialog: {
-              errors: {
-                startBeforeEnd: string;
-                startRequired: string;
-                endRequired: string;
-              };
+            "positions": {
+                "captain": string;
+                "gameLeader": string;
+                "homeCaptain": string;
+                "awayCaptain": string;
             };
-          };
+            "inputs": {
+                "comment": string;
+                "gameLeaderCommentsOptional": string;
+            };
+            "buttons": {
+                "cancel": string;
+                "back": string;
+                "close": string;
+                "confirm": string;
+                "submit": string;
+                "addComment": string;
+            };
+            "messages": {
+                "addedComment": string;
+                "commentFrom": string;
+            };
+            "errors": {
+                "errorAddingComment": string;
+            };
         };
-      };
+        "competitionDetailPage": {
+            "tabs": {
+                "divisions": string;
+                "encounters": string;
+                "teamEnrollments": string;
+            };
+            "buttons": {
+                "openInToernooiNL": string;
+                "view": string;
+                "clearFilters": string;
+            };
+            "divisions": {
+                "actions": {
+                    "edit": string;
+                    "sync": string;
+                    "recalculatePoints": string;
+                    "actions": string;
+                    "reports": string;
+                    "copy": string;
+                    "openCloseSignups": string;
+                    "openCloseChangeEncounters": string;
+                    "makeUnofficialTournament": string;
+                    "delete": string;
+                    "averageLevel": string;
+                    "downloadBasePlayers": string;
+                    "downloadCPFile": string;
+                };
+                "tableNames": {
+                    "F": string;
+                    "M": string;
+                    "MX": string;
+                };
+                "table": {
+                    "headers": {
+                        "divisions": string;
+                        "type": string;
+                        "numberTeams": string;
+                        "maxLevel": string;
+                        "index": string;
+                        "subdivisions": string;
+                    };
+                    "noRecords": string;
+                };
+                "teamEnrollments": {
+                    "drawer": {
+                        "sectionTitles": {
+                            "primaryPlayers": string;
+                            "generalInfo": string;
+                            "validations": string;
+                        };
+                        "dataKeys": {
+                            "teamIndex": string;
+                            "teamCaptain": string;
+                            "preferredPlayingTime": string;
+                        };
+                        "emptyStates": {
+                            "noValidations": string;
+                        };
+                    };
+                    "table": {
+                        "headers": {
+                            "division": string;
+                            "team": string;
+                            "index": string;
+                            "numberSignups": string;
+                            "messages": string;
+                            "actions": string;
+                        };
+                        "buttons": {
+                            "view": string;
+                        };
+                        "messages": {
+                            "numberErrors": string;
+                            "numberWarnings": string;
+                            "loadingEntries": string;
+                        };
+                        "noRecords": string;
+                    };
+                    "errors": {
+                        "already": string;
+                        "base-gender-mix": string;
+                        "base-other-team": string;
+                        "comp-status-base": string;
+                        "comp-status-team": string;
+                        "faller": string;
+                        "first-team-index": string;
+                        "no-subevent": string;
+                        "none": string;
+                        "player-club": string;
+                        "player-club-none": string;
+                        "player-gender": string;
+                        "player-min-level": string;
+                        "player-subevent": string;
+                        "riser": string;
+                        "team-index": string;
+                        "team-order": string;
+                        "team-order-same-subevent": string;
+                        "team-to-strong": string;
+                        "team-to-week": string;
+                        "title": string;
+                        "too-few-base-players": string;
+                        "too-many-base-players": string;
+                    };
+                };
+            };
+            "encounters": {
+                "table": {
+                    "buttons": {
+                        "filters": string;
+                    };
+                    "headers": {
+                        "date": string;
+                        "homeTeam": string;
+                        "awayTeam": string;
+                        "originalDate": string;
+                        "reschedule": string;
+                    };
+                    "tooltips": {
+                        "reschedule": string;
+                    };
+                    "rescheduleStatuses": {
+                        "rescheduled": string;
+                        "rescheduleInProgress": string;
+                        "rescheduleRequested": string;
+                    };
+                    "inputs": {
+                        "team": string;
+                        "club": string;
+                    };
+                    "noRecords": string;
+                };
+            };
+        };
+        "competitionOverviewPage": {
+            "title": string;
+            "sectionTitles": {
+                "overview": string;
+            };
+            "table": {
+                "headers": {
+                    "name": string;
+                    "start": string;
+                    "end": string;
+                    "official": string;
+                    "actions": string;
+                };
+                "divisions": string;
+                "inputs": {
+                    "onlyOfficialCompetitions": string;
+                };
+                "buttons": {
+                    "addCompetition": string;
+                    "loadMoreCompetitions": string;
+                };
+            };
+            "addCompetitionDialog": {
+                "title": string;
+                "inputs": {
+                    "visualCode": string;
+                    "officialCompetition": string;
+                };
+                "buttons": {
+                    "cancel": string;
+                    "add": string;
+                };
+                "messages": {
+                    "competitionAdded": string;
+                };
+                "errors": {
+                    "errorAddingCompetition": string;
+                };
+            };
+            "deleteCompetitionDialog": {
+                "title": string;
+                "body": string;
+                "buttons": {
+                    "cancel": string;
+                    "delete": string;
+                };
+                "successMessage": string;
+                "errorMessage": string;
+            };
+        };
+        "drawDetailPage": {
+            "sections": {
+                "standings": {
+                    "title": string;
+                    "actions": {
+                        "openInToernooiNL": string;
+                    };
+                    "table": {
+                        "headers": {
+                            "rank": string;
+                            "status": string;
+                            "name": string;
+                            "points": string;
+                            "played": string;
+                            "won": string;
+                            "lost": string;
+                            "drawn": string;
+                            "games": string;
+                            "setsWonLost": string;
+                            "pointsWonLost": string;
+                        };
+                    };
+                    "noRecords": string;
+                };
+                "encounters": {
+                    "title": string;
+                    "noRecords": string;
+                    "calendar": {
+                        "filters": {
+                            "team": string;
+                        };
+                    };
+                };
+            };
+            "actions": {
+                "syncPoints": string;
+            };
+            "messages": {
+                "pointsSynced": string;
+                "errorSyncingPoints": string;
+            };
+        };
+        "editCompetitionPage": {
+            "steps": {
+                "0": string;
+                "1": string;
+                "2": string;
+            };
+            "general": {
+                "sectionTitles": {
+                    "general": string;
+                };
+                "inputs": {
+                    "name": string;
+                    "season": string;
+                    "type": string;
+                    "contact": string;
+                    "country": string;
+                    "province": string;
+                    "sendNotifications": string;
+                    "teamMatcherLink": string;
+                };
+                "successMessage": string;
+                "errorMessage": string;
+            };
+            "divisions": {
+                "table": {
+                    "headers": {
+                        "name": string;
+                        "type": string;
+                        "maxLevel": string;
+                        "index": string;
+                    };
+                    "actions": {
+                        "edit": string;
+                        "delete": string;
+                        "add": string;
+                    };
+                    "noRecords": string;
+                    "addDivisionDialog": {
+                        "title": string;
+                        "inputs": {
+                            "name": string;
+                            "type": string;
+                            "level": string;
+                            "maxLevel": string;
+                            "minBaseTeamIndex": string;
+                            "maxBaseTeamIndex": string;
+                            "index": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "add": string;
+                        };
+                        "messages": {
+                            "divisionAdded": string;
+                        };
+                        "errors": {
+                            "errorAddingDivision": string;
+                        };
+                    };
+                    "editDivisionDialog": {
+                        "title": string;
+                        "inputs": {
+                            "name": string;
+                            "type": string;
+                            "level": string;
+                            "maxLevel": string;
+                            "minBaseTeamIndex": string;
+                            "maxBaseTeamIndex": string;
+                            "index": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "add": string;
+                        };
+                        "messages": {
+                            "divisionAdded": string;
+                        };
+                        "errors": {
+                            "errorAddingDivision": string;
+                        };
+                    };
+                    "deleteDivisionDialog": {
+                        "title": string;
+                        "body": string;
+                        "buttons": {
+                            "cancel": string;
+                            "delete": string;
+                        };
+                    };
+                };
+            };
+            "extra": {
+                "sectionTitles": {
+                    "exceptions": string;
+                    "info": string;
+                    "roles": string;
+                };
+                "emptyStates": {
+                    "noExceptions": string;
+                    "noInfo": string;
+                };
+                "inputs": {
+                    "periodStart": string;
+                    "periodEnd": string;
+                    "availableFields": string;
+                    "name": string;
+                    "competitionAllowed": string;
+                };
+                "inputDescriptions": {
+                    "exceptions": string;
+                    "info": string;
+                };
+                "buttons": {
+                    "add": string;
+                };
+                "successMessage": string;
+                "errorMessage": string;
+            };
+            "buttons": {
+                "next": string;
+                "cancel": string;
+                "back": string;
+                "save": string;
+                "saveChanges": string;
+                "finish": string;
+            };
+        };
+        "encounterAlerts": {
+            "buttons": {
+                "seeEncounter": string;
+                "seeAllMessages": string;
+                "hideMessages": string;
+            };
+            "messages": {
+                "confirmOrDisputeEncounter": string;
+            };
+            "details": {};
+        };
+        "encounterFormPage": {
+            "title": string;
+            "steps": {
+                "0": string;
+                "1": string;
+                "2": string;
+            };
+            "sectionTitles": {
+                "register": string;
+                "teams": string;
+                "confirmEncounter": string;
+                "confirmPresence": string;
+                "cancelPresence": string;
+                "confirmConfirmed": string;
+                "cancelConfirmed": string;
+                "results": string;
+                "players": string;
+                "information": string;
+            };
+            "prompts": {
+                "confirmPresence": string;
+                "cancelPresence": string;
+                "confirmConfirmed": string;
+                "cancelConfirmed": string;
+            };
+            "messages": {
+                "areComments": string;
+                "noComments": string;
+                "gameCreated": string;
+                "gameUpdated": string;
+                "presenceUpdated": string;
+                "confirmationUpdated": string;
+                "encounterUpdated": string;
+            };
+            "buttons": {
+                "back": string;
+                "next": string;
+                "submit": string;
+                "cancel": string;
+                "confirm": string;
+                "seeTeamFormation": string;
+                "2Sets": string;
+                "3Sets": string;
+                "saveChanges": string;
+            };
+            "dialogs": {
+                "gameDialog": {
+                    "winnerStatus": {
+                        "1": string;
+                        "2": string;
+                        "4": string;
+                        "5": string;
+                        "6": string;
+                        "7": string;
+                        "10": string;
+                        "12": string;
+                        "106": string;
+                        "107": string;
+                    };
+                };
+            };
+            "inputs": {
+                "present": string;
+                "confirm": string;
+                "league": string;
+                "players": string;
+                "player": string;
+                "winner": string;
+                "set1": string;
+                "set2": string;
+                "set3": string;
+                "startTime": string;
+                "endTime": string;
+                "shuttle": {
+                    "title": string;
+                    "helpText": string;
+                    "helpLink": string;
+                };
+                "commentsOptional": string;
+            };
+            "positions": {
+                "captain": string;
+                "gameLeader": string;
+                "homeCaptain": string;
+                "awayCaptain": string;
+            };
+            "errors": {
+                "presenceNotUpdated": string;
+                "confirmationNotUpdated": string;
+                "errorCreatingGame": string;
+                "errorUpdatingGame": string;
+                "encounterNotUpdated": string;
+            };
+        };
+        "points": {
+            "title": string;
+        };
     };
-    confirmEncounterPage: {
-      title: string;
-      sectionTitles: {
-        teams: string;
-        confirmation: string;
-        results: string;
-        information: string;
-        submitComment: string;
-      };
-      positions: {
-        captain: string;
-        gameLeader: string;
-        homeCaptain: string;
-        awayCaptain: string;
-      };
-      inputs: {
-        comment: string;
-        gameLeaderCommentsOptional: string;
-      };
-      buttons: {
-        cancel: string;
-        back: string;
-        close: string;
-        confirm: string;
-        submit: string;
-        addComment: string;
-      };
-      messages: {
-        addedComment: string;
-        commentFrom: string;
-      };
-      errors: {
-        errorAddingComment: string;
-      };
-    };
-    competitionDetailPage: {
-      tabs: {
-        divisions: string;
-        encounters: string;
-        teamEnrollments: string;
-      };
-      buttons: {
-        openInToernooiNL: string;
-        view: string;
-        clearFilters: string;
-      };
-      divisions: {
-        actions: {
-          edit: string;
-          sync: string;
-          recalculatePoints: string;
-          actions: string;
-          reports: string;
-          copy: string;
-          openCloseSignups: string;
-          openCloseChangeEncounters: string;
-          makeUnofficialTournament: string;
-          delete: string;
-          averageLevel: string;
-          downloadBasePlayers: string;
-          downloadCPFile: string;
-        };
-        tableNames: {
-          F: string;
-          M: string;
-          MX: string;
-        };
-        table: {
-          headers: {
-            divisions: string;
-            type: string;
-            numberTeams: string;
-            maxLevel: string;
-            index: string;
-            subdivisions: string;
-          };
-          noRecords: string;
-        };
-        teamEnrollments: {
-          drawer: {
-            sectionTitles: {
-              primaryPlayers: string;
-              generalInfo: string;
-              validations: string;
-            };
-            dataKeys: {
-              teamIndex: string;
-              teamCaptain: string;
-              preferredPlayingTime: string;
-            };
-            emptyStates: {
-              noValidations: string;
-            };
-          };
-          table: {
-            headers: {
-              division: string;
-              team: string;
-              index: string;
-              numberSignups: string;
-              messages: string;
-              actions: string;
-            };
-            buttons: {
-              view: string;
-            };
-            messages: {
-              numberErrors: string;
-              numberWarnings: string;
-              loadingEntries: string;
-            };
-            noRecords: string;
-          };
-          errors: {
-            already: string;
-            "base-gender-mix": string;
-            "base-other-team": string;
-            "comp-status-base": string;
-            "comp-status-team": string;
-            faller: string;
-            "first-team-index": string;
-            "no-subevent": string;
-            none: string;
-            "player-club": string;
-            "player-club-none": string;
-            "player-gender": string;
-            "player-min-level": string;
-            "player-subevent": string;
-            riser: string;
-            "team-index": string;
-            "team-order": string;
-            "team-order-same-subevent": string;
-            "team-to-strong": string;
-            "team-to-week": string;
-            title: string;
-            "too-few-base-players": string;
-            "too-many-base-players": string;
-          };
-        };
-      };
-      encounters: {
-        table: {
-          buttons: {
-            filters: string;
-          };
-          headers: {
-            date: string;
-            homeTeam: string;
-            awayTeam: string;
-            originalDate: string;
-            reschedule: string;
-          };
-          tooltips: {
-            reschedule: string;
-          };
-          rescheduleStatuses: {
-            rescheduled: string;
-            rescheduleInProgress: string;
-            rescheduleRequested: string;
-          };
-          inputs: {
-            team: string;
-            club: string;
-          };
-          noRecords: string;
-        };
-      };
-    };
-    competitionOverviewPage: {
-      title: string;
-      sectionTitles: {
-        overview: string;
-      };
-      table: {
-        headers: {
-          name: string;
-          start: string;
-          end: string;
-          official: string;
-          actions: string;
-        };
-        divisions: string;
-        inputs: {
-          onlyOfficialCompetitions: string;
-        };
-        buttons: {
-          addCompetition: string;
-          loadMoreCompetitions: string;
-        };
-      };
-      addCompetitionDialog: {
-        title: string;
-        inputs: {
-          visualCode: string;
-          officialCompetition: string;
-        };
-        buttons: {
-          cancel: string;
-          add: string;
-        };
-        messages: {
-          competitionAdded: string;
-        };
-        errors: {
-          errorAddingCompetition: string;
-        };
-      };
-      deleteCompetitionDialog: {
-        title: string;
-        body: string;
-        buttons: {
-          cancel: string;
-          delete: string;
-        };
-        successMessage: string;
-        errorMessage: string;
-      };
-    };
-    drawDetailPage: {
-      sections: {
-        standings: {
-          title: string;
-          actions: {
-            openInToernooiNL: string;
-          };
-          table: {
-            headers: {
-              rank: string;
-              status: string;
-              name: string;
-              points: string;
-              played: string;
-              won: string;
-              lost: string;
-              drawn: string;
-              games: string;
-              setsWonLost: string;
-              pointsWonLost: string;
-            };
-          };
-          noRecords: string;
-        };
-        encounters: {
-          title: string;
-          noRecords: string;
-          calendar: {
-            filters: {
-              team: string;
-            };
-          };
-        };
-      };
-      actions: {
-        syncPoints: string;
-      };
-      messages: {
-        pointsSynced: string;
-        errorSyncingPoints: string;
-      };
-    };
-    editCompetitionPage: {
-      steps: {
-        "0": string;
-        "1": string;
-        "2": string;
-      };
-      general: {
-        sectionTitles: {
-          general: string;
-        };
-        inputs: {
-          name: string;
-          season: string;
-          type: string;
-          contact: string;
-          country: string;
-          province: string;
-          sendNotifications: string;
-          teamMatcherLink: string;
-        };
-        successMessage: string;
-        errorMessage: string;
-      };
-      divisions: {
-        table: {
-          headers: {
-            name: string;
-            type: string;
-            maxLevel: string;
-            index: string;
-          };
-          actions: {
-            edit: string;
-            delete: string;
-            add: string;
-          };
-          noRecords: string;
-          addDivisionDialog: {
-            title: string;
-            inputs: {
-              name: string;
-              type: string;
-              level: string;
-              maxLevel: string;
-              minBaseTeamIndex: string;
-              maxBaseTeamIndex: string;
-              index: string;
-            };
-            buttons: {
-              cancel: string;
-              add: string;
-            };
-            messages: {
-              divisionAdded: string;
-            };
-            errors: {
-              errorAddingDivision: string;
-            };
-          };
-          editDivisionDialog: {
-            title: string;
-            inputs: {
-              name: string;
-              type: string;
-              level: string;
-              maxLevel: string;
-              minBaseTeamIndex: string;
-              maxBaseTeamIndex: string;
-              index: string;
-            };
-            buttons: {
-              cancel: string;
-              add: string;
-            };
-            messages: {
-              divisionAdded: string;
-            };
-            errors: {
-              errorAddingDivision: string;
-            };
-          };
-          deleteDivisionDialog: {
-            title: string;
-            body: string;
-            buttons: {
-              cancel: string;
-              delete: string;
-            };
-          };
-        };
-      };
-      extra: {
-        sectionTitles: {
-          exceptions: string;
-          info: string;
-          roles: string;
-        };
-        emptyStates: {
-          noExceptions: string;
-          noInfo: string;
-        };
-        inputs: {
-          periodStart: string;
-          periodEnd: string;
-          availableFields: string;
-          name: string;
-          competitionAllowed: string;
-        };
-        inputDescriptions: {
-          exceptions: string;
-          info: string;
-        };
-        buttons: {
-          add: string;
-        };
-        successMessage: string;
-        errorMessage: string;
-      };
-      buttons: {
-        next: string;
-        cancel: string;
-        back: string;
-        save: string;
-        saveChanges: string;
-        finish: string;
-      };
-    };
-    encounterAlerts: {
-      buttons: {
-        seeEncounter: string;
-        seeAllMessages: string;
-        hideMessages: string;
-      };
-      messages: {
-        confirmOrDisputeEncounter: string;
-      };
-      details: {};
-    };
-    encounterFormPage: {
-      title: string;
-      steps: {
-        "0": string;
-        "1": string;
-        "2": string;
-      };
-      sectionTitles: {
-        register: string;
-        teams: string;
-        confirmEncounter: string;
-        confirmPresence: string;
-        cancelPresence: string;
-        confirmConfirmed: string;
-        cancelConfirmed: string;
-        results: string;
-        players: string;
-        information: string;
-      };
-      prompts: {
-        confirmPresence: string;
-        cancelPresence: string;
-        confirmConfirmed: string;
-        cancelConfirmed: string;
-      };
-      messages: {
-        areComments: string;
-        noComments: string;
-        gameCreated: string;
-        gameUpdated: string;
-        presenceUpdated: string;
-        confirmationUpdated: string;
-        encounterUpdated: string;
-      };
-      buttons: {
-        back: string;
-        next: string;
-        submit: string;
-        cancel: string;
-        confirm: string;
-        seeTeamFormation: string;
-        "2Sets": string;
-        "3Sets": string;
-        saveChanges: string;
-      };
-      dialogs: {
-        gameDialog: {
-          winnerStatus: {
-            "1": string;
-            "2": string;
-            "4": string;
-            "5": string;
-            "6": string;
-            "7": string;
-            "10": string;
-            "12": string;
-            "106": string;
-            "107": string;
-          };
-        };
-      };
-      inputs: {
-        present: string;
-        confirm: string;
-        league: string;
-        players: string;
-        player: string;
-        winner: string;
-        set1: string;
-        set2: string;
-        set3: string;
-        startTime: string;
-        endTime: string;
-        shuttle: {
-          title: string;
-          helpText: string;
-          helpLink: string;
-        };
-        commentsOptional: string;
-      };
-      positions: {
-        captain: string;
-        gameLeader: string;
-        homeCaptain: string;
-        awayCaptain: string;
-      };
-      errors: {
-        presenceNotUpdated: string;
-        confirmationNotUpdated: string;
-        errorCreatingGame: string;
-        errorUpdatingGame: string;
-        encounterNotUpdated: string;
-      };
-    };
-    points: {
-      title: string;
-    };
-  };
 };
 /* prettier-ignore */
 export type I18nPath = Path<I18nTranslations>;

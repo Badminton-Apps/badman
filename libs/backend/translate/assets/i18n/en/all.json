@@ -1428,13 +1428,8 @@
   },
   "v1": {
     "enrollment": {
-      "disabled": {
-        "title": "Registration closed",
-        "message": "Registrations are currently closed. Please check back later."
-      },
       "selectedLocationCard": {
-        "courts": "{count, plural, one {# court} other {# courts}}",
-        "noGameDays": "No gamedays found."
+        "courts": "Courts"
       },
       "team-enrollment": {
         "import-existing-optional": "Import existing (optional)",
@@ -1534,7 +1529,16 @@
         }
       }
     },
-
+    "enrollment": {
+      "disabled": {
+        "title": "Registration closed",
+        "message": "Registrations are currently closed. Please check back later."
+      },
+      "selectedLocationCard": {
+        "courts": "{count, plural, one {# court} other {# courts}}",
+        "noGameDays": "No gamedays found."
+      }
+    },
     "player": {
       "backup": "Backup player",
       "base": "Baseplayer",
@@ -2796,6 +2800,12 @@
         "noValidations": "No validations found"
       },
       "noData": "No data",
+      "params": {
+        "gender": {
+          "male": "Male",
+          "female": "Female"
+        }
+      },
       "validation": {
         "errors": {
           "already": "Player already present as titular.",
