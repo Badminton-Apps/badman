@@ -131,6 +131,7 @@ async function addPlayerToClub(
 async function createTeam(
   ctx: SeederContext,
   clubId: string,
+  teamNumber: number,
   season: number,
   captainId: string,
   teamType: "M" | "F" | "MX" = "M"
@@ -140,7 +141,7 @@ async function createTeam(
   // Check if team already exists (same club, season, and type)
   const existing = await ctx.query<{ id: string }>(
     `SELECT id FROM "Teams" 
-     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
+     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = :teamNumber
      LIMIT 1`,
     { clubId, season, type: teamType }
   );
@@ -152,16 +153,17 @@ async function createTeam(
 
   // Fetch club and generate team name
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType);
 
   const team = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
-     VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
+     VALUES (:clubId, :type, :season, :teamNumber, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`,
     {
       clubId,
       type: teamType,
       season,
+      teamNumber,
       captainId,
       name: teamName,
       abbreviation,
@@ -273,6 +275,7 @@ async function createDrawCompetition(
 async function createOpponentTeam(
   ctx: SeederContext,
   clubId: string,
+  teamNumber: number,
   season: number,
   teamType: "M" | "F" | "MX" = "M"
 ): Promise<string> {
@@ -280,16 +283,17 @@ async function createOpponentTeam(
 
   // Fetch club and generate team name
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType);
 
   const opponentTeam = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
-     VALUES (:clubId, :type, :season, 1, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
+     VALUES (:clubId, :type, :season, :teamNumber, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`,
     {
       clubId,
       type: teamType,
       season,
+      teamNumber,
       name: teamName,
       abbreviation,
     }

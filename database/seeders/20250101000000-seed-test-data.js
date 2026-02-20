@@ -152,11 +152,20 @@ module.exports = {
         // Create three historical teams for TEAM AWESOME (M, F, MX) for previous season
         const historicalTeamIds = [];
         for (const teamType of ["M", "F", "MX"]) {
-          const historicalTeamId = await createTeam(ctx, clubId, previousSeason, user.id, teamType);
+          let teamNumber = 2;
+          const historicalTeamId = await createTeam(
+            ctx,
+            clubId,
+            teamNumber,
+            previousSeason,
+            user.id,
+            teamType
+          );
           historicalTeamIds.push(historicalTeamId);
           for (const player of teamAwesomePlayers) {
             await addPlayerToTeam(ctx, historicalTeamId, player.id);
           }
+          teamNumber = teamNumber + 1;
         }
         console.log(
           `✅ Created 3 historical teams for TEAM AWESOME (season ${previousSeason}): M, F, MX\n`
@@ -213,7 +222,7 @@ module.exports = {
         await addPlayerToClub(ctx, opponentClubId, opponentUser.id);
 
         // Create opponent team (in the second club) - use opponent user as captain
-        const opponentTeamId = await createOpponentTeam(ctx, opponentClubId, season);
+        const opponentTeamId = await createOpponentTeam(ctx, opponentClubId, 1, season);
 
         // Add all players to opponent team
         for (const player of opponentPlayers) {
@@ -226,9 +235,11 @@ module.exports = {
         // Create three historical opponent teams (M, F, MX) for previous season
         const historicalOpponentTeamIds = [];
         for (const teamType of ["M", "F", "MX"]) {
+          let teamNumber = 2;
           const historicalOpponentTeamId = await createOpponentTeam(
             ctx,
             opponentClubId,
+            teamNumber,
             previousSeason,
             teamType
           );
@@ -236,6 +247,7 @@ module.exports = {
           for (const player of opponentPlayers) {
             await addPlayerToTeam(ctx, historicalOpponentTeamId, player.id);
           }
+          teamNumber = teamNumber + 1;
         }
         console.log(
           `✅ Created 3 historical teams for THE OPPONENTS (season ${previousSeason}): M, F, MX\n`

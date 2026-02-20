@@ -23,11 +23,10 @@ export async function getClubById(ctx: SeederContext, clubId: string): Promise<C
 export function generateTeamName(
   club: Club,
   teamNumber: number,
-  type: string,
-  letter = "H"
+  type: "M" | "F" | "MX"
 ): { name: string; abbreviation: string } {
-  const name = `${club.name} ${teamNumber}${letter}`;
-  const abbreviation = `${club.abbreviation} ${teamNumber}${letter}`;
+  const name = `${club.name} ${teamNumber}${type}`;
+  const abbreviation = `${club.abbreviation} ${teamNumber}${type}`;
   return { name, abbreviation };
 }
 
