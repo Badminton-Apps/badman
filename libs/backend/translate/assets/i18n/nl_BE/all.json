@@ -1151,6 +1151,7 @@
       },
       "team-enrollment": {
         "import-existing-optional": "Bestaande importeren (optioneel)",
+        "validating": "Valideren…",
         "import-teams": {
           "title": "Teams importeren",
           "allTeams": "Alle teams",

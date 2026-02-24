@@ -1428,11 +1428,17 @@
   },
   "v1": {
     "enrollment": {
+      "disabled": {
+        "title": "Registration closed",
+        "message": "Registrations are currently closed. Please check back later."
+      },
       "selectedLocationCard": {
-        "courts": "Courts"
+        "courts": "{count, plural, one {# court} other {# courts}}",
+        "noGameDays": "No gamedays found."
       },
       "team-enrollment": {
         "import-existing-optional": "Import existing (optional)",
+        "validating": "Validating…",
         "import-teams": {
           "title": "Import teams",
           "allTeams": "All teams",
@@ -1527,16 +1533,6 @@
           },
           "moreCharactersRequired": "Please use {minLength} or more characters to search"
         }
-      }
-    },
-    "enrollment": {
-      "disabled": {
-        "title": "Registration closed",
-        "message": "Registrations are currently closed. Please check back later."
-      },
-      "selectedLocationCard": {
-        "courts": "{count, plural, one {# court} other {# courts}}",
-        "noGameDays": "No gamedays found."
       }
     },
     "player": {
@@ -2802,8 +2798,8 @@
       "noData": "No data",
       "params": {
         "gender": {
-          "male": "Male",
-          "female": "Female"
+          "male": "man",
+          "female": "woman"
         }
       },
       "validation": {
@@ -2838,12 +2834,6 @@
           "player-min-level": "Request for exception of player {playerFullName} in {rankingType} has not yet been accepted",
           "subtitute-team-index": "s",
           "title": "Warnings"
-        }
-      },
-      "params": {
-        "gender": {
-          "male": "man",
-          "female": "woman"
         }
       }
     },
