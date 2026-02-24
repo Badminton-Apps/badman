@@ -25,10 +25,12 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
   // Add data caching to prevent expensive fetchData calls
   private dataCache: Map<string, { data: T; timestamp: number }> = new Map();
   private dataCacheTimeout = 60000; // 1 minute cache for data
+  private readonly MAX_DATA_CACHE_SIZE = 100;
 
   // Add validation result caching
   private validationCache: Map<string, { result: any; timestamp: number }> = new Map();
   private validationCacheTimeout = 30000; // 30 seconds cache for validation results
+  private readonly MAX_VALIDATION_CACHE_SIZE = 200;
 
   abstract onApplicationBootstrap(): Promise<void>;
   abstract group: string;
@@ -47,7 +49,8 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     // Fetch fresh data
     const data = await this.fetchData(args);
 
-    // Cache the data
+    // Evict oldest entries if at capacity, then cache the data
+    this.evictOldestUntilUnderLimit(this.dataCache, this.MAX_DATA_CACHE_SIZE);
     this.dataCache.set(cacheKey, {
       data,
       timestamp: Date.now(),
@@ -117,6 +120,19 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
 
   private isValidationCacheValid(timestamp: number): boolean {
     return Date.now() - timestamp < this.validationCacheTimeout;
+  }
+
+  private evictOldestUntilUnderLimit<K, V extends { timestamp: number }>(
+    cache: Map<K, V>,
+    maxSize: number
+  ): void {
+    if (cache.size < maxSize) return;
+    const entries = Array.from(cache.entries());
+    entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
+    const toDelete = entries.length - maxSize + 1;
+    for (let i = 0; i < toDelete; i++) {
+      cache.delete(entries[i][0]);
+    }
   }
 
   private cleanupExpiredCaches(): void {
@@ -275,7 +291,8 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
       ...(data as T),
     };
 
-    // Cache the validation result
+    // Evict oldest entries if at capacity, then cache the validation result
+    this.evictOldestUntilUnderLimit(this.validationCache, this.MAX_VALIDATION_CACHE_SIZE);
     this.validationCache.set(validationCacheKey, {
       result,
       timestamp: Date.now(),
