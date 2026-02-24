@@ -1456,6 +1456,7 @@ export type I18nTranslations = {
                 };
                 "team-enrollment": {
                     "import-existing-optional": string;
+                    "validating": string;
                     "import-teams": {
                         "title": string;
                         "allTeams": string;

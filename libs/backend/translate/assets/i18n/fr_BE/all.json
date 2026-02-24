@@ -1684,6 +1684,7 @@
       },
       "team-enrollment": {
         "import-existing-optional": "Importer l'existant (optionnel)",
+        "validating": "Validation…",
         "import-teams": {
           "title": "Importer les équipes",
           "allTeams": "Toutes les équipes",
