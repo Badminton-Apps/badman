@@ -35,6 +35,7 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
   // Add HTML content caching
   private htmlCache = new Map<string, { html: string; timestamp: number }>();
   private readonly htmlCacheTimeout = 300000; // 5 minutes cache for HTML templates
+  private readonly HTML_CACHE_MAX_SIZE = 50;
 
   // Add metrics tracking
   private pdfGenerationStats = {
@@ -206,13 +207,13 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
   }
 
   private setCachedHtml(cacheKey: string, html: string): void {
-    // Cleanup old cache entries periodically
-    if (this.htmlCache.size > 100) {
-      const now = Date.now();
-      for (const [key, value] of this.htmlCache.entries()) {
-        if (now - value.timestamp >= this.htmlCacheTimeout) {
-          this.htmlCache.delete(key);
-        }
+    // Evict oldest entries if at capacity to enforce hard max size
+    if (this.htmlCache.size >= this.HTML_CACHE_MAX_SIZE) {
+      const entries = Array.from(this.htmlCache.entries());
+      entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
+      const toDelete = entries.length - this.HTML_CACHE_MAX_SIZE + 1;
+      for (let i = 0; i < toDelete; i++) {
+        this.htmlCache.delete(entries[i][0]);
       }
     }
 
