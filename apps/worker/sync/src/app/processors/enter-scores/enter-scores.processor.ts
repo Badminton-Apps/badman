@@ -56,24 +56,39 @@ export class EnterScoresProcessor {
     return `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
   }
 
+  /**
+   * Collects text from all div.submatchrow_message elements on the page (row validation messages).
+   */
+  private async getRowErrorMessages(page: any): Promise<string[]> {
+    return page.evaluate(() => {
+      const messageElements = document.querySelectorAll("div.submatchrow_message");
+      const messages: string[] = [];
+      messageElements.forEach((element: Element) => {
+        const text = element.textContent?.trim();
+        if (text) messages.push(text);
+      });
+      return messages;
+    });
+  }
+
+  /**
+   * Returns current page URL and any row validation error messages (e.g. after save).
+   * Used to re-check page state after save and decide success vs failure.
+   */
+  private async getPostSavePageState(page: any): Promise<{
+    currentUrl: string;
+    rowErrorMessages: string[];
+  }> {
+    const currentUrl = page.url();
+    const rowErrorMessages = await this.getRowErrorMessages(page);
+    return { currentUrl, rowErrorMessages };
+  }
+
   private async validateRowMessages(page: any): Promise<void> {
     this.logger.log("Validating rows for error messages");
 
     try {
-      // Look for all divs with class submatchrow_message
-      const errorMessages = await page.evaluate(() => {
-        const messageElements = document.querySelectorAll("div.submatchrow_message");
-        const messages: string[] = [];
-
-        messageElements.forEach((element: Element) => {
-          const text = element.textContent?.trim();
-          if (text) {
-            messages.push(text);
-          }
-        });
-
-        return messages;
-      });
+      const errorMessages = await this.getRowErrorMessages(page);
 
       if (errorMessages.length > 0) {
         const errorText = errorMessages.join("; ");
@@ -338,21 +353,24 @@ export class EnterScoresProcessor {
           await saveButton.click();
           this.logger.log(`Save button clicked, waiting for navigation`);
 
-          // Handle navigation with proper timeout and error handling
+          let saveSucceeded = false;
+          let saveFailureReason: "navigation-timeout" | "row-validation" | null = null;
+          const saveWaitTimeout = 45000; // 45 seconds for save navigation (page navigates on success, not AJAX)
+
           try {
             await page.waitForNavigation({
               waitUntil: "networkidle0",
-              timeout: 45000, // 45 seconds for save navigation
+              timeout: saveWaitTimeout,
             });
             this.logger.log(`Navigation completed successfully`);
+            saveSucceeded = true;
           } catch (navigationError: any) {
+            saveFailureReason = "navigation-timeout";
             this.logger.warn(
               `Navigation timeout after save button click: ${navigationError?.message || navigationError}`
             );
 
-            // Try alternative wait strategies
             try {
-              // Wait for network idle as fallback
               await page.waitForNetworkIdle({ idleTime: 1000, timeout: 15000 });
               this.logger.log(`Network idle achieved after navigation timeout`);
             } catch (networkError: any) {
@@ -360,12 +378,10 @@ export class EnterScoresProcessor {
                 `Network idle also failed: ${networkError?.message || networkError}`
               );
 
-              // Final fallback - just wait a bit and check if we're on a different page
               await new Promise((resolve) => setTimeout(resolve, 3000));
               const currentUrl = page.url();
               this.logger.log(`Current URL after fallback wait: ${currentUrl}`);
 
-              // If we're still on the same page, it might indicate a real problem
               if (currentUrl.includes("teammatch.aspx")) {
                 this.logger.warn(
                   `Still on teammatch page after save - this might indicate the save didn't work properly`
@@ -374,30 +390,101 @@ export class EnterScoresProcessor {
             }
           }
 
-          // Send success email notification
-          if (devEmailDestination) {
-            try {
-              const toernooiUrl = this.constructToernooiUrl(encounter);
-              await this.mailingService.sendEnterScoresSuccessMail(
-                encounter.id,
-                {
-                  fullName: "Dev team",
-                  email: devEmailDestination,
-                  slug: "dev",
-                },
-                encounter.visualCode,
-                toernooiUrl
-              );
+          // Re-check page state after save:
+          // - staying on teammatch.aspx is NOT necessarily an error (per user observation)
+          // - row validation messages ARE errors
+          const { currentUrl, rowErrorMessages } = await this.getPostSavePageState(page);
+          this.logger.log(
+            `Post-save page state: URL=${currentUrl}, rowErrorMessages=${rowErrorMessages.length}, saveSucceeded=${saveSucceeded}`
+          );
+          if (currentUrl.includes("teammatch.aspx")) {
+            this.logger.log(
+              `Post-save URL still on teammatch.aspx (not necessarily an error): ${currentUrl}`
+            );
+          }
+          if (rowErrorMessages.length > 0) {
+            this.logger.warn(`Post-save row error messages: ${rowErrorMessages.join("; ")}`);
+            saveSucceeded = false;
+            saveFailureReason = "row-validation";
+            this.logger.warn(
+              "Treating save as failed: row validation messages present after save"
+            );
+          }
+
+          // Send success email only when navigation completed and page state OK; otherwise send error email
+          if (saveSucceeded) {
+            if (devEmailDestination) {
+              try {
+                const toernooiUrl = this.constructToernooiUrl(encounter);
+                await this.mailingService.sendEnterScoresSuccessMail(
+                  encounter.id,
+                  {
+                    fullName: "Dev team",
+                    email: devEmailDestination,
+                    slug: "dev",
+                  },
+                  encounter.visualCode,
+                  toernooiUrl
+                );
+                this.logger.log(
+                  `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+                );
+              } catch (emailError) {
+                this.logger.error(
+                  "Failed to send success email:",
+                  emailError?.message || emailError
+                );
+              }
+            } else {
               this.logger.log(
-                `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+                `Skipping success email notification - no dev email destination configured for encounter ${encounter.visualCode || encounter.id}`
               );
-            } catch (emailError) {
-              this.logger.error("Failed to send success email:", emailError?.message || emailError);
             }
           } else {
-            this.logger.log(
-              `Skipping success email notification - no dev email destination configured for encounter ${encounter.visualCode || encounter.id}`
-            );
+            let failureMessage = "Save may have failed.";
+            if (saveFailureReason === "navigation-timeout") {
+              failureMessage +=
+                " Reason: navigation timeout after save button click. Scores may not have been persisted on the website.";
+            } else if (saveFailureReason === "row-validation") {
+              failureMessage += " Reason: row validation error messages present after save.";
+            } else {
+              failureMessage += " Reason: unknown (no navigation success signal).";
+            }
+            if (currentUrl.includes("teammatch.aspx")) {
+              failureMessage += ` Still on teammatch page (URL: ${currentUrl}).`;
+            }
+            if (rowErrorMessages.length > 0) {
+              failureMessage += ` Row validation messages: ${rowErrorMessages.join("; ")}`;
+            }
+            this.logger.warn(failureMessage);
+            if (devEmailDestination) {
+              try {
+                const toernooiUrl = this.constructToernooiUrl(encounter);
+                await this.mailingService.sendEnterScoresFailedMail(
+                  encounterId,
+                  failureMessage,
+                  {
+                    fullName: "Dev team",
+                    email: devEmailDestination,
+                    slug: "dev",
+                  },
+                  encounter?.visualCode,
+                  toernooiUrl
+                );
+                this.logger.log(
+                  `Failure email sent for encounter ${encounter?.visualCode || encounterId} (${saveFailureReason || "unknown"})`
+                );
+              } catch (emailError) {
+                this.logger.error(
+                  "Failed to send failure email:",
+                  emailError?.message || emailError
+                );
+              }
+            } else {
+              this.logger.log(
+                `Skipping failure email notification - no dev email destination configured for encounter ${encounter?.visualCode || encounterId}`
+              );
+            }
           }
         } else {
           this.logger.log(`Skipping save button because we are not in production`);
@@ -426,6 +513,11 @@ export class EnterScoresProcessor {
             );
           }
         }
+      } else {
+        // If we can't find the save button, we can't persist anything. Fail hard so the job is retried
+        // and the generic catch/failure-email path kicks in.
+        this.logger.error("Save button not found on page; cannot persist entered scores");
+        throw new Error("Save button not found on page; cannot persist entered scores");
       }
     } catch (error) {
       // Handle timeout errors specifically to prevent worker restarts

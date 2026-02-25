@@ -735,7 +735,13 @@ export async function enterGames(
       game.set1Team2 != null &&
       !(game.set1Team1 === 0 && game.set1Team2 === 0)
     ) {
-      await enterScores({ page }, 1, `${game.set1Team1}-${game.set1Team2}`, matchId);
+      await enterScores(
+        { page },
+        1,
+        `${game.set1Team1}-${game.set1Team2}`,
+        matchId,
+        logger
+      );
     }
 
     // Enter set 2 scores if both teams have valid scores (not null/undefined) and it's not 0-0
@@ -744,7 +750,13 @@ export async function enterGames(
       game.set2Team2 != null &&
       !(game.set2Team1 === 0 && game.set2Team2 === 0)
     ) {
-      await enterScores({ page }, 2, `${game.set2Team1}-${game.set2Team2}`, matchId);
+      await enterScores(
+        { page },
+        2,
+        `${game.set2Team1}-${game.set2Team2}`,
+        matchId,
+        logger
+      );
     }
 
     // Enter set 3 scores if both teams have valid scores (not null/undefined) and it's not 0-0
@@ -753,7 +765,13 @@ export async function enterGames(
       game.set3Team2 != null &&
       !(game.set3Team1 === 0 && game.set3Team2 === 0)
     ) {
-      await enterScores({ page }, 3, `${game.set3Team1}-${game.set3Team2}`, matchId);
+      await enterScores(
+        { page },
+        3,
+        `${game.set3Team1}-${game.set3Team2}`,
+        matchId,
+        logger
+      );
     }
 
     if (game.winner && game.winner > 2 && game.winner !== 0) {
