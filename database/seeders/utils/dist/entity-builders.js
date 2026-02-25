@@ -81,17 +81,17 @@ async function addPlayerToClub(ctx, clubId, playerId) {
  */
 async function createTeam(ctx, clubId, season, captainId, teamType = "M") {
     console.log("👥 Creating Team...");
-    // Check if team already exists
+    // Check if team already exists (same club, season, and type)
     const existing = await ctx.query(`SELECT id FROM "Teams" 
      WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
-     LIMIT 1`, { clubId, season, type: "M" });
+     LIMIT 1`, { clubId, season, type: teamType });
     if (existing && existing.length > 0 && existing[0]) {
         console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
         return existing[0].id;
     }
     // Fetch club and generate team name
     const club = await (0, team_helpers_1.getClubById)(ctx, clubId);
-    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, "M", "H");
+    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, teamType, "H");
     const team = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
      VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
@@ -173,16 +173,16 @@ async function createDrawCompetition(ctx, subEventId, season) {
 /**
  * Create opponent team
  */
-async function createOpponentTeam(ctx, clubId, season) {
+async function createOpponentTeam(ctx, clubId, season, teamType = "M") {
     console.log("👥 Creating opponent Team...");
     // Fetch club and generate team name
     const club = await (0, team_helpers_1.getClubById)(ctx, clubId);
-    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, "M", "H");
+    const { name: teamName, abbreviation } = (0, team_helpers_1.generateTeamName)(club, 1, teamType, "H");
     const opponentTeam = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
      VALUES (:clubId, :type, :season, 1, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
-        type: "M",
+        type: teamType,
         season,
         name: teamName,
         abbreviation,
@@ -194,7 +194,7 @@ async function createOpponentTeam(ctx, clubId, season) {
 /**
  * Create encounters
  */
-async function createEncounters(ctx, drawId, teamId, opponentTeamId, season, encounterCount = 10) {
+async function createEncounters(ctx, drawId, teamId, opponentTeamId, encounterCount = 10) {
     console.log("⚔️ Creating Encounters...");
     const now = new Date();
     const halfCount = Math.floor(encounterCount / 2);
