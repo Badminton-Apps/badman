@@ -137,12 +137,12 @@ async function createTeam(
 ): Promise<string> {
   console.log("👥 Creating Team...");
 
-  // Check if team already exists
+  // Check if team already exists (same club, season, and type)
   const existing = await ctx.query<{ id: string }>(
     `SELECT id FROM "Teams" 
      WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
      LIMIT 1`,
-    { clubId, season, type: "M" }
+    { clubId, season, type: teamType }
   );
 
   if (existing && existing.length > 0 && existing[0]) {
@@ -152,7 +152,7 @@ async function createTeam(
 
   // Fetch club and generate team name
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, "M", "H");
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
 
   const team = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
@@ -273,13 +273,14 @@ async function createDrawCompetition(
 async function createOpponentTeam(
   ctx: SeederContext,
   clubId: string,
-  season: number
+  season: number,
+  teamType: "M" | "F" | "MX" = "M"
 ): Promise<string> {
   console.log("👥 Creating opponent Team...");
 
   // Fetch club and generate team name
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, "M", "H");
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
 
   const opponentTeam = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
@@ -287,7 +288,7 @@ async function createOpponentTeam(
      RETURNING id`,
     {
       clubId,
-      type: "M",
+      type: teamType,
       season,
       name: teamName,
       abbreviation,
@@ -306,7 +307,6 @@ async function createEncounters(
   drawId: string,
   teamId: string,
   opponentTeamId: string,
-  season: number,
   encounterCount = 10
 ): Promise<void> {
   console.log("⚔️ Creating Encounters...");
