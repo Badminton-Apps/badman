@@ -1145,6 +1145,26 @@
     }
   },
   "v1": {
+    "enrollment": {
+      "selectedLocationCard": {
+        "courts": "Velden"
+      },
+      "team-enrollment": {
+        "import-existing-optional": "Bestaande importeren (optioneel)",
+        "import-teams": {
+          "title": "Teams importeren",
+          "allTeams": "Alle teams",
+          "categories": {
+            "MX": "Gemengd",
+            "M": "Heren",
+            "F": "Dames",
+            "NATIONAL": "Nationaal"
+          },
+          "cancel": "Annuleren",
+          "import": "Importeren"
+        }
+      }
+    },
     "messages": {
       "buttons": {
         "hide": "Verberg {messageType}",
@@ -2475,6 +2495,12 @@
         "noValidations": "Geen validaties gevonden"
       },
       "noData": "Geen gegevens",
+      "params": {
+        "gender": {
+          "male": "Man",
+          "female": "Vrouw"
+        }
+      },
       "validation": {
         "errors": {
           "already": "Speler is al aanwezig als titularis.",
