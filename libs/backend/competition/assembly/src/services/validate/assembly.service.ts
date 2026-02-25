@@ -202,11 +202,16 @@ export class AssemblyValidationService
     startRanking: moment.Moment,
     endRanking: moment.Moment
   ): Promise<Player[]> {
-    if (!playerIds || playerIds.length === 0) {
+    const normalizedPlayerIds = (playerIds ?? [])
+      .filter((p): p is string => typeof p === "string" && p.trim().length > 0)
+      .map((p) => p.trim())
+      .filter((p) => IsUUID(p));
+
+    if (normalizedPlayerIds.length === 0) {
       return [];
     }
 
-    const uniquePlayerIds = [...new Set(playerIds)];
+    const uniquePlayerIds = [...new Set(normalizedPlayerIds)];
     const results: Player[] = [];
     const missingIds: string[] = [];
 
@@ -399,7 +404,7 @@ export class AssemblyValidationService
 
     subtitudes?: string[];
   }): Promise<AssemblyValidationData> {
-    const idPlayers = [
+    const idPlayers = ([
       args.single1,
       args.single2,
       args.single3,
@@ -408,9 +413,15 @@ export class AssemblyValidationService
       ...(args.double2?.flat(1) ?? []),
       ...(args.double3?.flat(1) ?? []),
       ...(args.double4?.flat(1) ?? []),
-    ]?.filter((p) => p !== undefined && p !== null) as string[];
+    ] as Array<string | null | undefined>)
+      .filter((p): p is string => typeof p === "string" && p.trim().length > 0)
+      .map((p) => p.trim())
+      .filter((p) => IsUUID(p));
 
-    const idSubs = args.subtitudes?.filter((p) => p !== undefined && p !== null);
+    const idSubs = (args.subtitudes ?? [])
+      .filter((p): p is string => typeof p === "string" && p.trim().length > 0)
+      .map((p) => p.trim())
+      .filter((p) => IsUUID(p));
 
     // Parallelize initial data fetching
     const [team, encounter, system] = await Promise.all([
