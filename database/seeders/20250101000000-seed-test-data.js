@@ -56,7 +56,9 @@ module.exports = {
         // Get current season (September to April)
         const now = new Date();
         const season = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+        const previousSeason = season - 1;
         console.log(`📅 Using season: ${season}\n`);
+        console.log(`📅 Using previous season for historical teams: ${previousSeason}\n`);
 
         // Find or create player
         const user = await findOrCreatePlayer(
@@ -72,6 +74,39 @@ module.exports = {
 
         // Add ranking to user player
         await addRankingToPlayer(ctx, user.id);
+
+        // Add edit-any:club and edit:club claims for the user so they can manage all teams under their club
+        const claims = await sequelize.query(
+          `SELECT id, name FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club')`,
+          {
+            type: QueryTypes.SELECT,
+            transaction,
+          }
+        );
+        for (const claim of claims) {
+          const [existing] = await sequelize.query(
+            `SELECT 1 FROM "security"."PlayerClaimMemberships" WHERE "playerId" = :playerId AND "claimId" = :claimId`,
+            {
+              replacements: { playerId: user.id, claimId: claim.id },
+              type: QueryTypes.SELECT,
+              transaction,
+            }
+          );
+          if (!existing) {
+            await sequelize.query(
+              `INSERT INTO "security"."PlayerClaimMemberships" ("playerId", "claimId", "createdAt", "updatedAt")
+               VALUES (:playerId, :claimId, NOW(), NOW())`,
+              {
+                replacements: { playerId: user.id, claimId: claim.id },
+                transaction,
+              }
+            );
+            console.log(`✅ Granted claim "${claim.name}" to user (${userEmail})\n`);
+          }
+        }
+        if (claims.length > 0) {
+          console.log(`✅ Added ${claims.length} club permission claim(s) for user\n`);
+        }
 
         // Create first club (user's club)
         const clubId = await createClub(ctx, "TEAM AWESOME");
@@ -111,6 +146,19 @@ module.exports = {
           await addPlayerToTeam(ctx, teamId, player.id);
         }
         console.log(`✅ Added ${teamAwesomePlayers.length} players to TEAM AWESOME\n`);
+
+        // Create three historical teams for TEAM AWESOME (M, F, MX) for previous season
+        const historicalTeamIds = [];
+        for (const teamType of ["M", "F", "MX"]) {
+          const historicalTeamId = await createTeam(ctx, clubId, previousSeason, user.id, teamType);
+          historicalTeamIds.push(historicalTeamId);
+          for (const player of teamAwesomePlayers) {
+            await addPlayerToTeam(ctx, historicalTeamId, player.id);
+          }
+        }
+        console.log(
+          `✅ Created 3 historical teams for TEAM AWESOME (season ${previousSeason}): M, F, MX\n`
+        );
 
         // Create event competition
         const eventId = await createEventCompetition(ctx, season);
@@ -173,6 +221,24 @@ module.exports = {
           `✅ Added ${opponentPlayers.length} players to THE OPPONENTS (including user: ${opponentUserEmail})\n`
         );
 
+        // Create three historical opponent teams (M, F, MX) for previous season
+        const historicalOpponentTeamIds = [];
+        for (const teamType of ["M", "F", "MX"]) {
+          const historicalOpponentTeamId = await createOpponentTeam(
+            ctx,
+            opponentClubId,
+            previousSeason,
+            teamType
+          );
+          historicalOpponentTeamIds.push(historicalOpponentTeamId);
+          for (const player of opponentPlayers) {
+            await addPlayerToTeam(ctx, historicalOpponentTeamId, player.id);
+          }
+        }
+        console.log(
+          `✅ Created 3 historical teams for THE OPPONENTS (season ${previousSeason}): M, F, MX\n`
+        );
+
         // Create encounters
         await createEncounters(ctx, drawId, teamId, opponentTeamId, season);
 
@@ -187,6 +253,9 @@ module.exports = {
         console.log(`   • SubEvent: Test SubEvent M (${subEventId})`);
         console.log(`   • Draw: Test Draw (${drawId})`);
         console.log(`   • Encounters: 10`);
+        console.log(
+          `   • Historical teams (season ${previousSeason}): TEAM AWESOME [${historicalTeamIds.join(", ")}], THE OPPONENTS [${historicalOpponentTeamIds.join(", ")}]`
+        );
         console.log("\n✨ Seed completed successfully!");
       });
     } catch (error) {
@@ -201,7 +270,6 @@ module.exports = {
     const sequelize = queryInterface.sequelize;
     const userEmail = process.env.SEED_USER_EMAIL || "test@example.com";
     const opponentUserEmail = process.env.SEED_OPPONENT_USER_EMAIL || "opponent@example.com";
-
     console.log(`🧹 Cleaning up seed data for users: ${userEmail} and ${opponentUserEmail}\n`);
     console.log("📍 Step 1: Starting cleanup process...\n");
 
@@ -351,6 +419,16 @@ module.exports = {
           `DELETE FROM "Clubs" WHERE id IN (${clubPlaceholders})`,
           clubReplacements,
           "Deleted clubs"
+        );
+
+        console.log(
+          "📍 Step 3.8.1: Removing club permission claims (edit-any:club, edit:club)...\n"
+        );
+        await safeDelete(
+          `DELETE FROM "security"."PlayerClaimMemberships"
+           WHERE "claimId" IN (SELECT id FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club'))`,
+          {},
+          "Deleted club permission claims"
         );
 
         console.log("📍 Step 3.9: Finding test players before cleanup...\n");
