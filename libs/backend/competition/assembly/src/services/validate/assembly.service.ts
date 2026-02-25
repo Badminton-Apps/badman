@@ -62,12 +62,12 @@ export class AssemblyValidationService
 
     await this.clearRules();
 
-    // Set up simple cache cleanup every 10 minutes
+    // Set up simple cache cleanup every 5 minutes
     this.cacheCleanupInterval = setInterval(
       () => {
         this.cleanupPlayerCaches();
       },
-      10 * 60 * 1000
+      5 * 60 * 1000
     );
 
     await this.registerRule(PlayerCompStatusRule);
