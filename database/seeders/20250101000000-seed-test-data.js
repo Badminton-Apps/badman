@@ -197,7 +197,7 @@ module.exports = {
             gender: "mixed",
             domain: "opponents.com",
             prefix: "TEST-OPPONENTS",
-            baseIndex: 4, // Start from index 4 to avoid name collisions
+            baseIndex: 8, // Different range so names don't overlap with TEAM AWESOME (0-7)
           }
         );
 
