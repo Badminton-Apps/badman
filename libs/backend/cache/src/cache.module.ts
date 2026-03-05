@@ -35,7 +35,8 @@ const logger = new Logger("CacheModule");
           };
         } else {
           const env = configService.get<string>("NODE_ENV");
-          if (env === "production" || env === "beta") {
+          // "beta" was renamed to "staging"; consider removing "beta" later.
+          if (env === "production" || env === "staging" || env === "beta") {
             logger.warn(
               "Cache: Redis is NOT being used - using in-memory store. Set DB_CACHE=true for production to reduce memory pressure."
             );
