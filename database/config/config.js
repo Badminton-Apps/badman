@@ -19,7 +19,24 @@ const config = {
       max: retries,
     },
   },
+  // "beta" was renamed to "staging"; consider removing this block later.
   beta: {
+    host: process.env.DB_BETA_IP,
+    port: process.env.DB_BETA_PORT,
+    database: process.env.DB_BETA_DATABASE,
+    username: process.env.DB_BETA_USER,
+    password: process.env.DB_BETA_PASSWORD,
+    dialect: process.env.DB_BETA_DIALECT,
+    migrationStorageTableSchema: "public",
+    logging: false,
+    dialectOptions: {
+      ssl: process.env.DB_BETA_SSL === "true",
+    },
+    retry: {
+      max: retries,
+    },
+  },
+  staging: {
     host: process.env.DB_BETA_IP,
     port: process.env.DB_BETA_PORT,
     database: process.env.DB_BETA_DATABASE,

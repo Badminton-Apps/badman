@@ -11,7 +11,7 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
   constructor(private readonly configService: ConfigService<ConfigType>) {}
 
   async createSequelizeOptions(): Promise<SequelizeModuleOptions> {
-    const env = this.configService.get<"production" | "development" | "test">("NODE_ENV");
+    const env = this.configService.get<"production" | "development" | "test" | "staging">("NODE_ENV");
 
     this.logger.log(`Loading ${env} config`);
 

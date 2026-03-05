@@ -39,9 +39,10 @@ const config = {
   },
 };
 
+// "beta" was renamed to "staging"; consider removing "beta" from the message later.
 if (!config) {
   console.error(`❌ Invalid environment: ${environment}`);
-  console.error("Available environments: development, beta, prod");
+  console.error("Available environments: development, staging, beta, prod");
   process.exit(1);
 }
 
