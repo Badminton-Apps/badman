@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getClubById = getClubById;
 exports.generateTeamName = generateTeamName;
-exports.hasActiveMembership = hasActiveMembership;
 /**
  * Fetch club data by ID
  */
@@ -20,11 +19,4 @@ function generateTeamName(club, teamNumber, type, letter = "H") {
     const name = `${club.name} ${teamNumber}${letter}`;
     const abbreviation = `${club.abbreviation} ${teamNumber}${letter}`;
     return { name, abbreviation };
-}
-/**
- * Check if an active membership exists
- */
-async function hasActiveMembership(ctx, table, whereClause, replacements) {
-    const existing = await ctx.query(`SELECT id FROM "${table}" WHERE ${whereClause} AND "end" IS NULL LIMIT 1`, replacements);
-    return existing && existing.length > 0 ? existing[0] : null;
 }
