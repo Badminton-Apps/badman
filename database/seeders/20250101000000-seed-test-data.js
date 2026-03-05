@@ -24,237 +24,211 @@ const {
 } = require("./utils/dist");
 
 const PLAYERS_ON_TEAM = 8;
+const ENCOUNTER_COUNT = 10;
+const HISTORICAL_TEAM_TYPES = ["M", "F", "MX"];
+
+/**
+ * Load seed config from environment (same keys for up and down).
+ *
+ * Supported env vars (all optional):
+ *   SEED_HOMETEAM_USER_EMAIL, SEED_HOMETEAM_FIRST_NAME, SEED_HOMETEAM_LAST_NAME,
+ *   SEED_HOMETEAM_MEMBER_ID, SEED_HOMETEAM_GENDER, SEED_HOMETEAM_USER_AUTH0_SUB
+ *   SEED_AWAYTEAM_USER_EMAIL, SEED_AWAYTEAM_FIRST_NAME, SEED_AWAYTEAM_LAST_NAME,
+ *   SEED_AWAYTEAM_MEMBER_ID, SEED_AWAYTEAM_GENDER, SEED_AWAYTEAM_USER_AUTH0_SUB
+ */
+function loadSeedConfig() {
+  return {
+    homeTeam: {
+      email: process.env.SEED_HOMETEAM_USER_EMAIL || "test@example.com",
+      firstName: process.env.SEED_HOMETEAM_FIRST_NAME || "Test",
+      lastName: process.env.SEED_HOMETEAM_LAST_NAME || "User",
+      memberId: process.env.SEED_HOMETEAM_MEMBER_ID || `TEST-${Date.now()}`,
+      gender: process.env.SEED_HOMETEAM_GENDER || "M",
+      sub: process.env.SEED_HOMETEAM_USER_AUTH0_SUB || "",
+    },
+    awayTeam: {
+      email: process.env.SEED_AWAYTEAM_USER_EMAIL || "opponent@example.com",
+      firstName: process.env.SEED_AWAYTEAM_FIRST_NAME || "Opponent",
+      lastName: process.env.SEED_AWAYTEAM_LAST_NAME || "User",
+      memberId: process.env.SEED_AWAYTEAM_MEMBER_ID || `TEST-OPPONENT-${Date.now()}`,
+      gender: process.env.SEED_AWAYTEAM_GENDER || "M",
+      sub: process.env.SEED_AWAYTEAM_USER_AUTH0_SUB || "",
+    },
+  };
+}
+
+/**
+ * Grant club permission claims (edit-any:club, edit:club) to a player.
+ */
+async function grantClubClaims(sequelize, transaction, QueryTypes, playerId, userEmail) {
+  const claims = await sequelize.query(
+    `SELECT id, name FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club')`,
+    { type: QueryTypes.SELECT, transaction }
+  );
+  for (const claim of claims) {
+    const [existing] = await sequelize.query(
+      `SELECT 1 FROM "security"."PlayerClaimMemberships" WHERE "playerId" = :playerId AND "claimId" = :claimId`,
+      { replacements: { playerId, claimId: claim.id }, type: QueryTypes.SELECT, transaction }
+    );
+    if (!existing) {
+      await sequelize.query(
+        `INSERT INTO "security"."PlayerClaimMemberships" ("playerId", "claimId", "createdAt", "updatedAt")
+         VALUES (:playerId, :claimId, NOW(), NOW())`,
+        { replacements: { playerId, claimId: claim.id }, transaction }
+      );
+      console.log(`✅ Granted claim "${claim.name}" to user (${userEmail})\n`);
+    }
+  }
+  if (claims.length > 0) {
+    console.log(`✅ Added ${claims.length} club permission claim(s) for user\n`);
+  }
+}
+
+/**
+ * Find or create a user player and add ranking. Does not grant claims.
+ */
+async function seedUserAndClaims(ctx, userConfig) {
+  const user = await findOrCreatePlayer(
+    ctx,
+    userConfig.email,
+    userConfig.firstName,
+    userConfig.lastName,
+    userConfig.memberId,
+    userConfig.gender,
+    true,
+    userConfig.sub
+  );
+  await addRankingToPlayer(ctx, user.id);
+  return user;
+}
+
+/**
+ * Seed one club with players and teams (main + historical). Returns clubId, teamId, players, historicalTeamIds.
+ */
+async function seedClubWithPlayersAndTeams(ctx, clubName, captainUser, season, previousSeason, options) {
+  const {
+    playerCount = PLAYERS_ON_TEAM,
+    factoryOptions = {},
+    useCreateOpponentTeam = false,
+  } = options;
+
+  const clubId = await createClub(ctx, clubName);
+  const createTeamFn = useCreateOpponentTeam ? createOpponentTeam : createTeam;
+
+  const additionalPlayers = await PlayerFactory.createForTeam(ctx, clubName, playerCount, factoryOptions);
+  const players = [captainUser, ...additionalPlayers];
+
+  for (const player of additionalPlayers) {
+    await addPlayerToClub(ctx, clubId, player.id);
+  }
+  await addPlayerToClub(ctx, clubId, captainUser.id);
+
+  await ctx.verifyTransaction();
+  console.log("✅ Transaction is still valid after adding players to club\n");
+
+  const teamId = await createTeamFn(ctx, clubId, season, captainUser.id, "MX");
+  for (const player of players) {
+    await addPlayerToTeam(ctx, teamId, player.id);
+  }
+  console.log(`✅ Added ${players.length} players to ${clubName}\n`);
+
+  const historicalTeamIds = [];
+  for (const teamType of HISTORICAL_TEAM_TYPES) {
+    const historicalTeamId = await createTeamFn(ctx, clubId, previousSeason, captainUser.id, teamType);
+    historicalTeamIds.push(historicalTeamId);
+    for (const player of players) {
+      await addPlayerToTeam(ctx, historicalTeamId, player.id);
+    }
+  }
+  console.log(`✅ Created 3 historical teams for ${clubName} (season ${previousSeason}): M, F, MX\n`);
+
+  return { clubId, teamId, players, historicalTeamIds };
+}
+
+/**
+ * Create event tree (event, subevent, draw) for test data. Returns ids for encounters.
+ */
+async function seedEventTree(ctx, season) {
+  const eventId = await createEventCompetition(ctx, season);
+  const subEventId = await createSubEventCompetition(ctx, eventId);
+  const drawId = await createDrawCompetition(ctx, subEventId, season);
+  return { eventId, subEventId, drawId };
+}
+
+/**
+ * Build IN-clause placeholders and replacements for parameterized queries.
+ */
+function buildInClause(ids, paramName) {
+  const placeholders = ids.map((_, i) => `:${paramName}${i}`).join(", ");
+  const replacements = ids.reduce((acc, id, i) => {
+    acc[`${paramName}${i}`] = id;
+    return acc;
+  }, {});
+  return { placeholders, replacements };
+}
+
 /** @type {import('sequelize-cli').Seeder} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const sequelize = queryInterface.sequelize;
     const { QueryTypes } = Sequelize;
+    const config = loadSeedConfig();
 
-    // Get user email from environment variable (optional)
-    const userEmail = process.env.SEED_HOMETEAM_USER_EMAIL || "test@example.com";
-    const firstName = process.env.SEED_HOMETEAM_FIRST_NAME || "Test";
-    const lastName = process.env.SEED_HOMETEAM_LAST_NAME || "User";
-    const memberId = process.env.SEED_HOMETEAM_MEMBER_ID || `TEST-${Date.now()}`;
-    const gender = process.env.SEED_HOMETEAM_GENDER || "M";
-    const sub = process.env.SEED_HOMETEAM_USER_AUTH0_SUB || "";
-
-    // Get opponent user email from environment variable (optional)
-    const opponentUserEmail = process.env.SEED_AWAYTEAM_USER_EMAIL || "opponent@example.com";
-    const opponentFirstName = process.env.SEED_AWAYTEAM_FIRST_NAME || "Opponent";
-    const opponentLastName = process.env.SEED_AWAYTEAM_LAST_NAME || "User";
-    const opponentMemberId = process.env.SEED_AWAYTEAM_MEMBER_ID || `TEST-OPPONENT-${Date.now()}`;
-    const opponentGender = process.env.SEED_AWAYTEAM_GENDER || "M";
-    const opponentSub = process.env.SEED_AWAYTEAM_USER_AUTH0_SUB || "";
-
-    console.log(`🚀 Starting seed for user: ${userEmail}\n`);
+    console.log(`🚀 Starting seed for user: ${config.homeTeam.email}\n`);
 
     try {
       return await sequelize.transaction(async (transaction) => {
-        // Create seeder context
         const ctx = new SeederContext(sequelize, QueryTypes, transaction);
 
-        // Get current season (September to April)
         const now = new Date();
         const season = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
         const previousSeason = season - 1;
         console.log(`📅 Using season: ${season}\n`);
         console.log(`📅 Using previous season for historical teams: ${previousSeason}\n`);
 
-        // Find or create player
-        const user = await findOrCreatePlayer(
-          ctx,
-          userEmail,
-          firstName,
-          lastName,
-          memberId,
-          gender,
-          true, // competitionPlayer,
-          sub
-        );
+        const user = await seedUserAndClaims(ctx, config.homeTeam);
+        await grantClubClaims(sequelize, transaction, QueryTypes, user.id, config.homeTeam.email);
 
-        // Add ranking to user player
-        await addRankingToPlayer(ctx, user.id);
-
-        // Add edit-any:club and edit:club claims for the user so they can manage all teams under their club
-        const claims = await sequelize.query(
-          `SELECT id, name FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club')`,
-          {
-            type: QueryTypes.SELECT,
-            transaction,
-          }
-        );
-        for (const claim of claims) {
-          const [existing] = await sequelize.query(
-            `SELECT 1 FROM "security"."PlayerClaimMemberships" WHERE "playerId" = :playerId AND "claimId" = :claimId`,
-            {
-              replacements: { playerId: user.id, claimId: claim.id },
-              type: QueryTypes.SELECT,
-              transaction,
-            }
-          );
-          if (!existing) {
-            await sequelize.query(
-              `INSERT INTO "security"."PlayerClaimMemberships" ("playerId", "claimId", "createdAt", "updatedAt")
-               VALUES (:playerId, :claimId, NOW(), NOW())`,
-              {
-                replacements: { playerId: user.id, claimId: claim.id },
-                transaction,
-              }
-            );
-            console.log(`✅ Granted claim "${claim.name}" to user (${userEmail})\n`);
-          }
-        }
-        if (claims.length > 0) {
-          console.log(`✅ Added ${claims.length} club permission claim(s) for user\n`);
-        }
-
-        // Create first club (user's club)
-        const clubId = await createClub(ctx, "TEAM AWESOME");
-
-        // Create additional players for TEAM AWESOME (need 5 total, user is 1, so create 4 more)
-        const teamAwesomePlayers = [user];
-        const additionalPlayers = await PlayerFactory.createForTeam(
-          ctx,
-          "TEAM AWESOME",
-          PLAYERS_ON_TEAM,
-          {
+        const home = await seedClubWithPlayersAndTeams(ctx, "TEAM AWESOME", user, season, previousSeason, {
+          playerCount: PLAYERS_ON_TEAM,
+          factoryOptions: {
             gender: "mixed",
             domain: "teamawesome.com",
             prefix: "TEST-AWESOME",
             baseIndex: 0,
-          }
-        );
+          },
+          useCreateOpponentTeam: false,
+        });
 
-        // Add all additional players to club
-        for (const player of additionalPlayers) {
-          teamAwesomePlayers.push(player);
-          await addPlayerToClub(ctx, clubId, player.id);
-        }
+        const { eventId, subEventId, drawId } = await seedEventTree(ctx, season);
 
-        // Add user to club (if not already added)
-        await addPlayerToClub(ctx, clubId, user.id);
-
-        // Verify transaction is still valid by running a simple query
-        await ctx.verifyTransaction();
-        console.log("✅ Transaction is still valid after adding players to club\n");
-
-        // Create team
-        const teamId = await createTeam(ctx, clubId, season, user.id, "MX");
-
-        // Add all players to team
-        for (const player of teamAwesomePlayers) {
-          await addPlayerToTeam(ctx, teamId, player.id);
-        }
-        console.log(`✅ Added ${teamAwesomePlayers.length} players to TEAM AWESOME\n`);
-
-        // Create three historical teams for TEAM AWESOME (M, F, MX) for previous season
-        const historicalTeamIds = [];
-        for (const teamType of ["M", "F", "MX"]) {
-          const historicalTeamId = await createTeam(ctx, clubId, previousSeason, user.id, teamType);
-          historicalTeamIds.push(historicalTeamId);
-          for (const player of teamAwesomePlayers) {
-            await addPlayerToTeam(ctx, historicalTeamId, player.id);
-          }
-        }
-        console.log(
-          `✅ Created 3 historical teams for TEAM AWESOME (season ${previousSeason}): M, F, MX\n`
-        );
-
-        // Create event competition
-        const eventId = await createEventCompetition(ctx, season);
-
-        // Create sub event competition
-        const subEventId = await createSubEventCompetition(ctx, eventId);
-
-        // Create draw competition
-        const drawId = await createDrawCompetition(ctx, subEventId, season);
-
-        // Create second club (opponent club)
-        const opponentClubId = await createClub(ctx, "THE OPPONENTS");
-
-        // Find or create opponent user player
-        const opponentUser = await findOrCreatePlayer(
-          ctx,
-          opponentUserEmail,
-          opponentFirstName,
-          opponentLastName,
-          opponentMemberId,
-          opponentGender,
-          true, // competitionPlayer,
-          opponentSub
-        );
-
-        // Add ranking to opponent user player
-        await addRankingToPlayer(ctx, opponentUser.id);
-
-        // Create players for THE OPPONENTS (need 4 more players, opponent user is 1, so create 4 more)
-        const opponentPlayers = [opponentUser];
-        const additionalOpponentPlayers = await PlayerFactory.createForTeam(
-          ctx,
-          "THE OPPONENTS",
-          PLAYERS_ON_TEAM,
-          {
+        const opponentUser = await seedUserAndClaims(ctx, config.awayTeam);
+        const opponent = await seedClubWithPlayersAndTeams(ctx, "THE OPPONENTS", opponentUser, season, previousSeason, {
+          playerCount: PLAYERS_ON_TEAM,
+          factoryOptions: {
             gender: "mixed",
             domain: "opponents.com",
             prefix: "TEST-OPPONENTS",
-            baseIndex: 8, // Different range so names don't overlap with TEAM AWESOME (0-7)
-          }
-        );
+            baseIndex: 8,
+          },
+          useCreateOpponentTeam: true,
+        });
 
-        // Add all additional players to opponent club
-        for (const player of additionalOpponentPlayers) {
-          opponentPlayers.push(player);
-          await addPlayerToClub(ctx, opponentClubId, player.id);
-        }
-
-        // Add opponent user to club (if not already added)
-        await addPlayerToClub(ctx, opponentClubId, opponentUser.id);
-
-        // Create opponent team (in the second club) - use opponent user as captain
-        const opponentTeamId = await createOpponentTeam(ctx, opponentClubId, season);
-
-        // Add all players to opponent team
-        for (const player of opponentPlayers) {
-          await addPlayerToTeam(ctx, opponentTeamId, player.id);
-        }
-        console.log(
-          `✅ Added ${opponentPlayers.length} players to THE OPPONENTS (including user: ${opponentUserEmail})\n`
-        );
-
-        // Create three historical opponent teams (M, F, MX) for previous season
-        const historicalOpponentTeamIds = [];
-        for (const teamType of ["M", "F", "MX"]) {
-          const historicalOpponentTeamId = await createOpponentTeam(
-            ctx,
-            opponentClubId,
-            previousSeason,
-            teamType
-          );
-          historicalOpponentTeamIds.push(historicalOpponentTeamId);
-          for (const player of opponentPlayers) {
-            await addPlayerToTeam(ctx, historicalOpponentTeamId, player.id);
-          }
-        }
-        console.log(
-          `✅ Created 3 historical teams for THE OPPONENTS (season ${previousSeason}): M, F, MX\n`
-        );
-
-        // Create encounters
-        await createEncounters(ctx, drawId, teamId, opponentTeamId, season);
+        await createEncounters(ctx, drawId, home.teamId, opponent.teamId, ENCOUNTER_COUNT);
 
         console.log("📊 Summary:");
-        console.log(`   • Club: TEAM AWESOME (${clubId})`);
-        console.log(`   • Team: ${teamId} with ${teamAwesomePlayers.length} players`);
-        console.log(`   • User: ${userEmail}`);
-        console.log(`   • Opponent Club: THE OPPONENTS (${opponentClubId})`);
-        console.log(`   • Opponent Team: ${opponentTeamId} with ${opponentPlayers.length} players`);
-        console.log(`   • Opponent User: ${opponentUserEmail}`);
+        console.log(`   • Club: TEAM AWESOME (${home.clubId})`);
+        console.log(`   • Team: ${home.teamId} with ${home.players.length} players`);
+        console.log(`   • User: ${config.homeTeam.email}`);
+        console.log(`   • Opponent Club: THE OPPONENTS (${opponent.clubId})`);
+        console.log(`   • Opponent Team: ${opponent.teamId} with ${opponent.players.length} players`);
+        console.log(`   • Opponent User: ${config.awayTeam.email}`);
         console.log(`   • Event: Test Event ${season} (${eventId})`);
         console.log(`   • SubEvent: Test SubEvent M (${subEventId})`);
         console.log(`   • Draw: Test Draw (${drawId})`);
-        console.log(`   • Encounters: 10`);
+        console.log(`   • Encounters: ${ENCOUNTER_COUNT}`);
         console.log(
-          `   • Historical teams (season ${previousSeason}): TEAM AWESOME [${historicalTeamIds.join(", ")}], THE OPPONENTS [${historicalOpponentTeamIds.join(", ")}]`
+          `   • Historical teams (season ${previousSeason}): TEAM AWESOME [${home.historicalTeamIds.join(", ")}], THE OPPONENTS [${opponent.historicalTeamIds.join(", ")}]`
         );
         console.log("\n✨ Seed completed successfully!");
       });
@@ -266,21 +240,18 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // Cleanup: Remove test data
     const sequelize = queryInterface.sequelize;
-    const userEmail = process.env.SEED_USER_EMAIL || "test@example.com";
-    const opponentUserEmail = process.env.SEED_OPPONENT_USER_EMAIL || "opponent@example.com";
+    const config = loadSeedConfig();
+    const userEmail = config.homeTeam.email;
+    const opponentUserEmail = config.awayTeam.email;
+
     console.log(`🧹 Cleaning up seed data for users: ${userEmail} and ${opponentUserEmail}\n`);
     console.log("📍 Step 1: Starting cleanup process...\n");
 
-    // Helper function to safely execute a delete query (without transaction)
-    // We don't use transactions for cleanup to avoid "transaction aborted" errors
     const safeDelete = async (sql, replacements, description) => {
       console.log(`🔍 Attempting: ${description}...`);
       try {
-        const result = await sequelize.query(sql, {
-          replacements,
-        });
+        const result = await sequelize.query(sql, { replacements });
         console.log(`✅ ${description} - completed`);
         return result;
       } catch (err) {
@@ -291,52 +262,24 @@ module.exports = {
         if (err.sql) {
           console.error(`   SQL: ${err.sql.substring(0, 200)}...`);
         }
-
-        // If it's a "no rows affected" or "does not exist" error, that's okay
         if (
           err.message?.includes("does not exist") ||
           err.message?.includes("violates foreign key constraint") ||
-          err.code === "42P01" || // undefined_table
-          err.code === "23503" // foreign_key_violation
+          err.code === "42P01" ||
+          err.code === "23503"
         ) {
           console.log(`ℹ️  ${description} - skipped (data may not exist or has dependencies)`);
           return null;
         }
-        // For other errors, log but don't throw - continue cleanup
         console.warn(`⚠️  ${description} - continuing despite error`);
         return null;
       }
     };
 
-    try {
-      console.log("📍 Step 2: Finding test clubs...\n");
-      // Find all test clubs (both user's club and opponent club)
-      // Note: Added createdAt to SELECT for ORDER BY compatibility with DISTINCT
-      const clubs = await sequelize.query(
-        `SELECT DISTINCT c.id, c."createdAt" FROM "Clubs" c
-         WHERE c.name IN ('TEAM AWESOME', 'THE OPPONENTS')
-         ORDER BY c."createdAt" ASC`,
-        {
-          type: Sequelize.QueryTypes.SELECT,
-        }
-      );
-      console.log(`📍 Found ${clubs?.length || 0} test clubs\n`);
-
-      if (clubs && clubs.length > 0) {
-        const clubIds = clubs.map((c) => c.id);
-        console.log(`📍 Step 3: Starting deletion process for ${clubIds.length} clubs...\n`);
-
-        // Build placeholders for IN clause (e.g., :clubId0, :clubId1, ...)
-        const clubPlaceholders = clubIds.map((_, index) => `:clubId${index}`).join(", ");
-        const clubReplacements = clubIds.reduce((acc, id, index) => {
-          acc[`clubId${index}`] = id;
-          return acc;
-        }, {});
-
-        console.log("📍 Step 3.1: Deleting encounters...\n");
-        // Delete encounters
-        await safeDelete(
-          `DELETE FROM event."EncounterCompetitions" 
+    const CLEANUP_TASKS = [
+      {
+        description: "Deleted encounters",
+        sql: `DELETE FROM event."EncounterCompetitions" 
            WHERE "drawId" IN (
              SELECT id FROM event."DrawCompetitions" 
              WHERE "subeventId" IN (
@@ -347,14 +290,11 @@ module.exports = {
                )
              )
            )`,
-          {},
-          "Deleted encounters"
-        );
-
-        console.log("📍 Step 3.2: Deleting draws...\n");
-        // Delete draws
-        await safeDelete(
-          `DELETE FROM event."DrawCompetitions" 
+        replacements: {},
+      },
+      {
+        description: "Deleted draws",
+        sql: `DELETE FROM event."DrawCompetitions" 
            WHERE "subeventId" IN (
              SELECT id FROM event."SubEventCompetitions" 
              WHERE "eventId" IN (
@@ -362,32 +302,46 @@ module.exports = {
                WHERE "visualCode" LIKE 'TEST-%'
              )
            )`,
-          {},
-          "Deleted draws"
-        );
-
-        console.log("📍 Step 3.3: Deleting sub events...\n");
-        // Delete sub events
-        await safeDelete(
-          `DELETE FROM event."SubEventCompetitions" 
+        replacements: {},
+      },
+      {
+        description: "Deleted sub events",
+        sql: `DELETE FROM event."SubEventCompetitions" 
            WHERE "eventId" IN (
              SELECT id FROM event."EventCompetitions" 
              WHERE "visualCode" LIKE 'TEST-%'
            )`,
-          {},
-          "Deleted sub events"
-        );
+        replacements: {},
+      },
+      {
+        description: "Deleted events",
+        sql: `DELETE FROM event."EventCompetitions" WHERE "visualCode" LIKE 'TEST-%'`,
+        replacements: {},
+      },
+    ];
 
-        console.log("📍 Step 3.4: Deleting events...\n");
-        // Delete events
-        await safeDelete(
-          `DELETE FROM event."EventCompetitions" WHERE "visualCode" LIKE 'TEST-%'`,
-          {},
-          "Deleted events"
-        );
+    try {
+      console.log("📍 Step 2: Finding test clubs...\n");
+      const clubs = await sequelize.query(
+        `SELECT DISTINCT c.id, c."createdAt" FROM "Clubs" c
+         WHERE c.name IN ('TEAM AWESOME', 'THE OPPONENTS')
+         ORDER BY c."createdAt" ASC`,
+        { type: Sequelize.QueryTypes.SELECT }
+      );
+      console.log(`📍 Found ${clubs?.length || 0} test clubs\n`);
 
-        console.log("📍 Step 3.5: Deleting team memberships...\n");
-        // Delete team memberships for all test clubs
+      if (clubs && clubs.length > 0) {
+        const clubIds = clubs.map((c) => c.id);
+        console.log(`📍 Step 3: Starting deletion process for ${clubIds.length} clubs...\n`);
+
+        const { placeholders: clubPlaceholders, replacements: clubReplacements } = buildInClause(clubIds, "clubId");
+
+        for (const task of CLEANUP_TASKS) {
+          console.log(`📍 ${task.description}...\n`);
+          await safeDelete(task.sql, task.replacements, task.description);
+        }
+
+        console.log("📍 Deleting team memberships...\n");
         await safeDelete(
           `DELETE FROM "TeamPlayerMemberships" 
            WHERE "teamId" IN (
@@ -397,33 +351,28 @@ module.exports = {
           "Deleted team memberships"
         );
 
-        console.log("📍 Step 3.6: Deleting teams...\n");
-        // Delete teams for all test clubs
+        console.log("📍 Deleting teams...\n");
         await safeDelete(
           `DELETE FROM "Teams" WHERE "clubId" IN (${clubPlaceholders})`,
           clubReplacements,
           "Deleted teams"
         );
 
-        console.log("📍 Step 3.7: Deleting club memberships...\n");
-        // Delete club memberships for all test clubs
+        console.log("📍 Deleting club memberships...\n");
         await safeDelete(
           `DELETE FROM "ClubPlayerMemberships" WHERE "clubId" IN (${clubPlaceholders})`,
           clubReplacements,
           "Deleted club memberships"
         );
 
-        console.log("📍 Step 3.8: Deleting clubs...\n");
-        // Delete all test clubs
+        console.log("📍 Deleting clubs...\n");
         await safeDelete(
           `DELETE FROM "Clubs" WHERE id IN (${clubPlaceholders})`,
           clubReplacements,
           "Deleted clubs"
         );
 
-        console.log(
-          "📍 Step 3.8.1: Removing club permission claims (edit-any:club, edit:club)...\n"
-        );
+        console.log("📍 Removing club permission claims...\n");
         await safeDelete(
           `DELETE FROM "security"."PlayerClaimMemberships"
            WHERE "claimId" IN (SELECT id FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club'))`,
@@ -432,57 +381,48 @@ module.exports = {
         );
 
         console.log("📍 Step 3.9: Finding test players before cleanup...\n");
-        // Find test players first to get their IDs for ranking cleanup
         const testPlayers = await sequelize.query(
           `SELECT id FROM "Players" 
            WHERE ("memberId" LIKE 'TEST-%' OR email LIKE '%@teamawesome.com' OR email LIKE '%@opponents.com')
            AND (email = :userEmail OR email = :opponentUserEmail OR "memberId" LIKE 'TEST-%')`,
-          {
-            replacements: { userEmail, opponentUserEmail },
-            type: Sequelize.QueryTypes.SELECT,
-          }
+          { replacements: { userEmail, opponentUserEmail }, type: Sequelize.QueryTypes.SELECT }
         );
         console.log(`📍 Found ${testPlayers?.length || 0} test players\n`);
 
         if (testPlayers && testPlayers.length > 0) {
           const playerIds = testPlayers.map((p) => p.id);
-          const playerPlaceholders = playerIds.map((_, index) => `:playerId${index}`).join(", ");
-          const playerReplacements = playerIds.reduce((acc, id, index) => {
-            acc[`playerId${index}`] = id;
-            return acc;
-          }, {});
-
-          console.log("📍 Step 3.9.1: Deleting ranking points...\n");
-          // Delete ranking points for test players
-          await safeDelete(
-            `DELETE FROM ranking."RankingPoints" WHERE "playerId" IN (${playerPlaceholders})`,
-            playerReplacements,
-            "Deleted ranking points"
+          const { placeholders: playerPlaceholders, replacements: playerReplacements } = buildInClause(
+            playerIds,
+            "playerId"
           );
 
-          console.log("📍 Step 3.9.2: Deleting ranking places...\n");
-          // Delete ranking places for test players
-          await safeDelete(
-            `DELETE FROM ranking."RankingPlaces" WHERE "playerId" IN (${playerPlaceholders})`,
-            playerReplacements,
-            "Deleted ranking places"
-          );
+          const playerCleanupTasks = [
+            {
+              description: "Deleted ranking points",
+              sql: `DELETE FROM ranking."RankingPoints" WHERE "playerId" IN (${playerPlaceholders})`,
+              replacements: playerReplacements,
+            },
+            {
+              description: "Deleted ranking places",
+              sql: `DELETE FROM ranking."RankingPlaces" WHERE "playerId" IN (${playerPlaceholders})`,
+              replacements: playerReplacements,
+            },
+            {
+              description: "Deleted ranking last places",
+              sql: `DELETE FROM ranking."RankingLastPlaces" WHERE "playerId" IN (${playerPlaceholders})`,
+              replacements: playerReplacements,
+            },
+            {
+              description: "Deleted test players",
+              sql: `DELETE FROM "Players" WHERE id IN (${playerPlaceholders})`,
+              replacements: playerReplacements,
+            },
+          ];
 
-          console.log("📍 Step 3.9.3: Deleting ranking last places...\n");
-          // Delete ranking last places for test players
-          await safeDelete(
-            `DELETE FROM ranking."RankingLastPlaces" WHERE "playerId" IN (${playerPlaceholders})`,
-            playerReplacements,
-            "Deleted ranking last places"
-          );
-
-          console.log("📍 Step 3.9.4: Deleting test players...\n");
-          // Delete test players
-          await safeDelete(
-            `DELETE FROM "Players" WHERE id IN (${playerPlaceholders})`,
-            playerReplacements,
-            "Deleted test players"
-          );
+          for (const task of playerCleanupTasks) {
+            console.log(`📍 ${task.description}...\n`);
+            await safeDelete(task.sql, task.replacements, task.description);
+          }
         } else {
           console.log("ℹ️  No test players found to delete\n");
         }
@@ -499,7 +439,6 @@ module.exports = {
       if (error.stack) {
         console.error(`   Stack: ${error.stack.substring(0, 500)}...`);
       }
-      // Don't throw - allow cleanup to complete even if there are errors
       console.log("\n⚠️  Some cleanup operations may have failed, but continuing...");
     }
   },
