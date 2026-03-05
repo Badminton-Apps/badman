@@ -14,35 +14,23 @@
 
 const { Sequelize } = require("sequelize");
 const path = require("path");
-
-// Load environment variables
-require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
+const fs = require("fs");
 
 // Get environment from command line argument or default to development
 const environment = process.argv[2] || "development";
-const retries = 5;
-// Load database config
-const config = {
-  host: process.env.DB_IP,
-  port: process.env.DB_PORT,
-  database: process.env.DB_DATABASE,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  dialect: process.env.DB_DIALECT,
-  migrationStorageTableSchema: "public",
-  logging: false,
-  dialectOptions: {
-    ssl: process.env.DB_SSL === "true",
-  },
-  retry: {
-    max: retries,
-  },
-};
 
-// "beta" was renamed to "staging"; consider removing "beta" from the message later.
+// Load env for the chosen target (same strategy as Sequelize CLI: one set of keys, values from env)
+require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
+const envPath = path.resolve(__dirname, `../../.env.${environment}`);
+if (fs.existsSync(envPath)) {
+  require("dotenv").config({ path: envPath });
+}
+
+const dbConfigByEnv = require("../../database/config/config.js");
+const config = dbConfigByEnv[environment];
 if (!config) {
-  console.error(`❌ Invalid environment: ${environment}`);
-  console.error("Available environments: development, staging, beta, prod");
+  console.error(`❌ Unknown environment: ${environment}`);
+  console.error("Available environments: development, staging, production (or prod)");
   process.exit(1);
 }
 
