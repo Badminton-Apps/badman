@@ -15,6 +15,7 @@ import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 import { ConfigType } from "@badman/utils";
+import { startLockRenewal } from "../../utils";
 import { getPage, acceptCookies, signIn, waitForSelectors } from "@badman/backend-pupeteer";
 import {
   enableInputValidation,
@@ -133,6 +134,7 @@ export class EnterScoresProcessor {
 
     this.logger.debug(`Dev email destination: ${devEmailDestination}`);
 
+    const stopLockRenewal = startLockRenewal(job);
     try {
       this.logger.debug("Creating browser");
       page = await getPage(headlessValue, [
@@ -568,6 +570,7 @@ export class EnterScoresProcessor {
         throw error;
       }
     } finally {
+      stopLockRenewal();
       try {
         if (!hangBeforeBrowserCleanup && page) {
           this.logger.log(`Closing page...`);
