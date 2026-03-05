@@ -12,17 +12,26 @@ export interface SeederError extends Error {
   sql?: string;
 }
 
+/** PostgreSQL error code: current transaction is aborted */
+const PG_TRANSACTION_ABORTED = "25P02";
+
 /**
  * Handle and log seeder errors with consistent formatting
  */
 export function handleSeederError(err: SeederError | BaseError, operation: string): never {
   const error = err as SeederError;
+  const code = error.parent?.code ?? (error as { code?: string }).code;
   console.error(`❌ Error ${operation}:`);
   console.error("  Message:", error.message);
-  console.error("  Code:", error.parent?.code);
+  console.error("  Code:", code);
   console.error("  Detail:", error.parent?.detail);
   console.error("  Constraint:", error.parent?.constraint);
   console.error("  SQL:", error.sql);
+  if (code === PG_TRANSACTION_ABORTED) {
+    console.error(
+      "  Hint: This usually means a previous command in the same transaction failed. Scroll up for the first error (e.g. duplicate key, constraint violation)."
+    );
+  }
   console.error("  Full error:", JSON.stringify(error, null, 2));
   throw error;
 }

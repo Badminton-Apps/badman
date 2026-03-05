@@ -37,7 +37,6 @@ class PlayerFactory {
         const players = [];
         for (let i = 0; i < count; i++) {
             const index = baseIndex + i;
-            const name = data_factory_1.DataFactory.generateNameAtIndex(index);
             // Determine gender for this player
             let playerGender;
             if (gender === "mixed") {
@@ -47,6 +46,7 @@ class PlayerFactory {
             else {
                 playerGender = gender;
             }
+            const name = data_factory_1.DataFactory.generateNameAtIndex(index, playerGender);
             const player = await this.create(ctx, {
                 email: `${name.firstName.toLowerCase()}.${name.lastName.toLowerCase()}@${domain}`,
                 firstName: name.firstName,
