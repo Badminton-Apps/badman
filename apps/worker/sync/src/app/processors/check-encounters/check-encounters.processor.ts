@@ -22,6 +22,7 @@ import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
+import { startLockRenewal } from "../../utils";
 import moment from "moment";
 import { Page } from "puppeteer";
 import { Op } from "sequelize";
@@ -97,7 +98,7 @@ export class CheckEncounterProcessor {
   }
 
   @Process(Sync.CheckEncounters)
-  async syncEncounters() {
+  async syncEncounters(job: Job) {
     this.logger.log("Syncing encounters");
     let page: Page | undefined;
     const cronJob = await CronJob.findOne({
@@ -119,6 +120,7 @@ export class CheckEncounterProcessor {
     cronJob.amount++;
     await cronJob.save();
 
+    const stopLockRenewal = startLockRenewal(job);
     try {
       // get all encounters that are not accepted yet within the last 14 days
 
@@ -190,6 +192,7 @@ export class CheckEncounterProcessor {
     } catch (error) {
       this.logger.error(error);
     } finally {
+      stopLockRenewal();
       try {
         // Close browser properly
         if (page) {
