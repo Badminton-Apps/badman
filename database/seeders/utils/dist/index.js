@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PlayerFactory = exports.DataFactory = exports.addRankingToPlayer = exports.createRankingLastPlace = exports.createRankingPlace = exports.findOrGetPrimaryRankingSystem = exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = exports.withErrorHandling = exports.handleSeederError = exports.SeederContext = void 0;
+exports.PlayerFactory = exports.DataFactory = exports.hasActiveMembership = exports.generateTeamName = exports.getClubById = exports.addRankingToPlayer = exports.createRankingLastPlace = exports.createRankingPlace = exports.findOrGetPrimaryRankingSystem = exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = exports.withErrorHandling = exports.handleSeederError = exports.SeederContext = void 0;
 var seeder_context_1 = require("./seeder-context");
 Object.defineProperty(exports, "SeederContext", { enumerable: true, get: function () { return seeder_context_1.SeederContext; } });
 var error_handler_1 = require("./error-handler");
@@ -22,6 +22,11 @@ Object.defineProperty(exports, "findOrGetPrimaryRankingSystem", { enumerable: tr
 Object.defineProperty(exports, "createRankingPlace", { enumerable: true, get: function () { return ranking_builders_1.createRankingPlace; } });
 Object.defineProperty(exports, "createRankingLastPlace", { enumerable: true, get: function () { return ranking_builders_1.createRankingLastPlace; } });
 Object.defineProperty(exports, "addRankingToPlayer", { enumerable: true, get: function () { return ranking_builders_1.addRankingToPlayer; } });
+var club_team_naming_1 = require("./club-team-naming");
+Object.defineProperty(exports, "getClubById", { enumerable: true, get: function () { return club_team_naming_1.getClubById; } });
+Object.defineProperty(exports, "generateTeamName", { enumerable: true, get: function () { return club_team_naming_1.generateTeamName; } });
+var membership_helpers_1 = require("./membership-helpers");
+Object.defineProperty(exports, "hasActiveMembership", { enumerable: true, get: function () { return membership_helpers_1.hasActiveMembership; } });
 var data_factory_1 = require("./data-factory");
 Object.defineProperty(exports, "DataFactory", { enumerable: true, get: function () { return data_factory_1.DataFactory; } });
 var player_factory_1 = require("./player-factory");
