@@ -23,6 +23,7 @@ export class SyncDateProcessor {
   @Process(Sync.ChangeDate)
   async acceptDate(job: Job<{ encounterId: string }>) {
     // dont' run in beta or dev
+    // "beta" was renamed to "staging"; consider updating this comment later.
     if (this.configService.get("VR_CHANGE_DATES") !== true) {
       this.logger.log("VR_CHANGE_DATES is not true", this.configService.get("VR_CHANGE_DATES"));
       return;
