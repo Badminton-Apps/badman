@@ -6,7 +6,7 @@
     "@badman/backend-database": "6.185.0",
     "@badman/utils": "6.185.0",
     "@nestjs/common": "^10.4.15",
-    "fastify": "^4.29.0",
+    "fastify": "^5.7.3",
     "@nestjs/graphql": "^12.2.2",
     "@nestjs/config": "^3.3.0",
     "graphql-type-json": "^0.3.2",
