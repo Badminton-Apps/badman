@@ -15,6 +15,7 @@ import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 import { ConfigType } from "@badman/utils";
+import { startLockRenewal } from "../../utils";
 import { getPage, acceptCookies, signIn, waitForSelectors } from "@badman/backend-pupeteer";
 import {
   enableInputValidation,
@@ -119,6 +120,8 @@ export class EnterScoresProcessor {
     const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED") === true;
     const enterScoresEnabled = this.configService.get("ENTER_SCORES_ENABLED") === true;
     const hangBeforeBrowserCleanup = this.configService.get("HANG_BEFORE_BROWSER_CLEANUP") === true;
+    const nodeEnv = this.configService.get("NODE_ENV");
+
     const headlessValue = visualSyncEnabled ? false : true;
     if (!this._username || !this._password) {
       this.logger.error("No username or password found");
@@ -133,6 +136,7 @@ export class EnterScoresProcessor {
 
     this.logger.debug(`Dev email destination: ${devEmailDestination}`);
 
+    const stopLockRenewal = startLockRenewal(job);
     try {
       this.logger.debug("Creating browser");
       page = await getPage(headlessValue, [
@@ -344,12 +348,10 @@ export class EnterScoresProcessor {
       // Validate rows for error messages
       await this.validateRowMessages(page);
 
-      const nodeEv = process.env.NODE_ENV;
-
       const saveButton = await waitForSelectors([["input#btnSave.button"]], page, 5000);
       if (saveButton) {
         this.logger.debug(`Save button found`);
-        if (nodeEv === "production" || enterScoresEnabled) {
+        if (nodeEnv === "production" || enterScoresEnabled) {
           await saveButton.click();
           this.logger.log(`Save button clicked, waiting for navigation`);
 
@@ -406,9 +408,7 @@ export class EnterScoresProcessor {
             this.logger.warn(`Post-save row error messages: ${rowErrorMessages.join("; ")}`);
             saveSucceeded = false;
             saveFailureReason = "row-validation";
-            this.logger.warn(
-              "Treating save as failed: row validation messages present after save"
-            );
+            this.logger.warn("Treating save as failed: row validation messages present after save");
           }
 
           // Send success email only when navigation completed and page state OK; otherwise send error email
@@ -568,6 +568,7 @@ export class EnterScoresProcessor {
         throw error;
       }
     } finally {
+      stopLockRenewal();
       try {
         if (!hangBeforeBrowserCleanup && page) {
           this.logger.log(`Closing page...`);

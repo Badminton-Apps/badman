@@ -10,6 +10,7 @@ import { TournamentSyncer } from "./tournament-sync";
 import moment from "moment";
 import { NotificationService } from "@badman/backend-notifications";
 import { CronJob, EventCompetition, EventTournament } from "@badman/backend-database";
+import { startLockRenewal } from "../../utils";
 
 @Processor({
   name: SyncQueue,
@@ -77,6 +78,7 @@ export class SyncEventsProcessor {
     cronJob.amount++;
     await cronJob.save();
 
+    const stopLockRenewal = startLockRenewal(job);
     try {
       // Creates a new date based on either the job's date parameter or the last run time
       const newDate = moment(job.data?.date ?? cronJob.lastRun);
@@ -214,6 +216,7 @@ export class SyncEventsProcessor {
 
       throw e;
     } finally {
+      stopLockRenewal();
       cronJob.amount--;
       cronJob.lastRun = new Date();
       await cronJob.save();
