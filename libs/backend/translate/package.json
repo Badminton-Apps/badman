@@ -6,7 +6,7 @@
     "@badman/utils": "6.185.0",
     "tslib": "^2.8.1",
     "@nestjs/common": "^10.4.15",
-    "fastify": "^4.29.0",
+    "fastify": "^5.7.3",
     "nestjs-i18n": "^10.5.0"
   },
   "type": "commonjs",
