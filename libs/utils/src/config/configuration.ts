@@ -62,6 +62,12 @@ export const configSchema = Joi.object({
     then: Joi.number().integer().required(),
     otherwise: Joi.number().integer().optional(),
   }),
+  QUEUE_LOCK_DURATION_MS: Joi.number().integer().min(10000).optional(),
+  QUEUE_LOCK_RENEW_TIME_MS: Joi.number().integer().min(5000).optional(),
+  QUEUE_MAX_STALLED_COUNT: Joi.number().integer().min(1).optional(),
+  /** Max time a single job may run; after this it fails with a timeout so the queue does not get blocked. */
+  QUEUE_JOB_TIMEOUT_MS: Joi.number().integer().min(60000).optional(),
+
   CLIENT_URL: Joi.string().uri().required(),
   LEGACY_CLIENT_URL: Joi.string().uri().required(),
   LOGTAIL_TOKEN: Joi.string().optional(),
@@ -181,6 +187,10 @@ export type ConfigType = {
   REDIS_PORT?: number;
   REDIS_PASSWORD?: string;
   QUEUE_DB: number;
+  QUEUE_LOCK_DURATION_MS?: number;
+  QUEUE_LOCK_RENEW_TIME_MS?: number;
+  QUEUE_MAX_STALLED_COUNT?: number;
+  QUEUE_JOB_TIMEOUT_MS?: number;
   CLIENT_URL: string;
   LEGACY_CLIENT_URL: string;
   LOGTAIL_TOKEN?: string;
