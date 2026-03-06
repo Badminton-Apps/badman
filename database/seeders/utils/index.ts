@@ -27,6 +27,8 @@ export {
   createRankingLastPlace,
   addRankingToPlayer,
 } from "./ranking-builders";
+export { getClubById, generateTeamName } from "./club-team-naming";
+export { hasActiveMembership } from "./membership-helpers";
 export { DataFactory } from "./data-factory";
 export { PlayerFactory } from "./player-factory";
 export type { CreatePlayerOptions, CreatePlayersOptions } from "./player-factory";

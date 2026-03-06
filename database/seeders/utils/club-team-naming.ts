@@ -30,20 +30,3 @@ export function generateTeamName(
   const abbreviation = `${club.abbreviation} ${teamNumber}${letter}`;
   return { name, abbreviation };
 }
-
-/**
- * Check if an active membership exists
- */
-export async function hasActiveMembership<T extends { id: string }>(
-  ctx: SeederContext,
-  table: string,
-  whereClause: string,
-  replacements: Record<string, unknown>
-): Promise<T | null> {
-  const existing = await ctx.query<T>(
-    `SELECT id FROM "${table}" WHERE ${whereClause} AND "end" IS NULL LIMIT 1`,
-    replacements
-  );
-
-  return existing && existing.length > 0 ? existing[0] : null;
-}
