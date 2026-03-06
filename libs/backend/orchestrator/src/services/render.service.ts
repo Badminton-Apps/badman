@@ -14,42 +14,46 @@ export class RenderService {
   private renderApi!: string;
 
   constructor(private readonly configService: ConfigService<ConfigType>) {
-    if (
-      this.configService.get<string>("NODE_ENV") === "development" ||
-      this.configService.get<string>("NODE_ENV") === "test"
-    ) {
-      this._logger.verbose(`Skipping startService for ${RenderService.name} in development`);
+    const nodeEnv = this.configService.get<string>("NODE_ENV");
+    if (nodeEnv === "development" || nodeEnv === "test") {
+      this._logger.verbose(
+        `Render API disabled in ${nodeEnv} (start/suspend/status will be no-ops)`
+      );
     } else {
-      this.headers = {
-        accept: "application/json",
-        authorization: `Bearer ${this.configService.get<string>("RENDER_API_KEY")}`,
-      };
-
       const api = this.configService.get<string>("RENDER_API_URL");
-
+      const apiKey = this.configService.get<string>("RENDER_API_KEY");
       if (!api) {
+        this._logger.warn("RENDER_API_URL is not set; Render API calls will fail");
         throw new Error("RENDER_API_URL is not defined");
       }
-
+      if (!apiKey) {
+        this._logger.warn("RENDER_API_KEY is not set; Render API calls may be rejected");
+      }
+      this.headers = {
+        accept: "application/json",
+        authorization: `Bearer ${apiKey}`,
+      };
       this.renderApi = api;
+      this._logger.debug(`Render API configured (base URL: ${api})`);
     }
   }
 
   async startService(service: Service) {
-    // Don't start services in development
-    if (
-      this.configService.get<string>("NODE_ENV") === "development" ||
-      this.configService.get<string>("NODE_ENV") === "test"
-    ) {
-      this._logger.verbose(`Skipping startService for ${service.name} in development`);
+    const nodeEnv = this.configService.get<string>("NODE_ENV");
+    if (nodeEnv === "development" || nodeEnv === "test") {
+      this._logger.verbose(`Skipping startService for ${service.name} in ${nodeEnv}`);
       return;
     }
 
     if (!service.renderId) {
+      this._logger.error(
+        `startService: No renderId on service "${service.name}" (id=${service.id}). ` +
+          "Set the Render.com service ID on this record (Dashboard → service → ID in URL or API)."
+      );
       throw new Error(`No render id found for service ${service.name}`);
     }
 
-    // Get the service
+    this._logger.debug(`startService: fetching status for ${service.name} (renderId=${service.renderId})`);
     const serviceData = await this.getService(service, false);
 
     // Start the service if it's suspended
@@ -73,19 +77,19 @@ export class RenderService {
   }
 
   async suspendService(service: Service) {
-    // Don't suspend services in development
-    if (
-      this.configService.get<string>("NODE_ENV") === "development" ||
-      this.configService.get<string>("NODE_ENV") === "test"
-    ) {
-      this._logger.verbose(`Skipping suspendService for ${service.name} in development`);
+    const nodeEnv = this.configService.get<string>("NODE_ENV");
+    if (nodeEnv === "development" || nodeEnv === "test") {
+      this._logger.verbose(`Skipping suspendService for ${service.name} in ${nodeEnv}`);
       return;
     }
     if (!service.renderId) {
+      this._logger.error(
+        `suspendService: No renderId on service "${service.name}" (id=${service.id}).`
+      );
       throw new Error(`No render id found for service ${service.name}`);
     }
 
-    // Get the service
+    this._logger.debug(`suspendService: fetching status for ${service.name} (renderId=${service.renderId})`);
     const serviceData = await this.getService(service, false);
 
     // Suspend the service if it's not suspended
@@ -109,6 +113,11 @@ export class RenderService {
   }
 
   public async getService(service: Service, setStatus = true) {
+    if (!service.renderId) {
+      this._logger.error(`getService: service "${service.name}" (id=${service.id}) has no renderId`);
+      throw new Error(`No render id found for service ${service.name}`);
+    }
+    this._logger.verbose(`getService: GET ${this.renderApi}/services/${service.renderId}`);
     const renderService = await fetch(`${this.renderApi}/services/${service.renderId}`, {
       method: "GET",
       headers: this.headers,
