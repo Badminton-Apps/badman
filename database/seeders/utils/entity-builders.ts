@@ -1,11 +1,11 @@
 import { SeederContext } from "./seeder-context";
 import { withErrorHandling } from "./error-handler";
-import { getClubById, generateTeamName, hasActiveMembership } from "./team-helpers";
+import { getClubById, generateTeamName } from "./club-team-naming";
+import { hasActiveMembership } from "./membership-helpers";
 import type {
   Player,
   Club,
   Team,
-  ClubMembership,
   EventCompetition,
   SubEventCompetition,
   DrawCompetition,
@@ -90,8 +90,7 @@ async function addPlayerToClub(
   clubId: string,
   playerId: string
 ): Promise<void> {
-  // Check if membership already exists
-  const existing = await hasActiveMembership<ClubMembership>(
+  const existing = await hasActiveMembership<{ id: string }>(
     ctx,
     "ClubPlayerMemberships",
     `"clubId" = :clubId AND "playerId" = :playerId`,
@@ -103,54 +102,25 @@ async function addPlayerToClub(
     return;
   }
 
-  // Note: QueryTypes.INSERT returns [results, metadata], so we need to destructure
-  const queryResult = await ctx.sequelize.query(
+  const row = await ctx.insert<{ id: string }>(
     `INSERT INTO "ClubPlayerMemberships" ("clubId", "playerId", "start", "confirmed", "membershipType", "createdAt", "updatedAt")
      VALUES (:clubId, :playerId, NOW(), true, 'NORMAL', NOW(), NOW())
      RETURNING id`,
-    {
-      replacements: { clubId, playerId },
-
-      type: ctx.QueryTypes.INSERT as any,
-      transaction: ctx.transaction,
-    }
+    { clubId, playerId }
   );
-  const result = queryResult[0] as unknown as ClubMembership[] | undefined;
-
-  // Verify the insert succeeded
-  if (!result || !result[0] || !result[0].id) {
-    throw new Error("Failed to insert ClubPlayerMembership - no ID returned");
-  }
-
-  console.log(`✅ Added user to club (membership ID: ${result[0].id})\n`);
+  console.log(`✅ Added user to club (membership ID: ${row.id})\n`);
 }
 
 /**
- * Create a team
+ * Internal: insert a team row (used by createTeam and createOpponentTeam).
  */
-async function createTeam(
+async function insertTeam(
   ctx: SeederContext,
   clubId: string,
   season: number,
   captainId: string,
-  teamType: "M" | "F" | "MX" = "M"
+  teamType: "M" | "F" | "MX"
 ): Promise<string> {
-  console.log("👥 Creating Team...");
-
-  // Check if team already exists (same club, season, and type)
-  const existing = await ctx.query<{ id: string }>(
-    `SELECT id FROM "Teams" 
-     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
-     LIMIT 1`,
-    { clubId, season, type: teamType }
-  );
-
-  if (existing && existing.length > 0 && existing[0]) {
-    console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
-    return existing[0].id;
-  }
-
-  // Fetch club and generate team name
   const club = await getClubById(ctx, clubId);
   const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
 
@@ -167,7 +137,34 @@ async function createTeam(
       abbreviation,
     }
   );
-  const teamId = team.id;
+  return team.id;
+}
+
+/**
+ * Create a team (idempotent: returns existing team if same club/season/type).
+ */
+async function createTeam(
+  ctx: SeederContext,
+  clubId: string,
+  season: number,
+  captainId: string,
+  teamType: "M" | "F" | "MX" = "M"
+): Promise<string> {
+  console.log("👥 Creating Team...");
+
+  const existing = await ctx.query<{ id: string }>(
+    `SELECT id FROM "Teams" 
+     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
+     LIMIT 1`,
+    { clubId, season, type: teamType }
+  );
+
+  if (existing && existing.length > 0 && existing[0]) {
+    console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
+    return existing[0].id;
+  }
+
+  const teamId = await insertTeam(ctx, clubId, season, captainId, teamType);
   console.log(`✅ Created Team (${teamId})\n`);
   return teamId;
 }
@@ -202,10 +199,19 @@ async function addPlayerToTeam(
 }
 
 /**
- * Create event competition
+ * Create event competition (idempotent: returns existing if visualCode already exists).
  */
 async function createEventCompetition(ctx: SeederContext, season: number): Promise<string> {
   console.log("🏆 Creating EventCompetition...");
+  const visualCode = `TEST-${season}`;
+  const existing = await ctx.query<{ id: string }>(
+    `SELECT id FROM event."EventCompetitions" WHERE "visualCode" = :visualCode LIMIT 1`,
+    { visualCode }
+  );
+  if (existing && existing.length > 0 && existing[0]) {
+    console.log(`ℹ️  EventCompetition already exists (${existing[0].id})\n`);
+    return existing[0].id;
+  }
   const event = await ctx.insert<EventCompetition>(
     `INSERT INTO event."EventCompetitions" (name, type, season, official, "visualCode", "createdAt", "updatedAt")
      VALUES (:name, :type, :season, true, :visualCode, NOW(), NOW())
@@ -214,7 +220,7 @@ async function createEventCompetition(ctx: SeederContext, season: number): Promi
       name: `Test Event ${season}`,
       type: "PROV",
       season,
-      visualCode: `TEST-${season}`,
+      visualCode,
     }
   );
   const eventId = event.id;
@@ -223,10 +229,18 @@ async function createEventCompetition(ctx: SeederContext, season: number): Promi
 }
 
 /**
- * Create sub event competition
+ * Create sub event competition (idempotent: returns existing if same eventId + name exists).
  */
 async function createSubEventCompetition(ctx: SeederContext, eventId: string): Promise<string> {
   console.log("📋 Creating SubEventCompetition...");
+  const existing = await ctx.query<{ id: string }>(
+    `SELECT id FROM event."SubEventCompetitions" WHERE "eventId" = :eventId AND name = 'Test SubEvent M' LIMIT 1`,
+    { eventId }
+  );
+  if (existing && existing.length > 0 && existing[0]) {
+    console.log(`ℹ️  SubEventCompetition already exists (${existing[0].id})\n`);
+    return existing[0].id;
+  }
   const subEvent = await ctx.insert<SubEventCompetition>(
     `INSERT INTO event."SubEventCompetitions" ("eventId", name, "eventType", level, "maxLevel", "minBaseIndex", "maxBaseIndex", "createdAt", "updatedAt")
      VALUES (:eventId, :name, :eventType, 1, 6, 50, 70, NOW(), NOW())
@@ -243,7 +257,7 @@ async function createSubEventCompetition(ctx: SeederContext, eventId: string): P
 }
 
 /**
- * Create draw competition
+ * Create draw competition (idempotent: returns existing if visualCode already exists).
  */
 async function createDrawCompetition(
   ctx: SeederContext,
@@ -251,6 +265,15 @@ async function createDrawCompetition(
   season: number
 ): Promise<string> {
   console.log("🎲 Creating DrawCompetition...");
+  const visualCode = `TEST-DRAW-${season}`;
+  const existing = await ctx.query<{ id: string }>(
+    `SELECT id FROM event."DrawCompetitions" WHERE "subeventId" = :subeventId AND "visualCode" = :visualCode LIMIT 1`,
+    { subeventId: subEventId, visualCode }
+  );
+  if (existing && existing.length > 0 && existing[0]) {
+    console.log(`ℹ️  DrawCompetition already exists (${existing[0].id})\n`);
+    return existing[0].id;
+  }
   const draw = await ctx.insert<DrawCompetition>(
     `INSERT INTO event."DrawCompetitions" ("subeventId", name, type, "visualCode", "createdAt", "updatedAt")
      VALUES (:subeventId, :name, :type, :visualCode, NOW(), NOW())
@@ -259,7 +282,7 @@ async function createDrawCompetition(
       subeventId: subEventId,
       name: "Test Draw",
       type: "POULE",
-      visualCode: `TEST-DRAW-${season}`,
+      visualCode,
     }
   );
   const drawId = draw.id;
@@ -268,33 +291,17 @@ async function createDrawCompetition(
 }
 
 /**
- * Create opponent team
+ * Create opponent team (always inserts; no idempotency check).
  */
 async function createOpponentTeam(
   ctx: SeederContext,
   clubId: string,
   season: number,
+  captainId: string,
   teamType: "M" | "F" | "MX" = "M"
 ): Promise<string> {
   console.log("👥 Creating opponent Team...");
-
-  // Fetch club and generate team name
-  const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
-
-  const opponentTeam = await ctx.insert<Team>(
-    `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
-     VALUES (:clubId, :type, :season, 1, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
-     RETURNING id`,
-    {
-      clubId,
-      type: teamType,
-      season,
-      name: teamName,
-      abbreviation,
-    }
-  );
-  const opponentTeamId = opponentTeam.id;
+  const opponentTeamId = await insertTeam(ctx, clubId, season, captainId, teamType);
   console.log(`✅ Created opponent Team (${opponentTeamId})\n`);
   return opponentTeamId;
 }

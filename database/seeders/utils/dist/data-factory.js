@@ -65,46 +65,14 @@ class DataFactory {
         };
     }
     /**
-     * Generate a name from predefined lists (deterministic based on index)
+     * Generate a name from predefined lists (deterministic based on index).
+     * First name is chosen from male or female list based on gender; last name from shared list.
      */
-    static generateNameAtIndex(index) {
-        const firstNames = [
-            "Alice",
-            "Bob",
-            "Charlie",
-            "Diana",
-            "Eve",
-            "Frank",
-            "Grace",
-            "Henry",
-            "Ivy",
-            "Jack",
-            "Kate",
-            "Liam",
-            "Mia",
-            "Noah",
-            "Olivia",
-        ];
-        const lastNames = [
-            "Johnson",
-            "Smith",
-            "Brown",
-            "Williams",
-            "Davis",
-            "Miller",
-            "Wilson",
-            "Moore",
-            "Taylor",
-            "Anderson",
-            "Thomas",
-            "Jackson",
-            "White",
-            "Harris",
-            "Martin",
-        ];
+    static generateNameAtIndex(index, gender) {
+        const firstNames = gender === "M" ? this.MALE_FIRST_NAMES : this.FEMALE_FIRST_NAMES;
         return {
             firstName: firstNames[index % firstNames.length],
-            lastName: lastNames[index % lastNames.length],
+            lastName: this.LAST_NAMES[index % this.LAST_NAMES.length],
         };
     }
     /**
@@ -130,3 +98,23 @@ class DataFactory {
     }
 }
 exports.DataFactory = DataFactory;
+/** Male first names for seeded players */
+DataFactory.MALE_FIRST_NAMES = [
+    "Adam", "Alexander", "Ben", "Bram", "Daan", "David", "Erik", "Finn",
+    "Florian", "Hendrik", "Jasper", "Jens", "Joris", "Koen", "Lars", "Lucas",
+    "Maarten", "Niels", "Pieter", "Ruben", "Simon", "Stijn", "Thomas", "Wout",
+];
+/** Female first names for seeded players */
+DataFactory.FEMALE_FIRST_NAMES = [
+    "Anna", "Charlotte", "Emma", "Eva", "Femke", "Hannah", "Laura", "Lotte",
+    "Lynn", "Marie", "Nina", "Noa", "Olivia", "Sara", "Sophie", "Lisa",
+    "Julie", "Jade", "Amber", "Fien", "Lien", "Lore", "Nore", "Silke",
+];
+/** Last names for seeded players (shared across genders) */
+DataFactory.LAST_NAMES = [
+    "Aerts", "Bakker", "Claes", "De Cock", "Dubois", "Jacobs", "Janssens",
+    "Maes", "Martin", "Peeters", "Simon", "Thomas", "Wouters", "Willems",
+    "Vandenberghe", "Verhoeven", "De Smet", "Hermans", "Lambert", "Laurent",
+    "Leroy", "Moreau", "Petit", "Robert", "Bernard", "Bonnet", "Garnier",
+    "Faure", "André", "Lefebvre",
+];
