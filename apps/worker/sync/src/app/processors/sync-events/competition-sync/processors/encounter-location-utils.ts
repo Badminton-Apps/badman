@@ -1,4 +1,4 @@
-import moment from "moment";
+import { format, parse, setHours, setMinutes, getHours, getMinutes, isAfter, isBefore, addMinutes, subMinutes } from "date-fns";
 
 /**
  * Returns true when an encounter's start time falls within a ±15-minute window
@@ -13,23 +13,17 @@ export function matchesAvailabilityWindow(
   availabilityDay: string,
   startTimeStr: string
 ): boolean {
-  const momentDate = moment(encounterDate);
-
   // Day-of-week guard
-  if (availabilityDay !== momentDate.format("dddd").toLowerCase()) {
+  if (availabilityDay !== format(new Date(encounterDate), "EEEE").toLowerCase()) {
     return false;
   }
 
   // Build the slot start time on the same calendar day as the encounter
-  const startTime = momentDate.clone().set({
-    hour: moment(startTimeStr, "HH:mm").hour(),
-    minute: moment(startTimeStr, "HH:mm").minute(),
-    second: 0,
-    millisecond: 0,
-  });
+  const parsed = parse(startTimeStr, "HH:mm", new Date());
+  let startTime = setHours(new Date(encounterDate), getHours(parsed));
+  startTime = setMinutes(startTime, getMinutes(parsed));
+  startTime.setSeconds(0);
+  startTime.setMilliseconds(0);
 
-  return momentDate.isBetween(
-    startTime.clone().subtract(15, "minutes"),
-    startTime.clone().add(15, "minutes")
-  );
+  return isAfter(new Date(encounterDate), subMinutes(startTime, 15)) && isBefore(new Date(encounterDate), addMinutes(startTime, 15));
 }

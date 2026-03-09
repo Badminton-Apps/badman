@@ -5,7 +5,7 @@ import { RankingSystems, Ranking, Gender } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { Queue } from "bull";
 
-import moment, { Moment } from "moment";
+import { parse, subWeeks, format, isAfter, isBefore } from "date-fns";
 import { Op, Transaction, Sequelize } from "sequelize";
 import { isPublicationUsedForUpdate } from "./ranking-utils";
 import { ProcessStep, Processor } from "../../processing";
@@ -19,7 +19,7 @@ interface RankingStepData {
 
 interface PublicationStepData {
   visiblePublications: VisualPublication[];
-  hiddenPublications?: Moment[];
+  hiddenPublications?: Date[];
 }
 
 interface CategoriesStepData {
@@ -83,17 +83,17 @@ export class RankingSyncer {
         });
 
         // Default sync 1 week
-        const startDate = args?.start ? moment(args.start) : moment().subtract(1, "week");
+        const startDate = args?.start ? new Date(args.start) : subWeeks(new Date(), 1);
 
         // Default sync 1 week
-        const stop = args?.stop ? moment(args.stop) : undefined;
+        const stop = args?.stop ? new Date(args.stop) : undefined;
 
         return {
           stop: system == null,
           system,
           visualCode: rankingDetail[0].Code,
-          startDate: startDate.toDate(),
-          stopDate: stop?.toDate(),
+          startDate: startDate,
+          stopDate: stop,
         };
       }
     ) as ProcessStep<RankingStepData>;
@@ -132,9 +132,9 @@ export class RankingSyncer {
       let pubs = publications
         ?.filter((publication) => publication.Visible)
         .map((publication) => {
-          const momentDate = moment(publication.PublicationDate, "YYYY-MM-DD");
+          const pubDate = parse(publication.PublicationDate, "yyyy-MM-dd", new Date());
           const canUpdate = isPublicationUsedForUpdate(
-            momentDate,
+            pubDate,
             this.updateMonths,
             this.fuckedDatesGoods,
             this.fuckedDatesBads
@@ -148,22 +148,22 @@ export class RankingSyncer {
             week: publication.Week,
             publicationDate: publication.PublicationDate,
             visible: publication.Visible,
-            date: momentDate,
+            date: pubDate,
           } as VisualPublication;
         });
-      pubs = [...(pubs || [])].sort((a, b) => a.date.diff(b.date));
+      pubs = [...(pubs || [])].sort((a, b) => a.date.getTime() - b.date.getTime());
 
       // get latest publication
       const last = pubs?.at(-1);
       if (last) {
         // store the latest publication in the calculationLastUpdate
-        ranking.system.calculationLastUpdate = last.date.toDate();
+        ranking.system.calculationLastUpdate = last.date;
       }
 
       const lastUpdate = pubs?.filter((r) => r.usedForUpdate)?.at(-1);
       if (lastUpdate) {
         // store the latest publication in the calculationLastUpdate
-        ranking.system.updateLastUpdate = lastUpdate.date.toDate();
+        ranking.system.updateLastUpdate = lastUpdate.date;
       }
 
       if (last || lastUpdate) {
@@ -175,8 +175,7 @@ export class RankingSyncer {
         hiddenPublications: publications
           ?.filter((publication) => !publication.Visible)
           ?.map((publication) => {
-            const momentDate = moment(publication.PublicationDate, "YYYY-MM-DD");
-            return momentDate;
+            return parse(publication.PublicationDate, "yyyy-MM-dd", new Date());
           }),
       };
     });
@@ -202,7 +201,7 @@ export class RankingSyncer {
         for (const publication of hiddenPublications) {
           const points = await RankingPlace.count({
             where: {
-              rankingDate: publication.toDate(),
+              rankingDate: publication,
               systemId: system?.id,
             },
             transaction: args.transaction,
@@ -210,11 +209,11 @@ export class RankingSyncer {
 
           if (points > 0) {
             this.logger.log(
-              `Removing points for ${publication.format("LLL")} because it is not visible anymore`
+              `Removing points for ${publication.toLocaleString()} because it is not visible anymore`
             );
             await RankingPlace.destroy({
               where: {
-                rankingDate: publication.toDate(),
+                rankingDate: publication,
                 systemId: system?.id,
               },
               transaction: args.transaction,
@@ -245,8 +244,8 @@ export class RankingSyncer {
     // Process publications in smaller batches to prevent memory issues
     const publicationsToProcess = (visiblePublications || []).filter(
       (publication) =>
-        publication.date.isAfter(ranking.startDate) &&
-        (!ranking.stopDate || publication.date.isBefore(ranking.stopDate))
+        isAfter(publication.date, ranking.startDate) &&
+        (!ranking.stopDate || isBefore(publication.date, ranking.stopDate))
     );
 
     this.logger.log(
@@ -259,12 +258,12 @@ export class RankingSyncer {
 
       try {
         this.logger.log(
-          `Processing publication ${publication.name} (${publication.date.format("YYYY-MM-DD")}) - ${index + 1}/${publicationsToProcess.length}`
+          `Processing publication ${publication.name} (${format(publication.date, "yyyy-MM-dd")}) - ${index + 1}/${publicationsToProcess.length}`
         );
 
         if (publication.usedForUpdate) {
           this.logger.log(
-            `This publication will update rankings: ${publication.date.format("LLL")}`
+            `This publication will update rankings: ${publication.date.toLocaleString()}`
           );
         }
 
@@ -423,7 +422,7 @@ export class RankingSyncer {
           const place = new RankingPlace({
             updatePossible: publication.usedForUpdate,
             playerId: foundPlayer.id,
-            rankingDate: publication.date.toDate(),
+            rankingDate: publication.date,
             [type]: points.Level,
             [`${type}Points`]: points.Totalpoints,
             [`${type}Rank`]: points.Rank,
@@ -437,7 +436,7 @@ export class RankingSyncer {
     };
 
     for (const config of categoryConfigs) {
-      this.logger.debug(`Getting ${config.description} for ${publication.date.format("LLL")}`);
+      this.logger.debug(`Getting ${config.description} for ${publication.date.toLocaleString()}`);
       await pointsForCategory(
         publication,
         categoryMap.get(config.name) ?? null,
@@ -526,7 +525,7 @@ export class RankingSyncer {
       // find any ranking place where single, double or mix is null
       const playersWithMissingRankings = await RankingPlace.findAll({
         where: {
-          rankingDate: lastPublication.date.toDate(),
+          rankingDate: lastPublication.date,
           systemId: system?.id,
           [Op.or]: [{ single: null }, { double: null }, { mix: null }],
           transaction: args.transaction,
@@ -565,5 +564,5 @@ interface VisualPublication {
   week: string;
   publicationDate: Date;
   visible: boolean;
-  date: Moment;
+  date: Date;
 }

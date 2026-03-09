@@ -15,7 +15,7 @@ import {
 } from "@badman/backend-visual";
 import { GameStatus, GameType, getRankingProtected, runParallel } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
-import moment from "moment";
+import { isAfter, isBefore, subWeeks } from "date-fns";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { correctWrongPlayers } from "../../../../utils";
@@ -82,7 +82,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     games: Game[]
   ) {
     // only get info for games that have been played
-    const isAFutureEncounter = moment(encounter.date).isAfter(moment());
+    const isAFutureEncounter = isAfter(new Date(encounter.date), new Date());
     if (isAFutureEncounter || !encounter.date) {
       return;
     }
@@ -95,7 +95,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       return;
     }
 
-    const isLastWeek = moment().subtract(1, "week").isBefore(encounter.date);
+    const isLastWeek = isBefore(subWeeks(new Date(), 1), new Date(encounter.date));
     const result = await this.visualService.getTeamMatch(
       this.visualTournament.Code,
       internalId,
