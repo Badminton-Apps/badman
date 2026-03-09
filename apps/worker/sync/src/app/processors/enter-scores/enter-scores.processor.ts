@@ -27,6 +27,7 @@ import {
 } from "./pupeteer";
 import { clearFields } from "./pupeteer";
 import { enterGames } from "./pupeteer/enterGames";
+import { enterScoresPreflight, isFinalAttempt } from "./guards";
 
 @Processor({
   name: SyncQueue,
@@ -117,15 +118,19 @@ export class EnterScoresProcessor {
     this.logger.log(
       `🚀 Starting EnterScores job ${job.id} for encounter ${job.data.encounterId} (PID: ${process.pid})`
     );
-    const visualSyncEnabled = this.configService.get("VISUAL_SYNC_ENABLED") === true;
-    const enterScoresEnabled = this.configService.get("ENTER_SCORES_ENABLED") === true;
     const hangBeforeBrowserCleanup = this.configService.get("HANG_BEFORE_BROWSER_CLEANUP") === true;
-    const nodeEnv = this.configService.get("NODE_ENV");
 
-    const headlessValue = visualSyncEnabled ? false : true;
-    if (!this._username || !this._password) {
-      this.logger.error("No username or password found");
-      throw new Error("No username or password configured for Visual sync");
+    const preflight = enterScoresPreflight({
+      visualSyncEnabled: this.configService.get("VISUAL_SYNC_ENABLED") === true,
+      enterScoresEnabled: this.configService.get("ENTER_SCORES_ENABLED") === true,
+      nodeEnv: this.configService.get("NODE_ENV") ?? "development",
+      username: this._username,
+      password: this._password,
+    });
+
+    if (!preflight.canProceed) {
+      this.logger.error(preflight.reason);
+      throw new Error(preflight.reason);
     }
 
     this.logger.log("Syncing encounters");
@@ -139,7 +144,7 @@ export class EnterScoresProcessor {
     const stopLockRenewal = startLockRenewal(job);
     try {
       this.logger.debug("Creating browser");
-      page = await getPage(headlessValue, [
+      page = await getPage(preflight.headless, [
         "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
         "--disable-save-password-bubble",
         "--disable-credentials-enable-service",
@@ -351,7 +356,7 @@ export class EnterScoresProcessor {
       const saveButton = await waitForSelectors([["input#btnSave.button"]], page, 5000);
       if (saveButton) {
         this.logger.debug(`Save button found`);
-        if (nodeEnv === "production" || enterScoresEnabled) {
+        if (preflight.shouldSave) {
           await saveButton.click();
           this.logger.log(`Save button clicked, waiting for navigation`);
 
@@ -497,14 +502,14 @@ export class EnterScoresProcessor {
       }
     } catch (error) {
       const maxAttempts = job.opts?.attempts ?? 1;
-      const isFinalAttempt = job.attemptsMade >= maxAttempts - 1;
+      const finalAttempt = isFinalAttempt(job.attemptsMade, maxAttempts);
 
       this.logger.error(
         `EnterScores failed for encounter ${encounter?.visualCode || encounterId} [attempt ${job.attemptsMade + 1}/${maxAttempts}]: ${error?.message || error}`
       );
 
       // Only send the failure email on the final attempt to avoid flooding the inbox
-      if (isFinalAttempt) {
+      if (finalAttempt) {
         if (devEmailDestination) {
           try {
             const toernooiUrl = this.constructToernooiUrl(encounter);
