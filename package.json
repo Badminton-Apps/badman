@@ -251,5 +251,10 @@
   ],
   "stackblitz": {
     "startCommand": "npm run start:stackblitz"
+  },
+  "overrides": {
+    "string-length": {
+      "strip-ansi": "^6.0.0"
+    }
   }
 }
