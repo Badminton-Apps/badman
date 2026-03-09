@@ -29,7 +29,7 @@ export const timeUnits = (
   };
   // Property order is important here.
   // These arguments are the respective units in ms.
-  return {
+  const result = {
     // weeks: allocate(604800000), // Uncomment for weeks
     days: allocate(86400000),
     hours: allocate(3600000),
@@ -37,12 +37,10 @@ export const timeUnits = (
     seconds: allocate(1000),
     ms: ms, // remainder
     toString: () => {
-      const values = timeUnits(ms);
-      if (!values) return "";
-
-      return Object.values(values)
+      return Object.values(result)
         .filter((value) => typeof value !== "function")
         .join(", ");
     },
   };
+  return result;
 };
