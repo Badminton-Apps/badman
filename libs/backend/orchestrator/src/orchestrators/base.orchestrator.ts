@@ -150,8 +150,15 @@ export class OrchestratorBase implements OnModuleInit {
         this.logger.debug(
           `[${this.serviceName}] Found ${counts.waiting} waiting and ${counts.active} active jobs in queue, starting worker`
         );
-        this.startServer();
-        this.hasStarted = true;
+        try {
+          await this.startServer();
+          this.hasStarted = true;
+        } catch (err: unknown) {
+          // Leave hasStarted = false so the next cron tick retries
+          this.logger.error(
+            `[${this.serviceName}] Failed to start worker, will retry next tick: ${err instanceof Error ? err.message : String(err)}`
+          );
+        }
       }
     } else {
       if (this.hasStarted) {
@@ -163,8 +170,16 @@ export class OrchestratorBase implements OnModuleInit {
         }
 
         this.logger.debug(`[${this.serviceName}] No more jobs in queue, stopping worker`);
-        this.stopServer();
-        this.hasStarted = false;
+        try {
+          await this.stopServer();
+        } catch (err: unknown) {
+          this.logger.error(
+            `[${this.serviceName}] Failed to stop worker: ${err instanceof Error ? err.message : String(err)}`
+          );
+        } finally {
+          // Always clear hasStarted so the orchestrator doesn't keep assuming it's running
+          this.hasStarted = false;
+        }
       }
     }
   }
