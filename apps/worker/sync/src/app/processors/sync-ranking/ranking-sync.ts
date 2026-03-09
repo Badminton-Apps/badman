@@ -7,6 +7,7 @@ import { Queue } from "bull";
 
 import moment, { Moment } from "moment";
 import { Op, Transaction, Sequelize } from "sequelize";
+import { isPublicationUsedForUpdate } from "./ranking-utils";
 import { ProcessStep, Processor } from "../../processing";
 import { correctWrongPlayers } from "../../utils";
 interface RankingStepData {
@@ -132,27 +133,12 @@ export class RankingSyncer {
         ?.filter((publication) => publication.Visible)
         .map((publication) => {
           const momentDate = moment(publication.PublicationDate, "YYYY-MM-DD");
-          let canUpdate = false;
-
-          if (this.updateMonths.includes(momentDate.month())) {
-            const firstMondayOfMonth = momentDate.clone().date(1).day(8);
-            if (firstMondayOfMonth.date() > 7) {
-              firstMondayOfMonth.day(-6);
-            }
-
-            // Create some margin
-            const margin = firstMondayOfMonth.clone().add(2, "days");
-            canUpdate =
-              momentDate.isSame(firstMondayOfMonth) ||
-              momentDate.isBetween(firstMondayOfMonth, margin);
-          }
-
-          if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
-            canUpdate = true;
-          }
-          if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
-            canUpdate = false;
-          }
+          const canUpdate = isPublicationUsedForUpdate(
+            momentDate,
+            this.updateMonths,
+            this.fuckedDatesGoods,
+            this.fuckedDatesBads
+          );
 
           return {
             usedForUpdate: canUpdate,
