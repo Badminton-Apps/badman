@@ -302,11 +302,11 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
 |---|---|---|---|
 | 1 | Phase 1.1–1.3 | Quick wins, build testing muscle, no mocking complexity | ✅ DONE |
 | 2 | Refactoring R2 | Extract guard logic — small refactor, big testability gain | ✅ DONE |
-| 3 | Phase 2.2 | EnterScores is the #1 pain point | 📋 Next |
-| 4 | Phase 2.3 | CheckEncounters is the #2 pain point | 📋 Next |
-| 5 | Phase 2.4 | SyncEvents covers the broadest surface area | 📋 Next |
-| 6 | Phase 3.1–3.2 | Queue integration — catches stalling/retry bugs | 📋 Next |
-| 7 | Refactoring R1 | Page objects — only when ready for Phase 4 | 📋 Next |
+| 3 | Phase 3.1–3.2 | Queue integration — catches stalling/retry bugs | ✅ DONE |
+| 4 | Refactoring R1 | Page objects — prerequisite for Phase 2 Puppeteer processors | 📋 Next |
+| 5 | Phase 2.2 | EnterScores is the #1 pain point (needs R1 first) | 📋 Blocked on R1 |
+| 6 | Phase 2.3 | CheckEncounters is the #2 pain point (needs R1 first) | 📋 Blocked on R1 |
+| 7 | Phase 2.4 | SyncEvents covers the broadest surface area | 📋 Next |
 | 8 | Phase 4 | Browser tests — only if selector regressions are a real problem | 📋 Next |
 
 ---
@@ -321,17 +321,20 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
 | 1.2 | Lock Renewal | 5 | Interval, cleanup, error handling |
 | 1.3 | Utilities | 25 | timeUnits, mapWinnerValues, correctWrongTeams |
 | R2 | Guard Logic | 23 | CheckEncounters (12) + EnterScores (11) |
-| **Total** | **69 tests** | **All passing** | Clean TS compilation |
+| 3 | Queue Integration | 10 | Real Bull + redis-memory-server; job lifecycle, retries, concurrency, progress |
+| **Total** | **85 tests** | **All passing** | 9 suites |
 
-### Next: Phase 2 (Service-Level Integration Tests)
+### Next: Refactoring R1 (Page Object Extraction)
 
-Mock the external services (VisualService, Puppeteer, Database) and test each processor's `process()` method in isolation. Start with EnterScoresProcessor, then CheckEncounterProcessor.
+Phase 2 tests for the Puppeteer-heavy processors (EnterScores, CheckEncounters) require R1 first. The inline `page.waitForSelector`/`page.click`/`page.type` calls need to be wrapped in page-object classes before they can be meaningfully mocked and tested.
+
+Phase 2.4 (SyncEventsProcessor) does not use Puppeteer and can be tackled without R1.
 
 ---
 
 ## Success Criteria
 
-- **Phase 1 complete:** ✅ All pure logic functions have tests. 69 tests, all passing.
-- **Phase 2 complete:** (In progress) Each processor has tests covering happy path, main error paths, and guard conditions. Regressions in sync logic are caught before deployment.
-- **Phase 3 complete:** Queue behavior (retries, stalling, concurrency) is verified. Infrastructure changes don't silently break job processing.
+- **Phase 1 complete:** ✅ All pure logic functions have tests. 52 tests, all passing.
+- **Phase 3 complete:** ✅ Queue behavior (retries, stalling, concurrency) is verified. 10 tests with real Bull + in-memory Redis.
+- **Phase 2 complete:** (Blocked on R1) Each processor has tests covering happy path, main error paths, and guard conditions. Regressions in sync logic are caught before deployment.
 - **Phase 4 complete:** Browser interaction regressions are caught. toernooi.nl HTML changes are detected early.
