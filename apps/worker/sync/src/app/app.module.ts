@@ -16,6 +16,10 @@ import { Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { join } from "path";
 import versionPackage from "../version.json";
+import { EncounterFormPageService } from "./processors/enter-scores/encounter-form-page.service";
+import { EncounterDetailPageService } from "./processors/check-encounters/encounter-detail-page.service";
+import { IdleShutdownService } from "./services/idle-shutdown.service";
+import { AdminJobsController } from "./controllers/admin.controller";
 import {
   CheckEncounterProcessor,
   CheckRankingProcessor,
@@ -41,13 +45,17 @@ import {
 } from "./processors";
 
 @Module({
+  controllers: [AdminJobsController],
   providers: [
     GlobalConsumer,
+    IdleShutdownService,
 
     SyncDateProcessor,
     SyncRankingProcessor,
     SyncEventsProcessor,
     SyncTwizzitProcessor,
+    EncounterFormPageService,
+    EncounterDetailPageService,
     EnterScoresProcessor,
     CheckEncounterProcessor,
     CheckRankingProcessor,
@@ -228,7 +236,7 @@ export class WorkerSyncModule implements OnApplicationBootstrap {
     for (const job of cronJob) {
       this.logger.log(`Starting cron job ${job.meta.jobName}`);
       job.amount = 0;
-      job.save();
+      await job.save();
     }
   }
 }
