@@ -650,8 +650,10 @@ export class EncounterCompetitionResolver {
           {
             removeOnComplete: true,
             removeOnFail: false,
+            attempts: 3,
             backoff: {
               type: "exponential",
+              delay: 60000, // 1 minute base, doubles each retry
             },
           }
         );
