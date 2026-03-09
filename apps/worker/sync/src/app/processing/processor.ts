@@ -46,11 +46,6 @@ export class Processor {
       try {
         const stop = await step.executeStep(args);
 
-        if (stop === undefined) {
-          this.logger.debug("returnArgs was undefined");
-          break;
-        }
-
         if (stop) {
           this.logger.debug("stop was set");
           break;
