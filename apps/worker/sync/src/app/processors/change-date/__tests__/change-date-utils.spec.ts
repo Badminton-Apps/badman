@@ -22,7 +22,7 @@ describe("formatEncounterDateForApi", () => {
 
     it("uses the provided format string when supplied", () => {
       const date = new Date("2024-03-06T18:30:00Z");
-      const result = formatEncounterDateForApi(date, "Europe/Brussels", "YYYY-MM-DD");
+      const result = formatEncounterDateForApi(date, "Europe/Brussels", "yyyy-MM-dd");
       expect(result).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     });
   });

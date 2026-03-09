@@ -1,4 +1,4 @@
-import moment from "moment";
+import { parse } from "date-fns";
 import { isPublicationUsedForUpdate } from "../ranking-utils";
 
 /**
@@ -16,7 +16,7 @@ const GOOD_DATES: string[] = [];
 const BAD_DATES: string[] = [];
 
 function make(dateStr: string) {
-  return moment(dateStr, "YYYY-MM-DD");
+  return parse(dateStr, "yyyy-MM-dd", new Date());
 }
 
 describe("isPublicationUsedForUpdate", () => {
@@ -120,19 +120,16 @@ describe("isPublicationUsedForUpdate", () => {
     const BAD = ["2021-09-05T22:00:00.000Z"];
 
     it("treats 2021-09-13 as usable (goodDate in UTC = 2021-09-12T22:00:00.000Z)", () => {
-      // The date "2021-09-13" parsed as YYYY-MM-DD → midnight local → stored as .toISOString()
-      const date = moment("2021-09-13", "YYYY-MM-DD");
-      expect(isPublicationUsedForUpdate(date, UPDATE_MONTHS, GOOD, BAD)).toBe(
-        GOOD.includes(date.toISOString()) ? true : expect.any(Boolean)
-      );
-      // The key invariant: if the ISO string matches goodDates it must be true
+      // The date "2021-09-13" parsed as yyyy-MM-dd → midnight local → .toISOString() depends on host TZ.
+      // The test is conditional: only assert if the ISO string actually matches the goodDates list.
+      const date = make("2021-09-13");
       if (GOOD.includes(date.toISOString())) {
         expect(isPublicationUsedForUpdate(date, UPDATE_MONTHS, GOOD, BAD)).toBe(true);
       }
     });
 
     it("treats 2021-09-06 as excluded (badDate in UTC = 2021-09-05T22:00:00.000Z)", () => {
-      const date = moment("2021-09-06", "YYYY-MM-DD");
+      const date = make("2021-09-06");
       if (BAD.includes(date.toISOString())) {
         expect(isPublicationUsedForUpdate(date, UPDATE_MONTHS, GOOD, BAD)).toBe(false);
       }

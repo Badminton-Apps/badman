@@ -1,4 +1,4 @@
-import moment, { Moment } from "moment";
+import { getMonth, isEqual, isAfter, isBefore, setDate, getDay, addDays, startOfDay } from "date-fns";
 
 /**
  * Determines whether a ranking publication should be used to update player rankings.
@@ -9,32 +9,28 @@ import moment, { Moment } from "moment";
  *
  * Individual dates can be overridden via the goodDates / badDates lists.
  *
- * @param date         The publication date as a Moment object.
+ * @param date         The publication date as a Date object.
  * @param updateMonths 0-indexed months in which updates are expected (e.g. [0,2,4,6,8,10]).
  * @param goodDates    ISO date strings that are always treated as update-worthy.
  * @param badDates     ISO date strings that are always excluded from updates.
  */
 export function isPublicationUsedForUpdate(
-  date: Moment,
+  date: Date,
   updateMonths: number[],
   goodDates: string[],
   badDates: string[]
 ): boolean {
   let canUpdate = false;
 
-  if (updateMonths.includes(date.month())) {
-    // Find the first Monday of the month.
-    // .date(1).day(8) advances to the next Monday, but if it overshoots into the
-    // second week (date > 7) we step back one week with .day(-6).
-    const firstMondayOfMonth = date.clone().date(1).day(8);
-    if (firstMondayOfMonth.date() > 7) {
-      firstMondayOfMonth.day(-6);
-    }
-
-    // Allow the publication date to fall on the first Monday or within 2 days after it.
-    const margin = firstMondayOfMonth.clone().add(2, "days");
-    canUpdate =
-      date.isSame(firstMondayOfMonth) || date.isBetween(firstMondayOfMonth, margin);
+  if (updateMonths.includes(getMonth(date))) {
+    const firstOfMonth = setDate(new Date(date), 1);
+    const dayOfWeek = getDay(firstOfMonth); // 0=Sun,1=Mon,...,6=Sat
+    // Days until next Monday: if already Monday (1) → 0, else calculate
+    const daysUntilMonday = dayOfWeek === 1 ? 0 : dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
+    const firstMondayOfMonth = addDays(firstOfMonth, daysUntilMonday);
+    const margin = addDays(firstMondayOfMonth, 2);
+    canUpdate = isEqual(startOfDay(date), startOfDay(firstMondayOfMonth)) ||
+      (isAfter(date, firstMondayOfMonth) && isBefore(date, margin));
   }
 
   if (goodDates.includes(date.toISOString())) {

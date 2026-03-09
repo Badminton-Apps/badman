@@ -23,7 +23,7 @@ import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 import { startLockRenewal } from "../../utils";
-import moment from "moment";
+import { differenceInHours, isAfter, isValid, subDays } from "date-fns";
 import { Page } from "puppeteer";
 import { Op } from "sequelize";
 import {
@@ -128,7 +128,7 @@ export class CheckEncounterProcessor {
         attributes: ["id", "visualCode", "date", "homeTeamId", "awayTeamId"],
         where: {
           date: {
-            [Op.between]: [moment().subtract(14, "days").toDate(), moment().toDate()],
+            [Op.between]: [subDays(new Date(), 14), new Date()],
           },
           acceptedOn: null,
           visualCode: {
@@ -355,8 +355,8 @@ export class CheckEncounterProcessor {
         );
         // Continue with hasComment = false
       }
-      const enteredMoment = moment(enteredOn);
-      const hoursPassed = moment().diff(encounter.date, "hour");
+      const enteredMoment = new Date(enteredOn);
+      const hoursPassed = differenceInHours(new Date(), new Date(encounter.date));
 
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`
@@ -377,15 +377,16 @@ export class CheckEncounterProcessor {
           this.notificationService.notifyEncounterNotEntered(encounter);
         } else if (!accepted && hoursPassed > 48 && !hasComment) {
           // Check if it falls under the auto accept clubs
-          if (encounter.away?.club?.slug && enteredMoment.isValid()) {
-            let hoursPassedEntered = moment().diff(enteredMoment, "hour");
+          if (encounter.away?.club?.slug && isValid(enteredMoment)) {
+            let hoursPassedEntered = differenceInHours(new Date(), enteredMoment);
             // was entered on time
-            const enteredOnTime = enteredMoment.isSameOrBefore(
-              moment(encounter.date).add(36, "hour")
+            const enteredOnTime = !isAfter(
+              enteredMoment,
+              new Date(new Date(encounter.date).getTime() + 36 * 60 * 60 * 1000)
             );
             if (!enteredOnTime) {
               // if entered late we give it 36 hours to comment after the encounter was filled in
-              hoursPassedEntered = moment().diff(enteredMoment.clone().add(36, "hour"), "hour");
+              hoursPassedEntered = differenceInHours(new Date(), new Date(enteredMoment.getTime() + 36 * 60 * 60 * 1000));
             }
 
             // Check if anough time has passed for auto accepting
@@ -422,14 +423,14 @@ export class CheckEncounterProcessor {
 
       // Update our local data
       if (entered) {
-        if (!enteredMoment.isValid()) {
+        if (!isValid(enteredMoment)) {
           this.logger.error(
             `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`
           );
           return;
         }
 
-        encounter.enteredOn = enteredMoment.toDate();
+        encounter.enteredOn = enteredMoment;
 
         try {
           const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo(
@@ -472,16 +473,16 @@ export class CheckEncounterProcessor {
       }
 
       if (entered && accepted) {
-        const acceptedMoment = moment(acceptedOn);
+        const acceptedMoment = new Date(acceptedOn);
 
-        if (!acceptedMoment.isValid()) {
+        if (!isValid(acceptedMoment)) {
           this.logger.error(
             `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`
           );
           return;
         }
 
-        encounter.acceptedOn = acceptedMoment.toDate();
+        encounter.acceptedOn = acceptedMoment;
         encounter.accepted = true;
       }
 
