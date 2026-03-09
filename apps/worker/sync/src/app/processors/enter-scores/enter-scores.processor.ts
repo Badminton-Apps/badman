@@ -411,7 +411,7 @@ export class EnterScoresProcessor {
             this.logger.warn("Treating save as failed: row validation messages present after save");
           }
 
-          // Send success email only when navigation completed and page state OK; otherwise send error email
+          // Send success email only when navigation completed and page state OK; otherwise throw so Bull retries
           if (saveSucceeded) {
             if (devEmailDestination) {
               try {
@@ -456,35 +456,8 @@ export class EnterScoresProcessor {
             if (rowErrorMessages.length > 0) {
               failureMessage += ` Row validation messages: ${rowErrorMessages.join("; ")}`;
             }
-            this.logger.warn(failureMessage);
-            if (devEmailDestination) {
-              try {
-                const toernooiUrl = this.constructToernooiUrl(encounter);
-                await this.mailingService.sendEnterScoresFailedMail(
-                  encounterId,
-                  failureMessage,
-                  {
-                    fullName: "Dev team",
-                    email: devEmailDestination,
-                    slug: "dev",
-                  },
-                  encounter?.visualCode,
-                  toernooiUrl
-                );
-                this.logger.log(
-                  `Failure email sent for encounter ${encounter?.visualCode || encounterId} (${saveFailureReason || "unknown"})`
-                );
-              } catch (emailError) {
-                this.logger.error(
-                  "Failed to send failure email:",
-                  emailError?.message || emailError
-                );
-              }
-            } else {
-              this.logger.log(
-                `Skipping failure email notification - no dev email destination configured for encounter ${encounter?.visualCode || encounterId}`
-              );
-            }
+            // Throw so Bull marks the job as failed and retries it
+            throw new Error(failureMessage);
           }
         } else {
           this.logger.log(`Skipping save button because we are not in production`);
@@ -520,53 +493,46 @@ export class EnterScoresProcessor {
         throw new Error("Save button not found on page; cannot persist entered scores");
       }
     } catch (error) {
-      // Handle timeout errors specifically to prevent worker restarts
-      const isTimeoutError =
-        error?.message?.includes("timeout") ||
-        error?.message?.includes("Navigation timeout") ||
-        error?.name === "TimeoutError";
+      const maxAttempts = job.opts?.attempts ?? 1;
+      const isFinalAttempt = job.attemptsMade >= maxAttempts - 1;
 
-      // Send failure email notification first
-      if (devEmailDestination) {
-        try {
-          // Get encounter info for the email, fallback to encounterId if encounter is not available
-          const encounterInfo = encounter?.visualCode || encounterId;
-          const toernooiUrl = this.constructToernooiUrl(encounter);
-          await this.mailingService.sendEnterScoresFailedMail(
-            encounterId,
-            error?.message || String(error),
-            {
-              fullName: "Dev team",
-              email: devEmailDestination,
-              slug: "dev",
-            },
-            encounter?.visualCode,
-            toernooiUrl
+      this.logger.error(
+        `EnterScores failed for encounter ${encounter?.visualCode || encounterId} [attempt ${job.attemptsMade + 1}/${maxAttempts}]: ${error?.message || error}`
+      );
+
+      // Only send the failure email on the final attempt to avoid flooding the inbox
+      if (isFinalAttempt) {
+        if (devEmailDestination) {
+          try {
+            const toernooiUrl = this.constructToernooiUrl(encounter);
+            await this.mailingService.sendEnterScoresFailedMail(
+              encounterId,
+              error?.message || String(error),
+              {
+                fullName: "Dev team",
+                email: devEmailDestination,
+                slug: "dev",
+              },
+              encounter?.visualCode,
+              toernooiUrl
+            );
+            this.logger.log(`Failure email sent for encounter ${encounter?.visualCode || encounterId}`);
+          } catch (emailError) {
+            this.logger.error("Failed to send failure email:", emailError?.message || emailError);
+          }
+        } else {
+          this.logger.log(
+            `Skipping failure email - no dev email destination configured for encounter ${encounter?.visualCode || encounterId}`
           );
-          this.logger.log(`Failure email sent for encounter ${encounterInfo}`);
-        } catch (emailError) {
-          this.logger.error("Failed to send failure email:", emailError?.message || emailError);
         }
       } else {
-        const encounterInfo = encounter?.visualCode || encounterId;
-        this.logger.log(
-          `Skipping failure email notification - no dev email destination configured for encounter ${encounterInfo}`
+        this.logger.warn(
+          `Attempt ${job.attemptsMade + 1}/${maxAttempts} failed for encounter ${encounter?.visualCode || encounterId}, will retry`
         );
       }
 
-      // Now handle the error appropriately for Bull queue
-      if (isTimeoutError) {
-        this.logger.warn("Timeout error occurred - job will be retried:", error?.message || error);
-        // Re-throw timeout errors so Bull can retry the job
-        throw error;
-      } else {
-        this.logger.error(
-          "Error during enter scores process - job will be retried:",
-          error?.message || error
-        );
-        // Re-throw all errors so Bull can retry the job
-        throw error;
-      }
+      // Re-throw so Bull marks the job as failed and schedules the next retry
+      throw error;
     } finally {
       stopLockRenewal();
       try {
