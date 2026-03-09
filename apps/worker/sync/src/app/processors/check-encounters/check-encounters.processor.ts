@@ -8,13 +8,7 @@ import {
   Team,
 } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
-import {
-  acceptCookies,
-  getPage,
-  signIn,
-  getBrowser,
-  startBrowserHealthMonitoring,
-} from "@badman/backend-pupeteer";
+import { getBrowser, startBrowserHealthMonitoring } from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { SearchService } from "@badman/backend-search";
 import { ConfigType } from "@badman/utils";
@@ -23,20 +17,11 @@ import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 import { startLockRenewal } from "../../utils";
-import moment from "moment";
-import { Page } from "puppeteer";
+import { subDays } from "date-fns";
+import { isValid } from "date-fns";
 import { Op } from "sequelize";
-import {
-  acceptEncounter,
-  consentPrivacyAndCookie,
-  detailAccepted,
-  detailComment,
-  detailEntered,
-  detailInfo,
-  gotoEncounterPage,
-  hasTime,
-} from "./pupeteer";
 import { determineEncounterAction } from "./guards";
+import { EncounterDetailPageService } from "./encounter-detail-page.service";
 
 const includes = [
   {
@@ -89,7 +74,8 @@ export class CheckEncounterProcessor {
   constructor(
     private notificationService: NotificationService,
     private searchService: SearchService,
-    private configService: ConfigService<ConfigType>
+    private configService: ConfigService<ConfigType>,
+    private readonly detailPage: EncounterDetailPageService
   ) {
     this._username = configService.get("VR_API_USER");
     this._password = configService.get("VR_API_PASS");
@@ -98,10 +84,9 @@ export class CheckEncounterProcessor {
     startBrowserHealthMonitoring();
   }
 
-  @Process(Sync.CheckEncounters)
+  @Process({ name: Sync.CheckEncounters, concurrency: 1 })
   async syncEncounters(job: Job) {
     this.logger.log("Syncing encounters");
-    let page: Page | undefined;
     const cronJob = await CronJob.findOne({
       where: {
         "meta.jobName": Sync.CheckEncounters,
@@ -125,11 +110,12 @@ export class CheckEncounterProcessor {
     try {
       // get all encounters that are not accepted yet within the last 14 days
 
+      const now = new Date();
       const encounters = await EncounterCompetition.findAndCountAll({
         attributes: ["id", "visualCode", "date", "homeTeamId", "awayTeamId"],
         where: {
           date: {
-            [Op.between]: [moment().subtract(14, "days").toDate(), moment().toDate()],
+            [Op.between]: [subDays(now, 14), now],
           },
           acceptedOn: null,
           visualCode: {
@@ -158,20 +144,18 @@ export class CheckEncounterProcessor {
             } encounters left, ${chunks.length - chunksProcessed} chunks left`
           );
           // Close page from previous chunk if any
-          if (page && !page.isClosed()) {
+          if (this.detailPage.isOpen()) {
             try {
-              await page.close();
+              await this.detailPage.close();
             } catch (e) {
               this.logger.debug("Error closing previous page:", e.message);
             }
           }
 
-          page = await getPage();
-          page.setDefaultTimeout(10000);
-          await page.setViewport({ width: 1691, height: 1337 });
+          await this.detailPage.open();
 
           // Accept cookies
-          await acceptCookies({ page }, { logger: this.logger });
+          await this.detailPage.acceptCookies();
 
           // Processing encounters
           for (const encounter of chunk) {
@@ -181,7 +165,7 @@ export class CheckEncounterProcessor {
               continue;
             }
 
-            await this._syncEncounter(encounter, page);
+            await this._syncEncounter(encounter);
             encountersProcessed++;
           }
 
@@ -192,45 +176,17 @@ export class CheckEncounterProcessor {
       }
     } catch (error) {
       this.logger.error(error);
+      throw error;
     } finally {
       stopLockRenewal();
       try {
-        // Close browser properly
-        if (page) {
-          try {
-            if (!page.isClosed()) {
-              await page.close();
-            }
-          } catch (pageError) {
-            this.logger.debug("Error closing page (may already be closed):", pageError.message);
-          }
-
-          // Check if we should close the browser instance
-          try {
-            const browser = await getBrowser();
-            if (browser && browser.connected) {
-              const pages = await browser.pages();
-              this.logger.log(`Browser has ${pages.length} pages remaining`);
-
-              if (pages.length <= 1) {
-                this.logger.log("Closing browser instance...");
-                await browser.close();
-              }
-            }
-          } catch (browserError) {
-            this.logger.debug(
-              "Error during browser management (may already be closed):",
-              browserError.message
-            );
-          }
-        }
+        await this.detailPage.close();
       } catch (error) {
-        this.logger.debug("Error during browser cleanup:", error.message || error);
+        this.logger.debug("Error during page cleanup:", error.message || error);
       }
 
-      cronJob.amount++;
+      cronJob.amount--;
       cronJob.lastRun = new Date();
-      cronJob.running = false;
       await cronJob.save();
 
       this.logger.log("Synced encounters");
@@ -239,7 +195,7 @@ export class CheckEncounterProcessor {
     return true;
   }
 
-  @Process(Sync.CheckEncounter)
+  @Process({ name: Sync.CheckEncounter, concurrency: 1 })
   async syncEncounter(job: Job<{ encounterId: string }>) {
     const encounter = await EncounterCompetition.findByPk(job.data.encounterId, {
       include: includes,
@@ -258,52 +214,21 @@ export class CheckEncounterProcessor {
       return;
     }
 
-    // Create browser
-    const page = await getPage();
+    await this.detailPage.open();
     try {
-      page.setDefaultTimeout(10000);
-      await page.setViewport({ width: 1691, height: 1337 });
-
       // Accept cookies
-      await acceptCookies({ page }, { logger: this.logger });
+      await this.detailPage.acceptCookies();
 
       // Processing encounters
-      await this._syncEncounter(encounter, page);
+      await this._syncEncounter(encounter);
     } catch (error) {
       this.logger.error(error);
+      throw error;
     } finally {
       try {
-        // Close browser properly
-        if (page) {
-          try {
-            if (!page.isClosed()) {
-              await page.close();
-            }
-          } catch (pageError) {
-            this.logger.debug("Error closing page (may already be closed):", pageError.message);
-          }
-
-          // Check if we should close the browser instance
-          try {
-            const browser = await getBrowser();
-            if (browser && browser.connected) {
-              const pages = await browser.pages();
-              this.logger.log(`Browser has ${pages.length} pages remaining`);
-
-              if (pages.length <= 1) {
-                this.logger.log("Closing browser instance...");
-                await browser.close();
-              }
-            }
-          } catch (browserError) {
-            this.logger.debug(
-              "Error during browser management (may already be closed):",
-              browserError.message
-            );
-          }
-        }
+        await this.detailPage.close();
       } catch (error) {
-        this.logger.debug("Error during browser cleanup:", error.message || error);
+        this.logger.debug("Error during page cleanup:", error.message || error);
       }
 
       this.logger.log("Synced encounter");
@@ -331,23 +256,22 @@ export class CheckEncounterProcessor {
     encounter.drawCompetition.subEventCompetition.eventCompetition = event;
   }
 
-  private async _syncEncounter(encounter: EncounterCompetition, page: Page) {
-    const url = await gotoEncounterPage({ page }, encounter);
+  private async _syncEncounter(encounter: EncounterCompetition) {
+    const url = await this.detailPage.gotoEncounterPage(encounter);
     this.logger.debug(`Syncing encounter ${url}`);
 
-    await consentPrivacyAndCookie({ page }, { logger: this.logger });
-
     try {
-      const time = await hasTime({ page }, { logger: this.logger });
+      await this.detailPage.consentPrivacyAndCookie();
+      const time = await this.detailPage.hasTime();
       if (!time) {
         this.logger.verbose(`Encounter ${encounter.visualCode} has no time`);
         return;
       }
-      const { entered, enteredOn } = await detailEntered({ page }, { logger: this.logger });
-      const { accepted, acceptedOn } = await detailAccepted({ page }, { logger: this.logger });
+      const { entered, enteredOn } = await this.detailPage.getDetailEntered();
+      const { accepted, acceptedOn } = await this.detailPage.getDetailAccepted();
       let hasComment = false;
       try {
-        const result = await detailComment({ page }, { logger: this.logger });
+        const result = await this.detailPage.getDetailComment();
         hasComment = result.hasComment;
       } catch (error) {
         this.logger.warn(
@@ -356,8 +280,9 @@ export class CheckEncounterProcessor {
         );
         // Continue with hasComment = false
       }
-      const enteredMoment = moment(enteredOn);
-      const hoursPassed = moment().diff(encounter.date, "hour");
+      const hoursPassed = encounter.date
+        ? Math.floor((Date.now() - encounter.date.getTime()) / (1000 * 60 * 60))
+        : 0;
 
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`
@@ -390,11 +315,8 @@ export class CheckEncounterProcessor {
           this.logger.debug(
             `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away?.name}`
           );
-          await signIn(
-            { page },
-            { username: this._username, password: this._password, logger: this.logger }
-          );
-          const succesfull = await acceptEncounter({ page }, { logger: this.logger });
+          await this.detailPage.signIn(this._username, this._password);
+          const succesfull = await this.detailPage.acceptEncounter();
           if (!succesfull) {
             this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
             this.notificationService.notifyEncounterNotAccepted(encounter);
@@ -415,20 +337,17 @@ export class CheckEncounterProcessor {
 
       // Update our local data
       if (entered) {
-        if (!enteredMoment.isValid()) {
+        if (!enteredOn || !isValid(enteredOn)) {
           this.logger.error(
             `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`
           );
           return;
         }
 
-        encounter.enteredOn = enteredMoment.toDate();
+        encounter.enteredOn = enteredOn;
 
         try {
-          const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo(
-            { page },
-            { logger: this.logger }
-          );
+          const { endedOn, startedOn, usedShuttle, gameLeader } = await this.detailPage.getDetailInfo();
 
           this.logger.debug(
             `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`
@@ -465,16 +384,14 @@ export class CheckEncounterProcessor {
       }
 
       if (entered && accepted) {
-        const acceptedMoment = moment(acceptedOn);
-
-        if (!acceptedMoment.isValid()) {
+        if (!acceptedOn || !isValid(acceptedOn)) {
           this.logger.error(
             `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`
           );
           return;
         }
 
-        encounter.acceptedOn = acceptedMoment.toDate();
+        encounter.acceptedOn = acceptedOn;
         encounter.accepted = true;
       }
 

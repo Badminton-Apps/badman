@@ -254,7 +254,19 @@ These are not required before starting Phase 1/2, but will improve testability a
 
 **Priority: High (prerequisite for Phase 4, simplifies Phase 2)**
 
-Move all `page.waitForSelector` / `page.click` / `page.type` / `page.evaluate` calls out of EnterScoresProcessor and CheckEncounterProcessor into dedicated page-object classes. The processors then call `encounterPage.enterScores(data)` instead of manipulating DOM directly.
+**✅ DONE:** Extracted all Puppeteer interactions into injectable page-object services:
+
+#### EnterScoresProcessor
+**File:** `apps/worker/sync/src/app/processors/enter-scores/encounter-form-page.service.ts`
+
+`EncounterFormPageService` — wraps `open`, `close`, `acceptCookies`, `signIn`, `waitForSignInConfirmation`, `enterEditMode`, `clearFields`, `enterGames`, `enterGameLeader`, `enterShuttle`, `enterStartHour`, `enterEndHour`, `enableInputValidation`, `getRowErrorMessages`, `getCurrentUrl`, `clickSaveButton`, `waitForNavigation`, `waitForNetworkIdle`.
+
+#### CheckEncounterProcessor
+**File:** `apps/worker/sync/src/app/processors/check-encounters/encounter-detail-page.service.ts`
+
+`EncounterDetailPageService` — wraps `open`, `close`, `acceptCookies`, `gotoEncounterPage`, `consentPrivacyAndCookie`, `hasTime`, `getDetailEntered`, `getDetailAccepted`, `getDetailComment`, `signIn`, `acceptEncounter`, `getDetailInfo`.
+
+Both processors now inject the page service via constructor, enabling full mock replacement in tests. Also migrated remaining `moment` usage in `check-encounters.processor.ts` to `date-fns`.
 
 ### R2: Extract Guard/Decision Logic into Pure Functions
 
@@ -303,9 +315,9 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
 | 1 | Phase 1.1–1.3 | Quick wins, build testing muscle, no mocking complexity | ✅ DONE |
 | 2 | Refactoring R2 | Extract guard logic — small refactor, big testability gain | ✅ DONE |
 | 3 | Phase 3.1–3.2 | Queue integration — catches stalling/retry bugs | ✅ DONE |
-| 4 | Refactoring R1 | Page objects — prerequisite for Phase 2 Puppeteer processors | 📋 Next |
-| 5 | Phase 2.2 | EnterScores is the #1 pain point (needs R1 first) | 📋 Blocked on R1 |
-| 6 | Phase 2.3 | CheckEncounters is the #2 pain point (needs R1 first) | 📋 Blocked on R1 |
+| 4 | Refactoring R1 | Page objects — prerequisite for Phase 2 Puppeteer processors | ✅ DONE |
+| 5 | Phase 2.2 | EnterScores is the #1 pain point | ✅ DONE |
+| 6 | Phase 2.3 | CheckEncounters is the #2 pain point | 📋 Next |
 | 7 | Phase 2.4 | SyncEvents covers the broadest surface area | 📋 Next |
 | 8 | Phase 4 | Browser tests — only if selector regressions are a real problem | 📋 Next |
 
@@ -322,13 +334,13 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
 | 1.3 | Utilities | 25 | timeUnits, mapWinnerValues, correctWrongTeams |
 | R2 | Guard Logic | 23 | CheckEncounters (12) + EnterScores (11) |
 | 3 | Queue Integration | 10 | Real Bull + redis-memory-server; job lifecycle, retries, concurrency, progress |
-| **Total** | **85 tests** | **All passing** | 9 suites |
+| R1 | Page Object Extraction | 0 new tests | `EncounterFormPageService` + `EncounterDetailPageService`; processors refactored to inject them |
+| 2.2 | EnterScoresProcessor | 23 | Happy path, preflight, transaction rollback, row validation, nav timeout, failure email |
+| **Total** | **102 tests** | **All passing** | 10 suites |
 
-### Next: Refactoring R1 (Page Object Extraction)
+### Next: Phase 2.3 (CheckEncounterProcessor integration tests)
 
-Phase 2 tests for the Puppeteer-heavy processors (EnterScores, CheckEncounters) require R1 first. The inline `page.waitForSelector`/`page.click`/`page.type` calls need to be wrapped in page-object classes before they can be meaningfully mocked and tested.
-
-Phase 2.4 (SyncEventsProcessor) does not use Puppeteer and can be tackled without R1.
+Phase 2.3 (CheckEncounterProcessor) is next — mock EncounterDetailPageService + CronJob model.
 
 ---
 
@@ -336,5 +348,5 @@ Phase 2.4 (SyncEventsProcessor) does not use Puppeteer and can be tackled withou
 
 - **Phase 1 complete:** ✅ All pure logic functions have tests. 52 tests, all passing.
 - **Phase 3 complete:** ✅ Queue behavior (retries, stalling, concurrency) is verified. 10 tests with real Bull + in-memory Redis.
-- **Phase 2 complete:** (Blocked on R1) Each processor has tests covering happy path, main error paths, and guard conditions. Regressions in sync logic are caught before deployment.
+- **Phase 2 complete:** Each processor has tests covering happy path, main error paths, and guard conditions. Regressions in sync logic are caught before deployment.
 - **Phase 4 complete:** Browser interaction regressions are caught. toernooi.nl HTML changes are detected early.
