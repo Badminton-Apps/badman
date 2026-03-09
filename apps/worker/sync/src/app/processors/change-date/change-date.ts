@@ -78,7 +78,6 @@ export class SyncDateProcessor {
       };
 
       if (this.configService.get("NODE_ENV") === "production") {
-        ``;
         const resultPut = await axios(options);
         const parser = new XMLParser();
 
@@ -103,10 +102,10 @@ export class SyncDateProcessor {
       } else {
         this.logger.debug(options);
       }
-      encounter.synced = new Date();
+      encounter.dateSyncedAt = new Date();
     } catch (error) {
       this.logger.error(error);
-      encounter.synced = undefined;
+      encounter.dateSyncedAt = undefined;
     } finally {
       await encounter.save();
     }

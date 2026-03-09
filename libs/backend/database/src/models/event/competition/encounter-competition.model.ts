@@ -141,7 +141,11 @@ export class EncounterCompetition extends Model<
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  synced?: Date;
+  dateSyncedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column({ type: DataType.DATE, allowNull: true })
+  scoresSyncedAt?: Date | null;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)

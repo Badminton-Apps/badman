@@ -413,6 +413,9 @@ export class EnterScoresProcessor {
 
           // Send success email only when navigation completed and page state OK; otherwise throw so Bull retries
           if (saveSucceeded) {
+            // Mark the encounter as synced so duplicate triggers are suppressed
+            await encounter.update({ scoresSyncedAt: new Date() });
+
             if (devEmailDestination) {
               try {
                 const toernooiUrl = this.constructToernooiUrl(encounter);
