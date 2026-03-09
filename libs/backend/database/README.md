@@ -18,22 +18,34 @@ Configuration is in `.sequelizerc` (points to `database/config/config.js` for co
 
 ### Running migrations
 
+The `--env` flag must match a key in [`database/config/config.js`](../../../database/config/config.js). The available values are:
+
+| `--env` value | Notes |
+|---|---|
+| `development` | default if omitted |
+| `staging` | |
+| `production` | |
+| `prod` | alias for production |
+
+All environments read from the same environment variables (`DB_IP`, `DB_PORT`, `DB_DATABASE`, `DB_USER`, `DB_PASSWORD`, `DB_DIALECT`), so what matters is which vars are in scope when you run the command, not the `--env` value itself.
+
 ```bash
-# apply all pending migrations (development)
+# apply all pending migrations (development, env vars from .env)
 npx sequelize-cli db:migrate
 
-# apply all pending migrations (production)
-npx sequelize-cli db:migrate --env prod
+# apply all pending migrations (staging / production)
+npx sequelize-cli db:migrate --env staging
+npx sequelize-cli db:migrate --env production
 ```
 
 ### Rolling back
 
 ```bash
 # undo the last applied migration
-npx sequelize-cli db:migrate:undo --env prod
+npx sequelize-cli db:migrate:undo --env staging
 
 # undo all migrations (destructive — use with care)
-npx sequelize-cli db:migrate:undo:all --env prod
+npx sequelize-cli db:migrate:undo:all --env staging
 ```
 
 ### Adding a new migration
