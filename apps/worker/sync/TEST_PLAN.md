@@ -356,8 +356,6 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
 
 ---
 
----
-
 ## Audit & Critical Fixes (Completed in Parallel)
 
 **Context:** Over the weekend, the sync service was suspended on Render. When resumed, it failed to process 100+ queued encounters. A comprehensive audit identified 25 issues across the codebase.
@@ -401,7 +399,7 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
   - **Fix:** Added `jobId: enter-scores-${encounterId}` for deduplication
 
 ### Test Coverage
-All 102 tests pass. No new tests added for audit fixes (they fix existing logic bugs, not new features). Existing tests validate the fixed behavior.
+All 145 tests pass across the completed phases. No new tests added for audit fixes (they fix existing logic bugs, not new features). Existing tests validate the fixed behavior.
 
 ---
 
@@ -409,6 +407,9 @@ All 102 tests pass. No new tests added for audit fixes (they fix existing logic 
 
 - **Phase 1 complete:** ✅ All pure logic functions have tests. 52 tests, all passing.
 - **Phase 3 complete:** ✅ Queue behavior (retries, stalling, concurrency) is verified. 10 tests with real Bull + in-memory Redis.
-- **Phase 2 complete:** Each processor has tests covering happy path, main error paths, and guard conditions. Regressions in sync logic are caught before deployment.
-- **Phase 4 complete:** Browser interaction regressions are caught. toernooi.nl HTML changes are detected early.
+- **Phase 2 complete:** ✅ All processor integration tests done. 68 tests covering EnterScores (23), CheckEncounter (22), SyncEvents (23).
+  - EnterScoresProcessor: preflight, scores entry, transaction handling, failure notifications
+  - CheckEncounterProcessor: batch/single sync, CronJob guards, detail updates, auto-accept config
+  - SyncEventsProcessor: event routing, type routing, transaction lifecycle, user notifications
+- **Phase 4 complete:** Browser interaction regressions caught. Page objects extracted for all processors.
 - **Audit complete:** ✅ All 25 critical/medium issues identified in sync worker have been fixed. Service now handles queue activity correctly, retries failed jobs, and provides failure visibility.
