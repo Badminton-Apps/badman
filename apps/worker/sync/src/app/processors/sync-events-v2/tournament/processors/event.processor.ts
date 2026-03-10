@@ -4,7 +4,7 @@ import { VisualService } from "@badman/backend-visual";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
-import moment, { Moment } from "moment";
+import { addDays, differenceInDays } from "date-fns";
 import { Transaction } from "sequelize";
 import { EventEntry } from "@badman/backend-database";
 
@@ -105,13 +105,12 @@ export class EventTournamentProcessor {
 
     const visualTournament = await this._visualService.getTournament(tournemtnCode);
 
-    const dates: Moment[] = [];
-    for (
-      let date = moment(visualTournament.StartDate);
-      date.diff(visualTournament.EndDate, "days") <= 0;
-      date.add(1, "days")
-    ) {
-      dates.push(date.clone());
+    const dates: Date[] = [];
+    let date = new Date(visualTournament.StartDate);
+    const endDate = new Date(visualTournament.EndDate);
+    while (differenceInDays(endDate, date) >= 0) {
+      dates.push(new Date(date));
+      date = addDays(date, 1);
     }
 
     if (!event) {

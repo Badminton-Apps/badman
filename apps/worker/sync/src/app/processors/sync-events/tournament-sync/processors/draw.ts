@@ -5,7 +5,7 @@ import {
   SubEventTournament,
   EventEntry,
 } from "@badman/backend-database";
-import moment from "moment";
+import { isBefore, subMonths } from "date-fns";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { VisualService, XmlDrawTypeID, XmlTournament } from "@badman/backend-visual";
@@ -55,7 +55,7 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
     const draws = await subEvent.getDrawTournaments({
       transaction: this.transaction,
     });
-    const canChange = moment().subtract(1, "month").isBefore(this.event.firstDay);
+    const canChange = isBefore(subMonths(new Date(), 1), new Date(this.event.firstDay));
     const visualDraws = await this.visualService.getDraws(
       this.visualTournament.Code,
       internalId,

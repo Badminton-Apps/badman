@@ -1,4 +1,4 @@
-import moment from "moment";
+import { addDays, addMonths, addWeeks } from "date-fns";
 import { Op, SaveOptions, Transaction } from "sequelize";
 import { Game, Player, RankingPlace, RankingSystem } from "@badman/backend-database";
 import { GameType, getRankingProtected } from "@badman/utils";
@@ -62,9 +62,13 @@ export class RankingProcessor {
             where: {
               gameType: GameType.S,
               playedAt: {
-                [Op.gte]: moment(instance.rankingDate)
-                  .add(system.inactivityAmount, system.inactivityUnit)
-                  .toDate(),
+                [Op.gte]: (() => {
+                  const base = new Date(instance.rankingDate);
+                  const amt = system.inactivityAmount ?? 0;
+                  if (system.inactivityUnit === "months") return addMonths(base, amt);
+                  if (system.inactivityUnit === "weeks") return addWeeks(base, amt);
+                  return addDays(base, amt);
+                })(),
               },
             },
           },
@@ -116,9 +120,13 @@ export class RankingProcessor {
             where: {
               gameType: GameType.D,
               playedAt: {
-                [Op.gte]: moment(instance.rankingDate)
-                  .add(system.inactivityAmount, system.inactivityUnit)
-                  .toDate(),
+                [Op.gte]: (() => {
+                  const base = new Date(instance.rankingDate);
+                  const amt = system.inactivityAmount ?? 0;
+                  if (system.inactivityUnit === "months") return addMonths(base, amt);
+                  if (system.inactivityUnit === "weeks") return addWeeks(base, amt);
+                  return addDays(base, amt);
+                })(),
               },
             },
           },
@@ -165,9 +173,13 @@ export class RankingProcessor {
             where: {
               gameType: GameType.MX,
               playedAt: {
-                [Op.gte]: moment(instance.rankingDate)
-                  .add(system.inactivityAmount, system.inactivityUnit)
-                  .toDate(),
+                [Op.gte]: (() => {
+                  const base = new Date(instance.rankingDate);
+                  const amt = system.inactivityAmount ?? 0;
+                  if (system.inactivityUnit === "months") return addMonths(base, amt);
+                  if (system.inactivityUnit === "weeks") return addWeeks(base, amt);
+                  return addDays(base, amt);
+                })(),
               },
             },
           },

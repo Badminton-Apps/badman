@@ -1,5 +1,5 @@
 import { EventTournament } from "@badman/backend-database";
-import moment, { Moment } from "moment";
+import { addDays, differenceInDays } from "date-fns";
 import { StepProcessor, StepOptions } from "../../../../processing";
 import { VisualService, XmlTournament } from "@badman/backend-visual";
 import { Logger } from "@nestjs/common";
@@ -40,13 +40,12 @@ export class TournamentSyncEventProcessor extends StepProcessor {
 
     if (!event) {
       existed = false;
-      const dates: Moment[] = [];
-      for (
-        let date = moment(this.visualTournament.StartDate);
-        date.diff(this.visualTournament.EndDate, "days") <= 0;
-        date.add(1, "days")
-      ) {
-        dates.push(date.clone());
+      const dates: Date[] = [];
+      let date = new Date(this.visualTournament.StartDate);
+      const endDate = new Date(this.visualTournament.EndDate);
+      while (differenceInDays(endDate, date) >= 0) {
+        dates.push(new Date(date));
+        date = addDays(date, 1);
       }
 
       const visualTournament = await this.visualService.getTournament(this.visualTournament.Code);
