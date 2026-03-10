@@ -336,11 +336,23 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
 | 3 | Queue Integration | 10 | Real Bull + redis-memory-server; job lifecycle, retries, concurrency, progress |
 | R1 | Page Object Extraction | 0 new tests | `EncounterFormPageService` + `EncounterDetailPageService`; processors refactored to inject them |
 | 2.2 | EnterScoresProcessor | 23 | Happy path, preflight, transaction rollback, row validation, nav timeout, failure email |
-| **Total** | **102 tests** | **All passing** | 10 suites |
+| 2.3 | CheckEncounterProcessor | 22 | Batch/single job, CronJob guards, detail updates, notifications, auto-accept disabled |
+| 2.4 | SyncEventsProcessor | 23 | Event routing, transaction handling, notifications, filtering, CronJob guards, progress |
+| **Total** | **145 tests** | **All passing** | 12 suites |
 
-### Next: Phase 2.3 (CheckEncounterProcessor integration tests)
+### Completed Phases
 
-Phase 2.3 (CheckEncounterProcessor) is next — mock EncounterDetailPageService + CronJob model.
+**Phase 2.3:** CheckEncounterProcessor integration tests complete (22 tests)
+- Tests both @Process decorators: syncEncounters (batch) and syncEncounter (single)
+- Covers encounter fetching, chunking, detail page interactions, CronJob state management
+- Tests notifications for not-entered/not-accepted, auto-accept configuration
+- File: `apps/worker/sync/src/app/processors/check-encounters/__tests__/check-encounters.processor.spec.ts`
+
+**Phase 2.4:** SyncEventsProcessor integration tests complete (23 tests)
+- Tests event discovery from search, ID, and change-events
+- Event type routing to CompetitionSyncer vs TournamentSyncer
+- Transaction commit/rollback, user notifications (single/multiple), filtering (skip, only, startDate)
+- File: `apps/worker/sync/src/app/processors/sync-events/__tests__/sync-events.processor.spec.ts`
 
 ---
 
