@@ -132,7 +132,7 @@ export class RankingSyncer {
       let pubs = publications
         ?.filter((publication) => publication.Visible)
         .map((publication) => {
-          const pubDate = parse(publication.PublicationDate, "yyyy-MM-dd", new Date());
+          const pubDate = parse(publication.PublicationDate as unknown as string, "yyyy-MM-dd", new Date());
           const canUpdate = isPublicationUsedForUpdate(
             pubDate,
             this.updateMonths,
@@ -175,7 +175,7 @@ export class RankingSyncer {
         hiddenPublications: publications
           ?.filter((publication) => !publication.Visible)
           ?.map((publication) => {
-            return parse(publication.PublicationDate, "yyyy-MM-dd", new Date());
+            return parse(publication.PublicationDate as unknown as string, "yyyy-MM-dd", new Date());
           }),
       };
     });
