@@ -631,13 +631,19 @@ export class EncounterCompetitionResolver {
         throw new UnauthorizedException(`You do not have permission to edit this encounter`);
       }
 
-      const encounterChangedToFinished =
-        updateEncounterCompetitionData.finished === true && encounter.finished === false;
+      // Trigger a toernooi.nl score sync whenever the encounter is finished AND has scores entered,
+      // but hasn't been synced yet (scoresSyncedAt is null). Robust against the frontend sending
+      // finished + enteredOn in separate mutations.
+      const willBeFinished =
+        updateEncounterCompetitionData.finished === true ||
+        (encounter.finished === true && updateEncounterCompetitionData.finished !== false);
 
-      const encounterChangedToEntered =
-        updateEncounterCompetitionData.enteredOn !== null && encounter.enteredOn === null;
+      const willHaveEnteredOn =
+        updateEncounterCompetitionData.enteredOn != null || encounter.enteredOn != null;
 
-      const shouldUpdateToernooiNL = encounterChangedToFinished && encounterChangedToEntered;
+      const notYetSynced = encounter.scoresSyncedAt == null;
+
+      const shouldUpdateToernooiNL = willBeFinished && willHaveEnteredOn && notYetSynced;
 
       const result = await encounter.update(updateEncounterCompetitionData, { transaction });
 
@@ -648,10 +654,13 @@ export class EncounterCompetitionResolver {
             encounterId: encounter.id,
           },
           {
+            jobId: `enter-scores-${encounter.id}`,
             removeOnComplete: true,
             removeOnFail: false,
+            attempts: 3,
             backoff: {
               type: "exponential",
+              delay: 60000, // 1 minute base, doubles each retry
             },
           }
         );

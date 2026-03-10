@@ -15,6 +15,7 @@ const MAX_INACTIVE = 15 * 60 * 1000; // 15 minutes
 let lastActivityTime = 0;
 let activeRequestCount = 0;
 let isRestarting = false; // Prevent multiple simultaneous restarts
+const decrementedPages = new WeakSet<Page>();
 
 // Function to decrement active request count
 export function decrementActiveRequestCount(): void {
@@ -86,20 +87,22 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
 
   const page = await browser.newPage();
 
-  // Track when page is closed to update request count
+  // Track when page is closed to update request count (guard against double-decrement)
   const originalClose = page.close.bind(page);
   page.close = async () => {
-    decrementActiveRequestCount();
+    if (!decrementedPages.has(page)) {
+      decrementedPages.add(page);
+      decrementActiveRequestCount();
+    }
     return originalClose();
   };
 
-  // Also track page crashes/disconnections
-  page.on("close", () => {
-    decrementActiveRequestCount();
-  });
-
+  // Safety net for crashes where close() isn't called
   page.on("error", () => {
-    decrementActiveRequestCount();
+    if (!decrementedPages.has(page)) {
+      decrementedPages.add(page);
+      decrementActiveRequestCount();
+    }
   });
 
   return page;

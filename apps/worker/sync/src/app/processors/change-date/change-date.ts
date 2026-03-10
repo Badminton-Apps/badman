@@ -5,8 +5,8 @@ import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import axios from "axios";
 import { XMLParser } from "fast-xml-parser";
-import moment from "moment-timezone";
 import { Job } from "bull";
+import { formatEncounterDateForApi } from "./change-date-utils";
 import { ConfigType } from "@badman/utils";
 
 @Processor({
@@ -23,6 +23,7 @@ export class SyncDateProcessor {
   @Process(Sync.ChangeDate)
   async acceptDate(job: Job<{ encounterId: string }>) {
     // dont' run in beta or dev
+    // "beta" was renamed to "staging"; consider updating this comment later.
     if (this.configService.get("VR_CHANGE_DATES") !== true) {
       this.logger.log("VR_CHANGE_DATES is not true", this.configService.get("VR_CHANGE_DATES"));
       return;
@@ -60,7 +61,7 @@ export class SyncDateProcessor {
     <TournamentMatch>
         <TournamentID>${event.visualCode}</TournamentID>
         <MatchID>${encounter.visualCode}</MatchID>
-        <MatchDate>${moment(encounter.date).tz("Europe/Brussels").format(this.visualFormat)}</MatchDate>
+        <MatchDate>${formatEncounterDateForApi(encounter.date as Date, "Europe/Brussels", this.visualFormat)}</MatchDate>
     </TournamentMatch>
   `;
 
@@ -77,7 +78,6 @@ export class SyncDateProcessor {
       };
 
       if (this.configService.get("NODE_ENV") === "production") {
-        ``;
         const resultPut = await axios(options);
         const parser = new XMLParser();
 
@@ -102,10 +102,10 @@ export class SyncDateProcessor {
       } else {
         this.logger.debug(options);
       }
-      encounter.synced = new Date();
+      encounter.dateSyncedAt = new Date();
     } catch (error) {
       this.logger.error(error);
-      encounter.synced = undefined;
+      encounter.dateSyncedAt = undefined;
     } finally {
       await encounter.save();
     }

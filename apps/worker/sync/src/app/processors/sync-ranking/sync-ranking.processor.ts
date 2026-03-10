@@ -6,6 +6,7 @@ import { Job, Queue } from "bull";
 import { Sequelize } from "sequelize-typescript";
 import { RankingSyncer } from "./ranking-sync";
 import { CronJob } from "@badman/backend-database";
+import { startLockRenewal } from "../../utils";
 
 @Processor({
   name: SyncQueue,
@@ -55,6 +56,7 @@ export class SyncRankingProcessor {
     cronJob.amount++;
     await cronJob.save();
 
+    const stopLockRenewal = startLockRenewal(job);
     try {
       // Convert string dates to Date objects
       const processArgs: { transaction: any; start?: Date; stop?: Date } = {
@@ -80,6 +82,7 @@ export class SyncRankingProcessor {
       await transaction.rollback();
       throw error;
     } finally {
+      stopLockRenewal();
       cronJob.amount--;
       cronJob.lastRun = new Date();
       await cronJob.save();
