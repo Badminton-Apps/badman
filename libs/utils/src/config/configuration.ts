@@ -2,41 +2,43 @@ import Joi from "joi";
 
 export const configSchema = Joi.object({
   // default values
-  NODE_ENV: Joi.string().valid("development", "production", "test", "beta").default("development"),
+  NODE_ENV: Joi.string()
+    .valid("development", "production", "test", "staging")
+    .default("development"),
 
   DB_STORAGE: Joi.string().optional(),
+  // "beta" was renamed to "staging"; consider removing "beta" later.
   DB_IP: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
   DB_PORT: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.number().required(),
     otherwise: Joi.number().optional(),
   }),
   DB_DATABASE: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
   DB_USER: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
   DB_PASSWORD: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
   DB_DIALECT: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
   DB_SSL: Joi.boolean().optional(),
-
   DB_CACHE: Joi.boolean().default(false),
   DB_CACHE_PREFIX: Joi.string().optional(),
   DB_LOGGING: Joi.boolean().optional(),
@@ -55,21 +57,22 @@ export const configSchema = Joi.object({
     then: Joi.number().integer().min(1).max(65535).required(),
     otherwise: Joi.number().integer().min(1).max(65535).optional(),
   }),
-
   QUEUE_DB: Joi.when("DB_CACHE", {
     is: true,
     then: Joi.number().integer().required(),
     otherwise: Joi.number().integer().optional(),
   }),
+  QUEUE_LOCK_DURATION_MS: Joi.number().integer().min(10000).optional(),
+  QUEUE_LOCK_RENEW_TIME_MS: Joi.number().integer().min(5000).optional(),
+  QUEUE_MAX_STALLED_COUNT: Joi.number().integer().min(1).optional(),
+  /** Max time a single job may run; after this it fails with a timeout so the queue does not get blocked. */
+  QUEUE_JOB_TIMEOUT_MS: Joi.number().integer().min(60000).optional(),
 
   CLIENT_URL: Joi.string().uri().required(),
   LEGACY_CLIENT_URL: Joi.string().uri().required(),
-
   LOGTAIL_TOKEN: Joi.string().optional(),
-
   AUTH0_ISSUER_URL: Joi.string().uri().required(),
   AUTH0_AUDIENCE: Joi.string().required(),
-
   MAIL_ENABLED: Joi.boolean().default(false),
   MAIL_PASS: Joi.when("MAIL_ENABLED", {
     is: true,
@@ -95,11 +98,9 @@ export const configSchema = Joi.object({
     then: Joi.string().optional(),
     otherwise: Joi.string().optional(),
   }),
-
   DEV_EMAIL_DESTINATION: Joi.string()
     .email({ tlds: { allow: false } })
     .optional(),
-
   PUSH_ENABLED: Joi.boolean().default(false),
   VAPID_PRIVATE_KEY: Joi.when("PUSH_ENABLED", {
     is: true,
@@ -111,7 +112,6 @@ export const configSchema = Joi.object({
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
-
   // Visual
   VR_CHANGE_DATES: Joi.boolean().optional(),
   VR_ACCEPT_ENCOUNTERS: Joi.boolean().optional(),
@@ -121,17 +121,17 @@ export const configSchema = Joi.object({
   VR_API_PASS: Joi.string().optional(),
 
   TWIZZIT_API: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
   TWIZZIT_API_USER: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
   TWIZZIT_API_PASS: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
@@ -139,7 +139,7 @@ export const configSchema = Joi.object({
   CP_PASS: Joi.string().optional(),
 
   APOLLO_GRAPH_REF: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
@@ -147,12 +147,12 @@ export const configSchema = Joi.object({
   GRAPH_ID: Joi.string().optional(),
 
   RENDER_API_KEY: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
     otherwise: Joi.string().optional(),
   }),
   RENDER_API_URL: Joi.when("NODE_ENV", {
-    is: Joi.valid("production", "beta"),
+    is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().uri().required(),
     otherwise: Joi.string().uri().optional(),
   }),
@@ -170,7 +170,7 @@ export const load = () => ({
 });
 
 export type ConfigType = {
-  NODE_ENV: "development" | "production" | "test" | "beta";
+  NODE_ENV: "development" | "production" | "test" | "staging";
   DB_STORAGE?: string;
   DB_IP?: string;
   DB_PORT?: number;
@@ -187,6 +187,10 @@ export type ConfigType = {
   REDIS_PORT?: number;
   REDIS_PASSWORD?: string;
   QUEUE_DB: number;
+  QUEUE_LOCK_DURATION_MS?: number;
+  QUEUE_LOCK_RENEW_TIME_MS?: number;
+  QUEUE_MAX_STALLED_COUNT?: number;
+  QUEUE_JOB_TIMEOUT_MS?: number;
   CLIENT_URL: string;
   LEGACY_CLIENT_URL: string;
   LOGTAIL_TOKEN?: string;
@@ -220,4 +224,5 @@ export type ConfigType = {
   RENDER_API_KEY: string;
   RENDER_API_URL: string;
   RENDER_WAIT_TIME?: number;
+  WORKER_IDLE_TIMEOUT_MS?: number;
 };

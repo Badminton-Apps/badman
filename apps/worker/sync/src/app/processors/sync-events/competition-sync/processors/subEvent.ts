@@ -4,7 +4,7 @@ import {
   RankingSystem,
   SubEventCompetition,
 } from "@badman/backend-database";
-import moment from "moment";
+import { isBefore } from "date-fns";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import {
@@ -47,7 +47,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     const subEvents = await this.event.getSubEventCompetitions({
       transaction: this.transaction,
     });
-    const canChange = moment().isBefore(`${this.event.season}-09-01`);
+    const canChange = isBefore(new Date(), new Date(`${this.event.season}-09-01`));
 
     const visualEvents = await this.visualService.getSubEvents(
       this.visualTournament.Code,

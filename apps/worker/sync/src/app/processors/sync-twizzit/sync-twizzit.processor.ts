@@ -6,6 +6,7 @@ import { Job } from "bull";
 import { Sequelize } from "sequelize-typescript";
 import { TwizzitSyncer } from "./sync-twizzit";
 import { TwizzitService } from "@badman/backend-twizzit";
+import { startLockRenewal } from "../../utils";
 
 @Processor({
   name: SyncQueue,
@@ -50,6 +51,7 @@ export class SyncTwizzitProcessor {
     cronJob.amount++;
     await cronJob.save();
 
+    const stopLockRenewal = startLockRenewal(job);
     try {
       // create syncer
       this._twizzitSyncer = new TwizzitSyncer(this._twizzitService, this._sequelize);
@@ -69,6 +71,7 @@ export class SyncTwizzitProcessor {
       await transaction.rollback();
       throw error;
     } finally {
+      stopLockRenewal();
       cronJob.amount--;
       cronJob.lastRun = new Date();
       await cronJob.save();

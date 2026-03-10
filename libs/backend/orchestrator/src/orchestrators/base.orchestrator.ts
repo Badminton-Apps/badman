@@ -29,13 +29,15 @@ export class OrchestratorBase implements OnModuleInit {
   }
 
   async onModuleInit() {
-    if (
-      this.configService.get<string>("NODE_ENV") === "development" ||
-      this.configService.get<string>("NODE_ENV") === "test"
-    ) {
+    const nodeEnv = this.configService.get<string>("NODE_ENV");
+    if (nodeEnv === "development" || nodeEnv === "test") {
+      this.logger.debug(
+        `[${this.serviceName}] Skipping orchestrator init in ${nodeEnv} (no Render API calls)`
+      );
       return;
     }
 
+    this.logger.debug(`[${this.serviceName}] Running orchestrator init (NODE_ENV=${nodeEnv})`);
     await this._updateStatuses();
 
     this.logger.debug(
@@ -45,10 +47,11 @@ export class OrchestratorBase implements OnModuleInit {
 
   @Cron("*/1 * * * *")
   async checkQueue() {
-    if (
-      this.configService.get<string>("NODE_ENV") === "development" ||
-      this.configService.get<string>("NODE_ENV") === "test"
-    ) {
+    const nodeEnv = this.configService.get<string>("NODE_ENV");
+    if (nodeEnv === "development" || nodeEnv === "test") {
+      this.logger.verbose(
+        `[${this.serviceName}] Skipping queue check in ${nodeEnv} (orchestrator disabled)`
+      );
       return;
     }
 
@@ -59,6 +62,13 @@ export class OrchestratorBase implements OnModuleInit {
     this.logger.log(`[${this.serviceName}] Starting worker for queue ${this.queue.name}`);
 
     const service = await this._getService();
+    if (!service.renderId) {
+      this.logger.warn(
+        `[${this.serviceName}] Cannot start worker: Service "${service.name}" (id=${service.id}) has no renderId. ` +
+          "Set the Render.com service ID on this record (e.g. after renaming/recreating the worker on Render)."
+      );
+      return;
+    }
     await this.renderService.startService(service);
     this.gateway.server.emit(EVENTS.SERVICE.SERVICE_STARTING, {
       id: service.id,
@@ -69,6 +79,12 @@ export class OrchestratorBase implements OnModuleInit {
   async stopServer(): Promise<void> {
     this.logger.log(`[${this.serviceName}] Stopping worker for queue ${this.queue.name}`);
     const service = await this._getService();
+    if (!service.renderId) {
+      this.logger.warn(
+        `[${this.serviceName}] Cannot stop worker: Service "${service.name}" (id=${service.id}) has no renderId.`
+      );
+      return;
+    }
     await this.renderService.suspendService(service);
     this.gateway.server?.emit(EVENTS.SERVICE.SERVICE_STOPPED, {
       id: service.id,
@@ -83,6 +99,7 @@ export class OrchestratorBase implements OnModuleInit {
       service = await Service.create({
         name: this.serviceName,
         status: "stopped",
+        // This also needs a "renderId" -> You can find it in Render, on the sync / ranking sync worker services.
       });
     }
 
@@ -92,9 +109,14 @@ export class OrchestratorBase implements OnModuleInit {
   private async _updateStatuses() {
     const service = await this._getService();
     if (!service.renderId) {
-      this.logger.log(`[${this.serviceName}] No render id found, skipping status update`);
+      this.logger.log(
+        `[${this.serviceName}] No renderId on service "${service.name}" (id=${service.id}), skipping status update`
+      );
       return;
     }
+    this.logger.debug(
+      `[${this.serviceName}] Fetching status from Render for renderId=${service.renderId}`
+    );
     const render = await this.renderService.getService(service);
 
     if (render.suspended === "suspended") {
@@ -128,8 +150,15 @@ export class OrchestratorBase implements OnModuleInit {
         this.logger.debug(
           `[${this.serviceName}] Found ${counts.waiting} waiting and ${counts.active} active jobs in queue, starting worker`
         );
-        this.startServer();
-        this.hasStarted = true;
+        try {
+          await this.startServer();
+          this.hasStarted = true;
+        } catch (err: unknown) {
+          // Leave hasStarted = false so the next cron tick retries
+          this.logger.error(
+            `[${this.serviceName}] Failed to start worker, will retry next tick: ${err instanceof Error ? err.message : String(err)}`
+          );
+        }
       }
     } else {
       if (this.hasStarted) {
@@ -141,8 +170,16 @@ export class OrchestratorBase implements OnModuleInit {
         }
 
         this.logger.debug(`[${this.serviceName}] No more jobs in queue, stopping worker`);
-        this.stopServer();
-        this.hasStarted = false;
+        try {
+          await this.stopServer();
+        } catch (err: unknown) {
+          this.logger.error(
+            `[${this.serviceName}] Failed to stop worker: ${err instanceof Error ? err.message : String(err)}`
+          );
+        } finally {
+          // Always clear hasStarted so the orchestrator doesn't keep assuming it's running
+          this.hasStarted = false;
+        }
       }
     }
   }

@@ -17,12 +17,12 @@ export class Processor {
   }
 
   addStep(step: ProcessStep<unknown>, override = false) {
-    if (!override && !this.procesSteps.has(step.name)) {
-      this.procesSteps.set(step.name, step);
-    } else {
+    if (this.procesSteps.has(step.name) && !override) {
       this.logger.debug(`Steps:`, [...this.procesSteps.keys()], "new Step", step.name);
       throw new Error("Step already exists");
     }
+
+    this.procesSteps.set(step.name, step);
   }
 
   getData<T>(stepName: string) {
@@ -45,11 +45,6 @@ export class Processor {
 
       try {
         const stop = await step.executeStep(args);
-
-        if (stop === undefined) {
-          this.logger.debug("returnArgs was undefined");
-          break;
-        }
 
         if (stop) {
           this.logger.debug("stop was set");

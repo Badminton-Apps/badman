@@ -1,8 +1,8 @@
 import { Availability, Club, EventCompetition, Location, Team } from "@badman/backend-database";
 import { runParallel } from "@badman/utils";
 import { Logger } from "@nestjs/common";
-import moment from "moment";
 import { StepOptions, StepProcessor } from "../../../../processing";
+import { matchesAvailabilityWindow } from "./encounter-location-utils";
 import { EncounterStepData } from "./encounter";
 
 export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
@@ -108,7 +108,7 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
         continue;
       }
 
-      const momentdate = moment(encounter.encounter.date);
+      const encounterDate = encounter.encounter.date as Date;
 
       const options = [];
       for (const location of locations) {
@@ -118,33 +118,8 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
           }
 
           for (const day of availability.days) {
-            //  check if the day is the same as the encounter as monday, tuesday, etc
-            if (day.day === momentdate.format("dddd").toLowerCase()) {
-              // Clone the momentdate so we can set the time on it
-              const startTime = momentdate.clone().set({
-                hour: moment(day.startTime, "HH:mm").hour(),
-                minute: moment(day.startTime, "HH:mm").minute(),
-              });
-
-              this.logger.debug(
-                `Checing if date ${momentdate.format("YYYY-MM-DD HH:mm")} is between ${startTime
-                  .clone()
-                  .subtract(15, "minutes")
-                  .format("YYYY-MM-DD HH:mm")} and ${startTime
-                  .clone()
-                  .add(15, "minutes")
-                  .format("YYYY-MM-DD HH:mm")}`
-              );
-
-              // check if the start time is whithin a 15 minute range of the encounter start time
-              if (
-                momentdate.isBetween(
-                  startTime.clone().subtract(15, "minutes"),
-                  startTime.clone().add(15, "minutes")
-                )
-              ) {
-                options.push(location);
-              }
+            if (matchesAvailabilityWindow(encounterDate, day.day, day.startTime)) {
+              options.push(location);
             }
           }
         }
