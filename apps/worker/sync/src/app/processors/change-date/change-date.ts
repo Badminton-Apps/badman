@@ -5,8 +5,8 @@ import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import axios from "axios";
 import { XMLParser } from "fast-xml-parser";
-import moment from "moment-timezone";
 import { Job } from "bull";
+import { formatEncounterDateForApi } from "./change-date-utils";
 import { ConfigType } from "@badman/utils";
 
 @Processor({
@@ -61,7 +61,7 @@ export class SyncDateProcessor {
     <TournamentMatch>
         <TournamentID>${event.visualCode}</TournamentID>
         <MatchID>${encounter.visualCode}</MatchID>
-        <MatchDate>${moment(encounter.date).tz("Europe/Brussels").format(this.visualFormat)}</MatchDate>
+        <MatchDate>${formatEncounterDateForApi(encounter.date as Date, "Europe/Brussels", this.visualFormat)}</MatchDate>
     </TournamentMatch>
   `;
 
