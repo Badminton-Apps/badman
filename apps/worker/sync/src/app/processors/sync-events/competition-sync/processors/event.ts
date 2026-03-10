@@ -1,7 +1,7 @@
 import { EventCompetition } from "@badman/backend-database";
 import { VisualService, XmlTournament } from "@badman/backend-visual";
 import { Logger } from "@nestjs/common";
-import moment from "moment";
+import { differenceInDays, getFullYear } from "date-fns";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 
@@ -46,7 +46,7 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
       event = new EventCompetition({
         name: visualTournament.Name,
         visualCode: visualTournament.Code,
-        season: moment(visualTournament.StartDate).year(),
+        season: getFullYear(new Date(visualTournament.StartDate)),
       });
     }
     // Later we will change the search function to use the tournament code
@@ -58,8 +58,8 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
     await event.save({ transaction: this.transaction });
 
     const enlistingOpen =
-      moment(event.openDate).diff(moment(), "days") > 0 &&
-      moment(event.closeDate).diff(moment(), "days") < 0;
+      differenceInDays(new Date(event.openDate), new Date()) > 0 &&
+      differenceInDays(new Date(event.closeDate), new Date()) < 0;
 
     if (enlistingOpen) {
       this.logger.debug(`EventCompetition ${event.name} is open, skipping processing`);

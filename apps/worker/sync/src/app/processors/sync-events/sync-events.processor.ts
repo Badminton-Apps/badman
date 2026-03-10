@@ -7,7 +7,7 @@ import { Job } from "bull";
 import { Sequelize } from "sequelize-typescript";
 import { CompetitionSyncer } from "./competition-sync";
 import { TournamentSyncer } from "./tournament-sync";
-import moment from "moment";
+import { isBefore } from "date-fns";
 import { NotificationService } from "@badman/backend-notifications";
 import { CronJob, EventCompetition, EventTournament } from "@badman/backend-database";
 import { startLockRenewal } from "../../utils";
@@ -81,7 +81,7 @@ export class SyncEventsProcessor {
     const stopLockRenewal = startLockRenewal(job);
     try {
       // Creates a new date based on either the job's date parameter or the last run time
-      const newDate = moment(job.data?.date ?? cronJob.lastRun);
+      const newDate = new Date(job.data?.date ?? cronJob.lastRun);
       let newEvents: XmlTournament[] = [];
 
       // Checks if the search term is present in the job data.  If so, we will search for events based on the search term
@@ -111,14 +111,14 @@ export class SyncEventsProcessor {
         newEvents = newEvents.concat(await this.visualService.getChangeEvents(newDate));
       }
       newEvents = newEvents.sort((a, b) => {
-        return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
+        return new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime();
       });
 
       this.logger.verbose(`Found ${newEvents.length} new events`);
 
       if (job.data?.startDate) {
         newEvents = newEvents.filter((e) => {
-          return moment(e.StartDate).isSameOrAfter(job.data?.startDate);
+          return !isBefore(new Date(e.StartDate), new Date(job.data?.startDate));
         });
       }
 

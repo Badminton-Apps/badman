@@ -4,7 +4,7 @@ import { VisualService } from "@badman/backend-visual";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
-import moment from "moment";
+import { differenceInDays, getFullYear } from "date-fns";
 import { Transaction } from "sequelize";
 import { EventEntry } from "@badman/backend-database";
 
@@ -116,15 +116,15 @@ export class EventCompetitionProcessor {
 
     event.name = visualCompetition.Name;
     event.visualCode = visualCompetition.Code;
-    event.season = moment(visualCompetition.StartDate).year();
+    event.season = getFullYear(new Date(visualCompetition.StartDate));
 
     event.lastSync = new Date();
     await event.save({ transaction });
     this.logger.debug(`Event ${event.name} created`);
 
     const enlistingOpen =
-      moment(event.openDate).diff(moment(), "days") > 0 &&
-      moment(event.closeDate).diff(moment(), "days") < 0;
+      differenceInDays(new Date(event.openDate), new Date()) > 0 &&
+      differenceInDays(new Date(event.closeDate), new Date()) < 0;
 
     if (enlistingOpen) {
       this.logger.debug(`EventCompetition ${event.name} is open, skipping processing`);
