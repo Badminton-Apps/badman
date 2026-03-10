@@ -12,7 +12,8 @@ This document describes how the event/encounter sync process works end-to-end, i
 4. [The Sync Flow](#the-sync-flow)
 5. [Check Encounters Flow](#check-encounters-flow)
 6. [Enter Scores Flow](#enter-scores-flow)
-7. [Test Coverage](#test-coverage)
+7. [Retry Failed Encounter Sync Flow](#retry-failed-encounter-sync-flow)
+8. [Test Coverage](#test-coverage)
 
 ---
 
@@ -344,12 +345,61 @@ This is the **only place** in the entire codebase that sets `scoresSyncedAt` to 
 
 ---
 
+## Retry Failed Encounter Sync Flow
+
+The **Retry Failed Encounter Sync** cron job automatically finds encounters where score synchronization to toernooi.nl failed and re-queues them.
+
+**Processor**: `RetryFailedEncounterSyncProcessor` (`apps/worker/sync/src/app/processors/retry-failed-encounters/retry-failed-encounters.processor.ts`)
+
+### What Triggers It
+
+A `RetryFailedEncounterSync` job is triggered by a cron job (e.g., daily at 7 AM). The job runs independently and does not require user action.
+
+### Detection Criteria
+
+The processor finds encounters that meet ALL of these conditions:
+
+- `finished = true` — encounter marked as complete
+- `enteredOn != null` — scores were entered in Badman
+- `scoresSyncedAt = null` — scores were never successfully synced to toernooi.nl
+- Has games — encounter has actual match data
+- `visualCode != null` — encounter has a valid toernooi.nl reference
+- Date is in the past — no future encounters
+- `updatedAt >= 2026-03-09` — updated after the `scoresSyncedAt` column was added (avoids re-syncing historical data)
+- Current season — only encounters from August onward (Belgian season)
+
+### Step-by-Step Flow
+
+1. **Find CronJob record** — locates the scheduled job metadata
+2. **Check if already running** — prevents concurrent executions via `amount` counter
+3. **Query for failed encounters** — runs query with all criteria above, limit 50
+4. **Deduplicate** — for each encounter, checks if an EnterScores job is already queued; skips if found
+5. **Queue EnterScores jobs** — queues `Sync.EnterScores` for each encounter not already queued
+   - Job config: 3 attempts, exponential backoff (60s base), `removeOnComplete: true`
+6. **Log results** — logs encounters queued and skipped with reasons
+
+### Error Handling
+
+- If CronJob not found: throws error
+- If query fails: error thrown, caught in finally block
+- CronJob `amount` counter decremented in finally block (ensures cleanup even on error)
+- `lastRun` timestamp updated in finally block
+
+### Configuration
+
+No additional configuration needed. The retry uses the standard EnterScores retry config (3 attempts, exponential backoff 60s).
+
+The migration date guard is hardcoded to 2026-03-09 (when `scoresSyncedAt` column was added).
+
+---
+
 ## Test Coverage
 
 ### What IS Tested
 
 | File | What's tested |
 |------|--------------|
+| `processors/retry-failed-encounters/__tests__/retry-failed-encounters.processor.spec.ts` | Failed encounter querying, EnterScores job queueing, duplicate detection, CronJob guards, amount tracking, error handling |
 | `processors/check-encounters/__tests__/check-encounters.processor.spec.ts` | Batch + single encounter processing, detail updates, notifications, auto-accept, browser lifecycle, error handling |
 | `processors/check-encounters/__tests__/guards.spec.ts` | `determineEncounterAction()` — all action conditions |
 | `processors/enter-scores/__tests__/guards.spec.ts` | `enterScoresPreflight` and `isFinalAttempt` guard logic |
