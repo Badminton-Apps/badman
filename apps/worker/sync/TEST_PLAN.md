@@ -317,8 +317,8 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
 | 3 | Phase 3.1–3.2 | Queue integration — catches stalling/retry bugs | ✅ DONE |
 | 4 | Refactoring R1 | Page objects — prerequisite for Phase 2 Puppeteer processors | ✅ DONE |
 | 5 | Phase 2.2 | EnterScores is the #1 pain point | ✅ DONE |
-| 6 | Phase 2.3 | CheckEncounters is the #2 pain point | 📋 Next |
-| 7 | Phase 2.4 | SyncEvents covers the broadest surface area | 📋 Next |
+| 6 | Phase 2.3 | CheckEncounters is the #2 pain point | ✅ DONE |
+| 7 | Phase 2.4 | SyncEvents covers the broadest surface area | ✅ DONE |
 | 8 | Phase 4 | Browser tests — only if selector regressions are a real problem | 📋 Next |
 
 ---
