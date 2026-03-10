@@ -1,7 +1,7 @@
 import { EventCompetition } from "@badman/backend-database";
 import { VisualService, XmlTournament } from "@badman/backend-visual";
 import { Logger } from "@nestjs/common";
-import { differenceInDays, getFullYear } from "date-fns";
+import { differenceInDays, getYear } from "date-fns";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 
@@ -46,7 +46,7 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
       event = new EventCompetition({
         name: visualTournament.Name,
         visualCode: visualTournament.Code,
-        season: getFullYear(new Date(visualTournament.StartDate)),
+        season: getYear(new Date(visualTournament.StartDate)),
       });
     }
     // Later we will change the search function to use the tournament code

@@ -4,7 +4,7 @@ import { VisualService } from "@badman/backend-visual";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
-import { differenceInDays, getFullYear } from "date-fns";
+import { differenceInDays, getYear } from "date-fns";
 import { Transaction } from "sequelize";
 import { EventEntry } from "@badman/backend-database";
 
@@ -116,7 +116,7 @@ export class EventCompetitionProcessor {
 
     event.name = visualCompetition.Name;
     event.visualCode = visualCompetition.Code;
-    event.season = getFullYear(new Date(visualCompetition.StartDate));
+    event.season = getYear(new Date(visualCompetition.StartDate));
 
     event.lastSync = new Date();
     await event.save({ transaction });
