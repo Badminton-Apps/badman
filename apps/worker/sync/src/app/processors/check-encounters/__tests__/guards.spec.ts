@@ -1,5 +1,5 @@
 import { determineEncounterAction, EncounterCheckInput } from "../guards";
-import moment from "moment";
+import { addHours, subHours } from "date-fns";
 
 function makeInput(overrides: Partial<EncounterCheckInput> = {}): EncounterCheckInput {
   return {
@@ -7,7 +7,7 @@ function makeInput(overrides: Partial<EncounterCheckInput> = {}): EncounterCheck
     entered: false,
     accepted: false,
     hasComment: false,
-    encounterDate: moment().subtract(50, "hours").toDate(),
+    encounterDate: subHours(new Date(), 50),
     enteredOn: null,
     awayClubHasSlug: true,
     autoAcceptEnabled: true,
@@ -36,7 +36,7 @@ describe("determineEncounterAction", () => {
   describe("when encounter is not entered", () => {
     it("should return notify-not-entered after 24 hours", () => {
       const now = new Date();
-      const encounterDate = moment(now).subtract(25, "hours").toDate();
+      const encounterDate = subHours(now, 25);
 
       const result = determineEncounterAction(
         makeInput({ entered: false, encounterDate, now })
@@ -46,7 +46,7 @@ describe("determineEncounterAction", () => {
 
     it("should return none before 24 hours", () => {
       const now = new Date();
-      const encounterDate = moment(now).subtract(23, "hours").toDate();
+      const encounterDate = subHours(now, 23);
 
       const result = determineEncounterAction(
         makeInput({ entered: false, encounterDate, now })
@@ -57,11 +57,11 @@ describe("determineEncounterAction", () => {
 
   describe("when encounter is entered but not accepted after 48 hours", () => {
     const now = new Date();
-    const encounterDate = moment(now).subtract(50, "hours").toDate();
+    const encounterDate = subHours(now, 50);
     // Entered on time (within 36h of encounter)
-    const enteredOnTime = moment(encounterDate).add(10, "hours").toISOString();
+    const enteredOnTime = addHours(encounterDate, 10).toISOString();
     // Entered late
-    const enteredLate = moment(encounterDate).add(40, "hours").toISOString();
+    const enteredLate = addHours(encounterDate, 40).toISOString();
 
     it("should auto-accept when entered on time and >36h passed since entered", () => {
       // Entered 10h after encounter, now is 50h after encounter = 40h since entered
@@ -94,8 +94,8 @@ describe("determineEncounterAction", () => {
 
     it("should return auto-accept-too-early when not enough time passed", () => {
       // Entered 10h after encounter, now is only 30h after encounter = 20h since entered
-      const recentNow = moment(encounterDate).add(49, "hours").toDate();
-      const recentEnteredOn = moment(encounterDate).add(30, "hours").toISOString();
+      const recentNow = addHours(encounterDate, 49);
+      const recentEnteredOn = addHours(encounterDate, 30).toISOString();
 
       const result = determineEncounterAction(
         makeInput({
@@ -127,7 +127,7 @@ describe("determineEncounterAction", () => {
 
     it("should auto-accept late entry after sufficient time", () => {
       // Entered late at 40h. Need 36h after (entered + 36h) = 40+36+36 = 112h after encounter
-      const lateNow = moment(encounterDate).add(113, "hours").toDate();
+      const lateNow = addHours(encounterDate, 113);
 
       const result = determineEncounterAction(
         makeInput({
@@ -167,7 +167,7 @@ describe("determineEncounterAction", () => {
           awayClubHasSlug: true,
         })
       );
-      // moment("not-a-date").isValid() is false → falls to notify-not-accepted
+      // isValid("not-a-date") is false → falls to notify-not-accepted
       expect(result).toEqual({ action: "notify-not-accepted" });
     });
   });
