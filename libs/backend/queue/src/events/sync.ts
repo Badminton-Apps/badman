@@ -4,6 +4,7 @@ export enum Sync {
   SyncTwizzit = "SyncTwizzit",
 
   CheckEncounters = "CheckEncounters",
+  RetryFailedEncounterSync = "RetryFailedEncounterSync",
   CheckEncounter = "CheckEncounter",
   CheckRanking = "CheckRanking",
   ChangeDate = "ChangeDate",
