@@ -224,4 +224,5 @@ export type ConfigType = {
   RENDER_API_KEY: string;
   RENDER_API_URL: string;
   RENDER_WAIT_TIME?: number;
+  WORKER_IDLE_TIMEOUT_MS?: number;
 };
