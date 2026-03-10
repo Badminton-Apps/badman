@@ -654,6 +654,7 @@ export class EncounterCompetitionResolver {
             encounterId: encounter.id,
           },
           {
+            jobId: `enter-scores-${encounter.id}`,
             removeOnComplete: true,
             removeOnFail: false,
             attempts: 3,

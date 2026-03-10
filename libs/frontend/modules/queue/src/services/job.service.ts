@@ -20,7 +20,7 @@ export class JobsService {
         official: args.official,
       },
       removeOnComplete: true,
-      removeOnFail: true,
+      removeOnFail: 50,
     });
   }
 
@@ -30,7 +30,7 @@ export class JobsService {
       job: "SyncRanking",
       jobArgs: {},
       removeOnComplete: true,
-      removeOnFail: true,
+      removeOnFail: 50,
     });
   }
 
@@ -42,7 +42,7 @@ export class JobsService {
         encounterId: args.id,
       },
       removeOnComplete: true,
-      removeOnFail: true,
+      removeOnFail: 50,
     });
   }
 

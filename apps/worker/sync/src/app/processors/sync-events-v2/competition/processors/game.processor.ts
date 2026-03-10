@@ -19,7 +19,7 @@ import { GameStatus, GameType, getRankingProtected } from "@badman/utils";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job } from "bull";
-import moment from "moment-timezone";
+import { fromZonedTime } from "date-fns-tz";
 import { Op, Transaction } from "sequelize";
 import { reverseMapWinnerValue } from "../../../../utils/mapWinnerValues";
 
@@ -143,7 +143,7 @@ export class GameCompetitionProcessor {
     }
 
     const playedAt =
-      xmlGame.MatchTime != null ? moment.tz(xmlGame.MatchTime, "Europe/Brussels").toDate() : null;
+      xmlGame.MatchTime != null ? fromZonedTime(xmlGame.MatchTime, "Europe/Brussels") : null;
 
     let gameStatus: GameStatus;
     switch (xmlGame.ScoreStatus) {

@@ -1,6 +1,6 @@
 import { waitForSelector } from "@badman/backend-pupeteer";
 import { Logger } from "@nestjs/common";
-import moment from "moment";
+import { parse } from "date-fns";
 import { Page } from "puppeteer";
 
 export async function detailEntered(
@@ -46,7 +46,7 @@ export async function detailEntered(
           const match = timeFinder.exec(tdTxt);
 
           if (match) {
-            enteredOn = moment(match[1], "D-M-YYYY HH:mm").toDate();
+            enteredOn = parse(match[1], "d-M-yyyy HH:mm", new Date());
           }
         }
       }

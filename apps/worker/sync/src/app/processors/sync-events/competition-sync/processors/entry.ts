@@ -7,7 +7,7 @@ import { Op, WhereOptions } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { correctWrongTeams } from "../../../../utils";
 import { DrawStepData } from "./draw";
-import moment from "moment";
+import { isBefore } from "date-fns";
 
 export interface EntryStepData {
   entry: EventEntry;
@@ -103,10 +103,10 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       this.logger.debug(`Processing entry ${item} - ${team.name}`);
 
       // Check if we're before the start of the season (Septemeber 1st of the season) and if entry data needs updating
-      const seasonStart = moment([event.season, 8, 1]); // September 1st of the season
-      const currentDate = moment();
+      const seasonStart = new Date(event.season, 8, 1); // September 1st of the season
+      const currentDate = new Date();
 
-      if (currentDate.isBefore(seasonStart)) {
+      if (isBefore(currentDate, seasonStart)) {
         this.logger.debug(`Before season start, checking team data for ${team.name}`);
         await this._updateTeamDataFromVisual(team, entry, internalId);
       }

@@ -2,7 +2,8 @@ import { EncounterCompetition, EventCompetition, Game } from "@badman/backend-da
 import { VisualService, XmlTeamMatch, XmlTournament } from "@badman/backend-visual";
 import { runParallel } from "@badman/utils";
 import { Logger } from "@nestjs/common";
-import moment from "moment-timezone";
+import { isAfter } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { DrawStepData } from "./draw";
@@ -52,7 +53,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    const canChange = moment().isAfter(`${this.event.season}-08-01`);
+    const canChange = isAfter(new Date(), new Date(`${this.event.season}-08-01`));
 
     const visualMatches = (await this.visualService.getGames(
       this.visualTournament.Code,
@@ -67,7 +68,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
       let matchDate = null;
       if (xmlTeamMatch.MatchTime) {
-        matchDate = moment.tz(xmlTeamMatch.MatchTime, "Europe/Brussels").toDate();
+        matchDate = fromZonedTime(xmlTeamMatch.MatchTime, "Europe/Brussels");
       }
 
       const dbEncounters = encounters.filter((r) => r.visualCode === `${xmlTeamMatch.Code}`);

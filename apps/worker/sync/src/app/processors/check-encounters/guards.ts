@@ -1,4 +1,4 @@
-import moment from "moment";
+import { differenceInHours, addHours, isValid, isBefore, isEqual } from "date-fns";
 
 export interface EncounterCheckInput {
   /** Whether the event has checkEncounterForFilledIn enabled */
@@ -45,7 +45,7 @@ export type EncounterCheckAction =
  *    b. Otherwise → notify-not-accepted
  */
 export function determineEncounterAction(input: EncounterCheckInput): EncounterCheckAction {
-  const now = moment(input.now);
+  const now = input.now ?? new Date();
 
   if (!input.checkEncounterForFilledIn) {
     return { action: "none" };
@@ -55,26 +55,25 @@ export function determineEncounterAction(input: EncounterCheckInput): EncounterC
     return { action: "notify-has-comment" };
   }
 
-  const hoursPassed = now.diff(input.encounterDate, "hour");
+  const hoursPassed = differenceInHours(now, input.encounterDate);
 
   if (!input.entered && hoursPassed > 24 && !input.hasComment) {
     return { action: "notify-not-entered" };
   }
 
   if (!input.accepted && hoursPassed > 48 && !input.hasComment) {
-    const enteredMoment = moment(input.enteredOn);
+    const enteredDate = input.enteredOn ? new Date(input.enteredOn) : null;
 
-    if (input.awayClubHasSlug && enteredMoment.isValid()) {
-      let hoursPassedEntered = now.diff(enteredMoment, "hour");
+    if (input.awayClubHasSlug && enteredDate && isValid(enteredDate)) {
+      let hoursPassedEntered = differenceInHours(now, enteredDate);
 
       // Was it entered on time (within 36h of encounter)?
-      const enteredOnTime = enteredMoment.isSameOrBefore(
-        moment(input.encounterDate).add(36, "hour")
-      );
+      const deadline = addHours(input.encounterDate, 36);
+      const enteredOnTime = isBefore(enteredDate, deadline) || isEqual(enteredDate, deadline);
 
       if (!enteredOnTime) {
         // If entered late, give 36 more hours from when it was entered
-        hoursPassedEntered = now.diff(enteredMoment.clone().add(36, "hour"), "hour");
+        hoursPassedEntered = differenceInHours(now, addHours(enteredDate, 36));
       }
 
       if (hoursPassedEntered > 36) {

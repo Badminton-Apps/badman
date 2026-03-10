@@ -110,6 +110,8 @@
     "consolidate": "^1.0.4",
     "cors": "^2.8.5",
     "crypto-hash": "^3.1.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "express": "4.21.2",
     "fast-xml-parser": "^4.5.1",
     "fastify": "^4.29.0",
@@ -251,5 +253,10 @@
   ],
   "stackblitz": {
     "startCommand": "npm run start:stackblitz"
+  },
+  "overrides": {
+    "string-length": {
+      "strip-ansi": "^6.0.0"
+    }
   }
 }
