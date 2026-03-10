@@ -15,7 +15,8 @@ import {
 } from "@badman/backend-visual";
 import { GameStatus, getRankingProtected, runParallel } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
-import moment from "moment-timezone";
+import { isBefore, subWeeks } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { correctWrongPlayers } from "../../../../utils";
@@ -77,7 +78,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     });
     const subEvent = this.subEvents?.find((sub) => draw.subeventId === sub.subEvent.id)?.subEvent;
 
-    const isLastWeek = moment().subtract(2, "week").isBefore(this.event.event.firstDay);
+    const isLastWeek = isBefore(subWeeks(new Date(), 2), new Date(this.event.event.firstDay));
 
     const visualMatch = (await this.visualService.getGames(
       this.visualTournament.Code,
@@ -90,7 +91,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
 
       const playedAt =
         xmlMatch.MatchTime != null
-          ? moment.tz(xmlMatch.MatchTime, "Europe/Brussels").toDate()
+          ? fromZonedTime(xmlMatch.MatchTime, "Europe/Brussels")
           : this.event.event.firstDay;
 
       // Check if encounter was before last run, skip if only process new events

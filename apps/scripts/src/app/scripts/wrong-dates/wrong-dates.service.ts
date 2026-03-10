@@ -86,7 +86,7 @@ export class WrongDatesService {
           continue;
         }
 
-        // encounter.synced = new Date();
+        // encounter.dateSyncedAt = new Date();
       } catch (error) {
         this.logger.error(error);
       }

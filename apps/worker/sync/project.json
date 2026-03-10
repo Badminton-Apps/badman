@@ -65,20 +65,19 @@
       }
     },
     "test": {
+      "executor": "@nx/jest:jest",
       "inputs": [
         "default",
         "^production",
         "{workspaceRoot}/jest.preset.js",
-        "{workspaceRoot}/jest.config.ts",
-        {
-          "externalDependencies": ["jest"]
-        }
+        "{workspaceRoot}/jest.config.ts"
       ],
       "outputs": [
         "{workspaceRoot}/coverage/apps/worker/sync",
         "{workspaceRoot}\\coverage\\apps\\worker\\sync"
       ],
       "options": {
+        "jestConfig": "apps/worker/sync/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
