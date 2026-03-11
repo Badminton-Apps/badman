@@ -400,4 +400,95 @@ describe("EnterScoresProcessor", () => {
       expect(mailingService.sendEnterScoresFailedMail).not.toHaveBeenCalled();
     });
   });
+
+  // ── URL construction / post-save state ────────────────────────────────────
+
+  describe("URL construction / post-save state", () => {
+    it("still updates the encounter when getCurrentUrl returns a URL containing teammatch.aspx after successful navigation", async () => {
+      // Navigation succeeds (saveSucceeded=true), URL happens to still contain teammatch.aspx
+      formPage.waitForNavigation.mockResolvedValue(undefined);
+      formPage.getCurrentUrl.mockReturnValue(
+        "https://www.toernooi.nl/sport/teammatch.aspx?id=EV001&match=VC001"
+      );
+      formPage.getRowErrorMessages.mockResolvedValue([]);
+
+      const encounter = makeEncounter();
+      findByPkSpy.mockResolvedValue(encounter as any);
+
+      await processor.enterScores(makeJob() as any);
+
+      // URL check is just a log — encounter should still be updated
+      expect(encounter.update).toHaveBeenCalledWith({ scoresSyncedAt: expect.any(Date) });
+    });
+
+    it("includes 'Still on teammatch page' when navigation+network-idle both time out and URL contains teammatch.aspx", async () => {
+      formPage.waitForNavigation.mockRejectedValue(new Error("Navigation timeout"));
+      formPage.waitForNetworkIdle.mockRejectedValue(new Error("network idle timeout"));
+      formPage.getCurrentUrl.mockReturnValue(
+        "https://www.toernooi.nl/sport/teammatch.aspx?id=EV001&match=VC001"
+      );
+      formPage.getRowErrorMessages.mockResolvedValue([]);
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
+        /Still on teammatch page/
+      );
+    });
+  });
+
+  // ── HANG_BEFORE_BROWSER_CLEANUP flag ──────────────────────────────────────
+
+  describe("HANG_BEFORE_BROWSER_CLEANUP flag", () => {
+    it("does NOT call formPage.close() when HANG_BEFORE_BROWSER_CLEANUP is true", async () => {
+      await buildModule({ HANG_BEFORE_BROWSER_CLEANUP: true });
+      findByPkSpy = jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeEncounter() as any);
+
+      await processor.enterScores(makeJob() as any);
+
+      expect(formPage.close).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── saveFailureReason in error message ────────────────────────────────────
+
+  describe("saveFailureReason in error message", () => {
+    it("includes 'navigation timeout' when save fails due to navigation timeout", async () => {
+      formPage.waitForNavigation.mockRejectedValue(new Error("Navigation timeout"));
+      formPage.waitForNetworkIdle.mockResolvedValue(undefined);
+      // Post-save: no row errors, but saveSucceeded = false because navigation timed out
+      formPage.getRowErrorMessages.mockResolvedValue([]);
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
+        /navigation timeout/i
+      );
+    });
+
+    it("includes 'row validation' when save fails due to row-validation errors after save", async () => {
+      formPage.waitForNavigation.mockResolvedValue(undefined);
+      // First call (pre-save): no errors; second call (post-save): errors present
+      formPage.getRowErrorMessages
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(["Post-save row error"]);
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
+        /row validation/i
+      );
+    });
+  });
+
+  // ── Row error messages in failure message ──────────────────────────────────
+
+  describe("row error messages in failure", () => {
+    it("includes the error text when post-save row errors exist", async () => {
+      formPage.waitForNavigation.mockResolvedValue(undefined);
+      formPage.getRowErrorMessages
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(["Bad score for game 3"]);
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
+        /Bad score for game 3/
+      );
+    });
+  });
 });
