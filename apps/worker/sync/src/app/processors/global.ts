@@ -28,7 +28,17 @@ export class GlobalConsumer implements OnModuleInit {
     try {
       const job = await this.queue.getJob(jobId);
       const jobName = job?.name ?? "unknown";
-      const jobData = job ? JSON.stringify(job.data) : "unavailable";
+      let jobData = "unavailable";
+
+      if (job?.data) {
+        try {
+          jobData = JSON.stringify(job.data);
+        } catch (stringifyError) {
+          // Handle circular references or non-serializable data
+          jobData = `[unable to serialize: ${stringifyError?.message}]`;
+        }
+      }
+
       const attemptsMade = job?.attemptsMade ?? "?";
       const attemptsTotal = job?.opts?.attempts ?? "?";
       this.logger.error(
