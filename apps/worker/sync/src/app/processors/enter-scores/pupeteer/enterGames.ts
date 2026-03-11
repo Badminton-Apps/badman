@@ -6,10 +6,7 @@ import { Transaction } from "sequelize";
 import { SubEventTypeEnum } from "@badman/utils";
 import { enterScores } from "./enterScores";
 import { enterWinner } from "./enterWinner";
-import {
-  getHeaderForAssemblyPosition,
-  getAssemblyPositionsInOrder,
-} from "./assemblyPositions";
+import { getHeaderForAssemblyPosition, getAssemblyPositionsInOrder } from "./assemblyPositions";
 import { matchGamesToAssembly } from "./matchGamesToAssembly";
 import { fixMixedDoublesPlayerOrder } from "./fixMixedDoublesPlayerOrder";
 
@@ -82,14 +79,17 @@ async function findGameRowByAssemblyPosition(
       expectedHeader
     );
 
-    logger?.debug(`Headers found on page: ${matchingRows.allHeaders.join(", ")}`);
-    logger?.debug(`Looking for exact match: "${expectedHeader}"`);
-    logger?.debug(
-      `Case-sensitive matches: ${matchingRows.allHeaders.filter((h) => h === expectedHeader).length}`
-    );
-    logger?.debug(
-      `Case-insensitive matches: ${matchingRows.allHeaders.filter((h) => h.toLowerCase() === expectedHeader.toLowerCase()).length}`
-    );
+    // Only log detailed header diagnostics for HD1/HD2 to avoid spam
+    if (expectedHeader === "HD1" || expectedHeader === "HD2") {
+      logger?.debug(`Headers found on page: ${matchingRows.allHeaders.join(", ")}`);
+      logger?.debug(`Looking for exact match: "${expectedHeader}"`);
+      logger?.debug(
+        `Case-sensitive matches: ${matchingRows.allHeaders.filter((h) => h === expectedHeader).length}`
+      );
+      logger?.debug(
+        `Case-insensitive matches: ${matchingRows.allHeaders.filter((h) => h.toLowerCase() === expectedHeader.toLowerCase()).length}`
+      );
+    }
 
     if (matchingRows.results.length === 0) {
       logger?.warn(`No rows found with header "${expectedHeader}"`);
@@ -297,7 +297,7 @@ export async function enterGames(
       if (!t1p1.memberId) {
         logger?.error(
           `Player ${t1p1.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
-          `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
+            `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
         );
         continue;
       }
@@ -314,7 +314,7 @@ export async function enterGames(
       if (!t1p2.memberId) {
         logger?.error(
           `Player ${t1p2.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
-          `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
+            `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
         );
         continue;
       }
@@ -330,7 +330,7 @@ export async function enterGames(
       if (!t2p1.memberId) {
         logger?.error(
           `Player ${t2p1.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
-          `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
+            `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
         );
         continue;
       }
@@ -345,7 +345,7 @@ export async function enterGames(
       if (!t2p2.memberId) {
         logger?.error(
           `Player ${t2p2.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
-          `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
+            `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
         );
         continue;
       }
@@ -359,13 +359,7 @@ export async function enterGames(
       game.set1Team2 != null &&
       !(game.set1Team1 === 0 && game.set1Team2 === 0)
     ) {
-      await enterScores(
-        { page },
-        1,
-        `${game.set1Team1}-${game.set1Team2}`,
-        matchId,
-        logger
-      );
+      await enterScores({ page }, 1, `${game.set1Team1}-${game.set1Team2}`, matchId, logger);
     }
 
     // Enter set 2 scores if both teams have valid scores (not null/undefined) and it's not 0-0
@@ -374,13 +368,7 @@ export async function enterGames(
       game.set2Team2 != null &&
       !(game.set2Team1 === 0 && game.set2Team2 === 0)
     ) {
-      await enterScores(
-        { page },
-        2,
-        `${game.set2Team1}-${game.set2Team2}`,
-        matchId,
-        logger
-      );
+      await enterScores({ page }, 2, `${game.set2Team1}-${game.set2Team2}`, matchId, logger);
     }
 
     // Enter set 3 scores if both teams have valid scores (not null/undefined) and it's not 0-0
@@ -389,13 +377,7 @@ export async function enterGames(
       game.set3Team2 != null &&
       !(game.set3Team1 === 0 && game.set3Team2 === 0)
     ) {
-      await enterScores(
-        { page },
-        3,
-        `${game.set3Team1}-${game.set3Team2}`,
-        matchId,
-        logger
-      );
+      await enterScores({ page }, 3, `${game.set3Team1}-${game.set3Team2}`, matchId, logger);
     }
 
     if (game.winner && game.winner > 2) {
@@ -408,7 +390,9 @@ export async function enterGames(
   const processedGames = Array.from(gameAssemblyMap.keys());
   await validateAndRefillPlayerInputs({ page }, processedGames, logger);
 
-  logger?.log(`enterGames completed: processed ${gameAssemblyMap.size}/${orderedPositions.length} games for encounter ${encounter.id}`);
+  logger?.log(
+    `enterGames completed: processed ${gameAssemblyMap.size}/${orderedPositions.length} games for encounter ${encounter.id}`
+  );
 }
 
 /**
