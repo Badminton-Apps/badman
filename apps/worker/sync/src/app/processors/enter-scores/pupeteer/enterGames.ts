@@ -190,7 +190,7 @@ export async function enterGames(
     logger?: Logger;
   }
 ) {
-  const { page, timeout } = pupeteer;
+  const { page } = pupeteer;
   const { encounter, transaction, logger } = args || {};
   const { games, assemblies } = encounter;
   logger?.verbose("enterGames");
@@ -221,21 +221,19 @@ export async function enterGames(
   );
   logger?.log(`Game assembly map values:`, Array.from(gameAssemblyMap.values()));
 
-  // logger?.log(`Entering games using assembly-based ordering for teamType: ${teamType}`);
-
   // Process games in assembly order
   for (const assemblyPosition of orderedPositions) {
     // Find the game that matches this assembly position
     const gameEntry = Array.from(gameAssemblyMap.entries()).find(
-      ([game, data]) => data.assemblyPosition === assemblyPosition
+      ([, data]) => data.assemblyPosition === assemblyPosition
     );
     if (!gameEntry) {
       logger?.debug(`No game found for assembly position: ${assemblyPosition}`);
       continue;
     }
-    const [game, assemblyData] = gameEntry;
+    const [game] = gameEntry;
 
-    logger.verbose(`Processing game ${game.id} for assembly position: ${assemblyPosition}`);
+    logger?.verbose(`Processing game ${game.id} for assembly position: ${assemblyPosition}`);
     let matchId: string;
 
     // Always find the correct row based on assembly position to ensure proper ordering
@@ -392,7 +390,7 @@ export async function enterGames(
       );
     }
 
-    if (game.winner && game.winner > 2 && game.winner !== 0) {
+    if (game.winner && game.winner > 2) {
       await enterWinner({ page }, matchId, game.winner, logger);
     }
   }
@@ -417,7 +415,7 @@ async function validateAndRefillPlayerInputs(
   logger?: Logger
 ): Promise<void> {
   const { page } = pupeteer;
-  logger.verbose(`validate player inputs`);
+  logger?.verbose(`validate player inputs`);
   try {
     logger?.log("Starting player input validation...");
 
