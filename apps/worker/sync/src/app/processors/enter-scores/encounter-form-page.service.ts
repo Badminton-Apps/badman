@@ -1,16 +1,22 @@
 import { EncounterCompetition } from "@badman/backend-database";
-import { acceptCookies, getPage, signIn, waitForSelectors } from "@badman/backend-pupeteer";
+import { acceptCookies, getPage, signIn } from "@badman/backend-pupeteer";
 import { Injectable, Logger } from "@nestjs/common";
 import { Page } from "puppeteer";
 import { Transaction } from "sequelize";
 import {
   clearFields,
+  clickSaveButton,
   enableInputValidation,
   enterEditMode,
   enterEndHour,
   enterGameLeader,
   enterShuttle,
   enterStartHour,
+  getCurrentUrl,
+  getRowErrorMessages,
+  waitForNavigation,
+  waitForNetworkIdle,
+  waitForSignInConfirmation,
 } from "./pupeteer";
 import { enterGames } from "./pupeteer/enterGames";
 
@@ -60,8 +66,10 @@ export class EncounterFormPageService {
 
   async waitForSignInConfirmation(timeout = 5000): Promise<boolean> {
     this._assertPage();
-    const el = await this.page!.waitForSelector("#profileMenu", { timeout });
-    return !!el;
+    return waitForSignInConfirmation(
+      { page: this.page!, timeout },
+      { logger: this.logger }
+    );
   }
 
   async enterEditMode(encounter: EncounterCompetition): Promise<void> {
@@ -109,20 +117,12 @@ export class EncounterFormPageService {
 
   async getRowErrorMessages(): Promise<string[]> {
     this._assertPage();
-    return this.page!.evaluate(() => {
-      const messageElements = document.querySelectorAll("div.submatchrow_message");
-      const messages: string[] = [];
-      messageElements.forEach((el) => {
-        const text = el.textContent?.trim();
-        if (text) messages.push(text);
-      });
-      return messages;
-    });
+    return getRowErrorMessages({ page: this.page! }, { logger: this.logger });
   }
 
   getCurrentUrl(): string {
     this._assertPage();
-    return this.page!.url();
+    return getCurrentUrl({ page: this.page! }, { logger: this.logger });
   }
 
   /**
@@ -131,20 +131,17 @@ export class EncounterFormPageService {
    */
   async clickSaveButton(timeout = 5000): Promise<boolean> {
     this._assertPage();
-    const saveButton = await waitForSelectors([["input#btnSave.button"]], this.page!, timeout);
-    if (!saveButton) return false;
-    await saveButton.click();
-    return true;
+    return clickSaveButton({ page: this.page!, timeout }, { logger: this.logger });
   }
 
   async waitForNavigation(opts: { waitUntil: "networkidle0" | "load" | "domcontentloaded"; timeout: number }): Promise<void> {
     this._assertPage();
-    await this.page!.waitForNavigation(opts);
+    await waitForNavigation({ page: this.page! }, opts, { logger: this.logger });
   }
 
   async waitForNetworkIdle(opts: { idleTime: number; timeout: number }): Promise<void> {
     this._assertPage();
-    await this.page!.waitForNetworkIdle(opts);
+    await waitForNetworkIdle({ page: this.page! }, opts, { logger: this.logger });
   }
 
   private _assertPage(): void {
