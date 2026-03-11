@@ -93,7 +93,10 @@ async function findGameRowByAssemblyPosition(
 
     if (matchingRows.results.length === 0) {
       logger?.warn(`No rows found with header "${expectedHeader}"`);
-      logger?.warn(`Available headers: ${matchingRows.allHeaders.join(", ")}`);
+      // Only dump available headers for HD1/HD2 to avoid spam
+      if (expectedHeader === "HD1" || expectedHeader === "HD2") {
+        logger?.warn(`Available headers: ${matchingRows.allHeaders.join(", ")}`);
+      }
       return null;
     }
 
