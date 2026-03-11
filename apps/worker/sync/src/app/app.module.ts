@@ -42,6 +42,7 @@ import {
   ScheduleRecalculateStandingCompetitionEvent,
   ScheduleRecalculateStandingCompetitionSubEvent,
   DrawStandingCompetitionProcessor,
+  RetryFailedEncounterSyncProcessor,
 } from "./processors";
 
 @Module({
@@ -59,6 +60,7 @@ import {
     EnterScoresProcessor,
     CheckEncounterProcessor,
     CheckRankingProcessor,
+    RetryFailedEncounterSyncProcessor,
 
     // v2
     EventTournamentProcessor,

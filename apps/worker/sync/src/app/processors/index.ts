@@ -3,6 +3,7 @@ export * from "./check-encounters";
 export * from "./check-ranking";
 export * from "./enter-scores";
 export * from "./global";
+export * from "./retry-failed-encounters";
 export * from "./sync-events-v2";
 export * from "./sync-events";
 export * from "./sync-ranking";
