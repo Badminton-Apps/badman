@@ -133,6 +133,7 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
       ...args,
     ],
     userDataDir,
+    protocolTimeout: 30000, // 30 seconds for protocol operations (prevents crashes on slow connections)
   });
 
   // Handle browser disconnection

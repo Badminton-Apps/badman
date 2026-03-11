@@ -153,8 +153,25 @@ export class CheckEncounterProcessor {
 
           await this.detailPage.open();
 
-          // Accept cookies
-          await this.detailPage.acceptCookies();
+          // Accept cookies - handle timeouts gracefully
+          try {
+            await this.detailPage.acceptCookies();
+          } catch (error: any) {
+            const isTimeoutError =
+              error?.message?.includes("timeout") ||
+              error?.message?.includes("timed out") ||
+              error?.name === "ProtocolError";
+
+            if (isTimeoutError) {
+              this.logger.warn(
+                "Cookie acceptance timed out (continuing anyway):",
+                error?.message || error
+              );
+              // Don't throw timeout errors - continue with the process
+            } else {
+              throw error;
+            }
+          }
 
           // Processing encounters
           for (const encounter of chunk) {
@@ -215,8 +232,25 @@ export class CheckEncounterProcessor {
 
     await this.detailPage.open();
     try {
-      // Accept cookies
-      await this.detailPage.acceptCookies();
+      // Accept cookies - handle timeouts gracefully
+      try {
+        await this.detailPage.acceptCookies();
+      } catch (error: any) {
+        const isTimeoutError =
+          error?.message?.includes("timeout") ||
+          error?.message?.includes("timed out") ||
+          error?.name === "ProtocolError";
+
+        if (isTimeoutError) {
+          this.logger.warn(
+            "Cookie acceptance timed out (continuing anyway):",
+            error?.message || error
+          );
+          // Don't throw timeout errors - continue with the process
+        } else {
+          throw error;
+        }
+      }
 
       // Processing encounters
       await this._syncEncounter(encounter);
