@@ -84,12 +84,12 @@ export class AppController {
       case SyncQueue:
         return this._syncQueue.add(args.job, args.jobArgs, {
           removeOnComplete: args.removeOnComplete ?? true,
-          removeOnFail: args.removeOnFail ?? 1,
+          removeOnFail: args.removeOnFail ?? 50,
         });
       case RankingQueue:
         return this._rankingQueue.add(args.job, args.jobArgs, {
           removeOnComplete: args.removeOnComplete ?? true,
-          removeOnFail: args.removeOnFail ?? 1,
+          removeOnFail: args.removeOnFail ?? 50,
         });
       default:
         throw new HttpException("Unknown queue", 500);
