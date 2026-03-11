@@ -289,95 +289,48 @@ export async function enterGames(
       await fixMixedDoublesPlayerOrder(game, transaction, logger);
     }
 
-    const t1p1 = game.players?.find(
-      (p) => p.GamePlayerMembership.team === 1 && p.GamePlayerMembership.player === 1
-    );
+    // Select players for all 4 positions (t1p1, t1p2, t2p1, t2p2)
+    const playerPositions: { position: "t1p1" | "t1p2" | "t2p1" | "t2p2"; team: number; player: number }[] = [
+      { position: "t1p1", team: 1, player: 1 },
+      { position: "t1p2", team: 1, player: 2 },
+      { position: "t2p1", team: 2, player: 1 },
+      { position: "t2p2", team: 2, player: 2 },
+    ];
 
-    if (t1p1) {
-      if (!t1p1.memberId) {
+    let abandonGame = false;
+    for (const { position, team, player: playerNum } of playerPositions) {
+      const foundPlayer = game.players?.find(
+        (p) => p.GamePlayerMembership.team === team && p.GamePlayerMembership.player === playerNum
+      );
+
+      if (!foundPlayer) continue;
+
+      if (!foundPlayer.memberId) {
         logger?.error(
-          `Player ${t1p1.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
+          `Player ${foundPlayer.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
             `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
         );
-        continue;
+        abandonGame = true;
+        break;
       }
-      logger?.log(`Selecting player ${t1p1.memberId} for game ${matchId}`);
-      await selectPlayer({ page }, t1p1.memberId, "t1p1", matchId, logger);
+
+      logger?.log(`Selecting player ${foundPlayer.memberId} for game ${matchId} (${position})`);
+      await selectPlayer({ page }, foundPlayer.memberId, position, matchId, logger);
     }
 
-    const t1p2 = game.players?.find(
-      (p) => p.GamePlayerMembership.team === 1 && p.GamePlayerMembership.player === 2
-    );
+    if (abandonGame) continue;
 
-    logger?.debug(`t1p2`, { id: t1p2?.id, memberId: t1p2?.memberId, fullName: t1p2?.fullName });
-    if (t1p2) {
-      if (!t1p2.memberId) {
-        logger?.error(
-          `Player ${t1p2.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
-            `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
-        );
-        continue;
+    // Enter set scores (1-3) if both teams have valid scores and it's not 0-0
+    const sets: { setNum: number; team1: number | null; team2: number | null }[] = [
+      { setNum: 1, team1: game.set1Team1, team2: game.set1Team2 },
+      { setNum: 2, team1: game.set2Team1, team2: game.set2Team2 },
+      { setNum: 3, team1: game.set3Team1, team2: game.set3Team2 },
+    ];
+
+    for (const { setNum, team1, team2 } of sets) {
+      if (team1 != null && team2 != null && !(team1 === 0 && team2 === 0)) {
+        await enterScores({ page }, setNum, `${team1}-${team2}`, matchId, logger);
       }
-      logger?.log(`Selecting player ${t1p2.memberId} for game ${matchId}`);
-      await selectPlayer({ page }, t1p2.memberId, "t1p2", matchId, logger);
-    }
-
-    const t2p1 = game.players?.find(
-      (p) => p.GamePlayerMembership.team === 2 && p.GamePlayerMembership.player === 1
-    );
-    logger?.debug(`t2p1`, { id: t2p1?.id, memberId: t2p1?.memberId, fullName: t2p1?.fullName });
-    if (t2p1) {
-      if (!t2p1.memberId) {
-        logger?.error(
-          `Player ${t2p1.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
-            `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
-        );
-        continue;
-      }
-      logger?.log(`Selecting player ${t2p1.memberId} for game ${matchId}`);
-      await selectPlayer({ page }, t2p1.memberId, "t2p1", matchId, logger);
-    }
-
-    const t2p2 = game.players?.find(
-      (p) => p.GamePlayerMembership.team === 2 && p.GamePlayerMembership.player === 2
-    );
-    if (t2p2) {
-      if (!t2p2.memberId) {
-        logger?.error(
-          `Player ${t2p2.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
-            `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
-        );
-        continue;
-      }
-      logger?.log(`Selecting player ${t2p2.memberId} for game ${matchId}`);
-      await selectPlayer({ page }, t2p2.memberId, "t2p2", matchId, logger);
-    }
-
-    // Enter set 1 scores if both teams have valid scores (not null/undefined) and it's not 0-0
-    if (
-      game.set1Team1 != null &&
-      game.set1Team2 != null &&
-      !(game.set1Team1 === 0 && game.set1Team2 === 0)
-    ) {
-      await enterScores({ page }, 1, `${game.set1Team1}-${game.set1Team2}`, matchId, logger);
-    }
-
-    // Enter set 2 scores if both teams have valid scores (not null/undefined) and it's not 0-0
-    if (
-      game.set2Team1 != null &&
-      game.set2Team2 != null &&
-      !(game.set2Team1 === 0 && game.set2Team2 === 0)
-    ) {
-      await enterScores({ page }, 2, `${game.set2Team1}-${game.set2Team2}`, matchId, logger);
-    }
-
-    // Enter set 3 scores if both teams have valid scores (not null/undefined) and it's not 0-0
-    if (
-      game.set3Team1 != null &&
-      game.set3Team2 != null &&
-      !(game.set3Team1 === 0 && game.set3Team2 === 0)
-    ) {
-      await enterScores({ page }, 3, `${game.set3Team1}-${game.set3Team2}`, matchId, logger);
     }
 
     if (game.winner && game.winner > 2) {
