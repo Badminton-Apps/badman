@@ -1,4 +1,7 @@
 // start:ng42.barrel
+export * from "./assemblyPositions";
+export * from "./fixMixedDoublesPlayerOrder";
+export * from "./matchGamesToAssembly";
 export * from "./clearFields";
 export * from "./clickSaveButton";
 export * from "./enterEditMode";
