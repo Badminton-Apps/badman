@@ -82,23 +82,18 @@ async function findGameRowByAssemblyPosition(
       expectedHeader
     );
 
-    // Only log debug info for HD1 and HD2 to avoid spam
-    if (expectedHeader === "HD1" || expectedHeader === "HD2") {
-      logger?.debug(`Headers found on page: ${matchingRows.allHeaders.join(", ")}`);
-      logger?.debug(`Looking for exact match: "${expectedHeader}"`);
-      logger?.debug(
-        `Case-sensitive matches: ${matchingRows.allHeaders.filter((h) => h === expectedHeader).length}`
-      );
-      logger?.debug(
-        `Case-insensitive matches: ${matchingRows.allHeaders.filter((h) => h.toLowerCase() === expectedHeader.toLowerCase()).length}`
-      );
-    }
+    logger?.debug(`Headers found on page: ${matchingRows.allHeaders.join(", ")}`);
+    logger?.debug(`Looking for exact match: "${expectedHeader}"`);
+    logger?.debug(
+      `Case-sensitive matches: ${matchingRows.allHeaders.filter((h) => h === expectedHeader).length}`
+    );
+    logger?.debug(
+      `Case-insensitive matches: ${matchingRows.allHeaders.filter((h) => h.toLowerCase() === expectedHeader.toLowerCase()).length}`
+    );
 
     if (matchingRows.results.length === 0) {
       logger?.warn(`No rows found with header "${expectedHeader}"`);
-      if (expectedHeader === "HD1" || expectedHeader === "HD2") {
-        logger?.warn(`Available headers: ${matchingRows.allHeaders.join(", ")}`);
-      }
+      logger?.warn(`Available headers: ${matchingRows.allHeaders.join(", ")}`);
       return null;
     }
 
@@ -126,7 +121,7 @@ async function findGameRowByAssemblyPosition(
       `Error finding game row by assembly position for teamType ${teamType}, assemblyPosition ${assemblyPosition}:`,
       error
     );
-    return null;
+    throw error;
   }
 }
 
@@ -172,7 +167,7 @@ async function isGameRowEmpty(page: Page, matchId: string, logger?: Logger): Pro
     return true;
   } catch (error) {
     logger?.error(`Error checking if game row is empty for matchId ${matchId}:`, error);
-    return false;
+    throw error;
   }
 }
 
@@ -203,8 +198,7 @@ export async function enterGames(
   const teamType: SubEventTypeEnum = encounter.home?.type as SubEventTypeEnum;
 
   if (!teamType) {
-    logger?.error(`No teamType found for encounter, cannot process games`);
-    return;
+    throw new Error(`No teamType found for encounter ${encounter.id}, cannot process games`);
   }
 
   // Match games to assembly positions based on players
@@ -213,13 +207,13 @@ export async function enterGames(
   // Get assembly positions in correct order for processing based on team type
   const orderedPositions = getAssemblyPositionsInOrder(teamType);
 
-  logger?.log(`Ordered positions: ${orderedPositions}`);
-  logger?.log(`Game assembly map size: ${gameAssemblyMap.size}`);
-  logger?.log(
+  logger?.debug(`Ordered positions: ${orderedPositions}`);
+  logger?.debug(`Game assembly map size: ${gameAssemblyMap.size}`);
+  logger?.debug(
     `Game assembly map keys:`,
     Array.from(gameAssemblyMap.keys()).map((g) => g.id)
   );
-  logger?.log(`Game assembly map values:`, Array.from(gameAssemblyMap.values()));
+  logger?.debug(`Game assembly map values:`, Array.from(gameAssemblyMap.values()));
 
   // Process games in assembly order
   for (const assemblyPosition of orderedPositions) {
@@ -234,7 +228,6 @@ export async function enterGames(
     const [game] = gameEntry;
 
     logger?.verbose(`Processing game ${game.id} for assembly position: ${assemblyPosition}`);
-    let matchId: string;
 
     // Always find the correct row based on assembly position to ensure proper ordering
     logger?.log(`Finding correct game row for ${assemblyPosition} with teamType: ${teamType}`);
@@ -248,7 +241,7 @@ export async function enterGames(
     );
 
     if (!correctMatchId) {
-      const errorMessage = `Could not find empty game row for assembly position ${assemblyPosition}. This indicates either the row doesn't exist or it's already filled. Since clearFields() should have cleared all rows, this suggests a critical issue with the clearing process or a race condition.`;
+      const errorMessage = `Could not find empty game row for assembly position ${assemblyPosition} (encounter ${encounter.id}). This indicates either the row doesn't exist or it's already filled. Since clearFields() should have cleared all rows, this suggests a critical issue with the clearing process or a race condition.`;
       logger?.error(errorMessage);
       throw new Error(errorMessage);
     }
@@ -258,18 +251,18 @@ export async function enterGames(
     );
 
     // Validate and correct the visualCode if necessary
-    if (game?.visualCode && game.visualCode !== correctMatchId) {
+    if (game.visualCode && game.visualCode !== correctMatchId) {
       logger?.warn(
         `Game ${game.id} had incorrect visualCode: ${game.visualCode}, correcting to: ${correctMatchId}`
       );
-    } else if (!game?.visualCode) {
+    } else if (!game.visualCode) {
       logger?.log(`Game ${game.id} had no visualCode, setting to: ${correctMatchId}`);
     } else {
       logger?.debug(`Game ${game.id} already has correct visualCode: ${correctMatchId}`);
     }
 
     // Set the correct matchId
-    matchId = correctMatchId;
+    const matchId = correctMatchId;
     game.visualCode = correctMatchId;
 
     // Save the corrected visualCode to database if transaction is provided
@@ -299,7 +292,10 @@ export async function enterGames(
 
     if (t1p1) {
       if (!t1p1.memberId) {
-        logger?.error(`Player ${t1p1.fullName} has no memberId, skipping`);
+        logger?.error(
+          `Player ${t1p1.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
+          `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
+        );
         continue;
       }
       logger?.log(`Selecting player ${t1p1.memberId} for game ${matchId}`);
@@ -313,7 +309,10 @@ export async function enterGames(
     logger?.debug(`t1p2`, { id: t1p2?.id, memberId: t1p2?.memberId, fullName: t1p2?.fullName });
     if (t1p2) {
       if (!t1p2.memberId) {
-        logger?.error(`Player ${t1p2.fullName} has no memberId, skipping`);
+        logger?.error(
+          `Player ${t1p2.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
+          `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
+        );
         continue;
       }
       logger?.log(`Selecting player ${t1p2.memberId} for game ${matchId}`);
@@ -326,10 +325,13 @@ export async function enterGames(
     logger?.debug(`t2p1`, { id: t2p1?.id, memberId: t2p1?.memberId, fullName: t2p1?.fullName });
     if (t2p1) {
       if (!t2p1.memberId) {
-        logger?.error(`Player ${t2p1.fullName} has no memberId, skipping`);
+        logger?.error(
+          `Player ${t2p1.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
+          `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
+        );
         continue;
       }
-      logger?.debug(`Selecting player ${t2p1.memberId} for game ${matchId}`);
+      logger?.log(`Selecting player ${t2p1.memberId} for game ${matchId}`);
       await selectPlayer({ page }, t2p1.memberId, "t2p1", matchId, logger);
     }
 
@@ -338,7 +340,10 @@ export async function enterGames(
     );
     if (t2p2) {
       if (!t2p2.memberId) {
-        logger?.error(`Player ${t2p2.fullName} has no memberId, skipping`);
+        logger?.error(
+          `Player ${t2p2.fullName} has no memberId for game ${game.id} (encounter ${encounter.id}, position ${assemblyPosition}). ` +
+          `Abandoning entire game row — remaining players, scores, and winner for this game will NOT be entered.`
+        );
         continue;
       }
       logger?.log(`Selecting player ${t2p2.memberId} for game ${matchId}`);
@@ -399,6 +404,8 @@ export async function enterGames(
   logger?.log("Validating all player inputs...");
   const processedGames = Array.from(gameAssemblyMap.keys());
   await validateAndRefillPlayerInputs({ page }, processedGames, logger);
+
+  logger?.log(`enterGames completed: processed ${gameAssemblyMap.size}/${orderedPositions.length} games for encounter ${encounter.id}`);
 }
 
 /**
@@ -498,5 +505,6 @@ async function validateAndRefillPlayerInputs(
     logger?.log("Player input validation completed");
   } catch (error) {
     logger?.error("Error during player input validation:", error);
+    throw error;
   }
 }
