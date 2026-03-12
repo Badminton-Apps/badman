@@ -1,5 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# claude code
+.claude/settings.local.json
+
 # compiled output
 dist
 tmp
@@ -37,6 +40,8 @@ Thumbs.db
 
 .angular
 .env
+.env.*
+!.env.example
 .cache
 
 /database/backup
