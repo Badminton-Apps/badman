@@ -1,6 +1,5 @@
 import { acceptCookies } from './accept-coockies';
 import { Logger } from '@nestjs/common';
-import * as shared from './shared';
 
 jest.mock('./shared', () => ({
   waitForSelectors: jest.fn().mockResolvedValue({
@@ -16,7 +15,6 @@ describe('acceptCookies', () => {
     logger = new Logger('test');
     jest.clearAllMocks();
 
-    // Create a mock page with necessary methods
     mockPage = {
       setRequestInterception: jest.fn().mockResolvedValue(undefined),
       waitForNavigation: jest.fn().mockResolvedValue(undefined),
@@ -28,46 +26,24 @@ describe('acceptCookies', () => {
     };
   });
 
-  it('should properly cleanup request interception after completion', async () => {
+  it('should enable request interception and register a handler', async () => {
     await acceptCookies({ page: mockPage }, { logger });
 
-    // Verify request interception was enabled then disabled
-    const calls = mockPage.setRequestInterception.mock.calls;
-    expect(calls[0][0]).toBe(true);
-    expect(calls[calls.length - 1][0]).toBe(false);
-
-    // Verify request handler was attached and removed
+    expect(mockPage.setRequestInterception).toHaveBeenCalledWith(true);
     expect(mockPage.on).toHaveBeenCalledWith('request', expect.any(Function));
-    expect(mockPage.off).toHaveBeenCalledWith('request', expect.any(Function));
   });
 
-  it('should still cleanup even if an error occurs', async () => {
-    (shared.waitForSelectors as jest.Mock).mockRejectedValueOnce(
-      new Error('Navigation failed'),
-    );
-
-    await expect(acceptCookies({ page: mockPage }, { logger })).rejects.toThrow();
-
-    // Verify cleanup still happened
-    expect(mockPage.off).toHaveBeenCalledWith('request', expect.any(Function));
-    expect(mockPage.setRequestInterception).toHaveBeenCalledWith(false);
-  });
-
-  it('should use the same handler reference for on and off', async () => {
-    let capturedHandler: Function | null = null;
-
-    mockPage.on.mockImplementation((event: string, handler: Function) => {
-      if (event === 'request') capturedHandler = handler;
-    });
-
+  it('should keep interception active for the page lifetime (no cleanup)', async () => {
     await acceptCookies({ page: mockPage }, { logger });
 
-    expect(mockPage.off).toHaveBeenCalledWith('request', capturedHandler);
+    // Should NOT disable interception — the page continues to be used after acceptCookies
+    expect(mockPage.setRequestInterception).toHaveBeenCalledTimes(1);
+    expect(mockPage.setRequestInterception).toHaveBeenCalledWith(true);
+    expect(mockPage.off).not.toHaveBeenCalled();
   });
 
   it('should continue allowed requests', async () => {
     let capturedHandler: any = null;
-
     mockPage.on.mockImplementation((event: string, handler: Function) => {
       if (event === 'request') capturedHandler = handler;
     });
@@ -86,7 +62,6 @@ describe('acceptCookies', () => {
 
   it('should abort analytics requests', async () => {
     let capturedHandler: any = null;
-
     mockPage.on.mockImplementation((event: string, handler: Function) => {
       if (event === 'request') capturedHandler = handler;
     });
@@ -103,26 +78,25 @@ describe('acceptCookies', () => {
     expect(mockRequest.abort).toHaveBeenCalled();
   });
 
-  it('should not crash when request.continue() throws (interception disabled)', async () => {
+  it('should not crash when request.continue() rejects (interception disabled)', async () => {
     let capturedHandler: any = null;
-
     mockPage.on.mockImplementation((event: string, handler: Function) => {
       if (event === 'request') capturedHandler = handler;
     });
 
     await acceptCookies({ page: mockPage }, { logger });
 
-    // Simulate the exact error: "Request Interception is not enabled!"
+    // Simulate the exact production error
     const mockRequest = {
       url: () => 'https://example.com/page',
       isInterceptResolutionHandled: () => false,
       continue: jest.fn().mockRejectedValue(new Error('Request Interception is not enabled!')),
     };
 
-    // This should NOT throw — the handler catches the rejection
+    // Should NOT throw — the .catch() swallows it
     capturedHandler(mockRequest);
 
-    // Flush the microtask queue to ensure the .catch() runs
+    // Flush microtask queue
     await new Promise((resolve) => setImmediate(resolve));
 
     expect(mockRequest.continue).toHaveBeenCalled();
@@ -130,7 +104,6 @@ describe('acceptCookies', () => {
 
   it('should skip already-handled requests', async () => {
     let capturedHandler: any = null;
-
     mockPage.on.mockImplementation((event: string, handler: Function) => {
       if (event === 'request') capturedHandler = handler;
     });
