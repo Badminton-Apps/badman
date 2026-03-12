@@ -72,6 +72,39 @@ There are currently 2 async workers that can be run on the application, which sy
 
 Note: These workers heavily rely on the toernooi.nl system, and utilize the `VR_API_USER` and `VR_API_PASS` env variables. These variables should be available by request to the PandaPanda team. Be careful though: if the sync worker has actual credentials, there is the potential that "production" data on the toernooi.nl website will be affected. Refer to PandaPanda's documentation on the badman workers to understand what things can be affected, and the standard sync schedule for each worker before running them with true credentials. Otherwise, add `Test` as the value of each variable to ensure data does not get updated.
 
+### 10. Testing
+
+This is an Nx monorepo using Jest for testing. Run tests using npm scripts or nx commands:
+
+#### Run Tests
+
+- `npx nx test <project>` - Run tests for a specific project (e.g., `npx nx test worker-sync`)
+- `npm run test:affected` - Run tests for projects affected by recent changes
+- `npm run test:affected:coverage` - Run affected tests with coverage reports
+
+#### Run Tests with Coverage
+
+- `npx nx test <project> --coverage` - Run tests for a project with coverage
+- `npm run test:coverage` - Run tests for all projects with coverage
+
+#### Examples
+
+```bash
+# Run worker-sync tests (275 tests)
+npx nx test worker-sync
+
+# Run worker-sync tests with coverage reports
+npx nx test worker-sync --coverage
+
+# Run tests for projects affected by recent changes
+npm run test:affected
+
+# Run affected tests with coverage
+npm run test:affected:coverage
+```
+
+**Coverage Reports**: Generated in `./coverage` directory when running with `--coverage` flag.
+
 ## Legacy readme content
 
 everything below this should be further reviewed, and edited or removed
