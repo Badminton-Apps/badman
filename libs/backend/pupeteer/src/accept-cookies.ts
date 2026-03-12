@@ -25,12 +25,15 @@ export async function acceptCookies(
   const onRequest = (request: HTTPRequest) => {
     // block any google analytics / ads requests
     if (!request.isInterceptResolutionHandled()) {
-      if (request.url().includes("google-analytics") || request.url().includes("ads")) {
-        // console.log('aborting', request.url());
-        request.abort();
-      } else {
-        request.continue();
-      }
+      const action =
+        request.url().includes("google-analytics") || request.url().includes("ads")
+          ? request.abort()
+          : request.continue();
+
+      // Catch errors from continue/abort — interception may no longer be active
+      // (e.g. page closed or browser restarted while request was in-flight)
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      action.catch(() => {});
     }
   };
 

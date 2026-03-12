@@ -26,7 +26,12 @@ module.exports = [
     files: ["**/*.json"],
     rules: {
       ...config.rules,
-      "@nx/dependency-checks": "error",
+      "@nx/dependency-checks": [
+        "error",
+        {
+          ignoredDependencies: ["tslib", "puppeteer", "@nestjs/common"],
+        },
+      ],
     },
   })),
 ];
