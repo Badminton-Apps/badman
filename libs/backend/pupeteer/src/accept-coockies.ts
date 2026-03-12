@@ -27,16 +27,17 @@ export async function acceptCookies(
   {
     await page.setRequestInterception(true);
     requestHandler = (request: HTTPRequest) => {
-      // block any google analytics / ads requests
+      if (request.isInterceptResolutionHandled()) return;
 
-      if (!request.isInterceptResolutionHandled()) {
-        if (request.url().includes('google-analytics') || request.url().includes('ads')) {
-          // console.log('aborting', request.url());
-          request.abort();
-        } else {
-          request.continue();
-        }
-      }
+      // block any google analytics / ads requests
+      const action =
+        request.url().includes('google-analytics') || request.url().includes('ads')
+          ? request.abort()
+          : request.continue();
+
+      // Catch errors from continue/abort — interception may no longer be active
+      // (e.g. page closed, navigated, or concurrent page interference)
+      action.catch(() => {});
     };
     page.on('request', requestHandler);
   }
@@ -68,33 +69,39 @@ export async function acceptCookies(
       promises.push(targetPage.waitForNavigation());
 
       // Wait for the page to be idle
-      logger?.debug('waiting for network idle')
+      logger?.debug('waiting for network idle');
       await targetPage.waitForNetworkIdle({ idleTime: 500, timeout: timeout });
-      logger?.debug('network idle')
+      logger?.debug('network idle');
 
       // Check for consent dialog frame without waiting
-      const consentDialogFrame = await targetPage.$('iframe[src="https://nojazz.eu/nl/cmp/consentui-2.2-consentmode/"]');
-      logger?.debug('consentDialog found:', !!consentDialogFrame)
+      const consentDialogFrame = await targetPage.$(
+        'iframe[src="https://nojazz.eu/nl/cmp/consentui-2.2-consentmode/"]',
+      );
+      logger?.debug('consentDialog found:', !!consentDialogFrame);
 
       if (consentDialogFrame) {
         const frame = await consentDialogFrame.contentFrame();
         if (frame) {
           try {
-            const greenButton = await frame.waitForSelector('#consentui .btn.green', { timeout: 1000 });
+            const greenButton = await frame.waitForSelector('#consentui .btn.green', {
+              timeout: 1000,
+            });
             if (greenButton) {
-              logger?.debug('Found green button in consent dialog, clicking')
+              logger?.debug('Found green button in consent dialog, clicking');
               await greenButton.click();
               // Wait for the dialog to disappear and page to be idle again
               await targetPage.waitForNetworkIdle({ idleTime: 500, timeout: 5000 });
             }
           } catch (error: any) {
-            logger?.debug('No green button found in consent dialog:', error?.message || 'Unknown error')
+            logger?.debug(
+              'No green button found in consent dialog:',
+              error?.message || 'Unknown error',
+            );
           }
         }
       } else {
-        logger?.debug('No consent dialog frame found, continuing')
+        logger?.debug('No consent dialog frame found, continuing');
       }
-
     }
   } finally {
     // Clean up request interception to avoid race conditions in subsequent page navigation
