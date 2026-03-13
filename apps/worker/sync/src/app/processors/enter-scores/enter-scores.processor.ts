@@ -192,7 +192,9 @@ export class EnterScoresProcessor {
         `Entering scores for following encounter: Visual Code: ${encounter.visualCode}, Encounter id: ${encounterId}`
       );
 
-      // 🔧 FIX: Wrap acceptCookies in specific error handling
+      // acceptCookies navigates to toernooi.nl/cookiewall/ and clicks accept; that navigation
+      // can yield net::ERR_ABORTED (see libs/backend/pupeteer accept-cookies.ts). We handle
+      // ERR_ABORTED there and retries here mean the sync can still succeed on a later attempt.
       try {
         await this.formPage.acceptCookies(20000);
         this.logger.log("✅ Cookie acceptance completed successfully");
@@ -424,7 +426,9 @@ export class EnterScoresProcessor {
         `EnterScores failed for encounter ${encounter?.visualCode || encounterId} [attempt ${job.attemptsMade + 1}/${maxAttempts}]: ${error?.message || error}`
       );
 
-      // Only send the failure email on the final attempt to avoid flooding the inbox
+      // Failure can be e.g. net::ERR_ABORTED at cookiewall (acceptCookies step). The job
+      // retries; a later attempt often succeeds, so the sync may still complete.
+      // Only send the failure email on the final attempt to avoid flooding the inbox.
       if (finalAttempt) {
         if (devEmailDestination) {
           try {
