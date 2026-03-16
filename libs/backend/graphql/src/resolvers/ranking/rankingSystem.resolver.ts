@@ -47,8 +47,11 @@ export class RankingSystemResolver {
 
   @Query(() => RankingSystem)
   async primaryRankingSystem(): Promise<RankingSystem> {
+    this.logger.log("Fetching primary ranking system");
     const primaryRankingSystem = await RankingSystem.findOne({ where: { primary: true } });
+    this.logger.debug("Primary ranking system found", primaryRankingSystem);
     if (!primaryRankingSystem) {
+      this.logger.error("No primary ranking system found");
       throw new NotFoundException("No primary ranking system found");
     }
     return primaryRankingSystem;
