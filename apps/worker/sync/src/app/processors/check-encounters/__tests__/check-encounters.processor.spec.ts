@@ -99,7 +99,7 @@ function makeConfig(overrides: Record<string, unknown> = {}) {
 
 function makeDetailPageService() {
   return {
-    isOpen: jest.fn().mockReturnValue(false),
+    isOpen: jest.fn().mockReturnValue(true),
     open: jest.fn().mockResolvedValue(undefined),
     close: jest.fn().mockResolvedValue(undefined),
     acceptCookies: jest.fn().mockResolvedValue(undefined),
