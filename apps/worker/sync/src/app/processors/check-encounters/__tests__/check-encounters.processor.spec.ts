@@ -246,6 +246,20 @@ describe("CheckEncounterProcessor", () => {
       // Should open page for each chunk (3 chunks: 0-9, 10-19, 20-24)
       expect(detailPage.open).toHaveBeenCalledTimes(3);
     });
+
+    it("re-opens and accepts cookies when page is closed before an encounter", async () => {
+      const encounters = [makeEncounter({ id: "enc-1" }), makeEncounter({ id: "enc-2" })];
+      findAndCountAllSpy.mockResolvedValue({ count: 2, rows: encounters } as any);
+      detailPage.getDetailEntered.mockResolvedValue({ entered: true, enteredOn: new Date() });
+      // Before first encounter: page is open (just opened at start of chunk). Before second: closed.
+      detailPage.isOpen.mockReturnValueOnce(true).mockReturnValueOnce(false);
+
+      const job = makeJob();
+      await processor.syncEncounters(job as any);
+
+      expect(detailPage.open).toHaveBeenCalledTimes(2); // once at chunk start, once when re-opening
+      expect(detailPage.acceptCookies).toHaveBeenCalledTimes(2); // once at chunk start, once after re-open
+    });
   });
 
   describe("syncEncounter (single job)", () => {
