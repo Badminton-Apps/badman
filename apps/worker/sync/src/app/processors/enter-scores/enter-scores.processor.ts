@@ -316,13 +316,16 @@ export class EnterScoresProcessor {
               waitUntil: "networkidle0",
               timeout: saveWaitTimeout,
             }),
-            this.formPage.waitForNetworkIdle({ idleTime: 1000, timeout: saveWaitTimeout }).catch(() => null),
+            this.formPage
+              .waitForNetworkIdle({ idleTime: 1000, timeout: saveWaitTimeout })
+              .catch(() => null),
           ]);
           this.logger.log(`Navigation or network idle after save completed`);
           saveSucceeded = true;
         } catch (navigationError: unknown) {
           saveFailureReason = "navigation-timeout";
-          const navMsg = navigationError instanceof Error ? navigationError.message : String(navigationError);
+          const navMsg =
+            navigationError instanceof Error ? navigationError.message : String(navigationError);
           this.logger.warn(
             `Navigation after save button click failed (e.g. net::ERR_ABORTED at cookiewall); will check page state: ${navMsg}`
           );
@@ -370,9 +373,7 @@ export class EnterScoresProcessor {
           saveFailureReason === "navigation-timeout" &&
           rowErrorMessages.length === 0
         ) {
-          this.logger.log(
-            "Post-save navigation failed but no row errors — treating as success"
-          );
+          this.logger.log("Post-save navigation failed but no row errors — treating as success");
           saveSucceeded = true;
         }
 
@@ -388,7 +389,9 @@ export class EnterScoresProcessor {
                 encounter.visualCode,
                 toernooiUrl
               );
-              this.logger.log(`Success email sent for encounter ${encounter.visualCode || encounter.id}`);
+              this.logger.log(
+                `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+              );
             } catch (emailError) {
               this.logger.error("Failed to send success email:", emailError?.message || emailError);
             }
@@ -426,7 +429,9 @@ export class EnterScoresProcessor {
               encounter.visualCode,
               toernooiUrl
             );
-            this.logger.log(`Success email sent for encounter ${encounter.visualCode || encounter.id}`);
+            this.logger.log(
+              `Success email sent for encounter ${encounter.visualCode || encounter.id}`
+            );
           } catch (emailError) {
             this.logger.error("Failed to send success email:", emailError?.message || emailError);
           }
@@ -436,15 +441,23 @@ export class EnterScoresProcessor {
           );
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       const maxAttempts = job.opts?.attempts ?? 1;
       const finalAttempt = isFinalAttempt(job.attemptsMade, maxAttempts);
+      const errorMessage = error instanceof Error ? error.message : String(error);
 
       this.logger.error(
-        `EnterScores failed for encounter ${encounter?.visualCode || encounterId} [attempt ${job.attemptsMade + 1}/${maxAttempts}]: ${error?.message || error}`
+        `EnterScores failed for encounter ${encounter?.visualCode || encounterId} [attempt ${job.attemptsMade + 1}/${maxAttempts}]: ${errorMessage}`
       );
 
-      // Failure can be e.g. net::ERR_ABORTED at cookiewall (acceptCookies step). The job
+      if (errorMessage.includes("Execution context was destroyed")) {
+        this.logger.warn(
+          "Execution context was destroyed (often transient; job will retry with a fresh browser)"
+        );
+      }
+
+      // Failure can be e.g. net::ERR_ABORTED at cookiewall (acceptCookies step), or
+      // Execution context was destroyed. The job retries; a later attempt often succeeds.
       // retries; a later attempt often succeeds, so the sync may still complete.
       // Only send the failure email on the final attempt to avoid flooding the inbox.
       if (finalAttempt) {
@@ -453,7 +466,7 @@ export class EnterScoresProcessor {
             const toernooiUrl = this.constructToernooiUrl(encounter);
             await this.mailingService.sendEnterScoresFailedMail(
               encounterId,
-              error?.message || String(error),
+              errorMessage,
               {
                 fullName: "Dev team",
                 email: devEmailDestination,
@@ -462,7 +475,9 @@ export class EnterScoresProcessor {
               encounter?.visualCode,
               toernooiUrl
             );
-            this.logger.log(`Failure email sent for encounter ${encounter?.visualCode || encounterId}`);
+            this.logger.log(
+              `Failure email sent for encounter ${encounter?.visualCode || encounterId}`
+            );
           } catch (emailError) {
             this.logger.error("Failed to send failure email:", emailError?.message || emailError);
           }
