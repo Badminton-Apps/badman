@@ -1,5 +1,6 @@
 import { SyncQueue } from "@badman/backend-queue";
 import { InjectQueue, OnGlobalQueueError, OnGlobalQueueFailed, Processor } from "@nestjs/bull";
+import * as Sentry from "@sentry/nestjs";
 import { Logger, OnModuleInit } from "@nestjs/common";
 import { Job, Queue } from "bull";
 
@@ -19,12 +20,24 @@ export class GlobalConsumer implements OnModuleInit {
 
 
   @OnGlobalQueueError()
-  onGlobalError(err: Error) {
-    this.logger.error(`Queue error: ${err.message}`, err.stack);
+  onGlobalError(err: Error | undefined) {
+    const message = err instanceof Error ? err.message : err != null ? String(err) : "unknown error";
+    const stack = err instanceof Error ? err.stack : undefined;
+    this.logger.error(`Queue error: ${message}`, stack);
+    Sentry.setTag("queue", SyncQueue);
+    if (err) {
+      Sentry.captureException(err);
+    } else {
+      Sentry.captureMessage(`Queue error: ${message}`, "error");
+    }
   }
 
   @OnGlobalQueueFailed()
-  async onError(jobId: string, err: Error) {
+  async onError(jobId: string, err: Error | undefined) {
+    const errorMessage =
+      err instanceof Error ? err.message : err != null ? String(err) : "unknown error";
+    const errorStack = err instanceof Error ? err.stack : undefined;
+
     try {
       const job = await this.queue.getJob(jobId);
       const jobName = job?.name ?? "unknown";
@@ -34,19 +47,43 @@ export class GlobalConsumer implements OnModuleInit {
         try {
           jobData = JSON.stringify(job.data);
         } catch (stringifyError) {
-          // Handle circular references or non-serializable data
-          jobData = `[unable to serialize: ${stringifyError?.message}]`;
+          jobData = `[unable to serialize: ${(stringifyError as Error)?.message}]`;
         }
       }
 
       const attemptsMade = job?.attemptsMade ?? "?";
       const attemptsTotal = job?.opts?.attempts ?? "?";
       this.logger.error(
-        `Job ${jobId} (${jobName}) failed [attempt ${attemptsMade}/${attemptsTotal}] — data: ${jobData} — error: ${err.message}`,
-        err.stack
+        `Job ${jobId} (${jobName}) failed [attempt ${attemptsMade}/${attemptsTotal}] — data: ${jobData} — error: ${errorMessage}`,
+        errorStack
       );
+
+      Sentry.setTag("queue", SyncQueue);
+      Sentry.setTag("job_name", jobName);
+      Sentry.setContext("bullJob", {
+        jobId,
+        jobName,
+        attemptsMade: String(attemptsMade),
+        attemptsTotal: String(attemptsTotal),
+        data: jobData,
+      });
+      if (err) {
+        Sentry.captureException(err);
+      } else {
+        Sentry.captureMessage(`Job ${jobId} (${jobName}) failed: ${errorMessage}`, "error");
+      }
     } catch (lookupError) {
-      this.logger.error(`Job ${jobId} failed — error: ${err.message} (could not fetch job details: ${lookupError?.message})`, err.stack);
+      this.logger.error(
+        `Job ${jobId} failed — error: ${errorMessage} (could not fetch job details: ${(lookupError as Error)?.message})`,
+        errorStack
+      );
+      Sentry.setTag("queue", SyncQueue);
+      Sentry.setContext("bullJob", { jobId, errorMessage });
+      if (err) {
+        Sentry.captureException(err);
+      } else {
+        Sentry.captureMessage(`Job ${jobId} failed: ${errorMessage}`, "error");
+      }
     }
   }
 }
