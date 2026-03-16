@@ -191,6 +191,7 @@ describe("EnterScoresProcessor", () => {
       await expect(processor.enterScores(job as any)).rejects.toThrow(/enc-1 not found/);
 
       expect(Sentry.setTag).toHaveBeenCalledWith("processor", "enter-scores");
+      expect(Sentry.setTag).toHaveBeenCalledWith("error_code", "ENCOUNTER_NOT_FOUND");
       expect(Sentry.setContext).toHaveBeenCalledWith(
         "job",
         expect.objectContaining({
@@ -198,6 +199,8 @@ describe("EnterScoresProcessor", () => {
           jobId: "job-1",
           attemptsMade: 1,
           maxAttempts: 1,
+          phase: "load_encounter",
+          errorCode: "ENCOUNTER_NOT_FOUND",
         })
       );
     });
@@ -374,10 +377,10 @@ describe("EnterScoresProcessor", () => {
     });
 
     it("throws when cookie acceptance fails with a non-timeout error", async () => {
-      const criticalError = Object.assign(new Error("Site down"), { name: "CookieAcceptanceError" });
+      const criticalError = new Error("Site down");
       formPage.acceptCookies.mockRejectedValue(criticalError);
 
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("Failed to accept cookies");
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("Site down");
     });
 
     it("continues when sign-in times out but user is confirmed signed in", async () => {
