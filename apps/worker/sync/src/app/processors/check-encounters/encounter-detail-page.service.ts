@@ -108,7 +108,7 @@ export class EncounterDetailPageService {
   }
 
   private _assertPage(): void {
-    if (!this.page) {
+    if (!this.page || this.page.isClosed()) {
       throw new Error("Page not open — call open() first");
     }
   }
