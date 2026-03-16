@@ -97,7 +97,7 @@ When the worker starts (`WorkerSyncModule.onApplicationBootstrap`):
 
 ### Environment gating
 
-In `development` and `test` environments, all Render API calls are no-ops (skipped). The orchestrator only makes real API calls in `production` and `staging`.
+In `development`, `test`, and `staging` environments, all Render API calls are no-ops (skipped). The orchestrator only makes real API calls in `production`.
 
 ---
 
