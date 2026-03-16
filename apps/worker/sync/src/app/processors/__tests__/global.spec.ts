@@ -5,6 +5,13 @@ import { GlobalConsumer } from "../global";
 import { SyncQueue } from "@badman/backend-queue";
 import { Job, Queue } from "bull";
 
+jest.mock("@sentry/nestjs", () => ({
+  setTag: jest.fn(),
+  setContext: jest.fn(),
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
+
 describe("GlobalConsumer", () => {
   let consumer: GlobalConsumer;
   let mockQueue: Partial<Queue>;
@@ -164,6 +171,27 @@ describe("GlobalConsumer", () => {
         expect.stringContaining("unknown"),
         expect.anything()
       );
+    });
+
+    it("handles undefined error (e.g. Bull timeout or unhandled rejection)", async () => {
+      const mockJob = {
+        id: "job-6914",
+        name: "EnterScores",
+        data: { encounterId: "0953c888-ef13-4cc3-9239-923dfc716521" },
+        attemptsMade: 1,
+        opts: { attempts: 1 },
+      } as Partial<Job>;
+
+      (mockQueue.getJob as jest.Mock).mockResolvedValue(mockJob);
+
+      await consumer.onError("job-6914", undefined);
+
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      const [message, stack] = loggerErrorSpy.mock.calls[0];
+      expect(message).toContain("unknown error");
+      expect(message).toContain("EnterScores");
+      expect(message).toContain("job-6914");
+      expect(stack).toBeUndefined();
     });
   });
 
