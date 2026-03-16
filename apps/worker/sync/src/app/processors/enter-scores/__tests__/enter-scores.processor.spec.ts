@@ -3,8 +3,14 @@ import { TransactionManager } from "@badman/backend-queue";
 import { MailingService } from "@badman/backend-mailing";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
+import * as Sentry from "@sentry/nestjs";
 import { EnterScoresProcessor } from "../enter-scores.processor";
 import { EncounterFormPageService } from "../encounter-form-page.service";
+
+jest.mock("@sentry/nestjs", () => ({
+  setTag: jest.fn(),
+  setContext: jest.fn(),
+}));
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -172,6 +178,28 @@ describe("EnterScoresProcessor", () => {
 
       await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("enc-1 not found");
       expect(formPage.enterEditMode).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── Sentry context on failure ─────────────────────────────────────────────
+
+  describe("Sentry context on failure", () => {
+    it("sets processor tag and job context when enterScores throws", async () => {
+      findByPkSpy.mockResolvedValue(null);
+
+      const job = makeJob({ encounterId: "enc-1", attemptsMade: 0, maxAttempts: 1 });
+      await expect(processor.enterScores(job as any)).rejects.toThrow(/enc-1 not found/);
+
+      expect(Sentry.setTag).toHaveBeenCalledWith("processor", "enter-scores");
+      expect(Sentry.setContext).toHaveBeenCalledWith(
+        "job",
+        expect.objectContaining({
+          encounterId: "enc-1",
+          jobId: "job-1",
+          attemptsMade: 1,
+          maxAttempts: 1,
+        })
+      );
     });
   });
 

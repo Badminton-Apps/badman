@@ -71,6 +71,7 @@ export const configSchema = Joi.object({
   CLIENT_URL: Joi.string().uri().required(),
   LEGACY_CLIENT_URL: Joi.string().uri().required(),
   LOGTAIL_TOKEN: Joi.string().optional(),
+  SENTRY_DSN: Joi.string().uri().optional(),
   AUTH0_ISSUER_URL: Joi.string().uri().required(),
   AUTH0_AUDIENCE: Joi.string().required(),
   MAIL_ENABLED: Joi.boolean().default(false),

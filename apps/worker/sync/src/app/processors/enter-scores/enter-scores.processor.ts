@@ -15,6 +15,7 @@ import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 import { ConfigType } from "@badman/utils";
+import * as Sentry from "@sentry/nestjs";
 import { startLockRenewal } from "../../utils";
 import { EncounterFormPageService } from "./encounter-form-page.service";
 import { enterScoresPreflight, isFinalAttempt } from "./guards";
@@ -445,6 +446,16 @@ export class EnterScoresProcessor {
       const maxAttempts = job.opts?.attempts ?? 1;
       const finalAttempt = isFinalAttempt(job.attemptsMade, maxAttempts);
       const errorMessage = error instanceof Error ? error.message : String(error);
+
+      Sentry.setTag("processor", "enter-scores");
+      Sentry.setContext("job", {
+        encounterId,
+        encounterVisualCode: encounter?.visualCode ?? undefined,
+        jobId: String(job.id),
+        attemptsMade: job.attemptsMade + 1,
+        maxAttempts,
+        toernooiUrl: this.constructToernooiUrl(encounter ?? null),
+      });
 
       this.logger.error(
         `EnterScores failed for encounter ${encounter?.visualCode || encounterId} [attempt ${job.attemptsMade + 1}/${maxAttempts}]: ${errorMessage}`

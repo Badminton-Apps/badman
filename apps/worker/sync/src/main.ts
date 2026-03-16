@@ -1,5 +1,6 @@
-import { WorkerSyncModule } from "./app/app.module";
+import "./instrument";
 
+import { WorkerSyncModule } from "./app/app.module";
 import { NestFactory } from "@nestjs/core";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";

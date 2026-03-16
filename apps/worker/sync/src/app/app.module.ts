@@ -11,9 +11,11 @@ import { TranslateModule } from "@badman/backend-translate";
 import { TwizzitModule } from "@badman/backend-twizzit";
 import { VisualModule } from "@badman/backend-visual";
 import { EventsGateway, SocketModule } from "@badman/backend-websockets";
+import { SentryGlobalFilter, SentryModule } from "@sentry/nestjs/setup";
 import { EVENTS, configSchema, load, ConfigType } from "@badman/utils";
 import { Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { APP_FILTER } from "@nestjs/core";
 import { join } from "path";
 import versionPackage from "../version.json";
 import { EncounterFormPageService } from "./processors/enter-scores/encounter-form-page.service";
@@ -48,6 +50,7 @@ import {
 @Module({
   controllers: [AdminJobsController],
   providers: [
+    { provide: APP_FILTER, useClass: SentryGlobalFilter },
     GlobalConsumer,
     IdleShutdownService,
 
@@ -82,6 +85,7 @@ import {
     ScheduleRecalculateStandingCompetitionEvent,
   ],
   imports: [
+    SentryModule.forRoot(),
     ConfigModule.forRoot({
       cache: true,
       validationSchema: configSchema,
