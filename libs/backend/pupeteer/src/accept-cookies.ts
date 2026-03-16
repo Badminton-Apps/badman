@@ -32,7 +32,7 @@ export async function acceptCookies(
 
       // Catch errors from continue/abort — interception may no longer be active
       // (e.g. page closed or browser restarted while request was in-flight)
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+
       action.catch(() => {});
     }
   };
@@ -42,47 +42,51 @@ export async function acceptCookies(
 
   try {
     {
-      const targetPage = page;
-      const promises = [];
-      promises.push(targetPage.waitForNavigation({ timeout: (timeout || 5000) * 3 })); // Use 3x timeout for initial navigation
-      await targetPage.goto("https://www.toernooi.nl/cookiewall/");
       try {
-        await Promise.all(promises);
-      } catch (error: any) {
-        logger?.warn("Initial navigation timeout, continuing anyway:", error?.message || error);
+        await page.goto("https://www.toernooi.nl/cookiewall/", {
+          waitUntil: "domcontentloaded",
+          timeout: (timeout || 5000) * 3,
+        });
+      } catch (error: unknown) {
+        logger?.warn(
+          "Initial navigation to cookiewall failed, continuing anyway:",
+          error instanceof Error ? error.message : error
+        );
       }
     }
     {
-      const targetPage = page;
-      const promises = [];
-      promises.push(targetPage.waitForNavigation({ timeout: (timeout || 5000) * 2 })); // Use 2x timeout for button click navigation
       const element = await waitForSelectors(
         [['button[type="submit"]'], ["button.btn.btn--success.js-accept-basic"]],
-        targetPage,
+        page,
         timeout
       );
       await element.click({ offset: { x: 1.890625, y: 21.453125 } });
+      const navTimeout = (timeout || 5000) * 2;
       try {
-        await Promise.all(promises);
-      } catch (error: any) {
-        logger?.warn("Cookie button navigation timeout, continuing anyway:", error?.message || error);
+        await Promise.race([
+          page.waitForNavigation({ timeout: navTimeout }),
+          page.waitForNetworkIdle({ idleTime: 500, timeout: navTimeout }).catch(() => null),
+        ]);
+      } catch (error: unknown) {
+        logger?.warn(
+          "Cookie button click: navigation and network idle both failed or timed out, continuing anyway:",
+          error instanceof Error ? error.message : error
+        );
       }
     }
 
     {
-      const targetPage = page;
-
       // Wait for the page to be idle first
       logger?.debug("waiting for network idle");
       try {
-        await targetPage.waitForNetworkIdle({ idleTime: 500, timeout: timeout });
+        await page.waitForNetworkIdle({ idleTime: 500, timeout: timeout });
         logger?.debug("network idle");
       } catch (error: any) {
         logger?.warn("Network idle timeout, continuing anyway:", error?.message || error);
       }
 
       // Check for consent dialog frame without waiting
-      const consentDialogFrame = await targetPage.$(
+      const consentDialogFrame = await page.$(
         'iframe[src="https://nojazz.eu/nl/cmp/consentui-2.2-consentmode/"]'
       );
       logger?.debug("consentDialog found:", !!consentDialogFrame);
@@ -96,30 +100,21 @@ export async function acceptCookies(
             });
             if (greenButton) {
               logger?.debug("Found green button in consent dialog, clicking");
-
-              // Set up navigation promise ONLY when we're about to click
-              const navigationPromise = targetPage
-                .waitForNavigation({
-                  timeout: (timeout || 5000) * 2,
-                })
-                .catch((error: any) => {
-                  // Handle detached frame errors - this can happen when clicking causes navigation
-                  if (error?.message?.includes("detached") || error?.message?.includes("Frame")) {
-                    logger?.debug("Navigating frame was detached - page may have already navigated:", error?.message || error);
-                  } else {
-                    logger?.debug("Navigation after consent click timeout:", error?.message || error);
-                  }
-                  return null; // Don't throw, just return null
-                });
-
               await greenButton.click();
-
-              // Wait for either navigation or network idle, whichever comes first
-              await Promise.race([
-                navigationPromise,
-                targetPage.waitForNetworkIdle({ idleTime: 500, timeout: 5000 }).catch(() => null),
-              ]);
-
+              try {
+                await page.waitForNavigation({
+                  timeout: (timeout || 5000) * 2,
+                });
+              } catch (error: unknown) {
+                if (error instanceof Error && (error.message?.includes("detached") || error.message?.includes("Frame"))) {
+                  logger?.debug("Frame detached - page may have already navigated:", error.message);
+                } else {
+                  logger?.debug(
+                    "Navigation after consent click timeout:",
+                    error instanceof Error ? error.message : error
+                  );
+                }
+              }
               logger?.debug("Consent dialog handled successfully");
             }
           } catch (error: any) {
@@ -135,7 +130,7 @@ export async function acceptCookies(
 
       // Final check to ensure page is ready
       try {
-        await targetPage.waitForNetworkIdle({ idleTime: 300, timeout: 2000 });
+        await page.waitForNetworkIdle({ idleTime: 300, timeout: 2000 });
         logger?.debug("Final network idle check completed");
       } catch (error: any) {
         logger?.debug("Final network idle timeout, but continuing:", error?.message || error);

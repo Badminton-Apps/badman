@@ -55,24 +55,23 @@ export async function detailComment(
 
     hasComment = hasCommentResult;
     return { hasComment };
-  } catch (error) {
-    // Handle disposed element handles or page closure gracefully
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    // Handle disposed element handles, page closure, or destroyed execution context
     if (
-      error.message?.includes("disposed") ||
-      error.message?.includes("closed") ||
-      error.message?.includes("Target closed")
+      msg.includes("disposed") ||
+      msg.includes("closed") ||
+      msg.includes("Target closed") ||
+      msg.includes("Execution context was destroyed")
     ) {
       logger?.debug(
-        "Page or element was disposed while checking for comments, assuming no comment"
+        "Page or context was disposed/destroyed while checking for comments, assuming no comment"
       );
       return { hasComment: false };
     }
 
     // Re-throw other errors
-    logger?.error(
-      "Error in detailComment:",
-      error instanceof Error ? error.message : JSON.stringify(error)
-    );
+    logger?.error("Error in detailComment:", msg);
     throw error;
   }
 }

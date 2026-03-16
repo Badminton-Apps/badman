@@ -3,8 +3,14 @@ import { TransactionManager } from "@badman/backend-queue";
 import { MailingService } from "@badman/backend-mailing";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
+import * as Sentry from "@sentry/nestjs";
 import { EnterScoresProcessor } from "../enter-scores.processor";
 import { EncounterFormPageService } from "../encounter-form-page.service";
+
+jest.mock("@sentry/nestjs", () => ({
+  setTag: jest.fn(),
+  setContext: jest.fn(),
+}));
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -175,6 +181,31 @@ describe("EnterScoresProcessor", () => {
     });
   });
 
+  // ── Sentry context on failure ─────────────────────────────────────────────
+
+  describe("Sentry context on failure", () => {
+    it("sets processor tag and job context when enterScores throws", async () => {
+      findByPkSpy.mockResolvedValue(null);
+
+      const job = makeJob({ encounterId: "enc-1", attemptsMade: 0, maxAttempts: 1 });
+      await expect(processor.enterScores(job as any)).rejects.toThrow(/enc-1 not found/);
+
+      expect(Sentry.setTag).toHaveBeenCalledWith("processor", "enter-scores");
+      expect(Sentry.setTag).toHaveBeenCalledWith("error_code", "ENCOUNTER_NOT_FOUND");
+      expect(Sentry.setContext).toHaveBeenCalledWith(
+        "job",
+        expect.objectContaining({
+          encounterId: "enc-1",
+          jobId: "job-1",
+          attemptsMade: 1,
+          maxAttempts: 1,
+          phase: "load_encounter",
+          errorCode: "ENCOUNTER_NOT_FOUND",
+        })
+      );
+    });
+  });
+
   // ── Happy path ─────────────────────────────────────────────────────────────
 
   describe("happy path", () => {
@@ -307,16 +338,18 @@ describe("EnterScoresProcessor", () => {
   // ── Navigation timeout ─────────────────────────────────────────────────────
 
   describe("navigation handling", () => {
-    it("attempts network idle fallback when navigation times out", async () => {
+    it("treats as success when navigation times out but no row errors and left teammatch page", async () => {
+      const encounter = makeEncounter();
+      findByPkSpy.mockResolvedValue(encounter as any);
       formPage.waitForNavigation.mockRejectedValue(new Error("Navigation timeout"));
       formPage.getCurrentUrl.mockReturnValue("https://www.toernooi.nl/sport/matchresult.aspx");
       formPage.getRowErrorMessages.mockResolvedValue([]);
 
-      // Navigation timeout means saveSucceeded=false, so the job still throws
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("navigation timeout");
+      await processor.enterScores(makeJob() as any);
 
-      expect(formPage.waitForNetworkIdle).toHaveBeenCalledTimes(1);
-      expect(mailingService.sendEnterScoresSuccessMail).not.toHaveBeenCalled();
+      expect(formPage.waitForNetworkIdle).toHaveBeenCalled();
+      expect(encounter.update).toHaveBeenCalledWith({ scoresSyncedAt: expect.any(Date) });
+      expect(mailingService.sendEnterScoresSuccessMail).toHaveBeenCalled();
     });
 
     it("throws when navigation times out and row errors are present", async () => {
@@ -344,10 +377,10 @@ describe("EnterScoresProcessor", () => {
     });
 
     it("throws when cookie acceptance fails with a non-timeout error", async () => {
-      const criticalError = Object.assign(new Error("Site down"), { name: "CookieAcceptanceError" });
+      const criticalError = new Error("Site down");
       formPage.acceptCookies.mockRejectedValue(criticalError);
 
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("Failed to accept cookies");
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("Site down");
     });
 
     it("continues when sign-in times out but user is confirmed signed in", async () => {
@@ -421,7 +454,9 @@ describe("EnterScoresProcessor", () => {
       expect(encounter.update).toHaveBeenCalledWith({ scoresSyncedAt: expect.any(Date) });
     });
 
-    it("includes 'Still on teammatch page' when navigation+network-idle both time out and URL contains teammatch.aspx", async () => {
+    it("treats as success when navigation+network-idle both time out but no row errors (we may stay on teammatch)", async () => {
+      const encounter = makeEncounter();
+      findByPkSpy.mockResolvedValue(encounter as any);
       formPage.waitForNavigation.mockRejectedValue(new Error("Navigation timeout"));
       formPage.waitForNetworkIdle.mockRejectedValue(new Error("network idle timeout"));
       formPage.getCurrentUrl.mockReturnValue(
@@ -429,9 +464,10 @@ describe("EnterScoresProcessor", () => {
       );
       formPage.getRowErrorMessages.mockResolvedValue([]);
 
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
-        /Still on teammatch page/
-      );
+      await processor.enterScores(makeJob() as any);
+
+      expect(encounter.update).toHaveBeenCalledWith({ scoresSyncedAt: expect.any(Date) });
+      expect(mailingService.sendEnterScoresSuccessMail).toHaveBeenCalled();
     });
   });
 
@@ -453,14 +489,15 @@ describe("EnterScoresProcessor", () => {
   // ── saveFailureReason in error message ────────────────────────────────────
 
   describe("saveFailureReason in error message", () => {
-    it("includes 'navigation timeout' when save fails due to navigation timeout", async () => {
+    it("includes 'row validation' when navigation times out but row errors are present after save", async () => {
       formPage.waitForNavigation.mockRejectedValue(new Error("Navigation timeout"));
-      formPage.waitForNetworkIdle.mockResolvedValue(undefined);
-      // Post-save: no row errors, but saveSucceeded = false because navigation timed out
-      formPage.getRowErrorMessages.mockResolvedValue([]);
+      formPage.waitForNetworkIdle.mockRejectedValue(new Error("network idle timeout"));
+      formPage.getRowErrorMessages
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(["Post-save validation error"]);
 
       await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
-        /navigation timeout/i
+        /row validation/i
       );
     });
 

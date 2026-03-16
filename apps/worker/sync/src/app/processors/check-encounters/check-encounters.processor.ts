@@ -175,14 +175,32 @@ export class CheckEncounterProcessor {
 
           // Processing encounters
           for (const encounter of chunk) {
+            await this.ensurePageOpenForEncounter();
             await this.loadEvent(encounter);
             // if event is not found we can't continue
             if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition) {
               continue;
             }
 
-            await this._syncEncounter(encounter);
-            encountersProcessed++;
+            try {
+              await this._syncEncounter(encounter);
+              encountersProcessed++;
+            } catch (syncError: unknown) {
+              const msg = syncError instanceof Error ? syncError.message : String(syncError);
+              if (msg.includes("Execution context was destroyed")) {
+                this.logger.warn(
+                  `Execution context destroyed for encounter ${encounter.visualCode}, closing page and continuing with next`
+                );
+                try {
+                  await this.detailPage.close();
+                } catch (closeErr) {
+                  this.logger.debug("Error closing destroyed page:", (closeErr as Error)?.message ?? closeErr);
+                }
+                // Next iteration will re-open via ensurePageOpenForEncounter()
+              } else {
+                throw syncError;
+              }
+            }
           }
 
           chunksProcessed++;
@@ -265,6 +283,28 @@ export class CheckEncounterProcessor {
       }
 
       this.logger.log("Synced encounter");
+    }
+  }
+
+  /// Ensure the browser page is open (re-open and accept cookies if it was closed).
+  /// Call before each encounter so we recover if the page closed unexpectedly during the chunk.
+  private async ensurePageOpenForEncounter(): Promise<void> {
+    if (this.detailPage.isOpen()) {
+      return;
+    }
+    this.logger.warn("Page not open — re-opening before encounter");
+    await this.detailPage.open();
+    try {
+      await this.detailPage.acceptCookies();
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      const isTimeoutError =
+        msg.includes("timeout") || msg.includes("timed out") || (error as { name?: string })?.name === "ProtocolError";
+      if (isTimeoutError) {
+        this.logger.warn("Cookie acceptance timed out after re-open (continuing anyway):", msg);
+      } else {
+        throw error;
+      }
     }
   }
 
