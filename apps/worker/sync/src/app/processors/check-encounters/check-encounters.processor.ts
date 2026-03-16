@@ -182,8 +182,25 @@ export class CheckEncounterProcessor {
               continue;
             }
 
-            await this._syncEncounter(encounter);
-            encountersProcessed++;
+            try {
+              await this._syncEncounter(encounter);
+              encountersProcessed++;
+            } catch (syncError: unknown) {
+              const msg = syncError instanceof Error ? syncError.message : String(syncError);
+              if (msg.includes("Execution context was destroyed")) {
+                this.logger.warn(
+                  `Execution context destroyed for encounter ${encounter.visualCode}, closing page and continuing with next`
+                );
+                try {
+                  await this.detailPage.close();
+                } catch (closeErr) {
+                  this.logger.debug("Error closing destroyed page:", (closeErr as Error)?.message ?? closeErr);
+                }
+                // Next iteration will re-open via ensurePageOpenForEncounter()
+              } else {
+                throw syncError;
+              }
+            }
           }
 
           chunksProcessed++;

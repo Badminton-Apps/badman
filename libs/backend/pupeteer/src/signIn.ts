@@ -39,12 +39,38 @@ export async function signIn(
   // LOGIN
   {
     const targetPage = page;
-    
+
     // Validate page state before navigation
     if (targetPage.isClosed()) {
       throw new Error("Page is closed, cannot proceed with sign in");
     }
-    
+
+    const loginButtonSelectors = [
+      ["aria/Log in"],
+      ["body > div.content > div.masthead.masthead--fixed > div.masthead__user > a"],
+    ];
+
+    let element: Awaited<ReturnType<typeof waitForSelectors>>;
+    try {
+      element = await waitForSelectors(loginButtonSelectors, targetPage, timeout);
+    } catch (loginButtonError: unknown) {
+      const msg = loginButtonError instanceof Error ? loginButtonError.message : String(loginButtonError);
+      logger?.warn("Log in button not found, re-checking if already signed in:", msg);
+      try {
+        const profileMenu = await targetPage.waitForSelector("#profileMenu", { timeout: 2000 });
+        if (profileMenu) {
+          logger?.log("User is already signed in (profileMenu found after retry), skipping login");
+          return;
+        }
+      } catch {
+        // profileMenu not found, so we really need to log in and can't
+      }
+      throw new Error(
+        `Login button not found. Site layout may have changed or we're not on the expected page. ${msg}`
+      );
+    }
+    if (!element) throw new Error("Login button not found");
+
     const promises = [];
     const navigationPromise = targetPage
       .waitForNavigation({
@@ -55,23 +81,12 @@ export async function signIn(
         // Handle detached frame errors gracefully
         if (error?.message?.includes("detached") || error?.message?.includes("Frame")) {
           logger?.warn("Navigation frame detached, page may have already navigated:", error?.message);
-          // Check if we're already on the login page
           return null;
         }
         throw error;
       });
     promises.push(navigationPromise);
-    
-    const element = await waitForSelectors(
-      [
-        ["aria/Log in"],
-        ["body > div.content > div.masthead.masthead--fixed > div.masthead__user > a"],
-      ],
-      targetPage,
-      timeout
-    );
-    if (!element) throw new Error("Login button not found");
-    
+
     await element.click({ offset: { x: 32.265625, y: 14.078125 } });
     
     try {

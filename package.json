@@ -93,6 +93,7 @@
     "@ngx-translate/http-loader": "^16.0.1",
     "@nx/angular": "21.3.7",
     "@nx/nest": "21.3.7",
+    "@sentry/nestjs": "^10.43.0",
     "@socket.io/redis-adapter": "^8.3.0",
     "@swc-node/register": "^1.10.9",
     "@swc/core": "^1.10.16",

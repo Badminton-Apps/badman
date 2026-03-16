@@ -3,8 +3,14 @@ import { TransactionManager } from "@badman/backend-queue";
 import { MailingService } from "@badman/backend-mailing";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
+import * as Sentry from "@sentry/nestjs";
 import { EnterScoresProcessor } from "../enter-scores.processor";
 import { EncounterFormPageService } from "../encounter-form-page.service";
+
+jest.mock("@sentry/nestjs", () => ({
+  setTag: jest.fn(),
+  setContext: jest.fn(),
+}));
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -172,6 +178,31 @@ describe("EnterScoresProcessor", () => {
 
       await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("enc-1 not found");
       expect(formPage.enterEditMode).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── Sentry context on failure ─────────────────────────────────────────────
+
+  describe("Sentry context on failure", () => {
+    it("sets processor tag and job context when enterScores throws", async () => {
+      findByPkSpy.mockResolvedValue(null);
+
+      const job = makeJob({ encounterId: "enc-1", attemptsMade: 0, maxAttempts: 1 });
+      await expect(processor.enterScores(job as any)).rejects.toThrow(/enc-1 not found/);
+
+      expect(Sentry.setTag).toHaveBeenCalledWith("processor", "enter-scores");
+      expect(Sentry.setTag).toHaveBeenCalledWith("error_code", "ENCOUNTER_NOT_FOUND");
+      expect(Sentry.setContext).toHaveBeenCalledWith(
+        "job",
+        expect.objectContaining({
+          encounterId: "enc-1",
+          jobId: "job-1",
+          attemptsMade: 1,
+          maxAttempts: 1,
+          phase: "load_encounter",
+          errorCode: "ENCOUNTER_NOT_FOUND",
+        })
+      );
     });
   });
 
@@ -346,10 +377,10 @@ describe("EnterScoresProcessor", () => {
     });
 
     it("throws when cookie acceptance fails with a non-timeout error", async () => {
-      const criticalError = Object.assign(new Error("Site down"), { name: "CookieAcceptanceError" });
+      const criticalError = new Error("Site down");
       formPage.acceptCookies.mockRejectedValue(criticalError);
 
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("Failed to accept cookies");
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("Site down");
     });
 
     it("continues when sign-in times out but user is confirmed signed in", async () => {
