@@ -311,16 +311,20 @@ export class EnterScoresProcessor {
         const saveWaitTimeout = 45000;
 
         try {
-          await this.formPage.waitForNavigation({
-            waitUntil: "networkidle0",
-            timeout: saveWaitTimeout,
-          });
-          this.logger.log(`Navigation completed successfully`);
+          await Promise.race([
+            this.formPage.waitForNavigation({
+              waitUntil: "networkidle0",
+              timeout: saveWaitTimeout,
+            }),
+            this.formPage.waitForNetworkIdle({ idleTime: 1000, timeout: saveWaitTimeout }).catch(() => null),
+          ]);
+          this.logger.log(`Navigation or network idle after save completed`);
           saveSucceeded = true;
-        } catch (navigationError: any) {
+        } catch (navigationError: unknown) {
           saveFailureReason = "navigation-timeout";
+          const navMsg = navigationError instanceof Error ? navigationError.message : String(navigationError);
           this.logger.warn(
-            `Navigation timeout after save button click: ${navigationError?.message || navigationError}`
+            `Navigation after save button click failed (e.g. net::ERR_ABORTED at cookiewall); will check page state: ${navMsg}`
           );
 
           try {
@@ -356,6 +360,20 @@ export class EnterScoresProcessor {
           saveSucceeded = false;
           saveFailureReason = "row-validation";
           this.logger.warn("Treating save as failed: row validation messages present after save");
+        }
+
+        // Navigation after save can fail (e.g. net::ERR_ABORTED at cookiewall) even when the save
+        // succeeded on the server. We often stay on teammatch.aspx after a successful submit, so
+        // use the absence of row errors as the signal: no validation errors → treat as success.
+        if (
+          !saveSucceeded &&
+          saveFailureReason === "navigation-timeout" &&
+          rowErrorMessages.length === 0
+        ) {
+          this.logger.log(
+            "Post-save navigation failed but no row errors — treating as success"
+          );
+          saveSucceeded = true;
         }
 
         if (saveSucceeded) {
