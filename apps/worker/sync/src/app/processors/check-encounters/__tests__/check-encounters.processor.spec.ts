@@ -5,7 +5,12 @@ import { ConfigService } from "@nestjs/config";
 import { CheckEncounterProcessor } from "../check-encounters.processor";
 import { EncounterDetailPageService } from "../encounter-detail-page.service";
 import { SearchService } from "@badman/backend-search";
-import { Sync, SyncQueue } from "@badman/backend-queue";
+
+// Prevent startBrowserHealthMonitoring() from starting a real setInterval so the test process can exit
+jest.mock("@badman/backend-pupeteer", () => ({
+  ...jest.requireActual("@badman/backend-pupeteer"),
+  startBrowserHealthMonitoring: jest.fn(() => () => {}),
+}));
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -52,8 +57,8 @@ function makeEncounter(overrides: Partial<Record<string, unknown>> = {}) {
     club: { id: "club-2", name: "Club 2", slug: "club-2" },
   };
 
-  const homeTeam = (overrides && overrides.homeTeam) ? overrides.homeTeam : baseHomeTeam;
-  const awayTeam = (overrides && overrides.awayTeam) ? overrides.awayTeam : baseAwayTeam;
+  const homeTeam = overrides && overrides.homeTeam ? overrides.homeTeam : baseHomeTeam;
+  const awayTeam = overrides && overrides.awayTeam ? overrides.awayTeam : baseAwayTeam;
 
   const otherOverrides = Object.fromEntries(
     Object.entries(overrides || {}).filter(([key]) => key !== "homeTeam" && key !== "awayTeam")
@@ -175,7 +180,9 @@ describe("CheckEncounterProcessor", () => {
     findAndCountAllSpy = jest
       .spyOn(EncounterCompetition, "findAndCountAll")
       .mockResolvedValue({ count: 0, rows: [] } as any);
-    findByPkSpy = jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeEncounter() as any);
+    findByPkSpy = jest
+      .spyOn(EncounterCompetition, "findByPk")
+      .mockResolvedValue(makeEncounter() as any);
   });
 
   afterEach(() => {
@@ -235,9 +242,7 @@ describe("CheckEncounterProcessor", () => {
     });
 
     it("chunks encounters into groups of 10", async () => {
-      const encounters = Array.from({ length: 25 }, (_, i) =>
-        makeEncounter({ id: `enc-${i}` })
-      );
+      const encounters = Array.from({ length: 25 }, (_, i) => makeEncounter({ id: `enc-${i}` }));
       findAndCountAllSpy.mockResolvedValue({ count: 25, rows: encounters } as any);
 
       const job = makeJob();
@@ -285,7 +290,6 @@ describe("CheckEncounterProcessor", () => {
 
       expect(detailPage.open).not.toHaveBeenCalled();
     });
-
 
     it("throws error when processing fails", async () => {
       const encounter = makeEncounter();
@@ -388,7 +392,9 @@ describe("CheckEncounterProcessor", () => {
 
   describe("notifications and auto-accept", () => {
     beforeEach(() => {
-      findByPkSpy = jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeEncounter() as any);
+      findByPkSpy = jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeEncounter() as any);
     });
 
     it("sends notification when encounter not entered", async () => {
@@ -420,7 +426,6 @@ describe("CheckEncounterProcessor", () => {
       expect(notificationService.notifyEncounterNotAccepted).toHaveBeenCalledWith(encounter);
     });
 
-
     it("does not auto-accept when VR_ACCEPT_ENCOUNTERS disabled", async () => {
       await buildModule({ VR_ACCEPT_ENCOUNTERS: false });
       cronJobFindOneSpy = jest.spyOn(CronJob, "findOne").mockResolvedValue(makeCronJob() as any);
@@ -447,7 +452,6 @@ describe("CheckEncounterProcessor", () => {
       expect(detailPage.signIn).not.toHaveBeenCalled();
       expect(detailPage.acceptEncounter).not.toHaveBeenCalled();
     });
-
   });
 
   describe("error handling", () => {
