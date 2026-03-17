@@ -1,4 +1,5 @@
 export * from "./shared";
+export * from "./selectors";
 export * from "./errors";
 export * from "./signIn";
 export * from "./accept-cookies";
