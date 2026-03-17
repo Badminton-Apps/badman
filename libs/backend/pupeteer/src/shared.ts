@@ -7,7 +7,6 @@ let sharedBrowser: Browser | null = null;
 let browserPromise: Promise<Browser> | null = null;
 let browserStartTime = 0;
 const BROWSER_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
-const MAX_AGE = BROWSER_MAX_AGE_MS;
 const MAX_PAGES = 50;
 const MAX_INACTIVE = 15 * 60 * 1000; // 15 minutes
 
@@ -29,6 +28,12 @@ function isBrowserSafeToRestart(): boolean {
   return activeRequestCount === 0 && !isRestarting;
 }
 
+function resetBrowserState(): void {
+  sharedBrowser = null;
+  browserPromise = null;
+  browserStartTime = 0;
+}
+
 export async function getBrowser(headless = true, args: string[] = []): Promise<Browser> {
   // Update activity tracking
   lastActivityTime = Date.now();
@@ -40,8 +45,7 @@ export async function getBrowser(headless = true, args: string[] = []): Promise<
     if (browserAge > BROWSER_MAX_AGE_MS) {
       console.log("Browser aged out, restarting...");
       await sharedBrowser.close();
-      sharedBrowser = null;
-      browserPromise = null;
+      resetBrowserState();
     }
   }
 
@@ -93,16 +97,14 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
       // Too many pages, restart browser
       console.log("Too many pages, restarting browser...");
       await browser.close();
-      sharedBrowser = null;
-      browserPromise = null;
+      resetBrowserState();
       return await getPage(headless, args); // Recursive call to get fresh browser
     }
-  } catch (error) {
+  } catch {
     // Browser might be disconnected, restart
     console.log("Browser disconnected, restarting...");
     await forceCloseBrowser(browser);
-    sharedBrowser = null;
-    browserPromise = null;
+    resetBrowserState();
     return await getPage(headless, args); // Recursive call to get fresh browser
   }
 
@@ -114,27 +116,27 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
     const msg = error instanceof Error ? error.message : String(error);
     console.log("browser.newPage() failed (stale session?), restarting browser:", msg);
     await forceCloseBrowser(browser);
-    sharedBrowser = null;
-    browserPromise = null;
+    resetBrowserState();
     return await getPage(headless, args); // Recursive call to get fresh browser
+  }
+
+  function trackPageClosed(p: Page): void {
+    if (!decrementedPages.has(p)) {
+      decrementedPages.add(p);
+      decrementActiveRequestCount();
+    }
   }
 
   // Track when page is closed to update request count (guard against double-decrement)
   const originalClose = page.close.bind(page);
   page.close = async () => {
-    if (!decrementedPages.has(page)) {
-      decrementedPages.add(page);
-      decrementActiveRequestCount();
-    }
+    trackPageClosed(page);
     return originalClose();
   };
 
   // Safety net for crashes where close() isn't called
   page.on("error", () => {
-    if (!decrementedPages.has(page)) {
-      decrementedPages.add(page);
-      decrementActiveRequestCount();
-    }
+    trackPageClosed(page);
   });
 
   return page;
@@ -190,9 +192,7 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
 
   // Handle browser disconnection
   browser.on("disconnected", () => {
-    sharedBrowser = null;
-    browserPromise = null;
-    browserStartTime = 0;
+    resetBrowserState();
   });
 
   return browser;
@@ -220,10 +220,8 @@ export async function createUserDataDirWithLeakDetectionDisabled(dir: string) {
 // Cleanup function to manually restart browser
 export async function restartBrowser(): Promise<void> {
   if (sharedBrowser) {
-    await sharedBrowser.close();
-    sharedBrowser = null;
-    browserPromise = null;
-    browserStartTime = 0;
+    await forceCloseBrowser(sharedBrowser);
+    resetBrowserState();
   }
 }
 
@@ -234,13 +232,10 @@ async function gracefulRestart(): Promise<void> {
     console.log("Performing graceful browser restart...");
 
     try {
-      await sharedBrowser.close();
-      sharedBrowser = null;
-      browserPromise = null;
-      browserStartTime = 0;
+      await restartBrowser();
       console.log("Browser restart completed successfully");
-    } catch (error: any) {
-      console.log("Error during browser restart:", error?.message || error);
+    } catch (error: unknown) {
+      console.log("Error during browser restart:", error instanceof Error ? error.message : error);
     } finally {
       isRestarting = false;
     }
@@ -273,7 +268,8 @@ export function startBrowserHealthMonitoring(): () => void {
         const tooManyPages = pageCount > MAX_PAGES;
         const idleAndNoPages =
           pageCount === 0 &&
-          (browserAge > MAX_AGE || (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart()));
+          (browserAge > BROWSER_MAX_AGE_MS ||
+            (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart()));
         const needsRestart = tooManyPages || idleAndNoPages;
 
         if (needsRestart) {
@@ -282,8 +278,11 @@ export function startBrowserHealthMonitoring(): () => void {
           );
           await gracefulRestart();
         }
-      } catch (error: any) {
-        console.log("Error checking browser health, restarting...", error?.message || error);
+      } catch (error: unknown) {
+        console.log(
+          "Error checking browser health, restarting...",
+          error instanceof Error ? error.message : error
+        );
         await gracefulRestart();
       }
     },
