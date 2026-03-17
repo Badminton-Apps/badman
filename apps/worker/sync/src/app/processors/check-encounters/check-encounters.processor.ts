@@ -153,21 +153,19 @@ export class CheckEncounterProcessor {
 
           await this.detailPage.open();
 
-          // Accept cookies - handle timeouts gracefully
+          // Accept cookies - handle timeouts and already-accepted gracefully
           try {
             await this.detailPage.acceptCookies();
           } catch (error: any) {
-            const isTimeoutError =
-              error?.message?.includes("timeout") ||
-              error?.message?.includes("timed out") ||
+            const msg = error?.message || String(error);
+            const isNonFatal =
+              msg.includes("timeout") ||
+              msg.includes("timed out") ||
+              msg.includes("Could not find element") ||
               error?.name === "ProtocolError";
 
-            if (isTimeoutError) {
-              this.logger.warn(
-                "Cookie acceptance timed out (continuing anyway):",
-                error?.message || error
-              );
-              // Don't throw timeout errors - continue with the process
+            if (isNonFatal) {
+              this.logger.warn("Cookie acceptance non-fatal error (continuing):", msg);
             } else {
               throw error;
             }
@@ -250,21 +248,19 @@ export class CheckEncounterProcessor {
 
     await this.detailPage.open();
     try {
-      // Accept cookies - handle timeouts gracefully
+      // Accept cookies - handle timeouts and already-accepted gracefully
       try {
         await this.detailPage.acceptCookies();
       } catch (error: any) {
-        const isTimeoutError =
-          error?.message?.includes("timeout") ||
-          error?.message?.includes("timed out") ||
+        const msg = error?.message || String(error);
+        const isNonFatal =
+          msg.includes("timeout") ||
+          msg.includes("timed out") ||
+          msg.includes("Could not find element") ||
           error?.name === "ProtocolError";
 
-        if (isTimeoutError) {
-          this.logger.warn(
-            "Cookie acceptance timed out (continuing anyway):",
-            error?.message || error
-          );
-          // Don't throw timeout errors - continue with the process
+        if (isNonFatal) {
+          this.logger.warn("Cookie acceptance non-fatal error (continuing):", msg);
         } else {
           throw error;
         }
@@ -298,10 +294,13 @@ export class CheckEncounterProcessor {
       await this.detailPage.acceptCookies();
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
-      const isTimeoutError =
-        msg.includes("timeout") || msg.includes("timed out") || (error as { name?: string })?.name === "ProtocolError";
-      if (isTimeoutError) {
-        this.logger.warn("Cookie acceptance timed out after re-open (continuing anyway):", msg);
+      const isNonFatal =
+        msg.includes("timeout") ||
+        msg.includes("timed out") ||
+        msg.includes("Could not find element") ||
+        (error as { name?: string })?.name === "ProtocolError";
+      if (isNonFatal) {
+        this.logger.warn("Cookie acceptance non-fatal error after re-open (continuing):", msg);
       } else {
         throw error;
       }
