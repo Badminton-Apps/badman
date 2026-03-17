@@ -361,11 +361,16 @@ export function startBrowserHealthMonitoring(): () => void {
         const pages = await sharedBrowser.pages();
         const pageCount = pages.length;
 
-        // Check multiple conditions
-        const needsRestart =
-          browserAge > MAX_AGE ||
-          pageCount > MAX_PAGES ||
-          (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart());
+        // Only restart when safe: never close the browser while a job might still have a page.
+        // Restart when: too many pages (memory), or (idle long enough AND no open pages).
+        // If there are open pages we skip restart for age/inactivity to avoid killing active jobs
+        // (which would leave them stuck and cause "job stalled more than maxStalledCount").
+        const tooManyPages = pageCount > MAX_PAGES;
+        const idleAndNoPages =
+          pageCount === 0 &&
+          (browserAge > MAX_AGE ||
+            (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart()));
+        const needsRestart = tooManyPages || idleAndNoPages;
 
         if (needsRestart) {
           console.log(
