@@ -16,6 +16,7 @@ import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
 import { ConfigType } from "@badman/utils";
 import * as Sentry from "@sentry/nestjs";
+import { ToernooiUnreachableError } from "@badman/backend-pupeteer";
 import { startLockRenewal } from "../../utils";
 import {
   EnterScoresError,
@@ -392,6 +393,14 @@ export class EnterScoresProcessor {
         "Page/frame detached or target closed (transient; job will retry with a fresh browser)"
       );
     }
+    if (
+      errorMessage.includes("unreachable") ||
+      errorMessage.includes("net::ERR")
+    ) {
+      this.logger.warn(
+        "Toernooi.nl was likely unreachable; retry may succeed when the site is back."
+      );
+    }
 
     if (finalAttempt) {
       if (devEmailDestination) {
@@ -500,22 +509,22 @@ export class EnterScoresProcessor {
       );
 
       this._currentPhase = "cookie_accept";
-      // acceptCookies can timeout (e.g. net::ERR_ABORTED at cookiewall); we continue and retry later.
       try {
         await this.formPage.acceptCookies(20000);
         this.logger.log("✅ Cookie acceptance completed successfully");
       } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error);
         if (this.isTimeoutError(error)) {
           this.logger.warn(
             "Cookie acceptance timeout (continuing):",
-            (error as Error).message
+            msg
           );
         } else {
-          throw new EnterScoresError(
-            EnterScoresErrorCode.COOKIE_ACCEPT,
-            (error as Error).message,
-            { cause: error }
-          );
+          const code =
+            error instanceof ToernooiUnreachableError
+              ? EnterScoresErrorCode.SITE_UNREACHABLE
+              : EnterScoresErrorCode.COOKIE_ACCEPT;
+          throw new EnterScoresError(code, msg, { cause: error });
         }
       }
 
