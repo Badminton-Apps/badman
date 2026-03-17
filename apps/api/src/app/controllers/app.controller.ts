@@ -2,7 +2,7 @@ import { User } from "@badman/backend-authorization";
 
 import { Player } from "@badman/backend-database";
 import { CpGeneratorService, PlannerService } from "@badman/backend-generator";
-import { RankingQueue, SyncQueue } from "@badman/backend-queue";
+import { getSyncJobOptions, RankingQueue, SyncQueue } from "@badman/backend-queue";
 import { InjectQueue } from "@nestjs/bull";
 import {
   Body,
@@ -82,10 +82,14 @@ export class AppController {
 
     switch (args.queue) {
       case SyncQueue:
-        return this._syncQueue.add(args.job, args.jobArgs, {
-          removeOnComplete: args.removeOnComplete ?? true,
-          removeOnFail: args.removeOnFail ?? 50,
-        });
+        return this._syncQueue.add(
+          args.job,
+          args.jobArgs,
+          getSyncJobOptions({
+            removeOnComplete: args.removeOnComplete ?? true,
+            removeOnFail: args.removeOnFail ?? 50,
+          })
+        );
       case RankingQueue:
         return this._rankingQueue.add(args.job, args.jobArgs, {
           removeOnComplete: args.removeOnComplete ?? true,

@@ -18,7 +18,7 @@ import {
   updateEncounterCompetitionInput,
   updateTempTeamCaptainInput,
 } from "@badman/backend-database";
-import { Sync, SyncQueue } from "@badman/backend-queue";
+import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
@@ -650,19 +650,8 @@ export class EncounterCompetitionResolver {
       if (shouldUpdateToernooiNL) {
         await this.syncQueue.add(
           Sync.EnterScores,
-          {
-            encounterId: encounter.id,
-          },
-          {
-            jobId: `enter-scores-${encounter.id}`,
-            removeOnComplete: true,
-            removeOnFail: false,
-            attempts: 3,
-            backoff: {
-              type: "exponential",
-              delay: 60000, // 1 minute base, doubles each retry
-            },
-          }
+          { encounterId: encounter.id },
+          getSyncJobOptions({ jobId: `enter-scores-${encounter.id}` })
         );
       }
 
