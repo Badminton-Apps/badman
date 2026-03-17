@@ -1,4 +1,4 @@
-import { Page } from "puppeteer";
+import { Dialog, Page } from "puppeteer";
 import { waitForSelectors } from "@badman/backend-pupeteer";
 import { Logger } from "@nestjs/common";
 
@@ -22,6 +22,11 @@ export async function clearFields(
     throw new Error("No page provided");
   }
 
+  const onDialog = async (dialog: Dialog) => {
+    logger.debug("Dialog message:", dialog.message());
+    await dialog.accept();
+  };
+
   {
     const targetPage = page;
     await targetPage.evaluate(
@@ -41,11 +46,8 @@ export async function clearFields(
     );
     logger.debug("empty fields button found", !!veldenLegenButton);
 
-    // Handle any dialogs (like password change alerts)
-    targetPage.on("dialog", async (dialog) => {
-      logger.debug("Dialog message:", dialog.message());
-      await dialog.accept();
-    });
+    // Handle any dialogs (like password change alerts); register before click to avoid race
+    targetPage.once("dialog", onDialog);
 
     // Click the element
     await veldenLegenButton.click();
@@ -68,6 +70,8 @@ export async function clearFields(
     // Wait for the clearing process to complete (can take 3-5 seconds)
     logger.debug("Waiting for inputs to be cleared after dialog confirmation...");
     await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    page.off("dialog", onDialog);
   }
   {
     const targetPage = page;

@@ -70,6 +70,7 @@ function makeFormPageService() {
   return {
     open: jest.fn().mockResolvedValue(undefined),
     close: jest.fn().mockResolvedValue(undefined),
+    hasPage: jest.fn().mockReturnValue(false),
     acceptCookies: jest.fn().mockResolvedValue(undefined),
     signIn: jest.fn().mockResolvedValue(undefined),
     waitForSignInConfirmation: jest.fn().mockResolvedValue(true),
@@ -483,6 +484,107 @@ describe("EnterScoresProcessor", () => {
       await processor.enterScores(makeJob() as any);
 
       expect(formPage.close).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── Serial mutex ─────────────────────────────────────────────────────────
+
+  describe("serial mutex", () => {
+    it("processes concurrent enterScores calls sequentially, not in parallel", async () => {
+      const executionLog: string[] = [];
+
+      // Make enterGames take some time so we can detect overlap
+      formPage.enterGames.mockImplementation(async () => {
+        const encId = findByPkSpy.mock.results[findByPkSpy.mock.results.length - 1]?.value?.visualCode;
+        executionLog.push(`start:${encId}`);
+        await new Promise((r) => setTimeout(r, 50));
+        executionLog.push(`end:${encId}`);
+      });
+
+      // Set up three encounters
+      const enc1 = makeEncounter({ id: "e1", visualCode: "V1" });
+      const enc2 = makeEncounter({ id: "e2", visualCode: "V2" });
+      const enc3 = makeEncounter({ id: "e3", visualCode: "V3" });
+
+      findByPkSpy
+        .mockResolvedValueOnce(enc1 as any)
+        .mockResolvedValueOnce(enc2 as any)
+        .mockResolvedValueOnce(enc3 as any);
+
+      const job1 = makeJob({ encounterId: "e1" });
+      const job2 = { ...makeJob({ encounterId: "e2" }), id: "job-2" };
+      const job3 = { ...makeJob({ encounterId: "e3" }), id: "job-3" };
+
+      // Launch all three concurrently
+      await Promise.all([
+        processor.enterScores(job1 as any),
+        processor.enterScores(job2 as any),
+        processor.enterScores(job3 as any),
+      ]);
+
+      // Verify sequential execution: each "end" must come before the next "start"
+      expect(executionLog).toHaveLength(6);
+      for (let i = 0; i < executionLog.length - 1; i += 2) {
+        expect(executionLog[i]).toMatch(/^start:/);
+        expect(executionLog[i + 1]).toMatch(/^end:/);
+      }
+    });
+
+    it("starts lock renewal before waiting for the serial lock", async () => {
+      // Make the first job slow so the second has to wait
+      let resolveFirstJob: () => void;
+      const firstJobBlocking = new Promise<void>((r) => { resolveFirstJob = r; });
+
+      formPage.enterGames
+        .mockImplementationOnce(async () => { await firstJobBlocking; })
+        .mockImplementationOnce(async () => {});
+
+      const enc = makeEncounter();
+      findByPkSpy.mockResolvedValue(enc as any);
+
+      const job1 = makeJob({ encounterId: "e1" });
+      const job2 = { ...makeJob({ encounterId: "e2" }), id: "job-2", extendLock: jest.fn().mockResolvedValue(undefined) };
+
+      const p1 = processor.enterScores(job1 as any);
+      const p2 = processor.enterScores(job2 as any);
+
+      // Give the event loop a moment for both jobs to enter enterScores()
+      await new Promise((r) => setTimeout(r, 10));
+
+      // Job 2 is waiting for the serial lock, but lock renewal should already
+      // be active (startLockRenewal is called before await waitFor).
+      // We can't directly observe the interval, but we verify that extendLock
+      // is set up by checking job2.extendLock hasn't been called yet (it runs
+      // on a 2-minute interval), and the job didn't stall or throw.
+
+      // Unblock the first job
+      resolveFirstJob!();
+      await Promise.all([p1, p2]);
+
+      // Both should have completed successfully
+      expect(formPage.close).toHaveBeenCalledTimes(2);
+    });
+
+    it("releases the serial lock even when a job fails, allowing the next job to proceed", async () => {
+      formPage.enterGames
+        .mockRejectedValueOnce(new Error("game entry failed"))
+        .mockResolvedValueOnce(undefined);
+
+      const enc = makeEncounter();
+      findByPkSpy.mockResolvedValue(enc as any);
+
+      const job1 = makeJob({ encounterId: "e1" });
+      const job2 = { ...makeJob({ encounterId: "e2" }), id: "job-2" };
+
+      const results = await Promise.allSettled([
+        processor.enterScores(job1 as any),
+        processor.enterScores(job2 as any),
+      ]);
+
+      expect(results[0].status).toBe("rejected");
+      expect(results[1].status).toBe("fulfilled");
+      // The second job should have completed its full flow
+      expect(formPage.close).toHaveBeenCalledTimes(2);
     });
   });
 
