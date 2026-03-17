@@ -58,32 +58,52 @@ export class GlobalConsumer implements OnModuleInit {
         errorStack
       );
 
-      Sentry.setTag("queue", SyncQueue);
-      Sentry.setTag("job_name", jobName);
-      Sentry.setContext("bullJob", {
-        jobId,
-        jobName,
-        attemptsMade: String(attemptsMade),
-        attemptsTotal: String(attemptsTotal),
-        data: jobData,
+      const errorIdentifier = getErrorIdentifier(err);
+      Sentry.withScope((scope) => {
+        scope.setFingerprint(["sync-job-failed", jobName, errorIdentifier]);
+        scope.setTag("queue", SyncQueue);
+        scope.setTag("job_name", jobName);
+        scope.setTag("error_identifier", errorIdentifier);
+        scope.setContext("bullJob", {
+          jobId,
+          jobName,
+          attemptsMade: String(attemptsMade),
+          attemptsTotal: String(attemptsTotal),
+          data: jobData,
+        });
+        if (err) {
+          Sentry.captureException(err);
+        } else {
+          Sentry.captureMessage(`Job ${jobId} (${jobName}) failed: ${errorMessage}`, "error");
+        }
       });
-      if (err) {
-        Sentry.captureException(err);
-      } else {
-        Sentry.captureMessage(`Job ${jobId} (${jobName}) failed: ${errorMessage}`, "error");
-      }
     } catch (lookupError) {
       this.logger.error(
         `Job ${jobId} failed — error: ${errorMessage} (could not fetch job details: ${(lookupError as Error)?.message})`,
         errorStack
       );
-      Sentry.setTag("queue", SyncQueue);
-      Sentry.setContext("bullJob", { jobId, errorMessage });
-      if (err) {
-        Sentry.captureException(err);
-      } else {
-        Sentry.captureMessage(`Job ${jobId} failed: ${errorMessage}`, "error");
-      }
+      const errorIdentifier = getErrorIdentifier(err);
+      Sentry.withScope((scope) => {
+        scope.setFingerprint(["sync-job-failed", "unknown", errorIdentifier]);
+        scope.setTag("queue", SyncQueue);
+        scope.setTag("job_name", "unknown");
+        scope.setTag("error_identifier", errorIdentifier);
+        scope.setContext("bullJob", { jobId, errorMessage });
+        if (err) {
+          Sentry.captureException(err);
+        } else {
+          Sentry.captureMessage(`Job ${jobId} failed: ${errorMessage}`, "error");
+        }
+      });
     }
   }
+}
+
+/** Derive a stable key for Sentry grouping so different errors become different issues. */
+function getErrorIdentifier(err: Error | undefined): string {
+  if (err == null) return "unknown";
+  const withCode = err as Error & { code?: string };
+  if (typeof withCode.code === "string") return `${err.name}:${withCode.code}`;
+  if (err.name && err.name !== "Error") return err.name;
+  return "Error";
 }
