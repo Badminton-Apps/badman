@@ -164,7 +164,8 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
   const singletonLock = path.join(userDataDir, "SingletonLock");
   try {
     await fsPromises.unlink(singletonLock);
-  } catch {
+  } catch (err) {
+    console.log("Failed to remove SingletonLock file, ignoring...", err);
     // Ignore: file may not exist
   }
 
