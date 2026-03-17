@@ -488,17 +488,20 @@ export class EnterScoresProcessor {
     this.logger.debug(`Dev email destination: ${devEmailDestination}`);
 
     const stopLockRenewal = startLockRenewal(job);
+    const openFlags = [
+      "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
+      "--disable-save-password-bubble",
+      "--disable-credentials-enable-service",
+      "--disable-credential-saving",
+      "--password-store=basic",
+      "--no-default-browser-check",
+    ];
     try {
       this._currentPhase = "browser_open";
       this.logger.debug("Creating browser");
-      await this.formPage.open(preflight.headless, [
-        "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
-        "--disable-save-password-bubble",
-        "--disable-credentials-enable-service",
-        "--disable-credential-saving",
-        "--password-store=basic",
-        "--no-default-browser-check",
-      ]);
+      if (!this.formPage.hasPage()) {
+        await this.formPage.open(preflight.headless, openFlags);
+      }
 
       this._currentPhase = "load_encounter";
       this.logger.log("Getting encounter");
@@ -517,6 +520,11 @@ export class EnterScoresProcessor {
         if (this.isTimeoutError(error)) {
           this.logger.warn(
             "Cookie acceptance timeout (continuing):",
+            msg
+          );
+        } else if (msg.includes("Could not find element")) {
+          this.logger.warn(
+            "Cookie accept button not found (cookies likely already accepted, continuing):",
             msg
           );
         } else {

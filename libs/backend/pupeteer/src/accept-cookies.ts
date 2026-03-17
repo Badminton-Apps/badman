@@ -4,7 +4,6 @@ import { Logger } from "@nestjs/common";
 import { ToernooiUnreachableError } from "./errors";
 
 const SITE_UNREACHABLE_PATTERNS = [
-  "net::ERR_ABORTED",
   "net::ERR_NAME_NOT_RESOLVED",
   "net::ERR_CONNECTION_REFUSED",
   "net::ERR_CONNECTION_RESET",
@@ -79,6 +78,19 @@ export async function acceptCookies(
         });
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
+
+        // ERR_ABORTED on the cookiewall URL typically means the site redirected
+        // us away because cookies were already accepted in this browser session.
+        if (message.includes("net::ERR_ABORTED")) {
+          const currentUrl = page.url();
+          if (currentUrl.includes("toernooi.nl") && !currentUrl.includes("cookiewall")) {
+            logger?.debug(
+              `Cookie wall navigation aborted (redirected to ${currentUrl}) — cookies likely already accepted`
+            );
+            return;
+          }
+        }
+
         if (isSiteUnreachableError(message)) {
           throw new ToernooiUnreachableError(
             `Toernooi.nl unreachable: ${message}`,
@@ -89,11 +101,15 @@ export async function acceptCookies(
       }
     }
     {
-      const element = await waitForSelectors(
-        [['button[type="submit"]'], ["button.btn.btn--success.js-accept-basic"]],
-        page,
-        timeout
+      // Use non-throwing probe: when cookies are already accepted (shared browser
+      // session), the cookie wall page loads without accept buttons.
+      const element = await page.$(
+        'button[type="submit"], button.btn.btn--success.js-accept-basic'
       );
+      if (!element) {
+        logger?.debug("Cookie accept buttons not found — cookies likely already accepted, skipping");
+        return;
+      }
       await element.click({ offset: { x: 1.890625, y: 21.453125 } });
       const navTimeout = (timeout || 5000) * 2;
       try {

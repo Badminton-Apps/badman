@@ -41,10 +41,20 @@ export class EncounterFormPageService {
   }
 
   async close(): Promise<void> {
-    if (this.page && !this.page.isClosed()) {
-      await this.page.close();
+    const pageToClose = this.page;
+    if (pageToClose && !pageToClose.isClosed()) {
+      await pageToClose.close();
     }
-    this.page = null;
+    // Only clear our reference if it's still the page we closed (avoids clearing a new page
+    // set by a retry that already called open() before this cleanup finished).
+    if (this.page === pageToClose) {
+      this.page = null;
+    }
+  }
+
+  /** True if a page is open and not closed (e.g. for defensive reopen at job start). */
+  hasPage(): boolean {
+    return this.page != null && !this.page.isClosed();
   }
 
   async acceptCookies(timeout = 20000): Promise<void> {
@@ -145,6 +155,12 @@ export class EncounterFormPageService {
   }
 
   private _assertPage(): void {
+    if (this.page != null && this.page.isClosed()) {
+      this.page = null;
+      throw new Error(
+        "Page was closed (e.g. browser restarted or crashed). Retry the job for a fresh page."
+      );
+    }
     if (!this.page) {
       throw new Error("Page not open — call open() first");
     }

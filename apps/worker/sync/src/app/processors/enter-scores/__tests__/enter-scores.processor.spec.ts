@@ -70,6 +70,7 @@ function makeFormPageService() {
   return {
     open: jest.fn().mockResolvedValue(undefined),
     close: jest.fn().mockResolvedValue(undefined),
+    hasPage: jest.fn().mockReturnValue(false),
     acceptCookies: jest.fn().mockResolvedValue(undefined),
     signIn: jest.fn().mockResolvedValue(undefined),
     waitForSignInConfirmation: jest.fn().mockResolvedValue(true),
