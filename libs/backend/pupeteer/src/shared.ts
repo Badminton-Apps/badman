@@ -111,8 +111,20 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
 async function createSharedBrowser(headless = true, args: string[] = []): Promise<Browser> {
   const puppeteer = await import("puppeteer");
 
-  // Create a single user data directory for the shared browser
-  const userDataDir = path.resolve("./tmp/chrome-profile-shared");
+  // Use a unique user data directory per process to avoid SingletonLock conflicts
+  // when multiple worker instances run (e.g. on Render); Chrome allows only one
+  // browser per profile directory.
+  //
+  // Why we still use one shared browser per process: the original design used multiple
+  // browser instances per process (each with chrome-profile-<timestamp>-<n>), which was
+  // changed to a single shared browser + chrome-profile-shared to fix a deploy error (resource
+  // use / stability). We keep that single-browser-per-process model; only the profile path
+  // is now per-process so multiple processes (e.g. scaled workers) don't share one dir.
+  //
+  // Cleanup: BrowserCleanupService and scripts already target "chrome-profile-*", so
+  // all per-process dirs are cleaned. On ephemeral systems (e.g. Render) the filesystem
+  // is discarded on shutdown anyway.
+  const userDataDir = path.resolve("./tmp", `chrome-profile-${process.pid}`);
 
   // Create user data dir with leak detection disabled
   await createUserDataDirWithLeakDetectionDisabled(userDataDir);
@@ -349,11 +361,16 @@ export function startBrowserHealthMonitoring(): () => void {
         const pages = await sharedBrowser.pages();
         const pageCount = pages.length;
 
-        // Check multiple conditions
-        const needsRestart =
-          browserAge > MAX_AGE ||
-          pageCount > MAX_PAGES ||
-          (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart());
+        // Only restart when safe: never close the browser while a job might still have a page.
+        // Restart when: too many pages (memory), or (idle long enough AND no open pages).
+        // If there are open pages we skip restart for age/inactivity to avoid killing active jobs
+        // (which would leave them stuck and cause "job stalled more than maxStalledCount").
+        const tooManyPages = pageCount > MAX_PAGES;
+        const idleAndNoPages =
+          pageCount === 0 &&
+          (browserAge > MAX_AGE ||
+            (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart()));
+        const needsRestart = tooManyPages || idleAndNoPages;
 
         if (needsRestart) {
           console.log(

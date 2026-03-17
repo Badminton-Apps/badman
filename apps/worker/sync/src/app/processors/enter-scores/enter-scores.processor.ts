@@ -360,15 +360,24 @@ export class EnterScoresProcessor {
     if (finalAttempt) {
       if (devEmailDestination) {
         try {
-          const toernooiUrl = this.constructToernooiUrl(encounter ?? null);
+          // When failure happened before loadEncounter (e.g. browser open), load encounter so we can include the toernooi link in the email
+          let encounterForUrl = encounter;
+          if (!encounterForUrl) {
+            try {
+              encounterForUrl = await this.loadEncounter(encounterId);
+            } catch {
+              // Ignore; we'll send email without encounter link
+            }
+          }
+          const toernooiUrl = this.constructToernooiUrl(encounterForUrl ?? null);
           await this.mailingService.sendEnterScoresFailedMail(
             encounterId,
             errorMessage,
             { fullName: "Dev team", email: devEmailDestination, slug: "dev" },
-            encounter?.visualCode,
+            encounterForUrl?.visualCode ?? encounter?.visualCode,
             toernooiUrl
           );
-          this.logger.log(`Failure email sent for encounter ${encounter?.visualCode ?? encounterId}`);
+          this.logger.log(`Failure email sent for encounter ${encounterForUrl?.visualCode ?? encounter?.visualCode ?? encounterId}`);
         } catch (emailError: unknown) {
           this.logger.error(
             "Failed to send failure email:",
