@@ -1,5 +1,4 @@
 import { HTTPRequest, Page } from "puppeteer";
-import { waitForSelectors } from "./shared";
 import { Logger } from "@nestjs/common";
 import { ToernooiUnreachableError } from "./errors";
 
@@ -107,7 +106,9 @@ export async function acceptCookies(
         'button[type="submit"], button.btn.btn--success.js-accept-basic'
       );
       if (!element) {
-        logger?.debug("Cookie accept buttons not found — cookies likely already accepted, skipping");
+        logger?.debug(
+          "Cookie accept buttons not found — cookies likely already accepted, skipping"
+        );
         return;
       }
       await element.click({ offset: { x: 1.890625, y: 21.453125 } });
@@ -156,7 +157,10 @@ export async function acceptCookies(
                   timeout: (timeout || 5000) * 2,
                 });
               } catch (error: unknown) {
-                if (error instanceof Error && (error.message?.includes("detached") || error.message?.includes("Frame"))) {
+                if (
+                  error instanceof Error &&
+                  (error.message?.includes("detached") || error.message?.includes("Frame"))
+                ) {
                   logger?.debug("Frame detached - page may have already navigated:", error.message);
                 } else {
                   logger?.debug(
