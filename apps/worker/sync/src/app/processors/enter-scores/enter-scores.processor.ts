@@ -73,7 +73,9 @@ export class EnterScoresProcessor {
     if (
       msg.includes("frame was detached") ||
       msg.includes("Target closed") ||
-      msg.includes("detached Frame")
+      msg.includes("detached Frame") ||
+      msg.includes("ProtocolError") ||
+      msg.includes("timed out. Increase the 'protocolTimeout'")
     ) {
       return new EnterScoresError(
         EnterScoresErrorCode.BROWSER_PAGE,
@@ -399,6 +401,14 @@ export class EnterScoresProcessor {
     ) {
       this.logger.warn(
         "Toernooi.nl was likely unreachable; retry may succeed when the site is back."
+      );
+    }
+    if (
+      errorMessage.includes("ProtocolError") ||
+      errorMessage.includes("protocolTimeout")
+    ) {
+      this.logger.warn(
+        "CDP protocol timeout (browser connection overwhelmed or slow; job will retry with a fresh browser)"
       );
     }
 
