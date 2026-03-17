@@ -1,5 +1,5 @@
 import path from "path";
-import { ElementHandle, Page, Browser } from "puppeteer";
+import { Page, Browser } from "puppeteer";
 import { promises as fsPromises } from "fs";
 
 // Single shared browser instance for all requests
@@ -7,7 +7,6 @@ let sharedBrowser: Browser | null = null;
 let browserPromise: Promise<Browser> | null = null;
 let browserStartTime = 0;
 const BROWSER_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
-const MAX_AGE = BROWSER_MAX_AGE_MS;
 const MAX_PAGES = 50;
 const MAX_INACTIVE = 15 * 60 * 1000; // 15 minutes
 
@@ -29,6 +28,12 @@ function isBrowserSafeToRestart(): boolean {
   return activeRequestCount === 0 && !isRestarting;
 }
 
+function resetBrowserState(): void {
+  sharedBrowser = null;
+  browserPromise = null;
+  browserStartTime = 0;
+}
+
 export async function getBrowser(headless = true, args: string[] = []): Promise<Browser> {
   // Update activity tracking
   lastActivityTime = Date.now();
@@ -40,8 +45,7 @@ export async function getBrowser(headless = true, args: string[] = []): Promise<
     if (browserAge > BROWSER_MAX_AGE_MS) {
       console.log("Browser aged out, restarting...");
       await sharedBrowser.close();
-      sharedBrowser = null;
-      browserPromise = null;
+      resetBrowserState();
     }
   }
 
@@ -62,6 +66,26 @@ export async function getBrowser(headless = true, args: string[] = []): Promise<
   return sharedBrowser;
 }
 
+/**
+ * Best-effort close + kill of a browser that is no longer usable.
+ * Swallows all errors so the caller can safely proceed to launch a fresh one.
+ */
+async function forceCloseBrowser(browser: Browser): Promise<void> {
+  try {
+    await browser.close();
+  } catch {
+    // close() may throw if the CDP session is broken; kill the process directly
+    try {
+      const proc = browser.process();
+      if (proc && !proc.killed) {
+        proc.kill("SIGKILL");
+      }
+    } catch {
+      // nothing left to try
+    }
+  }
+}
+
 // Get a new page from the shared browser (more efficient for multiple requests)
 export async function getPage(headless = true, args: string[] = []): Promise<Page> {
   const browser = await getBrowser(headless, args);
@@ -73,15 +97,14 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
       // Too many pages, restart browser
       console.log("Too many pages, restarting browser...");
       await browser.close();
-      sharedBrowser = null;
-      browserPromise = null;
+      resetBrowserState();
       return await getPage(headless, args); // Recursive call to get fresh browser
     }
-  } catch (error) {
+  } catch {
     // Browser might be disconnected, restart
     console.log("Browser disconnected, restarting...");
-    sharedBrowser = null;
-    browserPromise = null;
+    await forceCloseBrowser(browser);
+    resetBrowserState();
     return await getPage(headless, args); // Recursive call to get fresh browser
   }
 
@@ -92,27 +115,28 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
     // CDP session may be stale (e.g. "Session with given id not found") after a previous job
     const msg = error instanceof Error ? error.message : String(error);
     console.log("browser.newPage() failed (stale session?), restarting browser:", msg);
-    sharedBrowser = null;
-    browserPromise = null;
+    await forceCloseBrowser(browser);
+    resetBrowserState();
     return await getPage(headless, args); // Recursive call to get fresh browser
+  }
+
+  function trackPageClosed(p: Page): void {
+    if (!decrementedPages.has(p)) {
+      decrementedPages.add(p);
+      decrementActiveRequestCount();
+    }
   }
 
   // Track when page is closed to update request count (guard against double-decrement)
   const originalClose = page.close.bind(page);
   page.close = async () => {
-    if (!decrementedPages.has(page)) {
-      decrementedPages.add(page);
-      decrementActiveRequestCount();
-    }
+    trackPageClosed(page);
     return originalClose();
   };
 
   // Safety net for crashes where close() isn't called
   page.on("error", () => {
-    if (!decrementedPages.has(page)) {
-      decrementedPages.add(page);
-      decrementActiveRequestCount();
-    }
+    trackPageClosed(page);
   });
 
   return page;
@@ -135,6 +159,15 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
   // all per-process dirs are cleaned. On ephemeral systems (e.g. Render) the filesystem
   // is discarded on shutdown anyway.
   const userDataDir = path.resolve("./tmp", `chrome-profile-${process.pid}`);
+
+  // Remove stale SingletonLock so Chrome can start (left behind after previous close/crash)
+  const singletonLock = path.join(userDataDir, "SingletonLock");
+  try {
+    await fsPromises.unlink(singletonLock);
+  } catch (err) {
+    console.log("Failed to remove SingletonLock file, ignoring...", err);
+    // Ignore: file may not exist
+  }
 
   // Create user data dir with leak detection disabled
   await createUserDataDirWithLeakDetectionDisabled(userDataDir);
@@ -160,9 +193,7 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
 
   // Handle browser disconnection
   browser.on("disconnected", () => {
-    sharedBrowser = null;
-    browserPromise = null;
-    browserStartTime = 0;
+    resetBrowserState();
   });
 
   return browser;
@@ -187,148 +218,11 @@ export async function createUserDataDirWithLeakDetectionDisabled(dir: string) {
   );
 }
 
-export async function waitForSelector(
-  selector: string[] | string,
-  frame: Page,
-  timeout?: number,
-  options: {
-    visible?: boolean;
-  } = {
-    visible: false,
-  }
-) {
-  if (selector instanceof Array) {
-    let element: ElementHandle<Element> | null = null;
-    for (const part of selector) {
-      if (!element) {
-        element = await frame.waitForSelector(part, {
-          timeout,
-          visible: options.visible,
-        });
-      } else {
-        element = await element.$(part);
-      }
-      if (!element) {
-        throw new Error("Could not find element: " + part);
-      }
-      element = (
-        await element.evaluateHandle((el) => (el.shadowRoot ? el.shadowRoot : el))
-      ).asElement() as ElementHandle<Element>;
-    }
-    if (!element) {
-      throw new Error("Could not find element: " + selector.join("|"));
-    }
-    return element;
-  }
-  const element = await frame.waitForSelector(selector, { timeout });
-  if (!element) {
-    throw new Error("Could not find element: " + selector);
-  }
-  return element;
-}
-
-export async function querySelectorsAll(selectors: string[], frame: Page) {
-  for (const selector of selectors) {
-    const result = await querySelectorAll(selector, frame);
-    if (result.length) {
-      return result;
-    }
-  }
-  return [];
-}
-
-export async function querySelectorAll(selector: string | string[], frame: Page) {
-  let elements: ElementHandle<Element>[] = [];
-  try {
-    if (selector instanceof Array) {
-      let i = 0;
-      for (const part of selector) {
-        if (i === 0) {
-          elements = await frame.$$(part);
-        } else {
-          const tmpElements = elements;
-          elements = [];
-          for (const el of tmpElements) {
-            elements.push(...(await el.$$(part)));
-          }
-        }
-        if (elements.length === 0) {
-          return [];
-        }
-        const tmpElements = [];
-        for (const el of elements) {
-          const newEl = (
-            await el.evaluateHandle((el) => (el.shadowRoot ? el.shadowRoot : el))
-          ).asElement() as ElementHandle<Element>;
-          if (newEl) {
-            tmpElements.push(newEl);
-          }
-        }
-        elements = tmpElements;
-        i++;
-      }
-    } else {
-      elements = await frame.$$(selector);
-    }
-    return elements;
-  } finally {
-    // Clean up all element handles
-    await Promise.all(elements.map((el) => el.dispose()));
-  }
-}
-
-export async function waitForFunction(fn: () => unknown, timeout: number) {
-  let isActive = true;
-  setTimeout(() => {
-    isActive = false; // This could be called after the function returns
-  }, timeout);
-  while (isActive) {
-    const result = await fn();
-    if (result) {
-      return; // Function returns but setTimeout callback still executes
-    }
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
-  throw new Error("Timed out");
-}
-
-export async function waitForSelectors(selectors: string[][], frame: Page, timeout?: number) {
-  const errors: Error[] = [];
-
-  for (const selector of selectors) {
-    try {
-      return await waitForSelector(selector, frame, timeout);
-    } catch (err) {
-      errors.push(err as Error);
-      // Don't log every attempt, just collect errors
-    }
-  }
-
-  // This will always execute if no selector is found
-  if (errors.length > 0) {
-    console.error(
-      "All selectors failed:",
-      errors.map((e) => e.message)
-    );
-  }
-
-  throw new Error("Could not find element for selectors: " + JSON.stringify(selectors));
-}
-
-// Add dispose methods for element handles
-export async function disposeElement(element: ElementHandle<Element>) {
-  if (element) {
-    await element.dispose();
-  }
-}
-
 // Cleanup function to manually restart browser
 export async function restartBrowser(): Promise<void> {
   if (sharedBrowser) {
-    await sharedBrowser.close();
-    sharedBrowser = null;
-    browserPromise = null;
-    browserStartTime = 0;
+    await forceCloseBrowser(sharedBrowser);
+    resetBrowserState();
   }
 }
 
@@ -339,13 +233,10 @@ async function gracefulRestart(): Promise<void> {
     console.log("Performing graceful browser restart...");
 
     try {
-      await sharedBrowser.close();
-      sharedBrowser = null;
-      browserPromise = null;
-      browserStartTime = 0;
+      await restartBrowser();
       console.log("Browser restart completed successfully");
-    } catch (error: any) {
-      console.log("Error during browser restart:", error?.message || error);
+    } catch (error: unknown) {
+      console.log("Error during browser restart:", error instanceof Error ? error.message : error);
     } finally {
       isRestarting = false;
     }
@@ -378,7 +269,7 @@ export function startBrowserHealthMonitoring(): () => void {
         const tooManyPages = pageCount > MAX_PAGES;
         const idleAndNoPages =
           pageCount === 0 &&
-          (browserAge > MAX_AGE ||
+          (browserAge > BROWSER_MAX_AGE_MS ||
             (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart()));
         const needsRestart = tooManyPages || idleAndNoPages;
 
@@ -388,8 +279,11 @@ export function startBrowserHealthMonitoring(): () => void {
           );
           await gracefulRestart();
         }
-      } catch (error: any) {
-        console.log("Error checking browser health, restarting...", error?.message || error);
+      } catch (error: unknown) {
+        console.log(
+          "Error checking browser health, restarting...",
+          error instanceof Error ? error.message : error
+        );
         await gracefulRestart();
       }
     },
