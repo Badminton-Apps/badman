@@ -65,6 +65,24 @@ export class EnterScoresProcessor {
     );
   }
 
+  /** Wrap known page/frame lifecycle errors so they're reported with BROWSER_PAGE and retried. */
+  private normalizePageError(error: unknown): unknown {
+    if (error instanceof EnterScoresError) return error;
+    const msg = error instanceof Error ? error.message : String(error);
+    if (
+      msg.includes("frame was detached") ||
+      msg.includes("Target closed") ||
+      msg.includes("detached Frame")
+    ) {
+      return new EnterScoresError(
+        EnterScoresErrorCode.BROWSER_PAGE,
+        msg,
+        { cause: error }
+      );
+    }
+    return error;
+  }
+
   private async loadEncounter(encounterId: string): Promise<EncounterCompetition> {
     const encounter = await EncounterCompetition.findByPk(encounterId, {
       attributes: [
@@ -238,12 +256,21 @@ export class EnterScoresProcessor {
     let saveFailureReason: "navigation-timeout" | "row-validation" | null = null;
     const saveWaitTimeout = 45000;
 
+    const navPromise = this.formPage.waitForNavigation({
+      waitUntil: "networkidle0",
+      timeout: saveWaitTimeout,
+    });
+    // If the race is won by network-idle, the navigation promise may still reject later (e.g.
+    // "Navigating frame was detached"). Attach a catch so that doesn't become an unhandled rejection.
+    navPromise.catch((lateErr: unknown) => {
+      this.logger.debug(
+        `Late navigation rejection (race already settled): ${lateErr instanceof Error ? lateErr.message : String(lateErr)}`
+      );
+    });
+
     try {
       await Promise.race([
-        this.formPage.waitForNavigation({
-          waitUntil: "networkidle0",
-          timeout: saveWaitTimeout,
-        }),
+        navPromise,
         this.formPage
           .waitForNetworkIdle({ idleTime: 1000, timeout: saveWaitTimeout })
           .catch(() => null),
@@ -354,6 +381,15 @@ export class EnterScoresProcessor {
     if (errorMessage.includes("Execution context was destroyed")) {
       this.logger.warn(
         "Execution context was destroyed (often transient; job will retry with a fresh browser)"
+      );
+    }
+    if (
+      errorMessage.includes("frame was detached") ||
+      errorMessage.includes("Target closed") ||
+      errorMessage.includes("detached Frame")
+    ) {
+      this.logger.warn(
+        "Page/frame detached or target closed (transient; job will retry with a fresh browser)"
       );
     }
 
@@ -538,14 +574,15 @@ export class EnterScoresProcessor {
       this._currentPhase = "notification";
       await this.sendNotificationEmail(encounter, devEmailDestination);
     } catch (error: unknown) {
+      const normalizedError = this.normalizePageError(error);
       await this.handleFailure(
-        error,
+        normalizedError,
         job,
         encounter,
         encounterId,
         devEmailDestination
       );
-      throw error;
+      throw normalizedError;
     } finally {
       await this.cleanup(stopLockRenewal, hangBeforeBrowserCleanup);
     }
