@@ -507,7 +507,7 @@ export class NotificationService {
     url,
   }: {
     encounter?: EncounterCompetition;
-    url: string;
+    url?: string;
   }) {
     const notifier = new SyncEncounterFailed(this.mailing, this.push);
 
@@ -550,6 +550,15 @@ export class NotificationService {
       encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.id
     }/draw/${encounter?.drawCompetition?.id}`;
 
+    // Use provided url or build encounter link from loaded encounter (e.g. when failure happened before gotoEncounterPage returned)
+    const eventId = encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
+    const matchId = encounter?.visualCode;
+    const toernooiUrl =
+      url ||
+      (eventId && matchId
+        ? `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`
+        : undefined);
+
     // Create a dev team user object for notification
     const devUser = {
       fullName: "Dev Team",
@@ -557,11 +566,11 @@ export class NotificationService {
       slug: "dev",
     };
 
-    if (encounter?.id && url) {
+    if (encounter?.id && toernooiUrl) {
       notifier.notify(
         devUser as Player,
         encounter.id,
-        { encounter, url, urlBadman },
+        { encounter, url: toernooiUrl, urlBadman },
         { email: devEmailDestination, slug: "dev" }
       );
     }
