@@ -83,7 +83,7 @@ function makeFormPageService() {
     enterEndHour: jest.fn().mockResolvedValue(undefined),
     enableInputValidation: jest.fn().mockResolvedValue(undefined),
     getRowErrorMessages: jest.fn().mockResolvedValue([]),
-    getCurrentUrl: jest.fn().mockReturnValue("https://www.toernooi.nl/sport/matchresult.aspx"),
+    getCurrentUrl: jest.fn().mockReturnValue("https://www.toernooi.nl/sport/teammatch.aspx?id=EV001&match=VC001"),
     clickSaveButton: jest.fn().mockResolvedValue(true),
     waitForNavigation: jest.fn().mockResolvedValue(undefined),
     waitForNetworkIdle: jest.fn().mockResolvedValue(undefined),
@@ -343,7 +343,7 @@ describe("EnterScoresProcessor", () => {
       const encounter = makeEncounter();
       findByPkSpy.mockResolvedValue(encounter as any);
       formPage.waitForNavigation.mockRejectedValue(new Error("Navigation timeout"));
-      formPage.getCurrentUrl.mockReturnValue("https://www.toernooi.nl/sport/matchresult.aspx");
+      formPage.getCurrentUrl.mockReturnValue("https://www.toernooi.nl/sport/teammatch.aspx?id=EV001&match=VC001");
       formPage.getRowErrorMessages.mockResolvedValue([]);
 
       await processor.enterScores(makeJob() as any);
