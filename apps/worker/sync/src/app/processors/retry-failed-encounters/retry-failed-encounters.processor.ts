@@ -6,7 +6,7 @@ import {
   Game,
   SubEventCompetition,
 } from "@badman/backend-database";
-import { Sync, SyncQueue } from "@badman/backend-queue";
+import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
@@ -87,16 +87,7 @@ export class RetryFailedEncounterSyncProcessor {
         await this.syncQueue.add(
           Sync.EnterScores,
           { encounterId },
-          {
-            jobId,
-            removeOnComplete: true,
-            removeOnFail: false,
-            attempts: 3,
-            backoff: {
-              type: "exponential",
-              delay: 60000,
-            },
-          }
+          getSyncJobOptions({ jobId })
         );
 
         queued++;

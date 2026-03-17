@@ -1,6 +1,36 @@
 import { HTTPRequest, Page } from "puppeteer";
 import { waitForSelectors } from "./shared";
 import { Logger } from "@nestjs/common";
+import { ToernooiUnreachableError } from "./errors";
+
+const SITE_UNREACHABLE_PATTERNS = [
+  "net::ERR_ABORTED",
+  "net::ERR_NAME_NOT_RESOLVED",
+  "net::ERR_CONNECTION_REFUSED",
+  "net::ERR_CONNECTION_RESET",
+  "net::ERR_CONNECTION_CLOSED",
+  "net::ERR_NETWORK",
+  "net::ERR_EMPTY_RESPONSE",
+  "Navigation timeout",
+  "TimeoutError",
+];
+
+const NOT_SITE_UNREACHABLE_PATTERNS = [
+  "net::ERR_HTTP",
+  "net::ERR_CERT",
+  "net::ERR_SSL",
+  "Target closed",
+  "frame",
+  "detached",
+];
+
+function isSiteUnreachableError(message: string): boolean {
+  const lower = message.toLowerCase();
+  if (NOT_SITE_UNREACHABLE_PATTERNS.some((p) => lower.includes(p.toLowerCase()))) {
+    return false;
+  }
+  return SITE_UNREACHABLE_PATTERNS.some((p) => message.includes(p));
+}
 
 export async function acceptCookies(
   pupeteer: {
@@ -48,10 +78,14 @@ export async function acceptCookies(
           timeout: (timeout || 5000) * 3,
         });
       } catch (error: unknown) {
-        logger?.warn(
-          "Initial navigation to cookiewall failed, continuing anyway:",
-          error instanceof Error ? error.message : error
-        );
+        const message = error instanceof Error ? error.message : String(error);
+        if (isSiteUnreachableError(message)) {
+          throw new ToernooiUnreachableError(
+            `Toernooi.nl unreachable: ${message}`,
+            error instanceof Error ? error : undefined
+          );
+        }
+        throw error;
       }
     }
     {
