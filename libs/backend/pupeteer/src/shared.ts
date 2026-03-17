@@ -111,8 +111,10 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
 async function createSharedBrowser(headless = true, args: string[] = []): Promise<Browser> {
   const puppeteer = await import("puppeteer");
 
-  // Create a single user data directory for the shared browser
-  const userDataDir = path.resolve("./tmp/chrome-profile-shared");
+  // Use a unique user data directory per process to avoid SingletonLock conflicts
+  // when multiple worker instances run (e.g. on Render); Chrome allows only one
+  // browser per profile directory.
+  const userDataDir = path.resolve("./tmp", `chrome-profile-${process.pid}`);
 
   // Create user data dir with leak detection disabled
   await createUserDataDirWithLeakDetectionDisabled(userDataDir);
