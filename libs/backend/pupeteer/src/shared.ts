@@ -85,7 +85,17 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
     return await getPage(headless, args); // Recursive call to get fresh browser
   }
 
-  const page = await browser.newPage();
+  let page: Page;
+  try {
+    page = await browser.newPage();
+  } catch (error) {
+    // CDP session may be stale (e.g. "Session with given id not found") after a previous job
+    const msg = error instanceof Error ? error.message : String(error);
+    console.log("browser.newPage() failed (stale session?), restarting browser:", msg);
+    sharedBrowser = null;
+    browserPromise = null;
+    return await getPage(headless, args); // Recursive call to get fresh browser
+  }
 
   // Track when page is closed to update request count (guard against double-decrement)
   const originalClose = page.close.bind(page);
