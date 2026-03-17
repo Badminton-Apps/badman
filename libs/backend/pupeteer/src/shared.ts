@@ -62,6 +62,26 @@ export async function getBrowser(headless = true, args: string[] = []): Promise<
   return sharedBrowser;
 }
 
+/**
+ * Best-effort close + kill of a browser that is no longer usable.
+ * Swallows all errors so the caller can safely proceed to launch a fresh one.
+ */
+async function forceCloseBrowser(browser: Browser): Promise<void> {
+  try {
+    await browser.close();
+  } catch {
+    // close() may throw if the CDP session is broken; kill the process directly
+    try {
+      const proc = browser.process();
+      if (proc && !proc.killed) {
+        proc.kill("SIGKILL");
+      }
+    } catch {
+      // nothing left to try
+    }
+  }
+}
+
 // Get a new page from the shared browser (more efficient for multiple requests)
 export async function getPage(headless = true, args: string[] = []): Promise<Page> {
   const browser = await getBrowser(headless, args);
@@ -80,6 +100,7 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
   } catch (error) {
     // Browser might be disconnected, restart
     console.log("Browser disconnected, restarting...");
+    await forceCloseBrowser(browser);
     sharedBrowser = null;
     browserPromise = null;
     return await getPage(headless, args); // Recursive call to get fresh browser
@@ -92,6 +113,7 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
     // CDP session may be stale (e.g. "Session with given id not found") after a previous job
     const msg = error instanceof Error ? error.message : String(error);
     console.log("browser.newPage() failed (stale session?), restarting browser:", msg);
+    await forceCloseBrowser(browser);
     sharedBrowser = null;
     browserPromise = null;
     return await getPage(headless, args); // Recursive call to get fresh browser
@@ -135,6 +157,14 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
   // all per-process dirs are cleaned. On ephemeral systems (e.g. Render) the filesystem
   // is discarded on shutdown anyway.
   const userDataDir = path.resolve("./tmp", `chrome-profile-${process.pid}`);
+
+  // Remove stale SingletonLock so Chrome can start (left behind after previous close/crash)
+  const singletonLock = path.join(userDataDir, "SingletonLock");
+  try {
+    await fsPromises.unlink(singletonLock);
+  } catch {
+    // Ignore: file may not exist
+  }
 
   // Create user data dir with leak detection disabled
   await createUserDataDirWithLeakDetectionDisabled(userDataDir);
@@ -378,8 +408,7 @@ export function startBrowserHealthMonitoring(): () => void {
         const tooManyPages = pageCount > MAX_PAGES;
         const idleAndNoPages =
           pageCount === 0 &&
-          (browserAge > MAX_AGE ||
-            (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart()));
+          (browserAge > MAX_AGE || (inactiveTime > MAX_INACTIVE && isBrowserSafeToRestart()));
         const needsRestart = tooManyPages || idleAndNoPages;
 
         if (needsRestart) {
