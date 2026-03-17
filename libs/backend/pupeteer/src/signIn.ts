@@ -1,5 +1,5 @@
 import { Page } from "puppeteer";
-import { waitForSelectors } from "./shared";
+import { waitForSelectors } from "./selectors";
 import { Logger } from "@nestjs/common";
 
 export async function signIn(
