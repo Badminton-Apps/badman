@@ -253,6 +253,22 @@ export class EnterScoresProcessor {
   }
 
   private async waitForSaveResult(): Promise<void> {
+    let saveSucceeded = false;
+    let saveFailureReason: "navigation-timeout" | "row-validation" | "still-on-edit-page" | null =
+      null;
+    const saveWaitTimeout = 45000;
+
+    // Set up navigation listener before clicking so we don't miss a fast redirect.
+    const navPromise = this.formPage.waitForNavigation({
+      waitUntil: "networkidle0",
+      timeout: saveWaitTimeout,
+    });
+    navPromise.catch((lateErr: unknown) => {
+      this.logger.debug(
+        `Late navigation rejection (race already settled): ${lateErr instanceof Error ? lateErr.message : String(lateErr)}`
+      );
+    });
+
     const saveClicked = await this.formPage.clickSaveButton(5000);
     if (!saveClicked) {
       this.logger.error("Save button not found on page; cannot persist entered scores");
@@ -263,22 +279,6 @@ export class EnterScoresProcessor {
     }
     this.logger.debug("Save button found and clicked");
     this.logger.log("Save button clicked, waiting for navigation");
-
-    let saveSucceeded = false;
-    let saveFailureReason: "navigation-timeout" | "row-validation" | null = null;
-    const saveWaitTimeout = 45000;
-
-    const navPromise = this.formPage.waitForNavigation({
-      waitUntil: "networkidle0",
-      timeout: saveWaitTimeout,
-    });
-    // If the race is won by network-idle, the navigation promise may still reject later (e.g.
-    // "Navigating frame was detached"). Attach a catch so that doesn't become an unhandled rejection.
-    navPromise.catch((lateErr: unknown) => {
-      this.logger.debug(
-        `Late navigation rejection (race already settled): ${lateErr instanceof Error ? lateErr.message : String(lateErr)}`
-      );
-    });
 
     try {
       await Promise.race([
@@ -321,7 +321,14 @@ export class EnterScoresProcessor {
       `Post-save page state: URL=${currentUrl}, rowErrorMessages=${rowErrorMessages.length}, saveSucceeded=${saveSucceeded}`
     );
     if (currentUrl.includes("teammatch.aspx")) {
-      this.logger.log(`Post-save URL still on teammatch.aspx (not necessarily an error): ${currentUrl}`);
+      this.logger.log(`Post-save URL on teammatch.aspx (good sign — save likely succeeded): ${currentUrl}`);
+    }
+    if (currentUrl.includes("matchresult.aspx")) {
+      this.logger.error(
+        `Post-save URL is still on matchresult.aspx (edit page), save did not trigger navigation: ${currentUrl}`
+      );
+      saveSucceeded = false;
+      saveFailureReason = "still-on-edit-page";
     }
     if (rowErrorMessages.length > 0) {
       this.logger.warn(`Post-save row error messages: ${rowErrorMessages.join("; ")}`);
@@ -331,6 +338,7 @@ export class EnterScoresProcessor {
     }
 
     // Navigation can fail even when save succeeded; use absence of row errors as success signal.
+    // Do not treat as success if we're still on the edit page (still-on-edit-page).
     if (
       !saveSucceeded &&
       saveFailureReason === "navigation-timeout" &&
@@ -348,6 +356,9 @@ export class EnterScoresProcessor {
         " Reason: navigation timeout after save button click. Scores may not have been persisted on the website.";
     } else if (saveFailureReason === "row-validation") {
       failureMessage += " Reason: row validation error messages present after save.";
+    } else if (saveFailureReason === "still-on-edit-page") {
+      failureMessage +=
+        " Reason: post-save URL is still on matchresult.aspx (edit page); save did not trigger navigation.";
     } else {
       failureMessage += " Reason: unknown (no navigation success signal).";
     }
