@@ -10,6 +10,13 @@ jest.mock("@sentry/nestjs", () => ({
   setContext: jest.fn(),
   captureException: jest.fn(),
   captureMessage: jest.fn(),
+  withScope: jest.fn((callback: (scope: { setFingerprint: () => void; setTag: () => void; setContext: () => void }) => void) => {
+    callback({
+      setFingerprint: jest.fn(),
+      setTag: jest.fn(),
+      setContext: jest.fn(),
+    });
+  }),
 }));
 
 describe("GlobalConsumer", () => {
