@@ -30,6 +30,7 @@ import { enterGames } from "./pupeteer/enterGames";
 export class EncounterFormPageService {
   private readonly logger = new Logger(EncounterFormPageService.name);
   private page: Page | null = null;
+  private _unhandledRejectionHandler: ((reason: unknown) => void) | null = null;
 
   async open(headless: boolean, flags: string[]): Promise<void> {
     this.page = await getPage(headless, flags);
@@ -38,13 +39,54 @@ export class EncounterFormPageService {
     }
     this.page.setDefaultTimeout(30000);
     await this.page.setViewport({ width: 1691, height: 1337 });
+
+    this._installUnhandledRejectionGuard();
   }
 
   async close(): Promise<void> {
-    if (this.page && !this.page.isClosed()) {
-      await this.page.close();
+    this._removeUnhandledRejectionGuard();
+
+    const pageToClose = this.page;
+    if (pageToClose && !pageToClose.isClosed()) {
+      await pageToClose.close();
     }
-    this.page = null;
+    if (this.page === pageToClose) {
+      this.page = null;
+    }
+  }
+
+  /**
+   * Catches unhandled ProtocolError rejections from internal Puppeteer frame initialization
+   * (FrameManager.onAttachedToTarget -> Network.enable / Page.addScriptToEvaluateOnNewDocument).
+   * These are fire-and-forget inside Puppeteer and can't be caught via the Page API.
+   */
+  private _installUnhandledRejectionGuard(): void {
+    this._unhandledRejectionHandler = (reason: unknown) => {
+      const msg = reason instanceof Error ? reason.message : String(reason);
+      if (
+        msg.includes("protocolTimeout") ||
+        msg.includes("Network.enable timed out") ||
+        msg.includes("Page.addScriptToEvaluateOnNewDocument timed out")
+      ) {
+        this.logger.warn(
+          `Suppressed internal Puppeteer ProtocolError (non-fatal): ${msg}`
+        );
+        return;
+      }
+    };
+    process.on("unhandledRejection", this._unhandledRejectionHandler);
+  }
+
+  private _removeUnhandledRejectionGuard(): void {
+    if (this._unhandledRejectionHandler) {
+      process.removeListener("unhandledRejection", this._unhandledRejectionHandler);
+      this._unhandledRejectionHandler = null;
+    }
+  }
+
+  /** True if a page is open and not closed (e.g. for defensive reopen at job start). */
+  hasPage(): boolean {
+    return this.page != null && !this.page.isClosed();
   }
 
   async acceptCookies(timeout = 20000): Promise<void> {
@@ -145,6 +187,12 @@ export class EncounterFormPageService {
   }
 
   private _assertPage(): void {
+    if (this.page != null && this.page.isClosed()) {
+      this.page = null;
+      throw new Error(
+        "Page was closed (e.g. browser restarted or crashed). Retry the job for a fresh page."
+      );
+    }
     if (!this.page) {
       throw new Error("Page not open — call open() first");
     }

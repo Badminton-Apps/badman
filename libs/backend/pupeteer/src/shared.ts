@@ -145,7 +145,7 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
       ...args,
     ],
     userDataDir,
-    protocolTimeout: 30000, // 30 seconds for protocol operations (prevents crashes on slow connections)
+    protocolTimeout: 180_000, // 3 minutes — Puppeteer's default; 30s was too tight and caused unhandled ProtocolError rejections during post-save frame initialization on slow servers
   });
 
   // Handle browser disconnection

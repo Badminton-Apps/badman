@@ -1,5 +1,4 @@
 import { EncounterCompetition } from "@badman/backend-database";
-import { runParallel } from "@badman/utils";
 import { Page } from "puppeteer";
 
 export async function enterEditMode(
@@ -19,13 +18,8 @@ export async function enterEditMode(
   const matchId = encounter.visualCode;
   const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
 
-  {
-    const targetPage = page;
-    const promises = [];
-    promises.push(targetPage.waitForNavigation());
-    await targetPage.goto(
-      `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`
-    );
-    await runParallel(promises);
-  }
+  await page.goto(
+    `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`,
+    { waitUntil: "networkidle0", timeout: 30000 }
+  );
 }

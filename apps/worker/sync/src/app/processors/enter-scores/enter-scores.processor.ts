@@ -35,6 +35,15 @@ export class EnterScoresProcessor {
   private readonly _password?: string;
   private _currentPhase: EnterScoresPhase = "preflight";
 
+  /**
+   * Serialize EnterScores execution.  Bull's per-name `concurrency` does NOT
+   * prevent concurrent runs: each `queue.process()` call adds a worker slot
+   * that can pick up ANY job type.  With ~30 named processors on SyncQueue,
+   * up to 30 EnterScores jobs could run in parallel — breaking the singleton
+   * EncounterFormPageService.  This promise chain ensures at most one runs.
+   */
+  private _serialQueue: Promise<void> = Promise.resolve();
+
   constructor(
     private readonly configService: ConfigService<ConfigType>,
     private readonly _transactionManager: TransactionManager,
@@ -73,7 +82,9 @@ export class EnterScoresProcessor {
     if (
       msg.includes("frame was detached") ||
       msg.includes("Target closed") ||
-      msg.includes("detached Frame")
+      msg.includes("detached Frame") ||
+      msg.includes("ProtocolError") ||
+      msg.includes("timed out. Increase the 'protocolTimeout'")
     ) {
       return new EnterScoresError(
         EnterScoresErrorCode.BROWSER_PAGE,
@@ -401,6 +412,14 @@ export class EnterScoresProcessor {
         "Toernooi.nl was likely unreachable; retry may succeed when the site is back."
       );
     }
+    if (
+      errorMessage.includes("ProtocolError") ||
+      errorMessage.includes("protocolTimeout")
+    ) {
+      this.logger.warn(
+        "CDP protocol timeout (browser connection overwhelmed or slow; job will retry with a fresh browser)"
+      );
+    }
 
     if (finalAttempt) {
       if (devEmailDestination) {
@@ -462,9 +481,33 @@ export class EnterScoresProcessor {
     concurrency: 1,
   })
   async enterScores(job: Job<{ encounterId: string }>) {
+    // Start lock renewal immediately so the job doesn't get marked as stalled
+    // while it waits in the serial queue behind other EnterScores jobs.
+    const stopLockRenewal = startLockRenewal(job);
+
+    // Serialize: wait for any previous EnterScores job to finish before starting.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    let release: () => void = () => {};
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const waitFor = this._serialQueue;
+    this._serialQueue = gate;
+
     this.logger.log(
-      `🚀 Starting EnterScores job ${job.id} for encounter ${job.data.encounterId} (PID: ${process.pid})`
+      `🚀 Starting EnterScores job ${job.id} for encounter ${job.data.encounterId} (PID: ${process.pid}), waiting for serial lock…`
     );
+    await waitFor;
+    this.logger.log(
+      `🔓 Serial lock acquired for job ${job.id} (encounter ${job.data.encounterId})`
+    );
+
+    try {
+      await this._enterScoresImpl(job, stopLockRenewal);
+    } finally {
+      release();
+    }
+  }
+
+  private async _enterScoresImpl(job: Job<{ encounterId: string }>, stopLockRenewal: () => void) {
     const hangBeforeBrowserCleanup = this.configService.get("HANG_BEFORE_BROWSER_CLEANUP") === true;
 
     const preflight = enterScoresPreflight({
@@ -484,21 +527,20 @@ export class EnterScoresProcessor {
     const encounterId = job.data.encounterId;
     let encounter: EncounterCompetition | null = null;
     const devEmailDestination = this.configService.get<string>("DEV_EMAIL_DESTINATION");
-
-    this.logger.debug(`Dev email destination: ${devEmailDestination}`);
-
-    const stopLockRenewal = startLockRenewal(job);
+    const openFlags = [
+      "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
+      "--disable-save-password-bubble",
+      "--disable-credentials-enable-service",
+      "--disable-credential-saving",
+      "--password-store=basic",
+      "--no-default-browser-check",
+    ];
     try {
       this._currentPhase = "browser_open";
       this.logger.debug("Creating browser");
-      await this.formPage.open(preflight.headless, [
-        "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
-        "--disable-save-password-bubble",
-        "--disable-credentials-enable-service",
-        "--disable-credential-saving",
-        "--password-store=basic",
-        "--no-default-browser-check",
-      ]);
+      if (!this.formPage.hasPage()) {
+        await this.formPage.open(preflight.headless, openFlags);
+      }
 
       this._currentPhase = "load_encounter";
       this.logger.log("Getting encounter");
@@ -517,6 +559,11 @@ export class EnterScoresProcessor {
         if (this.isTimeoutError(error)) {
           this.logger.warn(
             "Cookie acceptance timeout (continuing):",
+            msg
+          );
+        } else if (msg.includes("Could not find element")) {
+          this.logger.warn(
+            "Cookie accept button not found (cookies likely already accepted, continuing):",
             msg
           );
         } else {
