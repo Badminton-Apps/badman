@@ -9,6 +9,8 @@ export enum EnterScoresErrorCode {
   ROW_VALIDATION = "ROW_VALIDATION",
   SAVE_BUTTON = "SAVE_BUTTON",
   SAVE_FAILED = "SAVE_FAILED",
+  /** Toernooi.nl showed the "Foutmelding" dialog after save (e.g. player over limit). */
+  SAVE_DIALOG_ERROR = "SAVE_DIALOG_ERROR",
 }
 
 export type EnterScoresPhase =
