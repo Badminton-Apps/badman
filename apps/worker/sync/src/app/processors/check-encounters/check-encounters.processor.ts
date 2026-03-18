@@ -152,24 +152,7 @@ export class CheckEncounterProcessor {
           }
 
           await this.detailPage.open();
-
-          // Accept cookies - handle timeouts and already-accepted gracefully
-          try {
-            await this.detailPage.acceptCookies();
-          } catch (error: any) {
-            const msg = error?.message || String(error);
-            const isNonFatal =
-              msg.includes("timeout") ||
-              msg.includes("timed out") ||
-              msg.includes("Could not find element") ||
-              error?.name === "ProtocolError";
-
-            if (isNonFatal) {
-              this.logger.warn("Cookie acceptance non-fatal error (continuing):", msg);
-            } else {
-              throw error;
-            }
-          }
+          await this.acceptCookiesOrContinue();
 
           // Processing encounters
           for (const encounter of chunk) {
@@ -185,9 +168,13 @@ export class CheckEncounterProcessor {
               encountersProcessed++;
             } catch (syncError: unknown) {
               const msg = syncError instanceof Error ? syncError.message : String(syncError);
-              if (msg.includes("Execution context was destroyed")) {
+              const isPageGone =
+                msg.includes("Execution context was destroyed") ||
+                msg.includes("detached Frame") ||
+                msg.includes("frame was detached");
+              if (isPageGone) {
                 this.logger.warn(
-                  `Execution context destroyed for encounter ${encounter.visualCode}, closing page and continuing with next`
+                  `Page/frame detached for encounter ${encounter.visualCode}, closing page and continuing with next`
                 );
                 try {
                   await this.detailPage.close();
@@ -248,25 +235,7 @@ export class CheckEncounterProcessor {
 
     await this.detailPage.open();
     try {
-      // Accept cookies - handle timeouts and already-accepted gracefully
-      try {
-        await this.detailPage.acceptCookies();
-      } catch (error: any) {
-        const msg = error?.message || String(error);
-        const isNonFatal =
-          msg.includes("timeout") ||
-          msg.includes("timed out") ||
-          msg.includes("Could not find element") ||
-          error?.name === "ProtocolError";
-
-        if (isNonFatal) {
-          this.logger.warn("Cookie acceptance non-fatal error (continuing):", msg);
-        } else {
-          throw error;
-        }
-      }
-
-      // Processing encounters
+      await this.acceptCookiesOrContinue();
       await this._syncEncounter(encounter);
     } catch (error) {
       this.logger.error(error);
@@ -282,14 +251,8 @@ export class CheckEncounterProcessor {
     }
   }
 
-  /// Ensure the browser page is open (re-open and accept cookies if it was closed).
-  /// Call before each encounter so we recover if the page closed unexpectedly during the chunk.
-  private async ensurePageOpenForEncounter(): Promise<void> {
-    if (this.detailPage.isOpen()) {
-      return;
-    }
-    this.logger.warn("Page not open — re-opening before encounter");
-    await this.detailPage.open();
+  /// Call acceptCookies and treat known transient errors (timeout, detached frame, etc.) as non-fatal.
+  private async acceptCookiesOrContinue(logContext?: string): Promise<void> {
     try {
       await this.detailPage.acceptCookies();
     } catch (error: unknown) {
@@ -298,13 +261,27 @@ export class CheckEncounterProcessor {
         msg.includes("timeout") ||
         msg.includes("timed out") ||
         msg.includes("Could not find element") ||
+        msg.includes("detached Frame") ||
+        msg.includes("frame was detached") ||
         (error as { name?: string })?.name === "ProtocolError";
       if (isNonFatal) {
-        this.logger.warn("Cookie acceptance non-fatal error after re-open (continuing):", msg);
+        const suffix = logContext ? ` ${logContext} (continuing):` : " (continuing):";
+        this.logger.warn(`Cookie acceptance non-fatal error${suffix}`, msg);
       } else {
         throw error;
       }
     }
+  }
+
+  /// Ensure the browser page is open (re-open and accept cookies if it was closed).
+  /// Call before each encounter so we recover if the page closed unexpectedly during the chunk.
+  private async ensurePageOpenForEncounter(): Promise<void> {
+    if (this.detailPage.isOpen()) {
+      return;
+    }
+    this.logger.warn("Page not open — re-opening before encounter");
+    await this.detailPage.open();
+    await this.acceptCookiesOrContinue("after re-open");
   }
 
   /// Load the event for the encounter, we do this in a separate part
