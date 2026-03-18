@@ -55,7 +55,6 @@ const encounterIds = [
   // "33ade599-8009-49d8-9acd-54e1336f9657",
   // "66835f20-177b-4826-a3ca-ce9e1fb6b487",
   // "089744c5-225b-4210-92a9-da81b970ebea",
-  "4ec690d6-ee3a-46d9-9e69-d59b9b64242d",
 ];
 
 const endpoint = "http://localhost:5010/api/v1/queue-job";
