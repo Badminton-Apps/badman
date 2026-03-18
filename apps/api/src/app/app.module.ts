@@ -81,5 +81,20 @@ export class AppModule {
 
   constructor(configService: ConfigService<ConfigType>) {
     this.logger.log(`${AppModule.name} loaded, env: ${configService.get("NODE_ENV")}`);
+
+    const allowNoAuth = configService.get("DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH");
+    const asPlayerId = configService.get("DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID");
+    if (allowNoAuth || asPlayerId) {
+      this.logger.warn("----------------------------------------");
+      this.logger.warn("DEV ONLY - NEVER USE IN PRODUCTION:");
+      this.logger.warn(
+        "  DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH / DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID are set."
+      );
+      this.logger.warn(
+        "  Unauthenticated queue-job requests will be accepted when NODE_ENV=development."
+      );
+      this.logger.warn("  Bypass is DISABLED when NODE_ENV is not development.");
+      this.logger.warn("----------------------------------------");
+    }
   }
 }

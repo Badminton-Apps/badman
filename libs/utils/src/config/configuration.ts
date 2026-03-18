@@ -106,6 +106,28 @@ export const configSchema = Joi.object({
   DEV_EMAIL_DESTINATION: Joi.string()
     .email({ tlds: { allow: false } })
     .optional(),
+  /**
+   * DEV ONLY - Forbidden in production/staging. When true AND NODE_ENV=development only:
+   * queue-job accepts unauthenticated requests (no JWT). Uses DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID.
+   */
+  DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH: Joi.when("NODE_ENV", {
+    is: Joi.valid("production", "staging"),
+    then: Joi.forbidden().messages({
+      "any.unknown": "DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH must not be set when NODE_ENV is production or staging.",
+    }),
+    otherwise: Joi.boolean().optional(),
+  }),
+  /**
+   * DEV ONLY - Forbidden in production/staging. Player UUID to impersonate for unauthenticated
+   * queue-job when DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH is set. Must have change:job permission.
+   */
+  DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID: Joi.when("NODE_ENV", {
+    is: Joi.valid("production", "staging"),
+    then: Joi.forbidden().messages({
+      "any.unknown": "DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID must not be set when NODE_ENV is production or staging.",
+    }),
+    otherwise: Joi.string().uuid().optional(),
+  }),
   PUSH_ENABLED: Joi.boolean().default(false),
   VAPID_PRIVATE_KEY: Joi.when("PUSH_ENABLED", {
     is: true,
@@ -211,6 +233,10 @@ export type ConfigType = {
   MAIL_HOST?: string;
   MAIL_SUBJECT_PREFIX?: string;
   DEV_EMAIL_DESTINATION?: string;
+  /** @deprecated DEV ONLY - never set in production. Allows unauthenticated queue-job when NODE_ENV=development. */
+  DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH?: boolean;
+  /** @deprecated DEV ONLY - Player UUID to impersonate for unauthenticated queue-job. */
+  DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID?: string;
   PUSH_ENABLED: boolean;
   MAX_CONCURRENT_WORKER_JOBS: number;
   VAPID_PRIVATE_KEY?: string;
