@@ -87,6 +87,7 @@ function makeFormPageService() {
     clickSaveButton: jest.fn().mockResolvedValue(true),
     waitForNavigation: jest.fn().mockResolvedValue(undefined),
     waitForNetworkIdle: jest.fn().mockResolvedValue(undefined),
+    waitForSaveErrorDialog: jest.fn().mockResolvedValue(null),
   };
 }
 
@@ -332,6 +333,30 @@ describe("EnterScoresProcessor", () => {
 
       await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
         "Save button not found on page"
+      );
+    });
+  });
+
+  // ── Save error dialog (Foutmelding) ─────────────────────────────────────────
+
+  describe("save error dialog", () => {
+    it("throws and sends failure email with dialog message when toernooi.nl shows error dialog after save", async () => {
+      const dialogMessage = "DE4: Catry, Petra heeft te veel wedstrijden gespeeld.";
+      formPage.waitForSaveErrorDialog.mockResolvedValue(dialogMessage);
+      formPage.waitForNavigation.mockImplementation(() => new Promise(() => {}));
+
+      const job = makeJob({ attemptsMade: 2, maxAttempts: 3 });
+      await expect(processor.enterScores(job as any)).rejects.toThrow(
+        /Toernooi.nl showed an error after save/
+      );
+
+      expect(mailingService.sendEnterScoresFailedMail).toHaveBeenCalledTimes(1);
+      expect(mailingService.sendEnterScoresFailedMail).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.stringContaining(dialogMessage),
+        expect.anything(),
+        expect.any(String),
+        expect.any(String)
       );
     });
   });

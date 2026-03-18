@@ -18,11 +18,7 @@ import { ConfigType } from "@badman/utils";
 import * as Sentry from "@sentry/nestjs";
 import { ToernooiUnreachableError } from "@badman/backend-pupeteer";
 import { startLockRenewal } from "../../utils";
-import {
-  EnterScoresError,
-  EnterScoresErrorCode,
-  EnterScoresPhase,
-} from "./enter-scores.errors";
+import { EnterScoresError, EnterScoresErrorCode, EnterScoresPhase } from "./enter-scores.errors";
 import { EncounterFormPageService } from "./encounter-form-page.service";
 import { enterScoresPreflight, isFinalAttempt } from "./guards";
 
@@ -86,11 +82,7 @@ export class EnterScoresProcessor {
       msg.includes("ProtocolError") ||
       msg.includes("timed out. Increase the 'protocolTimeout'")
     ) {
-      return new EnterScoresError(
-        EnterScoresErrorCode.BROWSER_PAGE,
-        msg,
-        { cause: error }
-      );
+      return new EnterScoresError(EnterScoresErrorCode.BROWSER_PAGE, msg, { cause: error });
     }
     return error;
   }
@@ -187,9 +179,7 @@ export class EnterScoresProcessor {
         encounter.visualCode,
         toernooiUrl
       );
-      this.logger.log(
-        `Success email sent for encounter ${encounter.visualCode || encounter.id}`
-      );
+      this.logger.log(`Success email sent for encounter ${encounter.visualCode || encounter.id}`);
     } catch (emailError: unknown) {
       this.logger.error(
         "Failed to send success email:",
@@ -254,8 +244,12 @@ export class EnterScoresProcessor {
 
   private async waitForSaveResult(): Promise<void> {
     let saveSucceeded = false;
-    let saveFailureReason: "navigation-timeout" | "row-validation" | "still-on-edit-page" | null =
-      null;
+    let saveFailureReason:
+      | "navigation-timeout"
+      | "row-validation"
+      | "still-on-edit-page"
+      | "dialog"
+      | null = null;
     const saveWaitTimeout = 45000;
 
     // Set up navigation listener before clicking so we don't miss a fast redirect.
@@ -278,25 +272,48 @@ export class EnterScoresProcessor {
       );
     }
     this.logger.debug("Save button found and clicked");
-    this.logger.log("Save button clicked, waiting for navigation");
+    this.logger.log("Save button clicked, waiting for navigation or error dialog");
 
-    try {
-      await Promise.race([
-        navPromise,
-        this.formPage
-          .waitForNetworkIdle({ idleTime: 1000, timeout: saveWaitTimeout })
-          .catch(() => null),
-      ]);
-      this.logger.log("Navigation or network idle after save completed");
-      saveSucceeded = true;
-    } catch (navigationError: unknown) {
-      saveFailureReason = "navigation-timeout";
-      const navMsg =
-        navigationError instanceof Error ? navigationError.message : String(navigationError);
-      this.logger.warn(
-        `Navigation after save button click failed (e.g. net::ERR_ABORTED at cookiewall); will check page state: ${navMsg}`
+    // Race: either navigation succeeds, or the "Foutmelding" error dialog appears (e.g. "DE4: ... heeft te veel wedstrijden gespeeld").
+    type RaceResult = { type: "dialog"; message: string } | { type: "nav" } | { type: "timeout" };
+
+    const waitForDialogResult = async (): Promise<RaceResult> => {
+      const msg = await this.formPage.waitForSaveErrorDialog(saveWaitTimeout);
+      if (msg != null && msg.length > 0) {
+        return { type: "dialog", message: msg };
+      }
+      await new Promise<never>(() => {
+        /* never resolves so race is won by nav */
+      });
+    };
+
+    const waitForNavResult = async (): Promise<RaceResult> => {
+      try {
+        await navPromise;
+        return { type: "nav" };
+      } catch {
+        return { type: "timeout" };
+      }
+    };
+
+    const raceResult = await Promise.race([waitForDialogResult(), waitForNavResult()]);
+
+    if (raceResult.type === "dialog") {
+      this.logger.error(`Save rejected by toernooi.nl (error dialog): ${raceResult.message}`);
+      throw new EnterScoresError(
+        EnterScoresErrorCode.SAVE_DIALOG_ERROR,
+        `Toernooi.nl showed an error after save: ${raceResult.message}`
       );
+    }
 
+    if (raceResult.type === "nav") {
+      this.logger.log("Navigation after save completed");
+      saveSucceeded = true;
+    } else {
+      saveFailureReason = "navigation-timeout";
+      this.logger.warn(
+        "Navigation after save button click failed (e.g. net::ERR_ABORTED at cookiewall); will check page state"
+      );
       try {
         await this.formPage.waitForNetworkIdle({ idleTime: 1000, timeout: 15000 });
         this.logger.log("Network idle achieved after navigation timeout");
@@ -307,11 +324,15 @@ export class EnterScoresProcessor {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         const fallbackUrl = this.formPage.getCurrentUrl();
         this.logger.log(`Current URL after fallback wait: ${fallbackUrl}`);
-        if (fallbackUrl.includes("teammatch.aspx")) {
-          this.logger.warn(
-            "Still on teammatch page after save - this might indicate the save didn't work properly"
-          );
-        }
+      }
+      // After navigation timeout, check if the error dialog appeared (e.g. slow to render).
+      const dialogMessage = await this.formPage.waitForSaveErrorDialog(2000);
+      if (dialogMessage != null && dialogMessage.length > 0) {
+        this.logger.error(`Save rejected by toernooi.nl (error dialog): ${dialogMessage}`);
+        throw new EnterScoresError(
+          EnterScoresErrorCode.SAVE_DIALOG_ERROR,
+          `Toernooi.nl showed an error after save: ${dialogMessage}`
+        );
       }
     }
 
@@ -320,9 +341,7 @@ export class EnterScoresProcessor {
     this.logger.log(
       `Post-save page state: URL=${currentUrl}, rowErrorMessages=${rowErrorMessages.length}, saveSucceeded=${saveSucceeded}`
     );
-    if (currentUrl.includes("teammatch.aspx")) {
-      this.logger.log(`Post-save URL on teammatch.aspx (good sign — save likely succeeded): ${currentUrl}`);
-    }
+
     if (currentUrl.includes("matchresult.aspx")) {
       this.logger.error(
         `Post-save URL is still on matchresult.aspx (edit page), save did not trigger navigation: ${currentUrl}`
@@ -381,8 +400,7 @@ export class EnterScoresProcessor {
     const maxAttempts = job.opts?.attempts ?? 1;
     const finalAttempt = isFinalAttempt(job.attemptsMade, maxAttempts);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorCode =
-      error instanceof EnterScoresError ? error.code : undefined;
+    const errorCode = error instanceof EnterScoresError ? error.code : undefined;
 
     Sentry.setTag("processor", "enter-scores");
     Sentry.setTag("error_code", errorCode ?? "UNKNOWN");
@@ -415,18 +433,12 @@ export class EnterScoresProcessor {
         "Page/frame detached or target closed (transient; job will retry with a fresh browser)"
       );
     }
-    if (
-      errorMessage.includes("unreachable") ||
-      errorMessage.includes("net::ERR")
-    ) {
+    if (errorMessage.includes("unreachable") || errorMessage.includes("net::ERR")) {
       this.logger.warn(
         "Toernooi.nl was likely unreachable; retry may succeed when the site is back."
       );
     }
-    if (
-      errorMessage.includes("ProtocolError") ||
-      errorMessage.includes("protocolTimeout")
-    ) {
+    if (errorMessage.includes("ProtocolError") || errorMessage.includes("protocolTimeout")) {
       this.logger.warn(
         "CDP protocol timeout (browser connection overwhelmed or slow; job will retry with a fresh browser)"
       );
@@ -452,7 +464,9 @@ export class EnterScoresProcessor {
             encounterForUrl?.visualCode ?? encounter?.visualCode,
             toernooiUrl
           );
-          this.logger.log(`Failure email sent for encounter ${encounterForUrl?.visualCode ?? encounter?.visualCode ?? encounterId}`);
+          this.logger.log(
+            `Failure email sent for encounter ${encounterForUrl?.visualCode ?? encounter?.visualCode ?? encounterId}`
+          );
         } catch (emailError: unknown) {
           this.logger.error(
             "Failed to send failure email:",
@@ -497,9 +511,13 @@ export class EnterScoresProcessor {
     const stopLockRenewal = startLockRenewal(job);
 
     // Serialize: wait for any previous EnterScores job to finish before starting.
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    let release: () => void = () => {};
-    const gate = new Promise<void>((resolve) => { release = resolve; });
+
+    let release: () => void = () => {
+      /* set below */
+    };
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
     const waitFor = this._serialQueue;
     this._serialQueue = gate;
 
@@ -568,10 +586,7 @@ export class EnterScoresProcessor {
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : String(error);
         if (this.isTimeoutError(error)) {
-          this.logger.warn(
-            "Cookie acceptance timeout (continuing):",
-            msg
-          );
+          this.logger.warn("Cookie acceptance timeout (continuing):", msg);
         } else if (msg.includes("Could not find element")) {
           this.logger.warn(
             "Cookie accept button not found (cookies likely already accepted, continuing):",
@@ -593,17 +608,13 @@ export class EnterScoresProcessor {
         this.logger.log("✅ Sign in completed successfully");
       } catch (error: unknown) {
         if (!this.isTimeoutError(error)) {
-          throw new EnterScoresError(
-            EnterScoresErrorCode.SIGN_IN,
-            (error as Error).message,
-            { cause: error }
-          );
+          throw new EnterScoresError(EnterScoresErrorCode.SIGN_IN, (error as Error).message, {
+            cause: error,
+          });
         }
 
         this.logger.warn("Sign in timeout - checking if signed in anyway");
-        const signedIn = await this.formPage
-          .waitForSignInConfirmation(5000)
-          .catch(() => false);
+        const signedIn = await this.formPage.waitForSignInConfirmation(5000).catch(() => false);
         if (!signedIn) {
           throw new EnterScoresError(
             EnterScoresErrorCode.SIGN_IN,
@@ -642,13 +653,7 @@ export class EnterScoresProcessor {
       await this.sendNotificationEmail(encounter, devEmailDestination);
     } catch (error: unknown) {
       const normalizedError = this.normalizePageError(error);
-      await this.handleFailure(
-        normalizedError,
-        job,
-        encounter,
-        encounterId,
-        devEmailDestination
-      );
+      await this.handleFailure(normalizedError, job, encounter, encounterId, devEmailDestination);
       throw normalizedError;
     } finally {
       await this.cleanup(stopLockRenewal, hangBeforeBrowserCleanup);

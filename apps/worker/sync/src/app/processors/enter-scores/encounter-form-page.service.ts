@@ -16,6 +16,7 @@ import {
   getRowErrorMessages,
   waitForNavigation,
   waitForNetworkIdle,
+  waitForSaveErrorDialog,
   waitForSignInConfirmation,
 } from "./pupeteer";
 import { enterGames } from "./pupeteer/enterGames";
@@ -48,6 +49,7 @@ export class EncounterFormPageService {
 
     const pageToClose = this.page;
     if (pageToClose && !pageToClose.isClosed()) {
+      await new Promise((r) => setTimeout(r, 150));
       await pageToClose.close();
     }
     if (this.page === pageToClose) {
@@ -184,6 +186,18 @@ export class EncounterFormPageService {
   async waitForNetworkIdle(opts: { idleTime: number; timeout: number }): Promise<void> {
     this._assertPage();
     await waitForNetworkIdle({ page: this.page! }, opts, { logger: this.logger });
+  }
+
+  /**
+   * Waits for the save error dialog (#dlgError / "Foutmelding") that appears when toernooi.nl
+   * rejects the save (e.g. "too many matches played"). Returns the dialog message or null if not shown within timeout.
+   */
+  async waitForSaveErrorDialog(timeoutMs: number): Promise<string | null> {
+    this._assertPage();
+    return waitForSaveErrorDialog(
+      { page: this.page!, timeout: timeoutMs },
+      { logger: this.logger }
+    );
   }
 
   private _assertPage(): void {

@@ -4,6 +4,7 @@ import { getCurrentUrl } from "../getCurrentUrl";
 import { getRowErrorMessages } from "../getRowErrorMessages";
 import { waitForNavigation } from "../waitForNavigation";
 import { waitForNetworkIdle } from "../waitForNetworkIdle";
+import { waitForSaveErrorDialog } from "../waitForSaveErrorDialog";
 import { waitForSignInConfirmation } from "../waitForSignInConfirmation";
 
 jest.mock("@badman/backend-pupeteer", () => ({
@@ -149,6 +150,31 @@ describe("waitForNavigation", () => {
     await expect(
       waitForNavigation({ page: page as any }, { waitUntil: "load", timeout: 5000 })
     ).rejects.toThrow("Navigation timeout");
+  });
+});
+
+// ── waitForSaveErrorDialog ─────────────────────────────────────────────────────
+
+describe("waitForSaveErrorDialog", () => {
+  it("returns dialog message when #dlgError becomes visible", async () => {
+    const fakeEl = { evaluate: jest.fn().mockResolvedValue("DE4: Catry, Petra heeft te veel wedstrijden gespeeld.") };
+    const page = makePage({ waitForSelector: jest.fn().mockResolvedValue(fakeEl) });
+
+    const result = await waitForSaveErrorDialog({ page: page as any, timeout: 15000 });
+
+    expect(result).toBe("DE4: Catry, Petra heeft te veel wedstrijden gespeeld.");
+    expect(page.waitForSelector).toHaveBeenCalledWith("#dlgError", { visible: true, timeout: 15000 });
+    expect(fakeEl.evaluate).toHaveBeenCalled();
+  });
+
+  it("returns null when timeout is reached before dialog appears", async () => {
+    const page = makePage({
+      waitForSelector: jest.fn().mockRejectedValue(new Error("Timeout")),
+    });
+
+    const result = await waitForSaveErrorDialog({ page: page as any, timeout: 5000 });
+
+    expect(result).toBeNull();
   });
 });
 

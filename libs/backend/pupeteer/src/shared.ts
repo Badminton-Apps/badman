@@ -9,6 +9,8 @@ let browserStartTime = 0;
 const BROWSER_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
 const MAX_PAGES = 50;
 const MAX_INACTIVE = 15 * 60 * 1000; // 15 minutes
+/** Delay before newPage() so Chrome can finish tearing down the previous target (reduces "Session with given id not found"). */
+const NEW_PAGE_DELAY_MS = 200;
 
 // Track browser activity and requests
 let lastActivityTime = 0;
@@ -108,6 +110,8 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
     return await getPage(headless, args); // Recursive call to get fresh browser
   }
 
+  await new Promise((r) => setTimeout(r, NEW_PAGE_DELAY_MS));
+
   let page: Page;
   try {
     page = await browser.newPage();
@@ -163,10 +167,13 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
   // Remove stale SingletonLock so Chrome can start (left behind after previous close/crash)
   const singletonLock = path.join(userDataDir, "SingletonLock");
   try {
+    await fsPromises.access(singletonLock);
     await fsPromises.unlink(singletonLock);
   } catch (err) {
-    console.log("Failed to remove SingletonLock file, ignoring...", err);
-    // Ignore: file may not exist
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+      console.log("Failed to remove SingletonLock file, ignoring...", err);
+    }
+    // ENOENT: file doesn't exist, nothing to remove
   }
 
   // Create user data dir with leak detection disabled

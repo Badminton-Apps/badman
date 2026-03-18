@@ -18,6 +18,8 @@ const axios = require("axios");
  * 4. Check the worker logs to see job processing
  *
  * ENVIRONMENT VARIABLES (for testing):
+ * - On API: DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH=true + DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID=<uuid>
+ *   (DEV ONLY - NEVER IN PRODUCTION. Lets this script queue jobs without a token when NODE_ENV=development.)
  * - VISUAL_SYNC_ENABLED=true     # Shows browser window for debugging
  * - ENTER_SCORES_ENABLED=true    # Actually saves data (use carefully!)
  * - HANG_BEFORE_BROWSER_CLEANUP=true  # Keeps browser open for inspection (ONLY FOR DEVELOPMENT!,
@@ -75,17 +77,14 @@ async function addJobsToQueue() {
       },
       removeOnComplete: true,
       removeOnFail: true,
-      backoff: {
-        type: "exponential",
-      },
+    };
+
+    const headers = {
+      "Content-Type": "application/json",
     };
 
     try {
-      const response = await axios.post(endpoint, payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await axios.post(endpoint, payload, { headers });
 
       console.log("  ✅ Job added successfully");
       console.log(`  Response: ${JSON.stringify(response.data)}`);

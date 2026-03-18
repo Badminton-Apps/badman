@@ -12,5 +12,6 @@ export * from "./getRowErrorMessages";
 export * from "./selectPlayer";
 export * from "./waitForNavigation";
 export * from "./waitForNetworkIdle";
+export * from "./waitForSaveErrorDialog";
 export * from "./waitForSignInConfirmation";
 // end:ng42.barrel

@@ -22,6 +22,7 @@ jest.mock("../pupeteer", () => ({
   getRowErrorMessages: jest.fn(),
   waitForNavigation: jest.fn(),
   waitForNetworkIdle: jest.fn(),
+  waitForSaveErrorDialog: jest.fn(),
   waitForSignInConfirmation: jest.fn(),
 }));
 
@@ -43,6 +44,7 @@ import {
   getRowErrorMessages,
   waitForNavigation,
   waitForNetworkIdle,
+  waitForSaveErrorDialog,
   waitForSignInConfirmation,
 } from "../pupeteer";
 import { enterGames } from "../pupeteer/enterGames";
@@ -262,6 +264,16 @@ describe("EncounterFormPageService", () => {
         expect.anything()
       );
       expect(result).toBe(true);
+    });
+
+    it("waitForSaveErrorDialog calls mocked fn with timeout and returns its result", async () => {
+      (waitForSaveErrorDialog as jest.Mock).mockResolvedValue("DE4: Some error.");
+      const result = await service.waitForSaveErrorDialog(10000);
+      expect(waitForSaveErrorDialog).toHaveBeenCalledWith(
+        expect.objectContaining({ page: fakePage, timeout: 10000 }),
+        expect.anything()
+      );
+      expect(result).toBe("DE4: Some error.");
     });
 
     it("waitForNavigation calls mocked fn with correct opts", async () => {
