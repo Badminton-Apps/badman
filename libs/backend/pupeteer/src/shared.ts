@@ -163,10 +163,13 @@ async function createSharedBrowser(headless = true, args: string[] = []): Promis
   // Remove stale SingletonLock so Chrome can start (left behind after previous close/crash)
   const singletonLock = path.join(userDataDir, "SingletonLock");
   try {
+    await fsPromises.access(singletonLock);
     await fsPromises.unlink(singletonLock);
   } catch (err) {
-    console.log("Failed to remove SingletonLock file, ignoring...", err);
-    // Ignore: file may not exist
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+      console.log("Failed to remove SingletonLock file, ignoring...", err);
+    }
+    // ENOENT: file doesn't exist, nothing to remove
   }
 
   // Create user data dir with leak detection disabled
