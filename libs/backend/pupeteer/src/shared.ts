@@ -300,3 +300,39 @@ export function startBrowserHealthMonitoring(): () => void {
   // Return cleanup function
   return () => clearInterval(interval);
 }
+
+/**
+ * Creates an install/remove pair for a process-level unhandled rejection handler that
+ * suppresses internal Puppeteer ProtocolError timeouts (Page.addScriptToEvaluateOnNewDocument,
+ * Network.enable). These are fire-and-forget inside Puppeteer and cannot be caught via the Page API.
+ * Call install() when opening a page and remove() when closing so the guard is only active during
+ * page operations.
+ */
+export function createProtocolTimeoutGuard(logger: {
+  warn: (...args: unknown[]) => void;
+}): { install: () => void; remove: () => void } {
+  let handler: ((reason: unknown) => void) | null = null;
+  return {
+    install() {
+      if (handler) return;
+      handler = (reason: unknown) => {
+        const msg = reason instanceof Error ? reason.message : String(reason);
+        if (
+          msg.includes("protocolTimeout") ||
+          msg.includes("Network.enable timed out") ||
+          msg.includes("Page.addScriptToEvaluateOnNewDocument timed out")
+        ) {
+          logger.warn("Suppressed internal Puppeteer ProtocolError (non-fatal):", msg);
+          return;
+        }
+      };
+      process.on("unhandledRejection", handler);
+    },
+    remove() {
+      if (handler) {
+        process.removeListener("unhandledRejection", handler);
+        handler = null;
+      }
+    },
+  };
+}

@@ -51,6 +51,10 @@ type SharedModule = {
   getPage: (headless?: boolean, args?: string[]) => Promise<unknown>;
   getBrowser: (headless?: boolean, args?: string[]) => Promise<unknown>;
   restartBrowser: () => Promise<void>;
+  createProtocolTimeoutGuard: (logger: { warn: (...args: unknown[]) => void }) => {
+    install: () => void;
+    remove: () => void;
+  };
 };
 
 let shared: SharedModule;
@@ -183,5 +187,91 @@ describe("getBrowser", () => {
     expect(firstBrowser.close).toHaveBeenCalled();
     expect(mockLaunch).toHaveBeenCalledTimes(2);
     jest.useRealTimers();
+  });
+});
+
+describe("createProtocolTimeoutGuard", () => {
+  let logger: { warn: jest.Mock };
+
+  beforeEach(() => {
+    logger = { warn: jest.fn() };
+  });
+
+  it("returns install and remove functions", () => {
+    const guard = shared.createProtocolTimeoutGuard(logger);
+    expect(guard.install).toBeDefined();
+    expect(guard.remove).toBeDefined();
+    expect(typeof guard.install).toBe("function");
+    expect(typeof guard.remove).toBe("function");
+  });
+
+  it("install adds unhandledRejection listener, remove removes it", () => {
+    const guard = shared.createProtocolTimeoutGuard(logger);
+    const countBefore = process.listenerCount("unhandledRejection");
+
+    guard.install();
+    expect(process.listenerCount("unhandledRejection")).toBe(countBefore + 1);
+
+    guard.remove();
+    expect(process.listenerCount("unhandledRejection")).toBe(countBefore);
+  });
+
+  it("suppresses matching ProtocolError timeout and calls logger.warn", () => {
+    const guard = shared.createProtocolTimeoutGuard(logger);
+    guard.install();
+
+    const reason = new Error(
+      "Page.addScriptToEvaluateOnNewDocument timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed."
+    );
+    // Invoke the handler directly to avoid triggering Jest's unhandledRejection handling
+    const listeners = process.rawListeners("unhandledRejection");
+    const ourListener = listeners[listeners.length - 1] as (reason: unknown, promise: Promise<unknown>) => void;
+    ourListener(reason, Promise.resolve());
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      "Suppressed internal Puppeteer ProtocolError (non-fatal):",
+      reason.message
+    );
+
+    guard.remove();
+  });
+
+  it("suppresses Network.enable timed out message", () => {
+    const guard = shared.createProtocolTimeoutGuard(logger);
+    guard.install();
+
+    const reason = new Error("Network.enable timed out");
+    const listeners = process.rawListeners("unhandledRejection");
+    const ourListener = listeners[listeners.length - 1] as (reason: unknown, promise: Promise<unknown>) => void;
+    ourListener(reason, Promise.resolve());
+
+    expect(logger.warn).toHaveBeenCalledWith(
+      "Suppressed internal Puppeteer ProtocolError (non-fatal):",
+      reason.message
+    );
+
+    guard.remove();
+  });
+
+  it("double install does not add duplicate listener", () => {
+    const guard = shared.createProtocolTimeoutGuard(logger);
+    const countBefore = process.listenerCount("unhandledRejection");
+
+    guard.install();
+    guard.install();
+    expect(process.listenerCount("unhandledRejection")).toBe(countBefore + 1);
+
+    guard.remove();
+    expect(process.listenerCount("unhandledRejection")).toBe(countBefore);
+  });
+
+  it("remove is idempotent", () => {
+    const guard = shared.createProtocolTimeoutGuard(logger);
+    guard.install();
+    const countAfterInstall = process.listenerCount("unhandledRejection");
+
+    guard.remove();
+    guard.remove();
+    expect(process.listenerCount("unhandledRejection")).toBe(countAfterInstall - 1);
   });
 });
