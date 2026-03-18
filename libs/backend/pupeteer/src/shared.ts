@@ -9,6 +9,8 @@ let browserStartTime = 0;
 const BROWSER_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
 const MAX_PAGES = 50;
 const MAX_INACTIVE = 15 * 60 * 1000; // 15 minutes
+/** Delay before newPage() so Chrome can finish tearing down the previous target (reduces "Session with given id not found"). */
+const NEW_PAGE_DELAY_MS = 200;
 
 // Track browser activity and requests
 let lastActivityTime = 0;
@@ -107,6 +109,8 @@ export async function getPage(headless = true, args: string[] = []): Promise<Pag
     resetBrowserState();
     return await getPage(headless, args); // Recursive call to get fresh browser
   }
+
+  await new Promise((r) => setTimeout(r, NEW_PAGE_DELAY_MS));
 
   let page: Page;
   try {

@@ -49,6 +49,7 @@ export class EncounterFormPageService {
 
     const pageToClose = this.page;
     if (pageToClose && !pageToClose.isClosed()) {
+      await new Promise((r) => setTimeout(r, 150));
       await pageToClose.close();
     }
     if (this.page === pageToClose) {
