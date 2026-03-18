@@ -41,6 +41,7 @@ Thumbs.db
 .env
 .env.staging
 .env.production
+.env.prod-db
 .cache
 
 /database/backup

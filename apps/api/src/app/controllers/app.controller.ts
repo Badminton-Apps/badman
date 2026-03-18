@@ -3,6 +3,7 @@ import { User } from "@badman/backend-authorization";
 import { Player } from "@badman/backend-database";
 import { CpGeneratorService, PlannerService } from "@badman/backend-generator";
 import { getSyncJobOptions, RankingQueue, SyncQueue } from "@badman/backend-queue";
+import { ConfigType } from "@badman/utils";
 import { InjectQueue } from "@nestjs/bull";
 import {
   Body,
@@ -15,6 +16,7 @@ import {
   Res,
   UnauthorizedException,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Queue } from "bull";
 import { FastifyReply } from "fastify";
 import { createReadStream } from "fs";
@@ -28,7 +30,8 @@ export class AppController {
     @InjectQueue(RankingQueue) private _rankingQueue: Queue,
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private cpGen: CpGeneratorService,
-    private planner: PlannerService
+    private planner: PlannerService,
+    private configService: ConfigService<ConfigType>
   ) {}
 
   @Post("queue-job")
@@ -43,8 +46,39 @@ export class AppController {
       removeOnFail: boolean;
     }
   ) {
-    // Check if user is properly authenticated and exists in database
-    if (!user?.id) {
+    let effectiveUser: Player | null = user?.id ? user : null;
+
+    // DEV ONLY: bypass auth for queue-job when NODE_ENV=development and explicit env vars are set.
+    // Never runs in production (NODE_ENV check). See DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH.
+    if (!effectiveUser) {
+      const nodeEnv = this.configService.get("NODE_ENV");
+      const allowNoAuth =
+        this.configService.get("DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH") === true ||
+        this.configService.get("DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH") === "true";
+      const asPlayerId = this.configService.get("DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID");
+      const isDevelopment = nodeEnv === "development";
+
+      if (allowNoAuth && nodeEnv !== "development") {
+        this.logger.warn(
+          "DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH is set but NODE_ENV is not development — bypass is DISABLED (security)."
+        );
+      }
+
+      if (isDevelopment && allowNoAuth && asPlayerId) {
+        const devUser = await Player.findByPk(asPlayerId);
+        if (devUser) {
+          const hasPermission = await devUser.hasAnyPermission(["change:job"]);
+          if (hasPermission) {
+            this.logger.warn(
+              `[DEV ONLY] Unauthenticated queue-job: impersonating player ${asPlayerId}. Never enable in production.`
+            );
+            effectiveUser = devUser;
+          }
+        }
+      }
+    }
+
+    if (!effectiveUser?.id) {
       this.logger.error(
         `User authentication failed: user.id is undefined. User object: ${JSON.stringify({
           sub: user?.sub,
@@ -57,20 +91,22 @@ export class AppController {
       );
     }
 
+    const userForJob = effectiveUser;
+
     this.logger.debug(
-      `User (id: ${user.id}) is trying to add a job to the queue with args: ${JSON.stringify(args)}`
+      `User (id: ${userForJob.id}) is trying to add a job to the queue with args: ${JSON.stringify(args)}`
     );
 
-    const hasPermission = await user.hasAnyPermission(["change:job"]);
+    const hasPermission = await userForJob.hasAnyPermission(["change:job"]);
     if (!hasPermission) {
       this.logger.debug(
-        `User (id: ${user.id} / ${user?.fullName || "unknown"}) does not have permission to add a job to the queue`
+        `User (id: ${userForJob.id} / ${userForJob?.fullName || "unknown"}) does not have permission to add a job to the queue`
       );
       throw new UnauthorizedException("You do not have permission to do this");
     }
 
     this.logger.debug(
-      `Adding job ${args.job} to queue ${args.queue} for user ${user?.fullName || "unknown"}, permissions: ${hasPermission}`
+      `Adding job ${args.job} to queue ${args.queue} for user ${userForJob?.fullName || "unknown"}, permissions: ${hasPermission}`
     );
 
     if (!args.jobArgs) {
@@ -78,7 +114,7 @@ export class AppController {
     }
 
     // append the user id to the job args
-    args.jobArgs["userId"] = user.id;
+    args.jobArgs["userId"] = userForJob.id;
 
     switch (args.queue) {
       case SyncQueue:
