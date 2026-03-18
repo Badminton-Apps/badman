@@ -1,5 +1,10 @@
 import { EncounterCompetition } from "@badman/backend-database";
-import { acceptCookies, getPage, signIn } from "@badman/backend-pupeteer";
+import {
+  acceptCookies,
+  createProtocolTimeoutGuard,
+  getPage,
+  signIn,
+} from "@badman/backend-pupeteer";
 import { Injectable, Logger } from "@nestjs/common";
 import { Page } from "puppeteer";
 import { Transaction } from "sequelize";
@@ -31,21 +36,20 @@ import { enterGames } from "./pupeteer/enterGames";
 export class EncounterFormPageService {
   private readonly logger = new Logger(EncounterFormPageService.name);
   private page: Page | null = null;
-  private _unhandledRejectionHandler: ((reason: unknown) => void) | null = null;
+  private readonly _protocolTimeoutGuard = createProtocolTimeoutGuard(this.logger);
 
   async open(headless: boolean, flags: string[]): Promise<void> {
     this.page = await getPage(headless, flags);
     if (!this.page) {
       throw new Error("Failed to create browser page");
     }
+    this._protocolTimeoutGuard.install();
     this.page.setDefaultTimeout(30000);
     await this.page.setViewport({ width: 1691, height: 1337 });
-
-    this._installUnhandledRejectionGuard();
   }
 
   async close(): Promise<void> {
-    this._removeUnhandledRejectionGuard();
+    this._protocolTimeoutGuard.remove();
 
     const pageToClose = this.page;
     if (pageToClose && !pageToClose.isClosed()) {
@@ -54,35 +58,6 @@ export class EncounterFormPageService {
     }
     if (this.page === pageToClose) {
       this.page = null;
-    }
-  }
-
-  /**
-   * Catches unhandled ProtocolError rejections from internal Puppeteer frame initialization
-   * (FrameManager.onAttachedToTarget -> Network.enable / Page.addScriptToEvaluateOnNewDocument).
-   * These are fire-and-forget inside Puppeteer and can't be caught via the Page API.
-   */
-  private _installUnhandledRejectionGuard(): void {
-    this._unhandledRejectionHandler = (reason: unknown) => {
-      const msg = reason instanceof Error ? reason.message : String(reason);
-      if (
-        msg.includes("protocolTimeout") ||
-        msg.includes("Network.enable timed out") ||
-        msg.includes("Page.addScriptToEvaluateOnNewDocument timed out")
-      ) {
-        this.logger.warn(
-          `Suppressed internal Puppeteer ProtocolError (non-fatal): ${msg}`
-        );
-        return;
-      }
-    };
-    process.on("unhandledRejection", this._unhandledRejectionHandler);
-  }
-
-  private _removeUnhandledRejectionGuard(): void {
-    if (this._unhandledRejectionHandler) {
-      process.removeListener("unhandledRejection", this._unhandledRejectionHandler);
-      this._unhandledRejectionHandler = null;
     }
   }
 

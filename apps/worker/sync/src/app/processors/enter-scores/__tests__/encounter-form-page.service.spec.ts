@@ -7,6 +7,7 @@ jest.mock("@badman/backend-pupeteer", () => ({
   getPage: jest.fn(),
   acceptCookies: jest.fn(),
   signIn: jest.fn(),
+  createProtocolTimeoutGuard: jest.fn(() => ({ install: jest.fn(), remove: jest.fn() })),
 }));
 
 jest.mock("../pupeteer", () => ({

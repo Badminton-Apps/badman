@@ -1,5 +1,10 @@
 import { EncounterCompetition } from "@badman/backend-database";
-import { acceptCookies, getPage, signIn } from "@badman/backend-pupeteer";
+import {
+  acceptCookies,
+  createProtocolTimeoutGuard,
+  getPage,
+  signIn,
+} from "@badman/backend-pupeteer";
 import { Injectable, Logger } from "@nestjs/common";
 import { Page } from "puppeteer";
 import {
@@ -23,17 +28,20 @@ import {
 export class EncounterDetailPageService {
   private readonly logger = new Logger(EncounterDetailPageService.name);
   private page: Page | null = null;
+  private readonly _protocolTimeoutGuard = createProtocolTimeoutGuard(this.logger);
 
   async open(): Promise<void> {
     this.page = await getPage();
     if (!this.page) {
       throw new Error("Failed to create browser page");
     }
+    this._protocolTimeoutGuard.install();
     this.page.setDefaultTimeout(10000);
     await this.page.setViewport({ width: 1691, height: 1337 });
   }
 
   async close(): Promise<void> {
+    this._protocolTimeoutGuard.remove();
     if (this.page && !this.page.isClosed()) {
       await this.page.close();
     }
