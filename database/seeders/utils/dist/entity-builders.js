@@ -103,15 +103,16 @@ async function createTeam(ctx, clubId, season, captainId, teamType = "M") {
 /**
  * Add player to team membership
  */
-async function addPlayerToTeam(ctx, teamId, playerId) {
+async function addPlayerToTeam(ctx, teamId, playerId, membershipStart) {
     // Check if membership already exists
     const existing = await (0, membership_helpers_1.hasActiveMembership)(ctx, "TeamPlayerMemberships", `"teamId" = :teamId AND "playerId" = :playerId`, { teamId, playerId });
     if (existing) {
         console.log(`ℹ️  Player already has an active membership with this team\n`);
         return;
     }
+    const start = membershipStart ?? new Date();
     await ctx.rawQuery(`INSERT INTO "TeamPlayerMemberships" ("teamId", "playerId", "start", "membershipType", "createdAt", "updatedAt")
-     VALUES (:teamId, :playerId, NOW(), 'REGULAR', NOW(), NOW())`, { teamId, playerId });
+     VALUES (:teamId, :playerId, :start, 'REGULAR', NOW(), NOW())`, { teamId, playerId, start });
     console.log(`✅ Added user to team\n`);
 }
 /**
