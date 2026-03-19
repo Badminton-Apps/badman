@@ -17,6 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@badman/backend-assembly": ["libs/backend/competition/assembly/src/index.ts"],
+      "@badman/backend-encounter-games": [
+        "libs/backend/competition/encounter-games/src/index.ts"
+      ],
       "@badman/backend-authorization": ["libs/backend/authorization/src/index.ts"],
       "@badman/backend-cache": ["libs/backend/cache/src/index.ts"],
       "@badman/backend-change-encounter": [
