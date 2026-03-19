@@ -29,6 +29,7 @@ import {
   TeamResolverModule,
 } from "./resolvers";
 import { CronJobResolverModule } from "./resolvers/cronJobs/cronJob.module";
+import { EnrollmentSettingResolverModule } from "./resolvers/enrollmentSetting/enrollmentSetting.module";
 import { ServiceResolverModule } from "./resolvers/services/serice.module";
 
 @Module({
@@ -90,6 +91,7 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
     NotificationResolverModule,
     ServiceResolverModule,
     CronJobResolverModule,
+    EnrollmentSettingResolverModule,
   ],
 })
 export class GrapqhlModule {}
