@@ -175,7 +175,8 @@ async function createTeam(
 async function addPlayerToTeam(
   ctx: SeederContext,
   teamId: string,
-  playerId: string
+  playerId: string,
+  membershipStart?: Date
 ): Promise<void> {
   // Check if membership already exists
   const existing = await hasActiveMembership<{ id: string }>(
@@ -190,10 +191,11 @@ async function addPlayerToTeam(
     return;
   }
 
+  const start = membershipStart ?? new Date();
   await ctx.rawQuery(
     `INSERT INTO "TeamPlayerMemberships" ("teamId", "playerId", "start", "membershipType", "createdAt", "updatedAt")
-     VALUES (:teamId, :playerId, NOW(), 'REGULAR', NOW(), NOW())`,
-    { teamId, playerId }
+     VALUES (:teamId, :playerId, :start, 'REGULAR', NOW(), NOW())`,
+    { teamId, playerId, start }
   );
   console.log(`✅ Added user to team\n`);
 }

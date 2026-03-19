@@ -18,6 +18,7 @@ import {
   updateEncounterCompetitionInput,
   updateTempTeamCaptainInput,
 } from "@badman/backend-database";
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
@@ -65,7 +66,8 @@ export class EncounterCompetitionResolver {
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    private encounterValidationService: EncounterValidationService
+    private encounterValidationService: EncounterValidationService,
+    private encounterGamesService: EncounterGamesGenerationService
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -456,6 +458,23 @@ export class EncounterCompetitionResolver {
         clubId: data.clubId,
       }
     );
+  }
+
+  @Mutation(() => Boolean)
+  async generateEncounterGames(
+    @User() user: Player,
+    @Args("encounterId", { type: () => ID }) encounterId: string
+  ): Promise<boolean> {
+    if (
+      !(await user.hasAnyPermission([
+        "change-any:encounter",
+        `change-${encounterId}:encounter`,
+      ]))
+    ) {
+      throw new UnauthorizedException(`You do not have permission to generate games for this encounter`);
+    }
+    await this.encounterGamesService.generateGames(encounterId);
+    return true;
   }
 
   @Mutation(() => Boolean)

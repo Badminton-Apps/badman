@@ -1,6 +1,8 @@
 "use strict";
 
 const path = require("path");
+const env = process.env.NODE_ENV || "development";
+require("dotenv").config({ path: path.resolve(__dirname, `../../.env.${env}`) });
 require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
 
 // Note: This seeder uses raw Sequelize queries because Sequelize CLI seeders
@@ -126,9 +128,14 @@ async function seedClubWithPlayersAndTeams(ctx, clubName, captainUser, season, p
   await ctx.verifyTransaction();
   console.log("✅ Transaction is still valid after adding players to club\n");
 
+  // Set membership start to the beginning of the season (Aug 1) so it covers all seeded encounters,
+  // including past ones whose date is earlier than today.
+  const seasonStart = new Date(`${season}-08-01`);
+  const previousSeasonStart = new Date(`${previousSeason}-08-01`);
+
   const teamId = await createTeamFn(ctx, clubId, season, captainUser.id, "MX");
   for (const player of players) {
-    await addPlayerToTeam(ctx, teamId, player.id);
+    await addPlayerToTeam(ctx, teamId, player.id, seasonStart);
   }
   console.log(`✅ Added ${players.length} players to ${clubName}\n`);
 
@@ -137,7 +144,7 @@ async function seedClubWithPlayersAndTeams(ctx, clubName, captainUser, season, p
     const historicalTeamId = await createTeamFn(ctx, clubId, previousSeason, captainUser.id, teamType);
     historicalTeamIds.push(historicalTeamId);
     for (const player of players) {
-      await addPlayerToTeam(ctx, historicalTeamId, player.id);
+      await addPlayerToTeam(ctx, historicalTeamId, player.id, previousSeasonStart);
     }
   }
   console.log(`✅ Created 3 historical teams for ${clubName} (season ${previousSeason}): M, F, MX\n`);
