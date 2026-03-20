@@ -1427,6 +1427,17 @@
     }
   },
   "v1": {
+    "adminSettings": {
+      "enrollment": {
+        "title": "Enrollment",
+        "enrollmentOpen": "Enrollment Open",
+        "openDate": "Open Date",
+        "closeDate": "Close Date",
+        "save": "Save",
+        "success": "Enrollment settings saved successfully",
+        "error": "Failed to save enrollment settings"
+      }
+    },
     "enrollment": {
       "selectedLocationCard": {
         "courts": "Courts"
@@ -1470,7 +1481,8 @@
           "encounterForm": "Encounter form",
           "confirmEncounter": "Confirm encounter",
           "changeEncounter": "Change encounter",
-          "addProposal": "Add proposal"
+          "addProposal": "Add proposal",
+          "adminSettings": "Admin Settings"
         },
         "auth": {
           "logIn": "Log in",
