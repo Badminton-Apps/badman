@@ -101,7 +101,7 @@ async function grantClubClaims(sequelize, transaction, QueryTypes, playerId, use
  */
 async function grantGlobalAdminClaims(sequelize, transaction, QueryTypes, playerId, userEmail) {
   const claims = await sequelize.query(
-    `SELECT id, name FROM "security"."Claims" WHERE LOWER(type) = 'global'`,
+    `SELECT id, name FROM "security"."Claims" WHERE type = 'global'`,
     { type: QueryTypes.SELECT, transaction }
   );
   for (const claim of claims) {
