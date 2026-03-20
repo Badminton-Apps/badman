@@ -1145,6 +1145,17 @@
     }
   },
   "v1": {
+    "adminSettings": {
+      "enrollment": {
+        "title": "Inschrijving",
+        "enrollmentOpen": "Inschrijving Open",
+        "openDate": "Openingsdatum",
+        "closeDate": "Sluitingsdatum",
+        "save": "Opslaan",
+        "success": "Inschrijvingsinstellingen succesvol opgeslagen",
+        "error": "Inschrijvingsinstellingen opslaan mislukt"
+      }
+    },
     "enrollment": {
       "selectedLocationCard": {
         "courts": "Velden"

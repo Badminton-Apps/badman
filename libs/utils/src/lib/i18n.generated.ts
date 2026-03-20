@@ -1445,6 +1445,17 @@ export type I18nTranslations = {
             };
         };
         "v1": {
+            "adminSettings": {
+                "enrollment": {
+                    "title": string;
+                    "enrollmentOpen": string;
+                    "openDate": string;
+                    "closeDate": string;
+                    "save": string;
+                    "success": string;
+                    "error": string;
+                };
+            };
             "enrollment": {
                 "selectedLocationCard": {
                     "courts": string;

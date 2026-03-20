@@ -1637,6 +1637,17 @@
     }
   },
   "v1": {
+    "adminSettings": {
+      "enrollment": {
+        "title": "Inscription",
+        "enrollmentOpen": "Inscription Ouverte",
+        "openDate": "Date d'ouverture",
+        "closeDate": "Date de clôture",
+        "save": "Sauvegarder",
+        "success": "Paramètres d'inscription enregistrés avec succès",
+        "error": "Échec de l'enregistrement des paramètres d'inscription"
+      }
+    },
     "entryTeamDrawer": {
       "params": {
         "gender": {
