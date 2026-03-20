@@ -103,7 +103,8 @@ module.exports = {
         );
       } catch (err) {
         console.error("We errored with", err);
-        t.rollback();
+        await t.rollback();
+        throw err;
       }
     });
   },
@@ -134,7 +135,8 @@ module.exports = {
         );
       } catch (err) {
         console.error("We errored with", err);
-        t.rollback();
+        await t.rollback();
+        throw err;
       }
     });
   },

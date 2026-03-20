@@ -27,6 +27,8 @@
     "seed:build-utils": "tsc --project database/seeders/utils/tsconfig.json",
     "seed:test-data": "npm run seed:build-utils && npx sequelize-cli db:seed --seed 20250101000000-seed-test-data.js",
     "seed:test-data:undo": "npx sequelize-cli db:seed:undo --seed 20250101000000-seed-test-data.js",
+    "seed:admin": "npm run seed:build-utils && npx sequelize-cli db:seed --seed 20250101000001-seed-admin-user.js",
+    "seed:admin:undo": "npx sequelize-cli db:seed:undo --seed 20250101000001-seed-admin-user.js",
     "seed:all": "npx sequelize-cli db:seed:all",
     "seed:undo:all": "npx sequelize-cli db:seed:undo:all",
     "format": "prettier --write .",

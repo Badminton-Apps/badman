@@ -252,7 +252,7 @@ module.exports = {
     const userEmail = config.homeTeam.email;
     const opponentUserEmail = config.awayTeam.email;
 
-    console.log(`🧹 Cleaning up seed data for users: ${userEmail} and ${opponentUserEmail}\n`);
+    console.log(`🧹 Cleaning up seed data for users: ${userEmail}, ${opponentUserEmail}\n`);
     console.log("📍 Step 1: Starting cleanup process...\n");
 
     const safeDelete = async (sql, replacements, description) => {
@@ -343,6 +343,22 @@ module.exports = {
 
         const { placeholders: clubPlaceholders, replacements: clubReplacements } = buildInClause(clubIds, "clubId");
 
+        // Discover players via club membership before memberships are deleted
+        console.log("📍 Step 3.5: Finding test players via club membership...\n");
+        const testPlayers = await sequelize.query(
+          `SELECT DISTINCT p.id
+           FROM "Players" p
+           JOIN "ClubPlayerMemberships" cpm ON cpm."playerId" = p.id
+           WHERE cpm."clubId" IN (${clubPlaceholders})
+           UNION
+           SELECT id FROM "Players" WHERE email IN (:userEmail, :opponentUserEmail)`,
+          {
+            replacements: { ...clubReplacements, userEmail, opponentUserEmail },
+            type: Sequelize.QueryTypes.SELECT,
+          }
+        );
+        console.log(`📍 Found ${testPlayers?.length || 0} test players\n`);
+
         for (const task of CLEANUP_TASKS) {
           console.log(`📍 ${task.description}...\n`);
           await safeDelete(task.sql, task.replacements, task.description);
@@ -379,23 +395,6 @@ module.exports = {
           "Deleted clubs"
         );
 
-        console.log("📍 Removing club permission claims...\n");
-        await safeDelete(
-          `DELETE FROM "security"."PlayerClaimMemberships"
-           WHERE "claimId" IN (SELECT id FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club'))`,
-          {},
-          "Deleted club permission claims"
-        );
-
-        console.log("📍 Step 3.9: Finding test players before cleanup...\n");
-        const testPlayers = await sequelize.query(
-          `SELECT id FROM "Players" 
-           WHERE ("memberId" LIKE 'TEST-%' OR email LIKE '%@teamawesome.com' OR email LIKE '%@opponents.com')
-           AND (email = :userEmail OR email = :opponentUserEmail OR "memberId" LIKE 'TEST-%')`,
-          { replacements: { userEmail, opponentUserEmail }, type: Sequelize.QueryTypes.SELECT }
-        );
-        console.log(`📍 Found ${testPlayers?.length || 0} test players\n`);
-
         if (testPlayers && testPlayers.length > 0) {
           const playerIds = testPlayers.map((p) => p.id);
           const { placeholders: playerPlaceholders, replacements: playerReplacements } = buildInClause(
@@ -404,6 +403,11 @@ module.exports = {
           );
 
           const playerCleanupTasks = [
+            {
+              description: "Deleted permission claims for seeded players",
+              sql: `DELETE FROM "security"."PlayerClaimMemberships" WHERE "playerId" IN (${playerPlaceholders})`,
+              replacements: playerReplacements,
+            },
             {
               description: "Deleted ranking points",
               sql: `DELETE FROM ranking."RankingPoints" WHERE "playerId" IN (${playerPlaceholders})`,

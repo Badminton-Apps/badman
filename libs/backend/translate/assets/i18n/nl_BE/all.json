@@ -1146,11 +1146,15 @@
   },
   "v1": {
     "adminSettings": {
+      "title": "Admin Instellingen",
       "enrollment": {
         "title": "Inschrijving",
         "enrollmentOpen": "Inschrijving Open",
+        "enabled": "Inschrijving Open",
         "openDate": "Openingsdatum",
+        "startDate": "Startdatum",
         "closeDate": "Sluitingsdatum",
+        "endDate": "Einddatum",
         "save": "Opslaan",
         "success": "Inschrijvingsinstellingen succesvol opgeslagen",
         "error": "Inschrijvingsinstellingen opslaan mislukt"

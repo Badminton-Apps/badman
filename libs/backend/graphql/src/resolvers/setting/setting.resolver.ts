@@ -15,17 +15,17 @@ export class SettingResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => AdminSetting, { nullable: true })
-  async setting(@Args("key") key: string): Promise<AdminSetting | null> {
+  async adminSetting(@Args("key") key: string): Promise<AdminSetting | null> {
     return AdminSetting.findOne({ where: { key } });
   }
 
   @Query(() => [AdminSetting])
-  async settings(): Promise<AdminSetting[]> {
+  async adminSettings(): Promise<AdminSetting[]> {
     return AdminSetting.findAll();
   }
 
   @Mutation(() => AdminSetting)
-  async updateSetting(
+  async updateAdminSetting(
     @User() user: Player,
     @Args("data") updateData: AdminSettingUpdateInput,
   ) {

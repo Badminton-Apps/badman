@@ -45,7 +45,7 @@ describe("SettingResolver", () => {
 
       jest.spyOn(AdminSetting, "findOne").mockResolvedValue(mockSetting as any);
 
-      const result = await resolver.setting("enrollment");
+      const result = await resolver.adminSetting("enrollment");
 
       expect(result).toEqual(mockSetting);
       expect(AdminSetting.findOne).toHaveBeenCalledWith({ where: { key: "enrollment" } });
@@ -54,7 +54,7 @@ describe("SettingResolver", () => {
     it("should return null when no setting exists for the key", async () => {
       jest.spyOn(AdminSetting, "findOne").mockResolvedValue(null);
 
-      const result = await resolver.setting("nonexistent");
+      const result = await resolver.adminSetting("nonexistent");
 
       expect(result).toBeNull();
     });
@@ -69,7 +69,7 @@ describe("SettingResolver", () => {
 
       jest.spyOn(AdminSetting, "findAll").mockResolvedValue(mockSettings as any);
 
-      const result = await resolver.settings();
+      const result = await resolver.adminSettings();
 
       expect(result).toEqual(mockSettings);
       expect(AdminSetting.findAll).toHaveBeenCalledTimes(1);
@@ -78,13 +78,13 @@ describe("SettingResolver", () => {
     it("should return empty array when no settings exist", async () => {
       jest.spyOn(AdminSetting, "findAll").mockResolvedValue([]);
 
-      const result = await resolver.settings();
+      const result = await resolver.adminSettings();
 
       expect(result).toEqual([]);
     });
   });
 
-  describe("updateSetting (mutation)", () => {
+  describe("updateAdminSetting (mutation)", () => {
     const mockUser = (hasPermission: boolean) =>
       ({
         hasAnyPermission: jest.fn().mockResolvedValue(hasPermission),
@@ -96,7 +96,7 @@ describe("SettingResolver", () => {
 
       jest.spyOn(AdminSetting, "findByPk").mockResolvedValue(null);
 
-      await expect(resolver.updateSetting(user, updateData)).rejects.toThrow(NotFoundException);
+      await expect(resolver.updateAdminSetting(user, updateData)).rejects.toThrow(NotFoundException);
 
       expect(mockTransaction.rollback).toHaveBeenCalled();
     });
@@ -112,7 +112,7 @@ describe("SettingResolver", () => {
 
       jest.spyOn(AdminSetting, "findByPk").mockResolvedValue(mockSettingInstance as any);
 
-      await expect(resolver.updateSetting(user, updateData)).rejects.toThrow(NotFoundException);
+      await expect(resolver.updateAdminSetting(user, updateData)).rejects.toThrow(NotFoundException);
 
       expect(mockTransaction.rollback).toHaveBeenCalled();
     });
@@ -128,7 +128,7 @@ describe("SettingResolver", () => {
 
       jest.spyOn(AdminSetting, "findByPk").mockResolvedValue(mockSettingInstance as any);
 
-      await expect(resolver.updateSetting(user, updateData)).rejects.toThrow(
+      await expect(resolver.updateAdminSetting(user, updateData)).rejects.toThrow(
         UnauthorizedException,
       );
 
@@ -147,7 +147,7 @@ describe("SettingResolver", () => {
 
       jest.spyOn(AdminSetting, "findByPk").mockResolvedValue(mockSettingInstance as any);
 
-      await expect(resolver.updateSetting(user, updateData)).rejects.toThrow(
+      await expect(resolver.updateAdminSetting(user, updateData)).rejects.toThrow(
         UnauthorizedException,
       );
 
@@ -166,7 +166,7 @@ describe("SettingResolver", () => {
 
       jest.spyOn(AdminSetting, "findByPk").mockResolvedValue(mockSettingInstance as any);
 
-      const result = await resolver.updateSetting(user, updateData);
+      const result = await resolver.updateAdminSetting(user, updateData);
 
       expect(result).toEqual(updatedSetting);
       expect(mockSettingInstance.update).toHaveBeenCalledWith(updateData, {
@@ -187,7 +187,7 @@ describe("SettingResolver", () => {
 
       jest.spyOn(AdminSetting, "findByPk").mockResolvedValue(mockSettingInstance as any);
 
-      await expect(resolver.updateSetting(user, updateData)).rejects.toThrow("DB error");
+      await expect(resolver.updateAdminSetting(user, updateData)).rejects.toThrow("DB error");
 
       expect(mockTransaction.rollback).toHaveBeenCalled();
       expect(mockTransaction.commit).not.toHaveBeenCalled();
