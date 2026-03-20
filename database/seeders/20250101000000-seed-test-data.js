@@ -60,6 +60,33 @@ function loadSeedConfig() {
 }
 
 /**
+ * Grant club permission claims (edit-any:club, edit:club) to a player.
+ */
+async function grantClubClaims(sequelize, transaction, QueryTypes, playerId, userEmail) {
+  const claims = await sequelize.query(
+    `SELECT id, name FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club')`,
+    { type: QueryTypes.SELECT, transaction }
+  );
+  for (const claim of claims) {
+    const [existing] = await sequelize.query(
+      `SELECT 1 FROM "security"."PlayerClaimMemberships" WHERE "playerId" = :playerId AND "claimId" = :claimId`,
+      { replacements: { playerId, claimId: claim.id }, type: QueryTypes.SELECT, transaction }
+    );
+    if (!existing) {
+      await sequelize.query(
+        `INSERT INTO "security"."PlayerClaimMemberships" ("playerId", "claimId", "createdAt", "updatedAt")
+         VALUES (:playerId, :claimId, NOW(), NOW())`,
+        { replacements: { playerId, claimId: claim.id }, transaction }
+      );
+      console.log(`✅ Granted claim "${claim.name}" to user (${userEmail})\n`);
+    }
+  }
+  if (claims.length > 0) {
+    console.log(`✅ Added ${claims.length} club permission claim(s) for user\n`);
+  }
+}
+
+/**
  * Find or create a user player and add ranking. Does not grant claims.
  */
 async function seedUserAndClaims(ctx, userConfig) {
