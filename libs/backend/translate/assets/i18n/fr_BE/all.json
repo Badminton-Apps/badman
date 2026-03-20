@@ -1664,6 +1664,13 @@
           "import": "Importer"
         }
       }
+    },
+    "shell": {
+      "sidebar": {
+        "pages": {
+          "adminSettings": "Paramètres d'administration"
+        }
+      }
     }
   }
 }

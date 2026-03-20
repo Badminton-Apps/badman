@@ -1188,7 +1188,8 @@
           "encounterForm": "Ontmoetingsformulier",
           "confirmEncounter": "Bevestig ontmoeting",
           "changeEncounter": "Verplaats ontmoeting",
-          "addProposal": "Voorstel toevoegen"
+          "addProposal": "Voorstel toevoegen",
+          "adminSettings": "Admin Instellingen"
         },
         "auth": {
           "logIn": "Inloggen",

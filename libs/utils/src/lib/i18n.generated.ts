@@ -1489,6 +1489,7 @@ export type I18nTranslations = {
                         "confirmEncounter": string;
                         "changeEncounter": string;
                         "addProposal": string;
+                        "adminSettings": string;
                     };
                     "auth": {
                         "logIn": string;
