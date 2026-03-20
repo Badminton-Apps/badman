@@ -1638,11 +1638,15 @@
   },
   "v1": {
     "adminSettings": {
+      "title": "Paramètres d'administration",
       "enrollment": {
         "title": "Inscription",
         "enrollmentOpen": "Inscription Ouverte",
+        "enabled": "Inscription Ouverte",
         "openDate": "Date d'ouverture",
+        "startDate": "Date de début",
         "closeDate": "Date de clôture",
+        "endDate": "Date de fin",
         "save": "Sauvegarder",
         "success": "Paramètres d'inscription enregistrés avec succès",
         "error": "Échec de l'enregistrement des paramètres d'inscription"

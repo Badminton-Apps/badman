@@ -1428,11 +1428,15 @@
   },
   "v1": {
     "adminSettings": {
+      "title": "Admin Settings",
       "enrollment": {
         "title": "Enrollment",
         "enrollmentOpen": "Enrollment Open",
+        "enabled": "Enrollment Open",
         "openDate": "Open Date",
+        "startDate": "Start Date",
         "closeDate": "Close Date",
+        "endDate": "End Date",
         "save": "Save",
         "success": "Enrollment settings saved successfully",
         "error": "Failed to save enrollment settings"
