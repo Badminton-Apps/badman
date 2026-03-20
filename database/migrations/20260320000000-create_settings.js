@@ -19,7 +19,7 @@ module.exports = {
       try {
         await queryInterface.createTable(
           {
-            tableName: "EnrollmentSettings",
+            tableName: "Settings",
             schema: "system",
           },
           {
@@ -30,17 +30,30 @@ module.exports = {
               defaultValue:
                 queryInterface.sequelize.constructor.literal("uuid_generate_v4()"),
             },
-            enrollmentOpen: {
+            key: {
+              type: queryInterface.sequelize.constructor.DataTypes.STRING,
+              allowNull: false,
+              unique: true,
+            },
+            description: {
+              type: queryInterface.sequelize.constructor.DataTypes.STRING,
+              allowNull: true,
+            },
+            enabled: {
               type: queryInterface.sequelize.constructor.DataTypes.BOOLEAN,
               allowNull: false,
               defaultValue: false,
             },
-            openDate: {
+            startDate: {
               type: queryInterface.sequelize.constructor.DataTypes.DATEONLY,
               allowNull: true,
             },
-            closeDate: {
+            endDate: {
               type: queryInterface.sequelize.constructor.DataTypes.DATEONLY,
+              allowNull: true,
+            },
+            meta: {
+              type: queryInterface.sequelize.constructor.DataTypes.JSONB,
               allowNull: true,
             },
             createdAt: {
@@ -57,18 +70,21 @@ module.exports = {
           { transaction: t }
         );
 
-        // Seed default row
+        // Seed enrollment setting
         await queryInterface.bulkInsert(
           {
-            tableName: "EnrollmentSettings",
+            tableName: "Settings",
             schema: "system",
           },
           [
             {
               id: queryInterface.sequelize.constructor.literal("uuid_generate_v4()"),
-              enrollmentOpen: false,
-              openDate: null,
-              closeDate: null,
+              key: "enrollment",
+              description: "Enrollment open/close configuration",
+              enabled: false,
+              startDate: null,
+              endDate: null,
+              meta: null,
               createdAt: new Date(),
               updatedAt: new Date(),
             },
@@ -111,7 +127,7 @@ module.exports = {
         // Drop table
         await queryInterface.dropTable(
           {
-            tableName: "EnrollmentSettings",
+            tableName: "Settings",
             schema: "system",
           },
           { transaction: t }
