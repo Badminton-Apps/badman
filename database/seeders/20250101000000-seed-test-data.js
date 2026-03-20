@@ -37,8 +37,6 @@ const HISTORICAL_TEAM_TYPES = ["M", "F", "MX"];
  *   SEED_HOMETEAM_MEMBER_ID, SEED_HOMETEAM_GENDER, SEED_HOMETEAM_USER_AUTH0_SUB
  *   SEED_AWAYTEAM_USER_EMAIL, SEED_AWAYTEAM_FIRST_NAME, SEED_AWAYTEAM_LAST_NAME,
  *   SEED_AWAYTEAM_MEMBER_ID, SEED_AWAYTEAM_GENDER, SEED_AWAYTEAM_USER_AUTH0_SUB
- *   SEED_ADMIN_USER_EMAIL, SEED_ADMIN_FIRST_NAME, SEED_ADMIN_LAST_NAME,
- *   SEED_ADMIN_MEMBER_ID, SEED_ADMIN_GENDER, SEED_ADMIN_USER_AUTH0_SUB
  */
 function loadSeedConfig() {
   return {
@@ -58,69 +56,7 @@ function loadSeedConfig() {
       gender: process.env.SEED_AWAYTEAM_GENDER || "M",
       sub: process.env.SEED_AWAYTEAM_USER_AUTH0_SUB || "",
     },
-    admin: {
-      email: process.env.SEED_ADMIN_USER_EMAIL || "admin@example.com",
-      firstName: process.env.SEED_ADMIN_FIRST_NAME || "Admin",
-      lastName: process.env.SEED_ADMIN_LAST_NAME || "User",
-      memberId: process.env.SEED_ADMIN_MEMBER_ID || `TEST-ADMIN-${Date.now()}`,
-      gender: process.env.SEED_ADMIN_GENDER || "M",
-      sub: process.env.SEED_ADMIN_USER_AUTH0_SUB || "",
-    },
   };
-}
-
-/**
- * Grant club permission claims (edit-any:club, edit:club) to a player.
- */
-async function grantClubClaims(sequelize, transaction, QueryTypes, playerId, userEmail) {
-  const claims = await sequelize.query(
-    `SELECT id, name FROM "security"."Claims" WHERE name IN ('edit-any:club', 'edit:club')`,
-    { type: QueryTypes.SELECT, transaction }
-  );
-  for (const claim of claims) {
-    const [existing] = await sequelize.query(
-      `SELECT 1 FROM "security"."PlayerClaimMemberships" WHERE "playerId" = :playerId AND "claimId" = :claimId`,
-      { replacements: { playerId, claimId: claim.id }, type: QueryTypes.SELECT, transaction }
-    );
-    if (!existing) {
-      await sequelize.query(
-        `INSERT INTO "security"."PlayerClaimMemberships" ("playerId", "claimId", "createdAt", "updatedAt")
-         VALUES (:playerId, :claimId, NOW(), NOW())`,
-        { replacements: { playerId, claimId: claim.id }, transaction }
-      );
-      console.log(`✅ Granted claim "${claim.name}" to user (${userEmail})\n`);
-    }
-  }
-  if (claims.length > 0) {
-    console.log(`✅ Added ${claims.length} club permission claim(s) for user\n`);
-  }
-}
-
-/**
- * Grant all global admin claims to a player.
- */
-async function grantGlobalAdminClaims(sequelize, transaction, QueryTypes, playerId, userEmail) {
-  const claims = await sequelize.query(
-    `SELECT id, name FROM "security"."Claims" WHERE type = 'global'`,
-    { type: QueryTypes.SELECT, transaction }
-  );
-  for (const claim of claims) {
-    const [existing] = await sequelize.query(
-      `SELECT 1 FROM "security"."PlayerClaimMemberships" WHERE "playerId" = :playerId AND "claimId" = :claimId`,
-      { replacements: { playerId, claimId: claim.id }, type: QueryTypes.SELECT, transaction }
-    );
-    if (!existing) {
-      await sequelize.query(
-        `INSERT INTO "security"."PlayerClaimMemberships" ("playerId", "claimId", "createdAt", "updatedAt")
-         VALUES (:playerId, :claimId, NOW(), NOW())`,
-        { replacements: { playerId, claimId: claim.id }, transaction }
-      );
-      console.log(`✅ Granted global claim "${claim.name}" to user (${userEmail})\n`);
-    }
-  }
-  if (claims.length > 0) {
-    console.log(`✅ Added ${claims.length} global admin claim(s) for user\n`);
-  }
 }
 
 /**
@@ -244,12 +180,6 @@ module.exports = {
           useCreateOpponentTeam: false,
         });
 
-        // Create admin user with all global permissions
-        const adminUser = await seedUserAndClaims(ctx, config.admin);
-        await addPlayerToClub(ctx, home.clubId, adminUser.id);
-        await grantClubClaims(sequelize, transaction, QueryTypes, adminUser.id, config.admin.email);
-        await grantGlobalAdminClaims(sequelize, transaction, QueryTypes, adminUser.id, config.admin.email);
-
         const { eventId, subEventId, drawId } = await seedEventTree(ctx, season);
 
         const opponentUser = await seedUserAndClaims(ctx, config.awayTeam);
@@ -270,7 +200,6 @@ module.exports = {
         console.log(`   • Club: TEAM AWESOME (${home.clubId})`);
         console.log(`   • Team: ${home.teamId} with ${home.players.length} players`);
         console.log(`   • User: ${config.homeTeam.email}`);
-        console.log(`   • Admin User: ${config.admin.email} (all global claims)`);
         console.log(`   • Opponent Club: THE OPPONENTS (${opponent.clubId})`);
         console.log(`   • Opponent Team: ${opponent.teamId} with ${opponent.players.length} players`);
         console.log(`   • Opponent User: ${config.awayTeam.email}`);
@@ -295,9 +224,8 @@ module.exports = {
     const config = loadSeedConfig();
     const userEmail = config.homeTeam.email;
     const opponentUserEmail = config.awayTeam.email;
-    const adminUserEmail = config.admin.email;
 
-    console.log(`🧹 Cleaning up seed data for users: ${userEmail}, ${opponentUserEmail}, and ${adminUserEmail}\n`);
+    console.log(`🧹 Cleaning up seed data for users: ${userEmail}, ${opponentUserEmail}\n`);
     console.log("📍 Step 1: Starting cleanup process...\n");
 
     const safeDelete = async (sql, replacements, description) => {
@@ -388,6 +316,22 @@ module.exports = {
 
         const { placeholders: clubPlaceholders, replacements: clubReplacements } = buildInClause(clubIds, "clubId");
 
+        // Discover players via club membership before memberships are deleted
+        console.log("📍 Step 3.5: Finding test players via club membership...\n");
+        const testPlayers = await sequelize.query(
+          `SELECT DISTINCT p.id
+           FROM "Players" p
+           JOIN "ClubPlayerMemberships" cpm ON cpm."playerId" = p.id
+           WHERE cpm."clubId" IN (${clubPlaceholders})
+           UNION
+           SELECT id FROM "Players" WHERE email IN (:userEmail, :opponentUserEmail)`,
+          {
+            replacements: { ...clubReplacements, userEmail, opponentUserEmail },
+            type: Sequelize.QueryTypes.SELECT,
+          }
+        );
+        console.log(`📍 Found ${testPlayers?.length || 0} test players\n`);
+
         for (const task of CLEANUP_TASKS) {
           console.log(`📍 ${task.description}...\n`);
           await safeDelete(task.sql, task.replacements, task.description);
@@ -423,15 +367,6 @@ module.exports = {
           clubReplacements,
           "Deleted clubs"
         );
-
-        console.log("📍 Step 3.9: Finding test players before cleanup...\n");
-        const testPlayers = await sequelize.query(
-          `SELECT id FROM "Players"
-           WHERE ("memberId" LIKE 'TEST-%' OR email LIKE '%@teamawesome.com' OR email LIKE '%@opponents.com')
-           AND (email = :userEmail OR email = :opponentUserEmail OR email = :adminUserEmail OR "memberId" LIKE 'TEST-%')`,
-          { replacements: { userEmail, opponentUserEmail, adminUserEmail }, type: Sequelize.QueryTypes.SELECT }
-        );
-        console.log(`📍 Found ${testPlayers?.length || 0} test players\n`);
 
         if (testPlayers && testPlayers.length > 0) {
           const playerIds = testPlayers.map((p) => p.id);
