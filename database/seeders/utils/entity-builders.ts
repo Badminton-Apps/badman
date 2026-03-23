@@ -9,6 +9,8 @@ import type {
   EventCompetition,
   SubEventCompetition,
   DrawCompetition,
+  Location,
+  Availability,
 } from "./types";
 
 /**
@@ -378,6 +380,78 @@ async function createEncounters(
   console.log(`✅ Created ${encounterCount} Encounters\n`);
 }
 
+/**
+ * Create a location for a club (idempotent: check by name + clubId)
+ */
+async function createLocation(
+  ctx: SeederContext,
+  clubId: string,
+  locationData: {
+    name: string;
+    address: string;
+    street: string;
+    streetNumber: string;
+    postalcode: string;
+    city: string;
+    state: string;
+    phone: string;
+  }
+): Promise<Location> {
+  const existing = await ctx.query<Location>(
+    `SELECT id, name FROM event."Locations" WHERE name = :name AND "clubId" = :clubId LIMIT 1`,
+    { name: locationData.name, clubId }
+  );
+
+  if (existing && existing.length > 0) {
+    console.log(`ℹ️  Location already exists: ${existing[0].name} (${existing[0].id})\n`);
+    return existing[0];
+  }
+
+  const location = await ctx.insert<Location>(
+    `INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt")
+     VALUES (:name, :address, :street, :streetNumber, :postalcode, :city, :state, :phone, :clubId, NOW(), NOW())
+     RETURNING id, name`,
+    { ...locationData, clubId }
+  );
+  console.log(`✅ Created Location: ${location.name} (${location.id})\n`);
+  return location;
+}
+
+/**
+ * Create availability for a location (idempotent: check by locationId + season)
+ */
+async function createAvailability(
+  ctx: SeederContext,
+  locationId: string,
+  season: number,
+  days: unknown[],
+  exceptions: unknown[] = []
+): Promise<Availability> {
+  const existing = await ctx.query<Availability>(
+    `SELECT id FROM event."Availabilities" WHERE "locationId" = :locationId AND season = :season LIMIT 1`,
+    { locationId, season }
+  );
+
+  if (existing && existing.length > 0) {
+    console.log(`ℹ️  Availability already exists for this location/season (${existing[0].id})\n`);
+    return existing[0];
+  }
+
+  const availability = await ctx.insert<Availability>(
+    `INSERT INTO event."Availabilities" ("locationId", season, days, exceptions, "createdAt", "updatedAt")
+     VALUES (:locationId, :season, :days, :exceptions, NOW(), NOW())
+     RETURNING id`,
+    {
+      locationId,
+      season,
+      days: JSON.stringify(days),
+      exceptions: JSON.stringify(exceptions),
+    }
+  );
+  console.log(`✅ Created Availability (${availability.id}) for season ${season}\n`);
+  return availability;
+}
+
 // Wrap all functions with error handling
 const findOrCreatePlayerWithErrorHandling = withErrorHandling(
   findOrCreatePlayer,
@@ -413,6 +487,14 @@ const createEncountersWithErrorHandling = withErrorHandling(
   createEncounters,
   "creating encounters"
 );
+const createLocationWithErrorHandling = withErrorHandling(
+  createLocation,
+  "creating location"
+);
+const createAvailabilityWithErrorHandling = withErrorHandling(
+  createAvailability,
+  "creating availability"
+);
 
 export {
   findOrCreatePlayerWithErrorHandling as findOrCreatePlayer,
@@ -425,4 +507,6 @@ export {
   createDrawCompetitionWithErrorHandling as createDrawCompetition,
   createOpponentTeamWithErrorHandling as createOpponentTeam,
   createEncountersWithErrorHandling as createEncounters,
+  createLocationWithErrorHandling as createLocation,
+  createAvailabilityWithErrorHandling as createAvailability,
 };

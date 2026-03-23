@@ -1527,6 +1527,9 @@
           "title": "Transfers / loans"
         }
       },
+      "tooltips": {
+        "registrationClosed": "Registration closed"
+      },
       "topBar": {
         "search": {
           "placeholder": "Search",

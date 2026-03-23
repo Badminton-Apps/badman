@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = void 0;
+exports.createAvailability = exports.createLocation = exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = void 0;
 const error_handler_1 = require("./error-handler");
 const club_team_naming_1 = require("./club-team-naming");
 const membership_helpers_1 = require("./membership-helpers");
@@ -248,6 +248,41 @@ async function createEncounters(ctx, drawId, teamId, opponentTeamId, encounterCo
     }
     console.log(`✅ Created ${encounterCount} Encounters\n`);
 }
+/**
+ * Create a location for a club (idempotent: check by name + clubId)
+ */
+async function createLocation(ctx, clubId, locationData) {
+    const existing = await ctx.query(`SELECT id, name FROM event."Locations" WHERE name = :name AND "clubId" = :clubId LIMIT 1`, { name: locationData.name, clubId });
+    if (existing && existing.length > 0) {
+        console.log(`ℹ️  Location already exists: ${existing[0].name} (${existing[0].id})\n`);
+        return existing[0];
+    }
+    const location = await ctx.insert(`INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt")
+     VALUES (:name, :address, :street, :streetNumber, :postalcode, :city, :state, :phone, :clubId, NOW(), NOW())
+     RETURNING id, name`, { ...locationData, clubId });
+    console.log(`✅ Created Location: ${location.name} (${location.id})\n`);
+    return location;
+}
+/**
+ * Create availability for a location (idempotent: check by locationId + season)
+ */
+async function createAvailability(ctx, locationId, season, days, exceptions = []) {
+    const existing = await ctx.query(`SELECT id FROM event."Availabilities" WHERE "locationId" = :locationId AND season = :season LIMIT 1`, { locationId, season });
+    if (existing && existing.length > 0) {
+        console.log(`ℹ️  Availability already exists for this location/season (${existing[0].id})\n`);
+        return existing[0];
+    }
+    const availability = await ctx.insert(`INSERT INTO event."Availabilities" ("locationId", season, days, exceptions, "createdAt", "updatedAt")
+     VALUES (:locationId, :season, :days, :exceptions, NOW(), NOW())
+     RETURNING id`, {
+        locationId,
+        season,
+        days: JSON.stringify(days),
+        exceptions: JSON.stringify(exceptions),
+    });
+    console.log(`✅ Created Availability (${availability.id}) for season ${season}\n`);
+    return availability;
+}
 // Wrap all functions with error handling
 const findOrCreatePlayerWithErrorHandling = (0, error_handler_1.withErrorHandling)(findOrCreatePlayer, "finding/creating player");
 exports.findOrCreatePlayer = findOrCreatePlayerWithErrorHandling;
@@ -269,3 +304,7 @@ const createOpponentTeamWithErrorHandling = (0, error_handler_1.withErrorHandlin
 exports.createOpponentTeam = createOpponentTeamWithErrorHandling;
 const createEncountersWithErrorHandling = (0, error_handler_1.withErrorHandling)(createEncounters, "creating encounters");
 exports.createEncounters = createEncountersWithErrorHandling;
+const createLocationWithErrorHandling = (0, error_handler_1.withErrorHandling)(createLocation, "creating location");
+exports.createLocation = createLocationWithErrorHandling;
+const createAvailabilityWithErrorHandling = (0, error_handler_1.withErrorHandling)(createAvailability, "creating availability");
+exports.createAvailability = createAvailabilityWithErrorHandling;

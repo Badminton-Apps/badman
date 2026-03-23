@@ -23,11 +23,98 @@ const {
   createEncounters,
   PlayerFactory,
   addRankingToPlayer,
+  createLocation,
+  createAvailability,
 } = require("./utils/dist");
 
 const PLAYERS_ON_TEAM = 8;
 const ENCOUNTER_COUNT = 10;
 const HISTORICAL_TEAM_TYPES = ["M", "F", "MX"];
+
+/**
+ * Location seed data for TEAM AWESOME.
+ */
+const HOME_LOCATIONS = (season) => [
+  {
+    name: "Sporthal De Bres",
+    address: "Bredabaan 405, 2170 Antwerpen",
+    street: "Bredabaan",
+    streetNumber: "405",
+    postalcode: "2170",
+    city: "Antwerpen",
+    state: "Antwerpen",
+    phone: "+32 3 123 45 67",
+    days: [
+      { day: "tuesday", startTime: "19:00", endTime: "22:00", courts: 4 },
+      { day: "thursday", startTime: "19:00", endTime: "22:00", courts: 4 },
+      { day: "saturday", startTime: "10:00", endTime: "18:00", courts: 6 },
+    ],
+    exceptions: [{ start: `${season}-12-24`, end: `${season + 1}-01-02`, courts: 0 }],
+  },
+  {
+    name: "Sportcentrum Lillo",
+    address: "Lillo Fort 1, 2040 Antwerpen",
+    street: "Lillo Fort",
+    streetNumber: "1",
+    postalcode: "2040",
+    city: "Antwerpen",
+    state: "Antwerpen",
+    phone: "+32 3 234 56 78",
+    days: [
+      { day: "wednesday", startTime: "18:30", endTime: "21:30", courts: 3 },
+      { day: "friday", startTime: "19:00", endTime: "22:00", courts: 3 },
+    ],
+  },
+];
+
+/**
+ * Location seed data for THE OPPONENTS.
+ */
+const OPPONENT_LOCATIONS = (season) => [
+  {
+    name: "Sporthal Lange Munte",
+    address: "Lange Munte 1, 9000 Gent",
+    street: "Lange Munte",
+    streetNumber: "1",
+    postalcode: "9000",
+    city: "Gent",
+    state: "Oost-Vlaanderen",
+    phone: "+32 9 345 67 89",
+    days: [
+      { day: "monday", startTime: "19:00", endTime: "22:00", courts: 5 },
+      { day: "wednesday", startTime: "19:00", endTime: "22:00", courts: 5 },
+      { day: "sunday", startTime: "09:00", endTime: "17:00", courts: 8 },
+    ],
+    exceptions: [{ start: `${season}-12-24`, end: `${season + 1}-01-02`, courts: 0 }],
+  },
+  {
+    name: "Sportpark Bourgoyen",
+    address: "Driepikkelstraat 32, 9030 Gent",
+    street: "Driepikkelstraat",
+    streetNumber: "32",
+    postalcode: "9030",
+    city: "Gent",
+    state: "Oost-Vlaanderen",
+    phone: "+32 9 456 78 90",
+    days: [
+      { day: "thursday", startTime: "18:00", endTime: "21:00", courts: 2 },
+      { day: "saturday", startTime: "14:00", endTime: "20:00", courts: 4 },
+    ],
+  },
+];
+
+/**
+ * Seed locations and availability for a club.
+ */
+async function seedLocationsForClub(ctx, clubId, season, locations) {
+  console.log(`📍 Seeding ${locations.length} location(s)...`);
+  for (const locConfig of locations) {
+    const { days, exceptions, ...locationData } = locConfig;
+    const location = await createLocation(ctx, clubId, locationData);
+    await createAvailability(ctx, location.id, season, days, exceptions || []);
+  }
+  console.log(`✅ Seeded ${locations.length} location(s) with availability\n`);
+}
 
 /**
  * Load seed config from environment (same keys for up and down).
@@ -207,6 +294,8 @@ module.exports = {
           useCreateOpponentTeam: false,
         });
 
+        await seedLocationsForClub(ctx, home.clubId, season, HOME_LOCATIONS(season));
+
         const { eventId, subEventId, drawId } = await seedEventTree(ctx, season);
 
         const opponentUser = await seedUserAndClaims(ctx, config.awayTeam);
@@ -221,6 +310,8 @@ module.exports = {
           useCreateOpponentTeam: true,
         });
 
+        await seedLocationsForClub(ctx, opponent.clubId, season, OPPONENT_LOCATIONS(season));
+
         await createEncounters(ctx, drawId, home.teamId, opponent.teamId, ENCOUNTER_COUNT);
 
         console.log("📊 Summary:");
@@ -233,6 +324,7 @@ module.exports = {
         console.log(`   • Event: Test Event ${season} (${eventId})`);
         console.log(`   • SubEvent: Test SubEvent M (${subEventId})`);
         console.log(`   • Draw: Test Draw (${drawId})`);
+        console.log(`   • Locations: TEAM AWESOME [${HOME_LOCATIONS(season).length}], THE OPPONENTS [${OPPONENT_LOCATIONS(season).length}]`);
         console.log(`   • Encounters: ${ENCOUNTER_COUNT}`);
         console.log(
           `   • Historical teams (season ${previousSeason}): TEAM AWESOME [${home.historicalTeamIds.join(", ")}], THE OPPONENTS [${opponent.historicalTeamIds.join(", ")}]`
@@ -379,6 +471,22 @@ module.exports = {
           `DELETE FROM "Teams" WHERE "clubId" IN (${clubPlaceholders})`,
           clubReplacements,
           "Deleted teams"
+        );
+
+        console.log("📍 Deleting availabilities for club locations...\n");
+        await safeDelete(
+          `DELETE FROM event."Availabilities" WHERE "locationId" IN (
+            SELECT id FROM event."Locations" WHERE "clubId" IN (${clubPlaceholders})
+          )`,
+          clubReplacements,
+          "Deleted availabilities"
+        );
+
+        console.log("📍 Deleting club locations...\n");
+        await safeDelete(
+          `DELETE FROM event."Locations" WHERE "clubId" IN (${clubPlaceholders})`,
+          clubReplacements,
+          "Deleted locations"
         );
 
         console.log("📍 Deleting club memberships...\n");

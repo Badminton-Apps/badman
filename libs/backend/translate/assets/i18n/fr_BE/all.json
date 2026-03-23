@@ -1684,6 +1684,9 @@
       "sidebar": {
         "pages": {
           "adminSettings": "Paramètres d'administration"
+        },
+        "tooltips": {
+          "registrationClosed": "Inscriptions fermées"
         }
       }
     }

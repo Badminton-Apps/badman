@@ -39,3 +39,12 @@ export interface SubEventCompetition {
 export interface DrawCompetition {
   id: string;
 }
+
+export interface Location {
+  id: string;
+  name: string;
+}
+
+export interface Availability {
+  id: string;
+}

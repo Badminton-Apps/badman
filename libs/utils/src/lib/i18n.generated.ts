@@ -1446,11 +1446,15 @@ export type I18nTranslations = {
         };
         "v1": {
             "adminSettings": {
+                "title": string;
                 "enrollment": {
                     "title": string;
                     "enrollmentOpen": string;
+                    "enabled": string;
                     "openDate": string;
+                    "startDate": string;
                     "closeDate": string;
+                    "endDate": string;
                     "save": string;
                     "success": string;
                     "error": string;
@@ -1540,6 +1544,12 @@ export type I18nTranslations = {
                     "transfer": {
                         "title": string;
                     };
+                    "tooltips": {
+                        "registrationClosed": string;
+                    };
+                };
+                "tooltips": {
+                    "registrationClosed": string;
                 };
                 "topBar": {
                     "search": {
