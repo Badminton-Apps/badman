@@ -50,6 +50,11 @@ export class SettingResolver {
 
       const result = await setting.update(updateData, { transaction });
 
+      // DATEONLY columns come back as plain strings from Sequelize.
+      // The DateTime scalar requires a Date instance, so coerce here.
+      if (result.startDate != null) result.startDate = new Date(result.startDate);
+      if (result.endDate != null) result.endDate = new Date(result.endDate);
+
       await transaction.commit();
 
       return result;

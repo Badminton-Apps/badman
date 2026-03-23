@@ -1528,7 +1528,7 @@
         }
       },
       "tooltips": {
-        "registrationClosed": "Registration closed"
+        "registrationClosed": "Registration for this competition is closed"
       },
       "topBar": {
         "search": {

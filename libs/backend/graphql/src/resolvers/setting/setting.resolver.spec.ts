@@ -156,9 +156,9 @@ describe("SettingResolver", () => {
 
     it("should update and commit when authorized and setting exists", async () => {
       const user = mockUser(true);
-      const updateData = { id: "some-uuid", enabled: true, startDate: "2026-04-01" } as any;
+      const updateData = { id: "some-uuid", enabled: true } as any;
 
-      const updatedSetting = { ...updateData, key: "enrollment" };
+      const updatedSetting = { ...updateData, key: "enrollment", startDate: null, endDate: null };
       const mockSettingInstance = {
         key: "enrollment",
         update: jest.fn().mockResolvedValue(updatedSetting),
@@ -174,6 +174,32 @@ describe("SettingResolver", () => {
       });
       expect(mockTransaction.commit).toHaveBeenCalled();
       expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    });
+
+    it("should coerce DATEONLY string dates to Date instances before returning", async () => {
+      const user = mockUser(true);
+      const updateData = { id: "some-uuid", enabled: true, startDate: "2026-04-01", endDate: "2026-06-30" } as any;
+
+      // Sequelize DATEONLY columns return plain strings, not Date objects
+      const updatedSetting = {
+        key: "enrollment",
+        enabled: true,
+        startDate: "2026-04-01",
+        endDate: "2026-06-30",
+      };
+      const mockSettingInstance = {
+        key: "enrollment",
+        update: jest.fn().mockResolvedValue(updatedSetting),
+      };
+
+      jest.spyOn(AdminSetting, "findByPk").mockResolvedValue(mockSettingInstance as any);
+
+      const result = await resolver.updateAdminSetting(user, updateData);
+
+      expect(result.startDate).toBeInstanceOf(Date);
+      expect(result.endDate).toBeInstanceOf(Date);
+      expect((result.startDate as unknown as Date).toISOString()).toMatch(/^2026-04-01/);
+      expect((result.endDate as unknown as Date).toISOString()).toMatch(/^2026-06-30/);
     });
 
     it("should rollback on unexpected errors", async () => {

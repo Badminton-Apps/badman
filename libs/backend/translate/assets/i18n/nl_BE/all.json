@@ -1246,7 +1246,7 @@
         }
       },
       "tooltips": {
-        "registrationClosed": "Inschrijvingen gesloten"
+        "registrationClosed": "Inschrijving voor deze competitie is gesloten"
       },
       "topBar": {
         "search": {
