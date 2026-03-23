@@ -576,44 +576,73 @@ module.exports = {
 
 ## Implementation Status
 
-### ✅ Completed (2025-01-01)
+### ✅ Completed (2025-03-20)
 
-**Phase 1: Foundation** has been fully implemented:
+**Phase 1: Foundation** — Fully implemented with TypeScript
 
-- ✅ Created `utils/seeder-context.js` - SeederContext class
-- ✅ Created `utils/error-handler.js` - Standardized error handling
-- ✅ Created `utils/entity-builders.js` - All 10 entity creation functions
-- ✅ Created `utils/index.js` - Centralized exports
-- ✅ Refactored `20250101000000-seed-test-data.js` to use new utilities
+- ✅ Created `utils/seeder-context.ts` - SeederContext class for consistent DB access
+- ✅ Created `utils/error-handler.ts` - Standardized error handling
+- ✅ Created `utils/entity-builders.ts` - Entity creation functions with TypeScript types
+- ✅ Created `utils/index.ts` - Centralized exports
+- ✅ Created `utils/types.ts` - Type definitions (Player, Club, Team, Location, Availability, etc.)
+- ✅ Refactored seeders to use TypeScript utilities with compiled dist/ output
+
+**Phase 2: Enhancement** — Completed
+
+- ✅ Created `utils/player-factory.ts` - PlayerFactory for batch player creation
+- ✅ Created `utils/data-factory.ts` - DataFactory for generating test data
+- ✅ Created `utils/ranking-builders.ts` - Ranking creation helpers
+- ✅ Created `utils/membership-helpers.ts` - Club membership utilities
+- ✅ Created `utils/club-team-naming.ts` - Team naming utilities
+- ✅ **Added location seeding** — `createLocation()` and `createAvailability()` builders
+  - Seed 2 locations per club with realistic availability schedules
+  - Support for court counts and exception dates (e.g. Christmas closures)
+- ✅ **Split admin seeder** — `20250101000001-seed-admin-user.js`
+  - Independent admin user creation with global claims
+  - Can run before/after main test-data seeder
 
 **Results:**
 
-- Main seeder reduced from 818 lines to 232 lines (71% reduction)
-- All entity functions now reusable across multiple seeders
+- Utilities now in TypeScript with full type safety
+- Main seeders use compiled JS output from `dist/`
+- Location and availability seeding fully integrated
+- Admin user seeding is independent and reusable
+- All entity functions are reusable across multiple seeders
 - Consistent error handling across all functions
-- Cleaner API with SeederContext pattern
 
-**File Structure Created:**
+**File Structure:**
 
 ```
 database/seeders/
-├── utils/
-│   ├── seeder-context.js      ✅ Created
-│   ├── error-handler.js        ✅ Created
-│   ├── entity-builders.js      ✅ Created
-│   └── index.js                ✅ Created
-└── 20250101000000-seed-test-data.js  ✅ Refactored
+├── utils/                      ✅ TypeScript utilities
+│   ├── seeder-context.ts
+│   ├── error-handler.ts
+│   ├── entity-builders.ts      (includes createLocation, createAvailability)
+│   ├── types.ts
+│   ├── player-factory.ts
+│   ├── ranking-builders.ts
+│   ├── membership-helpers.ts
+│   ├── club-team-naming.ts
+│   ├── data-factory.ts
+│   ├── tsconfig.json
+│   ├── index.ts
+│   └── dist/                   ✅ Compiled JS output
+│       ├── *.js
+│       └── *.d.ts
+├── 20250101000000-seed-test-data.js   ✅ Test data (clubs, teams, locations)
+├── 20250101000001-seed-admin-user.js  ✅ Admin user (independent)
+├── README.md                   ✅ Updated docs
+└── SEEDER_EXTENSION_PLAN.md    ✅ This file
 ```
 
 ### ⚠️ Future Enhancements
 
 The following items from the plan are not yet implemented but can be added as needed:
 
-- QueryBuilder helpers (Phase 2)
-- DataFactory for test data generation (Phase 2)
-- Fluent builder API (Phase 3)
-- Configuration-driven seeding (Phase 3)
-- Seeder registry (Phase 3)
+- QueryBuilder helpers for lower-level query construction (Phase 3)
+- Fluent builder API (e.g. `new PlayerBuilder(ctx).withEmail(...).create()`)
+- Configuration-driven seeding via JSON config files
+- Seeder registry for dependency management between seeders
 
 ## Benefits Summary
 
