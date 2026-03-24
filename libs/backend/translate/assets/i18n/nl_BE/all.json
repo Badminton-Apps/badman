@@ -2561,6 +2561,13 @@
         "back": "Terug naar home"
       }
     },
+    "noProfilePage": {
+      "title": "Geen Profielpagina",
+      "description": "Uw profielpagina is niet beschikbaar",
+      "buttons": {
+        "back": "Teruggaan"
+      }
+    },
     "confirmEncounterPage": {
       "title": "bevestig ontmoeting",
       "sectionTitles": {

@@ -1546,6 +1546,13 @@ export type I18nTranslations = {
                     };
                     "tooltips": {
                         "registrationClosed": string;
+                        "noProfilePage": {
+                            "title": string;
+                            "description": string;
+                            "button": {
+                                "back": string;
+                            };
+                        };
                     };
                 };
                 "topBar": {

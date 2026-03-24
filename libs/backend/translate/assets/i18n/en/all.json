@@ -2844,6 +2844,13 @@
         "back": "Back to home"
       }
     },
+    "noProfilePage": {
+      "title": "No Profile Page",
+      "description": "Your profile page is not available",
+      "buttons": {
+        "back": "Go Back"
+      }
+    },
     "confirmEncounterPage": {
       "title": "Confirm encounter",
       "sectionTitles": {

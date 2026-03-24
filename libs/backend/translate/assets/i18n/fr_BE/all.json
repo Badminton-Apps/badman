@@ -440,6 +440,13 @@
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
   },
+  "noProfilePage": {
+    "title": "Pas de Page de Profil",
+    "description": "Votre page de profil n'est pas disponible",
+    "buttons": {
+      "back": "Retour"
+    }
+  },
   "confirmEncounterPage": {
     "title": "Confirmer la rencontre",
     "sectionTitles": {
