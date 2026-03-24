@@ -44,6 +44,8 @@ const HOME_LOCATIONS = (season) => [
     city: "Antwerpen",
     state: "Antwerpen",
     phone: "+32 3 123 45 67",
+    longitude: 4.4699,
+    latitude: 51.2565,
     days: [
       { day: "tuesday", startTime: "19:00", endTime: "22:00", courts: 4 },
       { day: "thursday", startTime: "19:00", endTime: "22:00", courts: 4 },
@@ -80,6 +82,8 @@ const OPPONENT_LOCATIONS = (season) => [
     city: "Gent",
     state: "Oost-Vlaanderen",
     phone: "+32 9 345 67 89",
+    longitude: 3.7174,
+    latitude: 51.0404,
     days: [
       { day: "monday", startTime: "19:00", endTime: "22:00", courts: 5 },
       { day: "wednesday", startTime: "19:00", endTime: "22:00", courts: 5 },
@@ -96,6 +100,8 @@ const OPPONENT_LOCATIONS = (season) => [
     city: "Gent",
     state: "Oost-Vlaanderen",
     phone: "+32 9 456 78 90",
+    longitude: 3.6912,
+    latitude: 51.0601,
     days: [
       { day: "thursday", startTime: "18:00", endTime: "21:00", courts: 2 },
       { day: "saturday", startTime: "14:00", endTime: "20:00", courts: 4 },

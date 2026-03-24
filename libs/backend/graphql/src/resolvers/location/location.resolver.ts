@@ -50,10 +50,14 @@ export class LocationResolver {
   }
 
   @ResolveField(() => Coordinates, { nullable: true })
-  coordinates(@Parent() location: Location): Coordinates {
+  coordinates(@Parent() location: Location): Coordinates | null {
+    if (!location.coordinates?.coordinates) {
+      return null;
+    }
+
     return {
-      latitude: location.coordinates?.coordinates?.[1],
-      longitude: location.coordinates?.coordinates?.[0],
+      latitude: location.coordinates.coordinates[1],
+      longitude: location.coordinates.coordinates[0],
     };
   }
 

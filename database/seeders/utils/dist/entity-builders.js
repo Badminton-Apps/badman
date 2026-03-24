@@ -257,8 +257,13 @@ async function createLocation(ctx, clubId, locationData) {
         console.log(`ℹ️  Location already exists: ${existing[0].name} (${existing[0].id})\n`);
         return existing[0];
     }
-    const location = await ctx.insert(`INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt")
-     VALUES (:name, :address, :street, :streetNumber, :postalcode, :city, :state, :phone, :clubId, NOW(), NOW())
+    const hasCoordinates = locationData.latitude != null && locationData.longitude != null;
+    const coordinatesColumn = hasCoordinates ? ', coordinates' : '';
+    const coordinatesValue = hasCoordinates
+        ? `, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)`
+        : '';
+    const location = await ctx.insert(`INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt"${coordinatesColumn})
+     VALUES (:name, :address, :street, :streetNumber, :postalcode, :city, :state, :phone, :clubId, NOW(), NOW()${coordinatesValue})
      RETURNING id, name`, { ...locationData, clubId });
     console.log(`✅ Created Location: ${location.name} (${location.id})\n`);
     return location;

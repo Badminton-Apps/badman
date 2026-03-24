@@ -395,6 +395,8 @@ async function createLocation(
     city: string;
     state: string;
     phone: string;
+    longitude?: number;
+    latitude?: number;
   }
 ): Promise<Location> {
   const existing = await ctx.query<Location>(
@@ -407,9 +409,15 @@ async function createLocation(
     return existing[0];
   }
 
+  const hasCoordinates = locationData.latitude != null && locationData.longitude != null;
+  const coordinatesColumn = hasCoordinates ? ', coordinates' : '';
+  const coordinatesValue = hasCoordinates
+    ? `, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)`
+    : '';
+
   const location = await ctx.insert<Location>(
-    `INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt")
-     VALUES (:name, :address, :street, :streetNumber, :postalcode, :city, :state, :phone, :clubId, NOW(), NOW())
+    `INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt"${coordinatesColumn})
+     VALUES (:name, :address, :street, :streetNumber, :postalcode, :city, :state, :phone, :clubId, NOW(), NOW()${coordinatesValue})
      RETURNING id, name`,
     { ...locationData, clubId }
   );
