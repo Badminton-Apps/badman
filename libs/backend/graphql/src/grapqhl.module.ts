@@ -14,6 +14,7 @@ import { ApolloServerPluginUsageReporting } from "@apollo/server/plugin/usageRep
 import { ConfigType } from "@badman/utils";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { join } from "node:path";
+import { ResilientDateTimeScalar } from "./scalars";
 import {
   AvailabilityModule,
   ClubResolverModule,
@@ -71,6 +72,9 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
           playground: false,
           debug: true,
           autoSchemaFile: join(process.cwd(), "schema.gql"),
+          buildSchemaOptions: {
+            scalarsMap: [{ type: Date, scalar: ResilientDateTimeScalar }],
+          },
           context: ({ req }: { req: unknown }) => ({ req }),
           plugins,
         } as Omit<GqlModuleOptions, "driver">;
