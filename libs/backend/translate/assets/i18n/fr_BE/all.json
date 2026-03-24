@@ -1671,6 +1671,14 @@
       "selectedLocationCard": {
         "courts": "Terrains"
       },
+      "enrollmentLocationCard": {
+        "gameDaysTitle": "Jours de jeu",
+        "ariaSelectLocation": "Sélectionner un lieu",
+        "ariaDeselectLocation": "Désélectionner le lieu",
+        "emptyPlaceholder": "—",
+        "noGameDays": "Aucun jour de jeu",
+        "courts": "{count, plural, one {# terrain} other {# terrains}}"
+      },
       "team-enrollment": {
         "import-existing-optional": "Importer l'existant (optionnel)",
         "import-teams": {

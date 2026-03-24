@@ -1446,6 +1446,14 @@
       "selectedLocationCard": {
         "courts": "Courts"
       },
+      "enrollmentLocationCard": {
+        "gameDaysTitle": "Game days",
+        "ariaSelectLocation": "Select location",
+        "ariaDeselectLocation": "Deselect location",
+        "emptyPlaceholder": "—",
+        "noGameDays": "No game days",
+        "courts": "{count, plural, one {# court} other {# courts}}"
+      },
       "team-enrollment": {
         "import-existing-optional": "Import existing (optional)",
         "import-teams": {

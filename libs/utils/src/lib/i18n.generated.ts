@@ -1464,6 +1464,14 @@ export type I18nTranslations = {
                 "selectedLocationCard": {
                     "courts": string;
                 };
+                "enrollmentLocationCard": {
+                    "gameDaysTitle": string;
+                    "ariaSelectLocation": string;
+                    "ariaDeselectLocation": string;
+                    "emptyPlaceholder": string;
+                    "noGameDays": string;
+                    "courts": string;
+                };
                 "team-enrollment": {
                     "import-existing-optional": string;
                     "import-teams": {

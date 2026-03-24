@@ -1164,6 +1164,14 @@
       "selectedLocationCard": {
         "courts": "Velden"
       },
+      "enrollmentLocationCard": {
+        "gameDaysTitle": "Speeldagen",
+        "ariaSelectLocation": "Locatie selecteren",
+        "ariaDeselectLocation": "Locatie deselecteren",
+        "emptyPlaceholder": "—",
+        "noGameDays": "Geen speeldagen",
+        "courts": "{count, plural, one {# baan} other {# banen}}"
+      },
       "team-enrollment": {
         "import-existing-optional": "Bestaande importeren (optioneel)",
         "import-teams": {
