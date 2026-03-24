@@ -43,11 +43,11 @@ export class AdminSetting extends Model<
   declare enabled: boolean;
 
   @Field(() => Date, { nullable: true })
-  @Column(DataType.DATEONLY)
+  @Column(DataType.DATE)
   declare startDate?: Date | null;
 
   @Field(() => Date, { nullable: true })
-  @Column(DataType.DATEONLY)
+  @Column(DataType.DATE)
   declare endDate?: Date | null;
 
   // JSONB escape hatch — not exposed to GraphQL
@@ -64,5 +64,5 @@ export class AdminSetting extends Model<
 @InputType()
 export class AdminSettingUpdateInput extends PartialType(
   OmitType(AdminSetting, ["createdAt", "updatedAt", "key", "meta"] as const),
-  InputType,
+  InputType
 ) {}

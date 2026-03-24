@@ -1546,13 +1546,6 @@ export type I18nTranslations = {
                     };
                     "tooltips": {
                         "registrationClosed": string;
-                        "noProfilePage": {
-                            "title": string;
-                            "description": string;
-                            "button": {
-                                "back": string;
-                            };
-                        };
                     };
                 };
                 "topBar": {
@@ -2868,6 +2861,13 @@ export type I18nTranslations = {
                     "back": string;
                 };
             };
+            "noProfilePage": {
+                "title": string;
+                "description": string;
+                "buttons": {
+                    "back": string;
+                };
+            };
             "confirmEncounterPage": {
                 "title": string;
                 "sectionTitles": {
@@ -3621,6 +3621,13 @@ export type I18nTranslations = {
                         };
                     };
                 };
+            };
+        };
+        "noProfilePage": {
+            "title": string;
+            "description": string;
+            "buttons": {
+                "back": string;
             };
         };
         "confirmEncounterPage": {
