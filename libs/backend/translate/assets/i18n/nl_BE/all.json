@@ -1243,10 +1243,10 @@
         },
         "transfer": {
           "title": "Transfers / uitleningen"
+        },
+        "tooltips": {
+          "registrationClosed": "Inschrijvingen gesloten"
         }
-      },
-      "tooltips": {
-        "registrationClosed": "Inschrijving voor deze competitie is gesloten"
       },
       "topBar": {
         "search": {

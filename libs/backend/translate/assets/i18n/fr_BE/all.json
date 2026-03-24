@@ -1686,7 +1686,7 @@
           "adminSettings": "Paramètres d'administration"
         },
         "tooltips": {
-          "registrationClosed": "L'inscription à cette compétition est fermée"
+          "registrationClosed": "Inscriptions fermées"
         }
       }
     }

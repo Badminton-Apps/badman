@@ -1525,10 +1525,10 @@
         },
         "transfer": {
           "title": "Transfers / loans"
+        },
+        "tooltips": {
+          "registrationClosed": "Registration closed"
         }
-      },
-      "tooltips": {
-        "registrationClosed": "Registration for this competition is closed"
       },
       "topBar": {
         "search": {

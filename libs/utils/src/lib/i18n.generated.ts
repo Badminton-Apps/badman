@@ -1548,9 +1548,6 @@ export type I18nTranslations = {
                         "registrationClosed": string;
                     };
                 };
-                "tooltips": {
-                    "registrationClosed": string;
-                };
                 "topBar": {
                     "search": {
                         "placeholder": string;
