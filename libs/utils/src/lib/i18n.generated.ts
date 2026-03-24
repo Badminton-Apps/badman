@@ -3637,6 +3637,9 @@ export type I18nTranslations = {
                     };
                 };
             };
+            "locations": {
+                "exceptions": string;
+            };
         };
         "noProfilePage": {
             "title": string;

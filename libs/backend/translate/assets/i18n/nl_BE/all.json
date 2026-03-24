@@ -3331,6 +3331,9 @@
           }
         }
       }
+    },
+    "locations": {
+      "exceptions": "Uitzonderingen"
     }
   }
 }

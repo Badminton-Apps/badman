@@ -1711,6 +1711,9 @@
           "registrationClosed": "Inscriptions fermées"
         }
       }
+    },
+    "locations": {
+      "exceptions": "Exceptions"
     }
   }
 }
