@@ -1685,6 +1685,21 @@
           "cancel": "Annuler",
           "import": "Importer"
         }
+      },
+      "validation": {
+        "invalidStatus": "Statut invalide.",
+        "invalidEmail": "Adresse e-mail invalide.",
+        "emailRequired": "L'adresse e-mail est requise.",
+        "clubRequired": "Le club est obligatoire.",
+        "selectAtLeastOneLocation": "Sélectionnez au moins un lieu.",
+        "locationGameDayAvailability": "Chaque lieu doit disposer d'au moins un jour de jeu avec au moins 2 terrains, chacun disponible pendant au moins 3 heures (pas nécessairement consécutives).",
+        "addAtLeastOneTeam": "Ajoutez au moins une équipe.",
+        "duplicateTeamNumberSameType": "Numéro d'équipe en double dans le même type.",
+        "selectLocation": "Sélectionnez un lieu.",
+        "teamNumberRequired": "Le numéro d'équipe est obligatoire.",
+        "invalidTeamType": "Type d'équipe invalide.",
+        "teamTypeRequired": "Le type d'équipe est obligatoire.",
+        "selectAtLeastOnePlayer": "Sélectionnez au moins un joueur."
       }
     },
     "shell": {

@@ -1460,6 +1460,21 @@
           "cancel": "Cancel",
           "import": "Import"
         }
+      },
+      "validation": {
+        "invalidStatus": "Invalid status.",
+        "invalidEmail": "Invalid email address.",
+        "emailRequired": "Email is required.",
+        "clubRequired": "Club is required.",
+        "selectAtLeastOneLocation": "Select at least one location.",
+        "locationGameDayAvailability": "Each location must have at least one game day with at least 2 courts, each available for at least 3 hours (not necessarily consecutive).",
+        "addAtLeastOneTeam": "Add at least one team.",
+        "duplicateTeamNumberSameType": "Duplicate team number within the same type.",
+        "selectLocation": "Select a location.",
+        "teamNumberRequired": "Team number is required.",
+        "invalidTeamType": "Invalid team type.",
+        "teamTypeRequired": "Team type is required.",
+        "selectAtLeastOnePlayer": "Select at least one player."
       }
     },
     "messages": {

@@ -1178,6 +1178,21 @@
           "cancel": "Annuleren",
           "import": "Importeren"
         }
+      },
+      "validation": {
+        "invalidStatus": "Ongeldige status.",
+        "invalidEmail": "Ongeldig e-mailadres.",
+        "emailRequired": "E-mailadres is verplicht.",
+        "clubRequired": "Club is verplicht.",
+        "selectAtLeastOneLocation": "Selecteer minstens één locatie.",
+        "locationGameDayAvailability": "Elke locatie moet minstens één speeldag hebben met minstens 2 terreinen die elk minstens 3 uur beschikbaar zijn (niet noodzakelijk aaneengesloten).",
+        "addAtLeastOneTeam": "Voeg minstens één ploeg toe.",
+        "duplicateTeamNumberSameType": "Dubbel ploegnummer binnen hetzelfde type.",
+        "selectLocation": "Selecteer een locatie.",
+        "teamNumberRequired": "Ploegnummer is verplicht.",
+        "invalidTeamType": "Ongeldig ploegtype.",
+        "teamTypeRequired": "Ploegtype is verplicht.",
+        "selectAtLeastOnePlayer": "Selecteer minstens één speler."
       }
     },
     "messages": {

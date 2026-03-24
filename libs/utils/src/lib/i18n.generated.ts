@@ -1479,6 +1479,21 @@ export type I18nTranslations = {
                         "import": string;
                     };
                 };
+                "validation": {
+                    "invalidStatus": string;
+                    "invalidEmail": string;
+                    "emailRequired": string;
+                    "clubRequired": string;
+                    "selectAtLeastOneLocation": string;
+                    "locationGameDayAvailability": string;
+                    "addAtLeastOneTeam": string;
+                    "duplicateTeamNumberSameType": string;
+                    "selectLocation": string;
+                    "teamNumberRequired": string;
+                    "invalidTeamType": string;
+                    "teamTypeRequired": string;
+                    "selectAtLeastOnePlayer": string;
+                };
             };
             "messages": {
                 "buttons": {
