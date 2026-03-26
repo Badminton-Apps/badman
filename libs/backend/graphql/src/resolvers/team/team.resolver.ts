@@ -221,6 +221,7 @@ export class TeamsResolver {
       let created = false;
       let teamDb: Team | null = null;
 
+      // Team.link is the cross-season continuity id; reuse it to find the current season team.
       if (teamData.link) {
         teamDb = await Team.findOne({
           where: {

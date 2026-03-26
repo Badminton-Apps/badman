@@ -40,13 +40,15 @@ export const validateEnrollment = (
       if (!team.team.type) return;
       if (!team.entry) return;
 
+      const continuityId = team.team.link;
+
       teams.push({
         id: team.team.id,
         name: team.team.name,
         type: team.team.type,
         teamNumber: team.team.teamNumber,
         subEventId: team.entry.subEventId ?? undefined,
-        link: team.team.link,
+        link: continuityId,
         players: team.team?.players?.map((p) => p.id)?.filter((p) => p) as string[],
         backupPlayers: team.team.players
           ?.filter((p) => p.teamMembership.membershipType == TeamMembershipType.BACKUP)

@@ -100,7 +100,20 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   @Column(DataType.TIME)
   preferredTime?: Date;
 
-  @Field(() => ID)
+  /**
+   * CONTEXT:
+   *
+   * Team.link is the cross-season continuity identifier.
+   * When registering a team for a new season, the link should be reused if possible.
+   *
+   * If it's not reused when registering a team for a new season,
+   * previous-season lookups and validation fail silently. The current name "link" is ambiguous.
+   *
+   */
+  @Field(() => ID, {
+    description:
+      "Cross-season continuity id. Reuse this link when registering the same team in a new season.",
+  })
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @Column(DataType.UUIDV4)
@@ -348,6 +361,13 @@ export class TeamNewInput extends PartialType(
   OmitType(TeamUpdateInput, ["id", "entry", "players"] as const),
   InputType
 ) {
+  @Field(() => ID, {
+    nullable: true,
+    description:
+      "Cross-season continuity id. Reuse this link when registering the same team in a new season.",
+  })
+  override link?: string;
+
   // Include the entry
   @Field(() => EventEntryNewInput, { nullable: true })
   entry?: EventEntryNewInput;
