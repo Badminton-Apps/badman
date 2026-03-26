@@ -1706,14 +1706,47 @@
     "entryTeamDrawer": {
       "params": {
         "gender": {
-          "male": "Homme",
-          "female": "Femme"
+          "male": "homme",
+          "female": "femme"
+        }
+      }
+    },
+    "shell": {
+      "sidebar": {
+        "tooltips": {
+          "registrationClosed": "Inscriptions fermées"
+        }
+      }
+    },
+    "editClubPage": {
+      "locations": {
+        "gameDays": {
+          "createDialog": {
+            "errors": {
+              "courtsMin": "Le nombre de terrains doit être supérieur à 0",
+              "startBeforeEnd": "L'heure de début doit être avant l'heure de fin"
+            }
+          }
+        },
+        "exceptions": {
+          "createDialog": {
+            "errors": {
+              "startBeforeEnd": "La date de début doit être avant la date de fin",
+              "startRequired": "La date de début est requise",
+              "endRequired": "La date de fin est requise"
+            }
+          }
         }
       }
     },
     "enrollment": {
+      "disabled": {
+        "title": "Inscriptions fermées",
+        "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
+      },
       "selectedLocationCard": {
-        "courts": "Terrains"
+        "courts": "{count, plural, one {# terrain} other {# terrains}}",
+        "noGameDays": "Aucun jour de match trouvé."
       },
       "enrollmentLocationCard": {
         "gameDaysTitle": "Jours de jeu",
@@ -1734,6 +1767,7 @@
           "playerTooStrong": "{name} est trop fort pour cette division (niveau {level}, max : {maxLevel})"
         },
         "import-existing-optional": "Importer l'existant (optionnel)",
+        "validating": "Validation…",
         "import-teams": {
           "title": "Importer les équipes",
           "allTeams": "Toutes les équipes",

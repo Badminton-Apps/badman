@@ -417,6 +417,7 @@ export type I18nTranslations = {
                 "warnings": {
                     "already-saved": string;
                     "base-other-team": string;
+                    "missing-continuity-link": string;
                     "player-min-level": string;
                     "subtitute-team-index": string;
                     "title": string;
@@ -1505,8 +1506,13 @@ export type I18nTranslations = {
                 "error": string;
             };
             "enrollment": {
+                "disabled": {
+                    "title": string;
+                    "message": string;
+                };
                 "selectedLocationCard": {
                     "courts": string;
+                    "noGameDays": string;
                 };
                 "enrollmentLocationCard": {
                     "gameDaysTitle": string;
@@ -1527,6 +1533,7 @@ export type I18nTranslations = {
                         "playerTooStrong": string;
                     };
                     "import-existing-optional": string;
+                    "validating": string;
                     "import-teams": {
                         "title": string;
                         "allTeams": string;
@@ -2729,6 +2736,10 @@ export type I18nTranslations = {
                                     "endTime": string;
                                     "courts": string;
                                 };
+                                "errors": {
+                                    "courtsMin": string;
+                                    "startBeforeEnd": string;
+                                };
                                 "buttons": {
                                     "cancel": string;
                                     "save": string;
@@ -2774,6 +2785,11 @@ export type I18nTranslations = {
                                 "form": {
                                     "start": string;
                                     "end": string;
+                                };
+                                "errors": {
+                                    "startBeforeEnd": string;
+                                    "startRequired": string;
+                                    "endRequired": string;
                                 };
                                 "buttons": {
                                     "cancel": string;
@@ -2928,6 +2944,7 @@ export type I18nTranslations = {
                     "warnings": {
                         "already-saved": string;
                         "base-other-team": string;
+                        "missing-continuity-link": string;
                         "player-min-level": string;
                         "subtitute-team-index": string;
                         "title": string;
@@ -3701,6 +3718,7 @@ export type I18nTranslations = {
                     };
                 };
             };
+<<<<<<< HEAD
             "locations": {
                 "exceptions": string;
             };
@@ -3710,6 +3728,28 @@ export type I18nTranslations = {
             "description": string;
             "buttons": {
                 "back": string;
+=======
+            "editClubPage": {
+                "locations": {
+                    "gameDays": {
+                        "createDialog": {
+                            "errors": {
+                                "courtsMin": string;
+                                "startBeforeEnd": string;
+                            };
+                        };
+                    };
+                    "exceptions": {
+                        "createDialog": {
+                            "errors": {
+                                "startBeforeEnd": string;
+                                "startRequired": string;
+                                "endRequired": string;
+                            };
+                        };
+                    };
+                };
+>>>>>>> feat/registration-module
             };
         };
         "confirmEncounterPage": {

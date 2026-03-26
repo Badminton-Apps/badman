@@ -119,21 +119,42 @@ async function addPlayerToClub(
 async function insertTeam(
   ctx: SeederContext,
   clubId: string,
+  teamNumber: number,
   season: number,
   captainId: string,
   teamType: "M" | "F" | "MX"
 ): Promise<string> {
+<<<<<<< HEAD
+=======
+  console.log("👥 Creating Team...");
+
+  // Check if team already exists (same club, season, and type)
+  const existing = await ctx.query<{ id: string }>(
+    `SELECT id FROM "Teams" 
+     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = :teamNumber
+     LIMIT 1`,
+    { clubId, season, type: teamType }
+  );
+
+  if (existing && existing.length > 0 && existing[0]) {
+    console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
+    return existing[0].id;
+  }
+
+  // Fetch club and generate team name
+>>>>>>> feat/registration-module
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType);
 
   const team = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
-     VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
+     VALUES (:clubId, :type, :season, :teamNumber, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`,
     {
       clubId,
       type: teamType,
       season,
+      teamNumber,
       captainId,
       name: teamName,
       abbreviation,
@@ -300,12 +321,35 @@ async function createDrawCompetition(
 async function createOpponentTeam(
   ctx: SeederContext,
   clubId: string,
+  teamNumber: number,
   season: number,
   captainId: string,
   teamType: "M" | "F" | "MX" = "M"
 ): Promise<string> {
   console.log("👥 Creating opponent Team...");
+<<<<<<< HEAD
   const opponentTeamId = await insertTeam(ctx, clubId, season, captainId, teamType);
+=======
+
+  // Fetch club and generate team name
+  const club = await getClubById(ctx, clubId);
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType);
+
+  const opponentTeam = await ctx.insert<Team>(
+    `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "link", name, abbreviation, "createdAt", "updatedAt")
+     VALUES (:clubId, :type, :season, :teamNumber, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
+     RETURNING id`,
+    {
+      clubId,
+      type: teamType,
+      season,
+      teamNumber,
+      name: teamName,
+      abbreviation,
+    }
+  );
+  const opponentTeamId = opponentTeam.id;
+>>>>>>> feat/registration-module
   console.log(`✅ Created opponent Team (${opponentTeamId})\n`);
   return opponentTeamId;
 }

@@ -31,6 +31,7 @@ import {
   TeamRiserFallerRule,
   TeamSubEventRule,
   TeamMaxBasePlayersRule,
+  TeamContinuityRule,
 } from "./rules";
 import moment from "moment";
 import { Op } from "sequelize";
@@ -70,12 +71,13 @@ export class EnrollmentValidationService {
       throw new Error("No teams found");
     }
 
-    const teamIdIds = teams.map((t) => t.link) as string[];
+    const continuityIds = teams.map((t) => t.link).filter((link) => !!link) as string[];
 
-    if (teamIdIds.length > 0) {
+    if (continuityIds.length > 0) {
+      // Continuity lookup: reuse Team.link to locate last season's team entry.
       previousSeasonTeams = await Team.findAll({
         where: {
-          link: teamIdIds,
+          link: continuityIds,
           season: season - 1,
         },
         include: [
@@ -92,17 +94,6 @@ export class EnrollmentValidationService {
         ],
       });
     }
-
-    const subEvents = await SubEventCompetition.findAll({
-      where: {
-        id: teams.map((e) => e.subEventId)?.filter((e) => !!e) as string[],
-      },
-      include: [
-        {
-          model: EventCompetition,
-        },
-      ],
-    });
 
     const stringPlayerIds = [
       ...new Set(
@@ -131,32 +122,49 @@ export class EnrollmentValidationService {
       (p) => p !== null && p !== undefined
     ) as string[];
 
-    const dbPlayers = await Player.findAll({
-      attributes: ["id", "gender", "competitionPlayer", "firstName", "lastName"],
-      where: {
-        id: stringPlayerIds,
-      },
-      include: [
-        {
-          model: RankingPlace,
-          where: {
-            systemId: system?.id,
-            rankingDate: {
-              [Op.lte]: moment([season, 5, 10]).toDate(),
-            },
-          },
-          order: [["rankingDate", "DESC"]],
-          limit: 1,
+    const [subEvents, dbPlayers, dbPlayersEntry, previousSeasonClubTeams] = await Promise.all([
+      SubEventCompetition.findAll({
+        where: {
+          id: teams.map((e) => e.subEventId)?.filter((e) => !!e) as string[],
         },
-      ],
-    });
-
-    const dbPlayersEntry = await Player.findAll({
-      attributes: ["id", "gender", "competitionPlayer", "firstName", "lastName"],
-      where: {
-        id: eixistingPlayerIds,
-      },
-    });
+        include: [
+          {
+            model: EventCompetition,
+          },
+        ],
+      }),
+      Player.findAll({
+        attributes: ["id", "gender", "competitionPlayer", "firstName", "lastName"],
+        where: {
+          id: stringPlayerIds,
+        },
+        include: [
+          {
+            model: RankingPlace,
+            where: {
+              systemId: system?.id,
+              rankingDate: {
+                [Op.lte]: moment([season, 5, 10]).toDate(),
+              },
+            },
+            order: [["rankingDate", "DESC"]],
+            limit: 1,
+          },
+        ],
+      }),
+      Player.findAll({
+        attributes: ["id", "gender", "competitionPlayer", "firstName", "lastName"],
+        where: {
+          id: eixistingPlayerIds,
+        },
+      }),
+      Team.findAll({
+        where: {
+          clubId: club.id,
+          season: season - 1,
+        },
+      }),
+    ]);
 
     return {
       club,
@@ -202,7 +210,21 @@ export class EnrollmentValidationService {
         const teamIndex = getIndexFromPlayers(t.type, teamPlayers, system.amountOfLevels);
         const baseIndex = getIndexFromPlayers(t.type, basePlayers, system.amountOfLevels);
 
-        const preTeam = previousSeasonTeams.find((p) => p.link === t.link);
+        const previousSeasonTeam = previousSeasonTeams.find((p) => p.link === t.link);
+        const missingContinuityId = !t.link;
+        const possibleOldTeamTeam = missingContinuityId
+          ? previousSeasonClubTeams.find(
+              (team) =>
+                (team.type === t.type && team.teamNumber === t.teamNumber) ||
+                (!!t.name && team.name === t.name)
+            )
+          : undefined;
+
+        if (missingContinuityId && possibleOldTeamTeam) {
+          this._logger.warn(
+            `Team continuity id missing for ${t.name ?? t.id}; previous season match exists.`
+          );
+        }
 
         if (!t.id) {
           throw new Error("No team id found");
@@ -214,11 +236,12 @@ export class EnrollmentValidationService {
             type: t.type,
             name: t.name,
             teamNumber: t.teamNumber,
-            link: preTeam?.link,
+            link: previousSeasonTeam?.link,
           }),
-          previousSeasonTeam: preTeam,
-          isNewTeam: t.link === null,
-          possibleOldTeam: false,
+          previousSeasonTeam,
+          possibleOldTeamTeam,
+          isNewTeam: !t.link,
+          possibleOldTeam: !!possibleOldTeamTeam,
           id: t.id,
           basePlayers,
           teamPlayers,
@@ -331,6 +354,7 @@ export class EnrollmentValidationService {
       new TeamRiserFallerRule(),
       new TeamSubeventIndexRule(),
       new TeamOrderRule(),
+      new TeamContinuityRule(),
     ];
   }
 

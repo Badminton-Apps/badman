@@ -39,9 +39,8 @@ Thumbs.db
 
 .angular
 .env
-.env.staging
-.env.production
-.env.prod-db
+.env.*
+!.env.example
 .cache
 
 /database/backup

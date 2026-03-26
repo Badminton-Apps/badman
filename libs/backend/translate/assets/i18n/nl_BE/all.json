@@ -405,6 +405,7 @@
       "warnings": {
         "already-saved": "Nieuwe wijzigingen kan je niet tussendoor meer opslaan, gelieve het formulier opnieuw te versturen in de laatste stap om je wijzigingen op te slaan",
         "base-other-team": "<strong>{player.fullName}</strong> is basisspeler in een ander team",
+        "missing-continuity-link": "Dit team lijkt op een ploeg uit het vorige seizoen, maar de continuiteits-id werd niet hergebruikt. Koppel het team om de historiek te bewaren.",
         "player-min-level": "Aanvraag voor uitzondering van speler <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> is nog niet geaccepteerd",
         "subtitute-team-index": "s",
         "title": "Waarschuwingen"
@@ -1227,6 +1228,7 @@
           "playerTooStrong": "{name} is te sterk voor deze afdeling (niveau {level}, max: {maxLevel})"
         },
         "import-existing-optional": "Bestaande importeren (optioneel)",
+        "validating": "Valideren…",
         "import-teams": {
           "title": "Teams importeren",
           "allTeams": "Alle teams",
@@ -1340,6 +1342,16 @@
           },
           "moreCharactersRequired": "Gelieve {minLength} of meer karakters te gebruiken om te zoeken"
         }
+      }
+    },
+    "enrollment": {
+      "disabled": {
+        "title": "Inschrijvingen gesloten",
+        "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
+      },
+      "selectedLocationCard": {
+        "courts": "{count, plural, one {# terrein} other {# terreinen}}",
+        "noGameDays": "Geen speeldagen gevonden."
       }
     },
     "player": {
@@ -2429,6 +2441,10 @@
                 "endTime": "Eindtijd",
                 "courts": "Velden"
               },
+              "errors": {
+                "courtsMin": "Het aantal velden moet groter zijn dan 0",
+                "startBeforeEnd": "De starttijd moet voor de eindtijd liggen"
+              },
               "buttons": {
                 "cancel": "Annuleren",
                 "save": "Opslaan"
@@ -2474,6 +2490,11 @@
               "form": {
                 "start": "Start",
                 "end": "Einde"
+              },
+              "errors": {
+                "startBeforeEnd": "De startdatum moet voor de einddatum liggen",
+                "startRequired": "Startdatum is verplicht",
+                "endRequired": "Einddatum is verplicht"
               },
               "buttons": {
                 "cancel": "Annuleren",
@@ -2628,6 +2649,7 @@
         "warnings": {
           "already-saved": "Nieuwe wijzigingen kunnen niet tussendoor worden opgeslagen, dien het formulier opnieuw in de laatste stap in om je wijzigingen op te slaan",
           "base-other-team": "{playerFullName} is basis speler in een ander team",
+          "missing-continuity-link": "Dit team lijkt op een ploeg uit het vorige seizoen, maar de continuiteits-id werd niet hergebruikt. Koppel het team om de historiek te bewaren.",
           "player-min-level": "Verzoek voor uitzondering voor speler {playerFullName} in {rankingType} is nog niet geaccepteerd",
           "subtitute-team-index": "s",
           "title": "Waarschuwingen"

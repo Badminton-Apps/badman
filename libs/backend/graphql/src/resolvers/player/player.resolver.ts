@@ -249,14 +249,29 @@ export class PlayersResolver {
     historical = false
   ): Promise<(Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
-
     if (!historical) {
+      const now = new Date();
       args.where = {
         ...args.where,
-        // [`$${ClubPlayerMembership.name}.active$`]: true,
+        [`$${ClubPlayerMembership.name}.confirmed$`]: true,
+        [`$${ClubPlayerMembership.name}.start$`]: {
+          [Op.lt]: now,
+        },
+        [Op.or]: [
+          {
+            [`$${ClubPlayerMembership.name}.end$`]: {
+              [Op.gt]: now,
+            },
+          },
+          {
+            [`$${ClubPlayerMembership.name}.end$`]: {
+              [Op.is]: null,
+            },
+          },
+        ],
       };
     }
-    return player.getClubs({
+    return await player.getClubs({
       ...args,
     });
   }

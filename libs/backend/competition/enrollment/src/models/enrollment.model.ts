@@ -140,6 +140,7 @@ export class EnrollmentValidationData {
 export class EnrollmentValidationTeam {
   team?: Partial<Team>;
   previousSeasonTeam?: Partial<Team>;
+  possibleOldTeamTeam?: Partial<Team>;
 
   isNewTeam?: boolean;
   possibleOldTeam?: boolean;

@@ -25,6 +25,7 @@ const {
   addRankingToPlayer,
   createLocation,
   createAvailability,
+  ensureClubAdminPermission,
 } = require("./utils/dist");
 
 const PLAYERS_ON_TEAM = 8;
@@ -221,8 +222,6 @@ async function seedClubWithPlayersAndTeams(ctx, clubName, captainUser, season, p
   await ctx.verifyTransaction();
   console.log("✅ Transaction is still valid after adding players to club\n");
 
-  // Set membership start to the beginning of the season (Aug 1) so it covers all seeded encounters,
-  // including past ones whose date is earlier than today.
   const seasonStart = new Date(`${season}-08-01`);
   const previousSeasonStart = new Date(`${previousSeason}-08-01`);
 
@@ -299,6 +298,8 @@ module.exports = {
           },
           useCreateOpponentTeam: false,
         });
+
+        await ensureClubAdminPermission(ctx, home.clubId, user.id);
 
         await seedLocationsForClub(ctx, home.clubId, season, HOME_LOCATIONS(season));
 
@@ -441,7 +442,6 @@ module.exports = {
 
         const { placeholders: clubPlaceholders, replacements: clubReplacements } = buildInClause(clubIds, "clubId");
 
-        // Discover players via club membership before memberships are deleted
         console.log("📍 Step 3.5: Finding test players via club membership...\n");
         const testPlayers = await sequelize.query(
           `SELECT DISTINCT p.id

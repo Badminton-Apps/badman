@@ -33,9 +33,18 @@ import { Test, TestingModule } from "@nestjs/testing";
 //   SubTeamIndexRule,
 // } from './rules';
 // import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
-import { DatabaseModule } from "@badman/backend-database";
+import {
+  Club,
+  DatabaseModule,
+  Player,
+  RankingSystem,
+  SubEventCompetition,
+  Team,
+} from "@badman/backend-database";
+import { SubEventTypeEnum } from "@badman/utils";
 import { ConfigModule } from "@nestjs/config";
 import { EnrollmentValidationService } from "./enrollment.service";
+import { TeamContinuityRule } from "./rules";
 
 describe("EnrollmentValidationService", () => {
   let service: EnrollmentValidationService;
@@ -90,8 +99,95 @@ describe("EnrollmentValidationService", () => {
     //   encounter = await encounterBuilder.Build();
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   test("should be defined", () => {
     expect(service).toBeDefined();
+  });
+
+  test("reused continuity id finds previous season team", async () => {
+    const system = { id: "system-1", amountOfLevels: 12 } as RankingSystem;
+    const club = new Club({ id: "club-1" });
+    const previousSeasonTeam = new Team({
+      id: "team-prev",
+      link: "continuity-1",
+      season: 2023,
+      name: "Team A",
+      teamNumber: 1,
+      type: SubEventTypeEnum.M,
+    });
+
+    jest.spyOn(RankingSystem, "findByPk").mockResolvedValue(system);
+    jest.spyOn(Club, "findByPk").mockResolvedValue(club);
+    const teamFindAllMock = jest.spyOn(Team, "findAll");
+    teamFindAllMock.mockResolvedValueOnce([previousSeasonTeam]);
+    teamFindAllMock.mockResolvedValueOnce([previousSeasonTeam]);
+    jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([]);
+    jest.spyOn(Player, "findAll").mockResolvedValue([]);
+
+    const data = await service.getValidationData({
+      clubId: club.id,
+      systemId: system.id,
+      season: 2024,
+      teams: [
+        {
+          id: "team-current",
+          name: "Team A",
+          type: SubEventTypeEnum.M,
+          teamNumber: 1,
+          link: "continuity-1",
+        },
+      ],
+    });
+
+    expect(data.teams[0].previousSeasonTeam?.link).toBe("continuity-1");
+    expect(data.teams[0].isNewTeam).toBe(false);
+  });
+
+  test("missing continuity id warns when previous season match exists", async () => {
+    const system = { id: "system-1", amountOfLevels: 12 } as RankingSystem;
+    const club = new Club({ id: "club-1" });
+    const previousSeasonTeam = new Team({
+      id: "team-prev",
+      link: "continuity-1",
+      season: 2023,
+      name: "Team A",
+      teamNumber: 1,
+      type: SubEventTypeEnum.M,
+    });
+
+    jest.spyOn(RankingSystem, "findByPk").mockResolvedValue(system);
+    jest.spyOn(Club, "findByPk").mockResolvedValue(club);
+    const teamFindAllMock = jest.spyOn(Team, "findAll");
+    teamFindAllMock.mockResolvedValueOnce([]);
+    teamFindAllMock.mockResolvedValueOnce([previousSeasonTeam]);
+    jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([]);
+    jest.spyOn(Player, "findAll").mockResolvedValue([]);
+
+    const data = await service.getValidationData({
+      clubId: club.id,
+      systemId: system.id,
+      season: 2024,
+      teams: [
+        {
+          id: "team-current",
+          name: "Team A",
+          type: SubEventTypeEnum.M,
+          teamNumber: 1,
+        },
+      ],
+    });
+
+    const validation = await service.validate(data, [new TeamContinuityRule()]);
+    const warningMessages = validation.teams?.[0]?.warnings?.map((w) => w.message) ?? [];
+
+    expect(data.teams[0].previousSeasonTeam).toBeUndefined();
+    expect(data.teams[0].possibleOldTeam).toBe(true);
+    expect(warningMessages).toContain(
+      "all.v1.entryTeamDrawer.validation.warnings.missing-continuity-link"
+    );
   });
 
   // describe('Doubles Male team checks', () => {
