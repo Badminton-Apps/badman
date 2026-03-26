@@ -1160,6 +1160,27 @@
         "error": "Inschrijvingsinstellingen opslaan mislukt"
       }
     },
+    "copyCompetitionsPage": {
+      "title": "Competities kopiëren",
+      "sourceSeasonTitle": "Bronseizoen",
+      "targetSeasonTitle": "Doelseizoen",
+      "table": {
+        "headers": {
+          "name": "Naam",
+          "type": "Type",
+          "official": "Officieel",
+          "actions": "Acties"
+        }
+      },
+      "dialog": {
+        "title": "Competitie kopiëren",
+        "confirm": "Kopiëren",
+        "cancel": "Annuleren",
+        "message": "{name} kopiëren naar seizoen {season}?"
+      },
+      "success": "Competitie succesvol gekopieerd",
+      "error": "Kopiëren van competitie mislukt"
+    },
     "enrollment": {
       "selectedLocationCard": {
         "courts": "Velden"
@@ -1173,6 +1194,15 @@
         "courts": "{count, plural, one {# baan} other {# banen}}"
       },
       "team-enrollment": {
+        "addBasePlayerDialog": {
+          "title": "Voeg basisspeler toe",
+          "competition": "Competitie",
+          "division": "Afdeling",
+          "baseIndex": "Basisindex: {baseIndex}",
+          "maxPlayersReached": "Maximum {max} basisspelers bereikt",
+          "noCompetitions": "Geen competities beschikbaar voor het aankomende seizoen.",
+          "playerTooStrong": "{name} is te sterk voor deze afdeling (niveau {level}, max: {maxLevel})"
+        },
         "import-existing-optional": "Bestaande importeren (optioneel)",
         "import-teams": {
           "title": "Teams importeren",
@@ -1227,7 +1257,8 @@
           "confirmEncounter": "Bevestig ontmoeting",
           "changeEncounter": "Verplaats ontmoeting",
           "addProposal": "Voorstel toevoegen",
-          "adminSettings": "Admin Instellingen"
+          "adminSettings": "Admin Instellingen",
+          "copyCompetitions": "Competities kopiëren"
         },
         "auth": {
           "logIn": "Inloggen",

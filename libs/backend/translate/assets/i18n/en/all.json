@@ -1442,6 +1442,27 @@
         "error": "Failed to save enrollment settings"
       }
     },
+    "copyCompetitionsPage": {
+      "title": "Copy Competitions",
+      "sourceSeasonTitle": "Source Season",
+      "targetSeasonTitle": "Target Season",
+      "table": {
+        "headers": {
+          "name": "Name",
+          "type": "Type",
+          "official": "Official",
+          "actions": "Actions"
+        }
+      },
+      "dialog": {
+        "title": "Copy Competition",
+        "confirm": "Copy",
+        "cancel": "Cancel",
+        "message": "Copy {name} to season {season}?"
+      },
+      "success": "Competition copied successfully",
+      "error": "Failed to copy competition"
+    },
     "enrollment": {
       "selectedLocationCard": {
         "courts": "Courts"
@@ -1455,6 +1476,15 @@
         "courts": "{count, plural, one {# court} other {# courts}}"
       },
       "team-enrollment": {
+        "addBasePlayerDialog": {
+          "title": "Add base player",
+          "competition": "Competition",
+          "division": "Division",
+          "baseIndex": "Base index: {baseIndex}",
+          "maxPlayersReached": "Maximum {max} base players reached",
+          "noCompetitions": "No competitions available for the upcoming season.",
+          "playerTooStrong": "{name} is too strong for this division (level {level}, max: {maxLevel})"
+        },
         "import-existing-optional": "Import existing (optional)",
         "import-teams": {
           "title": "Import teams",
@@ -1509,7 +1539,8 @@
           "confirmEncounter": "Confirm encounter",
           "changeEncounter": "Change encounter",
           "addProposal": "Add proposal",
-          "adminSettings": "Admin Settings"
+          "adminSettings": "Admin Settings",
+          "copyCompetitions": "Copy Competitions"
         },
         "auth": {
           "logIn": "Log in",

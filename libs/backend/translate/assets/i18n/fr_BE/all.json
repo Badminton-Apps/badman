@@ -1659,6 +1659,27 @@
         "error": "Échec de l'enregistrement des paramètres d'inscription"
       }
     },
+    "copyCompetitionsPage": {
+      "title": "Copier les compétitions",
+      "sourceSeasonTitle": "Saison source",
+      "targetSeasonTitle": "Saison cible",
+      "table": {
+        "headers": {
+          "name": "Nom",
+          "type": "Type",
+          "official": "Officiel",
+          "actions": "Actions"
+        }
+      },
+      "dialog": {
+        "title": "Copier la compétition",
+        "confirm": "Copier",
+        "cancel": "Annuler",
+        "message": "Copier {name} vers la saison {season} ?"
+      },
+      "success": "Compétition copiée avec succès",
+      "error": "Échec de la copie de la compétition"
+    },
     "entryTeamDrawer": {
       "params": {
         "gender": {
@@ -1680,6 +1701,15 @@
         "courts": "{count, plural, one {# terrain} other {# terrains}}"
       },
       "team-enrollment": {
+        "addBasePlayerDialog": {
+          "title": "Ajouter un joueur de base",
+          "competition": "Compétition",
+          "division": "Division",
+          "baseIndex": "Indice de base : {baseIndex}",
+          "maxPlayersReached": "Maximum de {max} joueurs de base atteint",
+          "noCompetitions": "Aucune compétition disponible pour la saison à venir.",
+          "playerTooStrong": "{name} est trop fort pour cette division (niveau {level}, max : {maxLevel})"
+        },
         "import-existing-optional": "Importer l'existant (optionnel)",
         "import-teams": {
           "title": "Importer les équipes",
@@ -1713,7 +1743,8 @@
     "shell": {
       "sidebar": {
         "pages": {
-          "adminSettings": "Paramètres d'administration"
+          "adminSettings": "Paramètres d'administration",
+          "copyCompetitions": "Copier les compétitions"
         },
         "tooltips": {
           "registrationClosed": "Inscriptions fermées"

@@ -1460,6 +1460,27 @@ export type I18nTranslations = {
                     "error": string;
                 };
             };
+            "copyCompetitionsPage": {
+                "title": string;
+                "sourceSeasonTitle": string;
+                "targetSeasonTitle": string;
+                "table": {
+                    "headers": {
+                        "name": string;
+                        "type": string;
+                        "official": string;
+                        "actions": string;
+                    };
+                };
+                "dialog": {
+                    "title": string;
+                    "confirm": string;
+                    "cancel": string;
+                    "message": string;
+                };
+                "success": string;
+                "error": string;
+            };
             "enrollment": {
                 "selectedLocationCard": {
                     "courts": string;
@@ -1473,6 +1494,15 @@ export type I18nTranslations = {
                     "courts": string;
                 };
                 "team-enrollment": {
+                    "addBasePlayerDialog": {
+                        "title": string;
+                        "competition": string;
+                        "division": string;
+                        "baseIndex": string;
+                        "maxPlayersReached": string;
+                        "noCompetitions": string;
+                        "playerTooStrong": string;
+                    };
                     "import-existing-optional": string;
                     "import-teams": {
                         "title": string;
@@ -1528,6 +1558,7 @@ export type I18nTranslations = {
                         "changeEncounter": string;
                         "addProposal": string;
                         "adminSettings": string;
+                        "copyCompetitions": string;
                     };
                     "auth": {
                         "logIn": string;
