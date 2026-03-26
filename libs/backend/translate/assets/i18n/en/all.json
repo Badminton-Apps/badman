@@ -1442,6 +1442,29 @@
         "error": "Failed to save enrollment settings"
       }
     },
+    "adminCompetitionsPage": {
+      "title": "Admin Competitions",
+      "seasonSelectLabel": "Season",
+      "sourceSeasonTitle": "Source Season {range}",
+      "targetSeasonTitle": "Target Season {range}",
+      "copySuccess": "Competition copied successfully",
+      "copyError": "Failed to copy competition",
+      "table": {
+        "headers": {
+          "name": "Name",
+          "type": "Type",
+          "official": "Official",
+          "actions": "Actions"
+        },
+        "copyTooltip": "Copy competition"
+      },
+      "copyDialog": {
+        "title": "Copy Competition",
+        "message": "Copy {name} to season {season}?",
+        "cancel": "Cancel",
+        "confirm": "Copy"
+      }
+    },
     "copyCompetitionsPage": {
       "title": "Copy Competitions",
       "sourceSeasonTitle": "Source Season",
@@ -1539,8 +1562,10 @@
           "confirmEncounter": "Confirm encounter",
           "changeEncounter": "Change encounter",
           "addProposal": "Add proposal",
+          "admin": "Admin",
           "adminSettings": "Admin Settings",
-          "copyCompetitions": "Copy Competitions"
+          "copyCompetitions": "Copy Competitions",
+          "adminCompetitions": "Admin Competitions"
         },
         "auth": {
           "logIn": "Log in",

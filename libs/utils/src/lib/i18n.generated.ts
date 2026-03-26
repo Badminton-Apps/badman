@@ -1460,6 +1460,29 @@ export type I18nTranslations = {
                     "error": string;
                 };
             };
+            "adminCompetitionsPage": {
+                "title": string;
+                "seasonSelectLabel": string;
+                "sourceSeasonTitle": string;
+                "targetSeasonTitle": string;
+                "copySuccess": string;
+                "copyError": string;
+                "table": {
+                    "headers": {
+                        "name": string;
+                        "type": string;
+                        "official": string;
+                        "actions": string;
+                    };
+                    "copyTooltip": string;
+                };
+                "copyDialog": {
+                    "title": string;
+                    "message": string;
+                    "cancel": string;
+                    "confirm": string;
+                };
+            };
             "copyCompetitionsPage": {
                 "title": string;
                 "sourceSeasonTitle": string;
@@ -1557,8 +1580,10 @@ export type I18nTranslations = {
                         "confirmEncounter": string;
                         "changeEncounter": string;
                         "addProposal": string;
+                        "admin": string;
                         "adminSettings": string;
                         "copyCompetitions": string;
+                        "adminCompetitions": string;
                     };
                     "auth": {
                         "logIn": string;

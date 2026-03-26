@@ -1659,6 +1659,29 @@
         "error": "Échec de l'enregistrement des paramètres d'inscription"
       }
     },
+    "adminCompetitionsPage": {
+      "title": "Administration des compétitions",
+      "seasonSelectLabel": "Saison",
+      "sourceSeasonTitle": "Saison source {range}",
+      "targetSeasonTitle": "Saison cible {range}",
+      "copySuccess": "Compétition copiée avec succès",
+      "copyError": "Échec de la copie de la compétition",
+      "table": {
+        "headers": {
+          "name": "Nom",
+          "type": "Type",
+          "official": "Officiel",
+          "actions": "Actions"
+        },
+        "copyTooltip": "Copier la compétition"
+      },
+      "copyDialog": {
+        "title": "Copier la compétition",
+        "message": "Copier {name} vers la saison {season} ?",
+        "cancel": "Annuler",
+        "confirm": "Copier"
+      }
+    },
     "copyCompetitionsPage": {
       "title": "Copier les compétitions",
       "sourceSeasonTitle": "Saison source",
@@ -1743,8 +1766,10 @@
     "shell": {
       "sidebar": {
         "pages": {
+          "admin": "Admin",
           "adminSettings": "Paramètres d'administration",
-          "copyCompetitions": "Copier les compétitions"
+          "copyCompetitions": "Copier les compétitions",
+          "adminCompetitions": "Admin Compétitions"
         },
         "tooltips": {
           "registrationClosed": "Inscriptions fermées"

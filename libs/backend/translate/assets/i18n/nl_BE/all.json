@@ -1160,6 +1160,29 @@
         "error": "Inschrijvingsinstellingen opslaan mislukt"
       }
     },
+    "adminCompetitionsPage": {
+      "title": "Admin Competities",
+      "seasonSelectLabel": "Seizoen",
+      "sourceSeasonTitle": "Bronseizoen {range}",
+      "targetSeasonTitle": "Doelseizoen {range}",
+      "copySuccess": "Competitie succesvol gekopieerd",
+      "copyError": "Kopiëren van competitie mislukt",
+      "table": {
+        "headers": {
+          "name": "Naam",
+          "type": "Type",
+          "official": "Officieel",
+          "actions": "Acties"
+        },
+        "copyTooltip": "Competitie kopiëren"
+      },
+      "copyDialog": {
+        "title": "Competitie kopiëren",
+        "message": "{name} kopiëren naar seizoen {season}?",
+        "cancel": "Annuleren",
+        "confirm": "Kopiëren"
+      }
+    },
     "copyCompetitionsPage": {
       "title": "Competities kopiëren",
       "sourceSeasonTitle": "Bronseizoen",
@@ -1257,8 +1280,10 @@
           "confirmEncounter": "Bevestig ontmoeting",
           "changeEncounter": "Verplaats ontmoeting",
           "addProposal": "Voorstel toevoegen",
+          "admin": "Admin",
           "adminSettings": "Admin Instellingen",
-          "copyCompetitions": "Competities kopiëren"
+          "copyCompetitions": "Competities kopiëren",
+          "adminCompetitions": "Admin Competities"
         },
         "auth": {
           "logIn": "Inloggen",
