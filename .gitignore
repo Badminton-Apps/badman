@@ -39,6 +39,7 @@ Thumbs.db
 
 .angular
 .env
+.env.*
 .cache
 
 /database/backup
