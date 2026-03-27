@@ -6,22 +6,27 @@ exports.ensureRoleClaim = ensureRoleClaim;
 exports.ensurePlayerRole = ensurePlayerRole;
 exports.ensureClubAdminPermission = ensureClubAdminPermission;
 const crypto_1 = require("crypto");
-async function ensureRole(ctx, { name, description, linkId, linkType, locked = true, }) {
+async function getRoleSchemaInfo(ctx) {
     const columns = await ctx.query(`SELECT column_name
      FROM information_schema.columns
      WHERE table_schema = 'security'
        AND table_name = 'Roles'
        AND column_name IN ('locked', 'linkId', 'linkType', 'clubId', 'type')`);
     const columnSet = new Set(columns.map((c) => c.column_name));
-    const hasLocked = columnSet.has("locked");
-    const hasLinkColumns = columnSet.has("linkId") && columnSet.has("linkType");
     const [idColumn] = await ctx.query(`SELECT column_default
      FROM information_schema.columns
      WHERE table_schema = 'security'
        AND table_name = 'Roles'
        AND column_name = 'id'
      LIMIT 1`);
-    const hasIdDefault = !!idColumn?.column_default;
+    return {
+        hasLocked: columnSet.has("locked"),
+        hasLinkColumns: columnSet.has("linkId") && columnSet.has("linkType"),
+        hasIdDefault: !!idColumn?.column_default,
+    };
+}
+async function ensureRole(ctx, { name, description, linkId, linkType, locked = true, }) {
+    const { hasLocked, hasLinkColumns, hasIdDefault } = await getRoleSchemaInfo(ctx);
     const roleId = hasIdDefault ? undefined : (0, crypto_1.randomUUID)();
     const [role] = await ctx.query(hasLinkColumns
         ? `SELECT id FROM "security"."Roles"

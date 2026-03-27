@@ -69,15 +69,16 @@ async function addPlayerToClub(ctx, clubId, playerId) {
 /**
  * Internal: insert a team row (used by createTeam and createOpponentTeam).
  */
-async function insertTeam(ctx, clubId, season, captainId, teamType) {
+async function insertTeam(ctx, clubId, teamNumber, season, captainId, teamType) {
     const club = await (0, club_team_naming_1.getClubById)(ctx, clubId);
-    const { name: teamName, abbreviation } = (0, club_team_naming_1.generateTeamName)(club, 1, teamType, "H");
+    const { name: teamName, abbreviation } = (0, club_team_naming_1.generateTeamName)(club, 1, teamType);
     const team = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
-     VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
+     VALUES (:clubId, :type, :season, :teamNumber, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
         type: teamType,
         season,
+        teamNumber,
         captainId,
         name: teamName,
         abbreviation,
@@ -96,7 +97,7 @@ async function createTeam(ctx, clubId, season, captainId, teamType = "M") {
         console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
         return existing[0].id;
     }
-    const teamId = await insertTeam(ctx, clubId, season, captainId, teamType);
+    const teamId = await insertTeam(ctx, clubId, 1, season, captainId, teamType);
     console.log(`✅ Created Team (${teamId})\n`);
     return teamId;
 }
@@ -185,9 +186,9 @@ async function createDrawCompetition(ctx, subEventId, season) {
 /**
  * Create opponent team (always inserts; no idempotency check).
  */
-async function createOpponentTeam(ctx, clubId, season, captainId, teamType = "M") {
+async function createOpponentTeam(ctx, clubId, teamNumber, season, captainId, teamType = "M") {
     console.log("👥 Creating opponent Team...");
-    const opponentTeamId = await insertTeam(ctx, clubId, season, captainId, teamType);
+    const opponentTeamId = await insertTeam(ctx, clubId, teamNumber, season, captainId, teamType);
     console.log(`✅ Created opponent Team (${opponentTeamId})\n`);
     return opponentTeamId;
 }
