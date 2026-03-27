@@ -15,8 +15,8 @@ async function getClubById(ctx, clubId) {
 /**
  * Generate team name and abbreviation from club data
  */
-function generateTeamName(club, teamNumber, type, letter = "H") {
-    const name = `${club.name} ${teamNumber}${letter}`;
-    const abbreviation = `${club.abbreviation} ${teamNumber}${letter}`;
+function generateTeamName(club, teamNumber, type) {
+    const name = `${club.name} ${teamNumber}${type}`;
+    const abbreviation = `${club.abbreviation} ${teamNumber}${type}`;
     return { name, abbreviation };
 }

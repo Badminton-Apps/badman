@@ -3718,17 +3718,9 @@ export type I18nTranslations = {
                     };
                 };
             };
-<<<<<<< HEAD
             "locations": {
                 "exceptions": string;
             };
-        };
-        "noProfilePage": {
-            "title": string;
-            "description": string;
-            "buttons": {
-                "back": string;
-=======
             "editClubPage": {
                 "locations": {
                     "gameDays": {
@@ -3749,7 +3741,13 @@ export type I18nTranslations = {
                         };
                     };
                 };
->>>>>>> feat/registration-module
+            };
+        };
+        "noProfilePage": {
+            "title": string;
+            "description": string;
+            "buttons": {
+                "back": string;
             };
         };
         "confirmEncounterPage": {
