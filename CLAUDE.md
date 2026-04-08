@@ -11,6 +11,9 @@ Competitive badminton management platform (Badman). Nx monorepo with NestJS (bac
 ## Common Commands
 
 ```bash
+# Start Docker containers (PostgreSQL, Redis, pgAdmin)
+npm run docker:up
+
 # Serve API + sync worker in dev
 nx run-many --target=serve --projects=api,worker-sync --parallel
 

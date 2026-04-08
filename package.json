@@ -8,6 +8,7 @@
     "start:prod": "node -r dotenv/config --max-old-space-size=1536 dist/apps/api/main.js",
     "build": "nx build",
     "nx": "nx",
+    "docker:up": "docker compose -f docker-compose.dev.yml up -d",
     "test": "npx nx test worker-sync --skip-nx-cache",
     "test:coverage": "npx nx test worker-sync --coverage --skip-nx-cache",
     "test:affected": "nx affected:test",
