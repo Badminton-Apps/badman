@@ -49,7 +49,7 @@ console.log("envFilePath", envFilePath, process.env.NODE_ENV);
       load: [load],
       expandVariables: true,
       envFilePath: envFilePath,
-      ignoreEnvVars: process.env.NODE_ENV === "test",
+      validatePredefined: process.env.NODE_ENV !== "test",
     }),
     AuthorizationModule,
     GrapqhlModule,

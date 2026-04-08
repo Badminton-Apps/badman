@@ -1,11 +1,11 @@
 import { Logger, Module } from "@nestjs/common";
-import { CacheStore, CacheModule as nestCache } from "@nestjs/cache-manager";
+import { CacheModule as nestCache } from "@nestjs/cache-manager";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import { redisStore } from "cache-manager-redis-store";
+import KeyvRedis from "@keyv/redis";
 import { ConfigType } from "@badman/utils";
 
-export const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week
+export const CACHE_TTL = 60 * 60 * 24 * 7 * 1000; // 1 week in milliseconds
 
 const logger = new Logger("CacheModule");
 
@@ -15,22 +15,18 @@ const logger = new Logger("CacheModule");
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService<ConfigType>) => {
         if (configService.get<boolean>("DB_CACHE") === true) {
-          const redis = (await redisStore({
-            socket: {
-              host: configService.get("REDIS_HOST"),
-              port: configService.get<number>("REDIS_PORT"),
-            },
-            ttl: CACHE_TTL,
-            password: configService.get("REDIS_PASSWORD"),
-            database: configService.get<number>("REDIS_DATABASE") ?? 0,
-          })) as unknown as CacheStore;
+          const host = configService.get("REDIS_HOST");
+          const port = configService.get<number>("REDIS_PORT");
+          const password = configService.get("REDIS_PASSWORD");
+          const database = configService.get<number>("REDIS_DATABASE") ?? 0;
 
-          logger.log(
-            `Cache: Using Redis store at ${configService.get("REDIS_HOST")}:${configService.get("REDIS_PORT")}`
-          );
+          let redisUrl = password ? `redis://:${password}@` : "redis://";
+          redisUrl += `${host}:${port}/${database}`;
+
+          logger.log(`Cache: Using Redis store at ${host}:${port}`);
 
           return {
-            store: redis,
+            stores: [new KeyvRedis(redisUrl)],
             ttl: CACHE_TTL,
           };
         } else {
@@ -43,7 +39,6 @@ const logger = new Logger("CacheModule");
           }
           return {
             ttl: 0,
-            store: "memory",
           };
         }
       },

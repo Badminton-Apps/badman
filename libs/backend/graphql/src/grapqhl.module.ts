@@ -7,7 +7,6 @@ import { ApolloDriver } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
 import { GqlModuleOptions, GraphQLModule } from "@nestjs/graphql";
 
-import OperationRegistry from "@apollo/server-plugin-operation-registry";
 import { ApolloServerPluginSchemaReporting } from "@apollo/server/plugin/schemaReporting";
 import { ApolloServerPluginUsageReporting } from "@apollo/server/plugin/usageReporting";
 
@@ -53,11 +52,6 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
             })
           );
           plugins.push(ApolloServerPluginSchemaReporting());
-          plugins.push(
-            OperationRegistry({
-              forbidUnregisteredOperations: true,
-            })
-          );
           plugins.push(
             ApolloServerPluginUsageReporting({
               sendVariableValues: { all: true },
