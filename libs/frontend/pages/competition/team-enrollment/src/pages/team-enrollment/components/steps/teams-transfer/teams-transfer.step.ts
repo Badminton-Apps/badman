@@ -222,7 +222,6 @@ export class TeamsTransferStepComponent {
       entry: new FormGroup({
         players: new FormArray(entry.players.map((p) => new FormControl(p))),
         subEventId: new FormControl(entry.subEventId),
-        q,
       }),
     }) as TeamForm;
 
