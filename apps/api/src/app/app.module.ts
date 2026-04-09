@@ -1,6 +1,7 @@
 import { Logger, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AppController, ImageController } from "./controllers";
+import { CpController } from "./controllers/cp.controller";
 
 import { AuthorizationModule } from "@badman/backend-authorization";
 import { DatabaseModule } from "@badman/backend-database";
@@ -78,7 +79,7 @@ const envFilePath = join(projectRoot, envFileName);
     SocketModule,
     TransferLoanModule,
   ],
-  controllers: [AppController, ImageController, CalendarController],
+  controllers: [AppController, ImageController, CalendarController, CpController],
   providers: [Logger],
 })
 export class AppModule {
