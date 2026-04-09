@@ -1,0 +1,21 @@
+extends ../../layouts/layout.pug
+
+block title
+  h1.text-center
+    | CP bestand klaar
+
+block content
+  p.text-center
+    p
+      | Beste #{ user },
+      br
+      br
+      | Je CP bestand is succesvol gegenereerd en klaar om te downloaden.
+    p
+      a(href=downloadUrl)
+        | Download CP bestand
+    br
+    br
+    | Met sportieve groeten,
+    br
+    | Badman

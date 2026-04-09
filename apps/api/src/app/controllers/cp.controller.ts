@@ -1,6 +1,7 @@
 import { User } from "@badman/backend-authorization";
 import { Player } from "@badman/backend-database";
 import { CpDataCollector } from "@badman/backend-generator";
+import { MailingService } from "@badman/backend-mailing";
 import { ConfigType } from "@badman/utils";
 import {
   Body,
@@ -42,7 +43,8 @@ export class CpController {
 
   constructor(
     private dataCollector: CpDataCollector,
-    private configService: ConfigService<ConfigType>
+    private configService: ConfigService<ConfigType>,
+    private mailingService: MailingService
   ) {}
 
   @Post("generate")
@@ -300,12 +302,9 @@ export class CpController {
       `CP file ready for user ${player.fullName} (${player.email}). Download: ${downloadUrl}`
     );
 
-    // TODO: Integrate with MailingService for proper templated email.
-    // For now, log the download URL. The MailingService uses Pug templates
-    // and we'd need to create a new template for this notification.
-    // This is acceptable for a once-a-year operation.
-    this.logger.log(
-      `[EMAIL PLACEHOLDER] To: ${player.email}, Subject: CP file ready, Body: Download at ${downloadUrl}`
+    await this.mailingService.sendCpExportReadyMail(
+      { fullName: player.fullName, email: player.email, slug: player.slug },
+      downloadUrl
     );
   }
 
@@ -316,9 +315,11 @@ export class CpController {
       return;
     }
 
-    this.logger.log(
-      `[EMAIL PLACEHOLDER] To: ${player.email}, Subject: CP generation failed, Body: Please try again or contact support.`
-    );
+    await this.mailingService.sendCpExportFailedMail({
+      fullName: player.fullName,
+      email: player.email,
+      slug: player.slug,
+    });
   }
 
   /**
