@@ -44,7 +44,7 @@ jobs:
         run: npx nx build backend-generator
 
       - name: Generate CP file
-        run: node dist/libs/backend/generator/scripts/cp-file-writer.js payload.json
+        run: node dist/libs/backend/generator/src/scripts/cp-file-writer.js payload.json
         env:
           CP_PASS: ${{ secrets.CP_PASS }}
 
