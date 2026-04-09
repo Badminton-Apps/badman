@@ -35,9 +35,14 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     })
   );
 }
-const envFilePath = process.env.NODE_ENV === "test" ? ".env.test" : undefined;
 
-console.log("envFilePath", envFilePath, process.env.NODE_ENV);
+// Resolve .env relative to the project root, not process.cwd().
+// The webpack bundle outputs to dist/apps/api/, so __dirname is three levels
+// below the workspace root. Using an absolute path avoids failures when the
+// NX executor (or a deployment runner) sets a different working directory.
+const projectRoot = join(__dirname, "..", "..", "..");
+const envFileName = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
+const envFilePath = join(projectRoot, envFileName);
 
 @Module({
   imports: [
