@@ -16,12 +16,14 @@ on:
 jobs:
   generate:
     runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: ".nvmrc"
 
       - name: Install dependencies
         run: npm ci
