@@ -16,12 +16,14 @@ on:
 jobs:
   generate:
     runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version-file: ".nvmrc"
 
       - name: Install dependencies
         run: npm ci
@@ -42,7 +44,7 @@ jobs:
         run: npx nx build backend-generator
 
       - name: Generate CP file
-        run: node dist/libs/backend/generator/scripts/cp-file-writer.js payload.json
+        run: node dist/libs/backend/generator/src/scripts/cp-file-writer.js payload.json
         env:
           CP_PASS: ${{ secrets.CP_PASS }}
 
