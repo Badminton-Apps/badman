@@ -1781,6 +1781,73 @@
           "import": "Importer"
         }
       },
+      "clubEnrollment": {
+        "steps": {
+          "generalInformation": "Informations générales",
+          "transfersLoans": "Transferts et prêts",
+          "teams": "Équipes",
+          "confirm": "Confirmer"
+        },
+        "nav": {
+          "previous": "Précédent",
+          "next": "Suivant",
+          "submit": "S'inscrire",
+          "submitting": "Envoi en cours…"
+        },
+        "toast": {
+          "addAtLeastOneTeam": "Ajoutez au moins une équipe."
+        },
+        "teams": {
+          "categories": {
+            "M": "Hommes",
+            "F": "Femmes",
+            "MX": "Mixte"
+          },
+          "addTeam": "Ajouter une équipe",
+          "emptyCategory": "Aucune équipe",
+          "baseValue": "Base : {value}",
+          "labelNumbered": "Équipe {number}",
+          "labelFallback": "Équipe"
+        },
+        "dialog": {
+          "deleteTeam": {
+            "title": "Retirer l'équipe",
+            "message": "Voulez-vous vraiment retirer cette équipe ?",
+            "cancel": "Annuler",
+            "confirm": "Retirer"
+          }
+        },
+        "clubSelection": {
+          "heading": "Club",
+          "clubLabel": "Club",
+          "emailLabel": "E-mail"
+        },
+        "locationSelection": {
+          "title": "Lieux",
+          "editLocations": "Modifier les lieux",
+          "editLocationsNoAccessTooltip": "Vous n'avez pas la permission de modifier les lieux. Contactez l'administrateur de votre club."
+        },
+        "remarks": {
+          "label": "Remarques",
+          "placeholder": "Facultatif : ajoutez des remarques pour votre inscription"
+        },
+        "summary": {
+          "title": "Récapitulatif de l'inscription"
+        },
+        "transfersLoans": {
+          "addTransfersTitle": "Ajouter des transferts",
+          "addLoansTitle": "Ajouter des prêts",
+          "addTransferButton": "Ajouter un transfert",
+          "addLoanButton": "Ajouter un prêt",
+          "emptyTransfers": "Aucun transfert",
+          "emptyLoans": "Aucun prêt"
+        },
+        "playerValidation": {
+          "alreadyMember": "Ce joueur est déjà membre de ce club.",
+          "alreadyLoaned": "Ce joueur est déjà en prêt.",
+          "checkFailed": "Impossible de vérifier le joueur. Réessayez."
+        }
+      },
       "validation": {
         "invalidStatus": "Statut invalide.",
         "invalidEmail": "Adresse e-mail invalide.",

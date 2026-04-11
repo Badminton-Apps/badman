@@ -1529,6 +1529,73 @@
           "import": "Import"
         }
       },
+      "clubEnrollment": {
+        "steps": {
+          "generalInformation": "General information",
+          "transfersLoans": "Transfers & loans",
+          "teams": "Teams",
+          "confirm": "Confirm"
+        },
+        "nav": {
+          "previous": "Previous",
+          "next": "Next",
+          "submit": "Enrol",
+          "submitting": "Submitting…"
+        },
+        "toast": {
+          "addAtLeastOneTeam": "Add at least one team."
+        },
+        "teams": {
+          "categories": {
+            "M": "Men",
+            "F": "Women",
+            "MX": "Mixed"
+          },
+          "addTeam": "Add team",
+          "emptyCategory": "No teams",
+          "baseValue": "Base: {value}",
+          "labelNumbered": "Team {number}",
+          "labelFallback": "Team"
+        },
+        "dialog": {
+          "deleteTeam": {
+            "title": "Remove team",
+            "message": "Are you sure you want to remove this team?",
+            "cancel": "Cancel",
+            "confirm": "Remove"
+          }
+        },
+        "clubSelection": {
+          "heading": "Club",
+          "clubLabel": "Club",
+          "emailLabel": "Email"
+        },
+        "locationSelection": {
+          "title": "Locations",
+          "editLocations": "Edit locations",
+          "editLocationsNoAccessTooltip": "You don't have permission to edit locations. Contact your club administrator."
+        },
+        "remarks": {
+          "label": "Remarks",
+          "placeholder": "Optional: add remarks for your enrolment"
+        },
+        "summary": {
+          "title": "Enrolment summary"
+        },
+        "transfersLoans": {
+          "addTransfersTitle": "Add transfers",
+          "addLoansTitle": "Add loans",
+          "addTransferButton": "Add transfer",
+          "addLoanButton": "Add loan",
+          "emptyTransfers": "No transfers",
+          "emptyLoans": "No loans"
+        },
+        "playerValidation": {
+          "alreadyMember": "This player is already a member of this club.",
+          "alreadyLoaned": "This player is already on loan.",
+          "checkFailed": "Could not verify the player. Try again."
+        }
+      },
       "validation": {
         "invalidStatus": "Invalid status.",
         "invalidEmail": "Invalid email address.",

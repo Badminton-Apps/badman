@@ -1206,8 +1206,13 @@
       "error": "Kopiëren van competitie mislukt"
     },
     "enrollment": {
+      "disabled": {
+        "title": "Inschrijvingen gesloten",
+        "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
+      },
       "selectedLocationCard": {
-        "courts": "Velden"
+        "courts": "{count, plural, one {# terrein} other {# terreinen}}",
+        "noGameDays": "Geen speeldagen gevonden."
       },
       "enrollmentLocationCard": {
         "gameDaysTitle": "Speeldagen",
@@ -1240,6 +1245,73 @@
           },
           "cancel": "Annuleren",
           "import": "Importeren"
+        }
+      },
+      "clubEnrollment": {
+        "steps": {
+          "generalInformation": "Algemene info",
+          "transfersLoans": "Transfers & uitleningen",
+          "teams": "Ploegen",
+          "confirm": "Bevestigen"
+        },
+        "nav": {
+          "previous": "Vorige",
+          "next": "Volgende",
+          "submit": "Inschrijven",
+          "submitting": "Bezig…"
+        },
+        "toast": {
+          "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
+        },
+        "teams": {
+          "categories": {
+            "M": "Mannen",
+            "F": "Vrouwen",
+            "MX": "Gemengd"
+          },
+          "addTeam": "Ploeg toevoegen",
+          "emptyCategory": "Geen ploegen",
+          "baseValue": "Basis: {value}",
+          "labelNumbered": "Ploeg {number}",
+          "labelFallback": "Ploeg"
+        },
+        "dialog": {
+          "deleteTeam": {
+            "title": "Ploeg verwijderen",
+            "message": "Ben je zeker dat je deze ploeg wil verwijderen?",
+            "cancel": "Annuleren",
+            "confirm": "Verwijderen"
+          }
+        },
+        "clubSelection": {
+          "heading": "Club",
+          "clubLabel": "Club",
+          "emailLabel": "Email"
+        },
+        "locationSelection": {
+          "title": "Locaties",
+          "editLocations": "Locaties bewerken",
+          "editLocationsNoAccessTooltip": "U heeft geen toegang tot het bewerken van locaties, contacteer de beheerder van de club"
+        },
+        "remarks": {
+          "label": "Opmerkingen",
+          "placeholder": "Optioneel: voeg opmerkingen toe bij je inschrijving"
+        },
+        "summary": {
+          "title": "Samenvatting inschrijving"
+        },
+        "transfersLoans": {
+          "addTransfersTitle": "Transfers toevoegen",
+          "addLoansTitle": "Uitleningen toevoegen",
+          "addTransferButton": "Transfer toevoegen",
+          "addLoanButton": "Uitlening toevoegen",
+          "emptyTransfers": "Geen transfers",
+          "emptyLoans": "Geen uitleningen"
+        },
+        "playerValidation": {
+          "alreadyMember": "Speler is al lid van deze club.",
+          "alreadyLoaned": "Speler is al uitgeleend.",
+          "checkFailed": "Controle van speler is mislukt. Probeer opnieuw."
         }
       },
       "validation": {
@@ -1342,16 +1414,6 @@
           },
           "moreCharactersRequired": "Gelieve {minLength} of meer karakters te gebruiken om te zoeken"
         }
-      }
-    },
-    "enrollment": {
-      "disabled": {
-        "title": "Inschrijvingen gesloten",
-        "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
-      },
-      "selectedLocationCard": {
-        "courts": "{count, plural, one {# terrein} other {# terreinen}}",
-        "noGameDays": "Geen speeldagen gevonden."
       }
     },
     "player": {

@@ -1547,6 +1547,73 @@ export type I18nTranslations = {
                         "import": string;
                     };
                 };
+                "clubEnrollment": {
+                    "steps": {
+                        "generalInformation": string;
+                        "transfersLoans": string;
+                        "teams": string;
+                        "confirm": string;
+                    };
+                    "nav": {
+                        "previous": string;
+                        "next": string;
+                        "submit": string;
+                        "submitting": string;
+                    };
+                    "toast": {
+                        "addAtLeastOneTeam": string;
+                    };
+                    "teams": {
+                        "categories": {
+                            "M": string;
+                            "F": string;
+                            "MX": string;
+                        };
+                        "addTeam": string;
+                        "emptyCategory": string;
+                        "baseValue": string;
+                        "labelNumbered": string;
+                        "labelFallback": string;
+                    };
+                    "dialog": {
+                        "deleteTeam": {
+                            "title": string;
+                            "message": string;
+                            "cancel": string;
+                            "confirm": string;
+                        };
+                    };
+                    "clubSelection": {
+                        "heading": string;
+                        "clubLabel": string;
+                        "emailLabel": string;
+                    };
+                    "locationSelection": {
+                        "title": string;
+                        "editLocations": string;
+                        "editLocationsNoAccessTooltip": string;
+                    };
+                    "remarks": {
+                        "label": string;
+                        "placeholder": string;
+                    };
+                    "summary": {
+                        "title": string;
+                    };
+                    "transfersLoans": {
+                        "addTransfersTitle": string;
+                        "addLoansTitle": string;
+                        "addTransferButton": string;
+                        "addLoanButton": string;
+                        "emptyTransfers": string;
+                        "emptyLoans": string;
+                    };
+                    "playerValidation": {
+                        "alreadyMember": string;
+                        "alreadyLoaned": string;
+                        "checkFailed": string;
+                    };
+                };
                 "validation": {
                     "invalidStatus": string;
                     "invalidEmail": string;
