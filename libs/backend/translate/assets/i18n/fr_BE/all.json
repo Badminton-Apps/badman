@@ -1807,7 +1807,18 @@
           "emptyCategory": "Aucune équipe",
           "baseValue": "Base : {value}",
           "labelNumbered": "Équipe {number}",
-          "labelFallback": "Équipe"
+          "labelFallback": "Équipe",
+          "a11y": {
+            "statusError": "Cette équipe comporte des erreurs de validation",
+            "statusWarning": "Cette équipe comporte des avertissements de validation",
+            "statusSuccess": "Cette équipe a passé la validation",
+            "validatingStatus": "Vérification de la validation de l'équipe",
+            "expandValidationDetails": "Afficher les détails de validation pour {team}",
+            "collapseValidationDetails": "Masquer les détails de validation pour {team}",
+            "editTeam": "Modifier {team}",
+            "deleteTeam": "Retirer {team}",
+            "removePlayerFromList": "Retirer {name} de l'équipe"
+          }
         },
         "dialog": {
           "deleteTeam": {

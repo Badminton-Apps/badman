@@ -1273,7 +1273,18 @@
           "emptyCategory": "Geen ploegen",
           "baseValue": "Basis: {value}",
           "labelNumbered": "Ploeg {number}",
-          "labelFallback": "Ploeg"
+          "labelFallback": "Ploeg",
+          "a11y": {
+            "statusError": "Deze ploeg heeft validatiefouten",
+            "statusWarning": "Deze ploeg heeft validatiewaarschuwingen",
+            "statusSuccess": "Deze ploeg is gevalideerd",
+            "validatingStatus": "Ploeg wordt gevalideerd",
+            "expandValidationDetails": "Toon validatiedetails voor {team}",
+            "collapseValidationDetails": "Verberg validatiedetails voor {team}",
+            "editTeam": "Bewerk {team}",
+            "deleteTeam": "Verwijder {team}",
+            "removePlayerFromList": "Verwijder {name} uit de ploeg"
+          }
         },
         "dialog": {
           "deleteTeam": {

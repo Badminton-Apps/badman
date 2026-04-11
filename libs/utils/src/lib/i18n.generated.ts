@@ -1574,6 +1574,17 @@ export type I18nTranslations = {
                         "baseValue": string;
                         "labelNumbered": string;
                         "labelFallback": string;
+                        "a11y": {
+                            "statusError": string;
+                            "statusWarning": string;
+                            "statusSuccess": string;
+                            "validatingStatus": string;
+                            "expandValidationDetails": string;
+                            "collapseValidationDetails": string;
+                            "editTeam": string;
+                            "deleteTeam": string;
+                            "removePlayerFromList": string;
+                        };
                     };
                     "dialog": {
                         "deleteTeam": {

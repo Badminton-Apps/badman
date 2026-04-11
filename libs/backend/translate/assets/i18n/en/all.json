@@ -1555,7 +1555,18 @@
           "emptyCategory": "No teams",
           "baseValue": "Base: {value}",
           "labelNumbered": "Team {number}",
-          "labelFallback": "Team"
+          "labelFallback": "Team",
+          "a11y": {
+            "statusError": "This team has validation errors",
+            "statusWarning": "This team has validation warnings",
+            "statusSuccess": "This team passed validation",
+            "validatingStatus": "Checking team validation",
+            "expandValidationDetails": "Show validation details for {team}",
+            "collapseValidationDetails": "Hide validation details for {team}",
+            "editTeam": "Edit {team}",
+            "deleteTeam": "Remove {team}",
+            "removePlayerFromList": "Remove {name} from the team"
+          }
         },
         "dialog": {
           "deleteTeam": {
