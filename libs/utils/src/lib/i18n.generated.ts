@@ -1523,6 +1523,8 @@ export type I18nTranslations = {
                     "title": string;
                     "message": string;
                 };
+                "submitSuccess": string;
+                "submitTeamError": string;
                 "selectedLocationCard": {
                     "courts": string;
                     "noGameDays": string;

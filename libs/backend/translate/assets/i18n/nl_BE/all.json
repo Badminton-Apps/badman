@@ -1223,6 +1223,8 @@
         "title": "Inschrijvingen gesloten",
         "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
       },
+      "submitSuccess": "Inschrijving gelukt voor: {teamNames}",
+      "submitTeamError": "{teamName}: {error}",
       "selectedLocationCard": {
         "courts": "{count, plural, one {# terrein} other {# terreinen}}",
         "noGameDays": "Geen speeldagen gevonden."

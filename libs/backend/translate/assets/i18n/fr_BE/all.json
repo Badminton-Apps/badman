@@ -1763,6 +1763,8 @@
         "title": "Inscriptions fermées",
         "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
       },
+      "submitSuccess": "Inscription réussie : {teamNames}",
+      "submitTeamError": "{teamName} : {error}",
       "selectedLocationCard": {
         "courts": "{count, plural, one {# terrain} other {# terrains}}",
         "noGameDays": "Aucun jour de match trouvé."

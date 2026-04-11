@@ -1505,6 +1505,8 @@
         "title": "Registration closed",
         "message": "Registrations are currently closed. Please check back later."
       },
+      "submitSuccess": "Successfully enrolled: {teamNames}",
+      "submitTeamError": "{teamName}: {error}",
       "selectedLocationCard": {
         "courts": "{count, plural, one {# court} other {# courts}}",
         "noGameDays": "No gamedays found."
