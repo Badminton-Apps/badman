@@ -1063,6 +1063,19 @@
       "title": "Teamnamen"
     }
   },
+  "teams": {
+    "a11y": {
+      "statusError": "Deze ploeg heeft validatiefouten",
+      "statusWarning": "Deze ploeg heeft validatiewaarschuwingen",
+      "statusSuccess": "Deze ploeg is gevalideerd",
+      "validatingStatus": "Ploeg wordt gevalideerd",
+      "expandValidationDetails": "Toon validatiedetails voor {team}",
+      "collapseValidationDetails": "Verberg validatiedetails voor {team}",
+      "editTeam": "Bewerk {team}",
+      "deleteTeam": "Verwijder {team}",
+      "removePlayerFromList": "Verwijder {name} uit de ploeg"
+    }
+  },
   "themes": {
     "dark": "Donker",
     "light": "Licht"
@@ -1224,13 +1237,13 @@
       },
       "team-enrollment": {
         "addBasePlayerDialog": {
-          "title": "Voeg basisspeler toe",
-          "competition": "Competitie",
-          "division": "Afdeling",
           "baseIndex": "Basisindex: {baseIndex}",
-          "maxPlayersReached": "Maximum {max} basisspelers bereikt",
-          "noCompetitions": "Geen competities beschikbaar voor het aankomende seizoen.",
-          "playerTooStrong": "{name} is te sterk voor deze afdeling (niveau {level}, max: {maxLevel})"
+          "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
+          "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
+          "competition": "Competitie",
+          "division": "Divisie",
+          "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
+          "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
         },
         "import-existing-optional": "Bestaande importeren (optioneel)",
         "validating": "Valideren…",
@@ -1247,83 +1260,84 @@
           "import": "Importeren"
         }
       },
-      "clubEnrollment": {
-        "steps": {
-          "generalInformation": "Algemene info",
-          "transfersLoans": "Transfers & uitleningen",
-          "teams": "Ploegen",
-          "confirm": "Bevestigen"
+      "steps": {
+        "generalInformation": "Algemene info",
+        "transfersLoans": "Transfers & uitleningen",
+        "teams": "Ploegen",
+        "confirm": "Bevestigen"
+      },
+      "nav": {
+        "previous": "Vorige",
+        "next": "Volgende",
+        "submit": "Inschrijven",
+        "submitting": "Bezig…"
+      },
+      "toast": {
+        "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
+      },
+      "teams": {
+        "categories": {
+          "M": "Mannen",
+          "F": "Vrouwen",
+          "MX": "Gemengd"
         },
-        "nav": {
-          "previous": "Vorige",
-          "next": "Volgende",
-          "submit": "Inschrijven",
-          "submitting": "Bezig…"
-        },
-        "toast": {
-          "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
-        },
-        "teams": {
-          "categories": {
-            "M": "Mannen",
-            "F": "Vrouwen",
-            "MX": "Gemengd"
-          },
-          "addTeam": "Ploeg toevoegen",
-          "emptyCategory": "Geen ploegen",
-          "baseValue": "Basis: {value}",
-          "labelNumbered": "Ploeg {number}",
-          "labelFallback": "Ploeg",
-          "a11y": {
-            "statusError": "Deze ploeg heeft validatiefouten",
-            "statusWarning": "Deze ploeg heeft validatiewaarschuwingen",
-            "statusSuccess": "Deze ploeg is gevalideerd",
-            "validatingStatus": "Ploeg wordt gevalideerd",
-            "expandValidationDetails": "Toon validatiedetails voor {team}",
-            "collapseValidationDetails": "Verberg validatiedetails voor {team}",
-            "editTeam": "Bewerk {team}",
-            "deleteTeam": "Verwijder {team}",
-            "removePlayerFromList": "Verwijder {name} uit de ploeg"
-          }
-        },
-        "dialog": {
-          "deleteTeam": {
-            "title": "Ploeg verwijderen",
-            "message": "Ben je zeker dat je deze ploeg wil verwijderen?",
-            "cancel": "Annuleren",
-            "confirm": "Verwijderen"
-          }
-        },
-        "clubSelection": {
-          "heading": "Club",
-          "clubLabel": "Club",
-          "emailLabel": "Email"
-        },
-        "locationSelection": {
-          "title": "Locaties",
-          "editLocations": "Locaties bewerken",
-          "editLocationsNoAccessTooltip": "U heeft geen toegang tot het bewerken van locaties, contacteer de beheerder van de club"
-        },
-        "remarks": {
-          "label": "Opmerkingen",
-          "placeholder": "Optioneel: voeg opmerkingen toe bij je inschrijving"
-        },
-        "summary": {
-          "title": "Samenvatting inschrijving"
-        },
-        "transfersLoans": {
-          "addTransfersTitle": "Transfers toevoegen",
-          "addLoansTitle": "Uitleningen toevoegen",
-          "addTransferButton": "Transfer toevoegen",
-          "addLoanButton": "Uitlening toevoegen",
-          "emptyTransfers": "Geen transfers",
-          "emptyLoans": "Geen uitleningen"
-        },
-        "playerValidation": {
-          "alreadyMember": "Speler is al lid van deze club.",
-          "alreadyLoaned": "Speler is al uitgeleend.",
-          "checkFailed": "Controle van speler is mislukt. Probeer opnieuw."
+        "addTeam": "Ploeg toevoegen",
+        "emptyCategory": "Geen ploegen",
+        "baseValue": "Basis: {value}",
+        "labelNumbered": "Ploeg {number}",
+        "labelFallback": "Ploeg",
+        "a11y": {
+          "statusError": "Deze ploeg heeft validatiefouten",
+          "statusWarning": "Deze ploeg heeft validatiewaarschuwingen",
+          "statusSuccess": "Deze ploeg is gevalideerd",
+          "validatingStatus": "Ploeg wordt gevalideerd",
+          "expandValidationDetails": "Toon validatiedetails voor {team}",
+          "collapseValidationDetails": "Verberg validatiedetails voor {team}",
+          "editTeam": "Bewerk {team}",
+          "deleteTeam": "Verwijder {team}",
+          "removePlayerFromList": "Verwijder {name} uit de ploeg"
         }
+      },
+      "dialog": {
+        "deleteTeam": {
+          "title": "Ploeg verwijderen",
+          "message": "Ben je zeker dat je deze ploeg wil verwijderen?",
+          "cancel": "Annuleren",
+          "confirm": "Verwijderen"
+        }
+      },
+      "clubSelection": {
+        "heading": "Club",
+        "clubLabel": "Club",
+        "emailLabel": "Email"
+      },
+      "locationSelection": {
+        "title": "Locaties",
+        "editLocations": "Locaties bewerken",
+        "editLocationsNoAccessTooltip": "U heeft geen toegang tot het bewerken van locaties, contacteer de beheerder van de club"
+      },
+      "remarks": {
+        "label": "Opmerkingen",
+        "placeholder": "Optioneel: voeg opmerkingen toe bij je inschrijving"
+      },
+      "summary": {
+        "title": "Samenvatting inschrijving"
+      },
+      "transfersLoans": {
+        "addTransfersTitle": "Transfers toevoegen",
+        "addLoansTitle": "Uitleningen toevoegen",
+        "addTransferButton": "Transfer toevoegen",
+        "addLoanButton": "Uitlening toevoegen",
+        "emptyTransfers": "Geen transfers",
+        "emptyLoans": "Geen uitleningen",
+        "a11y": {
+          "cancelPendingSelection": "Spelerselectie annuleren"
+        }
+      },
+      "playerValidation": {
+        "alreadyMember": "Speler is al lid van deze club.",
+        "alreadyLoaned": "Speler is al uitgeleend.",
+        "checkFailed": "Controle van speler is mislukt. Probeer opnieuw."
       },
       "validation": {
         "invalidStatus": "Ongeldige status.",
@@ -1332,13 +1346,14 @@
         "clubRequired": "Club is verplicht.",
         "selectAtLeastOneLocation": "Selecteer minstens één locatie.",
         "locationGameDayAvailability": "Elke locatie moet minstens één speeldag hebben met minstens 2 terreinen die elk minstens 3 uur beschikbaar zijn (niet noodzakelijk aaneengesloten).",
-        "addAtLeastOneTeam": "Voeg minstens één ploeg toe.",
-        "duplicateTeamNumberSameType": "Dubbel ploegnummer binnen hetzelfde type.",
         "selectLocation": "Selecteer een locatie.",
         "teamNumberRequired": "Ploegnummer is verplicht.",
         "invalidTeamType": "Ongeldig ploegtype.",
         "teamTypeRequired": "Ploegtype is verplicht.",
-        "selectAtLeastOnePlayer": "Selecteer minstens één speler."
+        "selectAtLeastOnePlayer": "Selecteer minstens één speler.",
+        "addAtLeastOneTeam": "Voeg minstens één ploeg toe.",
+        "duplicateTeamNumberSameType": "Dubbel ploegnummer binnen hetzelfde type.",
+        "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen."
       }
     },
     "messages": {

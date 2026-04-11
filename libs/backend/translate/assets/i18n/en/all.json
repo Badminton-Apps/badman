@@ -1345,6 +1345,19 @@
       "title": "Team names"
     }
   },
+  "teams": {
+    "a11y": {
+      "statusError": "This team has validation errors",
+      "statusWarning": "This team has validation warnings",
+      "statusSuccess": "This team passed validation",
+      "validatingStatus": "Checking team validation",
+      "expandValidationDetails": "Show validation details for {team}",
+      "collapseValidationDetails": "Hide validation details for {team}",
+      "editTeam": "Edit {team}",
+      "deleteTeam": "Remove {team}",
+      "removePlayerFromList": "Remove {name} from the team"
+    }
+  },
   "themes": {
     "dark": "Dark",
     "light": "Light"
@@ -1506,13 +1519,13 @@
       },
       "team-enrollment": {
         "addBasePlayerDialog": {
-          "title": "Add base player",
+          "baseIndex": "Base index: {baseIndex}",
+          "maxPlayersReached": "You can add at most {max} base players.",
+          "noCompetitions": "No competitions are available for this season.",
           "competition": "Competition",
           "division": "Division",
-          "baseIndex": "Base index: {baseIndex}",
-          "maxPlayersReached": "Maximum {max} base players reached",
-          "noCompetitions": "No competitions available for the upcoming season.",
-          "playerTooStrong": "{name} is too strong for this division (level {level}, max: {maxLevel})"
+          "divisionBaseIndexRangeMismatch": "Your team's base index ({baseIndex}) does not match any division for this competition.",
+          "playerTooStrong": "{name} has level {level}, which is too strong for this division (strongest allowed: {maxLevel})."
         },
         "import-existing-optional": "Import existing (optional)",
         "validating": "Validating…",
@@ -1529,83 +1542,84 @@
           "import": "Import"
         }
       },
-      "clubEnrollment": {
-        "steps": {
-          "generalInformation": "General information",
-          "transfersLoans": "Transfers & loans",
-          "teams": "Teams",
-          "confirm": "Confirm"
+      "steps": {
+        "generalInformation": "General information",
+        "transfersLoans": "Transfers & loans",
+        "teams": "Teams",
+        "confirm": "Confirm"
+      },
+      "nav": {
+        "previous": "Previous",
+        "next": "Next",
+        "submit": "Enrol",
+        "submitting": "Submitting…"
+      },
+      "toast": {
+        "addAtLeastOneTeam": "Add at least one team."
+      },
+      "teams": {
+        "categories": {
+          "M": "Men",
+          "F": "Women",
+          "MX": "Mixed"
         },
-        "nav": {
-          "previous": "Previous",
-          "next": "Next",
-          "submit": "Enrol",
-          "submitting": "Submitting…"
-        },
-        "toast": {
-          "addAtLeastOneTeam": "Add at least one team."
-        },
-        "teams": {
-          "categories": {
-            "M": "Men",
-            "F": "Women",
-            "MX": "Mixed"
-          },
-          "addTeam": "Add team",
-          "emptyCategory": "No teams",
-          "baseValue": "Base: {value}",
-          "labelNumbered": "Team {number}",
-          "labelFallback": "Team",
-          "a11y": {
-            "statusError": "This team has validation errors",
-            "statusWarning": "This team has validation warnings",
-            "statusSuccess": "This team passed validation",
-            "validatingStatus": "Checking team validation",
-            "expandValidationDetails": "Show validation details for {team}",
-            "collapseValidationDetails": "Hide validation details for {team}",
-            "editTeam": "Edit {team}",
-            "deleteTeam": "Remove {team}",
-            "removePlayerFromList": "Remove {name} from the team"
-          }
-        },
-        "dialog": {
-          "deleteTeam": {
-            "title": "Remove team",
-            "message": "Are you sure you want to remove this team?",
-            "cancel": "Cancel",
-            "confirm": "Remove"
-          }
-        },
-        "clubSelection": {
-          "heading": "Club",
-          "clubLabel": "Club",
-          "emailLabel": "Email"
-        },
-        "locationSelection": {
-          "title": "Locations",
-          "editLocations": "Edit locations",
-          "editLocationsNoAccessTooltip": "You don't have permission to edit locations. Contact your club administrator."
-        },
-        "remarks": {
-          "label": "Remarks",
-          "placeholder": "Optional: add remarks for your enrolment"
-        },
-        "summary": {
-          "title": "Enrolment summary"
-        },
-        "transfersLoans": {
-          "addTransfersTitle": "Add transfers",
-          "addLoansTitle": "Add loans",
-          "addTransferButton": "Add transfer",
-          "addLoanButton": "Add loan",
-          "emptyTransfers": "No transfers",
-          "emptyLoans": "No loans"
-        },
-        "playerValidation": {
-          "alreadyMember": "This player is already a member of this club.",
-          "alreadyLoaned": "This player is already on loan.",
-          "checkFailed": "Could not verify the player. Try again."
+        "addTeam": "Add team",
+        "emptyCategory": "No teams",
+        "baseValue": "Base: {value}",
+        "labelNumbered": "Team {number}",
+        "labelFallback": "Team",
+        "a11y": {
+          "statusError": "This team has validation errors",
+          "statusWarning": "This team has validation warnings",
+          "statusSuccess": "This team passed validation",
+          "validatingStatus": "Checking team validation",
+          "expandValidationDetails": "Show validation details for {team}",
+          "collapseValidationDetails": "Hide validation details for {team}",
+          "editTeam": "Edit {team}",
+          "deleteTeam": "Remove {team}",
+          "removePlayerFromList": "Remove {name} from the team"
         }
+      },
+      "dialog": {
+        "deleteTeam": {
+          "title": "Remove team",
+          "message": "Are you sure you want to remove this team?",
+          "cancel": "Cancel",
+          "confirm": "Remove"
+        }
+      },
+      "clubSelection": {
+        "heading": "Club",
+        "clubLabel": "Club",
+        "emailLabel": "Email"
+      },
+      "locationSelection": {
+        "title": "Locations",
+        "editLocations": "Edit locations",
+        "editLocationsNoAccessTooltip": "You don't have permission to edit locations. Contact your club administrator."
+      },
+      "remarks": {
+        "label": "Remarks",
+        "placeholder": "Optional: add remarks for your enrolment"
+      },
+      "summary": {
+        "title": "Enrolment summary"
+      },
+      "transfersLoans": {
+        "addTransfersTitle": "Add transfers",
+        "addLoansTitle": "Add loans",
+        "addTransferButton": "Add transfer",
+        "addLoanButton": "Add loan",
+        "emptyTransfers": "No transfers",
+        "emptyLoans": "No loans",
+        "a11y": {
+          "cancelPendingSelection": "Cancel player selection"
+        }
+      },
+      "playerValidation": {
+        "alreadyMember": "This player is already a member of this club.",
+        "alreadyLoaned": "This player is already on loan.",
+        "checkFailed": "Could not verify the player. Try again."
       },
       "validation": {
         "invalidStatus": "Invalid status.",
@@ -1614,13 +1628,14 @@
         "clubRequired": "Club is required.",
         "selectAtLeastOneLocation": "Select at least one location.",
         "locationGameDayAvailability": "Each location must have at least one game day with at least 2 courts, each available for at least 3 hours (not necessarily consecutive).",
-        "addAtLeastOneTeam": "Add at least one team.",
-        "duplicateTeamNumberSameType": "Duplicate team number within the same type.",
         "selectLocation": "Select a location.",
         "teamNumberRequired": "Team number is required.",
         "invalidTeamType": "Invalid team type.",
         "teamTypeRequired": "Team type is required.",
-        "selectAtLeastOnePlayer": "Select at least one player."
+        "selectAtLeastOnePlayer": "Select at least one player.",
+        "addAtLeastOneTeam": "Add at least one team.",
+        "duplicateTeamNumberSameType": "Duplicate team number within the same type.",
+        "maxBasePlayers": "You can add at most {max} base players."
       }
     },
     "messages": {
@@ -1964,7 +1979,6 @@
       "noRecentEncounters": "No recent encounters",
       "rolePrefix": "You are",
       "clubAdmin": "Club admin",
-
       "gameLeader": "Game leader",
       "unknown": "Unknown",
       "captain": "Captain",

@@ -1561,6 +1561,19 @@
       "title": "Nom des équipes"
     }
   },
+  "teams": {
+    "a11y": {
+      "statusError": "Cette équipe a des erreurs de validation",
+      "statusWarning": "Cette équipe a des avertissements de validation",
+      "statusSuccess": "Cette équipe a réussi la validation",
+      "validatingStatus": "Vérification de la validation de l'équipe",
+      "expandValidationDetails": "Afficher les détails de validation pour {team}",
+      "collapseValidationDetails": "Masquer les détails de validation pour {team}",
+      "editTeam": "Modifier {team}",
+      "deleteTeam": "Retirer {team}",
+      "removePlayerFromList": "Retirer {name} de l'équipe"
+    }
+  },
   "themes": {
     "dark": "Sombre",
     "light": "Lumière"
@@ -1713,6 +1726,12 @@
     },
     "shell": {
       "sidebar": {
+        "pages": {
+          "admin": "Admin",
+          "adminSettings": "Paramètres d'administration",
+          "copyCompetitions": "Copier les compétitions",
+          "adminCompetitions": "Admin Compétitions"
+        },
         "tooltips": {
           "registrationClosed": "Inscriptions fermées"
         }
@@ -1758,13 +1777,13 @@
       },
       "team-enrollment": {
         "addBasePlayerDialog": {
-          "title": "Ajouter un joueur de base",
+          "baseIndex": "Indice de base : {baseIndex}",
+          "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
+          "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
           "competition": "Compétition",
           "division": "Division",
-          "baseIndex": "Indice de base : {baseIndex}",
-          "maxPlayersReached": "Maximum de {max} joueurs de base atteint",
-          "noCompetitions": "Aucune compétition disponible pour la saison à venir.",
-          "playerTooStrong": "{name} est trop fort pour cette division (niveau {level}, max : {maxLevel})"
+          "divisionBaseIndexRangeMismatch": "L'indice de base de votre équipe ({baseIndex}) ne correspond à aucune division pour cette compétition.",
+          "playerTooStrong": "{name} a le niveau {level}, ce qui est trop fort pour cette division (maximum autorisé : {maxLevel})."
         },
         "import-existing-optional": "Importer l'existant (optionnel)",
         "validating": "Validation…",
@@ -1781,83 +1800,84 @@
           "import": "Importer"
         }
       },
-      "clubEnrollment": {
-        "steps": {
-          "generalInformation": "Informations générales",
-          "transfersLoans": "Transferts et prêts",
-          "teams": "Équipes",
-          "confirm": "Confirmer"
+      "steps": {
+        "generalInformation": "Informations générales",
+        "transfersLoans": "Transferts et prêts",
+        "teams": "Équipes",
+        "confirm": "Confirmer"
+      },
+      "nav": {
+        "previous": "Précédent",
+        "next": "Suivant",
+        "submit": "S'inscrire",
+        "submitting": "Envoi en cours…"
+      },
+      "toast": {
+        "addAtLeastOneTeam": "Ajoutez au moins une équipe."
+      },
+      "teams": {
+        "categories": {
+          "M": "Hommes",
+          "F": "Femmes",
+          "MX": "Mixte"
         },
-        "nav": {
-          "previous": "Précédent",
-          "next": "Suivant",
-          "submit": "S'inscrire",
-          "submitting": "Envoi en cours…"
-        },
-        "toast": {
-          "addAtLeastOneTeam": "Ajoutez au moins une équipe."
-        },
-        "teams": {
-          "categories": {
-            "M": "Hommes",
-            "F": "Femmes",
-            "MX": "Mixte"
-          },
-          "addTeam": "Ajouter une équipe",
-          "emptyCategory": "Aucune équipe",
-          "baseValue": "Base : {value}",
-          "labelNumbered": "Équipe {number}",
-          "labelFallback": "Équipe",
-          "a11y": {
-            "statusError": "Cette équipe comporte des erreurs de validation",
-            "statusWarning": "Cette équipe comporte des avertissements de validation",
-            "statusSuccess": "Cette équipe a passé la validation",
-            "validatingStatus": "Vérification de la validation de l'équipe",
-            "expandValidationDetails": "Afficher les détails de validation pour {team}",
-            "collapseValidationDetails": "Masquer les détails de validation pour {team}",
-            "editTeam": "Modifier {team}",
-            "deleteTeam": "Retirer {team}",
-            "removePlayerFromList": "Retirer {name} de l'équipe"
-          }
-        },
-        "dialog": {
-          "deleteTeam": {
-            "title": "Retirer l'équipe",
-            "message": "Voulez-vous vraiment retirer cette équipe ?",
-            "cancel": "Annuler",
-            "confirm": "Retirer"
-          }
-        },
-        "clubSelection": {
-          "heading": "Club",
-          "clubLabel": "Club",
-          "emailLabel": "E-mail"
-        },
-        "locationSelection": {
-          "title": "Lieux",
-          "editLocations": "Modifier les lieux",
-          "editLocationsNoAccessTooltip": "Vous n'avez pas la permission de modifier les lieux. Contactez l'administrateur de votre club."
-        },
-        "remarks": {
-          "label": "Remarques",
-          "placeholder": "Facultatif : ajoutez des remarques pour votre inscription"
-        },
-        "summary": {
-          "title": "Récapitulatif de l'inscription"
-        },
-        "transfersLoans": {
-          "addTransfersTitle": "Ajouter des transferts",
-          "addLoansTitle": "Ajouter des prêts",
-          "addTransferButton": "Ajouter un transfert",
-          "addLoanButton": "Ajouter un prêt",
-          "emptyTransfers": "Aucun transfert",
-          "emptyLoans": "Aucun prêt"
-        },
-        "playerValidation": {
-          "alreadyMember": "Ce joueur est déjà membre de ce club.",
-          "alreadyLoaned": "Ce joueur est déjà en prêt.",
-          "checkFailed": "Impossible de vérifier le joueur. Réessayez."
+        "addTeam": "Ajouter une équipe",
+        "emptyCategory": "Aucune équipe",
+        "baseValue": "Base : {value}",
+        "labelNumbered": "Équipe {number}",
+        "labelFallback": "Équipe",
+        "a11y": {
+          "statusError": "Cette équipe comporte des erreurs de validation",
+          "statusWarning": "Cette équipe comporte des avertissements de validation",
+          "statusSuccess": "Cette équipe a passé la validation",
+          "validatingStatus": "Vérification de la validation de l'équipe",
+          "expandValidationDetails": "Afficher les détails de validation pour {team}",
+          "collapseValidationDetails": "Masquer les détails de validation pour {team}",
+          "editTeam": "Modifier {team}",
+          "deleteTeam": "Retirer {team}",
+          "removePlayerFromList": "Retirer {name} de l'équipe"
         }
+      },
+      "dialog": {
+        "deleteTeam": {
+          "title": "Retirer l'équipe",
+          "message": "Voulez-vous vraiment retirer cette équipe ?",
+          "cancel": "Annuler",
+          "confirm": "Retirer"
+        }
+      },
+      "clubSelection": {
+        "heading": "Club",
+        "clubLabel": "Club",
+        "emailLabel": "E-mail"
+      },
+      "locationSelection": {
+        "title": "Lieux",
+        "editLocations": "Modifier les lieux",
+        "editLocationsNoAccessTooltip": "Vous n'avez pas la permission de modifier les lieux. Contactez l'administrateur de votre club."
+      },
+      "remarks": {
+        "label": "Remarques",
+        "placeholder": "Facultatif : ajoutez des remarques pour votre inscription"
+      },
+      "summary": {
+        "title": "Récapitulatif de l'inscription"
+      },
+      "transfersLoans": {
+        "addTransfersTitle": "Ajouter des transferts",
+        "addLoansTitle": "Ajouter des prêts",
+        "addTransferButton": "Ajouter un transfert",
+        "addLoanButton": "Ajouter un prêt",
+        "emptyTransfers": "Aucun transfert",
+        "emptyLoans": "Aucun prêt",
+        "a11y": {
+          "cancelPendingSelection": "Annuler la sélection du joueur"
+        }
+      },
+      "playerValidation": {
+        "alreadyMember": "Ce joueur est déjà membre de ce club.",
+        "alreadyLoaned": "Ce joueur est déjà en prêt.",
+        "checkFailed": "Impossible de vérifier le joueur. Réessayez."
       },
       "validation": {
         "invalidStatus": "Statut invalide.",
@@ -1866,26 +1886,14 @@
         "clubRequired": "Le club est obligatoire.",
         "selectAtLeastOneLocation": "Sélectionnez au moins un lieu.",
         "locationGameDayAvailability": "Chaque lieu doit disposer d'au moins un jour de jeu avec au moins 2 terrains, chacun disponible pendant au moins 3 heures (pas nécessairement consécutives).",
-        "addAtLeastOneTeam": "Ajoutez au moins une équipe.",
-        "duplicateTeamNumberSameType": "Numéro d'équipe en double dans le même type.",
         "selectLocation": "Sélectionnez un lieu.",
         "teamNumberRequired": "Le numéro d'équipe est obligatoire.",
         "invalidTeamType": "Type d'équipe invalide.",
         "teamTypeRequired": "Le type d'équipe est obligatoire.",
-        "selectAtLeastOnePlayer": "Sélectionnez au moins un joueur."
-      }
-    },
-    "shell": {
-      "sidebar": {
-        "pages": {
-          "admin": "Admin",
-          "adminSettings": "Paramètres d'administration",
-          "copyCompetitions": "Copier les compétitions",
-          "adminCompetitions": "Admin Compétitions"
-        },
-        "tooltips": {
-          "registrationClosed": "Inscriptions fermées"
-        }
+        "selectAtLeastOnePlayer": "Sélectionnez au moins un joueur.",
+        "addAtLeastOneTeam": "Ajoutez au moins une équipe.",
+        "duplicateTeamNumberSameType": "Numéro d'équipe en double dans le même type.",
+        "maxBasePlayers": "Vous pouvez ajouter au maximum {max} joueurs de base."
       }
     },
     "locations": {
