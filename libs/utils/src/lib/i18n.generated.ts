@@ -1363,6 +1363,19 @@ export type I18nTranslations = {
                 "title": string;
             };
         };
+        "teams": {
+            "a11y": {
+                "statusError": string;
+                "statusWarning": string;
+                "statusSuccess": string;
+                "validatingStatus": string;
+                "expandValidationDetails": string;
+                "collapseValidationDetails": string;
+                "editTeam": string;
+                "deleteTeam": string;
+                "removePlayerFromList": string;
+            };
+        };
         "themes": {
             "dark": string;
             "light": string;
@@ -1524,12 +1537,12 @@ export type I18nTranslations = {
                 };
                 "team-enrollment": {
                     "addBasePlayerDialog": {
-                        "title": string;
-                        "competition": string;
-                        "division": string;
                         "baseIndex": string;
                         "maxPlayersReached": string;
                         "noCompetitions": string;
+                        "competition": string;
+                        "division": string;
+                        "divisionBaseIndexRangeMismatch": string;
                         "playerTooStrong": string;
                     };
                     "import-existing-optional": string;
@@ -1547,83 +1560,84 @@ export type I18nTranslations = {
                         "import": string;
                     };
                 };
-                "clubEnrollment": {
-                    "steps": {
-                        "generalInformation": string;
-                        "transfersLoans": string;
-                        "teams": string;
+                "steps": {
+                    "generalInformation": string;
+                    "transfersLoans": string;
+                    "teams": string;
+                    "confirm": string;
+                };
+                "nav": {
+                    "previous": string;
+                    "next": string;
+                    "submit": string;
+                    "submitting": string;
+                };
+                "toast": {
+                    "addAtLeastOneTeam": string;
+                };
+                "teams": {
+                    "categories": {
+                        "M": string;
+                        "F": string;
+                        "MX": string;
+                    };
+                    "addTeam": string;
+                    "emptyCategory": string;
+                    "baseValue": string;
+                    "labelNumbered": string;
+                    "labelFallback": string;
+                    "a11y": {
+                        "statusError": string;
+                        "statusWarning": string;
+                        "statusSuccess": string;
+                        "validatingStatus": string;
+                        "expandValidationDetails": string;
+                        "collapseValidationDetails": string;
+                        "editTeam": string;
+                        "deleteTeam": string;
+                        "removePlayerFromList": string;
+                    };
+                };
+                "dialog": {
+                    "deleteTeam": {
+                        "title": string;
+                        "message": string;
+                        "cancel": string;
                         "confirm": string;
                     };
-                    "nav": {
-                        "previous": string;
-                        "next": string;
-                        "submit": string;
-                        "submitting": string;
+                };
+                "clubSelection": {
+                    "heading": string;
+                    "clubLabel": string;
+                    "emailLabel": string;
+                };
+                "locationSelection": {
+                    "title": string;
+                    "editLocations": string;
+                    "editLocationsNoAccessTooltip": string;
+                };
+                "remarks": {
+                    "label": string;
+                    "placeholder": string;
+                };
+                "summary": {
+                    "title": string;
+                };
+                "transfersLoans": {
+                    "addTransfersTitle": string;
+                    "addLoansTitle": string;
+                    "addTransferButton": string;
+                    "addLoanButton": string;
+                    "emptyTransfers": string;
+                    "emptyLoans": string;
+                    "a11y": {
+                        "cancelPendingSelection": string;
                     };
-                    "toast": {
-                        "addAtLeastOneTeam": string;
-                    };
-                    "teams": {
-                        "categories": {
-                            "M": string;
-                            "F": string;
-                            "MX": string;
-                        };
-                        "addTeam": string;
-                        "emptyCategory": string;
-                        "baseValue": string;
-                        "labelNumbered": string;
-                        "labelFallback": string;
-                        "a11y": {
-                            "statusError": string;
-                            "statusWarning": string;
-                            "statusSuccess": string;
-                            "validatingStatus": string;
-                            "expandValidationDetails": string;
-                            "collapseValidationDetails": string;
-                            "editTeam": string;
-                            "deleteTeam": string;
-                            "removePlayerFromList": string;
-                        };
-                    };
-                    "dialog": {
-                        "deleteTeam": {
-                            "title": string;
-                            "message": string;
-                            "cancel": string;
-                            "confirm": string;
-                        };
-                    };
-                    "clubSelection": {
-                        "heading": string;
-                        "clubLabel": string;
-                        "emailLabel": string;
-                    };
-                    "locationSelection": {
-                        "title": string;
-                        "editLocations": string;
-                        "editLocationsNoAccessTooltip": string;
-                    };
-                    "remarks": {
-                        "label": string;
-                        "placeholder": string;
-                    };
-                    "summary": {
-                        "title": string;
-                    };
-                    "transfersLoans": {
-                        "addTransfersTitle": string;
-                        "addLoansTitle": string;
-                        "addTransferButton": string;
-                        "addLoanButton": string;
-                        "emptyTransfers": string;
-                        "emptyLoans": string;
-                    };
-                    "playerValidation": {
-                        "alreadyMember": string;
-                        "alreadyLoaned": string;
-                        "checkFailed": string;
-                    };
+                };
+                "playerValidation": {
+                    "alreadyMember": string;
+                    "alreadyLoaned": string;
+                    "checkFailed": string;
                 };
                 "validation": {
                     "invalidStatus": string;
@@ -1632,13 +1646,14 @@ export type I18nTranslations = {
                     "clubRequired": string;
                     "selectAtLeastOneLocation": string;
                     "locationGameDayAvailability": string;
-                    "addAtLeastOneTeam": string;
-                    "duplicateTeamNumberSameType": string;
                     "selectLocation": string;
                     "teamNumberRequired": string;
                     "invalidTeamType": string;
                     "teamTypeRequired": string;
                     "selectAtLeastOnePlayer": string;
+                    "addAtLeastOneTeam": string;
+                    "duplicateTeamNumberSameType": string;
+                    "maxBasePlayers": string;
                 };
             };
             "messages": {
