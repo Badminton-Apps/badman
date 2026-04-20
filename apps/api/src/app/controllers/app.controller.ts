@@ -1,7 +1,7 @@
 import { User } from "@badman/backend-authorization";
 
 import { Player } from "@badman/backend-database";
-import { CpGeneratorService, PlannerService } from "@badman/backend-generator";
+import { PlannerService } from "@badman/backend-generator";
 import { getSyncJobOptions, RankingQueue, SyncQueue } from "@badman/backend-queue";
 import { ConfigType } from "@badman/utils";
 import { InjectQueue } from "@nestjs/bull";
@@ -19,8 +19,6 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { Queue } from "bull";
 import { FastifyReply } from "fastify";
-import { createReadStream } from "fs";
-import { basename, extname } from "path";
 
 @Controller()
 export class AppController {
@@ -29,7 +27,6 @@ export class AppController {
   constructor(
     @InjectQueue(RankingQueue) private _rankingQueue: Queue,
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
-    private cpGen: CpGeneratorService,
     private planner: PlannerService,
     private configService: ConfigService<ConfigType>
   ) {}
@@ -134,22 +131,6 @@ export class AppController {
       default:
         throw new HttpException("Unknown queue", 500);
     }
-  }
-
-  @Get("cp")
-  async getCp(@Res() res: FastifyReply, @Query() query: { eventId: string }) {
-    this.logger.debug("Generating CP");
-    const fileLoc = await this.cpGen.generateCpFile(query.eventId);
-    if (!fileLoc) {
-      throw new HttpException("Could not generate CP", 500);
-    }
-
-    const file = createReadStream(fileLoc);
-    const extension = extname(fileLoc);
-    const fileName = basename(fileLoc, extension);
-    res.header("Content-disposition", "attachment; filename=" + fileName + extension);
-
-    res.type(extension).send(file);
   }
 
   @Get("planner")

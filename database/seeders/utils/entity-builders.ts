@@ -9,6 +9,8 @@ import type {
   EventCompetition,
   SubEventCompetition,
   DrawCompetition,
+  Location,
+  Availability,
 } from "./types";
 
 /**
@@ -117,21 +119,23 @@ async function addPlayerToClub(
 async function insertTeam(
   ctx: SeederContext,
   clubId: string,
+  teamNumber: number,
   season: number,
   captainId: string,
   teamType: "M" | "F" | "MX"
 ): Promise<string> {
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType, "H");
+  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType);
 
   const team = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
-     VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
+     VALUES (:clubId, :type, :season, :teamNumber, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`,
     {
       clubId,
       type: teamType,
       season,
+      teamNumber,
       captainId,
       name: teamName,
       abbreviation,
@@ -164,7 +168,7 @@ async function createTeam(
     return existing[0].id;
   }
 
-  const teamId = await insertTeam(ctx, clubId, season, captainId, teamType);
+  const teamId = await insertTeam(ctx, clubId, 1, season, captainId, teamType);
   console.log(`✅ Created Team (${teamId})\n`);
   return teamId;
 }
@@ -175,7 +179,8 @@ async function createTeam(
 async function addPlayerToTeam(
   ctx: SeederContext,
   teamId: string,
-  playerId: string
+  playerId: string,
+  membershipStart?: Date
 ): Promise<void> {
   // Check if membership already exists
   const existing = await hasActiveMembership<{ id: string }>(
@@ -190,10 +195,11 @@ async function addPlayerToTeam(
     return;
   }
 
+  const start = membershipStart ?? new Date();
   await ctx.rawQuery(
     `INSERT INTO "TeamPlayerMemberships" ("teamId", "playerId", "start", "membershipType", "createdAt", "updatedAt")
-     VALUES (:teamId, :playerId, NOW(), 'REGULAR', NOW(), NOW())`,
-    { teamId, playerId }
+     VALUES (:teamId, :playerId, :start, 'REGULAR', NOW(), NOW())`,
+    { teamId, playerId, start }
   );
   console.log(`✅ Added user to team\n`);
 }
@@ -296,12 +302,13 @@ async function createDrawCompetition(
 async function createOpponentTeam(
   ctx: SeederContext,
   clubId: string,
+  teamNumber: number,
   season: number,
   captainId: string,
   teamType: "M" | "F" | "MX" = "M"
 ): Promise<string> {
   console.log("👥 Creating opponent Team...");
-  const opponentTeamId = await insertTeam(ctx, clubId, season, captainId, teamType);
+  const opponentTeamId = await insertTeam(ctx, clubId, teamNumber, season, captainId, teamType);
   console.log(`✅ Created opponent Team (${opponentTeamId})\n`);
   return opponentTeamId;
 }
@@ -376,6 +383,86 @@ async function createEncounters(
   console.log(`✅ Created ${encounterCount} Encounters\n`);
 }
 
+/**
+ * Create a location for a club (idempotent: check by name + clubId)
+ */
+async function createLocation(
+  ctx: SeederContext,
+  clubId: string,
+  locationData: {
+    name: string;
+    address: string;
+    street: string;
+    streetNumber: string;
+    postalcode: string;
+    city: string;
+    state: string;
+    phone: string;
+    longitude?: number;
+    latitude?: number;
+  }
+): Promise<Location> {
+  const existing = await ctx.query<Location>(
+    `SELECT id, name FROM event."Locations" WHERE name = :name AND "clubId" = :clubId LIMIT 1`,
+    { name: locationData.name, clubId }
+  );
+
+  if (existing && existing.length > 0) {
+    console.log(`ℹ️  Location already exists: ${existing[0].name} (${existing[0].id})\n`);
+    return existing[0];
+  }
+
+  const hasCoordinates = locationData.latitude != null && locationData.longitude != null;
+  const coordinatesColumn = hasCoordinates ? ', coordinates' : '';
+  const coordinatesValue = hasCoordinates
+    ? `, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)`
+    : '';
+
+  const location = await ctx.insert<Location>(
+    `INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt"${coordinatesColumn})
+     VALUES (:name, :address, :street, :streetNumber, :postalcode, :city, :state, :phone, :clubId, NOW(), NOW()${coordinatesValue})
+     RETURNING id, name`,
+    { ...locationData, clubId }
+  );
+  console.log(`✅ Created Location: ${location.name} (${location.id})\n`);
+  return location;
+}
+
+/**
+ * Create availability for a location (idempotent: check by locationId + season)
+ */
+async function createAvailability(
+  ctx: SeederContext,
+  locationId: string,
+  season: number,
+  days: unknown[],
+  exceptions: unknown[] = []
+): Promise<Availability> {
+  const existing = await ctx.query<Availability>(
+    `SELECT id FROM event."Availabilities" WHERE "locationId" = :locationId AND season = :season LIMIT 1`,
+    { locationId, season }
+  );
+
+  if (existing && existing.length > 0) {
+    console.log(`ℹ️  Availability already exists for this location/season (${existing[0].id})\n`);
+    return existing[0];
+  }
+
+  const availability = await ctx.insert<Availability>(
+    `INSERT INTO event."Availabilities" ("locationId", season, days, exceptions, "createdAt", "updatedAt")
+     VALUES (:locationId, :season, :days, :exceptions, NOW(), NOW())
+     RETURNING id`,
+    {
+      locationId,
+      season,
+      days: JSON.stringify(days),
+      exceptions: JSON.stringify(exceptions),
+    }
+  );
+  console.log(`✅ Created Availability (${availability.id}) for season ${season}\n`);
+  return availability;
+}
+
 // Wrap all functions with error handling
 const findOrCreatePlayerWithErrorHandling = withErrorHandling(
   findOrCreatePlayer,
@@ -411,6 +498,14 @@ const createEncountersWithErrorHandling = withErrorHandling(
   createEncounters,
   "creating encounters"
 );
+const createLocationWithErrorHandling = withErrorHandling(
+  createLocation,
+  "creating location"
+);
+const createAvailabilityWithErrorHandling = withErrorHandling(
+  createAvailability,
+  "creating availability"
+);
 
 export {
   findOrCreatePlayerWithErrorHandling as findOrCreatePlayer,
@@ -423,4 +518,6 @@ export {
   createDrawCompetitionWithErrorHandling as createDrawCompetition,
   createOpponentTeamWithErrorHandling as createOpponentTeam,
   createEncountersWithErrorHandling as createEncounters,
+  createLocationWithErrorHandling as createLocation,
+  createAvailabilityWithErrorHandling as createAvailability,
 };

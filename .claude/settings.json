@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(ls *)",
+      "Bash(cat *)"
+    ],
+    "additionalDirectories": [
+      "/home/arno/Documents/Work/PandaPanda/Projects/Badman/badman/docs/estimates"
+    ]
+  }
+}

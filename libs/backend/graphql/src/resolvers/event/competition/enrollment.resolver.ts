@@ -42,7 +42,7 @@ export class EnrollmentResolver {
     @Args("subEventId") subEventId: string
   ) {
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
-      throw new UnauthorizedException(`You do not have permission to add a competition`);
+      throw new UnauthorizedException(`You do not have permission to update a competition`);
     }
     // Do transaction
     const transaction = await this._sequelize.transaction();

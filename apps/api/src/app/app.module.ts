@@ -1,6 +1,7 @@
 import { Logger, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AppController, ImageController } from "./controllers";
+import { CpController } from "./controllers/cp.controller";
 
 import { AuthorizationModule } from "@badman/backend-authorization";
 import { DatabaseModule } from "@badman/backend-database";
@@ -35,9 +36,14 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     })
   );
 }
-const envFilePath = process.env.NODE_ENV === "test" ? ".env.test" : undefined;
 
-console.log("envFilePath", envFilePath, process.env.NODE_ENV);
+// Resolve .env relative to the project root, not process.cwd().
+// The webpack bundle outputs to dist/apps/api/, so __dirname is three levels
+// below the workspace root. Using an absolute path avoids failures when the
+// NX executor (or a deployment runner) sets a different working directory.
+const projectRoot = join(__dirname, "..", "..", "..");
+const envFileName = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
+const envFilePath = join(projectRoot, envFileName);
 
 @Module({
   imports: [
@@ -49,7 +55,7 @@ console.log("envFilePath", envFilePath, process.env.NODE_ENV);
       load: [load],
       expandVariables: true,
       envFilePath: envFilePath,
-      ignoreEnvVars: process.env.NODE_ENV === "test",
+      validatePredefined: process.env.NODE_ENV !== "test",
     }),
     AuthorizationModule,
     GrapqhlModule,
@@ -73,7 +79,7 @@ console.log("envFilePath", envFilePath, process.env.NODE_ENV);
     SocketModule,
     TransferLoanModule,
   ],
-  controllers: [AppController, ImageController, CalendarController],
+  controllers: [AppController, ImageController, CalendarController, CpController],
   providers: [Logger],
 })
 export class AppModule {

@@ -50,10 +50,14 @@ export class LocationResolver {
   }
 
   @ResolveField(() => Coordinates, { nullable: true })
-  coordinates(@Parent() location: Location): Coordinates {
+  coordinates(@Parent() location: Location): Coordinates | null {
+    if (!location.coordinates?.coordinates) {
+      return null;
+    }
+
     return {
-      latitude: location.coordinates?.coordinates?.[1],
-      longitude: location.coordinates?.coordinates?.[0],
+      latitude: location.coordinates.coordinates[1],
+      longitude: location.coordinates.coordinates[0],
     };
   }
 
@@ -86,7 +90,7 @@ export class LocationResolver {
       }
 
       if (!(await user.hasAnyPermission([`${dbClub.id}_edit:location`, "edit-any:club"]))) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to add a location`);
       }
 
       const dbLocation = await Location.create(
@@ -128,7 +132,7 @@ export class LocationResolver {
       }
 
       if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, "edit-any:club"]))) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to update a location`);
       }
 
       await dbLocation.update(
@@ -172,7 +176,7 @@ export class LocationResolver {
       }
 
       if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, "edit-any:club"]))) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to delete a location`);
       }
 
       await dbLocation.destroy({ transaction });

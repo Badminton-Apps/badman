@@ -405,6 +405,7 @@
       "warnings": {
         "already-saved": "Nieuwe wijzigingen kan je niet tussendoor meer opslaan, gelieve het formulier opnieuw te versturen in de laatste stap om je wijzigingen op te slaan",
         "base-other-team": "<strong>{player.fullName}</strong> is basisspeler in een ander team",
+        "missing-continuity-link": "Dit team lijkt op een ploeg uit het vorige seizoen, maar de continuiteits-id werd niet hergebruikt. Koppel het team om de historiek te bewaren.",
         "player-min-level": "Aanvraag voor uitzondering van speler <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> is nog niet geaccepteerd",
         "subtitute-team-index": "s",
         "title": "Waarschuwingen"
@@ -1062,6 +1063,19 @@
       "title": "Teamnamen"
     }
   },
+  "teams": {
+    "a11y": {
+      "statusError": "Deze ploeg heeft validatiefouten",
+      "statusWarning": "Deze ploeg heeft validatiewaarschuwingen",
+      "statusSuccess": "Deze ploeg is gevalideerd",
+      "validatingStatus": "Ploeg wordt gevalideerd",
+      "expandValidationDetails": "Toon validatiedetails voor {team}",
+      "collapseValidationDetails": "Verberg validatiedetails voor {team}",
+      "editTeam": "Bewerk {team}",
+      "deleteTeam": "Verwijder {team}",
+      "removePlayerFromList": "Verwijder {name} uit de ploeg"
+    }
+  },
   "themes": {
     "dark": "Donker",
     "light": "Licht"
@@ -1145,12 +1159,96 @@
     }
   },
   "v1": {
+    "adminSettings": {
+      "title": "Admin Instellingen",
+      "enrollment": {
+        "title": "Inschrijving",
+        "enrollmentOpen": "Inschrijving Open",
+        "enabled": "Inschrijving Open",
+        "openDate": "Openingsdatum",
+        "startDate": "Startdatum",
+        "closeDate": "Sluitingsdatum",
+        "endDate": "Einddatum",
+        "save": "Opslaan",
+        "success": "Inschrijvingsinstellingen succesvol opgeslagen",
+        "error": "Inschrijvingsinstellingen opslaan mislukt"
+      }
+    },
+    "adminCompetitionsPage": {
+      "title": "Admin Competities",
+      "seasonSelectLabel": "Seizoen",
+      "sourceSeasonTitle": "Bronseizoen {range}",
+      "targetSeasonTitle": "Doelseizoen {range}",
+      "copySuccess": "Competitie succesvol gekopieerd",
+      "copyError": "Kopiëren van competitie mislukt",
+      "table": {
+        "headers": {
+          "name": "Naam",
+          "type": "Type",
+          "official": "Officieel",
+          "actions": "Acties"
+        },
+        "copyTooltip": "Competitie kopiëren"
+      },
+      "copyDialog": {
+        "title": "Competitie kopiëren",
+        "message": "{name} kopiëren naar seizoen {season}?",
+        "cancel": "Annuleren",
+        "confirm": "Kopiëren"
+      }
+    },
+    "copyCompetitionsPage": {
+      "title": "Competities kopiëren",
+      "sourceSeasonTitle": "Bronseizoen",
+      "targetSeasonTitle": "Doelseizoen",
+      "table": {
+        "headers": {
+          "name": "Naam",
+          "type": "Type",
+          "official": "Officieel",
+          "actions": "Acties"
+        }
+      },
+      "dialog": {
+        "title": "Competitie kopiëren",
+        "confirm": "Kopiëren",
+        "cancel": "Annuleren",
+        "message": "{name} kopiëren naar seizoen {season}?"
+      },
+      "success": "Competitie succesvol gekopieerd",
+      "error": "Kopiëren van competitie mislukt"
+    },
     "enrollment": {
+      "disabled": {
+        "title": "Inschrijvingen gesloten",
+        "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
+      },
+      "submitSuccess": "Inschrijving gelukt voor: {teamNames}",
+      "submitTeamError": "{teamName}: {error}",
       "selectedLocationCard": {
-        "courts": "Velden"
+        "courts": "{count, plural, one {# terrein} other {# terreinen}}",
+        "noGameDays": "Geen speeldagen gevonden."
+      },
+      "enrollmentLocationCard": {
+        "gameDaysTitle": "Speeldagen",
+        "ariaSelectLocation": "Locatie selecteren",
+        "ariaDeselectLocation": "Locatie deselecteren",
+        "emptyPlaceholder": "—",
+        "noGameDays": "Geen speeldagen",
+        "courts": "{count, plural, one {# baan} other {# banen}}"
       },
       "team-enrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": "Basisindex: {baseIndex}",
+          "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
+          "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
+          "competition": "Competitie",
+          "division": "Divisie",
+          "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
+          "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
+        },
         "import-existing-optional": "Bestaande importeren (optioneel)",
+        "validating": "Valideren…",
         "import-teams": {
           "title": "Teams importeren",
           "allTeams": "Alle teams",
@@ -1163,6 +1261,101 @@
           "cancel": "Annuleren",
           "import": "Importeren"
         }
+      },
+      "steps": {
+        "generalInformation": "Algemene info",
+        "transfersLoans": "Transfers & uitleningen",
+        "teams": "Ploegen",
+        "confirm": "Bevestigen"
+      },
+      "nav": {
+        "previous": "Vorige",
+        "next": "Volgende",
+        "submit": "Inschrijven",
+        "submitting": "Bezig…"
+      },
+      "toast": {
+        "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
+      },
+      "teams": {
+        "categories": {
+          "M": "Mannen",
+          "F": "Vrouwen",
+          "MX": "Gemengd"
+        },
+        "addTeam": "Ploeg toevoegen",
+        "emptyCategory": "Geen ploegen",
+        "baseValue": "Basis: {value}",
+        "labelNumbered": "Ploeg {number}",
+        "labelFallback": "Ploeg",
+        "a11y": {
+          "statusError": "Deze ploeg heeft validatiefouten",
+          "statusWarning": "Deze ploeg heeft validatiewaarschuwingen",
+          "statusSuccess": "Deze ploeg is gevalideerd",
+          "validatingStatus": "Ploeg wordt gevalideerd",
+          "expandValidationDetails": "Toon validatiedetails voor {team}",
+          "collapseValidationDetails": "Verberg validatiedetails voor {team}",
+          "editTeam": "Bewerk {team}",
+          "deleteTeam": "Verwijder {team}",
+          "removePlayerFromList": "Verwijder {name} uit de ploeg"
+        }
+      },
+      "dialog": {
+        "deleteTeam": {
+          "title": "Ploeg verwijderen",
+          "message": "Ben je zeker dat je deze ploeg wil verwijderen?",
+          "cancel": "Annuleren",
+          "confirm": "Verwijderen"
+        }
+      },
+      "clubSelection": {
+        "heading": "Club",
+        "clubLabel": "Club",
+        "emailLabel": "Email"
+      },
+      "locationSelection": {
+        "title": "Locaties",
+        "editLocations": "Locaties bewerken",
+        "editLocationsNoAccessTooltip": "U heeft geen toegang tot het bewerken van locaties, contacteer de beheerder van de club"
+      },
+      "remarks": {
+        "label": "Opmerkingen",
+        "placeholder": "Optioneel: voeg opmerkingen toe bij je inschrijving"
+      },
+      "summary": {
+        "title": "Samenvatting inschrijving"
+      },
+      "transfersLoans": {
+        "addTransfersTitle": "Transfers toevoegen",
+        "addLoansTitle": "Uitleningen toevoegen",
+        "addTransferButton": "Transfer toevoegen",
+        "addLoanButton": "Uitlening toevoegen",
+        "emptyTransfers": "Geen transfers",
+        "emptyLoans": "Geen uitleningen",
+        "a11y": {
+          "cancelPendingSelection": "Spelerselectie annuleren"
+        }
+      },
+      "playerValidation": {
+        "alreadyMember": "Speler is al lid van deze club.",
+        "alreadyLoaned": "Speler is al uitgeleend.",
+        "checkFailed": "Controle van speler is mislukt. Probeer opnieuw."
+      },
+      "validation": {
+        "invalidStatus": "Ongeldige status.",
+        "invalidEmail": "Ongeldig e-mailadres.",
+        "emailRequired": "E-mailadres is verplicht.",
+        "clubRequired": "Club is verplicht.",
+        "selectAtLeastOneLocation": "Selecteer minstens één locatie.",
+        "locationGameDayAvailability": "Elke locatie moet minstens één speeldag hebben met minstens 2 terreinen die elk minstens 3 uur beschikbaar zijn (niet noodzakelijk aaneengesloten).",
+        "selectLocation": "Selecteer een locatie.",
+        "teamNumberRequired": "Ploegnummer is verplicht.",
+        "invalidTeamType": "Ongeldig ploegtype.",
+        "teamTypeRequired": "Ploegtype is verplicht.",
+        "selectAtLeastOnePlayer": "Selecteer minstens één speler.",
+        "addAtLeastOneTeam": "Voeg minstens één ploeg toe.",
+        "duplicateTeamNumberSameType": "Dubbel ploegnummer binnen hetzelfde type.",
+        "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen."
       }
     },
     "messages": {
@@ -1188,7 +1381,11 @@
           "encounterForm": "Ontmoetingsformulier",
           "confirmEncounter": "Bevestig ontmoeting",
           "changeEncounter": "Verplaats ontmoeting",
-          "addProposal": "Voorstel toevoegen"
+          "addProposal": "Voorstel toevoegen",
+          "admin": "Admin",
+          "adminSettings": "Admin Instellingen",
+          "copyCompetitions": "Competities kopiëren",
+          "adminCompetitions": "Admin Competities"
         },
         "auth": {
           "logIn": "Inloggen",
@@ -1227,6 +1424,9 @@
         },
         "transfer": {
           "title": "Transfers / uitleningen"
+        },
+        "tooltips": {
+          "registrationClosed": "Inschrijvingen gesloten"
         }
       },
       "topBar": {
@@ -2331,6 +2531,10 @@
                 "endTime": "Eindtijd",
                 "courts": "Velden"
               },
+              "errors": {
+                "courtsMin": "Het aantal velden moet groter zijn dan 0",
+                "startBeforeEnd": "De starttijd moet voor de eindtijd liggen"
+              },
               "buttons": {
                 "cancel": "Annuleren",
                 "save": "Opslaan"
@@ -2376,6 +2580,11 @@
               "form": {
                 "start": "Start",
                 "end": "Einde"
+              },
+              "errors": {
+                "startBeforeEnd": "De startdatum moet voor de einddatum liggen",
+                "startRequired": "Startdatum is verplicht",
+                "endRequired": "Einddatum is verplicht"
               },
               "buttons": {
                 "cancel": "Annuleren",
@@ -2530,6 +2739,7 @@
         "warnings": {
           "already-saved": "Nieuwe wijzigingen kunnen niet tussendoor worden opgeslagen, dien het formulier opnieuw in de laatste stap in om je wijzigingen op te slaan",
           "base-other-team": "{playerFullName} is basis speler in een ander team",
+          "missing-continuity-link": "Dit team lijkt op een ploeg uit het vorige seizoen, maar de continuiteits-id werd niet hergebruikt. Koppel het team om de historiek te bewaren.",
           "player-min-level": "Verzoek voor uitzondering voor speler {playerFullName} in {rankingType} is nog niet geaccepteerd",
           "subtitute-team-index": "s",
           "title": "Waarschuwingen"
@@ -2540,6 +2750,13 @@
       "title": "De pagina die je zoekt bestaat niet",
       "buttons": {
         "back": "Terug naar home"
+      }
+    },
+    "noProfilePage": {
+      "title": "Geen Profielpagina",
+      "description": "Uw profielpagina is niet beschikbaar",
+      "buttons": {
+        "back": "Teruggaan"
       }
     },
     "confirmEncounterPage": {
@@ -3290,6 +3507,9 @@
           }
         }
       }
+    },
+    "locations": {
+      "exceptions": "Uitzonderingen"
     }
   }
 }

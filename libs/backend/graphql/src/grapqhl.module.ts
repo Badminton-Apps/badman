@@ -7,13 +7,13 @@ import { ApolloDriver } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
 import { GqlModuleOptions, GraphQLModule } from "@nestjs/graphql";
 
-import OperationRegistry from "@apollo/server-plugin-operation-registry";
 import { ApolloServerPluginSchemaReporting } from "@apollo/server/plugin/schemaReporting";
 import { ApolloServerPluginUsageReporting } from "@apollo/server/plugin/usageReporting";
 
 import { ConfigType } from "@badman/utils";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { join } from "node:path";
+import { ResilientDateTimeScalar } from "./scalars";
 import {
   AvailabilityModule,
   ClubResolverModule,
@@ -29,6 +29,7 @@ import {
   TeamResolverModule,
 } from "./resolvers";
 import { CronJobResolverModule } from "./resolvers/cronJobs/cronJob.module";
+import { SettingResolverModule } from "./resolvers/setting/setting.module";
 import { ServiceResolverModule } from "./resolvers/services/serice.module";
 
 @Module({
@@ -52,11 +53,6 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
           );
           plugins.push(ApolloServerPluginSchemaReporting());
           plugins.push(
-            OperationRegistry({
-              forbidUnregisteredOperations: true,
-            })
-          );
-          plugins.push(
             ApolloServerPluginUsageReporting({
               sendVariableValues: { all: true },
             })
@@ -70,6 +66,9 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
           playground: false,
           debug: true,
           autoSchemaFile: join(process.cwd(), "schema.gql"),
+          buildSchemaOptions: {
+            scalarsMap: [{ type: Date, scalar: ResilientDateTimeScalar }],
+          },
           context: ({ req }: { req: unknown }) => ({ req }),
           plugins,
         } as Omit<GqlModuleOptions, "driver">;
@@ -90,6 +89,7 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
     NotificationResolverModule,
     ServiceResolverModule,
     CronJobResolverModule,
+    SettingResolverModule,
   ],
 })
 export class GrapqhlModule {}

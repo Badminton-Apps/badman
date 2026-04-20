@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = void 0;
+exports.createAvailability = exports.createLocation = exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = void 0;
 const error_handler_1 = require("./error-handler");
 const club_team_naming_1 = require("./club-team-naming");
 const membership_helpers_1 = require("./membership-helpers");
@@ -69,15 +69,16 @@ async function addPlayerToClub(ctx, clubId, playerId) {
 /**
  * Internal: insert a team row (used by createTeam and createOpponentTeam).
  */
-async function insertTeam(ctx, clubId, season, captainId, teamType) {
+async function insertTeam(ctx, clubId, teamNumber, season, captainId, teamType) {
     const club = await (0, club_team_naming_1.getClubById)(ctx, clubId);
-    const { name: teamName, abbreviation } = (0, club_team_naming_1.generateTeamName)(club, 1, teamType, "H");
+    const { name: teamName, abbreviation } = (0, club_team_naming_1.generateTeamName)(club, 1, teamType);
     const team = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
-     VALUES (:clubId, :type, :season, 1, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
+     VALUES (:clubId, :type, :season, :teamNumber, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
         clubId,
         type: teamType,
         season,
+        teamNumber,
         captainId,
         name: teamName,
         abbreviation,
@@ -96,22 +97,23 @@ async function createTeam(ctx, clubId, season, captainId, teamType = "M") {
         console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
         return existing[0].id;
     }
-    const teamId = await insertTeam(ctx, clubId, season, captainId, teamType);
+    const teamId = await insertTeam(ctx, clubId, 1, season, captainId, teamType);
     console.log(`✅ Created Team (${teamId})\n`);
     return teamId;
 }
 /**
  * Add player to team membership
  */
-async function addPlayerToTeam(ctx, teamId, playerId) {
+async function addPlayerToTeam(ctx, teamId, playerId, membershipStart) {
     // Check if membership already exists
     const existing = await (0, membership_helpers_1.hasActiveMembership)(ctx, "TeamPlayerMemberships", `"teamId" = :teamId AND "playerId" = :playerId`, { teamId, playerId });
     if (existing) {
         console.log(`ℹ️  Player already has an active membership with this team\n`);
         return;
     }
+    const start = membershipStart ?? new Date();
     await ctx.rawQuery(`INSERT INTO "TeamPlayerMemberships" ("teamId", "playerId", "start", "membershipType", "createdAt", "updatedAt")
-     VALUES (:teamId, :playerId, NOW(), 'REGULAR', NOW(), NOW())`, { teamId, playerId });
+     VALUES (:teamId, :playerId, :start, 'REGULAR', NOW(), NOW())`, { teamId, playerId, start });
     console.log(`✅ Added user to team\n`);
 }
 /**
@@ -184,9 +186,9 @@ async function createDrawCompetition(ctx, subEventId, season) {
 /**
  * Create opponent team (always inserts; no idempotency check).
  */
-async function createOpponentTeam(ctx, clubId, season, captainId, teamType = "M") {
+async function createOpponentTeam(ctx, clubId, teamNumber, season, captainId, teamType = "M") {
     console.log("👥 Creating opponent Team...");
-    const opponentTeamId = await insertTeam(ctx, clubId, season, captainId, teamType);
+    const opponentTeamId = await insertTeam(ctx, clubId, teamNumber, season, captainId, teamType);
     console.log(`✅ Created opponent Team (${opponentTeamId})\n`);
     return opponentTeamId;
 }
@@ -247,6 +249,46 @@ async function createEncounters(ctx, drawId, teamId, opponentTeamId, encounterCo
     }
     console.log(`✅ Created ${encounterCount} Encounters\n`);
 }
+/**
+ * Create a location for a club (idempotent: check by name + clubId)
+ */
+async function createLocation(ctx, clubId, locationData) {
+    const existing = await ctx.query(`SELECT id, name FROM event."Locations" WHERE name = :name AND "clubId" = :clubId LIMIT 1`, { name: locationData.name, clubId });
+    if (existing && existing.length > 0) {
+        console.log(`ℹ️  Location already exists: ${existing[0].name} (${existing[0].id})\n`);
+        return existing[0];
+    }
+    const hasCoordinates = locationData.latitude != null && locationData.longitude != null;
+    const coordinatesColumn = hasCoordinates ? ', coordinates' : '';
+    const coordinatesValue = hasCoordinates
+        ? `, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)`
+        : '';
+    const location = await ctx.insert(`INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt"${coordinatesColumn})
+     VALUES (:name, :address, :street, :streetNumber, :postalcode, :city, :state, :phone, :clubId, NOW(), NOW()${coordinatesValue})
+     RETURNING id, name`, { ...locationData, clubId });
+    console.log(`✅ Created Location: ${location.name} (${location.id})\n`);
+    return location;
+}
+/**
+ * Create availability for a location (idempotent: check by locationId + season)
+ */
+async function createAvailability(ctx, locationId, season, days, exceptions = []) {
+    const existing = await ctx.query(`SELECT id FROM event."Availabilities" WHERE "locationId" = :locationId AND season = :season LIMIT 1`, { locationId, season });
+    if (existing && existing.length > 0) {
+        console.log(`ℹ️  Availability already exists for this location/season (${existing[0].id})\n`);
+        return existing[0];
+    }
+    const availability = await ctx.insert(`INSERT INTO event."Availabilities" ("locationId", season, days, exceptions, "createdAt", "updatedAt")
+     VALUES (:locationId, :season, :days, :exceptions, NOW(), NOW())
+     RETURNING id`, {
+        locationId,
+        season,
+        days: JSON.stringify(days),
+        exceptions: JSON.stringify(exceptions),
+    });
+    console.log(`✅ Created Availability (${availability.id}) for season ${season}\n`);
+    return availability;
+}
 // Wrap all functions with error handling
 const findOrCreatePlayerWithErrorHandling = (0, error_handler_1.withErrorHandling)(findOrCreatePlayer, "finding/creating player");
 exports.findOrCreatePlayer = findOrCreatePlayerWithErrorHandling;
@@ -268,3 +310,7 @@ const createOpponentTeamWithErrorHandling = (0, error_handler_1.withErrorHandlin
 exports.createOpponentTeam = createOpponentTeamWithErrorHandling;
 const createEncountersWithErrorHandling = (0, error_handler_1.withErrorHandling)(createEncounters, "creating encounters");
 exports.createEncounters = createEncountersWithErrorHandling;
+const createLocationWithErrorHandling = (0, error_handler_1.withErrorHandling)(createLocation, "creating location");
+exports.createLocation = createLocationWithErrorHandling;
+const createAvailabilityWithErrorHandling = (0, error_handler_1.withErrorHandling)(createAvailability, "creating availability");
+exports.createAvailability = createAvailabilityWithErrorHandling;
