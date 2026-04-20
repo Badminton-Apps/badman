@@ -5,8 +5,8 @@ import { XMLParser } from "fast-xml-parser";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import axiosRateLimit from "axios-rate-limit";
-import { Moment } from "moment";
-import moment from "moment-timezone";
+import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { performance } from "perf_hooks";
 import {
   XmlClub,
@@ -26,7 +26,7 @@ import { ConfigType } from "@badman/utils";
 @Injectable()
 export class VisualService {
   private readonly logger = new Logger(VisualService.name);
-  public static visualFormat = "YYYY-MM-DDTHH:mm:ss";
+  public static visualFormat = "yyyy-MM-dd'T'HH:mm:ss";
   private static CACHE_KEY = "visual";
 
   private _retries = 25;
@@ -193,9 +193,10 @@ export class VisualService {
 
     return tournaments;
   }
-  async getChangeEvents(date: Moment, page = 0, pageSize = 100) {
-    const url = `${this._configService.get("VR_API")}/Tournament?list=1&refdate=${date.format(
-      "YYYY-MM-DD"
+  async getChangeEvents(date: Date, page = 0, pageSize = 100) {
+    const url = `${this._configService.get("VR_API")}/Tournament?list=1&refdate=${format(
+      date,
+      "yyyy-MM-dd"
     )}&pagesize=${pageSize}&pageno=${page}`;
 
     const result = await this._getFromApi(url, false);
@@ -225,7 +226,7 @@ export class VisualService {
     <TournamentMatch>
         <TournamentID>${tourneyId}</TournamentID>
         <MatchID>${matchId}</MatchID>
-        <MatchDate>${moment(newDate).tz("Europe/Brussels").format(VisualService.visualFormat)}</MatchDate>
+        <MatchDate>${formatInTimeZone(newDate, "Europe/Brussels", VisualService.visualFormat)}</MatchDate>
     </TournamentMatch>
   `;
 
