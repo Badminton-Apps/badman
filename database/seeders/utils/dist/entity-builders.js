@@ -71,7 +71,7 @@ async function addPlayerToClub(ctx, clubId, playerId) {
  */
 async function insertTeam(ctx, clubId, teamNumber, season, captainId, teamType) {
     const club = await (0, club_team_naming_1.getClubById)(ctx, clubId);
-    const { name: teamName, abbreviation } = (0, club_team_naming_1.generateTeamName)(club, 1, teamType);
+    const { name: teamName, abbreviation } = (0, club_team_naming_1.generateTeamName)(club, teamNumber, teamType);
     const team = await ctx.insert(`INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
      VALUES (:clubId, :type, :season, :teamNumber, :captainId, gen_random_uuid(), :name, :abbreviation, NOW(), NOW())
      RETURNING id`, {
@@ -86,18 +86,18 @@ async function insertTeam(ctx, clubId, teamNumber, season, captainId, teamType) 
     return team.id;
 }
 /**
- * Create a team (idempotent: returns existing team if same club/season/type).
+ * Create a team (idempotent: returns existing team if same club/season/type/teamNumber).
  */
-async function createTeam(ctx, clubId, season, captainId, teamType = "M") {
+async function createTeam(ctx, clubId, season, captainId, teamType = "M", teamNumber = 1) {
     console.log("👥 Creating Team...");
     const existing = await ctx.query(`SELECT id FROM "Teams" 
-     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
-     LIMIT 1`, { clubId, season, type: teamType });
+     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = :teamNumber
+     LIMIT 1`, { clubId, season, type: teamType, teamNumber });
     if (existing && existing.length > 0 && existing[0]) {
         console.log(`ℹ️  Team already exists for this club/season (ID: ${existing[0].id})\n`);
         return existing[0].id;
     }
-    const teamId = await insertTeam(ctx, clubId, 1, season, captainId, teamType);
+    const teamId = await insertTeam(ctx, clubId, teamNumber, season, captainId, teamType);
     console.log(`✅ Created Team (${teamId})\n`);
     return teamId;
 }
@@ -185,8 +185,9 @@ async function createDrawCompetition(ctx, subEventId, season) {
 }
 /**
  * Create opponent team (always inserts; no idempotency check).
+ * Same parameter order as createTeam: (ctx, clubId, season, captainId, teamType?, teamNumber?).
  */
-async function createOpponentTeam(ctx, clubId, teamNumber, season, captainId, teamType = "M") {
+async function createOpponentTeam(ctx, clubId, season, captainId, teamType = "M", teamNumber = 1) {
     console.log("👥 Creating opponent Team...");
     const opponentTeamId = await insertTeam(ctx, clubId, teamNumber, season, captainId, teamType);
     console.log(`✅ Created opponent Team (${opponentTeamId})\n`);

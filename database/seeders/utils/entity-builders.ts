@@ -125,7 +125,7 @@ async function insertTeam(
   teamType: "M" | "F" | "MX"
 ): Promise<string> {
   const club = await getClubById(ctx, clubId);
-  const { name: teamName, abbreviation } = generateTeamName(club, 1, teamType);
+  const { name: teamName, abbreviation } = generateTeamName(club, teamNumber, teamType);
 
   const team = await ctx.insert<Team>(
     `INSERT INTO "Teams" ("clubId", type, season, "teamNumber", "captainId", "link", name, abbreviation, "createdAt", "updatedAt")
@@ -145,22 +145,23 @@ async function insertTeam(
 }
 
 /**
- * Create a team (idempotent: returns existing team if same club/season/type).
+ * Create a team (idempotent: returns existing team if same club/season/type/teamNumber).
  */
 async function createTeam(
   ctx: SeederContext,
   clubId: string,
   season: number,
   captainId: string,
-  teamType: "M" | "F" | "MX" = "M"
+  teamType: "M" | "F" | "MX" = "M",
+  teamNumber = 1
 ): Promise<string> {
   console.log("👥 Creating Team...");
 
   const existing = await ctx.query<{ id: string }>(
     `SELECT id FROM "Teams" 
-     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = 1
+     WHERE "clubId" = :clubId AND season = :season AND type = :type AND "teamNumber" = :teamNumber
      LIMIT 1`,
-    { clubId, season, type: teamType }
+    { clubId, season, type: teamType, teamNumber }
   );
 
   if (existing && existing.length > 0 && existing[0]) {
@@ -168,7 +169,7 @@ async function createTeam(
     return existing[0].id;
   }
 
-  const teamId = await insertTeam(ctx, clubId, 1, season, captainId, teamType);
+  const teamId = await insertTeam(ctx, clubId, teamNumber, season, captainId, teamType);
   console.log(`✅ Created Team (${teamId})\n`);
   return teamId;
 }
@@ -298,14 +299,15 @@ async function createDrawCompetition(
 
 /**
  * Create opponent team (always inserts; no idempotency check).
+ * Same parameter order as createTeam: (ctx, clubId, season, captainId, teamType?, teamNumber?).
  */
 async function createOpponentTeam(
   ctx: SeederContext,
   clubId: string,
-  teamNumber: number,
   season: number,
   captainId: string,
-  teamType: "M" | "F" | "MX" = "M"
+  teamType: "M" | "F" | "MX" = "M",
+  teamNumber = 1
 ): Promise<string> {
   console.log("👥 Creating opponent Team...");
   const opponentTeamId = await insertTeam(ctx, clubId, teamNumber, season, captainId, teamType);
