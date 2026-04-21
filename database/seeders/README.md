@@ -215,12 +215,12 @@ The TypeScript utilities in `utils/` are compiled to JavaScript in `dist/` and i
 - `findOrCreatePlayer(ctx, email, firstName, lastName, memberId, gender, auth0Sub)` — Find or create a player
 - `createClub(ctx, name)` — Create a club
 - `addPlayerToClub(ctx, clubId, playerId, role)` — Add player to club
-- `createTeam(ctx, clubId, season, teamPlayerId)` — Create a team
+- `createTeam(ctx, clubId, season, captainId, teamType?, teamNumber?)` — Create a team (idempotent; default `teamNumber` 1)
 - `addPlayerToTeam(ctx, teamId, playerId)` — Add player to team
 - `createEventCompetition(ctx, season, name)` — Create an event
 - `createSubEventCompetition(ctx, eventId, name, teamType)` — Create a sub-event
 - `createDrawCompetition(ctx, subEventId, name)` — Create a draw
-- `createOpponentTeam(ctx, drawId, homeTeamId)` — Create opponent team record
+- `createOpponentTeam(ctx, clubId, season, captainId, teamType?, teamNumber?)` — Create opponent team (always inserts; same args as `createTeam`)
 - `createEncounters(ctx, drawId, homeTeamId, awayTeamId, count)` — Create matches
 - **`createLocation(ctx, clubId, locationData)`** — Create a club location (NEW)
 - **`createAvailability(ctx, locationId, availabilityData)`** — Create location availability (NEW)
