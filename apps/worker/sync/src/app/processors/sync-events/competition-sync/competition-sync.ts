@@ -1,3 +1,4 @@
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { PointsService } from "@badman/backend-ranking";
 import { VisualService, XmlTournament } from "@badman/backend-visual";
 import { Logger } from "@nestjs/common";
@@ -58,6 +59,7 @@ export class CompetitionSyncer {
   constructor(
     private visualService: VisualService,
     private pointService: PointsService,
+    private encounterGamesGenerationService: EncounterGamesGenerationService,
     protected options?: {
       newGames?: boolean;
     }
@@ -139,6 +141,7 @@ export class CompetitionSyncer {
     this._gameStep = new CompetitionSyncGameProcessor(
       args.xmlTournament,
       this.visualService,
+      this.encounterGamesGenerationService,
       options
     );
 

@@ -1,4 +1,3 @@
-import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { DrawCompetition, EncounterCompetition, RankingSystem } from "@badman/backend-database";
 import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
 import { VisualService } from "@badman/backend-visual";
@@ -15,7 +14,6 @@ export class EncounterCompetitionProcessor {
   constructor(
     private readonly _transactionManager: TransactionManager,
     private readonly _visualService: VisualService,
-    private readonly _encounterGamesGenerationService: EncounterGamesGenerationService,
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
@@ -124,10 +122,6 @@ export class EncounterCompetitionProcessor {
           id: game.id,
           visualCode: game.visualCode,
         });
-        // Protect scored games from destruction
-        if (game.set1Team1 != null || game.set1Team2 != null) {
-          continue;
-        }
         await game.destroy({ transaction });
       }
 
@@ -140,6 +134,18 @@ export class EncounterCompetitionProcessor {
       throw new Error("Sub Encounter code is required");
     }
 
+    const visualEncounters = await this._visualService.getGames(
+      job.data.eventCode,
+      EncounterCode,
+      true
+    );
+
+    const visualEncounter = visualEncounters.find((r) => `${r.Code}` === `${EncounterCode}`);
+
+    if (!visualEncounter) {
+      throw new Error("Sub Encounter not found");
+    }
+
     if (!encounter) {
       encounter = new EncounterCompetition();
     }
@@ -147,13 +153,9 @@ export class EncounterCompetitionProcessor {
       encounter.id = EncounterId;
     }
 
-    encounter.visualCode = EncounterCode;
+    encounter.visualCode = visualEncounter.Code;
 
     await encounter.save({ transaction });
-
-    // Ensure 8 local game slots exist before syncing toernooi data.
-    // Idempotent: skips orders already present (including any toernooi-synced games).
-    await this._encounterGamesGenerationService.generateGames(encounter.id, transaction);
 
     let gameJobIds = [];
     // if we request to update the Encounters or the event is new we need to process the matches
@@ -193,38 +195,15 @@ export class EncounterCompetitionProcessor {
     }
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
-    // Individual games within a competition encounter live under /TeamMatch/{id},
-    // NOT /Draw/{id}/Match. See visual.service.ts — getGames on an encounter
-    // code would return unrelated TeamMatches of the draw that happens to share
-    // the numeric ID.
-    const matches = await this._visualService.getTeamMatch(eventCode, encounterCode);
+    const matches = await this._visualService.getGames(eventCode, encounterCode, true);
 
-    const dbGames = await encounter.getGames({ transaction });
-
-    // Skip toernooi matches whose corresponding local slot already has scores.
-    const skipCodes = new Set<string>();
-    // Map local (unscored) game slots by order so toernooi data can be merged in place.
-    const localGameIdByOrder = new Map<number, string>();
+    // remove all sub events in this event that are not in the visual to remove stray data
+    const dbGames = await encounter.getGames({
+      transaction,
+    });
 
     for (const dbGame of dbGames) {
-      if (!dbGame.visualCode) {
-        // Local placeholder: find toernooi match targeting the same slot (by order).
-        const match = matches.find((m) => m.MatchOrder === dbGame.order);
-        if (!match) continue;
-
-        const hasScores = dbGame.set1Team1 != null || dbGame.set1Team2 != null;
-        if (hasScores) {
-          // Local scores win — leave the local game untouched and skip the toernooi match.
-          skipCodes.add(`${match.Code}`);
-        } else {
-          // Toernooi wins — let the game job update the existing local game in place.
-          localGameIdByOrder.set(dbGame.order, dbGame.id);
-        }
-        continue;
-      }
-
-      // Synced game: destroy if no longer in the toernooi response.
-      if (!matches.find((r) => r.Code === dbGame.visualCode)) {
+      if (!matches.find((r) => `${r.Code}` === `${dbGame.visualCode}`)) {
         this.logger.debug(`Removing game ${dbGame.visualCode}`);
         await dbGame.destroy({ transaction });
       }
@@ -232,27 +211,17 @@ export class EncounterCompetitionProcessor {
 
     const gameJobIds = [];
 
+    // queue the new sub events
     for (const match of matches) {
-      if (skipCodes.has(`${match.Code}`)) {
-        this.logger.debug(
-          `Skipping toernooi match ${match.Code} — local slot already has scores`
-        );
-        continue;
-      }
-
-      const localGameId = localGameIdByOrder.get(match.MatchOrder);
-      const existingGameId =
-        localGameId ?? games?.find((r) => r.visualCode === match.Code)?.id;
-
+      // update sub events
       const matchJob = await this._syncQueue.add(Sync.ProcessSyncCompetitionGame, {
         transactionId,
         drawId: encounter.drawId,
-        encounterId: encounter.id,
-        encounterVisualCode: encounter.visualCode,
         eventCode,
         rankingSystemId,
+        encounterId: encounter.id,
         gameCode: match.Code,
-        gameId: existingGameId,
+        gameId: games?.find((r) => `${r.visualCode}` === `${match.Code}`)?.id,
         options,
       });
 

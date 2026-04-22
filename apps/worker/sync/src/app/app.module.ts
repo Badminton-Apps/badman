@@ -45,8 +45,6 @@ import {
   ScheduleRecalculateStandingCompetitionEvent,
   ScheduleRecalculateStandingCompetitionSubEvent,
   DrawStandingCompetitionProcessor,
-  EncounterCompetitionProcessor,
-  GameCompetitionProcessor,
   RetryFailedEncounterSyncProcessor,
 } from "./processors";
 
@@ -76,8 +74,6 @@ import {
     DrawStandingTournamentProcessor,
 
     DrawStandingCompetitionProcessor,
-    EncounterCompetitionProcessor,
-    GameCompetitionProcessor,
 
     EventTournamenScheduler,
     SubEventTournamentScheduler,

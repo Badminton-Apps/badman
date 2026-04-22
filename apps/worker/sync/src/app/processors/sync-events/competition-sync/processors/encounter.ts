@@ -154,11 +154,46 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   private async _destroyEncounters(encounter: EncounterCompetition[]) {
+    if (encounter.length === 0) {
+      return;
+    }
+
+    // Protect encounters that have ANY game with set scores — those represent
+    // locally-entered results that must survive a sync that would otherwise
+    // orphan the encounter.
+    const scoredLinkIds = (
+      await Game.findAll({
+        where: {
+          linkType: GameLinkType.COMPETITION,
+          linkId: { [Op.in]: encounter.map((e) => e.id) },
+          [Op.or]: [
+            { set1Team1: { [Op.ne]: null } },
+            { set1Team2: { [Op.ne]: null } },
+          ],
+        },
+        attributes: ["linkId"],
+        transaction: this.transaction,
+      })
+    ).map((g) => g.linkId);
+
+    const protectedIds = new Set(scoredLinkIds);
+    const safeToDestroy = encounter.filter((e) => !protectedIds.has(e.id));
+
+    if (protectedIds.size > 0) {
+      this.logger.warn(
+        `Skipping destroy for ${protectedIds.size} encounter(s) with locally-scored games: ${Array.from(protectedIds).join(", ")}`
+      );
+    }
+
+    if (safeToDestroy.length === 0) {
+      return;
+    }
+
     await Game.destroy({
       where: {
         linkType: GameLinkType.COMPETITION,
         linkId: {
-          [Op.in]: encounter.map((e) => e.id),
+          [Op.in]: safeToDestroy.map((e) => e.id),
         },
       },
       transaction: this.transaction,
@@ -167,7 +202,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     await EncounterCompetition.destroy({
       where: {
         id: {
-          [Op.in]: encounter.map((e) => e.id),
+          [Op.in]: safeToDestroy.map((e) => e.id),
         },
       },
       transaction: this.transaction,
@@ -175,7 +210,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     // remove from db encounters
     this._dbEncounters = this._dbEncounters.filter(
-      (e) => !encounter.find((r) => r.id === e.encounter.id)
+      (e) => !safeToDestroy.find((r) => r.id === e.encounter.id)
     );
   }
 }

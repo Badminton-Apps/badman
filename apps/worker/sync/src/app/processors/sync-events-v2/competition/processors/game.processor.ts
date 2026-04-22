@@ -15,7 +15,7 @@ import {
   XmlPlayer,
   XmlScoreStatus,
 } from "@badman/backend-visual";
-import { GameLinkType, GameStatus, GameType, getRankingProtected } from "@badman/utils";
+import { GameStatus, GameType, getRankingProtected } from "@badman/utils";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job } from "bull";
@@ -46,8 +46,6 @@ export class GameCompetitionProcessor {
       subEventId: string;
       rankingSystemId: string;
       drawId: string;
-      encounterId: string;
-      encounterVisualCode: string;
 
       // one or the other
       gameId: string;
@@ -97,17 +95,11 @@ export class GameCompetitionProcessor {
       throw new Error("Event code is required");
     }
 
-    const encounterId = job.data.encounterId ?? game?.linkId;
-    if (!encounterId) {
-      throw new Error("encounterId is required");
-    }
-
     if (!game && job.data.gameCode) {
       game = await Game.findOne({
         where: {
           visualCode: job.data.gameCode.toString(),
-          linkId: encounterId,
-          linkType: GameLinkType.COMPETITION,
+          linkId: draw.id,
         },
         transaction,
       });
@@ -135,18 +127,9 @@ export class GameCompetitionProcessor {
       throw new Error("game code is required");
     }
 
-    // Individual games within a competition encounter are fetched via
-    // /TeamMatch/{id} (getTeamMatch), NOT /Draw/{id}/Match (getGames).
-    // See visual.service.ts JSDoc for endpoint semantics.
-    const encounterVisualCode = job.data.encounterVisualCode;
-    if (!encounterVisualCode) {
-      throw new Error("encounterVisualCode is required");
-    }
-    const xmlGames = await this._visualService.getTeamMatch(
-      job.data.eventCode,
-      encounterVisualCode
-    );
-    const xmlGame = xmlGames.find((m) => m.Code?.toString() === gameCode.toString());
+    // we fetch it via the draw because bye's aren't in the game detail
+    const xmlGames = await this._visualService.getGames(job.data.eventCode, draw.visualCode, true);
+    const xmlGame = xmlGames.find((m) => m.Code.toString() === gameCode.toString()) as XmlMatch;
     if (!xmlGame) {
       throw new Error("game not found");
     }
@@ -222,8 +205,8 @@ export class GameCompetitionProcessor {
     }
     game.gameType = this._getGameType(xmlGame.MatchTypeID);
     game.visualCode = xmlGame.Code;
-    game.linkId = encounterId;
-    game.linkType = GameLinkType.COMPETITION;
+    game.linkId = draw.id;
+    game.linkType = "tournament";
     game.status = gameStatus;
 
     // Only update playedAt if our database has no existing data
