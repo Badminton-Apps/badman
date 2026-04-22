@@ -1,5 +1,6 @@
 import { CronJob, DatabaseModule, Service } from "@badman/backend-database";
 import { CompileModule } from "@badman/backend-compile";
+import { EncounterGamesModule } from "@badman/backend-encounter-games";
 import { LoggingModule } from "@badman/backend-logging";
 import { MailingModule } from "@badman/backend-mailing";
 import { NotificationsModule } from "@badman/backend-notifications";
@@ -44,6 +45,8 @@ import {
   ScheduleRecalculateStandingCompetitionEvent,
   ScheduleRecalculateStandingCompetitionSubEvent,
   DrawStandingCompetitionProcessor,
+  EncounterCompetitionProcessor,
+  GameCompetitionProcessor,
   RetryFailedEncounterSyncProcessor,
 } from "./processors";
 
@@ -73,6 +76,8 @@ import {
     DrawStandingTournamentProcessor,
 
     DrawStandingCompetitionProcessor,
+    EncounterCompetitionProcessor,
+    GameCompetitionProcessor,
 
     EventTournamenScheduler,
     SubEventTournamentScheduler,
@@ -108,6 +113,7 @@ import {
       inject: [ConfigService],
     }),
     DatabaseModule,
+    EncounterGamesModule,
     MailingModule,
     PupeteerModule,
     RankingModule,

@@ -1,6 +1,6 @@
 import { EncounterCompetition, EventCompetition, Game } from "@badman/backend-database";
 import { VisualService, XmlTeamMatch, XmlTournament } from "@badman/backend-visual";
-import { runParallel } from "@badman/utils";
+import { GameLinkType, runParallel } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { isAfter } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
@@ -156,7 +156,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   private async _destroyEncounters(encounter: EncounterCompetition[]) {
     await Game.destroy({
       where: {
-        linkType: "competition",
+        linkType: GameLinkType.COMPETITION,
         linkId: {
           [Op.in]: encounter.map((e) => e.id),
         },

@@ -7,7 +7,7 @@ import {
   RankingSystem,
   Team,
 } from "@badman/backend-database";
-import { GameStatus, GameType, getAssemblyPositionsInOrder, SubEventTypeEnum } from "@badman/utils";
+import { GameLinkType, GameStatus, GameType, getAssemblyPositionsInOrder, SubEventTypeEnum } from "@badman/utils";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
@@ -72,7 +72,7 @@ export class EncounterGamesGenerationService {
 
     // 5. Load existing games for idempotency check
     const existingGames = await Game.findAll({
-      where: { linkId: encounterId, linkType: "competition" },
+      where: { linkId: encounterId, linkType: GameLinkType.COMPETITION },
       transaction,
     });
 
@@ -101,7 +101,7 @@ export class EncounterGamesGenerationService {
       const game = await Game.create(
         {
           linkId: encounterId,
-          linkType: "competition",
+          linkType: GameLinkType.COMPETITION,
           order,
           gameType,
           status: GameStatus.NORMAL,
@@ -130,7 +130,7 @@ export class EncounterGamesGenerationService {
 
     // Return all 8 games
     return Game.findAll({
-      where: { linkId: encounterId, linkType: "competition" },
+      where: { linkId: encounterId, linkType: GameLinkType.COMPETITION },
       order: [["order", "ASC"]],
       transaction,
     });

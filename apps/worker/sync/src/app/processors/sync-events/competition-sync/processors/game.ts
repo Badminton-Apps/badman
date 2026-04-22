@@ -13,7 +13,7 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from "@badman/backend-visual";
-import { GameStatus, GameType, getRankingProtected, runParallel } from "@badman/utils";
+import { GameLinkType, GameStatus, GameType, getRankingProtected, runParallel } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { isAfter, isBefore, subWeeks } from "date-fns";
 import { Op } from "sequelize";
@@ -166,7 +166,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           gameType: this._getGameType(xmlMatch.MatchTypeID),
           order: xmlMatch.MatchOrder,
           linkId: encounter.id,
-          linkType: "competition",
+          linkType: GameLinkType.COMPETITION,
           status: gameStatus,
           playedAt: encounter.date,
           set1Team1: xmlMatch?.Sets?.Set?.[0]?.Team1,

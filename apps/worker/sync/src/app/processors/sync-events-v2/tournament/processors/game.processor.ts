@@ -9,7 +9,7 @@ import {
 import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
 import { PointsService } from "@badman/backend-ranking";
 import { VisualService, XmlMatch, XmlPlayer, XmlScoreStatus } from "@badman/backend-visual";
-import { GameStatus, getRankingProtected } from "@badman/utils";
+import { GameLinkType, GameStatus, getRankingProtected } from "@badman/utils";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job } from "bull";
@@ -198,7 +198,7 @@ export class GameTournamentProcessor {
     game.gameType = subEvent?.gameType;
     game.visualCode = xmlGame.Code;
     game.linkId = draw.id;
-    game.linkType = "tournament";
+    game.linkType = GameLinkType.TOURNAMENT;
     game.status = gameStatus;
 
     // Only update playedAt if our database has no existing data

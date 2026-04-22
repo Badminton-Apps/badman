@@ -2,6 +2,7 @@ export * from "./changeEncounterAvailibilty.enum";
 export * from "./clubMembershipType.enum";
 export * from "./drawType.enum";
 export * from "./eventType.enum";
+export * from "./gameLinkType.enum";
 export * from "./gameStatus.enum";
 export * from "./gameType.enum";
 export * from "./levelType.enum";

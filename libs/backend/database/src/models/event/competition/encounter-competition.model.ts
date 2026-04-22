@@ -31,6 +31,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
+import { GameLinkType } from "@badman/utils";
 import { Relation } from "../../../wrapper";
 import { Comment } from "../../comment.model";
 import { Notification } from "../../personal";
@@ -76,7 +77,7 @@ export class EncounterCompetition extends Model<
     foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: "competition",
+      linkType: GameLinkType.COMPETITION,
     },
   })
   games?: Relation<Game[]>;
