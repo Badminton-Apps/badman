@@ -221,8 +221,12 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         }
 
         if (game.winner != reverseMapWinnerValue(xmlMatch.Winner)) {
-          // Only update winner if toernooi.nl has data OR if we have no existing data
-          if (xmlMatch.Winner != null || game.winner == null) {
+          // Toernooi sends Winner=0 for scheduled-but-not-yet-played games.
+          // Treat that as "no data" — don't overwrite a locally-entered winner
+          // with the NOT_YET_PLAYED sentinel. Only overwrite when toernooi
+          // reports a real outcome (Winner > 0) or when local is empty.
+          const hasToernooiWinner = xmlMatch.Winner != null && xmlMatch.Winner !== 0;
+          if (hasToernooiWinner || game.winner == null) {
             game.winner = reverseMapWinnerValue(xmlMatch.Winner);
           }
         }
@@ -266,7 +270,15 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           }
         }
 
-        if (game.status !== gameStatus) {
+        // Only overwrite status when toernooi has a confirmed outcome:
+        // either a real Winner (played) or an explicit non-Normal ScoreStatus
+        // (walkover / retirement / disqualified / no-match). Otherwise leave
+        // local status alone — a default Normal from an unplayed toernooi
+        // slot must not override a locally-entered Walkover/Retirement.
+        const hasToernooiOutcome =
+          (xmlMatch.Winner != null && xmlMatch.Winner !== 0) ||
+          xmlMatch.ScoreStatus !== XmlScoreStatus.Normal;
+        if (game.status !== gameStatus && (hasToernooiOutcome || game.status == null)) {
           game.status = gameStatus;
         }
       }
