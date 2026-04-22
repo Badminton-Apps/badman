@@ -132,12 +132,10 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
 
     const visualMatch = result.filter((m) => m != null || m != undefined) as XmlMatch[];
 
-    // Protection: Compare data completeness between toernooi.nl and local data
-    const shouldSkipSync = this._shouldSkipGameSync(encounter, visualMatch, games);
-    if (shouldSkipSync) {
-      return;
-    }
-
+    // Merge toernooi data into local games. Toernooi is the source of truth
+    // and will overwrite fields where it has data; the per-field guards below
+    // (e.g. `if (xmlGame.Winner != null || game.winner == null)`) ensure that
+    // locally-entered data is NOT overwritten when toernooi's field is empty.
     for (const xmlMatch of visualMatch) {
       // Try to find existing game with multiple fallback strategies to prevent duplicates
       let game = games.find(
@@ -511,58 +509,4 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     return returnPlayer;
   }
 
-  /**
-   * Determines if game sync should be skipped based on data completeness comparison
-   * between toernooi.nl and local data
-   */
-  private _shouldSkipGameSync(
-    encounter: EncounterCompetition,
-    visualMatches: XmlMatch[],
-    localGames: Game[]
-  ): boolean {
-    // Count complete games in toernooi.nl (games with set scores)
-    const completeVisualGames = visualMatches.filter((xmlMatch) => {
-      const sets = xmlMatch?.Sets?.Set;
-      if (!sets) {
-        return false;
-      }
-
-      // Normalize to array format
-      const setsArray = Array.isArray(sets) ? sets : [sets];
-
-      // Check if any set has scores
-      return setsArray.some(
-        (set) => set?.Team1 != null && set?.Team2 != null && (set.Team1 > 0 || set.Team2 > 0)
-      );
-    }).length;
-
-    // Count complete games in local data (games with set scores and playedAt)
-    const completeLocalGames = localGames.filter((game) => {
-      const hasPlayedAt = game.playedAt != null;
-      const hasWinner = game.winner != null && game.winner > 0;
-      const hasSetScores =
-        (game.set1Team1 != null && game.set1Team2 != null) ||
-        (game.set2Team1 != null && game.set2Team2 != null) ||
-        (game.set3Team1 != null && game.set3Team2 != null);
-
-      return hasPlayedAt && hasSetScores && hasWinner;
-    }).length;
-
-    // Skip sync if local data is more complete than or equal to toernooi.nl data
-    const shouldSkip = completeLocalGames >= completeVisualGames && completeLocalGames > 0;
-
-    if (shouldSkip) {
-      this.logger.debug(
-        `Skipping game sync for encounter ${encounter.id} - local data is more complete ` +
-          `(local: ${completeLocalGames} complete games, toernooi.nl: ${completeVisualGames} complete games)`
-      );
-    } else {
-      this.logger.debug(
-        `Proceeding with game sync for encounter ${encounter.id} - toernooi.nl has more complete data ` +
-          `(local: ${completeLocalGames} complete games, toernooi.nl: ${completeVisualGames} complete games)`
-      );
-    }
-
-    return shouldSkip;
-  }
 }
