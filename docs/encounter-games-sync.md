@@ -1,6 +1,8 @@
 # Encounter Games Sync (toernooi.nl)
 
-How encounter games are pulled from toernooi.nl (Visual Reality) into the database, how they interact with locally-generated placeholders, and how the "always 8 games per encounter" invariant is enforced.
+How competition encounter games are pulled from toernooi.nl (Visual Reality) into the database, how local entries interact with synced data, and how the "always 8 games per encounter" invariant is enforced.
+
+> **Which pipeline runs in production?** The v1 sync chain under `apps/worker/sync/src/app/processors/sync-events/competition-sync/`. The v2 pipeline under `sync-events-v2/competition/` is a partial migration — its processors are not wired up in `app.module.ts` and no entry-point queues `Sync.ProcessSyncCompetitionEvent`. Ongoing v2 work lives on branch `feat/v2-competition-sync`.
 
 ---
 
@@ -10,20 +12,23 @@ How encounter games are pulled from toernooi.nl (Visual Reality) into the databa
 2. [Components](#components)
 3. [Flow](#flow)
 4. [Sequence Diagram](#sequence-diagram)
-5. [Slot State Matrix](#slot-state-matrix)
-6. [Score Conflict Resolution](#score-conflict-resolution)
-7. [Status & Winner Enums](#status--winner-enums)
-8. [Deriving Upstream State](#deriving-upstream-state)
+5. [Merge policy (per-field)](#merge-policy-per-field)
+6. [Slot State Matrix](#slot-state-matrix)
+7. [Protecting local data on deletes](#protecting-local-data-on-deletes)
+8. [GameLinkType and model associations](#gamelinktype-and-model-associations)
+9. [Status & Winner enums](#status--winner-enums)
+10. [VR API endpoints (authoritative reference)](#vr-api-endpoints-authoritative-reference)
+11. [Deriving upstream state](#deriving-upstream-state)
 
 ---
 
 ## Summary
 
-- Upstream source: toernooi.nl (Visual Reality) XML API, base `VR_API`.
-- Every competition encounter has **exactly 8 game slots** (ordered 1–8, derived from `getAssemblyPositionsInOrder()`).
-- Slots are created by `EncounterGamesGenerationService.generateGames()`, which is now called automatically at the start of every encounter sync (was previously a manual GraphQL mutation only).
-- Toernooi data merges **in place** into existing local slots (matched by `order` = `MatchOrder`). Local games with set scores are protected and are never overwritten.
-- `GameLinkType` enum distinguishes `COMPETITION` (encounter games) from `TOURNAMENT` (tournament draw games). Competition games always have `linkId = encounter.id` / `linkType = "competition"`.
+- **Upstream source**: toernooi.nl Visual Reality XML API (base `VR_API=https://api.tournamentsoftware.com/1.0`), HTTP Basic auth, 15 RPS rate-limited.
+- **Invariant**: every competition encounter has exactly **8 game slots** (ordered 1–8, derived from `getAssemblyPositionsInOrder()` per team type). Slots are created by `EncounterGamesGenerationService.generateGames()`, which v1 sync now calls automatically at the top of `CompetitionSyncGameProcessor._processEncounter`.
+- **Source of truth**: toernooi.nl wins **when it has real data**. Where toernooi's field is empty (unplayed game, default `Winner=0`, default `ScoreStatus=Normal` without a real outcome), local data is preserved.
+- **Protection on destroy**: when an encounter is removed upstream, the local row is preserved if **any** of its games has set scores OR a non-zero winner (walkover / retirement entered locally).
+- **`GameLinkType` enum** (`COMPETITION | TOURNAMENT`) replaces the magic strings throughout the backend.
 
 ---
 
@@ -31,75 +36,57 @@ How encounter games are pulled from toernooi.nl (Visual Reality) into the databa
 
 | Component | Path |
 |---|---|
-| HTTP client (XML fetch + parse) | `libs/backend/visual/src/services/visual.service.ts` |
-| Draw processor (encounters per draw) | `apps/worker/sync/src/app/processors/sync-events-v2/competition/processors/draw.processor.ts` |
-| Encounter processor (games per encounter) | `apps/worker/sync/src/app/processors/sync-events-v2/competition/processors/encounter.processor.ts` |
-| Game processor (single game detail) | `apps/worker/sync/src/app/processors/sync-events-v2/competition/processors/game.processor.ts` |
-| Local 8-slot generator | `libs/backend/competition/encounter-games/src/services/encounter-games-generation.service.ts` |
+| HTTP client (XML fetch + parse, rate-limited, cached) | `libs/backend/visual/src/services/visual.service.ts` |
+| XML type definitions | `libs/backend/visual/src/utils/visual-result.ts` |
+| v1 entry point (NestJS Bull processor on `Sync.SyncEvents`) | `apps/worker/sync/src/app/processors/sync-events/sync-events.processor.ts` |
+| v1 orchestrator (chains StepProcessors) | `apps/worker/sync/src/app/processors/sync-events/competition-sync/competition-sync.ts` |
+| v1 encounter step (upsert encounters + destroy missing) | `apps/worker/sync/src/app/processors/sync-events/competition-sync/processors/encounter.ts` |
+| v1 game step (per-field merge + 8-slot generation) | `apps/worker/sync/src/app/processors/sync-events/competition-sync/processors/game.ts` |
+| 8-slot generator | `libs/backend/competition/encounter-games/src/services/encounter-games-generation.service.ts` |
 | `GameLinkType` enum | `libs/utils/src/lib/enums/gameLinkType.enum.ts` |
 | Game entity + enums | `libs/backend/database/src/models/event/game.model.ts` |
-| Encounter entity | `libs/backend/database/src/models/event/competition/encounter-competition.model.ts` |
+| EncounterCompetition (scoped `HasMany Game`) | `libs/backend/database/src/models/event/competition/encounter-competition.model.ts` |
 
 ---
 
 ## Flow
 
-### 1. Upstream call
+### 1. Entry
 
-`VisualService.getGames(tourneyId, drawId)` — `visual.service.ts:90`
+`SyncEventsProcessor` consumes `Sync.SyncEvents` Bull jobs, opens a Sequelize transaction per XmlTournament, and hands off to `CompetitionSyncer.process()`. If the tournament's `TypeID` is `TeamTournament (1)` or `OnlineLeague (3)`, the competition chain runs; `IndividualTournament (0)` / `TeamSportTournament (2)` go to the tournament chain.
+
+### 2. Orchestration (`CompetitionSyncer`)
+
+Steps run sequentially inside the transaction:
 
 ```
-GET {VR_API}/Tournament/{tourneyId}/Draw/{drawId}/Match
+event → subEvent → ranking → draw → entry → encounter
+  → encounterLocation → player → game → point → standing → cleanup
 ```
 
-Response is XML, parsed into either `Match[]` (individual games) or `TeamMatch[]` (encounters). The API returns `Match[]` when `drawId` is an **encounter code**, and `TeamMatch[]` when it's a **draw code**. If neither key is present, the service logs `"No matches"` and returns `[]`.
+All steps share the same Sequelize transaction via `this.transaction` on the `StepProcessor` base class.
 
-### 2. Encounter sync — ensure 8 slots exist
+### 3. Encounter step
 
-`EncounterCompetitionProcessor.ProcessSyncCompetitionEncounter` — `encounter.processor.ts`
+`CompetitionSyncEncounterProcessor` fetches `TeamMatch[]` at draw level via `getGames(eventCode, drawCode)` and upserts encounters by `visualCode`. Encounters that disappeared upstream go through `_destroyEncounters` (see [protection](#protecting-local-data-on-deletes)).
 
-After the `EncounterCompetition` row is saved, `generateGames(encounter.id, transaction)` runs unconditionally. It is idempotent: skips any `order` (1–8) already present. So on first sync all 8 slots are created, and on re-syncs it's a no-op.
+### 4. Game step — per encounter
 
-### 3. Encounter sync — reconciliation
+`CompetitionSyncGameProcessor._processEncounter(encounter, internalId, games)`:
 
-`EncounterCompetitionProcessor.processGames` — `encounter.processor.ts:196+`
+1. **Ensure 8 slots exist**: call `encounterGamesGenerationService.generateGames(encounter.id, transaction)` (idempotent, skips existing orders). Reload the local games list. Skipped when `encounter.homeTeamId` is null (logged warning). Errors caught and logged — sync continues.
+2. **Date guards**: skip if `isAfter(encounter.date, now)` (future) or `encounter.date == null`. Slots remain from step 1.
+3. **Finished guard**: skip if `encounter.finished === true`.
+4. **Fetch games**: `visualService.getTeamMatch(eventCode, internalId)` — this hits `/TeamMatch/{id}` and returns `XmlMatch[]` (individual games). Do NOT use `getGames` here: it hits `/Draw/{id}/Match` which for a team-match code returns unrelated TeamMatches.
+5. **Match each `xmlMatch` to a local game** (3-level fallback):
+   - (a) exact: same `order` AND same `visualCode`
+   - (b) same `visualCode` only
+   - (c) same `order` with null `visualCode` (local placeholder)
+6. **Merge** per the policy below.
 
-1. Fetch toernooi games: `visualService.getGames(eventCode, encounterVisualCode)` → `XmlMatch[]`.
-2. Load DB games for the encounter via `encounter.getGames()` (scoped to `linkType = 'competition'`).
-3. Walk DB games:
-   - **Local placeholder** (no `visualCode`): match to a toernooi entry by `order == MatchOrder`.
-     - If local slot has set scores (`set1Team1 != null || set1Team2 != null`) → protect it; the toernooi match is added to `skipCodes` and its game job is NOT queued.
-     - Otherwise → record the local game's `id` in `localGameIdByOrder`; a game job will be queued and will update the local game **in place** (same UUID, stamps `visualCode`, scores, players).
-   - **Synced game** (has `visualCode`): if its code is missing from the current toernooi response, destroy (stale upstream).
-4. Queue a `ProcessSyncCompetitionGame` job per non-skipped toernooi match, passing:
-   - `gameId` = local placeholder's id if one matched that slot, else the id of a previously-synced game with that visualCode, else none (new game created in game processor)
-   - `encounterId`, `encounterVisualCode`, `drawId`, `eventCode`, `rankingSystemId`, `gameCode`, `options`.
+### 5. Local 8-slot generator (standalone)
 
-### 4. Per-game sync
-
-`GameCompetitionProcessor.ProcessSyncCompetitionGame` — `game.processor.ts`
-
-1. Load `Game` by `gameId` if provided (this is the local placeholder in the normal path).
-2. Derive `encounterId` from `job.data.encounterId ?? game.linkId`.
-3. Re-fetch via `visualService.getGames(eventCode, encounterVisualCode)` — for competition we must use the encounter code, not the draw code, because the draw endpoint returns `TeamMatch[]` (encounters), not individual games.
-4. Locate the match by `gameCode`; parse `Sets`, `MatchTime`, `ScoreStatus` → `GameStatus`.
-5. Update the game row:
-   - `linkId = encounterId`, `linkType = GameLinkType.COMPETITION` (always).
-   - `round`, `order`, `playedAt` only written when the DB value is null — preserves local slot order and any pre-existing data.
-   - `winner` only written when toernooi has data OR DB value is null.
-   - Set scores only written when toernooi has data OR DB value is null.
-   - `gameType`, `visualCode`, `status` always overwritten from toernooi.
-6. Player memberships only re-written if the game had no prior winner (preserves historical assignments on re-sync).
-
-### 5. Delete-encounter path
-
-`encounter.processor.ts` `deleteEncounter` branch:
-
-When an encounter is destroyed as part of sync (`options.deleteEncounter`), games are walked first. Games with set scores are **kept** (they remain linked to the old encounter UUID, which is re-used for the new `EncounterCompetition`). Unscored games are destroyed.
-
-### 6. Local generation (standalone)
-
-`EncounterGamesGenerationService.generateGames()` is still exposed via GraphQL mutation for manual triggering (`encounter.resolver.ts`). It uses the same idempotency logic: skip any `order` already present. Running it outside of sync is safe and produces no duplicates.
+`EncounterGamesGenerationService.generateGames()` is also exposed via GraphQL mutation for manual triggering. Idempotent — safe to run any number of times without duplicating slots.
 
 ---
 
@@ -108,106 +95,181 @@ When an encounter is destroyed as part of sync (`options.deleteEncounter`), game
 ```mermaid
 sequenceDiagram
   autonumber
-  participant Q as Bull Queue
-  participant DP as DrawProcessor
-  participant EP as EncounterProcessor
-  participant GS as GamesGenerationService
+  participant Cron as Cron / Trigger
+  participant SP as SyncEventsProcessor
+  participant CS as CompetitionSyncer
+  participant ES as EncounterStep
+  participant GS as GameStep
+  participant Gen as GamesGenerationService
   participant VS as VisualService
   participant VR as toernooi.nl (VR_API)
   participant DB as Database
-  participant GP as GameProcessor
 
-  Q->>DP: ProcessSyncCompetitionDraw
-  DP->>VS: getGames(eventCode, drawCode)
-  VS->>VR: GET /Tournament/{t}/Draw/{drawCode}/Match
-  VR-->>VS: XML (TeamMatch[] = encounters)
-  VS-->>DP: encounters[]
-  DP->>Q: queue ProcessSyncCompetitionEncounter per encounter
+  Cron->>SP: Sync.SyncEvents job
+  SP->>DB: begin transaction
+  SP->>CS: process(transaction, xmlTournament)
 
-  Q->>EP: ProcessSyncCompetitionEncounter
-  EP->>DB: save encounter
-  EP->>GS: generateGames(encounter.id)
-  GS->>DB: upsert missing slots (1..8)
-  EP->>VS: getGames(eventCode, encounterVisualCode)
-  VS->>VR: GET /Tournament/{t}/Draw/{encounterVisualCode}/Match
-  VR-->>VS: XML (Match[] = games, 0..8)
-  VS-->>EP: matches[]
-  EP->>DB: load encounter.games (all 8 slots + any previously synced)
+  CS->>ES: run encounter step
+  ES->>VS: getGames(eventCode, drawCode)
+  VS->>VR: GET /Draw/{drawCode}/Match
+  VR-->>VS: TeamMatch[] (encounters)
+  VS-->>ES: TeamMatch[]
+  ES->>DB: upsert encounters; _destroyEncounters for missing (protected)
 
-  loop for each DB game
-    alt no visualCode (local slot)
-      alt local slot has set scores & toernooi has match for this order
-        Note over EP: add match.Code to skipCodes — protect local score
-      else local slot unscored & toernooi has match
-        Note over EP: record local.id in localGameIdByOrder — merge in place
-      end
-    else has visualCode (previously synced)
-      alt visualCode missing from toernooi response
-        EP->>DB: destroy game (stale upstream)
+  CS->>GS: run game step
+
+  loop per encounter
+    alt encounter.homeTeamId
+      GS->>Gen: generateGames(encounter.id, transaction)
+      Gen->>DB: insert missing slots 1..8
+      GS->>DB: reload games for encounter
+    else no homeTeamId
+      Note over GS: log warn, skip generation
+    end
+
+    alt future OR finished OR no date
+      Note over GS: keep slots, skip merge
+    else
+      GS->>VS: getTeamMatch(eventCode, internalId)
+      VS->>VR: GET /TeamMatch/{id}
+      VR-->>VS: Match[] (individual games)
+      VS-->>GS: Match[]
+
+      loop per xmlMatch
+        GS->>GS: match to local game by order+visualCode
+        GS->>GS: per-field merge (see policy)
+        GS->>DB: save if changed
+        alt originalWinner == null
+          GS->>DB: rewrite GamePlayerMemberships
+        else
+          Note over GS: skip membership rewrite
+        end
       end
     end
   end
 
-  loop for each match not in skipCodes
-    EP->>Q: queue ProcessSyncCompetitionGame (gameId = local slot id if any)
-  end
-
-  Q->>GP: ProcessSyncCompetitionGame
-  GP->>VS: getGames(eventCode, encounterVisualCode)
-  VS-->>GP: matches[] (cache likely hit)
-  GP->>GP: pick match by gameCode; map ScoreStatus → GameStatus
-  GP->>DB: update Game in place (linkId=encounterId, linkType=COMPETITION, stamp visualCode/scores/players)
+  SP->>DB: commit
 ```
+
+---
+
+## Merge policy (per-field)
+
+**Rule**: toernooi.nl is the source of truth **when it has real data**. Otherwise, local data is preserved. Applied per field inside `_processEncounter` — no whole-encounter skip.
+
+| Field | When toernooi overwrites local | When local is preserved |
+|---|---|---|
+| `visualCode` | local is null | local has a value (never overwritten) |
+| `playedAt` | local is null | local has a date |
+| `order` | local is null | local has an order |
+| `round` | local is null | local has a round |
+| `winner` | `xmlMatch.Winner > 0` **OR** local is null | `Winner == null` or `Winner === 0` (NOT_YET_PLAYED) |
+| `set1Team1` … `set3Team2` | `xmlMatch.Sets.Set[n].TeamN != null` **OR** local is null | toernooi value is null/undefined |
+| `status` | toernooi has a confirmed outcome (real `Winner > 0`) **OR** `ScoreStatus !== Normal` **OR** local is null | toernooi sent default `Normal` with no real outcome |
+| `gameType`, `linkId`, `linkType` | always re-assigned, but to the same value in steady state | — |
+| `GamePlayerMembership` | `originalWinner == null || originalWinner === 0` (captured **before** updates) | local game already had a winner → memberships untouched |
+
+Why the `Winner === 0` and `ScoreStatus === Normal` exclusions exist: toernooi sends these as **defaults** for scheduled-but-unplayed games. Without the exclusion, a scheduled empty slot on toernooi would overwrite a locally-entered winner or walkover status, producing inconsistent state (scores without a winner, walkover reverted to normal).
+
+The per-field guards are read-only-null-safe: they never overwrite local data with `null`.
 
 ---
 
 ## Slot State Matrix
 
-Every encounter has exactly 8 slots after sync. Per slot, the possible states are:
+Per slot, the valid states after sync are:
 
-| State | `visualCode` | Set scores | Meaning |
-|---|---|---|---|
-| Local placeholder, unfilled | null | null | generateGames created it, toernooi has no entry for this order yet |
-| Toernooi-synced, no scores | set | null | Game exists upstream, not yet played or entered |
-| Toernooi-synced, played | set | filled | Game played; scores and winner from toernooi |
-| Local scores (protected) | null | filled | Scores entered locally before toernooi had them — protected from overwrite |
-| Walkover / retirement / etc. | set | may be null | Toernooi `ScoreStatus` translated to DB `GameStatus` |
+| State | `visualCode` | `winner` | Set scores | Meaning |
+|---|---|---|---|---|
+| Empty local slot | null | null | null | Created by `generateGames`, toernooi has nothing matching |
+| Synced, not played | non-null | null or 0 | null | Toernooi has the slot; game not played yet |
+| Synced, played | non-null | 1 or 2 | filled | Toernooi has the result |
+| Locally scored | null | 1 or 2 | filled | User entered scores before toernooi caught up — protected from overwrite |
+| Locally-scored + synced | non-null | 1 or 2 | filled | Slot was synced then scored locally, or scored first then matched upstream |
+| Walkover / retirement | non-null or null | 1 or 2 | may be null | `status != NORMAL` or non-zero `winner` with no sets |
 
-Total is always 8 (guaranteed by `generateGames()` running at sync start and the in-place merge keeping count constant).
-
----
-
-## Score Conflict Resolution
-
-When toernooi returns a game for a slot where the local game already has set scores:
-
-- Local game: kept exactly as-is (no update).
-- Toernooi match: **not** queued as a game job. `visualCode` is NOT stamped onto the local game.
-- Rationale: local scores are assumed to be authoritative (typically entered by referee/team captain at the venue before toernooi was updated).
-
-Trade-off: because `visualCode` is not stamped, the slot will be re-evaluated on the next sync. If toernooi has since updated, the protection kicks in again as long as local scores remain.
+Total is always 8 in steady state. `generateGames` creates the missing orders; the merge loop updates them in place; no tail cleanup deletes local slots.
 
 ---
 
-## Status & Winner Enums
+## Protecting local data on deletes
 
-`game.model.ts` / mapped in `game.processor.ts`:
+Two surfaces can delete game rows. Both now protect local entries.
 
-- `GameStatus`: `NORMAL | WALKOVER | RETIREMENT | DISQUALIFIED | NO_MATCH`
-- Winner: `NOT_YET_PLAYED(0) | HOME_WIN(1) | AWAY_WIN(2) | FORFEIT | DISQUALIFIED | ABSENT`
+### v1 `CompetitionSyncEncounterProcessor._destroyEncounters` (whole encounter removal)
 
-Special mapping: when upstream `ScoreStatus = Normal` but no scores exist and player fields are partially filled, game status is coerced to `WALKOVER` (workaround for tournaments that don't configure score status explicitly).
+Before destroying an encounter that's no longer in toernooi, the step queries for any game in the target encounter with either:
+
+- `set1Team1 != null` OR `set1Team2 != null`, OR
+- `winner != null && winner !== 0` (covers locally-entered walkovers / retirements without set scores)
+
+Encounters with ANY such game are **skipped**, with a warning log. The remaining encounters have their games and rows destroyed.
+
+### v1 `CompetitionSyncGameProcessor` tail cleanup — REMOVED
+
+Previously deleted any game with `visualCode == null`. Removed in this PR — local null-`visualCode` rows are intentional slots now. Orphaned synced games (rows with stale `visualCode`) are handled at the encounter level.
 
 ---
 
-## Deriving Upstream State
+## GameLinkType and model associations
 
-Given a DB encounter, these inferences are safe:
+`Game` is a polymorphic child of two parents via `(linkId, linkType)`:
 
-- **Has `visualCode`** on game ⇔ game existed in toernooi at last sync.
-- **No `visualCode`** on game ⇔ local slot. Either never synced from toernooi, or scored locally and protected.
-- **`visualCode` present but game missing on re-sync** ⇒ upstream admin deleted it (we purge and re-create as a local slot via `generateGames`).
-- **Count of games with `visualCode` < 8** ⇒ either toernooi doesn't have those games yet, or those slots had local scores that got protected. Check set scores on the no-`visualCode` slots to disambiguate.
-- **All 8 games have `visualCode` and scores** ⇒ encounter is fully played and synced.
+- `linkType = GameLinkType.COMPETITION`, `linkId = EncounterCompetition.id` — individual games in a competition encounter
+- `linkType = GameLinkType.TOURNAMENT`, `linkId = DrawTournament.id` — individual games in a tournament draw
 
-To fully classify an encounter's state you need both the per-slot `visualCode` presence **and** whether each slot has set scores.
+`EncounterCompetition.@HasMany(Game)` is **scoped to `linkType = "competition"`**, so `encounter.getGames()` returns only competition games. Same pattern on `DrawTournament` scoped to `"tournament"`.
+
+The enum replaces magic strings across:
+- models, resolvers, sync v1 processors, sync v2 tournament processor, `encounter-games-generation.service.ts`, `GameBuilder` test util.
+
+Source: `libs/utils/src/lib/enums/gameLinkType.enum.ts`.
+
+---
+
+## Status & Winner enums
+
+- `GameStatus` (in `game.model.ts`): `NORMAL | WALKOVER | RETIREMENT | DISQUALIFIED | NO_MATCH`
+- `XmlScoreStatus` (in `visual-result.ts`): `Normal = 0, Walkover = 1, Retirement = 2, Disqualified = 3, "No Match" = 4`
+- `Winner` / `game.winner` values: `0 = NOT_YET_PLAYED, 1 = HOME_WIN, 2 = AWAY_WIN`, higher values are special outcomes mapped via `WINNER_VALUE_MAPPING` in `apps/worker/sync/src/app/utils/mapWinnerValues.ts`.
+
+Special mapping in `game.processor.ts`: when upstream `ScoreStatus = Normal` but no scores are recorded and player fields are partially filled, the processor coerces status to `WALKOVER`.
+
+---
+
+## VR API endpoints (authoritative reference)
+
+| Method | Endpoint | Returns |
+|---|---|---|
+| `getTournament(id)` | `GET /Tournament/{id}` | `XmlTournament` |
+| `getDraws(eventCode, subEventId)` | `GET /Tournament/{evt}/Event/{sub}/Draw` | `XmlTournamentDraw[]` |
+| `getGames(tourneyId, drawId)` | `GET /Tournament/{evt}/Draw/{drawId}/Match` | `XmlTeamMatch[]` for competition draws, `XmlMatch[]` for tournament draws |
+| `getTeamMatch(tourneyId, matchId)` | `GET /Tournament/{evt}/TeamMatch/{id}` | `XmlMatch[]` (individual games within a competition encounter) |
+| `getGame(tourneyId, matchId)` | `GET /Tournament/{evt}/MatchDetail/{id}` | `XmlMatch` (single game detail; byes excluded) |
+
+**Common foot-gun**: `getGames` on an encounter code does NOT return the encounter's individual games — the VR API treats it as a draw lookup and returns unrelated `TeamMatch[]`. Always use `getTeamMatch` at the encounter level.
+
+**Type normalization**: `VisualService._normalizeTypes` coerces `Code`, `ScoreStatus`, `Winner`, `MatchOrder`, `MatchTypeID` etc. to `number` at runtime. `MemberID` stays a `string`. The TypeScript interfaces in `visual-result.ts` still declare some of these as `string` (legacy) — treat the runtime shape as authoritative.
+
+---
+
+## Deriving upstream state
+
+Given a DB encounter's games, these inferences are safe:
+
+- **`visualCode` present** ⇔ game existed in toernooi at last sync.
+- **No `visualCode`, no scores, no winner** ⇒ unfilled local slot (placeholder).
+- **No `visualCode`, has scores or winner** ⇒ locally entered, not yet pushed to toernooi.
+- **`visualCode` present, set scores + winner > 0** ⇒ played and confirmed upstream.
+- **All 8 slots present, none with `visualCode`** ⇒ encounter generated locally; toernooi hasn't produced any data yet.
+- **Count of games with `visualCode` < 8** ⇒ toernooi has partial data, remaining slots are local placeholders or locally scored.
+
+To fully classify you need per-slot `visualCode`, `winner`, and set scores together.
+
+---
+
+## Related documents and tests
+
+- `libs/backend/visual/src/__integration__/visual.service.integration.spec.ts` — live API contract tests (skipped without VR credentials).
+- `apps/worker/sync/src/app/processors/sync-events/competition-sync/processors/__tests__/game.spec.ts` — per-field merge policy tests.
+- `libs/backend/competition/encounter-games/src/services/encounter-games-generation.service.spec.ts` — 8-slot generator tests.
