@@ -9,6 +9,8 @@ import {
 } from "@badman/backend-database";
 import { GameStatus, GameType, getAssemblyPositionsInOrder, SubEventTypeEnum } from "@badman/utils";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Transaction } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 
 export interface GameSlot {
   order: number;
@@ -22,10 +24,20 @@ export interface GameSlot {
 export class EncounterGamesGenerationService {
   private readonly logger = new Logger(EncounterGamesGenerationService.name);
 
-  async generateGames(encounterId: string): Promise<Game[]> {
+  constructor(private _sequelize: Sequelize) {}
+
+  async generateGames(encounterId: string, transaction?: Transaction): Promise<Game[]> {
+    if (transaction) {
+      return this._generate(encounterId, transaction);
+    }
+    return this._sequelize.transaction((t) => this._generate(encounterId, t));
+  }
+
+  private async _generate(encounterId: string, transaction: Transaction): Promise<Game[]> {
     // 1. Load encounter with required associations
     const encounter = await EncounterCompetition.findByPk(encounterId, {
       include: [{ model: Team, as: "home" }],
+      transaction,
     });
 
     if (!encounter) {
@@ -51,7 +63,7 @@ export class EncounterGamesGenerationService {
     }
 
     // 4. Get home and away assemblies
-    const assemblies = await encounter.getAssemblies();
+    const assemblies = await encounter.getAssemblies({ transaction });
     const homeAssembly = assemblies.find((a) => a.teamId === encounter.homeTeamId);
     const awayAssembly = assemblies.find((a) => a.teamId === encounter.awayTeamId);
 
@@ -61,12 +73,13 @@ export class EncounterGamesGenerationService {
     // 5. Load existing games for idempotency check
     const existingGames = await Game.findAll({
       where: { linkId: encounterId, linkType: "competition" },
+      transaction,
     });
 
     const existingOrders = new Set(existingGames.map((g) => g.order));
 
     // 6. Load primary ranking system once
-    const system = await RankingSystem.findOne({ where: { primary: true } });
+    const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
 
     // 7. Build slots and create missing games
     const newGames: Game[] = [];
@@ -85,16 +98,25 @@ export class EncounterGamesGenerationService {
       const awayPlayerIds = this.extractPlayerIds(awayData, assemblyPosition);
       const gameType = this.resolveGameType(teamType, assemblyPosition);
 
-      const game = await Game.create({
-        linkId: encounterId,
-        linkType: "competition",
-        order,
-        gameType,
-        status: GameStatus.NORMAL,
-        visualCode: undefined,
-      });
+      const game = await Game.create(
+        {
+          linkId: encounterId,
+          linkType: "competition",
+          order,
+          gameType,
+          status: GameStatus.NORMAL,
+          visualCode: undefined,
+        },
+        { transaction }
+      );
 
-      await this.createPlayerMemberships(game.id, homePlayerIds, awayPlayerIds, system?.id);
+      await this.createPlayerMemberships(
+        game.id,
+        homePlayerIds,
+        awayPlayerIds,
+        system?.id,
+        transaction
+      );
 
       newGames.push(game);
       this.logger.debug(
@@ -110,6 +132,7 @@ export class EncounterGamesGenerationService {
     return Game.findAll({
       where: { linkId: encounterId, linkType: "competition" },
       order: [["order", "ASC"]],
+      transaction,
     });
   }
 
@@ -131,7 +154,8 @@ export class EncounterGamesGenerationService {
     gameId: string,
     homePlayerIds: string[],
     awayPlayerIds: string[],
-    systemId: string | undefined
+    systemId: string | undefined,
+    transaction: Transaction
   ): Promise<void> {
     const allPlayers: { playerId: string; team: number; player: number }[] = [];
 
@@ -145,19 +169,22 @@ export class EncounterGamesGenerationService {
 
     for (const { playerId, team, player } of allPlayers) {
       const ranking = systemId
-        ? await RankingLastPlace.findOne({ where: { playerId, systemId } })
+        ? await RankingLastPlace.findOne({ where: { playerId, systemId }, transaction })
         : null;
 
-      await GamePlayerMembership.create({
-        playerId,
-        gameId,
-        team,
-        player,
-        systemId,
-        single: ranking?.single,
-        double: ranking?.double,
-        mix: ranking?.mix,
-      });
+      await GamePlayerMembership.create(
+        {
+          playerId,
+          gameId,
+          team,
+          player,
+          systemId,
+          single: ranking?.single,
+          double: ranking?.double,
+          mix: ranking?.mix,
+        },
+        { transaction }
+      );
     }
   }
 }

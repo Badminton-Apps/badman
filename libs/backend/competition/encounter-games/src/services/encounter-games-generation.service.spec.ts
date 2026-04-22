@@ -1,5 +1,6 @@
 import { EncounterCompetition, Game, GamePlayerMembership, RankingSystem } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
+import { Sequelize } from "sequelize-typescript";
 import { EncounterGamesGenerationService } from "./encounter-games-generation.service";
 
 // Simple unit tests using jest mocks — no real DB required
@@ -16,7 +17,12 @@ describe("EncounterGamesGenerationService", () => {
   let service: EncounterGamesGenerationService;
 
   beforeEach(() => {
-    service = new EncounterGamesGenerationService();
+    const mockSequelize = {
+      transaction: jest.fn((cb?: (t: unknown) => Promise<unknown>) =>
+        typeof cb === "function" ? cb({}) : Promise.resolve({})
+      ),
+    } as unknown as Sequelize;
+    service = new EncounterGamesGenerationService(mockSequelize);
     jest.clearAllMocks();
   });
 
@@ -86,12 +92,14 @@ describe("EncounterGamesGenerationService", () => {
       expect(Game.create).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({ order: 1, gameType: "D", linkType: "competition" }),
+        expect.objectContaining({ transaction: expect.anything() }),
       );
 
       // 5th slot should be single1 → gameType S
       expect(Game.create).toHaveBeenNthCalledWith(
         5,
         expect.objectContaining({ order: 5, gameType: "S" }),
+        expect.objectContaining({ transaction: expect.anything() }),
       );
     });
 
@@ -113,6 +121,7 @@ describe("EncounterGamesGenerationService", () => {
       expect(Game.create).toHaveBeenCalledTimes(1);
       expect(Game.create).toHaveBeenCalledWith(
         expect.objectContaining({ order: 8 }),
+        expect.objectContaining({ transaction: expect.anything() }),
       );
     });
 
@@ -139,6 +148,7 @@ describe("EncounterGamesGenerationService", () => {
         expect(Game.create).toHaveBeenNthCalledWith(
           i,
           expect.objectContaining({ gameType: "MX" }),
+          expect.objectContaining({ transaction: expect.anything() }),
         );
       }
     });
