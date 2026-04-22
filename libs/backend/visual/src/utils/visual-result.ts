@@ -122,18 +122,33 @@ export interface XmlVenue {
   Website: string;
 }
 
+/**
+ * One encounter within a competition draw (poule). Returned by
+ * `getGames(tourneyId, drawCode)` when the draw is a competition poule.
+ *
+ * **Runtime vs declared types**: `Code`, `ScoreStatus`, `EventCode`, `DrawCode`
+ * are declared as `string` below but are coerced to `number` at runtime by
+ * `VisualService._normalizeTypes`. Treat them as numbers when consuming.
+ */
 export interface XmlTeamMatch {
+  /** Unique encounter/TeamMatch code (runtime: number). Use as `matchId` to `getTeamMatch`. */
   Code: string;
   Winner: number;
+  /** Runtime: number (XmlScoreStatus). */
   ScoreStatus: string;
   RoundName: string;
   MatchTime: Date;
   EventCode: string;
   EventName: XmlEventName;
+  /** Code of the parent draw (poule). Runtime: number. */
   DrawCode: string;
   DrawName: XmlDrawName;
   Team1: XmlTeam;
   Team2: XmlTeam;
+  /**
+   * Aggregate team score, NOT per-game set scores. Has a single
+   * `{Team1, Team2}` entry with the encounter's games-won tally (e.g. 6-2).
+   */
   Sets: XmlSets;
 }
 
@@ -145,8 +160,20 @@ export enum XmlEventName {
   The1StProvinciale = "1st Provinciale",
 }
 
+/**
+ * One individual game. Returned by:
+ * - `getTeamMatch(tourneyId, encounterCode)` — games within a competition encounter (up to 8)
+ * - `getGames(tourneyId, drawCode)` when the draw is a tournament draw (individual brackets)
+ * - `getGame(tourneyId, matchId)` — single game detail (byes excluded)
+ *
+ * **Runtime vs declared types**: `Code`, `EventCode`, `DrawCode` are declared
+ * as `string` but are coerced to `number` at runtime by
+ * `VisualService._normalizeTypes`. Treat them as numbers when consuming.
+ */
 export interface XmlMatch {
+  /** Unique game code. Runtime: number. */
   Code: string;
+  /** 0 = not-yet-played, 1 = Team1 win, 2 = Team2 win */
   Winner: number;
   ScoreStatus: XmlScoreStatus;
   TeamMatchWinner: string;
@@ -165,10 +192,12 @@ export interface XmlMatch {
   CourtName: string;
   MatchTypeID: XmlMatchTypeID;
   MatchTypeNo: string;
+  /** Slot number within the parent encounter (1–8 for competition) */
   MatchOrder: number;
   Team1: XmlTeam;
   Team2: XmlTeam;
   Duration: string;
+  /** Per-set scores. `Sets.Set` is an object for single-set games, an array otherwise. */
   Sets: XmlSets;
   Stats: XmlStats;
   RoundName: string;

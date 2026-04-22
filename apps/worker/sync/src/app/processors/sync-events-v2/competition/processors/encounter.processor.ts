@@ -1,7 +1,7 @@
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { DrawCompetition, EncounterCompetition, RankingSystem } from "@badman/backend-database";
 import { Sync, SyncQueue, TransactionManager } from "@badman/backend-queue";
-import { VisualService, XmlMatch } from "@badman/backend-visual";
+import { VisualService } from "@badman/backend-visual";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
@@ -140,18 +140,6 @@ export class EncounterCompetitionProcessor {
       throw new Error("Sub Encounter code is required");
     }
 
-    const visualEncounters = await this._visualService.getGames(
-      job.data.eventCode,
-      EncounterCode,
-      true
-    );
-
-    const visualEncounter = visualEncounters.find((r) => r.Code === EncounterCode);
-
-    if (!visualEncounter) {
-      throw new Error("Sub Encounter not found");
-    }
-
     if (!encounter) {
       encounter = new EncounterCompetition();
     }
@@ -159,7 +147,7 @@ export class EncounterCompetitionProcessor {
       encounter.id = EncounterId;
     }
 
-    encounter.visualCode = visualEncounter.Code;
+    encounter.visualCode = EncounterCode;
 
     await encounter.save({ transaction });
 
@@ -205,12 +193,11 @@ export class EncounterCompetitionProcessor {
     }
   ) {
     const transaction = await this._transactionManager.getTransaction(transactionId);
-    // Per-encounter call returns individual games (XmlMatch), never XmlTeamMatch.
-    const matches = (await this._visualService.getGames(
-      eventCode,
-      encounterCode,
-      true
-    )) as XmlMatch[];
+    // Individual games within a competition encounter live under /TeamMatch/{id},
+    // NOT /Draw/{id}/Match. See visual.service.ts — getGames on an encounter
+    // code would return unrelated TeamMatches of the draw that happens to share
+    // the numeric ID.
+    const matches = await this._visualService.getTeamMatch(eventCode, encounterCode);
 
     const dbGames = await encounter.getGames({ transaction });
 

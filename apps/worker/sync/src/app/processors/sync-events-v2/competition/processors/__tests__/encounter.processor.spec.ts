@@ -60,7 +60,7 @@ function makeJob(overrides: Partial<Record<string, unknown>> = {}) {
 describe("EncounterCompetitionProcessor", () => {
   let processor: EncounterCompetitionProcessor;
   let transactionManager: { getTransaction: jest.Mock; addJob: jest.Mock };
-  let visualService: { getGames: jest.Mock };
+  let visualService: { getGames: jest.Mock; getTeamMatch: jest.Mock };
   let generationService: { generateGames: jest.Mock };
   let syncQueue: { add: jest.Mock };
   let encounter: {
@@ -79,7 +79,7 @@ describe("EncounterCompetitionProcessor", () => {
       getTransaction: jest.fn().mockResolvedValue({}),
       addJob: jest.fn().mockResolvedValue(undefined),
     };
-    visualService = { getGames: jest.fn() };
+    visualService = { getGames: jest.fn(), getTeamMatch: jest.fn() };
     generationService = { generateGames: jest.fn().mockResolvedValue([]) };
     syncQueue = {
       add: jest.fn().mockImplementation((name: string) =>
@@ -110,9 +110,7 @@ describe("EncounterCompetitionProcessor", () => {
 
   describe("ProcessSyncCompetitionEncounter", () => {
     it("calls generateGames after saving the encounter", async () => {
-      visualService.getGames.mockResolvedValue([
-        { Code: "ENC-VC-1", MatchOrder: 0 },
-      ]);
+      visualService.getTeamMatch.mockResolvedValue([]);
 
       await processor.ProcessSyncCompetitionEncounter(makeJob() as never);
 
@@ -127,18 +125,13 @@ describe("EncounterCompetitionProcessor", () => {
       expect(saveOrder).toBeLessThan(genOrder);
     });
 
-    it("fetches the encounter XML at least once by the encounter's visualCode", async () => {
-      visualService.getGames.mockResolvedValue([
-        { Code: "ENC-VC-1", MatchOrder: 0 },
-      ]);
+    it("fetches encounter games via getTeamMatch (not getGames)", async () => {
+      visualService.getTeamMatch.mockResolvedValue([]);
 
       await processor.ProcessSyncCompetitionEncounter(makeJob() as never);
 
-      expect(visualService.getGames).toHaveBeenCalledWith(
-        "EVENT-1",
-        "ENC-VC-1",
-        true,
-      );
+      expect(visualService.getTeamMatch).toHaveBeenCalledWith("EVENT-1", "ENC-VC-1");
+      expect(visualService.getGames).not.toHaveBeenCalled();
     });
   });
 
@@ -152,9 +145,9 @@ describe("EncounterCompetitionProcessor", () => {
         set1Team2: 18,
       });
       encounter.getGames.mockResolvedValue([scoredLocal]);
-      visualService.getGames
-        .mockResolvedValueOnce([{ Code: "ENC-VC-1", MatchOrder: 0 }]) // encounter lookup
-        .mockResolvedValueOnce([{ Code: "T-match-3", MatchOrder: 3 }]); // processGames fetch
+      visualService.getTeamMatch.mockResolvedValue([
+        { Code: "T-match-3", MatchOrder: 3 },
+      ]);
 
       await processor.ProcessSyncCompetitionEncounter(makeJob() as never);
 
@@ -174,9 +167,9 @@ describe("EncounterCompetitionProcessor", () => {
         set1Team2: null,
       });
       encounter.getGames.mockResolvedValue([unscoredLocal]);
-      visualService.getGames
-        .mockResolvedValueOnce([{ Code: "ENC-VC-1", MatchOrder: 0 }])
-        .mockResolvedValueOnce([{ Code: "T-match-2", MatchOrder: 2 }]);
+      visualService.getTeamMatch.mockResolvedValue([
+        { Code: "T-match-2", MatchOrder: 2 },
+      ]);
 
       await processor.ProcessSyncCompetitionEncounter(makeJob() as never);
 
@@ -201,9 +194,9 @@ describe("EncounterCompetitionProcessor", () => {
         order: 4,
       });
       encounter.getGames.mockResolvedValue([staleSynced]);
-      visualService.getGames
-        .mockResolvedValueOnce([{ Code: "ENC-VC-1", MatchOrder: 0 }])
-        .mockResolvedValueOnce([{ Code: "T-match-4", MatchOrder: 4 }]);
+      visualService.getTeamMatch.mockResolvedValue([
+        { Code: "T-match-4", MatchOrder: 4 },
+      ]);
 
       await processor.ProcessSyncCompetitionEncounter(makeJob() as never);
 
@@ -212,12 +205,10 @@ describe("EncounterCompetitionProcessor", () => {
 
     it("passes encounterVisualCode on every queued game job", async () => {
       encounter.getGames.mockResolvedValue([]);
-      visualService.getGames
-        .mockResolvedValueOnce([{ Code: "ENC-VC-1", MatchOrder: 0 }])
-        .mockResolvedValueOnce([
-          { Code: "T1", MatchOrder: 1 },
-          { Code: "T2", MatchOrder: 2 },
-        ]);
+      visualService.getTeamMatch.mockResolvedValue([
+        { Code: "T1", MatchOrder: 1 },
+        { Code: "T2", MatchOrder: 2 },
+      ]);
 
       await processor.ProcessSyncCompetitionEncounter(makeJob() as never);
 
@@ -240,9 +231,7 @@ describe("EncounterCompetitionProcessor", () => {
       const scored = makeGame({ id: "scored", set1Team1: 21 });
       const unscored = makeGame({ id: "unscored" });
       encounter.getGames.mockResolvedValue([scored, unscored]);
-      visualService.getGames.mockResolvedValue([
-        { Code: "ENC-VC-1", MatchOrder: 0 },
-      ]);
+      visualService.getTeamMatch.mockResolvedValue([]);
 
       await processor.ProcessSyncCompetitionEncounter(
         makeJob({ options: { deleteEncounter: true } }) as never,

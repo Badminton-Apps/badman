@@ -135,14 +135,18 @@ export class GameCompetitionProcessor {
       throw new Error("game code is required");
     }
 
-    // For competition, individual games live under the encounter endpoint,
-    // not the draw endpoint (which returns TeamMatch[] for competition).
+    // Individual games within a competition encounter are fetched via
+    // /TeamMatch/{id} (getTeamMatch), NOT /Draw/{id}/Match (getGames).
+    // See visual.service.ts JSDoc for endpoint semantics.
     const encounterVisualCode = job.data.encounterVisualCode;
     if (!encounterVisualCode) {
       throw new Error("encounterVisualCode is required");
     }
-    const xmlGames = await this._visualService.getGames(job.data.eventCode, encounterVisualCode, true);
-    const xmlGame = xmlGames.find((m) => m.Code?.toString() === gameCode.toString()) as XmlMatch;
+    const xmlGames = await this._visualService.getTeamMatch(
+      job.data.eventCode,
+      encounterVisualCode
+    );
+    const xmlGame = xmlGames.find((m) => m.Code?.toString() === gameCode.toString());
     if (!xmlGame) {
       throw new Error("game not found");
     }

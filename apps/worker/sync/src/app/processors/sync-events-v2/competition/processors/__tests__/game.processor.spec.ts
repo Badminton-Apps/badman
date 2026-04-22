@@ -81,14 +81,14 @@ function makeXmlMatch(overrides: Partial<Record<string, unknown>> = {}) {
 describe("GameCompetitionProcessor", () => {
   let processor: GameCompetitionProcessor;
   let transactionManager: { getTransaction: jest.Mock };
-  let visualService: { getGames: jest.Mock };
+  let visualService: { getGames: jest.Mock; getTeamMatch: jest.Mock };
   let pointService: { createRankingPointforGame: jest.Mock };
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     transactionManager = { getTransaction: jest.fn().mockResolvedValue({}) };
-    visualService = { getGames: jest.fn() };
+    visualService = { getGames: jest.fn(), getTeamMatch: jest.fn() };
     pointService = { createRankingPointforGame: jest.fn().mockResolvedValue(undefined) };
 
     (DrawCompetition.findByPk as jest.Mock).mockResolvedValue({ id: "draw-1", subeventId: "sub-1" });
@@ -123,17 +123,16 @@ describe("GameCompetitionProcessor", () => {
     ).rejects.toThrow("encounterVisualCode is required");
   });
 
-  it("re-fetches games via encounterVisualCode, not draw.visualCode", async () => {
+  it("re-fetches games via getTeamMatch (not getGames at draw level)", async () => {
     const xmlMatch = makeXmlMatch({ Code: 9001 });
     (Game.findOne as jest.Mock).mockResolvedValue(null);
-    visualService.getGames.mockResolvedValue([xmlMatch]);
+    visualService.getTeamMatch.mockResolvedValue([xmlMatch]);
 
     await processor.ProcessSyncCompetitionGame(makeJob() as never);
 
-    expect(visualService.getGames).toHaveBeenCalledWith("EVENT-1", "ENC-VC-1", true);
-    // Sanity: draw object has no visualCode set on it, so if the code used
-    // draw.visualCode we'd see `undefined` in the call args — it doesn't.
-    expect(visualService.getGames).not.toHaveBeenCalledWith("EVENT-1", undefined, true);
+    // Must use getTeamMatch (hits /TeamMatch/{id}) — not getGames (/Draw/{id}/Match).
+    expect(visualService.getTeamMatch).toHaveBeenCalledWith("EVENT-1", "ENC-VC-1");
+    expect(visualService.getGames).not.toHaveBeenCalled();
   });
 
   it("stamps linkId=encounterId and linkType=COMPETITION when saving", async () => {
@@ -157,7 +156,7 @@ describe("GameCompetitionProcessor", () => {
       destroy: jest.fn().mockResolvedValue(undefined),
     };
     (Game.findOne as jest.Mock).mockResolvedValue(existingGame);
-    visualService.getGames.mockResolvedValue([makeXmlMatch()]);
+    visualService.getTeamMatch.mockResolvedValue([makeXmlMatch()]);
 
     await processor.ProcessSyncCompetitionGame(
       makeJob({ gameId: "game-existing" }) as never,
@@ -189,7 +188,7 @@ describe("GameCompetitionProcessor", () => {
       destroy: jest.fn().mockResolvedValue(undefined),
     };
     (Game.findOne as jest.Mock).mockResolvedValue(localGame);
-    visualService.getGames.mockResolvedValue([makeXmlMatch({ MatchOrder: 7 })]);
+    visualService.getTeamMatch.mockResolvedValue([makeXmlMatch({ MatchOrder: 7 })]);
 
     await processor.ProcessSyncCompetitionGame(
       makeJob({ gameId: "local" }) as never,
@@ -220,7 +219,7 @@ describe("GameCompetitionProcessor", () => {
     };
     (Game.findOne as jest.Mock).mockResolvedValue(localGame);
     // Toernooi returns no sets
-    visualService.getGames.mockResolvedValue([
+    visualService.getTeamMatch.mockResolvedValue([
       makeXmlMatch({ Sets: { Set: [{ Team1: null, Team2: null }] } }),
     ]);
 
@@ -235,7 +234,7 @@ describe("GameCompetitionProcessor", () => {
 
   it("throws 'game not found' when gameCode is not in the toernooi response", async () => {
     (Game.findOne as jest.Mock).mockResolvedValue(null);
-    visualService.getGames.mockResolvedValue([makeXmlMatch({ Code: 8888 })]);
+    visualService.getTeamMatch.mockResolvedValue([makeXmlMatch({ Code: 8888 })]);
 
     await expect(
       processor.ProcessSyncCompetitionGame(makeJob({ gameCode: 9999 }) as never),
@@ -263,7 +262,7 @@ describe("GameCompetitionProcessor", () => {
       destroy: jest.fn().mockResolvedValue(undefined),
     };
     (Game.findOne as jest.Mock).mockResolvedValue(existingGame);
-    visualService.getGames.mockResolvedValue([makeXmlMatch()]);
+    visualService.getTeamMatch.mockResolvedValue([makeXmlMatch()]);
 
     await processor.ProcessSyncCompetitionGame(
       makeJob({ gameId: "game-existing" }) as never,
