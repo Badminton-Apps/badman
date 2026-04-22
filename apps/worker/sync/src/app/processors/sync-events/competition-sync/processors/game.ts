@@ -83,6 +83,32 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     internalId: number,
     games: Game[]
   ) {
+    // Ensure all 8 local game slots exist. Runs BEFORE the sync guards so
+    // the invariant holds even when we skip the toernooi merge (e.g. encounter
+    // is in the future or finished). Idempotent — skips orders already present.
+    // Requires a home team to resolve assembly positions; skip with a warning
+    // otherwise rather than crashing the whole event sync.
+    if (encounter.homeTeamId) {
+      try {
+        await this.encounterGamesGenerationService.generateGames(encounter.id, this.transaction);
+        games = await Game.findAll({
+          where: {
+            linkId: encounter.id,
+            linkType: GameLinkType.COMPETITION,
+          },
+          transaction: this.transaction,
+        });
+      } catch (err) {
+        this.logger.warn(
+          `generateGames failed for encounter ${encounter.id} (${(err as Error)?.message}) — continuing without slot generation`
+        );
+      }
+    } else {
+      this.logger.warn(
+        `Skipping generateGames for encounter ${encounter.id} — no homeTeamId set`
+      );
+    }
+
     // only get info for games that have been played
     const isAFutureEncounter = isAfter(new Date(encounter.date), new Date());
     if (isAFutureEncounter || !encounter.date) {
@@ -111,19 +137,6 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     if (shouldSkipSync) {
       return;
     }
-
-    // Ensure all 8 local game slots exist before syncing toernooi data.
-    // Idempotent: skips orders already present. Runs after the sync guards
-    // so we only create slots when we're actually going to write game data.
-    // Refresh the local games list so subsequent lookups see the new slots.
-    await this.encounterGamesGenerationService.generateGames(encounter.id, this.transaction);
-    games = await Game.findAll({
-      where: {
-        linkId: encounter.id,
-        linkType: GameLinkType.COMPETITION,
-      },
-      transaction: this.transaction,
-    });
 
     for (const xmlMatch of visualMatch) {
       // Try to find existing game with multiple fallback strategies to prevent duplicates
@@ -295,15 +308,13 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       }
     }
 
-    // Remove local slot games that weren't matched to any toernooi.nl game,
-    // but PROTECT games that already have set scores (locally entered results).
-    const removedGames = games.filter(
-      (g) => g.visualCode == null && g.set1Team1 == null && g.set1Team2 == null
-    );
-    for (const removed of removedGames) {
-      await removed.destroy({ transaction: this.transaction });
-      games.splice(games.indexOf(removed), 1);
-    }
+    // Note: we intentionally do NOT delete games with visualCode == null here.
+    // Those are local slots (created by generateGames or entered manually) and
+    // must persist to maintain the "always 8 games per encounter" invariant.
+    // If a game was synced before (has visualCode) and no longer matches a
+    // toernooi entry, it is left as-is rather than destroyed — deletion of
+    // orphaned synced games happens in _destroyEncounters at the encounter
+    // level, not here.
 
     this._games = this._games.concat(games);
   }

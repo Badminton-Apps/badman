@@ -158,9 +158,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       return;
     }
 
-    // Protect encounters that have ANY game with set scores — those represent
-    // locally-entered results that must survive a sync that would otherwise
-    // orphan the encounter.
+    // Protect encounters that have ANY game with locally-entered data:
+    //   - set scores filled (normal match played locally), OR
+    //   - a winner marked (walkover / retirement entered locally, no sets)
+    // These must survive a sync that would otherwise orphan the encounter.
     const scoredLinkIds = (
       await Game.findAll({
         where: {
@@ -169,6 +170,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
           [Op.or]: [
             { set1Team1: { [Op.ne]: null } },
             { set1Team2: { [Op.ne]: null } },
+            { winner: { [Op.and]: [{ [Op.ne]: null }, { [Op.ne]: 0 }] } },
           ],
         },
         attributes: ["linkId"],
