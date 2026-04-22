@@ -146,7 +146,7 @@ export class EncounterCompetitionProcessor {
       true
     );
 
-    const visualEncounter = visualEncounters.find((r) => `${r.Code}` === `${EncounterCode}`);
+    const visualEncounter = visualEncounters.find((r) => r.Code === EncounterCode);
 
     if (!visualEncounter) {
       throw new Error("Sub Encounter not found");
@@ -222,7 +222,7 @@ export class EncounterCompetitionProcessor {
     for (const dbGame of dbGames) {
       if (!dbGame.visualCode) {
         // Local placeholder: find toernooi match targeting the same slot (by order).
-        const match = matches.find((m) => `${m.MatchOrder}` === `${dbGame.order}`);
+        const match = matches.find((m) => m.MatchOrder === dbGame.order);
         if (!match) continue;
 
         const hasScores = dbGame.set1Team1 != null || dbGame.set1Team2 != null;
@@ -237,7 +237,7 @@ export class EncounterCompetitionProcessor {
       }
 
       // Synced game: destroy if no longer in the toernooi response.
-      if (!matches.find((r) => `${r.Code}` === `${dbGame.visualCode}`)) {
+      if (!matches.find((r) => r.Code === dbGame.visualCode)) {
         this.logger.debug(`Removing game ${dbGame.visualCode}`);
         await dbGame.destroy({ transaction });
       }
@@ -255,7 +255,7 @@ export class EncounterCompetitionProcessor {
 
       const localGameId = localGameIdByOrder.get(match.MatchOrder);
       const existingGameId =
-        localGameId ?? games?.find((r) => `${r.visualCode}` === `${match.Code}`)?.id;
+        localGameId ?? games?.find((r) => r.visualCode === match.Code)?.id;
 
       const matchJob = await this._syncQueue.add(Sync.ProcessSyncCompetitionGame, {
         transactionId,
