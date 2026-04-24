@@ -108,7 +108,7 @@ export class SyncEventsProcessor {
           newEvents = newEvents.concat(await this.visualService.getEvent(id));
         }
       } else {
-        newEvents = newEvents.concat(await this.visualService.getChangeEvents(newDate as any));
+        newEvents = newEvents.concat(await this.visualService.getChangeEvents(newDate));
       }
       newEvents = newEvents.sort((a, b) => {
         return new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime();

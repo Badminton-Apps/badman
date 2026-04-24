@@ -8,6 +8,8 @@ export type {
   EventCompetition,
   SubEventCompetition,
   DrawCompetition,
+  Location,
+  Availability,
 } from "./types";
 export {
   findOrCreatePlayer,
@@ -20,7 +22,16 @@ export {
   createDrawCompetition,
   createOpponentTeam,
   createEncounters,
+  createLocation,
+  createAvailability,
 } from "./entity-builders";
+export {
+  ensureRole,
+  ensureClaimId,
+  ensureRoleClaim,
+  ensurePlayerRole,
+  ensureClubAdminPermission,
+} from "./permissions";
 export {
   findOrGetPrimaryRankingSystem,
   createRankingPlace,

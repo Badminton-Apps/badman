@@ -153,7 +153,7 @@ export class TeamsResolver {
       }
 
       if (!(await user.hasAnyPermission([`${dbClub.id}_edit:club`, "edit-any:club"]))) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to delete teams`);
       }
 
       await Team.destroy({
@@ -191,7 +191,7 @@ export class TeamsResolver {
       }
 
       if (!(await user.hasAnyPermission([`${dbClub.id}_edit:club`, "edit-any:club"]))) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to create a team`);
       }
 
       if (!newTeamData.teamNumber) {
@@ -221,6 +221,7 @@ export class TeamsResolver {
       let created = false;
       let teamDb: Team | null = null;
 
+      // Team.link is the cross-season continuity id; reuse it to find the current season team.
       if (teamData.link) {
         teamDb = await Team.findOne({
           where: {
@@ -475,7 +476,7 @@ export class TeamsResolver {
       }
 
       if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:club`, "edit-any:club"]))) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to update a team`);
       }
 
       const changedTeams = [];
@@ -600,7 +601,7 @@ export class TeamsResolver {
       }
 
       if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:club`, "edit-any:club"]))) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to delete a team`);
       }
 
       await dbTeam.destroy({ transaction });

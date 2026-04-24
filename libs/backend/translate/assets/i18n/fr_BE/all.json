@@ -440,6 +440,13 @@
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
   },
+  "noProfilePage": {
+    "title": "Pas de Page de Profil",
+    "description": "Votre page de profil n'est pas disponible",
+    "buttons": {
+      "back": "Retour"
+    }
+  },
   "confirmEncounterPage": {
     "title": "Confirmer la rencontre",
     "sectionTitles": {
@@ -1554,6 +1561,19 @@
       "title": "Nom des équipes"
     }
   },
+  "teams": {
+    "a11y": {
+      "statusError": "Cette équipe a des erreurs de validation",
+      "statusWarning": "Cette équipe a des avertissements de validation",
+      "statusSuccess": "Cette équipe a réussi la validation",
+      "validatingStatus": "Vérification de la validation de l'équipe",
+      "expandValidationDetails": "Afficher les détails de validation pour {team}",
+      "collapseValidationDetails": "Masquer les détails de validation pour {team}",
+      "editTeam": "Modifier {team}",
+      "deleteTeam": "Retirer {team}",
+      "removePlayerFromList": "Retirer {name} de l'équipe"
+    }
+  },
   "themes": {
     "dark": "Sombre",
     "light": "Lumière"
@@ -1637,20 +1657,138 @@
     }
   },
   "v1": {
+    "adminSettings": {
+      "title": "Paramètres d'administration",
+      "enrollment": {
+        "title": "Inscription",
+        "enrollmentOpen": "Inscription Ouverte",
+        "enabled": "Inscription Ouverte",
+        "openDate": "Date d'ouverture",
+        "startDate": "Date de début",
+        "closeDate": "Date de clôture",
+        "endDate": "Date de fin",
+        "save": "Sauvegarder",
+        "success": "Paramètres d'inscription enregistrés avec succès",
+        "error": "Échec de l'enregistrement des paramètres d'inscription"
+      }
+    },
+    "adminCompetitionsPage": {
+      "title": "Administration des compétitions",
+      "seasonSelectLabel": "Saison",
+      "sourceSeasonTitle": "Saison source {range}",
+      "targetSeasonTitle": "Saison cible {range}",
+      "copySuccess": "Compétition copiée avec succès",
+      "copyError": "Échec de la copie de la compétition",
+      "table": {
+        "headers": {
+          "name": "Nom",
+          "type": "Type",
+          "official": "Officiel",
+          "actions": "Actions"
+        },
+        "copyTooltip": "Copier la compétition"
+      },
+      "copyDialog": {
+        "title": "Copier la compétition",
+        "message": "Copier {name} vers la saison {season} ?",
+        "cancel": "Annuler",
+        "confirm": "Copier"
+      }
+    },
+    "copyCompetitionsPage": {
+      "title": "Copier les compétitions",
+      "sourceSeasonTitle": "Saison source",
+      "targetSeasonTitle": "Saison cible",
+      "table": {
+        "headers": {
+          "name": "Nom",
+          "type": "Type",
+          "official": "Officiel",
+          "actions": "Actions"
+        }
+      },
+      "dialog": {
+        "title": "Copier la compétition",
+        "confirm": "Copier",
+        "cancel": "Annuler",
+        "message": "Copier {name} vers la saison {season} ?"
+      },
+      "success": "Compétition copiée avec succès",
+      "error": "Échec de la copie de la compétition"
+    },
     "entryTeamDrawer": {
       "params": {
         "gender": {
-          "male": "Homme",
-          "female": "Femme"
+          "male": "homme",
+          "female": "femme"
+        }
+      }
+    },
+    "shell": {
+      "sidebar": {
+        "pages": {
+          "admin": "Admin",
+          "adminSettings": "Paramètres d'administration",
+          "copyCompetitions": "Copier les compétitions",
+          "adminCompetitions": "Admin Compétitions"
+        },
+        "tooltips": {
+          "registrationClosed": "Inscriptions fermées"
+        }
+      }
+    },
+    "editClubPage": {
+      "locations": {
+        "gameDays": {
+          "createDialog": {
+            "errors": {
+              "courtsMin": "Le nombre de terrains doit être supérieur à 0",
+              "startBeforeEnd": "L'heure de début doit être avant l'heure de fin"
+            }
+          }
+        },
+        "exceptions": {
+          "createDialog": {
+            "errors": {
+              "startBeforeEnd": "La date de début doit être avant la date de fin",
+              "startRequired": "La date de début est requise",
+              "endRequired": "La date de fin est requise"
+            }
+          }
         }
       }
     },
     "enrollment": {
+      "disabled": {
+        "title": "Inscriptions fermées",
+        "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
+      },
+      "submitSuccess": "Inscription réussie : {teamNames}",
+      "submitTeamError": "{teamName} : {error}",
       "selectedLocationCard": {
-        "courts": "Terrains"
+        "courts": "{count, plural, one {# terrain} other {# terrains}}",
+        "noGameDays": "Aucun jour de match trouvé."
+      },
+      "enrollmentLocationCard": {
+        "gameDaysTitle": "Jours de jeu",
+        "ariaSelectLocation": "Sélectionner un lieu",
+        "ariaDeselectLocation": "Désélectionner le lieu",
+        "emptyPlaceholder": "—",
+        "noGameDays": "Aucun jour de jeu",
+        "courts": "{count, plural, one {# terrain} other {# terrains}}"
       },
       "team-enrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": "Indice de base : {baseIndex}",
+          "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
+          "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
+          "competition": "Compétition",
+          "division": "Division",
+          "divisionBaseIndexRangeMismatch": "L'indice de base de votre équipe ({baseIndex}) ne correspond à aucune division pour cette compétition.",
+          "playerTooStrong": "{name} a le niveau {level}, ce qui est trop fort pour cette division (maximum autorisé : {maxLevel})."
+        },
         "import-existing-optional": "Importer l'existant (optionnel)",
+        "validating": "Validation…",
         "import-teams": {
           "title": "Importer les équipes",
           "allTeams": "Toutes les équipes",
@@ -1663,7 +1801,105 @@
           "cancel": "Annuler",
           "import": "Importer"
         }
+      },
+      "steps": {
+        "generalInformation": "Informations générales",
+        "transfersLoans": "Transferts et prêts",
+        "teams": "Équipes",
+        "confirm": "Confirmer"
+      },
+      "nav": {
+        "previous": "Précédent",
+        "next": "Suivant",
+        "submit": "S'inscrire",
+        "submitting": "Envoi en cours…"
+      },
+      "toast": {
+        "addAtLeastOneTeam": "Ajoutez au moins une équipe."
+      },
+      "teams": {
+        "categories": {
+          "M": "Hommes",
+          "F": "Femmes",
+          "MX": "Mixte"
+        },
+        "addTeam": "Ajouter une équipe",
+        "emptyCategory": "Aucune équipe",
+        "baseValue": "Base : {value}",
+        "labelNumbered": "Équipe {number}",
+        "labelFallback": "Équipe",
+        "a11y": {
+          "statusError": "Cette équipe comporte des erreurs de validation",
+          "statusWarning": "Cette équipe comporte des avertissements de validation",
+          "statusSuccess": "Cette équipe a passé la validation",
+          "validatingStatus": "Vérification de la validation de l'équipe",
+          "expandValidationDetails": "Afficher les détails de validation pour {team}",
+          "collapseValidationDetails": "Masquer les détails de validation pour {team}",
+          "editTeam": "Modifier {team}",
+          "deleteTeam": "Retirer {team}",
+          "removePlayerFromList": "Retirer {name} de l'équipe"
+        }
+      },
+      "dialog": {
+        "deleteTeam": {
+          "title": "Retirer l'équipe",
+          "message": "Voulez-vous vraiment retirer cette équipe ?",
+          "cancel": "Annuler",
+          "confirm": "Retirer"
+        }
+      },
+      "clubSelection": {
+        "heading": "Club",
+        "clubLabel": "Club",
+        "emailLabel": "E-mail"
+      },
+      "locationSelection": {
+        "title": "Lieux",
+        "editLocations": "Modifier les lieux",
+        "editLocationsNoAccessTooltip": "Vous n'avez pas la permission de modifier les lieux. Contactez l'administrateur de votre club."
+      },
+      "remarks": {
+        "label": "Remarques",
+        "placeholder": "Facultatif : ajoutez des remarques pour votre inscription"
+      },
+      "summary": {
+        "title": "Récapitulatif de l'inscription"
+      },
+      "transfersLoans": {
+        "addTransfersTitle": "Ajouter des transferts",
+        "addLoansTitle": "Ajouter des prêts",
+        "addTransferButton": "Ajouter un transfert",
+        "addLoanButton": "Ajouter un prêt",
+        "emptyTransfers": "Aucun transfert",
+        "emptyLoans": "Aucun prêt",
+        "a11y": {
+          "cancelPendingSelection": "Annuler la sélection du joueur"
+        }
+      },
+      "playerValidation": {
+        "alreadyMember": "Ce joueur est déjà membre de ce club.",
+        "alreadyLoaned": "Ce joueur est déjà en prêt.",
+        "checkFailed": "Impossible de vérifier le joueur. Réessayez."
+      },
+      "validation": {
+        "invalidStatus": "Statut invalide.",
+        "invalidEmail": "Adresse e-mail invalide.",
+        "emailRequired": "L'adresse e-mail est requise.",
+        "clubRequired": "Le club est obligatoire.",
+        "selectAtLeastOneLocation": "Sélectionnez au moins un lieu.",
+        "locationGameDayAvailability": "Chaque lieu doit disposer d'au moins un jour de jeu avec au moins 2 terrains, chacun disponible pendant au moins 3 heures (pas nécessairement consécutives).",
+        "selectLocation": "Sélectionnez un lieu.",
+        "teamNumberRequired": "Le numéro d'équipe est obligatoire.",
+        "invalidTeamType": "Type d'équipe invalide.",
+        "teamTypeRequired": "Le type d'équipe est obligatoire.",
+        "selectAtLeastOnePlayer": "Sélectionnez au moins un joueur.",
+        "addAtLeastOneTeam": "Ajoutez au moins une équipe.",
+        "duplicateTeamNumberSameType": "Numéro d'équipe en double dans le même type.",
+        "maxBasePlayers": "Vous pouvez ajouter au maximum {max} joueurs de base."
       }
+    },
+    "locations": {
+      "exceptions": "Exceptions"
     }
   }
 }

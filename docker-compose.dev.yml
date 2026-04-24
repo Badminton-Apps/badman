@@ -1,9 +1,9 @@
-version: "3"
 name: badman-next
 services:
   # Databases
   postgres:
     image: postgis/postgis:16-master
+    platform: linux/amd64
     shm_size: 1gb
     restart: unless-stopped
     environment:
@@ -28,18 +28,6 @@ services:
     networks:
       - api
     restart: unless-stopped
-
-  typesense:
-    image: typesense/typesense:27.1
-    ports:
-      - "8108:8108"
-    networks:
-      - api
-    volumes:
-      - ./typesense-data:/data
-    environment:
-      TYPESENSE_API_KEY: "xyz"
-      TYPESENSE_DATA_DIR: "/data"
 
   # Tools
   pgadmin:
@@ -76,4 +64,3 @@ networks:
 volumes:
   db-data:
   db-admin:
-  typesense-data:
