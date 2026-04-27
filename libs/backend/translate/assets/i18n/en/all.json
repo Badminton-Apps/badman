@@ -1501,6 +1501,7 @@
       "error": "Failed to copy competition"
     },
     "enrollment": {
+      "pageTitle": "Competition Enrollment {season}",
       "disabled": {
         "title": "Registration closed",
         "message": "Registrations are currently closed. Please check back later."
@@ -1637,7 +1638,8 @@
         "selectAtLeastOnePlayer": "Select at least one player.",
         "addAtLeastOneTeam": "Add at least one team.",
         "duplicateTeamNumberSameType": "Duplicate team number within the same type.",
-        "maxBasePlayers": "You can add at most {max} base players."
+        "maxBasePlayers": "You can add at most {max} base players.",
+        "minBasePlayers": "Select at least {min} base players."
       }
     },
     "messages": {

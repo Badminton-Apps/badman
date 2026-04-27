@@ -1219,6 +1219,7 @@
       "error": "Kopiëren van competitie mislukt"
     },
     "enrollment": {
+      "pageTitle": "Competitie Inschrijving {season}",
       "disabled": {
         "title": "Inschrijvingen gesloten",
         "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
@@ -1355,7 +1356,8 @@
         "selectAtLeastOnePlayer": "Selecteer minstens één speler.",
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe.",
         "duplicateTeamNumberSameType": "Dubbel ploegnummer binnen hetzelfde type.",
-        "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen."
+        "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen.",
+        "minBasePlayers": "Je moet minstens {min} basisspelers selecteren."
       }
     },
     "messages": {

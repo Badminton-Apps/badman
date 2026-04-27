@@ -1519,6 +1519,7 @@ export type I18nTranslations = {
                 "error": string;
             };
             "enrollment": {
+                "pageTitle": string;
                 "disabled": {
                     "title": string;
                     "message": string;
@@ -1656,6 +1657,7 @@ export type I18nTranslations = {
                     "addAtLeastOneTeam": string;
                     "duplicateTeamNumberSameType": string;
                     "maxBasePlayers": string;
+                    "minBasePlayers": string;
                 };
             };
             "messages": {

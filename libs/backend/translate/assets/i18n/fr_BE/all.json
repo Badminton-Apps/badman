@@ -1759,6 +1759,7 @@
       }
     },
     "enrollment": {
+      "pageTitle": "Inscription à la compétition {season}",
       "disabled": {
         "title": "Inscriptions fermées",
         "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
@@ -1895,7 +1896,8 @@
         "selectAtLeastOnePlayer": "Sélectionnez au moins un joueur.",
         "addAtLeastOneTeam": "Ajoutez au moins une équipe.",
         "duplicateTeamNumberSameType": "Numéro d'équipe en double dans le même type.",
-        "maxBasePlayers": "Vous pouvez ajouter au maximum {max} joueurs de base."
+        "maxBasePlayers": "Vous pouvez ajouter au maximum {max} joueurs de base.",
+        "minBasePlayers": "Sélectionnez au moins {min} joueurs de base."
       }
     },
     "locations": {
