@@ -6,7 +6,7 @@
     "@badman/frontend-models": "*",
     "@badman/frontend-seo": "*",
     "@badman/frontend-utils": "*",
-    "@angular/common": "19.2.6",
+    "@angular/common": "20.3.14",
     "@angular/core": "19.2.6",
     "@angular/forms": "19.2.6",
     "@angular/material": "19.2.9",

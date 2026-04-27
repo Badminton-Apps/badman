@@ -4,7 +4,7 @@
   "peerDependencies": {
     "@angular/core": "19.2.6",
     "web-vitals": "^4.2.4",
-    "@angular/common": "19.2.6"
+    "@angular/common": "20.3.14"
   },
   "dependencies": {},
   "sideEffects": false

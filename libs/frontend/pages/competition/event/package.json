@@ -15,7 +15,7 @@
     "@badman/frontend-cp": "*",
     "@badman/frontend-excel": "*",
     "@badman/frontend-utils": "*",
-    "@angular/common": "19.2.6",
+    "@angular/common": "20.3.14",
     "@angular/core": "19.2.6",
     "@angular/router": "19.2.6",
     "@auth0/auth0-angular": "~2.2.3",

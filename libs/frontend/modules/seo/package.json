@@ -3,7 +3,7 @@
   "version": "6.185.0",
   "peerDependencies": {
     "@angular/core": "19.2.6",
-    "@angular/common": "19.2.6",
+    "@angular/common": "20.3.14",
     "@angular/platform-browser": "19.2.6"
   },
   "dependencies": {},
