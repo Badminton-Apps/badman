@@ -2,7 +2,9 @@ name: badman-next
 services:
   # Databases
   postgres:
+    platform: linux/amd64
     image: postgis/postgis:16-master
+    platform: linux/amd64
     shm_size: 1gb
     restart: unless-stopped
     environment:

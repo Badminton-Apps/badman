@@ -3,6 +3,7 @@ import { CacheModule as nestCache } from "@nestjs/cache-manager";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
 import KeyvRedis from "@keyv/redis";
+import Keyv from "keyv";
 import { ConfigType } from "@badman/utils";
 
 export const CACHE_TTL = 60 * 60 * 24 * 7 * 1000; // 1 week in milliseconds
@@ -26,7 +27,7 @@ const logger = new Logger("CacheModule");
           logger.log(`Cache: Using Redis store at ${host}:${port}`);
 
           return {
-            stores: [new KeyvRedis(redisUrl)],
+            stores: [new Keyv({ store: new KeyvRedis(redisUrl) })],
             ttl: CACHE_TTL,
           };
         } else {
@@ -38,6 +39,7 @@ const logger = new Logger("CacheModule");
             );
           }
           return {
+            stores: [new Keyv()],
             ttl: 0,
           };
         }
