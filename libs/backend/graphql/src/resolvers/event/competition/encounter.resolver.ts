@@ -465,13 +465,23 @@ export class EncounterCompetitionResolver {
     @User() user: Player,
     @Args("encounterId", { type: () => ID }) encounterId: string
   ): Promise<boolean> {
+    const encounter = await EncounterCompetition.findByPk(encounterId);
+
+    if (!encounter) {
+      throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+    }
+
     if (
-      !(await user.hasAnyPermission([
-        "change-any:encounter",
-        `change-${encounterId}:encounter`,
-      ]))
+      !(
+        (await user.hasAnyPermission([
+          "change-any:encounter",
+          `change-${encounterId}:encounter`,
+        ])) || encounter.gameLeaderId === user.id
+      )
     ) {
-      throw new UnauthorizedException(`You do not have permission to generate games for this encounter`);
+      throw new UnauthorizedException(
+        `You do not have permission to generate games for this encounter`
+      );
     }
     await this.encounterGamesService.generateGames(encounterId);
     return true;
