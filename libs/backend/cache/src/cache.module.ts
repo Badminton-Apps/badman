@@ -1,7 +1,8 @@
-import { Logger, Module } from "@nestjs/common";
-import { CacheModule as nestCache } from "@nestjs/cache-manager";
+import { Inject, Injectable, Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
+import { CACHE_MANAGER, CacheModule as nestCache } from "@nestjs/cache-manager";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
+import type { Cache } from "cache-manager";
 import KeyvRedis from "@keyv/redis";
 import Keyv from "keyv";
 import { ConfigType } from "@badman/utils";
@@ -9,6 +10,33 @@ import { ConfigType } from "@badman/utils";
 export const CACHE_TTL = 60 * 60 * 24 * 7 * 1000; // 1 week in milliseconds
 
 const logger = new Logger("CacheModule");
+
+// Boot-time round-trip against the configured cache. Catches the
+// `store.set is not a function` class of failure (cache-manager / Keyv API
+// drift) at startup instead of on the first cached request.
+@Injectable()
+export class CacheHealthCheck implements OnApplicationBootstrap {
+  private readonly logger = new Logger(CacheHealthCheck.name);
+
+  constructor(@Inject(CACHE_MANAGER) private readonly cache: Cache) {}
+
+  async onApplicationBootstrap(): Promise<void> {
+    const key = `__cache_health_check__:${process.pid}`;
+    const value = String(Date.now());
+    try {
+      await this.cache.set(key, value, 5_000);
+      const got = await this.cache.get<string>(key);
+      if (got !== value) {
+        throw new Error(`cache round-trip mismatch: expected ${value}, got ${String(got)}`);
+      }
+      await this.cache.del(key);
+      this.logger.log("Cache round-trip OK");
+    } catch (err) {
+      this.logger.error("Cache round-trip FAILED — refusing to start", err);
+      throw err;
+    }
+  }
+}
 
 @Module({
   imports: [
@@ -48,7 +76,7 @@ const logger = new Logger("CacheModule");
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [CacheHealthCheck],
   exports: [nestCache],
 })
 export class CacheModule {}
