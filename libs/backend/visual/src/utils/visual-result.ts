@@ -487,10 +487,18 @@ export interface XmlTournament {
   TournamentStatus?: number;
 }
 
+// `z.coerce.string()` would happily turn `undefined` into the literal string
+// "undefined" and silently pass — useless for validation. This helper rejects
+// undefined while still accepting numeric IDs (fast-xml-parser sometimes
+// returns numbers for tag bodies that look numeric).
+const requiredIdString = z
+  .union([z.string(), z.number()])
+  .transform((v) => String(v));
+
 export const XmlTournamentMatchSchema = z
   .object({
-    TournamentID: z.coerce.string(),
-    MatchID: z.coerce.string(),
+    TournamentID: requiredIdString,
+    MatchID: requiredIdString,
     MatchDate: z.string().optional(),
   })
   .passthrough();

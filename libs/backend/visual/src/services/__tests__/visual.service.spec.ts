@@ -472,4 +472,374 @@ describe("VisualService", () => {
       );
     });
   });
+
+  describe("getTournament", () => {
+    it("returns the validated tournament when the API returns one", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><Tournament><Code>TC1</Code><Name>Open Gent</Name>` +
+          `<StartDate>2024-03-04</StartDate></Tournament></Result>`,
+      });
+
+      const result = await service.getTournament("TC1", false);
+
+      expect(result).toBeDefined();
+      expect(result?.Code).toBe("TC1");
+      expect(result?.Name).toBe("Open Gent");
+    });
+
+    it("returns undefined when the API has no tournament", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getTournament("missing", false)).toBeUndefined();
+    });
+
+    it("throws when Name is missing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result><Tournament><Code>TC1</Code></Tournament></Result>`,
+      });
+
+      await expect(service.getTournament("TC1", false)).rejects.toThrow(
+        /Invalid Tournament response/
+      );
+    });
+  });
+
+  describe("searchEvents", () => {
+    it("returns an empty array when no tournaments match", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.searchEvents("nope")).toEqual([]);
+    });
+
+    it("returns multiple matching tournaments", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<Tournament><Code>T1</Code><Name>Open A</Name></Tournament>` +
+          `<Tournament><Code>T2</Code><Name>Open B</Name></Tournament>` +
+          `</Result>`,
+      });
+
+      const result = await service.searchEvents("Open");
+
+      expect(result).toHaveLength(2);
+      expect(result.map((t) => t.Code)).toEqual(["T1", "T2"]);
+    });
+
+    it("normalises a single matching tournament to a 1-element array", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><Tournament><Code>T1</Code><Name>Open A</Name></Tournament></Result>`,
+      });
+
+      const result = await service.searchEvents("Open A");
+
+      expect(result).toHaveLength(1);
+    });
+  });
+
+  describe("getEvent", () => {
+    it("returns the matching tournament wrapped in an array", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><Tournament><Code>EV1</Code><Name>Test</Name></Tournament></Result>`,
+      });
+
+      const result = await service.getEvent("EV1");
+
+      expect(result).toHaveLength(1);
+      expect(result[0].Code).toBe("EV1");
+    });
+
+    it("returns an empty array when there is no tournament", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getEvent("missing")).toEqual([]);
+    });
+  });
+
+  describe("getSubEvents", () => {
+    it("returns the validated sub-event list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<TournamentEvent><Code>SE1</Code><Name>HE</Name></TournamentEvent>` +
+          `<TournamentEvent><Code>SE2</Code><Name>DE</Name></TournamentEvent>` +
+          `</Result>`,
+      });
+
+      const result = await service.getSubEvents("EV1", false);
+
+      expect(result).toHaveLength(2);
+    });
+
+    it("throws when Name is missing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result><TournamentEvent><Code>SE1</Code></TournamentEvent></Result>`,
+      });
+
+      await expect(service.getSubEvents("EV1", false)).rejects.toThrow(
+        /Invalid TournamentEvent response/
+      );
+    });
+  });
+
+  describe("getSubEvent", () => {
+    it("returns the validated sub-event", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><TournamentEvent><Code>SE1</Code><Name>HE</Name></TournamentEvent></Result>`,
+      });
+
+      const result = await service.getSubEvent("EV1", "SE1", false);
+
+      expect(result?.Code).toBe("SE1");
+    });
+
+    it("returns undefined when missing", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getSubEvent("EV1", "SE1", false)).toBeUndefined();
+    });
+  });
+
+  describe("getDraws", () => {
+    it("returns the validated draw list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<TournamentDraw><Code>D1</Code><Name>Group A</Name></TournamentDraw>` +
+          `<TournamentDraw><Code>D2</Code><Name>Group B</Name></TournamentDraw>` +
+          `</Result>`,
+      });
+
+      const result = await service.getDraws("EV1", "SE1", false);
+
+      expect(result).toHaveLength(2);
+    });
+
+    it("throws when Name is missing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result><TournamentDraw><Code>D1</Code></TournamentDraw></Result>`,
+      });
+
+      await expect(service.getDraws("EV1", "SE1", false)).rejects.toThrow(
+        /Invalid TournamentDraw response/
+      );
+    });
+  });
+
+  describe("getDraw", () => {
+    it("returns the validated draw", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><TournamentDraw><Code>D1</Code><Name>Group A</Name></TournamentDraw></Result>`,
+      });
+
+      const result = await service.getDraw("EV1", "D1", false);
+
+      expect(result?.Code).toBe("D1");
+    });
+
+    it("returns undefined when missing", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getDraw("EV1", "missing", false)).toBeUndefined();
+    });
+  });
+
+  describe("getDate", () => {
+    it("returns the MatchDate string", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><TournamentMatch>` +
+          `<TournamentID>T1</TournamentID><MatchID>M1</MatchID>` +
+          `<MatchDate>2026-04-15T19:00:00</MatchDate>` +
+          `</TournamentMatch></Result>`,
+      });
+
+      const result = await service.getDate("T1", "M1", false);
+
+      expect(result).toBe("2026-04-15T19:00:00");
+    });
+
+    it("returns undefined when there is no TournamentMatch", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getDate("T1", "M1", false)).toBeUndefined();
+    });
+
+    it("throws when MatchID is missing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><TournamentMatch>` +
+          `<TournamentID>T1</TournamentID>` +
+          `<MatchDate>2026-04-15T19:00:00</MatchDate>` +
+          `</TournamentMatch></Result>`,
+      });
+
+      await expect(service.getDate("T1", "M1", false)).rejects.toThrow(
+        /Invalid TournamentMatch response/
+      );
+    });
+  });
+
+  describe("getPlayers", () => {
+    it("returns the validated player list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<Player><MemberID>M001</MemberID><Firstname>John</Firstname><Lastname>Doe</Lastname></Player>` +
+          `<Player><MemberID>M002</MemberID><Firstname>Jane</Firstname><Lastname>Doe</Lastname></Player>` +
+          `</Result>`,
+      });
+
+      const result = await service.getPlayers("T1", false);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].MemberID).toBe("M001");
+    });
+
+    it("returns an empty array when there are no players", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getPlayers("T1", false)).toEqual([]);
+    });
+  });
+
+  describe("getTeam", () => {
+    it("returns the validated team", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><Team><Code>TM1</Code><Name>Test Team</Name></Team></Result>`,
+      });
+
+      const result = await service.getTeam("T1", "TM1", false);
+
+      expect(result?.Code).toBe("TM1");
+    });
+
+    it("returns undefined when there is no team", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getTeam("T1", "missing", false)).toBeUndefined();
+    });
+  });
+
+  describe("getClubs", () => {
+    it("returns the validated club list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<Club><Code>C1</Code><Name>Club A</Name></Club>` +
+          `<Club><Code>C2</Code><Name>Club B</Name></Club>` +
+          `</Result>`,
+      });
+
+      const result = await service.getClubs("T1", false);
+
+      expect(result).toHaveLength(2);
+    });
+
+    it("throws when Name is missing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result><Club><Code>C1</Code></Club></Result>`,
+      });
+
+      await expect(service.getClubs("T1", false)).rejects.toThrow(/Invalid Club response/);
+    });
+  });
+
+  describe("getTeamMatch", () => {
+    it("returns the validated match list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<Match><Code>MA1</Code></Match>` +
+          `<Match><Code>MA2</Code></Match>` +
+          `</Result>`,
+      });
+
+      const result = await service.getTeamMatch("T1", "TM1", false);
+
+      expect(result).toHaveLength(2);
+    });
+
+    it("returns an empty array when there are no matches", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getTeamMatch("T1", "TM1", false)).toEqual([]);
+    });
+  });
+
+  describe("getGame", () => {
+    it("normalises a single match into a 1-element array", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result><Match><Code>G1</Code></Match></Result>`,
+      });
+
+      const result = await service.getGame("T1", "G1", false);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].Code).toBe("G1");
+    });
+
+    it("returns an empty array when there is no match", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getGame("T1", "G1", false)).toEqual([]);
+    });
+  });
+
+  describe("getGames", () => {
+    it("returns Match payloads when present", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><Match><Code>M1</Code></Match><Match><Code>M2</Code></Match></Result>`,
+      });
+
+      const result = await service.getGames("T1", "D1", false);
+
+      expect(result).toHaveLength(2);
+    });
+
+    it("returns TeamMatch payloads when there are no Matches", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<TeamMatch><Code>TM1</Code></TeamMatch>` +
+          `<TeamMatch><Code>TM2</Code></TeamMatch>` +
+          `</Result>`,
+      });
+
+      const result = await service.getGames("T1", "D1", false);
+
+      expect(result).toHaveLength(2);
+    });
+
+    it("returns an empty array and warns when neither Match nor TeamMatch is present", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      const result = await service.getGames("T1", "D1", false);
+
+      expect(result).toEqual([]);
+    });
+  });
 });
