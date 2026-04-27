@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { asArray } from "./visual-parsing";
+
 /**
  * Strict coercion for required ID / Code-style fields.
  *
@@ -13,6 +15,17 @@ import { z } from "zod";
 const requiredCoercedString = z
   .union([z.string(), z.number()])
   .transform((v) => String(v));
+
+/**
+ * Wrap a schema so the input is always normalised to an array before
+ * validation. Handles the XML "0/1/many sibling tags map to absent /
+ * object / array" quirk at the schema level so consumers always see an
+ * array, never a single object.
+ */
+const arrayOf = <S extends z.ZodTypeAny>(
+  schema: S
+): z.ZodEffects<z.ZodArray<S>, z.infer<S>[], unknown> =>
+  z.preprocess((v) => (v == null ? [] : asArray(v)), z.array(schema));
 
 export interface XmlResult {
   Tournament?: XmlTournament | XmlTournament[];
@@ -123,15 +136,18 @@ export const XmlScoreSchema = z
   .passthrough();
 export type XmlScore = z.infer<typeof XmlScoreSchema>;
 
-// XmlScores etc. use z.unknown() for the inner Score/Stat/Set/Player/Item
-// field. fast-xml-parser yields either an object or an array depending on
-// whether the XML has 0/1/many sibling tags; the consuming code handles
-// that via _asArray. Validating the inner shape with z.union(X, array(X))
-// makes the inferred type tree explode and trips TS7056 ("inferred type
-// exceeds maximum length"). We only need the wrapper key to exist.
-//
-// The hand-written interfaces below preserve the legacy contract for
-// downstream consumers (e.g. encounter.ts reads `sets.Set.Team1`).
+// XmlScores / XmlStats / XmlSets / XmlPlayers / XmlStructure all wrap a
+// list of children that fast-xml-parser yields as either a single object
+// (one occurrence in the XML), an array (many), or absent (zero). The
+// `arrayOf` helper normalises all three at the schema layer so consumers
+// always see a real array — no more `Array.isArray()` checks in caller
+// code, no more lying `XmlPlayer[]` types when the runtime is actually
+// `XmlPlayer | XmlPlayer[]`. The schema is now the single source of truth
+// (z.infer-derived types) for these wrappers.
+// XmlScores / XmlStats: nothing in the codebase reads `.Scores.Score` or
+// `.Stats.Stat` today. Keep them as opaque `z.unknown()` wrappers so they
+// don't cascade into the deep type-tree that trips TS7056 once XmlSet /
+// XmlItem / XmlMatch nest them.
 export const XmlScoresSchema = z.object({ Score: z.unknown() }).passthrough();
 export interface XmlScores {
   Score: XmlScore[];
@@ -157,10 +173,8 @@ export const XmlSetSchema = z
   .passthrough();
 export type XmlSet = z.infer<typeof XmlSetSchema>;
 
-export const XmlSetsSchema = z.object({ Set: z.unknown() }).passthrough();
-export interface XmlSets {
-  Set: XmlSet | XmlSet[];
-}
+export const XmlSetsSchema = z.object({ Set: arrayOf(XmlSetSchema) }).passthrough();
+export type XmlSets = z.infer<typeof XmlSetsSchema>;
 
 export const XmlPlayerSchema = z
   .object({
@@ -199,10 +213,8 @@ export const XmlClubSchema = z
   .passthrough();
 export type XmlClub = z.infer<typeof XmlClubSchema>;
 
-export const XmlPlayersSchema = z.object({ Player: z.unknown() }).passthrough();
-export interface XmlPlayers {
-  Player: XmlPlayer[];
-}
+export const XmlPlayersSchema = z.object({ Player: arrayOf(XmlPlayerSchema) }).passthrough();
+export type XmlPlayers = z.infer<typeof XmlPlayersSchema>;
 
 export const XmlTeamSchema = z
   .object({
@@ -382,10 +394,8 @@ export interface XmlItem {
   Sets?: XmlSets;
 }
 
-export const XmlStructureSchema = z.object({ Item: z.unknown() }).passthrough();
-export interface XmlStructure {
-  Item: XmlItem | XmlItem[];
-}
+export const XmlStructureSchema = z.object({ Item: arrayOf(XmlItemSchema) }).passthrough();
+export type XmlStructure = z.infer<typeof XmlStructureSchema>;
 
 export const XmlTournamentDrawSchema = z
   .object({

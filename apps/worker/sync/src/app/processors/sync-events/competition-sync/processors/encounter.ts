@@ -125,9 +125,12 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         await dbEncounter.save({ transaction: this.transaction });
       }
 
-      if (!Array.isArray(xmlTeamMatch.Sets?.Set)) {
-        dbEncounter.homeScore = xmlTeamMatch.Sets?.Set?.Team1;
-        dbEncounter.awayScore = xmlTeamMatch.Sets?.Set?.Team2;
+      // VisualService normalises Sets.Set to an array; pick the first set's
+      // score (matches the previous "single-set only" behaviour).
+      const firstSet = xmlTeamMatch.Sets?.Set?.[0];
+      if (firstSet) {
+        dbEncounter.homeScore = firstSet.Team1;
+        dbEncounter.awayScore = firstSet.Team2;
       }
 
       dbEncounter.homeTeamId = team1?.id;
