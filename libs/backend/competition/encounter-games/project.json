@@ -1,0 +1,55 @@
+{
+  "name": "backend-encounter-games",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/competition/encounter-games/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "{workspaceRoot}/dist/libs/backend/competition/encounter-games",
+        "tsConfig": "libs/backend/competition/encounter-games/tsconfig.lib.json",
+        "packageJson": "libs/backend/competition/encounter-games/package.json",
+        "main": "libs/backend/competition/encounter-games/src/index.ts",
+        "assets": ["libs/backend/competition/encounter-games/*.md"],
+        "transformers": [
+          {
+            "name": "typescript-transform-paths/nx-transformer"
+          }
+        ]
+      }
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/backend/competition/encounter-games",
+        "{workspaceRoot}\\coverage\\libs\\backend\\competition\\encounter-games"
+      ],
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "eslintConfig": "libs/backend/competition/encounter-games/eslint.config.js"
+      }
+    }
+  }
+}

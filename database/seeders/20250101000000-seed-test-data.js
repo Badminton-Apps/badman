@@ -201,7 +201,14 @@ async function seedUserAndClaims(ctx, userConfig) {
 /**
  * Seed one club with players and teams (main + historical). Returns clubId, teamId, players, historicalTeamIds.
  */
-async function seedClubWithPlayersAndTeams(ctx, clubName, captainUser, season, previousSeason, options) {
+async function seedClubWithPlayersAndTeams(
+  ctx,
+  clubName,
+  captainUser,
+  season,
+  previousSeason,
+  options
+) {
   const {
     playerCount = PLAYERS_ON_TEAM,
     factoryOptions = {},
@@ -211,7 +218,12 @@ async function seedClubWithPlayersAndTeams(ctx, clubName, captainUser, season, p
   const clubId = await createClub(ctx, clubName);
   const createTeamFn = useCreateOpponentTeam ? createOpponentTeam : createTeam;
 
-  const additionalPlayers = await PlayerFactory.createForTeam(ctx, clubName, playerCount, factoryOptions);
+  const additionalPlayers = await PlayerFactory.createForTeam(
+    ctx,
+    clubName,
+    playerCount,
+    factoryOptions
+  );
   const players = [captainUser, ...additionalPlayers];
 
   for (const player of additionalPlayers) {
@@ -233,13 +245,21 @@ async function seedClubWithPlayersAndTeams(ctx, clubName, captainUser, season, p
 
   const historicalTeamIds = [];
   for (const teamType of HISTORICAL_TEAM_TYPES) {
-    const historicalTeamId = await createTeamFn(ctx, clubId, previousSeason, captainUser.id, teamType);
+    const historicalTeamId = await createTeamFn(
+      ctx,
+      clubId,
+      previousSeason,
+      captainUser.id,
+      teamType
+    );
     historicalTeamIds.push(historicalTeamId);
     for (const player of players) {
       await addPlayerToTeam(ctx, historicalTeamId, player.id, previousSeasonStart);
     }
   }
-  console.log(`✅ Created 3 historical teams for ${clubName} (season ${previousSeason}): M, F, MX\n`);
+  console.log(
+    `✅ Created 3 historical teams for ${clubName} (season ${previousSeason}): M, F, MX\n`
+  );
 
   return { clubId, teamId, players, historicalTeamIds };
 }
@@ -288,16 +308,23 @@ module.exports = {
         const user = await seedUserAndClaims(ctx, config.homeTeam);
         await grantClubClaims(sequelize, transaction, QueryTypes, user.id, config.homeTeam.email);
 
-        const home = await seedClubWithPlayersAndTeams(ctx, "TEAM AWESOME", user, season, previousSeason, {
-          playerCount: PLAYERS_ON_TEAM,
-          factoryOptions: {
-            gender: "mixed",
-            domain: "teamawesome.com",
-            prefix: "TEST-AWESOME",
-            baseIndex: 0,
-          },
-          useCreateOpponentTeam: false,
-        });
+        const home = await seedClubWithPlayersAndTeams(
+          ctx,
+          "TEAM AWESOME",
+          user,
+          season,
+          previousSeason,
+          {
+            playerCount: PLAYERS_ON_TEAM,
+            factoryOptions: {
+              gender: "mixed",
+              domain: "teamawesome.com",
+              prefix: "TEST-AWESOME",
+              baseIndex: 0,
+            },
+            useCreateOpponentTeam: false,
+          }
+        );
 
         await ensureClubAdminPermission(ctx, home.clubId, user.id);
 
@@ -306,16 +333,23 @@ module.exports = {
         const { eventId, subEventId, drawId } = await seedEventTree(ctx, season);
 
         const opponentUser = await seedUserAndClaims(ctx, config.awayTeam);
-        const opponent = await seedClubWithPlayersAndTeams(ctx, "THE OPPONENTS", opponentUser, season, previousSeason, {
-          playerCount: PLAYERS_ON_TEAM,
-          factoryOptions: {
-            gender: "mixed",
-            domain: "opponents.com",
-            prefix: "TEST-OPPONENTS",
-            baseIndex: 8,
-          },
-          useCreateOpponentTeam: true,
-        });
+        const opponent = await seedClubWithPlayersAndTeams(
+          ctx,
+          "THE OPPONENTS",
+          opponentUser,
+          season,
+          previousSeason,
+          {
+            playerCount: PLAYERS_ON_TEAM,
+            factoryOptions: {
+              gender: "mixed",
+              domain: "opponents.com",
+              prefix: "TEST-OPPONENTS",
+              baseIndex: 8,
+            },
+            useCreateOpponentTeam: true,
+          }
+        );
 
         await seedLocationsForClub(ctx, opponent.clubId, season, OPPONENT_LOCATIONS(season));
 
@@ -326,12 +360,16 @@ module.exports = {
         console.log(`   • Team: ${home.teamId} with ${home.players.length} players`);
         console.log(`   • User: ${config.homeTeam.email}`);
         console.log(`   • Opponent Club: THE OPPONENTS (${opponent.clubId})`);
-        console.log(`   • Opponent Team: ${opponent.teamId} with ${opponent.players.length} players`);
+        console.log(
+          `   • Opponent Team: ${opponent.teamId} with ${opponent.players.length} players`
+        );
         console.log(`   • Opponent User: ${config.awayTeam.email}`);
         console.log(`   • Event: Test Event ${season} (${eventId})`);
         console.log(`   • SubEvent: Test SubEvent M (${subEventId})`);
         console.log(`   • Draw: Test Draw (${drawId})`);
-        console.log(`   • Locations: TEAM AWESOME [${HOME_LOCATIONS(season).length}], THE OPPONENTS [${OPPONENT_LOCATIONS(season).length}]`);
+        console.log(
+          `   • Locations: TEAM AWESOME [${HOME_LOCATIONS(season).length}], THE OPPONENTS [${OPPONENT_LOCATIONS(season).length}]`
+        );
         console.log(`   • Encounters: ${ENCOUNTER_COUNT}`);
         console.log(
           `   • Historical teams (season ${previousSeason}): TEAM AWESOME [${home.historicalTeamIds.join(", ")}], THE OPPONENTS [${opponent.historicalTeamIds.join(", ")}]`
@@ -440,7 +478,10 @@ module.exports = {
         const clubIds = clubs.map((c) => c.id);
         console.log(`📍 Step 3: Starting deletion process for ${clubIds.length} clubs...\n`);
 
-        const { placeholders: clubPlaceholders, replacements: clubReplacements } = buildInClause(clubIds, "clubId");
+        const { placeholders: clubPlaceholders, replacements: clubReplacements } = buildInClause(
+          clubIds,
+          "clubId"
+        );
 
         console.log("📍 Step 3.5: Finding test players via club membership...\n");
         const testPlayers = await sequelize.query(
@@ -511,10 +552,8 @@ module.exports = {
 
         if (testPlayers && testPlayers.length > 0) {
           const playerIds = testPlayers.map((p) => p.id);
-          const { placeholders: playerPlaceholders, replacements: playerReplacements } = buildInClause(
-            playerIds,
-            "playerId"
-          );
+          const { placeholders: playerPlaceholders, replacements: playerReplacements } =
+            buildInClause(playerIds, "playerId");
 
           const playerCleanupTasks = [
             {

@@ -18,6 +18,7 @@ import {
   updateEncounterCompetitionInput,
   updateTempTeamCaptainInput,
 } from "@badman/backend-database";
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
@@ -65,7 +66,8 @@ export class EncounterCompetitionResolver {
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    private encounterValidationService: EncounterValidationService
+    private encounterValidationService: EncounterValidationService,
+    private encounterGamesService: EncounterGamesGenerationService
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -459,6 +461,38 @@ export class EncounterCompetitionResolver {
   }
 
   @Mutation(() => Boolean)
+  async generateEncounterGames(
+    @User() user: Player,
+    @Args("encounterId", { type: () => ID }) encounterId: string
+  ): Promise<boolean> {
+    const encounter = await EncounterCompetition.findByPk(encounterId, {
+      include: [
+        { model: Team, as: "home" },
+        { model: Team, as: "away" },
+      ],
+    });
+
+    if (!encounter) {
+      throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+    }
+
+    const hasPermission =
+      (await user.hasAnyPermission([
+        "change-any:encounter",
+        `${encounter.home?.clubId}_enter:results`,
+        `${encounter.away?.clubId}_enter:results`,
+      ])) || encounter.gameLeaderId === user.id;
+
+    if (!hasPermission) {
+      throw new UnauthorizedException(
+        `You do not have permission to generate games for this encounter`
+      );
+    }
+    await this.encounterGamesService.generateGames(encounterId);
+    return true;
+  }
+
+  @Mutation(() => Boolean)
   async changeDate(
     @User() user: Player,
     @Args("id", { type: () => ID }) id: string,
@@ -614,20 +648,26 @@ export class EncounterCompetitionResolver {
     this.logger.log("Updating encounter record with id:", `${encounterId}`);
     const transaction = await this._sequelize.transaction();
     try {
-      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
+      const encounter = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+        include: [
+          { model: Team, as: "home" },
+          { model: Team, as: "away" },
+        ],
+      });
 
       if (!encounter) {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
       }
 
-      if (
-        !(
-          (await user.hasAnyPermission(["change-any:encounter"])) || [
-            `change-${encounterId}:encounter`,
-          ] ||
-          encounter.gameLeaderId === user.id
-        )
-      ) {
+      const hasPermission =
+        (await user.hasAnyPermission([
+          "change-any:encounter",
+          `${encounter.home?.clubId}_enter:results`,
+          `${encounter.away?.clubId}_enter:results`,
+        ])) || encounter.gameLeaderId === user.id;
+
+      if (!hasPermission) {
         throw new UnauthorizedException(`You do not have permission to edit this encounter`);
       }
 
