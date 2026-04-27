@@ -465,20 +465,25 @@ export class EncounterCompetitionResolver {
     @User() user: Player,
     @Args("encounterId", { type: () => ID }) encounterId: string
   ): Promise<boolean> {
-    const encounter = await EncounterCompetition.findByPk(encounterId);
+    const encounter = await EncounterCompetition.findByPk(encounterId, {
+      include: [
+        { model: Team, as: "home" },
+        { model: Team, as: "away" },
+      ],
+    });
 
     if (!encounter) {
       throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
     }
 
-    if (
-      !(
-        (await user.hasAnyPermission([
-          "change-any:encounter",
-          `change-${encounterId}:encounter`,
-        ])) || encounter.gameLeaderId === user.id
-      )
-    ) {
+    const hasPermission =
+      (await user.hasAnyPermission([
+        "change-any:encounter",
+        `${encounter.home?.clubId}_enter:results`,
+        `${encounter.away?.clubId}_enter:results`,
+      ])) || encounter.gameLeaderId === user.id;
+
+    if (!hasPermission) {
       throw new UnauthorizedException(
         `You do not have permission to generate games for this encounter`
       );
@@ -643,20 +648,26 @@ export class EncounterCompetitionResolver {
     this.logger.log("Updating encounter record with id:", `${encounterId}`);
     const transaction = await this._sequelize.transaction();
     try {
-      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
+      const encounter = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+        include: [
+          { model: Team, as: "home" },
+          { model: Team, as: "away" },
+        ],
+      });
 
       if (!encounter) {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
       }
 
-      if (
-        !(
-          (await user.hasAnyPermission(["change-any:encounter"])) || [
-            `change-${encounterId}:encounter`,
-          ] ||
-          encounter.gameLeaderId === user.id
-        )
-      ) {
+      const hasPermission =
+        (await user.hasAnyPermission([
+          "change-any:encounter",
+          `${encounter.home?.clubId}_enter:results`,
+          `${encounter.away?.clubId}_enter:results`,
+        ])) || encounter.gameLeaderId === user.id;
+
+      if (!hasPermission) {
         throw new UnauthorizedException(`You do not have permission to edit this encounter`);
       }
 
