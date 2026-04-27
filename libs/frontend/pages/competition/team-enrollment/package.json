@@ -11,7 +11,7 @@
     "@badman/frontend-utils": "*",
     "@badman/frontend-seo": "*",
     "@angular/common": "19.2.6",
-    "@angular/core": "19.2.6",
+    "@angular/core": "20.3.16",
     "@angular/forms": "19.2.6",
     "@angular/material": "19.2.9",
     "@ngx-translate/core": "^16.0.4",
