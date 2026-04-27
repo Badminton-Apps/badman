@@ -186,4 +186,161 @@ describe("VisualService", () => {
       );
     });
   });
+
+  describe("getPublications", () => {
+    const RANKING_ID = "5CE3FF3E-3B3B-4AFD-9F62-29888F1ECD4F";
+
+    it("hits the correct URL", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result></Result>`,
+      });
+
+      await service.getPublications(RANKING_ID, false);
+
+      expect(httpGet).toHaveBeenCalledWith(
+        `${VR_API}/Ranking/${RANKING_ID}/Publication`,
+        expect.any(Object)
+      );
+    });
+
+    it("returns undefined when the API has no publications", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result></Result>`,
+      });
+
+      const result = await service.getPublications(RANKING_ID, false);
+
+      expect(result).toBeUndefined();
+    });
+
+    it("parses the XML branch (date-only PublicationDate)", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<RankingPublication>` +
+          `<Code>P1</Code><Name>Week 10</Name>` +
+          `<Year>2024</Year><Week>10</Week>` +
+          `<PublicationDate>2024-03-04</PublicationDate>` +
+          `<Visible>true</Visible>` +
+          `</RankingPublication>` +
+          `<RankingPublication>` +
+          `<Code>P2</Code><Name>Week 11</Name>` +
+          `<Year>2024</Year><Week>11</Week>` +
+          `<PublicationDate>2024-03-11</PublicationDate>` +
+          `<Visible>true</Visible>` +
+          `</RankingPublication>` +
+          `</Result>`,
+      });
+
+      const result = await service.getPublications(RANKING_ID, false);
+
+      expect(result).toHaveLength(2);
+      expect(result?.[0]).toMatchObject({
+        Code: "P1",
+        PublicationDate: "2024-03-04",
+        Visible: true,
+      });
+      // Year/Week may come back as numbers from fast-xml-parser; the schema
+      // coerces them to strings.
+      expect(typeof result?.[0].Year).toBe("string");
+      expect(typeof result?.[0].Week).toBe("string");
+    });
+
+    it("parses the JSON branch (ISO-datetime PublicationDate) — regression for the publications-step crash", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: JSON.stringify({
+          RankingPublication: [
+            {
+              Code: "P1",
+              Name: "Week 10",
+              Year: 2024,
+              Week: 10,
+              PublicationDate: "2024-03-04T00:00:00",
+              Visible: true,
+            },
+          ],
+        }),
+      });
+
+      const result = await service.getPublications(RANKING_ID, false);
+
+      expect(result).toHaveLength(1);
+      expect(result?.[0]).toMatchObject({
+        Code: "P1",
+        PublicationDate: "2024-03-04T00:00:00",
+        Visible: true,
+        Year: "2024",
+        Week: "10",
+      });
+    });
+
+    it("normalises a single publication object into a 1-element array", async () => {
+      // fast-xml-parser yields a single <RankingPublication> as an object,
+      // not a 1-element array. Without _asArray normalisation the validator
+      // would reject a perfectly valid singular response.
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<RankingPublication>` +
+          `<Code>P1</Code><Name>Week 10</Name>` +
+          `<Year>2024</Year><Week>10</Week>` +
+          `<PublicationDate>2024-03-04</PublicationDate>` +
+          `<Visible>true</Visible>` +
+          `</RankingPublication>` +
+          `</Result>`,
+      });
+
+      const result = await service.getPublications(RANKING_ID, false);
+
+      expect(result).toHaveLength(1);
+      expect(result?.[0].Code).toBe("P1");
+    });
+
+    it("throws a clear error when a publication is missing PublicationDate", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<RankingPublication>` +
+          `<Code>P1</Code><Name>Week 10</Name>` +
+          `<Year>2024</Year><Week>10</Week>` +
+          `<Visible>true</Visible>` +
+          `</RankingPublication>` +
+          `<RankingPublication>` +
+          `<Code>P2</Code><Name>Week 11</Name>` +
+          `<Year>2024</Year><Week>11</Week>` +
+          `<PublicationDate>2024-03-11</PublicationDate>` +
+          `<Visible>true</Visible>` +
+          `</RankingPublication>` +
+          `</Result>`,
+      });
+
+      const promise = service.getPublications(RANKING_ID, false);
+      await expect(promise).rejects.toThrow(/Invalid RankingPublication response/);
+      await expect(promise).rejects.toThrow(/PublicationDate/);
+    });
+
+    it("throws a clear error when PublicationDate is empty", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: JSON.stringify({
+          RankingPublication: [
+            {
+              Code: "P1",
+              Name: "Week 10",
+              Year: 2024,
+              Week: 10,
+              PublicationDate: "",
+              Visible: true,
+            },
+          ],
+        }),
+      });
+
+      await expect(service.getPublications(RANKING_ID, false)).rejects.toThrow(
+        /Invalid RankingPublication response/
+      );
+    });
+  });
 });

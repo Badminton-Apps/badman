@@ -286,8 +286,10 @@ export class VisualService {
 
     // Validate the response shape at the API boundary so a future Visual API
     // change is caught here with a clear error, not deep in the sync pipeline
-    // as a confusing RangeError / TypeError.
-    const validation = z.array(XmlRankingPublicationSchema).safeParse(parsed.RankingPublication);
+    // as a confusing RangeError / TypeError. _asArray handles the case where
+    // fast-xml-parser yields a single <RankingPublication> as an object.
+    const candidates = this._asArray(parsed.RankingPublication);
+    const validation = z.array(XmlRankingPublicationSchema).safeParse(candidates);
     if (!validation.success) {
       this.logger.error(
         `Visual API returned a malformed RankingPublication payload for ${rankingId}: ${validation.error.message}`
