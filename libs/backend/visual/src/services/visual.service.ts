@@ -11,6 +11,8 @@ import { performance } from "perf_hooks";
 import {
   XmlClub,
   XmlMatch,
+  XmlRankingPublication,
+  XmlRankingPublicationSchema,
   XmlResult,
   XmlTeam,
   XmlTeamMatch,
@@ -18,6 +20,7 @@ import {
   XmlTournamentDraw,
   XmlTournamentEvent,
 } from "../utils";
+import { z } from "zod";
 import { Cache } from "cache-manager";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { CACHE_TTL } from "@badman/backend-cache";
@@ -268,13 +271,32 @@ export class VisualService {
     const parsed = this._parseResponse(result) as XmlResult;
     return parsed.RankingCategory;
   }
-  async getPublications(rankingId: string, useCache = true) {
+  async getPublications(
+    rankingId: string,
+    useCache = true
+  ): Promise<XmlRankingPublication[] | undefined> {
     const result = await this._getFromApi(
       `${this._configService.get("VR_API")}/Ranking/${rankingId}/Publication`,
       useCache
     );
     const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.RankingPublication;
+    if (!parsed.RankingPublication) {
+      return undefined;
+    }
+
+    // Validate the response shape at the API boundary so a future Visual API
+    // change is caught here with a clear error, not deep in the sync pipeline
+    // as a confusing RangeError / TypeError.
+    const validation = z.array(XmlRankingPublicationSchema).safeParse(parsed.RankingPublication);
+    if (!validation.success) {
+      this.logger.error(
+        `Visual API returned a malformed RankingPublication payload for ${rankingId}: ${validation.error.message}`
+      );
+      throw new Error(
+        `Invalid RankingPublication response from Visual API: ${validation.error.message}`
+      );
+    }
+    return validation.data;
   }
   async getPoints(rankingId: string, publicationId: string, categoryId: string, useCache = true) {
     const result = await this._getFromApi(

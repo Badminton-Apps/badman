@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface XmlResult {
   Tournament?: XmlTournament | XmlTournament[];
   TournamentMatch?: XmlTournamentMatch;
@@ -45,14 +47,29 @@ export interface XmlRankingCategory {
   Name: string;
 }
 
-export interface XmlRankingPublication {
-  Code: string;
-  Name: string;
-  Year: string;
-  Week: string;
-  PublicationDate: Date;
-  Visible: boolean;
-}
+// Runtime schema for a single ranking publication returned by the Visual API.
+// Used as the single source of truth: the TS type below is derived via
+// z.infer, and visual.service.getPublications validates every response shape
+// against this schema. If the upstream API ever changes shape again we get a
+// clear, early error at the boundary instead of a downstream RangeError /
+// TypeError deep inside the sync pipeline.
+//
+// Notes on PublicationDate / Visible:
+//   - PublicationDate is a string. fast-xml-parser yields the raw text node
+//     ("yyyy-MM-dd"); the JSON branch added in 515cedb3b yields a full
+//     ISO-8601 datetime ("yyyy-MM-dd'T'HH:mm:ss[.SSSZ]"). Either is accepted.
+//   - Year / Week come back as strings from XML and may come back as numbers
+//     from the JSON branch — coerce.
+export const XmlRankingPublicationSchema = z.object({
+  Code: z.string(),
+  Name: z.string(),
+  Year: z.coerce.string(),
+  Week: z.coerce.string(),
+  PublicationDate: z.string().min(1),
+  Visible: z.coerce.boolean(),
+});
+
+export type XmlRankingPublication = z.infer<typeof XmlRankingPublicationSchema>;
 
 interface XmlError {
   Code: number;
