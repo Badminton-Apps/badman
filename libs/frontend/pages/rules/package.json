@@ -10,7 +10,7 @@
     "@angular/material": "19.2.9",
     "@ng-matero/extensions": "~19.0.3",
     "@ngx-translate/core": "^16.0.4",
-    "@angular/common": "19.2.6",
+    "@angular/common": "20.3.14",
     "@angular/router": "19.2.6",
     "apollo-angular": "^8.0.2",
     "ngx-socket-io": "~4.8.4",
