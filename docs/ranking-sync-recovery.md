@@ -23,17 +23,17 @@ Result: federation snapshot is restored, but local-derived state (`RankingLastPl
 - [ ] Identify the affected `RankingSystem` id and the gap window `[gap_start, gap_end]`.
 - [ ] Check current watermarks per system:
   ```sql
-  SELECT id, name, ranking_system,
-         calculation_last_update, update_last_update,
-         calculate_updates, run_currently
-  FROM ranking.ranking_systems;
+  SELECT id, name, "rankingSystem",
+         "calculationLastUpdate", "updateLastUpdate",
+         "calculateUpdates", "runCurrently"
+  FROM ranking."RankingSystems";
   ```
 - [ ] Build a per-date histogram and find holes:
   ```sql
-  SELECT ranking_date::date, COUNT(*) AS rows
-  FROM ranking.ranking_places
-  WHERE system_id = '<SYSTEM_ID>'
-    AND ranking_date >= '<gap_start>'
+  SELECT "rankingDate"::date, COUNT(*) AS rows
+  FROM ranking."RankingPlaces"
+  WHERE "systemId" = '<SYSTEM_ID>'
+    AND "rankingDate" >= '<gap_start>'
   GROUP BY 1 ORDER BY 1 DESC;
   ```
 - [ ] Diff against federation. List all publication dates federation advertises:
@@ -43,31 +43,31 @@ Result: federation snapshot is restored, but local-derived state (`RankingLastPl
   Diff the result against the previous query. **Holes = Phase 2 needed.**
 - [ ] Spot-check 5–10 reportedly-wrong players:
   ```sql
-  SELECT p.id, p.first_name, p.last_name, p.member_id,
-         lp.ranking_date AS last_place_date,
+  SELECT p.id, p."firstName", p."lastName", p."memberId",
+         lp."rankingDate" AS last_place_date,
          lp.single, lp.double, lp.mix,
-         lp.single_points, lp.double_points, lp.mix_points
-  FROM "players" p
-  JOIN ranking.ranking_last_places lp ON lp.player_id = p.id
-  WHERE p.member_id IN ('...', '...', '...')
-    AND lp.system_id = '<SYSTEM_ID>';
+         lp."singlePoints", lp."doublePoints", lp."mixPoints"
+  FROM "Players" p
+  JOIN ranking."RankingLastPlaces" lp ON lp."playerId" = p.id
+  WHERE p."memberId" IN ('...', '...', '...')
+    AND lp."systemId" = '<SYSTEM_ID>';
   ```
 - [ ] Per-player history for those same players:
   ```sql
-  SELECT ranking_date, single, double, mix, update_possible
-  FROM ranking.ranking_places
-  WHERE player_id = '<P>' AND system_id = '<SYSTEM_ID>'
-  ORDER BY ranking_date DESC LIMIT 10;
+  SELECT "rankingDate", single, double, mix, "updatePossible"
+  FROM ranking."RankingPlaces"
+  WHERE "playerId" = '<P>' AND "systemId" = '<SYSTEM_ID>'
+  ORDER BY "rankingDate" DESC LIMIT 10;
   ```
 - [ ] Check `RankingPoint` coverage for games played during the gap:
   ```sql
-  SELECT date_trunc('week', g.played_at) AS wk,
+  SELECT date_trunc('week', g."playedAt") AS wk,
          COUNT(*) AS games,
          COUNT(rp.id) AS with_points
-  FROM event.games g
-  LEFT JOIN ranking.ranking_points rp
-    ON rp.game_id = g.id AND rp.system_id = '<SYSTEM_ID>'
-  WHERE g.played_at >= '<gap_start>' AND g.played_at < '<gap_end>'
+  FROM event."Games" g
+  LEFT JOIN ranking."RankingPoints" rp
+    ON rp."gameId" = g.id AND rp."systemId" = '<SYSTEM_ID>'
+  WHERE g."playedAt" >= '<gap_start>' AND g."playedAt" < '<gap_end>'
   GROUP BY 1 ORDER BY 1;
   ```
   **`with_points` ≪ `games` = Phase 4 needed.**
@@ -98,9 +98,9 @@ Result: federation snapshot is restored, but local-derived state (`RankingLastPl
 
 - [ ] Rewind the watermark on the affected system so the recalc reaches back into the gap:
   ```sql
-  UPDATE ranking.ranking_systems
-  SET calculation_last_update = '<pre_gap_date>',
-      update_last_update      = '<pre_gap_date>'
+  UPDATE ranking."RankingSystems"
+  SET "calculationLastUpdate" = '<pre_gap_date>',
+      "updateLastUpdate"      = '<pre_gap_date>'
   WHERE id = '<SYSTEM_ID>';
   ```
 - [ ] Confirm `calculate_updates = true` on the system. If false, the recalc cron is gated off entirely.
@@ -128,13 +128,13 @@ If Phase 1.6 showed orphan points, Phase 3 with `recalculatePoints: true` alread
 
 - [ ] `RankingLastPlace` keeps up with `RankingPlace`:
   ```sql
-  SELECT lp.player_id, lp.ranking_date, MAX(rp.ranking_date) AS max_place_date
-  FROM ranking.ranking_last_places lp
-  JOIN ranking.ranking_places rp
-    ON rp.player_id = lp.player_id AND rp.system_id = lp.system_id
-  WHERE lp.system_id = '<SYSTEM_ID>'
-  GROUP BY lp.player_id, lp.ranking_date
-  HAVING lp.ranking_date < MAX(rp.ranking_date)
+  SELECT lp."playerId", lp."rankingDate", MAX(rp."rankingDate") AS max_place_date
+  FROM ranking."RankingLastPlaces" lp
+  JOIN ranking."RankingPlaces" rp
+    ON rp."playerId" = lp."playerId" AND rp."systemId" = lp."systemId"
+  WHERE lp."systemId" = '<SYSTEM_ID>'
+  GROUP BY lp."playerId", lp."rankingDate"
+  HAVING lp."rankingDate" < MAX(rp."rankingDate")
   LIMIT 50;
   ```
   Expected: 0 rows. Non-zero rows = `RankingLastPlace` stuck behind. Re-sync the latest publication only — the `@AfterUpsert` hook on `RankingPlace` (`updateLatestRankings`) will fire forward and fix it.
@@ -150,16 +150,16 @@ If Phase 1.6 showed orphan points, Phase 3 with `recalculatePoints: true` alread
 
 - [ ] Post in the user channel/forum once recalc completes. Phase 3 may take hours on a full dataset.
 - [ ] Tail worker logs until queue depth returns to 0.
-- [ ] Snapshot `calculation_last_update` and confirm it now equals the latest federation publication date.
+- [ ] Snapshot `calculationLastUpdate` and confirm it now equals the latest federation publication date.
 
 ---
 
 ## Don'ts
 
 - Don't clear `RankingPlace` and re-sync from epoch. Federation is your only source of truth and Step 4 (`removeInvisiblePublications`) will *delete* historic rows on next sync if federation hides any of them.
-- Don't rewind `calculation_last_update` to `2016-08-31` (the model default). `getRankingPeriods` will enumerate years of intervals and saturate the queue + DB.
+- Don't rewind `calculationLastUpdate` to `2016-08-31` (the model default). `getRankingPeriods` will enumerate years of intervals and saturate the queue + DB.
 - Don't run two `Sync.SyncRanking` jobs in parallel. The `cronJob.running` field is dead code (never set to `true`); only Bull's job-name dedup in `CronService` prevents collisions, and that's bypassed when admin enqueues directly.
-- Don't disable `calculate_updates` on the system to "make it stop" — that gates off all recovery jobs too.
+- Don't disable `calculateUpdates` on the system to "make it stop" — that gates off all recovery jobs too.
 - Don't assume the daily cron will heal it on its own. Without watermark rewind it never re-enters the gap.
 
 ---
@@ -197,9 +197,9 @@ These changes belong in their own PR. They are not part of the recovery itself.
 
 ### Operational guardrails
 
-7. **Sync-completion sanity check.** After each sync run, count expected publication dates from federation in `[watermark - 1 month, now]` and compare to `SELECT DISTINCT ranking_date` in `RankingPlace` for the same window. Alert when they diverge.
+7. **Sync-completion sanity check.** After each sync run, count expected publication dates from federation in `[watermark - 1 month, now]` and compare to `SELECT DISTINCT "rankingDate"` in `RankingPlace` for the same window. Alert when they diverge.
 
-8. **Heartbeat alerting.** Alert if `RankingSystem.calculation_last_update` falls more than `2 × calculation_interval` behind `now()`. Catches dead worker, broken cron, federation downtime, all the same way.
+8. **Heartbeat alerting.** Alert if `RankingSystem.calculationLastUpdate` falls more than `2 × calculation_interval` behind `now()`. Catches dead worker, broken cron, federation downtime, all the same way.
 
 9. **Last-successful-sync metric.** Emit a metric per successful run with the count of publications processed. Dashboard the trailing 30 days. A sudden drop to zero or one publication per run is the early warning we missed this time.
 
