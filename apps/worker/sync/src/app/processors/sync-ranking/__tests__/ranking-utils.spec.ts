@@ -1,5 +1,5 @@
 import { parse } from "date-fns";
-import { isPublicationUsedForUpdate } from "../ranking-utils";
+import { isPublicationUsedForUpdate, parsePublicationDate } from "../ranking-utils";
 
 /**
  * Tests for isPublicationUsedForUpdate.
@@ -134,5 +134,64 @@ describe("isPublicationUsedForUpdate", () => {
         expect(isPublicationUsedForUpdate(date, UPDATE_MONTHS, GOOD, BAD)).toBe(false);
       }
     });
+  });
+
+  // ─── Invalid date input (regression: Visual API JSON branch) ─────────────
+
+  describe("invalid date input", () => {
+    it("returns false for an Invalid Date instead of throwing on toISOString", () => {
+      const invalid = new Date("not a date");
+      expect(() =>
+        isPublicationUsedForUpdate(invalid, UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).not.toThrow();
+      expect(isPublicationUsedForUpdate(invalid, UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(
+        false
+      );
+    });
+  });
+});
+
+describe("parsePublicationDate", () => {
+  it("parses date-only strings (XML branch)", () => {
+    const d = parsePublicationDate("2024-03-04");
+    expect(d).not.toBeNull();
+    expect(d!.getFullYear()).toBe(2024);
+    expect(d!.getMonth()).toBe(2); // March
+    expect(d!.getDate()).toBe(4);
+  });
+
+  it("parses ISO datetime strings (JSON branch)", () => {
+    const d = parsePublicationDate("2024-03-04T00:00:00");
+    expect(d).not.toBeNull();
+    expect(d!.getFullYear()).toBe(2024);
+  });
+
+  it("parses ISO datetime strings with millis and Z", () => {
+    const d = parsePublicationDate("2024-03-04T00:00:00.000Z");
+    expect(d).not.toBeNull();
+    expect(d!.toISOString()).toBe("2024-03-04T00:00:00.000Z");
+  });
+
+  it("returns null for null/undefined", () => {
+    expect(parsePublicationDate(null)).toBeNull();
+    expect(parsePublicationDate(undefined)).toBeNull();
+  });
+
+  it("returns null for empty / whitespace strings", () => {
+    expect(parsePublicationDate("")).toBeNull();
+    expect(parsePublicationDate("   ")).toBeNull();
+  });
+
+  it("returns null for unparseable garbage", () => {
+    expect(parsePublicationDate("not a date")).toBeNull();
+  });
+
+  it("passes through valid Date instances", () => {
+    const d = new Date("2024-03-04T00:00:00.000Z");
+    expect(parsePublicationDate(d)).toBe(d);
+  });
+
+  it("returns null for an invalid Date instance", () => {
+    expect(parsePublicationDate(new Date("nope"))).toBeNull();
   });
 });
