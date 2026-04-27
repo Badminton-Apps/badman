@@ -4,7 +4,7 @@
   "peerDependencies": {
     "@badman/frontend-models": "*",
     "@angular/common": "19.2.6",
-    "@angular/core": "19.2.6",
+    "@angular/core": "20.3.16",
     "@apollo/client": "^3.13.1",
     "@auth0/auth0-angular": "~2.2.3",
     "apollo-angular": "^8.0.2",
