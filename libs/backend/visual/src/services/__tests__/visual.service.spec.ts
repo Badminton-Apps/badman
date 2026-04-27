@@ -203,14 +203,14 @@ describe("VisualService", () => {
       );
     });
 
-    it("returns undefined when the API has no publications", async () => {
+    it("returns an empty array when the API has no publications", async () => {
       httpGet.mockResolvedValueOnce({
         data: `<?xml version="1.0"?><Result></Result>`,
       });
 
       const result = await service.getPublications(RANKING_ID, false);
 
-      expect(result).toBeUndefined();
+      expect(result).toEqual([]);
     });
 
     it("parses the XML branch (date-only PublicationDate)", async () => {
@@ -340,6 +340,135 @@ describe("VisualService", () => {
 
       await expect(service.getPublications(RANKING_ID, false)).rejects.toThrow(
         /Invalid RankingPublication response/
+      );
+    });
+  });
+
+  describe("getRanking", () => {
+    it("returns the validated ranking list (single Ranking element)", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<Ranking><Code>R1</Code><Name>Visual</Name></Ranking>` +
+          `</Result>`,
+      });
+
+      const result = await service.getRanking(false);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toMatchObject({ Code: "R1", Name: "Visual" });
+    });
+
+    it("returns an empty array when no Ranking is present", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      const result = await service.getRanking(false);
+
+      expect(result).toEqual([]);
+    });
+
+    it("throws when Name is missing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result><Ranking><Code>R1</Code></Ranking></Result>`,
+      });
+
+      await expect(service.getRanking(false)).rejects.toThrow(/Invalid Ranking response/);
+    });
+  });
+
+  describe("getCategories", () => {
+    const RANKING_ID = "5CE3FF3E-3B3B-4AFD-9F62-29888F1ECD4F";
+
+    it("returns the validated category list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result>` +
+          `<RankingCategory><Code>HE</Code><Name>HE/SM</Name></RankingCategory>` +
+          `<RankingCategory><Code>DE</Code><Name>DE/SD</Name></RankingCategory>` +
+          `</Result>`,
+      });
+
+      const result = await service.getCategories(RANKING_ID, false);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toMatchObject({ Code: "HE", Name: "HE/SM" });
+    });
+
+    it("normalises a single category object to a 1-element array", async () => {
+      httpGet.mockResolvedValueOnce({
+        data:
+          `<?xml version="1.0"?>` +
+          `<Result><RankingCategory><Code>HE</Code><Name>HE/SM</Name></RankingCategory></Result>`,
+      });
+
+      const result = await service.getCategories(RANKING_ID, false);
+
+      expect(result).toHaveLength(1);
+    });
+
+    it("throws when Name is missing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result><RankingCategory><Code>HE</Code></RankingCategory></Result>`,
+      });
+
+      await expect(service.getCategories(RANKING_ID, false)).rejects.toThrow(
+        /Invalid RankingCategory response/
+      );
+    });
+  });
+
+  describe("getPoints", () => {
+    const RANKING_ID = "5CE3FF3E-3B3B-4AFD-9F62-29888F1ECD4F";
+
+    it("returns the validated points list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: JSON.stringify({
+          RankingPublicationPoints: [
+            {
+              Rank: 1,
+              Level: 12,
+              Totalpoints: 1234,
+              Player1: { Code: "P1", MemberID: "M001", Name: "Test Player" },
+            },
+            {
+              Rank: 2,
+              PreviousRank: "3",
+              Level: 11,
+              Totalpoints: 1100,
+              Player1: { Code: "P2", MemberID: "M002", Name: "Other Player" },
+            },
+          ],
+        }),
+      });
+
+      const result = await service.getPoints(RANKING_ID, "PUB1", "CAT1", false);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toMatchObject({ Rank: 1, Level: 12, Totalpoints: 1234 });
+      expect(result[0].Player1).toMatchObject({ MemberID: "M001", Name: "Test Player" });
+    });
+
+    it("returns an empty array when no points are present", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      const result = await service.getPoints(RANKING_ID, "PUB1", "CAT1", false);
+
+      expect(result).toEqual([]);
+    });
+
+    it("throws when Player1 is missing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: JSON.stringify({
+          RankingPublicationPoints: [
+            { Rank: 1, Level: 12, Totalpoints: 1234 },
+          ],
+        }),
+      });
+
+      await expect(service.getPoints(RANKING_ID, "PUB1", "CAT1", false)).rejects.toThrow(
+        /Invalid RankingPublicationPoints response/
       );
     });
   });
