@@ -1,5 +1,19 @@
 import { z } from "zod";
 
+/**
+ * Strict coercion for required ID / Code-style fields.
+ *
+ * `z.coerce.string()` calls `String(input)` which produces `"undefined"`
+ * for an `undefined` input — a silent false-negative that lets a missing
+ * required field sneak past validation. Use `requiredCoercedString` for
+ * any required field where the API may send either a string or a number
+ * (fast-xml-parser parses numeric tag bodies as numbers). It accepts
+ * both, transforms numbers to strings, and rejects undefined / null.
+ */
+const requiredCoercedString = z
+  .union([z.string(), z.number()])
+  .transform((v) => String(v));
+
 export interface XmlResult {
   Tournament?: XmlTournament | XmlTournament[];
   TournamentMatch?: XmlTournamentMatch;
@@ -20,7 +34,7 @@ export interface XmlResult {
 
 export const XmlRankingSchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Name: z.string(),
   })
   .passthrough();
@@ -28,7 +42,7 @@ export type XmlRanking = z.infer<typeof XmlRankingSchema>;
 
 export const XmlRankingCategorySchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Name: z.string(),
   })
   .passthrough();
@@ -36,8 +50,8 @@ export type XmlRankingCategory = z.infer<typeof XmlRankingCategorySchema>;
 
 const XmlPlayerStubSchema = z
   .object({
-    Code: z.coerce.string(),
-    MemberID: z.coerce.string(),
+    Code: requiredCoercedString,
+    MemberID: requiredCoercedString,
     Name: z.string(),
     CountryCode: z.string().optional(),
   })
@@ -70,8 +84,8 @@ export type XmlRankingPublicationPoint = z.infer<typeof XmlRankingPublicationPoi
 export const XmlRankingPublicationSchema = z.object({
   Code: z.string(),
   Name: z.string(),
-  Year: z.coerce.string(),
-  Week: z.coerce.string(),
+  Year: requiredCoercedString,
+  Week: requiredCoercedString,
   PublicationDate: z.string().min(1),
   Visible: z.coerce.boolean(),
 });
@@ -95,9 +109,11 @@ interface XmlError {
 //   - fast-xml-parser parses numeric tag bodies as numbers and "true"/"false"
 //     as booleans; the Visual JSON branch is similar. _normalizeTypes in
 //     visual.service.ts also coerces specific enum-id fields to numbers.
-//     We therefore validate Code-style fields with z.coerce.string() to
-//     accept either form, and enum-id fields with z.coerce.number() /
-//     z.nativeEnum(...).
+//     We therefore validate Code-style required fields with
+//     `requiredCoercedString` (accepts string OR number, rejects
+//     undefined/null) and enum-id fields with z.coerce.number() /
+//     z.nativeEnum(...). Plain z.coerce.string() is used only for
+//     `.optional()` fields where the .optional() short-circuits undefined.
 //   - Date fields are intentionally typed as `string` here — the API never
 //     sends a real Date, and downstream code parses the string itself.
 // ──────────────────────────────────────────────────────────────────────────
@@ -122,7 +138,7 @@ export interface XmlScores {
 }
 
 export const XmlStatSchema = z
-  .object({ _ID: z.coerce.string(), _Value: z.coerce.string() })
+  .object({ _ID: requiredCoercedString, _Value: requiredCoercedString })
   .passthrough();
 export type XmlStat = z.infer<typeof XmlStatSchema>;
 
@@ -148,7 +164,7 @@ export interface XmlSets {
 
 export const XmlPlayerSchema = z
   .object({
-    MemberID: z.coerce.string(),
+    MemberID: requiredCoercedString,
     Firstname: z.string().optional(),
     Lastname: z.string().optional(),
     GenderID: z.coerce.number().optional(),
@@ -161,7 +177,7 @@ export type XmlPlayer = z.infer<typeof XmlPlayerSchema>;
 
 export const XmlClubSchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Name: z.string(),
     Number: z.coerce.string().optional(),
     Contact: z.string().optional(),
@@ -190,7 +206,7 @@ export interface XmlPlayers {
 
 export const XmlTeamSchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Name: z.string().optional(),
     Player1: XmlPlayerSchema.optional(),
     Player2: XmlPlayerSchema.optional(),
@@ -228,7 +244,7 @@ export interface XmlTeam {
 
 export const XmlMatchSchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Winner: z.coerce.number().optional(),
     ScoreStatus: z.coerce.number().optional(),
     TeamMatchWinner: z.coerce.string().optional(),
@@ -288,7 +304,7 @@ export interface XmlMatch {
 
 export const XmlTeamMatchSchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Winner: z.coerce.number().optional(),
     ScoreStatus: z.coerce.string().optional(),
     RoundName: z.string().optional(),
@@ -325,7 +341,7 @@ export type XmlGrading = z.infer<typeof XmlGradingSchema>;
 
 export const XmlTournamentEventSchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Name: z.string(),
     GenderID: z.coerce.number().optional(),
     GameTypeID: z.coerce.number().optional(),
@@ -346,7 +362,7 @@ export const XmlItemSchema = z
   .object({
     Col: z.coerce.string().optional(),
     Row: z.coerce.string().optional(),
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Winner: z.coerce.string().optional(),
     ScoreStatus: z.coerce.string().optional(),
     Team: TeamClassSchema.optional(),
@@ -373,7 +389,7 @@ export interface XmlStructure {
 
 export const XmlTournamentDrawSchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Name: z.string(),
     EventCode: z.coerce.string().optional(),
     TypeID: z.coerce.number().optional(),
@@ -430,7 +446,7 @@ export type XmlVenue = z.infer<typeof XmlVenueSchema>;
 
 export const XmlTournamentSchema = z
   .object({
-    Code: z.coerce.string(),
+    Code: requiredCoercedString,
     Name: z.string(),
     Number: z.coerce.string().optional(),
     TypeID: z.coerce.number().optional(),
@@ -487,18 +503,10 @@ export interface XmlTournament {
   TournamentStatus?: number;
 }
 
-// `z.coerce.string()` would happily turn `undefined` into the literal string
-// "undefined" and silently pass — useless for validation. This helper rejects
-// undefined while still accepting numeric IDs (fast-xml-parser sometimes
-// returns numbers for tag bodies that look numeric).
-const requiredIdString = z
-  .union([z.string(), z.number()])
-  .transform((v) => String(v));
-
 export const XmlTournamentMatchSchema = z
   .object({
-    TournamentID: requiredIdString,
-    MatchID: requiredIdString,
+    TournamentID: requiredCoercedString,
+    MatchID: requiredCoercedString,
     MatchDate: z.string().optional(),
   })
   .passthrough();

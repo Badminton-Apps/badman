@@ -63,7 +63,14 @@ export function normalizeTypes(data: unknown): unknown {
           }
           break;
         case "MemberID":
-          normalized[key] = typeof value === "string" ? value : String(value);
+          // Preserve null/undefined so downstream validation can reject a
+          // missing field. `String(undefined)` would silently produce the
+          // literal string "undefined" and pass through unnoticed.
+          if (value == null) {
+            normalized[key] = value;
+          } else {
+            normalized[key] = typeof value === "string" ? value : String(value);
+          }
           break;
         default:
           normalized[key] = normalizeTypes(value);

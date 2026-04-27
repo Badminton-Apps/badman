@@ -75,7 +75,7 @@ describe("VisualService", () => {
     it("should format date as yyyy-MM-dd in the URL", async () => {
       const date = new Date("2026-04-15T10:00:00Z");
       httpGet.mockResolvedValueOnce({
-        data: `<?xml version="1.0"?><Result><Tournament><ID>1</ID><Name>Test</Name></Tournament></Result>`,
+        data: `<?xml version="1.0"?><Result><Tournament><Code>1</Code><Name>Test</Name></Tournament></Result>`,
       });
 
       await service.getChangeEvents(date);
@@ -110,19 +110,19 @@ describe("VisualService", () => {
     it("should return array with single tournament", async () => {
       const date = new Date("2026-01-01T00:00:00Z");
       httpGet.mockResolvedValueOnce({
-        data: `<?xml version="1.0"?><Result><Tournament><ID>42</ID><Name>Open Gent</Name></Tournament></Result>`,
+        data: `<?xml version="1.0"?><Result><Tournament><Code>42</Code><Name>Open Gent</Name></Tournament></Result>`,
       });
 
       const result = await service.getChangeEvents(date);
 
       expect(result).toHaveLength(1);
-      expect(result[0]).toMatchObject({ ID: 42, Name: "Open Gent" });
+      expect(result[0]).toMatchObject({ Code: "42", Name: "Open Gent" });
     });
 
     it("should return array with multiple tournaments", async () => {
       const date = new Date("2026-01-01T00:00:00Z");
       httpGet.mockResolvedValueOnce({
-        data: `<?xml version="1.0"?><Result><Tournament><ID>1</ID><Name>A</Name></Tournament><Tournament><ID>2</ID><Name>B</Name></Tournament></Result>`,
+        data: `<?xml version="1.0"?><Result><Tournament><Code>1</Code><Name>A</Name></Tournament><Tournament><Code>2</Code><Name>B</Name></Tournament></Result>`,
       });
 
       const result = await service.getChangeEvents(date);
