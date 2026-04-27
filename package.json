@@ -243,7 +243,7 @@
     "typescript": "~5.8.0",
     "typescript-transform-paths": "^3.5.3",
     "util": "^0.12.5",
-    "webpack": "5.98.0",
+    "webpack": "5.104.1",
     "webpack-cli": "^6.0.1"
   },
   "optionalDependencies": {
