@@ -1574,6 +1574,7 @@ export type I18nTranslations = {
                     "next": string;
                     "submit": string;
                     "submitting": string;
+                    "teamsHaveErrors": string;
                 };
                 "toast": {
                     "addAtLeastOneTeam": string;
