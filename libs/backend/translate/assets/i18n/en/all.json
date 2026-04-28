@@ -1554,7 +1554,7 @@
       "nav": {
         "previous": "Previous",
         "next": "Next",
-        "submit": "Enrol",
+        "submit": "Enroll",
         "submitting": "Submitting…",
         "teamsHaveErrors": "Fix team errors before continuing"
       },
@@ -1604,10 +1604,10 @@
       },
       "remarks": {
         "label": "Remarks",
-        "placeholder": "Optional: add remarks for your enrolment"
+        "placeholder": "Optional: add remarks for your enrollment"
       },
       "summary": {
-        "title": "Enrolment summary"
+        "title": "Enrollment summary"
       },
       "transfersLoans": {
         "addTransfersTitle": "Add transfers",
