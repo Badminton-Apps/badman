@@ -1717,10 +1717,59 @@
       "error": "Échec de la copie de la compétition"
     },
     "entryTeamDrawer": {
+      "sectionTitles": {
+        "basePlayers": "Joueurs de base",
+        "generalInfo": "Informations générales",
+        "validations": "Validations"
+      },
+      "dataKeys": {
+        "teamIndex": "Index d'équipe",
+        "teamCaptain": "Capitaine de l'équipe",
+        "preferredPlayingTime": "Heure de jeu préférée"
+      },
+      "emptyStates": {
+        "noValidations": "Aucune validation trouvée"
+      },
+      "noData": "Aucune donnée",
       "params": {
         "gender": {
           "male": "homme",
           "female": "femme"
+        }
+      },
+      "validation": {
+        "errors": {
+          "already": "Le joueur est déjà présent comme titulaire.",
+          "base-gender-mix": "L'équipe de base comprend {maleCount} hommes et {femaleCount} femmes, alors qu'il devrait y en avoir 2 de chaque",
+          "base-other-team": "{playerFullName} ne peut être spécifié comme joueur de base qu'une fois par ligue",
+          "comp-status-base": "Le joueur de base {playerFullName} n'est pas marqué comme joueur de compétition",
+          "comp-status-team": "{playerFullName} n'est pas marqué comme joueur de compétition",
+          "faller": "L'équipe devrait être rétrogradée, mais elle n'est pas inscrite dans une série inférieure",
+          "first-team-index": "Une première équipe rétrogradée ne peut pas aligner une équipe avec un indice d'équipe inférieur à son indice de base pendant la saison",
+          "no-subevent": "Aucune division trouvée",
+          "none": "Aucune erreur trouvée",
+          "player-club": "Le joueur {playerFullName} ne fait pas partie de {clubName} (club actuel : {activeClubName})",
+          "player-club-none": "Aucun club connu pour le joueur {playerFullName}",
+          "player-gender": "{playerFullName} est un(e) {playerGender} mais un(e) {gender} était attendu(e)",
+          "player-min-level": "{playerFullName} a un indice de {playerRanking} en {rankingType} et doit être au moins {minLevel}.",
+          "player-subevent": "{playerFullName} fait partie de l'équipe de base {teamName} qui joue également en {subEventName}",
+          "riser": "L'équipe devrait être promue, mais elle n'est pas inscrite dans une série supérieure",
+          "team-index": "La configuration la plus forte n'est pas possible. L'indice d'équipe est {teamIndex} et l'indice d'équipe de base est {baseIndex}.",
+          "team-order": "L'équipe {teamName} est dans une série inférieure mais a un numéro d'équipe inférieur",
+          "team-order-same-subevent": "L'équipe {teamName} a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
+          "team-to-strong": "L'indice d'équipe des joueurs de base égal à {baseIndex} ne peut pas être inférieur à celui autorisé dans la division {minIndex}",
+          "team-to-week": "L'indice d'équipe des joueurs de départ est {baseIndex} et ne peut pas dépasser la limite de la division {maxIndex}",
+          "title": "Erreurs",
+          "too-few-base-players": "Trop peu de joueurs de base",
+          "too-many-base-players": "Trop de joueurs de base"
+        },
+        "warnings": {
+          "already-saved": "Les nouvelles modifications ne peuvent pas être enregistrées entre-temps, veuillez soumettre à nouveau le formulaire à la dernière étape pour enregistrer vos modifications",
+          "base-other-team": "{playerFullName} est joueur de base dans une autre équipe",
+          "missing-continuity-link": "Cette équipe ressemble à une équipe de la saison précédente, mais l'ID de continuité n'a pas été réutilisé. Veuillez le lier pour conserver l'historique.",
+          "player-min-level": "La demande d'exception pour le joueur {playerFullName} en {rankingType} n'a pas encore été acceptée",
+          "subtitute-team-index": "s",
+          "title": "Avertissements"
         }
       }
     },

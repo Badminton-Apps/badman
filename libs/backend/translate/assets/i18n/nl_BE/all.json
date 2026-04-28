@@ -2721,7 +2721,7 @@
           "comp-status-team": "{playerFullName} is niet gemarkeerd als competitie speler",
           "faller": "Het team zou moeten degraderen, maar is niet ingeschreven in een lagere klasse",
           "first-team-index": "Een eerste team dat is gedegradeerd mag geen team met een lagere teamindex opstellen dan hun basisindex gedurende het seizoen",
-          "no-subevent": "Kies alstublieft een reeks",
+          "no-subevent": "Geen divisie gevonden",
           "none": "Geen fouten gevonden",
           "player-club": "Speler {playerFullName} maakt geen deel uit van {clubName} (huidige club: {activeClubName})",
           "player-club-none": "Geen club bekend voor speler {playerFullName}",
