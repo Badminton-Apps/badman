@@ -1,4 +1,46 @@
-import { getMonth, isEqual, isAfter, isBefore, setDate, getDay, addDays, startOfDay } from "date-fns";
+import {
+  getMonth,
+  isEqual,
+  isAfter,
+  isBefore,
+  setDate,
+  getDay,
+  addDays,
+  startOfDay,
+  parseISO,
+  parse,
+  isValid,
+} from "date-fns";
+
+/**
+ * Tolerant publication-date parser. Accepts:
+ *   - ISO datetime strings ("yyyy-MM-dd'T'HH:mm:ss[.SSSZ]") as returned by the
+ *     JSON branch of the Visual API
+ *   - Date-only strings ("yyyy-MM-dd") as returned by the XML branch
+ *   - Date objects (defensive)
+ *   - epoch numbers (defensive)
+ *
+ * Returns null when the input cannot be parsed — callers should skip the
+ * publication rather than crash the whole sync step.
+ */
+export function parsePublicationDate(raw: unknown): Date | null {
+  if (raw == null) return null;
+  if (raw instanceof Date) {
+    return isValid(raw) ? raw : null;
+  }
+  if (typeof raw === "number") {
+    const d = new Date(raw);
+    return isValid(d) ? d : null;
+  }
+  const s = String(raw).trim();
+  if (!s) return null;
+
+  const iso = parseISO(s);
+  if (isValid(iso)) return iso;
+
+  const fallback = parse(s, "yyyy-MM-dd", new Date());
+  return isValid(fallback) ? fallback : null;
+}
 
 /**
  * Determines whether a ranking publication should be used to update player rankings.
@@ -20,6 +62,12 @@ export function isPublicationUsedForUpdate(
   goodDates: string[],
   badDates: string[]
 ): boolean {
+  // Defensive: an invalid Date would crash on `.toISOString()` below and take
+  // the entire publications step down. Treat it as "not used for update".
+  if (!isValid(date)) {
+    return false;
+  }
+
   let canUpdate = false;
 
   if (updateMonths.includes(getMonth(date))) {

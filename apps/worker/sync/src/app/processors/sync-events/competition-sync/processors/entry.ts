@@ -1,8 +1,7 @@
 import { Club, EventEntry, Team, Player } from "@badman/backend-database";
-import { VisualService, XmlClub, XmlItem, XmlTournament } from "@badman/backend-visual";
+import { VisualService, XmlClub, XmlTournament } from "@badman/backend-visual";
 import { LevelType, runParallel, SubEventTypeEnum, teamValues } from "@badman/utils";
 import { Logger } from "@nestjs/common";
-import { isArray } from "class-validator";
 import { Op, WhereOptions } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { correctWrongTeams } from "../../../../utils";
@@ -61,13 +60,9 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       return;
     }
 
-    if (!isArray(xmlDraw.Structure.Item)) {
-      xmlDraw.Structure.Item = [xmlDraw.Structure.Item as XmlItem];
-    }
-
-    // get the teams for the draw
+    // VisualService normalises Structure.Item to an array.
     const teams = new Set<string>(
-      xmlDraw.Structure.Item?.map((item) => item.Team?.Name)?.filter(
+      xmlDraw.Structure?.Item?.map((item) => item.Team?.Name)?.filter(
         (name): name is string => name?.length > 0
       ) ?? []
     );
@@ -428,11 +423,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         return;
       }
 
-      const items = isArray(xmlDraw.Structure.Item)
-        ? xmlDraw.Structure.Item
-        : [xmlDraw.Structure.Item as XmlItem];
-
-      const teamItem = items.find(
+      // VisualService normalises Structure.Item to an array.
+      const teamItem = xmlDraw.Structure.Item.find(
         (item) => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code
       );
       if (!teamItem?.Team?.Code) {

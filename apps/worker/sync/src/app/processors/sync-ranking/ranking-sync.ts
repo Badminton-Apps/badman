@@ -5,9 +5,9 @@ import { RankingSystems, Ranking, Gender } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { Queue } from "bull";
 
-import { parse, subWeeks, format, isAfter, isBefore } from "date-fns";
+import { subWeeks, format, isAfter, isBefore } from "date-fns";
 import { Op, Transaction, Sequelize } from "sequelize";
-import { isPublicationUsedForUpdate } from "./ranking-utils";
+import { isPublicationUsedForUpdate, parsePublicationDate } from "./ranking-utils";
 import { ProcessStep, Processor } from "../../processing";
 import { correctWrongPlayers } from "../../utils";
 interface RankingStepData {
@@ -129,10 +129,16 @@ export class RankingSyncer {
 
       const publications = await this._visualService.getPublications(ranking.visualCode, false);
 
-      let pubs = publications
-        ?.filter((publication) => publication.Visible)
-        .map((publication) => {
-          const pubDate = parse(publication.PublicationDate as unknown as string, "yyyy-MM-dd", new Date());
+      const pubs: VisualPublication[] = (publications ?? [])
+        .filter((publication) => publication.Visible)
+        .flatMap((publication): VisualPublication[] => {
+          const pubDate = parsePublicationDate(publication.PublicationDate);
+          if (!pubDate) {
+            this.logger.warn(
+              `Skipping publication ${publication.Code} (${publication.Name}): unparseable PublicationDate=${String(publication.PublicationDate)}`
+            );
+            return [];
+          }
           const canUpdate = isPublicationUsedForUpdate(
             pubDate,
             this.updateMonths,
@@ -140,18 +146,20 @@ export class RankingSyncer {
             this.fuckedDatesBads
           );
 
-          return {
-            usedForUpdate: canUpdate,
-            code: publication.Code,
-            name: publication.Name,
-            year: publication.Year,
-            week: publication.Week,
-            publicationDate: publication.PublicationDate,
-            visible: publication.Visible,
-            date: pubDate,
-          } as VisualPublication;
-        });
-      pubs = [...(pubs || [])].sort((a, b) => a.date.getTime() - b.date.getTime());
+          return [
+            {
+              usedForUpdate: canUpdate,
+              code: publication.Code,
+              name: publication.Name,
+              year: publication.Year,
+              week: publication.Week,
+              publicationDate: publication.PublicationDate,
+              visible: publication.Visible,
+              date: pubDate,
+            },
+          ];
+        })
+        .sort((a, b) => a.date.getTime() - b.date.getTime());
 
       // get latest publication
       const last = pubs?.at(-1);
@@ -172,10 +180,17 @@ export class RankingSyncer {
 
       return {
         visiblePublications: pubs,
-        hiddenPublications: publications
-          ?.filter((publication) => !publication.Visible)
-          ?.map((publication) => {
-            return parse(publication.PublicationDate as unknown as string, "yyyy-MM-dd", new Date());
+        hiddenPublications: (publications ?? [])
+          .filter((publication) => !publication.Visible)
+          .flatMap((publication): Date[] => {
+            const pubDate = parsePublicationDate(publication.PublicationDate);
+            if (!pubDate) {
+              this.logger.warn(
+                `Skipping hidden publication ${publication.Code} (${publication.Name}): unparseable PublicationDate=${String(publication.PublicationDate)}`
+              );
+              return [];
+            }
+            return [pubDate];
           }),
       };
     });
@@ -562,7 +577,7 @@ interface VisualPublication {
   name: string;
   year: string;
   week: string;
-  publicationDate: Date;
+  publicationDate: string;
   visible: boolean;
   date: Date;
 }

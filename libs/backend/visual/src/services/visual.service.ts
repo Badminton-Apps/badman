@@ -10,14 +10,37 @@ import { formatInTimeZone } from "date-fns-tz";
 import { performance } from "perf_hooks";
 import {
   XmlClub,
+  XmlClubSchema,
   XmlMatch,
+  XmlMatchSchema,
+  XmlPlayer,
+  XmlPlayerSchema,
+  XmlRanking,
+  XmlRankingCategory,
+  XmlRankingCategorySchema,
+  XmlRankingPublication,
+  XmlRankingPublicationPoint,
+  XmlRankingPublicationPointSchema,
+  XmlRankingPublicationSchema,
+  XmlRankingSchema,
   XmlResult,
   XmlTeam,
   XmlTeamMatch,
+  XmlTeamMatchSchema,
+  XmlTeamSchema,
   XmlTournament,
   XmlTournamentDraw,
+  XmlTournamentDrawSchema,
   XmlTournamentEvent,
+  XmlTournamentEventSchema,
+  XmlTournamentMatch,
+  XmlTournamentMatchSchema,
+  XmlTournamentSchema,
+  parseResponse,
+  validateMany,
+  validateOne,
 } from "../utils";
+import { z } from "zod";
 import { Cache } from "cache-manager";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { CACHE_TTL } from "@badman/backend-cache";
@@ -46,177 +69,190 @@ export class VisualService {
     });
   }
 
-  async getPlayers(tourneyId: string, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/Player`,
-      useCache
-    );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return this._asArray(parsed.Player);
-  }
-  async getTeam(tourneyId: string, teamId: string | number, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/team/${teamId}`,
-      useCache
-    );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.Team as XmlTeam;
+  private _vr(): string {
+    return `${this._configService.get("VR_API")}`;
   }
 
-  async getClubs(tourneyId: string, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/Club`,
+  async getPlayers(tourneyId: string, useCache = true): Promise<XmlPlayer[]> {
+    return this._fetchMany<XmlPlayer>(
+      `${this._vr()}/Tournament/${tourneyId}/Player`,
+      "Player",
+      XmlPlayerSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return this._asArray(parsed.Club) as XmlClub[];
   }
-  async getTeamMatch(tourneyId: string, matchId: string | number, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/TeamMatch/${matchId}`,
+
+  async getTeam(
+    tourneyId: string,
+    teamId: string | number,
+    useCache = true
+  ): Promise<XmlTeam | undefined> {
+    return this._fetchOne<XmlTeam>(
+      `${this._vr()}/Tournament/${tourneyId}/team/${teamId}`,
+      "Team",
+      XmlTeamSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return this._asArray(parsed.Match) as XmlMatch[];
   }
-  async getGame(tourneyId: string, matchId: string | number, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/MatchDetail/${matchId}`,
+
+  async getClubs(tourneyId: string, useCache = true): Promise<XmlClub[]> {
+    return this._fetchMany<XmlClub>(
+      `${this._vr()}/Tournament/${tourneyId}/Club`,
+      "Club",
+      XmlClubSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.Match;
   }
+
+  async getTeamMatch(
+    tourneyId: string,
+    matchId: string | number,
+    useCache = true
+  ): Promise<XmlMatch[]> {
+    return this._fetchMany<XmlMatch>(
+      `${this._vr()}/Tournament/${tourneyId}/TeamMatch/${matchId}`,
+      "Match",
+      XmlMatchSchema,
+      useCache
+    );
+  }
+
+  /**
+   * The MatchDetail endpoint may return either a single match or an array
+   * (XML quirk: 0/1/many sibling tags map to absent / object / array).
+   * Always normalise to an array — downstream code shouldn't have to
+   * branch on the shape.
+   */
+  async getGame(
+    tourneyId: string,
+    matchId: string | number,
+    useCache = true
+  ): Promise<XmlMatch[]> {
+    return this._fetchMany<XmlMatch>(
+      `${this._vr()}/Tournament/${tourneyId}/MatchDetail/${matchId}`,
+      "Match",
+      XmlMatchSchema,
+      useCache
+    );
+  }
+
   async getGames(
     tourneyId: string,
     drawId: string | number,
     useCache = true
   ): Promise<(XmlTeamMatch | XmlMatch)[]> {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/Draw/${drawId}/Match`,
-      useCache
-    );
-    const parsed = this._parseResponse(result) as XmlResult;
+    const url = `${this._vr()}/Tournament/${tourneyId}/Draw/${drawId}/Match`;
+    const result = await this._getFromApi(url, useCache);
+    const parsed = parseResponse(result, this._parser, this.logger) as XmlResult;
 
     if (parsed.Match) {
-      return this._asArray(parsed.Match);
+      return validateMany<XmlMatch>(parsed.Match, XmlMatchSchema, "Match", this.logger);
     }
     if (parsed.TeamMatch) {
-      return this._asArray(parsed.TeamMatch);
+      return validateMany<XmlTeamMatch>(
+        parsed.TeamMatch,
+        XmlTeamMatchSchema,
+        "TeamMatch",
+        this.logger
+      );
     }
 
     this.logger.warn("No matches");
     return [];
   }
+
   async getDraws(
     tourneyId: string,
     eventId: string | number,
     useCache = true
   ): Promise<XmlTournamentDraw[]> {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/Event/${eventId}/Draw`,
+    return this._fetchMany<XmlTournamentDraw>(
+      `${this._vr()}/Tournament/${tourneyId}/Event/${eventId}/Draw`,
+      "TournamentDraw",
+      XmlTournamentDrawSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return this._asArray(parsed.TournamentDraw);
   }
+
   async getDraw(
     tourneyId: string,
     drawId: string | number,
     useCache = true
-  ): Promise<XmlTournamentDraw> {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/Draw/${drawId}`,
+  ): Promise<XmlTournamentDraw | undefined> {
+    return this._fetchOne<XmlTournamentDraw>(
+      `${this._vr()}/Tournament/${tourneyId}/Draw/${drawId}`,
+      "TournamentDraw",
+      XmlTournamentDrawSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.TournamentDraw as XmlTournamentDraw;
   }
+
   async getSubEvents(eventCode: string | number, useCache = true): Promise<XmlTournamentEvent[]> {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${eventCode}/Event`,
+    return this._fetchMany<XmlTournamentEvent>(
+      `${this._vr()}/Tournament/${eventCode}/Event`,
+      "TournamentEvent",
+      XmlTournamentEventSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return this._asArray(parsed.TournamentEvent);
   }
+
   async getSubEvent(
     eventCode: string | number,
     subEventCode: string | number,
     useCache = true
-  ): Promise<XmlTournamentEvent> {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${eventCode}/Event/${subEventCode}`,
+  ): Promise<XmlTournamentEvent | undefined> {
+    return this._fetchOne<XmlTournamentEvent>(
+      `${this._vr()}/Tournament/${eventCode}/Event/${subEventCode}`,
+      "TournamentEvent",
+      XmlTournamentEventSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed?.TournamentEvent as XmlTournamentEvent;
   }
-  async getTournament(tourneyId: string, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}`,
+
+  async getTournament(tourneyId: string, useCache = true): Promise<XmlTournament | undefined> {
+    return this._fetchOne<XmlTournament>(
+      `${this._vr()}/Tournament/${tourneyId}`,
+      "Tournament",
+      XmlTournamentSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed?.Tournament as XmlTournament;
   }
-  async searchEvents(query: string) {
-    const url = `${this._configService.get("VR_API")}/Tournament?q=${query}`;
 
-    const result = await this._getFromApi(url, false);
-    const body = this._parseResponse(result) as XmlResult;
-
-    if (body?.Tournament === undefined) {
-      return [];
-    }
-
-    const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
-
-    // TODO: Wait untill Visual fixes this
-    // if (tournaments.length != 0) {
-    //   tournaments.concat(await this._getChangeEvents(date, page + 1));
-    // }
-
-    return tournaments;
+  async searchEvents(query: string): Promise<XmlTournament[]> {
+    return this._fetchMany<XmlTournament>(
+      `${this._vr()}/Tournament?q=${query}`,
+      "Tournament",
+      XmlTournamentSchema,
+      false
+    );
   }
-  async getEvent(code: string) {
-    const url = `${this._configService.get("VR_API")}/Tournament/${code}`;
 
-    const result = await this._getFromApi(url, false);
-    const body = this._parseResponse(result) as XmlResult;
-
-    if (body?.Tournament === undefined) {
-      return [];
-    }
-
-    const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
-
-    return tournaments;
+  async getEvent(code: string): Promise<XmlTournament[]> {
+    return this._fetchMany<XmlTournament>(
+      `${this._vr()}/Tournament/${code}`,
+      "Tournament",
+      XmlTournamentSchema,
+      false
+    );
   }
-  async getChangeEvents(date: Date, page = 0, pageSize = 100) {
-    const url = `${this._configService.get("VR_API")}/Tournament?list=1&refdate=${format(
-      date,
-      "yyyy-MM-dd"
-    )}&pagesize=${pageSize}&pageno=${page}`;
 
-    const result = await this._getFromApi(url, false);
-    const body = this._parseResponse(result) as XmlResult;
-
-    if (body?.Tournament === undefined) {
-      return [];
-    }
-
-    const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
-
-    return tournaments;
+  async getChangeEvents(date: Date, page = 0, pageSize = 100): Promise<XmlTournament[]> {
+    return this._fetchMany<XmlTournament>(
+      `${this._vr()}/Tournament?list=1&refdate=${format(date, "yyyy-MM-dd")}&pagesize=${pageSize}&pageno=${page}`,
+      "Tournament",
+      XmlTournamentSchema,
+      false
+    );
   }
+
   async getDate(tourneyId: string, encounterId: string, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Tournament/${tourneyId}/Match/${encounterId}/Date`,
+    const tm = await this._fetchOne<XmlTournamentMatch>(
+      `${this._vr()}/Tournament/${tourneyId}/Match/${encounterId}/Date`,
+      "TournamentMatch",
+      XmlTournamentMatchSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.TournamentMatch?.MatchDate;
+    return tm?.MatchDate;
   }
 
   async changeDate(tourneyId: string, matchId: string, newDate: Date) {
@@ -244,7 +280,7 @@ export class VisualService {
     if (this._configService.get("NODE_ENV") === "production") {
       const resultPut = await axios(options);
 
-      const bodyPut = this._parseResponse(resultPut.data) as XmlResult;
+      const bodyPut = parseResponse(resultPut.data, this._parser, this.logger) as XmlResult;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== "Success.") {
         this.logger.error(options);
         throw new Error(bodyPut.Error?.Message);
@@ -255,34 +291,48 @@ export class VisualService {
       this.logger.debug(options);
     }
   }
-  async getRanking(useCache = true) {
-    const result = await this._getFromApi(`${this._configService.get("VR_API")}/Ranking`, useCache);
-    const parsed = this._parseResponse(result) as XmlResult;
-    return this._asArray(parsed.Ranking);
-  }
-  async getCategories(rankingId: string, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Ranking/${rankingId}/Category`,
+  async getRanking(useCache = true): Promise<XmlRanking[]> {
+    return this._fetchMany<XmlRanking>(
+      `${this._vr()}/Ranking`,
+      "Ranking",
+      XmlRankingSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.RankingCategory;
   }
-  async getPublications(rankingId: string, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Ranking/${rankingId}/Publication`,
+
+  async getCategories(rankingId: string, useCache = true): Promise<XmlRankingCategory[]> {
+    return this._fetchMany<XmlRankingCategory>(
+      `${this._vr()}/Ranking/${rankingId}/Category`,
+      "RankingCategory",
+      XmlRankingCategorySchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.RankingPublication;
   }
-  async getPoints(rankingId: string, publicationId: string, categoryId: string, useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get("VR_API")}/Ranking/${rankingId}/Publication/${publicationId}/Category/${categoryId}`,
+
+  async getPublications(
+    rankingId: string,
+    useCache = true
+  ): Promise<XmlRankingPublication[]> {
+    return this._fetchMany<XmlRankingPublication>(
+      `${this._vr()}/Ranking/${rankingId}/Publication`,
+      "RankingPublication",
+      XmlRankingPublicationSchema,
       useCache
     );
-    const parsed = this._parseResponse(result) as XmlResult;
-    return parsed.RankingPublicationPoints;
+  }
+
+  async getPoints(
+    rankingId: string,
+    publicationId: string,
+    categoryId: string,
+    useCache = true
+  ): Promise<XmlRankingPublicationPoint[]> {
+    return this._fetchMany<XmlRankingPublicationPoint>(
+      `${this._vr()}/Ranking/${rankingId}/Publication/${publicationId}/Category/${categoryId}`,
+      "RankingPublicationPoints",
+      XmlRankingPublicationPointSchema,
+      useCache
+    );
   }
 
   private async _getFromApi(url: string, useCache = true) {
@@ -327,99 +377,34 @@ export class VisualService {
     return result.data;
   }
 
-  private _asArray(obj: unknown | unknown[]) {
-    return Array.isArray(obj) ? obj : [obj];
-  }
-  private _parseResponse(data: string | unknown): XmlResult | unknown {
-    // If data is not a string, it's likely already parsed JSON
-    if (typeof data !== "string") {
-      this.logger.debug("Data is already parsed (not a string), processing for type corrections");
-      if (data && typeof data === "object" && "Result" in data) {
-        // Extract the Result and ensure proper typing
-        return this._normalizeTypes((data as { Result: unknown }).Result);
-      }
-      // Apply type normalization to the parsed JSON data
-      return this._normalizeTypes(data);
-    }
-
-    // Check if the response is XML by looking for XML-like content
-    const trimmedData = data.trim(); // Check for XML declaration or XML tags
-    if (trimmedData.startsWith("<?xml") || trimmedData.startsWith("<")) {
-      // It's XML, parse with XML parser
-      const parsed = this._parser.parse(data);
-      return this._normalizeTypes(parsed.Result || parsed);
-    } else {
-      // Assume it's JSON, parse as JSON
-      try {
-        const jsonParsed = JSON.parse(data);
-        return this._normalizeTypes(jsonParsed);
-      } catch (error) {
-        this.logger.error("Failed to parse response as JSON:", error);
-        // Fallback to XML parsing if JSON parsing fails
-        const parsed = this._parser.parse(data);
-        return this._normalizeTypes(parsed.Result || parsed);
-      }
-    }
+  /**
+   * Fetch + parse + validate a list-shaped Visual API response in one call.
+   * Always returns an array (empty when the payload key is missing) so
+   * downstream code doesn't need to branch on shape.
+   */
+  private async _fetchMany<TOut>(
+    url: string,
+    payloadKey: keyof XmlResult,
+    schema: z.ZodTypeAny,
+    useCache: boolean
+  ): Promise<TOut[]> {
+    const result = await this._getFromApi(url, useCache);
+    const parsed = parseResponse(result, this._parser, this.logger) as XmlResult;
+    return validateMany<TOut>(parsed[payloadKey], schema, String(payloadKey), this.logger);
   }
 
   /**
-   * Normalizes data types to ensure enums are properly typed as numbers
+   * Fetch + parse + validate a single-object Visual API response. Returns
+   * undefined when the payload key is missing; throws on shape mismatch.
    */
-  private _normalizeTypes(data: unknown): unknown {
-    if (data === null || data === undefined) {
-      return data;
-    }
-
-    if (Array.isArray(data)) {
-      return data.map((item) => this._normalizeTypes(item));
-    }
-
-    if (typeof data === "object") {
-      const normalized: Record<string, unknown> = {};
-
-      for (const [key, value] of Object.entries(data)) {
-        // Convert enum fields to numbers
-        switch (key) {
-          case "GenderID":
-          case "GameTypeID":
-          case "TypeID":
-          case "MatchTypeID":
-          case "ScoreStatus":
-          case "TournamentTypeID":
-          case "DrawTypeID":
-          case "LevelID":
-          case "Winner":
-          case "MatchOrder":
-          case "Code":
-          case "Size":
-          case "Team1":
-          case "Team2":
-          case "Rank":
-          case "Level":
-          case "Totalpoints":
-            // Convert to number if it's a string representation of a number
-            if (typeof value === "string" && !isNaN(Number(value))) {
-              normalized[key] = Number(value);
-            } else if (typeof value === "number") {
-              normalized[key] = value;
-            } else {
-              normalized[key] = this._normalizeTypes(value);
-            }
-            break;
-          case "MemberID":
-            // MemberID should remain a string but ensure it's properly typed
-            normalized[key] = typeof value === "string" ? value : String(value);
-            break;
-          default:
-            // Recursively normalize nested objects
-            normalized[key] = this._normalizeTypes(value);
-            break;
-        }
-      }
-
-      return normalized;
-    }
-
-    return data;
+  private async _fetchOne<TOut>(
+    url: string,
+    payloadKey: keyof XmlResult,
+    schema: z.ZodTypeAny,
+    useCache: boolean
+  ): Promise<TOut | undefined> {
+    const result = await this._getFromApi(url, useCache);
+    const parsed = parseResponse(result, this._parser, this.logger) as XmlResult;
+    return validateOne<TOut>(parsed[payloadKey], schema, String(payloadKey), this.logger);
   }
 }

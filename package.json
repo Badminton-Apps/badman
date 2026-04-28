@@ -108,8 +108,7 @@
     "axios-retry": "^4.5.0",
     "body-parser": "^1.20.3",
     "bull": "^4.16.5",
-    "cache-manager": "^5.7.6",
-    "cache-manager-redis-store": "^3.0.1",
+    "cache-manager": "^6.4.0",
     "canvas": "2.11.2",
     "canvg": "^4.0.2",
     "class-validator": "^0.14.1",
@@ -172,6 +171,7 @@
     "winston": "^3.17.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "xng-breadcrumb": "^14.0.0",
+    "zod": "^3.25.75",
     "zone.js": "0.15.0"
   },
   "devDependencies": {
