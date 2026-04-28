@@ -1862,7 +1862,8 @@
         "previous": "Précédent",
         "next": "Suivant",
         "submit": "S'inscrire",
-        "submitting": "Envoi en cours…"
+        "submitting": "Envoi en cours…",
+        "teamsHaveErrors": "Corrigez les erreurs d'équipe avant de continuer"
       },
       "toast": {
         "addAtLeastOneTeam": "Ajoutez au moins une équipe."

@@ -1555,7 +1555,8 @@
         "previous": "Previous",
         "next": "Next",
         "submit": "Enrol",
-        "submitting": "Submitting…"
+        "submitting": "Submitting…",
+        "teamsHaveErrors": "Fix team errors before continuing"
       },
       "toast": {
         "addAtLeastOneTeam": "Add at least one team."

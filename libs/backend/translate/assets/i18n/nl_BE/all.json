@@ -1273,7 +1273,8 @@
         "previous": "Vorige",
         "next": "Volgende",
         "submit": "Inschrijven",
-        "submitting": "Bezig…"
+        "submitting": "Bezig…",
+        "teamsHaveErrors": "Los teamfouten op voor je verdergaat"
       },
       "toast": {
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
