@@ -1244,7 +1244,7 @@
           "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
           "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
           "competition": "Competitie",
-          "division": "Divisie",
+          "division": "Afdeling",
           "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
           "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
         },
