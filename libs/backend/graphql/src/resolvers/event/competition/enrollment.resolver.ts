@@ -11,9 +11,11 @@ import {
   EnrollmentOutput,
   EnrollmentValidationService,
 } from "@badman/backend-enrollment";
-import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
+import { EnrollmentResult } from "./enrollment-result.object";
 
 @Resolver(() => EnrollmentOutput)
 export class EnrollmentResolver {
@@ -35,47 +37,129 @@ export class EnrollmentResolver {
     );
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => EnrollmentResult, {
+    description:
+      "Enroll a single team into a single sub-event competition. Idempotent on (teamId, subEventId): re-submitting an already-enrolled pair returns success with alreadyExisted=true. Failures surface as GraphQLError with a stable extensions.code (PERMISSION_DENIED, TEAM_NOT_FOUND, SUB_EVENT_NOT_FOUND, SEASON_MISMATCH, INTERNAL_ERROR).",
+  })
   async createEnrollment(
     @User() user: Player,
     @Args("teamId") teamId: string,
     @Args("subEventId") subEventId: string
-  ) {
-    if (!(await user.hasAnyPermission([`edit:competition`]))) {
-      throw new UnauthorizedException(`You do not have permission to update a competition`);
-    }
-    // Do transaction
+  ): Promise<EnrollmentResult> {
+    const userId = user?.id ?? null;
+
     const transaction = await this._sequelize.transaction();
     try {
       const team = await Team.findByPk(teamId, { transaction });
+      if (!team) {
+        this.logger.warn({
+          code: "TEAM_NOT_FOUND",
+          teamId,
+          subEventCompetitionId: subEventId,
+          userId,
+        });
+        throw new GraphQLError(`Team not found: ${teamId}`, {
+          extensions: { code: "TEAM_NOT_FOUND", teamId },
+        });
+      }
+
+      const allowed = await user.hasAnyPermission([
+        "edit:competition",
+        `${team.clubId}_edit:club`,
+        "edit-any:club",
+      ]);
+      if (!allowed) {
+        this.logger.warn({
+          code: "PERMISSION_DENIED",
+          teamId,
+          subEventCompetitionId: subEventId,
+          userId,
+        });
+        throw new GraphQLError("You do not have permission to enroll this team.", {
+          extensions: { code: "PERMISSION_DENIED", userId },
+        });
+      }
+
       const subEvent = await SubEventCompetition.findByPk(subEventId, {
         transaction,
         include: [EventCompetition],
       });
-
-      if (!team) {
-        throw new NotFoundException(`${Team.name}: ${teamId}`);
-      }
       if (!subEvent) {
-        throw new NotFoundException(`${SubEventCompetition.name}: ${subEventId}`);
+        this.logger.warn({
+          code: "SUB_EVENT_NOT_FOUND",
+          teamId,
+          subEventCompetitionId: subEventId,
+          userId,
+        });
+        throw new GraphQLError(`Sub-event not found: ${subEventId}`, {
+          extensions: { code: "SUB_EVENT_NOT_FOUND", subEventId },
+        });
       }
 
-      if (team.season !== subEvent.eventCompetition?.season) {
-        throw new Error(`The team and the subEvent are not in the same season`);
+      const competitionSeason = subEvent.eventCompetition?.season;
+      if (team.season !== competitionSeason) {
+        this.logger.warn({
+          code: "SEASON_MISMATCH",
+          teamId,
+          subEventCompetitionId: subEventId,
+          userId,
+          teamSeason: team.season,
+          competitionSeason,
+        });
+        throw new GraphQLError("Team season does not match competition season.", {
+          extensions: {
+            code: "SEASON_MISMATCH",
+            teamSeason: team.season,
+            competitionSeason,
+          },
+        });
       }
 
-      const entry =
-        (await team.getEntry({ transaction })) ?? (await new EventEntry().save({ transaction }));
+      // Idempotency short-circuit: if the team's existing entry already points
+      // to this sub-event, return success without further writes.
+      const existingEntry = await team.getEntry({ transaction });
+      if (existingEntry?.subEventId === subEventId) {
+        await transaction.commit();
+        return {
+          teamId,
+          subEventCompetitionId: subEventId,
+          alreadyExisted: true,
+        };
+      }
 
-      await entry.save({ transaction });
+      // Otherwise: reuse the team's existing entry (Team @HasOne EventEntry) or
+      // create a fresh one, then attach to the requested sub-event. Cross-sub-event
+      // moves are preserved as the existing behavior (see research.md §R3).
+      const entry = existingEntry ?? (await EventEntry.create({}, { transaction }));
       await team.setEntry(entry, { transaction });
       await subEvent.addEventEntry(entry, { transaction });
 
       await transaction.commit();
-      return true;
+      return {
+        teamId,
+        subEventCompetitionId: subEventId,
+        alreadyExisted: false,
+      };
     } catch (error) {
       await transaction.rollback();
-      throw error;
+      if (error instanceof GraphQLError) {
+        // Already classified — let it pass through unchanged.
+        throw error;
+      }
+      // Unclassified failure: log full stack server-side, return sanitized
+      // INTERNAL_ERROR so internal details (SQL, stack frames) do not leak.
+      this.logger.error(
+        {
+          code: "INTERNAL_ERROR",
+          teamId,
+          subEventCompetitionId: subEventId,
+          userId,
+        },
+        error instanceof Error ? error.stack : String(error)
+      );
+      throw new GraphQLError("Internal error while creating enrollment.", {
+        extensions: { code: "INTERNAL_ERROR" },
+      });
     }
   }
 }

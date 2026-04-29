@@ -107,7 +107,7 @@ When an enrollment submit succeeds, the response carries enough identifying info
 - **SC-002**: Re-submitting an already-enrolled `(team, sub-event)` pair never produces a user-visible error in QA reproduction of the BAD-21 scenario; it returns success.
 - **SC-003**: When the BAD-21 failure recurs for any user, the originating cause can be identified from server logs alone — without contacting the user — in 100% of cases (because the code, ids, and user are logged).
 - **SC-004**: Support tickets matching "enrollment final submit error with no detail" trend to zero within one season after rollout.
-- **SC-005**: Concurrent or repeated submits for the same `(team, sub-event)` produce at most one enrollment record in the system, verified by uniqueness check after a stress reproduction.
+- **SC-005**: Sequential re-submits for the same `(team, sub-event)` produce at most one enrollment record in the system, verified by re-running the BAD-21 reproducer twice. Hard concurrency (two truly simultaneous in-flight requests racing the application-level idempotency check) is best-effort under the application-level invariant only; tightening to a DB-enforced guarantee is deferred (see `docs/tech-debt.md`).
 
 ## Assumptions
 
