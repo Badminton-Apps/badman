@@ -169,3 +169,8 @@ Pattern:
    - Mutation handles not-found (`NotFoundException`)
    - Mutation succeeds: updates, commits transaction, returns result
    - Mutation rolls back on unexpected errors
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
