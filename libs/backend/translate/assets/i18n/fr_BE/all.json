@@ -1927,6 +1927,8 @@
           "cancelPendingSelection": "Annuler la sélection du joueur"
         }
       },
+      "pendingTransferBadge": "(transfert)",
+      "pendingLoanBadge": "(prêt)",
       "playerValidation": {
         "alreadyMember": "Ce joueur est déjà membre de ce club.",
         "alreadyLoaned": "Ce joueur est déjà en prêt.",
@@ -1948,6 +1950,10 @@
         "duplicateTeamNumberSameType": "Numéro d'équipe en double dans le même type.",
         "maxBasePlayers": "Vous pouvez ajouter au maximum {max} joueurs de base.",
         "minBasePlayers": "Sélectionnez au moins {min} joueurs de base."
+      },
+      "errors": {
+        "rejectedPendingPlayer": "Le joueur {playerName} n'est plus membre ni transfert/prêt en cours. Retirez-le des joueurs de base.",
+        "rejectedPendingPlayerBlocksSubmit": "L'inscription ne peut pas être envoyée. Un ou plusieurs équipes contiennent des joueurs de base qui ne sont plus valides."
       }
     },
     "locations": {

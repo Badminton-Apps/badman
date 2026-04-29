@@ -1638,6 +1638,8 @@ export type I18nTranslations = {
                         "cancelPendingSelection": string;
                     };
                 };
+                "pendingTransferBadge": string;
+                "pendingLoanBadge": string;
                 "playerValidation": {
                     "alreadyMember": string;
                     "alreadyLoaned": string;
@@ -1659,6 +1661,10 @@ export type I18nTranslations = {
                     "duplicateTeamNumberSameType": string;
                     "maxBasePlayers": string;
                     "minBasePlayers": string;
+                };
+                "errors": {
+                    "rejectedPendingPlayer": string;
+                    "rejectedPendingPlayerBlocksSubmit": string;
                 };
             };
             "messages": {

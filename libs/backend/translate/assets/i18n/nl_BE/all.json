@@ -1338,6 +1338,8 @@
           "cancelPendingSelection": "Spelerselectie annuleren"
         }
       },
+      "pendingTransferBadge": "(transfer)",
+      "pendingLoanBadge": "(uitleen)",
       "playerValidation": {
         "alreadyMember": "Speler is al lid van deze club.",
         "alreadyLoaned": "Speler is al uitgeleend.",
@@ -1359,6 +1361,10 @@
         "duplicateTeamNumberSameType": "Dubbel ploegnummer binnen hetzelfde type.",
         "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen.",
         "minBasePlayers": "Je moet minstens {min} basisspelers selecteren."
+      },
+      "errors": {
+        "rejectedPendingPlayer": "Speler {playerName} is geen lid of openstaande transfer/uitleen meer. Verwijder hem/haar uit de basisspelers.",
+        "rejectedPendingPlayerBlocksSubmit": "Inschrijving kan niet ingediend worden. Eén of meerdere teams bevatten basisspelers die niet meer geldig zijn."
       }
     },
     "messages": {
