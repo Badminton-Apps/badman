@@ -1,7 +1,9 @@
 import {
+  XmlItemSchema,
   XmlRankingCategorySchema,
   XmlRankingPublicationSchema,
   XmlRankingSchema,
+  XmlTournamentDrawSchema,
   XmlTournamentMatchSchema,
 } from "../visual-result";
 
@@ -131,6 +133,32 @@ describe("requiredCoercedString invariant", () => {
       MatchDate: "2026-04-15T19:00:00",
     });
     expect(result.success).toBe(false);
+  });
+
+  // Visual API emits empty `<Team/>` elements which fast-xml-parser deserializes
+  // to "" instead of an object. Schema must tolerate that without throwing.
+  it("XmlItemSchema: coerces empty-string Team to undefined", () => {
+    const result = XmlItemSchema.safeParse({ Code: "X", Team: "" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.Team).toBeUndefined();
+  });
+
+  it("XmlTournamentDrawSchema: accepts mixed string/object Team values across Items", () => {
+    const result = XmlTournamentDrawSchema.safeParse({
+      Code: "DR1",
+      Name: "Draw 1",
+      Structure: {
+        Item: [
+          { Code: "1", Team: "" },
+          { Code: "2", Team: { Code: "T1", Name: "Foo" } },
+        ],
+      },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Structure?.Item[0].Team).toBeUndefined();
+      expect(result.data.Structure?.Item[1].Team).toEqual({ Code: "T1", Name: "Foo" });
+    }
   });
 
   it("XmlTournamentMatchSchema: accepts numeric MatchID", () => {

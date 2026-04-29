@@ -377,7 +377,10 @@ export const XmlItemSchema = z
     Code: requiredCoercedString,
     Winner: z.coerce.string().optional(),
     ScoreStatus: z.coerce.string().optional(),
-    Team: TeamClassSchema.optional(),
+    Team: z.preprocess(
+      (v) => (typeof v === "string" ? undefined : v),
+      TeamClassSchema.optional()
+    ),
     MatchTime: z.string().optional(),
     Sets: XmlSetsSchema.optional(),
   })
