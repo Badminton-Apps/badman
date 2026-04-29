@@ -6,8 +6,8 @@ import { ExcelService } from "../services/excel.services";
 @Controller({
   path: "excel/enrollment",
 })
-export class EnrollemntController {
-  private readonly logger = new Logger(EnrollemntController.name);
+export class EnrollmentController {
+  private readonly logger = new Logger(EnrollmentController.name);
 
   constructor(private readonly excelService: ExcelService) {}
 
