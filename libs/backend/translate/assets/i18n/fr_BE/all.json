@@ -1758,6 +1758,7 @@
           "team-order": "L'équipe {teamName} est dans une série inférieure mais a un numéro d'équipe inférieur",
           "team-order-same-subevent": "L'équipe {teamName} a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
           "team-to-strong": "L'indice d'équipe des joueurs de base égal à {baseIndex} ne peut pas être inférieur à celui autorisé dans la division {minIndex}",
+          "rejectedPendingPlayer": "Le joueur {playerName} n'est plus membre ni transfert/prêt en cours. Retirez-le des joueurs de base.",
           "team-to-week": "L'indice d'équipe des joueurs de départ est {baseIndex} et ne peut pas dépasser la limite de la division {maxIndex}",
           "title": "Erreurs",
           "too-few-base-players": "Trop peu de joueurs de base",
@@ -1927,8 +1928,8 @@
           "cancelPendingSelection": "Annuler la sélection du joueur"
         }
       },
-      "pendingTransferBadge": "(transfert)",
-      "pendingLoanBadge": "(prêt)",
+      "pendingTransferBadge": "transfert",
+      "pendingLoanBadge": "prêt",
       "playerValidation": {
         "alreadyMember": "Ce joueur est déjà membre de ce club.",
         "alreadyLoaned": "Ce joueur est déjà en prêt.",
@@ -1952,7 +1953,6 @@
         "minBasePlayers": "Sélectionnez au moins {min} joueurs de base."
       },
       "errors": {
-        "rejectedPendingPlayer": "Le joueur {playerName} n'est plus membre ni transfert/prêt en cours. Retirez-le des joueurs de base.",
         "rejectedPendingPlayerBlocksSubmit": "L'inscription ne peut pas être envoyée. Un ou plusieurs équipes contiennent des joueurs de base qui ne sont plus valides."
       }
     },

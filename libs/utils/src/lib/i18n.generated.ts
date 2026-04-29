@@ -1663,7 +1663,6 @@ export type I18nTranslations = {
                     "minBasePlayers": string;
                 };
                 "errors": {
-                    "rejectedPendingPlayer": string;
                     "rejectedPendingPlayerBlocksSubmit": string;
                 };
             };
@@ -3044,6 +3043,7 @@ export type I18nTranslations = {
                         "title": string;
                         "too-few-base-players": string;
                         "too-many-base-players": string;
+                        "rejectedPendingPlayer": string;
                     };
                     "warnings": {
                         "already-saved": string;
