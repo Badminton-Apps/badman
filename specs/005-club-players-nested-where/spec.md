@@ -5,6 +5,13 @@
 **Status**: Draft
 **Linear**: [BAD-132](https://linear.app/dashdot/issue/BAD-132) — Priority: Urgent
 
+## Clarifications
+
+### Session 2026-04-30
+
+- Q: How should the `Club.players` resolver accept membership-field filters? → A: Typed input — add `clubMembership: ClubMembershipFilterInput` argument with explicit, named fields (cleaner SDL, no JSONObject magic keys). The dollar-syntax and new-top-level-query options were rejected.
+- Q: Should `active` (a virtual computed field) be filterable through the typed input? → A: No — exclude `active` from `ClubMembershipFilterInput`. Callers express the same intent via `start`/`end` operators, avoiding implicit "current time" coupling.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — Frontend loads existing LOAN memberships for an enrollment season (Priority: P1)
@@ -64,19 +71,19 @@ A single request to filter players by membership fields produces a single SQL qu
 
 ### Functional Requirements
 
-- **FR-001**: `Club.players` MUST accept a where clause whose keys reference fields on the player's club membership (e.g. `membershipType`, `start`, `end`, `confirmed`, `active`).
-- **FR-002**: A `where` clause MUST support at minimum these operators on membership fields: equal, set membership (in), less-than-or-equal, greater-than-or-equal — matching the operator vocabulary already accepted on player-level fields.
-- **FR-003**: Membership-field filters MUST compose (logical AND) with existing player-level filters within the same `where` clause.
+- **FR-001**: `Club.players` MUST accept a typed `clubMembership` argument that filters returned players by fields on their club membership: `membershipType`, `start`, `end`, `confirmed`. The virtual `active` field is intentionally excluded — callers express the same intent via `start`/`end` operators.
+- **FR-002**: The `clubMembership` filter MUST support at minimum these operators on its fields: equal, set membership (in), less-than-or-equal, greater-than-or-equal — matching the operator vocabulary already accepted on player-level fields.
+- **FR-003**: The `clubMembership` filter MUST compose (logical AND) with the existing player-level `where` argument within the same query.
 - **FR-004**: Filters MUST be applied via a database join, not by post-fetch client-side filtering.
 - **FR-005**: A single resolver call MUST emit one SQL query regardless of result-row count (no N+1).
-- **FR-006**: Existing callers that pass only player-level filters MUST continue to receive identical results to today.
-- **FR-007**: The where-clause syntax accepted by the resolver MUST be documented (example query in the spec or contract document) so the frontend can adopt it without trial-and-error.
+- **FR-006**: Existing callers that pass only the player-level `where` (no `clubMembership` argument) MUST continue to receive identical results to today.
+- **FR-007**: The `clubMembership` input type MUST be exposed in the GraphQL schema with field-level descriptions so the frontend can author queries from introspection alone.
 
 ### Key Entities
 
 - **Club**: Existing entity. Owns the `players` collection that this feature filters.
 - **Player**: Existing entity. Returned by the filter; player-level fields remain filterable as today.
-- **ClubPlayerMembership**: Existing entity. Provides the fields newly available in the where clause: `membershipType`, `start`, `end`, `confirmed`, `active`.
+- **ClubPlayerMembership**: Existing entity. Provides the fields newly available in the typed filter input: `membershipType`, `start`, `end`, `confirmed`. The virtual `active` getter is not filterable through this input.
 
 ## Success Criteria *(mandatory)*
 
@@ -89,7 +96,7 @@ A single request to filter players by membership fields produces a single SQL qu
 
 ## Assumptions
 
-- The frontend will adopt whichever where-clause syntax the backend ships (dollar-key, dotted, or typed input), as long as it satisfies FR-001 through FR-007.
+- The frontend will adopt the typed `clubMembership` argument once it ships; until then, the workaround query path stays in place.
 - The fields exposed for filtering match what already exists on the membership entity; no new columns or virtual fields are introduced as part of this change.
 - Date-range overlap (start/end) is expressed by the caller using the same operators used elsewhere — no new "between" or "overlaps" operator is required for v1; FR-002 covers the operator set.
 - Authorization on the player list is unchanged: callers who can already see a club's players today continue to see them; this feature does not add or remove visibility.
