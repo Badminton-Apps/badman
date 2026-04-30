@@ -1219,6 +1219,7 @@
       "error": "Kopiëren van competitie mislukt"
     },
     "enrollment": {
+      "pageTitle": "Competitie Inschrijving {season}",
       "disabled": {
         "title": "Inschrijvingen gesloten",
         "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
@@ -1235,7 +1236,12 @@
         "ariaDeselectLocation": "Locatie deselecteren",
         "emptyPlaceholder": "—",
         "noGameDays": "Geen speeldagen",
-        "courts": "{count, plural, one {# baan} other {# banen}}"
+        "courts": "{count, plural, one {# baan} other {# banen}}",
+        "copyFromLastSeason": "Beschikbaarheid van vorig seizoen kopiëren",
+        "copyAvailabilitySuccess": "Beschikbaarheid succesvol gekopieerd",
+        "copyAvailabilityError": "Beschikbaarheid kon niet worden gekopieerd",
+        "manageAvailability": "Beschikbaarheid beheren",
+        "hideAvailability": "Beschikbaarheid verbergen"
       },
       "team-enrollment": {
         "addBasePlayerDialog": {
@@ -1243,7 +1249,7 @@
           "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
           "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
           "competition": "Competitie",
-          "division": "Divisie",
+          "division": "Afdeling",
           "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
           "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
         },
@@ -1272,7 +1278,8 @@
         "previous": "Vorige",
         "next": "Volgende",
         "submit": "Inschrijven",
-        "submitting": "Bezig…"
+        "submitting": "Bezig…",
+        "teamsHaveErrors": "Los teamfouten op voor je verdergaat"
       },
       "toast": {
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
@@ -1336,6 +1343,8 @@
           "cancelPendingSelection": "Spelerselectie annuleren"
         }
       },
+      "pendingTransferBadge": "transfer",
+      "pendingLoanBadge": "uitleen",
       "playerValidation": {
         "alreadyMember": "Speler is al lid van deze club.",
         "alreadyLoaned": "Speler is al uitgeleend.",
@@ -1355,7 +1364,11 @@
         "selectAtLeastOnePlayer": "Selecteer minstens één speler.",
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe.",
         "duplicateTeamNumberSameType": "Dubbel ploegnummer binnen hetzelfde type.",
-        "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen."
+        "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen.",
+        "minBasePlayers": "Je moet minstens {min} basisspelers selecteren."
+      },
+      "errors": {
+        "rejectedPendingPlayerBlocksSubmit": "Inschrijving kan niet ingediend worden. Eén of meerdere teams bevatten basisspelers die niet meer geldig zijn."
       }
     },
     "messages": {
@@ -2719,7 +2732,7 @@
           "comp-status-team": "{playerFullName} is niet gemarkeerd als competitie speler",
           "faller": "Het team zou moeten degraderen, maar is niet ingeschreven in een lagere klasse",
           "first-team-index": "Een eerste team dat is gedegradeerd mag geen team met een lagere teamindex opstellen dan hun basisindex gedurende het seizoen",
-          "no-subevent": "Kies alstublieft een reeks",
+          "no-subevent": "Geen divisie gevonden",
           "none": "Geen fouten gevonden",
           "player-club": "Speler {playerFullName} maakt geen deel uit van {clubName} (huidige club: {activeClubName})",
           "player-club-none": "Geen club bekend voor speler {playerFullName}",
@@ -2731,6 +2744,7 @@
           "team-order": "Team {teamName} zit in een lagere klasse maar heeft een lagere teamnummer",
           "team-order-same-subevent": "Team {teamName} heeft een betere index in dezelfde reeks, maar heeft een lagere teamnummer",
           "team-to-strong": "Teamindex basis spelers gelijk aan {baseIndex} kan niet lager zijn dan toegestaan in de divisie {minIndex}",
+          "rejectedPendingPlayer": "Speler {playerName} is geen lid of openstaande transfer/uitleen meer. Verwijder hem/haar uit de basisspelers.",
           "team-to-week": "Teamindex startspelers is {baseIndex} en mag de limiet van de divisie {maxIndex} niet overschrijden",
           "title": "Fouten",
           "too-few-base-players": "Te weinig basis spelers",

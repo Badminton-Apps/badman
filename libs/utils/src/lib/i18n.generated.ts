@@ -1519,6 +1519,7 @@ export type I18nTranslations = {
                 "error": string;
             };
             "enrollment": {
+                "pageTitle": string;
                 "disabled": {
                     "title": string;
                     "message": string;
@@ -1536,6 +1537,11 @@ export type I18nTranslations = {
                     "emptyPlaceholder": string;
                     "noGameDays": string;
                     "courts": string;
+                    "copyFromLastSeason": string;
+                    "copyAvailabilitySuccess": string;
+                    "copyAvailabilityError": string;
+                    "manageAvailability": string;
+                    "hideAvailability": string;
                 };
                 "team-enrollment": {
                     "addBasePlayerDialog": {
@@ -1573,6 +1579,7 @@ export type I18nTranslations = {
                     "next": string;
                     "submit": string;
                     "submitting": string;
+                    "teamsHaveErrors": string;
                 };
                 "toast": {
                     "addAtLeastOneTeam": string;
@@ -1636,6 +1643,8 @@ export type I18nTranslations = {
                         "cancelPendingSelection": string;
                     };
                 };
+                "pendingTransferBadge": string;
+                "pendingLoanBadge": string;
                 "playerValidation": {
                     "alreadyMember": string;
                     "alreadyLoaned": string;
@@ -1656,6 +1665,10 @@ export type I18nTranslations = {
                     "addAtLeastOneTeam": string;
                     "duplicateTeamNumberSameType": string;
                     "maxBasePlayers": string;
+                    "minBasePlayers": string;
+                };
+                "errors": {
+                    "rejectedPendingPlayerBlocksSubmit": string;
                 };
             };
             "messages": {
@@ -3035,6 +3048,7 @@ export type I18nTranslations = {
                         "title": string;
                         "too-few-base-players": string;
                         "too-many-base-players": string;
+                        "rejectedPendingPlayer": string;
                     };
                     "warnings": {
                         "already-saved": string;
