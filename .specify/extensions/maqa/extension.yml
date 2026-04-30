@@ -1,0 +1,54 @@
+schema_version: "1.0"
+
+extension:
+  id: "maqa"
+  name: "MAQA — Multi-Agent & Quality Assurance"
+  version: "0.1.3"
+  description: "Coordinator + feature + QA agent workflow. Parallel worktree-based implementation with optional Trello integration via maqa-trello."
+  author: "GenieRobot"
+  repository: "https://github.com/GenieRobot/spec-kit-maqa-ext"
+  license: "MIT"
+  homepage: "https://github.com/GenieRobot/spec-kit-maqa-ext"
+
+requires:
+  speckit_version: ">=0.3.0"
+
+provides:
+  commands:
+    - name: "speckit.maqa.coordinator"
+      file: "commands/speckit.maqa.coordinator.md"
+      description: "Assess ready features, create worktrees, return SPAWN plan for parallel feature agents"
+      aliases: ["speckit.maqa"]
+
+    - name: "speckit.maqa.feature"
+      file: "commands/speckit.maqa.feature.md"
+      description: "Implement one feature in one worktree. Tests optional. Reports done or blocked."
+
+    - name: "speckit.maqa.qa"
+      file: "commands/speckit.maqa.qa.md"
+      description: "Static analysis quality gate: text, links, security, accessibility (all configurable)."
+
+    - name: "speckit.maqa.setup"
+      file: "commands/speckit.maqa.setup.md"
+      description: "One-time Claude Code setup: deploys coordinator/feature/qa as native subagents in .claude/agents/"
+
+  config:
+    - name: "maqa-config.yml"
+      template: "config-template.yml"
+      description: "MAQA workflow configuration (test command, TDD mode, QA checks, parallelism)"
+      required: false
+
+hooks:
+  after_tasks:
+    command: "speckit.maqa.coordinator"
+    optional: true
+    prompt: "Launch MAQA coordinator to start parallel implementation?"
+    description: "Optionally start the coordinator workflow after task breakdown"
+
+tags:
+  - "multi-agent"
+  - "orchestration"
+  - "quality-assurance"
+  - "workflow"
+  - "parallel"
+  - "tdd"

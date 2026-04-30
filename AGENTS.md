@@ -97,10 +97,11 @@ Resolvers live in `libs/backend/graphql/src/resolvers/<domain>/`. Each domain ha
 - Slug support: `IsUUID(id)` decides between `findByPk` and `findOne({ where: { slug } })`
 - Paged results use inline `@ObjectType()` with `{ count: number; rows: T[] }`
 - `ListArgs` / `queryFixer()` utilities translate GraphQL filter operators to Sequelize `Op` symbols
+- **Classified errors**: when a mutation needs to expose distinct, machine-readable failure modes to clients, throw `GraphQLError` from the `graphql` package with `extensions.code` set to a constant from the shared registry [`libs/backend/graphql/src/utils/error-codes.ts`](libs/backend/graphql/src/utils/error-codes.ts) (`ErrorCode.PERMISSION_DENIED`, `ErrorCode.INTERNAL_ERROR`, etc.). Do NOT inline string literals — clients pin behavior to these codes and the registry is the single source of truth. Adding a new code: append a key to `error-codes.ts` and document the per-code `extensions` payload in the resolver's contract document under `specs/`. Reference implementations: [`enrollment.resolver.ts`](libs/backend/graphql/src/resolvers/event/competition/enrollment.resolver.ts) and [`team.resolver.ts`](libs/backend/graphql/src/resolvers/team/team.resolver.ts) (`createEnrollment` / `createTeam`).
 
 ### Auth Flow
 
-`PermGuard` (global) validates JWT via Auth0 JWKS (RS256). Routes are **public by default** — the guard only throws on *invalid* tokens. Access control is applied in resolvers via `user.hasAnyPermission()`. The `@User()` decorator extracts `request.user`; returns a stub with `hasAnyPermission: () => false` for unauthenticated requests (or `true` in development env).
+`PermGuard` (global) validates JWT via Auth0 JWKS (RS256). Routes are **public by default** — the guard only throws on _invalid_ tokens. Access control is applied in resolvers via `user.hasAnyPermission()`. The `@User()` decorator extracts `request.user`; returns a stub with `hasAnyPermission: () => false` for unauthenticated requests (or `true` in development env).
 
 ### Translation / i18n
 
@@ -169,3 +170,24 @@ Pattern:
    - Mutation handles not-found (`NotFoundException`)
    - Mutation succeeds: updates, commits transaction, returns result
    - Mutation rolls back on unexpected errors
+
+## Reference docs (`docs/`)
+
+Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones before starting work in those areas.
+
+- [`docs/tech-debt.md`](docs/tech-debt.md) — registry of knowing compromises. Read before introducing one; update in the same commit. Versioned at the top.
+- [`docs/enrollment-old-vs-new.md`](docs/enrollment-old-vs-new.md) — side-by-side comparison of the legacy Angular enrollment wizard vs the new Next.js implementation, with backend cross-references (`createEnrollment`, `createTeam`, `createTeams`, ranking-snapshot logic, validation rules). Read before touching enrollment, team-create, or the new frontend's submit flow.
+- [`docs/admin-permissions.md`](docs/admin-permissions.md) — permission catalog and `${entityId}_edit:*` conventions used by `user.hasAnyPermission(...)` in resolvers.
+- [`docs/ranking-sync.md`](docs/ranking-sync.md), [`docs/ranking-sync-improvements.md`](docs/ranking-sync-improvements.md), [`docs/ranking-sync-recovery.md`](docs/ranking-sync-recovery.md) — federation-sync architecture and operational playbooks for the worker-sync app.
+- [`docs/sync-process.md`](docs/sync-process.md) — overall sync pipeline.
+- [`docs/settings-api-guide.md`](docs/settings-api-guide.md), [`docs/enrollment-settings-frontend.md`](docs/enrollment-settings-frontend.md) — enrollment-settings API + FE guidance.
+- [`docs/enter-scores-local-browser.md`](docs/enter-scores-local-browser.md) — local-dev workflow for scoring.
+- [`docs/guides/`](docs/guides/), [`docs/estimates/`](docs/estimates/) — assorted how-to guides and feature estimates.
+
+<!-- SPECKIT START -->
+
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan:
+[specs/002-team-resolver-improvements/plan.md](specs/002-team-resolver-improvements/plan.md)
+
+<!-- SPECKIT END -->
