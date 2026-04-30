@@ -5,6 +5,15 @@
 **Status**: Draft
 **Input**: User request to apply the same classified-error, idempotent-submit, and structured-result improvements made to `createEnrollment` (BAD-21 / branch `001-fix-enrollment-submit-error`) to the `createTeam` mutation.
 
+## Clarifications
+
+### Session 2026-04-30
+
+- Q: Return type change — breaking schema change or additive? → A: Replace `createTeam` return with `TeamResult { teamId, clubId, alreadyExisted }`. Accepted as a breaking GraphQL schema change; the active frontend will be updated in lockstep. Mirrors the enrollment fix.
+- Q: Idempotent re-submit — does it re-sync roster and entry, or only top-level fields? → A: **Pure idempotency**. On `(link, season)` match → return success with `alreadyExisted: true` and perform NO writes. The existing upsert-on-find behavior (mutating team fields, roster, entry on find) is REMOVED. Callers needing to update an existing team must use the existing `updateTeam` mutation. Frontend follow-up tracked in Linear [BAD-128](https://linear.app/dashdot/issue/BAD-128).
+- Q: Concurrency guarantee for `(link, season)` — DB constraint or app-level only? → A: App-level invariant only (find-then-create inside the transaction). True simultaneous races are best-effort; tightening to a DB unique index on `(link, season) WHERE link IS NOT NULL` is deferred to tech-debt, mirroring the BAD-21 enrollment decision.
+- Q: Auto-incremented `teamNumber` race when the caller omits `teamNumber` — in scope or deferred? → A: **Out of scope**. The `MAX(teamNumber)+1` race for `(clubId, type, season)` is a pre-existing issue with no DB-level uniqueness on `(clubId, type, season, teamNumber)`; not classified as a new error code in v1. Track separately if it surfaces in production.
+
 ## Background
 
 The `createTeam` mutation currently throws raw NestJS exceptions (`NotFoundException`, `UnauthorizedException`, `BadRequestException`) that reach the GraphQL client as opaque, untyped error objects. The client cannot tell a "club not found" from a "permission denied" from a "player not found", cannot translate error messages, and has no idempotency guarantee when a team with the same cross-season link already exists for the requested season. This makes retries risky and user-facing toasts generic.
@@ -42,7 +51,7 @@ When a team with the same cross-season link and season already exists and the us
 **Acceptance Scenarios**:
 
 1. **Given** a team already exists for a `(link, season)` pair, **When** `createTeam` is called again with the same values, **Then** the mutation returns success pointing at the existing team and no duplicate is created.
-2. **Given** the existing team's editable fields (name, captain, preferred day, etc.) differ from the incoming request, **When** `createTeam` is called for the same `(link, season)`, **Then** the existing team's fields are updated to match the request and the response indicates the team already existed.
+2. **Given** an existing team for `(link, season)` and a `createTeam` call carrying different field values, **When** the mutation runs, **Then** the existing team is left UNCHANGED, the response is success with `alreadyExisted: true`, and the caller must invoke `updateTeam` to apply changes.
 
 ---
 
@@ -78,8 +87,8 @@ When a team create or update succeeds, the response carries enough identifying i
 - **FR-002**: The mutation MUST reject calls where the referenced club does not exist with the stable error code `CLUB_NOT_FOUND`.
 - **FR-003**: The mutation MUST reject calls where any player id in the `players` list does not exist with the stable error code `PLAYER_NOT_FOUND`, carrying the offending player id in the error payload.
 - **FR-004**: The mutation MUST reject calls where ranking data cannot be found for any player included in the entry's base lineup with the stable error code `RANKING_NOT_FOUND`, carrying the offending player id in the error payload.
-- **FR-005**: The mutation MUST treat a re-submit for an already-existing team identified by the same `(link, season)` pair as success rather than an error. The existing team's editable fields MUST be updated to reflect the incoming request values.
-- **FR-006**: Concurrent creates for the same `(link, season)` MUST result in exactly one persisted team record; all callers MUST receive a success response.
+- **FR-005**: The mutation MUST treat a re-submit for an already-existing team identified by the same `(link, season)` pair as a successful no-op rather than an error. No fields, roster, or entry on the existing team are modified by `createTeam` on the find path. Updates to existing teams are the responsibility of `updateTeam`.
+- **FR-006**: Sequential re-submits for the same `(link, season)` MUST result in exactly one persisted team record; all callers MUST receive a success response. True simultaneous concurrent races are best-effort under the application-level invariant only; a DB unique index on `(link, season) WHERE link IS NOT NULL` is deferred to tech-debt (see `docs/tech-debt.md`), matching the BAD-21 enrollment precedent.
 - **FR-007**: On any failure, the mutation MUST roll back all partial database changes so the system never persists a half-created team, partial roster, or partial entry.
 - **FR-008**: On success, the mutation response MUST carry the `teamId`, the `clubId`, and a boolean flag (`alreadyExisted`) indicating whether the team was newly created or already existed.
 - **FR-009**: Every classified error MUST carry a stable, documented `extensions.code` value (one of: `PERMISSION_DENIED`, `CLUB_NOT_FOUND`, `PLAYER_NOT_FOUND`, `RANKING_NOT_FOUND`). Unclassified server errors MUST surface under `INTERNAL_ERROR` rather than as a raw exception message.
@@ -104,9 +113,9 @@ When a team create or update succeeds, the response carries enough identifying i
 
 ## Assumptions
 
-- The fix is applied at the **backend** layer only. Frontend changes to map new error codes to localized copy are out of scope for this spec and will be handled in the active frontend repository separately.
+- The fix is applied at the **backend** layer only. Frontend changes (mapping new error codes to localized copy, migrating to `TeamResult`, and following up with `updateTeam` on `alreadyExisted: true`) are tracked in Linear issue [BAD-128](https://linear.app/dashdot/issue/BAD-128) and will be handled in the active frontend repository.
 - The legacy Angular frontend in this repo is reference-only and will not be modified.
 - The set of classifiable error codes for v1 is the closed list above. Additional codes (e.g. `TEAM_NUMBER_CONFLICT`) are out of scope and can be added in a future iteration without breaking the current contract.
 - Idempotency is scoped to the `(link, season)` pair. Teams without a `link` value always create a new record (existing behavior).
 - The `createTeams` batch mutation delegates to `createTeam` in a loop; it benefits from the same improvements automatically and does not need separate treatment.
-- The mutation return type changes from `Team` to a lightweight `TeamResult` envelope. Clients currently consuming the full `Team` object on success will need to update their queries, but because the change is additive (the team can still be re-fetched by id), this is not a breaking behavioral change.
+- The mutation return type changes from `Team` to a lightweight `TeamResult` envelope (`teamId`, `clubId`, `alreadyExisted`). This IS a breaking GraphQL schema change for any client selecting `Team` fields directly on the mutation; the active frontend will be updated in lockstep. The team itself can still be re-fetched by id via the existing `team(id)` query.
