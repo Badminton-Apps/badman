@@ -30,10 +30,11 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { GraphQLError } from "graphql";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { v4 as uuidv4 } from "uuid";
-import { ListArgs } from "../../utils";
+import { ErrorCode, ListArgs } from "../../utils";
+import { TeamResult } from "./team-result.object";
 
 @Resolver(() => Team)
 export class TeamsResolver {
@@ -173,25 +174,54 @@ export class TeamsResolver {
     }
   }
 
-  @Mutation(() => Team)
+  @Mutation(() => TeamResult, {
+    description:
+      "Create a team for a club. Idempotent on (link, season): when an existing team is found for that pair, returns success with alreadyExisted: true and no writes. To update an existing team, use updateTeam. Failures surface as GraphQLError with a stable extensions.code (CLUB_NOT_FOUND, PERMISSION_DENIED, PLAYER_NOT_FOUND, RANKING_NOT_FOUND, INTERNAL_ERROR).",
+  })
   async createTeam(
     @Args("data") newTeamData: TeamNewInput,
     @Args("nationalCountsAsMixed", { type: () => Boolean })
     nationalCountsAsMixed: boolean,
     @User() user: Player
-  ): Promise<Team> {
+  ): Promise<TeamResult> {
+    const userId = user?.id ?? null;
+    const clubId = newTeamData.clubId;
+
     const transaction = await this._sequelize.transaction();
     try {
-      const dbClub = await Club.findByPk(newTeamData.clubId, {
-        transaction,
-      });
-
+      const dbClub = await Club.findByPk(clubId, { transaction });
       if (!dbClub) {
-        throw new NotFoundException(`${Club.name}: ${newTeamData.clubId}`);
+        this.logger.warn({ code: ErrorCode.CLUB_NOT_FOUND, clubId, userId });
+        throw new GraphQLError(`Club not found: ${clubId}`, {
+          extensions: { code: ErrorCode.CLUB_NOT_FOUND, clubId },
+        });
       }
 
       if (!(await user.hasAnyPermission([`${dbClub.id}_edit:club`, "edit-any:club"]))) {
-        throw new UnauthorizedException(`You do not have permission to create a team`);
+        this.logger.warn({ code: ErrorCode.PERMISSION_DENIED, clubId: dbClub.id, userId });
+        throw new GraphQLError("You do not have permission to create a team for this club.", {
+          extensions: { code: ErrorCode.PERMISSION_DENIED, userId, clubId: dbClub.id },
+        });
+      }
+
+      // Idempotency: see specs/002-team-resolver-improvements/research.md §R2.
+      // Updates flow through updateTeam (Linear BAD-128).
+      if (newTeamData.link) {
+        const existing = await Team.findOne({
+          where: {
+            link: newTeamData.link,
+            season: newTeamData.season,
+          },
+          transaction,
+        });
+        if (existing) {
+          await transaction.commit();
+          return {
+            teamId: existing.id,
+            clubId: dbClub.id,
+            alreadyExisted: true,
+          };
+        }
       }
 
       if (!newTeamData.teamNumber) {
@@ -200,197 +230,120 @@ export class TeamsResolver {
           types.push(SubEventTypeEnum.NATIONAL);
         }
 
-        // Find the highst active team number for the club
+        // Find the highest active team number for the club. Race window when
+        // two concurrent creates omit teamNumber is out of scope (spec Q4).
         const highestNumber = (await Team.max("teamNumber", {
           where: {
             clubId: dbClub.id,
-            type: {
-              [Op.or]: types,
-            },
+            type: { [Op.or]: types },
             season: newTeamData.season,
           },
         })) as number;
-
-        // Increase by one (because we create new)
         newTeamData.teamNumber = highestNumber + 1;
       }
 
-      // Create or find the team (that was inactive)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { players, entry, ...teamData } = newTeamData;
-      let created = false;
-      let teamDb: Team | null = null;
+      const teamDb = await Team.create({ ...(teamData as Team) }, { transaction });
+      await teamDb.setClub(dbClub, { transaction });
 
-      // Team.link is the cross-season continuity id; reuse it to find the current season team.
-      if (teamData.link) {
-        teamDb = await Team.findOne({
-          where: {
-            link: newTeamData.link,
-            season: newTeamData.season,
-          },
-          transaction,
-        });
-      }
-
-      if (!teamDb) {
-        teamDb = await Team.create(
-          {
-            ...(teamData as Team),
-          },
-          { transaction }
-        );
-        created = true;
-      }
-
-      if (!created) {
-        // update values
-        teamDb.name = newTeamData.name;
-        teamDb.phone = newTeamData.phone;
-        teamDb.email = newTeamData.email;
-        teamDb.abbreviation = newTeamData.abbreviation;
-        teamDb.season = newTeamData.season;
-        teamDb.type = newTeamData.type || teamDb.type;
-        teamDb.teamNumber = newTeamData.teamNumber;
-        teamDb.captainId = newTeamData.captainId;
-        teamDb.preferredDay = newTeamData.preferredDay;
-        teamDb.preferredTime = newTeamData.preferredTime;
-        teamDb.prefferedLocationId = newTeamData.prefferedLocationId;
-        teamDb.link = newTeamData.link ?? uuidv4();
-        await teamDb.save({ transaction });
-      }
-      if (created) {
-        await teamDb.setClub(dbClub, { transaction });
-      }
-
-      if (newTeamData.players) {
+      if (players) {
         this.logger.debug(`Adding players to team ${teamDb.name}`);
-
         const dbPlayers = await Player.findAll({
-          where: {
-            id: newTeamData.players.map((p) => p.id),
-          },
+          where: { id: players.map((p) => p.id) },
           transaction,
         });
-
-        const dbMemberships = await TeamPlayerMembership.findAll({
-          where: {
-            teamId: teamDb.id,
-          },
-          transaction,
-        });
-
-        // add or update players
         await Promise.all(
-          newTeamData.players.map(async (player) => {
+          players.map(async (player) => {
             const dbPlayer = dbPlayers.find((p) => p.id === player.id);
             if (!dbPlayer) {
-              throw new NotFoundException(`${Player.name}: ${player.id}`);
-            }
-
-            const membership = dbMemberships.find((m) => m.playerId === dbPlayer.id);
-
-            if (membership) {
-              if (membership.membershipType !== player.membershipType) {
-                membership.membershipType = player.membershipType;
-                await membership.save({ transaction });
-              }
-            } else {
-              if (!teamDb) {
-                throw new BadRequestException("Could not create team");
-              }
-
-              await teamDb.addPlayer(dbPlayer, {
-                through: {
-                  membershipType: player.membershipType,
-                  start: new Date(),
-                },
-                transaction,
+              this.logger.warn({
+                code: ErrorCode.PLAYER_NOT_FOUND,
+                playerId: player.id,
+                clubId: dbClub.id,
+                userId,
+              });
+              throw new GraphQLError(`Player not found: ${player.id}`, {
+                extensions: { code: ErrorCode.PLAYER_NOT_FOUND, playerId: player.id },
               });
             }
+            await teamDb.addPlayer(dbPlayer, {
+              through: {
+                membershipType: player.membershipType,
+                start: new Date(),
+              },
+              transaction,
+            });
           })
         );
-
-        // remove players that are not in the new list
-        for (const membership of dbMemberships) {
-          const player = newTeamData.players?.find((p) => p.id === membership.playerId);
-
-          if (!player) {
-            await teamDb.removePlayer(membership.playerId, { transaction });
-          }
-        }
       }
 
-      if (newTeamData.entry) {
+      if (entry) {
         this.logger.debug(`Adding entry to team ${teamDb.name}`);
+        const [dbEntry] = await EventEntry.findOrCreate({
+          where: {
+            teamId: teamDb.id,
+            subEventId: entry.subEventId,
+            entryType: "competition",
+          },
+          defaults: { ...(entry as EventEntry) },
+          transaction,
+          hooks: false,
+        });
 
-        let dbEntry = await teamDb.getEntry({ transaction });
-
-        if (!dbEntry) {
-          [dbEntry] = await EventEntry.findOrCreate({
-            where: {
-              teamId: teamDb.id,
-              subEventId: newTeamData.entry.subEventId,
-              entryType: "competition",
-            },
-            defaults: {
-              ...(newTeamData.entry as EventEntry),
-            },
-            transaction,
-            hooks: false,
-          });
-        } else {
-          // Might be a new link
-          dbEntry.subEventId = newTeamData.entry.subEventId;
-        }
-
-        if (newTeamData.entry?.meta?.competition?.players) {
+        if (entry?.meta?.competition?.players) {
           const system = await RankingSystem.findOne({
-            where: {
-              primary: true,
-            },
+            where: { primary: true },
             transaction,
           });
-
           if (!system) {
-            throw new NotFoundException("No primary ranking system found");
+            this.logger.error({
+              code: ErrorCode.INTERNAL_ERROR,
+              reason: "primary ranking system missing",
+              clubId: dbClub.id,
+              userId,
+            });
+            throw new GraphQLError("Primary ranking system not configured.", {
+              extensions: { code: ErrorCode.INTERNAL_ERROR },
+            });
           }
 
-          const players: EntryCompetitionPlayer[] = [];
-          const playerIds = (newTeamData.entry.meta.competition.players?.map((p) => p.id) ||
-            []) as string[];
-
+          const competitionPlayers: EntryCompetitionPlayer[] = [];
+          const playerIds = (entry.meta.competition.players?.map((p) => p.id) || []) as string[];
           const rankings = await RankingLastPlace.findAll({
-            where: {
-              playerId: {
-                [Op.in]: playerIds,
-              },
-              systemId: system.id,
-            },
+            where: { playerId: { [Op.in]: playerIds }, systemId: system.id },
+            transaction,
+          });
+          const dbBasePlayers = await Player.findAll({
+            where: { id: { [Op.in]: playerIds } },
             transaction,
           });
 
-          const dbPlayers = await Player.findAll({
-            where: {
-              id: {
-                [Op.in]: playerIds,
-              },
-            },
-            transaction,
-          });
-
-          for (const p of newTeamData.entry.meta.competition.players) {
-            const player = dbPlayers.find((dbPlayer) => dbPlayer.id === p.id);
-            const ranking = rankings.find((r) => r.playerId === p.id);
-
+          for (const p of entry.meta.competition.players) {
+            const player = dbBasePlayers.find((dbPlayer) => dbPlayer.id === p.id);
             if (!player) {
-              throw new NotFoundException(`Player ${p.id} not found`);
+              this.logger.warn({
+                code: ErrorCode.PLAYER_NOT_FOUND,
+                playerId: p.id,
+                clubId: dbClub.id,
+                userId,
+              });
+              throw new GraphQLError(`Player not found: ${p.id}`, {
+                extensions: { code: ErrorCode.PLAYER_NOT_FOUND, playerId: p.id },
+              });
             }
-
+            const ranking = rankings.find((r) => r.playerId === p.id);
             if (!ranking) {
-              throw new NotFoundException(`Ranking for player ${p.id} not found`);
+              this.logger.warn({
+                code: ErrorCode.RANKING_NOT_FOUND,
+                playerId: p.id,
+                clubId: dbClub.id,
+                userId,
+              });
+              throw new GraphQLError(`Ranking for player ${p.id} not found`, {
+                extensions: { code: ErrorCode.RANKING_NOT_FOUND, playerId: p.id },
+              });
             }
-
-            players.push({
+            competitionPlayers.push({
               id: player.id,
               gender: player.gender,
               single: ranking.single,
@@ -402,30 +355,37 @@ export class TeamsResolver {
             });
           }
 
-          const index = getIndexFromPlayers(teamDb.type, players);
-
+          const index = getIndexFromPlayers(teamDb.type, competitionPlayers);
           dbEntry.meta = {
             ...dbEntry.meta,
-            competition: {
-              teamIndex: index,
-              players,
-            },
+            competition: { teamIndex: index, players: competitionPlayers },
           };
-
           await dbEntry.save({ transaction, hooks: false });
         }
       }
 
       await transaction.commit();
-      return teamDb;
+      return {
+        teamId: teamDb.id,
+        clubId: dbClub.id,
+        alreadyExisted: false,
+      };
     } catch (e) {
-      this.logger.warn("rollback", e);
       await transaction.rollback();
-      throw e;
+      if (e instanceof GraphQLError) {
+        throw e;
+      }
+      this.logger.error(
+        { code: ErrorCode.INTERNAL_ERROR, clubId, userId },
+        e instanceof Error ? e.stack : String(e)
+      );
+      throw new GraphQLError("Internal error.", {
+        extensions: { code: ErrorCode.INTERNAL_ERROR },
+      });
     }
   }
 
-  @Mutation(() => [Team])
+  @Mutation(() => [TeamResult])
   async createTeams(
     @Args("data", {
       type: () => [TeamNewInput],
@@ -434,8 +394,8 @@ export class TeamsResolver {
     @Args("nationalCountsAsMixed", { type: () => Boolean })
     nationalCountsAsMixed: boolean,
     @User() user: Player
-  ): Promise<Team[]> {
-    const results: Team[] = [];
+  ): Promise<TeamResult[]> {
+    const results: TeamResult[] = [];
 
     // we need to sort the teams to make sure we create the teams in the right order
     for (const team of newTeamData.sort((a, b) => {

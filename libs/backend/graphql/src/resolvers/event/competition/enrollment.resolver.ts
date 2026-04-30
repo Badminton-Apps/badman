@@ -15,6 +15,7 @@ import { Logger } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
+import { ErrorCode } from "../../../utils";
 import { EnrollmentResult } from "./enrollment-result.object";
 
 @Resolver(() => EnrollmentOutput)
@@ -53,13 +54,13 @@ export class EnrollmentResolver {
       const team = await Team.findByPk(teamId, { transaction });
       if (!team) {
         this.logger.warn({
-          code: "TEAM_NOT_FOUND",
+          code: ErrorCode.TEAM_NOT_FOUND,
           teamId,
           subEventCompetitionId: subEventId,
           userId,
         });
         throw new GraphQLError(`Team not found: ${teamId}`, {
-          extensions: { code: "TEAM_NOT_FOUND", teamId },
+          extensions: { code: ErrorCode.TEAM_NOT_FOUND, teamId },
         });
       }
 
@@ -70,13 +71,13 @@ export class EnrollmentResolver {
       ]);
       if (!allowed) {
         this.logger.warn({
-          code: "PERMISSION_DENIED",
+          code: ErrorCode.PERMISSION_DENIED,
           teamId,
           subEventCompetitionId: subEventId,
           userId,
         });
         throw new GraphQLError("You do not have permission to enroll this team.", {
-          extensions: { code: "PERMISSION_DENIED", userId },
+          extensions: { code: ErrorCode.PERMISSION_DENIED, userId },
         });
       }
 
@@ -86,20 +87,20 @@ export class EnrollmentResolver {
       });
       if (!subEvent) {
         this.logger.warn({
-          code: "SUB_EVENT_NOT_FOUND",
+          code: ErrorCode.SUB_EVENT_NOT_FOUND,
           teamId,
           subEventCompetitionId: subEventId,
           userId,
         });
         throw new GraphQLError(`Sub-event not found: ${subEventId}`, {
-          extensions: { code: "SUB_EVENT_NOT_FOUND", subEventId },
+          extensions: { code: ErrorCode.SUB_EVENT_NOT_FOUND, subEventId },
         });
       }
 
       const competitionSeason = subEvent.eventCompetition?.season;
       if (team.season !== competitionSeason) {
         this.logger.warn({
-          code: "SEASON_MISMATCH",
+          code: ErrorCode.SEASON_MISMATCH,
           teamId,
           subEventCompetitionId: subEventId,
           userId,
@@ -108,7 +109,7 @@ export class EnrollmentResolver {
         });
         throw new GraphQLError("Team season does not match competition season.", {
           extensions: {
-            code: "SEASON_MISMATCH",
+            code: ErrorCode.SEASON_MISMATCH,
             teamSeason: team.season,
             competitionSeason,
           },
@@ -150,7 +151,7 @@ export class EnrollmentResolver {
       // INTERNAL_ERROR so internal details (SQL, stack frames) do not leak.
       this.logger.error(
         {
-          code: "INTERNAL_ERROR",
+          code: ErrorCode.INTERNAL_ERROR,
           teamId,
           subEventCompetitionId: subEventId,
           userId,
@@ -158,7 +159,7 @@ export class EnrollmentResolver {
         error instanceof Error ? error.stack : String(error)
       );
       throw new GraphQLError("Internal error while creating enrollment.", {
-        extensions: { code: "INTERNAL_ERROR" },
+        extensions: { code: ErrorCode.INTERNAL_ERROR },
       });
     }
   }
