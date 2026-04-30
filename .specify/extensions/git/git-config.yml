@@ -34,22 +34,22 @@ auto_commit:
     enabled: false
     message: "[Spec Kit] Save progress before issue sync"
   after_constitution:
-    enabled: false
+    enabled: true
     message: "[Spec Kit] Add project constitution"
   after_specify:
-    enabled: false
+    enabled: true
     message: "[Spec Kit] Add specification"
   after_clarify:
-    enabled: false
+    enabled: true
     message: "[Spec Kit] Clarify specification"
   after_plan:
-    enabled: false
+    enabled: true
     message: "[Spec Kit] Add implementation plan"
   after_tasks:
-    enabled: false
+    enabled: true
     message: "[Spec Kit] Add tasks"
   after_implement:
-    enabled: false
+    enabled: true
     message: "[Spec Kit] Implementation progress"
   after_checklist:
     enabled: false

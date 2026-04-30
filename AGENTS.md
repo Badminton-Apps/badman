@@ -97,6 +97,7 @@ Resolvers live in `libs/backend/graphql/src/resolvers/<domain>/`. Each domain ha
 - Slug support: `IsUUID(id)` decides between `findByPk` and `findOne({ where: { slug } })`
 - Paged results use inline `@ObjectType()` with `{ count: number; rows: T[] }`
 - `ListArgs` / `queryFixer()` utilities translate GraphQL filter operators to Sequelize `Op` symbols
+- **Classified errors**: when a mutation needs to expose distinct, machine-readable failure modes to clients, throw `GraphQLError` from the `graphql` package with `extensions.code` set to a constant from the shared registry [`libs/backend/graphql/src/utils/error-codes.ts`](libs/backend/graphql/src/utils/error-codes.ts) (`ErrorCode.PERMISSION_DENIED`, `ErrorCode.INTERNAL_ERROR`, etc.). Do NOT inline string literals — clients pin behavior to these codes and the registry is the single source of truth. Adding a new code: append a key to `error-codes.ts` and document the per-code `extensions` payload in the resolver's contract document under `specs/`. Reference implementations: [`enrollment.resolver.ts`](libs/backend/graphql/src/resolvers/event/competition/enrollment.resolver.ts) and [`team.resolver.ts`](libs/backend/graphql/src/resolvers/team/team.resolver.ts) (`createEnrollment` / `createTeam`).
 
 ### Auth Flow
 
