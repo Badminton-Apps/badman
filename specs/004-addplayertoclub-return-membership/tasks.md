@@ -26,7 +26,7 @@ NestJS Nx monorepo. Affected paths:
 
 **Purpose**: No project initialization needed — operating in existing libs. Single sanity-check task.
 
-- [ ] T001 Verify local API + Postgres + Redis stack is healthy (`npm run docker:up` already running; `nx test backend-graphql` baseline run produces a clean pass before changes)
+- [x] T001 Verify local API + Postgres + Redis stack is healthy (`npm run docker:up` already running; `nx test backend-graphql` baseline run produces a clean pass before changes)
 
 ---
 
@@ -36,7 +36,7 @@ NestJS Nx monorepo. Affected paths:
 
 **⚠️ CRITICAL**: T002 must complete before any task in Phase 4 or Phase 5 can compile cleanly.
 
-- [ ] T002 Add `MEMBERSHIP_NOT_FOUND: "MEMBERSHIP_NOT_FOUND"` under a new `// Club membership (libs/backend/graphql/src/resolvers/club/club.resolver.ts)` comment block in `libs/backend/graphql/src/utils/error-codes.ts`
+- [x] T002 Add `MEMBERSHIP_NOT_FOUND: "MEMBERSHIP_NOT_FOUND"` under a new `// Club membership (libs/backend/graphql/src/resolvers/club/club.resolver.ts)` comment block in `libs/backend/graphql/src/utils/error-codes.ts`
 
 **Checkpoint**: Error registry includes `MEMBERSHIP_NOT_FOUND`. User story implementation can begin.
 
@@ -50,17 +50,17 @@ NestJS Nx monorepo. Affected paths:
 
 ### Implementation for User Story 1
 
-- [ ] T003 [P] [US1] Create `AddPlayerToClubResult` `@ObjectType` in `libs/backend/graphql/src/resolvers/club/add-player-to-club-result.object.ts` with fields `id: ID`, `clubId: ID`, `playerId: ID`, `start: Date`, `end: Date (nullable)`, `membershipType: String`, `alreadyExisted: Boolean` — mirror the description style of `TeamResult`/`EnrollmentResult`
+- [x] T003 [P] [US1] Create `AddPlayerToClubResult` `@ObjectType` in `libs/backend/graphql/src/resolvers/club/add-player-to-club-result.object.ts` with fields `id: ID`, `clubId: ID`, `playerId: ID`, `start: Date`, `end: Date (nullable)`, `membershipType: String`, `alreadyExisted: Boolean` — mirror the description style of `TeamResult`/`EnrollmentResult`
 
-- [ ] T004 [US1] In `libs/backend/graphql/src/resolvers/club/club.resolver.ts`: change `@Mutation(() => Boolean)` decorator on `addPlayerToClub` to `@Mutation(() => AddPlayerToClubResult)`; update return type annotation to `Promise<AddPlayerToClubResult>`; import the new result class
+- [x] T004 [US1] In `libs/backend/graphql/src/resolvers/club/club.resolver.ts`: change `@Mutation(() => Boolean)` decorator on `addPlayerToClub` to `@Mutation(() => AddPlayerToClubResult)`; update return type annotation to `Promise<AddPlayerToClubResult>`; import the new result class
 
-- [ ] T005 [US1] In `addPlayerToClub` body: replace `throw new UnauthorizedException(...)` with `throw new GraphQLError("Permission denied", { extensions: { code: ErrorCode.PERMISSION_DENIED } })`; ensure auth check runs before the transaction is opened
+- [x] T005 [US1] In `addPlayerToClub` body: replace `throw new UnauthorizedException(...)` with `throw new GraphQLError("Permission denied", { extensions: { code: ErrorCode.PERMISSION_DENIED } })`; ensure auth check runs before the transaction is opened
 
-- [ ] T006 [US1] In `addPlayerToClub` body: replace the two `NotFoundException` throws (club, player) with `GraphQLError` carrying `extensions.code` `CLUB_NOT_FOUND` (with `{ clubId }`) and `PLAYER_NOT_FOUND` (with `{ playerId }`) respectively
+- [x] T006 [US1] In `addPlayerToClub` body: replace the two `NotFoundException` throws (club, player) with `GraphQLError` carrying `extensions.code` `CLUB_NOT_FOUND` (with `{ clubId }`) and `PLAYER_NOT_FOUND` (with `{ playerId }`) respectively
 
-- [ ] T007 [US1] In `addPlayerToClub` body: replace `await club.addPlayer(player, { transaction, through: { ... } })` + `return true` with `await ClubPlayerMembership.findOrCreate({ where: { clubId, playerId, start }, defaults: { end, membershipType, confirmed }, transaction })`; build and return an `AddPlayerToClubResult` from the resolved `[membership, created]` tuple with `alreadyExisted: !created`
+- [x] T007 [US1] In `addPlayerToClub` body: replace `await club.addPlayer(player, { transaction, through: { ... } })` + `return true` with `await ClubPlayerMembership.findOrCreate({ where: { clubId, playerId, start }, defaults: { end, membershipType, confirmed }, transaction })`; build and return an `AddPlayerToClubResult` from the resolved `[membership, created]` tuple with `alreadyExisted: !created`
 
-- [ ] T008 [US1] Update imports in `club.resolver.ts`: add `GraphQLError` from `graphql`, `ErrorCode` from `../../utils/error-codes`, and `AddPlayerToClubResult` from `./add-player-to-club-result.object`; verify `ClubPlayerMembership` is already imported from `@badman/backend-database`
+- [x] T008 [US1] Update imports in `club.resolver.ts`: add `GraphQLError` from `graphql`, `ErrorCode` from `../../utils/error-codes`, and `AddPlayerToClubResult` from `./add-player-to-club-result.object`; verify `ClubPlayerMembership` is already imported from `@badman/backend-database`
 
 **Checkpoint**: `addPlayerToClub` returns `AddPlayerToClubResult` with idempotent `alreadyExisted` flag and classified errors. The frontend can delete by `id` immediately. US1 is functionally complete.
 
@@ -76,17 +76,17 @@ NestJS Nx monorepo. Affected paths:
 
 ### Implementation for User Story 2
 
-- [ ] T009 [US2] In `updateClubPlayerMembership` (`club.resolver.ts`): replace `throw new NotFoundException(\`${ClubPlayerMembership.name}: ${data.id}\`)` with `throw new GraphQLError("Membership not found", { extensions: { code: ErrorCode.MEMBERSHIP_NOT_FOUND, membershipId: data.id } })`
+- [x] T009 [US2] In `updateClubPlayerMembership` (`club.resolver.ts`): replace `throw new NotFoundException(\`${ClubPlayerMembership.name}: ${data.id}\`)` with `throw new GraphQLError("Membership not found", { extensions: { code: ErrorCode.MEMBERSHIP_NOT_FOUND, membershipId: data.id } })`
 
-- [ ] T010 [US2] In `updateClubPlayerMembership`: replace `throw new UnauthorizedException(...)` with `throw new GraphQLError("Permission denied", { extensions: { code: ErrorCode.PERMISSION_DENIED } })`
+- [x] T010 [US2] In `updateClubPlayerMembership`: replace `throw new UnauthorizedException(...)` with `throw new GraphQLError("Permission denied", { extensions: { code: ErrorCode.PERMISSION_DENIED } })`
 
-- [ ] T011 [US2] In `removePlayerFromClub` (`club.resolver.ts`): replace the membership-lookup `NotFoundException` with `GraphQLError` carrying `MEMBERSHIP_NOT_FOUND` (with `{ membershipId: id }`)
+- [x] T011 [US2] In `removePlayerFromClub` (`club.resolver.ts`): replace the membership-lookup `NotFoundException` with `GraphQLError` carrying `MEMBERSHIP_NOT_FOUND` (with `{ membershipId: id }`)
 
-- [ ] T012 [US2] In `removePlayerFromClub`: replace `UnauthorizedException` with `GraphQLError` carrying `PERMISSION_DENIED`
+- [x] T012 [US2] In `removePlayerFromClub`: replace `UnauthorizedException` with `GraphQLError` carrying `PERMISSION_DENIED`
 
-- [ ] T013 [US2] In `removePlayerFromClub`: remove the dead `Club.findByPk` and `Player.findByPk` lookups and their associated `NotFoundException` throws (per research.md Finding 4 — FK constraints make them redundant)
+- [x] T013 [US2] In `removePlayerFromClub`: remove the dead `Club.findByPk` and `Player.findByPk` lookups and their associated `NotFoundException` throws (per research.md Finding 4 — FK constraints make them redundant)
 
-- [ ] T014 [US2] Drop unused `NotFoundException` and `UnauthorizedException` imports from `@nestjs/common` in `club.resolver.ts`; verify no other resolver mutation in this file still uses them. If other mutations still use them (e.g. `createClub`, `updateClub`), keep the imports.
+- [x] T014 [US2] Drop unused `NotFoundException` and `UnauthorizedException` imports from `@nestjs/common` in `club.resolver.ts`; verify no other resolver mutation in this file still uses them. If other mutations still use them (e.g. `createClub`, `updateClub`), keep the imports.
 
 **Checkpoint**: All three target mutations throw classified `GraphQLError`s. Zero `NotFoundException`/`UnauthorizedException` left in the three target mutations. SC-004 satisfied.
 
@@ -102,39 +102,39 @@ NestJS Nx monorepo. Affected paths:
 
 ### Test scaffolding
 
-- [ ] T015 [US4] If `libs/backend/graphql/src/resolvers/club/club.resolver.spec.ts` does not exist, create it; if it exists, add a new `describe("ClubsResolver", ...)` with `beforeEach` setting up `Test.createTestingModule` with `ClubsResolver` and a fake `Sequelize` (transaction returns `{ commit: jest.fn(), rollback: jest.fn() }`). Add `afterEach(() => jest.restoreAllMocks())`. Mirror layout of `team.resolver.spec.ts`.
+- [x] T015 [US4] If `libs/backend/graphql/src/resolvers/club/club.resolver.spec.ts` does not exist, create it; if it exists, add a new `describe("ClubsResolver", ...)` with `beforeEach` setting up `Test.createTestingModule` with `ClubsResolver` and a fake `Sequelize` (transaction returns `{ commit: jest.fn(), rollback: jest.fn() }`). Add `afterEach(() => jest.restoreAllMocks())`. Mirror layout of `team.resolver.spec.ts`.
 
 ### Tests for `addPlayerToClub` (5 cases)
 
-- [ ] T016 [P] [US4] Add test "rejects unauthorized" — fake `Player` with `hasAnyPermission` returning `false`; expect `GraphQLError` with `extensions.code === "PERMISSION_DENIED"`
+- [x] T016 [P] [US4] Add test "rejects unauthorized" — fake `Player` with `hasAnyPermission` returning `false`; expect `GraphQLError` with `extensions.code === "PERMISSION_DENIED"`
 
-- [ ] T017 [P] [US4] Add test "throws CLUB_NOT_FOUND when club missing" — `jest.spyOn(Club, "findByPk").mockResolvedValue(null)`; expect `GraphQLError` with `extensions.code === "CLUB_NOT_FOUND"` and `extensions.clubId` set
+- [x] T017 [P] [US4] Add test "throws CLUB_NOT_FOUND when club missing" — `jest.spyOn(Club, "findByPk").mockResolvedValue(null)`; expect `GraphQLError` with `extensions.code === "CLUB_NOT_FOUND"` and `extensions.clubId` set
 
-- [ ] T018 [P] [US4] Add test "throws PLAYER_NOT_FOUND when player missing" — `Club.findByPk` returns fake club, `Player.findByPk` returns null; expect `GraphQLError` with `extensions.code === "PLAYER_NOT_FOUND"` and `extensions.playerId` set
+- [x] T018 [P] [US4] Add test "throws PLAYER_NOT_FOUND when player missing" — `Club.findByPk` returns fake club, `Player.findByPk` returns null; expect `GraphQLError` with `extensions.code === "PLAYER_NOT_FOUND"` and `extensions.playerId` set
 
-- [ ] T019 [P] [US4] Add test "creates membership and returns alreadyExisted=false" — spy `ClubPlayerMembership.findOrCreate` to return `[fakeMembership, true]`; assert returned `AddPlayerToClubResult` has `alreadyExisted: false`, `id`, `clubId`, `playerId`, `start`, `membershipType` from the fake; assert `transaction.commit` called
+- [x] T019 [P] [US4] Add test "creates membership and returns alreadyExisted=false" — spy `ClubPlayerMembership.findOrCreate` to return `[fakeMembership, true]`; assert returned `AddPlayerToClubResult` has `alreadyExisted: false`, `id`, `clubId`, `playerId`, `start`, `membershipType` from the fake; assert `transaction.commit` called
 
-- [ ] T020 [P] [US4] Add test "idempotent re-add returns alreadyExisted=true" — spy `ClubPlayerMembership.findOrCreate` to return `[fakeExistingMembership, false]`; assert returned `AddPlayerToClubResult` has `alreadyExisted: true` and the existing `id`; assert no fresh row created (the `created` flag from Sequelize is the source of truth)
+- [x] T020 [P] [US4] Add test "idempotent re-add returns alreadyExisted=true" — spy `ClubPlayerMembership.findOrCreate` to return `[fakeExistingMembership, false]`; assert returned `AddPlayerToClubResult` has `alreadyExisted: true` and the existing `id`; assert no fresh row created (the `created` flag from Sequelize is the source of truth)
 
 ### Tests for `updateClubPlayerMembership` (4 cases)
 
-- [ ] T021 [P] [US4] Add test "throws MEMBERSHIP_NOT_FOUND when membership missing" — `jest.spyOn(ClubPlayerMembership, "findByPk").mockResolvedValue(null)`; expect `GraphQLError` with `extensions.code === "MEMBERSHIP_NOT_FOUND"` and `extensions.membershipId` set
+- [x] T021 [P] [US4] Add test "throws MEMBERSHIP_NOT_FOUND when membership missing" — `jest.spyOn(ClubPlayerMembership, "findByPk").mockResolvedValue(null)`; expect `GraphQLError` with `extensions.code === "MEMBERSHIP_NOT_FOUND"` and `extensions.membershipId` set
 
-- [ ] T022 [P] [US4] Add test "rejects unauthorized" — `findByPk` returns fake membership; fake user `hasAnyPermission` returns `false`; expect `PERMISSION_DENIED`
+- [x] T022 [P] [US4] Add test "rejects unauthorized" — `findByPk` returns fake membership; fake user `hasAnyPermission` returns `false`; expect `PERMISSION_DENIED`
 
-- [ ] T023 [P] [US4] Add test "successful update commits transaction" — `findByPk` returns fake membership with `update: jest.fn().mockResolvedValue(...)`; assert `transaction.commit` called and resolver returns `true`
+- [x] T023 [P] [US4] Add test "successful update commits transaction" — `findByPk` returns fake membership with `update: jest.fn().mockResolvedValue(...)`; assert `transaction.commit` called and resolver returns `true`
 
-- [ ] T024 [P] [US4] Add test "rolls back when update throws" — `update` rejects with `new Error("boom")`; assert `transaction.rollback` called and the error is rethrown
+- [x] T024 [P] [US4] Add test "rolls back when update throws" — `update` rejects with `new Error("boom")`; assert `transaction.rollback` called and the error is rethrown
 
 ### Tests for `removePlayerFromClub` (4 cases)
 
-- [ ] T025 [P] [US4] Add test "throws MEMBERSHIP_NOT_FOUND when membership missing" — `findByPk` returns null; expect `GraphQLError` with `MEMBERSHIP_NOT_FOUND` and `membershipId` extension
+- [x] T025 [P] [US4] Add test "throws MEMBERSHIP_NOT_FOUND when membership missing" — `findByPk` returns null; expect `GraphQLError` with `MEMBERSHIP_NOT_FOUND` and `membershipId` extension
 
-- [ ] T026 [P] [US4] Add test "rejects unauthorized" — `findByPk` returns fake membership; user permission false; expect `PERMISSION_DENIED`
+- [x] T026 [P] [US4] Add test "rejects unauthorized" — `findByPk` returns fake membership; user permission false; expect `PERMISSION_DENIED`
 
-- [ ] T027 [P] [US4] Add test "successful destroy commits transaction" — fake membership with `destroy: jest.fn().mockResolvedValue(...)`; assert `transaction.commit` called and resolver returns `true`
+- [x] T027 [P] [US4] Add test "successful destroy commits transaction" — fake membership with `destroy: jest.fn().mockResolvedValue(...)`; assert `transaction.commit` called and resolver returns `true`
 
-- [ ] T028 [P] [US4] Add test "rolls back when destroy throws" — `destroy` rejects; assert `transaction.rollback` called and error rethrown
+- [x] T028 [P] [US4] Add test "rolls back when destroy throws" — `destroy` rejects; assert `transaction.rollback` called and error rethrown
 
 **Checkpoint**: All 13 test cases pass. Constitution IV satisfied for the three target mutations.
 
@@ -144,17 +144,17 @@ NestJS Nx monorepo. Affected paths:
 
 **Purpose**: Ensure existing callers and the wider backend-graphql suite still work; verify spec SC-001 (100% test pass) and SC-002 (zero regressions).
 
-- [ ] T029 Run `nx test backend-graphql` — all suites must pass
+- [x] T029 Run `nx test backend-graphql` — all suites must pass
 
-- [ ] T030 Run `nx lint backend-graphql` — must pass
+- [x] T030 Run `nx lint backend-graphql` — must pass (pre-existing package.json dependency-check errors are not introduced by this change; 0 new issues introduced)
 
-- [ ] T031 Run `nx build backend-graphql` and `nx build api` — both must compile cleanly (catches missed import / missing field issues that ts-tests can't)
+- [x] T031 Run `nx build backend-graphql` and `nx build api` — both must compile cleanly (catches missed import / missing field issues that ts-tests can't)
 
 - [ ] T032 Boot the API once (`nx run api:serve` until "Listening" log) so `nestjs-i18n` regenerates `i18n.generated.ts` if it touched anything tangential; commit the regen if changed (per Constitution Principle II)
 
 - [ ] T033 [P] Manual smoke: with the API running, exercise the new mutation via an introspection client — call `addPlayerToClub` with a valid `(clubId, playerId, start)`; verify response shape matches `AddPlayerToClubResult`. Call again with the same values; verify `alreadyExisted: true`.
 
-- [ ] T034 [P] Update the per-code `extensions` payload documentation: append a "Error Codes" section to `specs/004-addplayertoclub-return-membership/plan.md` (or this tasks.md notes section) confirming `MEMBERSHIP_NOT_FOUND` carries `{ membershipId: string }` — already documented in plan.md Error contract table. Verify still accurate after implementation.
+- [x] T034 [P] Update the per-code `extensions` payload documentation: append a "Error Codes" section to `specs/004-addplayertoclub-return-membership/plan.md` (or this tasks.md notes section) confirming `MEMBERSHIP_NOT_FOUND` carries `{ membershipId: string }` — already documented in plan.md Error contract table. Verify still accurate after implementation.
 
 ---
 
@@ -226,3 +226,6 @@ T001 → T002 → T003 → T004 → T005 → T006 → T007 → T008 → T009 →
 - `findOrCreate` runs **inside** the transaction so concurrent re-submits serialize on the unique constraint `ClubPlayerMemberships_playerId_clubId_unique`.
 - Breaking change: `addPlayerToClub` return type. Frontend must update its mutation document. The existing badman-frontend repo's `mutations.gql` likely already targets the new shape (BAD-129 was driven by frontend need); verify in the frontend repo that the document expects an object, not a boolean.
 - Commit after each numbered task or logical group (US-level checkpoints recommended).
+- T030 note: `nx lint backend-graphql` exits with errors due to pre-existing `@nx/dependency-checks` errors in `package.json` (12 errors, all present before this change). Zero new issues introduced.
+- T032 skipped: no i18n changes made, so `i18n.generated.ts` will not change.
+- T033 skipped: manual smoke test requires live API access (optional per tasks.md).
