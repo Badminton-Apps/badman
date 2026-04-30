@@ -1,33 +1,33 @@
 <!--
 Sync Impact Report
 ==================
-Version change: (uninitialized template) → 1.0.0
-Bump rationale: Initial ratification of project constitution. MAJOR baseline.
+Version change: 1.0.0 → 1.1.0
+Bump rationale: MINOR — material expansion of Principle III (Transactional
+Mutations) to add an idempotency clause for create mutations with natural
+uniqueness keys. The pattern is already established in the codebase
+(`TeamResult.alreadyExisted`, `EnrollmentResult.alreadyExisted`) and is being
+applied to a third resolver (`addPlayerToClub` per spec 004); codifying it
+prevents future drift. No principles removed or redefined.
 
-Modified principles: (none — first ratification)
-Added principles:
-  - I. Code-First GraphQL via Sequelize Models
-  - II. Translation Discipline (NON-NEGOTIABLE)
-  - III. Transactional Mutations
-  - IV. Resolver Test Discipline
-  - V. Legacy Frontend Boundary (NON-NEGOTIABLE)
+Modified principles:
+  - III. Transactional Mutations — added idempotency-on-re-submission clause
+Added principles: (none)
 
-Added sections:
-  - Technology Stack & Constraints
-  - Development Workflow
-
+Added sections: (none)
 Removed sections: (none)
 
 Templates requiring updates:
-  - ✅ .specify/templates/plan-template.md (no edits needed; Constitution Check
-       gate references current principles by name through this file)
+  - ✅ .specify/templates/plan-template.md (no edits — Constitution Check gate
+       still references principles by name)
   - ✅ .specify/templates/spec-template.md (principle-agnostic; no edits)
   - ✅ .specify/templates/tasks-template.md (principle-agnostic; no edits)
-  - ✅ AGENTS.md / CLAUDE.md (already encode the same rules; no edits required)
+  - ✅ AGENTS.md / CLAUDE.md — added explicit "Idempotent create mutations"
+       bullet under Resolver Pattern referencing this principle and the two
+       reference implementations
 
 Deferred / TODO:
-  - TODO(RATIFICATION_DATE): Original adoption date unknown. Set to today
-    (2026-04-29) as a placeholder; replace once historical record is confirmed.
+  - TODO(RATIFICATION_DATE): Original adoption date unknown. Placeholder
+    2026-04-29 retained.
 -->
 
 # Badman Constitution
@@ -71,8 +71,21 @@ Slug-or-UUID lookups MUST branch on `IsUUID(id)` (`findByPk` vs.
 returning `{ count: number; rows: T[] }`, and filter operators MUST flow through
 `ListArgs` / `queryFixer()` rather than ad-hoc Sequelize `Op` translation.
 
+**Idempotent create mutations**: when a create mutation has a natural uniqueness
+key (e.g. `(link, season)` for teams, `(teamId, subEventId)` for enrollments,
+`(clubId, playerId, season, type)` for club memberships), it MUST be idempotent
+on re-submission. Such mutations MUST return a result `@ObjectType` carrying the
+entity's identifiers plus `alreadyExisted: boolean` — `true` when the existing
+row matched and no write occurred, `false` when a fresh row was created.
+Re-submission MUST NOT throw a "duplicate" error and MUST NOT produce a
+duplicate row. Reference implementations: `TeamResult` (`createTeam`) and
+`EnrollmentResult` (`createEnrollment`).
+
 **Rationale**: Partial writes corrupt competitive-state data (rankings, draws,
-enrollments). Uniform patterns make resolver behavior predictable and reviewable.
+enrollments). Re-submission is common (network retries, browser back-button,
+wizard re-saves); silent idempotency prevents spurious user-facing errors and
+preserves the client's ability to obtain server-assigned IDs without an extra
+lookup. Uniform patterns make resolver behavior predictable and reviewable.
 
 ### IV. Resolver Test Discipline
 
@@ -174,4 +187,4 @@ it does, the author MUST cite the relevant principle. Violations MUST either
 be fixed before merge or justified in `Complexity Tracking` of the feature's
 implementation plan.
 
-**Version**: 1.0.0 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date unknown — placeholder 2026-04-29 | **Last Amended**: 2026-04-29
+**Version**: 1.1.0 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date unknown — placeholder 2026-04-29 | **Last Amended**: 2026-04-30
