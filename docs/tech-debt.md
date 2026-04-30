@@ -113,7 +113,7 @@ Versions (newest first):
 
 ### Team: FE migration of `createTeam` callers (BAD-128)
 
-- **Where**: active frontend repository (separate from this repo). Linear: [BAD-128](https://linear.app/dashdot/issue/BAD-128).
+- **Where**: active frontend repository (separate from this repo). Linear: [BAD-128](https://linear.app/dashdot/issue/BAD-128). Cross-reference: [`docs/enrollment-old-vs-new.md`](enrollment-old-vs-new.md) §10 (mutations) and §13 already flag the missing `createTeams` step in the new flow — BAD-128 is the work that lands those changes.
 - **What**: `002-team-resolver-improvements` changes the `createTeam` (and `createTeams`) GraphQL return type from `Team` to `TeamResult { teamId, clubId, alreadyExisted }`, and removes the upsert-on-find behavior (existing teams are no longer updated by `createTeam`). All FE call sites must (a) update their selection sets to `TeamResult`, (b) follow up with `updateTeam` when `alreadyExisted: true` is returned and the caller intends to apply changes, and (c) map the new `extensions.code` values (`CLUB_NOT_FOUND`, `PERMISSION_DENIED`, `PLAYER_NOT_FOUND`, `RANKING_NOT_FOUND`, `INTERNAL_ERROR`) to localized copy.
 - **Why we shipped it**: keeping the upsert path inside `createTeam` would have duplicated `updateTeam`'s responsibilities and made idempotency semantics inconsistent with the BAD-21 enrollment fix. The breakage is intentional; FE migration is a coordinated rollout in the active frontend repo.
 - **Fix**: complete BAD-128. When closed, delete this entry.
