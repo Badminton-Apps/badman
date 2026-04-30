@@ -54,21 +54,30 @@ When the enrollment wizard renumbers teams (because a team is added or removed i
 
 ### Edge Cases
 
-- Team number changes to a value already held by another team — system must handle ordering/locking without name collision.
+- Team number changes to a value already held by another team in the same club/category — the update MUST be rejected with an error; the caller is responsible for resolving the conflict before retrying.
 - Bulk rename of multiple teams in one action — all must regenerate, not just the first.
 - Update touches only unrelated fields (notes, scheduling preference) — name must not change.
 - Club's display-name setting changes — regenerating names for all club teams is **out of scope** for this fix (separate ticket if needed).
+
+## Clarifications
+
+### Session 2026-04-30
+
+- Q: Should name regeneration on update also regenerate the abbreviation in the same operation? → A: Yes — both name and abbreviation regenerate together on every relevant update.
+- Q: What happens when an update would assign a team number already held by another team in the same club/category? → A: Reject the update — return an error; caller must resolve the conflict explicitly.
+- Q: Should bulk team renumbering be atomic (all-or-nothing) or best-effort? → A: Atomic — entire batch rolls back if any single team update fails.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: When a team's number changes, the system MUST immediately update the team's stored name to reflect the new number.
-- **FR-002**: When a team's type changes, the system MUST immediately update the team's stored name to reflect the new type notation.
-- **FR-003**: When neither the team number nor the type changes during an update, the system MUST NOT regenerate the team name (no unnecessary churn).
-- **FR-004**: When multiple teams are updated in a single batch operation, the system MUST regenerate names for all affected teams, not only the first.
+- **FR-001**: When a team's number changes, the system MUST immediately update the team's stored name and abbreviation to reflect the new number.
+- **FR-002**: When a team's type changes, the system MUST immediately update the team's stored name and abbreviation to reflect the new type notation.
+- **FR-003**: When neither the team number nor the type changes during an update, the system MUST NOT regenerate the team name or abbreviation (no unnecessary churn).
+- **FR-004**: When multiple teams are updated in a single batch operation, the system MUST regenerate names and abbreviations for all affected teams, not only the first. The batch MUST be atomic — if any single team update fails, the entire batch rolls back with no partial changes persisted.
 - **FR-005**: The name regeneration on update MUST use the same logic as name generation on creation — no separate or divergent rules.
 - **FR-006**: The enrollment wizard MUST be able to renumber teams via direct update (no delete-then-create required to obtain correct names).
+- **FR-007**: If a team update would assign a number already held by another team in the same club and gender category, the system MUST reject the update with a clear error before persisting any change.
 
 ### Key Entities
 
@@ -79,7 +88,7 @@ When the enrollment wizard renumbers teams (because a team is added or removed i
 
 ### Measurable Outcomes
 
-- **SC-001**: 100% of automated tests for number-change, type-change, and no-op update scenarios pass before release.
+- **SC-001**: 100% of automated tests for number-change, type-change, and no-op update scenarios pass before release — covering both name and abbreviation fields.
 - **SC-002**: Zero cases in post-release QA where a team's displayed name does not match its stored number after an admin update.
 - **SC-003**: Enrollment wizard renumbering produces correct names for all affected teams in a single pass — verified by automated test covering ≥5 teams renumbered in one operation.
 - **SC-004**: Existing enrollment and team-creation flows (BAD-121, BAD-17) pass their own acceptance criteria without relying on delete-then-create as a name-sync workaround.
