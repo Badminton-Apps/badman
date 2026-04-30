@@ -1236,7 +1236,12 @@
         "ariaDeselectLocation": "Locatie deselecteren",
         "emptyPlaceholder": "—",
         "noGameDays": "Geen speeldagen",
-        "courts": "{count, plural, one {# baan} other {# banen}}"
+        "courts": "{count, plural, one {# baan} other {# banen}}",
+        "copyFromLastSeason": "Beschikbaarheid van vorig seizoen kopiëren",
+        "copyAvailabilitySuccess": "Beschikbaarheid succesvol gekopieerd",
+        "copyAvailabilityError": "Beschikbaarheid kon niet worden gekopieerd",
+        "manageAvailability": "Beschikbaarheid beheren",
+        "hideAvailability": "Beschikbaarheid verbergen"
       },
       "team-enrollment": {
         "addBasePlayerDialog": {
