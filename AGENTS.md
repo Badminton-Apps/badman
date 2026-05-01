@@ -98,6 +98,7 @@ Resolvers live in `libs/backend/graphql/src/resolvers/<domain>/`. Each domain ha
 - Paged results use inline `@ObjectType()` with `{ count: number; rows: T[] }`
 - `ListArgs` / `queryFixer()` utilities translate GraphQL filter operators to Sequelize `Op` symbols
 - **Classified errors**: when a mutation needs to expose distinct, machine-readable failure modes to clients, throw `GraphQLError` from the `graphql` package with `extensions.code` set to a constant from the shared registry [`libs/backend/graphql/src/utils/error-codes.ts`](libs/backend/graphql/src/utils/error-codes.ts) (`ErrorCode.PERMISSION_DENIED`, `ErrorCode.INTERNAL_ERROR`, etc.). Do NOT inline string literals — clients pin behavior to these codes and the registry is the single source of truth. Adding a new code: append a key to `error-codes.ts` and document the per-code `extensions` payload in the resolver's contract document under `specs/`. Reference implementations: [`enrollment.resolver.ts`](libs/backend/graphql/src/resolvers/event/competition/enrollment.resolver.ts) and [`team.resolver.ts`](libs/backend/graphql/src/resolvers/team/team.resolver.ts) (`createEnrollment` / `createTeam`).
+- **Idempotent create mutations**: when a create mutation has a natural uniqueness key (e.g. `(link, season)` for teams, `(teamId, subEventId)` for enrollments, `(clubId, playerId, season, type)` for club memberships), it MUST be idempotent on re-submission. Return a result `@ObjectType` carrying the entity's identifiers plus `alreadyExisted: boolean` (`true` = existing row matched, no write; `false` = fresh row created). Do NOT throw a duplicate error. Reference implementations: `TeamResult` ([`team-result.object.ts`](libs/backend/graphql/src/resolvers/team/team-result.object.ts)) and `EnrollmentResult` ([`enrollment-result.object.ts`](libs/backend/graphql/src/resolvers/event/competition/enrollment-result.object.ts)). See Constitution Principle III.
 
 ### Auth Flow
 
@@ -188,6 +189,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/002-team-resolver-improvements/plan.md](specs/002-team-resolver-improvements/plan.md)
+[specs/004-addplayertoclub-return-membership/plan.md](specs/004-addplayertoclub-return-membership/plan.md)
 
 <!-- SPECKIT END -->

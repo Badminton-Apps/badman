@@ -1826,7 +1826,12 @@
         "ariaDeselectLocation": "Désélectionner le lieu",
         "emptyPlaceholder": "—",
         "noGameDays": "Aucun jour de jeu",
-        "courts": "{count, plural, one {# terrain} other {# terrains}}"
+        "courts": "{count, plural, one {# terrain} other {# terrains}}",
+        "copyFromLastSeason": "Copier la disponibilité de la saison dernière",
+        "copyAvailabilitySuccess": "Disponibilité copiée avec succès",
+        "copyAvailabilityError": "Impossible de copier la disponibilité",
+        "manageAvailability": "Gérer la disponibilité",
+        "hideAvailability": "Masquer la disponibilité"
       },
       "team-enrollment": {
         "addBasePlayerDialog": {

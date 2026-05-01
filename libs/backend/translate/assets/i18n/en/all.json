@@ -1518,7 +1518,12 @@
         "ariaDeselectLocation": "Deselect location",
         "emptyPlaceholder": "—",
         "noGameDays": "No game days",
-        "courts": "{count, plural, one {# court} other {# courts}}"
+        "courts": "{count, plural, one {# court} other {# courts}}",
+        "copyFromLastSeason": "Copy availability from last season",
+        "copyAvailabilitySuccess": "Availability copied successfully",
+        "copyAvailabilityError": "Failed to copy availability",
+        "manageAvailability": "Manage availability",
+        "hideAvailability": "Hide availability"
       },
       "team-enrollment": {
         "addBasePlayerDialog": {

@@ -1,0 +1,17 @@
+{
+  "features": {
+    "004-addplayertoclub-return-membership": {
+      "state": "in_review_qa_approved",
+      "branch": "004-addplayertoclub-return-membership",
+      "linear_id": "BAD-129",
+      "linear_status": "Ready for review",
+      "feature_status": "done",
+      "qa_status": "approved",
+      "tasks_done": "32/34",
+      "implementation_commit": "f3829f369",
+      "next_step": "open PR; merge to develop after human review"
+    }
+  },
+  "board": "linear",
+  "ci_gate": "none"
+}

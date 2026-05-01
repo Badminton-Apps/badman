@@ -1537,6 +1537,11 @@ export type I18nTranslations = {
                     "emptyPlaceholder": string;
                     "noGameDays": string;
                     "courts": string;
+                    "copyFromLastSeason": string;
+                    "copyAvailabilitySuccess": string;
+                    "copyAvailabilityError": string;
+                    "manageAvailability": string;
+                    "hideAvailability": string;
                 };
                 "team-enrollment": {
                     "addBasePlayerDialog": {
