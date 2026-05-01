@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import {
@@ -9,6 +10,7 @@ import {
   RankingSystem,
   Team,
   TeamNewInput,
+  TeamUpdateInput,
 } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
 import { TeamsResolver } from "./team.resolver";
@@ -318,5 +320,197 @@ describe("TeamsResolver.createTeams", () => {
       expect(r).toHaveProperty("clubId");
       expect(r).toHaveProperty("alreadyExisted", false);
     });
+  });
+});
+
+describe("TeamsResolver.updateTeam", () => {
+  let resolver: TeamsResolver;
+  let mockTransaction: { commit: jest.Mock; rollback: jest.Mock };
+
+  const userWithPermission = (allowed: boolean) =>
+    ({
+      id: "user-uuid",
+      hasAnyPermission: jest.fn().mockResolvedValue(allowed),
+    }) as unknown as Player;
+
+  const stubClub = (id = "club-uuid") =>
+    ({ id, name: "Test club", abbreviation: "TC" }) as unknown as Club;
+
+  const stubDbTeam = (overrides: Partial<Team> = {}) => {
+    const update = jest.fn().mockResolvedValue(undefined);
+    const getPlayers = jest.fn().mockResolvedValue([]);
+    const base = {
+      id: "team-uuid",
+      clubId: "club-uuid",
+      teamNumber: 3,
+      type: SubEventTypeEnum.M,
+      season: 2026,
+      name: "Test club 3H",
+      abbreviation: "TC 3H",
+      club: stubClub(),
+      update,
+      getPlayers,
+      _update: update,
+      _getPlayers: getPlayers,
+      ...overrides,
+    };
+    (base as Record<string, unknown>)["toJSON"] = () => ({ ...base });
+    return base as unknown as Team & { _update: jest.Mock; _getPlayers: jest.Mock };
+  };
+
+  const baseInput = (overrides: Partial<TeamUpdateInput> = {}): TeamUpdateInput =>
+    ({
+      id: "team-uuid",
+      ...overrides,
+    }) as TeamUpdateInput;
+
+  beforeEach(async () => {
+    mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        TeamsResolver,
+        {
+          provide: Sequelize,
+          useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
+        },
+      ],
+    }).compile();
+    resolver = module.get<TeamsResolver>(TeamsResolver);
+  });
+
+  afterEach(() => jest.restoreAllMocks());
+
+  it("throws UnauthorizedException when user lacks permission", async () => {
+    const user = userWithPermission(false);
+    const dbTeam = stubDbTeam();
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+
+    await expect(resolver.updateTeam(baseInput(), user)).rejects.toThrow(UnauthorizedException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+  });
+
+  it("throws NotFoundException when team does not exist", async () => {
+    const user = userWithPermission(true);
+    jest.spyOn(Team, "findByPk").mockResolvedValue(null);
+
+    await expect(resolver.updateTeam(baseInput({ id: "missing" }), user)).rejects.toThrow(
+      NotFoundException
+    );
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("throws TEAM_NUMBER_CONFLICT when target number is taken", async () => {
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam({ teamNumber: 3 });
+    const conflicting = { id: "conflict-team-uuid", teamNumber: 5 } as unknown as Team;
+
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+    jest.spyOn(Team, "findOne").mockResolvedValue(conflicting);
+
+    try {
+      await resolver.updateTeam(baseInput({ teamNumber: 5 }), user);
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e.extensions["code"]).toBe("TEAM_NUMBER_CONFLICT");
+      expect(e.extensions["conflictingTeamId"]).toBe("conflict-team-uuid");
+    }
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+  });
+
+  it("commits and returns team when number changes with no conflict", async () => {
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam({ teamNumber: 3 });
+
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+    jest.spyOn(Team, "findOne").mockResolvedValue(null); // no conflict
+    jest.spyOn(Team, "findAll").mockResolvedValue([]); // no cascade teams
+    jest.spyOn(Team, "generateName").mockResolvedValue(undefined);
+    jest.spyOn(Team, "generateAbbreviation").mockResolvedValue(undefined);
+
+    const result = await resolver.updateTeam(baseInput({ teamNumber: 5 }), user);
+
+    expect(dbTeam._update).toHaveBeenCalled();
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+    expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    expect(result).toBe(dbTeam);
+  });
+
+  it("does not throw when type changes (US2)", async () => {
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam({ type: SubEventTypeEnum.M });
+
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+
+    const result = await resolver.updateTeam(baseInput({ type: SubEventTypeEnum.MX }), user);
+
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+    expect(result).toBe(dbTeam);
+  });
+
+  it("succeeds and does not regenerate name when unrelated field changes", async () => {
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam();
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+    const nameSpy = jest.spyOn(Team, "generateName");
+
+    await resolver.updateTeam(baseInput({ season: 2027 }), user);
+
+    expect(nameSpy).not.toHaveBeenCalled();
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+  });
+
+  it("rolls back transaction on unexpected error", async () => {
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam();
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+    dbTeam._update.mockRejectedValue(new Error("DB exploded"));
+
+    await expect(resolver.updateTeam(baseInput(), user)).rejects.toThrow("DB exploded");
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+  });
+
+  it("regenerates names for all cascade teams without _temp suffix (US3)", async () => {
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam({ teamNumber: 1 });
+
+    const makeCascadeTeam = (n: number) => {
+      const save = jest.fn().mockResolvedValue(undefined);
+      return {
+        teamNumber: n,
+        type: SubEventTypeEnum.M,
+        club: stubClub(),
+        name: `Test club ${n}H`,
+        abbreviation: `TC ${n}H`,
+        save,
+        _save: save,
+      } as unknown as Team & { _save: jest.Mock };
+    };
+
+    const cascadeTeam2 = makeCascadeTeam(2);
+    const cascadeTeam3 = makeCascadeTeam(3);
+
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+    jest.spyOn(Team, "findOne").mockResolvedValue(null); // no conflict
+    jest.spyOn(Team, "findAll").mockResolvedValue([cascadeTeam2, cascadeTeam3] as Team[]);
+    const generateNameSpy = jest.spyOn(Team, "generateName").mockResolvedValue(undefined);
+    const generateAbbrevSpy = jest.spyOn(Team, "generateAbbreviation").mockResolvedValue(undefined);
+
+    await resolver.updateTeam(baseInput({ teamNumber: 3 }), user);
+
+    // generateName called for each cascade team in Phase 2
+    expect(generateNameSpy).toHaveBeenCalledTimes(2);
+    expect(generateAbbrevSpy).toHaveBeenCalledTimes(2);
+    // final saves with hooks:false — no _temp in name
+    expect(cascadeTeam2._save).toHaveBeenCalledWith(expect.objectContaining({ hooks: false }));
+    expect(cascadeTeam3._save).toHaveBeenCalledWith(expect.objectContaining({ hooks: false }));
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
   });
 });

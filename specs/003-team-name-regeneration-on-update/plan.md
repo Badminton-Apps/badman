@@ -33,7 +33,7 @@ The `Team` Sequelize model regenerates `name` and `abbreviation` only on create.
 ### Documentation (this feature)
 
 ```text
-specs/003-linear-bad-127/
+specs/003-team-name-regeneration-on-update/
 ├── plan.md              ← this file
 ├── research.md          ← Phase 0 findings
 ├── data-model.md        ← Phase 1 entities + hook lifecycle
