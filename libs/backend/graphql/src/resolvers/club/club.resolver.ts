@@ -34,6 +34,7 @@ import { Sequelize } from "sequelize-typescript";
 import { ListArgs } from "../../utils";
 import { ErrorCode } from "../../utils/error-codes";
 import { AddPlayerToClubResult } from "./add-player-to-club-result.object";
+import { ClubMembershipFilterInput } from "./club-membership-filter.input";
 
 @ObjectType()
 export class PagedClub {
@@ -96,11 +97,52 @@ export class ClubsResolver {
   async players(
     @Parent() club: Club,
     @Args() listArgs: ListArgs,
-    @Args("active", { type: () => Boolean, nullable: true, defaultValue: true }) active = true
+    @Args("active", { type: () => Boolean, nullable: true, defaultValue: true }) active = true,
+    @Args("clubMembership", { type: () => ClubMembershipFilterInput, nullable: true })
+    clubMembership?: ClubMembershipFilterInput
   ): Promise<(Player & { ClubMembership: ClubPlayerMembership })[] | Player[] | undefined> {
     const options = ListArgs.toFindOptions(listArgs);
 
-    if (active) {
+    const optingIn = clubMembership !== undefined && clubMembership !== null;
+
+    if (optingIn) {
+      if (clubMembership.id !== undefined && clubMembership.id.length === 0) {
+        return [];
+      }
+
+      const membershipWhere: Record<string, unknown> = {};
+      if (clubMembership.id?.length) {
+        membershipWhere["id"] = { [Op.in]: clubMembership.id };
+      }
+      if (clubMembership.membershipType?.length) {
+        membershipWhere["membershipType"] = { [Op.in]: clubMembership.membershipType };
+      }
+      if (clubMembership.startBefore !== undefined) {
+        membershipWhere["start"] = { [Op.lte]: clubMembership.startBefore };
+      }
+      if (clubMembership.endAfter !== undefined) {
+        membershipWhere["end"] = { [Op.gte]: clubMembership.endAfter };
+      }
+      if (clubMembership.confirmed !== undefined) {
+        membershipWhere["confirmed"] = clubMembership.confirmed;
+      }
+
+      const anyFieldSet = Object.keys(membershipWhere).length > 0;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const existingIncludes: any[] = Array.isArray(options.include) ? options.include : [];
+      options.include = [
+        ...existingIncludes,
+        {
+          model: ClubPlayerMembership,
+          as: "ClubPlayerMembership",
+          required: anyFieldSet,
+          where: anyFieldSet ? membershipWhere : undefined,
+        },
+      ];
+    }
+
+    if (active && !optingIn) {
       /*
       see: ClubPlayerMembership.active
       // but this prevents fetching it from the database to speed up the query

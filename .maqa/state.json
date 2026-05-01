@@ -1,5 +1,14 @@
 {
   "features": {
+    "001-fix-enrollment-submit-error": {
+      "status": "done"
+    },
+    "002-team-resolver-improvements": {
+      "status": "done"
+    },
+    "003-linear-bad-127": {
+      "status": "done"
+    },
     "004-addplayertoclub-return-membership": {
       "state": "in_review_qa_approved",
       "branch": "004-addplayertoclub-return-membership",
@@ -10,6 +19,12 @@
       "tasks_done": "32/34",
       "implementation_commit": "f3829f369",
       "next_step": "open PR; merge to develop after human review"
+    },
+    "005-club-players-nested-where": {
+      "status": "done",
+      "board": "linear",
+      "card_id": "BAD-132",
+      "branch": "005-club-players-nested-where"
     }
   },
   "board": "linear",
