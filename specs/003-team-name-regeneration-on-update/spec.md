@@ -54,7 +54,7 @@ When the enrollment wizard renumbers teams (because a team is added or removed i
 
 ### Edge Cases
 
-- Team number changes to a value already held by another team in the same club/category — the update MUST be rejected with an error; the caller is responsible for resolving the conflict before retrying.
+- Team number changes to a value already held by another team in the same club/category — the update MUST be rejected with `code: TEAM_NUMBER_CONFLICT` and `conflictingTeamId: <uuid>`; the caller is responsible for resolving the conflict before retrying.
 - Bulk rename of multiple teams in one action — all must regenerate, not just the first.
 - Update touches only unrelated fields (notes, scheduling preference) — name must not change.
 - Club's display-name setting changes — regenerating names for all club teams is **out of scope** for this fix (separate ticket if needed).
@@ -67,6 +67,11 @@ When the enrollment wizard renumbers teams (because a team is added or removed i
 - Q: What happens when an update would assign a team number already held by another team in the same club/category? → A: Reject the update — return an error; caller must resolve the conflict explicitly.
 - Q: Should bulk team renumbering be atomic (all-or-nothing) or best-effort? → A: Atomic — entire batch rolls back if any single team update fails.
 
+### Session 2026-05-01
+
+- Q: Should the @BeforeBulkCreate double-abbreviation-call fix be in scope for BAD-127? → A: Yes — in scope; add to spec and acceptance criteria.
+- Q: Should the team number conflict error include the conflicting team's ID? → A: Yes — include `conflictingTeamId` in error extensions so clients can navigate without an extra lookup.
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
@@ -77,7 +82,8 @@ When the enrollment wizard renumbers teams (because a team is added or removed i
 - **FR-004**: When multiple teams are updated in a single batch operation, the system MUST regenerate names and abbreviations for all affected teams, not only the first. The batch MUST be atomic — if any single team update fails, the entire batch rolls back with no partial changes persisted.
 - **FR-005**: The name regeneration on update MUST use the same logic as name generation on creation — no separate or divergent rules.
 - **FR-006**: The enrollment wizard MUST be able to renumber teams via direct update (no delete-then-create required to obtain correct names).
-- **FR-007**: If a team update would assign a number already held by another team in the same club and gender category, the system MUST reject the update with a clear error before persisting any change.
+- **FR-007**: If a team update would assign a number already held by another team in the same club and gender category, the system MUST reject the update with a machine-readable error containing `code: TEAM_NUMBER_CONFLICT` and `conflictingTeamId: <uuid>` so clients can identify and navigate to the blocking team without an extra request.
+- **FR-008**: When teams are created in bulk, the system MUST generate each team's abbreviation exactly once per team — no double-processing. (Fixes latent `@BeforeBulkCreate` double-call bug.)
 
 ### Key Entities
 
@@ -92,6 +98,7 @@ When the enrollment wizard renumbers teams (because a team is added or removed i
 - **SC-002**: Zero cases in post-release QA where a team's displayed name does not match its stored number after an admin update.
 - **SC-003**: Enrollment wizard renumbering produces correct names for all affected teams in a single pass — verified by automated test covering ≥5 teams renumbered in one operation.
 - **SC-004**: Existing enrollment and team-creation flows (BAD-121, BAD-17) pass their own acceptance criteria without relying on delete-then-create as a name-sync workaround.
+- **SC-005**: Automated test confirms bulk team create calls `generateAbbreviation` exactly once per team instance (spy-verified, ≥2 teams in batch).
 
 ## Assumptions
 

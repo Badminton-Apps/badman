@@ -188,6 +188,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/003-linear-bad-127/plan.md](specs/003-linear-bad-127/plan.md)
+[specs/003-team-name-regeneration-on-update/plan.md](specs/003-team-name-regeneration-on-update/plan.md)
 
 <!-- SPECKIT END -->
