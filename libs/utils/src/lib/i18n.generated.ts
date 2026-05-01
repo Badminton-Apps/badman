@@ -1569,10 +1569,8 @@ export type I18nTranslations = {
                     };
                 };
                 "steps": {
-                    "generalInformation": string;
-                    "transfersLoans": string;
-                    "teams": string;
-                    "confirm": string;
+                    "info": string;
+                    "players": string;
                 };
                 "nav": {
                     "previous": string;
@@ -1585,27 +1583,9 @@ export type I18nTranslations = {
                     "addAtLeastOneTeam": string;
                 };
                 "teams": {
-                    "categories": {
-                        "M": string;
-                        "F": string;
-                        "MX": string;
-                    };
-                    "addTeam": string;
-                    "emptyCategory": string;
-                    "baseValue": string;
-                    "labelNumbered": string;
-                    "labelFallback": string;
-                    "a11y": {
-                        "statusError": string;
-                        "statusWarning": string;
-                        "statusSuccess": string;
-                        "validatingStatus": string;
-                        "expandValidationDetails": string;
-                        "collapseValidationDetails": string;
-                        "editTeam": string;
-                        "deleteTeam": string;
-                        "removePlayerFromList": string;
-                    };
+                    "deleteError": string;
+                    "loadError": string;
+                    "retry": string;
                 };
                 "dialog": {
                     "deleteTeam": {
@@ -1616,9 +1596,7 @@ export type I18nTranslations = {
                     };
                 };
                 "clubSelection": {
-                    "heading": string;
-                    "clubLabel": string;
-                    "emailLabel": string;
+                    "noAdminClubs": string;
                 };
                 "locationSelection": {
                     "title": string;
@@ -1633,15 +1611,9 @@ export type I18nTranslations = {
                     "title": string;
                 };
                 "transfersLoans": {
-                    "addTransfersTitle": string;
-                    "addLoansTitle": string;
-                    "addTransferButton": string;
-                    "addLoanButton": string;
-                    "emptyTransfers": string;
-                    "emptyLoans": string;
-                    "a11y": {
-                        "cancelPendingSelection": string;
-                    };
+                    "addError": string;
+                    "deleteError": string;
+                    "loadError": string;
                 };
                 "pendingTransferBadge": string;
                 "pendingLoanBadge": string;
@@ -1670,6 +1642,32 @@ export type I18nTranslations = {
                 "errors": {
                     "rejectedPendingPlayerBlocksSubmit": string;
                 };
+                "form": {
+                    "type": string;
+                    "teamNumber": string;
+                    "email": string;
+                    "phone": string;
+                    "preferredDay": string;
+                    "preferredTime": string;
+                    "preferredLocation": string;
+                };
+                "generalInfo": string;
+                "preferredPlayingTime": string;
+                "teamCaptain": string;
+                "buttons": {
+                    "addTeam": string;
+                    "back": string;
+                    "cancel": string;
+                    "editTeam": string;
+                    "next": string;
+                    "addPlayer": string;
+                };
+                "messages": {
+                    "successAdd": string;
+                    "successEdit": string;
+                };
+                "addPlayer": string;
+                "players": string;
             };
             "messages": {
                 "buttons": {

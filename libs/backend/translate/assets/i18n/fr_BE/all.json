@@ -1859,10 +1859,8 @@
         }
       },
       "steps": {
-        "generalInformation": "Informations générales",
-        "transfersLoans": "Transferts et prêts",
-        "teams": "Équipes",
-        "confirm": "Confirmer"
+        "info": "Informations",
+        "players": "Joueurs"
       },
       "nav": {
         "previous": "Précédent",
@@ -1875,27 +1873,9 @@
         "addAtLeastOneTeam": "Ajoutez au moins une équipe."
       },
       "teams": {
-        "categories": {
-          "M": "Hommes",
-          "F": "Femmes",
-          "MX": "Mixte"
-        },
-        "addTeam": "Ajouter une équipe",
-        "emptyCategory": "Aucune équipe",
-        "baseValue": "Base : {value}",
-        "labelNumbered": "Équipe {number}",
-        "labelFallback": "Équipe",
-        "a11y": {
-          "statusError": "Cette équipe comporte des erreurs de validation",
-          "statusWarning": "Cette équipe comporte des avertissements de validation",
-          "statusSuccess": "Cette équipe a passé la validation",
-          "validatingStatus": "Vérification de la validation de l'équipe",
-          "expandValidationDetails": "Afficher les détails de validation pour {team}",
-          "collapseValidationDetails": "Masquer les détails de validation pour {team}",
-          "editTeam": "Modifier {team}",
-          "deleteTeam": "Retirer {team}",
-          "removePlayerFromList": "Retirer {name} de l'équipe"
-        }
+        "deleteError": "Erreur lors de la suppression de l'équipe",
+        "loadError": "Erreur lors du chargement des équipes",
+        "retry": "Réessayer"
       },
       "dialog": {
         "deleteTeam": {
@@ -1906,9 +1886,7 @@
         }
       },
       "clubSelection": {
-        "heading": "Club",
-        "clubLabel": "Club",
-        "emailLabel": "E-mail"
+        "noAdminClubs": "Vous n'êtes administrateur d'aucun club"
       },
       "locationSelection": {
         "title": "Lieux",
@@ -1923,15 +1901,9 @@
         "title": "Récapitulatif de l'inscription"
       },
       "transfersLoans": {
-        "addTransfersTitle": "Ajouter des transferts",
-        "addLoansTitle": "Ajouter des prêts",
-        "addTransferButton": "Ajouter un transfert",
-        "addLoanButton": "Ajouter un prêt",
-        "emptyTransfers": "Aucun transfert",
-        "emptyLoans": "Aucun prêt",
-        "a11y": {
-          "cancelPendingSelection": "Annuler la sélection du joueur"
-        }
+        "addError": "Erreur lors de l'ajout du transfert/prêt",
+        "deleteError": "Erreur lors de la suppression du transfert/prêt",
+        "loadError": "Erreur lors du chargement des transferts/prêts"
       },
       "pendingTransferBadge": "transfert",
       "pendingLoanBadge": "prêt",
@@ -1958,8 +1930,34 @@
         "minBasePlayers": "Sélectionnez au moins {min} joueurs de base."
       },
       "errors": {
-        "rejectedPendingPlayerBlocksSubmit": "L'inscription ne peut pas être envoyée. Un ou plusieurs équipes contiennent des joueurs de base qui ne sont plus valides."
-      }
+        "rejectedPendingPlayerBlocksSubmit": "L'inscription ne peut pas être soumise. Un ou plusieurs équipes contiennent des joueurs de base qui ne sont plus valides."
+      },
+      "form": {
+        "type": "Type",
+        "teamNumber": "Numéro d'équipe",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "preferredDay": "Jour préféré",
+        "preferredTime": "Heure préférée",
+        "preferredLocation": "Lieu préféré"
+      },
+      "generalInfo": "Informations générales",
+      "preferredPlayingTime": "Heure de jeu préférée",
+      "teamCaptain": "Capitaine d'équipe",
+      "buttons": {
+        "addTeam": "Ajouter une équipe",
+        "back": "Retour",
+        "cancel": "Annuler",
+        "editTeam": "Modifier l'équipe",
+        "next": "Suivant",
+        "addPlayer": "Ajouter un joueur"
+      },
+      "messages": {
+        "successAdd": "L'équipe a été ajoutée",
+        "successEdit": "L'équipe a été mise à jour"
+      },
+      "addPlayer": "Ajouter un joueur",
+      "players": "Joueurs"
     },
     "locations": {
       "exceptions": "Exceptions"

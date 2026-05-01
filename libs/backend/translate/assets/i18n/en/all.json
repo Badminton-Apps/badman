@@ -1551,10 +1551,8 @@
         }
       },
       "steps": {
-        "generalInformation": "General information",
-        "transfersLoans": "Transfers & loans",
-        "teams": "Teams",
-        "confirm": "Confirm"
+        "info": "Information",
+        "players": "Players"
       },
       "nav": {
         "previous": "Previous",
@@ -1567,27 +1565,9 @@
         "addAtLeastOneTeam": "Add at least one team."
       },
       "teams": {
-        "categories": {
-          "M": "Men",
-          "F": "Women",
-          "MX": "Mixed"
-        },
-        "addTeam": "Add team",
-        "emptyCategory": "No teams",
-        "baseValue": "Base: {value}",
-        "labelNumbered": "Team {number}",
-        "labelFallback": "Team",
-        "a11y": {
-          "statusError": "This team has validation errors",
-          "statusWarning": "This team has validation warnings",
-          "statusSuccess": "This team passed validation",
-          "validatingStatus": "Checking team validation",
-          "expandValidationDetails": "Show validation details for {team}",
-          "collapseValidationDetails": "Hide validation details for {team}",
-          "editTeam": "Edit {team}",
-          "deleteTeam": "Remove {team}",
-          "removePlayerFromList": "Remove {name} from the team"
-        }
+        "deleteError": "Error deleting team",
+        "loadError": "Error loading teams",
+        "retry": "Try again"
       },
       "dialog": {
         "deleteTeam": {
@@ -1598,9 +1578,7 @@
         }
       },
       "clubSelection": {
-        "heading": "Club",
-        "clubLabel": "Club",
-        "emailLabel": "Email"
+        "noAdminClubs": "You are not an admin of any clubs"
       },
       "locationSelection": {
         "title": "Locations",
@@ -1615,15 +1593,9 @@
         "title": "Enrollment summary"
       },
       "transfersLoans": {
-        "addTransfersTitle": "Add transfers",
-        "addLoansTitle": "Add loans",
-        "addTransferButton": "Add transfer",
-        "addLoanButton": "Add loan",
-        "emptyTransfers": "No transfers",
-        "emptyLoans": "No loans",
-        "a11y": {
-          "cancelPendingSelection": "Cancel player selection"
-        }
+        "addError": "Error adding transfer/loan",
+        "deleteError": "Error deleting transfer/loan",
+        "loadError": "Error loading transfers/loans"
       },
       "pendingTransferBadge": "transfer",
       "pendingLoanBadge": "loan",
@@ -1648,7 +1620,36 @@
         "duplicateTeamNumberSameType": "Duplicate team number within the same type.",
         "maxBasePlayers": "You can add at most {max} base players.",
         "minBasePlayers": "Select at least {min} base players."
-      }
+      },
+      "errors": {
+        "rejectedPendingPlayerBlocksSubmit": "Enrollment cannot be submitted. One or more teams contain base players that are no longer valid."
+      },
+      "form": {
+        "type": "Type",
+        "teamNumber": "Team number",
+        "email": "Email",
+        "phone": "Phone",
+        "preferredDay": "Preferred day",
+        "preferredTime": "Preferred time",
+        "preferredLocation": "Preferred location"
+      },
+      "generalInfo": "General information",
+      "preferredPlayingTime": "Preferred playing time",
+      "teamCaptain": "Team captain",
+      "buttons": {
+        "addTeam": "Add team",
+        "back": "Back",
+        "cancel": "Cancel",
+        "editTeam": "Edit team",
+        "next": "Next",
+        "addPlayer": "Add player"
+      },
+      "messages": {
+        "successAdd": "Team has been added",
+        "successEdit": "Team has been updated"
+      },
+      "addPlayer": "Add player",
+      "players": "Players"
     },
     "messages": {
       "buttons": {

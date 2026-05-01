@@ -1269,10 +1269,8 @@
         }
       },
       "steps": {
-        "generalInformation": "Algemene info",
-        "transfersLoans": "Transfers & uitleningen",
-        "teams": "Ploegen",
-        "confirm": "Bevestigen"
+        "info": "Informatie",
+        "players": "Spelers"
       },
       "nav": {
         "previous": "Vorige",
@@ -1285,27 +1283,9 @@
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
       },
       "teams": {
-        "categories": {
-          "M": "Mannen",
-          "F": "Vrouwen",
-          "MX": "Gemengd"
-        },
-        "addTeam": "Ploeg toevoegen",
-        "emptyCategory": "Geen ploegen",
-        "baseValue": "Basis: {value}",
-        "labelNumbered": "Ploeg {number}",
-        "labelFallback": "Ploeg",
-        "a11y": {
-          "statusError": "Deze ploeg heeft validatiefouten",
-          "statusWarning": "Deze ploeg heeft validatiewaarschuwingen",
-          "statusSuccess": "Deze ploeg is gevalideerd",
-          "validatingStatus": "Ploeg wordt gevalideerd",
-          "expandValidationDetails": "Toon validatiedetails voor {team}",
-          "collapseValidationDetails": "Verberg validatiedetails voor {team}",
-          "editTeam": "Bewerk {team}",
-          "deleteTeam": "Verwijder {team}",
-          "removePlayerFromList": "Verwijder {name} uit de ploeg"
-        }
+        "deleteError": "Fout bij het verwijderen van het team",
+        "loadError": "Fout bij het laden van teams",
+        "retry": "Opnieuw proberen"
       },
       "dialog": {
         "deleteTeam": {
@@ -1316,9 +1296,7 @@
         }
       },
       "clubSelection": {
-        "heading": "Club",
-        "clubLabel": "Club",
-        "emailLabel": "Email"
+        "noAdminClubs": "Je bent geen admin van clubs"
       },
       "locationSelection": {
         "title": "Locaties",
@@ -1333,15 +1311,9 @@
         "title": "Samenvatting inschrijving"
       },
       "transfersLoans": {
-        "addTransfersTitle": "Transfers toevoegen",
-        "addLoansTitle": "Uitleningen toevoegen",
-        "addTransferButton": "Transfer toevoegen",
-        "addLoanButton": "Uitlening toevoegen",
-        "emptyTransfers": "Geen transfers",
-        "emptyLoans": "Geen uitleningen",
-        "a11y": {
-          "cancelPendingSelection": "Spelerselectie annuleren"
-        }
+        "addError": "Fout bij het toevoegen van transfer/uitlening",
+        "deleteError": "Fout bij het verwijderen van transfer/uitlening",
+        "loadError": "Fout bij het laden van transfers/uitleningen"
       },
       "pendingTransferBadge": "transfer",
       "pendingLoanBadge": "uitleen",
@@ -1369,7 +1341,33 @@
       },
       "errors": {
         "rejectedPendingPlayerBlocksSubmit": "Inschrijving kan niet ingediend worden. Eén of meerdere teams bevatten basisspelers die niet meer geldig zijn."
-      }
+      },
+      "form": {
+        "type": "Type",
+        "teamNumber": "Teamnummer",
+        "email": "E-mail",
+        "phone": "Telefoon",
+        "preferredDay": "Gewenste dag",
+        "preferredTime": "Gewenste tijd",
+        "preferredLocation": "Gewenste locatie"
+      },
+      "generalInfo": "Algemene informatie",
+      "preferredPlayingTime": "Gewenste speeltijd",
+      "teamCaptain": "Teamcaptain",
+      "buttons": {
+        "addTeam": "Voeg team toe",
+        "back": "Terug",
+        "cancel": "Annuleren",
+        "editTeam": "Bewerk team",
+        "next": "Volgende",
+        "addPlayer": "Voeg speler toe"
+      },
+      "messages": {
+        "successAdd": "Team is toegevoegd",
+        "successEdit": "Team is bijgewerkt"
+      },
+      "addPlayer": "Voeg speler toe",
+      "players": "Spelers"
     },
     "messages": {
       "buttons": {
