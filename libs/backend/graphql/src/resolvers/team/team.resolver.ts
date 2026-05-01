@@ -19,7 +19,6 @@ import {
   IsUUID,
   SubEventTypeEnum,
   TeamMembershipType,
-  UseForTeamName,
   getIndexFromPlayers,
   getLetterForRegion,
 } from "@badman/utils";
@@ -439,15 +438,26 @@ export class TeamsResolver {
         throw new UnauthorizedException(`You do not have permission to update a team`);
       }
 
-      const changedTeams = [];
+      const changedTeams: Team[] = [];
 
       if (updateTeamData.teamNumber && updateTeamData.teamNumber !== dbTeam.teamNumber) {
-        updateTeamData.name = `${dbTeam.club?.name} ${
-          updateTeamData.teamNumber
-        }${getLetterForRegion(dbTeam.type, "vl")}`;
-        updateTeamData.abbreviation = `${dbTeam.club?.abbreviation} ${
-          updateTeamData.teamNumber
-        }${getLetterForRegion(dbTeam.type, "vl")}`;
+        const conflict = await Team.findOne({
+          where: {
+            clubId: dbTeam.clubId,
+            season: dbTeam.season,
+            type: dbTeam.type,
+            teamNumber: updateTeamData.teamNumber,
+          },
+          transaction,
+        });
+        if (conflict) {
+          throw new GraphQLError("Team number already in use", {
+            extensions: {
+              code: ErrorCode.TEAM_NUMBER_CONFLICT,
+              conflictingTeamId: conflict.id,
+            },
+          });
+        }
 
         if (updateTeamData.teamNumber > dbTeam.teamNumber) {
           // Number was increased
@@ -463,13 +473,11 @@ export class TeamsResolver {
             include: [Club],
             transaction,
           });
-          // unique contraints
           for (const dbLteam of dbLowerTeams) {
             dbLteam.teamNumber--;
-            // set teams to temp name for unique constraint
-            this._setNameAndAbbreviation(dbLteam, true);
-            await dbLteam.save({ transaction });
-
+            dbLteam.name = `${dbLteam.club?.name ?? ""} ${dbLteam.teamNumber}${getLetterForRegion(dbLteam.type, "vl")}_temp`;
+            dbLteam.abbreviation = `${dbLteam.club?.abbreviation ?? ""} ${dbLteam.teamNumber}${getLetterForRegion(dbLteam.type, "vl")}`;
+            await dbLteam.save({ transaction, hooks: false });
             changedTeams.push(dbLteam);
           }
         } else if (updateTeamData.teamNumber < dbTeam.teamNumber) {
@@ -486,13 +494,11 @@ export class TeamsResolver {
             include: [Club],
             transaction,
           });
-
           for (const dbHteam of dbHigherTeams) {
             dbHteam.teamNumber++;
-            // set teams to temp name for unique constraint
-            this._setNameAndAbbreviation(dbHteam, true);
-
-            await dbHteam.save({ transaction });
+            dbHteam.name = `${dbHteam.club?.name ?? ""} ${dbHteam.teamNumber}${getLetterForRegion(dbHteam.type, "vl")}_temp`;
+            dbHteam.abbreviation = `${dbHteam.club?.abbreviation ?? ""} ${dbHteam.teamNumber}${getLetterForRegion(dbHteam.type, "vl")}`;
+            await dbHteam.save({ transaction, hooks: false });
             changedTeams.push(dbHteam);
           }
         }
@@ -529,11 +535,11 @@ export class TeamsResolver {
 
       await dbTeam.update({ ...dbTeam.toJSON(), ...updateTeamData } as Team, { transaction });
 
-      // revert to original name
       if (changedTeams.length > 0) {
         for (const dbCteam of changedTeams) {
-          dbCteam.name = dbCteam.name?.replace("_temp", "");
-          await dbCteam.save({ transaction });
+          await Team.generateName(dbCteam, { transaction });
+          await Team.generateAbbreviation(dbCteam, { transaction });
+          await dbCteam.save({ transaction, hooks: false });
         }
       }
 
@@ -573,36 +579,6 @@ export class TeamsResolver {
       await transaction.rollback();
       throw e;
     }
-  }
-
-  /**
-   * Sets the name and abbreviation for a team.
-   * @param team The team to set the name and abbreviation for.
-   * @param temp Whether to use the _temp suffix
-   */
-
-  private _setNameAndAbbreviation(team: Team, temp = false) {
-    let prefix = team.club?.name;
-    switch (team.club?.useForTeamName) {
-      case UseForTeamName.NAME:
-      case UseForTeamName.FULL_NAME:
-        prefix = team.club?.name;
-        break;
-      case UseForTeamName.ABBREVIATION:
-        prefix = team.club?.abbreviation;
-        break;
-      default:
-        prefix = team.club?.name;
-    }
-
-    team.name = `${prefix} ${team.teamNumber}${getLetterForRegion(
-      team.type,
-      "vl"
-    )}${temp ? "_temp" : ""}`;
-
-    team.abbreviation = `${team.club?.abbreviation} ${
-      team.teamNumber
-    }${getLetterForRegion(team.type, "vl")}`;
   }
 
   // Adding / removing links

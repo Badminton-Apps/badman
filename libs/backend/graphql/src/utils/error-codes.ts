@@ -24,6 +24,7 @@ export const ErrorCode = {
   CLUB_NOT_FOUND: "CLUB_NOT_FOUND",
   PLAYER_NOT_FOUND: "PLAYER_NOT_FOUND",
   RANKING_NOT_FOUND: "RANKING_NOT_FOUND",
+  TEAM_NUMBER_CONFLICT: "TEAM_NUMBER_CONFLICT",
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
