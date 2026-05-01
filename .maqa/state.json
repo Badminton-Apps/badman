@@ -1,0 +1,48 @@
+{
+  "metadata": {
+    "coordinator_version": "maqa-1.0",
+    "timestamp": "2026-05-01T00:00:00Z",
+    "current_user": "arno@dashdot.be",
+    "branch": "003-linear-bad-127",
+    "main_branch": "develop"
+  },
+  "features": {
+    "003-team-name-regeneration-on-update": {
+      "status": "TODO",
+      "priority": "P1",
+      "description": "Team name/abbreviation regeneration on update via Sequelize hooks",
+      "spec_path": "/Users/arno/Documents/Projects/Badman/badman/specs/003-team-name-regeneration-on-update",
+      "phase": "Phase 1 - Baseline Verification",
+      "next_task": "T001 - Run baseline test suites",
+      "tasks": {
+        "T001": {"status": "TODO", "phase": 1, "description": "Run baseline test suites"},
+        "T002": {"status": "TODO", "phase": 2, "description": "Add TEAM_NUMBER_CONFLICT error code"},
+        "T003": {"status": "TODO", "phase": 3, "description": "Write @BeforeUpdate hook unit tests"},
+        "T004": {"status": "TODO", "phase": 3, "description": "Write updateTeam resolver tests"},
+        "T005": {"status": "TODO", "phase": 3, "description": "Add @BeforeUpdate and @BeforeBulkUpdate hooks"},
+        "T006": {"status": "TODO", "phase": 3, "description": "Update updateTeam resolver mutation"},
+        "T007": {"status": "TODO", "phase": 4, "description": "Add type-change test cases to model"},
+        "T008": {"status": "TODO", "phase": 4, "description": "Add type-change test case to resolver"},
+        "T009": {"status": "TODO", "phase": 5, "description": "Add bulk renumber test"},
+        "T010": {"status": "TODO", "phase": 5, "description": "Add @BeforeBulkCreate single-call test"},
+        "T011": {"status": "TODO", "phase": 6, "description": "Run full test suites"},
+        "T012": {"status": "TODO", "phase": 6, "description": "Verify no manual name construction"}
+      },
+      "affected_files": [
+        "/Users/arno/Documents/Projects/Badman/badman/libs/backend/graphql/src/utils/error-codes.ts",
+        "/Users/arno/Documents/Projects/Badman/badman/libs/backend/database/src/models/team.model.ts",
+        "/Users/arno/Documents/Projects/Badman/badman/libs/backend/database/src/models/team.model.spec.ts",
+        "/Users/arno/Documents/Projects/Badman/badman/libs/backend/graphql/src/resolvers/team/team.resolver.ts",
+        "/Users/arno/Documents/Projects/Badman/badman/libs/backend/graphql/src/resolvers/team/team.resolver.spec.ts"
+      ],
+      "qa_checks": {
+        "text": true,
+        "links": true,
+        "security": true
+      }
+    }
+  },
+  "agents": {
+    "feature_agents": []
+  }
+}
