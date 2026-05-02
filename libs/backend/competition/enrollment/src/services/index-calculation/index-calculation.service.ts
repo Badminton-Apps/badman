@@ -288,7 +288,7 @@ export class IndexCalculationService {
     amountOfLevels: number
   ): IndexCalculationResult {
     const missingPlayerIds = input.players
-      .filter((p) => !p.gender && notFoundIds.has(p.id))
+      .filter((p) => notFoundIds.has(p.id))
       .map((p) => p.id);
 
     if (missingPlayerIds.length > 0) {
@@ -302,7 +302,7 @@ export class IndexCalculationService {
 
     const resolvedPlayers: IndexCalculationContributingPlayer[] = input.players.map((p) => {
       const place = placeMap.get(p.id);
-      const gender = (p.gender ?? genderMap.get(p.id)) as "M" | "F";
+      const gender = genderMap.get(p.id) as "M" | "F";
       return {
         id: p.id,
         gender,

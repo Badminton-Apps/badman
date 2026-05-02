@@ -30,7 +30,7 @@ const validInput = (overrides?: Partial<CalculateIndexInput>): CalculateIndexInp
   key: "team-key-1",
   type: SubEventTypeEnum.M,
   season: SEASON,
-  players: [{ id: PLAYER_UUID, gender: "M" }],
+  players: [{ id: PLAYER_UUID }],
   ...overrides,
 });
 
@@ -154,7 +154,7 @@ describe("CalculateIndexResolver", () => {
     const user = authenticatedUser();
     const input = validInput({
       key: "k1",
-      players: [{ id: "bad-player-id", gender: "M" }],
+      players: [{ id: "bad-player-id" }],
     });
 
     await expect(resolver.calculateIndex([input], user)).rejects.toThrow(BadRequestException);
@@ -219,10 +219,7 @@ describe("CalculateIndexResolver", () => {
           key: "fixture-key",
           type: fixture.type,
           season: SEASON,
-          players: fixture.players.map(() => ({
-            id: PLAYER_UUID,
-            gender: undefined,
-          })),
+          players: fixture.players.map(() => ({ id: PLAYER_UUID })),
         };
 
         const results = await resolver.calculateIndex([input], user);

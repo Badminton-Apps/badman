@@ -1,17 +1,11 @@
 import { SubEventTypeEnum } from "@badman/utils";
 import { Field, ID, InputType, Int } from "@nestjs/graphql";
 import { IsInt, IsOptional, IsUUID, Min } from "class-validator";
-
 @InputType()
 export class CalculateIndexPlayerInput {
   @Field(() => ID)
   @IsUUID()
   id!: string;
-
-  /** "M" | "F"; optional — when absent, resolved from the Player table */
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  gender?: string;
 }
 
 @InputType()

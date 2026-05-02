@@ -68,10 +68,7 @@ export class CalculateIndexResolver {
       type: i.type,
       season: i.season,
       subEventCompetitionId: i.subEventCompetitionId,
-      players: i.players.map((p) => ({
-        id: p.id,
-        gender: p.gender as "M" | "F" | undefined,
-      })),
+      players: i.players.map((p) => ({ id: p.id })),
     }));
 
     let serviceResults;

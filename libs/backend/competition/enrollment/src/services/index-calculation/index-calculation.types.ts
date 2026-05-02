@@ -3,8 +3,6 @@ import { SubEventTypeEnum } from "@badman/utils";
 export interface IndexCalculationPlayerInput {
   /** UUID of the player */
   id: string;
-  /** Gender of the player; when absent it will be resolved from the Player table */
-  gender?: "M" | "F";
 }
 
 export interface IndexCalculationInput {
