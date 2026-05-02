@@ -1640,7 +1640,10 @@ export type I18nTranslations = {
                     "minBasePlayers": string;
                 };
                 "errors": {
-                    "rejectedPendingPlayerBlocksSubmit": string;
+                    "clubNotFoundForFinalise": string;
+                    "finalisationFailed": string;
+                    "noTeamsToFinalise": string;
+                    "notAuthorisedToFinalise": string;
                 };
                 "form": {
                     "type": string;
@@ -1668,6 +1671,19 @@ export type I18nTranslations = {
                 };
                 "addPlayer": string;
                 "players": string;
+                "alreadySubmitted": {
+                    "title": string;
+                    "body": string;
+                };
+                "submit": {
+                    "alreadyFinalised": string;
+                    "finalisationFailed": string;
+                    "finalised": string;
+                    "notificationFailedBody": string;
+                    "notificationFailedTitle": string;
+                    "retryFinalisation": string;
+                    "retryNotification": string;
+                };
             };
             "messages": {
                 "buttons": {

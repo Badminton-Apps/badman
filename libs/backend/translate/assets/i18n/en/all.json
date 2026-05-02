@@ -1649,7 +1649,26 @@
         "successEdit": "Team has been updated"
       },
       "addPlayer": "Add player",
-      "players": "Players"
+      "players": "Players",
+      "alreadySubmitted": {
+        "title": "Already submitted",
+        "body": "This club's enrollment for the current season has already been submitted. To make changes, contact the federation."
+      },
+      "submit": {
+        "alreadyFinalised": "This enrollment was already submitted earlier.",
+        "finalisationFailed": "Your teams were saved, but we couldn't finalise the submission. Press Retry to try again.",
+        "finalised": "Enrollment submitted successfully.",
+        "notificationFailedBody": "Your enrollment was saved, but we couldn't send the confirmation email or push notification. Press Retry to try sending it again.",
+        "notificationFailedTitle": "Submission complete — confirmation could not be sent",
+        "retryFinalisation": "Retry",
+        "retryNotification": "Retry"
+      },
+      "errors": {
+        "clubNotFoundForFinalise": "Club not found.",
+        "finalisationFailed": "Submission failed. Please try again.",
+        "noTeamsToFinalise": "Add at least one team before submitting.",
+        "notAuthorisedToFinalise": "You don't have permission to finalise this club's enrollment."
+      }
     },
     "messages": {
       "buttons": {

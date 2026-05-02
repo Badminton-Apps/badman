@@ -1367,7 +1367,26 @@
         "successEdit": "Team is bijgewerkt"
       },
       "addPlayer": "Voeg speler toe",
-      "players": "Spelers"
+      "players": "Spelers",
+      "alreadySubmitted": {
+        "title": "Reeds ingediend",
+        "body": "De inschrijving van deze club voor het huidige seizoen is al ingediend. Neem contact op met de federatie om wijzigingen aan te brengen."
+      },
+      "submit": {
+        "alreadyFinalised": "Deze inschrijving is eerder al ingediend.",
+        "finalisationFailed": "Je teams zijn opgeslagen, maar we konden de indiening niet voltooien. Klik op Opnieuw proberen om het opnieuw te proberen.",
+        "finalised": "Inschrijving succesvol ingediend.",
+        "notificationFailedBody": "Je inschrijving is opgeslagen, maar we konden de bevestigingsemail of pushmelding niet versturen. Klik op Opnieuw proberen om het opnieuw te versturen.",
+        "notificationFailedTitle": "Indiening voltooid — bevestiging kon niet worden verzonden",
+        "retryFinalisation": "Opnieuw proberen",
+        "retryNotification": "Opnieuw proberen"
+      },
+      "errors": {
+        "clubNotFoundForFinalise": "Club niet gevonden.",
+        "finalisationFailed": "Indiening mislukt. Probeer het opnieuw.",
+        "noTeamsToFinalise": "Voeg minstens één team toe voor het indienen.",
+        "notAuthorisedToFinalise": "U bent niet bevoegd om de inschrijving van deze club af te ronden."
+      }
     },
     "messages": {
       "buttons": {
