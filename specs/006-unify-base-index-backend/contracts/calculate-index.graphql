@@ -1,0 +1,76 @@
+# Public GraphQL contract — calculateIndex
+#
+# Generated representation of the code-first declarations that ship with this
+# feature. This SDL is for documentation and contract review; the authoritative
+# definitions are the @InputType / @ObjectType classes in
+# libs/backend/graphql/src/resolvers/event/competition/calculate-index/.
+
+scalar UUID
+
+enum SubEventTypeEnum {
+  M
+  F
+  MX
+  NATIONAL
+}
+
+input CalculateIndexPlayerInput {
+  id: ID!
+  single: Int
+  double: Int
+  mix: Int
+  gender: String
+}
+
+input CalculateIndexInput {
+  "Caller-supplied correlation key — typically the team UUID. Unique within a batch."
+  key: ID!
+  type: SubEventTypeEnum!
+  season: Int!
+  rankingSystemId: ID!
+  "When present, the service derives the snapshot window from the parent EventCompetition (parity with the entry-model hook)."
+  subEventCompetitionId: ID
+  players: [CalculateIndexPlayerInput!]!
+}
+
+type CalculateIndexContributingPlayer {
+  id: ID!
+  gender: String!
+  single: Int!
+  double: Int!
+  mix: Int!
+}
+
+type CalculateIndexError {
+  "PLAYER_NOT_FOUND | RANKING_SYSTEM_NOT_FOUND | SUB_EVENT_NOT_FOUND | RANKING_FETCH_FAILED | INTERNAL_ERROR"
+  code: String!
+  message: String!
+  "Populated only when code == PLAYER_NOT_FOUND."
+  playerIds: [ID!]
+}
+
+type CalculateIndexResult {
+  key: ID!
+  "Null when error is set."
+  index: Int
+  contributingPlayers: [CalculateIndexContributingPlayer!]
+  "Null when error is set. Drives the (4-n)*24 / *36 penalty already included in `index`."
+  missingPlayerCount: Int
+  "Null when index is set."
+  error: CalculateIndexError
+}
+
+extend type Query {
+  """
+  Compute the canonical team-strength index for one or more inputs.
+
+  Authentication: requires an authenticated caller. No fine-grained permission gate.
+  Errors:
+    - BadRequestException — empty inputs, duplicate keys, malformed UUIDs.
+    - UnauthorizedException — caller is not authenticated.
+
+  Per-input failures (player not found, snapshot unavailable) are returned in
+  CalculateIndexResult.error and DO NOT fail the overall request.
+  """
+  calculateIndex(inputs: [CalculateIndexInput!]!): [CalculateIndexResult!]!
+}

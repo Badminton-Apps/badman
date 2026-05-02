@@ -189,6 +189,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/005-club-players-nested-where/plan.md](specs/005-club-players-nested-where/plan.md)
+[specs/006-unify-base-index-backend/plan.md](specs/006-unify-base-index-backend/plan.md)
 
 <!-- SPECKIT END -->
