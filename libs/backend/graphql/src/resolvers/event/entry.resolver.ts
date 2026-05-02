@@ -16,15 +16,22 @@ import {
 import { EnrollmentValidationService, TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
 import { LoggingAction, TeamMembershipType } from "@badman/utils";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { GraphQLError } from "graphql";
+import { Sequelize } from "sequelize-typescript";
 import { ListArgs } from "../../utils";
+import { ErrorCode } from "../../utils/error-codes";
+import { FinishEventEntryResult } from "./finish-event-entry-result.object";
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
+  private readonly logger = new Logger(EventEntryResolver.name);
+
   constructor(
     private notificationService: NotificationService,
-    private enrollmentService: EnrollmentValidationService
+    private enrollmentService: EnrollmentValidationService,
+    private _sequelize: Sequelize
   ) {}
 
   @Query(() => EventEntry)
@@ -117,13 +124,13 @@ export class EventEntryResolver {
     return validation.teams?.find((t) => t.id === team.id) ?? null;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => FinishEventEntryResult)
   async finishEventEntry(
     @User() user: Player,
     @Args("clubId", { type: () => ID }) clubId: string,
     @Args("season", { type: () => Int }) season: number,
     @Args("email", { type: () => String }) email: string
-  ) {
+  ): Promise<FinishEventEntryResult> {
     if (!(await user.hasAnyPermission([clubId + "_edit:club", "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to enroll a club`);
     }
@@ -133,42 +140,104 @@ export class EventEntryResolver {
       throw new NotFoundException(clubId);
     }
 
-    // update the contact email of the club if it is different
-    if (club.contactCompetition !== email) {
-      club.contactCompetition = email;
-      await club.save();
-    }
+    const transaction = await this._sequelize.transaction();
 
-    await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
+    try {
+      // Fetch teams for the club and season
+      const teams = await Team.findAll({
+        where: {
+          clubId: clubId,
+          season: season,
+        },
+        include: [{ model: EventEntry }],
+        transaction,
+      });
 
-    const teamsOfClub = await Team.findAll({
-      where: {
-        clubId: clubId,
-        season: season,
-      },
-      include: [{ model: EventEntry }],
-    });
-
-    for (const team of teamsOfClub) {
-      if (!team.entry) {
-        continue;
+      // Reject if no teams exist for this club and season
+      if (teams.length === 0) {
+        throw new GraphQLError("No teams to finalise for this club and season", {
+          extensions: { code: ErrorCode.NO_TEAMS_TO_FINALISE, clubId, season },
+        });
       }
 
-      team.entry.sendOn = new Date();
-      await team.entry.save();
+      // Collect team IDs that have entries for row locking
+      const teamIds = teams.filter((t) => t.entry).map((t) => t.id);
+
+      // Acquire row-level locks on EventEntry rows for this club+season
+      const entries = await EventEntry.findAll({
+        where: { teamId: teamIds },
+        lock: transaction.LOCK.UPDATE,
+        transaction,
+      });
+
+      // Idempotency check: all entries already have sendOn set
+      const alreadyFinalised =
+        entries.length > 0 && entries.every((e) => e.sendOn !== null && e.sendOn !== undefined);
+
+      if (alreadyFinalised) {
+        // Only permitted side-effect on no-op path: update contact email if different
+        if (club.contactCompetition !== email) {
+          club.contactCompetition = email;
+          await club.save({ transaction });
+        }
+
+        await transaction.commit();
+        return { success: true, alreadyFinalised: true, notificationDispatched: false };
+      }
+
+      // Fresh finalisation path
+      // Update the contact email of the club if it is different
+      if (club.contactCompetition !== email) {
+        club.contactCompetition = email;
+        await club.save({ transaction });
+      }
+
+      // Update sendOn for all null entries only (partial-state safety)
+      for (const team of teams) {
+        if (!team.entry) {
+          continue;
+        }
+
+        if (team.entry.sendOn === null || team.entry.sendOn === undefined) {
+          team.entry.sendOn = new Date();
+          await team.entry.save({ transaction });
+        }
+      }
+
+      // Write audit log row
+      await Logging.create(
+        {
+          action: LoggingAction.EnrollmentSubmitted,
+          playerId: user.id,
+          meta: {
+            clubId,
+            season,
+            email,
+          },
+        },
+        { transaction }
+      );
+
+      await transaction.commit();
+
+      // Post-commit: dispatch notification (must NOT be inside transaction)
+      let notificationDispatched = false;
+      try {
+        await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
+        notificationDispatched = true;
+      } catch (notifyError) {
+        this.logger.error(
+          `Failed to dispatch enrollment notification for club ${clubId} season ${season}`,
+          notifyError
+        );
+        notificationDispatched = false;
+      }
+
+      return { success: true, alreadyFinalised: false, notificationDispatched };
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
     }
-
-    await Logging.create({
-      action: LoggingAction.EnrollmentSubmitted,
-      playerId: user.id,
-      meta: {
-        clubId,
-        season,
-        email,
-      },
-    });
-
-    return true;
   }
   // @Mutation(returns => EventEntry)
   // async addEventEntry(

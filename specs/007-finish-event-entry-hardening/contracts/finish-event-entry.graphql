@@ -1,0 +1,60 @@
+# GraphQL contract: finishEventEntry
+#
+# This file documents the post-change shape of the mutation. It is NOT a
+# hand-written SDL artefact — Apollo code-first generates the schema from the
+# resolver + @ObjectType. The contract here is the source of truth for the
+# sibling frontend repo's codegen expectations.
+
+"""
+Result of a single finishEventEntry mutation. Distinguishes three terminal
+outcomes:
+  - fresh finalisation succeeded:        {success: true,  alreadyFinalised: false, notificationDispatched: true}
+  - fresh finalisation, notify failed:   {success: true,  alreadyFinalised: false, notificationDispatched: false}
+  - already-finalised no-op:             {success: true,  alreadyFinalised: true,  notificationDispatched: false}
+"""
+type FinishEventEntryResult {
+  """
+  Overall outcome. True whenever the resolver returns a value (i.e. did not
+  throw). Reserved for forward-compat soft failures.
+  """
+  success: Boolean!
+
+  """
+  True when every EventEntry for (clubId, season) already had sendOn set and
+  the call was a no-op apart from an optional Club.contactCompetition update.
+  """
+  alreadyFinalised: Boolean!
+
+  """
+  True when the post-commit notificationService.notifyEnrollment call
+  succeeded. False when it threw, or when alreadyFinalised is true (no
+  notification is attempted on the no-op path).
+  """
+  notificationDispatched: Boolean!
+}
+
+extend type Mutation {
+  """
+  Finalise a club's enrollment for a given season. Atomic over:
+    - Club.contactCompetition update (if email arg differs)
+    - EventEntry.sendOn set on every team entry for (clubId, season)
+    - Logging row with action EnrollmentSubmitted
+
+  Idempotent: re-submission for an already-finalised (clubId, season) returns
+  alreadyFinalised: true and performs no writes other than (optionally)
+  updating Club.contactCompetition.
+
+  Authorisation: caller must hold "{clubId}_edit:club" or "edit-any:club".
+
+  Errors (GraphQLError.extensions.code):
+    PERMISSION_DENIED          — caller lacks required permission
+    CLUB_NOT_FOUND             — clubId is unknown
+    NO_TEAMS_TO_FINALISE       — extensions: { clubId, season }
+    INTERNAL_ERROR             — any other server error (transaction rolled back)
+  """
+  finishEventEntry(
+    clubId: ID!
+    season: Int!
+    email: String!
+  ): FinishEventEntryResult!
+}
