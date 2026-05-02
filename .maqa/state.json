@@ -26,6 +26,33 @@
       "card_id": "BAD-132",
       "branch": "005-club-players-nested-where"
     },
+    "007-finish-event-entry-hardening": {
+      "status": "in_review_qa_approved",
+      "board": "linear",
+      "card_id": "BAD-137",
+      "linear_status": "Ready for review",
+      "branch": "007-finish-event-entry-hardening",
+      "tasks_total": 24,
+      "tasks_completed": "T001, T003-T020 (19/24)",
+      "deferred": "T002 (docker check), T021 (nx affected:test), T022 (manual quickstart walk), T023 (verify only), T024 (frontend PR — separate repo)",
+      "implementation_commits": ["e407d0553", "cf539101b"],
+      "tests_passed": 12,
+      "tests_total": 12,
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_transactional_mutations": "PASS",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "next_step": "human review and merge to develop; open companion frontend PR per specs/007-finish-event-entry-hardening/frontend-changes.md (BAD-122 follow-up)"
+    },
     "006-unify-base-index-backend": {
       "status": "in_review_qa_approved",
       "board": "linear",
