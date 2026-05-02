@@ -1,5 +1,4 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { BadRequestException, UnauthorizedException } from "@nestjs/common";
 import { Player } from "@badman/backend-database";
 import { IndexCalculationService } from "@badman/backend-enrollment";
 import {
@@ -10,6 +9,7 @@ import {
 import { GraphQLError } from "graphql";
 import { CalculateIndexResolver } from "./calculate-index.resolver";
 import { CalculateIndexInput } from "./calculate-index.input";
+import { ErrorCode } from "../../../../utils";
 
 const SEASON = 2025;
 const PLAYER_UUID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12";
@@ -114,72 +114,91 @@ describe("CalculateIndexResolver", () => {
   });
 
   // -------------------------------------------------------------------------
-  // T024 (b) — Anonymous user → UnauthorizedException
+  // T024 (b) — Anonymous user → GraphQLError UNAUTHENTICATED
   // -------------------------------------------------------------------------
-  it("throws UnauthorizedException for anonymous users (no id)", async () => {
+  it("throws GraphQLError UNAUTHENTICATED for anonymous users (no id)", async () => {
     const user = anonymousUser();
 
     await expect(
       resolver.calculateIndex([validInput()], user)
-    ).rejects.toThrow(UnauthorizedException);
+    ).rejects.toThrow(GraphQLError);
+
+    await expect(
+      resolver.calculateIndex([validInput()], user)
+    ).rejects.toMatchObject({ extensions: { code: ErrorCode.UNAUTHENTICATED } });
 
     expect(mockService.calculate).not.toHaveBeenCalled();
   });
 
   // -------------------------------------------------------------------------
-  // T024 (c) — Empty inputs → BadRequestException
+  // T024 (c) — Empty inputs → GraphQLError BAD_USER_INPUT
   // -------------------------------------------------------------------------
-  it("throws BadRequestException for empty inputs array", async () => {
+  it("throws GraphQLError BAD_USER_INPUT for empty inputs array", async () => {
     const user = authenticatedUser();
 
-    await expect(resolver.calculateIndex([], user)).rejects.toThrow(BadRequestException);
+    await expect(resolver.calculateIndex([], user)).rejects.toThrow(GraphQLError);
+    await expect(resolver.calculateIndex([], user)).rejects.toMatchObject({
+      extensions: { code: ErrorCode.BAD_USER_INPUT },
+    });
     expect(mockService.calculate).not.toHaveBeenCalled();
   });
 
   // -------------------------------------------------------------------------
-  // T024 (d) — Duplicate key within batch → BadRequestException
+  // T024 (d) — Duplicate key within batch → GraphQLError BAD_USER_INPUT
   // -------------------------------------------------------------------------
-  it("throws BadRequestException when batch contains duplicate keys", async () => {
+  it("throws GraphQLError BAD_USER_INPUT when batch contains duplicate keys", async () => {
     const user = authenticatedUser();
     const inputs = [validInput({ key: "dup-key" }), validInput({ key: "dup-key" })];
 
-    await expect(resolver.calculateIndex(inputs, user)).rejects.toThrow(BadRequestException);
+    await expect(resolver.calculateIndex(inputs, user)).rejects.toThrow(GraphQLError);
+    await expect(resolver.calculateIndex(inputs, user)).rejects.toMatchObject({
+      extensions: { code: ErrorCode.BAD_USER_INPUT },
+    });
     expect(mockService.calculate).not.toHaveBeenCalled();
   });
 
   // -------------------------------------------------------------------------
-  // T024 (e) — Malformed UUID in player id → BadRequestException
+  // T024 (e) — Malformed UUID in player id → GraphQLError BAD_USER_INPUT
   // -------------------------------------------------------------------------
-  it("throws BadRequestException for malformed player id UUID", async () => {
+  it("throws GraphQLError BAD_USER_INPUT for malformed player id UUID", async () => {
     const user = authenticatedUser();
     const input = validInput({
       key: "k1",
       players: [{ id: "bad-player-id" }],
     });
 
-    await expect(resolver.calculateIndex([input], user)).rejects.toThrow(BadRequestException);
+    await expect(resolver.calculateIndex([input], user)).rejects.toThrow(GraphQLError);
+    await expect(resolver.calculateIndex([input], user)).rejects.toMatchObject({
+      extensions: { code: ErrorCode.BAD_USER_INPUT },
+    });
     expect(mockService.calculate).not.toHaveBeenCalled();
   });
 
   // -------------------------------------------------------------------------
-  // T024 (f) — Season out of range → BadRequestException
+  // T024 (f) — Season out of range → GraphQLError BAD_USER_INPUT
   // -------------------------------------------------------------------------
-  it("throws BadRequestException when season is below 1990", async () => {
+  it("throws GraphQLError BAD_USER_INPUT when season is below 1990", async () => {
     const user = authenticatedUser();
 
     await expect(
       resolver.calculateIndex([validInput({ season: 1989 })], user)
-    ).rejects.toThrow(BadRequestException);
+    ).rejects.toThrow(GraphQLError);
+    await expect(
+      resolver.calculateIndex([validInput({ season: 1989 })], user)
+    ).rejects.toMatchObject({ extensions: { code: ErrorCode.BAD_USER_INPUT } });
     expect(mockService.calculate).not.toHaveBeenCalled();
   });
 
-  it("throws BadRequestException when season is above currentYear + 1", async () => {
+  it("throws GraphQLError BAD_USER_INPUT when season is above currentYear + 1", async () => {
     const user = authenticatedUser();
     const futureSeason = new Date().getFullYear() + 2;
 
     await expect(
       resolver.calculateIndex([validInput({ season: futureSeason })], user)
-    ).rejects.toThrow(BadRequestException);
+    ).rejects.toThrow(GraphQLError);
+    await expect(
+      resolver.calculateIndex([validInput({ season: futureSeason })], user)
+    ).rejects.toMatchObject({ extensions: { code: ErrorCode.BAD_USER_INPUT } });
     expect(mockService.calculate).not.toHaveBeenCalled();
   });
 

@@ -6,7 +6,7 @@ import {
   isSuccess,
 } from "@badman/backend-enrollment";
 import { IsUUID } from "@badman/utils";
-import { BadRequestException, Logger, UnauthorizedException } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { Args, Query, Resolver } from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
 import { ErrorCode } from "../../../../utils";
@@ -30,34 +30,43 @@ export class CalculateIndexResolver {
     @User() user: Player
   ): Promise<CalculateIndexResult[]> {
     if (!user?.id) {
-      throw new UnauthorizedException("Authentication required to calculate index.");
+      throw new GraphQLError("Authentication required to calculate index.", {
+        extensions: { code: ErrorCode.UNAUTHENTICATED },
+      });
     }
 
     if (!inputs || inputs.length === 0) {
-      throw new BadRequestException("inputs must be a non-empty array.");
+      throw new GraphQLError("inputs must be a non-empty array.", {
+        extensions: { code: ErrorCode.BAD_USER_INPUT },
+      });
     }
 
     const keys = inputs.map((i) => i.key);
     if (new Set(keys).size !== keys.length) {
-      throw new BadRequestException("inputs contains duplicate key values. Each key must be unique within a batch.");
+      throw new GraphQLError("inputs contains duplicate key values. Each key must be unique within a batch.", {
+        extensions: { code: ErrorCode.BAD_USER_INPUT },
+      });
     }
 
     const currentYear = new Date().getFullYear();
     for (const input of inputs) {
       if (input.season < 1990 || input.season > currentYear + 1) {
-        throw new BadRequestException(
-          `inputs[${input.key}].season is out of range. Must be between 1990 and ${currentYear + 1}.`
+        throw new GraphQLError(
+          `inputs[${input.key}].season is out of range. Must be between 1990 and ${currentYear + 1}.`,
+          { extensions: { code: ErrorCode.BAD_USER_INPUT, key: input.key } }
         );
       }
       if (input.subEventCompetitionId && !IsUUID(input.subEventCompetitionId)) {
-        throw new BadRequestException(
-          `inputs[${input.key}].subEventCompetitionId is not a valid UUID.`
+        throw new GraphQLError(
+          `inputs[${input.key}].subEventCompetitionId is not a valid UUID.`,
+          { extensions: { code: ErrorCode.BAD_USER_INPUT, key: input.key } }
         );
       }
       for (const player of input.players) {
         if (!IsUUID(player.id)) {
-          throw new BadRequestException(
-            `inputs[${input.key}].players[${player.id}].id is not a valid UUID.`
+          throw new GraphQLError(
+            `inputs[${input.key}].players contains an invalid UUID: ${player.id}.`,
+            { extensions: { code: ErrorCode.BAD_USER_INPUT, key: input.key } }
           );
         }
       }
