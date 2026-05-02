@@ -1,5 +1,5 @@
 import { DatabaseModule } from "@badman/backend-database";
-import { EnrollmentModule } from "@badman/backend-competition-enrollment";
+import { EnrollmentModule } from "@badman/backend-enrollment";
 import { PupeteerModule } from "@badman/backend-pupeteer";
 import { VisualModule } from "@badman/backend-visual";
 import { configSchema, load } from "@badman/utils";
