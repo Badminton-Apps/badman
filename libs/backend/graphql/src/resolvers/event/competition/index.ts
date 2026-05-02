@@ -6,5 +6,6 @@ export * from "./event.resolver";
 export * from "./subevent.resolver";
 export * from "./assembly.resolver";
 export * from "./enrollment.resolver";
+export * from "./calculate-index";
 
 // end:ng42.barrel

@@ -12,6 +12,8 @@
  */
 export const ErrorCode = {
   // Cross-cutting
+  UNAUTHENTICATED: "UNAUTHENTICATED",
+  BAD_USER_INPUT: "BAD_USER_INPUT",
   PERMISSION_DENIED: "PERMISSION_DENIED",
   INTERNAL_ERROR: "INTERNAL_ERROR",
 
@@ -28,6 +30,9 @@ export const ErrorCode = {
 
   // Club membership (libs/backend/graphql/src/resolvers/club/club.resolver.ts)
   MEMBERSHIP_NOT_FOUND: "MEMBERSHIP_NOT_FOUND",
+
+  // Index calculation (libs/backend/graphql/src/resolvers/event/competition/calculate-index/calculate-index.resolver.ts)
+  RANKING_SYSTEM_NOT_FOUND: "RANKING_SYSTEM_NOT_FOUND",
   
 } as const;
 

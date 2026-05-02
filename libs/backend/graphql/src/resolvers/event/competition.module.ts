@@ -8,6 +8,7 @@ import { RankingModule } from "@badman/backend-ranking";
 import { Module } from "@nestjs/common";
 import {
   AssemblyResolver,
+  CalculateIndexResolver,
   DrawCompetitionResolver,
   EncounterChangeCompetitionResolver,
   EncounterCompetitionResolver,
@@ -36,6 +37,7 @@ import { ChangeEncounterModule } from "@badman/backend-change-encounter";
     SubEventCompetitionResolver,
     AssemblyResolver,
     EnrollmentResolver,
+    CalculateIndexResolver,
   ],
 })
 export class CompetitionResolverModule {}

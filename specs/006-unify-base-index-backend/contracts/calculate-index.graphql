@@ -1,0 +1,78 @@
+# Public GraphQL contract — calculateIndex
+#
+# Generated representation of the code-first declarations that ship with this
+# feature. This SDL is for documentation and contract review; the authoritative
+# definitions are the @InputType / @ObjectType classes in
+# libs/backend/graphql/src/resolvers/event/competition/calculate-index/.
+
+scalar UUID
+
+enum SubEventTypeEnum {
+  M
+  F
+  MX
+  NATIONAL
+}
+
+input CalculateIndexPlayerInput {
+  id: ID!
+  # gender, single, double, mix are NOT supplied by the caller.
+  # The service resolves all per-player data exclusively from the DB
+  # (Player table for gender, RankingPlace for ranking components).
+}
+
+input CalculateIndexInput {
+  "Caller-supplied correlation key — typically the team UUID. Unique within a batch."
+  key: ID!
+  type: SubEventTypeEnum!
+  season: Int!
+  # rankingSystemId is NOT supplied — the service always uses the primary ranking system.
+  "When present, the service derives the snapshot window from the parent EventCompetition (parity with the entry-model hook)."
+  subEventCompetitionId: ID
+  players: [CalculateIndexPlayerInput!]!
+}
+
+type CalculateIndexContributingPlayer {
+  id: ID!
+  "Resolved from the Player table — not supplied by the caller."
+  gender: String!
+  single: Int!
+  double: Int!
+  mix: Int!
+}
+
+"All fields are non-nullable on success. Failures throw GraphQLError — there is no error field."
+type CalculateIndexResult {
+  key: ID!
+  index: Int!
+  contributingPlayers: [CalculateIndexContributingPlayer!]!
+  "Drives the (4-n)*24 / *36 penalty already included in `index`."
+  missingPlayerCount: Int!
+}
+
+extend type Query {
+  """
+  Compute the canonical team-strength index for one or more inputs.
+
+  Authentication: required — any logged-in user. Unauthenticated callers receive a
+  GraphQLError with extensions.code = UNAUTHENTICATED.
+
+  All errors surface as GraphQLError in the standard `errors` array with a stable
+  extensions.code. There are no NestJS HTTP exceptions on this query.
+
+  Batch-level guards (apply to the whole request, extensions.code = BAD_USER_INPUT):
+    - empty `inputs` array
+    - duplicate `key` within the batch
+    - malformed player UUID
+    - `season` outside [1990, currentYear+1]
+
+  Per-input failure codes (extensions.key identifies the batch entry):
+    - PLAYER_NOT_FOUND        — player ID absent from DB or has no gender on record;
+                                extensions.playerIds lists the offending IDs
+    - SUB_EVENT_NOT_FOUND     — subEventCompetitionId references unknown sub-event or
+                                one with no linked EventCompetition
+    - RANKING_SYSTEM_NOT_FOUND — no primary ranking system configured in the DB
+    - INTERNAL_ERROR          — unexpected error during processing
+  """
+  calculateIndex(inputs: [CalculateIndexInput!]!): [CalculateIndexResult!]!
+}

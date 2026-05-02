@@ -185,9 +185,12 @@ export class PlayersResolver {
     @Parent() player: Player,
     @Args() listArgs: ListArgs
   ): Promise<RankingLastPlace[]> {
+    const opts = ListArgs.toFindOptions(listArgs);
+    const primary = await RankingSystem.findOne({ where: { primary: true } });
+    opts.where = { ...opts.where, systemId: primary?.id };
     const places = await player.getRankingLastPlaces({
       order: [["rankingDate", "DESC"]],
-      ...ListArgs.toFindOptions(listArgs),
+      ...opts,
     });
 
     // distinct systemIds
@@ -562,8 +565,10 @@ export class PlayerTeamResolver extends PlayersResolver {
   ): Promise<RankingLastPlace[]> {
     const args = ListArgs.toFindOptions(listArgs);
 
+    const primary = await RankingSystem.findOne({ where: { primary: true } });
     args.where = {
       ...args.where,
+      systemId: primary?.id,
       playerId: player.id,
     };
 
