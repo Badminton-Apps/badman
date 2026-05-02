@@ -8,24 +8,6 @@ export class CalculateIndexPlayerInput {
   @IsUUID()
   id!: string;
 
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  single?: number;
-
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  double?: number;
-
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  mix?: number;
-
   /** "M" | "F"; optional — when absent, resolved from the Player table */
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -46,10 +28,6 @@ export class CalculateIndexInput {
   @IsInt()
   @Min(1990)
   season!: number;
-
-  @Field(() => ID)
-  @IsUUID()
-  rankingSystemId!: string;
 
   /**
    * Optional sub-event competition UUID.

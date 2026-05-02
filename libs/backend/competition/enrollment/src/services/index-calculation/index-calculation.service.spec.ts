@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { Player, RankingPlace, RankingSystem, SubEventCompetition } from "@badman/backend-database";
+import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
 import {
   getIndexFromPlayers,
   INDEX_CALCULATION_FIXTURES,
@@ -11,7 +11,6 @@ import { IndexCalculationInput } from "./index-calculation.types";
 const SYSTEM_ID = "system-uuid-0000-0000-0000-000000000000";
 const SEASON = 2025;
 
-/** Build a stub RankingSystem row */
 const stubSystem = (overrides?: Partial<RankingSystem>): RankingSystem =>
   ({
     id: SYSTEM_ID,
@@ -20,7 +19,6 @@ const stubSystem = (overrides?: Partial<RankingSystem>): RankingSystem =>
     ...overrides,
   }) as unknown as RankingSystem;
 
-/** Build a stub RankingPlace row */
 const stubPlace = (
   playerId: string,
   single?: number,
@@ -55,8 +53,6 @@ describe("IndexCalculationService", () => {
   // -------------------------------------------------------------------------
   describe("parity with getIndexFromPlayers (INDEX_CALCULATION_FIXTURES)", () => {
     for (const fixture of INDEX_CALCULATION_FIXTURES) {
-      // Skip fixtures whose players have no gender (they'd trigger PLAYER_NOT_FOUND
-      // in DB lookup mode — fixture parity is about the calculation path).
       const hasUngenderedPlayers = fixture.players.some(
         (p) => !("gender" in p) || p.gender === undefined
       );
@@ -66,35 +62,28 @@ describe("IndexCalculationService", () => {
       }
 
       test(fixture.name, async () => {
-        // Mock RankingSystem lookup
-        jest.spyOn(RankingSystem, "findByPk").mockResolvedValue(
+        jest.spyOn(RankingSystem, "findOne").mockResolvedValue(
           stubSystem({ amountOfLevels: fixture.defaultRanking ?? 12 })
         );
 
-        // Players in fixtures already have gender; no Player.findAll needed.
+        // Players have gender in fixture — no DB lookup needed.
         jest.spyOn(Player, "findAll").mockResolvedValue([]);
 
-        // Stub RankingPlace: for each player that has undefined components,
-        // return no row (so the default-fill path is exercised).
-        const placeRows: RankingPlace[] = fixture.players
-          .filter((p) => p.id && (p.single !== undefined || p.double !== undefined || p.mix !== undefined))
-          .map((p) =>
-            stubPlace(p.id ?? "", p.single, p.double, p.mix)
-          );
+        // Use explicit non-empty IDs (fixture.players often have id = "").
+        const playerIds = fixture.players.map((_, idx) => `player-${idx}`);
+
+        const placeRows: RankingPlace[] = fixture.players.map((p, idx) =>
+          stubPlace(playerIds[idx], p.single, p.double, p.mix)
+        );
         jest.spyOn(RankingPlace, "findAll").mockResolvedValue(placeRows);
 
-        // Build an input where all components are pre-supplied by the fixture.
         const input: IndexCalculationInput = {
           key: "test-key",
           type: fixture.type,
           season: SEASON,
-          rankingSystemId: SYSTEM_ID,
-          players: fixture.players.map((p) => ({
-            id: p.id ?? "player-id",
-            gender: p.gender,
-            single: p.single,
-            double: p.double,
-            mix: p.mix,
+          players: fixture.players.map((p, idx) => ({
+            id: playerIds[idx],
+            gender: p.gender as "M" | "F" | undefined,
           })),
         };
 
@@ -122,9 +111,8 @@ describe("IndexCalculationService", () => {
       const goodPlayerId = "player-good-0000-0000-0000-000000000000";
       const badPlayerId = "player-bad--0000-0000-0000-000000000000";
 
-      jest.spyOn(RankingSystem, "findByPk").mockResolvedValue(stubSystem());
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
 
-      // Player.findAll returns only the good player (bad one not found).
       jest.spyOn(Player, "findAll").mockResolvedValue([
         { id: goodPlayerId, gender: "M" } as unknown as Player,
       ]);
@@ -138,16 +126,14 @@ describe("IndexCalculationService", () => {
           key: "good-key",
           type: SubEventTypeEnum.M,
           season: SEASON,
-          rankingSystemId: SYSTEM_ID,
-          // Gender is pre-supplied so no DB lookup needed for this player.
-          players: [{ id: goodPlayerId, gender: "M", single: 8, double: 8 }],
+          // Gender pre-supplied so no DB lookup needed.
+          players: [{ id: goodPlayerId, gender: "M" }],
         },
         {
           key: "bad-key",
           type: SubEventTypeEnum.M,
           season: SEASON,
-          rankingSystemId: SYSTEM_ID,
-          // No gender supplied → must be looked up → will not be found.
+          // No gender → must be looked up → not found.
           players: [{ id: badPlayerId }],
         },
       ];
@@ -168,12 +154,11 @@ describe("IndexCalculationService", () => {
   });
 
   // -------------------------------------------------------------------------
-  // T017: Snapshot dedupe — one RankingPlace.findAll for inputs sharing
-  //        (season, rankingSystemId).
+  // T017: Snapshot dedupe — one RankingPlace.findAll for inputs sharing season.
   // -------------------------------------------------------------------------
   describe("snapshot dedupe", () => {
-    it("calls RankingPlace.findAll exactly once when three inputs share (season, rankingSystemId)", async () => {
-      jest.spyOn(RankingSystem, "findByPk").mockResolvedValue(stubSystem());
+    it("calls RankingPlace.findAll exactly once when three inputs share the same season", async () => {
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([]);
 
       const findAllSpy = jest
@@ -185,31 +170,27 @@ describe("IndexCalculationService", () => {
           key: "key-1",
           type: SubEventTypeEnum.M,
           season: SEASON,
-          rankingSystemId: SYSTEM_ID,
-          players: [{ id: "p1", gender: "M", single: 8, double: 8 }],
+          players: [{ id: "p1", gender: "M" }],
         },
         {
           key: "key-2",
           type: SubEventTypeEnum.M,
           season: SEASON,
-          rankingSystemId: SYSTEM_ID,
-          players: [{ id: "p2", gender: "M", single: 8, double: 8 }],
+          players: [{ id: "p2", gender: "M" }],
         },
         {
           key: "key-3",
           type: SubEventTypeEnum.M,
           season: SEASON,
-          rankingSystemId: SYSTEM_ID,
-          players: [{ id: "p3", gender: "M", single: 8, double: 8 }],
+          players: [{ id: "p3", gender: "M" }],
         },
       ];
 
       await service.calculate(inputs);
 
-      // All three share the same (season, rankingSystemId) group → one DB call.
+      // All three share the same season → one DB call.
       expect(findAllSpy).toHaveBeenCalledTimes(1);
 
-      // The single call must include the union of all player IDs.
       const callArgs = findAllSpy.mock.calls[0][0] as { where: { playerId: string[] } };
       const fetchedIds: string[] = callArgs.where.playerId;
       expect(fetchedIds).toContain("p1");

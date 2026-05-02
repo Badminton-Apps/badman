@@ -3,12 +3,6 @@ import { SubEventTypeEnum } from "@badman/utils";
 export interface IndexCalculationPlayerInput {
   /** UUID of the player */
   id: string;
-  /** Pre-resolved single ranking; when absent the snapshot value (or default) is used */
-  single?: number;
-  /** Pre-resolved double ranking; when absent the snapshot value (or default) is used */
-  double?: number;
-  /** Pre-resolved mix ranking; when absent the snapshot value (or default) is used */
-  mix?: number;
   /** Gender of the player; when absent it will be resolved from the Player table */
   gender?: "M" | "F";
 }
@@ -20,13 +14,11 @@ export interface IndexCalculationInput {
   type: SubEventTypeEnum;
   /** Season year */
   season: number;
-  /** Ranking system UUID — drives snapshot row selection and amountOfLevels default */
-  rankingSystemId: string;
   /**
    * Optional sub-event competition UUID.
-   * When present, the service derives season + ranking window from the linked
+   * When present, the service derives the ranking snapshot window from the linked
    * EventCompetition (parity with the entry-model hook).
-   * When absent, the service uses (season, rankingSystemId) directly.
+   * When absent, the service uses a broad calendar-year window for the given season.
    */
   subEventCompetitionId?: string;
   /** Player inputs. Empty array is valid — produces only the missing-player penalty. */
