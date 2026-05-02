@@ -5,11 +5,7 @@ import {
   RankingSystem,
   SubEventCompetition,
 } from "@badman/backend-database";
-import {
-  getBestPlayersFromTeam,
-  getIndexFromPlayers,
-  IndexPlayer,
-} from "@badman/utils";
+import { getBestPlayersFromTeam, getIndexFromPlayers, IndexPlayer } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { endOfMonth } from "date-fns";
 import { Op, Transaction } from "sequelize";
@@ -48,7 +44,10 @@ export class IndexCalculationService {
 
     // Step 2: Batch-resolve gender for all players across all inputs.
     const allPlayerIds = [...new Set(inputs.flatMap((i) => i.players.map((p) => p.id)))];
-    const { genderMap, notFoundIds } = await this.resolveGenders(allPlayerIds, options?.transaction);
+    const { genderMap, notFoundIds } = await this.resolveGenders(
+      allPlayerIds,
+      options?.transaction
+    );
 
     // Step 3: Batch-fetch RankingPlace rows for inputs that don't specify a sub-event.
     //         Group by season so we issue one DB query per unique season.
@@ -189,7 +188,10 @@ export class IndexCalculationService {
       const playerIds = [...new Set(rawIds)];
       const window = this.buildBroadWindow(season);
       try {
-        bySeasonResult.set(season, await this.fetchPlaceMap(playerIds, systemId, window, transaction));
+        bySeasonResult.set(
+          season,
+          await this.fetchPlaceMap(playerIds, systemId, window, transaction)
+        );
       } catch (err) {
         this.logger.error({ season, systemId }, err instanceof Error ? err.stack : String(err));
         bySeasonResult.set(season, new Map());
@@ -222,16 +224,28 @@ export class IndexCalculationService {
     });
 
     if (!subEvent) {
-      return failure(subEventCompetitionId, "SUB_EVENT_NOT_FOUND", `SubEventCompetition not found: ${subEventCompetitionId}`);
+      return failure(
+        subEventCompetitionId,
+        "SUB_EVENT_NOT_FOUND",
+        `SubEventCompetition not found: ${subEventCompetitionId}`
+      );
     }
 
     const ec = subEvent.eventCompetition;
     if (!ec) {
-      return failure(subEventCompetitionId, "SUB_EVENT_NOT_FOUND", `SubEventCompetition ${subEventCompetitionId} has no linked EventCompetition`);
+      return failure(
+        subEventCompetitionId,
+        "SUB_EVENT_NOT_FOUND",
+        `SubEventCompetition ${subEventCompetitionId} has no linked EventCompetition`
+      );
     }
 
     if (!ec.usedRankingUnit || ec.usedRankingAmount == null) {
-      return failure(subEventCompetitionId, "INTERNAL_ERROR", `EventCompetition for sub-event ${subEventCompetitionId} is missing usedRankingUnit / usedRankingAmount`);
+      return failure(
+        subEventCompetitionId,
+        "INTERNAL_ERROR",
+        `EventCompetition for sub-event ${subEventCompetitionId} is missing usedRankingUnit / usedRankingAmount`
+      );
     }
 
     const window = this.buildPreciseWindow({
@@ -244,7 +258,11 @@ export class IndexCalculationService {
       return await this.fetchPlaceMap(playerIds, systemId, window, transaction);
     } catch (err) {
       this.logger.error({ subEventCompetitionId }, err instanceof Error ? err.stack : String(err));
-      return failure(subEventCompetitionId, "RANKING_FETCH_FAILED", `RankingPlace fetch failed for sub-event ${subEventCompetitionId}`);
+      return failure(
+        subEventCompetitionId,
+        "RANKING_FETCH_FAILED",
+        `RankingPlace fetch failed for sub-event ${subEventCompetitionId}`
+      );
     }
   }
 
@@ -287,9 +305,7 @@ export class IndexCalculationService {
     notFoundIds: Set<string>,
     amountOfLevels: number
   ): IndexCalculationResult {
-    const missingPlayerIds = input.players
-      .filter((p) => notFoundIds.has(p.id))
-      .map((p) => p.id);
+    const missingPlayerIds = input.players.filter((p) => notFoundIds.has(p.id)).map((p) => p.id);
 
     if (missingPlayerIds.length > 0) {
       return failure(
@@ -326,6 +342,21 @@ export class IndexCalculationService {
 
     const contributingPlayers = resolvedPlayers.filter((p) => contributingIds.has(p.id));
     const missingPlayerCount = Math.max(0, 4 - contributingPlayers.length);
+
+    this.logger.debug({
+      key: input.key,
+      type: input.type,
+      playerIds: input.players.map((p) => p.id),
+      resolvedPerPlayer: resolvedPlayers.map(({ id, single, double, mix }) => ({
+        id,
+        single,
+        double,
+        mix,
+      })),
+      bestN: contributingPlayers.map((p) => p.id),
+      missingPlayerCount,
+      index,
+    });
 
     const successResult: IndexCalculationSuccess = {
       _tag: "success",

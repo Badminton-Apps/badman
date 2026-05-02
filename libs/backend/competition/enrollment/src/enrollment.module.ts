@@ -1,4 +1,5 @@
-import { Module } from "@nestjs/common";
+import { Module, OnModuleInit } from "@nestjs/common";
+import { EventEntry } from "@badman/backend-database";
 import { EnrollmentValidationService } from "./services";
 import { EnrollmentController } from "./controllers/excel.controller";
 import { ExcelService } from "./services/excel.services";
@@ -9,4 +10,10 @@ import { IndexCalculationService } from "./services/index-calculation/index-calc
   providers: [EnrollmentValidationService, ExcelService, IndexCalculationService],
   exports: [EnrollmentValidationService, IndexCalculationService],
 })
-export class EnrollmentModule {}
+export class EnrollmentModule implements OnModuleInit {
+  constructor(private readonly indexCalculationService: IndexCalculationService) {}
+
+  onModuleInit() {
+    EventEntry.setIndexCalculationService(this.indexCalculationService);
+  }
+}

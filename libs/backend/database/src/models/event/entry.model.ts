@@ -1,7 +1,5 @@
-import { getIndexFromPlayers } from "@badman/utils";
-import { Logger, NotFoundException } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
-import moment from "moment";
 import {
   BelongsToGetAssociationMixin,
   BelongsToGetAssociationMixinOptions,
@@ -11,7 +9,6 @@ import {
   HasOneSetAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
-  Op,
   SaveOptions,
 } from "sequelize";
 import {
@@ -32,11 +29,34 @@ import {
 import { EntryMetaType } from "../../types";
 import { Relation } from "../../wrapper";
 import { Player } from "../player.model";
-import { RankingPlace, RankingSystem } from "../ranking";
 import { Team } from "../team.model";
 import { DrawCompetition, EventCompetition, SubEventCompetition } from "./competition";
 import { Standing } from "./standing.model";
 import { DrawTournament, SubEventTournament } from "./tournament";
+
+/**
+ * Minimal interface — avoids importing from @badman/backend-competition-enrollment
+ * which already imports from @badman/backend-database (cycle).
+ */
+interface IIndexCalculationService {
+  calculateOne(
+    input: {
+      key: string;
+      type: string;
+      season: number;
+      subEventCompetitionId?: string;
+      players: { id: string }[];
+    },
+    options?: { transaction?: unknown }
+  ): Promise<
+    | {
+        _tag: "success";
+        index: number;
+        resolvedPlayers: { id: string; single: number; double: number; mix: number }[];
+      }
+    | { _tag: "failure"; error: { code: string; message: string } }
+  >;
+}
 
 @Table({
   timestamps: true,
@@ -48,6 +68,17 @@ export class EventEntry extends Model<
   InferAttributes<EventEntry>,
   InferCreationAttributes<EventEntry>
 > {
+  private static _indexService: IIndexCalculationService | null = null;
+
+  /**
+   * Called by EnrollmentModule.onModuleInit() to register the service instance.
+   * The static registration avoids a circular module dependency:
+   *   @badman/backend-competition-enrollment → @badman/backend-database → (cycle)
+   */
+  static setIndexCalculationService(service: IIndexCalculationService): void {
+    EventEntry._indexService = service;
+  }
+
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
@@ -194,95 +225,46 @@ export class EventEntry extends Model<
   @BeforeUpdate
   @BeforeCreate
   static async recalculateCompetitionIndex(instance: EventEntry, options: SaveOptions) {
-    if (!instance.changed("meta")) {
-      return;
-    }
-
-    const dbSubEvent = await SubEventCompetition.findByPk(instance.subEventId, {
-      attributes: [],
-      include: [
-        {
-          model: EventCompetition,
-          attributes: ["season", "usedRankingUnit", "usedRankingAmount"],
-        },
-      ],
-      transaction: options?.transaction,
-    });
-
-    if (!dbSubEvent) {
-      throw new NotFoundException(`${SubEventCompetition.name}: event`);
-    }
-
-    const dbSystem = await RankingSystem.findOne({
-      where: {
-        primary: true,
-      },
-      transaction: options?.transaction,
-    });
-
-    if (!dbSystem) {
-      throw new NotFoundException(`${RankingSystem.name}: primary`);
-    }
-
-    if (!dbSubEvent.eventCompetition) {
-      throw new Error("Did not include eventCompetition");
-    }
-
-    if (!instance.meta?.competition) {
-      // not a competition meta
-      return;
-    }
-
-    if (
-      !dbSubEvent.eventCompetition.usedRankingUnit ||
-      !dbSubEvent.eventCompetition.usedRankingAmount
-    ) {
-      throw new Error("EventCompetition usedRanking is not set");
-    }
-
-    const usedRankingDate = moment();
-    usedRankingDate.set("year", dbSubEvent.eventCompetition.season);
-    usedRankingDate.set(
-      dbSubEvent.eventCompetition.usedRankingUnit,
-      dbSubEvent.eventCompetition.usedRankingAmount
-    );
-
-    const startRanking = usedRankingDate.clone().set("date", 0);
-    const endRanking = usedRankingDate.clone().clone().endOf("month");
-
-    const dbRanking = await RankingPlace.findAll({
-      where: {
-        playerId: instance.meta?.competition?.players?.map((r) => r.id),
-        systemId: dbSystem.id,
-        rankingDate: {
-          [Op.between]: [startRanking.toDate(), endRanking.toDate()],
-        },
-        updatePossible: true,
-      },
-      order: [["rankingDate", "DESC"]],
-      transaction: options?.transaction,
-    });
-
-    instance.meta.competition.players = instance.meta?.competition.players?.map((r) => {
-      const ranking = dbRanking.find((ranking) => ranking.playerId === r.id);
-      return {
-        ...r,
-        single: ((r?.single ?? -1) == -1 ? ranking?.single : r?.single) ?? dbSystem.amountOfLevels,
-        double: ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ?? dbSystem.amountOfLevels,
-        mix: ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
-      };
-    });
+    if (!instance.changed("meta")) return;
+    if (!instance.meta?.competition) return;
 
     const team = await instance.getTeam();
-    if (!team) {
-      // If team is null, we can't calculate the team index
-      return;
+    if (!team) return;
+
+    const service = EventEntry._indexService;
+    if (!service) {
+      throw new Error(
+        "IndexCalculationService is not registered on EventEntry. " +
+          "Ensure EnrollmentModule is imported by the application module."
+      );
     }
-    instance.meta.competition.teamIndex = getIndexFromPlayers(
-      team.type,
-      instance.meta?.competition.players,
-      dbSystem.amountOfLevels
+
+    const result = await service.calculateOne(
+      {
+        key: instance.id!,
+        type: team.type!,
+        // season is ignored when subEventCompetitionId is provided;
+        // the service derives it from the linked EventCompetition.
+        season: 0,
+        subEventCompetitionId: instance.subEventId ?? undefined,
+        players: (instance.meta.competition.players ?? []).map((p) => ({ id: p.id! })),
+      },
+      { transaction: options?.transaction }
     );
+
+    if (result._tag === "failure") {
+      throw new Error(
+        `Index recalculation failed for entry ${instance.id}: ${result.error.code} — ${result.error.message}`
+      );
+    }
+
+    const resolvedMap = new Map(result.resolvedPlayers.map((p) => [p.id, p]));
+    instance.meta.competition.players = (instance.meta.competition.players ?? []).map((p) => {
+      const resolved = resolvedMap.get(p.id!);
+      if (!resolved) return p;
+      return { ...p, single: resolved.single, double: resolved.double, mix: resolved.mix };
+    });
+    instance.meta.competition.teamIndex = result.index;
   }
 }
 
