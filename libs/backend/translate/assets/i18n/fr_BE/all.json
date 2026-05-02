@@ -1957,7 +1957,26 @@
         "successEdit": "L'équipe a été mise à jour"
       },
       "addPlayer": "Ajouter un joueur",
-      "players": "Joueurs"
+      "players": "Joueurs",
+      "alreadySubmitted": {
+        "title": "Déjà soumis",
+        "body": "L'inscription de ce club pour la saison en cours a déjà été soumise. Pour apporter des modifications, veuillez contacter la fédération."
+      },
+      "submit": {
+        "alreadyFinalised": "Cette inscription a déjà été soumise précédemment.",
+        "finalisationFailed": "Vos équipes ont été enregistrées, mais nous n'avons pas pu finaliser la soumission. Cliquez sur Réessayer pour réessayer.",
+        "finalised": "Inscription soumise avec succès.",
+        "notificationFailedBody": "Votre inscription a été enregistrée, mais nous n'avons pas pu envoyer l'e-mail de confirmation ou la notification push. Cliquez sur Réessayer pour la renvoyer.",
+        "notificationFailedTitle": "Soumission terminée — la confirmation n'a pas pu être envoyée",
+        "retryFinalisation": "Réessayer",
+        "retryNotification": "Réessayer"
+      },
+      "errors": {
+        "clubNotFoundForFinalise": "Club non trouvé.",
+        "finalisationFailed": "La soumission a échoué. Veuillez réessayer.",
+        "noTeamsToFinalise": "Ajoutez au moins une équipe avant de soumettre.",
+        "notAuthorisedToFinalise": "Vous n'avez pas la permission de finaliser l'inscription de ce club."
+      }
     },
     "locations": {
       "exceptions": "Exceptions"
