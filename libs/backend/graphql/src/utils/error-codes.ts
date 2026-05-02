@@ -33,7 +33,10 @@ export const ErrorCode = {
 
   // Index calculation (libs/backend/graphql/src/resolvers/event/competition/calculate-index/calculate-index.resolver.ts)
   RANKING_SYSTEM_NOT_FOUND: "RANKING_SYSTEM_NOT_FOUND",
-  
+
+  // Event entry finalisation (libs/backend/graphql/src/resolvers/event/entry.resolver.ts)
+  NO_TEAMS_TO_FINALISE: "NO_TEAMS_TO_FINALISE",
+
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
