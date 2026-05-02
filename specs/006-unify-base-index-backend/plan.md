@@ -7,7 +7,7 @@
 
 Eliminate divergence between the displayed base/team index in the new Next.js frontend and the value the backend uses for enrollment validation. Today the canonical formula lives in `@badman/utils.getIndexFromPlayers` and is reused by backend validation, the entry-model recalculation hook, and the legacy Angular frontend; the new frontend reimplements it locally and drifts (BAD-119).
 
-Approach: extract the inline snapshot-fetch + formula glue from the entry-model `BeforeCreate`/`BeforeUpdate` hook into a new `IndexCalculationService` in `@badman/backend-competition-enrollment`. Expose a single batched GraphQL query `calculateIndex(...)` that supports both base-index mode (player IDs only) and team-index mode (pre-resolved per-player components) and returns per-input results so a single bad input never fails the batch. The new frontend consumes that query (debounced + batched) and deletes its local formula. Existing backend callers (validation, hook, assembly rules, maintenance script) keep their public behaviour byte-identical (SC-006).
+Approach: extract the inline snapshot-fetch + formula glue from the entry-model `BeforeCreate`/`BeforeUpdate` hook into a new `IndexCalculationService` in `@badman/backend-competition-enrollment`. Expose a single batched GraphQL query `calculateIndex(...)` that accepts player IDs only (the service resolves gender and ranking components from the DB) and returns per-input results so a single bad input never fails the batch. The new frontend consumes that query (debounced + batched) and deletes its local formula. Existing backend callers (validation, hook, assembly rules, maintenance script) keep their public behaviour byte-identical (SC-006).
 
 ## Technical Context
 
@@ -57,7 +57,7 @@ specs/006-unify-base-index-backend/
 ```text
 libs/utils/src/lib/
 ├── get-index.ts                            # Canonical helper (unchanged)
-└── get-index.spec.ts                       # Helper oracle — landed in this branch (37 cases)
+└── get-index.spec.ts                       # Helper oracle — landed in this branch (38 cases)
 
 libs/backend/competition/enrollment/src/
 ├── enrollment.module.ts                    # + provide & export IndexCalculationService
@@ -74,8 +74,8 @@ libs/backend/graphql/src/resolvers/event/competition/
 ├── calculate-index/                        # NEW resolver folder (mirrors enrollment-result/team-result style)
 │   ├── calculate-index.resolver.ts
 │   ├── calculate-index.resolver.spec.ts
-│   ├── calculate-index.input.ts            # @InputType — supports both modes (FR-001)
-│   ├── calculate-index.result.ts           # @ObjectType — per-input result with optional error union
+│   ├── calculate-index.input.ts            # @InputType — player IDs only; service resolves all data from DB
+│   ├── calculate-index.result.ts           # @ObjectType — all fields non-nullable; failures throw GraphQLError
 │   └── index.ts
 └── index.ts                                # + register resolver
 

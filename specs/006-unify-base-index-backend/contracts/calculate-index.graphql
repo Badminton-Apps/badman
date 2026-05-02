@@ -16,10 +16,9 @@ enum SubEventTypeEnum {
 
 input CalculateIndexPlayerInput {
   id: ID!
-  single: Int
-  double: Int
-  mix: Int
-  gender: String
+  # gender, single, double, mix are NOT supplied by the caller.
+  # The service resolves all per-player data exclusively from the DB
+  # (Player table for gender, RankingPlace for ranking components).
 }
 
 input CalculateIndexInput {
@@ -27,7 +26,7 @@ input CalculateIndexInput {
   key: ID!
   type: SubEventTypeEnum!
   season: Int!
-  rankingSystemId: ID!
+  # rankingSystemId is NOT supplied — the service always uses the primary ranking system.
   "When present, the service derives the snapshot window from the parent EventCompetition (parity with the entry-model hook)."
   subEventCompetitionId: ID
   players: [CalculateIndexPlayerInput!]!
@@ -35,42 +34,45 @@ input CalculateIndexInput {
 
 type CalculateIndexContributingPlayer {
   id: ID!
+  "Resolved from the Player table — not supplied by the caller."
   gender: String!
   single: Int!
   double: Int!
   mix: Int!
 }
 
-type CalculateIndexError {
-  "PLAYER_NOT_FOUND | RANKING_SYSTEM_NOT_FOUND | SUB_EVENT_NOT_FOUND | RANKING_FETCH_FAILED | INTERNAL_ERROR"
-  code: String!
-  message: String!
-  "Populated only when code == PLAYER_NOT_FOUND."
-  playerIds: [ID!]
-}
-
+"All fields are non-nullable on success. Failures throw GraphQLError — there is no error field."
 type CalculateIndexResult {
   key: ID!
-  "Null when error is set."
-  index: Int
-  contributingPlayers: [CalculateIndexContributingPlayer!]
-  "Null when error is set. Drives the (4-n)*24 / *36 penalty already included in `index`."
-  missingPlayerCount: Int
-  "Null when index is set."
-  error: CalculateIndexError
+  index: Int!
+  contributingPlayers: [CalculateIndexContributingPlayer!]!
+  "Drives the (4-n)*24 / *36 penalty already included in `index`."
+  missingPlayerCount: Int!
 }
 
 extend type Query {
   """
   Compute the canonical team-strength index for one or more inputs.
 
-  Authentication: requires an authenticated caller. No fine-grained permission gate.
-  Errors:
-    - BadRequestException — empty inputs, duplicate keys, malformed UUIDs.
-    - UnauthorizedException — caller is not authenticated.
+  Authentication: required — any logged-in user. Unauthenticated callers receive a
+  GraphQLError with extensions.code = UNAUTHENTICATED.
 
-  Per-input failures (player not found, snapshot unavailable) are returned in
-  CalculateIndexResult.error and DO NOT fail the overall request.
+  All errors surface as GraphQLError in the standard `errors` array with a stable
+  extensions.code. There are no NestJS HTTP exceptions on this query.
+
+  Batch-level guards (apply to the whole request, extensions.code = BAD_USER_INPUT):
+    - empty `inputs` array
+    - duplicate `key` within the batch
+    - malformed player UUID
+    - `season` outside [1990, currentYear+1]
+
+  Per-input failure codes (extensions.key identifies the batch entry):
+    - PLAYER_NOT_FOUND        — player ID absent from DB or has no gender on record;
+                                extensions.playerIds lists the offending IDs
+    - SUB_EVENT_NOT_FOUND     — subEventCompetitionId references unknown sub-event or
+                                one with no linked EventCompetition
+    - RANKING_SYSTEM_NOT_FOUND — no primary ranking system configured in the DB
+    - INTERNAL_ERROR          — unexpected error during processing
   """
   calculateIndex(inputs: [CalculateIndexInput!]!): [CalculateIndexResult!]!
 }
