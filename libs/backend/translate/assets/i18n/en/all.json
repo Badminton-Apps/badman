@@ -1527,7 +1527,11 @@
       },
       "team-enrollment": {
         "addBasePlayerDialog": {
-          "baseIndex": "Base index: {baseIndex}",
+          "baseIndex": {
+            "loading": "Calculating base index…",
+            "unavailable": "Base index not available",
+            "value": "Base index: {baseIndex}"
+          },
           "maxPlayersReached": "You can add at most {max} base players.",
           "noCompetitions": "No competitions are available for this season.",
           "competition": "Competition",
@@ -1552,7 +1556,11 @@
       },
       "steps": {
         "info": "Information",
-        "players": "Players"
+        "players": "Players",
+        "generalInformation": "General information",
+        "transfersLoans": "Transfers & loans",
+        "teams": "Teams",
+        "confirm": "Confirm"
       },
       "nav": {
         "previous": "Previous",
@@ -1565,6 +1573,16 @@
         "addAtLeastOneTeam": "Add at least one team."
       },
       "teams": {
+        "categories": {
+          "M": "Men",
+          "F": "Women",
+          "MX": "Mixed"
+        },
+        "addTeam": "Add team",
+        "emptyCategory": "No teams in this category",
+        "a11y": {
+          "removePlayerFromList": "Remove player from list"
+        },
         "deleteError": "Error deleting team",
         "loadError": "Error loading teams",
         "retry": "Try again"
@@ -1578,7 +1596,10 @@
         }
       },
       "clubSelection": {
-        "noAdminClubs": "You are not an admin of any clubs"
+        "noAdminClubs": "You are not an admin of any clubs",
+        "heading": "Select your club",
+        "clubLabel": "Club",
+        "emailLabel": "Contact email"
       },
       "locationSelection": {
         "title": "Locations",
@@ -1595,7 +1616,16 @@
       "transfersLoans": {
         "addError": "Error adding transfer/loan",
         "deleteError": "Error deleting transfer/loan",
-        "loadError": "Error loading transfers/loans"
+        "loadError": "Error loading transfers/loans",
+        "addTransfersTitle": "Transfers",
+        "addTransferButton": "Add transfer",
+        "emptyTransfers": "No transfers added yet",
+        "addLoansTitle": "Loans",
+        "addLoanButton": "Add loan",
+        "emptyLoans": "No loans added yet",
+        "a11y": {
+          "cancelPendingSelection": "Cancel pending player selection"
+        }
       },
       "pendingTransferBadge": "transfer",
       "pendingLoanBadge": "loan",
@@ -1622,7 +1652,10 @@
         "minBasePlayers": "Select at least {min} base players."
       },
       "errors": {
-        "rejectedPendingPlayerBlocksSubmit": "Enrollment cannot be submitted. One or more teams contain base players that are no longer valid."
+        "clubNotFoundForFinalise": "Club not found.",
+        "finalisationFailed": "Submission failed. Please try again.",
+        "noTeamsToFinalise": "Add at least one team before submitting.",
+        "notAuthorisedToFinalise": "You don't have permission to finalise this club's enrollment."
       },
       "form": {
         "type": "Type",
@@ -1662,12 +1695,6 @@
         "notificationFailedTitle": "Submission complete — confirmation could not be sent",
         "retryFinalisation": "Retry",
         "retryNotification": "Retry"
-      },
-      "errors": {
-        "clubNotFoundForFinalise": "Club not found.",
-        "finalisationFailed": "Submission failed. Please try again.",
-        "noTeamsToFinalise": "Add at least one team before submitting.",
-        "notAuthorisedToFinalise": "You don't have permission to finalise this club's enrollment."
       }
     },
     "messages": {
@@ -3057,6 +3084,18 @@
           "subtitute-team-index": "s",
           "title": "Warnings"
         }
+      },
+      "errors": {
+        "title": "Errors",
+        "permissionDenied": "You don't have permission to perform this action.",
+        "clubNotFound": "Club not found.",
+        "playerNotFound": "Player not found.",
+        "rankingNotFound": "Player has no ranking — required for index calculation.",
+        "teamNotFound": "Team not found.",
+        "subEventNotFound": "Sub-event not found.",
+        "seasonMismatch": "The team's season does not match the sub-event's competition season.",
+        "internal": "Unexpected server error. Please try again.",
+        "unknown": "Something went wrong."
       }
     },
     "notFoundPage": {

@@ -1772,6 +1772,18 @@
           "subtitute-team-index": "s",
           "title": "Avertissements"
         }
+      },
+      "errors": {
+        "title": "Erreurs",
+        "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action.",
+        "clubNotFound": "Club non trouvé.",
+        "playerNotFound": "Joueur non trouvé.",
+        "rankingNotFound": "Le joueur n'a pas de classement - requis pour le calcul de l'indice.",
+        "teamNotFound": "Équipe non trouvée.",
+        "subEventNotFound": "Sous-événement non trouvé.",
+        "seasonMismatch": "La saison de l'équipe ne correspond pas à la saison de compétition.",
+        "internal": "Erreur serveur inattendue. Veuillez réessayer.",
+        "unknown": "Une erreur est survenue."
       }
     },
     "shell": {
@@ -1835,7 +1847,11 @@
       },
       "team-enrollment": {
         "addBasePlayerDialog": {
-          "baseIndex": "Indice de base : {baseIndex}",
+          "baseIndex": {
+            "loading": "Calcul de l'index de base…",
+            "unavailable": "Index de base indisponible",
+            "value": "Indice de base : {baseIndex}"
+          },
           "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
           "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
           "competition": "Compétition",
@@ -1860,7 +1876,11 @@
       },
       "steps": {
         "info": "Informations",
-        "players": "Joueurs"
+        "players": "Joueurs",
+        "generalInformation": "Informations générales",
+        "transfersLoans": "Transferts & prêts",
+        "teams": "Équipes",
+        "confirm": "Confirmer"
       },
       "nav": {
         "previous": "Précédent",
@@ -1873,6 +1893,16 @@
         "addAtLeastOneTeam": "Ajoutez au moins une équipe."
       },
       "teams": {
+        "categories": {
+          "M": "Hommes",
+          "F": "Dames",
+          "MX": "Mixte"
+        },
+        "addTeam": "Ajouter une équipe",
+        "emptyCategory": "Aucune équipe dans cette catégorie",
+        "a11y": {
+          "removePlayerFromList": "Retirer le joueur de la liste"
+        },
         "deleteError": "Erreur lors de la suppression de l'équipe",
         "loadError": "Erreur lors du chargement des équipes",
         "retry": "Réessayer"
@@ -1886,7 +1916,10 @@
         }
       },
       "clubSelection": {
-        "noAdminClubs": "Vous n'êtes administrateur d'aucun club"
+        "noAdminClubs": "Vous n'êtes administrateur d'aucun club",
+        "heading": "Sélectionnez votre club",
+        "clubLabel": "Club",
+        "emailLabel": "E-mail de contact"
       },
       "locationSelection": {
         "title": "Lieux",
@@ -1903,7 +1936,16 @@
       "transfersLoans": {
         "addError": "Erreur lors de l'ajout du transfert/prêt",
         "deleteError": "Erreur lors de la suppression du transfert/prêt",
-        "loadError": "Erreur lors du chargement des transferts/prêts"
+        "loadError": "Erreur lors du chargement des transferts/prêts",
+        "addTransfersTitle": "Transferts",
+        "addTransferButton": "Ajouter un transfert",
+        "emptyTransfers": "Aucun transfert ajouté",
+        "addLoansTitle": "Prêts",
+        "addLoanButton": "Ajouter un prêt",
+        "emptyLoans": "Aucun prêt ajouté",
+        "a11y": {
+          "cancelPendingSelection": "Annuler la sélection de joueur en attente"
+        }
       },
       "pendingTransferBadge": "transfert",
       "pendingLoanBadge": "prêt",
@@ -1930,7 +1972,10 @@
         "minBasePlayers": "Sélectionnez au moins {min} joueurs de base."
       },
       "errors": {
-        "rejectedPendingPlayerBlocksSubmit": "L'inscription ne peut pas être soumise. Un ou plusieurs équipes contiennent des joueurs de base qui ne sont plus valides."
+        "clubNotFoundForFinalise": "Club non trouvé.",
+        "finalisationFailed": "La soumission a échoué. Veuillez réessayer.",
+        "noTeamsToFinalise": "Ajoutez au moins une équipe avant de soumettre.",
+        "notAuthorisedToFinalise": "Vous n'avez pas la permission de finaliser l'inscription de ce club."
       },
       "form": {
         "type": "Type",
@@ -1970,12 +2015,6 @@
         "notificationFailedTitle": "Soumission terminée — la confirmation n'a pas pu être envoyée",
         "retryFinalisation": "Réessayer",
         "retryNotification": "Réessayer"
-      },
-      "errors": {
-        "clubNotFoundForFinalise": "Club non trouvé.",
-        "finalisationFailed": "La soumission a échoué. Veuillez réessayer.",
-        "noTeamsToFinalise": "Ajoutez au moins une équipe avant de soumettre.",
-        "notAuthorisedToFinalise": "Vous n'avez pas la permission de finaliser l'inscription de ce club."
       }
     },
     "locations": {
