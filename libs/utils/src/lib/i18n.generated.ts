@@ -1545,7 +1545,11 @@ export type I18nTranslations = {
                 };
                 "team-enrollment": {
                     "addBasePlayerDialog": {
-                        "baseIndex": string;
+                        "baseIndex": {
+                            "loading": string;
+                            "unavailable": string;
+                            "value": string;
+                        };
                         "maxPlayersReached": string;
                         "noCompetitions": string;
                         "competition": string;
@@ -1571,6 +1575,10 @@ export type I18nTranslations = {
                 "steps": {
                     "info": string;
                     "players": string;
+                    "generalInformation": string;
+                    "transfersLoans": string;
+                    "teams": string;
+                    "confirm": string;
                 };
                 "nav": {
                     "previous": string;
@@ -1583,6 +1591,16 @@ export type I18nTranslations = {
                     "addAtLeastOneTeam": string;
                 };
                 "teams": {
+                    "categories": {
+                        "M": string;
+                        "F": string;
+                        "MX": string;
+                    };
+                    "addTeam": string;
+                    "emptyCategory": string;
+                    "a11y": {
+                        "removePlayerFromList": string;
+                    };
                     "deleteError": string;
                     "loadError": string;
                     "retry": string;
@@ -1597,6 +1615,9 @@ export type I18nTranslations = {
                 };
                 "clubSelection": {
                     "noAdminClubs": string;
+                    "heading": string;
+                    "clubLabel": string;
+                    "emailLabel": string;
                 };
                 "locationSelection": {
                     "title": string;
@@ -1614,6 +1635,15 @@ export type I18nTranslations = {
                     "addError": string;
                     "deleteError": string;
                     "loadError": string;
+                    "addTransfersTitle": string;
+                    "addTransferButton": string;
+                    "emptyTransfers": string;
+                    "addLoansTitle": string;
+                    "addLoanButton": string;
+                    "emptyLoans": string;
+                    "a11y": {
+                        "cancelPendingSelection": string;
+                    };
                 };
                 "pendingTransferBadge": string;
                 "pendingLoanBadge": string;
@@ -3072,6 +3102,18 @@ export type I18nTranslations = {
                         "subtitute-team-index": string;
                         "title": string;
                     };
+                };
+                "errors": {
+                    "title": string;
+                    "permissionDenied": string;
+                    "clubNotFound": string;
+                    "playerNotFound": string;
+                    "rankingNotFound": string;
+                    "teamNotFound": string;
+                    "subEventNotFound": string;
+                    "seasonMismatch": string;
+                    "internal": string;
+                    "unknown": string;
                 };
             };
             "notFoundPage": {
