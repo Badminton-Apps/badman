@@ -1601,6 +1601,7 @@
         "addError": "Error adding transfer/loan",
         "deleteError": "Error deleting transfer/loan",
         "loadError": "Error loading transfers/loans",
+        "duplicateWarning": "This player is already registered as a transfer/loan",
         "addTransfersTitle": "Transfers",
         "addTransferButton": "Add transfer",
         "emptyTransfers": "No transfers added yet",

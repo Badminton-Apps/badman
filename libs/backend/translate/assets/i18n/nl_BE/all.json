@@ -1319,6 +1319,7 @@
         "addError": "Fout bij het toevoegen van transfer/uitlening",
         "deleteError": "Fout bij het verwijderen van transfer/uitlening",
         "loadError": "Fout bij het laden van transfers/uitleningen",
+        "duplicateWarning": "Deze speler is al geregistreerd als transfer/uitlening",
         "addTransfersTitle": "Transfers",
         "addTransferButton": "Transfer toevoegen",
         "emptyTransfers": "Nog geen transfers toegevoegd",

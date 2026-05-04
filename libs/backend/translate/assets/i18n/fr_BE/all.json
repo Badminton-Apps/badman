@@ -1921,6 +1921,7 @@
         "addError": "Erreur lors de l'ajout du transfert/prêt",
         "deleteError": "Erreur lors de la suppression du transfert/prêt",
         "loadError": "Erreur lors du chargement des transferts/prêts",
+        "duplicateWarning": "Ce joueur is déjà enregistré comme transfert/prêt",
         "addTransfersTitle": "Transferts",
         "addTransferButton": "Ajouter un transfert",
         "emptyTransfers": "Aucun transfert ajouté",
