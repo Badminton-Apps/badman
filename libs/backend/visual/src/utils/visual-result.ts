@@ -27,6 +27,26 @@ const arrayOf = <S extends z.ZodTypeAny>(
 ): z.ZodEffects<z.ZodArray<S>, z.infer<S>[], unknown> =>
   z.preprocess((v) => (v == null ? [] : asArray(v)), z.array(schema));
 
+/**
+ * Preprocess helper for optional nested-object fields.
+ * The Visual API occasionally sends a primitive (number, string) where an
+ * object is expected — fast-xml-parser collapses empty or ID-only elements
+ * to their scalar value. Drop the primitive to undefined so the schema
+ * treats the field as absent rather than throwing.
+ *
+ * Logs a warning so we can observe what values are actually being dropped
+ * in production and remove this guard once the upstream data stabilises.
+ */
+const dropPrimitive =
+  (field: string) =>
+  (v: unknown): unknown => {
+    if (v !== undefined && (typeof v !== "object" || v === null)) {
+      console.warn(`[visual] unexpected primitive for "${field}" — dropping:`, v);
+      return undefined;
+    }
+    return v;
+  };
+
 export interface XmlResult {
   Tournament?: XmlTournament | XmlTournament[];
   TournamentMatch?: XmlTournamentMatch;
@@ -194,19 +214,19 @@ export const XmlClubSchema = z
     Code: requiredCoercedString,
     Name: z.string(),
     Number: z.coerce.string().optional(),
-    Contact: z.string().optional(),
+    Contact: z.coerce.string().optional(),
     Address: z.string().optional(),
     Address2: z.string().optional(),
     Address3: z.string().optional(),
-    PostalCode: z.string().optional(),
+    PostalCode: z.coerce.string().optional(),
     City: z.string().optional(),
     State: z.string().optional(),
     Country: z.string().optional(),
-    Phone: z.string().optional(),
-    Phone2: z.string().optional(),
-    Mobile: z.string().optional(),
-    Fax: z.string().optional(),
-    Fax2: z.string().optional(),
+    Phone: z.coerce.string().optional(),
+    Phone2: z.coerce.string().optional(),
+    Mobile: z.coerce.string().optional(),
+    Fax: z.coerce.string().optional(),
+    Fax2: z.coerce.string().optional(),
     Email: z.string().optional(),
     Website: z.string().optional(),
   })
@@ -220,18 +240,18 @@ export const XmlTeamSchema = z
   .object({
     Code: requiredCoercedString,
     Name: z.string().optional(),
-    Player1: XmlPlayerSchema.optional(),
-    Player2: XmlPlayerSchema.optional(),
-    Player3: XmlPlayerSchema.optional(),
-    Player4: XmlPlayerSchema.optional(),
-    Contact: z.string().optional(),
+    Player1: z.preprocess(dropPrimitive("Team.Player1"), XmlPlayerSchema.optional()),
+    Player2: z.preprocess(dropPrimitive("Team.Player2"), XmlPlayerSchema.optional()),
+    Player3: z.preprocess(dropPrimitive("Team.Player3"), XmlPlayerSchema.optional()),
+    Player4: z.preprocess(dropPrimitive("Team.Player4"), XmlPlayerSchema.optional()),
+    Contact: z.coerce.string().optional(),
     Address: z.string().optional(),
-    PostalCode: z.string().optional(),
+    PostalCode: z.coerce.string().optional(),
     City: z.string().optional(),
-    Phone: z.string().optional(),
+    Phone: z.coerce.string().optional(),
     Email: z.string().optional(),
-    Club: XmlClubSchema.optional(),
-    Players: XmlPlayersSchema.optional(),
+    Club: z.preprocess(dropPrimitive("Team.Club"), XmlClubSchema.optional()),
+    Players: z.preprocess(dropPrimitive("Team.Players"), XmlPlayersSchema.optional()),
   })
   .passthrough();
 // Legacy contract preserved for consumers that destructure the nested
@@ -276,9 +296,9 @@ export const XmlMatchSchema = z
     MatchTypeID: z.coerce.number().optional(),
     MatchTypeNo: z.coerce.string().optional(),
     MatchOrder: z.coerce.number().optional(),
-    Team1: XmlTeamSchema.optional(),
-    Team2: XmlTeamSchema.optional(),
-    Duration: z.string().optional(),
+    Team1: z.preprocess(dropPrimitive("Match.Team1"), XmlTeamSchema.optional()),
+    Team2: z.preprocess(dropPrimitive("Match.Team2"), XmlTeamSchema.optional()),
+    Duration: z.coerce.string().optional(),
     Sets: XmlSetsSchema.optional(),
     Stats: XmlStatsSchema.optional(),
     RoundName: z.string().optional(),
@@ -325,8 +345,8 @@ export const XmlTeamMatchSchema = z
     EventName: z.string().optional(),
     DrawCode: z.coerce.string().optional(),
     DrawName: z.string().optional(),
-    Team1: XmlTeamSchema.optional(),
-    Team2: XmlTeamSchema.optional(),
+    Team1: z.preprocess(dropPrimitive("TeamMatch.Team1"), XmlTeamSchema.optional()),
+    Team2: z.preprocess(dropPrimitive("TeamMatch.Team2"), XmlTeamSchema.optional()),
     Sets: XmlSetsSchema.optional(),
   })
   .passthrough();
@@ -359,8 +379,8 @@ export const XmlTournamentEventSchema = z
     GameTypeID: z.coerce.number().optional(),
     LevelID: z.coerce.number().optional(),
     ParaClassID: z.coerce.string().optional(),
-    Grading: XmlGradingSchema.optional(),
-    SubGrading: XmlGradingSchema.optional(),
+    Grading: z.preprocess(dropPrimitive("TournamentEvent.Grading"), XmlGradingSchema.optional()),
+    SubGrading: z.preprocess(dropPrimitive("TournamentEvent.SubGrading"), XmlGradingSchema.optional()),
   })
   .passthrough();
 export type XmlTournamentEvent = z.infer<typeof XmlTournamentEventSchema>;
@@ -377,10 +397,7 @@ export const XmlItemSchema = z
     Code: requiredCoercedString,
     Winner: z.coerce.string().optional(),
     ScoreStatus: z.coerce.string().optional(),
-    Team: z.preprocess(
-      (v) => (typeof v === "string" ? undefined : v),
-      TeamClassSchema.optional()
-    ),
+    Team: z.preprocess(dropPrimitive("Item.Team"), TeamClassSchema.optional()),
     MatchTime: z.string().optional(),
     Sets: XmlSetsSchema.optional(),
   })
@@ -434,7 +451,7 @@ export type XmlCategory = z.infer<typeof XmlCategorySchema>;
 export const XmlContactSchema = z
   .object({
     Name: z.string().optional(),
-    Phone: z.string().optional(),
+    Phone: z.coerce.string().optional(),
     Email: z.string().optional(),
   })
   .passthrough();
@@ -447,11 +464,11 @@ export const XmlVenueSchema = z
   .object({
     Name: z.string().optional(),
     Address1: z.string().optional(),
-    Postalcode: z.string().optional(),
+    Postalcode: z.coerce.string().optional(),
     City: z.string().optional(),
     CountryCode: z.string().optional(),
-    Phone: z.string().optional(),
-    Fax: z.string().optional(),
+    Phone: z.coerce.string().optional(),
+    Fax: z.coerce.string().optional(),
     Website: z.string().optional(),
   })
   .passthrough();
@@ -468,7 +485,7 @@ export const XmlTournamentSchema = z
     EndDate: z.string().optional(),
     OnlineEntryStartDate: z.string().optional(),
     OnlineEntryEndDate: z.string().optional(),
-    TournamentTimezone: z.string().optional(),
+    TournamentTimezone: z.coerce.string().optional(),
     AcceptanceListPublicationDate: z.string().optional(),
     DrawPublicationDate: z.string().optional(),
     ProspectusPublicationDate: z.string().optional(),
@@ -477,11 +494,11 @@ export const XmlTournamentSchema = z
     OnlineEntryWithdrawalDeadline: z.string().optional(),
     AcceptanceRankingDate: z.string().optional(),
     SeedingRankingDate: z.string().optional(),
-    Category: XmlCategorySchema.optional(),
+    Category: z.preprocess(dropPrimitive("Tournament.Category"), XmlCategorySchema.optional()),
     PrizeMoney: z.coerce.string().optional(),
-    Organization: XmlOrganizationSchema.optional(),
-    Contact: XmlContactSchema.optional(),
-    Venue: XmlVenueSchema.optional(),
+    Organization: z.preprocess(dropPrimitive("Tournament.Organization"), XmlOrganizationSchema.optional()),
+    Contact: z.preprocess(dropPrimitive("Tournament.Contact"), XmlContactSchema.optional()),
+    Venue: z.preprocess(dropPrimitive("Tournament.Venue"), XmlVenueSchema.optional()),
     TournamentStatus: z.coerce.number().optional(),
   })
   .passthrough();
