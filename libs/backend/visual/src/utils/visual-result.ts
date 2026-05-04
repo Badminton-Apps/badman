@@ -276,8 +276,14 @@ export const XmlMatchSchema = z
     MatchTypeID: z.coerce.number().optional(),
     MatchTypeNo: z.coerce.string().optional(),
     MatchOrder: z.coerce.number().optional(),
-    Team1: XmlTeamSchema.optional(),
-    Team2: XmlTeamSchema.optional(),
+    Team1: z.preprocess(
+      (v) => (typeof v !== "object" || v === null ? undefined : v),
+      XmlTeamSchema.optional()
+    ),
+    Team2: z.preprocess(
+      (v) => (typeof v !== "object" || v === null ? undefined : v),
+      XmlTeamSchema.optional()
+    ),
     Duration: z.string().optional(),
     Sets: XmlSetsSchema.optional(),
     Stats: XmlStatsSchema.optional(),
@@ -325,8 +331,14 @@ export const XmlTeamMatchSchema = z
     EventName: z.string().optional(),
     DrawCode: z.coerce.string().optional(),
     DrawName: z.string().optional(),
-    Team1: XmlTeamSchema.optional(),
-    Team2: XmlTeamSchema.optional(),
+    Team1: z.preprocess(
+      (v) => (typeof v !== "object" || v === null ? undefined : v),
+      XmlTeamSchema.optional()
+    ),
+    Team2: z.preprocess(
+      (v) => (typeof v !== "object" || v === null ? undefined : v),
+      XmlTeamSchema.optional()
+    ),
     Sets: XmlSetsSchema.optional(),
   })
   .passthrough();

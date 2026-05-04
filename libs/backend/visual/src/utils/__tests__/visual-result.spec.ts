@@ -1,8 +1,10 @@
 import {
   XmlItemSchema,
+  XmlMatchSchema,
   XmlRankingCategorySchema,
   XmlRankingPublicationSchema,
   XmlRankingSchema,
+  XmlTeamMatchSchema,
   XmlTournamentDrawSchema,
   XmlTournamentMatchSchema,
 } from "../visual-result";
@@ -158,6 +160,39 @@ describe("requiredCoercedString invariant", () => {
     if (result.success) {
       expect(result.data.Structure?.Item[0].Team).toBeUndefined();
       expect(result.data.Structure?.Item[1].Team).toEqual({ Code: "T1", Name: "Foo" });
+    }
+  });
+
+  // Visual API sends bare numbers for Team1/Team2 (e.g. team-code IDs) when the
+  // match slot is not yet filled. Schema must drop them to undefined (Sentry #116466287).
+  it("XmlMatchSchema: coerces numeric Team1/Team2 to undefined", () => {
+    const result = XmlMatchSchema.safeParse({ Code: "M1", Team1: 0, Team2: 0 });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Team1).toBeUndefined();
+      expect(result.data.Team2).toBeUndefined();
+    }
+  });
+
+  it("XmlMatchSchema: preserves object Team1/Team2", () => {
+    const result = XmlMatchSchema.safeParse({
+      Code: "M1",
+      Team1: { Code: "T1", Name: "Alpha" },
+      Team2: { Code: "T2", Name: "Beta" },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Team1?.Code).toBe("T1");
+      expect(result.data.Team2?.Code).toBe("T2");
+    }
+  });
+
+  it("XmlTeamMatchSchema: coerces numeric Team1/Team2 to undefined", () => {
+    const result = XmlTeamMatchSchema.safeParse({ Code: "TM1", Team1: 42, Team2: 99 });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Team1).toBeUndefined();
+      expect(result.data.Team2).toBeUndefined();
     }
   });
 
