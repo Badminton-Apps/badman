@@ -1543,31 +1543,6 @@ export type I18nTranslations = {
                     "manageAvailability": string;
                     "hideAvailability": string;
                 };
-                "team-enrollment": {
-                    "addBasePlayerDialog": {
-                        "baseIndex": string;
-                        "maxPlayersReached": string;
-                        "noCompetitions": string;
-                        "competition": string;
-                        "division": string;
-                        "divisionBaseIndexRangeMismatch": string;
-                        "playerTooStrong": string;
-                    };
-                    "import-existing-optional": string;
-                    "validating": string;
-                    "import-teams": {
-                        "title": string;
-                        "allTeams": string;
-                        "categories": {
-                            "MX": string;
-                            "M": string;
-                            "F": string;
-                            "NATIONAL": string;
-                        };
-                        "cancel": string;
-                        "import": string;
-                    };
-                };
                 "steps": {
                     "info": string;
                     "players": string;
@@ -1720,6 +1695,31 @@ export type I18nTranslations = {
                     "notificationFailedTitle": string;
                     "retryFinalisation": string;
                     "retryNotification": string;
+                };
+                "teamEnrollment": {
+                    "addBasePlayerDialog": {
+                        "baseIndex": string;
+                        "maxPlayersReached": string;
+                        "noCompetitions": string;
+                        "competition": string;
+                        "division": string;
+                        "divisionBaseIndexRangeMismatch": string;
+                        "playerTooStrong": string;
+                    };
+                    "importExistingOptional": string;
+                    "validating": string;
+                    "importTeams": {
+                        "title": string;
+                        "allTeams": string;
+                        "categories": {
+                            "MX": string;
+                            "M": string;
+                            "F": string;
+                            "NATIONAL": string;
+                        };
+                        "cancel": string;
+                        "import": string;
+                    };
                 };
             };
             "messages": {

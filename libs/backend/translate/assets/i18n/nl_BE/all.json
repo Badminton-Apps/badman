@@ -1243,31 +1243,6 @@
         "manageAvailability": "Beschikbaarheid beheren",
         "hideAvailability": "Beschikbaarheid verbergen"
       },
-      "team-enrollment": {
-        "addBasePlayerDialog": {
-          "baseIndex": "Basisindex",
-          "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
-          "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
-          "competition": "Competitie",
-          "division": "Afdeling",
-          "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
-          "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
-        },
-        "import-existing-optional": "Bestaande importeren (optioneel)",
-        "validating": "Valideren…",
-        "import-teams": {
-          "title": "Teams importeren",
-          "allTeams": "Alle teams",
-          "categories": {
-            "MX": "Gemengd",
-            "M": "Heren",
-            "F": "Dames",
-            "NATIONAL": "Nationaal"
-          },
-          "cancel": "Annuleren",
-          "import": "Importeren"
-        }
-      },
       "steps": {
         "info": "Informatie",
         "players": "Spelers",
@@ -1420,6 +1395,31 @@
         "notificationFailedTitle": "Indiening voltooid — bevestiging kon niet worden verzonden",
         "retryFinalisation": "Opnieuw proberen",
         "retryNotification": "Opnieuw proberen"
+      },
+      "teamEnrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": "Basisindex",
+          "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
+          "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
+          "competition": "Competitie",
+          "division": "Afdeling",
+          "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
+          "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
+        },
+        "importExistingOptional": "Bestaande importeren (optioneel)",
+        "validating": "Valideren…",
+        "importTeams": {
+          "title": "Teams importeren",
+          "allTeams": "Alle teams",
+          "categories": {
+            "MX": "Gemengd",
+            "M": "Heren",
+            "F": "Dames",
+            "NATIONAL": "Nationaal"
+          },
+          "cancel": "Annuleren",
+          "import": "Importeren"
+        }
       }
     },
     "messages": {

@@ -1525,31 +1525,6 @@
         "manageAvailability": "Manage availability",
         "hideAvailability": "Hide availability"
       },
-      "team-enrollment": {
-        "addBasePlayerDialog": {
-          "baseIndex": "Base index",
-          "maxPlayersReached": "You can add at most {max} base players.",
-          "noCompetitions": "No competitions are available for this season.",
-          "competition": "Competition",
-          "division": "Division",
-          "divisionBaseIndexRangeMismatch": "Your team's base index ({baseIndex}) does not match any division for this competition.",
-          "playerTooStrong": "{name} has level {level}, which is too strong for this division (strongest allowed: {maxLevel})."
-        },
-        "import-existing-optional": "Import existing (optional)",
-        "validating": "Validating…",
-        "import-teams": {
-          "title": "Import teams",
-          "allTeams": "All teams",
-          "categories": {
-            "MX": "Mixed",
-            "M": "Men's",
-            "F": "Women's",
-            "NATIONAL": "National"
-          },
-          "cancel": "Cancel",
-          "import": "Import"
-        }
-      },
       "steps": {
         "info": "Information",
         "players": "Players",
@@ -1702,6 +1677,31 @@
         "notificationFailedTitle": "Submission complete — confirmation could not be sent",
         "retryFinalisation": "Retry",
         "retryNotification": "Retry"
+      },
+      "teamEnrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": "Base index",
+          "maxPlayersReached": "You can add at most {max} base players.",
+          "noCompetitions": "No competitions are available for this season.",
+          "competition": "Competition",
+          "division": "Division",
+          "divisionBaseIndexRangeMismatch": "Your team's base index ({baseIndex}) does not match any division for this competition.",
+          "playerTooStrong": "{name} has level {level}, which is too strong for this division (strongest allowed: {maxLevel})."
+        },
+        "importExistingOptional": "Import existing (optional)",
+        "validating": "Validating…",
+        "importTeams": {
+          "title": "Import teams",
+          "allTeams": "All teams",
+          "categories": {
+            "MX": "Mixed",
+            "M": "Men's",
+            "F": "Women's",
+            "NATIONAL": "National"
+          },
+          "cancel": "Cancel",
+          "import": "Import"
+        }
       }
     },
     "messages": {

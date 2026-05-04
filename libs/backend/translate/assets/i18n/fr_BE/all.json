@@ -1845,31 +1845,6 @@
         "manageAvailability": "Gérer la disponibilité",
         "hideAvailability": "Masquer la disponibilité"
       },
-      "team-enrollment": {
-        "addBasePlayerDialog": {
-          "baseIndex": "Indice de base",
-          "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
-          "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
-          "competition": "Compétition",
-          "division": "Division",
-          "divisionBaseIndexRangeMismatch": "L'indice de base de votre équipe ({baseIndex}) ne correspond à aucune division pour cette compétition.",
-          "playerTooStrong": "{name} a le niveau {level}, ce qui est trop fort pour cette division (maximum autorisé : {maxLevel})."
-        },
-        "import-existing-optional": "Importer l'existant (optionnel)",
-        "validating": "Validation…",
-        "import-teams": {
-          "title": "Importer les équipes",
-          "allTeams": "Toutes les équipes",
-          "categories": {
-            "MX": "Mixte",
-            "M": "Messieurs",
-            "F": "Dames",
-            "NATIONAL": "National"
-          },
-          "cancel": "Annuler",
-          "import": "Importer"
-        }
-      },
       "steps": {
         "info": "Informations",
         "players": "Joueurs",
@@ -2022,6 +1997,31 @@
         "notificationFailedTitle": "Soumission terminée — la confirmation n'a pas pu être envoyée",
         "retryFinalisation": "Réessayer",
         "retryNotification": "Réessayer"
+      },
+      "teamEnrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": "Indice de base",
+          "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
+          "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
+          "competition": "Compétition",
+          "division": "Division",
+          "divisionBaseIndexRangeMismatch": "L'indice de base de votre équipe ({baseIndex}) ne correspond à aucune division pour cette compétition.",
+          "playerTooStrong": "{name} a le niveau {level}, ce qui est trop fort pour cette division (maximum autorisé : {maxLevel})."
+        },
+        "importExistingOptional": "Importer l'existant (optionnel)",
+        "validating": "Validation…",
+        "importTeams": {
+          "title": "Importer les équipes",
+          "allTeams": "Toutes les équipes",
+          "categories": {
+            "MX": "Mixte",
+            "M": "Messieurs",
+            "F": "Dames",
+            "NATIONAL": "National"
+          },
+          "cancel": "Annuler",
+          "import": "Importer"
+        }
       }
     },
     "locations": {
