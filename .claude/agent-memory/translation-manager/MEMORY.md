@@ -1,0 +1,1 @@
+- [i18n Key Renaming (2026-05-04)](i18n-renaming-2026-05-04.md) — Renamed 19 keys under `all.v1.enrollment` from kebab-case to camelCase

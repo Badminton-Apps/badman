@@ -1563,6 +1563,8 @@ export type I18nTranslations = {
                 };
                 "teams": {
                     "baseValue": string;
+                    "labelNumbered": string;
+                    "labelFallback": string;
                     "baseIndex": {
                         "loading": string;
                     };
@@ -1698,7 +1700,11 @@ export type I18nTranslations = {
                 };
                 "teamEnrollment": {
                     "addBasePlayerDialog": {
-                        "baseIndex": string;
+                        "baseIndex": {
+                            "label": string;
+                            "loading": string;
+                            "unavailable": string;
+                        };
                         "maxPlayersReached": string;
                         "noCompetitions": string;
                         "competition": string;

@@ -1864,7 +1864,9 @@
         "addAtLeastOneTeam": "Ajoutez au moins une équipe."
       },
       "teams": {
-        "baseValue": "Équipe {index}",
+        "baseValue": "Équipe {value}",
+        "labelNumbered": "Équipe {number}",
+        "labelFallback": "Équipe",
         "baseIndex": {
           "loading": "Chargement de l'équipe..."
         },
@@ -2000,7 +2002,11 @@
       },
       "teamEnrollment": {
         "addBasePlayerDialog": {
-          "baseIndex": "Indice de base",
+          "baseIndex": {
+            "label": "Indice de base",
+            "loading": "Chargement de l'indice de base...",
+            "unavailable": "Indice de base non disponible"
+          },
           "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
           "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
           "competition": "Compétition",

@@ -54,7 +54,7 @@ const stubSubEvent = (
     id: SUB_EVENT_ID,
     eventCompetition: {
       season: SEASON,
-      usedRankingUnit: "month",
+      usedRankingUnit: "months",
       usedRankingAmount: 4,
       ...ecOverrides,
     } as unknown as EventCompetition,
@@ -547,12 +547,12 @@ describe("IndexCalculationService", () => {
       }
     });
 
-    it("uses the precise snapshot window from EventCompetition when subEventCompetitionId is supplied", async () => {
+    it("uses the precise snapshot window from EventCompetition when subEventCompetitionId is supplied (months unit)", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      // usedRankingAmount = 4 → month index 4 (May); season 2024
+      // usedRankingUnit="months", usedRankingAmount=4 → May 2024
       jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(
-        stubSubEvent({ season: 2024, usedRankingAmount: 4 })
+        stubSubEvent({ season: 2024, usedRankingUnit: "months", usedRankingAmount: 4 })
       );
       const spy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
 
@@ -570,15 +570,74 @@ describe("IndexCalculationService", () => {
       };
       const [start, end] = args.where.rankingDate[Op.between];
 
-      // start = day 0 of month 4 of 2024 = last day of April 2024
-      expect(start.getFullYear()).toBe(2024);
-      expect(start.getMonth()).toBe(3); // April
-      expect(start.getDate()).toBe(30);
+      // start widened 1 year back: startOfMonth(May 2023)
+      expect(start.getFullYear()).toBe(2023);
+      expect(start.getMonth()).toBe(4); // May
+      expect(start.getDate()).toBe(1);
 
       // end = last day of May 2024
       expect(end.getFullYear()).toBe(2024);
       expect(end.getMonth()).toBe(4); // May
       expect(end.getDate()).toBe(31);
+    });
+
+    it("builds a weeks-based window when usedRankingUnit is 'weeks'", async () => {
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
+      jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
+      // week 20 of 2024 falls in May
+      jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(
+        stubSubEvent({ season: 2024, usedRankingUnit: "weeks", usedRankingAmount: 20 })
+      );
+      const spy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+
+      await service.calculateOne({
+        key: "k",
+        type: SubEventTypeEnum.M,
+        season: SEASON,
+        subEventCompetitionId: SUB_EVENT_ID,
+        players: [{ id: "p1" }],
+      });
+
+      const args = spy.mock.calls[0][0] as {
+        where: { rankingDate: Record<symbol, [Date, Date]> };
+      };
+      const [start, end] = args.where.rankingDate[Op.between];
+
+      // week 20 of 2024 is in May → window widened to [May 1 2023, May 31 2024]
+      expect(start.getFullYear()).toBe(2023);
+      expect(start.getMonth()).toBe(4); // May
+      expect(start.getDate()).toBe(1);
+      expect(end.getFullYear()).toBe(2024);
+      expect(end.getMonth()).toBe(4); // May
+      expect(end.getDate()).toBe(31);
+    });
+
+    it("falls back to the prior-year snapshot when the precise month has no rows", async () => {
+      const playerId = "p1";
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
+      jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer(playerId)]);
+      // Upcoming season 2026, May target — no May 2026 rows yet, only May 2025.
+      jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(
+        stubSubEvent({ season: 2026, usedRankingUnit: "months", usedRankingAmount: 4 })
+      );
+      const priorYearPlace = stubPlace(playerId, 7, 7, 12);
+      // Make rankingDate explicit so the test pins the prior-year semantics.
+      (priorYearPlace as unknown as { rankingDate: Date }).rankingDate = new Date(2025, 4, 5);
+      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([priorYearPlace]);
+
+      const result = await service.calculateOne({
+        key: "k",
+        type: SubEventTypeEnum.M,
+        season: 2026,
+        subEventCompetitionId: SUB_EVENT_ID,
+        players: [{ id: playerId }],
+      });
+
+      expect(result._tag).toBe("success");
+      if (result._tag === "success") {
+        expect(result.contributingPlayers[0].single).toBe(7);
+        expect(result.contributingPlayers[0].double).toBe(7);
+      }
     });
 
     it("returns a successful result using the precise window", async () => {
