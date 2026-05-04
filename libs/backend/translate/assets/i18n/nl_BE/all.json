@@ -1262,7 +1262,7 @@
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
       },
       "teams": {
-        "baseValue": "Team {index}",
+        "baseValue": "Team {value}",
         "baseIndex": {
           "loading": "Team laden..."
         },
@@ -1398,7 +1398,11 @@
       },
       "teamEnrollment": {
         "addBasePlayerDialog": {
-          "baseIndex": "Basisindex",
+          "baseIndex": {
+            "label": "Basisindex",
+            "loading": "Basisindex laden...",
+            "unavailable": "Basisindex niet beschikbaar"
+          },
           "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
           "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
           "competition": "Competitie",

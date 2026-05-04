@@ -1544,7 +1544,7 @@
         "addAtLeastOneTeam": "Add at least one team."
       },
       "teams": {
-        "baseValue": "Team {index}",
+        "baseValue": "Team {value}",
         "baseIndex": {
           "loading": "Loading team..."
         },
@@ -1680,7 +1680,11 @@
       },
       "teamEnrollment": {
         "addBasePlayerDialog": {
-          "baseIndex": "Base index",
+          "baseIndex": {
+            "label": "Base index",
+            "loading": "Loading base index...",
+            "unavailable": "Base index unavailable"
+          },
           "maxPlayersReached": "You can add at most {max} base players.",
           "noCompetitions": "No competitions are available for this season.",
           "competition": "Competition",
