@@ -59,7 +59,7 @@ export class EventEntryResolver {
     return eventEntry.getPlayers();
   }
 
-  @ResolveField(() => SubEventCompetition)
+  @ResolveField(() => SubEventCompetition, { nullable: true })
   async subEventCompetition(@Parent() eventEntry: EventEntry): Promise<SubEventCompetition> {
     return eventEntry.getSubEventCompetition();
   }
@@ -83,6 +83,7 @@ export class EventEntryResolver {
   }
 
   @ResolveField(() => TeamEnrollmentOutput, {
+    nullable: true,
     description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
   })
   async enrollmentValidation(
