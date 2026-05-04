@@ -7,7 +7,7 @@ import {
 } from "@badman/backend-database";
 import { getBestPlayersFromTeam, getIndexFromPlayers, IndexPlayer } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
-import { endOfMonth } from "date-fns";
+import { endOfMonth, setDay, setMonth, setWeek, startOfMonth, subYears } from "date-fns";
 import { Op, Transaction } from "sequelize";
 import {
   IndexCalculationContributingPlayer,
@@ -128,10 +128,27 @@ export class IndexCalculationService {
     usedRankingUnit: string;
     usedRankingAmount: number;
   }): { start: Date; end: Date } {
-    const refDate = new Date(ec.season, ec.usedRankingAmount, 1);
-    // day 0 rolls back to the last day of the previous month (mirrors moment's .set("date", 0))
-    const start = new Date(ec.season, ec.usedRankingAmount, 0);
+    // Mirror assembly.service.ts: moment().set("year", season).set(unit, amount).startOf/endOfMonth
+    let refDate = new Date(ec.season, 0, 1);
+    switch (ec.usedRankingUnit) {
+      case "months":
+        refDate = setMonth(refDate, ec.usedRankingAmount);
+        break;
+      case "weeks":
+        refDate = setWeek(refDate, ec.usedRankingAmount);
+        break;
+      case "days":
+        refDate = setDay(refDate, ec.usedRankingAmount);
+        break;
+      default:
+        refDate = setMonth(refDate, ec.usedRankingAmount);
+    }
     const end = endOfMonth(refDate);
+    // Widen 1 year back so an upcoming-season enrollment can fall through to
+    // last season's snapshot when this season's federation snapshot has not
+    // yet been published. fetchPlaceMap orders DESC and keeps the most recent
+    // row per player — fresher data wins automatically when it exists.
+    const start = startOfMonth(subYears(refDate, 1));
     return { start, end };
   }
 
@@ -254,8 +271,25 @@ export class IndexCalculationService {
       usedRankingAmount: ec.usedRankingAmount,
     });
 
+    this.logger.debug({
+      subEventCompetitionId,
+      season: ec.season,
+      usedRankingUnit: ec.usedRankingUnit,
+      usedRankingAmount: ec.usedRankingAmount,
+      window: { start: window.start.toISOString(), end: window.end.toISOString() },
+    });
+
     try {
-      return await this.fetchPlaceMap(playerIds, systemId, window, transaction);
+      const placeMap = await this.fetchPlaceMap(playerIds, systemId, window, transaction);
+      if (placeMap.size === 0) {
+        this.logger.warn({
+          subEventCompetitionId,
+          systemId,
+          playerIds,
+          window: { start: window.start.toISOString(), end: window.end.toISOString() },
+        }, "No RankingPlace rows found in window — all players will fall back to amountOfLevels");
+      }
+      return placeMap;
     } catch (err) {
       this.logger.error({ subEventCompetitionId }, err instanceof Error ? err.stack : String(err));
       return failure(

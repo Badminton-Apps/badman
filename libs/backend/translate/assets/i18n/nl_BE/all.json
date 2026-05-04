@@ -1263,6 +1263,8 @@
       },
       "teams": {
         "baseValue": "Team {value}",
+        "labelNumbered": "Ploeg {number}",
+        "labelFallback": "Ploeg",
         "baseIndex": {
           "loading": "Team laden..."
         },

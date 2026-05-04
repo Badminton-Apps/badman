@@ -1545,6 +1545,8 @@
       },
       "teams": {
         "baseValue": "Team {value}",
+        "labelNumbered": "Team {number}",
+        "labelFallback": "Team",
         "baseIndex": {
           "loading": "Loading team..."
         },

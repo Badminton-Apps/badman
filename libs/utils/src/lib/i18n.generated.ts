@@ -1563,6 +1563,8 @@ export type I18nTranslations = {
                 };
                 "teams": {
                     "baseValue": string;
+                    "labelNumbered": string;
+                    "labelFallback": string;
                     "baseIndex": {
                         "loading": string;
                     };

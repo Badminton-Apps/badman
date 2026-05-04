@@ -1865,6 +1865,8 @@
       },
       "teams": {
         "baseValue": "Équipe {value}",
+        "labelNumbered": "Équipe {number}",
+        "labelFallback": "Équipe",
         "baseIndex": {
           "loading": "Chargement de l'équipe..."
         },
