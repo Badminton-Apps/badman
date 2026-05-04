@@ -1243,35 +1243,6 @@
         "manageAvailability": "Beschikbaarheid beheren",
         "hideAvailability": "Beschikbaarheid verbergen"
       },
-      "team-enrollment": {
-        "addBasePlayerDialog": {
-          "baseIndex": {
-            "loading": "Basisindex berekenen…",
-            "unavailable": "Basisindex niet beschikbaar",
-            "value": "Basisindex: {baseIndex}"
-          },
-          "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
-          "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
-          "competition": "Competitie",
-          "division": "Afdeling",
-          "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
-          "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
-        },
-        "import-existing-optional": "Bestaande importeren (optioneel)",
-        "validating": "Valideren…",
-        "import-teams": {
-          "title": "Teams importeren",
-          "allTeams": "Alle teams",
-          "categories": {
-            "MX": "Gemengd",
-            "M": "Heren",
-            "F": "Dames",
-            "NATIONAL": "Nationaal"
-          },
-          "cancel": "Annuleren",
-          "import": "Importeren"
-        }
-      },
       "steps": {
         "info": "Informatie",
         "players": "Spelers",
@@ -1291,6 +1262,10 @@
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
       },
       "teams": {
+        "baseValue": "Team {index}",
+        "baseIndex": {
+          "loading": "Team laden..."
+        },
         "categories": {
           "M": "Heren",
           "F": "Dames",
@@ -1299,6 +1274,13 @@
         "addTeam": "Ploeg toevoegen",
         "emptyCategory": "Geen ploegen in deze categorie",
         "a11y": {
+          "statusError": "Team heeft validatiefouten",
+          "statusSuccess": "Team is geldig",
+          "validatingStatus": "Team valideren...",
+          "expandValidationDetails": "Validatiedetails uitklappen",
+          "collapseValidationDetails": "Validatiedetails inklappen",
+          "editTeam": "Team bewerken",
+          "deleteTeam": "Team verwijderen",
           "removePlayerFromList": "Speler uit lijst verwijderen"
         },
         "deleteError": "Fout bij het verwijderen van team",
@@ -1413,6 +1395,31 @@
         "notificationFailedTitle": "Indiening voltooid — bevestiging kon niet worden verzonden",
         "retryFinalisation": "Opnieuw proberen",
         "retryNotification": "Opnieuw proberen"
+      },
+      "teamEnrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": "Basisindex",
+          "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
+          "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
+          "competition": "Competitie",
+          "division": "Afdeling",
+          "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
+          "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
+        },
+        "importExistingOptional": "Bestaande importeren (optioneel)",
+        "validating": "Valideren…",
+        "importTeams": {
+          "title": "Teams importeren",
+          "allTeams": "Alle teams",
+          "categories": {
+            "MX": "Gemengd",
+            "M": "Heren",
+            "F": "Dames",
+            "NATIONAL": "Nationaal"
+          },
+          "cancel": "Annuleren",
+          "import": "Importeren"
+        }
       }
     },
     "messages": {

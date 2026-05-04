@@ -1845,35 +1845,6 @@
         "manageAvailability": "Gérer la disponibilité",
         "hideAvailability": "Masquer la disponibilité"
       },
-      "team-enrollment": {
-        "addBasePlayerDialog": {
-          "baseIndex": {
-            "loading": "Calcul de l'index de base…",
-            "unavailable": "Index de base indisponible",
-            "value": "Indice de base : {baseIndex}"
-          },
-          "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
-          "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
-          "competition": "Compétition",
-          "division": "Division",
-          "divisionBaseIndexRangeMismatch": "L'indice de base de votre équipe ({baseIndex}) ne correspond à aucune division pour cette compétition.",
-          "playerTooStrong": "{name} a le niveau {level}, ce qui est trop fort pour cette division (maximum autorisé : {maxLevel})."
-        },
-        "import-existing-optional": "Importer l'existant (optionnel)",
-        "validating": "Validation…",
-        "import-teams": {
-          "title": "Importer les équipes",
-          "allTeams": "Toutes les équipes",
-          "categories": {
-            "MX": "Mixte",
-            "M": "Messieurs",
-            "F": "Dames",
-            "NATIONAL": "National"
-          },
-          "cancel": "Annuler",
-          "import": "Importer"
-        }
-      },
       "steps": {
         "info": "Informations",
         "players": "Joueurs",
@@ -1893,6 +1864,10 @@
         "addAtLeastOneTeam": "Ajoutez au moins une équipe."
       },
       "teams": {
+        "baseValue": "Équipe {index}",
+        "baseIndex": {
+          "loading": "Chargement de l'équipe..."
+        },
         "categories": {
           "M": "Hommes",
           "F": "Dames",
@@ -1901,6 +1876,13 @@
         "addTeam": "Ajouter une équipe",
         "emptyCategory": "Aucune équipe dans cette catégorie",
         "a11y": {
+          "statusError": "L'équipe a des erreurs de validation",
+          "statusSuccess": "L'équipe est valide",
+          "validatingStatus": "Validation de l'équipe...",
+          "expandValidationDetails": "Développer les détails de validation",
+          "collapseValidationDetails": "Réduire les détails de validation",
+          "editTeam": "Modifier l'équipe",
+          "deleteTeam": "Supprimer l'équipe",
           "removePlayerFromList": "Retirer le joueur de la liste"
         },
         "deleteError": "Erreur lors de la suppression de l'équipe",
@@ -2015,6 +1997,31 @@
         "notificationFailedTitle": "Soumission terminée — la confirmation n'a pas pu être envoyée",
         "retryFinalisation": "Réessayer",
         "retryNotification": "Réessayer"
+      },
+      "teamEnrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": "Indice de base",
+          "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
+          "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
+          "competition": "Compétition",
+          "division": "Division",
+          "divisionBaseIndexRangeMismatch": "L'indice de base de votre équipe ({baseIndex}) ne correspond à aucune division pour cette compétition.",
+          "playerTooStrong": "{name} a le niveau {level}, ce qui est trop fort pour cette division (maximum autorisé : {maxLevel})."
+        },
+        "importExistingOptional": "Importer l'existant (optionnel)",
+        "validating": "Validation…",
+        "importTeams": {
+          "title": "Importer les équipes",
+          "allTeams": "Toutes les équipes",
+          "categories": {
+            "MX": "Mixte",
+            "M": "Messieurs",
+            "F": "Dames",
+            "NATIONAL": "National"
+          },
+          "cancel": "Annuler",
+          "import": "Importer"
+        }
       }
     },
     "locations": {
