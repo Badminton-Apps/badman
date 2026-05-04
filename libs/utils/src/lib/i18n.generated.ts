@@ -1545,11 +1545,7 @@ export type I18nTranslations = {
                 };
                 "team-enrollment": {
                     "addBasePlayerDialog": {
-                        "baseIndex": {
-                            "loading": string;
-                            "unavailable": string;
-                            "value": string;
-                        };
+                        "baseIndex": string;
                         "maxPlayersReached": string;
                         "noCompetitions": string;
                         "competition": string;
@@ -1591,6 +1587,10 @@ export type I18nTranslations = {
                     "addAtLeastOneTeam": string;
                 };
                 "teams": {
+                    "baseValue": string;
+                    "baseIndex": {
+                        "loading": string;
+                    };
                     "categories": {
                         "M": string;
                         "F": string;
@@ -1599,6 +1599,13 @@ export type I18nTranslations = {
                     "addTeam": string;
                     "emptyCategory": string;
                     "a11y": {
+                        "statusError": string;
+                        "statusSuccess": string;
+                        "validatingStatus": string;
+                        "expandValidationDetails": string;
+                        "collapseValidationDetails": string;
+                        "editTeam": string;
+                        "deleteTeam": string;
                         "removePlayerFromList": string;
                     };
                     "deleteError": string;

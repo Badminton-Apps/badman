@@ -1527,11 +1527,7 @@
       },
       "team-enrollment": {
         "addBasePlayerDialog": {
-          "baseIndex": {
-            "loading": "Calculating base index…",
-            "unavailable": "Base index not available",
-            "value": "Base index: {baseIndex}"
-          },
+          "baseIndex": "Base index",
           "maxPlayersReached": "You can add at most {max} base players.",
           "noCompetitions": "No competitions are available for this season.",
           "competition": "Competition",
@@ -1573,6 +1569,10 @@
         "addAtLeastOneTeam": "Add at least one team."
       },
       "teams": {
+        "baseValue": "Team {index}",
+        "baseIndex": {
+          "loading": "Loading team..."
+        },
         "categories": {
           "M": "Men",
           "F": "Women",
@@ -1581,6 +1581,13 @@
         "addTeam": "Add team",
         "emptyCategory": "No teams in this category",
         "a11y": {
+          "statusError": "Team has validation errors",
+          "statusSuccess": "Team is valid",
+          "validatingStatus": "Validating team...",
+          "expandValidationDetails": "Expand validation details",
+          "collapseValidationDetails": "Collapse validation details",
+          "editTeam": "Edit team",
+          "deleteTeam": "Delete team",
           "removePlayerFromList": "Remove player from list"
         },
         "deleteError": "Error deleting team",
