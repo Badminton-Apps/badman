@@ -1619,6 +1619,7 @@ export type I18nTranslations = {
                     "addError": string;
                     "deleteError": string;
                     "loadError": string;
+                    "duplicateWarning": string;
                     "addTransfersTitle": string;
                     "addTransferButton": string;
                     "emptyTransfers": string;
