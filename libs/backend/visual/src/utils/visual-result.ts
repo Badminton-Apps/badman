@@ -480,7 +480,7 @@ export const XmlTournamentSchema = z
     EndDate: z.string().optional(),
     OnlineEntryStartDate: z.string().optional(),
     OnlineEntryEndDate: z.string().optional(),
-    TournamentTimezone: z.string().optional(),
+    TournamentTimezone: z.coerce.string().optional(),
     AcceptanceListPublicationDate: z.string().optional(),
     DrawPublicationDate: z.string().optional(),
     ProspectusPublicationDate: z.string().optional(),

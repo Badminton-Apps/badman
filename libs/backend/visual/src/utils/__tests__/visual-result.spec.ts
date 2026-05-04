@@ -7,6 +7,7 @@ import {
   XmlTeamMatchSchema,
   XmlTournamentDrawSchema,
   XmlTournamentMatchSchema,
+  XmlTournamentSchema,
 } from "../visual-result";
 
 describe("XmlRankingPublicationSchema", () => {
@@ -207,5 +208,16 @@ describe("requiredCoercedString invariant", () => {
       expect(result.data.TournamentID).toBe("1");
       expect(result.data.MatchID).toBe("99");
     }
+  });
+
+  // Visual API sometimes returns TournamentTimezone as a number (Sentry #104397491).
+  it("XmlTournamentSchema: coerces numeric TournamentTimezone to string", () => {
+    const result = XmlTournamentSchema.safeParse({
+      Code: "T1",
+      Name: "Open 2026",
+      TournamentTimezone: 1,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.TournamentTimezone).toBe("1");
   });
 });
