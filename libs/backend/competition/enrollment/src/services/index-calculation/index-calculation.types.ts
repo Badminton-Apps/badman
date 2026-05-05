@@ -25,7 +25,8 @@ export interface IndexCalculationInput {
 
 export interface IndexCalculationContributingPlayer {
   id: string;
-  gender: "M" | "F";
+  /** Null when the player exists in DB but has no gender recorded. */
+  gender: "M" | "F" | null | undefined;
   /** After default-fill */
   single: number;
   /** After default-fill */
