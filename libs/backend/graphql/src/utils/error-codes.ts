@@ -26,6 +26,8 @@ export const ErrorCode = {
   CLUB_NOT_FOUND: "CLUB_NOT_FOUND",
   PLAYER_NOT_FOUND: "PLAYER_NOT_FOUND",
   RANKING_NOT_FOUND: "RANKING_NOT_FOUND",
+  // Deprecated: no longer raised by any resolver as of spec 008 (BAD-152). Remove once active
+  // frontend's error map drops the case.
   TEAM_NUMBER_CONFLICT: "TEAM_NUMBER_CONFLICT",
 
   // Club membership (libs/backend/graphql/src/resolvers/club/club.resolver.ts)
@@ -36,7 +38,6 @@ export const ErrorCode = {
 
   // Event entry finalisation (libs/backend/graphql/src/resolvers/event/entry.resolver.ts)
   NO_TEAMS_TO_FINALISE: "NO_TEAMS_TO_FINALISE",
-
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

@@ -402,38 +402,17 @@ describe("TeamsResolver.updateTeam", () => {
     expect(mockTransaction.rollback).toHaveBeenCalled();
   });
 
-  it("throws TEAM_NUMBER_CONFLICT when target number is taken", async () => {
-    const user = userWithPermission(true);
-    const dbTeam = stubDbTeam({ teamNumber: 3 });
-    const conflicting = { id: "conflict-team-uuid", teamNumber: 5 } as unknown as Team;
+  // US4 (spec 008 FR-004): updateTeam no longer writes teamNumber / name / abbreviation.
+  // The conflict-check + shift-blocks + _temp dance are removed. The sole writer of
+  // those fields is recalculateTeamNumbersForGroup.
 
-    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
-    jest.spyOn(Team, "findOne").mockResolvedValue(conflicting);
-
-    try {
-      await resolver.updateTeam(baseInput({ teamNumber: 5 }), user);
-      fail("expected throw");
-    } catch (err) {
-      const e = err as GraphQLError;
-      expect(e.extensions["code"]).toBe("TEAM_NUMBER_CONFLICT");
-      expect(e.extensions["conflictingTeamId"]).toBe("conflict-team-uuid");
-    }
-
-    expect(mockTransaction.rollback).toHaveBeenCalled();
-    expect(mockTransaction.commit).not.toHaveBeenCalled();
-  });
-
-  it("commits and returns team when number changes with no conflict", async () => {
+  it("commits and returns team when a roster-only edit succeeds", async () => {
     const user = userWithPermission(true);
     const dbTeam = stubDbTeam({ teamNumber: 3 });
 
     jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
-    jest.spyOn(Team, "findOne").mockResolvedValue(null); // no conflict
-    jest.spyOn(Team, "findAll").mockResolvedValue([]); // no cascade teams
-    jest.spyOn(Team, "generateName").mockResolvedValue(undefined);
-    jest.spyOn(Team, "generateAbbreviation").mockResolvedValue(undefined);
 
-    const result = await resolver.updateTeam(baseInput({ teamNumber: 5 }), user);
+    const result = await resolver.updateTeam(baseInput({ season: 2026 }), user);
 
     expect(dbTeam._update).toHaveBeenCalled();
     expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
@@ -441,7 +420,7 @@ describe("TeamsResolver.updateTeam", () => {
     expect(result).toBe(dbTeam);
   });
 
-  it("does not throw when type changes (US2)", async () => {
+  it("does not throw when type changes", async () => {
     const user = userWithPermission(true);
     const dbTeam = stubDbTeam({ type: SubEventTypeEnum.M });
 
@@ -453,7 +432,7 @@ describe("TeamsResolver.updateTeam", () => {
     expect(result).toBe(dbTeam);
   });
 
-  it("succeeds and does not regenerate name when unrelated field changes", async () => {
+  it("succeeds and does not call generateName (teamNumber is frozen)", async () => {
     const user = userWithPermission(true);
     const dbTeam = stubDbTeam();
     jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
@@ -461,7 +440,38 @@ describe("TeamsResolver.updateTeam", () => {
 
     await resolver.updateTeam(baseInput({ season: 2027 }), user);
 
+    // generateName must NOT be called — teamNumber is not changed by updateTeam
     expect(nameSpy).not.toHaveBeenCalled();
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not write teamNumber even when supplied in the input (FR-004)", async () => {
+    // The TypeScript type no longer has teamNumber in TeamUpdateInput, so this
+    // tests the runtime path as a belt-and-suspenders check.
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam({ teamNumber: 3 });
+
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+
+    // Cast to bypass TypeScript since the field no longer exists on the type
+    await resolver.updateTeam(baseInput() as TeamUpdateInput, user);
+
+    // The team's teamNumber should remain 3 — not modified by updateTeam
+    expect(dbTeam.teamNumber).toBe(3);
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not invoke Team.findOne (no conflict-check on teamNumber anymore)", async () => {
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam({ teamNumber: 3 });
+
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+    const findOneSpy = jest.spyOn(Team, "findOne");
+
+    await resolver.updateTeam(baseInput(), user);
+
+    // findOne was removed from updateTeam; it was only used for the conflict check
+    expect(findOneSpy).not.toHaveBeenCalled();
     expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
   });
 
@@ -475,42 +485,5 @@ describe("TeamsResolver.updateTeam", () => {
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
     expect(mockTransaction.commit).not.toHaveBeenCalled();
-  });
-
-  it("regenerates names for all cascade teams without _temp suffix (US3)", async () => {
-    const user = userWithPermission(true);
-    const dbTeam = stubDbTeam({ teamNumber: 1 });
-
-    const makeCascadeTeam = (n: number) => {
-      const save = jest.fn().mockResolvedValue(undefined);
-      return {
-        teamNumber: n,
-        type: SubEventTypeEnum.M,
-        club: stubClub(),
-        name: `Test club ${n}H`,
-        abbreviation: `TC ${n}H`,
-        save,
-        _save: save,
-      } as unknown as Team & { _save: jest.Mock };
-    };
-
-    const cascadeTeam2 = makeCascadeTeam(2);
-    const cascadeTeam3 = makeCascadeTeam(3);
-
-    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
-    jest.spyOn(Team, "findOne").mockResolvedValue(null); // no conflict
-    jest.spyOn(Team, "findAll").mockResolvedValue([cascadeTeam2, cascadeTeam3] as Team[]);
-    const generateNameSpy = jest.spyOn(Team, "generateName").mockResolvedValue(undefined);
-    const generateAbbrevSpy = jest.spyOn(Team, "generateAbbreviation").mockResolvedValue(undefined);
-
-    await resolver.updateTeam(baseInput({ teamNumber: 3 }), user);
-
-    // generateName called for each cascade team in Phase 2
-    expect(generateNameSpy).toHaveBeenCalledTimes(2);
-    expect(generateAbbrevSpy).toHaveBeenCalledTimes(2);
-    // final saves with hooks:false — no _temp in name
-    expect(cascadeTeam2._save).toHaveBeenCalledWith(expect.objectContaining({ hooks: false }));
-    expect(cascadeTeam3._save).toHaveBeenCalledWith(expect.objectContaining({ hooks: false }));
-    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
   });
 });
