@@ -12,6 +12,7 @@ import {
   DrawCompetitionResolver,
   EncounterChangeCompetitionResolver,
   EncounterCompetitionResolver,
+  EnrollmentEntryService,
   EnrollmentResolver,
   EventCompetitionResolver,
   SubEventCompetitionResolver,
@@ -37,6 +38,7 @@ import { ChangeEncounterModule } from "@badman/backend-change-encounter";
     SubEventCompetitionResolver,
     AssemblyResolver,
     EnrollmentResolver,
+    EnrollmentEntryService,
     CalculateIndexResolver,
   ],
 })

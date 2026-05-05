@@ -1,14 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { GraphQLError } from "graphql";
-import { Sequelize } from "sequelize-typescript";
 import { EventEntry, Player, SubEventCompetition, Team } from "@badman/backend-database";
-import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { EnrollmentEntryService } from "./enrollment-entry.service";
-import { EnrollmentResolver } from "./enrollment.resolver";
 
-describe("EnrollmentResolver.createEnrollment", () => {
-  let resolver: EnrollmentResolver;
-  let mockTransaction: { commit: jest.Mock; rollback: jest.Mock };
+describe("EnrollmentEntryService.createEntry", () => {
+  let service: EnrollmentEntryService;
+
+  const fakeTransaction = {} as never;
 
   const userWithPermission = (allowed: boolean) =>
     ({
@@ -16,7 +14,6 @@ describe("EnrollmentResolver.createEnrollment", () => {
       hasAnyPermission: jest.fn().mockResolvedValue(allowed),
     }) as unknown as Player;
 
-  // user.hasAnyPermission decides per requested permission string
   const userMatchingPerms = (matching: string[]) =>
     ({
       id: "user-uuid",
@@ -59,53 +56,38 @@ describe("EnrollmentResolver.createEnrollment", () => {
   };
 
   beforeEach(async () => {
-    mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        EnrollmentResolver,
-        EnrollmentEntryService,
-        {
-          provide: Sequelize,
-          useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
-        },
-        {
-          provide: EnrollmentValidationService,
-          useValue: { fetchAndValidate: jest.fn() },
-        },
-      ],
+      providers: [EnrollmentEntryService],
     }).compile();
-    resolver = module.get<EnrollmentResolver>(EnrollmentResolver);
+    service = module.get<EnrollmentEntryService>(EnrollmentEntryService);
   });
 
   afterEach(() => jest.restoreAllMocks());
 
-  it("returns TEAM_NOT_FOUND and rolls back when the team is missing", async () => {
-    const user = userWithPermission(true);
+  it("throws TEAM_NOT_FOUND when the team is missing", async () => {
     jest.spyOn(Team, "findByPk").mockResolvedValue(null);
 
-    await expect(resolver.createEnrollment(user, "missing-team", "se-uuid")).rejects.toThrow(
-      GraphQLError
-    );
+    const user = userWithPermission(true);
+    await expect(
+      service.createEntry({ teamId: "missing", subEventId: "se-uuid", transaction: fakeTransaction, user })
+    ).rejects.toThrow(GraphQLError);
 
     try {
-      await resolver.createEnrollment(user, "missing-team", "se-uuid");
+      await service.createEntry({ teamId: "missing", subEventId: "se-uuid", transaction: fakeTransaction, user });
     } catch (err) {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("TEAM_NOT_FOUND");
-      expect(e.extensions["teamId"]).toBe("missing-team");
+      expect(e.extensions["teamId"]).toBe("missing");
     }
-
-    expect(mockTransaction.rollback).toHaveBeenCalled();
-    expect(mockTransaction.commit).not.toHaveBeenCalled();
   });
 
-  it("returns PERMISSION_DENIED when the user holds none of the accepted permissions", async () => {
-    const user = userWithPermission(false);
+  it("throws PERMISSION_DENIED when the user holds none of the accepted permissions", async () => {
     const team = stubTeam();
+    const user = userWithPermission(false);
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
 
     try {
-      await resolver.createEnrollment(user, team.id, "se-uuid");
+      await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
@@ -118,10 +100,9 @@ describe("EnrollmentResolver.createEnrollment", () => {
       `${team.clubId}_edit:club`,
       "edit-any:club",
     ]);
-    expect(mockTransaction.rollback).toHaveBeenCalled();
   });
 
-  it("succeeds when the user has only the team's club-scoped edit:club permission (Q1 clarification)", async () => {
+  it("succeeds when the user has only the team's club-scoped edit:club permission", async () => {
     const team = stubTeam({ clubId: "my-club" });
     const user = userMatchingPerms([`my-club_edit:club`]);
     const subEvent = stubSubEvent({ season: 2026 });
@@ -130,32 +111,28 @@ describe("EnrollmentResolver.createEnrollment", () => {
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
     jest.spyOn(EventEntry, "create").mockResolvedValue({} as unknown as EventEntry);
 
-    const result = await resolver.createEnrollment(user, team.id, "se-uuid");
+    const result = await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
 
     expect(result.alreadyExisted).toBe(false);
-    expect(mockTransaction.commit).toHaveBeenCalled();
-    expect(mockTransaction.rollback).not.toHaveBeenCalled();
   });
 
-  it("returns SUB_EVENT_NOT_FOUND and rolls back when the sub-event is missing", async () => {
+  it("throws SUB_EVENT_NOT_FOUND when the sub-event is missing", async () => {
     const team = stubTeam();
     const user = userWithPermission(true);
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(null);
 
     try {
-      await resolver.createEnrollment(user, team.id, "missing-se");
+      await service.createEntry({ teamId: team.id, subEventId: "missing-se", transaction: fakeTransaction, user });
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("SUB_EVENT_NOT_FOUND");
       expect(e.extensions["subEventId"]).toBe("missing-se");
     }
-
-    expect(mockTransaction.rollback).toHaveBeenCalled();
   });
 
-  it("returns SEASON_MISMATCH with both seasons in extensions when team and competition seasons differ", async () => {
+  it("throws SEASON_MISMATCH with both seasons in extensions when seasons differ", async () => {
     const team = stubTeam({ season: 2026 });
     const subEvent = stubSubEvent({ season: 2025 });
     const user = userWithPermission(true);
@@ -163,7 +140,7 @@ describe("EnrollmentResolver.createEnrollment", () => {
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
 
     try {
-      await resolver.createEnrollment(user, team.id, "se-uuid");
+      await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
@@ -171,57 +148,23 @@ describe("EnrollmentResolver.createEnrollment", () => {
       expect(e.extensions["teamSeason"]).toBe(2026);
       expect(e.extensions["competitionSeason"]).toBe(2025);
     }
-
-    expect(mockTransaction.rollback).toHaveBeenCalled();
   });
 
-  it("returns INTERNAL_ERROR (sanitized) on an unexpected throw and logs at error severity", async () => {
-    const team = stubTeam();
-    const subEvent = stubSubEvent();
-    const user = userWithPermission(true);
-    jest.spyOn(Team, "findByPk").mockResolvedValue(team);
-    jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
-    (team as unknown as { _getEntry: jest.Mock })._getEntry.mockRejectedValue(
-      new Error("boom: internal stuff")
-    );
-
-    try {
-      await resolver.createEnrollment(user, team.id, "se-uuid");
-      fail("expected throw");
-    } catch (err) {
-      const e = err as GraphQLError;
-      expect(e.extensions["code"]).toBe("INTERNAL_ERROR");
-      // Internal message must NOT leak.
-      expect(e.message).not.toContain("boom: internal stuff");
-    }
-
-    expect(mockTransaction.rollback).toHaveBeenCalled();
-  });
-
-  it("is idempotent when the team's existing entry already points to the requested sub-event (US2)", async () => {
+  it("is idempotent when the existing entry already points to the requested sub-event", async () => {
     const team = stubTeam({ existingEntry: { subEventId: "se-uuid" } });
     const subEvent = stubSubEvent();
     const user = userWithPermission(true);
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
 
-    const result = await resolver.createEnrollment(user, team.id, "se-uuid");
+    const result = await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
 
-    expect(result).toEqual({
-      teamId: team.id,
-      subEventCompetitionId: "se-uuid",
-      alreadyExisted: true,
-    });
-    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
-    expect(mockTransaction.rollback).not.toHaveBeenCalled();
-    // No further writes happen on the idempotent path.
+    expect(result).toEqual({ teamId: team.id, subEventCompetitionId: "se-uuid", alreadyExisted: true });
     expect((team as unknown as { _setEntry: jest.Mock })._setEntry).not.toHaveBeenCalled();
-    expect(
-      (subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry
-    ).not.toHaveBeenCalled();
+    expect((subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry).not.toHaveBeenCalled();
   });
 
-  it("returns a fresh EnrollmentResult on a successful new enrollment (US3)", async () => {
+  it("creates a fresh entry on a new enrollment", async () => {
     const team = stubTeam();
     const subEvent = stubSubEvent();
     const user = userWithPermission(true);
@@ -229,17 +172,24 @@ describe("EnrollmentResolver.createEnrollment", () => {
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
     jest.spyOn(EventEntry, "create").mockResolvedValue({} as unknown as EventEntry);
 
-    const result = await resolver.createEnrollment(user, team.id, "se-uuid");
+    const result = await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
 
-    expect(result).toEqual({
-      teamId: team.id,
-      subEventCompetitionId: "se-uuid",
-      alreadyExisted: false,
-    });
-    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
-    expect(mockTransaction.rollback).not.toHaveBeenCalled();
-    expect(
-      (subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry
-    ).toHaveBeenCalled();
+    expect(result).toEqual({ teamId: team.id, subEventCompetitionId: "se-uuid", alreadyExisted: false });
+    expect((subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry).toHaveBeenCalled();
+  });
+
+  it("reuses an existing entry when the team already has one pointing to a different sub-event", async () => {
+    const existingEntry = { subEventId: "old-se" } as unknown as EventEntry;
+    const team = stubTeam({ existingEntry: existingEntry as unknown as { subEventId: string } });
+    const subEvent = stubSubEvent();
+    const user = userWithPermission(true);
+    jest.spyOn(Team, "findByPk").mockResolvedValue(team);
+    jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
+
+    const result = await service.createEntry({ teamId: team.id, subEventId: "new-se", transaction: fakeTransaction, user });
+
+    expect(result.alreadyExisted).toBe(false);
+    // setEntry called with the reused entry (no EventEntry.create)
+    expect((team as unknown as { _setEntry: jest.Mock })._setEntry).toHaveBeenCalledWith(existingEntry, expect.any(Object));
   });
 });

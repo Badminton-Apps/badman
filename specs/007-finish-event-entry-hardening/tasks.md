@@ -28,8 +28,8 @@ Single-project, in-place modification of [`libs/backend/graphql/`](../../libs/ba
 
 **Purpose**: Prepare the working tree. Branch already exists.
 
-- [ ] T001 Verify branch `007-finish-event-entry-hardening` is checked out and clean: `git status` returns no surprises; `git rev-parse --abbrev-ref HEAD` returns the branch name
-- [ ] T002 [P] Confirm Docker stack is up for local verification (`npm run docker:up`) so quickstart §3 can run later
+- [x] T001 Verify branch `007-finish-event-entry-hardening` is checked out and clean: `git status` returns no surprises; `git rev-parse --abbrev-ref HEAD` returns the branch name
+- [x] T002 [P] Confirm Docker stack is up for local verification (`npm run docker:up`) so quickstart §3 can run later
 
 ---
 
@@ -39,9 +39,9 @@ Single-project, in-place modification of [`libs/backend/graphql/`](../../libs/ba
 
 **⚠️ CRITICAL**: No story implementation may begin until this phase is complete.
 
-- [ ] T003 Add `NO_TEAMS_TO_FINALISE: "NO_TEAMS_TO_FINALISE"` to the registry in `libs/backend/graphql/src/utils/error-codes.ts` under a new `// Event entry finalisation` group; keep alphabetical-within-group ordering as the file establishes
-- [ ] T004 [P] Create the `FinishEventEntryResult` `@ObjectType` in `libs/backend/graphql/src/resolvers/event/finish-event-entry-result.object.ts` with three `Boolean!` fields (`success`, `alreadyFinalised`, `notificationDispatched`) and the field descriptions from [contracts/finish-event-entry.graphql](contracts/finish-event-entry.graphql); follow the structure of `libs/backend/graphql/src/resolvers/team/team-result.object.ts`
-- [ ] T005 Export `FinishEventEntryResult` from the appropriate barrel/index so it is reachable by `entry.resolver.ts` (verify there is no separate index file in `resolvers/event/`; if there is, add the export — otherwise direct import is fine and this task is a no-op)
+- [x] T003 Add `NO_TEAMS_TO_FINALISE: "NO_TEAMS_TO_FINALISE"` to the registry in `libs/backend/graphql/src/utils/error-codes.ts` under a new `// Event entry finalisation` group; keep alphabetical-within-group ordering as the file establishes
+- [x] T004 [P] Create the `FinishEventEntryResult` `@ObjectType` in `libs/backend/graphql/src/resolvers/event/finish-event-entry-result.object.ts` with three `Boolean!` fields (`success`, `alreadyFinalised`, `notificationDispatched`) and the field descriptions from [contracts/finish-event-entry.graphql](contracts/finish-event-entry.graphql); follow the structure of `libs/backend/graphql/src/resolvers/team/team-result.object.ts`
+- [x] T005 Export `FinishEventEntryResult` from the appropriate barrel/index so it is reachable by `entry.resolver.ts` (verify there is no separate index file in `resolvers/event/`; if there is, add the export — otherwise direct import is fine and this task is a no-op)
 
 **Checkpoint**: Result type exists, error code exists. Stories can now begin.
 
@@ -55,13 +55,13 @@ Single-project, in-place modification of [`libs/backend/graphql/`](../../libs/ba
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Inject `Sequelize` into `EventEntryResolver` constructor in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts` (private field `_sequelize`). Pattern: copy from `libs/backend/graphql/src/resolvers/enrollmentSetting/enrollmentSetting.resolver.ts`
-- [ ] T007 [US1] Change `finishEventEntry` return type from `Boolean` to `FinishEventEntryResult` (decorator `@Mutation(() => FinishEventEntryResult)`, TS return `Promise<FinishEventEntryResult>`) in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
-- [ ] T008 [US1] Open a transaction via `await this._sequelize.transaction()` at the start of the mutation body (after auth + `Club.findByPk` checks); pass `{ transaction }` to every Sequelize call inside; `commit()` on success, `rollback()` in a `catch` re-throw block, in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
-- [ ] T009 [US1] Inside the transaction: replace the existing `Team.findAll(...)` with one that includes `EventEntry` AND uses `lock: transaction.LOCK.UPDATE` on the included entries (or a separate `EventEntry.findAll({ where: { teamId: { [Op.in]: teamIds } }, lock, transaction })` after fetching teams), in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`. Reference: [research.md](research.md) R1
-- [ ] T010 [US1] Add zero-team rejection: if `teams.length === 0`, throw `new GraphQLError("No teams to finalise for this club and season", { extensions: { code: ErrorCode.NO_TEAMS_TO_FINALISE, clubId, season } })`. Imports: `GraphQLError` from `graphql`; `ErrorCode` from `../../utils/error-codes`. Place this throw inside the transaction so the rollback runs. File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
-- [ ] T011 [US1] Move the notification dispatch (`this.notificationService.notifyEnrollment(...)`) to AFTER `await transaction.commit()`; wrap it in `try/catch`; on success set `notificationDispatched = true`, on failure log via NestJS `Logger` and set `notificationDispatched = false`. Do NOT re-throw. File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`. Reference: [research.md](research.md) R2
-- [ ] T012 [US1] Construct and return `{ success: true, alreadyFinalised: false, notificationDispatched }` on the fresh path in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
+- [x] T006 [US1] Inject `Sequelize` into `EventEntryResolver` constructor in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts` (private field `_sequelize`). Pattern: copy from `libs/backend/graphql/src/resolvers/enrollmentSetting/enrollmentSetting.resolver.ts`
+- [x] T007 [US1] Change `finishEventEntry` return type from `Boolean` to `FinishEventEntryResult` (decorator `@Mutation(() => FinishEventEntryResult)`, TS return `Promise<FinishEventEntryResult>`) in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
+- [x] T008 [US1] Open a transaction via `await this._sequelize.transaction()` at the start of the mutation body (after auth + `Club.findByPk` checks); pass `{ transaction }` to every Sequelize call inside; `commit()` on success, `rollback()` in a `catch` re-throw block, in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
+- [x] T009 [US1] Inside the transaction: replace the existing `Team.findAll(...)` with one that includes `EventEntry` AND uses `lock: transaction.LOCK.UPDATE` on the included entries (or a separate `EventEntry.findAll({ where: { teamId: { [Op.in]: teamIds } }, lock, transaction })` after fetching teams), in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`. Reference: [research.md](research.md) R1
+- [x] T010 [US1] Add zero-team rejection: if `teams.length === 0`, throw `new GraphQLError("No teams to finalise for this club and season", { extensions: { code: ErrorCode.NO_TEAMS_TO_FINALISE, clubId, season } })`. Imports: `GraphQLError` from `graphql`; `ErrorCode` from `../../utils/error-codes`. Place this throw inside the transaction so the rollback runs. File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
+- [x] T011 [US1] Move the notification dispatch (`this.notificationService.notifyEnrollment(...)`) to AFTER `await transaction.commit()`; wrap it in `try/catch`; on success set `notificationDispatched = true`, on failure log via NestJS `Logger` and set `notificationDispatched = false`. Do NOT re-throw. File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`. Reference: [research.md](research.md) R2
+- [x] T012 [US1] Construct and return `{ success: true, alreadyFinalised: false, notificationDispatched }` on the fresh path in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
 
 **Checkpoint**: Mutation is now atomic on the fresh path; zero-teams rejected; new return type wired. US1 passes its independent tests in isolation.
 
@@ -75,10 +75,10 @@ Single-project, in-place modification of [`libs/backend/graphql/`](../../libs/ba
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Inside the transaction (after T009's locked read of entries, before any writes), compute `alreadyFinalised = entries.length > 0 && entries.every(e => e.sendOn !== null)` in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
-- [ ] T014 [US2] Branch on `alreadyFinalised`: on the no-op path, conditionally `await club.save({ transaction })` ONLY if `club.contactCompetition !== email` (after assigning the new value); skip every other write (no entry saves, no `Logging.create`); commit; return `{ success: true, alreadyFinalised: true, notificationDispatched: false }` WITHOUT calling the notification service. File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
-- [ ] T015 [US2] On the fresh path, ensure the existing `if (!team.entry) continue` skip survives the rewrite — teams with no entry row must not throw and must not block the loop. File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
-- [ ] T016 [US2] On the fresh path, only update `Team.entry.sendOn` for entries where `sendOn === null` (partial-state safety; matches FR-003 and acceptance scenario US2.2). File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
+- [x] T013 [US2] Inside the transaction (after T009's locked read of entries, before any writes), compute `alreadyFinalised = entries.length > 0 && entries.every(e => e.sendOn !== null)` in `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
+- [x] T014 [US2] Branch on `alreadyFinalised`: on the no-op path, conditionally `await club.save({ transaction })` ONLY if `club.contactCompetition !== email` (after assigning the new value); skip every other write (no entry saves, no `Logging.create`); commit; return `{ success: true, alreadyFinalised: true, notificationDispatched: false }` WITHOUT calling the notification service. File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
+- [x] T015 [US2] On the fresh path, ensure the existing `if (!team.entry) continue` skip survives the rewrite — teams with no entry row must not throw and must not block the loop. File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
+- [x] T016 [US2] On the fresh path, only update `Team.entry.sendOn` for entries where `sendOn === null` (partial-state safety; matches FR-003 and acceptance scenario US2.2). File: `libs/backend/graphql/src/resolvers/event/entry.resolver.ts`
 
 **Checkpoint**: Re-submission is idempotent. US1 + US2 both functional. The resolver matches the contract in [contracts/finish-event-entry.graphql](contracts/finish-event-entry.graphql).
 
@@ -94,8 +94,8 @@ Single-project, in-place modification of [`libs/backend/graphql/`](../../libs/ba
 
 > **NOTE**: T017 scaffolds the test file. Subsequent T018–T019 add cases that fail against the pre-hardening resolver and pass after US1+US2 are implemented. Authors may write tests upfront and only implement to green.
 
-- [ ] T017 [P] [US3] Create `libs/backend/graphql/src/resolvers/event/entry.resolver.spec.ts` with the test-module scaffold from `libs/backend/graphql/src/resolvers/enrollmentSetting/enrollmentSetting.resolver.spec.ts`: `Test.createTestingModule`, fake `Sequelize` whose `transaction()` returns `{ commit, rollback, LOCK: { UPDATE: 'UPDATE' } }` jest.fn() stubs, mocked `NotificationService`, mocked `EnrollmentValidationService`, fake `Player` factory with `hasAnyPermission` jest.fn(), `afterEach(jest.restoreAllMocks)`
-- [ ] T018 [US3] Add the 12 `it(...)` cases enumerated in [research.md](research.md) R7 to `libs/backend/graphql/src/resolvers/event/entry.resolver.spec.ts`. Each test uses `jest.spyOn` on `Club.findByPk`, `Team.findAll`, `EventEntry.findAll` (or whichever is used), `Logging.create`, plus mocked instance methods on returned objects. No real DB. Reference scenarios:
+- [x] T017 [P] [US3] Create `libs/backend/graphql/src/resolvers/event/entry.resolver.spec.ts` with the test-module scaffold from `libs/backend/graphql/src/resolvers/enrollmentSetting/enrollmentSetting.resolver.spec.ts`: `Test.createTestingModule`, fake `Sequelize` whose `transaction()` returns `{ commit, rollback, LOCK: { UPDATE: 'UPDATE' } }` jest.fn() stubs, mocked `NotificationService`, mocked `EnrollmentValidationService`, fake `Player` factory with `hasAnyPermission` jest.fn(), `afterEach(jest.restoreAllMocks)`
+- [x] T018 [US3] Add the 12 `it(...)` cases enumerated in [research.md](research.md) R7 to `libs/backend/graphql/src/resolvers/event/entry.resolver.spec.ts`. Each test uses `jest.spyOn` on `Club.findByPk`, `Team.findAll`, `EventEntry.findAll` (or whichever is used), `Logging.create`, plus mocked instance methods on returned objects. No real DB. Reference scenarios:
   - #1 unauthorized → `UnauthorizedException`
   - #2 unknown clubId → `NotFoundException`
   - #3 zero teams → `GraphQLError` with `extensions.code === ErrorCode.NO_TEAMS_TO_FINALISE`; `transaction.rollback` called
@@ -108,7 +108,7 @@ Single-project, in-place modification of [`libs/backend/graphql/`](../../libs/ba
   - #10 notification rejects post-commit → DB committed; no throw; `notificationDispatched: false`
   - #11 row-lock query inspected — `findAll` second arg includes `lock: 'UPDATE'` and the same `transaction`
   - #12 `edit-any:club` permission grants access
-- [ ] T019 [US3] Run `npx jest --config libs/backend/graphql/jest.config.ts libs/backend/graphql/src/resolvers/event/entry.resolver.spec.ts` and confirm green. If a test fails because of a real bug exposed by US1/US2, fix the resolver — do NOT relax the test
+- [x] T019 [US3] Run `npx jest --config libs/backend/graphql/jest.config.ts libs/backend/graphql/src/resolvers/event/entry.resolver.spec.ts` and confirm green. If a test fails because of a real bug exposed by US1/US2, fix the resolver — do NOT relax the test
 
 **Checkpoint**: All three stories functional. Spec covers every contract clause.
 
@@ -116,11 +116,11 @@ Single-project, in-place modification of [`libs/backend/graphql/`](../../libs/ba
 
 ## Phase 6: Polish & Cross-Cutting
 
-- [ ] T020 [P] Run `nx lint backend-graphql` and `prettier --check libs/backend/graphql/src/resolvers/event/` ; fix anything reported
-- [ ] T021 [P] Run `nx affected:test` from the monorepo root; investigate any unrelated breakage
-- [ ] T022 Walk [quickstart.md](quickstart.md) §3.a, §3.b, §3.c against a local `nx serve api` and confirm each terminal outcome matches expectations
-- [ ] T023 Confirm `AGENTS.md` SPECKIT block points at `specs/007-finish-event-entry-hardening/plan.md` (already updated in `/speckit-plan`; verify only)
-- [ ] T024 Hand [frontend-changes.md](frontend-changes.md) to the sibling `badman-frontend` repo (open companion PR there); link both PRs in their descriptions per [frontend-changes.md](frontend-changes.md) §9
+- [x] T020 [P] Run `nx lint backend-graphql` and `prettier --check libs/backend/graphql/src/resolvers/event/` ; fix anything reported
+- [x] T021 [P] Run `nx affected:test` from the monorepo root; investigate any unrelated breakage
+- [x] T022 Walk [quickstart.md](quickstart.md) §3.a, §3.b, §3.c against a local `nx serve api` and confirm each terminal outcome matches expectations
+- [x] T023 Confirm `AGENTS.md` SPECKIT block points at `specs/007-finish-event-entry-hardening/plan.md` (already updated in `/speckit-plan`; verify only)
+- [x] T024 Hand [frontend-changes.md](frontend-changes.md) to the sibling `badman-frontend` repo (open companion PR there); link both PRs in their descriptions per [frontend-changes.md](frontend-changes.md) §9
 
 ---
 
