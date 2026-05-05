@@ -1,6 +1,6 @@
 import { ClubPlayerMembership } from "@badman/backend-database";
 import { Injectable } from "@nestjs/common";
-import { Transaction } from "sequelize";
+import { FindOrCreateOptions, ModelStatic, Transaction } from "sequelize";
 
 export interface UpsertMembershipArgs {
   clubId: string;
@@ -33,12 +33,12 @@ export class ClubMembershipService {
     confirmed,
     transaction,
   }: UpsertMembershipArgs): Promise<UpsertMembershipResult> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [membership, created] = await (ClubPlayerMembership as any).findOrCreate({
+    const options: FindOrCreateOptions = {
       where: { clubId, playerId, start },
       defaults: { start, end, membershipType, confirmed },
       transaction,
-    });
+    };
+    const [membership, created] = await (ClubPlayerMembership as unknown as ModelStatic<ClubPlayerMembership>).findOrCreate(options);
 
     return {
       id: membership.id as string,
