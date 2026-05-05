@@ -6,6 +6,7 @@ import { Club, EventEntry, Logging, Player, Team } from "@badman/backend-databas
 import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
 import { EventEntryResolver } from "./entry.resolver";
+import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 import { ErrorCode } from "../../utils/error-codes";
 
 // Type helper to cast mocked model objects
@@ -71,6 +72,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EventEntryResolver,
+        EnrollmentFinalizeService,
         {
           provide: Sequelize,
           useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },

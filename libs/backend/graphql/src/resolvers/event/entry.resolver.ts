@@ -6,7 +6,6 @@ import {
   EntryCompetitionPlayer,
   EntryCompetitionPlayersType,
   EventEntry,
-  Logging,
   Player,
   Standing,
   SubEventCompetition,
@@ -15,13 +14,12 @@ import {
 } from "@badman/backend-database";
 import { EnrollmentValidationService, TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
-import { LoggingAction, TeamMembershipType } from "@badman/utils";
+import { TeamMembershipType } from "@badman/utils";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
-import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { ListArgs } from "../../utils";
-import { ErrorCode } from "../../utils/error-codes";
+import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 import { FinishEventEntryResult } from "./finish-event-entry-result.object";
 
 @Resolver(() => EventEntry)
@@ -31,6 +29,7 @@ export class EventEntryResolver {
   constructor(
     private notificationService: NotificationService,
     private enrollmentService: EnrollmentValidationService,
+    private enrollmentFinalizeService: EnrollmentFinalizeService,
     private _sequelize: Sequelize
   ) {}
 
@@ -142,99 +141,26 @@ export class EventEntryResolver {
     }
 
     const transaction = await this._sequelize.transaction();
-
     try {
-      // Fetch teams for the club and season
-      const teams = await Team.findAll({
-        where: {
-          clubId: clubId,
-          season: season,
-        },
-        include: [{ model: EventEntry }],
-        transaction,
+      const { alreadyFinalised } = await this.enrollmentFinalizeService.finalize({
+        clubId, season, email, user, club, transaction,
       });
-
-      // Reject if no teams exist for this club and season
-      if (teams.length === 0) {
-        throw new GraphQLError("No teams to finalise for this club and season", {
-          extensions: { code: ErrorCode.NO_TEAMS_TO_FINALISE, clubId, season },
-        });
-      }
-
-      // Collect team IDs that have entries for row locking
-      const teamIds = teams.filter((t) => t.entry).map((t) => t.id);
-
-      // Acquire row-level locks on EventEntry rows for this club+season
-      const entries = await EventEntry.findAll({
-        where: { teamId: teamIds },
-        lock: transaction.LOCK.UPDATE,
-        transaction,
-      });
-
-      // Idempotency check: all entries already have sendOn set
-      const alreadyFinalised =
-        entries.length > 0 && entries.every((e) => e.sendOn !== null && e.sendOn !== undefined);
-
-      if (alreadyFinalised) {
-        // Only permitted side-effect on no-op path: update contact email if different
-        if (club.contactCompetition !== email) {
-          club.contactCompetition = email;
-          await club.save({ transaction });
-        }
-
-        await transaction.commit();
-        return { success: true, alreadyFinalised: true, notificationDispatched: false };
-      }
-
-      // Fresh finalisation path
-      // Update the contact email of the club if it is different
-      if (club.contactCompetition !== email) {
-        club.contactCompetition = email;
-        await club.save({ transaction });
-      }
-
-      // Update sendOn for all null entries only (partial-state safety)
-      for (const team of teams) {
-        if (!team.entry) {
-          continue;
-        }
-
-        if (team.entry.sendOn === null || team.entry.sendOn === undefined) {
-          team.entry.sendOn = new Date();
-          await team.entry.save({ transaction });
-        }
-      }
-
-      // Write audit log row
-      await Logging.create(
-        {
-          action: LoggingAction.EnrollmentSubmitted,
-          playerId: user.id,
-          meta: {
-            clubId,
-            season,
-            email,
-          },
-        },
-        { transaction }
-      );
-
       await transaction.commit();
 
-      // Post-commit: dispatch notification (must NOT be inside transaction)
       let notificationDispatched = false;
-      try {
-        await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
-        notificationDispatched = true;
-      } catch (notifyError) {
-        this.logger.error(
-          `Failed to dispatch enrollment notification for club ${clubId} season ${season}`,
-          notifyError
-        );
-        notificationDispatched = false;
+      if (!alreadyFinalised) {
+        try {
+          await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
+          notificationDispatched = true;
+        } catch (notifyError) {
+          this.logger.error(
+            `Failed to dispatch enrollment notification for club ${clubId} season ${season}`,
+            notifyError
+          );
+        }
       }
 
-      return { success: true, alreadyFinalised: false, notificationDispatched };
+      return { success: true, alreadyFinalised, notificationDispatched };
     } catch (error) {
       await transaction.rollback();
       throw error;
