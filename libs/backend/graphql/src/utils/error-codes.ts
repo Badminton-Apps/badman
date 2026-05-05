@@ -37,6 +37,9 @@ export const ErrorCode = {
   // Event entry finalisation (libs/backend/graphql/src/resolvers/event/entry.resolver.ts)
   NO_TEAMS_TO_FINALISE: "NO_TEAMS_TO_FINALISE",
 
+  // Atomic enrollment submission (libs/backend/graphql/src/resolvers/event/competition/submit-enrollment.resolver.ts)
+  VALIDATION_FAILED: "VALIDATION_FAILED",
+
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

@@ -16,8 +16,13 @@ import {
   EnrollmentResolver,
   EventCompetitionResolver,
   SubEventCompetitionResolver,
+  SubmitEnrollmentResolver,
+  SubmitEnrollmentService,
 } from "./competition";
 import { ChangeEncounterModule } from "@badman/backend-change-encounter";
+import { ClubMembershipService } from "../club/club-membership.service";
+import { TeamWriteService } from "../team/team-write.service";
+import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 
 @Module({
   imports: [
@@ -40,6 +45,11 @@ import { ChangeEncounterModule } from "@badman/backend-change-encounter";
     EnrollmentResolver,
     EnrollmentEntryService,
     CalculateIndexResolver,
+    SubmitEnrollmentResolver,
+    SubmitEnrollmentService,
+    ClubMembershipService,
+    TeamWriteService,
+    EnrollmentFinalizeService,
   ],
 })
 export class CompetitionResolverModule {}

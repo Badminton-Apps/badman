@@ -8,5 +8,9 @@ export * from "./assembly.resolver";
 export * from "./enrollment.resolver";
 export * from "./enrollment-entry.service";
 export * from "./calculate-index";
+export * from "./submit-enrollment.resolver";
+export * from "./submit-enrollment.service";
+export * from "./submit-enrollment.input";
+export * from "./submit-enrollment-result.object";
 
 // end:ng42.barrel

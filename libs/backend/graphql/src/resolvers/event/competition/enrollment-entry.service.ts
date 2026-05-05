@@ -13,6 +13,7 @@ export interface CreateEntryArgs {
 
 export interface CreateEntryResult {
   teamId: string;
+  entryId: string;
   subEventCompetitionId: string;
   alreadyExisted: boolean;
 }
@@ -65,13 +66,13 @@ export class EnrollmentEntryService {
 
     const existingEntry = await team.getEntry({ transaction });
     if (existingEntry?.subEventId === subEventId) {
-      return { teamId, subEventCompetitionId: subEventId, alreadyExisted: true };
+      return { teamId, entryId: existingEntry.id as string, subEventCompetitionId: subEventId, alreadyExisted: true };
     }
 
     const entry = existingEntry ?? (await EventEntry.create({}, { transaction }));
     await team.setEntry(entry, { transaction });
     await subEvent.addEventEntry(entry, { transaction });
 
-    return { teamId, subEventCompetitionId: subEventId, alreadyExisted: false };
+    return { teamId, entryId: entry.id as string, subEventCompetitionId: subEventId, alreadyExisted: false };
   }
 }
