@@ -90,11 +90,14 @@ export class TeamRenumberingService {
      teamsByTier.push(
        Team.findAll({
          where: { clubId, season, type: tierType },
-         include: [{ model: TeamPlayerMembership, as: 'memberships', include: [Player] }],
+         include: [{ model: Player, as: 'players', through: { attributes: ['membershipType', 'start', 'end'] } }],
          transaction,
          order: [['id', 'ASC']],
        })
      )
+   // Note: Team→Player is @BelongsToMany via TeamPlayerMembership (team.model.ts:154–155).
+   // Each loaded player exposes the join row as `player.TeamPlayerMembership` —
+   // read membershipType from there.
 
 4. If every tier is empty → return [].
 
@@ -109,13 +112,14 @@ export class TeamRenumberingService {
    (One query for the entire scope to avoid N+1.)
 
 7. For each team in every tier:
-     basePlayers = team.memberships filtered to base-set memberships (membershipType marker).
-     indexPlayers = basePlayers.map(m => ({
-       id: m.player.id,
-       gender: m.player.gender,
-       single: rankings.find(r => r.playerId === m.player.id)?.single ?? defaultRanking,
-       double: ...,
-       mix: ...,
+     basePlayers = team.players.filter(p => p.TeamPlayerMembership.membershipType === <BASE marker>)
+                                — confirm the BASE enum value matches what enrollment.service.ts:210–211 uses.
+     indexPlayers = basePlayers.map(p => ({
+       id: p.id,
+       gender: p.gender,
+       single: rankings.find(r => r.playerId === p.id)?.single ?? defaultRanking,
+       double: rankings.find(r => r.playerId === p.id)?.double ?? defaultRanking,
+       mix: rankings.find(r => r.playerId === p.id)?.mix ?? defaultRanking,
      }));
      team._baseIndex = getIndexFromPlayers(team.type, indexPlayers, system.amountOfLevels);
 
