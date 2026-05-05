@@ -1,6 +1,15 @@
 import { Team } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
-import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
+import { Field, ID, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
+
+// `SubEventTypeEnum` is a TS enum from `@badman/utils`. NestJS GraphQL needs
+// an explicit registration before it can appear in a schema as an enum type.
+// Module-load side-effect, called once.
+registerEnumType(SubEventTypeEnum, {
+  name: "SubEventTypeEnum",
+  description:
+    "Competition team type: M (men), F (women), MX (mixed), NATIONAL (Belgian national league).",
+});
 
 /**
  * The scope that was written by a single recalculateTeamNumbersForGroup call.
