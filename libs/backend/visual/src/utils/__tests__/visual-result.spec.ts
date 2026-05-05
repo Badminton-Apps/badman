@@ -188,6 +188,21 @@ describe("requiredCoercedString invariant", () => {
     }
   });
 
+  // Visual API sends Match-level Team1/Team2 objects without a Code field —
+  // Code is only set on top-level draw teams (Sentry #116466287 follow-up).
+  it("XmlMatchSchema: accepts Team1/Team2 object without Code", () => {
+    const result = XmlMatchSchema.safeParse({
+      Code: "M1",
+      Team1: { Player1: { MemberID: "P1" } },
+      Team2: { Player1: { MemberID: "P2" } },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Team1?.Code).toBeUndefined();
+      expect(result.data.Team2?.Code).toBeUndefined();
+    }
+  });
+
   it("XmlTeamMatchSchema: coerces numeric Team1/Team2 to undefined", () => {
     const result = XmlTeamMatchSchema.safeParse({ Code: "TM1", Team1: 42, Team2: 99 });
     expect(result.success).toBe(true);

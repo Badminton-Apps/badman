@@ -238,7 +238,10 @@ export type XmlPlayers = z.infer<typeof XmlPlayersSchema>;
 
 export const XmlTeamSchema = z
   .object({
-    Code: requiredCoercedString,
+    // Code is missing on Match/TeamMatch sub-team payloads (Visual API only
+    // sends it for top-level draw teams). Keep it coercion-friendly when
+    // present, but don't reject the whole Match response when absent.
+    Code: z.union([z.string(), z.number()]).transform((v) => String(v)).optional(),
     Name: z.string().optional(),
     Player1: z.preprocess(dropPrimitive("Team.Player1"), XmlPlayerSchema.optional()),
     Player2: z.preprocess(dropPrimitive("Team.Player2"), XmlPlayerSchema.optional()),
@@ -258,7 +261,7 @@ export const XmlTeamSchema = z
 // wrapper types (Player1-4, Club, Players). The schema validates the
 // runtime shape; this interface keeps the static type stable.
 export interface XmlTeam {
-  Code: string;
+  Code?: string;
   Name?: string;
   Player1?: XmlPlayer;
   Player2?: XmlPlayer;
