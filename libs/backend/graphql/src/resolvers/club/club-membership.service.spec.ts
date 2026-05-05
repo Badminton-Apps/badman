@@ -66,7 +66,9 @@ describe("ClubMembershipService.upsertMembership", () => {
     const membership = fakeMembership({ membershipType: ClubMembershipType.LOAN });
     jest.spyOn(ClubPlayerMembership, "findOrCreate").mockResolvedValue([membership, true] as never);
 
-    const result = await service.upsertMembership(baseArgs({ membershipType: ClubMembershipType.LOAN }));
+    const result = await service.upsertMembership(
+      baseArgs({ membershipType: ClubMembershipType.LOAN })
+    );
 
     expect(result.membershipType).toBe(ClubMembershipType.LOAN);
   });

@@ -38,7 +38,9 @@ export class ClubMembershipService {
       defaults: { start, end, membershipType, confirmed },
       transaction,
     };
-    const [membership, created] = await (ClubPlayerMembership as unknown as ModelStatic<ClubPlayerMembership>).findOrCreate(options);
+    const [membership, created] = await (
+      ClubPlayerMembership as unknown as ModelStatic<ClubPlayerMembership>
+    ).findOrCreate(options);
 
     return {
       id: membership.id as string,

@@ -1,4 +1,10 @@
-import { EventCompetition, EventEntry, Player, SubEventCompetition, Team } from "@badman/backend-database";
+import {
+  EventCompetition,
+  EventEntry,
+  Player,
+  SubEventCompetition,
+  Team,
+} from "@badman/backend-database";
 import { Injectable, Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Transaction } from "sequelize";
@@ -22,12 +28,22 @@ export interface CreateEntryResult {
 export class EnrollmentEntryService {
   private readonly logger = new Logger(EnrollmentEntryService.name);
 
-  async createEntry({ teamId, subEventId, transaction, user }: CreateEntryArgs): Promise<CreateEntryResult> {
+  async createEntry({
+    teamId,
+    subEventId,
+    transaction,
+    user,
+  }: CreateEntryArgs): Promise<CreateEntryResult> {
     const userId = user?.id ?? null;
 
     const team = await Team.findByPk(teamId, { transaction });
     if (!team) {
-      this.logger.warn({ code: ErrorCode.TEAM_NOT_FOUND, teamId, subEventCompetitionId: subEventId, userId });
+      this.logger.warn({
+        code: ErrorCode.TEAM_NOT_FOUND,
+        teamId,
+        subEventCompetitionId: subEventId,
+        userId,
+      });
       throw new GraphQLError(`Team not found: ${teamId}`, {
         extensions: { code: ErrorCode.TEAM_NOT_FOUND, teamId },
       });
@@ -39,7 +55,12 @@ export class EnrollmentEntryService {
       "edit-any:club",
     ]);
     if (!allowed) {
-      this.logger.warn({ code: ErrorCode.PERMISSION_DENIED, teamId, subEventCompetitionId: subEventId, userId });
+      this.logger.warn({
+        code: ErrorCode.PERMISSION_DENIED,
+        teamId,
+        subEventCompetitionId: subEventId,
+        userId,
+      });
       throw new GraphQLError("You do not have permission to enroll this team.", {
         extensions: { code: ErrorCode.PERMISSION_DENIED, userId },
       });
@@ -50,7 +71,12 @@ export class EnrollmentEntryService {
       include: [EventCompetition],
     });
     if (!subEvent) {
-      this.logger.warn({ code: ErrorCode.SUB_EVENT_NOT_FOUND, teamId, subEventCompetitionId: subEventId, userId });
+      this.logger.warn({
+        code: ErrorCode.SUB_EVENT_NOT_FOUND,
+        teamId,
+        subEventCompetitionId: subEventId,
+        userId,
+      });
       throw new GraphQLError(`Sub-event not found: ${subEventId}`, {
         extensions: { code: ErrorCode.SUB_EVENT_NOT_FOUND, subEventId },
       });
@@ -58,7 +84,14 @@ export class EnrollmentEntryService {
 
     const competitionSeason = subEvent.eventCompetition?.season;
     if (team.season !== competitionSeason) {
-      this.logger.warn({ code: ErrorCode.SEASON_MISMATCH, teamId, subEventCompetitionId: subEventId, userId, teamSeason: team.season, competitionSeason });
+      this.logger.warn({
+        code: ErrorCode.SEASON_MISMATCH,
+        teamId,
+        subEventCompetitionId: subEventId,
+        userId,
+        teamSeason: team.season,
+        competitionSeason,
+      });
       throw new GraphQLError("Team season does not match competition season.", {
         extensions: { code: ErrorCode.SEASON_MISMATCH, teamSeason: team.season, competitionSeason },
       });
@@ -66,13 +99,23 @@ export class EnrollmentEntryService {
 
     const existingEntry = await team.getEntry({ transaction });
     if (existingEntry?.subEventId === subEventId) {
-      return { teamId, entryId: existingEntry.id as string, subEventCompetitionId: subEventId, alreadyExisted: true };
+      return {
+        teamId,
+        entryId: existingEntry.id as string,
+        subEventCompetitionId: subEventId,
+        alreadyExisted: true,
+      };
     }
 
     const entry = existingEntry ?? (await EventEntry.create({}, { transaction }));
     await team.setEntry(entry, { transaction });
     await subEvent.addEventEntry(entry, { transaction });
 
-    return { teamId, entryId: entry.id as string, subEventCompetitionId: subEventId, alreadyExisted: false };
+    return {
+      teamId,
+      entryId: entry.id as string,
+      subEventCompetitionId: subEventId,
+      alreadyExisted: false,
+    };
   }
 }

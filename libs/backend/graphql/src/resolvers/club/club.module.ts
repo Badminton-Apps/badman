@@ -6,7 +6,12 @@ import { ClubPlayerMembershipsResolver } from "./club-membership.resolver";
 
 @Module({
   imports: [DatabaseModule],
-  providers: [ClubsResolver, ClubPlayerResolver, ClubPlayerMembershipsResolver, ClubMembershipService],
+  providers: [
+    ClubsResolver,
+    ClubPlayerResolver,
+    ClubPlayerMembershipsResolver,
+    ClubMembershipService,
+  ],
   exports: [ClubMembershipService],
 })
 export class ClubResolverModule {}

@@ -408,9 +408,9 @@ describe("ClubsResolver", () => {
       } as Partial<ClubPlayerMembership>);
       jest.spyOn(ClubPlayerMembership, "findByPk").mockResolvedValue(membership);
 
-      await expect(
-        resolver.updateClubPlayerMembership(user, baseUpdateInput())
-      ).rejects.toThrow("boom");
+      await expect(resolver.updateClubPlayerMembership(user, baseUpdateInput())).rejects.toThrow(
+        "boom"
+      );
 
       expect(mockTransaction.rollback).toHaveBeenCalled();
       expect(mockTransaction.commit).not.toHaveBeenCalled();

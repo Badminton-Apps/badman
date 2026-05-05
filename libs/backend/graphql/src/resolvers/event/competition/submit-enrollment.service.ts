@@ -1,9 +1,4 @@
-import {
-  Club,
-  Comment,
-  Player,
-  SubEventCompetition,
-} from "@badman/backend-database";
+import { Club, Comment, Player, SubEventCompetition } from "@badman/backend-database";
 import { ClubMembershipType } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
@@ -38,10 +33,15 @@ export class SubmitEnrollmentService {
     private readonly clubMembershipService: ClubMembershipService,
     private readonly teamWriteService: TeamWriteService,
     private readonly enrollmentEntryService: EnrollmentEntryService,
-    private readonly enrollmentFinalizeService: EnrollmentFinalizeService,
+    private readonly enrollmentFinalizeService: EnrollmentFinalizeService
   ) {}
 
-  async run({ input, user, confirmed, transaction }: SubmitEnrollmentRunArgs): Promise<SubmitEnrollmentServiceResult> {
+  async run({
+    input,
+    user,
+    confirmed,
+    transaction,
+  }: SubmitEnrollmentRunArgs): Promise<SubmitEnrollmentServiceResult> {
     const { clubId, season, adminEmail, teams, transfers, loans, remarks } = input;
     const txId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -75,7 +75,12 @@ export class SubmitEnrollmentService {
     }
 
     // (4) Phase A: write each team without final teamNumber/name/abbreviation
-    const coreResults: { teamId: string; link: string; alreadyExisted: boolean; inputIndex: number }[] = [];
+    const coreResults: {
+      teamId: string;
+      link: string;
+      alreadyExisted: boolean;
+      inputIndex: number;
+    }[] = [];
     for (let i = 0; i < teams.length; i++) {
       const team = teams[i];
       const core = await this.teamWriteService.upsertTeamCore({
@@ -161,13 +166,21 @@ export class SubmitEnrollmentService {
 
     if (teams.length === 0) {
       throw new GraphQLError("No teams to submit", {
-        extensions: { code: ErrorCode.NO_TEAMS_TO_FINALISE, clubId: input.clubId, season: input.season },
+        extensions: {
+          code: ErrorCode.NO_TEAMS_TO_FINALISE,
+          clubId: input.clubId,
+          season: input.season,
+        },
       });
     }
 
     if (teams.length > MAX_TEAMS) {
       throw new GraphQLError(`Too many teams (max ${MAX_TEAMS})`, {
-        extensions: { code: ErrorCode.VALIDATION_FAILED, issue: "team-count-exceeded", count: teams.length },
+        extensions: {
+          code: ErrorCode.VALIDATION_FAILED,
+          issue: "team-count-exceeded",
+          count: teams.length,
+        },
       });
     }
 

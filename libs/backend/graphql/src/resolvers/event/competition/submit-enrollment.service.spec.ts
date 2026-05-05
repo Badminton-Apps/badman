@@ -18,9 +18,14 @@ describe("SubmitEnrollmentService", () => {
   let enrollmentFinalizeService: jest.Mocked<EnrollmentFinalizeService>;
 
   const fakeTransaction = { LOCK: { UPDATE: "UPDATE" } } as never;
-  const fakeUser = { id: "user-uuid", hasAnyPermission: jest.fn().mockResolvedValue(false) } as never;
+  const fakeUser = {
+    id: "user-uuid",
+    hasAnyPermission: jest.fn().mockResolvedValue(false),
+  } as never;
 
-  const makeTeam = (overrides: Partial<SubmitEnrollmentTeamInput> = {}): SubmitEnrollmentTeamInput => ({
+  const makeTeam = (
+    overrides: Partial<SubmitEnrollmentTeamInput> = {}
+  ): SubmitEnrollmentTeamInput => ({
     type: SubEventTypeEnum.MX,
     subEventId: "subevent-uuid",
     teamNumber: 1,
@@ -40,15 +45,28 @@ describe("SubmitEnrollmentService", () => {
   });
 
   const defaultCoreResult = { teamId: "team-uuid", link: "link-uuid", alreadyExisted: false };
-  const defaultNumberedResult = { teamId: "team-uuid", teamNumber: 1, name: "Club 1H", abbreviation: "CL 1H" };
-  const defaultEntryResult = { teamId: "team-uuid", entryId: "entry-uuid", subEventCompetitionId: "subevent-uuid", alreadyExisted: false };
+  const defaultNumberedResult = {
+    teamId: "team-uuid",
+    teamNumber: 1,
+    name: "Club 1H",
+    abbreviation: "CL 1H",
+  };
+  const defaultEntryResult = {
+    teamId: "team-uuid",
+    entryId: "entry-uuid",
+    subEventCompetitionId: "subevent-uuid",
+    alreadyExisted: false,
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SubmitEnrollmentService,
         { provide: ClubMembershipService, useValue: { upsertMembership: jest.fn() } },
-        { provide: TeamWriteService, useValue: { upsertTeamCore: jest.fn(), applyTeamNumbersTwoPhase: jest.fn() } },
+        {
+          provide: TeamWriteService,
+          useValue: { upsertTeamCore: jest.fn(), applyTeamNumbersTwoPhase: jest.fn() },
+        },
         { provide: EnrollmentEntryService, useValue: { createEntry: jest.fn() } },
         { provide: EnrollmentFinalizeService, useValue: { finalize: jest.fn() } },
       ],
@@ -74,7 +92,12 @@ describe("SubmitEnrollmentService", () => {
   // ── Happy path ─────────────────────────────────────────────────────────────
 
   it("happy path — 1 new team — returns full result", async () => {
-    const result = await service.run({ input: makeInput(), user: fakeUser, confirmed: false, transaction: fakeTransaction });
+    const result = await service.run({
+      input: makeInput(),
+      user: fakeUser,
+      confirmed: false,
+      transaction: fakeTransaction,
+    });
 
     expect(result.alreadyFinalised).toBe(false);
     expect(result.teams).toHaveLength(1);
@@ -90,9 +113,17 @@ describe("SubmitEnrollmentService", () => {
   });
 
   it("happy path — existing team — alreadyExisted: true in result", async () => {
-    teamWriteService.upsertTeamCore.mockResolvedValue({ ...defaultCoreResult, alreadyExisted: true });
+    teamWriteService.upsertTeamCore.mockResolvedValue({
+      ...defaultCoreResult,
+      alreadyExisted: true,
+    });
 
-    const result = await service.run({ input: makeInput({ teams: [makeTeam({ id: "existing-uuid" })] }), user: fakeUser, confirmed: false, transaction: fakeTransaction });
+    const result = await service.run({
+      input: makeInput({ teams: [makeTeam({ id: "existing-uuid" })] }),
+      user: fakeUser,
+      confirmed: false,
+      transaction: fakeTransaction,
+    });
 
     expect(result.teams[0].alreadyExisted).toBe(true);
   });
@@ -100,7 +131,12 @@ describe("SubmitEnrollmentService", () => {
   it("alreadyFinalised: true propagated from finalize", async () => {
     enrollmentFinalizeService.finalize.mockResolvedValue({ alreadyFinalised: true });
 
-    const result = await service.run({ input: makeInput(), user: fakeUser, confirmed: false, transaction: fakeTransaction });
+    const result = await service.run({
+      input: makeInput(),
+      user: fakeUser,
+      confirmed: false,
+      transaction: fakeTransaction,
+    });
 
     expect(result.alreadyFinalised).toBe(true);
   });
@@ -109,14 +145,21 @@ describe("SubmitEnrollmentService", () => {
 
   it("calls upsertMembership for each transfer with NORMAL type", async () => {
     const input = makeInput({
-      transfers: [{ playerId: "p1", start: new Date("2025-09-01") }, { playerId: "p2", start: new Date("2025-09-01") }],
+      transfers: [
+        { playerId: "p1", start: new Date("2025-09-01") },
+        { playerId: "p2", start: new Date("2025-09-01") },
+      ],
     });
 
     await service.run({ input, user: fakeUser, confirmed: true, transaction: fakeTransaction });
 
     expect(clubMembershipService.upsertMembership).toHaveBeenCalledTimes(2);
     expect(clubMembershipService.upsertMembership).toHaveBeenCalledWith(
-      expect.objectContaining({ playerId: "p1", membershipType: ClubMembershipType.NORMAL, confirmed: true })
+      expect.objectContaining({
+        playerId: "p1",
+        membershipType: ClubMembershipType.NORMAL,
+        confirmed: true,
+      })
     );
   });
 
@@ -145,9 +188,9 @@ describe("SubmitEnrollmentService", () => {
   // ── Remarks ────────────────────────────────────────────────────────────────
 
   it("writes one Comment per distinct eventCompetition when remarks provided", async () => {
-    jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([
-      { id: "se1", eventId: "event-uuid" } as never,
-    ]);
+    jest
+      .spyOn(SubEventCompetition, "findAll")
+      .mockResolvedValue([{ id: "se1", eventId: "event-uuid" } as never]);
     const createSpy = jest.spyOn(Comment, "create").mockResolvedValue({} as never);
     const input = makeInput({ remarks: "Hello" });
 
@@ -155,23 +198,27 @@ describe("SubmitEnrollmentService", () => {
 
     expect(createSpy).toHaveBeenCalledTimes(1);
     expect(createSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ linkType: "competition", linkId: "event-uuid", clubId: "club-uuid", message: "Hello" }),
+      expect.objectContaining({
+        linkType: "competition",
+        linkId: "event-uuid",
+        clubId: "club-uuid",
+        message: "Hello",
+      }),
       expect.anything()
     );
   });
 
   it("writes two Comments when two distinct eventCompetitions", async () => {
-    jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([
-      { id: "se1", eventId: "event-A" } as never,
-      { id: "se2", eventId: "event-B" } as never,
-    ]);
+    jest
+      .spyOn(SubEventCompetition, "findAll")
+      .mockResolvedValue([
+        { id: "se1", eventId: "event-A" } as never,
+        { id: "se2", eventId: "event-B" } as never,
+      ]);
     const createSpy = jest.spyOn(Comment, "create").mockResolvedValue({} as never);
     const input = makeInput({
       remarks: "Hi",
-      teams: [
-        makeTeam({ subEventId: "se1" }),
-        makeTeam({ subEventId: "se2", teamNumber: 2 }),
-      ],
+      teams: [makeTeam({ subEventId: "se1" }), makeTeam({ subEventId: "se2", teamNumber: 2 })],
     });
     teamWriteService.upsertTeamCore
       .mockResolvedValueOnce({ teamId: "t1", link: "l1", alreadyExisted: false })
@@ -181,8 +228,18 @@ describe("SubmitEnrollmentService", () => {
       { teamId: "t2", teamNumber: 2, name: "Club 2H", abbreviation: "CL 2H" },
     ]);
     enrollmentEntryService.createEntry
-      .mockResolvedValueOnce({ teamId: "t1", entryId: "e1", subEventCompetitionId: "se1", alreadyExisted: false })
-      .mockResolvedValueOnce({ teamId: "t2", entryId: "e2", subEventCompetitionId: "se2", alreadyExisted: false });
+      .mockResolvedValueOnce({
+        teamId: "t1",
+        entryId: "e1",
+        subEventCompetitionId: "se1",
+        alreadyExisted: false,
+      })
+      .mockResolvedValueOnce({
+        teamId: "t2",
+        entryId: "e2",
+        subEventCompetitionId: "se2",
+        alreadyExisted: false,
+      });
 
     await service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction });
 
@@ -190,13 +247,15 @@ describe("SubmitEnrollmentService", () => {
   });
 
   it("swallows Comment.create error and continues", async () => {
-    jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([
-      { id: "se1", eventId: "event-uuid" } as never,
-    ]);
+    jest
+      .spyOn(SubEventCompetition, "findAll")
+      .mockResolvedValue([{ id: "se1", eventId: "event-uuid" } as never]);
     jest.spyOn(Comment, "create").mockRejectedValue(new Error("db-write-failure"));
     const input = makeInput({ remarks: "note" });
 
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })).resolves.not.toThrow();
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).resolves.not.toThrow();
   });
 
   it("does not write Comment when remarks is empty string", async () => {
@@ -227,12 +286,14 @@ describe("SubmitEnrollmentService", () => {
       ],
     });
 
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction }))
-      .rejects.toSatisfyError(ErrorCode.VALIDATION_FAILED, "duplicate-team-number");
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).rejects.toSatisfyError(ErrorCode.VALIDATION_FAILED, "duplicate-team-number");
   });
 
   it("allows same teamNumber for different types", async () => {
-    jest.spyOn(SubEventCompetition, "findByPk")
+    jest
+      .spyOn(SubEventCompetition, "findByPk")
       .mockResolvedValueOnce({ eventType: "MX" } as never)
       .mockResolvedValueOnce({ eventType: "M" } as never);
     teamWriteService.upsertTeamCore
@@ -243,8 +304,18 @@ describe("SubmitEnrollmentService", () => {
       { teamId: "t2", teamNumber: 1, name: "Club 1H", abbreviation: "CL 1H" },
     ]);
     enrollmentEntryService.createEntry
-      .mockResolvedValueOnce({ teamId: "t1", entryId: "e1", subEventCompetitionId: "se1", alreadyExisted: false })
-      .mockResolvedValueOnce({ teamId: "t2", entryId: "e2", subEventCompetitionId: "se2", alreadyExisted: false });
+      .mockResolvedValueOnce({
+        teamId: "t1",
+        entryId: "e1",
+        subEventCompetitionId: "se1",
+        alreadyExisted: false,
+      })
+      .mockResolvedValueOnce({
+        teamId: "t2",
+        entryId: "e2",
+        subEventCompetitionId: "se2",
+        alreadyExisted: false,
+      });
 
     const input = makeInput({
       teams: [
@@ -253,15 +324,18 @@ describe("SubmitEnrollmentService", () => {
       ],
     });
 
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })).resolves.not.toThrow();
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).resolves.not.toThrow();
   });
 
   it("throws VALIDATION_FAILED subevent-type-mismatch", async () => {
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue({ eventType: "M" } as never);
     const input = makeInput({ teams: [makeTeam({ type: SubEventTypeEnum.MX })] });
 
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction }))
-      .rejects.toSatisfyError(ErrorCode.VALIDATION_FAILED, "subevent-type-mismatch");
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).rejects.toSatisfyError(ErrorCode.VALIDATION_FAILED, "subevent-type-mismatch");
   });
 
   it("throws VALIDATION_FAILED base-not-in-roster", async () => {
@@ -269,17 +343,20 @@ describe("SubmitEnrollmentService", () => {
       teams: [makeTeam({ basePlayers: ["p-not-in-roster"], players: ["p1", "p2"] })],
     });
 
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction }))
-      .rejects.toSatisfyError(ErrorCode.VALIDATION_FAILED, "base-not-in-roster");
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).rejects.toSatisfyError(ErrorCode.VALIDATION_FAILED, "base-not-in-roster");
   });
 
   it("throws NO_TEAMS_TO_FINALISE when teams array is empty", async () => {
     const input = makeInput({ teams: [] });
 
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction }))
-      .rejects.toThrow(GraphQLError);
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction }))
-      .rejects.toMatchObject({ extensions: { code: ErrorCode.NO_TEAMS_TO_FINALISE } });
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).rejects.toThrow(GraphQLError);
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).rejects.toMatchObject({ extensions: { code: ErrorCode.NO_TEAMS_TO_FINALISE } });
   });
 
   it("throws VALIDATION_FAILED team-count-exceeded for 51 teams", async () => {
@@ -288,8 +365,9 @@ describe("SubmitEnrollmentService", () => {
     );
     const input = makeInput({ teams: manyTeams });
 
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction }))
-      .rejects.toSatisfyError(ErrorCode.VALIDATION_FAILED, "team-count-exceeded");
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).rejects.toSatisfyError(ErrorCode.VALIDATION_FAILED, "team-count-exceeded");
   });
 
   it("sanity runs before any DB write — upsertTeamCore not called on dup-number failure", async () => {
@@ -297,7 +375,9 @@ describe("SubmitEnrollmentService", () => {
       teams: [makeTeam({ teamNumber: 1 }), makeTeam({ teamNumber: 1, subEventId: "se2" })],
     });
 
-    await expect(service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })).rejects.toThrow();
+    await expect(
+      service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
+    ).rejects.toThrow();
     expect(teamWriteService.upsertTeamCore).not.toHaveBeenCalled();
   });
 });

@@ -143,7 +143,12 @@ export class EventEntryResolver {
     const transaction = await this._sequelize.transaction();
     try {
       const { alreadyFinalised } = await this.enrollmentFinalizeService.finalize({
-        clubId, season, email, user, club, transaction,
+        clubId,
+        season,
+        email,
+        user,
+        club,
+        transaction,
       });
       await transaction.commit();
 

@@ -102,7 +102,9 @@ describe("TeamWriteService", () => {
       const team = fakeTeam();
       jest.spyOn(Team, "create").mockResolvedValue(team as never);
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([]);
-      const createMemberSpy = jest.spyOn(TeamPlayerMembership, "create").mockResolvedValue({} as never);
+      const createMemberSpy = jest
+        .spyOn(TeamPlayerMembership, "create")
+        .mockResolvedValue({} as never);
 
       await service.upsertTeamCore(makeTxArgs({ id: null, players: ["player-1", "player-2"] }));
 
@@ -116,7 +118,10 @@ describe("TeamWriteService", () => {
     it("soft-ends removed players by setting end date", async () => {
       const team = fakeTeam({ id: "existing-uuid" });
       jest.spyOn(Team, "findByPk").mockResolvedValue(team as never);
-      const existingMembership = { playerId: "player-to-remove", end: null } as unknown as TeamPlayerMembership;
+      const existingMembership = {
+        playerId: "player-to-remove",
+        end: null,
+      } as unknown as TeamPlayerMembership;
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([existingMembership]);
       const updateSpy = jest.spyOn(TeamPlayerMembership, "update").mockResolvedValue([1] as never);
 
@@ -124,19 +129,26 @@ describe("TeamWriteService", () => {
 
       expect(updateSpy).toHaveBeenCalledWith(
         expect.objectContaining({ end: expect.any(Date) }),
-        expect.objectContaining({ where: { teamId: "existing-uuid", playerId: ["player-to-remove"] } })
+        expect.objectContaining({
+          where: { teamId: "existing-uuid", playerId: ["player-to-remove"] },
+        })
       );
     });
 
     it("does not touch memberships for unchanged players", async () => {
       const team = fakeTeam({ id: "existing-uuid" });
       jest.spyOn(Team, "findByPk").mockResolvedValue(team as never);
-      const membership = { playerId: "unchanged-player", end: null } as unknown as TeamPlayerMembership;
+      const membership = {
+        playerId: "unchanged-player",
+        end: null,
+      } as unknown as TeamPlayerMembership;
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([membership]);
       const createSpy = jest.spyOn(TeamPlayerMembership, "create").mockResolvedValue({} as never);
       const updateSpy = jest.spyOn(TeamPlayerMembership, "update").mockResolvedValue([0] as never);
 
-      await service.upsertTeamCore(makeTxArgs({ id: "existing-uuid", players: ["unchanged-player"] }));
+      await service.upsertTeamCore(
+        makeTxArgs({ id: "existing-uuid", players: ["unchanged-player"] })
+      );
 
       expect(createSpy).not.toHaveBeenCalled();
       expect(updateSpy).not.toHaveBeenCalled();
@@ -188,7 +200,12 @@ describe("TeamWriteService", () => {
         updateCalls.push(args);
         return [1] as never;
       });
-      const reloaded = fakeTeam({ id: "team-A", teamNumber: 1, name: "Club 1H", abbreviation: "CL 1H" });
+      const reloaded = fakeTeam({
+        id: "team-A",
+        teamNumber: 1,
+        name: "Club 1H",
+        abbreviation: "CL 1H",
+      });
       jest.spyOn(Team, "findByPk").mockResolvedValue(reloaded as never);
 
       await service.applyTeamNumbersTwoPhase({
@@ -217,9 +234,14 @@ describe("TeamWriteService", () => {
         updateCalls.push(args);
         return [1] as never;
       });
-      jest.spyOn(Team, "findByPk")
-        .mockResolvedValueOnce(fakeTeam({ id: "team-A", teamNumber: 2, name: "Club 2H", abbreviation: "CL 2H" }) as never)
-        .mockResolvedValueOnce(fakeTeam({ id: "team-B", teamNumber: 1, name: "Club 1H", abbreviation: "CL 1H" }) as never);
+      jest
+        .spyOn(Team, "findByPk")
+        .mockResolvedValueOnce(
+          fakeTeam({ id: "team-A", teamNumber: 2, name: "Club 2H", abbreviation: "CL 2H" }) as never
+        )
+        .mockResolvedValueOnce(
+          fakeTeam({ id: "team-B", teamNumber: 1, name: "Club 1H", abbreviation: "CL 1H" }) as never
+        );
 
       await service.applyTeamNumbersTwoPhase({
         teams: [
@@ -232,11 +254,19 @@ describe("TeamWriteService", () => {
 
       expect(updateCalls).toHaveLength(4);
       // B-1 passes: individualHooks: false for both
-      expect((updateCalls[0] as unknown[])[1]).toEqual(expect.objectContaining({ individualHooks: false }));
-      expect((updateCalls[1] as unknown[])[1]).toEqual(expect.objectContaining({ individualHooks: false }));
+      expect((updateCalls[0] as unknown[])[1]).toEqual(
+        expect.objectContaining({ individualHooks: false })
+      );
+      expect((updateCalls[1] as unknown[])[1]).toEqual(
+        expect.objectContaining({ individualHooks: false })
+      );
       // B-2 passes: individualHooks: true for both
-      expect((updateCalls[2] as unknown[])[1]).toEqual(expect.objectContaining({ individualHooks: true }));
-      expect((updateCalls[3] as unknown[])[1]).toEqual(expect.objectContaining({ individualHooks: true }));
+      expect((updateCalls[2] as unknown[])[1]).toEqual(
+        expect.objectContaining({ individualHooks: true })
+      );
+      expect((updateCalls[3] as unknown[])[1]).toEqual(
+        expect.objectContaining({ individualHooks: true })
+      );
     });
 
     it("pass B-1 uses temp teamNumber >= 1_000_000_000", async () => {
@@ -245,9 +275,9 @@ describe("TeamWriteService", () => {
         updateCalls.push(args);
         return [1] as never;
       });
-      jest.spyOn(Team, "findByPk").mockResolvedValue(
-        fakeTeam({ id: "team-A", teamNumber: 1, name: "Club 1H" }) as never
-      );
+      jest
+        .spyOn(Team, "findByPk")
+        .mockResolvedValue(fakeTeam({ id: "team-A", teamNumber: 1, name: "Club 1H" }) as never);
 
       await service.applyTeamNumbersTwoPhase({
         teams: [{ teamId: "team-A", teamNumber: 1 }],
@@ -261,7 +291,12 @@ describe("TeamWriteService", () => {
 
     it("returns final name and abbreviation from reloaded team", async () => {
       jest.spyOn(Team, "update").mockResolvedValue([1] as never);
-      const reloaded = fakeTeam({ id: "team-A", teamNumber: 3, name: "Badman 3H", abbreviation: "BM 3H" });
+      const reloaded = fakeTeam({
+        id: "team-A",
+        teamNumber: 3,
+        name: "Badman 3H",
+        abbreviation: "BM 3H",
+      });
       jest.spyOn(Team, "findByPk").mockResolvedValue(reloaded as never);
 
       const results = await service.applyTeamNumbersTwoPhase({
@@ -286,4 +321,3 @@ describe("TeamWriteService", () => {
     });
   });
 });
-

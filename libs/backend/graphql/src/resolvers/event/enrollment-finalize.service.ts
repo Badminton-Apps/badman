@@ -22,7 +22,14 @@ export interface FinalizeResult {
 export class EnrollmentFinalizeService {
   private readonly logger = new Logger(EnrollmentFinalizeService.name);
 
-  async finalize({ clubId, season, email, user, club, transaction }: FinalizeArgs): Promise<FinalizeResult> {
+  async finalize({
+    clubId,
+    season,
+    email,
+    user,
+    club,
+    transaction,
+  }: FinalizeArgs): Promise<FinalizeResult> {
     const teams = await Team.findAll({
       where: { clubId, season },
       include: [{ model: EventEntry }],

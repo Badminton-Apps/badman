@@ -69,11 +69,21 @@ describe("EnrollmentEntryService.createEntry", () => {
 
     const user = userWithPermission(true);
     await expect(
-      service.createEntry({ teamId: "missing", subEventId: "se-uuid", transaction: fakeTransaction, user })
+      service.createEntry({
+        teamId: "missing",
+        subEventId: "se-uuid",
+        transaction: fakeTransaction,
+        user,
+      })
     ).rejects.toThrow(GraphQLError);
 
     try {
-      await service.createEntry({ teamId: "missing", subEventId: "se-uuid", transaction: fakeTransaction, user });
+      await service.createEntry({
+        teamId: "missing",
+        subEventId: "se-uuid",
+        transaction: fakeTransaction,
+        user,
+      });
     } catch (err) {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("TEAM_NOT_FOUND");
@@ -87,7 +97,12 @@ describe("EnrollmentEntryService.createEntry", () => {
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
 
     try {
-      await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
+      await service.createEntry({
+        teamId: team.id,
+        subEventId: "se-uuid",
+        transaction: fakeTransaction,
+        user,
+      });
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
@@ -111,7 +126,12 @@ describe("EnrollmentEntryService.createEntry", () => {
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
     jest.spyOn(EventEntry, "create").mockResolvedValue({} as unknown as EventEntry);
 
-    const result = await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
+    const result = await service.createEntry({
+      teamId: team.id,
+      subEventId: "se-uuid",
+      transaction: fakeTransaction,
+      user,
+    });
 
     expect(result.alreadyExisted).toBe(false);
   });
@@ -123,7 +143,12 @@ describe("EnrollmentEntryService.createEntry", () => {
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(null);
 
     try {
-      await service.createEntry({ teamId: team.id, subEventId: "missing-se", transaction: fakeTransaction, user });
+      await service.createEntry({
+        teamId: team.id,
+        subEventId: "missing-se",
+        transaction: fakeTransaction,
+        user,
+      });
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
@@ -140,7 +165,12 @@ describe("EnrollmentEntryService.createEntry", () => {
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
 
     try {
-      await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
+      await service.createEntry({
+        teamId: team.id,
+        subEventId: "se-uuid",
+        transaction: fakeTransaction,
+        user,
+      });
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
@@ -157,11 +187,22 @@ describe("EnrollmentEntryService.createEntry", () => {
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
 
-    const result = await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
+    const result = await service.createEntry({
+      teamId: team.id,
+      subEventId: "se-uuid",
+      transaction: fakeTransaction,
+      user,
+    });
 
-    expect(result).toEqual({ teamId: team.id, subEventCompetitionId: "se-uuid", alreadyExisted: true });
+    expect(result).toEqual({
+      teamId: team.id,
+      subEventCompetitionId: "se-uuid",
+      alreadyExisted: true,
+    });
     expect((team as unknown as { _setEntry: jest.Mock })._setEntry).not.toHaveBeenCalled();
-    expect((subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry).not.toHaveBeenCalled();
+    expect(
+      (subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry
+    ).not.toHaveBeenCalled();
   });
 
   it("creates a fresh entry on a new enrollment", async () => {
@@ -172,10 +213,21 @@ describe("EnrollmentEntryService.createEntry", () => {
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
     jest.spyOn(EventEntry, "create").mockResolvedValue({} as unknown as EventEntry);
 
-    const result = await service.createEntry({ teamId: team.id, subEventId: "se-uuid", transaction: fakeTransaction, user });
+    const result = await service.createEntry({
+      teamId: team.id,
+      subEventId: "se-uuid",
+      transaction: fakeTransaction,
+      user,
+    });
 
-    expect(result).toEqual({ teamId: team.id, subEventCompetitionId: "se-uuid", alreadyExisted: false });
-    expect((subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry).toHaveBeenCalled();
+    expect(result).toEqual({
+      teamId: team.id,
+      subEventCompetitionId: "se-uuid",
+      alreadyExisted: false,
+    });
+    expect(
+      (subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry
+    ).toHaveBeenCalled();
   });
 
   it("reuses an existing entry when the team already has one pointing to a different sub-event", async () => {
@@ -186,10 +238,18 @@ describe("EnrollmentEntryService.createEntry", () => {
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
 
-    const result = await service.createEntry({ teamId: team.id, subEventId: "new-se", transaction: fakeTransaction, user });
+    const result = await service.createEntry({
+      teamId: team.id,
+      subEventId: "new-se",
+      transaction: fakeTransaction,
+      user,
+    });
 
     expect(result.alreadyExisted).toBe(false);
     // setEntry called with the reused entry (no EventEntry.create)
-    expect((team as unknown as { _setEntry: jest.Mock })._setEntry).toHaveBeenCalledWith(existingEntry, expect.any(Object));
+    expect((team as unknown as { _setEntry: jest.Mock })._setEntry).toHaveBeenCalledWith(
+      existingEntry,
+      expect.any(Object)
+    );
   });
 });

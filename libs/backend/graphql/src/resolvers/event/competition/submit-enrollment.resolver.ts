@@ -17,7 +17,7 @@ export class SubmitEnrollmentResolver {
   constructor(
     private readonly submitEnrollmentService: SubmitEnrollmentService,
     private readonly notificationService: NotificationService,
-    private readonly _sequelize: Sequelize,
+    private readonly _sequelize: Sequelize
   ) {}
 
   @Mutation(() => SubmitEnrollmentResult)

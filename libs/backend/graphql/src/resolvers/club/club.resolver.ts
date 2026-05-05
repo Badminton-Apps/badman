@@ -52,7 +52,7 @@ export class ClubsResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private clubMembershipService: ClubMembershipService,
+    private clubMembershipService: ClubMembershipService
   ) {}
 
   @Query(() => Club)

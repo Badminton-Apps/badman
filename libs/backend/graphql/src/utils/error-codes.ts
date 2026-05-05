@@ -39,7 +39,6 @@ export const ErrorCode = {
 
   // Atomic enrollment submission (libs/backend/graphql/src/resolvers/event/competition/submit-enrollment.resolver.ts)
   VALIDATION_FAILED: "VALIDATION_FAILED",
-
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

@@ -46,7 +46,12 @@ export class EnrollmentResolver {
     const userId = user?.id ?? null;
     const transaction = await this._sequelize.transaction();
     try {
-      const result = await this.enrollmentEntryService.createEntry({ teamId, subEventId, transaction, user });
+      const result = await this.enrollmentEntryService.createEntry({
+        teamId,
+        subEventId,
+        transaction,
+        user,
+      });
       await transaction.commit();
       return result;
     } catch (error) {

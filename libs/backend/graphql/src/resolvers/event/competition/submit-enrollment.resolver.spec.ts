@@ -185,9 +185,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
 
     await resolver.submitEnrollment(user, makeInput());
 
-    expect(submitService.run).toHaveBeenCalledWith(
-      expect.objectContaining({ confirmed: false })
-    );
+    expect(submitService.run).toHaveBeenCalledWith(expect.objectContaining({ confirmed: false }));
   });
 
   // Case 10: change:transfer present → confirmed: true
@@ -196,9 +194,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
 
     await resolver.submitEnrollment(user, makeInput());
 
-    expect(submitService.run).toHaveBeenCalledWith(
-      expect.objectContaining({ confirmed: true })
-    );
+    expect(submitService.run).toHaveBeenCalledWith(expect.objectContaining({ confirmed: true }));
   });
 
   // Case 11: idempotent retry — second call returns alreadyFinalised: true
@@ -223,8 +219,13 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
   it("commits transaction before dispatching notification", async () => {
     const user = makeUser(["edit-any:club"]);
     const callOrder: string[] = [];
-    commitSpy.mockImplementation(async () => { callOrder.push("commit"); });
-    notificationService.notifyEnrollment.mockImplementation(async () => { callOrder.push("notify"); return undefined as never; });
+    commitSpy.mockImplementation(async () => {
+      callOrder.push("commit");
+    });
+    notificationService.notifyEnrollment.mockImplementation(async () => {
+      callOrder.push("notify");
+      return undefined as never;
+    });
 
     await resolver.submitEnrollment(user, makeInput());
 
