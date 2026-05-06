@@ -295,7 +295,7 @@ export const XmlMatchSchema = z
     LocationCode: z.coerce.string().optional(),
     LocationName: z.string().optional(),
     CourtCode: z.coerce.string().optional(),
-    CourtName: z.string().optional(),
+    CourtName: z.coerce.string().optional(),
     MatchTypeID: z.coerce.number().optional(),
     MatchTypeNo: z.coerce.string().optional(),
     MatchOrder: z.coerce.number().optional(),
