@@ -13,7 +13,7 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from "@badman/backend-visual";
-import { GameStatus, getRankingProtected, runParallel } from "@badman/utils";
+import { GameStatus, getRankingProtected } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { isBefore, subWeeks } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
@@ -62,7 +62,9 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    await runParallel(this.draws?.map((e) => this._processSubevent(e.draw, e.internalId)) ?? []);
+    for (const e of this.draws ?? []) {
+      await this._processSubevent(e.draw, e.internalId);
+    }
 
     return this._games;
   }
