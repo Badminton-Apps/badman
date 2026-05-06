@@ -11,6 +11,7 @@ import {
 } from "@badman/backend-database";
 import { ClubsResolver } from "./club.resolver";
 import { ClubMembershipFilterInput } from "./club-membership-filter.input";
+import { ClubMembershipService } from "./club-membership.service";
 
 describe("ClubsResolver", () => {
   let resolver: ClubsResolver;
@@ -69,6 +70,7 @@ describe("ClubsResolver", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ClubsResolver,
+        ClubMembershipService,
         {
           provide: Sequelize,
           useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
@@ -406,9 +408,9 @@ describe("ClubsResolver", () => {
       } as Partial<ClubPlayerMembership>);
       jest.spyOn(ClubPlayerMembership, "findByPk").mockResolvedValue(membership);
 
-      await expect(
-        resolver.updateClubPlayerMembership(user, baseUpdateInput())
-      ).rejects.toThrow("boom");
+      await expect(resolver.updateClubPlayerMembership(user, baseUpdateInput())).rejects.toThrow(
+        "boom"
+      );
 
       expect(mockTransaction.rollback).toHaveBeenCalled();
       expect(mockTransaction.commit).not.toHaveBeenCalled();

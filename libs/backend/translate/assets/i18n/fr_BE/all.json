@@ -1999,7 +1999,13 @@
         "notificationFailedBody": "Votre inscription a été enregistrée, mais nous n'avons pas pu envoyer l'e-mail de confirmation ou la notification push. Cliquez sur Réessayer pour la renvoyer.",
         "notificationFailedTitle": "Soumission terminée — la confirmation n'a pas pu être envoyée",
         "retryFinalisation": "Réessayer",
-        "retryNotification": "Réessayer"
+        "retryNotification": "Réessayer",
+        "error": {
+          "network": {
+            "title": "Erreur réseau",
+            "body": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
+          }
+        }
       },
       "teamEnrollment": {
         "addBasePlayerDialog": {
