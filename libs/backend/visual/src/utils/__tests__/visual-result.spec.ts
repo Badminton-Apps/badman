@@ -203,6 +203,13 @@ describe("requiredCoercedString invariant", () => {
     }
   });
 
+  // Visual API sometimes returns CourtName as a numeric court number (Sentry #117823630).
+  it("XmlMatchSchema: coerces numeric CourtName to string", () => {
+    const result = XmlMatchSchema.safeParse({ Code: "M1", CourtName: 3 });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.CourtName).toBe("3");
+  });
+
   it("XmlTeamMatchSchema: coerces numeric Team1/Team2 to undefined", () => {
     const result = XmlTeamMatchSchema.safeParse({ Code: "TM1", Team1: 42, Team2: 99 });
     expect(result.success).toBe(true);
