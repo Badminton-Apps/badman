@@ -44,7 +44,6 @@ describe("toXlsx", () => {
     const ws = wb.Sheets["Results"];
     expect(ws["!autofilter"]).toBeDefined();
   });
-
 });
 
 describe("toCSV", () => {

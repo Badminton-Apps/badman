@@ -7,7 +7,7 @@ export type Row = (string | number | undefined | null)[];
  * Column widths are auto-sized (max content length + 2).
  * Autofilter is applied to the full sheet range.
  */
-export function toXlsx(sheetName: string, headers: string[], rows: Row[]): Buffer {
+export function toXlsx(sheetName: string, headers: readonly string[], rows: Row[]): Buffer {
   const wb = XLSX.utils.book_new();
   const data = [[...headers], ...rows];
   const ws = XLSX.utils.aoa_to_sheet(data);
@@ -34,7 +34,7 @@ export function toXlsx(sheetName: string, headers: string[], rows: Row[]): Buffe
  * - Double-quotes inside values are escaped as ""
  * - null / undefined → empty string
  */
-export function toCSV(headers: string[], rows: Row[]): string {
+export function toCSV(headers: readonly string[], rows: Row[]): string {
   const escape = (value: string | number | undefined | null): string => {
     const str = value === undefined || value === null ? "" : String(value);
     if (str.includes(",") || str.includes('"') || str.includes("\n") || str.includes("\r")) {
@@ -46,4 +46,3 @@ export function toCSV(headers: string[], rows: Row[]): string {
   const lines = [headers, ...rows].map((row) => row.map(escape).join(","));
   return lines.join("\r\n");
 }
-

@@ -1,7 +1,7 @@
 import { EventCompetition, Player, Team } from "@badman/backend-database";
 import { SubEventTypeEnum, sortPlayers } from "@badman/utils";
+import { toXlsx } from "@badman/backend-utils";
 import { Injectable } from "@nestjs/common";
-import * as XLSX from "xlsx";
 
 // A excel generation service
 @Injectable()
@@ -15,22 +15,21 @@ export class ExcelService {
       ],
     });
 
-    const data: (string | number | undefined)[][] = [
-      [
-        "Naam",
-        "Voornaam",
-        "Lidnummer",
-        "Geslacht",
-        "Ploeg",
-        "Enkel",
-        "Dubbel",
-        "Gemengd",
-        "Afdeling",
-        "Reeks",
-        "Somindex gemengde competitie",
-        "Somindex heren-/damescompetitie",
-      ],
-    ]; // Array to hold Excel data
+    const headers = [
+      "Naam",
+      "Voornaam",
+      "Lidnummer",
+      "Geslacht",
+      "Ploeg",
+      "Enkel",
+      "Dubbel",
+      "Gemengd",
+      "Afdeling",
+      "Reeks",
+      "Somindex gemengde competitie",
+      "Somindex heren-/damescompetitie",
+    ] as const;
+    const rows: (string | number | undefined)[][] = [];
 
     for (const subEvent of subEvents ?? []) {
       const draws = await subEvent?.getDrawCompetitions();
@@ -52,7 +51,7 @@ export class ExcelService {
               throw new Error("Entry has no team");
             }
 
-            data.push(
+            rows.push(
               this.getPlayerEntry(
                 player,
                 entry.team,
@@ -70,33 +69,7 @@ export class ExcelService {
       }
     }
 
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(data);
-
-    // Find the row with the most columns
-    let indexWithMostColumns = 0;
-    let maxColumns = 0;
-    data.forEach((row, index) => {
-      if (row.length > maxColumns) {
-        maxColumns = row.length;
-        indexWithMostColumns = index;
-      }
-    });
-
-    // Autosize columns
-    const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
-      data.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0)
-    );
-    ws["!cols"] = columnSizes.map((width) => ({ width }));
-
-    // Enable filtering
-    ws["!autofilter"] = {
-      ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws["!ref"] as string)),
-    };
-
-    XLSX.utils.book_append_sheet(wb, ws, "Enrollment");
-
-    const buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+    const buffer = toXlsx("Enrollment", headers, rows);
     return { buffer, event };
   }
 
