@@ -1,9 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import {
-  BadRequestException,
-  ForbiddenException,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { BadRequestException, ForbiddenException, UnauthorizedException } from "@nestjs/common";
 import { ExportController } from "./export.controller";
 import { TeamsService } from "../services/export/teams.service";
 import { Player } from "@badman/backend-database";
@@ -75,11 +71,10 @@ describe("ExportController", () => {
     it("returns XLSX content type by default (no format param)", async () => {
       const res = mockRes();
 
-      await controller.getTeams(
-        mockUser(),
-        res,
-        { eventId: VALID_EVENT_ID, format: undefined as any }
-      );
+      await controller.getTeams(mockUser(), res, {
+        eventId: VALID_EVENT_ID,
+        format: undefined as any,
+      });
 
       expect(res.header).toHaveBeenCalledWith(
         "Content-Type",
@@ -90,11 +85,7 @@ describe("ExportController", () => {
     it("returns XLSX content type when format=xlsx", async () => {
       const res = mockRes();
 
-      await controller.getTeams(
-        mockUser(),
-        res,
-        { eventId: VALID_EVENT_ID, format: "xlsx" }
-      );
+      await controller.getTeams(mockUser(), res, { eventId: VALID_EVENT_ID, format: "xlsx" });
 
       expect(res.header).toHaveBeenCalledWith(
         "Content-Type",
@@ -105,11 +96,7 @@ describe("ExportController", () => {
     it("returns CSV content type when format=csv", async () => {
       const res = mockRes();
 
-      await controller.getTeams(
-        mockUser(),
-        res,
-        { eventId: VALID_EVENT_ID, format: "csv" }
-      );
+      await controller.getTeams(mockUser(), res, { eventId: VALID_EVENT_ID, format: "csv" });
 
       expect(res.header).toHaveBeenCalledWith("Content-Type", "text/csv; charset=utf-8");
     });
@@ -117,11 +104,7 @@ describe("ExportController", () => {
     it("sets Content-Disposition with eventName for XLSX", async () => {
       const res = mockRes();
 
-      await controller.getTeams(
-        mockUser(),
-        res,
-        { eventId: VALID_EVENT_ID, format: "xlsx" }
-      );
+      await controller.getTeams(mockUser(), res, { eventId: VALID_EVENT_ID, format: "xlsx" });
 
       expect(res.header).toHaveBeenCalledWith(
         "Content-Disposition",
@@ -132,11 +115,7 @@ describe("ExportController", () => {
     it("sets Content-Disposition with eventName for CSV", async () => {
       const res = mockRes();
 
-      await controller.getTeams(
-        mockUser(),
-        res,
-        { eventId: VALID_EVENT_ID, format: "csv" }
-      );
+      await controller.getTeams(mockUser(), res, { eventId: VALID_EVENT_ID, format: "csv" });
 
       expect(res.header).toHaveBeenCalledWith(
         "Content-Disposition",
@@ -147,11 +126,7 @@ describe("ExportController", () => {
     it("calls toXlsx with sheet name 'Teams'", async () => {
       const res = mockRes();
 
-      await controller.getTeams(
-        mockUser(),
-        res,
-        { eventId: VALID_EVENT_ID, format: "xlsx" }
-      );
+      await controller.getTeams(mockUser(), res, { eventId: VALID_EVENT_ID, format: "xlsx" });
 
       expect(mockToXlsx).toHaveBeenCalledWith("Teams", MOCK_HEADERS, expect.any(Array));
     });
@@ -161,11 +136,7 @@ describe("ExportController", () => {
       mockToXlsx.mockReturnValue(xlsxBuffer);
       const res = mockRes();
 
-      await controller.getTeams(
-        mockUser(),
-        res,
-        { eventId: VALID_EVENT_ID, format: "xlsx" }
-      );
+      await controller.getTeams(mockUser(), res, { eventId: VALID_EVENT_ID, format: "xlsx" });
 
       expect(res.send).toHaveBeenCalledWith(xlsxBuffer);
     });
@@ -176,11 +147,10 @@ describe("ExportController", () => {
       const res = mockRes();
 
       await expect(
-        controller.getTeams(
-          { id: undefined } as unknown as Player,
-          res,
-          { eventId: VALID_EVENT_ID, format: "xlsx" }
-        )
+        controller.getTeams({ id: undefined } as unknown as Player, res, {
+          eventId: VALID_EVENT_ID,
+          format: "xlsx",
+        })
       ).rejects.toThrow(UnauthorizedException);
 
       expect(teamsService.getTeams).not.toHaveBeenCalled();
@@ -206,11 +176,7 @@ describe("ExportController", () => {
       const res = mockRes();
 
       await expect(
-        controller.getTeams(
-          mockUser(),
-          res,
-          { eventId: VALID_EVENT_ID, format: "pdf" as any }
-        )
+        controller.getTeams(mockUser(), res, { eventId: VALID_EVENT_ID, format: "pdf" as any })
       ).rejects.toThrow(BadRequestException);
 
       expect(teamsService.getTeams).not.toHaveBeenCalled();
@@ -220,11 +186,7 @@ describe("ExportController", () => {
       const res = mockRes();
 
       await expect(
-        controller.getTeams(
-          mockUser(),
-          res,
-          { eventId: "", format: "xlsx" }
-        )
+        controller.getTeams(mockUser(), res, { eventId: "", format: "xlsx" })
       ).rejects.toThrow(BadRequestException);
 
       expect(teamsService.getTeams).not.toHaveBeenCalled();
@@ -234,11 +196,7 @@ describe("ExportController", () => {
       const res = mockRes();
 
       await expect(
-        controller.getTeams(
-          mockUser(),
-          res,
-          { eventId: "not-a-uuid", format: "xlsx" }
-        )
+        controller.getTeams(mockUser(), res, { eventId: "not-a-uuid", format: "xlsx" })
       ).rejects.toThrow(BadRequestException);
 
       expect(teamsService.getTeams).not.toHaveBeenCalled();

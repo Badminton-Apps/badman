@@ -60,7 +60,10 @@ export class ExportController {
       case "xlsx": {
         const buffer = toXlsx("Teams", headers, rows);
         res.header("Content-Disposition", `attachment; filename="${eventName}.xlsx"`);
-        res.header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        res.header(
+          "Content-Type",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
         res.send(buffer);
         break;
       }

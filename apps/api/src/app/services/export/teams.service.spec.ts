@@ -10,14 +10,16 @@ const EXPECTED_HEADERS = [
   "Voorkeur speelmoment (tijdstip)",
 ] as const;
 
-function makeTeam(overrides: Partial<{
-  id: string;
-  name: string;
-  clubId: string;
-  clubName: string;
-  preferredDay: string | null;
-  preferredTime: string | null;
-}> = {}) {
+function makeTeam(
+  overrides: Partial<{
+    id: string;
+    name: string;
+    clubId: string;
+    clubName: string;
+    preferredDay: string | null;
+    preferredTime: string | null;
+  }> = {}
+) {
   const opts = {
     id: "team-1",
     name: "Club A 1H",
@@ -97,7 +99,9 @@ describe("TeamsService", () => {
   });
 
   it("translates 'monday' to 'Maandag'", async () => {
-    const event = makeEvent([makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: "monday" }))])])]);
+    const event = makeEvent([
+      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: "monday" }))])]),
+    ]);
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
@@ -113,7 +117,9 @@ describe("TeamsService", () => {
     ["saturday", "Zaterdag"],
     ["sunday", "Zondag"],
   ])("translates '%s' to '%s'", async (day, expected) => {
-    const event = makeEvent([makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: day }))])])]);
+    const event = makeEvent([
+      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: day }))])]),
+    ]);
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
@@ -122,7 +128,9 @@ describe("TeamsService", () => {
   });
 
   it("formats preferredTime '09:00:00' as '09:00'", async () => {
-    const event = makeEvent([makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredTime: "09:00:00" }))])])]);
+    const event = makeEvent([
+      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredTime: "09:00:00" }))])]),
+    ]);
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
@@ -131,7 +139,9 @@ describe("TeamsService", () => {
   });
 
   it("returns empty string when preferredDay is null", async () => {
-    const event = makeEvent([makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: null }))])])]);
+    const event = makeEvent([
+      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: null }))])]),
+    ]);
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
@@ -140,7 +150,9 @@ describe("TeamsService", () => {
   });
 
   it("returns empty string when preferredTime is null", async () => {
-    const event = makeEvent([makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredTime: null }))])])]);
+    const event = makeEvent([
+      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredTime: null }))])]),
+    ]);
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
@@ -160,8 +172,8 @@ describe("TeamsService", () => {
   it("throws NotFoundException when event does not exist", async () => {
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(null);
 
-    await expect(
-      service.getTeams("00000000-0000-0000-0000-000000000001")
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.getTeams("00000000-0000-0000-0000-000000000001")).rejects.toThrow(
+      NotFoundException
+    );
   });
 });
