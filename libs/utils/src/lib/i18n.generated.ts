@@ -1698,6 +1698,12 @@ export type I18nTranslations = {
                     "notificationFailedTitle": string;
                     "retryFinalisation": string;
                     "retryNotification": string;
+                    "error": {
+                        "network": {
+                            "title": string;
+                            "body": string;
+                        };
+                    };
                 };
                 "teamEnrollment": {
                     "addBasePlayerDialog": {

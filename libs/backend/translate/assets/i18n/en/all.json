@@ -1679,7 +1679,13 @@
         "notificationFailedBody": "Your enrollment was saved, but we couldn't send the confirmation email or push notification. Press Retry to try sending it again.",
         "notificationFailedTitle": "Submission complete — confirmation could not be sent",
         "retryFinalisation": "Retry",
-        "retryNotification": "Retry"
+        "retryNotification": "Retry",
+        "error": {
+          "network": {
+            "title": "Network error",
+            "body": "We couldn't reach the server. Check your connection and try again."
+          }
+        }
       },
       "teamEnrollment": {
         "addBasePlayerDialog": {

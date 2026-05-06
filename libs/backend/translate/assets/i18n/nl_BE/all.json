@@ -1397,7 +1397,13 @@
         "notificationFailedBody": "Je inschrijving is opgeslagen, maar we konden de bevestigingsemail of pushmelding niet versturen. Klik op Opnieuw proberen om het opnieuw te versturen.",
         "notificationFailedTitle": "Indiening voltooid — bevestiging kon niet worden verzonden",
         "retryFinalisation": "Opnieuw proberen",
-        "retryNotification": "Opnieuw proberen"
+        "retryNotification": "Opnieuw proberen",
+        "error": {
+          "network": {
+            "title": "Netwerkfout",
+            "body": "We konden de server niet bereiken. Controleer je verbinding en probeer opnieuw."
+          }
+        }
       },
       "teamEnrollment": {
         "addBasePlayerDialog": {
