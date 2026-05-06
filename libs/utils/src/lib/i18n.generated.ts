@@ -3377,6 +3377,7 @@ export type I18nTranslations = {
                 "actions": {
                     "edit": string;
                     "delete": string;
+                    "export": string;
                     "setRisersFallers": string;
                     "openCloseDate": string;
                     "openCloseEncounterChangeDate": string;
@@ -3387,6 +3388,12 @@ export type I18nTranslations = {
                         "syncSuccess": string;
                         "syncError": string;
                     };
+                    "averageLevel": string;
+                    "downloadEnrollment": string;
+                    "downloadTeams": string;
+                    "downloadExceptions": string;
+                    "downloadLocations": string;
+                    "downloadCp": string;
                 };
                 "addCompetitionDialog": {
                     "title": string;
@@ -4118,6 +4125,27 @@ export type I18nTranslations = {
                     "addCompetition": string;
                     "loadMoreCompetitions": string;
                 };
+            };
+            "actions": {
+                "edit": string;
+                "delete": string;
+                "export": string;
+                "setRisersFallers": string;
+                "openCloseDate": string;
+                "openCloseEncounterChangeDate": string;
+                "makeOfficial": string;
+                "makeUnofficial": string;
+                "sync": string;
+                "messages": {
+                    "syncSuccess": string;
+                    "syncError": string;
+                };
+                "averageLevel": string;
+                "downloadEnrollment": string;
+                "downloadTeams": string;
+                "downloadExceptions": string;
+                "downloadLocations": string;
+                "downloadCp": string;
             };
             "addCompetitionDialog": {
                 "title": string;

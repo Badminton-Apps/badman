@@ -3294,6 +3294,7 @@
       "actions": {
         "edit": "Edit",
         "delete": "Delete",
+        "export": "Export",
         "setRisersFallers": "Set risers/fallers",
         "openCloseDate": "Open/Close date",
         "openCloseEncounterChangeDate": "Open / close move encounters",
@@ -3303,7 +3304,13 @@
         "messages": {
           "syncSuccess": "Competition successfully synced",
           "syncError": "Error syncing competition"
-        }
+        },
+        "averageLevel": "Average level",
+        "downloadEnrollment": "Download enrollment",
+        "downloadTeams": "Download teams",
+        "downloadExceptions": "Download exceptions",
+        "downloadLocations": "Download locations",
+        "downloadCp": "Download CP file"
       },
       "addCompetitionDialog": {
         "title": "Add competition",

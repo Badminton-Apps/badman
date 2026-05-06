@@ -3072,6 +3072,7 @@
       "actions": {
         "edit": "Bewerken",
         "delete": "Verwijderen",
+        "export": "Exporteren",
         "setRisersFallers": "Stel stijgers/dalers in",
         "openCloseDate": "Openen/sluiten datum",
         "makeOfficial": "Officieel maken",
@@ -3081,7 +3082,13 @@
         "messages": {
           "syncSuccess": "Competitie succesvol gesynchroniseerd",
           "syncError": "Fout bij het synchroniseren van competitie"
-        }
+        },
+        "averageLevel": "Gemiddeld niveau",
+        "downloadEnrollment": "Inschrijvingen downloaden",
+        "downloadTeams": "Ploegen downloaden",
+        "downloadExceptions": "Uitzonderingen downloaden",
+        "downloadLocations": "Locaties downloaden",
+        "downloadCp": "CP-bestand downloaden"
       },
       "addCompetitionDialog": {
         "title": "Competitie toevoegen",
