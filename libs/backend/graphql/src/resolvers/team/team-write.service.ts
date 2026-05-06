@@ -1,10 +1,9 @@
-import { Club, Player, Team, TeamPlayerMembership } from "@badman/backend-database";
+import { Club, Team, TeamPlayerMembership } from "@badman/backend-database";
 import { Injectable, Logger } from "@nestjs/common";
 import { v4 as uuid } from "uuid";
 import { Transaction } from "sequelize";
 
 export interface UpsertTeamCoreArgs {
-  id?: string | null;
   link?: string | null;
   clubId: string;
   season: number;
@@ -45,7 +44,6 @@ export class TeamWriteService {
   private readonly logger = new Logger(TeamWriteService.name);
 
   async upsertTeamCore({
-    id,
     link,
     clubId,
     season,
@@ -66,10 +64,18 @@ export class TeamWriteService {
     const tempName = `__tmp_${txId}_${txIndex}`;
     const tempAbbr = `__T${txIndex}`;
 
-    let team: Team;
+    let team: Team | null = null;
+    if (link) {
+      team = await Team.findOne({
+        where: { link, season, clubId },
+        transaction,
+        lock: transaction.LOCK.UPDATE,
+      });
+    }
+
     let alreadyExisted: boolean;
 
-    if (!id) {
+    if (!team) {
       team = await Team.create(
         {
           link: resolvedLink,
@@ -90,17 +96,6 @@ export class TeamWriteService {
       );
       alreadyExisted = false;
     } else {
-      const found = await Team.findByPk(id, {
-        transaction,
-        lock: transaction.LOCK.UPDATE,
-      });
-
-      if (!found) {
-        throw new Error(`Team not found: ${id}`);
-      }
-
-      team = found;
-
       const updateData: Partial<Team> = {
         link: resolvedLink,
         captainId: captainId ?? team.captainId,

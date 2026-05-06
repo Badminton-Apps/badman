@@ -16,9 +16,6 @@ export class SubmitEnrollmentMembershipInput {
 @InputType()
 export class SubmitEnrollmentTeamInput {
   @Field(() => ID, { nullable: true })
-  id?: string;
-
-  @Field(() => ID, { nullable: true })
   link?: string;
 
   @Field(() => String)

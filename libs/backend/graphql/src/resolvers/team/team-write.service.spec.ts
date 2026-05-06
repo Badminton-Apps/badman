@@ -58,7 +58,7 @@ describe("TeamWriteService", () => {
       const createSpy = jest.spyOn(Team, "create").mockResolvedValue(team as never);
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([]);
 
-      const result = await service.upsertTeamCore(makeTxArgs({ id: null }));
+      const result = await service.upsertTeamCore(makeTxArgs());
 
       expect(createSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -75,27 +75,42 @@ describe("TeamWriteService", () => {
       expect(result.teamId).toBe("team-uuid");
     });
 
-    it("uses existing team when id provided", async () => {
-      const team = fakeTeam({ id: "existing-uuid" });
-      jest.spyOn(Team, "findByPk").mockResolvedValue(team as never);
+    it("uses existing team when link matches", async () => {
+      const team = fakeTeam({ id: "existing-uuid", link: "match-link" });
+      jest.spyOn(Team, "findOne").mockResolvedValue(team as never);
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([]);
 
-      const result = await service.upsertTeamCore(makeTxArgs({ id: "existing-uuid" }));
+      const result = await service.upsertTeamCore(makeTxArgs({ link: "match-link" }));
 
       expect(team.update).toHaveBeenCalled();
       expect(result.alreadyExisted).toBe(true);
       expect(result.teamId).toBe("existing-uuid");
     });
 
-    it("does not call Team.create when id is provided", async () => {
+    it("does not call Team.create when link matches existing team", async () => {
       const createSpy = jest.spyOn(Team, "create");
-      const team = fakeTeam({ id: "existing-uuid" });
-      jest.spyOn(Team, "findByPk").mockResolvedValue(team as never);
+      const team = fakeTeam({ id: "existing-uuid", link: "match-link" });
+      jest.spyOn(Team, "findOne").mockResolvedValue(team as never);
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([]);
 
-      await service.upsertTeamCore(makeTxArgs({ id: "existing-uuid" }));
+      await service.upsertTeamCore(makeTxArgs({ link: "match-link" }));
 
       expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it("creates when link provided but no existing team matches", async () => {
+      const team = fakeTeam({ link: "fresh-link" });
+      jest.spyOn(Team, "findOne").mockResolvedValue(null);
+      const createSpy = jest.spyOn(Team, "create").mockResolvedValue(team as never);
+      jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([]);
+
+      const result = await service.upsertTeamCore(makeTxArgs({ link: "fresh-link" }));
+
+      expect(createSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ link: "fresh-link" }),
+        expect.anything()
+      );
+      expect(result.alreadyExisted).toBe(false);
     });
 
     it("adds new players via TeamPlayerMembership.create", async () => {
@@ -106,7 +121,7 @@ describe("TeamWriteService", () => {
         .spyOn(TeamPlayerMembership, "create")
         .mockResolvedValue({} as never);
 
-      await service.upsertTeamCore(makeTxArgs({ id: null, players: ["player-1", "player-2"] }));
+      await service.upsertTeamCore(makeTxArgs({ players: ["player-1", "player-2"] }));
 
       expect(createMemberSpy).toHaveBeenCalledTimes(2);
       expect(createMemberSpy).toHaveBeenCalledWith(
@@ -116,8 +131,8 @@ describe("TeamWriteService", () => {
     });
 
     it("soft-ends removed players by setting end date", async () => {
-      const team = fakeTeam({ id: "existing-uuid" });
-      jest.spyOn(Team, "findByPk").mockResolvedValue(team as never);
+      const team = fakeTeam({ id: "existing-uuid", link: "match-link" });
+      jest.spyOn(Team, "findOne").mockResolvedValue(team as never);
       const existingMembership = {
         playerId: "player-to-remove",
         end: null,
@@ -125,7 +140,7 @@ describe("TeamWriteService", () => {
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([existingMembership]);
       const updateSpy = jest.spyOn(TeamPlayerMembership, "update").mockResolvedValue([1] as never);
 
-      await service.upsertTeamCore(makeTxArgs({ id: "existing-uuid", players: [] }));
+      await service.upsertTeamCore(makeTxArgs({ link: "match-link", players: [] }));
 
       expect(updateSpy).toHaveBeenCalledWith(
         expect.objectContaining({ end: expect.any(Date) }),
@@ -136,8 +151,8 @@ describe("TeamWriteService", () => {
     });
 
     it("does not touch memberships for unchanged players", async () => {
-      const team = fakeTeam({ id: "existing-uuid" });
-      jest.spyOn(Team, "findByPk").mockResolvedValue(team as never);
+      const team = fakeTeam({ id: "existing-uuid", link: "match-link" });
+      jest.spyOn(Team, "findOne").mockResolvedValue(team as never);
       const membership = {
         playerId: "unchanged-player",
         end: null,
@@ -147,7 +162,7 @@ describe("TeamWriteService", () => {
       const updateSpy = jest.spyOn(TeamPlayerMembership, "update").mockResolvedValue([0] as never);
 
       await service.upsertTeamCore(
-        makeTxArgs({ id: "existing-uuid", players: ["unchanged-player"] })
+        makeTxArgs({ link: "match-link", players: ["unchanged-player"] })
       );
 
       expect(createSpy).not.toHaveBeenCalled();
@@ -159,7 +174,7 @@ describe("TeamWriteService", () => {
       const createSpy = jest.spyOn(Team, "create").mockResolvedValue(team as never);
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([]);
 
-      await service.upsertTeamCore(makeTxArgs({ id: null, captainId: "captain-uuid" }));
+      await service.upsertTeamCore(makeTxArgs({ captainId: "captain-uuid" }));
 
       expect(createSpy).toHaveBeenCalledWith(
         expect.objectContaining({ captainId: "captain-uuid" }),
@@ -172,19 +187,20 @@ describe("TeamWriteService", () => {
       const createSpy = jest.spyOn(Team, "create").mockResolvedValue(team as never);
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([]);
 
-      const result = await service.upsertTeamCore(makeTxArgs({ id: null, link: null }));
+      const result = await service.upsertTeamCore(makeTxArgs({ link: null }));
 
       const createdArgs = createSpy.mock.calls[0][0] as unknown as { link: string };
       expect(createdArgs.link).toBeTruthy();
       expect(typeof result.link).toBe("string");
     });
 
-    it("uses provided link when given", async () => {
+    it("uses provided link when given and no existing match", async () => {
       const team = fakeTeam({ link: "my-link-uuid" });
+      jest.spyOn(Team, "findOne").mockResolvedValue(null);
       const createSpy = jest.spyOn(Team, "create").mockResolvedValue(team as never);
       jest.spyOn(TeamPlayerMembership, "findAll").mockResolvedValue([]);
 
-      const result = await service.upsertTeamCore(makeTxArgs({ id: null, link: "my-link-uuid" }));
+      const result = await service.upsertTeamCore(makeTxArgs({ link: "my-link-uuid" }));
 
       expect((createSpy.mock.calls[0][0] as unknown as { link: string }).link).toBe("my-link-uuid");
       expect(result.link).toBe("my-link-uuid");

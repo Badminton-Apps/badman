@@ -119,7 +119,7 @@ describe("SubmitEnrollmentService", () => {
     });
 
     const result = await service.run({
-      input: makeInput({ teams: [makeTeam({ id: "existing-uuid" })] }),
+      input: makeInput({ teams: [makeTeam({ link: "existing-link" })] }),
       user: fakeUser,
       confirmed: false,
       transaction: fakeTransaction,

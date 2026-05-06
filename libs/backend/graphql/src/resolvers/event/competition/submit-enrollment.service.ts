@@ -84,7 +84,6 @@ export class SubmitEnrollmentService {
     for (let i = 0; i < teams.length; i++) {
       const team = teams[i];
       const core = await this.teamWriteService.upsertTeamCore({
-        id: team.id,
         link: team.link,
         clubId,
         season,
