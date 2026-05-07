@@ -114,15 +114,42 @@ export class TeamsResolver {
       },
     });
 
-    // Find the first entry that has a drawId
-    const entryWithDrawId = entries.find((entry: EventEntry) => entry.drawId);
-
-    if (entryWithDrawId) {
-      return entryWithDrawId;
-    }
-
-    // Return null if no entry has a drawId
-    return null;
+    // Prefer an entry that has been assigned to a draw: once the federation
+    // sync has run the draw assignment, the entry carries a `drawId` and that
+    // entry is the authoritative one (it pins the team to a specific draw
+    // within the subEvent, which is what the encounter/calendar views need).
+    //
+    // However, between team enrollment and the draw being made, entries
+    // exist with `drawId = NULL`. They still carry the `subEventId`, which
+    // is enough for the frontend to resolve `entry.subEventCompetition` and
+    // render the division/Liga label and the edit dialog's competition
+    // field. Before this fallback, freshly-enrolled teams (new enrollment
+    // flow) showed up in the club-teams list without a division until the
+    // sync had assigned a draw, even though the data needed to render the
+    // division was already present on the entry.
+    //
+    // Why both enrollment paths produce drawId = NULL:
+    //   - Old createTeam mutation (this file, ~line 296) does
+    //     EventEntry.findOrCreate keyed on (teamId, subEventId, entryType);
+    //     `EventEntryNewInput` has no `drawId` field, so it is never written.
+    //   - New enrollment flow (EnrollmentEntryService, ~line 110) does
+    //     `EventEntry.create({}, { transaction })` with an empty payload and
+    //     then attaches teamId via `team.setEntry` and subEventId via
+    //     `subEvent.addEventEntry`. Again no `drawId`.
+    // The only place `drawId` gets populated is the federation sync. See
+    // apps/worker/sync/.../competition/processors/standing.processor.ts —
+    // it loads the team with its existing EventEntry filtered by the draw's
+    // subEventId, then runs `entryDraw.drawId = draw.id; entryDraw.save()`.
+    // So sync amends the row created at enrollment time in place; it does
+    // not create a duplicate. Once sync has run, the `find(e => e.drawId)`
+    // branch below wins again and this fallback becomes a no-op.
+    //
+    // Strategy: take the drawId-bearing entry when one exists, otherwise
+    // fall back to any entry for the team. The order of `findAll` is not
+    // guaranteed, but in practice a team has at most one entry per season
+    // until the draw is made, so the fallback is unambiguous in the
+    // pre-draw window.
+    return entries.find((entry: EventEntry) => entry.drawId) ?? entries[0] ?? null;
   }
 
   @ResolveField(() => Location)
