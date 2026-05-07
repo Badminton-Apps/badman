@@ -1,5 +1,5 @@
 import { NotFoundException } from "@nestjs/common";
-import { EventCompetition, Team } from "@badman/backend-database";
+import { EventCompetition, EventEntry, Team } from "@badman/backend-database";
 import { TeamsService } from "./teams.service";
 
 const EXPECTED_HEADERS = [
@@ -42,19 +42,8 @@ function makeEntry(team: Team | null) {
   return { team } as any;
 }
 
-function makeDraw(entries: ReturnType<typeof makeEntry>[]) {
-  return { getEventEntries: jest.fn().mockResolvedValue(entries) } as any;
-}
-
-function makeSubEvent(draws: ReturnType<typeof makeDraw>[]) {
-  return { getDrawCompetitions: jest.fn().mockResolvedValue(draws) } as any;
-}
-
-function makeEvent(subEvents: ReturnType<typeof makeSubEvent>[]) {
-  return {
-    name: "Test Competition 2025",
-    getSubEventCompetitions: jest.fn().mockResolvedValue(subEvents),
-  } as any;
+function makeEvent(name = "Test Competition 2025") {
+  return { name } as any;
 }
 
 describe("TeamsService", () => {
@@ -69,8 +58,8 @@ describe("TeamsService", () => {
   });
 
   it("returns the 5 headers in the correct order", async () => {
-    const event = makeEvent([makeSubEvent([makeDraw([])])]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest.spyOn(EventEntry, "findAll").mockResolvedValue([]);
 
     const { headers } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 
@@ -78,20 +67,18 @@ describe("TeamsService", () => {
   });
 
   it("returns eventName from the competition", async () => {
-    const event = makeEvent([]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest.spyOn(EventEntry, "findAll").mockResolvedValue([]);
 
     const { eventName } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 
     expect(eventName).toBe("Test Competition 2025");
   });
 
-  it("deduplicates a team enrolled in multiple draws", async () => {
+  it("deduplicates a team enrolled in multiple entries", async () => {
     const team = makeTeam();
-    const draw1 = makeDraw([makeEntry(team)]);
-    const draw2 = makeDraw([makeEntry(team)]);
-    const event = makeEvent([makeSubEvent([draw1, draw2])]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest.spyOn(EventEntry, "findAll").mockResolvedValue([makeEntry(team), makeEntry(team)]);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 
@@ -99,10 +86,10 @@ describe("TeamsService", () => {
   });
 
   it("translates 'monday' to 'Maandag'", async () => {
-    const event = makeEvent([
-      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: "monday" }))])]),
-    ]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest
+      .spyOn(EventEntry, "findAll")
+      .mockResolvedValue([makeEntry(makeTeam({ preferredDay: "monday" }))]);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 
@@ -117,10 +104,10 @@ describe("TeamsService", () => {
     ["saturday", "Zaterdag"],
     ["sunday", "Zondag"],
   ])("translates '%s' to '%s'", async (day, expected) => {
-    const event = makeEvent([
-      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: day }))])]),
-    ]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest
+      .spyOn(EventEntry, "findAll")
+      .mockResolvedValue([makeEntry(makeTeam({ preferredDay: day }))]);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 
@@ -128,10 +115,10 @@ describe("TeamsService", () => {
   });
 
   it("formats preferredTime '09:00:00' as '09:00'", async () => {
-    const event = makeEvent([
-      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredTime: "09:00:00" }))])]),
-    ]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest
+      .spyOn(EventEntry, "findAll")
+      .mockResolvedValue([makeEntry(makeTeam({ preferredTime: "09:00:00" }))]);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 
@@ -139,10 +126,10 @@ describe("TeamsService", () => {
   });
 
   it("returns empty string when preferredDay is null", async () => {
-    const event = makeEvent([
-      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredDay: null }))])]),
-    ]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest
+      .spyOn(EventEntry, "findAll")
+      .mockResolvedValue([makeEntry(makeTeam({ preferredDay: null }))]);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 
@@ -150,10 +137,10 @@ describe("TeamsService", () => {
   });
 
   it("returns empty string when preferredTime is null", async () => {
-    const event = makeEvent([
-      makeSubEvent([makeDraw([makeEntry(makeTeam({ preferredTime: null }))])]),
-    ]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest
+      .spyOn(EventEntry, "findAll")
+      .mockResolvedValue([makeEntry(makeTeam({ preferredTime: null }))]);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 
@@ -161,8 +148,8 @@ describe("TeamsService", () => {
   });
 
   it("skips entries with no team", async () => {
-    const event = makeEvent([makeSubEvent([makeDraw([makeEntry(null)])])]);
-    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+    jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent());
+    jest.spyOn(EventEntry, "findAll").mockResolvedValue([makeEntry(null)]);
 
     const { rows } = await service.getTeams("00000000-0000-0000-0000-000000000001");
 

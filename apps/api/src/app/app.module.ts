@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AppController, ImageController } from "./controllers";
 import { CpController } from "./controllers/cp.controller";
 import { ExportController } from "./controllers/export.controller";
+import { ExceptionsService } from "./services/export/exceptions.service";
 import { TeamsService } from "./services/export/teams.service";
 
 import { AuthorizationModule } from "@badman/backend-authorization";
@@ -82,7 +83,7 @@ const envFilePath = join(projectRoot, envFileName);
     TransferLoanModule,
   ],
   controllers: [AppController, ImageController, CalendarController, CpController, ExportController],
-  providers: [Logger, TeamsService],
+  providers: [Logger, TeamsService, ExceptionsService],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
