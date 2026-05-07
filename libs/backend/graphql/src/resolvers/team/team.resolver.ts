@@ -7,8 +7,6 @@ import {
   Location,
   Player,
   PlayerWithTeamMembershipType,
-  RankingLastPlace,
-  RankingSystem,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
@@ -16,10 +14,13 @@ import {
   TeamWithPlayerMembershipType,
 } from "@badman/backend-database";
 import {
+  IndexCalculationService,
+  isFailure,
+} from "@badman/backend-enrollment";
+import {
   IsUUID,
   SubEventTypeEnum,
   TeamMembershipType,
-  getIndexFromPlayers,
   getLetterForRegion,
 } from "@badman/utils";
 import {
@@ -39,7 +40,10 @@ import { TeamResult } from "./team-result.object";
 export class TeamsResolver {
   private readonly logger = new Logger(TeamsResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private readonly indexCalculationService: IndexCalculationService
+  ) {}
 
   @Query(() => Team)
   async team(@Args("id", { type: () => ID }) id: string): Promise<Team> {
@@ -290,74 +294,60 @@ export class TeamsResolver {
         });
 
         if (entry?.meta?.competition?.players) {
-          const system = await RankingSystem.findOne({
-            where: { primary: true },
-            transaction,
-          });
-          if (!system) {
-            this.logger.error({
-              code: ErrorCode.INTERNAL_ERROR,
-              reason: "primary ranking system missing",
+          // Delegate to IndexCalculationService for the canonical rank lookup
+          // (validator's June 10 cutoff + min+2 fallback) and index math.
+          const playerIds = (entry.meta.competition.players?.map((p) => p.id) || []) as string[];
+          const result = await this.indexCalculationService.calculateOne(
+            {
+              key: dbEntry.id!,
+              type: teamDb.type,
+              subEventCompetitionId: entry.subEventId,
+              players: playerIds.map((id) => ({ id })),
+            },
+            { transaction }
+          );
+          if (isFailure(result)) {
+            this.logger.warn({
+              code: result.error.code,
               clubId: dbClub.id,
               userId,
-            });
-            throw new GraphQLError("Primary ranking system not configured.", {
-              extensions: { code: ErrorCode.INTERNAL_ERROR },
-            });
-          }
-
-          const competitionPlayers: EntryCompetitionPlayer[] = [];
-          const playerIds = (entry.meta.competition.players?.map((p) => p.id) || []) as string[];
-          const rankings = await RankingLastPlace.findAll({
-            where: { playerId: { [Op.in]: playerIds }, systemId: system.id },
-            transaction,
-          });
-          const dbBasePlayers = await Player.findAll({
-            where: { id: { [Op.in]: playerIds } },
-            transaction,
-          });
-
-          for (const p of entry.meta.competition.players) {
-            const player = dbBasePlayers.find((dbPlayer) => dbPlayer.id === p.id);
-            if (!player) {
-              this.logger.warn({
-                code: ErrorCode.PLAYER_NOT_FOUND,
-                playerId: p.id,
-                clubId: dbClub.id,
-                userId,
-              });
-              throw new GraphQLError(`Player not found: ${p.id}`, {
-                extensions: { code: ErrorCode.PLAYER_NOT_FOUND, playerId: p.id },
-              });
-            }
-            const ranking = rankings.find((r) => r.playerId === p.id);
-            if (!ranking) {
-              this.logger.warn({
-                code: ErrorCode.RANKING_NOT_FOUND,
-                playerId: p.id,
-                clubId: dbClub.id,
-                userId,
-              });
-              throw new GraphQLError(`Ranking for player ${p.id} not found`, {
-                extensions: { code: ErrorCode.RANKING_NOT_FOUND, playerId: p.id },
-              });
-            }
-            competitionPlayers.push({
-              id: player.id,
-              gender: player.gender,
-              single: ranking.single,
-              double: ranking.double,
-              mix: ranking.mix,
-              levelException: p.levelException,
-              levelExceptionReason: p.levelExceptionReason,
-              levelExceptionRequested: p.levelExceptionRequested,
+            }, result.error.message);
+            const code =
+              result.error.code === "PLAYER_NOT_FOUND"
+                ? ErrorCode.PLAYER_NOT_FOUND
+                : result.error.code === "RANKING_SYSTEM_NOT_FOUND"
+                ? ErrorCode.INTERNAL_ERROR
+                : ErrorCode.INTERNAL_ERROR;
+            throw new GraphQLError(result.error.message, {
+              extensions: {
+                code,
+                ...(result.error.playerIds ? { playerIds: result.error.playerIds } : {}),
+              },
             });
           }
 
-          const index = getIndexFromPlayers(teamDb.type, competitionPlayers);
+          const origById = new Map(
+            entry.meta.competition.players.map((p) => [p.id, p])
+          );
+          const competitionPlayers: EntryCompetitionPlayer[] = result.resolvedPlayers.map(
+            (rp) => {
+              const orig = origById.get(rp.id);
+              return {
+                id: rp.id,
+                gender: rp.gender,
+                single: rp.single,
+                double: rp.double,
+                mix: rp.mix,
+                levelException: orig?.levelException,
+                levelExceptionReason: orig?.levelExceptionReason,
+                levelExceptionRequested: orig?.levelExceptionRequested,
+              };
+            }
+          );
+
           dbEntry.meta = {
             ...dbEntry.meta,
-            competition: { teamIndex: index, players: competitionPlayers },
+            competition: { teamIndex: result.index, players: competitionPlayers },
           };
           await dbEntry.save({ transaction, hooks: false });
         }

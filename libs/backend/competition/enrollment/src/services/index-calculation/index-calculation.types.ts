@@ -8,15 +8,27 @@ export interface IndexCalculationPlayerInput {
 export interface IndexCalculationInput {
   /** Caller-supplied correlation key (typically the team UUID) */
   key: string;
-  /** Team type — drives the canonical formula branch (non-MX vs MX) */
-  type: SubEventTypeEnum;
-  /** Season year */
-  season: number;
   /**
-   * Optional sub-event competition UUID.
-   * When present, the service derives the ranking snapshot window from the linked
-   * EventCompetition (parity with the entry-model hook).
-   * When absent, the service uses a broad calendar-year window for the given season.
+   * Team type — drives the canonical formula branch (non-MX vs MX).
+   * Optional only when `subEventCompetitionId` is provided; the service then
+   * derives the type from `SubEventCompetition.eventType`.
+   */
+  type?: SubEventTypeEnum;
+  /**
+   * Season year. Optional only when `subEventCompetitionId` is provided; the
+   * service then derives the season from the linked `EventCompetition`.
+   */
+  season?: number;
+  /**
+   * Optional ranking system override. When omitted, the primary system is used.
+   * Mirrors the validator, which honors a caller-supplied `systemId` and falls
+   * back to primary.
+   */
+  systemId?: string;
+  /**
+   * Optional sub-event competition UUID. Used to derive `type` and/or `season`
+   * when the caller does not supply them. Does NOT influence the ranking-date
+   * cutoff — that is always `<= June 10 of season` (validator's rule).
    */
   subEventCompetitionId?: string;
   /** Player inputs. Empty array is valid — produces only the missing-player penalty. */
@@ -56,6 +68,7 @@ export type IndexCalculationErrorCode =
   | "PLAYER_NOT_FOUND"
   | "RANKING_SYSTEM_NOT_FOUND"
   | "SUB_EVENT_NOT_FOUND"
+  | "MISSING_TYPE_OR_SEASON"
   | "RANKING_FETCH_FAILED"
   | "INTERNAL_ERROR";
 
