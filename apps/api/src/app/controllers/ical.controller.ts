@@ -1,6 +1,6 @@
 import { EncounterCompetition, Location, Team } from "@badman/backend-database";
 import { Controller, Get, Query, Res } from "@nestjs/common";
-import { Response } from "express";
+import { FastifyReply } from "fastify";
 import { ICalCalendar } from "ical-generator";
 import moment from "moment";
 import { Op } from "sequelize";
@@ -10,10 +10,10 @@ export class CalendarController {
   @Get("team")
   async generateCalendarLink(
     @Query() query: { teamId: string; linkId: string },
-    @Res() res: Response
+    @Res() res: FastifyReply
   ) {
     if (!query.teamId && !query.linkId) {
-      return res.status(400).send("Invalid team or link id");
+      return res.type("text/plain").status(400).send("Invalid team or link id");
     }
 
     const team = query.teamId
@@ -21,7 +21,7 @@ export class CalendarController {
       : await Team.findAll({ where: { link: query.linkId } });
 
     if (!team) {
-      return res.status(404).send("Team not found");
+      return res.type("text/plain").status(404).send("Team not found");
     }
 
     const ids = Array.isArray(team) ? team.map((t) => t.id) : [team.id];
@@ -78,10 +78,11 @@ export class CalendarController {
       });
     });
 
-    // res.header('Content-Type', 'text/calendar');
-    // res.header('Content-Disposition', `attachment; filename="calendar-${teamName}.ics"`);
-
-    // Send the calendar data as an .ics file
-    res.send(calendar.toString());
+    res.header("Content-Type", "text/calendar; charset=utf-8");
+    res.header(
+      "Content-Disposition",
+      `attachment; filename="calendar-${teamName}.ics"`
+    );
+    return res.send(calendar.toString());
   }
 }
