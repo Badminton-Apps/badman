@@ -40,6 +40,7 @@ import { IndexCalculationService } from "../index-calculation/index-calculation.
 import {
   IndexCalculationContributingPlayer,
   IndexCalculationInput,
+  isFailure,
   isSuccess,
 } from "../index-calculation/index-calculation.types";
 
@@ -294,7 +295,7 @@ export class EnrollmentValidationService {
         // issue (missing gender, missing player, …).
         if (baseRes && isSuccess(baseRes)) {
           this.hydrateRanks(sk.basePlayers, baseRes.resolvedPlayers);
-        } else if (baseRes) {
+        } else if (baseRes && isFailure(baseRes)) {
           this._logger.warn(
             `Index calc failed for team ${sk.teamId} base: ${baseRes.error.code} ${baseRes.error.message}`
           );
