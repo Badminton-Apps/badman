@@ -12,6 +12,7 @@ import {
   TeamNewInput,
   TeamUpdateInput,
 } from "@badman/backend-database";
+import { IndexCalculationService } from "@badman/backend-enrollment";
 import { SubEventTypeEnum } from "@badman/utils";
 import { TeamsResolver } from "./team.resolver";
 
@@ -61,6 +62,20 @@ describe("TeamsResolver.createTeam", () => {
         {
           provide: Sequelize,
           useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
+        },
+        {
+          provide: IndexCalculationService,
+          useValue: {
+            calculate: jest.fn().mockResolvedValue([]),
+            calculateOne: jest.fn().mockResolvedValue({
+              _tag: "success",
+              key: "team-key",
+              index: 0,
+              contributingPlayers: [],
+              missingPlayerCount: 0,
+              resolvedPlayers: [],
+            }),
+          },
         },
       ],
     }).compile();
@@ -194,7 +209,7 @@ describe("TeamsResolver.createTeam", () => {
     expect(mockTransaction.rollback).toHaveBeenCalled();
   });
 
-  it("returns RANKING_NOT_FOUND when a base-lineup player has no ranking", async () => {
+  it("propagates PLAYER_NOT_FOUND from IndexCalculationService", async () => {
     const user = userWithPermission(true);
     const dbClub = stubClub();
     const created = stubCreatedTeam();
@@ -204,14 +219,29 @@ describe("TeamsResolver.createTeam", () => {
     jest
       .spyOn(EventEntry, "findOrCreate")
       .mockResolvedValue([
-        { meta: {}, save: jest.fn().mockResolvedValue(undefined) } as never,
+        { id: "entry-uuid", meta: {}, save: jest.fn().mockResolvedValue(undefined) } as never,
         true,
       ]);
-    jest.spyOn(RankingSystem, "findOne").mockResolvedValue({ id: "ranking-system-uuid" } as never);
     jest
       .spyOn(Player, "findAll")
       .mockResolvedValue([{ id: "player-1", gender: "M" } as unknown as Player]);
-    jest.spyOn(RankingLastPlace, "findAll").mockResolvedValue([]); // no rankings
+
+    // Override the service mock for this test: simulate PLAYER_NOT_FOUND.
+    // The resolver should map this to ErrorCode.PLAYER_NOT_FOUND and roll back.
+    const calculateOneMock = (
+      resolver as unknown as {
+        indexCalculationService: { calculateOne: jest.Mock };
+      }
+    ).indexCalculationService.calculateOne;
+    calculateOneMock.mockResolvedValueOnce({
+      _tag: "failure",
+      key: "entry-uuid",
+      error: {
+        code: "PLAYER_NOT_FOUND",
+        message: "Players not found: player-1",
+        playerIds: ["player-1"],
+      },
+    });
 
     const input = baseInput({
       entry: {
@@ -230,8 +260,8 @@ describe("TeamsResolver.createTeam", () => {
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
-      expect(e.extensions["code"]).toBe("RANKING_NOT_FOUND");
-      expect(e.extensions["playerId"]).toBe("player-1");
+      expect(e.extensions["code"]).toBe("PLAYER_NOT_FOUND");
+      expect(e.extensions["playerIds"]).toContain("player-1");
     }
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
@@ -274,6 +304,20 @@ describe("TeamsResolver.createTeams", () => {
         {
           provide: Sequelize,
           useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
+        },
+        {
+          provide: IndexCalculationService,
+          useValue: {
+            calculate: jest.fn().mockResolvedValue([]),
+            calculateOne: jest.fn().mockResolvedValue({
+              _tag: "success",
+              key: "team-key",
+              index: 0,
+              contributingPlayers: [],
+              missingPlayerCount: 0,
+              resolvedPlayers: [],
+            }),
+          },
         },
       ],
     }).compile();
@@ -372,6 +416,20 @@ describe("TeamsResolver.updateTeam", () => {
         {
           provide: Sequelize,
           useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
+        },
+        {
+          provide: IndexCalculationService,
+          useValue: {
+            calculate: jest.fn().mockResolvedValue([]),
+            calculateOne: jest.fn().mockResolvedValue({
+              _tag: "success",
+              key: "team-key",
+              index: 0,
+              contributingPlayers: [],
+              missingPlayerCount: 0,
+              resolvedPlayers: [],
+            }),
+          },
         },
       ],
     }).compile();

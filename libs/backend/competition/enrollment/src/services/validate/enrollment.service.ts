@@ -4,13 +4,12 @@ import {
   EventCompetition,
   EventEntry,
   Player,
-  RankingPlace,
   RankingSystem,
   Standing,
   SubEventCompetition,
   Team,
 } from "@badman/backend-database";
-import { getSeason, getIndexFromPlayers } from "@badman/utils";
+import { getSeason } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import {
   EnrollmentOutput,
@@ -33,16 +32,22 @@ import {
   TeamMaxBasePlayersRule,
   TeamContinuityRule,
 } from "./rules";
-import moment from "moment";
-import { Op } from "sequelize";
 import { PartialType, PickType } from "@nestjs/graphql";
 import { PlayerClubRule } from "./rules/player-club.rule";
 import { TeamBaseGenderRule } from "./rules/team-base-gender.rule";
 import { Md5 } from "ts-md5";
+import { IndexCalculationService } from "../index-calculation/index-calculation.service";
+import {
+  IndexCalculationContributingPlayer,
+  IndexCalculationInput,
+  isSuccess,
+} from "../index-calculation/index-calculation.types";
 
 @Injectable()
 export class EnrollmentValidationService {
   private readonly _logger = new Logger(EnrollmentValidationService.name);
+
+  constructor(private readonly indexCalculationService: IndexCalculationService) {}
 
   async getValidationData({
     clubId,
@@ -138,19 +143,7 @@ export class EnrollmentValidationService {
         where: {
           id: stringPlayerIds,
         },
-        include: [
-          {
-            model: RankingPlace,
-            where: {
-              systemId: system?.id,
-              rankingDate: {
-                [Op.lte]: moment([season, 5, 10]).toDate(),
-              },
-            },
-            order: [["rankingDate", "DESC"]],
-            limit: 1,
-          },
-        ],
+        // RankingPlace lookup is now delegated to IndexCalculationService below.
       }),
       Player.findAll({
         attributes: ["id", "gender", "competitionPlayer", "firstName", "lastName"],
@@ -166,95 +159,194 @@ export class EnrollmentValidationService {
       }),
     ]);
 
+    // Pass 1: build per-team skeletons (player rosters + metadata) without
+    // computed indices. Ranks on `EntryCompetitionPlayer` are hydrated in
+    // pass 2 from `IndexCalculationService.resolvedPlayers`.
+    const skeletons = teams.map((t) => {
+      if (!t.type) {
+        throw new Error("No type found");
+      }
+      if (!t.id) {
+        throw new Error("No team id found");
+      }
+
+      const playersForTeam = this.getPlayers(
+        [t.players ?? [], t.backupPlayers ?? [], t.basePlayers ?? []]?.flat(1),
+        dbPlayers,
+        dbPlayersEntry
+      );
+
+      const basePlayers = playersForTeam.filter((p) =>
+        t.basePlayers?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id)
+      );
+
+      // find if there are any exceptions requested
+      for (const exception of t.exceptions ?? []) {
+        const playerIndex = basePlayers.findIndex((p) => p.id === exception);
+        if (playerIndex === -1) {
+          throw new Error(`Player with id ${exception} not found`);
+        }
+        basePlayers[playerIndex].levelExceptionRequested = true;
+      }
+
+      const teamPlayers = playersForTeam.filter((p) =>
+        t.players?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id)
+      );
+
+      const backupPlayers = playersForTeam.filter((p) =>
+        t.backupPlayers
+          ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
+          .includes(p.id)
+      );
+
+      const previousSeasonTeam = previousSeasonTeams.find((p) => p.link === t.link);
+      const missingContinuityId = !t.link;
+      const possibleOldTeamTeam = missingContinuityId
+        ? previousSeasonClubTeams.find(
+            (team) =>
+              (team.type === t.type && team.teamNumber === t.teamNumber) ||
+              (!!t.name && team.name === t.name)
+          )
+        : undefined;
+
+      if (missingContinuityId && possibleOldTeamTeam) {
+        this._logger.warn(
+          `Team continuity id missing for ${t.name ?? t.id}; previous season match exists.`
+        );
+      }
+
+      return {
+        teamId: t.id,
+        teamType: t.type,
+        team: new Team({
+          id: t.id,
+          type: t.type,
+          name: t.name,
+          teamNumber: t.teamNumber,
+          link: previousSeasonTeam?.link,
+        }),
+        previousSeasonTeam,
+        possibleOldTeamTeam,
+        isNewTeam: !t.link,
+        possibleOldTeam: !!possibleOldTeamTeam,
+        basePlayers,
+        teamPlayers,
+        backupPlayers,
+        subEvent: subEvents.find((s) => s.id === t.subEventId),
+      };
+    });
+
+    // Pass 2: single batched call to IndexCalculationService. Per team we
+    // submit three inputs:
+    //   `${id}:base`   → drives baseIndex AND hydrates basePlayers ranks
+    //   `${id}:team`   → drives teamIndex AND hydrates teamPlayers ranks
+    //   `${id}:backup` → only hydrates backupPlayers ranks (index discarded)
+    // The service deduplicates RankingPlace fetches to one DB query per
+    // (systemId, season).
+    const indexInputs: IndexCalculationInput[] = [];
+    for (const sk of skeletons) {
+      const baseIds = sk.basePlayers.map((p) => p.id!).filter((id) => !!id);
+      const teamIds = sk.teamPlayers.map((p) => p.id!).filter((id) => !!id);
+      const backupIds = sk.backupPlayers.map((p) => p.id!).filter((id) => !!id);
+      const common = {
+        type: sk.teamType,
+        season,
+        systemId: system.id,
+      };
+      indexInputs.push({
+        ...common,
+        key: `${sk.teamId}:base`,
+        players: baseIds.map((id) => ({ id })),
+      });
+      indexInputs.push({
+        ...common,
+        key: `${sk.teamId}:team`,
+        players: teamIds.map((id) => ({ id })),
+      });
+      if (backupIds.length > 0) {
+        indexInputs.push({
+          ...common,
+          key: `${sk.teamId}:backup`,
+          players: backupIds.map((id) => ({ id })),
+        });
+      }
+    }
+
+    const indexResults =
+      indexInputs.length > 0
+        ? await this.indexCalculationService.calculate(indexInputs)
+        : [];
+    const resultsByKey = new Map(indexResults.map((r) => [r.key, r]));
+
     return {
       club,
       season,
       loans: loans ?? [],
       transfers: transfers ?? [],
-      teams: teams?.map((t) => {
-        if (!t.type) {
-          throw new Error("No type found");
-        }
+      teams: skeletons.map((sk) => {
+        const baseRes = resultsByKey.get(`${sk.teamId}:base`);
+        const teamRes = resultsByKey.get(`${sk.teamId}:team`);
+        const backupRes = resultsByKey.get(`${sk.teamId}:backup`);
 
-        const playersForTeam = this.getPlayers(
-          [t.players ?? [], t.backupPlayers ?? [], t.basePlayers ?? []]?.flat(1),
-          dbPlayers,
-          dbPlayersEntry,
-          system
-        );
-
-        const basePlayers = playersForTeam.filter((p) =>
-          t.basePlayers?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id)
-        );
-
-        // find if there are any exceptions requested
-        for (const exception of t.exceptions ?? []) {
-          const playerIndex = basePlayers.findIndex((p) => p.id === exception);
-          if (playerIndex === -1) {
-            throw new Error(`Player with id ${exception} not found`);
-          }
-
-          basePlayers[playerIndex].levelExceptionRequested = true;
-        }
-
-        const teamPlayers = playersForTeam.filter((p) =>
-          t.players?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id)
-        );
-
-        const backupPlayers = playersForTeam.filter((p) =>
-          t.backupPlayers
-            ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
-            .includes(p.id)
-        );
-
-        const teamIndex = getIndexFromPlayers(t.type, teamPlayers, system.amountOfLevels);
-        const baseIndex = getIndexFromPlayers(t.type, basePlayers, system.amountOfLevels);
-
-        const previousSeasonTeam = previousSeasonTeams.find((p) => p.link === t.link);
-        const missingContinuityId = !t.link;
-        const possibleOldTeamTeam = missingContinuityId
-          ? previousSeasonClubTeams.find(
-              (team) =>
-                (team.type === t.type && team.teamNumber === t.teamNumber) ||
-                (!!t.name && team.name === t.name)
-            )
-          : undefined;
-
-        if (missingContinuityId && possibleOldTeamTeam) {
+        // Hydrate per-player ranks from each respective response. Failures
+        // are tolerated: players keep their default-undefined ranks and
+        // downstream rules (PlayerGenderRule etc.) surface the underlying
+        // issue (missing gender, missing player, …).
+        if (baseRes && isSuccess(baseRes)) {
+          this.hydrateRanks(sk.basePlayers, baseRes.resolvedPlayers);
+        } else if (baseRes) {
           this._logger.warn(
-            `Team continuity id missing for ${t.name ?? t.id}; previous season match exists.`
+            `Index calc failed for team ${sk.teamId} base: ${baseRes.error.code} ${baseRes.error.message}`
           );
         }
-
-        if (!t.id) {
-          throw new Error("No team id found");
+        if (teamRes && isSuccess(teamRes)) {
+          this.hydrateRanks(sk.teamPlayers, teamRes.resolvedPlayers);
+        }
+        if (backupRes && isSuccess(backupRes)) {
+          this.hydrateRanks(sk.backupPlayers, backupRes.resolvedPlayers);
         }
 
+        const baseIndex = baseRes && isSuccess(baseRes) ? baseRes.index : undefined;
+        const teamIndex = teamRes && isSuccess(teamRes) ? teamRes.index : undefined;
+
         return {
-          team: new Team({
-            id: t.id,
-            type: t.type,
-            name: t.name,
-            teamNumber: t.teamNumber,
-            link: previousSeasonTeam?.link,
-          }),
-          previousSeasonTeam,
-          possibleOldTeamTeam,
-          isNewTeam: !t.link,
-          possibleOldTeam: !!possibleOldTeamTeam,
-          id: t.id,
-          basePlayers,
-          teamPlayers,
-          backupPlayers,
+          team: sk.team,
+          previousSeasonTeam: sk.previousSeasonTeam,
+          possibleOldTeamTeam: sk.possibleOldTeamTeam,
+          isNewTeam: sk.isNewTeam,
+          possibleOldTeam: sk.possibleOldTeam,
+          id: sk.teamId,
+          basePlayers: sk.basePlayers,
+          teamPlayers: sk.teamPlayers,
+          backupPlayers: sk.backupPlayers,
           system,
 
           baseIndex,
           teamIndex,
 
-          subEvent: subEvents.find((s) => s.id === t.subEventId),
+          subEvent: sk.subEvent,
         };
       }),
     };
+  }
+
+  /**
+   * Copy `single` / `double` / `mix` from the index-calculation service's
+   * resolved per-player ranks onto the `EntryCompetitionPlayer` objects that
+   * downstream rules consume. Idempotent.
+   */
+  private hydrateRanks(
+    players: EntryCompetitionPlayer[],
+    resolved: IndexCalculationContributingPlayer[]
+  ): void {
+    const byId = new Map(resolved.map((r) => [r.id, r]));
+    for (const p of players) {
+      const r = p.id ? byId.get(p.id) : undefined;
+      if (!r) continue;
+      p.single = r.single;
+      p.double = r.double;
+      p.mix = r.mix;
+    }
   }
 
   /**
@@ -358,80 +450,50 @@ export class EnrollmentValidationService {
     ];
   }
 
+  /**
+   * Build the per-team `EntryCompetitionPlayer[]` skeleton (id, gender, dbPlayer
+   * association) without populating ranks. Ranks are filled later by
+   * `hydrateRanks` from `IndexCalculationService.resolvedPlayers`, which is the
+   * canonical source for the cutoff + min+2 fallback semantics.
+   */
   private getPlayers(
     players: (string | EntryCompetitionPlayer)[],
-    withRanking: Player[],
-    withoutRanking: Player[],
-    system?: RankingSystem
+    withDbPlayer: Player[],
+    existingDbPlayers: Player[]
   ): EntryCompetitionPlayer[] {
-    if (!system) {
-      throw new Error("No ranking system provided");
-    }
-
     const stringPlayerIds = players.filter((p) => !instanceOfEntryCompetitionPlayer(p)) as string[];
-    const eixistingPlayerIds = players.filter((p) =>
+    const existingPlayers = players.filter((p) =>
       instanceOfEntryCompetitionPlayer(p)
     ) as EntryCompetitionPlayer[];
 
-    const addedPlayes: EntryCompetitionPlayer[] = [];
+    const addedPlayers: EntryCompetitionPlayer[] = [];
 
-    for (const player of eixistingPlayerIds) {
-      if (!player?.id) {
-        continue;
-      }
+    for (const player of existingPlayers) {
+      if (!player?.id) continue;
+      if (addedPlayers.find((p) => p.id === player.id)) continue;
 
-      // check if player is already added
-      if (addedPlayes.find((p) => p.id === player.id)) {
-        continue;
-      }
-
-      const dbPlayer = withoutRanking.find((p) => p.id === player?.id);
+      const dbPlayer = existingDbPlayers.find((p) => p.id === player.id);
       player.player = dbPlayer;
-
-      addedPlayes.push(player);
+      addedPlayers.push(player);
     }
 
     for (const id of stringPlayerIds) {
-      // check if player is already added
-      if (addedPlayes.find((p) => p.id === id)) {
-        continue;
-      }
+      if (addedPlayers.find((p) => p.id === id)) continue;
 
-      const dbPlayer = withRanking.find((p) => p.id === id);
+      const dbPlayer = withDbPlayer.find((p) => p.id === id);
       if (!dbPlayer) {
         throw new Error(`Player with id ${id} not found`);
       }
 
-      const ranking =
-        dbPlayer?.rankingPlaces?.[0] ??
-        new RankingPlace({
-          playerId: dbPlayer.id,
-          systemId: system?.id,
-        });
-
-      const bestRankingMin2 =
-        Math.min(
-          ranking?.single ?? system.amountOfLevels,
-          ranking?.double ?? system.amountOfLevels,
-          ranking?.mix ?? system.amountOfLevels
-        ) + 2;
-
-      // if the player has a missing rankingplace, we set the lowest possible ranking
-      ranking.single = ranking?.single ?? bestRankingMin2;
-      ranking.double = ranking?.double ?? bestRankingMin2;
-      ranking.mix = ranking?.mix ?? bestRankingMin2;
-
-      addedPlayes.push({
+      addedPlayers.push({
         id,
         player: dbPlayer,
-        single: ranking.single,
-        double: ranking.double,
-        mix: ranking.mix,
         gender: dbPlayer.gender,
+        // single / double / mix populated by hydrateRanks
       });
     }
 
-    return addedPlayes;
+    return addedPlayers;
   }
 }
 
