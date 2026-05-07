@@ -120,7 +120,13 @@ export class CalculateIndexResolver {
 }
 
 function mapErrorCode(
-  serviceCode: "PLAYER_NOT_FOUND" | "RANKING_SYSTEM_NOT_FOUND" | "SUB_EVENT_NOT_FOUND" | "RANKING_FETCH_FAILED" | "INTERNAL_ERROR"
+  serviceCode:
+    | "PLAYER_NOT_FOUND"
+    | "RANKING_SYSTEM_NOT_FOUND"
+    | "SUB_EVENT_NOT_FOUND"
+    | "MISSING_TYPE_OR_SEASON"
+    | "RANKING_FETCH_FAILED"
+    | "INTERNAL_ERROR"
 ): string {
   switch (serviceCode) {
     case "PLAYER_NOT_FOUND":
@@ -129,6 +135,7 @@ function mapErrorCode(
       return ErrorCode.RANKING_SYSTEM_NOT_FOUND;
     case "SUB_EVENT_NOT_FOUND":
       return ErrorCode.SUB_EVENT_NOT_FOUND;
+    case "MISSING_TYPE_OR_SEASON":
     case "RANKING_FETCH_FAILED":
     case "INTERNAL_ERROR":
     default:

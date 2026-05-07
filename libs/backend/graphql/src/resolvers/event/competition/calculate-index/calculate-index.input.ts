@@ -25,8 +25,9 @@ export class CalculateIndexInput {
 
   /**
    * Optional sub-event competition UUID.
-   * When present, the service derives the ranking snapshot window from the linked
-   * EventCompetition (parity with the entry-model hook).
+   * Used only as a fallback to derive `type` and/or `season` when the caller
+   * omits them. Does NOT influence the ranking-date cutoff — that is always
+   * `<= June 10 of season` (validator's rule).
    */
   @Field(() => ID, { nullable: true })
   @IsOptional()

@@ -42,8 +42,9 @@ interface IIndexCalculationService {
   calculateOne(
     input: {
       key: string;
-      type: string;
-      season: number;
+      type?: string;
+      season?: number;
+      systemId?: string;
       subEventCompetitionId?: string;
       players: { id: string }[];
     },
@@ -243,9 +244,8 @@ export class EventEntry extends Model<
       {
         key: instance.id!,
         type: team.type!,
-        // season is ignored when subEventCompetitionId is provided;
-        // the service derives it from the linked EventCompetition.
-        season: 0,
+        // `season` intentionally omitted: the service derives it from the
+        // sub-event's linked EventCompetition when subEventCompetitionId is set.
         subEventCompetitionId: instance.subEventId ?? undefined,
         players: (instance.meta.competition.players ?? []).map((p) => ({ id: p.id! })),
       },

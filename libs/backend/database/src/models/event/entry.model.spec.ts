@@ -109,7 +109,8 @@ describe("EventEntry.recalculateCompetitionIndex", () => {
       {
         key: ENTRY_UUID,
         type: "M",
-        season: 0,
+        // `season` intentionally omitted — the service derives it from
+        // SubEventCompetition.eventCompetition when subEventCompetitionId is set.
         subEventCompetitionId: SUBEVENT_UUID,
         players: [{ id: PLAYER_UUID }],
       },
