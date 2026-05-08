@@ -64,6 +64,7 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
             origin: "*",
           },
           playground: false,
+          introspection: true,
           debug: true,
           autoSchemaFile: join(process.cwd(), "schema.gql"),
           buildSchemaOptions: {
