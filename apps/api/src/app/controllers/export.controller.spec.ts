@@ -1,6 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { BadRequestException, ForbiddenException, UnauthorizedException } from "@nestjs/common";
 import { ExportController } from "./export.controller";
+import { ExceptionsService } from "../services/export/exceptions.service";
+import { LocationsService } from "../services/export/locations.service";
 import { TeamsService } from "../services/export/teams.service";
 import { Player } from "@badman/backend-database";
 import { toCSV, toXlsx } from "@badman/backend-utils";
@@ -57,7 +59,11 @@ describe("ExportController", () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ExportController],
-      providers: [{ provide: TeamsService, useValue: teamsService }],
+      providers: [
+        { provide: TeamsService, useValue: teamsService },
+        { provide: ExceptionsService, useValue: {} },
+        { provide: LocationsService, useValue: {} },
+      ],
     }).compile();
 
     controller = module.get<ExportController>(ExportController);

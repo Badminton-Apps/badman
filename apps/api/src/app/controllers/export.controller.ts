@@ -14,10 +14,48 @@ import { IsUUID } from "@badman/utils";
 import { toCSV, toXlsx } from "@badman/backend-utils";
 import { FastifyReply } from "fastify";
 import { ExceptionsService } from "../services/export/exceptions.service";
+import { LocationsService } from "../services/export/locations.service";
 import { TeamsService } from "../services/export/teams.service";
 
 export type ExportFormat = "xlsx" | "csv";
 const VALID_FORMATS: ExportFormat[] = ["xlsx", "csv"];
+
+function getExportFormat(query: { format: ExportFormat }): ExportFormat {
+  const format: ExportFormat = query.format ?? "xlsx";
+  if (!VALID_FORMATS.includes(format)) {
+    throw new BadRequestException(`format must be one of: ${VALID_FORMATS.join(", ")}`);
+  }
+  return format;
+}
+
+function buildExportPayload({
+  format,
+  sheetName,
+  headers,
+  rows,
+}: {
+  format: ExportFormat;
+  sheetName: string;
+  headers: readonly string[];
+  rows: (string | number | undefined | null)[][];
+}): { payload: string | Buffer; extension: ExportFormat; contentType: string } {
+  switch (format) {
+    case "csv": {
+      return {
+        payload: toCSV(headers, rows),
+        extension: "csv",
+        contentType: "text/csv; charset=utf-8",
+      };
+    }
+    case "xlsx": {
+      return {
+        payload: toXlsx(sheetName, headers, rows),
+        extension: "xlsx",
+        contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      };
+    }
+  }
+}
 
 @Controller({ path: "export" })
 export class ExportController {
@@ -25,7 +63,8 @@ export class ExportController {
 
   constructor(
     private readonly teamsService: TeamsService,
-    private readonly exceptionsService: ExceptionsService
+    private readonly exceptionsService: ExceptionsService,
+    private readonly locationsService: LocationsService
   ) {}
 
   @Get("teams")
@@ -41,10 +80,7 @@ export class ExportController {
       throw new ForbiddenException("Insufficient permissions");
     }
 
-    const format: ExportFormat = query.format ?? "xlsx";
-    if (!VALID_FORMATS.includes(format)) {
-      throw new BadRequestException(`format must be one of: ${VALID_FORMATS.join(", ")}`);
-    }
+    const format = getExportFormat(query);
 
     if (!query.eventId || !IsUUID(query.eventId)) {
       throw new BadRequestException("eventId must be a valid UUID");
@@ -53,25 +89,15 @@ export class ExportController {
     this.logger.debug(`Generating teams export [${format}]`);
     const { headers, rows, eventName } = await this.teamsService.getTeams(query.eventId);
 
-    switch (format) {
-      case "csv": {
-        const csv = toCSV(headers, rows);
-        res.header("Content-Disposition", `attachment; filename="${eventName}.csv"`);
-        res.header("Content-Type", "text/csv; charset=utf-8");
-        res.send(csv);
-        break;
-      }
-      case "xlsx": {
-        const buffer = toXlsx("Teams", headers, rows);
-        res.header("Content-Disposition", `attachment; filename="${eventName}.xlsx"`);
-        res.header(
-          "Content-Type",
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.send(buffer);
-        break;
-      }
-    }
+    const { payload, extension, contentType } = buildExportPayload({
+      format,
+      sheetName: "Teams",
+      headers,
+      rows,
+    });
+    res.header("Content-Disposition", `attachment; filename="${eventName}.${extension}"`);
+    res.header("Content-Type", contentType);
+    res.send(payload);
 
     this.logger.debug("Done");
   }
@@ -89,10 +115,7 @@ export class ExportController {
       throw new ForbiddenException("Insufficient permissions");
     }
 
-    const format: ExportFormat = query.format ?? "xlsx";
-    if (!VALID_FORMATS.includes(format)) {
-      throw new BadRequestException(`format must be one of: ${VALID_FORMATS.join(", ")}`);
-    }
+    const format = getExportFormat(query);
 
     if (!query.eventId || !IsUUID(query.eventId)) {
       throw new BadRequestException("eventId must be a valid UUID");
@@ -101,25 +124,53 @@ export class ExportController {
     this.logger.debug(`Generating exceptions export [${format}]`);
     const { headers, rows, eventName } = await this.exceptionsService.getExceptions(query.eventId);
 
-    switch (format) {
-      case "csv": {
-        const csv = toCSV(headers, rows);
-        res.header("Content-Disposition", `attachment; filename="${eventName}-exceptions.csv"`);
-        res.header("Content-Type", "text/csv; charset=utf-8");
-        res.send(csv);
-        break;
-      }
-      case "xlsx": {
-        const buffer = toXlsx("Exceptions", headers, rows);
-        res.header("Content-Disposition", `attachment; filename="${eventName}-exceptions.xlsx"`);
-        res.header(
-          "Content-Type",
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.send(buffer);
-        break;
-      }
+    const { payload, extension, contentType } = buildExportPayload({
+      format,
+      sheetName: "Exceptions",
+      headers,
+      rows,
+    });
+    res.header(
+      "Content-Disposition",
+      `attachment; filename="${eventName}-exceptions.${extension}"`
+    );
+    res.header("Content-Type", contentType);
+    res.send(payload);
+
+    this.logger.debug("Done");
+  }
+
+  @Get("locations")
+  async getLocations(
+    @User() user: Player,
+    @Res() res: FastifyReply,
+    @Query() query: { eventId: string; format: ExportFormat }
+  ) {
+    if (!user?.id) {
+      throw new UnauthorizedException("Login required");
     }
+    if (!(await user.hasAnyPermission(["export-locations:competition"]))) {
+      throw new ForbiddenException("Insufficient permissions");
+    }
+
+    const format = getExportFormat(query);
+
+    if (!query.eventId || !IsUUID(query.eventId)) {
+      throw new BadRequestException("eventId must be a valid UUID");
+    }
+
+    this.logger.debug(`Generating locations export [${format}]`);
+    const { headers, rows, eventName } = await this.locationsService.getLocations(query.eventId);
+
+    const { payload, extension, contentType } = buildExportPayload({
+      format,
+      sheetName: "Locations",
+      headers,
+      rows,
+    });
+    res.header("Content-Disposition", `attachment; filename="${eventName}-locations.${extension}"`);
+    res.header("Content-Type", contentType);
+    res.send(payload);
 
     this.logger.debug("Done");
   }

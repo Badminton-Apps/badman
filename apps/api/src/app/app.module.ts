@@ -4,6 +4,7 @@ import { AppController, ImageController } from "./controllers";
 import { CpController } from "./controllers/cp.controller";
 import { ExportController } from "./controllers/export.controller";
 import { ExceptionsService } from "./services/export/exceptions.service";
+import { LocationsService } from "./services/export/locations.service";
 import { TeamsService } from "./services/export/teams.service";
 
 import { AuthorizationModule } from "@badman/backend-authorization";
@@ -83,7 +84,7 @@ const envFilePath = join(projectRoot, envFileName);
     TransferLoanModule,
   ],
   controllers: [AppController, ImageController, CalendarController, CpController, ExportController],
-  providers: [Logger, TeamsService, ExceptionsService],
+  providers: [Logger, TeamsService, ExceptionsService, LocationsService],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
