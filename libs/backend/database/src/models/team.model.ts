@@ -14,6 +14,7 @@ import {
   BelongsToSetAssociationMixin,
   CreateOptions,
   CreationOptional,
+  UpdateOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -30,7 +31,9 @@ import {
 } from "sequelize";
 import {
   BeforeBulkCreate,
+  BeforeBulkUpdate,
   BeforeCreate,
+  BeforeUpdate,
   BelongsTo,
   BelongsToMany,
   Column,
@@ -215,7 +218,6 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   static async setAbbriviations(instances: Team[], options: CreateOptions) {
     for (const instance of instances ?? []) {
       await this.setAbbriviation(instance, options);
-      await this.generateAbbreviation(instance, options);
     }
   }
 
@@ -224,6 +226,21 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
     if (instance.isNewRecord) {
       await this.generateName(instance, options);
       await this.generateAbbreviation(instance, options);
+    }
+  }
+
+  @BeforeUpdate
+  static async regenerateOnUpdate(instance: Team, options: UpdateOptions) {
+    if (instance.changed("teamNumber") || instance.changed("type")) {
+      await this.generateName(instance, options as CreateOptions);
+      await this.generateAbbreviation(instance, options as CreateOptions);
+    }
+  }
+
+  @BeforeBulkUpdate
+  static async regenerateOnBulkUpdate(options: UpdateOptions & { instance?: Team }) {
+    if (options.instance) {
+      await this.regenerateOnUpdate(options.instance, options);
     }
   }
 

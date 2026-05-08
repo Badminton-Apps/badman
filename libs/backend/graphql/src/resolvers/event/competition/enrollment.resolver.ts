@@ -1,25 +1,24 @@
 import { User } from "@badman/backend-authorization";
-import {
-  EventCompetition,
-  EventEntry,
-  Player,
-  SubEventCompetition,
-  Team,
-} from "@badman/backend-database";
+import { Player } from "@badman/backend-database";
 import {
   EnrollmentInput,
   EnrollmentOutput,
   EnrollmentValidationService,
 } from "@badman/backend-enrollment";
-import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
+import { ErrorCode } from "../../../utils";
+import { EnrollmentEntryService } from "./enrollment-entry.service";
+import { EnrollmentResult } from "./enrollment-result.object";
 
 @Resolver(() => EnrollmentOutput)
 export class EnrollmentResolver {
   private readonly logger = new Logger(EnrollmentResolver.name);
   constructor(
     private enrollmentService: EnrollmentValidationService,
+    private enrollmentEntryService: EnrollmentEntryService,
     private _sequelize: Sequelize
   ) {}
 
@@ -35,47 +34,36 @@ export class EnrollmentResolver {
     );
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => EnrollmentResult, {
+    description:
+      "Enroll a single team into a single sub-event competition. Idempotent on (teamId, subEventId): re-submitting an already-enrolled pair returns success with alreadyExisted=true. Failures surface as GraphQLError with a stable extensions.code (PERMISSION_DENIED, TEAM_NOT_FOUND, SUB_EVENT_NOT_FOUND, SEASON_MISMATCH, INTERNAL_ERROR).",
+  })
   async createEnrollment(
     @User() user: Player,
     @Args("teamId") teamId: string,
     @Args("subEventId") subEventId: string
-  ) {
-    if (!(await user.hasAnyPermission([`edit:competition`]))) {
-      throw new UnauthorizedException(`You do not have permission to update a competition`);
-    }
-    // Do transaction
+  ): Promise<EnrollmentResult> {
+    const userId = user?.id ?? null;
     const transaction = await this._sequelize.transaction();
     try {
-      const team = await Team.findByPk(teamId, { transaction });
-      const subEvent = await SubEventCompetition.findByPk(subEventId, {
+      const result = await this.enrollmentEntryService.createEntry({
+        teamId,
+        subEventId,
         transaction,
-        include: [EventCompetition],
+        user,
       });
-
-      if (!team) {
-        throw new NotFoundException(`${Team.name}: ${teamId}`);
-      }
-      if (!subEvent) {
-        throw new NotFoundException(`${SubEventCompetition.name}: ${subEventId}`);
-      }
-
-      if (team.season !== subEvent.eventCompetition?.season) {
-        throw new Error(`The team and the subEvent are not in the same season`);
-      }
-
-      const entry =
-        (await team.getEntry({ transaction })) ?? (await new EventEntry().save({ transaction }));
-
-      await entry.save({ transaction });
-      await team.setEntry(entry, { transaction });
-      await subEvent.addEventEntry(entry, { transaction });
-
       await transaction.commit();
-      return true;
+      return result;
     } catch (error) {
       await transaction.rollback();
-      throw error;
+      if (error instanceof GraphQLError) throw error;
+      this.logger.error(
+        { code: ErrorCode.INTERNAL_ERROR, teamId, subEventCompetitionId: subEventId, userId },
+        error instanceof Error ? error.stack : String(error)
+      );
+      throw new GraphQLError("Internal error while creating enrollment.", {
+        extensions: { code: ErrorCode.INTERNAL_ERROR },
+      });
     }
   }
 }

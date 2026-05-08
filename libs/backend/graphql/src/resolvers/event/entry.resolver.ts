@@ -6,7 +6,6 @@ import {
   EntryCompetitionPlayer,
   EntryCompetitionPlayersType,
   EventEntry,
-  Logging,
   Player,
   Standing,
   SubEventCompetition,
@@ -15,16 +14,23 @@ import {
 } from "@badman/backend-database";
 import { EnrollmentValidationService, TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
-import { LoggingAction, TeamMembershipType } from "@badman/utils";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { TeamMembershipType } from "@badman/utils";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Sequelize } from "sequelize-typescript";
 import { ListArgs } from "../../utils";
+import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
+import { FinishEventEntryResult } from "./finish-event-entry-result.object";
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
+  private readonly logger = new Logger(EventEntryResolver.name);
+
   constructor(
     private notificationService: NotificationService,
-    private enrollmentService: EnrollmentValidationService
+    private enrollmentService: EnrollmentValidationService,
+    private enrollmentFinalizeService: EnrollmentFinalizeService,
+    private _sequelize: Sequelize
   ) {}
 
   @Query(() => EventEntry)
@@ -52,7 +58,7 @@ export class EventEntryResolver {
     return eventEntry.getPlayers();
   }
 
-  @ResolveField(() => SubEventCompetition)
+  @ResolveField(() => SubEventCompetition, { nullable: true })
   async subEventCompetition(@Parent() eventEntry: EventEntry): Promise<SubEventCompetition> {
     return eventEntry.getSubEventCompetition();
   }
@@ -76,6 +82,7 @@ export class EventEntryResolver {
   }
 
   @ResolveField(() => TeamEnrollmentOutput, {
+    nullable: true,
     description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
   })
   async enrollmentValidation(
@@ -117,13 +124,13 @@ export class EventEntryResolver {
     return validation.teams?.find((t) => t.id === team.id) ?? null;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => FinishEventEntryResult)
   async finishEventEntry(
     @User() user: Player,
     @Args("clubId", { type: () => ID }) clubId: string,
     @Args("season", { type: () => Int }) season: number,
     @Args("email", { type: () => String }) email: string
-  ) {
+  ): Promise<FinishEventEntryResult> {
     if (!(await user.hasAnyPermission([clubId + "_edit:club", "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to enroll a club`);
     }
@@ -133,42 +140,36 @@ export class EventEntryResolver {
       throw new NotFoundException(clubId);
     }
 
-    // update the contact email of the club if it is different
-    if (club.contactCompetition !== email) {
-      club.contactCompetition = email;
-      await club.save();
-    }
-
-    await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
-
-    const teamsOfClub = await Team.findAll({
-      where: {
-        clubId: clubId,
-        season: season,
-      },
-      include: [{ model: EventEntry }],
-    });
-
-    for (const team of teamsOfClub) {
-      if (!team.entry) {
-        continue;
-      }
-
-      team.entry.sendOn = new Date();
-      await team.entry.save();
-    }
-
-    await Logging.create({
-      action: LoggingAction.EnrollmentSubmitted,
-      playerId: user.id,
-      meta: {
+    const transaction = await this._sequelize.transaction();
+    try {
+      const { alreadyFinalised } = await this.enrollmentFinalizeService.finalize({
         clubId,
         season,
         email,
-      },
-    });
+        user,
+        club,
+        transaction,
+      });
+      await transaction.commit();
 
-    return true;
+      let notificationDispatched = false;
+      if (!alreadyFinalised) {
+        try {
+          await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
+          notificationDispatched = true;
+        } catch (notifyError) {
+          this.logger.error(
+            `Failed to dispatch enrollment notification for club ${clubId} season ${season}`,
+            notifyError
+          );
+        }
+      }
+
+      return { success: true, alreadyFinalised, notificationDispatched };
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
   // @Mutation(returns => EventEntry)
   // async addEventEntry(

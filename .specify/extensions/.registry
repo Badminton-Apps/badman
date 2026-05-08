@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "extensions": {
+    "git": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:9731aa8143a72fbebfdb440f155038ab42642517c2b2bdbbf67c8fdbe076ed79",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.git.feature",
+          "speckit.git.validate",
+          "speckit.git.remote",
+          "speckit.git.initialize",
+          "speckit.git.commit"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-04-29T12:46:26.814200+00:00"
+    },
+    "maqa": {
+      "version": "0.1.3",
+      "source": "local",
+      "manifest_hash": "sha256:d96bafdc9b20e8b21e509f31467db87222ec7d86c5b1e238672990ad16b91672",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.maqa.coordinator",
+          "speckit.maqa",
+          "speckit.maqa.feature",
+          "speckit.maqa.qa",
+          "speckit.maqa.setup"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-04-29T12:55:38.955749+00:00"
+    },
+    "maqa-linear": {
+      "version": "0.1.0",
+      "source": "local",
+      "manifest_hash": "sha256:ea026a4c8d824262f3576ca5a0db11caec5d58c541874f4d30d5452d0642281e",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "claude": [
+          "speckit.maqa-linear.setup",
+          "speckit.maqa-linear.populate"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-04-29T12:55:56.785640+00:00"
+    }
+  }
+}

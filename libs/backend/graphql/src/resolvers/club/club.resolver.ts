@@ -28,9 +28,14 @@ import {
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
+import { GraphQLError } from "graphql";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { ListArgs } from "../../utils";
+import { ErrorCode } from "../../utils/error-codes";
+import { AddPlayerToClubResult } from "./add-player-to-club-result.object";
+import { ClubMembershipFilterInput } from "./club-membership-filter.input";
+import { ClubMembershipService } from "./club-membership.service";
 
 @ObjectType()
 export class PagedClub {
@@ -45,7 +50,10 @@ export class PagedClub {
 export class ClubsResolver {
   private readonly logger = new Logger(ClubsResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private clubMembershipService: ClubMembershipService
+  ) {}
 
   @Query(() => Club)
   async club(@Args("id", { type: () => ID }) id: string): Promise<Club> {
@@ -93,11 +101,52 @@ export class ClubsResolver {
   async players(
     @Parent() club: Club,
     @Args() listArgs: ListArgs,
-    @Args("active", { type: () => Boolean, nullable: true, defaultValue: true }) active = true
+    @Args("active", { type: () => Boolean, nullable: true, defaultValue: true }) active = true,
+    @Args("clubMembership", { type: () => ClubMembershipFilterInput, nullable: true })
+    clubMembership?: ClubMembershipFilterInput
   ): Promise<(Player & { ClubMembership: ClubPlayerMembership })[] | Player[] | undefined> {
     const options = ListArgs.toFindOptions(listArgs);
 
-    if (active) {
+    const optingIn = clubMembership !== undefined && clubMembership !== null;
+
+    if (optingIn) {
+      if (clubMembership.id !== undefined && clubMembership.id.length === 0) {
+        return [];
+      }
+
+      const membershipWhere: Record<string, unknown> = {};
+      if (clubMembership.id?.length) {
+        membershipWhere["id"] = { [Op.in]: clubMembership.id };
+      }
+      if (clubMembership.membershipType?.length) {
+        membershipWhere["membershipType"] = { [Op.in]: clubMembership.membershipType };
+      }
+      if (clubMembership.startBefore !== undefined) {
+        membershipWhere["start"] = { [Op.lte]: clubMembership.startBefore };
+      }
+      if (clubMembership.endAfter !== undefined) {
+        membershipWhere["end"] = { [Op.gte]: clubMembership.endAfter };
+      }
+      if (clubMembership.confirmed !== undefined) {
+        membershipWhere["confirmed"] = clubMembership.confirmed;
+      }
+
+      const anyFieldSet = Object.keys(membershipWhere).length > 0;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const existingIncludes: any[] = Array.isArray(options.include) ? options.include : [];
+      options.include = [
+        ...existingIncludes,
+        {
+          model: ClubPlayerMembership,
+          as: "ClubPlayerMembership",
+          required: anyFieldSet,
+          where: anyFieldSet ? membershipWhere : undefined,
+        },
+      ];
+    }
+
+    if (active && !optingIn) {
       /*
       see: ClubPlayerMembership.active
       // but this prevents fetching it from the database to speed up the query
@@ -244,51 +293,49 @@ export class ClubsResolver {
     }
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => AddPlayerToClubResult)
   async addPlayerToClub(
     @User() user: Player,
     @Args("data") addPlayerToClubData: ClubPlayerMembershipNewInput
-  ) {
+  ): Promise<AddPlayerToClubResult> {
     if (
       !(await user.hasAnyPermission([`${addPlayerToClubData.clubId}_edit:club`, "edit-any:club"]))
     ) {
-      throw new UnauthorizedException(`You do not have permission to edit this club`);
+      throw new GraphQLError("Permission denied", {
+        extensions: { code: ErrorCode.PERMISSION_DENIED },
+      });
     }
 
-    // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const club = await Club.findByPk(addPlayerToClubData.clubId, {
-        transaction,
-      });
-      const player = await Player.findByPk(addPlayerToClubData.playerId, {
-        transaction,
-      });
-
+      const club = await Club.findByPk(addPlayerToClubData.clubId, { transaction });
       if (!club) {
-        throw new NotFoundException(`${Club.name}: ${addPlayerToClubData.clubId}`);
+        throw new GraphQLError("Club not found", {
+          extensions: { code: ErrorCode.CLUB_NOT_FOUND, clubId: addPlayerToClubData.clubId },
+        });
       }
+
+      const player = await Player.findByPk(addPlayerToClubData.playerId, { transaction });
       if (!player) {
-        throw new NotFoundException(`${Player.name}: ${addPlayerToClubData.playerId}`);
+        throw new GraphQLError("Player not found", {
+          extensions: { code: ErrorCode.PLAYER_NOT_FOUND, playerId: addPlayerToClubData.playerId },
+        });
       }
 
       const confirmed = await user.hasAnyPermission(["change:transfer"]);
 
-      // Add player to club
-      await club.addPlayer(player, {
+      const result = await this.clubMembershipService.upsertMembership({
+        clubId: addPlayerToClubData.clubId as string,
+        playerId: addPlayerToClubData.playerId as string,
+        start: addPlayerToClubData.start as Date,
+        end: addPlayerToClubData.end,
+        membershipType: addPlayerToClubData.membershipType as string,
+        confirmed,
         transaction,
-        through: {
-          start: addPlayerToClubData.start,
-          end: addPlayerToClubData.end,
-          membershipType: addPlayerToClubData.membershipType,
-          confirmed,
-        },
       });
 
-      // Commit transaction
       await transaction.commit();
-
-      return true;
+      return result;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
@@ -304,13 +351,18 @@ export class ClubsResolver {
     const membership = await ClubPlayerMembership.findByPk(updateClubPlayerMembershipData.id);
 
     if (!membership) {
-      throw new NotFoundException(
-        `${ClubPlayerMembership.name}: ${updateClubPlayerMembershipData.id}`
-      );
+      throw new GraphQLError("Membership not found", {
+        extensions: {
+          code: ErrorCode.MEMBERSHIP_NOT_FOUND,
+          membershipId: updateClubPlayerMembershipData.id,
+        },
+      });
     }
 
     if (!(await user.hasAnyPermission([`${membership.clubId}_edit:club`, "edit-any:club"]))) {
-      throw new UnauthorizedException(`You do not have permission to edit this club`);
+      throw new GraphQLError("Permission denied", {
+        extensions: { code: ErrorCode.PERMISSION_DENIED },
+      });
     }
 
     // Do transaction
@@ -336,28 +388,20 @@ export class ClubsResolver {
     const membership = await ClubPlayerMembership.findByPk(id);
 
     if (!membership) {
-      throw new NotFoundException(`${ClubPlayerMembership.name}: ${id}`);
+      throw new GraphQLError("Membership not found", {
+        extensions: { code: ErrorCode.MEMBERSHIP_NOT_FOUND, membershipId: id },
+      });
     }
 
     if (!(await user.hasAnyPermission([`${membership.clubId}_edit:club`, "edit-any:club"]))) {
-      throw new UnauthorizedException(`You do not have permission to edit this club`);
+      throw new GraphQLError("Permission denied", {
+        extensions: { code: ErrorCode.PERMISSION_DENIED },
+      });
     }
 
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const club = await Club.findByPk(membership.clubId, { transaction });
-      const player = await Player.findByPk(membership.playerId, {
-        transaction,
-      });
-
-      if (!club) {
-        throw new NotFoundException(`${Club.name}: ${membership.clubId}`);
-      }
-      if (!player) {
-        throw new NotFoundException(`${Player.name}: ${membership.playerId}`);
-      }
-
       // remove membership
       await membership.destroy({ transaction });
 

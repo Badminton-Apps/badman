@@ -1717,11 +1717,73 @@
       "error": "Échec de la copie de la compétition"
     },
     "entryTeamDrawer": {
+      "sectionTitles": {
+        "basePlayers": "Joueurs de base",
+        "generalInfo": "Informations générales",
+        "validations": "Validations"
+      },
+      "dataKeys": {
+        "teamIndex": "Index d'équipe",
+        "teamCaptain": "Capitaine de l'équipe",
+        "preferredPlayingTime": "Heure de jeu préférée"
+      },
+      "emptyStates": {
+        "noValidations": "Aucune validation trouvée"
+      },
+      "noData": "Aucune donnée",
       "params": {
         "gender": {
           "male": "homme",
           "female": "femme"
         }
+      },
+      "validation": {
+        "errors": {
+          "already": "Le joueur est déjà présent comme titulaire.",
+          "base-gender-mix": "L'équipe de base comprend {maleCount} hommes et {femaleCount} femmes, alors qu'il devrait y en avoir 2 de chaque",
+          "base-other-team": "{playerFullName} ne peut être spécifié comme joueur de base qu'une fois par ligue",
+          "comp-status-base": "Le joueur de base {playerFullName} n'est pas marqué comme joueur de compétition",
+          "comp-status-team": "{playerFullName} n'est pas marqué comme joueur de compétition",
+          "faller": "L'équipe devrait être rétrogradée, mais elle n'est pas inscrite dans une série inférieure",
+          "first-team-index": "Une première équipe rétrogradée ne peut pas aligner une équipe avec un indice d'équipe inférieur à son indice de base pendant la saison",
+          "no-subevent": "Aucune division trouvée",
+          "none": "Aucune erreur trouvée",
+          "player-club": "Le joueur {playerFullName} ne fait pas partie de {clubName} (club actuel : {activeClubName})",
+          "player-club-none": "Aucun club connu pour le joueur {playerFullName}",
+          "player-gender": "{playerFullName} est un(e) {playerGender} mais un(e) {gender} était attendu(e)",
+          "player-min-level": "{playerFullName} a un indice de {playerRanking} en {rankingType} et doit être au moins {minLevel}.",
+          "player-subevent": "{playerFullName} fait partie de l'équipe de base {teamName} qui joue également en {subEventName}",
+          "riser": "L'équipe devrait être promue, mais elle n'est pas inscrite dans une série supérieure",
+          "team-index": "La configuration la plus forte n'est pas possible. L'indice d'équipe est {teamIndex} et l'indice d'équipe de base est {baseIndex}.",
+          "team-order": "L'équipe {teamName} est dans une série inférieure mais a un numéro d'équipe inférieur",
+          "team-order-same-subevent": "L'équipe {teamName} a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
+          "team-to-strong": "L'indice d'équipe des joueurs de base égal à {baseIndex} ne peut pas être inférieur à celui autorisé dans la division {minIndex}",
+          "rejectedPendingPlayer": "Le joueur {playerName} n'est plus membre ni transfert/prêt en cours. Retirez-le des joueurs de base.",
+          "team-to-week": "L'indice d'équipe des joueurs de départ est {baseIndex} et ne peut pas dépasser la limite de la division {maxIndex}",
+          "title": "Erreurs",
+          "too-few-base-players": "Trop peu de joueurs de base",
+          "too-many-base-players": "Trop de joueurs de base"
+        },
+        "warnings": {
+          "already-saved": "Les nouvelles modifications ne peuvent pas être enregistrées entre-temps, veuillez soumettre à nouveau le formulaire à la dernière étape pour enregistrer vos modifications",
+          "base-other-team": "{playerFullName} est joueur de base dans une autre équipe",
+          "missing-continuity-link": "Cette équipe ressemble à une équipe de la saison précédente, mais l'ID de continuité n'a pas été réutilisé. Veuillez le lier pour conserver l'historique.",
+          "player-min-level": "La demande d'exception pour le joueur {playerFullName} en {rankingType} n'a pas encore été acceptée",
+          "subtitute-team-index": "s",
+          "title": "Avertissements"
+        }
+      },
+      "errors": {
+        "title": "Erreurs",
+        "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action.",
+        "clubNotFound": "Club non trouvé.",
+        "playerNotFound": "Joueur non trouvé.",
+        "rankingNotFound": "Le joueur n'a pas de classement - requis pour le calcul de l'indice.",
+        "teamNotFound": "Équipe non trouvée.",
+        "subEventNotFound": "Sous-événement non trouvé.",
+        "seasonMismatch": "La saison de l'équipe ne correspond pas à la saison de compétition.",
+        "internal": "Erreur serveur inattendue. Veuillez réessayer.",
+        "unknown": "Une erreur est survenue."
       }
     },
     "shell": {
@@ -1759,6 +1821,7 @@
       }
     },
     "enrollment": {
+      "pageTitle": "Inscription à la compétition {season}",
       "disabled": {
         "title": "Inscriptions fermées",
         "message": "Les inscriptions sont actuellement fermées. Veuillez réessayer plus tard."
@@ -1775,36 +1838,18 @@
         "ariaDeselectLocation": "Désélectionner le lieu",
         "emptyPlaceholder": "—",
         "noGameDays": "Aucun jour de jeu",
-        "courts": "{count, plural, one {# terrain} other {# terrains}}"
-      },
-      "team-enrollment": {
-        "addBasePlayerDialog": {
-          "baseIndex": "Indice de base : {baseIndex}",
-          "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
-          "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
-          "competition": "Compétition",
-          "division": "Division",
-          "divisionBaseIndexRangeMismatch": "L'indice de base de votre équipe ({baseIndex}) ne correspond à aucune division pour cette compétition.",
-          "playerTooStrong": "{name} a le niveau {level}, ce qui est trop fort pour cette division (maximum autorisé : {maxLevel})."
-        },
-        "import-existing-optional": "Importer l'existant (optionnel)",
-        "validating": "Validation…",
-        "import-teams": {
-          "title": "Importer les équipes",
-          "allTeams": "Toutes les équipes",
-          "categories": {
-            "MX": "Mixte",
-            "M": "Messieurs",
-            "F": "Dames",
-            "NATIONAL": "National"
-          },
-          "cancel": "Annuler",
-          "import": "Importer"
-        }
+        "courts": "{count, plural, one {# terrain} other {# terrains}}",
+        "copyFromLastSeason": "Copier la disponibilité de la saison dernière",
+        "copyAvailabilitySuccess": "Disponibilité copiée avec succès",
+        "copyAvailabilityError": "Impossible de copier la disponibilité",
+        "manageAvailability": "Gérer la disponibilité",
+        "hideAvailability": "Masquer la disponibilité"
       },
       "steps": {
+        "info": "Informations",
+        "players": "Joueurs",
         "generalInformation": "Informations générales",
-        "transfersLoans": "Transferts et prêts",
+        "transfersLoans": "Transferts & prêts",
         "teams": "Équipes",
         "confirm": "Confirmer"
       },
@@ -1812,33 +1857,39 @@
         "previous": "Précédent",
         "next": "Suivant",
         "submit": "S'inscrire",
-        "submitting": "Envoi en cours…"
+        "submitting": "Envoi en cours…",
+        "teamsHaveErrors": "Corrigez les erreurs d'équipe avant de continuer"
       },
       "toast": {
         "addAtLeastOneTeam": "Ajoutez au moins une équipe."
       },
       "teams": {
+        "baseValue": "Équipe {value}",
+        "labelNumbered": "Équipe {number}",
+        "labelFallback": "Équipe",
+        "baseIndex": {
+          "loading": "Chargement de l'équipe..."
+        },
         "categories": {
           "M": "Hommes",
-          "F": "Femmes",
+          "F": "Dames",
           "MX": "Mixte"
         },
         "addTeam": "Ajouter une équipe",
-        "emptyCategory": "Aucune équipe",
-        "baseValue": "Base : {value}",
-        "labelNumbered": "Équipe {number}",
-        "labelFallback": "Équipe",
+        "emptyCategory": "Aucune équipe dans cette catégorie",
         "a11y": {
-          "statusError": "Cette équipe comporte des erreurs de validation",
-          "statusWarning": "Cette équipe comporte des avertissements de validation",
-          "statusSuccess": "Cette équipe a passé la validation",
-          "validatingStatus": "Vérification de la validation de l'équipe",
-          "expandValidationDetails": "Afficher les détails de validation pour {team}",
-          "collapseValidationDetails": "Masquer les détails de validation pour {team}",
-          "editTeam": "Modifier {team}",
-          "deleteTeam": "Retirer {team}",
-          "removePlayerFromList": "Retirer {name} de l'équipe"
-        }
+          "statusError": "L'équipe a des erreurs de validation",
+          "statusSuccess": "L'équipe est valide",
+          "validatingStatus": "Validation de l'équipe...",
+          "expandValidationDetails": "Développer les détails de validation",
+          "collapseValidationDetails": "Réduire les détails de validation",
+          "editTeam": "Modifier l'équipe",
+          "deleteTeam": "Supprimer l'équipe",
+          "removePlayerFromList": "Retirer le joueur de la liste"
+        },
+        "deleteError": "Erreur lors de la suppression de l'équipe",
+        "loadError": "Erreur lors du chargement des équipes",
+        "retry": "Réessayer"
       },
       "dialog": {
         "deleteTeam": {
@@ -1849,9 +1900,10 @@
         }
       },
       "clubSelection": {
-        "heading": "Club",
+        "noAdminClubs": "Vous n'êtes administrateur d'aucun club",
+        "heading": "Sélectionnez votre club",
         "clubLabel": "Club",
-        "emailLabel": "E-mail"
+        "emailLabel": "E-mail de contact"
       },
       "locationSelection": {
         "title": "Lieux",
@@ -1866,16 +1918,22 @@
         "title": "Récapitulatif de l'inscription"
       },
       "transfersLoans": {
-        "addTransfersTitle": "Ajouter des transferts",
-        "addLoansTitle": "Ajouter des prêts",
+        "addError": "Erreur lors de l'ajout du transfert/prêt",
+        "deleteError": "Erreur lors de la suppression du transfert/prêt",
+        "loadError": "Erreur lors du chargement des transferts/prêts",
+        "duplicateWarning": "Ce joueur est déjà enregistré comme transfert/prêt",
+        "addTransfersTitle": "Transferts",
         "addTransferButton": "Ajouter un transfert",
+        "emptyTransfers": "Aucun transfert ajouté",
+        "addLoansTitle": "Prêts",
         "addLoanButton": "Ajouter un prêt",
-        "emptyTransfers": "Aucun transfert",
-        "emptyLoans": "Aucun prêt",
+        "emptyLoans": "Aucun prêt ajouté",
         "a11y": {
-          "cancelPendingSelection": "Annuler la sélection du joueur"
+          "cancelPendingSelection": "Annuler la sélection de joueur en attente"
         }
       },
+      "pendingTransferBadge": "transfert",
+      "pendingLoanBadge": "prêt",
       "playerValidation": {
         "alreadyMember": "Ce joueur est déjà membre de ce club.",
         "alreadyLoaned": "Ce joueur est déjà en prêt.",
@@ -1895,7 +1953,88 @@
         "selectAtLeastOnePlayer": "Sélectionnez au moins un joueur.",
         "addAtLeastOneTeam": "Ajoutez au moins une équipe.",
         "duplicateTeamNumberSameType": "Numéro d'équipe en double dans le même type.",
-        "maxBasePlayers": "Vous pouvez ajouter au maximum {max} joueurs de base."
+        "maxBasePlayers": "Vous pouvez ajouter au maximum {max} joueurs de base.",
+        "minBasePlayers": "Sélectionnez au moins {min} joueurs de base."
+      },
+      "errors": {
+        "clubNotFoundForFinalise": "Club non trouvé.",
+        "finalisationFailed": "La soumission a échoué. Veuillez réessayer.",
+        "noTeamsToFinalise": "Ajoutez au moins une équipe avant de soumettre.",
+        "notAuthorisedToFinalise": "Vous n'avez pas la permission de finaliser l'inscription de ce club."
+      },
+      "form": {
+        "type": "Type",
+        "teamNumber": "Numéro d'équipe",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "preferredDay": "Jour préféré",
+        "preferredTime": "Heure préférée",
+        "preferredLocation": "Lieu préféré"
+      },
+      "generalInfo": "Informations générales",
+      "preferredPlayingTime": "Heure de jeu préférée",
+      "teamCaptain": "Capitaine d'équipe",
+      "buttons": {
+        "addTeam": "Ajouter une équipe",
+        "back": "Retour",
+        "cancel": "Annuler",
+        "editTeam": "Modifier l'équipe",
+        "next": "Suivant",
+        "addPlayer": "Ajouter un joueur"
+      },
+      "messages": {
+        "successAdd": "L'équipe a été ajoutée",
+        "successEdit": "L'équipe a été mise à jour"
+      },
+      "addPlayer": "Ajouter un joueur",
+      "players": "Joueurs",
+      "alreadySubmitted": {
+        "title": "Déjà soumis",
+        "body": "L'inscription de ce club pour la saison en cours a déjà été soumise. Pour apporter des modifications, veuillez contacter la fédération."
+      },
+      "submit": {
+        "alreadyFinalised": "Cette inscription a déjà été soumise précédemment.",
+        "finalisationFailed": "Vos équipes ont été enregistrées, mais nous n'avons pas pu finaliser la soumission. Cliquez sur Réessayer pour réessayer.",
+        "finalised": "Inscription soumise avec succès.",
+        "notificationFailedBody": "Votre inscription a été enregistrée, mais nous n'avons pas pu envoyer l'e-mail de confirmation ou la notification push. Cliquez sur Réessayer pour la renvoyer.",
+        "notificationFailedTitle": "Soumission terminée — la confirmation n'a pas pu être envoyée",
+        "retryFinalisation": "Réessayer",
+        "retryNotification": "Réessayer",
+        "error": {
+          "network": {
+            "title": "Erreur réseau",
+            "body": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
+          }
+        }
+      },
+      "teamEnrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": {
+            "label": "Indice de base",
+            "loading": "Chargement de l'indice de base...",
+            "unavailable": "Indice de base non disponible"
+          },
+          "maxPlayersReached": "Vous pouvez ajouter au maximum {max} joueurs de base.",
+          "noCompetitions": "Aucune compétition n'est disponible pour cette saison.",
+          "competition": "Compétition",
+          "division": "Division",
+          "divisionBaseIndexRangeMismatch": "L'indice de base de votre équipe ({baseIndex}) ne correspond à aucune division pour cette compétition.",
+          "playerTooStrong": "{name} a le niveau {level}, ce qui est trop fort pour cette division (maximum autorisé : {maxLevel})."
+        },
+        "importExistingOptional": "Importer l'existant (optionnel)",
+        "validating": "Validation…",
+        "importTeams": {
+          "title": "Importer les équipes",
+          "allTeams": "Toutes les équipes",
+          "categories": {
+            "MX": "Mixte",
+            "M": "Messieurs",
+            "F": "Dames",
+            "NATIONAL": "National"
+          },
+          "cancel": "Annuler",
+          "import": "Importer"
+        }
       }
     },
     "locations": {

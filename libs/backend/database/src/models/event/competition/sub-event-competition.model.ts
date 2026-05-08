@@ -106,7 +106,7 @@ export class SubEventCompetition extends Model<
    */
   get levelWithModifier() {
     if (!this.eventCompetition) {
-      throw new Error("EventCompetition is not set");
+      return null;
     }
 
     let modifier = 0;

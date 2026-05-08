@@ -1219,6 +1219,7 @@
       "error": "Kopiëren van competitie mislukt"
     },
     "enrollment": {
+      "pageTitle": "Competitie Inschrijving {season}",
       "disabled": {
         "title": "Inschrijvingen gesloten",
         "message": "Inschrijvingen zijn momenteel gesloten. Probeer later opnieuw."
@@ -1235,35 +1236,17 @@
         "ariaDeselectLocation": "Locatie deselecteren",
         "emptyPlaceholder": "—",
         "noGameDays": "Geen speeldagen",
-        "courts": "{count, plural, one {# baan} other {# banen}}"
-      },
-      "team-enrollment": {
-        "addBasePlayerDialog": {
-          "baseIndex": "Basisindex: {baseIndex}",
-          "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
-          "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
-          "competition": "Competitie",
-          "division": "Divisie",
-          "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
-          "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
-        },
-        "import-existing-optional": "Bestaande importeren (optioneel)",
-        "validating": "Valideren…",
-        "import-teams": {
-          "title": "Teams importeren",
-          "allTeams": "Alle teams",
-          "categories": {
-            "MX": "Gemengd",
-            "M": "Heren",
-            "F": "Dames",
-            "NATIONAL": "Nationaal"
-          },
-          "cancel": "Annuleren",
-          "import": "Importeren"
-        }
+        "courts": "{count, plural, one {# baan} other {# banen}}",
+        "copyFromLastSeason": "Beschikbaarheid van vorig seizoen kopiëren",
+        "copyAvailabilitySuccess": "Beschikbaarheid succesvol gekopieerd",
+        "copyAvailabilityError": "Beschikbaarheid kon niet worden gekopieerd",
+        "manageAvailability": "Beschikbaarheid beheren",
+        "hideAvailability": "Beschikbaarheid verbergen"
       },
       "steps": {
-        "generalInformation": "Algemene info",
+        "info": "Informatie",
+        "players": "Spelers",
+        "generalInformation": "Algemene informatie",
         "transfersLoans": "Transfers & uitleningen",
         "teams": "Ploegen",
         "confirm": "Bevestigen"
@@ -1272,33 +1255,39 @@
         "previous": "Vorige",
         "next": "Volgende",
         "submit": "Inschrijven",
-        "submitting": "Bezig…"
+        "submitting": "Bezig…",
+        "teamsHaveErrors": "Los teamfouten op voor je verdergaat"
       },
       "toast": {
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe."
       },
       "teams": {
+        "baseValue": "Team {value}",
+        "labelNumbered": "Ploeg {number}",
+        "labelFallback": "Ploeg",
+        "baseIndex": {
+          "loading": "Team laden..."
+        },
         "categories": {
-          "M": "Mannen",
-          "F": "Vrouwen",
+          "M": "Heren",
+          "F": "Dames",
           "MX": "Gemengd"
         },
         "addTeam": "Ploeg toevoegen",
-        "emptyCategory": "Geen ploegen",
-        "baseValue": "Basis: {value}",
-        "labelNumbered": "Ploeg {number}",
-        "labelFallback": "Ploeg",
+        "emptyCategory": "Geen ploegen in deze categorie",
         "a11y": {
-          "statusError": "Deze ploeg heeft validatiefouten",
-          "statusWarning": "Deze ploeg heeft validatiewaarschuwingen",
-          "statusSuccess": "Deze ploeg is gevalideerd",
-          "validatingStatus": "Ploeg wordt gevalideerd",
-          "expandValidationDetails": "Toon validatiedetails voor {team}",
-          "collapseValidationDetails": "Verberg validatiedetails voor {team}",
-          "editTeam": "Bewerk {team}",
-          "deleteTeam": "Verwijder {team}",
-          "removePlayerFromList": "Verwijder {name} uit de ploeg"
-        }
+          "statusError": "Team heeft validatiefouten",
+          "statusSuccess": "Team is geldig",
+          "validatingStatus": "Team valideren...",
+          "expandValidationDetails": "Validatiedetails uitklappen",
+          "collapseValidationDetails": "Validatiedetails inklappen",
+          "editTeam": "Team bewerken",
+          "deleteTeam": "Team verwijderen",
+          "removePlayerFromList": "Speler uit lijst verwijderen"
+        },
+        "deleteError": "Fout bij het verwijderen van team",
+        "loadError": "Fout bij het laden van teams",
+        "retry": "Probeer opnieuw"
       },
       "dialog": {
         "deleteTeam": {
@@ -1309,9 +1298,10 @@
         }
       },
       "clubSelection": {
-        "heading": "Club",
+        "noAdminClubs": "Je bent geen admin van clubs",
+        "heading": "Selecteer je club",
         "clubLabel": "Club",
-        "emailLabel": "Email"
+        "emailLabel": "Contact e-mail"
       },
       "locationSelection": {
         "title": "Locaties",
@@ -1326,16 +1316,22 @@
         "title": "Samenvatting inschrijving"
       },
       "transfersLoans": {
-        "addTransfersTitle": "Transfers toevoegen",
-        "addLoansTitle": "Uitleningen toevoegen",
+        "addError": "Fout bij het toevoegen van transfer/uitlening",
+        "deleteError": "Fout bij het verwijderen van transfer/uitlening",
+        "loadError": "Fout bij het laden van transfers/uitleningen",
+        "duplicateWarning": "Deze speler is al geregistreerd als transfer/uitlening",
+        "addTransfersTitle": "Transfers",
         "addTransferButton": "Transfer toevoegen",
+        "emptyTransfers": "Nog geen transfers toegevoegd",
+        "addLoansTitle": "Uitleningen",
         "addLoanButton": "Uitlening toevoegen",
-        "emptyTransfers": "Geen transfers",
-        "emptyLoans": "Geen uitleningen",
+        "emptyLoans": "Nog geen uitleningen toegevoegd",
         "a11y": {
-          "cancelPendingSelection": "Spelerselectie annuleren"
+          "cancelPendingSelection": "Hangende spelerselectie annuleren"
         }
       },
+      "pendingTransferBadge": "transfer",
+      "pendingLoanBadge": "uitleen",
       "playerValidation": {
         "alreadyMember": "Speler is al lid van deze club.",
         "alreadyLoaned": "Speler is al uitgeleend.",
@@ -1355,7 +1351,88 @@
         "selectAtLeastOnePlayer": "Selecteer minstens één speler.",
         "addAtLeastOneTeam": "Voeg minstens één ploeg toe.",
         "duplicateTeamNumberSameType": "Dubbel ploegnummer binnen hetzelfde type.",
-        "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen."
+        "maxBasePlayers": "Je kunt hoogstens {max} basisspelers toevoegen.",
+        "minBasePlayers": "Je moet minstens {min} basisspelers selecteren."
+      },
+      "errors": {
+        "clubNotFoundForFinalise": "Club niet gevonden.",
+        "finalisationFailed": "Indiening mislukt. Probeer het opnieuw.",
+        "noTeamsToFinalise": "Voeg minstens één team toe voor het indienen.",
+        "notAuthorisedToFinalise": "U bent niet bevoegd om de inschrijving van deze club af te ronden."
+      },
+      "form": {
+        "type": "Type",
+        "teamNumber": "Teamnummer",
+        "email": "E-mail",
+        "phone": "Telefoon",
+        "preferredDay": "Gewenste dag",
+        "preferredTime": "Gewenste tijd",
+        "preferredLocation": "Gewenste locatie"
+      },
+      "generalInfo": "Algemene informatie",
+      "preferredPlayingTime": "Gewenste speeltijd",
+      "teamCaptain": "Teamcaptain",
+      "buttons": {
+        "addTeam": "Voeg team toe",
+        "back": "Terug",
+        "cancel": "Annuleren",
+        "editTeam": "Bewerk team",
+        "next": "Volgende",
+        "addPlayer": "Voeg speler toe"
+      },
+      "messages": {
+        "successAdd": "Team is toegevoegd",
+        "successEdit": "Team is bijgewerkt"
+      },
+      "addPlayer": "Voeg speler toe",
+      "players": "Spelers",
+      "alreadySubmitted": {
+        "title": "Reeds ingediend",
+        "body": "De inschrijving van deze club voor het huidige seizoen is al ingediend. Neem contact op met de federatie om wijzigingen aan te brengen."
+      },
+      "submit": {
+        "alreadyFinalised": "Deze inschrijving is eerder al ingediend.",
+        "finalisationFailed": "Je teams zijn opgeslagen, maar we konden de indiening niet voltooien. Klik op Opnieuw proberen om het opnieuw te proberen.",
+        "finalised": "Inschrijving succesvol ingediend.",
+        "notificationFailedBody": "Je inschrijving is opgeslagen, maar we konden de bevestigingsemail of pushmelding niet versturen. Klik op Opnieuw proberen om het opnieuw te versturen.",
+        "notificationFailedTitle": "Indiening voltooid — bevestiging kon niet worden verzonden",
+        "retryFinalisation": "Opnieuw proberen",
+        "retryNotification": "Opnieuw proberen",
+        "error": {
+          "network": {
+            "title": "Netwerkfout",
+            "body": "We konden de server niet bereiken. Controleer je verbinding en probeer opnieuw."
+          }
+        }
+      },
+      "teamEnrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": {
+            "label": "Basisindex",
+            "loading": "Basisindex laden...",
+            "unavailable": "Basisindex niet beschikbaar"
+          },
+          "maxPlayersReached": "Je kunt maximaal {max} basisspelers toevoegen.",
+          "noCompetitions": "Er zijn geen competities beschikbaar voor dit seizoen.",
+          "competition": "Competitie",
+          "division": "Afdeling",
+          "divisionBaseIndexRangeMismatch": "De basisindex van je team ({baseIndex}) komt niet overeen met een divisie in deze competitie.",
+          "playerTooStrong": "{name} heeft niveau {level}; dat is te sterk voor deze divisie (sterkst toegestaan: {maxLevel})."
+        },
+        "importExistingOptional": "Bestaande importeren (optioneel)",
+        "validating": "Valideren…",
+        "importTeams": {
+          "title": "Teams importeren",
+          "allTeams": "Alle teams",
+          "categories": {
+            "MX": "Gemengd",
+            "M": "Heren",
+            "F": "Dames",
+            "NATIONAL": "Nationaal"
+          },
+          "cancel": "Annuleren",
+          "import": "Importeren"
+        }
       }
     },
     "messages": {
@@ -2719,7 +2796,7 @@
           "comp-status-team": "{playerFullName} is niet gemarkeerd als competitie speler",
           "faller": "Het team zou moeten degraderen, maar is niet ingeschreven in een lagere klasse",
           "first-team-index": "Een eerste team dat is gedegradeerd mag geen team met een lagere teamindex opstellen dan hun basisindex gedurende het seizoen",
-          "no-subevent": "Kies alstublieft een reeks",
+          "no-subevent": "Geen divisie gevonden",
           "none": "Geen fouten gevonden",
           "player-club": "Speler {playerFullName} maakt geen deel uit van {clubName} (huidige club: {activeClubName})",
           "player-club-none": "Geen club bekend voor speler {playerFullName}",
@@ -2731,6 +2808,7 @@
           "team-order": "Team {teamName} zit in een lagere klasse maar heeft een lagere teamnummer",
           "team-order-same-subevent": "Team {teamName} heeft een betere index in dezelfde reeks, maar heeft een lagere teamnummer",
           "team-to-strong": "Teamindex basis spelers gelijk aan {baseIndex} kan niet lager zijn dan toegestaan in de divisie {minIndex}",
+          "rejectedPendingPlayer": "Speler {playerName} is geen lid of openstaande transfer/uitleen meer. Verwijder hem/haar uit de basisspelers.",
           "team-to-week": "Teamindex startspelers is {baseIndex} en mag de limiet van de divisie {maxIndex} niet overschrijden",
           "title": "Fouten",
           "too-few-base-players": "Te weinig basis spelers",
@@ -2744,6 +2822,18 @@
           "subtitute-team-index": "s",
           "title": "Waarschuwingen"
         }
+      },
+      "errors": {
+        "title": "Fouten",
+        "permissionDenied": "Je hebt geen toestemming om deze actie uit te voeren.",
+        "clubNotFound": "Club niet gevonden.",
+        "playerNotFound": "Speler niet gevonden.",
+        "rankingNotFound": "Speler heeft geen ranking - vereist voor indexberekening.",
+        "teamNotFound": "Team niet gevonden.",
+        "subEventNotFound": "Onderverdeling niet gevonden.",
+        "seasonMismatch": "Het seizoen van het team komt niet overeen met het competitieseizoen.",
+        "internal": "Onverwachte serverfout. Probeer het opnieuw.",
+        "unknown": "Er is iets misgegaan."
       }
     },
     "notFoundPage": {

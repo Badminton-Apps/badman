@@ -51,7 +51,10 @@ export class SubEventCompetitionResolver {
 
   @Query(() => [SubEventCompetition])
   async subEventCompetitions(@Args() listArgs: ListArgs): Promise<SubEventCompetition[]> {
-    return SubEventCompetition.findAll(ListArgs.toFindOptions(listArgs));
+    return SubEventCompetition.findAll({
+      ...ListArgs.toFindOptions(listArgs),
+      include: [{ model: EventCompetition }],
+    });
   }
 
   @ResolveField(() => EventCompetition)
