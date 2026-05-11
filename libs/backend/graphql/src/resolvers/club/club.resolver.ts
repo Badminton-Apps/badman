@@ -263,10 +263,11 @@ export class ClubsResolver {
   @Mutation(() => Club)
   async updateClub(@User() user: Player, @Args("data") updateClubData: ClubUpdateInput) {
     const userId = user?.id ?? null;
+    const clubIdArg = updateClubData.id ?? "";
     try {
-      assertUUID(updateClubData.id, "id", { userId });
+      assertUUID(clubIdArg, "id", { userId });
     } catch (e) {
-      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "id", value: updateClubData.id, userId });
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "id", value: clubIdArg, userId });
       throw e;
     }
 

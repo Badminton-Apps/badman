@@ -215,7 +215,7 @@ export class TeamsResolver {
     @User() user: Player
   ): Promise<TeamResult> {
     const userId = user?.id ?? null;
-    const clubId = newTeamData.clubId;
+    const clubId = newTeamData.clubId ?? "";
 
     try {
       assertUUID(clubId, "clubId", { userId });
@@ -370,7 +370,7 @@ export class TeamsResolver {
               const orig = origById.get(rp.id);
               return {
                 id: rp.id,
-                gender: rp.gender,
+                gender: rp.gender ?? undefined,
                 single: rp.single,
                 double: rp.double,
                 mix: rp.mix,
@@ -424,7 +424,7 @@ export class TeamsResolver {
 
     // Validate each team's clubId before entering the loop — fail fast on the first invalid entry
     for (const team of newTeamData) {
-      const clubId = team.clubId;
+      const clubId = team.clubId ?? "";
       try {
         assertUUID(clubId, "clubId", { userId });
       } catch (e) {

@@ -10,6 +10,8 @@ import { SubmitEnrollmentInput, SubmitEnrollmentTeamInput } from "./submit-enrol
 import { SubEventTypeEnum } from "@badman/utils";
 import { ErrorCode } from "../../../utils";
 
+const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+
 describe("SubmitEnrollmentResolver.submitEnrollment", () => {
   let resolver: SubmitEnrollmentResolver;
   let submitService: jest.Mocked<SubmitEnrollmentService>;
@@ -40,7 +42,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
     players: [],
   });
 
-  const makeInput = (clubId = "club-uuid"): SubmitEnrollmentInput => ({
+  const makeInput = (clubId = CLUB_UUID): SubmitEnrollmentInput => ({
     clubId,
     season: 2025,
     adminEmail: "admin@test.com",
@@ -134,7 +136,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
   // Case 2: wrong club perm
   it("throws PERMISSION_DENIED for wrong club perm", async () => {
     const user = makeUser(["other-club_edit:club"]);
-    const input = makeInput("club-uuid");
+    const input = makeInput(CLUB_UUID);
 
     await expect(resolver.submitEnrollment(user, input)).rejects.toMatchObject({
       extensions: { code: ErrorCode.PERMISSION_DENIED },
@@ -143,7 +145,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
 
   // Case 3: club-specific perm granted
   it("calls service when club-specific perm granted", async () => {
-    const user = makeUser(["club-uuid_edit:club"]);
+    const user = makeUser([`${CLUB_UUID}_edit:club`]);
     await resolver.submitEnrollment(user, makeInput());
     expect(submitService.run).toHaveBeenCalled();
   });
@@ -188,7 +190,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
 
     expect(notificationService.notifyEnrollment).toHaveBeenCalledWith(
       "user-uuid",
-      "club-uuid",
+      CLUB_UUID,
       2025,
       "admin@test.com"
     );

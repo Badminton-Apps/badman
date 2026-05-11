@@ -18,6 +18,9 @@ import { SubEventTypeEnum } from "@badman/utils";
 import { ErrorCode } from "../../utils";
 import { TeamsResolver } from "./team.resolver";
 
+const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+const MISSING_UUID = "00000000-0000-0000-0000-000000000000";
+
 describe("TeamsResolver.createTeam", () => {
   let resolver: TeamsResolver;
   let mockTransaction: { commit: jest.Mock; rollback: jest.Mock };
@@ -28,12 +31,12 @@ describe("TeamsResolver.createTeam", () => {
       hasAnyPermission: jest.fn().mockResolvedValue(allowed),
     }) as unknown as Player;
 
-  const stubClub = (id = "club-uuid") =>
+  const stubClub = (id = CLUB_UUID) =>
     ({ id, name: "Test club", abbreviation: "TC" }) as unknown as Club;
 
   const baseInput = (overrides: Partial<TeamNewInput> = {}): TeamNewInput =>
     ({
-      clubId: "club-uuid",
+      clubId: CLUB_UUID,
       season: 2026,
       type: SubEventTypeEnum.MX,
       teamNumber: 1,
@@ -46,7 +49,7 @@ describe("TeamsResolver.createTeam", () => {
     const addPlayer = jest.fn().mockResolvedValue(undefined);
     return {
       id: overrides?.id ?? "new-team-uuid",
-      clubId: overrides?.clubId ?? "club-uuid",
+      clubId: overrides?.clubId ?? CLUB_UUID,
       name: "TC 1",
       type: SubEventTypeEnum.MX,
       setClub,
@@ -111,17 +114,17 @@ describe("TeamsResolver.createTeam", () => {
     );
   });
 
-  it("returns CLUB_NOT_FOUND and rolls back when the club is missing", async () => {
+  it("returns CLUB_NOT_FOUND and rolls back when the club is missing (UUID not in DB)", async () => {
     const user = userWithPermission(true);
     jest.spyOn(Club, "findByPk").mockResolvedValue(null);
 
     try {
-      await resolver.createTeam(baseInput({ clubId: "missing-club" }), false, user);
+      await resolver.createTeam(baseInput({ clubId: MISSING_UUID }), false, user);
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("CLUB_NOT_FOUND");
-      expect(e.extensions["clubId"]).toBe("missing-club");
+      expect(e.extensions["clubId"]).toBe(MISSING_UUID);
     }
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
@@ -140,7 +143,7 @@ describe("TeamsResolver.createTeam", () => {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("PERMISSION_DENIED");
       expect(e.extensions["userId"]).toBe("user-uuid");
-      expect(e.extensions["clubId"]).toBe("club-uuid");
+      expect(e.extensions["clubId"]).toBe(CLUB_UUID);
     }
 
     expect(user.hasAnyPermission).toHaveBeenCalledWith([`${dbClub.id}_edit:club`, "edit-any:club"]);
@@ -386,7 +389,7 @@ describe("TeamsResolver.createTeams", () => {
   });
 
   it("returns one TeamResult per input team", async () => {
-    const dbClub = { id: "club-uuid", name: "Test club" } as unknown as Club;
+    const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
     jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
     let counter = 0;
     jest.spyOn(Team, "create").mockImplementation(
