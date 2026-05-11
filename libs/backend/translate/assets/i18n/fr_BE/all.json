@@ -1694,6 +1694,15 @@
         "error": "Échec de l'enregistrement des paramètres d'inscription"
       }
     },
+    "avgLevelPage": {
+      "error": "Impossible de charger les données de niveau moyen.",
+      "empty": "Aucune donnée de niveau moyen disponible pour cette compétition.",
+      "eventType": {
+        "M": "Hommes",
+        "F": "Femmes",
+        "MX": "Mixte"
+      }
+    },
     "adminCompetitionsPage": {
       "title": "Administration des compétitions",
       "seasonSelectLabel": "Saison",

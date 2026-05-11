@@ -1474,6 +1474,15 @@ export type I18nTranslations = {
                     "error": string;
                 };
             };
+            "avgLevelPage": {
+                "error": string;
+                "empty": string;
+                "eventType": {
+                    "M": string;
+                    "F": string;
+                    "MX": string;
+                };
+            };
             "adminCompetitionsPage": {
                 "title": string;
                 "seasonSelectLabel": string;

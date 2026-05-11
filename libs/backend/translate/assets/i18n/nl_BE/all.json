@@ -1174,6 +1174,15 @@
         "error": "Inschrijvingsinstellingen opslaan mislukt"
       }
     },
+    "avgLevelPage": {
+      "error": "Gemiddeld niveau gegevens konden niet geladen worden.",
+      "empty": "Geen gegevens over gemiddeld niveau beschikbaar voor deze competitie.",
+      "eventType": {
+        "M": "Heren",
+        "F": "Dames",
+        "MX": "Gemengd"
+      }
+    },
     "adminCompetitionsPage": {
       "title": "Admin Competities",
       "seasonSelectLabel": "Seizoen",
