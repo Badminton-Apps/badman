@@ -82,17 +82,36 @@
       "next_step": "human review and merge to develop; open companion frontend PR per specs/007-finish-event-entry-hardening/frontend-changes.md (BAD-122 follow-up)"
     },
     "014-validate-clubid-uuid": {
-      "status": "in_progress",
+      "status": "in_review_qa_approved",
       "board": "linear",
       "card_id": "BAD-213",
       "linear_url": "https://linear.app/dashdot/issue/BAD-213",
-      "linear_status": "In Progress",
+      "linear_status": "Ready for review",
       "branch": "014-validate-clubid-uuid",
       "spec_path": "specs/014-validate-clubid-uuid",
       "tasks_total": 23,
+      "tasks_completed": "T001-T021, T023 (22/23)",
+      "deferred": "T022 (manual quickstart walk — needs running API + docker DB)",
       "spec_kit_commits": ["fba14cd80", "0a1254a79", "a5a66aca7", "14c6286bf"],
-      "worktree": "../014-validate-clubid-uuid",
-      "next_step": "feature agent implements T001-T023; QA on completion"
+      "implementation_commits": ["16bc84aee", "1df5d7521", "188de9e84", "b321aa393", "6652660bb", "2afd4f47e"],
+      "tests_passed": 252,
+      "tests_skipped": 5,
+      "lint_errors": 0,
+      "lint_warnings": 44,
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_transactional_mutations": "PASS",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "next_step": "open PR targeting develop; companion frontend PR resolves club slug → UUID before invoking Club-scoped mutations (see specs/008-reorder-teams-atomic/frontend-impact.md)"
     },
     "008-reorder-teams-atomic": {
       "status": "in_review",
