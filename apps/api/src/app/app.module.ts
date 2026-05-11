@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AppController, ImageController } from "./controllers";
 import { CpController } from "./controllers/cp.controller";
 import { ExportController } from "./controllers/export.controller";
+import { AvgLevelService } from "./services/export/avg-level.service";
 import { EnrollmentService } from "./services/export/enrollment.service";
 import { ExceptionsService } from "./services/export/exceptions.service";
 import { LocationsService } from "./services/export/locations.service";
@@ -85,7 +86,7 @@ const envFilePath = join(projectRoot, envFileName);
     TransferLoanModule,
   ],
   controllers: [AppController, ImageController, CalendarController, CpController, ExportController],
-  providers: [Logger, TeamsService, ExceptionsService, LocationsService, EnrollmentService],
+  providers: [Logger, TeamsService, ExceptionsService, LocationsService, EnrollmentService, AvgLevelService],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
