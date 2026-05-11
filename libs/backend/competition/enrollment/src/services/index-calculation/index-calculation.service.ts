@@ -11,6 +11,7 @@ import {
   SubEventTypeEnum,
 } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
+import * as Sentry from "@sentry/nestjs";
 import moment from "moment";
 import { Op, Transaction } from "sequelize";
 import {
@@ -44,6 +45,39 @@ export class IndexCalculationService {
   private readonly logger = new Logger(IndexCalculationService.name);
 
   /**
+   * Cached primary RankingSystem.
+   *
+   * Primary system changes only via an admin action (RankingSystemResolver
+   * `setPrimary`). In a single process lifetime that is rare, so we cache the
+   * row here to spare the index-calc hot path one DB round-trip per call.
+   * If the cached row is ever found stale (deleted, no longer `primary`),
+   * the in-process cache is invalidated and we re-query.
+   */
+  private primaryCache: { row: RankingSystem | null; fetchedAt: number } | null = null;
+  private static readonly PRIMARY_CACHE_TTL_MS = 5 * 60 * 1000;
+
+  /** Test hook: drop the primary-system cache between cases. */
+  resetPrimaryCache(): void {
+    this.primaryCache = null;
+  }
+
+  private async getPrimarySystem(transaction?: Transaction): Promise<RankingSystem | null> {
+    const now = Date.now();
+    if (
+      this.primaryCache &&
+      now - this.primaryCache.fetchedAt < IndexCalculationService.PRIMARY_CACHE_TTL_MS
+    ) {
+      return this.primaryCache.row;
+    }
+    const row = await RankingSystem.findOne({
+      where: { primary: true },
+      transaction,
+    });
+    this.primaryCache = { row, fetchedAt: now };
+    return row;
+  }
+
+  /**
    * Calculate index values for a batch of inputs in a single call.
    * Per-input failures are surfaced as IndexCalculationFailure entries;
    * they do not abort the batch.
@@ -56,6 +90,41 @@ export class IndexCalculationService {
       return [];
     }
 
+    const start = Date.now();
+    const totalPlayers = inputs.reduce((sum, i) => sum + i.players.length, 0);
+    return Sentry.startSpan(
+      {
+        name: "IndexCalculationService.calculate",
+        op: "function",
+        attributes: {
+          "index_calc.input_count": inputs.length,
+          "index_calc.player_ref_count": totalPlayers,
+        },
+      },
+      async (span) => {
+        try {
+          return await this._calculate(inputs, options);
+        } finally {
+          const durationMs = Date.now() - start;
+          span?.setAttribute("index_calc.duration_ms", durationMs);
+          if (durationMs > 1000) {
+            this.logger.warn(
+              `Slow index calculation: ${inputs.length} input(s), ${totalPlayers} player ref(s), ${durationMs}ms`
+            );
+          } else {
+            this.logger.debug(
+              `Index calculation: ${inputs.length} input(s), ${totalPlayers} player ref(s), ${durationMs}ms`
+            );
+          }
+        }
+      }
+    );
+  }
+
+  private async _calculate(
+    inputs: IndexCalculationInput[],
+    options?: { transaction?: Transaction }
+  ): Promise<IndexCalculationResult[]> {
     // Step 1: Derive missing type/season from sub-events (one batched lookup).
     const subEventIds = [
       ...new Set(
@@ -138,10 +207,7 @@ export class IndexCalculationService {
     const systemById = new Map<string, RankingSystem>();
     try {
       // Always need primary as a fallback for inputs that did not specify a system.
-      primarySystem = await RankingSystem.findOne({
-        where: { primary: true },
-        transaction: options?.transaction,
-      });
+      primarySystem = await this.getPrimarySystem(options?.transaction);
       if (primarySystem) systemById.set(primarySystem.id, primarySystem);
 
       if (systemIds.length > 0) {

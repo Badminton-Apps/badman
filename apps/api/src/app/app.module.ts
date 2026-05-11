@@ -1,5 +1,8 @@
 import { Logger, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { APP_FILTER } from "@nestjs/core";
+import { SentryModule } from "@sentry/nestjs/setup";
+import { PrematureCloseFilter } from "./filters/premature-close.filter";
 import { AppController, ImageController } from "./controllers";
 import { CpController } from "./controllers/cp.controller";
 
@@ -47,6 +50,7 @@ const envFilePath = join(projectRoot, envFileName);
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ...productionModules,
     CleanEnvironmentModule.forPredicate(envFilePath, () => process.env.NODE_ENV === "test"),
     ConfigModule.forRoot({
@@ -80,7 +84,10 @@ const envFilePath = join(projectRoot, envFileName);
     TransferLoanModule,
   ],
   controllers: [AppController, ImageController, CalendarController, CpController],
-  providers: [Logger],
+  providers: [
+    Logger,
+    { provide: APP_FILTER, useClass: PrematureCloseFilter },
+  ],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);

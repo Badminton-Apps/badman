@@ -3,6 +3,8 @@
  * This is only a minimal backend to get started.
  */
 
+import "./instrument";
+
 import { Logger, VersioningType } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
