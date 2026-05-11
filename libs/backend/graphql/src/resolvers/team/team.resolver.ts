@@ -254,6 +254,8 @@ export class TeamsResolver {
         }
       }
 
+      // Placeholder number; authoritative numbers come from recalculateTeamNumbersForGroup. Spec 008.
+      // The wizard calls recalculateTeamNumbersForGroup after createTeam to assign final numbers.
       if (!newTeamData.teamNumber) {
         const types = [newTeamData.type];
         if (nationalCountsAsMixed && newTeamData.type === SubEventTypeEnum.MX) {
@@ -455,71 +457,11 @@ export class TeamsResolver {
         throw new UnauthorizedException(`You do not have permission to update a team`);
       }
 
-      const changedTeams: Team[] = [];
-
-      if (updateTeamData.teamNumber && updateTeamData.teamNumber !== dbTeam.teamNumber) {
-        const conflict = await Team.findOne({
-          where: {
-            clubId: dbTeam.clubId,
-            season: dbTeam.season,
-            type: dbTeam.type,
-            teamNumber: updateTeamData.teamNumber,
-          },
-          transaction,
-        });
-        if (conflict) {
-          throw new GraphQLError("Team number already in use", {
-            extensions: {
-              code: ErrorCode.TEAM_NUMBER_CONFLICT,
-              conflictingTeamId: conflict.id,
-            },
-          });
-        }
-
-        if (updateTeamData.teamNumber > dbTeam.teamNumber) {
-          // Number was increased
-          const dbLowerTeams = await Team.findAll({
-            where: {
-              clubId: dbTeam.clubId,
-              teamNumber: {
-                [Op.and]: [{ [Op.gt]: dbTeam.teamNumber }, { [Op.lte]: updateTeamData.teamNumber }],
-              },
-              season: dbTeam.season,
-              type: dbTeam.type,
-            },
-            include: [Club],
-            transaction,
-          });
-          for (const dbLteam of dbLowerTeams) {
-            dbLteam.teamNumber--;
-            dbLteam.name = `${dbLteam.club?.name ?? ""} ${dbLteam.teamNumber}${getLetterForRegion(dbLteam.type, "vl")}_temp`;
-            dbLteam.abbreviation = `${dbLteam.club?.abbreviation ?? ""} ${dbLteam.teamNumber}${getLetterForRegion(dbLteam.type, "vl")}`;
-            await dbLteam.save({ transaction, hooks: false });
-            changedTeams.push(dbLteam);
-          }
-        } else if (updateTeamData.teamNumber < dbTeam.teamNumber) {
-          // number was decreased
-          const dbHigherTeams = await Team.findAll({
-            where: {
-              clubId: dbTeam.clubId,
-              teamNumber: {
-                [Op.and]: [{ [Op.lt]: dbTeam.teamNumber }, { [Op.gte]: updateTeamData.teamNumber }],
-              },
-              season: dbTeam.season,
-              type: dbTeam.type,
-            },
-            include: [Club],
-            transaction,
-          });
-          for (const dbHteam of dbHigherTeams) {
-            dbHteam.teamNumber++;
-            dbHteam.name = `${dbHteam.club?.name ?? ""} ${dbHteam.teamNumber}${getLetterForRegion(dbHteam.type, "vl")}_temp`;
-            dbHteam.abbreviation = `${dbHteam.club?.abbreviation ?? ""} ${dbHteam.teamNumber}${getLetterForRegion(dbHteam.type, "vl")}`;
-            await dbHteam.save({ transaction, hooks: false });
-            changedTeams.push(dbHteam);
-          }
-        }
-      }
+      // teamNumber is intentionally NOT written by updateTeam (spec 008, FR-004).
+      // The recalculateTeamNumbersForGroup mutation is the sole writer of teamNumber,
+      // name, and abbreviation. The conflict-check + shift-blocks + _temp dance that
+      // previously lived here have been removed; they were the root cause of the
+      // TEAM_NUMBER_CONFLICT deadlock in BAD-152.
 
       if (updateTeamData.players) {
         const playerIds = updateTeamData.players.map((p) => p.id);
@@ -551,14 +493,6 @@ export class TeamsResolver {
       }
 
       await dbTeam.update({ ...dbTeam.toJSON(), ...updateTeamData } as Team, { transaction });
-
-      if (changedTeams.length > 0) {
-        for (const dbCteam of changedTeams) {
-          await Team.generateName(dbCteam, { transaction });
-          await Team.generateAbbreviation(dbCteam, { transaction });
-          await dbCteam.save({ transaction, hooks: false });
-        }
-      }
 
       // await dbTeam.update(location, { transaction });
       await transaction.commit();

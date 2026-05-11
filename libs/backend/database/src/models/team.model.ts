@@ -361,6 +361,10 @@ export class TeamUpdateInput extends PartialType(
     "entry",
     "prefferedLocation",
     "prefferedLocation2",
+    // teamNumber is intentionally excluded: authoritative numbering is owned
+    // exclusively by recalculateTeamNumbersForGroup (spec 008). Sending
+    // teamNumber via updateTeam is now a GraphQL validation error.
+    "teamNumber",
   ] as const),
   InputType
 ) {
@@ -384,6 +388,13 @@ export class TeamNewInput extends PartialType(
       "Cross-season continuity id. Reuse this link when registering the same team in a new season.",
   })
   override link?: string;
+
+  // teamNumber is accepted on create as a hint / placeholder value. It is NOT
+  // authoritative: recalculateTeamNumbersForGroup overwrites it after creation.
+  // (Spec 008 FR-005: createTeam MAY assign a placeholder; the recalculate is
+  // the source of truth for final numbers.)
+  @Field(() => Int, { nullable: true })
+  teamNumber?: number;
 
   // Include the entry
   @Field(() => EventEntryNewInput, { nullable: true })

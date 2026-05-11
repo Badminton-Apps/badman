@@ -26,6 +26,8 @@ export const ErrorCode = {
   CLUB_NOT_FOUND: "CLUB_NOT_FOUND",
   PLAYER_NOT_FOUND: "PLAYER_NOT_FOUND",
   RANKING_NOT_FOUND: "RANKING_NOT_FOUND",
+  // Deprecated: no longer raised by any resolver as of spec 008 (BAD-152). Remove once active
+  // frontend's error map drops the case.
   TEAM_NUMBER_CONFLICT: "TEAM_NUMBER_CONFLICT",
 
   // Club membership (libs/backend/graphql/src/resolvers/club/club.resolver.ts)

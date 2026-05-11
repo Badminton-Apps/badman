@@ -498,10 +498,10 @@ describe("IndexCalculationService", () => {
       expect(playerSpy).not.toHaveBeenCalled();
     });
 
-    it("returns PLAYER_NOT_FOUND when a player exists in DB but has no gender", async () => {
+    it("succeeds (without gender filtering) when a player exists in DB but has no gender", async () => {
       const noGenderId = "player-nogender-0000-0000-000000000000";
 
-      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem({ amountOfLevels: 12 }));
       jest.spyOn(Player, "findAll").mockResolvedValue([
         { id: noGenderId, gender: null } as unknown as Player,
       ]);
@@ -514,10 +514,9 @@ describe("IndexCalculationService", () => {
         players: [{ id: noGenderId }],
       });
 
-      expect(result._tag).toBe("failure");
-      if (result._tag === "failure") {
-        expect(result.error.code).toBe("PLAYER_NOT_FOUND");
-      }
+      // Player exists in DB — should not be treated as missing.
+      // No RankingPlace rows → defaults to amountOfLevels for all components.
+      expect(result._tag).toBe("success");
     });
   });
 
