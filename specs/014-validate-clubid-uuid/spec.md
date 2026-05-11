@@ -5,6 +5,12 @@
 **Status**: Draft
 **Input**: User description: "Enforce UUID validation on Club-scoped GraphQL mutation `clubId`/`id` arguments to prevent slug-as-UUID Postgres 22P02 cast errors and protect the `recalculateTeamNumbersForGroup` advisory-lock invariant."
 
+## Clarifications
+
+### Session 2026-05-11
+
+- Q: Should the resolver log a structured warning when `assertUUID` rejects an arg? → A: Each resolver logs `this.logger.warn({ code: BAD_USER_INPUT, field, value, userId })` before throwing; the helper itself stays log-free. Matches the existing `PERMISSION_DENIED` / `CLUB_NOT_FOUND` warn-then-throw pattern in the repo.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — Recalculate-numbers caller passes a slug, gets a clean error (Priority: P1)
@@ -59,6 +65,7 @@ A backend developer adding a new mutation that takes a `clubId` arg picks up the
 - **FR-006**: `BAD_USER_INPUT` MUST be a named constant in the shared `ErrorCode` registry. No string literal `"BAD_USER_INPUT"` may appear at a mutation throw site.
 - **FR-007**: The `recalculateTeamNumbersForGroup` contract document MUST be updated to declare the validation step and the new failure row, so the contract is the source of truth for future implementations.
 - **FR-008**: The frontend-impact document for feature 008 MUST be updated to state that callers must pass `club.id`, not `club.slug`, and to point at the existing cached `club(id: slug) { id }` round-trip as the resolution mechanism.
+- **FR-009**: On every rejection, the resolver MUST emit a structured `warn`-level log entry containing at minimum `{ code: "BAD_USER_INPUT", field, value, userId }`, written **before** the `GraphQLError` is thrown. The shared validator helper MUST remain log-free; logging is the resolver's responsibility, matching the existing `PERMISSION_DENIED` / `CLUB_NOT_FOUND` warn-then-throw pattern.
 
 ### Key Entities
 
