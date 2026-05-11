@@ -3303,7 +3303,8 @@
         "sync": "Sync",
         "messages": {
           "syncSuccess": "Competition successfully synced",
-          "syncError": "Error syncing competition"
+          "syncError": "Error syncing competition",
+          "cpGenerationStarted": "CP generation started. You will receive an email when the file is ready for download."
         },
         "averageLevel": "Average level",
         "downloadEnrollment": "Download enrollment",

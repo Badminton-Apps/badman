@@ -3387,6 +3387,7 @@ export type I18nTranslations = {
                     "messages": {
                         "syncSuccess": string;
                         "syncError": string;
+                        "cpGenerationStarted": string;
                     };
                     "averageLevel": string;
                     "downloadEnrollment": string;
@@ -4139,6 +4140,7 @@ export type I18nTranslations = {
                 "messages": {
                     "syncSuccess": string;
                     "syncError": string;
+                    "cpGenerationStarted": string;
                 };
                 "averageLevel": string;
                 "downloadEnrollment": string;

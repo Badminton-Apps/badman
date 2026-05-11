@@ -649,7 +649,8 @@
       "sync": "Synchroniser",
       "messages": {
         "syncSuccess": "Compétition synchronisée avec succès",
-        "syncError": "Erreur lors de la synchronisation de la compétition"
+        "syncError": "Erreur lors de la synchronisation de la compétition",
+        "cpGenerationStarted": "Génération CP démarrée. Vous recevrez un e-mail lorsque le fichier sera prêt à télécharger."
       },
       "averageLevel": "Niveau moyen",
       "downloadEnrollment": "Télécharger les inscriptions",

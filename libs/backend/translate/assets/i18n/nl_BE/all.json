@@ -3081,7 +3081,8 @@
         "sync": "Synchroniseren",
         "messages": {
           "syncSuccess": "Competitie succesvol gesynchroniseerd",
-          "syncError": "Fout bij het synchroniseren van competitie"
+          "syncError": "Fout bij het synchroniseren van competitie",
+          "cpGenerationStarted": "CP-generatie gestart. U ontvangt een e-mail wanneer het bestand klaar is om te downloaden."
         },
         "averageLevel": "Gemiddeld niveau",
         "downloadEnrollment": "Inschrijvingen downloaden",

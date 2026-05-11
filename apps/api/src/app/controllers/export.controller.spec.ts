@@ -1,6 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { BadRequestException, ForbiddenException, UnauthorizedException } from "@nestjs/common";
 import { ExportController } from "./export.controller";
+import { EnrollmentService } from "../services/export/enrollment.service";
 import { ExceptionsService } from "../services/export/exceptions.service";
 import { LocationsService } from "../services/export/locations.service";
 import { TeamsService } from "../services/export/teams.service";
@@ -63,6 +64,7 @@ describe("ExportController", () => {
         { provide: TeamsService, useValue: teamsService },
         { provide: ExceptionsService, useValue: {} },
         { provide: LocationsService, useValue: {} },
+        { provide: EnrollmentService, useValue: {} },
       ],
     }).compile();
 
