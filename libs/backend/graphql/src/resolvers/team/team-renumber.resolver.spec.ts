@@ -3,8 +3,10 @@ import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { Club, Player, Team } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
+import { Logger } from "@nestjs/common";
 import { TeamRenumberResolver } from "./team-renumber.resolver";
 import { TeamRenumberingService, RenumberedTeam } from "./team-renumbering.service";
+import { ErrorCode } from "../../utils";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -358,6 +360,51 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
 
     expect(mockService.recalculateForScope).toHaveBeenCalledWith(
       expect.objectContaining({ types: [SubEventTypeEnum.NATIONAL, SubEventTypeEnum.MX] })
+    );
+  });
+
+  // --------------------------------------------------------------------------
+  // Error — BAD_USER_INPUT for non-UUID clubId
+  // --------------------------------------------------------------------------
+
+  it("throws BAD_USER_INPUT and logs warn when clubId is a slug (not a UUID)", async () => {
+    const user = userWithPermission(true);
+    const mockSequelize = { transaction: jest.fn() };
+    jest.spyOn(Logger.prototype, "warn");
+
+    // Access the sequelize mock from the module for assertion
+    const txSpy = jest.spyOn(resolver["_sequelize"], "transaction");
+
+    try {
+      await resolver.recalculateTeamNumbersForGroup(
+        "smash-for-fun",
+        2026,
+        SubEventTypeEnum.M,
+        false,
+        user
+      );
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("clubId");
+      expect(e.extensions["value"]).toBe("smash-for-fun");
+    }
+
+    // No transaction should be opened (validation fires before everything)
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+    expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    expect(txSpy).not.toHaveBeenCalled();
+
+    // Logger.warn should have been called once with the expected payload
+    expect(Logger.prototype.warn).toHaveBeenCalledTimes(1);
+    expect(Logger.prototype.warn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        code: ErrorCode.BAD_USER_INPUT,
+        field: "clubId",
+        value: "smash-for-fun",
+      })
     );
   });
 

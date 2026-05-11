@@ -89,17 +89,18 @@ export class TeamRenumberResolver {
 
 ## Behavior (success)
 
-1. Look up the `Club` by `clubId`. Not found → `CLUB_NOT_FOUND`.
-2. Open a Sequelize transaction.
-3. Acquire `pg_advisory_xact_lock` on the canonical scope key (see "Lock key" below).
-4. Resolve the affected scope into a list of types:
+1. Validate `clubId` is a UUID. Not a UUID → `BAD_USER_INPUT`.
+2. Look up the `Club` by `clubId`. Not found → `CLUB_NOT_FOUND`.
+3. Open a Sequelize transaction.
+4. Acquire `pg_advisory_xact_lock` on the canonical scope key (see "Lock key" below).
+5. Resolve the affected scope into a list of types:
    - `type ∈ { M, F }` → scope types = `[type]`.
    - `type = NATIONAL` → scope types = `[NATIONAL]`. (The lock key is `'MX+NAT'` regardless — see "Lock key".)
    - `type = MX` and `nationalCountsAsMixed = false` → scope types = `[MX]`.
    - `type = MX` and `nationalCountsAsMixed = true` → scope types = `[NATIONAL, MX]` (NATIONAL first, MX second; ordering matters for FR-002 tiered numbering).
-5. Delegate to `TeamRenumberingService.recalculateForScope({ clubId, season, types: scope, transaction })`.
-6. The service: loads teams in the scope (one query per type, ordered by `id`); loads `RankingLastPlace` for the union of base-member player ids; loads the primary `RankingSystem`; computes `baseIndex` per team; sorts within each tier by `(baseIndex ASC, id ASC)`; assigns `teamNumber` cumulatively across tiers in the order specified by `scope`; saves only changed rows; returns the team list in final order.
-7. Commit. Return `{ teams, affectedScope: { clubId, season, types: scope } }`.
+6. Delegate to `TeamRenumberingService.recalculateForScope({ clubId, season, types: scope, transaction })`.
+7. The service: loads teams in the scope (one query per type, ordered by `id`); loads `RankingLastPlace` for the union of base-member player ids; loads the primary `RankingSystem`; computes `baseIndex` per team; sorts within each tier by `(baseIndex ASC, id ASC)`; assigns `teamNumber` cumulatively across tiers in the order specified by `scope`; saves only changed rows; returns the team list in final order.
+8. Commit. Return `{ teams, affectedScope: { clubId, season, types: scope } }`.
 
 ## Behavior (idempotent)
 
@@ -109,6 +110,7 @@ If the scope is already correctly numbered, step 6 saves zero rows. The mutation
 
 | Condition | Error code | Side effect |
 |-----------|-----------|-------------|
+| `clubId` is not a UUID | `BAD_USER_INPUT` | Nothing opened. No write. |
 | Caller lacks club-edit permission | `PERMISSION_DENIED` | Transaction never opened (or rolled back at the boundary). No write. |
 | `clubId` does not match a club | `CLUB_NOT_FOUND` | Rollback. No write. |
 | Primary `RankingSystem` row missing | `INTERNAL_ERROR` | Rollback. No write. |
