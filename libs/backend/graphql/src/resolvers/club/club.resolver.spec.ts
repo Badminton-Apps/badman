@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { FindOptions, Op } from "sequelize";
@@ -7,8 +8,10 @@ import {
   ClubPlayerMembership,
   ClubPlayerMembershipNewInput,
   ClubPlayerMembershipUpdateInput,
+  ClubUpdateInput,
   Player,
 } from "@badman/backend-database";
+import { ErrorCode } from "../../utils";
 import { ClubsResolver } from "./club.resolver";
 import { ClubMembershipFilterInput } from "./club-membership-filter.input";
 import { ClubMembershipService } from "./club-membership.service";
@@ -258,10 +261,88 @@ describe("ClubsResolver", () => {
   });
 
   // ---------------------------------------------------------------------------
+  // BAD_USER_INPUT — UUID validation (014)
+  // ---------------------------------------------------------------------------
+
+  describe("removeClub — UUID validation", () => {
+    it("throws BAD_USER_INPUT and logs warn when id is not a UUID", async () => {
+      const user = userWithPermission(true);
+      const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+      try {
+        await resolver.removeClub(user, "smash-for-fun");
+        fail("expected throw");
+      } catch (err) {
+        const e = err as GraphQLError;
+        expect(e).toBeInstanceOf(GraphQLError);
+        expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+        expect(e.extensions["field"]).toBe("id");
+        expect(e.extensions["value"]).toBe("smash-for-fun");
+      }
+
+      expect(mockTransaction.commit).not.toHaveBeenCalled();
+      expect(mockTransaction.rollback).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "id" })
+      );
+    });
+  });
+
+  describe("updateClub — UUID validation", () => {
+    it("throws BAD_USER_INPUT and logs warn when updateClubData.id is not a UUID", async () => {
+      const user = userWithPermission(true);
+      const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+      const input = { id: "smash-for-fun" } as ClubUpdateInput;
+      try {
+        await resolver.updateClub(user, input);
+        fail("expected throw");
+      } catch (err) {
+        const e = err as GraphQLError;
+        expect(e).toBeInstanceOf(GraphQLError);
+        expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+        expect(e.extensions["field"]).toBe("id");
+        expect(e.extensions["value"]).toBe("smash-for-fun");
+      }
+
+      expect(mockTransaction.commit).not.toHaveBeenCalled();
+      expect(mockTransaction.rollback).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "id" })
+      );
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // addPlayerToClub — 5 cases (004)
   // ---------------------------------------------------------------------------
 
   describe("addPlayerToClub", () => {
+    it("throws BAD_USER_INPUT and logs warn when clubId is not a UUID", async () => {
+      const user = userWithPermission(true);
+      const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+      try {
+        await resolver.addPlayerToClub(user, baseAddInput({ clubId: "smash-for-fun" }));
+        fail("expected throw");
+      } catch (err) {
+        const e = err as GraphQLError;
+        expect(e).toBeInstanceOf(GraphQLError);
+        expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+        expect(e.extensions["field"]).toBe("clubId");
+        expect(e.extensions["value"]).toBe("smash-for-fun");
+      }
+
+      expect(mockTransaction.commit).not.toHaveBeenCalled();
+      expect(mockTransaction.rollback).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "clubId" })
+      );
+    });
+
     it("rejects unauthorized with PERMISSION_DENIED", async () => {
       const user = userWithPermission(false);
 

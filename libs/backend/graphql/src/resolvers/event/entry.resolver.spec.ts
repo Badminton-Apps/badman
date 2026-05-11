@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { Club, EventEntry, Logging, Player, Team } from "@badman/backend-database";
@@ -91,6 +91,36 @@ describe("EventEntryResolver.finishEventEntry", () => {
   });
 
   afterEach(() => jest.restoreAllMocks());
+
+  // Case #0: BAD_USER_INPUT — UUID validation (T016)
+  it("throws BAD_USER_INPUT and logs warn when clubId is not a UUID", async () => {
+    const user = userWithPermission(true);
+    const txSpy = jest.spyOn(resolver["_sequelize"], "transaction");
+    const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+    try {
+      await resolver.finishEventEntry(user, "smash-for-fun", 2026, "test@example.com");
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("clubId");
+      expect(e.extensions["value"]).toBe("smash-for-fun");
+    }
+
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+    expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    expect(txSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        code: ErrorCode.BAD_USER_INPUT,
+        field: "clubId",
+        value: "smash-for-fun",
+      })
+    );
+  });
 
   // Case #1: unauthorized user
   it("throws UnauthorizedException when user lacks permission", async () => {

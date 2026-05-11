@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { Logger } from "@nestjs/common";
 import { Player } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
 import { GraphQLError } from "graphql";
@@ -88,6 +89,36 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
   });
 
   afterEach(() => jest.restoreAllMocks());
+
+  // Case 0: BAD_USER_INPUT — UUID validation (T018)
+  it("throws BAD_USER_INPUT and logs warn when clubId is not a UUID", async () => {
+    const user = makeUser(["edit-any:club"]);
+    const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+    const input = makeInput("smash-for-fun");
+    try {
+      await resolver.submitEnrollment(user, input);
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("clubId");
+      expect(e.extensions["value"]).toBe("smash-for-fun");
+    }
+
+    expect(fakeSequelize.transaction).not.toHaveBeenCalled();
+    expect(commitSpy).not.toHaveBeenCalled();
+    expect(rollbackSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        code: ErrorCode.BAD_USER_INPUT,
+        field: "clubId",
+        value: "smash-for-fun",
+      })
+    );
+  });
 
   // Case 1: anonymous user
   it("throws PERMISSION_DENIED for anonymous user (no perms)", async () => {
