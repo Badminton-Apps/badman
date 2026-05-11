@@ -23,7 +23,6 @@ import {
 import { Point } from "geojson";
 import { Sequelize } from "sequelize-typescript";
 import { ErrorCode, ListArgs, assertUUID } from "../../utils";
-import { GraphQLError } from "graphql";
 
 @ObjectType()
 export class Coordinates {

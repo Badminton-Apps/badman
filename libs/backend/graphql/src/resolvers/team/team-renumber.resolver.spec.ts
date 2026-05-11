@@ -369,7 +369,6 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
 
   it("throws BAD_USER_INPUT and logs warn when clubId is a slug (not a UUID)", async () => {
     const user = userWithPermission(true);
-    const mockSequelize = { transaction: jest.fn() };
     jest.spyOn(Logger.prototype, "warn");
 
     // Access the sequelize mock from the module for assertion

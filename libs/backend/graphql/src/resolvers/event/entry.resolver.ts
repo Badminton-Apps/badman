@@ -19,7 +19,6 @@ import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
 import { ErrorCode, ListArgs, assertUUID } from "../../utils";
-import { GraphQLError } from "graphql";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 import { FinishEventEntryResult } from "./finish-event-entry-result.object";
 
