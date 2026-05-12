@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { Club, EventEntry, Logging, Player, Team } from "@badman/backend-database";
@@ -8,6 +8,8 @@ import { NotificationService } from "@badman/backend-notifications";
 import { EventEntryResolver } from "./entry.resolver";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 import { ErrorCode } from "../../utils/error-codes";
+
+const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
 
 // Type helper to cast mocked model objects
 const asUnknown = <T>(x: unknown): T => x as T;
@@ -31,7 +33,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
   const stubClub = (overrides: Partial<{ contactCompetition: string }> = {}) => {
     const save = jest.fn().mockResolvedValue(undefined);
     return asUnknown<Club & { _save: jest.Mock }>({
-      id: "club-uuid",
+      id: CLUB_UUID,
       name: "Test Club",
       contactCompetition: overrides.contactCompetition ?? "existing@example.com",
       save,
@@ -55,7 +57,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
   ) =>
     asUnknown<Team>({
       id,
-      clubId: "club-uuid",
+      clubId: CLUB_UUID,
       season: 2026,
       entry,
     });
@@ -92,13 +94,43 @@ describe("EventEntryResolver.finishEventEntry", () => {
 
   afterEach(() => jest.restoreAllMocks());
 
+  // Case #0: BAD_USER_INPUT — UUID validation (T016)
+  it("throws BAD_USER_INPUT and logs warn when clubId is not a UUID", async () => {
+    const user = userWithPermission(true);
+    const txSpy = jest.spyOn(resolver["_sequelize"], "transaction");
+    const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+    try {
+      await resolver.finishEventEntry(user, "smash-for-fun", 2026, "test@example.com");
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("clubId");
+      expect(e.extensions["value"]).toBe("smash-for-fun");
+    }
+
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+    expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    expect(txSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        code: ErrorCode.BAD_USER_INPUT,
+        field: "clubId",
+        value: "smash-for-fun",
+      })
+    );
+  });
+
   // Case #1: unauthorized user
   it("throws UnauthorizedException when user lacks permission", async () => {
     const user = userWithPermission(false);
     jest.spyOn(Club, "findByPk").mockResolvedValue(stubClub());
 
     await expect(
-      resolver.finishEventEntry(user, "club-uuid", 2026, "new@example.com")
+      resolver.finishEventEntry(user, CLUB_UUID, 2026, "new@example.com")
     ).rejects.toThrow(UnauthorizedException);
 
     // No model writes
@@ -108,12 +140,13 @@ describe("EventEntryResolver.finishEventEntry", () => {
   });
 
   // Case #2: unknown clubId
-  it("throws NotFoundException when club does not exist", async () => {
+  it("throws NotFoundException when club does not exist (UUID not in DB)", async () => {
     const user = userWithPermission(true);
+    const missingUUID = "00000000-0000-0000-0000-000000000000";
     jest.spyOn(Club, "findByPk").mockResolvedValue(null);
 
     await expect(
-      resolver.finishEventEntry(user, "missing-club", 2026, "new@example.com")
+      resolver.finishEventEntry(user, missingUUID, 2026, "new@example.com")
     ).rejects.toThrow(NotFoundException);
 
     // No transaction started
@@ -129,12 +162,12 @@ describe("EventEntryResolver.finishEventEntry", () => {
     jest.spyOn(Team, "findAll").mockResolvedValue([]);
 
     try {
-      await resolver.finishEventEntry(user, "club-uuid", 2026, "new@example.com");
+      await resolver.finishEventEntry(user, CLUB_UUID, 2026, "new@example.com");
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
       expect(e.extensions?.["code"]).toBe(ErrorCode.NO_TEAMS_TO_FINALISE);
-      expect(e.extensions?.["clubId"]).toBe("club-uuid");
+      expect(e.extensions?.["clubId"]).toBe(CLUB_UUID);
       expect(e.extensions?.["season"]).toBe(2026);
     }
 
@@ -163,7 +196,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
       .mockResolvedValue([entry1, entry2, entry3] as unknown as EventEntry[]);
     const loggingCreate = jest.spyOn(Logging, "create").mockResolvedValue(undefined as never);
 
-    const result = await resolver.finishEventEntry(user, "club-uuid", 2026, "new@example.com");
+    const result = await resolver.finishEventEntry(user, CLUB_UUID, 2026, "new@example.com");
 
     expect(result).toEqual({
       success: true,
@@ -185,7 +218,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
     expect(mockNotificationService.notifyEnrollment).toHaveBeenCalledTimes(1);
     expect(mockNotificationService.notifyEnrollment).toHaveBeenCalledWith(
       user.id,
-      "club-uuid",
+      CLUB_UUID,
       2026,
       "new@example.com"
     );
@@ -204,7 +237,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
     jest.spyOn(Logging, "create").mockRejectedValue(new Error("DB write failed"));
 
     await expect(
-      resolver.finishEventEntry(user, "club-uuid", 2026, "new@example.com")
+      resolver.finishEventEntry(user, CLUB_UUID, 2026, "new@example.com")
     ).rejects.toThrow("DB write failed");
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
@@ -227,7 +260,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
       .mockResolvedValue([entry1, entry2] as unknown as EventEntry[]);
     const loggingCreate = jest.spyOn(Logging, "create");
 
-    const result = await resolver.finishEventEntry(user, "club-uuid", 2026, "same@example.com");
+    const result = await resolver.finishEventEntry(user, CLUB_UUID, 2026, "same@example.com");
 
     expect(result).toEqual({
       success: true,
@@ -257,7 +290,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
       .mockResolvedValue([entry1, entry2] as unknown as EventEntry[]);
     const loggingCreate = jest.spyOn(Logging, "create");
 
-    const result = await resolver.finishEventEntry(user, "club-uuid", 2026, "new@example.com");
+    const result = await resolver.finishEventEntry(user, CLUB_UUID, 2026, "new@example.com");
 
     expect(result).toEqual({
       success: true,
@@ -291,7 +324,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
       .mockResolvedValue([entryAlreadySet, entryNull] as unknown as EventEntry[]);
     const loggingCreate = jest.spyOn(Logging, "create").mockResolvedValue(undefined as never);
 
-    const result = await resolver.finishEventEntry(user, "club-uuid", 2026, "test@example.com");
+    const result = await resolver.finishEventEntry(user, CLUB_UUID, 2026, "test@example.com");
 
     expect(result).toEqual({
       success: true,
@@ -319,7 +352,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
     jest.spyOn(EventEntry, "findAll").mockResolvedValue([entryWithData] as unknown as EventEntry[]);
     jest.spyOn(Logging, "create").mockResolvedValue(undefined as never);
 
-    const result = await resolver.finishEventEntry(user, "club-uuid", 2026, "test@example.com");
+    const result = await resolver.finishEventEntry(user, CLUB_UUID, 2026, "test@example.com");
 
     expect(result.success).toBe(true);
     expect(result.alreadyFinalised).toBe(false);
@@ -339,7 +372,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
     jest.spyOn(Logging, "create").mockResolvedValue(undefined as never);
     mockNotificationService.notifyEnrollment.mockRejectedValue(new Error("SMTP failure"));
 
-    const result = await resolver.finishEventEntry(user, "club-uuid", 2026, "test@example.com");
+    const result = await resolver.finishEventEntry(user, CLUB_UUID, 2026, "test@example.com");
 
     // DB writes committed
     expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
@@ -366,7 +399,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
       .mockResolvedValue([entry1] as unknown as EventEntry[]);
     jest.spyOn(Logging, "create").mockResolvedValue(undefined as never);
 
-    await resolver.finishEventEntry(user, "club-uuid", 2026, "test@example.com");
+    await resolver.finishEventEntry(user, CLUB_UUID, 2026, "test@example.com");
 
     expect(eventEntryFindAll).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -393,7 +426,7 @@ describe("EventEntryResolver.finishEventEntry", () => {
     jest.spyOn(EventEntry, "findAll").mockResolvedValue([entry1] as unknown as EventEntry[]);
     jest.spyOn(Logging, "create").mockResolvedValue(undefined as never);
 
-    const result = await resolver.finishEventEntry(user, "club-uuid", 2026, "test@example.com");
+    const result = await resolver.finishEventEntry(user, CLUB_UUID, 2026, "test@example.com");
 
     expect(result.success).toBe(true);
     expect(result.alreadyFinalised).toBe(false);

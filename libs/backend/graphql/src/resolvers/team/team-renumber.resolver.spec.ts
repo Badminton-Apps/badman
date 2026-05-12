@@ -3,8 +3,10 @@ import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { Club, Player, Team } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
+import { Logger } from "@nestjs/common";
 import { TeamRenumberResolver } from "./team-renumber.resolver";
 import { TeamRenumberingService, RenumberedTeam } from "./team-renumbering.service";
+import { ErrorCode } from "../../utils";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -16,7 +18,10 @@ const userWithPermission = (allowed: boolean) =>
     hasAnyPermission: jest.fn().mockResolvedValue(allowed),
   }) as unknown as Player;
 
-const stubClub = (id = "club-uuid") =>
+const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+const MISSING_UUID = "00000000-0000-0000-0000-000000000000";
+
+const stubClub = (id = CLUB_UUID) =>
   ({ id, name: "Test Club", abbreviation: "TC" }) as unknown as Club;
 
 const makeTeam = (id: string, teamNumber: number): Team =>
@@ -82,7 +87,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     mockService.recalculateForScope.mockResolvedValue(makeRenumbered([team1, team2]));
 
     const result = await resolver.recalculateTeamNumbersForGroup(
-      "club-uuid",
+      CLUB_UUID,
       2026,
       SubEventTypeEnum.M,
       false,
@@ -93,7 +98,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     expect(result.teams[0]).toBe(team1);
     expect(result.teams[1]).toBe(team2);
     expect(result.affectedScope).toEqual({
-      clubId: "club-uuid",
+      clubId: CLUB_UUID,
       season: 2026,
       types: [SubEventTypeEnum.M],
     });
@@ -112,7 +117,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     mockService.recalculateForScope.mockResolvedValue(makeRenumbered([national, mx1, mx2]));
 
     const result = await resolver.recalculateTeamNumbersForGroup(
-      "club-uuid",
+      CLUB_UUID,
       2026,
       SubEventTypeEnum.MX,
       true, // nationalCountsAsMixed
@@ -138,7 +143,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     mockService.recalculateForScope.mockResolvedValue([]);
 
     const result = await resolver.recalculateTeamNumbersForGroup(
-      "club-uuid",
+      CLUB_UUID,
       2026,
       SubEventTypeEnum.F,
       false,
@@ -162,7 +167,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
 
     try {
       await resolver.recalculateTeamNumbersForGroup(
-        "club-uuid",
+        CLUB_UUID,
         2026,
         SubEventTypeEnum.M,
         false,
@@ -173,7 +178,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("PERMISSION_DENIED");
       expect(e.extensions["userId"]).toBe("user-uuid");
-      expect(e.extensions["clubId"]).toBe("club-uuid");
+      expect(e.extensions["clubId"]).toBe(CLUB_UUID);
     }
 
     // No commit (auth throws before transaction opens)
@@ -187,7 +192,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
 
     try {
       await resolver.recalculateTeamNumbersForGroup(
-        "some-club",
+        CLUB_UUID,
         2026,
         SubEventTypeEnum.MX,
         false,
@@ -204,14 +209,14 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
   // Error — mutation-handles-not-found (CLUB_NOT_FOUND)
   // --------------------------------------------------------------------------
 
-  it("throws CLUB_NOT_FOUND and rolls back when clubId does not exist", async () => {
+  it("throws CLUB_NOT_FOUND and rolls back when clubId does not exist (UUID not in DB)", async () => {
     const user = userWithPermission(true);
 
     jest.spyOn(Club, "findByPk").mockResolvedValue(null);
 
     try {
       await resolver.recalculateTeamNumbersForGroup(
-        "missing-club",
+        MISSING_UUID,
         2026,
         SubEventTypeEnum.M,
         false,
@@ -221,7 +226,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     } catch (err) {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("CLUB_NOT_FOUND");
-      expect(e.extensions["clubId"]).toBe("missing-club");
+      expect(e.extensions["clubId"]).toBe(MISSING_UUID);
     }
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
@@ -242,7 +247,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
 
     try {
       await resolver.recalculateTeamNumbersForGroup(
-        "club-uuid",
+        CLUB_UUID,
         2026,
         SubEventTypeEnum.M,
         false,
@@ -269,7 +274,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
 
     try {
       await resolver.recalculateTeamNumbersForGroup(
-        "club-uuid",
+        CLUB_UUID,
         2026,
         SubEventTypeEnum.F,
         false,
@@ -298,7 +303,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
 
     try {
       await resolver.recalculateTeamNumbersForGroup(
-        "club-uuid",
+        CLUB_UUID,
         2026,
         SubEventTypeEnum.M,
         false,
@@ -324,7 +329,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     jest.spyOn(Club, "findByPk").mockResolvedValue(stubClub());
     mockService.recalculateForScope.mockResolvedValue([]);
 
-    await resolver.recalculateTeamNumbersForGroup("c", 2026, SubEventTypeEnum.M, false, user);
+    await resolver.recalculateTeamNumbersForGroup(CLUB_UUID, 2026, SubEventTypeEnum.M, false, user);
 
     expect(mockService.recalculateForScope).toHaveBeenCalledWith(
       expect.objectContaining({ types: [SubEventTypeEnum.M] })
@@ -337,7 +342,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     mockService.recalculateForScope.mockResolvedValue([]);
 
     await resolver.recalculateTeamNumbersForGroup(
-      "c",
+      CLUB_UUID,
       2026,
       SubEventTypeEnum.NATIONAL,
       false,
@@ -354,10 +359,54 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     jest.spyOn(Club, "findByPk").mockResolvedValue(stubClub());
     mockService.recalculateForScope.mockResolvedValue([]);
 
-    await resolver.recalculateTeamNumbersForGroup("c", 2026, SubEventTypeEnum.MX, true, user);
+    await resolver.recalculateTeamNumbersForGroup(CLUB_UUID, 2026, SubEventTypeEnum.MX, true, user);
 
     expect(mockService.recalculateForScope).toHaveBeenCalledWith(
       expect.objectContaining({ types: [SubEventTypeEnum.NATIONAL, SubEventTypeEnum.MX] })
+    );
+  });
+
+  // --------------------------------------------------------------------------
+  // Error — BAD_USER_INPUT for non-UUID clubId
+  // --------------------------------------------------------------------------
+
+  it("throws BAD_USER_INPUT and logs warn when clubId is a slug (not a UUID)", async () => {
+    const user = userWithPermission(true);
+    jest.spyOn(Logger.prototype, "warn");
+
+    // Access the sequelize mock from the module for assertion
+    const txSpy = jest.spyOn(resolver["_sequelize"], "transaction");
+
+    try {
+      await resolver.recalculateTeamNumbersForGroup(
+        "smash-for-fun",
+        2026,
+        SubEventTypeEnum.M,
+        false,
+        user
+      );
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("clubId");
+      expect(e.extensions["value"]).toBe("smash-for-fun");
+    }
+
+    // No transaction should be opened (validation fires before everything)
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+    expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    expect(txSpy).not.toHaveBeenCalled();
+
+    // Logger.warn should have been called once with the expected payload
+    expect(Logger.prototype.warn).toHaveBeenCalledTimes(1);
+    expect(Logger.prototype.warn).toHaveBeenCalledWith(
+      expect.objectContaining({
+        code: ErrorCode.BAD_USER_INPUT,
+        field: "clubId",
+        value: "smash-for-fun",
+      })
     );
   });
 
@@ -384,7 +433,7 @@ describe("TeamRenumberResolver.recalculateTeamNumbersForGroup", () => {
     ]);
 
     const result = await resolver.recalculateTeamNumbersForGroup(
-      "club-uuid",
+      CLUB_UUID,
       2026,
       SubEventTypeEnum.M,
       false,

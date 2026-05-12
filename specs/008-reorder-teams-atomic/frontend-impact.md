@@ -131,6 +131,23 @@ Calling it with the same inputs N times produces the same final state. Safe unde
 - **Order of deploy**: backend first. The backend tolerates an FE that still sends `teamNumber` only because the GraphQL layer rejects unknown fields — so the FE will visibly fail until it deploys.
 - **Active-frontend Linear ticket**: pair this work with whatever issue tracks the FE migration (search the BAD project for "team renumber" / "auto-renumber"; create one if it does not exist). Cross-link from the backend PR.
 
+## Required client behavior: always pass a UUID for `clubId`
+
+Every Club-scoped mutation (including `recalculateTeamNumbersForGroup`) now validates that `clubId` is a UUID before processing the request. Passing a slug (e.g. `"smash-for-fun"`) returns `BAD_USER_INPUT`.
+
+If you only have the club slug (e.g. from a route param), resolve the UUID first using the existing read query, then reuse it for all subsequent mutations:
+
+```ts
+const { data } = await apolloClient.query({
+  query: gql`query ClubBySlug($id: ID!) { club(id: $id) { id } }`,
+  variables: { id: clubSlug },
+  fetchPolicy: "cache-first",
+});
+const clubId = data.club.id; // guaranteed UUID — use this for mutations
+```
+
+Apollo's cache makes subsequent calls free. Pass `clubId` (the UUID) to `recalculateTeamNumbersForGroup`, not the slug.
+
 ## TL;DR for the FE engineer
 
 1. Stop sending `teamNumber` in any team mutation. Ever.
@@ -138,3 +155,4 @@ Calling it with the same inputs N times produces the same final state. Safe unde
 3. Mid-season pages MUST NOT call the new mutation; team numbers are intentionally frozen.
 4. Drop the client-side auto-renumber routine and any save-serializing wrapper.
 5. Remove the `TEAM_NUMBER_CONFLICT` error-map case in the FE's next release (one cycle behind backend).
+6. Always pass `club.id` (UUID) as `clubId` to all Club-scoped mutations. Never pass `club.slug`.

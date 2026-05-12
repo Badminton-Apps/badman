@@ -33,7 +33,7 @@ import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "
 import { GraphQLError } from "graphql";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { ErrorCode, ListArgs } from "../../utils";
+import { ErrorCode, ListArgs, assertUUID } from "../../utils";
 import { TeamResult } from "./team-result.object";
 
 @Resolver(() => Team)
@@ -215,7 +215,14 @@ export class TeamsResolver {
     @User() user: Player
   ): Promise<TeamResult> {
     const userId = user?.id ?? null;
-    const clubId = newTeamData.clubId;
+    const clubId = newTeamData.clubId ?? "";
+
+    try {
+      assertUUID(clubId, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
 
     const transaction = await this._sequelize.transaction();
     try {
@@ -363,7 +370,7 @@ export class TeamsResolver {
               const orig = origById.get(rp.id);
               return {
                 id: rp.id,
-                gender: rp.gender,
+                gender: rp.gender ?? undefined,
                 single: rp.single,
                 double: rp.double,
                 mix: rp.mix,
@@ -413,6 +420,19 @@ export class TeamsResolver {
     nationalCountsAsMixed: boolean,
     @User() user: Player
   ): Promise<TeamResult[]> {
+    const userId = user?.id ?? null;
+
+    // Validate each team's clubId before entering the loop — fail fast on the first invalid entry
+    for (const team of newTeamData) {
+      const clubId = team.clubId ?? "";
+      try {
+        assertUUID(clubId, "clubId", { userId });
+      } catch (e) {
+        this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+        throw e;
+      }
+    }
+
     const results: TeamResult[] = [];
 
     // we need to sort the teams to make sure we create the teams in the right order

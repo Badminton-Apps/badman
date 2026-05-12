@@ -18,7 +18,7 @@ import { TeamMembershipType } from "@badman/utils";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
-import { ListArgs } from "../../utils";
+import { ErrorCode, ListArgs, assertUUID } from "../../utils";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 import { FinishEventEntryResult } from "./finish-event-entry-result.object";
 
@@ -131,6 +131,14 @@ export class EventEntryResolver {
     @Args("season", { type: () => Int }) season: number,
     @Args("email", { type: () => String }) email: string
   ): Promise<FinishEventEntryResult> {
+    const userId = user?.id ?? null;
+    try {
+      assertUUID(clubId, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
+
     if (!(await user.hasAnyPermission([clubId + "_edit:club", "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to enroll a club`);
     }

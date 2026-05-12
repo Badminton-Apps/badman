@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { Logger } from "@nestjs/common";
 import { Player } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
 import { GraphQLError } from "graphql";
@@ -8,6 +9,8 @@ import { SubmitEnrollmentService } from "./submit-enrollment.service";
 import { SubmitEnrollmentInput, SubmitEnrollmentTeamInput } from "./submit-enrollment.input";
 import { SubEventTypeEnum } from "@badman/utils";
 import { ErrorCode } from "../../../utils";
+
+const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
 
 describe("SubmitEnrollmentResolver.submitEnrollment", () => {
   let resolver: SubmitEnrollmentResolver;
@@ -39,7 +42,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
     players: [],
   });
 
-  const makeInput = (clubId = "club-uuid"): SubmitEnrollmentInput => ({
+  const makeInput = (clubId = CLUB_UUID): SubmitEnrollmentInput => ({
     clubId,
     season: 2025,
     adminEmail: "admin@test.com",
@@ -89,6 +92,36 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
 
   afterEach(() => jest.restoreAllMocks());
 
+  // Case 0: BAD_USER_INPUT — UUID validation (T018)
+  it("throws BAD_USER_INPUT and logs warn when clubId is not a UUID", async () => {
+    const user = makeUser(["edit-any:club"]);
+    const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+    const input = makeInput("smash-for-fun");
+    try {
+      await resolver.submitEnrollment(user, input);
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("clubId");
+      expect(e.extensions["value"]).toBe("smash-for-fun");
+    }
+
+    expect(fakeSequelize.transaction).not.toHaveBeenCalled();
+    expect(commitSpy).not.toHaveBeenCalled();
+    expect(rollbackSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        code: ErrorCode.BAD_USER_INPUT,
+        field: "clubId",
+        value: "smash-for-fun",
+      })
+    );
+  });
+
   // Case 1: anonymous user
   it("throws PERMISSION_DENIED for anonymous user (no perms)", async () => {
     const user = makeUser([]);
@@ -103,7 +136,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
   // Case 2: wrong club perm
   it("throws PERMISSION_DENIED for wrong club perm", async () => {
     const user = makeUser(["other-club_edit:club"]);
-    const input = makeInput("club-uuid");
+    const input = makeInput(CLUB_UUID);
 
     await expect(resolver.submitEnrollment(user, input)).rejects.toMatchObject({
       extensions: { code: ErrorCode.PERMISSION_DENIED },
@@ -112,7 +145,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
 
   // Case 3: club-specific perm granted
   it("calls service when club-specific perm granted", async () => {
-    const user = makeUser(["club-uuid_edit:club"]);
+    const user = makeUser([`${CLUB_UUID}_edit:club`]);
     await resolver.submitEnrollment(user, makeInput());
     expect(submitService.run).toHaveBeenCalled();
   });
@@ -157,7 +190,7 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
 
     expect(notificationService.notifyEnrollment).toHaveBeenCalledWith(
       "user-uuid",
-      "club-uuid",
+      CLUB_UUID,
       2025,
       "admin@test.com"
     );

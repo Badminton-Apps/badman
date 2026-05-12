@@ -5,7 +5,7 @@ import { Logger } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Resolver } from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
-import { ErrorCode } from "../../utils";
+import { ErrorCode, assertUUID } from "../../utils";
 import { RecalculateTeamNumbersResult } from "./team-renumber-result.object";
 import { TeamRenumberingService } from "./team-renumbering.service";
 
@@ -44,6 +44,14 @@ export class TeamRenumberResolver {
       nationalCountsAsMixed,
       userId,
     });
+
+    // UUID validation BEFORE authorization, transaction, or advisory lock
+    try {
+      assertUUID(clubId, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
 
     // Authorization check BEFORE opening the transaction or acquiring the lock
     if (!(await user.hasAnyPermission([`${clubId}_edit:club`, "edit-any:club"]))) {
