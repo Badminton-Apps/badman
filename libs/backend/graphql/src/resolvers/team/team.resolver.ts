@@ -363,7 +363,7 @@ export class TeamsResolver {
               const orig = origById.get(rp.id);
               return {
                 id: rp.id,
-                gender: rp.gender,
+                gender: rp.gender ?? undefined,
                 single: rp.single,
                 double: rp.double,
                 mix: rp.mix,
