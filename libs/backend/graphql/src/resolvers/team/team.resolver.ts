@@ -7,8 +7,6 @@ import {
   Location,
   Player,
   PlayerWithTeamMembershipType,
-  RankingLastPlace,
-  RankingSystem,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
@@ -16,10 +14,13 @@ import {
   TeamWithPlayerMembershipType,
 } from "@badman/backend-database";
 import {
+  IndexCalculationService,
+  isFailure,
+} from "@badman/backend-enrollment";
+import {
   IsUUID,
   SubEventTypeEnum,
   TeamMembershipType,
-  getIndexFromPlayers,
   getLetterForRegion,
 } from "@badman/utils";
 import {
@@ -32,14 +33,17 @@ import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "
 import { GraphQLError } from "graphql";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { ErrorCode, ListArgs } from "../../utils";
+import { ErrorCode, ListArgs, assertUUID } from "../../utils";
 import { TeamResult } from "./team-result.object";
 
 @Resolver(() => Team)
 export class TeamsResolver {
   private readonly logger = new Logger(TeamsResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private readonly indexCalculationService: IndexCalculationService
+  ) {}
 
   @Query(() => Team)
   async team(@Args("id", { type: () => ID }) id: string): Promise<Team> {
@@ -110,15 +114,42 @@ export class TeamsResolver {
       },
     });
 
-    // Find the first entry that has a drawId
-    const entryWithDrawId = entries.find((entry: EventEntry) => entry.drawId);
-
-    if (entryWithDrawId) {
-      return entryWithDrawId;
-    }
-
-    // Return null if no entry has a drawId
-    return null;
+    // Prefer an entry that has been assigned to a draw: once the federation
+    // sync has run the draw assignment, the entry carries a `drawId` and that
+    // entry is the authoritative one (it pins the team to a specific draw
+    // within the subEvent, which is what the encounter/calendar views need).
+    //
+    // However, between team enrollment and the draw being made, entries
+    // exist with `drawId = NULL`. They still carry the `subEventId`, which
+    // is enough for the frontend to resolve `entry.subEventCompetition` and
+    // render the division/Liga label and the edit dialog's competition
+    // field. Before this fallback, freshly-enrolled teams (new enrollment
+    // flow) showed up in the club-teams list without a division until the
+    // sync had assigned a draw, even though the data needed to render the
+    // division was already present on the entry.
+    //
+    // Why both enrollment paths produce drawId = NULL:
+    //   - Old createTeam mutation (this file, ~line 296) does
+    //     EventEntry.findOrCreate keyed on (teamId, subEventId, entryType);
+    //     `EventEntryNewInput` has no `drawId` field, so it is never written.
+    //   - New enrollment flow (EnrollmentEntryService, ~line 110) does
+    //     `EventEntry.create({}, { transaction })` with an empty payload and
+    //     then attaches teamId via `team.setEntry` and subEventId via
+    //     `subEvent.addEventEntry`. Again no `drawId`.
+    // The only place `drawId` gets populated is the federation sync. See
+    // apps/worker/sync/.../competition/processors/standing.processor.ts —
+    // it loads the team with its existing EventEntry filtered by the draw's
+    // subEventId, then runs `entryDraw.drawId = draw.id; entryDraw.save()`.
+    // So sync amends the row created at enrollment time in place; it does
+    // not create a duplicate. Once sync has run, the `find(e => e.drawId)`
+    // branch below wins again and this fallback becomes a no-op.
+    //
+    // Strategy: take the drawId-bearing entry when one exists, otherwise
+    // fall back to any entry for the team. The order of `findAll` is not
+    // guaranteed, but in practice a team has at most one entry per season
+    // until the draw is made, so the fallback is unambiguous in the
+    // pre-draw window.
+    return entries.find((entry: EventEntry) => entry.drawId) ?? entries[0] ?? null;
   }
 
   @ResolveField(() => Location)
@@ -184,7 +215,14 @@ export class TeamsResolver {
     @User() user: Player
   ): Promise<TeamResult> {
     const userId = user?.id ?? null;
-    const clubId = newTeamData.clubId;
+    const clubId = newTeamData.clubId ?? "";
+
+    try {
+      assertUUID(clubId, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
 
     const transaction = await this._sequelize.transaction();
     try {
@@ -290,74 +328,60 @@ export class TeamsResolver {
         });
 
         if (entry?.meta?.competition?.players) {
-          const system = await RankingSystem.findOne({
-            where: { primary: true },
-            transaction,
-          });
-          if (!system) {
-            this.logger.error({
-              code: ErrorCode.INTERNAL_ERROR,
-              reason: "primary ranking system missing",
+          // Delegate to IndexCalculationService for the canonical rank lookup
+          // (validator's June 10 cutoff + min+2 fallback) and index math.
+          const playerIds = (entry.meta.competition.players?.map((p) => p.id) || []) as string[];
+          const result = await this.indexCalculationService.calculateOne(
+            {
+              key: dbEntry.id!,
+              type: teamDb.type,
+              subEventCompetitionId: entry.subEventId,
+              players: playerIds.map((id) => ({ id })),
+            },
+            { transaction }
+          );
+          if (isFailure(result)) {
+            this.logger.warn({
+              code: result.error.code,
               clubId: dbClub.id,
               userId,
-            });
-            throw new GraphQLError("Primary ranking system not configured.", {
-              extensions: { code: ErrorCode.INTERNAL_ERROR },
-            });
-          }
-
-          const competitionPlayers: EntryCompetitionPlayer[] = [];
-          const playerIds = (entry.meta.competition.players?.map((p) => p.id) || []) as string[];
-          const rankings = await RankingLastPlace.findAll({
-            where: { playerId: { [Op.in]: playerIds }, systemId: system.id },
-            transaction,
-          });
-          const dbBasePlayers = await Player.findAll({
-            where: { id: { [Op.in]: playerIds } },
-            transaction,
-          });
-
-          for (const p of entry.meta.competition.players) {
-            const player = dbBasePlayers.find((dbPlayer) => dbPlayer.id === p.id);
-            if (!player) {
-              this.logger.warn({
-                code: ErrorCode.PLAYER_NOT_FOUND,
-                playerId: p.id,
-                clubId: dbClub.id,
-                userId,
-              });
-              throw new GraphQLError(`Player not found: ${p.id}`, {
-                extensions: { code: ErrorCode.PLAYER_NOT_FOUND, playerId: p.id },
-              });
-            }
-            const ranking = rankings.find((r) => r.playerId === p.id);
-            if (!ranking) {
-              this.logger.warn({
-                code: ErrorCode.RANKING_NOT_FOUND,
-                playerId: p.id,
-                clubId: dbClub.id,
-                userId,
-              });
-              throw new GraphQLError(`Ranking for player ${p.id} not found`, {
-                extensions: { code: ErrorCode.RANKING_NOT_FOUND, playerId: p.id },
-              });
-            }
-            competitionPlayers.push({
-              id: player.id,
-              gender: player.gender,
-              single: ranking.single,
-              double: ranking.double,
-              mix: ranking.mix,
-              levelException: p.levelException,
-              levelExceptionReason: p.levelExceptionReason,
-              levelExceptionRequested: p.levelExceptionRequested,
+            }, result.error.message);
+            const code =
+              result.error.code === "PLAYER_NOT_FOUND"
+                ? ErrorCode.PLAYER_NOT_FOUND
+                : result.error.code === "RANKING_SYSTEM_NOT_FOUND"
+                ? ErrorCode.INTERNAL_ERROR
+                : ErrorCode.INTERNAL_ERROR;
+            throw new GraphQLError(result.error.message, {
+              extensions: {
+                code,
+                ...(result.error.playerIds ? { playerIds: result.error.playerIds } : {}),
+              },
             });
           }
 
-          const index = getIndexFromPlayers(teamDb.type, competitionPlayers);
+          const origById = new Map(
+            entry.meta.competition.players.map((p) => [p.id, p])
+          );
+          const competitionPlayers: EntryCompetitionPlayer[] = result.resolvedPlayers.map(
+            (rp) => {
+              const orig = origById.get(rp.id);
+              return {
+                id: rp.id,
+                gender: rp.gender ?? undefined,
+                single: rp.single,
+                double: rp.double,
+                mix: rp.mix,
+                levelException: orig?.levelException,
+                levelExceptionReason: orig?.levelExceptionReason,
+                levelExceptionRequested: orig?.levelExceptionRequested,
+              };
+            }
+          );
+
           dbEntry.meta = {
             ...dbEntry.meta,
-            competition: { teamIndex: index, players: competitionPlayers },
+            competition: { teamIndex: result.index, players: competitionPlayers },
           };
           await dbEntry.save({ transaction, hooks: false });
         }
@@ -394,6 +418,19 @@ export class TeamsResolver {
     nationalCountsAsMixed: boolean,
     @User() user: Player
   ): Promise<TeamResult[]> {
+    const userId = user?.id ?? null;
+
+    // Validate each team's clubId before entering the loop — fail fast on the first invalid entry
+    for (const team of newTeamData) {
+      const clubId = team.clubId ?? "";
+      try {
+        assertUUID(clubId, "clubId", { userId });
+      } catch (e) {
+        this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+        throw e;
+      }
+    }
+
     const results: TeamResult[] = [];
 
     // we need to sort the teams to make sure we create the teams in the right order
@@ -438,72 +475,6 @@ export class TeamsResolver {
         throw new UnauthorizedException(`You do not have permission to update a team`);
       }
 
-      const changedTeams: Team[] = [];
-
-      if (updateTeamData.teamNumber && updateTeamData.teamNumber !== dbTeam.teamNumber) {
-        const conflict = await Team.findOne({
-          where: {
-            clubId: dbTeam.clubId,
-            season: dbTeam.season,
-            type: dbTeam.type,
-            teamNumber: updateTeamData.teamNumber,
-          },
-          transaction,
-        });
-        if (conflict) {
-          throw new GraphQLError("Team number already in use", {
-            extensions: {
-              code: ErrorCode.TEAM_NUMBER_CONFLICT,
-              conflictingTeamId: conflict.id,
-            },
-          });
-        }
-
-        if (updateTeamData.teamNumber > dbTeam.teamNumber) {
-          // Number was increased
-          const dbLowerTeams = await Team.findAll({
-            where: {
-              clubId: dbTeam.clubId,
-              teamNumber: {
-                [Op.and]: [{ [Op.gt]: dbTeam.teamNumber }, { [Op.lte]: updateTeamData.teamNumber }],
-              },
-              season: dbTeam.season,
-              type: dbTeam.type,
-            },
-            include: [Club],
-            transaction,
-          });
-          for (const dbLteam of dbLowerTeams) {
-            dbLteam.teamNumber--;
-            dbLteam.name = `${dbLteam.club?.name ?? ""} ${dbLteam.teamNumber}${getLetterForRegion(dbLteam.type, "vl")}_temp`;
-            dbLteam.abbreviation = `${dbLteam.club?.abbreviation ?? ""} ${dbLteam.teamNumber}${getLetterForRegion(dbLteam.type, "vl")}`;
-            await dbLteam.save({ transaction, hooks: false });
-            changedTeams.push(dbLteam);
-          }
-        } else if (updateTeamData.teamNumber < dbTeam.teamNumber) {
-          // number was decreased
-          const dbHigherTeams = await Team.findAll({
-            where: {
-              clubId: dbTeam.clubId,
-              teamNumber: {
-                [Op.and]: [{ [Op.lt]: dbTeam.teamNumber }, { [Op.gte]: updateTeamData.teamNumber }],
-              },
-              season: dbTeam.season,
-              type: dbTeam.type,
-            },
-            include: [Club],
-            transaction,
-          });
-          for (const dbHteam of dbHigherTeams) {
-            dbHteam.teamNumber++;
-            dbHteam.name = `${dbHteam.club?.name ?? ""} ${dbHteam.teamNumber}${getLetterForRegion(dbHteam.type, "vl")}_temp`;
-            dbHteam.abbreviation = `${dbHteam.club?.abbreviation ?? ""} ${dbHteam.teamNumber}${getLetterForRegion(dbHteam.type, "vl")}`;
-            await dbHteam.save({ transaction, hooks: false });
-            changedTeams.push(dbHteam);
-          }
-        }
-      }
-
       if (updateTeamData.players) {
         const playerIds = updateTeamData.players.map((p) => p.id);
 
@@ -534,14 +505,6 @@ export class TeamsResolver {
       }
 
       await dbTeam.update({ ...dbTeam.toJSON(), ...updateTeamData } as Team, { transaction });
-
-      if (changedTeams.length > 0) {
-        for (const dbCteam of changedTeams) {
-          await Team.generateName(dbCteam, { transaction });
-          await Team.generateAbbreviation(dbCteam, { transaction });
-          await dbCteam.save({ transaction, hooks: false });
-        }
-      }
 
       // await dbTeam.update(location, { transaction });
       await transaction.commit();

@@ -26,7 +26,6 @@ export const ErrorCode = {
   CLUB_NOT_FOUND: "CLUB_NOT_FOUND",
   PLAYER_NOT_FOUND: "PLAYER_NOT_FOUND",
   RANKING_NOT_FOUND: "RANKING_NOT_FOUND",
-  TEAM_NUMBER_CONFLICT: "TEAM_NUMBER_CONFLICT",
 
   // Club membership (libs/backend/graphql/src/resolvers/club/club.resolver.ts)
   MEMBERSHIP_NOT_FOUND: "MEMBERSHIP_NOT_FOUND",
@@ -37,6 +36,8 @@ export const ErrorCode = {
   // Event entry finalisation (libs/backend/graphql/src/resolvers/event/entry.resolver.ts)
   NO_TEAMS_TO_FINALISE: "NO_TEAMS_TO_FINALISE",
 
+  // Atomic enrollment submission (libs/backend/graphql/src/resolvers/event/competition/submit-enrollment.resolver.ts)
+  VALIDATION_FAILED: "VALIDATION_FAILED",
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

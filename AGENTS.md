@@ -31,6 +31,13 @@ npx jest --config libs/backend/graphql/jest.config.ts
 # Run only affected tests
 nx affected:test
 
+# Run integration tests against the dev postgres (docker-compose.dev.yml)
+# Off by default; set RUN_INTEGRATION_TESTS=1 to opt in. Files named *.integration.spec.ts
+# guard themselves with that env var, so a normal `nx test` run skips them.
+npm run docker:up
+RUN_INTEGRATION_TESTS=1 npx jest --config libs/backend/graphql/jest.config.ts \
+  --testPathPattern <feature>.integration
+
 # Lint a specific project
 nx lint backend-graphql
 
@@ -154,6 +161,21 @@ Workers are lean NestJS apps importing only needed modules. Bull processors use 
 - Test files are co-located next to the source file: `foo.resolver.ts` → `foo.resolver.spec.ts`
 - Use `@nestjs/testing` `Test.createTestingModule` to wire up the unit under test with mocked dependencies
 
+### Integration test convention
+
+Integration tests exercise behaviour that unit tests cannot fake — postgres-only features (advisory locks, deferred constraints), real association loading, multi-row transaction semantics. Reference: [`libs/backend/graphql/src/resolvers/team/team-renumbering.integration.spec.ts`](libs/backend/graphql/src/resolvers/team/team-renumbering.integration.spec.ts).
+
+Conventions:
+
+1. **Filename** — `*.integration.spec.ts`, co-located with the unit under test (`foo.service.ts` → `foo.integration.spec.ts`).
+2. **Opt-in gate** — guard the entire `describe` with `process.env["RUN_INTEGRATION_TESTS"] === "1"`. Default `nx test` runs MUST skip them.
+3. **Connection** — load `.env` via `dotenv`, build a fresh `new Sequelize({ dialect: 'postgres', host: DB_IP, ... , models: <all models from @badman/backend-database> })`. Pass every model exported from the barrel (cross-model associations need the full graph). Skip the suite (warn, don't fail) when `DB_DIALECT` is not `postgres`.
+4. **Sentinel scope** — pick a season number that cannot collide with seed/dev data (e.g. `9999`) and create an ad-hoc test club in `beforeAll`. Use `Op.in` cleanup keyed on `clubId + season`.
+5. **Self-clean** — `beforeEach` wipes the sentinel scope; `afterAll` deletes the club, the suite-owned players + rankings, and closes the connection. Never leak rows past the suite.
+6. **Construct services directly** — for service-level integration tests, instantiate the service with `new MyService(sequelize)` rather than spinning up a full `Test.createTestingModule`. Resolver-level integration tests may use the testing module if they need DI.
+
+Run via the integration-test command in the Common Commands block above.
+
 ### Resolver test convention
 
 See the reference implementation in `libs/backend/graphql/src/resolvers/enrollmentSetting/enrollmentSetting.resolver.spec.ts`.
@@ -189,6 +211,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/013-cp-export-hardening/plan.md](specs/013-cp-export-hardening/plan.md)
+[specs/014-validate-clubid-uuid/plan.md](specs/014-validate-clubid-uuid/plan.md)
 
 <!-- SPECKIT END -->

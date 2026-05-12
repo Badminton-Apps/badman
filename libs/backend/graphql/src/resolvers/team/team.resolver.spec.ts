@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import {
@@ -12,8 +13,13 @@ import {
   TeamNewInput,
   TeamUpdateInput,
 } from "@badman/backend-database";
+import { IndexCalculationService } from "@badman/backend-enrollment";
 import { SubEventTypeEnum } from "@badman/utils";
+import { ErrorCode } from "../../utils";
 import { TeamsResolver } from "./team.resolver";
+
+const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+const MISSING_UUID = "00000000-0000-0000-0000-000000000000";
 
 describe("TeamsResolver.createTeam", () => {
   let resolver: TeamsResolver;
@@ -25,12 +31,12 @@ describe("TeamsResolver.createTeam", () => {
       hasAnyPermission: jest.fn().mockResolvedValue(allowed),
     }) as unknown as Player;
 
-  const stubClub = (id = "club-uuid") =>
+  const stubClub = (id = CLUB_UUID) =>
     ({ id, name: "Test club", abbreviation: "TC" }) as unknown as Club;
 
   const baseInput = (overrides: Partial<TeamNewInput> = {}): TeamNewInput =>
     ({
-      clubId: "club-uuid",
+      clubId: CLUB_UUID,
       season: 2026,
       type: SubEventTypeEnum.MX,
       teamNumber: 1,
@@ -43,7 +49,7 @@ describe("TeamsResolver.createTeam", () => {
     const addPlayer = jest.fn().mockResolvedValue(undefined);
     return {
       id: overrides?.id ?? "new-team-uuid",
-      clubId: overrides?.clubId ?? "club-uuid",
+      clubId: overrides?.clubId ?? CLUB_UUID,
       name: "TC 1",
       type: SubEventTypeEnum.MX,
       setClub,
@@ -62,6 +68,20 @@ describe("TeamsResolver.createTeam", () => {
           provide: Sequelize,
           useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
         },
+        {
+          provide: IndexCalculationService,
+          useValue: {
+            calculate: jest.fn().mockResolvedValue([]),
+            calculateOne: jest.fn().mockResolvedValue({
+              _tag: "success",
+              key: "team-key",
+              index: 0,
+              contributingPlayers: [],
+              missingPlayerCount: 0,
+              resolvedPlayers: [],
+            }),
+          },
+        },
       ],
     }).compile();
     resolver = module.get<TeamsResolver>(TeamsResolver);
@@ -69,17 +89,42 @@ describe("TeamsResolver.createTeam", () => {
 
   afterEach(() => jest.restoreAllMocks());
 
-  it("returns CLUB_NOT_FOUND and rolls back when the club is missing", async () => {
+  it("throws BAD_USER_INPUT and logs warn when clubId is not a UUID", async () => {
+    const user = userWithPermission(true);
+    const txSpy = jest.spyOn(resolver["_sequelize"], "transaction");
+    const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+    try {
+      await resolver.createTeam(baseInput({ clubId: "smash-for-fun" }), false, user);
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("clubId");
+      expect(e.extensions["value"]).toBe("smash-for-fun");
+    }
+
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+    expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    expect(txSpy).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "clubId" })
+    );
+  });
+
+  it("returns CLUB_NOT_FOUND and rolls back when the club is missing (UUID not in DB)", async () => {
     const user = userWithPermission(true);
     jest.spyOn(Club, "findByPk").mockResolvedValue(null);
 
     try {
-      await resolver.createTeam(baseInput({ clubId: "missing-club" }), false, user);
+      await resolver.createTeam(baseInput({ clubId: MISSING_UUID }), false, user);
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("CLUB_NOT_FOUND");
-      expect(e.extensions["clubId"]).toBe("missing-club");
+      expect(e.extensions["clubId"]).toBe(MISSING_UUID);
     }
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
@@ -98,7 +143,7 @@ describe("TeamsResolver.createTeam", () => {
       const e = err as GraphQLError;
       expect(e.extensions["code"]).toBe("PERMISSION_DENIED");
       expect(e.extensions["userId"]).toBe("user-uuid");
-      expect(e.extensions["clubId"]).toBe("club-uuid");
+      expect(e.extensions["clubId"]).toBe(CLUB_UUID);
     }
 
     expect(user.hasAnyPermission).toHaveBeenCalledWith([`${dbClub.id}_edit:club`, "edit-any:club"]);
@@ -194,7 +239,7 @@ describe("TeamsResolver.createTeam", () => {
     expect(mockTransaction.rollback).toHaveBeenCalled();
   });
 
-  it("returns RANKING_NOT_FOUND when a base-lineup player has no ranking", async () => {
+  it("propagates PLAYER_NOT_FOUND from IndexCalculationService", async () => {
     const user = userWithPermission(true);
     const dbClub = stubClub();
     const created = stubCreatedTeam();
@@ -204,14 +249,29 @@ describe("TeamsResolver.createTeam", () => {
     jest
       .spyOn(EventEntry, "findOrCreate")
       .mockResolvedValue([
-        { meta: {}, save: jest.fn().mockResolvedValue(undefined) } as never,
+        { id: "entry-uuid", meta: {}, save: jest.fn().mockResolvedValue(undefined) } as never,
         true,
       ]);
-    jest.spyOn(RankingSystem, "findOne").mockResolvedValue({ id: "ranking-system-uuid" } as never);
     jest
       .spyOn(Player, "findAll")
       .mockResolvedValue([{ id: "player-1", gender: "M" } as unknown as Player]);
-    jest.spyOn(RankingLastPlace, "findAll").mockResolvedValue([]); // no rankings
+
+    // Override the service mock for this test: simulate PLAYER_NOT_FOUND.
+    // The resolver should map this to ErrorCode.PLAYER_NOT_FOUND and roll back.
+    const calculateOneMock = (
+      resolver as unknown as {
+        indexCalculationService: { calculateOne: jest.Mock };
+      }
+    ).indexCalculationService.calculateOne;
+    calculateOneMock.mockResolvedValueOnce({
+      _tag: "failure",
+      key: "entry-uuid",
+      error: {
+        code: "PLAYER_NOT_FOUND",
+        message: "Players not found: player-1",
+        playerIds: ["player-1"],
+      },
+    });
 
     const input = baseInput({
       entry: {
@@ -230,8 +290,8 @@ describe("TeamsResolver.createTeam", () => {
       fail("expected throw");
     } catch (err) {
       const e = err as GraphQLError;
-      expect(e.extensions["code"]).toBe("RANKING_NOT_FOUND");
-      expect(e.extensions["playerId"]).toBe("player-1");
+      expect(e.extensions["code"]).toBe("PLAYER_NOT_FOUND");
+      expect(e.extensions["playerIds"]).toContain("player-1");
     }
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
@@ -275,6 +335,20 @@ describe("TeamsResolver.createTeams", () => {
           provide: Sequelize,
           useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
         },
+        {
+          provide: IndexCalculationService,
+          useValue: {
+            calculate: jest.fn().mockResolvedValue([]),
+            calculateOne: jest.fn().mockResolvedValue({
+              _tag: "success",
+              key: "team-key",
+              index: 0,
+              contributingPlayers: [],
+              missingPlayerCount: 0,
+              resolvedPlayers: [],
+            }),
+          },
+        },
       ],
     }).compile();
     resolver = module.get<TeamsResolver>(TeamsResolver);
@@ -282,8 +356,40 @@ describe("TeamsResolver.createTeams", () => {
 
   afterEach(() => jest.restoreAllMocks());
 
+  it("throws BAD_USER_INPUT and logs warn when any team's clubId is not a UUID", async () => {
+    const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+    const inputs: TeamNewInput[] = [
+      {
+        clubId: "smash-for-fun",
+        season: 2026,
+        type: SubEventTypeEnum.MX,
+        teamNumber: 1,
+        name: "Team A",
+      } as TeamNewInput,
+    ];
+
+    try {
+      await resolver.createTeams(inputs, false, user);
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("clubId");
+      expect(e.extensions["value"]).toBe("smash-for-fun");
+    }
+
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+    expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "clubId" })
+    );
+  });
+
   it("returns one TeamResult per input team", async () => {
-    const dbClub = { id: "club-uuid", name: "Test club" } as unknown as Club;
+    const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
     jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
     let counter = 0;
     jest.spyOn(Team, "create").mockImplementation(
@@ -373,6 +479,20 @@ describe("TeamsResolver.updateTeam", () => {
           provide: Sequelize,
           useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
         },
+        {
+          provide: IndexCalculationService,
+          useValue: {
+            calculate: jest.fn().mockResolvedValue([]),
+            calculateOne: jest.fn().mockResolvedValue({
+              _tag: "success",
+              key: "team-key",
+              index: 0,
+              contributingPlayers: [],
+              missingPlayerCount: 0,
+              resolvedPlayers: [],
+            }),
+          },
+        },
       ],
     }).compile();
     resolver = module.get<TeamsResolver>(TeamsResolver);
@@ -402,38 +522,13 @@ describe("TeamsResolver.updateTeam", () => {
     expect(mockTransaction.rollback).toHaveBeenCalled();
   });
 
-  it("throws TEAM_NUMBER_CONFLICT when target number is taken", async () => {
-    const user = userWithPermission(true);
-    const dbTeam = stubDbTeam({ teamNumber: 3 });
-    const conflicting = { id: "conflict-team-uuid", teamNumber: 5 } as unknown as Team;
-
-    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
-    jest.spyOn(Team, "findOne").mockResolvedValue(conflicting);
-
-    try {
-      await resolver.updateTeam(baseInput({ teamNumber: 5 }), user);
-      fail("expected throw");
-    } catch (err) {
-      const e = err as GraphQLError;
-      expect(e.extensions["code"]).toBe("TEAM_NUMBER_CONFLICT");
-      expect(e.extensions["conflictingTeamId"]).toBe("conflict-team-uuid");
-    }
-
-    expect(mockTransaction.rollback).toHaveBeenCalled();
-    expect(mockTransaction.commit).not.toHaveBeenCalled();
-  });
-
-  it("commits and returns team when number changes with no conflict", async () => {
+  it("commits and returns team when a roster-only edit succeeds", async () => {
     const user = userWithPermission(true);
     const dbTeam = stubDbTeam({ teamNumber: 3 });
 
     jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
-    jest.spyOn(Team, "findOne").mockResolvedValue(null); // no conflict
-    jest.spyOn(Team, "findAll").mockResolvedValue([]); // no cascade teams
-    jest.spyOn(Team, "generateName").mockResolvedValue(undefined);
-    jest.spyOn(Team, "generateAbbreviation").mockResolvedValue(undefined);
 
-    const result = await resolver.updateTeam(baseInput({ teamNumber: 5 }), user);
+    const result = await resolver.updateTeam(baseInput({ season: 2026 }), user);
 
     expect(dbTeam._update).toHaveBeenCalled();
     expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
@@ -441,7 +536,7 @@ describe("TeamsResolver.updateTeam", () => {
     expect(result).toBe(dbTeam);
   });
 
-  it("does not throw when type changes (US2)", async () => {
+  it("does not throw when type changes", async () => {
     const user = userWithPermission(true);
     const dbTeam = stubDbTeam({ type: SubEventTypeEnum.M });
 
@@ -453,7 +548,7 @@ describe("TeamsResolver.updateTeam", () => {
     expect(result).toBe(dbTeam);
   });
 
-  it("succeeds and does not regenerate name when unrelated field changes", async () => {
+  it("succeeds and does not call generateName (teamNumber is frozen)", async () => {
     const user = userWithPermission(true);
     const dbTeam = stubDbTeam();
     jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
@@ -461,7 +556,38 @@ describe("TeamsResolver.updateTeam", () => {
 
     await resolver.updateTeam(baseInput({ season: 2027 }), user);
 
+    // generateName must NOT be called — teamNumber is not changed by updateTeam
     expect(nameSpy).not.toHaveBeenCalled();
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not write teamNumber even when supplied in the input (FR-004)", async () => {
+    // The TypeScript type no longer has teamNumber in TeamUpdateInput, so this
+    // tests the runtime path as a belt-and-suspenders check.
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam({ teamNumber: 3 });
+
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+
+    // Cast to bypass TypeScript since the field no longer exists on the type
+    await resolver.updateTeam(baseInput() as TeamUpdateInput, user);
+
+    // The team's teamNumber should remain 3 — not modified by updateTeam
+    expect(dbTeam.teamNumber).toBe(3);
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not invoke Team.findOne (no conflict-check on teamNumber anymore)", async () => {
+    const user = userWithPermission(true);
+    const dbTeam = stubDbTeam({ teamNumber: 3 });
+
+    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
+    const findOneSpy = jest.spyOn(Team, "findOne");
+
+    await resolver.updateTeam(baseInput(), user);
+
+    // findOne was removed from updateTeam; it was only used for the conflict check
+    expect(findOneSpy).not.toHaveBeenCalled();
     expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
   });
 
@@ -475,42 +601,5 @@ describe("TeamsResolver.updateTeam", () => {
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
     expect(mockTransaction.commit).not.toHaveBeenCalled();
-  });
-
-  it("regenerates names for all cascade teams without _temp suffix (US3)", async () => {
-    const user = userWithPermission(true);
-    const dbTeam = stubDbTeam({ teamNumber: 1 });
-
-    const makeCascadeTeam = (n: number) => {
-      const save = jest.fn().mockResolvedValue(undefined);
-      return {
-        teamNumber: n,
-        type: SubEventTypeEnum.M,
-        club: stubClub(),
-        name: `Test club ${n}H`,
-        abbreviation: `TC ${n}H`,
-        save,
-        _save: save,
-      } as unknown as Team & { _save: jest.Mock };
-    };
-
-    const cascadeTeam2 = makeCascadeTeam(2);
-    const cascadeTeam3 = makeCascadeTeam(3);
-
-    jest.spyOn(Team, "findByPk").mockResolvedValue(dbTeam);
-    jest.spyOn(Team, "findOne").mockResolvedValue(null); // no conflict
-    jest.spyOn(Team, "findAll").mockResolvedValue([cascadeTeam2, cascadeTeam3] as Team[]);
-    const generateNameSpy = jest.spyOn(Team, "generateName").mockResolvedValue(undefined);
-    const generateAbbrevSpy = jest.spyOn(Team, "generateAbbreviation").mockResolvedValue(undefined);
-
-    await resolver.updateTeam(baseInput({ teamNumber: 3 }), user);
-
-    // generateName called for each cascade team in Phase 2
-    expect(generateNameSpy).toHaveBeenCalledTimes(2);
-    expect(generateAbbrevSpy).toHaveBeenCalledTimes(2);
-    // final saves with hooks:false — no _temp in name
-    expect(cascadeTeam2._save).toHaveBeenCalledWith(expect.objectContaining({ hooks: false }));
-    expect(cascadeTeam3._save).toHaveBeenCalledWith(expect.objectContaining({ hooks: false }));
-    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
   });
 });

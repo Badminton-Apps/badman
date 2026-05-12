@@ -257,7 +257,6 @@ export class RankingPlace extends Model {
     instances: RankingPlace[] | RankingPlace,
     options: SaveOptions
   ) {
-    console.log("updateLatestRankingsCreate called");
     if (!Array.isArray(instances)) {
       instances = [instances];
     }

@@ -1,13 +1,18 @@
 import {
-  EventCompetition,
   Player,
   RankingPlace,
   RankingSystem,
   SubEventCompetition,
 } from "@badman/backend-database";
-import { getBestPlayersFromTeam, getIndexFromPlayers, IndexPlayer } from "@badman/utils";
+import {
+  getBestPlayersFromTeam,
+  getIndexFromPlayers,
+  IndexPlayer,
+  SubEventTypeEnum,
+} from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
-import { endOfMonth, setDay, setMonth, setWeek, startOfMonth, subYears } from "date-fns";
+import * as Sentry from "@sentry/nestjs";
+import moment from "moment";
 import { Op, Transaction } from "sequelize";
 import {
   IndexCalculationContributingPlayer,
@@ -17,9 +22,60 @@ import {
   IndexCalculationSuccess,
 } from "./index-calculation.types";
 
+/**
+ * Resolves a team's strength index using the EnrollmentValidationService's
+ * canonical rule:
+ *
+ *   • RankingPlace.rankingDate <= moment([season, 5, 10]).toDate()
+ *     (June 10 of season; moment month is 0-indexed)
+ *   • ORDER BY rankingDate DESC, keep the first row per player
+ *   • No `updatePossible` filter — both confirmed and in-progress rows count,
+ *     same as the validator.
+ *   • Missing per-discipline values fall back to
+ *     `min(single, double, mix) + 2` (validator's "min+2" penalty).
+ *     A player with no RankingPlace at all therefore gets
+ *     `amountOfLevels + 2` per discipline.
+ *
+ * `subEventCompetitionId` does NOT influence the cutoff — it is consulted only
+ * to derive `type` (M / F / MX / NATIONAL) and/or `season` when the caller
+ * does not pass them.
+ */
 @Injectable()
 export class IndexCalculationService {
   private readonly logger = new Logger(IndexCalculationService.name);
+
+  /**
+   * Cached primary RankingSystem.
+   *
+   * Primary system changes only via an admin action (RankingSystemResolver
+   * `setPrimary`). In a single process lifetime that is rare, so we cache the
+   * row here to spare the index-calc hot path one DB round-trip per call.
+   * If the cached row is ever found stale (deleted, no longer `primary`),
+   * the in-process cache is invalidated and we re-query.
+   */
+  private primaryCache: { row: RankingSystem | null; fetchedAt: number } | null = null;
+  private static readonly PRIMARY_CACHE_TTL_MS = 5 * 60 * 1000;
+
+  /** Test hook: drop the primary-system cache between cases. */
+  resetPrimaryCache(): void {
+    this.primaryCache = null;
+  }
+
+  private async getPrimarySystem(transaction?: Transaction): Promise<RankingSystem | null> {
+    const now = Date.now();
+    if (
+      this.primaryCache &&
+      now - this.primaryCache.fetchedAt < IndexCalculationService.PRIMARY_CACHE_TTL_MS
+    ) {
+      return this.primaryCache.row;
+    }
+    const row = await RankingSystem.findOne({
+      where: { primary: true },
+      transaction,
+    });
+    this.primaryCache = { row, fetchedAt: now };
+    return row;
+  }
 
   /**
    * Calculate index values for a batch of inputs in a single call.
@@ -34,58 +90,236 @@ export class IndexCalculationService {
       return [];
     }
 
-    // Step 1: Resolve the primary ranking system (shared across all inputs).
-    const sys = await this.resolvePrimarySystem(options?.transaction);
-    if (!sys) {
-      return inputs.map((i) =>
-        failure(i.key, "RANKING_SYSTEM_NOT_FOUND", "Primary ranking system not configured.")
-      );
+    const start = Date.now();
+    const totalPlayers = inputs.reduce((sum, i) => sum + i.players.length, 0);
+    return Sentry.startSpan(
+      {
+        name: "IndexCalculationService.calculate",
+        op: "function",
+        attributes: {
+          "index_calc.input_count": inputs.length,
+          "index_calc.player_ref_count": totalPlayers,
+        },
+      },
+      async (span) => {
+        try {
+          return await this._calculate(inputs, options);
+        } finally {
+          const durationMs = Date.now() - start;
+          span?.setAttribute("index_calc.duration_ms", durationMs);
+          if (durationMs > 1000) {
+            this.logger.warn(
+              `Slow index calculation: ${inputs.length} input(s), ${totalPlayers} player ref(s), ${durationMs}ms`
+            );
+          } else {
+            this.logger.debug(
+              `Index calculation: ${inputs.length} input(s), ${totalPlayers} player ref(s), ${durationMs}ms`
+            );
+          }
+        }
+      }
+    );
+  }
+
+  private async _calculate(
+    inputs: IndexCalculationInput[],
+    options?: { transaction?: Transaction }
+  ): Promise<IndexCalculationResult[]> {
+    // Step 1: Derive missing type/season from sub-events (one batched lookup).
+    const subEventIds = [
+      ...new Set(
+        inputs
+          .map((i) => i.subEventCompetitionId)
+          .filter((id): id is string => !!id)
+      ),
+    ];
+    let subEventMap = new Map<
+      string,
+      { eventType: SubEventTypeEnum; season: number }
+    >();
+    if (subEventIds.length > 0) {
+      try {
+        const subEvents = await SubEventCompetition.findAll({
+          where: { id: subEventIds },
+          attributes: ["id", "eventType"],
+          include: [{ association: "eventCompetition", attributes: ["season"] }],
+          transaction: options?.transaction,
+        });
+        for (const se of subEvents) {
+          const season = se.eventCompetition?.season;
+          if (se.eventType && season != null) {
+            subEventMap.set(se.id, { eventType: se.eventType, season });
+          }
+        }
+      } catch (err) {
+        this.logger.error(
+          { subEventIds },
+          err instanceof Error ? err.stack : String(err)
+        );
+        // Fall through; per-input failure surfaces below.
+      }
     }
 
-    // Step 2: Batch-resolve gender for all players across all inputs.
-    const allPlayerIds = [...new Set(inputs.flatMap((i) => i.players.map((p) => p.id)))];
+    // Step 2: Resolve per-input metadata (type, season, systemId).
+    interface ResolvedInput {
+      input: IndexCalculationInput;
+      type: SubEventTypeEnum;
+      season: number;
+      systemId?: string;
+    }
+    const resolved: (ResolvedInput | IndexCalculationFailure)[] = inputs.map(
+      (input) => {
+        let type = input.type;
+        let season = input.season;
+        if (input.subEventCompetitionId) {
+          const se = subEventMap.get(input.subEventCompetitionId);
+          if (!se) {
+            return failure(
+              input.key,
+              "SUB_EVENT_NOT_FOUND",
+              `SubEventCompetition not found or has no linked EventCompetition: ${input.subEventCompetitionId}`
+            );
+          }
+          type = type ?? se.eventType;
+          season = season ?? se.season;
+        }
+        if (!type || season == null) {
+          return failure(
+            input.key,
+            "MISSING_TYPE_OR_SEASON",
+            "Input is missing `type` and/or `season`. Provide them directly or via `subEventCompetitionId`."
+          );
+        }
+        return { input, type, season, systemId: input.systemId };
+      }
+    );
+
+    // Step 3: Resolve ranking systems (caller-supplied or primary).
+    const systemIds = [
+      ...new Set(
+        resolved
+          .filter((r): r is ResolvedInput => !("_tag" in r))
+          .map((r) => r.systemId)
+          .filter((id): id is string => !!id)
+      ),
+    ];
+    let primarySystem: RankingSystem | null = null;
+    const systemById = new Map<string, RankingSystem>();
+    try {
+      // Always need primary as a fallback for inputs that did not specify a system.
+      primarySystem = await this.getPrimarySystem(options?.transaction);
+      if (primarySystem) systemById.set(primarySystem.id, primarySystem);
+
+      if (systemIds.length > 0) {
+        const explicit = await RankingSystem.findAll({
+          where: { id: systemIds },
+          transaction: options?.transaction,
+        });
+        for (const s of explicit) systemById.set(s.id, s);
+      }
+    } catch (err) {
+      this.logger.error(err instanceof Error ? err.stack : String(err));
+    }
+
+    // Step 4: Batch-resolve gender for all players across all inputs.
+    const allPlayerIds = [
+      ...new Set(inputs.flatMap((i) => i.players.map((p) => p.id))),
+    ];
     const { genderMap, notFoundIds } = await this.resolveGenders(
       allPlayerIds,
       options?.transaction
     );
 
-    // Step 3: Batch-fetch RankingPlace rows for inputs that don't specify a sub-event.
-    //         Group by season so we issue one DB query per unique season.
-    const broadPlaceMaps = await this.fetchBroadPlaceMaps(
-      inputs.filter((i) => !i.subEventCompetitionId),
-      sys.id,
-      options?.transaction
-    );
-
-    // Step 4: Process each input.
-    const results: IndexCalculationResult[] = [];
-
-    for (const input of inputs) {
+    // Step 5: Group RankingPlace fetches by (systemId, season). One DB call per group.
+    interface FetchKey {
+      systemId: string;
+      season: number;
+    }
+    const fetchKeyOf = (k: FetchKey) => `${k.systemId}::${k.season}`;
+    const groups = new Map<
+      string,
+      { key: FetchKey; playerIds: Set<string> }
+    >();
+    const inputSystemId = new Map<string, string>(); // input.key -> systemId chosen
+    for (const r of resolved) {
+      if ("_tag" in r) continue;
+      const sys =
+        (r.systemId ? systemById.get(r.systemId) : null) ?? primarySystem;
+      if (!sys) continue; // failure handled below
+      inputSystemId.set(r.input.key, sys.id);
+      const k = fetchKeyOf({ systemId: sys.id, season: r.season });
+      const g = groups.get(k);
+      if (g) {
+        for (const p of r.input.players) g.playerIds.add(p.id);
+      } else {
+        groups.set(k, {
+          key: { systemId: sys.id, season: r.season },
+          playerIds: new Set(r.input.players.map((p) => p.id)),
+        });
+      }
+    }
+    const placeMaps = new Map<string, Map<string, RankingPlace>>();
+    for (const [k, g] of groups) {
       try {
-        let placeMap: Map<string, RankingPlace>;
-
-        if (input.subEventCompetitionId) {
-          const windowResult = await this.fetchSubEventWindow(
-            input.subEventCompetitionId,
-            input.players.map((p) => p.id),
-            sys.id,
+        placeMaps.set(
+          k,
+          await this.fetchPlaceMap(
+            [...g.playerIds],
+            g.key.systemId,
+            g.key.season,
             options?.transaction
-          );
-          if ("_tag" in windowResult && windowResult._tag === "failure") {
-            results.push(windowResult as IndexCalculationFailure);
-            continue;
-          }
-          placeMap = windowResult as Map<string, RankingPlace>;
-        } else {
-          placeMap = broadPlaceMaps.get(input.season) ?? new Map();
-        }
-
-        results.push(
-          this.computeResult(input, placeMap, genderMap, notFoundIds, sys.amountOfLevels ?? 12)
+          )
         );
       } catch (err) {
-        this.logger.error({ key: input.key }, err instanceof Error ? err.stack : String(err));
-        results.push(failure(input.key, "INTERNAL_ERROR", "Unexpected error processing input."));
+        this.logger.error(
+          { systemId: g.key.systemId, season: g.key.season },
+          err instanceof Error ? err.stack : String(err)
+        );
+        placeMaps.set(k, new Map()); // fall through to default-fill
+      }
+    }
+
+    // Step 6: Process each input.
+    const results: IndexCalculationResult[] = [];
+    for (const r of resolved) {
+      if ("_tag" in r) {
+        results.push(r);
+        continue;
+      }
+      const sysId = inputSystemId.get(r.input.key);
+      const sys = sysId ? systemById.get(sysId) : null;
+      if (!sys) {
+        results.push(
+          failure(
+            r.input.key,
+            "RANKING_SYSTEM_NOT_FOUND",
+            "No primary ranking system configured and no explicit systemId resolved."
+          )
+        );
+        continue;
+      }
+      const placeMap =
+        placeMaps.get(fetchKeyOf({ systemId: sys.id, season: r.season })) ??
+        new Map<string, RankingPlace>();
+      try {
+        results.push(
+          this.computeResult(
+            r.input,
+            r.type,
+            placeMap,
+            genderMap,
+            notFoundIds,
+            sys.amountOfLevels ?? 12
+          )
+        );
+      } catch (err) {
+        this.logger.error(
+          { key: r.input.key },
+          err instanceof Error ? err.stack : String(err)
+        );
+        results.push(
+          failure(r.input.key, "INTERNAL_ERROR", "Unexpected error processing input.")
+        );
       }
     }
 
@@ -105,75 +339,29 @@ export class IndexCalculationService {
   // Private helpers
   // ---------------------------------------------------------------------------
 
-  private async resolvePrimarySystem(transaction?: Transaction): Promise<RankingSystem | null> {
-    return RankingSystem.findOne({
-      where: { primary: true },
-      transaction,
-    });
-  }
-
-  /** Calendar-year broad window: Jan 1 → Dec 31 of the given season. */
-  private buildBroadWindow(season: number): { start: Date; end: Date } {
-    const start = new Date(season, 0, 1);
-    const end = endOfMonth(new Date(season, 11, 1));
-    return { start, end };
-  }
-
   /**
-   * Derives the precise snapshot window from an EventCompetition, mirroring
-   * the logic in entry.model.ts (recalculateCompetitionIndex).
+   * Validator's exact rule: most-recent RankingPlace per player whose
+   * `rankingDate` is <= June 10 of `season`.
    */
-  private buildPreciseWindow(ec: {
-    season: number;
-    usedRankingUnit: string;
-    usedRankingAmount: number;
-  }): { start: Date; end: Date } {
-    // Mirror assembly.service.ts: moment().set("year", season).set(unit, amount).startOf/endOfMonth
-    let refDate = new Date(ec.season, 0, 1);
-    switch (ec.usedRankingUnit) {
-      case "months":
-        refDate = setMonth(refDate, ec.usedRankingAmount);
-        break;
-      case "weeks":
-        refDate = setWeek(refDate, ec.usedRankingAmount);
-        break;
-      case "days":
-        refDate = setDay(refDate, ec.usedRankingAmount);
-        break;
-      default:
-        refDate = setMonth(refDate, ec.usedRankingAmount);
-    }
-    const end = endOfMonth(refDate);
-    // Widen 1 year back so an upcoming-season enrollment can fall through to
-    // last season's snapshot when this season's federation snapshot has not
-    // yet been published. fetchPlaceMap orders DESC and keeps the most recent
-    // row per player — fresher data wins automatically when it exists.
-    const start = startOfMonth(subYears(refDate, 1));
-    return { start, end };
-  }
-
   private async fetchPlaceMap(
     playerIds: string[],
     systemId: string,
-    window: { start: Date; end: Date },
+    season: number,
     transaction?: Transaction
   ): Promise<Map<string, RankingPlace>> {
     if (playerIds.length === 0) return new Map();
 
+    const cutoff = moment([season, 5, 10]).toDate();
     const rows = await RankingPlace.findAll({
       where: {
         playerId: playerIds,
         systemId,
-        rankingDate: { [Op.between]: [window.start, window.end] },
-        // updatePossible: true means the row is confirmed/final (not an in-progress
-        // recalculation). Only confirmed rows are valid as ranking snapshots.
-        updatePossible: true,
+        rankingDate: { [Op.lte]: cutoff },
       },
       order: [["rankingDate", "DESC"]],
       transaction,
     });
 
-    // Keep most-recent row per player (DESC order gives first hit per player).
     const map = new Map<string, RankingPlace>();
     for (const row of rows) {
       if (row.playerId && !map.has(row.playerId)) {
@@ -181,123 +369,6 @@ export class IndexCalculationService {
       }
     }
     return map;
-  }
-
-  /** Batch-fetch broad place maps, one DB call per unique season. */
-  private async fetchBroadPlaceMaps(
-    inputs: IndexCalculationInput[],
-    systemId: string,
-    transaction?: Transaction
-  ): Promise<Map<number, Map<string, RankingPlace>>> {
-    const bySeasonResult = new Map<number, Map<string, RankingPlace>>();
-
-    const seasonToPlayerIds = new Map<number, string[]>();
-    for (const input of inputs) {
-      if (!seasonToPlayerIds.has(input.season)) {
-        seasonToPlayerIds.set(input.season, []);
-      }
-      for (const p of input.players) {
-        seasonToPlayerIds.get(input.season)!.push(p.id);
-      }
-    }
-
-    for (const [season, rawIds] of seasonToPlayerIds) {
-      const playerIds = [...new Set(rawIds)];
-      const window = this.buildBroadWindow(season);
-      try {
-        bySeasonResult.set(
-          season,
-          await this.fetchPlaceMap(playerIds, systemId, window, transaction)
-        );
-      } catch (err) {
-        this.logger.error({ season, systemId }, err instanceof Error ? err.stack : String(err));
-        bySeasonResult.set(season, new Map());
-      }
-    }
-
-    return bySeasonResult;
-  }
-
-  /**
-   * Resolves the precise snapshot window for a sub-event and fetches the
-   * matching RankingPlace rows. Returns a place map on success or an
-   * IndexCalculationFailure on error.
-   */
-  private async fetchSubEventWindow(
-    subEventCompetitionId: string,
-    playerIds: string[],
-    systemId: string,
-    transaction?: Transaction
-  ): Promise<Map<string, RankingPlace> | IndexCalculationFailure> {
-    const subEvent = await SubEventCompetition.findByPk(subEventCompetitionId, {
-      attributes: [],
-      include: [
-        {
-          model: EventCompetition,
-          attributes: ["season", "usedRankingUnit", "usedRankingAmount"],
-        },
-      ],
-      transaction,
-    });
-
-    if (!subEvent) {
-      return failure(
-        subEventCompetitionId,
-        "SUB_EVENT_NOT_FOUND",
-        `SubEventCompetition not found: ${subEventCompetitionId}`
-      );
-    }
-
-    const ec = subEvent.eventCompetition;
-    if (!ec) {
-      return failure(
-        subEventCompetitionId,
-        "SUB_EVENT_NOT_FOUND",
-        `SubEventCompetition ${subEventCompetitionId} has no linked EventCompetition`
-      );
-    }
-
-    if (!ec.usedRankingUnit || ec.usedRankingAmount == null) {
-      return failure(
-        subEventCompetitionId,
-        "INTERNAL_ERROR",
-        `EventCompetition for sub-event ${subEventCompetitionId} is missing usedRankingUnit / usedRankingAmount`
-      );
-    }
-
-    const window = this.buildPreciseWindow({
-      season: ec.season,
-      usedRankingUnit: ec.usedRankingUnit,
-      usedRankingAmount: ec.usedRankingAmount,
-    });
-
-    this.logger.debug({
-      subEventCompetitionId,
-      season: ec.season,
-      usedRankingUnit: ec.usedRankingUnit,
-      usedRankingAmount: ec.usedRankingAmount,
-      window: { start: window.start.toISOString(), end: window.end.toISOString() },
-    });
-
-    try {
-      const placeMap = await this.fetchPlaceMap(playerIds, systemId, window, transaction);
-      if (placeMap.size === 0) {
-        this.logger.warn({
-          subEventCompetitionId,
-          systemId,
-          playerIds,
-          window: { start: window.start.toISOString(), end: window.end.toISOString() },
-        }, "No RankingPlace rows found in window — all players will fall back to amountOfLevels");
-      }
-      return placeMap;
-    } catch (err) {
-      this.logger.error({ subEventCompetitionId }, err instanceof Error ? err.stack : String(err));
-      return failure(
-        subEventCompetitionId,
-        "RANKING_FETCH_FAILED",
-        `RankingPlace fetch failed for sub-event ${subEventCompetitionId}`
-      );
-    }
   }
 
   /** Batch-resolve player gender from the Player table. */
@@ -316,14 +387,20 @@ export class IndexCalculationService {
       transaction,
     });
 
+    const foundIds = new Set<string>();
     for (const p of dbPlayers) {
+      foundIds.add(p.id);
       if (p.gender) {
         genderMap.set(p.id, p.gender as "M" | "F");
       }
     }
 
+    // Only truly absent players (not in DB at all) are "not found".
+    // Players that exist but have no gender are not an error — they are
+    // simply absent from genderMap and will contribute without gender
+    // filtering (safe for M/F teams; MX will treat them as ungrouped).
     for (const id of playerIds) {
-      if (!genderMap.has(id)) {
+      if (!foundIds.has(id)) {
         notFoundIds.add(id);
       }
     }
@@ -331,15 +408,23 @@ export class IndexCalculationService {
     return { genderMap, notFoundIds };
   }
 
-  /** Compute a single IndexCalculationResult given pre-fetched data. */
+  /**
+   * Compute a single IndexCalculationResult given pre-fetched data.
+   * Mirrors `EnrollmentValidationService.getPlayers` per-discipline fallback:
+   *   bestRankingMin2 = min(s, d, m) + 2  (each component defaults to amountOfLevels first)
+   *   missing components default to bestRankingMin2.
+   */
   private computeResult(
     input: IndexCalculationInput,
+    type: SubEventTypeEnum,
     placeMap: Map<string, RankingPlace>,
     genderMap: Map<string, "M" | "F">,
     notFoundIds: Set<string>,
     amountOfLevels: number
   ): IndexCalculationResult {
-    const missingPlayerIds = input.players.filter((p) => notFoundIds.has(p.id)).map((p) => p.id);
+    const missingPlayerIds = input.players
+      .filter((p) => notFoundIds.has(p.id))
+      .map((p) => p.id);
 
     if (missingPlayerIds.length > 0) {
       return failure(
@@ -350,36 +435,51 @@ export class IndexCalculationService {
       );
     }
 
-    const resolvedPlayers: IndexCalculationContributingPlayer[] = input.players.map((p) => {
-      const place = placeMap.get(p.id);
-      const gender = genderMap.get(p.id) as "M" | "F";
-      return {
-        id: p.id,
-        gender,
-        single: place?.single ?? amountOfLevels,
-        double: place?.double ?? amountOfLevels,
-        mix: place?.mix ?? amountOfLevels,
-      };
-    });
+    const resolvedPlayers: IndexCalculationContributingPlayer[] = input.players.map(
+      (p) => {
+        const place = placeMap.get(p.id);
+        const gender = genderMap.get(p.id) as "M" | "F";
+        const rawSingle = place?.single;
+        const rawDouble = place?.double;
+        const rawMix = place?.mix;
+        const bestRankingMin2 =
+          Math.min(
+            rawSingle ?? amountOfLevels,
+            rawDouble ?? amountOfLevels,
+            rawMix ?? amountOfLevels
+          ) + 2;
+        return {
+          id: p.id,
+          gender,
+          single: rawSingle ?? bestRankingMin2,
+          double: rawDouble ?? bestRankingMin2,
+          mix: rawMix ?? bestRankingMin2,
+        };
+      }
+    );
 
     const indexPlayers: Partial<IndexPlayer>[] = resolvedPlayers.map((p) => ({
       id: p.id,
-      gender: p.gender,
+      // null/undefined gender → omit the key so getBestPlayers excludes this
+      // player from MX gender groups (same as getIndexFromPlayers behaviour).
+      ...(p.gender ? { gender: p.gender } : {}),
       single: p.single,
       double: p.double,
       mix: p.mix,
     }));
 
-    const index = getIndexFromPlayers(input.type, indexPlayers, amountOfLevels);
-    const bestResult = getBestPlayersFromTeam(input.type, indexPlayers, amountOfLevels);
+    const index = getIndexFromPlayers(type, indexPlayers, amountOfLevels);
+    const bestResult = getBestPlayersFromTeam(type, indexPlayers, amountOfLevels);
     const contributingIds = new Set(bestResult.players.map((p) => p.id));
 
-    const contributingPlayers = resolvedPlayers.filter((p) => contributingIds.has(p.id));
+    const contributingPlayers = resolvedPlayers.filter((p) =>
+      contributingIds.has(p.id)
+    );
     const missingPlayerCount = Math.max(0, 4 - contributingPlayers.length);
 
     this.logger.debug({
       key: input.key,
-      type: input.type,
+      type,
       playerIds: input.players.map((p) => p.id),
       resolvedPerPlayer: resolvedPlayers.map(({ id, single, double, mix }) => ({
         id,

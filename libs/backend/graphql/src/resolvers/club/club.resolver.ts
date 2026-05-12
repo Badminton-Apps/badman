@@ -31,10 +31,11 @@ import {
 import { GraphQLError } from "graphql";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { ListArgs } from "../../utils";
+import { ListArgs, assertUUID } from "../../utils";
 import { ErrorCode } from "../../utils/error-codes";
 import { AddPlayerToClubResult } from "./add-player-to-club-result.object";
 import { ClubMembershipFilterInput } from "./club-membership-filter.input";
+import { ClubMembershipService } from "./club-membership.service";
 
 @ObjectType()
 export class PagedClub {
@@ -49,7 +50,10 @@ export class PagedClub {
 export class ClubsResolver {
   private readonly logger = new Logger(ClubsResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private clubMembershipService: ClubMembershipService
+  ) {}
 
   @Query(() => Club)
   async club(@Args("id", { type: () => ID }) id: string): Promise<Club> {
@@ -222,6 +226,14 @@ export class ClubsResolver {
 
   @Mutation(() => Club)
   async removeClub(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
+    const userId = user?.id ?? null;
+    try {
+      assertUUID(id, "id", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "id", value: id, userId });
+      throw e;
+    }
+
     if (!(await user.hasAnyPermission(["remove:club"]))) {
       throw new UnauthorizedException(`You do not have permission to add a club`);
     }
@@ -250,6 +262,15 @@ export class ClubsResolver {
 
   @Mutation(() => Club)
   async updateClub(@User() user: Player, @Args("data") updateClubData: ClubUpdateInput) {
+    const userId = user?.id ?? null;
+    const clubIdArg = updateClubData.id ?? "";
+    try {
+      assertUUID(clubIdArg, "id", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "id", value: clubIdArg, userId });
+      throw e;
+    }
+
     if (!(await user.hasAnyPermission([`${updateClubData.id}_edit:club`, "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
@@ -294,6 +315,15 @@ export class ClubsResolver {
     @User() user: Player,
     @Args("data") addPlayerToClubData: ClubPlayerMembershipNewInput
   ): Promise<AddPlayerToClubResult> {
+    const userId = user?.id ?? null;
+    const clubId = addPlayerToClubData.clubId;
+    try {
+      assertUUID(clubId as string, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
+
     if (
       !(await user.hasAnyPermission([`${addPlayerToClubData.clubId}_edit:club`, "edit-any:club"]))
     ) {
@@ -302,63 +332,36 @@ export class ClubsResolver {
       });
     }
 
-    // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const club = await Club.findByPk(addPlayerToClubData.clubId, {
-        transaction,
-      });
-
+      const club = await Club.findByPk(addPlayerToClubData.clubId, { transaction });
       if (!club) {
         throw new GraphQLError("Club not found", {
           extensions: { code: ErrorCode.CLUB_NOT_FOUND, clubId: addPlayerToClubData.clubId },
         });
       }
 
-      const player = await Player.findByPk(addPlayerToClubData.playerId, {
-        transaction,
-      });
-
+      const player = await Player.findByPk(addPlayerToClubData.playerId, { transaction });
       if (!player) {
         throw new GraphQLError("Player not found", {
-          extensions: {
-            code: ErrorCode.PLAYER_NOT_FOUND,
-            playerId: addPlayerToClubData.playerId,
-          },
+          extensions: { code: ErrorCode.PLAYER_NOT_FOUND, playerId: addPlayerToClubData.playerId },
         });
       }
 
       const confirmed = await user.hasAnyPermission(["change:transfer"]);
 
-      const clubId = addPlayerToClubData.clubId as string;
-      const playerId = addPlayerToClubData.playerId as string;
-      const start = addPlayerToClubData.start as Date;
-
-      // Idempotent create: findOrCreate on natural key (clubId, playerId, start)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const [membership, created] = await (ClubPlayerMembership as any).findOrCreate({
-        where: { clubId, playerId, start },
-        defaults: {
-          start,
-          end: addPlayerToClubData.end,
-          membershipType: addPlayerToClubData.membershipType,
-          confirmed,
-        },
+      const result = await this.clubMembershipService.upsertMembership({
+        clubId: addPlayerToClubData.clubId as string,
+        playerId: addPlayerToClubData.playerId as string,
+        start: addPlayerToClubData.start as Date,
+        end: addPlayerToClubData.end,
+        membershipType: addPlayerToClubData.membershipType as string,
+        confirmed,
         transaction,
       });
 
-      // Commit transaction
       await transaction.commit();
-
-      return {
-        id: membership.id as string,
-        clubId,
-        playerId,
-        start: membership.start as Date,
-        end: (membership.end as Date | null | undefined) ?? null,
-        membershipType: membership.membershipType as string,
-        alreadyExisted: !created,
-      };
+      return result;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
