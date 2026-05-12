@@ -149,6 +149,61 @@ export function validateMany<TOut>(
 }
 
 /**
+ * Same shape as `validateMany`, but drops individual entries that fail the
+ * schema instead of throwing for the whole list. Use this only when one
+ * bad row should not poison a whole sync run — i.e. the dataset is a flat
+ * list of independently-useful records and a missing-field entry is
+ * cosmetically broken upstream rather than a contract violation.
+ *
+ * Each dropped entry is logged with its index and the Zod error so we keep
+ * visibility into upstream rot.
+ *
+ * Reference: Sentry #104397491 (SyncEvents) — the Visual API `Player` list
+ * sporadically contains rows without `MemberID`, which the strict
+ * `validateMany` rejects, killing the whole job.
+ */
+export interface LossyDropInfo {
+  index: number;
+  payloadKey: string;
+  error: z.ZodError;
+  value: unknown;
+}
+
+export function validateManyLossy<TOut>(
+  value: unknown,
+  schema: z.ZodTypeAny,
+  payloadKey: string,
+  logger: Logger,
+  onDrop?: (info: LossyDropInfo) => void
+): TOut[] {
+  if (value == null) return [];
+  const candidates = asArray(value);
+  const out: TOut[] = [];
+  for (let i = 0; i < candidates.length; i++) {
+    const result = schema.safeParse(candidates[i]);
+    if (result.success) {
+      out.push(result.data as TOut);
+    } else {
+      logger.warn(
+        `[visual] dropping invalid ${payloadKey} entry at index ${i}: ${result.error.message}`
+      );
+      if (onDrop) {
+        try {
+          onDrop({ index: i, payloadKey, error: result.error, value: candidates[i] });
+        } catch (cbErr) {
+          // Never let a reporting hook fail the sync — log and continue.
+          logger.error(
+            `[visual] onDrop callback threw while reporting ${payloadKey} drop:`,
+            cbErr
+          );
+        }
+      }
+    }
+  }
+  return out;
+}
+
+/**
  * Validate a single-object payload from the API. Returns undefined when
  * the payload is missing; throws a clear error on shape mismatch.
  *

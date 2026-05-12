@@ -2,8 +2,18 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { VisualService } from "../visual.service";
+import * as Sentry from "@sentry/nestjs";
 import axios from "axios";
 import { formatInTimeZone } from "date-fns-tz";
+
+jest.mock("@sentry/nestjs", () => ({
+  __esModule: true,
+  withScope: jest.fn((cb: (scope: any) => void) => {
+    cb({ setLevel: jest.fn(), setTag: jest.fn(), setContext: jest.fn(), setFingerprint: jest.fn() });
+  }),
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
 
 jest.mock("axios", () => {
   const mockAxios: any = jest.fn().mockResolvedValue({ data: "" });
@@ -470,6 +480,67 @@ describe("VisualService", () => {
       await expect(service.getPoints(RANKING_ID, "PUB1", "CAT1", false)).rejects.toThrow(
         /Invalid RankingPublicationPoints response/
       );
+    });
+  });
+
+  describe("getPlayers", () => {
+    const TOURNEY_ID = "T-LOSSY-1";
+
+    it("returns the validated player list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: JSON.stringify({
+          Player: [
+            { MemberID: "M001", Firstname: "Alice", Lastname: "A" },
+            { MemberID: 12345, Firstname: "Bob", Lastname: "B" },
+          ],
+        }),
+      });
+
+      const result = await service.getPlayers(TOURNEY_ID, false);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].MemberID).toBe("M001");
+      expect(result[1].MemberID).toBe("12345");
+    });
+
+    // Regression: Sentry #104397491 — Visual API sporadically returns Player
+    // rows without a MemberID. Strict validation killed the whole SyncEvents
+    // job; lossy validation must drop the bad rows, keep the good ones, and
+    // report each drop to Sentry as a warning (fingerprinted per field path
+    // so all rows with the same defect collapse into one issue).
+    it("drops Player entries missing MemberID instead of throwing", async () => {
+      const warnSpy = jest.spyOn((service as any).logger, "warn").mockImplementation(() => undefined);
+      (Sentry.captureMessage as jest.Mock).mockClear();
+      (Sentry.withScope as jest.Mock).mockClear();
+
+      httpGet.mockResolvedValueOnce({
+        data: JSON.stringify({
+          Player: [
+            { Firstname: "NoID" },
+            { MemberID: "M001", Firstname: "Alice" },
+            { Firstname: "AlsoNoID" },
+            { MemberID: "M002", Firstname: "Bob" },
+          ],
+        }),
+      });
+
+      const result = await service.getPlayers(TOURNEY_ID, false);
+
+      expect(result).toHaveLength(2);
+      expect(result.map((p) => p.MemberID)).toEqual(["M001", "M002"]);
+      expect(warnSpy).toHaveBeenCalledTimes(2);
+      expect(warnSpy.mock.calls[0][0]).toMatch(/dropping invalid Player entry at index 0/);
+      expect(warnSpy.mock.calls[1][0]).toMatch(/dropping invalid Player entry at index 2/);
+      expect(Sentry.captureMessage).toHaveBeenCalledTimes(2);
+      expect(Sentry.captureMessage).toHaveBeenCalledWith(
+        expect.stringMatching(/Visual API Player entry dropped.*MemberID/)
+      );
+    });
+
+    it("returns empty array when the API has no players", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getPlayers(TOURNEY_ID, false)).toEqual([]);
     });
   });
 
