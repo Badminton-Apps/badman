@@ -5,9 +5,9 @@ import { RankingSystems, Ranking, Gender } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { Queue } from "bull";
 
-import { parse, subWeeks, format, isAfter, isBefore } from "date-fns";
+import { subWeeks, format, isAfter, isBefore } from "date-fns";
 import { Op, Transaction, Sequelize } from "sequelize";
-import { isPublicationUsedForUpdate } from "./ranking-utils";
+import { isPublicationUsedForUpdate, parsePublicationDate } from "./ranking-utils";
 import { ProcessStep, Processor } from "../../processing";
 import { correctWrongPlayers } from "../../utils";
 interface RankingStepData {
@@ -129,10 +129,16 @@ export class RankingSyncer {
 
       const publications = await this._visualService.getPublications(ranking.visualCode, false);
 
-      let pubs = publications
-        ?.filter((publication) => publication.Visible)
-        .map((publication) => {
-          const pubDate = parse(publication.PublicationDate as unknown as string, "yyyy-MM-dd", new Date());
+      const pubs: VisualPublication[] = (publications ?? [])
+        .filter((publication) => publication.Visible)
+        .flatMap((publication): VisualPublication[] => {
+          const pubDate = parsePublicationDate(publication.PublicationDate);
+          if (!pubDate) {
+            this.logger.warn(
+              `Skipping publication ${publication.Code} (${publication.Name}): unparseable PublicationDate=${String(publication.PublicationDate)}`
+            );
+            return [];
+          }
           const canUpdate = isPublicationUsedForUpdate(
             pubDate,
             this.updateMonths,
@@ -140,18 +146,20 @@ export class RankingSyncer {
             this.fuckedDatesBads
           );
 
-          return {
-            usedForUpdate: canUpdate,
-            code: publication.Code,
-            name: publication.Name,
-            year: publication.Year,
-            week: publication.Week,
-            publicationDate: publication.PublicationDate,
-            visible: publication.Visible,
-            date: pubDate,
-          } as VisualPublication;
-        });
-      pubs = [...(pubs || [])].sort((a, b) => a.date.getTime() - b.date.getTime());
+          return [
+            {
+              usedForUpdate: canUpdate,
+              code: publication.Code,
+              name: publication.Name,
+              year: publication.Year,
+              week: publication.Week,
+              publicationDate: publication.PublicationDate,
+              visible: publication.Visible,
+              date: pubDate,
+            },
+          ];
+        })
+        .sort((a, b) => a.date.getTime() - b.date.getTime());
 
       // get latest publication
       const last = pubs?.at(-1);
@@ -172,10 +180,17 @@ export class RankingSyncer {
 
       return {
         visiblePublications: pubs,
-        hiddenPublications: publications
-          ?.filter((publication) => !publication.Visible)
-          ?.map((publication) => {
-            return parse(publication.PublicationDate as unknown as string, "yyyy-MM-dd", new Date());
+        hiddenPublications: (publications ?? [])
+          .filter((publication) => !publication.Visible)
+          .flatMap((publication): Date[] => {
+            const pubDate = parsePublicationDate(publication.PublicationDate);
+            if (!pubDate) {
+              this.logger.warn(
+                `Skipping hidden publication ${publication.Code} (${publication.Name}): unparseable PublicationDate=${String(publication.PublicationDate)}`
+              );
+              return [];
+            }
+            return [pubDate];
           }),
       };
     });
@@ -248,27 +263,25 @@ export class RankingSyncer {
         (!ranking.stopDate || isBefore(publication.date, ranking.stopDate))
     );
 
+    const totalPublications = publicationsToProcess.length;
+    const runStart = Date.now();
     this.logger.log(
-      `Processing ${publicationsToProcess.length} publications with separate transactions`
+      `Processing ${totalPublications} publications with separate transactions`
     );
 
     for (const [index, publication] of publicationsToProcess.entries()) {
       // Create a separate transaction for each publication
       const publicationTransaction = await this._sequelize.transaction();
+      const pubStart = Date.now();
 
       try {
+        const progressPct = Math.round(((index + 1) / totalPublications) * 100);
         this.logger.log(
-          `Processing publication ${publication.name} (${format(publication.date, "yyyy-MM-dd")}) - ${index + 1}/${publicationsToProcess.length}`
+          `[${index + 1}/${totalPublications}] (${progressPct}%) Processing publication ${publication.name} (${format(publication.date, "yyyy-MM-dd")})${publication.usedForUpdate ? " — UPDATE" : ""}`
         );
 
-        if (publication.usedForUpdate) {
-          this.logger.log(
-            `This publication will update rankings: ${publication.date.toLocaleString()}`
-          );
-        }
-
         // Process this single publication with its own transaction
-        await this.processSinglePublication(
+        const pubStats = await this.processSinglePublication(
           publication,
           categories,
           ranking,
@@ -277,7 +290,11 @@ export class RankingSyncer {
 
         // Commit the transaction for this publication
         await publicationTransaction.commit();
-        this.logger.debug(`Committed transaction for publication ${publication.name}`);
+        const pubElapsedS = ((Date.now() - pubStart) / 1000).toFixed(1);
+        const runElapsedS = ((Date.now() - runStart) / 1000).toFixed(1);
+        this.logger.log(
+          `[${index + 1}/${totalPublications}] Done in ${pubElapsedS}s — ${pubStats.places} places, ${pubStats.newPlayers} new players (run total ${runElapsedS}s)`
+        );
 
         // Force garbage collection after each publication
         if (global.gc) {
@@ -299,7 +316,7 @@ export class RankingSyncer {
     categories: CategoriesStepData[],
     ranking: RankingStepData,
     transaction: Transaction
-  ) {
+  ): Promise<{ places: number; newPlayers: number }> {
     const rankingPlaces = new Map<string, RankingPlace>();
     const newPlayers = new Map<string, Player>();
 
@@ -451,8 +468,9 @@ export class RankingSyncer {
     }
 
     // Create new players first
-    this.logger.debug(`Creating ${newPlayers.size} new players`);
-    if (newPlayers.size > 0) {
+    const newPlayerCount = newPlayers.size;
+    if (newPlayerCount > 0) {
+      this.logger.log(`Creating ${newPlayerCount} new players`);
       const newPlayersMap = Array.from(newPlayers).map(([, player]) => player.toJSON());
       await Player.bulkCreate(newPlayersMap, {
         ignoreDuplicates: true,
@@ -463,15 +481,21 @@ export class RankingSyncer {
 
     // Process ranking places in very small chunks
     const instances = Array.from(rankingPlaces).map(([, place]) => place.toJSON());
-    this.logger.debug(`Creating/updating ${instances.length} ranking places`);
-
+    const placeCount = instances.length;
     const chunkSize = 500; // Ultra small chunks to prevent lock exhaustion
+    const totalChunks = Math.ceil(placeCount / chunkSize);
+    this.logger.log(`Creating/updating ${placeCount} ranking places in ${totalChunks} chunks`);
+
     for (let i = 0; i < instances.length; i += chunkSize) {
       const chunk = instances.slice(i, i + chunkSize);
+      const chunkNum = Math.floor(i / chunkSize) + 1;
 
-      this.logger.verbose(
-        `Processing batch ${Math.floor(i / chunkSize) + 1}/${Math.ceil(instances.length / chunkSize)} (${chunk.length} records)`
-      );
+      // Only log every 5th chunk (or first/last) to avoid noise on big publications
+      if (chunkNum === 1 || chunkNum === totalChunks || chunkNum % 5 === 0) {
+        this.logger.log(
+          `  chunk ${chunkNum}/${totalChunks} (${chunk.length} records)`
+        );
+      }
 
       await RankingPlace.bulkCreate(chunk, {
         updateOnDuplicate: [
@@ -496,13 +520,11 @@ export class RankingSyncer {
       }
     }
 
-    this.logger.verbose(
-      `Finished processing ${instances.length} ranking places for ${publication.name}`
-    );
-
     // Clear memory immediately
     rankingPlaces.clear();
     newPlayers.clear();
+
+    return { places: placeCount, newPlayers: newPlayerCount };
   }
 
   protected queueMissingRankingPlayers(): ProcessStep {
@@ -562,7 +584,7 @@ interface VisualPublication {
   name: string;
   year: string;
   week: string;
-  publicationDate: Date;
+  publicationDate: string;
   visible: boolean;
   date: Date;
 }

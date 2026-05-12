@@ -1,0 +1,161 @@
+{
+  "features": {
+    "001-fix-enrollment-submit-error": {
+      "status": "done"
+    },
+    "002-team-resolver-improvements": {
+      "status": "done"
+    },
+    "003-linear-bad-127": {
+      "status": "done"
+    },
+    "004-addplayertoclub-return-membership": {
+      "state": "in_review_qa_approved",
+      "branch": "004-addplayertoclub-return-membership",
+      "linear_id": "BAD-129",
+      "linear_status": "Ready for review",
+      "feature_status": "done",
+      "qa_status": "approved",
+      "tasks_done": "32/34",
+      "implementation_commit": "f3829f369",
+      "next_step": "open PR; merge to develop after human review"
+    },
+    "005-club-players-nested-where": {
+      "status": "done",
+      "board": "linear",
+      "card_id": "BAD-132",
+      "branch": "005-club-players-nested-where"
+    },
+    "006-unify-base-index-backend": {
+      "status": "in_review_qa_approved",
+      "board": "linear",
+      "card_id": "BAD-136",
+      "linear_status": "Ready for review",
+      "branch": "006-unify-base-index-backend",
+      "tasks_total": 36,
+      "mvp_scope": "T001-T025 (Phases 1-4: US1 + US2)",
+      "tasks_completed": "T001-T025 (25/36)",
+      "deferred": "T026-T036 (Phases 5-7: US4 hook refactor, US3 perf, polish)",
+      "implementation_commits": ["b7de5cf39", "ae63d6a61"],
+      "tests_passed": 126,
+      "tests_skipped": 2,
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_query_auth": "PASS",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "next_step": "human review of MVP delivery; decide whether to merge MVP first or hold for hook refactor (US4); BAD-119 frontend can wire calculateIndex against this branch immediately"
+    },
+    "007-finish-event-entry-hardening": {
+      "status": "in_review_qa_approved",
+      "board": "linear",
+      "card_id": "BAD-137",
+      "linear_status": "Ready for review",
+      "branch": "007-finish-event-entry-hardening",
+      "tasks_total": 24,
+      "tasks_completed": "T001, T003-T020 (19/24)",
+      "deferred": "T002 (docker check), T021 (nx affected:test), T022 (manual quickstart walk), T023 (verify only), T024 (frontend PR — separate repo)",
+      "implementation_commits": ["e407d0553", "cf539101b"],
+      "tests_passed": 12,
+      "tests_total": 12,
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_transactional_mutations": "PASS",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "next_step": "human review and merge to develop; open companion frontend PR per specs/007-finish-event-entry-hardening/frontend-changes.md (BAD-122 follow-up)"
+    },
+    "014-validate-clubid-uuid": {
+      "status": "in_review_qa_approved",
+      "board": "linear",
+      "card_id": "BAD-213",
+      "linear_url": "https://linear.app/dashdot/issue/BAD-213",
+      "linear_status": "Ready for review",
+      "branch": "014-validate-clubid-uuid",
+      "spec_path": "specs/014-validate-clubid-uuid",
+      "tasks_total": 23,
+      "tasks_completed": "T001-T021, T023 (22/23)",
+      "deferred": "T022 (manual quickstart walk — needs running API + docker DB)",
+      "spec_kit_commits": ["fba14cd80", "0a1254a79", "a5a66aca7", "14c6286bf"],
+      "implementation_commits": ["16bc84aee", "1df5d7521", "188de9e84", "b321aa393", "6652660bb", "2afd4f47e"],
+      "tests_passed": 252,
+      "tests_skipped": 5,
+      "lint_errors": 0,
+      "lint_warnings": 44,
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_transactional_mutations": "PASS",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "next_step": "open PR targeting develop; companion frontend PR resolves club slug → UUID before invoking Club-scoped mutations (see specs/008-reorder-teams-atomic/frontend-impact.md)"
+    },
+    "008-reorder-teams-atomic": {
+      "status": "in_review",
+      "board": "linear",
+      "card_id": "BAD-152",
+      "linear_url": "https://linear.app/dashdot/issue/BAD-152",
+      "linear_status": "In review",
+      "branch": "008-reorder-teams-atomic",
+      "spec_path": "/Users/arno/Documents/Projects/Badman/badman/specs/008-reorder-teams-atomic",
+      "deliverables": {
+        "spec": "spec.md",
+        "plan": "plan.md",
+        "research": "research.md",
+        "data_model": "data-model.md",
+        "contracts": ["team-renumber-mutation.md", "team-renumbering-service.md"],
+        "frontend_impact": "frontend-impact.md",
+        "quickstart": "quickstart.md",
+        "tasks": "tasks.md"
+      },
+      "spec_kit_commits": ["038b5ca10", "666d98c6d", "f67027148"],
+      "tasks_total": 43,
+      "tasks_completed": "T001-T021, T024, T029-T033, T034-T036, T038-T041 (37/43)",
+      "deferred": [
+        "T022 (manual quickstart verification — needs live DB + seed data)",
+        "T023 (manual playground walk — needs live DB)",
+        "T025–T027 (integration test scenarios — need docker DB, marked as .todo)",
+        "T028 (run integration tests with RUN_INTEGRATION_TESTS=1 — needs docker DB)",
+        "T037 (integration assertion for rejected recalculate — marked .todo in integration spec)",
+        "T042 (manual end-to-end quickstart walk — needs running API)",
+        "T043 (AGENTS.md update — spec plan pointer OK, no change needed)"
+      ],
+      "tests_passed": 160,
+      "tests_skipped": 5,
+      "tests_total": 165,
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_transactional_mutations": "PASS",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "next_step": "open PR targeting develop; run integration tests with docker up (RUN_INTEGRATION_TESTS=1); frontend must update to call recalculateTeamNumbersForGroup instead of parallel updateTeam calls"
+    }
+  },
+  "board": "linear",
+  "ci_gate": "none"
+}

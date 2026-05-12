@@ -162,7 +162,7 @@ describeOrSkip("VisualService (integration — real VR API)", () => {
     it("MatchTypeID is one of the known XmlMatchTypeID values", () => {
       const allowed = new Set([1, 2, 3, 4, 5, 11, 12, 13, 14, 101, 102]);
       for (const game of playedGames) {
-        expect(allowed.has(game.MatchTypeID)).toBe(true);
+        expect(allowed.has(game.MatchTypeID!)).toBe(true);
       }
     });
 
@@ -221,7 +221,7 @@ describeOrSkip("VisualService (integration — real VR API)", () => {
     it("documents the ScoreStatus values present in real data", () => {
       const statuses = new Set<number>();
       for (const game of playedGames) {
-        statuses.add(game.ScoreStatus);
+        statuses.add(game.ScoreStatus!);
       }
       // eslint-disable-next-line no-console
       console.log(

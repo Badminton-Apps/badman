@@ -14,6 +14,7 @@ import {
   BelongsToSetAssociationMixin,
   CreateOptions,
   CreationOptional,
+  UpdateOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -30,7 +31,9 @@ import {
 } from "sequelize";
 import {
   BeforeBulkCreate,
+  BeforeBulkUpdate,
   BeforeCreate,
+  BeforeUpdate,
   BelongsTo,
   BelongsToMany,
   Column,
@@ -100,7 +103,20 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   @Column(DataType.TIME)
   preferredTime?: Date;
 
-  @Field(() => ID)
+  /**
+   * CONTEXT:
+   *
+   * Team.link is the cross-season continuity identifier.
+   * When registering a team for a new season, the link should be reused if possible.
+   *
+   * If it's not reused when registering a team for a new season,
+   * previous-season lookups and validation fail silently. The current name "link" is ambiguous.
+   *
+   */
+  @Field(() => ID, {
+    description:
+      "Cross-season continuity id. Reuse this link when registering the same team in a new season.",
+  })
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @Column(DataType.UUIDV4)
@@ -202,7 +218,6 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
   static async setAbbriviations(instances: Team[], options: CreateOptions) {
     for (const instance of instances ?? []) {
       await this.setAbbriviation(instance, options);
-      await this.generateAbbreviation(instance, options);
     }
   }
 
@@ -211,6 +226,21 @@ export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<T
     if (instance.isNewRecord) {
       await this.generateName(instance, options);
       await this.generateAbbreviation(instance, options);
+    }
+  }
+
+  @BeforeUpdate
+  static async regenerateOnUpdate(instance: Team, options: UpdateOptions) {
+    if (instance.changed("teamNumber") || instance.changed("type")) {
+      await this.generateName(instance, options as CreateOptions);
+      await this.generateAbbreviation(instance, options as CreateOptions);
+    }
+  }
+
+  @BeforeBulkUpdate
+  static async regenerateOnBulkUpdate(options: UpdateOptions & { instance?: Team }) {
+    if (options.instance) {
+      await this.regenerateOnUpdate(options.instance, options);
     }
   }
 
@@ -331,6 +361,9 @@ export class TeamUpdateInput extends PartialType(
     "entry",
     "prefferedLocation",
     "prefferedLocation2",
+    // teamNumber is intentionally excluded from updateTeam: authoritative numbering
+    // is assigned by submitEnrollment (atomic two-phase write via TeamWriteService).
+    "teamNumber",
   ] as const),
   InputType
 ) {
@@ -348,6 +381,19 @@ export class TeamNewInput extends PartialType(
   OmitType(TeamUpdateInput, ["id", "entry", "players"] as const),
   InputType
 ) {
+  @Field(() => ID, {
+    nullable: true,
+    description:
+      "Cross-season continuity id. Reuse this link when registering the same team in a new season.",
+  })
+  override link?: string;
+
+  // teamNumber is optional on createTeam. When omitted, the server assigns
+  // MAX(teamNumber)+1 for (clubId, season, type). The wizard's authoritative path
+  // is submitEnrollment, which supplies final numbers per team.
+  @Field(() => Int, { nullable: true })
+  teamNumber?: number;
+
   // Include the entry
   @Field(() => EventEntryNewInput, { nullable: true })
   entry?: EventEntryNewInput;

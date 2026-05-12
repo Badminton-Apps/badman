@@ -7,4 +7,7 @@ export default {
   },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../../coverage/libs/backend/database",
+  moduleNameMapper: {
+    "^@badman/backend-database$": "<rootDir>/src/index.ts",
+  },
 };

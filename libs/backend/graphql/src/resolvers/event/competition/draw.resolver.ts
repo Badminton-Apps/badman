@@ -69,7 +69,7 @@ export class DrawCompetitionResolver {
     @Args("data") updateDrawCompetitionData: DrawCompetitionUpdateInput
   ): Promise<DrawCompetition> {
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
-      throw new UnauthorizedException(`You do not have permission to add a competition`);
+      throw new UnauthorizedException(`You do not have permission to update a competition`);
     }
 
     // if no transaction is passed, create a new one
@@ -150,7 +150,7 @@ export class DrawCompetitionResolver {
   ): Promise<DrawCompetition[]> {
     // update all draw competitions in a transaction
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
-      throw new UnauthorizedException(`You do not have permission to add a competition`);
+      throw new UnauthorizedException(`You do not have permission to update a competition`);
     }
 
     const results = [];

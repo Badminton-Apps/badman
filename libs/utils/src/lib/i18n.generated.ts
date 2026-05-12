@@ -417,6 +417,7 @@ export type I18nTranslations = {
                 "warnings": {
                     "already-saved": string;
                     "base-other-team": string;
+                    "missing-continuity-link": string;
                     "player-min-level": string;
                     "subtitute-team-index": string;
                     "title": string;
@@ -1362,6 +1363,19 @@ export type I18nTranslations = {
                 "title": string;
             };
         };
+        "teams": {
+            "a11y": {
+                "statusError": string;
+                "statusWarning": string;
+                "statusSuccess": string;
+                "validatingStatus": string;
+                "expandValidationDetails": string;
+                "collapseValidationDetails": string;
+                "editTeam": string;
+                "deleteTeam": string;
+                "removePlayerFromList": string;
+            };
+        };
         "themes": {
             "dark": string;
             "light": string;
@@ -1445,13 +1459,278 @@ export type I18nTranslations = {
             };
         };
         "v1": {
+            "adminSettings": {
+                "title": string;
+                "enrollment": {
+                    "title": string;
+                    "enrollmentOpen": string;
+                    "enabled": string;
+                    "openDate": string;
+                    "startDate": string;
+                    "closeDate": string;
+                    "endDate": string;
+                    "save": string;
+                    "success": string;
+                    "error": string;
+                };
+            };
+            "avgLevelPage": {
+                "error": string;
+                "empty": string;
+                "eventType": {
+                    "M": string;
+                    "F": string;
+                    "MX": string;
+                };
+            };
+            "adminCompetitionsPage": {
+                "title": string;
+                "seasonSelectLabel": string;
+                "sourceSeasonTitle": string;
+                "targetSeasonTitle": string;
+                "copySuccess": string;
+                "copyError": string;
+                "table": {
+                    "headers": {
+                        "name": string;
+                        "type": string;
+                        "official": string;
+                        "actions": string;
+                    };
+                    "copyTooltip": string;
+                };
+                "copyDialog": {
+                    "title": string;
+                    "message": string;
+                    "cancel": string;
+                    "confirm": string;
+                };
+            };
+            "copyCompetitionsPage": {
+                "title": string;
+                "sourceSeasonTitle": string;
+                "targetSeasonTitle": string;
+                "table": {
+                    "headers": {
+                        "name": string;
+                        "type": string;
+                        "official": string;
+                        "actions": string;
+                    };
+                };
+                "dialog": {
+                    "title": string;
+                    "confirm": string;
+                    "cancel": string;
+                    "message": string;
+                };
+                "success": string;
+                "error": string;
+            };
             "enrollment": {
+                "pageTitle": string;
+                "disabled": {
+                    "title": string;
+                    "message": string;
+                };
+                "submitSuccess": string;
+                "submitTeamError": string;
                 "selectedLocationCard": {
                     "courts": string;
+                    "noGameDays": string;
                 };
-                "team-enrollment": {
-                    "import-existing-optional": string;
-                    "import-teams": {
+                "enrollmentLocationCard": {
+                    "gameDaysTitle": string;
+                    "ariaSelectLocation": string;
+                    "ariaDeselectLocation": string;
+                    "emptyPlaceholder": string;
+                    "noGameDays": string;
+                    "courts": string;
+                    "copyFromLastSeason": string;
+                    "copyAvailabilitySuccess": string;
+                    "copyAvailabilityError": string;
+                    "manageAvailability": string;
+                    "hideAvailability": string;
+                };
+                "steps": {
+                    "info": string;
+                    "players": string;
+                    "generalInformation": string;
+                    "transfersLoans": string;
+                    "teams": string;
+                    "confirm": string;
+                };
+                "nav": {
+                    "previous": string;
+                    "next": string;
+                    "submit": string;
+                    "submitting": string;
+                    "teamsHaveErrors": string;
+                };
+                "toast": {
+                    "addAtLeastOneTeam": string;
+                };
+                "teams": {
+                    "baseValue": string;
+                    "labelNumbered": string;
+                    "labelFallback": string;
+                    "baseIndex": {
+                        "loading": string;
+                    };
+                    "categories": {
+                        "M": string;
+                        "F": string;
+                        "MX": string;
+                    };
+                    "addTeam": string;
+                    "emptyCategory": string;
+                    "a11y": {
+                        "statusError": string;
+                        "statusSuccess": string;
+                        "validatingStatus": string;
+                        "expandValidationDetails": string;
+                        "collapseValidationDetails": string;
+                        "editTeam": string;
+                        "deleteTeam": string;
+                        "removePlayerFromList": string;
+                    };
+                    "deleteError": string;
+                    "loadError": string;
+                    "retry": string;
+                };
+                "dialog": {
+                    "deleteTeam": {
+                        "title": string;
+                        "message": string;
+                        "cancel": string;
+                        "confirm": string;
+                    };
+                };
+                "clubSelection": {
+                    "noAdminClubs": string;
+                    "heading": string;
+                    "clubLabel": string;
+                    "emailLabel": string;
+                };
+                "locationSelection": {
+                    "title": string;
+                    "editLocations": string;
+                    "editLocationsNoAccessTooltip": string;
+                };
+                "remarks": {
+                    "label": string;
+                    "placeholder": string;
+                };
+                "summary": {
+                    "title": string;
+                };
+                "transfersLoans": {
+                    "addError": string;
+                    "deleteError": string;
+                    "loadError": string;
+                    "duplicateWarning": string;
+                    "addTransfersTitle": string;
+                    "addTransferButton": string;
+                    "emptyTransfers": string;
+                    "addLoansTitle": string;
+                    "addLoanButton": string;
+                    "emptyLoans": string;
+                    "a11y": {
+                        "cancelPendingSelection": string;
+                    };
+                };
+                "pendingTransferBadge": string;
+                "pendingLoanBadge": string;
+                "playerValidation": {
+                    "alreadyMember": string;
+                    "alreadyLoaned": string;
+                    "checkFailed": string;
+                };
+                "validation": {
+                    "invalidStatus": string;
+                    "invalidEmail": string;
+                    "emailRequired": string;
+                    "clubRequired": string;
+                    "selectAtLeastOneLocation": string;
+                    "locationGameDayAvailability": string;
+                    "selectLocation": string;
+                    "teamNumberRequired": string;
+                    "invalidTeamType": string;
+                    "teamTypeRequired": string;
+                    "selectAtLeastOnePlayer": string;
+                    "addAtLeastOneTeam": string;
+                    "duplicateTeamNumberSameType": string;
+                    "maxBasePlayers": string;
+                    "minBasePlayers": string;
+                };
+                "errors": {
+                    "clubNotFoundForFinalise": string;
+                    "finalisationFailed": string;
+                    "noTeamsToFinalise": string;
+                    "notAuthorisedToFinalise": string;
+                };
+                "form": {
+                    "type": string;
+                    "teamNumber": string;
+                    "email": string;
+                    "phone": string;
+                    "preferredDay": string;
+                    "preferredTime": string;
+                    "preferredLocation": string;
+                };
+                "generalInfo": string;
+                "preferredPlayingTime": string;
+                "teamCaptain": string;
+                "buttons": {
+                    "addTeam": string;
+                    "back": string;
+                    "cancel": string;
+                    "editTeam": string;
+                    "next": string;
+                    "addPlayer": string;
+                };
+                "messages": {
+                    "successAdd": string;
+                    "successEdit": string;
+                };
+                "addPlayer": string;
+                "players": string;
+                "alreadySubmitted": {
+                    "title": string;
+                    "body": string;
+                };
+                "submit": {
+                    "alreadyFinalised": string;
+                    "finalisationFailed": string;
+                    "finalised": string;
+                    "notificationFailedBody": string;
+                    "notificationFailedTitle": string;
+                    "retryFinalisation": string;
+                    "retryNotification": string;
+                    "error": {
+                        "network": {
+                            "title": string;
+                            "body": string;
+                        };
+                    };
+                };
+                "teamEnrollment": {
+                    "addBasePlayerDialog": {
+                        "baseIndex": {
+                            "label": string;
+                            "loading": string;
+                            "unavailable": string;
+                        };
+                        "maxPlayersReached": string;
+                        "noCompetitions": string;
+                        "competition": string;
+                        "division": string;
+                        "divisionBaseIndexRangeMismatch": string;
+                        "playerTooStrong": string;
+                    };
+                    "importExistingOptional": string;
+                    "validating": string;
+                    "importTeams": {
                         "title": string;
                         "allTeams": string;
                         "categories": {
@@ -1489,6 +1768,10 @@ export type I18nTranslations = {
                         "confirmEncounter": string;
                         "changeEncounter": string;
                         "addProposal": string;
+                        "admin": string;
+                        "adminSettings": string;
+                        "copyCompetitions": string;
+                        "adminCompetitions": string;
                     };
                     "auth": {
                         "logIn": string;
@@ -1527,6 +1810,9 @@ export type I18nTranslations = {
                     };
                     "transfer": {
                         "title": string;
+                    };
+                    "tooltips": {
+                        "registrationClosed": string;
                     };
                 };
                 "topBar": {
@@ -2631,6 +2917,10 @@ export type I18nTranslations = {
                                     "endTime": string;
                                     "courts": string;
                                 };
+                                "errors": {
+                                    "courtsMin": string;
+                                    "startBeforeEnd": string;
+                                };
                                 "buttons": {
                                     "cancel": string;
                                     "save": string;
@@ -2676,6 +2966,11 @@ export type I18nTranslations = {
                                 "form": {
                                     "start": string;
                                     "end": string;
+                                };
+                                "errors": {
+                                    "startBeforeEnd": string;
+                                    "startRequired": string;
+                                    "endRequired": string;
                                 };
                                 "buttons": {
                                     "cancel": string;
@@ -2826,18 +3121,39 @@ export type I18nTranslations = {
                         "title": string;
                         "too-few-base-players": string;
                         "too-many-base-players": string;
+                        "rejectedPendingPlayer": string;
                     };
                     "warnings": {
                         "already-saved": string;
                         "base-other-team": string;
+                        "missing-continuity-link": string;
                         "player-min-level": string;
                         "subtitute-team-index": string;
                         "title": string;
                     };
                 };
+                "errors": {
+                    "title": string;
+                    "permissionDenied": string;
+                    "clubNotFound": string;
+                    "playerNotFound": string;
+                    "rankingNotFound": string;
+                    "teamNotFound": string;
+                    "subEventNotFound": string;
+                    "seasonMismatch": string;
+                    "internal": string;
+                    "unknown": string;
+                };
             };
             "notFoundPage": {
                 "title": string;
+                "buttons": {
+                    "back": string;
+                };
+            };
+            "noProfilePage": {
+                "title": string;
+                "description": string;
                 "buttons": {
                     "back": string;
                 };
@@ -3076,6 +3392,7 @@ export type I18nTranslations = {
                 "actions": {
                     "edit": string;
                     "delete": string;
+                    "export": string;
                     "setRisersFallers": string;
                     "openCloseDate": string;
                     "openCloseEncounterChangeDate": string;
@@ -3085,7 +3402,14 @@ export type I18nTranslations = {
                     "messages": {
                         "syncSuccess": string;
                         "syncError": string;
+                        "cpGenerationStarted": string;
                     };
+                    "averageLevel": string;
+                    "downloadEnrollment": string;
+                    "downloadTeams": string;
+                    "downloadExceptions": string;
+                    "downloadLocations": string;
+                    "downloadCp": string;
                 };
                 "addCompetitionDialog": {
                     "title": string;
@@ -3596,6 +3920,37 @@ export type I18nTranslations = {
                     };
                 };
             };
+            "locations": {
+                "exceptions": string;
+            };
+            "editClubPage": {
+                "locations": {
+                    "gameDays": {
+                        "createDialog": {
+                            "errors": {
+                                "courtsMin": string;
+                                "startBeforeEnd": string;
+                            };
+                        };
+                    };
+                    "exceptions": {
+                        "createDialog": {
+                            "errors": {
+                                "startBeforeEnd": string;
+                                "startRequired": string;
+                                "endRequired": string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        "noProfilePage": {
+            "title": string;
+            "description": string;
+            "buttons": {
+                "back": string;
+            };
         };
         "confirmEncounterPage": {
             "title": string;
@@ -3786,6 +4141,28 @@ export type I18nTranslations = {
                     "addCompetition": string;
                     "loadMoreCompetitions": string;
                 };
+            };
+            "actions": {
+                "edit": string;
+                "delete": string;
+                "export": string;
+                "setRisersFallers": string;
+                "openCloseDate": string;
+                "openCloseEncounterChangeDate": string;
+                "makeOfficial": string;
+                "makeUnofficial": string;
+                "sync": string;
+                "messages": {
+                    "syncSuccess": string;
+                    "syncError": string;
+                    "cpGenerationStarted": string;
+                };
+                "averageLevel": string;
+                "downloadEnrollment": string;
+                "downloadTeams": string;
+                "downloadExceptions": string;
+                "downloadLocations": string;
+                "downloadCp": string;
             };
             "addCompetitionDialog": {
                 "title": string;

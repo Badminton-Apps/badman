@@ -42,14 +42,14 @@ export class TeamsTransferStepComponent {
   loaded = this.dataService.state.loadedTeams;
 
   teamsCurrent = this.dataService.state.teams;
-  teamsCurrentLinks = computed(() => this.teamsCurrent().map((team) => team.link));
+  teamsCurrentContinuityIds = computed(() => this.teamsCurrent().map((team) => team.link));
 
-  teamsLast = computed(() => this.club()?.teams?.sort(sortTeams) ?? []);
-  teamsLastIds = computed(() => this.teamsLast().map((team) => team.id));
-  teamLastLinks = computed(() => this.teamsLast().map((team) => team.link));
+  previousSeasonTeams = computed(() => this.club()?.teams?.sort(sortTeams) ?? []);
+  previousSeasonTeamIds = computed(() => this.previousSeasonTeams().map((team) => team.id));
+  previousSeasonContinuityIds = computed(() => this.previousSeasonTeams().map((team) => team.link));
 
   teamsCurrentNamed = computed(() =>
-    this.teamsLast().map((lastSeasonTeam) => {
+    this.previousSeasonTeams().map((lastSeasonTeam) => {
       // find team in last teams
       const currentSeasonTeam = this.teamsCurrent().find((t) => t.link === lastSeasonTeam.link);
 
@@ -69,10 +69,28 @@ export class TeamsTransferStepComponent {
   );
 
   newTeams = computed(() =>
-    this.teamsCurrent().filter((team) => !this.teamLastLinks().includes(team.link))
+    this.teamsCurrent().filter((team) => !this.previousSeasonContinuityIds().includes(team.link))
   );
-  existingLinks = computed(() =>
-    this.teamLastLinks().filter((link) => this.teamsCurrentLinks().includes(link))
+  existingContinuityIds = computed(() =>
+    this.previousSeasonContinuityIds().filter((link) =>
+      this.teamsCurrentContinuityIds().includes(link)
+    )
+  );
+  missingContinuityTeams = computed(() =>
+    this.teamsCurrent().filter((team) => {
+      if (team.link) {
+        return false;
+      }
+
+      const matchByNumberAndType = this.previousSeasonTeams().find(
+        (lastTeam) => lastTeam.type === team.type && lastTeam.teamNumber === team.teamNumber
+      );
+      const matchByName = this.previousSeasonTeams().find(
+        (lastTeam) => lastTeam.name === team.name
+      );
+
+      return !!(matchByNumberAndType || matchByName);
+    })
   );
   nationalCountsAsMixed = computed(
     () => this.formGroup().get(NATIONAL_COUNTS_AS_MIXED) as FormControl<boolean>
@@ -108,7 +126,7 @@ export class TeamsTransferStepComponent {
         // find new teams
         const newTeams = next.filter((team) => !prev.includes(team));
         for (const id of newTeams) {
-          const team = this.teamsLast().find((t) => t.id === id) as Team;
+          const team = this.previousSeasonTeams().find((t) => t.id === id) as Team;
 
           this._addTeam(team);
         }
@@ -138,8 +156,8 @@ export class TeamsTransferStepComponent {
         // this.transferTeamsCtrl.setValue([], { emitEvent: false });
 
         // Set our control to show all teams that we are transfering
-        const teamIds = this.teamsLast()
-          .filter((team) => this.existingLinks().includes(team.link))
+        const teamIds = this.previousSeasonTeams()
+          .filter((team) => this.existingContinuityIds().includes(team.link))
           .map((team) => team.id);
 
         // Patch the checkbox list
@@ -156,7 +174,7 @@ export class TeamsTransferStepComponent {
   }
 
   selectAll() {
-    this.transferTeamsCtrl.setValue(this.teamsLastIds());
+    this.transferTeamsCtrl.setValue(this.previousSeasonTeamIds());
   }
 
   deselectAll() {

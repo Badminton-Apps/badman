@@ -1,41 +1,20 @@
-// import {
-//   DatabaseModule,
-//   SystemGroupBuilder,
-//   SystemBuilder,
-//   RankingSystem,
-//   PlayerBuilder,
-//   TeamBuilder,
-//   EventCompetitionEntryBuilder,
-//   DrawCompetition,
-//   DrawCompetitionBuilder,
-//   EncounterCompetitionBuilder,
-//   SubEventCompetitionBuilder,
-//   EventCompetitionBuilder,
-//   SubEventCompetition,
-//   ClubBuilder,
-//   Player,
-//   Team,
-//   EncounterCompetition,
-// } from '@badman/backend-database';
-// import { Sequelize } from 'sequelize-typescript';
-import { Test, TestingModule } from "@nestjs/testing";
-// import { ConfigModule } from '@nestjs/config';
 
-// import {
-//   TeamBaseIndexRule,
-//   CompetitionStatusRule,
-//   PlayerMinLevelRule,
-//   PlayerOrderRule,
-//   TeamSubeventIndexRule,
-//   PlayerMaxGamesRule,
-//   PlayerGenderRule,
-//   TeamClubBaseRule,
-//   SubTeamIndexRule,
-// } from './rules';
-// import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
-import { DatabaseModule } from "@badman/backend-database";
+import { Test, TestingModule } from "@nestjs/testing";
+import {
+  Club,
+  DatabaseModule,
+  Player,
+  RankingPlace,
+  RankingSystem,
+  SubEventCompetition,
+  Team,
+} from "@badman/backend-database";
+import { SubEventTypeEnum } from "@badman/utils";
 import { ConfigModule } from "@nestjs/config";
+import { Op } from "sequelize";
 import { EnrollmentValidationService } from "./enrollment.service";
+import { IndexCalculationService } from "../index-calculation/index-calculation.service";
+import { TeamContinuityRule } from "./rules";
 
 describe("EnrollmentValidationService", () => {
   let service: EnrollmentValidationService;
@@ -47,7 +26,7 @@ describe("EnrollmentValidationService", () => {
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      providers: [EnrollmentValidationService],
+      providers: [EnrollmentValidationService, IndexCalculationService],
       imports: [
         DatabaseModule,
         ConfigModule.forRoot({
@@ -90,8 +69,380 @@ describe("EnrollmentValidationService", () => {
     //   encounter = await encounterBuilder.Build();
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   test("should be defined", () => {
     expect(service).toBeDefined();
+  });
+
+  test("reused continuity id finds previous season team", async () => {
+    const system = { id: "system-1", amountOfLevels: 12 } as RankingSystem;
+    const club = new Club({ id: "club-1", name: "Club 1" });
+    const previousSeasonTeam = new Team({
+      id: "team-prev",
+      link: "continuity-1",
+      season: 2023,
+      name: "Team A",
+      teamNumber: 1,
+      type: SubEventTypeEnum.M,
+    });
+
+    jest.spyOn(RankingSystem, "findByPk").mockResolvedValue(system);
+    jest.spyOn(Club, "findByPk").mockResolvedValue(club);
+    const teamFindAllMock = jest.spyOn(Team, "findAll");
+    teamFindAllMock.mockResolvedValueOnce([previousSeasonTeam]);
+    teamFindAllMock.mockResolvedValueOnce([previousSeasonTeam]);
+    jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([]);
+    jest.spyOn(Player, "findAll").mockResolvedValue([]);
+
+    const data = await service.getValidationData({
+      clubId: club.id,
+      systemId: system.id,
+      season: 2024,
+      teams: [
+        {
+          id: "team-current",
+          name: "Team A",
+          type: SubEventTypeEnum.M,
+          teamNumber: 1,
+          link: "continuity-1",
+        },
+      ],
+    });
+
+    expect(data.teams[0].previousSeasonTeam?.link).toBe("continuity-1");
+    expect(data.teams[0].isNewTeam).toBe(false);
+  });
+
+  test("missing continuity id warns when previous season match exists", async () => {
+    const system = { id: "system-1", amountOfLevels: 12 } as RankingSystem;
+    const club = new Club({ id: "club-1", name: "Club 1" });
+    const previousSeasonTeam = new Team({
+      id: "team-prev",
+      link: "continuity-1",
+      season: 2023,
+      name: "Team A",
+      teamNumber: 1,
+      type: SubEventTypeEnum.M,
+    });
+
+    jest.spyOn(RankingSystem, "findByPk").mockResolvedValue(system);
+    jest.spyOn(Club, "findByPk").mockResolvedValue(club);
+    // No continuity link on the team → the first conditional Team.findAll
+    // (previousSeasonTeams) is skipped. Only the previousSeasonClubTeams
+    // call runs, and that's the one that should return the candidate match.
+    jest.spyOn(Team, "findAll").mockResolvedValue([previousSeasonTeam]);
+    jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([]);
+    jest.spyOn(Player, "findAll").mockResolvedValue([]);
+
+    const data = await service.getValidationData({
+      clubId: club.id,
+      systemId: system.id,
+      season: 2024,
+      teams: [
+        {
+          id: "team-current",
+          name: "Team A",
+          type: SubEventTypeEnum.M,
+          teamNumber: 1,
+        },
+      ],
+    });
+
+    const validation = await service.validate(data, [new TeamContinuityRule()]);
+    const warningMessages = validation.teams?.[0]?.warnings?.map((w) => w.message) ?? [];
+
+    expect(data.teams[0].previousSeasonTeam).toBeUndefined();
+    expect(data.teams[0].possibleOldTeam).toBe(true);
+    expect(warningMessages).toContain(
+      "all.v1.entryTeamDrawer.validation.warnings.missing-continuity-link"
+    );
+  });
+
+  describe("getValidationData index calculations", () => {
+    const SYSTEM_ID = "system-1";
+    const SEASON = 2024;
+    const RANKING_DATE_BEFORE_CUTOFF = new Date(SEASON, 4, 15); // May 15 SEASON
+    const RANKING_DATE_AFTER_CUTOFF = new Date(SEASON, 5, 20); // June 20 SEASON
+
+    const stubSystem = (amountOfLevels = 12): RankingSystem =>
+      ({ id: SYSTEM_ID, amountOfLevels, primary: true }) as unknown as RankingSystem;
+
+    const stubPlayerWithRanking = (
+      id: string,
+      gender: "M" | "F",
+      single?: number,
+      double?: number,
+      mix?: number,
+      rankingDate: Date = RANKING_DATE_BEFORE_CUTOFF
+    ): Player => {
+      const player = new Player({
+        id,
+        gender,
+        firstName: id,
+        lastName: id,
+        competitionPlayer: true,
+      });
+      const place = new RankingPlace({
+        playerId: id,
+        systemId: SYSTEM_ID,
+        single,
+        double,
+        mix,
+        rankingDate,
+      });
+      (player as unknown as { rankingPlaces: RankingPlace[] }).rankingPlaces = [place];
+      return player;
+    };
+
+    const stubPlayerWithoutRanking = (id: string, gender: "M" | "F"): Player => {
+      const player = new Player({
+        id,
+        gender,
+        firstName: id,
+        lastName: id,
+        competitionPlayer: true,
+      });
+      (player as unknown as { rankingPlaces: RankingPlace[] }).rankingPlaces = [];
+      return player;
+    };
+
+    const arrange = (players: Player[]) => {
+      jest.spyOn(RankingSystem, "findByPk").mockResolvedValue(stubSystem());
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
+      jest.spyOn(RankingSystem, "findAll").mockResolvedValue([stubSystem()]);
+      jest.spyOn(Club, "findByPk").mockResolvedValue(new Club({ id: "club-1", name: "Club 1" }));
+      jest.spyOn(Team, "findAll").mockResolvedValue([]);
+      jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([]);
+      // Player.findAll is called both by the validator (gender + names) and by
+      // IndexCalculationService (gender). Same return is fine for both.
+      jest.spyOn(Player, "findAll").mockResolvedValue(players);
+      // The service's RankingPlace.findAll consults `rankingDate <= June 10 of season`.
+      // Filter the in-memory rows by that predicate so the cutoff still drives the result.
+      jest.spyOn(RankingPlace, "findAll").mockImplementation((opts) => {
+        const cutoff = (opts as { where: { rankingDate: Record<symbol, Date> } }).where.rankingDate[Op.lte];
+        const allPlaces = players.flatMap(
+          (p) => (p as unknown as { rankingPlaces?: RankingPlace[] }).rankingPlaces ?? []
+        );
+        return Promise.resolve(allPlaces.filter((rp) => rp.rankingDate && rp.rankingDate <= cutoff));
+      });
+    };
+
+    test("M team: baseIndex sums single+double of 4 base players", async () => {
+      const players = [
+        stubPlayerWithRanking("p1", "M", 5, 5, 7),
+        stubPlayerWithRanking("p2", "M", 6, 6, 8),
+        stubPlayerWithRanking("p3", "M", 7, 7, 9),
+        stubPlayerWithRanking("p4", "M", 8, 8, 10),
+      ];
+      arrange(players);
+
+      const data = await service.getValidationData({
+        clubId: "club-1",
+        systemId: SYSTEM_ID,
+        season: SEASON,
+        teams: [
+          {
+            id: "team-1",
+            name: "Team A",
+            type: SubEventTypeEnum.M,
+            teamNumber: 1,
+            basePlayers: ["p1", "p2", "p3", "p4"],
+          },
+        ],
+      });
+
+      // (5+5)+(6+6)+(7+7)+(8+8) = 52
+      expect(data.teams[0].baseIndex).toBe(52);
+      expect(data.teams[0].basePlayers).toHaveLength(4);
+    });
+
+    test("F team: 3 base players adds (4-3)*24 penalty", async () => {
+      const players = [
+        stubPlayerWithRanking("p1", "F", 4, 4, 6),
+        stubPlayerWithRanking("p2", "F", 5, 5, 7),
+        stubPlayerWithRanking("p3", "F", 6, 6, 8),
+      ];
+      arrange(players);
+
+      const data = await service.getValidationData({
+        clubId: "club-1",
+        systemId: SYSTEM_ID,
+        season: SEASON,
+        teams: [
+          {
+            id: "team-1",
+            name: "Team A",
+            type: SubEventTypeEnum.F,
+            teamNumber: 1,
+            basePlayers: ["p1", "p2", "p3"],
+          },
+        ],
+      });
+
+      // (4+4)+(5+5)+(6+6) + 1*24 = 30 + 24 = 54
+      expect(data.teams[0].baseIndex).toBe(54);
+    });
+
+    test("MX team: 2M + 2F sums single+double+mix, no penalty", async () => {
+      const players = [
+        stubPlayerWithRanking("p1", "M", 5, 5, 7),
+        stubPlayerWithRanking("p2", "M", 6, 6, 8),
+        stubPlayerWithRanking("p3", "F", 4, 4, 6),
+        stubPlayerWithRanking("p4", "F", 5, 5, 7),
+      ];
+      arrange(players);
+
+      const data = await service.getValidationData({
+        clubId: "club-1",
+        systemId: SYSTEM_ID,
+        season: SEASON,
+        teams: [
+          {
+            id: "team-1",
+            name: "Team A",
+            type: SubEventTypeEnum.MX,
+            teamNumber: 1,
+            basePlayers: ["p1", "p2", "p3", "p4"],
+          },
+        ],
+      });
+
+      // (5+5+7)+(6+6+8)+(4+4+6)+(5+5+7) = 17+20+14+17 = 68
+      expect(data.teams[0].baseIndex).toBe(68);
+    });
+
+    test("MX team: 2M + 1F adds (4-3)*36 penalty", async () => {
+      const players = [
+        stubPlayerWithRanking("p1", "M", 5, 5, 7),
+        stubPlayerWithRanking("p2", "M", 6, 6, 8),
+        stubPlayerWithRanking("p3", "F", 4, 4, 6),
+      ];
+      arrange(players);
+
+      const data = await service.getValidationData({
+        clubId: "club-1",
+        systemId: SYSTEM_ID,
+        season: SEASON,
+        teams: [
+          {
+            id: "team-1",
+            name: "Team A",
+            type: SubEventTypeEnum.MX,
+            teamNumber: 1,
+            basePlayers: ["p1", "p2", "p3"],
+          },
+        ],
+      });
+
+      // (5+5+7)+(6+6+8)+(4+4+6) + 1*36 = 17+20+14+36 = 87
+      expect(data.teams[0].baseIndex).toBe(87);
+    });
+
+    test("Player without RankingPlace falls back to min(s,d,m)+2 = amountOfLevels+2 per discipline", async () => {
+      const players = [
+        stubPlayerWithRanking("p1", "M", 5, 5, 7),
+        stubPlayerWithRanking("p2", "M", 6, 6, 8),
+        stubPlayerWithRanking("p3", "M", 7, 7, 9),
+        stubPlayerWithoutRanking("p4", "M"),
+      ];
+      arrange(players);
+
+      const data = await service.getValidationData({
+        clubId: "club-1",
+        systemId: SYSTEM_ID,
+        season: SEASON,
+        teams: [
+          {
+            id: "team-1",
+            name: "Team A",
+            type: SubEventTypeEnum.M,
+            teamNumber: 1,
+            basePlayers: ["p1", "p2", "p3", "p4"],
+          },
+        ],
+      });
+
+      // Three rated players + one unrated. Unrated: min(12,12,12)+2 = 14 per discipline → single+double = 28.
+      // (5+5)+(6+6)+(7+7)+14+14 = 10+12+14+28 = 64
+      expect(data.teams[0].baseIndex).toBe(64);
+    });
+
+    test("Cutoff: a RankingPlace dated after June 10 of season is ignored; players fall back to amountOfLevels+2", async () => {
+      // p1-p3 have rows BEFORE cutoff. p4 has only an AFTER-cutoff row → service ignores it
+      // and falls back to min(12,12,12)+2 = 14 per discipline.
+      const players = [
+        stubPlayerWithRanking("p1", "M", 5, 5, 7, RANKING_DATE_BEFORE_CUTOFF),
+        stubPlayerWithRanking("p2", "M", 6, 6, 8, RANKING_DATE_BEFORE_CUTOFF),
+        stubPlayerWithRanking("p3", "M", 7, 7, 9, RANKING_DATE_BEFORE_CUTOFF),
+        stubPlayerWithRanking("p4", "M", 1, 1, 1, RANKING_DATE_AFTER_CUTOFF),
+      ];
+      arrange(players);
+
+      const data = await service.getValidationData({
+        clubId: "club-1",
+        systemId: SYSTEM_ID,
+        season: SEASON,
+        teams: [
+          {
+            id: "team-1",
+            name: "Team A",
+            type: SubEventTypeEnum.M,
+            teamNumber: 1,
+            basePlayers: ["p1", "p2", "p3", "p4"],
+          },
+        ],
+      });
+
+      // Verify the service was queried with the validator's June 10 cutoff.
+      const rankingPlaceCalls = (RankingPlace.findAll as unknown as jest.SpyInstance).mock.calls;
+      expect(rankingPlaceCalls.length).toBeGreaterThan(0);
+      const args = rankingPlaceCalls[0][0] as { where: { rankingDate: Record<symbol, Date> } };
+      const cutoff = args.where.rankingDate[Op.lte];
+      expect(cutoff.getFullYear()).toBe(SEASON);
+      expect(cutoff.getMonth()).toBe(5); // June (0-indexed)
+      expect(cutoff.getDate()).toBe(10);
+      expect(RANKING_DATE_AFTER_CUTOFF.getTime()).toBeGreaterThan(cutoff.getTime());
+
+      // p4's stronger after-cutoff row is excluded; min+2 fallback yields 14+14=28 for that player.
+      // (5+5)+(6+6)+(7+7)+14+14 = 64
+      expect(data.teams[0].baseIndex).toBe(64);
+    });
+
+    test("Enrollment-only flow: only basePlayers populated; teamIndex defaults to 4-player penalty", async () => {
+      // Current enrollment input does not populate t.players. The validator therefore feeds
+      // an empty list into teamIndex, which yields the 4*24 penalty (96) for non-MX teams.
+      // baseIndex still reflects the actual base roster.
+      const players = [
+        stubPlayerWithRanking("p1", "M", 5, 5, 7),
+        stubPlayerWithRanking("p2", "M", 6, 6, 8),
+        stubPlayerWithRanking("p3", "M", 7, 7, 9),
+        stubPlayerWithRanking("p4", "M", 8, 8, 10),
+      ];
+      arrange(players);
+
+      const data = await service.getValidationData({
+        clubId: "club-1",
+        systemId: SYSTEM_ID,
+        season: SEASON,
+        teams: [
+          {
+            id: "team-1",
+            name: "Team A",
+            type: SubEventTypeEnum.M,
+            teamNumber: 2,
+            basePlayers: ["p1", "p2", "p3", "p4"],
+            // players + backupPlayers omitted — current enrollment shape
+          },
+        ],
+      });
+
+      expect(data.teams[0].baseIndex).toBe(52);
+      expect(data.teams[0].teamIndex).toBe(96); // 4 * 24 penalty for empty teamPlayers
+      // teamIndex >= baseIndex satisfies team-base-index.rule for non-#1 teams (rule guards against teamIndex < baseIndex).
+    });
   });
 
   // describe('Doubles Male team checks', () => {

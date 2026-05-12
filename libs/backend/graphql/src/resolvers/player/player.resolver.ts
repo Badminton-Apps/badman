@@ -185,9 +185,12 @@ export class PlayersResolver {
     @Parent() player: Player,
     @Args() listArgs: ListArgs
   ): Promise<RankingLastPlace[]> {
+    const opts = ListArgs.toFindOptions(listArgs);
+    const primary = await RankingSystem.findOne({ where: { primary: true } });
+    opts.where = { ...opts.where, systemId: primary?.id };
     const places = await player.getRankingLastPlaces({
       order: [["rankingDate", "DESC"]],
-      ...ListArgs.toFindOptions(listArgs),
+      ...opts,
     });
 
     // distinct systemIds
@@ -249,14 +252,29 @@ export class PlayersResolver {
     historical = false
   ): Promise<(Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
-
     if (!historical) {
+      const now = new Date();
       args.where = {
         ...args.where,
-        // [`$${ClubPlayerMembership.name}.active$`]: true,
+        [`$${ClubPlayerMembership.name}.confirmed$`]: true,
+        [`$${ClubPlayerMembership.name}.start$`]: {
+          [Op.lt]: now,
+        },
+        [Op.or]: [
+          {
+            [`$${ClubPlayerMembership.name}.end$`]: {
+              [Op.gt]: now,
+            },
+          },
+          {
+            [`$${ClubPlayerMembership.name}.end$`]: {
+              [Op.is]: null,
+            },
+          },
+        ],
       };
     }
-    return player.getClubs({
+    return await player.getClubs({
       ...args,
     });
   }
@@ -547,8 +565,10 @@ export class PlayerTeamResolver extends PlayersResolver {
   ): Promise<RankingLastPlace[]> {
     const args = ListArgs.toFindOptions(listArgs);
 
+    const primary = await RankingSystem.findOne({ where: { primary: true } });
     args.where = {
       ...args.where,
+      systemId: primary?.id,
       playerId: player.id,
     };
 

@@ -22,11 +22,13 @@ import {
 import { DatetimeAdapter } from "@ng-matero/extensions/core";
 import {
   provideTranslateService,
+  TranslateCompiler,
   TranslateLoader,
   TranslateParser,
   TranslateService,
 } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { TranslateMessageFormatCompiler } from "ngx-translate-messageformat-compiler";
 import { langulageInitializer } from "./factory";
 import { ITranslateConfig } from "./interfaces";
 import { SingleBracketInterpolation } from "./services";
@@ -52,6 +54,10 @@ export function provideTranslation(config: ITranslateConfig) {
     },
     provideTranslateService({
       defaultLanguage: "en",
+      compiler: {
+        provide: TranslateCompiler,
+        useClass: TranslateMessageFormatCompiler,
+      },
       parser: {
         provide: TranslateParser,
         useClass: SingleBracketInterpolation,

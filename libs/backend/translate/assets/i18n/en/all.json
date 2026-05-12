@@ -410,6 +410,7 @@
       "warnings": {
         "already-saved": "New changes cannot be saved in between, please resubmit the form in the last step to save your changes",
         "base-other-team": "<strong>{player.fullName}</strong> is baseplayer on another team",
+        "missing-continuity-link": "This team looks like a previous-season team, but the continuity id was not reused. Please link it to keep history.",
         "player-min-level": "Request for exception of player <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> has not yet been accepted",
         "subtitute-team-index": "s",
         "title": "Warnings"
@@ -1344,6 +1345,19 @@
       "title": "Team names"
     }
   },
+  "teams": {
+    "a11y": {
+      "statusError": "This team has validation errors",
+      "statusWarning": "This team has validation warnings",
+      "statusSuccess": "This team passed validation",
+      "validatingStatus": "Checking team validation",
+      "expandValidationDetails": "Show validation details for {team}",
+      "collapseValidationDetails": "Hide validation details for {team}",
+      "editTeam": "Edit {team}",
+      "deleteTeam": "Remove {team}",
+      "removePlayerFromList": "Remove {name} from the team"
+    }
+  },
   "themes": {
     "dark": "Dark",
     "light": "Light"
@@ -1427,13 +1441,278 @@
     }
   },
   "v1": {
-    "enrollment": {
-      "selectedLocationCard": {
-        "courts": "Courts"
+    "adminSettings": {
+      "title": "Admin Settings",
+      "enrollment": {
+        "title": "Enrollment",
+        "enrollmentOpen": "Enrollment Open",
+        "enabled": "Enrollment Open",
+        "openDate": "Open Date",
+        "startDate": "Start Date",
+        "closeDate": "Close Date",
+        "endDate": "End Date",
+        "save": "Save",
+        "success": "Enrollment settings saved successfully",
+        "error": "Failed to save enrollment settings"
+      }
+    },
+    "avgLevelPage": {
+      "error": "Failed to load average level data.",
+      "empty": "No average level data available for this competition.",
+      "eventType": {
+        "M": "Men",
+        "F": "Women",
+        "MX": "Mixed"
+      }
+    },
+    "adminCompetitionsPage": {
+      "title": "Admin Competitions",
+      "seasonSelectLabel": "Season",
+      "sourceSeasonTitle": "Source Season {range}",
+      "targetSeasonTitle": "Target Season {range}",
+      "copySuccess": "Competition copied successfully",
+      "copyError": "Failed to copy competition",
+      "table": {
+        "headers": {
+          "name": "Name",
+          "type": "Type",
+          "official": "Official",
+          "actions": "Actions"
+        },
+        "copyTooltip": "Copy competition"
       },
-      "team-enrollment": {
-        "import-existing-optional": "Import existing (optional)",
-        "import-teams": {
+      "copyDialog": {
+        "title": "Copy Competition",
+        "message": "Copy {name} to season {season}?",
+        "cancel": "Cancel",
+        "confirm": "Copy"
+      }
+    },
+    "copyCompetitionsPage": {
+      "title": "Copy Competitions",
+      "sourceSeasonTitle": "Source Season",
+      "targetSeasonTitle": "Target Season",
+      "table": {
+        "headers": {
+          "name": "Name",
+          "type": "Type",
+          "official": "Official",
+          "actions": "Actions"
+        }
+      },
+      "dialog": {
+        "title": "Copy Competition",
+        "confirm": "Copy",
+        "cancel": "Cancel",
+        "message": "Copy {name} to season {season}?"
+      },
+      "success": "Competition copied successfully",
+      "error": "Failed to copy competition"
+    },
+    "enrollment": {
+      "pageTitle": "Competition Enrollment {season}",
+      "disabled": {
+        "title": "Registration closed",
+        "message": "Registrations are currently closed. Please check back later."
+      },
+      "submitSuccess": "Successfully enrolled: {teamNames}",
+      "submitTeamError": "{teamName}: {error}",
+      "selectedLocationCard": {
+        "courts": "{count, plural, one {# court} other {# courts}}",
+        "noGameDays": "No gamedays found."
+      },
+      "enrollmentLocationCard": {
+        "gameDaysTitle": "Game days",
+        "ariaSelectLocation": "Select location",
+        "ariaDeselectLocation": "Deselect location",
+        "emptyPlaceholder": "—",
+        "noGameDays": "No game days",
+        "courts": "{count, plural, one {# court} other {# courts}}",
+        "copyFromLastSeason": "Copy availability from last season",
+        "copyAvailabilitySuccess": "Availability copied successfully",
+        "copyAvailabilityError": "Failed to copy availability",
+        "manageAvailability": "Manage availability",
+        "hideAvailability": "Hide availability"
+      },
+      "steps": {
+        "info": "Information",
+        "players": "Players",
+        "generalInformation": "General information",
+        "transfersLoans": "Transfers & loans",
+        "teams": "Teams",
+        "confirm": "Confirm"
+      },
+      "nav": {
+        "previous": "Previous",
+        "next": "Next",
+        "submit": "Enroll",
+        "submitting": "Submitting…",
+        "teamsHaveErrors": "Fix team errors before continuing"
+      },
+      "toast": {
+        "addAtLeastOneTeam": "Add at least one team."
+      },
+      "teams": {
+        "baseValue": "Team {value}",
+        "labelNumbered": "Team {number}",
+        "labelFallback": "Team",
+        "baseIndex": {
+          "loading": "Loading team..."
+        },
+        "categories": {
+          "M": "Men",
+          "F": "Women",
+          "MX": "Mixed"
+        },
+        "addTeam": "Add team",
+        "emptyCategory": "No teams in this category",
+        "a11y": {
+          "statusError": "Team has validation errors",
+          "statusSuccess": "Team is valid",
+          "validatingStatus": "Validating team...",
+          "expandValidationDetails": "Expand validation details",
+          "collapseValidationDetails": "Collapse validation details",
+          "editTeam": "Edit team",
+          "deleteTeam": "Delete team",
+          "removePlayerFromList": "Remove player from list"
+        },
+        "deleteError": "Error deleting team",
+        "loadError": "Error loading teams",
+        "retry": "Try again"
+      },
+      "dialog": {
+        "deleteTeam": {
+          "title": "Remove team",
+          "message": "Are you sure you want to remove this team?",
+          "cancel": "Cancel",
+          "confirm": "Remove"
+        }
+      },
+      "clubSelection": {
+        "noAdminClubs": "You are not an admin of any clubs",
+        "heading": "Select your club",
+        "clubLabel": "Club",
+        "emailLabel": "Contact email"
+      },
+      "locationSelection": {
+        "title": "Locations",
+        "editLocations": "Edit locations",
+        "editLocationsNoAccessTooltip": "You don't have permission to edit locations. Contact your club administrator."
+      },
+      "remarks": {
+        "label": "Remarks",
+        "placeholder": "Optional: add remarks for your enrollment"
+      },
+      "summary": {
+        "title": "Enrollment summary"
+      },
+      "transfersLoans": {
+        "addError": "Error adding transfer/loan",
+        "deleteError": "Error deleting transfer/loan",
+        "loadError": "Error loading transfers/loans",
+        "duplicateWarning": "This player is already registered as a transfer/loan",
+        "addTransfersTitle": "Transfers",
+        "addTransferButton": "Add transfer",
+        "emptyTransfers": "No transfers added yet",
+        "addLoansTitle": "Loans",
+        "addLoanButton": "Add loan",
+        "emptyLoans": "No loans added yet",
+        "a11y": {
+          "cancelPendingSelection": "Cancel pending player selection"
+        }
+      },
+      "pendingTransferBadge": "transfer",
+      "pendingLoanBadge": "loan",
+      "playerValidation": {
+        "alreadyMember": "This player is already a member of this club.",
+        "alreadyLoaned": "This player is already on loan.",
+        "checkFailed": "Could not verify the player. Try again."
+      },
+      "validation": {
+        "invalidStatus": "Invalid status.",
+        "invalidEmail": "Invalid email address.",
+        "emailRequired": "Email is required.",
+        "clubRequired": "Club is required.",
+        "selectAtLeastOneLocation": "Select at least one location.",
+        "locationGameDayAvailability": "Each location must have at least one game day with at least 2 courts, each available for at least 3 hours (not necessarily consecutive).",
+        "selectLocation": "Select a location.",
+        "teamNumberRequired": "Team number is required.",
+        "invalidTeamType": "Invalid team type.",
+        "teamTypeRequired": "Team type is required.",
+        "selectAtLeastOnePlayer": "Select at least one player.",
+        "addAtLeastOneTeam": "Add at least one team.",
+        "duplicateTeamNumberSameType": "Duplicate team number within the same type.",
+        "maxBasePlayers": "You can add at most {max} base players.",
+        "minBasePlayers": "Select at least {min} base players."
+      },
+      "errors": {
+        "clubNotFoundForFinalise": "Club not found.",
+        "finalisationFailed": "Submission failed. Please try again.",
+        "noTeamsToFinalise": "Add at least one team before submitting.",
+        "notAuthorisedToFinalise": "You don't have permission to finalise this club's enrollment."
+      },
+      "form": {
+        "type": "Type",
+        "teamNumber": "Team number",
+        "email": "Email",
+        "phone": "Phone",
+        "preferredDay": "Preferred day",
+        "preferredTime": "Preferred time",
+        "preferredLocation": "Preferred location"
+      },
+      "generalInfo": "General information",
+      "preferredPlayingTime": "Preferred playing time",
+      "teamCaptain": "Team captain",
+      "buttons": {
+        "addTeam": "Add team",
+        "back": "Back",
+        "cancel": "Cancel",
+        "editTeam": "Edit team",
+        "next": "Next",
+        "addPlayer": "Add player"
+      },
+      "messages": {
+        "successAdd": "Team has been added",
+        "successEdit": "Team has been updated"
+      },
+      "addPlayer": "Add player",
+      "players": "Players",
+      "alreadySubmitted": {
+        "title": "Already submitted",
+        "body": "This club's enrollment for the current season has already been submitted. To make changes, contact the federation."
+      },
+      "submit": {
+        "alreadyFinalised": "This enrollment was already submitted earlier.",
+        "finalisationFailed": "Your teams were saved, but we couldn't finalise the submission. Press Retry to try again.",
+        "finalised": "Enrollment submitted successfully.",
+        "notificationFailedBody": "Your enrollment was saved, but we couldn't send the confirmation email or push notification. Press Retry to try sending it again.",
+        "notificationFailedTitle": "Submission complete — confirmation could not be sent",
+        "retryFinalisation": "Retry",
+        "retryNotification": "Retry",
+        "error": {
+          "network": {
+            "title": "Network error",
+            "body": "We couldn't reach the server. Check your connection and try again."
+          }
+        }
+      },
+      "teamEnrollment": {
+        "addBasePlayerDialog": {
+          "baseIndex": {
+            "label": "Base index",
+            "loading": "Loading base index...",
+            "unavailable": "Base index unavailable"
+          },
+          "maxPlayersReached": "You can add at most {max} base players.",
+          "noCompetitions": "No competitions are available for this season.",
+          "competition": "Competition",
+          "division": "Division",
+          "divisionBaseIndexRangeMismatch": "Your team's base index ({baseIndex}) does not match any division for this competition.",
+          "playerTooStrong": "{name} has level {level}, which is too strong for this division (strongest allowed: {maxLevel})."
+        },
+        "importExistingOptional": "Import existing (optional)",
+        "validating": "Validating…",
+        "importTeams": {
           "title": "Import teams",
           "allTeams": "All teams",
           "categories": {
@@ -1470,7 +1749,11 @@
           "encounterForm": "Encounter form",
           "confirmEncounter": "Confirm encounter",
           "changeEncounter": "Change encounter",
-          "addProposal": "Add proposal"
+          "addProposal": "Add proposal",
+          "admin": "Admin",
+          "adminSettings": "Admin Settings",
+          "copyCompetitions": "Copy Competitions",
+          "adminCompetitions": "Admin Competitions"
         },
         "auth": {
           "logIn": "Log in",
@@ -1509,6 +1792,9 @@
         },
         "transfer": {
           "title": "Transfers / loans"
+        },
+        "tooltips": {
+          "registrationClosed": "Registration closed"
         }
       },
       "topBar": {
@@ -1781,7 +2067,6 @@
       "noRecentEncounters": "No recent encounters",
       "rolePrefix": "You are",
       "clubAdmin": "Club admin",
-
       "gameLeader": "Game leader",
       "unknown": "Unknown",
       "captain": "Captain",
@@ -2614,6 +2899,10 @@
                 "endTime": "End time",
                 "courts": "Courts"
               },
+              "errors": {
+                "courtsMin": "Courts must be greater than 0",
+                "startBeforeEnd": "Start time must be before end time"
+              },
               "buttons": {
                 "cancel": "Cancel",
                 "save": "Save"
@@ -2659,6 +2948,11 @@
               "form": {
                 "start": "Start",
                 "end": "End"
+              },
+              "errors": {
+                "startBeforeEnd": "Start date must be before end date",
+                "startRequired": "Start date is required",
+                "endRequired": "End date is required"
               },
               "buttons": {
                 "cancel": "Cancel",
@@ -2780,8 +3074,8 @@
       "noData": "No data",
       "params": {
         "gender": {
-          "male": "Male",
-          "female": "Female"
+          "male": "man",
+          "female": "woman"
         }
       },
       "validation": {
@@ -2793,11 +3087,11 @@
           "comp-status-team": "{playerFullName} is not marked as a competition player",
           "faller": "The team should be degrade, but is not enrolled in a lower series",
           "first-team-index": "A first team dropped may not field a team with team index lower than their base index during the season",
-          "no-subevent": "Please choose a series",
+          "no-subevent": "No division found",
           "none": "No errors found",
           "player-club": "Player {playerFullName} is not part of {clubName} (current club: {activeClubName})",
           "player-club-none": "No club known for player {playerFullName}",
-          "player-gender": "{playerFullName} is a {player.gender} but a {gender} was expected",
+          "player-gender": "{playerFullName} is a {playerGender} but a {gender} was expected",
           "player-min-level": "{playerFullName} has an index of {playerRanking} in {rankingType} and may be at least {minLevel} .",
           "player-subevent": "{playerFullName} is part of the base team {teamName} that also plays in {subEventName} ",
           "riser": "The team should promote, but is not enrolled in a higher series",
@@ -2808,21 +3102,42 @@
           "team-to-week": "Team index starting players is {baseIndex} and may not exceed the limit of the division {maxIndex} ",
           "title": "Errors",
           "too-few-base-players": "Too few base players",
-          "too-many-base-players": "Too many base players"
+          "too-many-base-players": "Too many base players",
+          "rejectedPendingPlayer": "Player {playerName} is no longer a member or pending transfer/loan. Remove from base players."
         },
         "warnings": {
           "already-saved": "New changes cannot be saved in between, please resubmit the form in the last step to save your changes",
           "base-other-team": "{playerFullName} is baseplayer on another team",
+          "missing-continuity-link": "This team looks like a previous-season team, but the continuity id was not reused. Please link it to keep history.",
           "player-min-level": "Request for exception of player {playerFullName} in {rankingType} has not yet been accepted",
           "subtitute-team-index": "s",
           "title": "Warnings"
         }
+      },
+      "errors": {
+        "title": "Errors",
+        "permissionDenied": "You don't have permission to perform this action.",
+        "clubNotFound": "Club not found.",
+        "playerNotFound": "Player not found.",
+        "rankingNotFound": "Player has no ranking — required for index calculation.",
+        "teamNotFound": "Team not found.",
+        "subEventNotFound": "Sub-event not found.",
+        "seasonMismatch": "The team's season does not match the sub-event's competition season.",
+        "internal": "Unexpected server error. Please try again.",
+        "unknown": "Something went wrong."
       }
     },
     "notFoundPage": {
       "title": "The page you are looking for does not exist",
       "buttons": {
         "back": "Back to home"
+      }
+    },
+    "noProfilePage": {
+      "title": "No Profile Page",
+      "description": "Your profile page is not available",
+      "buttons": {
+        "back": "Go Back"
       }
     },
     "confirmEncounterPage": {
@@ -2994,6 +3309,7 @@
       "actions": {
         "edit": "Edit",
         "delete": "Delete",
+        "export": "Export",
         "setRisersFallers": "Set risers/fallers",
         "openCloseDate": "Open/Close date",
         "openCloseEncounterChangeDate": "Open / close move encounters",
@@ -3002,8 +3318,15 @@
         "sync": "Sync",
         "messages": {
           "syncSuccess": "Competition successfully synced",
-          "syncError": "Error syncing competition"
-        }
+          "syncError": "Error syncing competition",
+          "cpGenerationStarted": "CP generation started. You will receive an email when the file is ready for download."
+        },
+        "averageLevel": "Average level",
+        "downloadEnrollment": "Download enrollment",
+        "downloadTeams": "Download teams",
+        "downloadExceptions": "Download exceptions",
+        "downloadLocations": "Download locations",
+        "downloadCp": "Download CP file"
       },
       "addCompetitionDialog": {
         "title": "Add competition",
@@ -3513,6 +3836,9 @@
           }
         }
       }
+    },
+    "locations": {
+      "exceptions": "Exceptions"
     }
   }
 }

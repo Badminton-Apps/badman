@@ -67,7 +67,7 @@ jobs:
           playwright merge-reports --reporter=html,github ./blob-reports
 
           ## for copy pasting in shell
-          # bun playwright show-report
+          # npx playwright show-report
 
       - name: coverage reports
         run: npx --yes lcov-result-merger 'coverage/**/lcov.info' 'coverage/lcov.info'

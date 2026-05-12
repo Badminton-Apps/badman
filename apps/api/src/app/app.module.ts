@@ -1,6 +1,16 @@
 import { Logger, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { APP_FILTER } from "@nestjs/core";
+import { SentryModule } from "@sentry/nestjs/setup";
+import { PrematureCloseFilter } from "./filters/premature-close.filter";
 import { AppController, ImageController } from "./controllers";
+import { CpController } from "./controllers/cp.controller";
+import { ExportController } from "./controllers/export.controller";
+import { AvgLevelService } from "./services/export/avg-level.service";
+import { EnrollmentService } from "./services/export/enrollment.service";
+import { ExceptionsService } from "./services/export/exceptions.service";
+import { LocationsService } from "./services/export/locations.service";
+import { TeamsService } from "./services/export/teams.service";
 
 import { AuthorizationModule } from "@badman/backend-authorization";
 import { DatabaseModule } from "@badman/backend-database";
@@ -35,12 +45,18 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
     })
   );
 }
-const envFilePath = process.env.NODE_ENV === "test" ? ".env.test" : undefined;
 
-console.log("envFilePath", envFilePath, process.env.NODE_ENV);
+// Resolve .env relative to the project root, not process.cwd().
+// The webpack bundle outputs to dist/apps/api/, so __dirname is three levels
+// below the workspace root. Using an absolute path avoids failures when the
+// NX executor (or a deployment runner) sets a different working directory.
+const projectRoot = join(__dirname, "..", "..", "..");
+const envFileName = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
+const envFilePath = join(projectRoot, envFileName);
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ...productionModules,
     CleanEnvironmentModule.forPredicate(envFilePath, () => process.env.NODE_ENV === "test"),
     ConfigModule.forRoot({
@@ -49,7 +65,7 @@ console.log("envFilePath", envFilePath, process.env.NODE_ENV);
       load: [load],
       expandVariables: true,
       envFilePath: envFilePath,
-      ignoreEnvVars: process.env.NODE_ENV === "test",
+      validatePredefined: process.env.NODE_ENV !== "test",
     }),
     AuthorizationModule,
     GrapqhlModule,
@@ -73,8 +89,12 @@ console.log("envFilePath", envFilePath, process.env.NODE_ENV);
     SocketModule,
     TransferLoanModule,
   ],
-  controllers: [AppController, ImageController, CalendarController],
-  providers: [Logger],
+
+  controllers: [AppController, ImageController, CalendarController, CpController,ExportController],
+  providers: [
+    Logger, TeamsService, ExceptionsService, LocationsService, EnrollmentService, AvgLevelService,
+    { provide: APP_FILTER, useClass: PrematureCloseFilter },
+  ],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);

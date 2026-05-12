@@ -1,0 +1,37 @@
+schema_version: "1.0"
+
+extension:
+  id: "maqa-linear"
+  name: "MAQA Linear Integration"
+  version: "0.1.0"
+  description: "Linear board integration for the MAQA extension. Populates issues from specs, tracks state across workflow, real-time sub-issue ticking."
+  author: "GenieRobot"
+  repository: "https://github.com/GenieRobot/spec-kit-maqa-linear"
+  license: "MIT"
+  homepage: "https://github.com/GenieRobot/spec-kit-maqa-linear"
+
+requires:
+  speckit_version: ">=0.3.0"
+
+provides:
+  commands:
+    - name: "speckit.maqa-linear.setup"
+      file: "commands/speckit.maqa-linear.setup.md"
+      description: "Bootstrap Linear config for MAQA. Reads teams and workflow states via API and generates maqa-linear/linear-config.yml."
+
+    - name: "speckit.maqa-linear.populate"
+      file: "commands/speckit.maqa-linear.populate.md"
+      description: "Populate Linear team from specs/*/tasks.md. Creates one issue per feature with task list in description. Skips existing. Safe to re-run."
+
+  config:
+    - name: "maqa-linear/linear-config.yml"
+      template: "config-template.yml"
+      description: "Linear team and state IDs for MAQA coordination"
+      required: true
+
+tags:
+  - "linear"
+  - "project-management"
+  - "multi-agent"
+  - "maqa"
+  - "kanban"

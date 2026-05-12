@@ -7,6 +7,7 @@ export * from "./player-min-level.rule";
 export * from "./player-subevent.rule";
 export * from "./team-base-index.rule";
 export * from "./team-base-gender.rule";
+export * from "./team-continuity.rule";
 export * from "./team-max-base-players.rule";
 export * from "./team-order.rule";
 export * from "./team-riser-faller.rule";
