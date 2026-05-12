@@ -2,19 +2,25 @@ import { User } from "@badman/backend-authorization";
 import { Player } from "@badman/backend-database";
 import { CpDataCollector } from "@badman/backend-generator";
 import { MailingService } from "@badman/backend-mailing";
-import { ConfigType } from "@badman/utils";
+import { ConfigType, IsUUID } from "@badman/utils";
 import {
+  BadGatewayException,
+  BadRequestException,
   Body,
+  ConflictException,
   Controller,
+  ForbiddenException,
   Get,
+  GoneException,
   Headers,
   HttpException,
   Logger,
   NotFoundException,
   Param,
+  PayloadTooLargeException,
   Post,
-  Query,
   Res,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -25,6 +31,7 @@ interface CpGenerationRecord {
   runId: string;
   userId: string;
   eventId: string;
+  locale: string;
   status: "pending" | "completed" | "failed";
   createdAt: Date;
 }
@@ -48,19 +55,20 @@ export class CpController {
   ) {}
 
   @Post("generate")
-  async generate(@User() user: Player, @Body() body: { eventId: string }) {
+  async generate(@User() user: Player, @Body() body: { eventId: string; locale?: string }) {
     if (!user?.id) {
       throw new UnauthorizedException("Authentication required");
     }
 
-    const hasPermission = await user.hasAnyPermission(["export-cp:competition"]);
+    const hasPermission = await user.hasAnyPermission(["edit:competition"]);
+
     if (!hasPermission) {
-      throw new UnauthorizedException("You do not have permission to export CP files");
+      throw new ForbiddenException("Insufficient permissions");
     }
 
-    const { eventId } = body;
-    if (!eventId) {
-      throw new HttpException("eventId is required", 400);
+    const { eventId, locale = "nl_BE" } = body;
+    if (!eventId || !IsUUID(eventId)) {
+      throw new BadRequestException("eventId must be a valid UUID");
     }
 
     // Prevent concurrent generation for the same event
@@ -70,9 +78,8 @@ export class CpController {
       if (record && record.status === "pending") {
         const ageMinutes = (Date.now() - record.createdAt.getTime()) / 1000 / 60;
         if (ageMinutes < 15) {
-          throw new HttpException(
-            "A CP generation is already in progress for this event. Please wait for it to complete.",
-            409
+          throw new ConflictException(
+            "A CP generation is already in progress for this event. Please wait for it to complete."
           );
         }
         // Expired pending record, clean up
@@ -91,9 +98,8 @@ export class CpController {
 
     // Validate size (GitHub workflow_dispatch input limit is 65535 chars)
     if (payloadBase64.length > 65535) {
-      throw new HttpException(
-        `Competition data is too large for export (${payloadBase64.length} chars, max 65535). Contact support.`,
-        413
+      throw new PayloadTooLargeException(
+        `Competition data is too large for export (${payloadBase64.length} chars, max 65535). Contact support.`
       );
     }
 
@@ -104,10 +110,14 @@ export class CpController {
     const callbackUrl = this.configService.get("CP_CALLBACK_URL");
 
     if (!githubToken) {
-      throw new HttpException("CP export is not configured (missing GITHUB_TOKEN_CP)", 503);
+      throw new ServiceUnavailableException(
+        "CP export is not configured (missing GITHUB_TOKEN_CP)"
+      );
     }
     if (!callbackUrl) {
-      throw new HttpException("CP export is not configured (missing CP_CALLBACK_URL)", 503);
+      throw new ServiceUnavailableException(
+        "CP export is not configured (missing CP_CALLBACK_URL)"
+      );
     }
 
     const workflowUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/actions/workflows/generate-cp.yml/dispatches`;
@@ -132,9 +142,8 @@ export class CpController {
     if (response.status !== 204) {
       const errorBody = await response.text();
       this.logger.error(`GitHub API error: ${response.status} ${errorBody}`);
-      throw new HttpException(
-        `Failed to trigger CP generation: GitHub API returned ${response.status}`,
-        502
+      throw new BadGatewayException(
+        `Failed to trigger CP generation: GitHub API returned ${response.status}`
       );
     }
 
@@ -144,6 +153,7 @@ export class CpController {
       runId: trackingId,
       userId: user.id,
       eventId,
+      locale,
       status: "pending",
       createdAt: new Date(),
     };
@@ -190,8 +200,20 @@ export class CpController {
 
     // Also store by run_id for download lookups
     if (matchedTrackingId) {
-      const record = this.generations.get(matchedTrackingId)!;
-      this.generations.set(body.run_id, record);
+      const record = this.generations.get(matchedTrackingId);
+      if (record) {
+        this.generations.set(body.run_id, record);
+      }
+    } else {
+      // No pending record found (e.g. API restarted) — store directly by run_id
+      this.generations.set(body.run_id, {
+        runId: body.run_id,
+        userId: body.user_id,
+        eventId: "",
+        locale: "nl_BE",
+        status: body.status === "completed" ? "completed" : "failed",
+        createdAt: new Date(),
+      });
     }
 
     // Send email notification
@@ -210,9 +232,9 @@ export class CpController {
       throw new UnauthorizedException("Authentication required");
     }
 
-    const hasPermission = await user.hasAnyPermission(["export-cp:competition"]);
+    const hasPermission = await user.hasAnyPermission(["edit:competition"]);
     if (!hasPermission) {
-      throw new UnauthorizedException("You do not have permission to download CP files");
+      throw new ForbiddenException("Insufficient permissions");
     }
 
     // Verify ownership (or admin)
@@ -222,7 +244,7 @@ export class CpController {
     }
 
     if (record.status === "failed") {
-      throw new HttpException("This generation failed. Please try again.", 410);
+      throw new GoneException("This generation failed. Please try again.");
     }
 
     if (record.status === "pending") {
@@ -248,14 +270,12 @@ export class CpController {
 
     if (!artifactsRes.ok) {
       if (artifactsRes.status === 404) {
-        throw new HttpException(
-          "CP file has expired (artifacts are kept for 30 days). Please regenerate.",
-          410
+        throw new GoneException(
+          "CP file has expired (artifacts are kept for 30 days). Please regenerate."
         );
       }
-      throw new HttpException(
-        `Failed to fetch artifact: GitHub API returned ${artifactsRes.status}`,
-        502
+      throw new BadGatewayException(
+        `Failed to fetch artifact: GitHub API returned ${artifactsRes.status}`
       );
     }
 
@@ -277,7 +297,7 @@ export class CpController {
     });
 
     if (!downloadRes.ok) {
-      throw new HttpException(`Failed to download artifact: ${downloadRes.status}`, 502);
+      throw new BadGatewayException(`Failed to download artifact: ${downloadRes.status}`);
     }
 
     // GitHub returns a zip file containing the .cp file
@@ -295,8 +315,10 @@ export class CpController {
       return;
     }
 
+    const record = this.generations.get(runId);
+    const locale = record?.locale;
     const clientUrl = this.configService.get("CLIENT_URL") || "";
-    const downloadUrl = `${clientUrl}/cp/download/${runId}`;
+    const downloadUrl = `${clientUrl}/${locale}/cp/download/${runId}`;
 
     this.logger.log(
       `CP file ready for user ${player.fullName} (${player.email}). Download: ${downloadUrl}`

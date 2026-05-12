@@ -1,33 +1,26 @@
 <!--
 Sync Impact Report
 ==================
-Version change: 1.0.0 → 1.1.0
-Bump rationale: MINOR — material expansion of Principle III (Transactional
-Mutations) to add an idempotency clause for create mutations with natural
-uniqueness keys. The pattern is already established in the codebase
-(`TeamResult.alreadyExisted`, `EnrollmentResult.alreadyExisted`) and is being
-applied to a third resolver (`addPlayerToClub` per spec 004); codifying it
-prevents future drift. No principles removed or redefined.
+Version change: 1.1.0 → 1.1.0 (no change — validation pass only)
+Bump rationale: No user input supplied; validation run on 2026-05-05 confirmed
+  constitution is current and consistent with all templates. No principles added,
+  removed, or redefined. Version unchanged.
 
-Modified principles:
-  - III. Transactional Mutations — added idempotency-on-re-submission clause
+Modified principles: (none)
 Added principles: (none)
-
 Added sections: (none)
 Removed sections: (none)
 
 Templates requiring updates:
-  - ✅ .specify/templates/plan-template.md (no edits — Constitution Check gate
-       still references principles by name)
-  - ✅ .specify/templates/spec-template.md (principle-agnostic; no edits)
-  - ✅ .specify/templates/tasks-template.md (principle-agnostic; no edits)
-  - ✅ AGENTS.md / CLAUDE.md — added explicit "Idempotent create mutations"
-       bullet under Resolver Pattern referencing this principle and the two
-       reference implementations
+  - ✅ .specify/templates/plan-template.md — Constitution Check gate references
+       principles by name; still aligned with all five principles.
+  - ✅ .specify/templates/spec-template.md — principle-agnostic; no edits needed.
+  - ✅ .specify/templates/tasks-template.md — principle-agnostic; no edits needed.
+  - ✅ .specify/templates/commands/ — no command files present; nothing to check.
 
 Deferred / TODO:
   - TODO(RATIFICATION_DATE): Original adoption date unknown. Placeholder
-    2026-04-29 retained.
+    2026-04-29 retained. Update when the exact date is known.
 -->
 
 # Badman Constitution
