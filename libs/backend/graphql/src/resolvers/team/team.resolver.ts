@@ -261,8 +261,6 @@ export class TeamsResolver {
         }
       }
 
-      // Placeholder number; authoritative numbers come from recalculateTeamNumbersForGroup. Spec 008.
-      // The wizard calls recalculateTeamNumbersForGroup after createTeam to assign final numbers.
       if (!newTeamData.teamNumber) {
         const types = [newTeamData.type];
         if (nationalCountsAsMixed && newTeamData.type === SubEventTypeEnum.MX) {
@@ -476,12 +474,6 @@ export class TeamsResolver {
       if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:club`, "edit-any:club"]))) {
         throw new UnauthorizedException(`You do not have permission to update a team`);
       }
-
-      // teamNumber is intentionally NOT written by updateTeam (spec 008, FR-004).
-      // The recalculateTeamNumbersForGroup mutation is the sole writer of teamNumber,
-      // name, and abbreviation. The conflict-check + shift-blocks + _temp dance that
-      // previously lived here have been removed; they were the root cause of the
-      // TEAM_NUMBER_CONFLICT deadlock in BAD-152.
 
       if (updateTeamData.players) {
         const playerIds = updateTeamData.players.map((p) => p.id);

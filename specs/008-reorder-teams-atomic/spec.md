@@ -2,7 +2,7 @@
 
 **Feature Branch**: `008-reorder-teams-atomic`
 **Created**: 2026-05-05
-**Status**: Draft
+**Status**: **Superseded (2026-05-12)** by badman-frontend spec 018 (`enrollment-state-rewrite`). The wizard reintroduced client-side team numbering and submits final numbers via `submitEnrollment`; no caller of `recalculateTeamNumbersForGroup` remains. Backend mutation, service, tests, and the `TEAM_NUMBER_CONFLICT` error code were removed. The atomic two-phase write that solved the BAD-152 deadlock still lives in `TeamWriteService.applyTeamNumbersTwoPhase`, exercised by `submitEnrollment`.
 **Input**: User description: "Backend fix — team renumber deadlock. Team numbering inside a `(clubId, season, type)` group is derived from each team's `baseIndex` (sum of best players' rankings — lower is stronger). Strongest team gets `1`, next `2`, and so on. Any roster edit, team create, or team import changes one team's `baseIndex` and therefore the numbering for every team in the group. Today the frontend tries to express this re-numbering as parallel partial `updateTeam` calls; they deadlock on a resolver-level uniqueness check and produce `TEAM_NUMBER_CONFLICT`. Provide a server-side primitive that recomputes `(clubId, season, type)` numbering atomically from current rosters."
 
 ## Clarifications

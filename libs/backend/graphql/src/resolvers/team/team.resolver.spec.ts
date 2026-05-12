@@ -522,10 +522,6 @@ describe("TeamsResolver.updateTeam", () => {
     expect(mockTransaction.rollback).toHaveBeenCalled();
   });
 
-  // US4 (spec 008 FR-004): updateTeam no longer writes teamNumber / name / abbreviation.
-  // The conflict-check + shift-blocks + _temp dance are removed. The sole writer of
-  // those fields is recalculateTeamNumbersForGroup.
-
   it("commits and returns team when a roster-only edit succeeds", async () => {
     const user = userWithPermission(true);
     const dbTeam = stubDbTeam({ teamNumber: 3 });
