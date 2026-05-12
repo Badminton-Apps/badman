@@ -393,12 +393,21 @@ export class NotificationService {
   }
 
   async notifyEnrollment(userId: string, clubId: string, season: number, email: string) {
+    this._logger.log(
+      `[notifyEnrollment] Starting enrollment notification — userId: ${userId}, clubId: ${clubId}, season: ${season}, adminEmail: ${email}`
+    );
+
     const notifierEnrollment = new ClubEnrollmentNotifier(this.mailing, this.push);
 
     const user = await Player.findByPk(userId);
     if (!user) {
+      this._logger.error(`[notifyEnrollment] User not found — userId: ${userId}`);
       throw new Error("User not found");
     }
+
+    this._logger.log(
+      `[notifyEnrollment] User loaded — ${user.fullName} (${user.email})`
+    );
 
     const club = await Club.findByPk(clubId, {
       include: [
@@ -431,8 +440,13 @@ export class NotificationService {
     });
 
     if (!club) {
+      this._logger.error(`[notifyEnrollment] Club not found — clubId: ${clubId}`);
       throw new Error("Club not found");
     }
+
+    this._logger.log(
+      `[notifyEnrollment] Club loaded — ${club.name}, teams in season: ${club.teams?.length ?? 0}`
+    );
 
     const locations = await club.getLocations({
       include: [{ model: Availability, where: { season } }],
@@ -473,6 +487,12 @@ export class NotificationService {
     });
 
     club.teams?.map((team) => {
+      if (!team?.entry?.meta?.competition) {
+        this._logger.warn(
+          `[notifyEnrollment] Team ${team.name} (id: ${team.id}) has no enrollment meta — base players will be empty in the email`
+        );
+      }
+
       const basePlayers = {
         ...team?.entry?.meta?.competition?.players.map((player) => {
           const basePlayer = players.find((p) => p.id === player.id);
@@ -490,16 +510,29 @@ export class NotificationService {
 
     club.teams = club?.teams?.sort(sortTeams);
     const url = `${this.configService.get("CLIENT_URL")}/club/${club.id}`;
+    const resolvedEmail = email || user.email || "";
+
+    this._logger.log(
+      `[notifyEnrollment] Dispatching notification — to: ${resolvedEmail}, cc: jeroen@badmintonvlaanderen.be, locations: ${locations.length}, comments: ${comments.length}, url: ${url}`
+    );
+
+    if (!resolvedEmail) {
+      this._logger.warn(
+        `[notifyEnrollment] No email address resolved — adminEmail: "${email}", user.email: "${user.email}". Notification will be skipped by notifier.`
+      );
+    }
 
     notifierEnrollment.notify(
       user,
       clubId,
       { club, locations, comments },
-      { email: email || user.email || "", url },
+      { email: resolvedEmail, url },
       {
         email: true,
       }
     );
+
+    this._logger.log(`[notifyEnrollment] Notification dispatched for club ${club.name}`);
   }
 
   async notifySyncEncounterFailed({
