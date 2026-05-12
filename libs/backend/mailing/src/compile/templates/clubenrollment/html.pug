@@ -30,7 +30,7 @@ block content
                   | #{ " " }#{ team.name }
                   br
                   strong Afdeling:
-                  if team && team.entry && team.entry.subEventCompetition && team.entry.subEventCompetition.eventCompetition && team.entry.subEventCompetition.name
+                  if team?.entry?.subEventCompetition?.eventCompetition?.name && team?.entry?.subEventCompetition?.name
                     | #{ " " }#{ team.entry.subEventCompetition.eventCompetition.name } - #{ team.entry.subEventCompetition.name }
                   else
                     strong(style="color: red") Geen afdeling gekozen
@@ -43,7 +43,7 @@ block content
                   br
                   strong Basisspelers:
                   ul
-                  each player in team.entry.meta.competition.players
+                  each player in team.entry?.meta?.competition?.players || []
                     li #{ player.firstName }#{ " " }#{ player.lastName }
                       small #{ " " }(#{ player.memberId })
                         if team.type == "MX"
