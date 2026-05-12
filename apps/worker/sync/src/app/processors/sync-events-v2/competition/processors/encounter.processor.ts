@@ -203,6 +203,9 @@ export class EncounterCompetitionProcessor {
     });
 
     for (const dbGame of dbGames) {
+      // Never destroy locally-generated competition games (they start with visualCode=null)
+      if (!dbGame.visualCode) continue;
+
       if (!matches.find((r) => `${r.Code}` === `${dbGame.visualCode}`)) {
         this.logger.debug(`Removing game ${dbGame.visualCode}`);
         await dbGame.destroy({ transaction });
