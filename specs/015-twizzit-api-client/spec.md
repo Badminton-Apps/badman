@@ -1,6 +1,6 @@
 # Feature Specification: Twizzit API Client (Phases 0–2 Foundation)
 
-**Feature Branch**: `feat/twizzit-integration`
+**Feature Branch**: `015-twizzit-api-client`
 **Created**: 2026-05-12
 **Status**: Draft
 **Input**: User description: "Use docs/twizzit. Spec phases 0, 1, 2 only. Check requirements. api-exploration overview must be validated against the live API. We have API credentials. Goal: typed functions for every Twizzit endpoint we will use, each with zod validation, tests, and error handling. NOT a goal: writing anything to the database."
@@ -26,6 +26,7 @@ The deliverable here is a **library** that future sync work consumes — not a s
 - Q: Token caching & refresh policy? → A: In-memory per `TwizzitClient` instance. Proactive refresh at ≥80% of the JWT `exp` lifetime; reactive 401-retry as fallback. Never persisted to disk or Redis.
 - Q: Logger sink contract? → A: Optional minimal `Logger` interface in config (`{ debug, info, warn, error: (msg, meta?) => void }`); default no-op. Consumer adapts Pino / Nest `Logger` / winston as needed.
 - Q: Soft-delete representation (gap Q5) & default zod strictness? → A: Strict zod everywhere — no `.passthrough()` escape hatch. If Twizzit adds a `deleted`/`archived`/`status` flag (or any other field), the next live run surfaces a `TwizzitValidationError`, we record a fixture, bump the schema, and ship a deliberate change. Drift never silently degrades.
+- Note (post-clarification, live data 2026-05-12): the `/authenticate` response carries `created-on` and `valid-till` (unix-seconds, kebab-case). Observed `valid-till - created-on` = 1800 s; the JWT's own `exp` claim suggests 24 h. **The response body wins** — the lib treats the JWT as opaque and uses `valid-till` for the 80 %-lifetime proactive refresh. `/organizations` confirmed to return `[{ id: 34245, name: "Badminton Belgium" }]` as documented; no schema change needed for that endpoint.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -142,7 +143,7 @@ The test suite runs hermetically in CI without hitting the live Twizzit API. Rec
 - **FR-019**: A live-mode test suite MUST exist, gated behind `RUN_TWIZZIT_LIVE_TESTS=1` (or equivalent, decided in Phase 1), that exercises the same functions against staging Twizzit. CI MUST NOT enable live mode by default.
 - **FR-020**: The client MUST NOT write to the Badman database. It MUST NOT import `@badman/backend-database`, `@badman/backend-queue`, `@badman/backend-graphql`, or any other module that performs persistence. (This is the hard scope boundary for this spec.)
 - **FR-021**: For list endpoints, pagination MUST be transparent: each list function loops Twizzit's offset-based pagination (`limit` + `offset` query parameters) internally and returns the full validated list to the caller. Each list function MUST accept an optional `{ pageSize?: number; maxPages?: number }` argument so callers can bound a pull when needed; `maxPages` MUST default to a documented finite value (no infinite loops). Multi-page behaviour MUST be exercised by a recorded-fixture test that captures at least two pages of response.
-- **FR-022**: The bearer token MUST be cached in memory on the `TwizzitClient` instance and MUST NOT be persisted to disk, Redis, or any shared store (per N4.1). The client MUST parse the JWT `exp` claim (when present) and refresh the token proactively once ≥80% of the token's lifetime has elapsed. If `exp` is absent or unparsable, the client MUST fall back to the reactive `401`-retry path (FR-013). Token refresh failures MUST surface as `TwizzitAuthError` (FR-015).
+- **FR-022**: The bearer token MUST be cached in memory on the `TwizzitClient` instance and MUST NOT be persisted to disk, Redis, or any shared store (per N4.1). The client MUST compute token lifetime from the `created-on` and `valid-till` fields returned in the `/authenticate` response body (both unix-seconds) and refresh the token proactively once ≥80 % of the lifetime has elapsed. The JWT itself MUST be treated as opaque — its `exp` claim is not parsed because the response body's `valid-till` is shorter and therefore binding. If `valid-till` is absent on a future response, the client MUST fall back to the reactive `401`-retry path (FR-013) and the strict-zod schema MUST surface the missing field as a `TwizzitValidationError`. Token refresh failures MUST surface as `TwizzitAuthError` (FR-015).
 
 ### Key Entities
 
