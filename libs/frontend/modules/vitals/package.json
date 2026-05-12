@@ -2,7 +2,7 @@
   "name": "@badman/frontend-vitals",
   "version": "6.185.0",
   "peerDependencies": {
-    "@angular/core": "19.2.6",
+    "@angular/core": "20.3.16",
     "web-vitals": "^4.2.4",
     "@angular/common": "19.2.6"
   },

@@ -11,7 +11,7 @@
     "@badman/frontend-graphql": "*",
     "@badman/frontend-html-injects": "*",
     "@angular/common": "19.2.6",
-    "@angular/core": "19.2.6",
+    "@angular/core": "20.3.16",
     "@angular/router": "19.2.6",
     "@angular/forms": "19.2.6",
     "@angular/material": "19.2.9",
