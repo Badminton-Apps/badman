@@ -25,6 +25,7 @@
       "@badman/backend-cluster": ["libs/backend/cluster/src/index.ts"],
       "@badman/backend-compile": ["libs/backend/compile/src/index.ts"],
       "@badman/backend-database": ["libs/backend/database/src/index.ts"],
+      "@badman/backend-encounter-games": ["libs/backend/competition/encounter-games/src/index.ts"],
       "@badman/backend-enrollment": ["libs/backend/competition/enrollment/src/index.ts"],
       "@badman/backend-generator": ["libs/backend/generator/src/index.ts"],
       "@badman/backend-graphql": ["libs/backend/graphql/src/index.ts"],
@@ -84,6 +85,7 @@
       "@badman/frontend-twizzit": ["libs/frontend/modules/twizzit/src/index.ts"],
       "@badman/frontend-utils": ["libs/frontend/modules/utils/src/index.ts"],
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
+      "@badman/integrations-twizzit-client": ["libs/integrations/twizzit-client/src/index.ts"],
       "@badman/utils": ["libs/utils/src/index.ts"]
     }
   },
