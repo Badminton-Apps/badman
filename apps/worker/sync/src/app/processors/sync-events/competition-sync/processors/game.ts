@@ -1,3 +1,4 @@
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import {
   EncounterCompetition,
   Game,
@@ -13,7 +14,7 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from "@badman/backend-visual";
-import { GameStatus, GameType, getRankingProtected, runParallel } from "@badman/utils";
+import { GameLinkType, GameStatus, GameType, getRankingProtected, runParallel } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { isAfter, isBefore, subWeeks } from "date-fns";
 import { Op } from "sequelize";
@@ -32,6 +33,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
+    protected readonly encounterGamesGenerationService: EncounterGamesGenerationService,
     options?: StepOptions
   ) {
     if (!options) {
@@ -81,6 +83,32 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     internalId: number,
     games: Game[]
   ) {
+    // Ensure all 8 local game slots exist. Runs BEFORE the sync guards so
+    // the invariant holds even when we skip the toernooi merge (e.g. encounter
+    // is in the future or finished). Idempotent — skips orders already present.
+    // Requires a home team to resolve assembly positions; skip with a warning
+    // otherwise rather than crashing the whole event sync.
+    if (encounter.homeTeamId) {
+      try {
+        await this.encounterGamesGenerationService.generateGames(encounter.id, this.transaction);
+        games = await Game.findAll({
+          where: {
+            linkId: encounter.id,
+            linkType: GameLinkType.COMPETITION,
+          },
+          transaction: this.transaction,
+        });
+      } catch (err) {
+        this.logger.warn(
+          `generateGames failed for encounter ${encounter.id} (${(err as Error)?.message}) — continuing without slot generation`
+        );
+      }
+    } else {
+      this.logger.warn(
+        `Skipping generateGames for encounter ${encounter.id} — no homeTeamId set`
+      );
+    }
+
     // only get info for games that have been played
     const isAFutureEncounter = isAfter(new Date(encounter.date), new Date());
     if (isAFutureEncounter || !encounter.date) {
@@ -104,12 +132,10 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
 
     const visualMatch = result.filter((m) => m != null || m != undefined) as XmlMatch[];
 
-    // Protection: Compare data completeness between toernooi.nl and local data
-    const shouldSkipSync = this._shouldSkipGameSync(encounter, visualMatch, games);
-    if (shouldSkipSync) {
-      return;
-    }
-
+    // Merge toernooi data into local games. Toernooi is the source of truth
+    // and will overwrite fields where it has data; the per-field guards below
+    // (e.g. `if (xmlGame.Winner != null || game.winner == null)`) ensure that
+    // locally-entered data is NOT overwritten when toernooi's field is empty.
     for (const xmlMatch of visualMatch) {
       // Try to find existing game with multiple fallback strategies to prevent duplicates
       let game = games.find(
@@ -166,7 +192,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           gameType: this._getGameType(xmlMatch.MatchTypeID),
           order: xmlMatch.MatchOrder,
           linkId: encounter.id,
-          linkType: "competition",
+          linkType: GameLinkType.COMPETITION,
           status: gameStatus,
           playedAt: encounter.date,
           set1Team1: xmlMatch?.Sets?.Set?.[0]?.Team1,
@@ -195,8 +221,12 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         }
 
         if (game.winner != reverseMapWinnerValue(xmlMatch.Winner)) {
-          // Only update winner if toernooi.nl has data OR if we have no existing data
-          if (xmlMatch.Winner != null || game.winner == null) {
+          // Toernooi sends Winner=0 for scheduled-but-not-yet-played games.
+          // Treat that as "no data" — don't overwrite a locally-entered winner
+          // with the NOT_YET_PLAYED sentinel. Only overwrite when toernooi
+          // reports a real outcome (Winner > 0) or when local is empty.
+          const hasToernooiWinner = xmlMatch.Winner != null && xmlMatch.Winner !== 0;
+          if (hasToernooiWinner || game.winner == null) {
             game.winner = reverseMapWinnerValue(xmlMatch.Winner);
           }
         }
@@ -240,7 +270,15 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           }
         }
 
-        if (game.status !== gameStatus) {
+        // Only overwrite status when toernooi has a confirmed outcome:
+        // either a real Winner (played) or an explicit non-Normal ScoreStatus
+        // (walkover / retirement / disqualified / no-match). Otherwise leave
+        // local status alone — a default Normal from an unplayed toernooi
+        // slot must not override a locally-entered Walkover/Retirement.
+        const hasToernooiOutcome =
+          (xmlMatch.Winner != null && xmlMatch.Winner !== 0) ||
+          xmlMatch.ScoreStatus !== XmlScoreStatus.Normal;
+        if (game.status !== gameStatus && (hasToernooiOutcome || game.status == null)) {
           game.status = gameStatus;
         }
       }
@@ -280,12 +318,13 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       }
     }
 
-    // Remove draw that are not in the xml
-    const removedGames = games.filter((g) => g.visualCode == null);
-    for (const removed of removedGames) {
-      await removed.destroy({ transaction: this.transaction });
-      games.splice(games.indexOf(removed), 1);
-    }
+    // Note: we intentionally do NOT delete games with visualCode == null here.
+    // Those are local slots (created by generateGames or entered manually) and
+    // must persist to maintain the "always 8 games per encounter" invariant.
+    // If a game was synced before (has visualCode) and no longer matches a
+    // toernooi entry, it is left as-is rather than destroyed — deletion of
+    // orphaned synced games happens in _destroyEncounters at the encounter
+    // level, not here.
 
     this._games = this._games.concat(games);
   }
@@ -482,58 +521,4 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     return returnPlayer;
   }
 
-  /**
-   * Determines if game sync should be skipped based on data completeness comparison
-   * between toernooi.nl and local data
-   */
-  private _shouldSkipGameSync(
-    encounter: EncounterCompetition,
-    visualMatches: XmlMatch[],
-    localGames: Game[]
-  ): boolean {
-    // Count complete games in toernooi.nl (games with set scores)
-    const completeVisualGames = visualMatches.filter((xmlMatch) => {
-      const sets = xmlMatch?.Sets?.Set;
-      if (!sets) {
-        return false;
-      }
-
-      // Normalize to array format
-      const setsArray = Array.isArray(sets) ? sets : [sets];
-
-      // Check if any set has scores
-      return setsArray.some(
-        (set) => set?.Team1 != null && set?.Team2 != null && (set.Team1 > 0 || set.Team2 > 0)
-      );
-    }).length;
-
-    // Count complete games in local data (games with set scores and playedAt)
-    const completeLocalGames = localGames.filter((game) => {
-      const hasPlayedAt = game.playedAt != null;
-      const hasWinner = game.winner != null && game.winner > 0;
-      const hasSetScores =
-        (game.set1Team1 != null && game.set1Team2 != null) ||
-        (game.set2Team1 != null && game.set2Team2 != null) ||
-        (game.set3Team1 != null && game.set3Team2 != null);
-
-      return hasPlayedAt && hasSetScores && hasWinner;
-    }).length;
-
-    // Skip sync if local data is more complete than or equal to toernooi.nl data
-    const shouldSkip = completeLocalGames >= completeVisualGames && completeLocalGames > 0;
-
-    if (shouldSkip) {
-      this.logger.debug(
-        `Skipping game sync for encounter ${encounter.id} - local data is more complete ` +
-          `(local: ${completeLocalGames} complete games, toernooi.nl: ${completeVisualGames} complete games)`
-      );
-    } else {
-      this.logger.debug(
-        `Proceeding with game sync for encounter ${encounter.id} - toernooi.nl has more complete data ` +
-          `(local: ${completeLocalGames} complete games, toernooi.nl: ${completeVisualGames} complete games)`
-      );
-    }
-
-    return shouldSkip;
-  }
 }

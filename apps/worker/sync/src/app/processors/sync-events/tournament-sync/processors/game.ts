@@ -13,7 +13,7 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from "@badman/backend-visual";
-import { GameStatus, getRankingProtected, runParallel } from "@badman/utils";
+import { GameLinkType, GameStatus, getRankingProtected, runParallel } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { isBefore, subWeeks } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
@@ -156,7 +156,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           gameType: subEvent?.gameType,
           visualCode: xmlMatch.Code,
           linkId: draw.id,
-          linkType: "tournament",
+          linkType: GameLinkType.TOURNAMENT,
           status: gameStatus,
           playedAt,
           set1Team1: xmlMatch?.Sets?.Set[0]?.Team1,

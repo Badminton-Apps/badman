@@ -284,7 +284,18 @@ export const XmlMatchSchema = z
     RoundName: z.string().optional(),
   })
   .passthrough();
-// Legacy interface preserved — consumers reach into Sets/Stats/Team1/Team2.
+/**
+ * One individual game. Returned by:
+ * - `getTeamMatch(tourneyId, encounterCode)` — games within a competition encounter (up to 8)
+ * - `getGames(tourneyId, drawCode)` when the draw is a tournament draw (individual brackets)
+ * - `getGame(tourneyId, matchId)` — single game detail (byes excluded)
+ *
+ * **Runtime vs declared types**: `Code`, `EventCode`, `DrawCode` are declared
+ * as `string` but are coerced to `number` at runtime by
+ * `VisualService._normalizeTypes`. Treat them as numbers when consuming.
+ *
+ * Legacy interface preserved — consumers reach into Sets/Stats/Team1/Team2.
+ */
 export interface XmlMatch {
   Code: string;
   Winner?: number;
@@ -330,7 +341,19 @@ export const XmlTeamMatchSchema = z
     Sets: XmlSetsSchema.optional(),
   })
   .passthrough();
-// Legacy interface preserved — consumers reach into Sets/Team1/Team2.
+/**
+ * One encounter within a competition draw (poule). Returned by
+ * `getGames(tourneyId, drawCode)` when the draw is a competition poule.
+ *
+ * **Runtime vs declared types**: `Code`, `ScoreStatus`, `EventCode`, `DrawCode`
+ * are declared as `string` but are coerced to `number` at runtime by
+ * `VisualService._normalizeTypes`. Treat them as numbers when consuming.
+ *
+ * `Sets` is the aggregate team score (single `{Team1, Team2}` entry with the
+ * encounter's games-won tally, e.g. 6-2), NOT per-game set scores.
+ *
+ * Legacy interface preserved — consumers reach into Sets/Team1/Team2.
+ */
 export interface XmlTeamMatch {
   Code: string;
   Winner?: number;

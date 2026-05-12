@@ -26,7 +26,7 @@ import {
   HasManySetAssociationsMixin,
 } from "sequelize";
 import { SubEventTournament } from "./sub-event-tournament.model";
-import { DrawType } from "@badman/utils";
+import { DrawType, GameLinkType } from "@badman/utils";
 import { Game } from "../game.model";
 import { Standing } from "../standing.model";
 import { EventEntry } from "../entry.model";
@@ -74,7 +74,7 @@ export class DrawTournament extends Model {
     foreignKey: "linkId",
     constraints: false,
     scope: {
-      linkType: "tournament",
+      linkType: GameLinkType.TOURNAMENT,
     },
   })
   games?: Relation<Game[]>;

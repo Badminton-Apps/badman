@@ -1,3 +1,4 @@
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService } from "@badman/backend-ranking";
 import { VisualService, XmlTournament, XmlTournamentTypeID } from "@badman/backend-visual";
@@ -31,9 +32,14 @@ export class SyncEventsProcessor {
     pointService: PointsService,
     private notificationService: NotificationService,
     private visualService: VisualService,
-    private _sequelize: Sequelize
+    private _sequelize: Sequelize,
+    private _encounterGamesGenerationService: EncounterGamesGenerationService
   ) {
-    this._competitionSync = new CompetitionSyncer(this.visualService, pointService);
+    this._competitionSync = new CompetitionSyncer(
+      this.visualService,
+      pointService,
+      this._encounterGamesGenerationService
+    );
     this._tournamentSync = new TournamentSyncer(this.visualService, pointService);
   }
 
