@@ -2,6 +2,7 @@ import { CronJob, EventCompetition, EventTournament } from "@badman/backend-data
 import { NotificationService } from "@badman/backend-notifications";
 import { VisualService, XmlTournamentTypeID } from "@badman/backend-visual";
 import { PointsService } from "@badman/backend-ranking";
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { Test, TestingModule } from "@nestjs/testing";
 import { SyncEventsProcessor } from "../sync-events.processor";
 import { CompetitionSyncer } from "../competition-sync";
@@ -106,6 +107,10 @@ describe("SyncEventsProcessor", () => {
         { provide: NotificationService, useValue: notificationService },
         { provide: PointsService, useValue: pointsService },
         { provide: Sequelize, useValue: sequelize },
+        {
+          provide: EncounterGamesGenerationService,
+          useValue: { generate: jest.fn().mockResolvedValue(undefined) },
+        },
       ],
     }).compile();
 

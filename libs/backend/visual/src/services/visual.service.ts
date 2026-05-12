@@ -104,6 +104,15 @@ export class VisualService {
     );
   }
 
+  /**
+   * GET /Tournament/{tourneyId}/TeamMatch/{matchId}
+   *
+   * Fetches the individual games within a competition encounter (TeamMatch).
+   *
+   * **Use this for competition encounters.** Returns up to 8 individual
+   * `XmlMatch` records (singles + doubles) — each with MatchOrder, MatchTypeID,
+   * per-set scores, and player MemberIDs.
+   */
   async getTeamMatch(
     tourneyId: string,
     matchId: string | number,
@@ -118,6 +127,11 @@ export class VisualService {
   }
 
   /**
+   * GET /Tournament/{tourneyId}/MatchDetail/{matchId}
+   *
+   * Fetches a single game's detail. Note: byes do NOT appear in this endpoint —
+   * use getGames or getTeamMatch at the parent level to see byes.
+   *
    * The MatchDetail endpoint may return either a single match or an array
    * (XML quirk: 0/1/many sibling tags map to absent / object / array).
    * Always normalise to an array — downstream code shouldn't have to
@@ -136,6 +150,22 @@ export class VisualService {
     );
   }
 
+  /**
+   * GET /Tournament/{tourneyId}/Draw/{drawId}/Match
+   *
+   * Fetches the contents of a draw. Return shape depends on draw type:
+   *
+   * - **Competition draw (poule)** → `XmlTeamMatch[]` — one per encounter.
+   *   Each item has `Code` (encounter code), `Team1`, `Team2`, `MatchTime`,
+   *   `RoundName`, and `Sets.Set` = aggregate team score. No `MatchOrder`.
+   * - **Tournament draw** (individual) → `XmlMatch[]` — individual games with
+   *   `MatchOrder`, `MatchTypeID`, per-set scores, etc.
+   *
+   * **Do NOT** call this with a competition encounter code — the VR API will
+   * treat it as a draw lookup and return the unrelated TeamMatches that happen
+   * to share the numeric ID. For encounter-level game fetch use
+   * {@link VisualService.getTeamMatch}.
+   */
   async getGames(
     tourneyId: string,
     drawId: string | number,

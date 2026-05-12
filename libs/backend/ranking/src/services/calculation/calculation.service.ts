@@ -69,7 +69,7 @@ export class CalculationService {
       const updates = getRankingPeriods(system, fromDateM, toDateM);
 
       if (updates.length === 0) {
-        this.logger.log(`Simulation finished ${system.name}`);
+        this.logger.log(`Simulation for ${system.name}: no periods to update`);
         return;
       }
 
@@ -80,20 +80,18 @@ export class CalculationService {
       );
       const maxUpdate = moment(updates[updates.length - 1].date);
 
+      const rankingUpdateCount = updates.filter((u) => u.updatePossible).length;
       this.logger.log(
-        `Simulation for ${system.name} has ${updates.length} point updates planned, including ${
-          updates.filter((u) => u.updatePossible).length
-        } ranking updates, between ${minUpdatePlace?.format("YYYY-MM-DD")} and ${maxUpdate?.format("YYYY-MM-DD")}
-        `
+        `Simulation for ${system.name}: ${updates.length} period(s) to process, ${rankingUpdateCount} with ranking updates, from ${minUpdatePlace?.format("YYYY-MM-DD")} to ${maxUpdate?.format("YYYY-MM-DD")}`
       );
 
       // If we changed the system, we might have to recalculate the points,
       // Setting recalculatePoints to true will delete all points and recalculate them
       if (recalculatePoints) {
-        this.logger.verbose(
-          `Recalculate points for ${system.name}, between ${minUpdatePoints?.format(
+        this.logger.log(
+          `Recalculating all points for ${system.name} from ${minUpdatePoints?.format(
             "YYYY-MM-DD"
-          )} and ${maxUpdate?.format("YYYY-MM-DD")}`
+          )} to ${maxUpdate?.format("YYYY-MM-DD")}`
         );
         await RankingPoint.destroy({
           where: {
@@ -123,10 +121,14 @@ export class CalculationService {
       }
 
       for (const [index, { date, updatePossible }] of updates.entries()) {
-        this.logger.debug(
-          `points and ranking for date: ${moment(date).format("YYYY-MM-DD")}, ${updatePossible}, ${index} / ${
-            updates.length
-          }, calculateRanking: ${calculateRanking}, calculatePlaces: ${calculatePlaces}, calculatePoints: ${calculatePoints}`
+        const periodNum = index + 1;
+        const actions: string[] = [];
+        if (calculatePoints) actions.push("points");
+        if (calculatePlaces) actions.push("places");
+        if (calculateRanking && updatePossible) actions.push("rankings");
+
+        this.logger.log(
+          `[${periodNum}/${updates.length}] Processing ${moment(date).format("YYYY-MM-DD")}: ${actions.join(", ")}`
         );
 
         const startUpdate = moment();
@@ -155,19 +157,22 @@ export class CalculationService {
         const duration = moment.duration(stopUpdate.diff(startUpdate));
 
         this.logger.log(
-          `Simulation for ${system.name} finished in ${duration.asSeconds()} seconds`
+          `[${periodNum}/${updates.length}] Completed ${moment(date).format("YYYY-MM-DD")} in ${duration.asSeconds().toFixed(1)}s`
         );
       }
 
       if (transaction) {
         await transaction?.commit();
       }
-      this.logger.log(`Simulation finished ${system.name}`);
+      this.logger.log(
+        `Simulation for ${system.name} completed successfully: ${updates.length} period(s) processed`
+      );
     } catch (e) {
       if (transaction) {
         await transaction.rollback();
       }
-      this.logger.error(e);
+      const errorMsg = e instanceof Error ? e.message : String(e);
+      this.logger.error(`Simulation for ${system.name} failed: ${errorMsg}`, e instanceof Error ? e.stack : "");
       throw e;
     } finally {
       system.runCurrently = false;
