@@ -7,7 +7,7 @@
     "@badman/frontend-models": "*",
     "@badman/frontend-utils": "*",
     "@angular/core": "19.2.6",
-    "@angular/common": "19.2.6",
+    "@angular/common": "20.3.14",
     "@angular/router": "19.2.6",
     "ngx-markdown": "^19.1.0",
     "@angular/forms": "19.2.6",
