@@ -119,6 +119,7 @@ export class SubmitEnrollmentService {
       const entry = await this.enrollmentEntryService.createEntry({
         teamId: core.teamId,
         subEventId: team.subEventId,
+        basePlayers: team.basePlayers,
         transaction,
         user,
       });
@@ -228,6 +229,7 @@ export class SubmitEnrollmentService {
 
     // basePlayers ⊆ players
     for (const team of teams) {
+      //base players are a part of the players array
       const invalidBase = team.basePlayers.filter((bp) => !team.players.includes(bp));
       if (invalidBase.length > 0) {
         throw new GraphQLError(`basePlayers must be a subset of players`, {
