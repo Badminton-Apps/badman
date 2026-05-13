@@ -166,6 +166,27 @@ Earlier name: `FederationContactSource`. Renamed to `FederationGateway` because 
 - `FederationDataSource` — fine but TypeORM/Apollo-flavored.
 - Full hexagonal port/adapter split — rejected as speculative.
 
+### Package layout (2026-05-13 follow-up)
+
+The current layout keeps `gateway.ts` + `federation.ts` (pure type definitions, zero behaviour, zero dependencies on anything else in the lib) co-located with the Twizzit implementation inside `libs/integrations/twizzit-client`. This was a deliberate choice over extracting a separate `libs/integrations/federation-core` shared library now.
+
+**Why not extract `federation-core` upfront**:
+- Both files are zero-implementation interface declarations. Moving them later is a `git mv` + an Nx generator + import-path updates — well under an hour.
+- Per gap-doc G5, LFBB may share the Twizzit tenant with a different membership-type mapping; that's a *config* difference, not a *gateway* difference. The second concrete implementation may never materialise.
+- Premature abstraction is a documented anti-pattern in [CLAUDE.md](../../CLAUDE.md): "three similar lines is better than a premature abstraction."
+
+**Extraction recipe** (when a non-Twizzit federation actually arrives):
+
+1. `npx nx g @nx/js:library federation-core --directory=libs/integrations --bundler=none`.
+2. `git mv libs/integrations/twizzit-client/src/{federation,gateway}.ts libs/integrations/federation-core/src/`.
+3. Update `libs/integrations/federation-core/src/index.ts` to barrel-export everything from those two files.
+4. In `libs/integrations/twizzit-client/src/`: replace `from "./federation"` / `from "./gateway"` imports with `from "@badman/integrations-federation-core"`. Re-export the same names from `index.ts` for backwards compatibility (or break and update consumers — your call at that moment).
+5. The new federation's client (`libs/integrations/lfbb-client` or whatever) depends on `@badman/integrations-federation-core` and implements `FederationGateway`. Zero dependency on twizzit-client.
+
+**Consumer-side discipline (carried forward)**: when `apps/worker/sync` (or any other consumer) is wired up in a future phase, it MUST code against `FederationGateway` — never against `TwizzitClient` directly. That keeps the eventual extraction mechanical. The consumer's DI / construction site is the one place that names the concrete implementation.
+
+**Net**: today's structure satisfies FR-008 fully; the extraction path is documented and cheap; nothing locked in.
+
 ---
 
 ## R10. Open Twizzit-side questions (SC-007)
