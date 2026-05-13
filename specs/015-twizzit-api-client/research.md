@@ -33,7 +33,7 @@ The lib does NOT re-export axios types (`AxiosError`, `AxiosInstance`) — all c
 
 ## R2. Base URL
 
-**Decision**: `https://app.twizzit.com/v2/api` is the default base URL, derived from the Swagger documentation URL `https://app.twizzit.com/v2/api/documentation/...` in `docs/twizzit/twizzit-api-reference-index.md`. The base URL MUST be overridable via the `TWIZZIT_BASE_URL` environment variable (and as a programmatic config field) so a future staging-only host or local mock server can be slotted in without code changes.
+**Decision**: `https://app.twizzit.com/v2/api` is the default base URL, derived from the Swagger documentation URL `https://app.twizzit.com/v2/api/documentation/...` in `docs/twizzit/twizzit-api-reference-index.md`. The base URL MUST be overridable via the `TWIZZIT_API` environment variable (read by the consumer; see R6) and as a programmatic config field, so a future staging-only host or local mock server can be slotted in without code changes.
 
 **Rationale**: One production host today; same host serves the staging API key (separate tenant), per the spec's Assumption. The override hook is FR-019-adjacent — it lets the live-test harness target a staging URL if Twizzit ever surfaces one.
 
@@ -96,15 +96,16 @@ The lib does NOT re-export axios types (`AxiosError`, `AxiosInstance`) — all c
 
 ## R6. Environment variables
 
-**Decision**: Three env vars, all owned by the consumer (not the lib):
+**Decision (2026-05-13 revision)**: Reuse the **existing project-wide TWIZZIT env-var names** (per [`.env.example`](../../.env.example)) so consumers, legacy sync code, and live tests all read from a single set of variables:
 
 | Name | Required | Purpose |
 |------|----------|---------|
-| `TWIZZIT_USERNAME` | Yes | Username passed to `POST /authenticate`. |
-| `TWIZZIT_PASSWORD` | Yes | Password passed to `POST /authenticate`. Surface only via env, never via CLI flags or config files. |
-| `TWIZZIT_BASE_URL` | No | Override base URL (default `https://app.twizzit.com/v2/api`). |
+| `TWIZZIT_API_USER` | Yes | Username passed to `POST /authenticate`. |
+| `TWIZZIT_API_PASS` | Yes | Password passed to `POST /authenticate`. Surface only via env, never via CLI flags or config files. |
+| `TWIZZIT_API` | No | Override base URL (default `https://app.twizzit.com/v2/api`). |
+| `RUN_TWIZZIT_LIVE_TESTS` | No | Set to `1` to enable the live-mode test suite. Default unset (skipped). |
 
-The lib itself does NOT read `process.env` — consumers read env and pass `credentials` into `new TwizzitClient({ ... })`. This keeps the lib testable and 12-factor-friendly.
+The lib itself does NOT read `process.env` — consumers (worker apps, tests) read env and pass `credentials` into `new TwizzitClient({ ... })`. This keeps the lib testable and 12-factor-friendly. *(Earlier draft used `TWIZZIT_USERNAME`/`TWIZZIT_PASSWORD`/`TWIZZIT_BASE_URL` — replaced to match the names already in `.env.example`.)*
 
 **Rationale**: Two-secret model matches Twizzit's `POST /authenticate` body contract. Decoupling from `process.env` keeps the lib hermetic; tests pass credentials directly.
 
