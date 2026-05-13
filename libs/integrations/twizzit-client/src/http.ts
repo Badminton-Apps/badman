@@ -147,7 +147,34 @@ export function createHttpClient(opts: HttpClientOptions): HttpClient {
         );
       }
 
-      // Any auth-endpoint failure (401, 403, etc.) is an auth error — never re-auth a /authenticate call.
+      // 429 — Retry-After honoured, bounded by maxRateLimitRetries.
+      // Must be checked BEFORE the /authenticate guard so a rate-limited auth call
+      // throws TwizzitRateLimitError, not TwizzitAuthError.
+      if (status === 429 && config) {
+        const attempts = (config.__twizzit429Attempts ?? 0) + 1;
+        config.__twizzit429Attempts = attempts;
+        const retryAfterHeader = error.response.headers?.["retry-after"] as string | undefined;
+        const retryAfterMs = parseRetryAfterMs(retryAfterHeader);
+        if (attempts > retryPolicy.maxRateLimitRetries) {
+          const ms = retryAfterMs ?? retryPolicy.initialBackoffMs;
+          throw new TwizzitRateLimitError(
+            `Rate limited on ${endpointUrl} after ${attempts} attempt(s)`,
+            makeContext(endpointUrl, attempts),
+            ms
+          );
+        }
+        const waitMs =
+          retryAfterMs ??
+          Math.min(
+            retryPolicy.initialBackoffMs * Math.pow(2, attempts - 1),
+            retryPolicy.maxBackoffMs
+          );
+        logger.warn("429; retrying", { url: endpointUrl, attempts, waitMs });
+        await sleep(waitMs);
+        return instance.request(config);
+      }
+
+      // Any auth-endpoint failure (non-429 4xx) is an auth error — never re-auth a /authenticate call.
       if (endpointUrl === "/authenticate" && status >= 400 && status < 500) {
         throw new TwizzitAuthError(
           `Authentication failed (HTTP ${status})`,
@@ -177,31 +204,6 @@ export function createHttpClient(opts: HttpClientOptions): HttpClient {
           makeContext(endpointUrl, 2),
           401
         );
-      }
-
-      // 429 — Retry-After honoured, bounded by maxRateLimitRetries.
-      if (status === 429 && config) {
-        const attempts = (config.__twizzit429Attempts ?? 0) + 1;
-        config.__twizzit429Attempts = attempts;
-        const retryAfterHeader = error.response.headers?.["retry-after"] as string | undefined;
-        const retryAfterMs = parseRetryAfterMs(retryAfterHeader);
-        if (attempts > retryPolicy.maxRateLimitRetries) {
-          const ms = retryAfterMs ?? retryPolicy.initialBackoffMs;
-          throw new TwizzitRateLimitError(
-            `Rate limited on ${endpointUrl} after ${attempts} attempt(s)`,
-            makeContext(endpointUrl, attempts),
-            ms
-          );
-        }
-        const waitMs =
-          retryAfterMs ??
-          Math.min(
-            retryPolicy.initialBackoffMs * Math.pow(2, attempts - 1),
-            retryPolicy.maxBackoffMs
-          );
-        logger.warn("429; retrying", { url: endpointUrl, attempts, waitMs });
-        await sleep(waitMs);
-        return instance.request(config);
       }
 
       if (status >= 500) {

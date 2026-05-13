@@ -71,6 +71,9 @@ export async function paginate<T>(opts: PaginateOptions<T>): Promise<T[]> {
     }
 
     const offset = page * pageSize;
+    if (page > 0 && page % 10 === 0) {
+      logger?.info("paginate: progress", { endpoint: endpointLabel, page, items: results.length });
+    }
     const items = await fetchPage(offset, pageSize);
     results.push(...items);
     page++;

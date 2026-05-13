@@ -61,10 +61,18 @@ const RawExtraFieldValueAttributeSchema = z
   })
   .strict();
 
+// PHP encodes an empty associative array as `{}` rather than `[]`.
+// Accept both and normalise to array.
+const emptyObjectToArray = z
+  .union([
+    z.array(RawExtraFieldValueAttributeSchema),
+    z.record(z.unknown()).transform((): z.infer<typeof RawExtraFieldValueAttributeSchema>[] => []),
+  ]);
+
 const RawExtraFieldValueValueSchema = z
   .object({
     value: z.string(),
-    attributes: z.array(RawExtraFieldValueAttributeSchema),
+    attributes: emptyObjectToArray,
   })
   .strict();
 
