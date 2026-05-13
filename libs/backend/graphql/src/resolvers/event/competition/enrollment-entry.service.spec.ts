@@ -36,10 +36,22 @@ describe("EnrollmentEntryService.createEntry", () => {
     };
   };
 
+  const stubEntry = (overrides?: { subEventId?: string; meta?: object }) => {
+    const save = jest.fn().mockResolvedValue(undefined);
+    const entry = {
+      id: "entry-uuid",
+      subEventId: overrides?.subEventId ?? null,
+      meta: overrides?.meta ?? undefined,
+      save,
+      _save: save,
+    };
+    return entry as unknown as EventEntry & { _save: jest.Mock };
+  };
+
   const stubTeam = (overrides?: {
     season?: number;
     clubId?: string;
-    existingEntry?: { subEventId: string | null } | null;
+    existingEntry?: EventEntry | null;
   }) => {
     const existingEntry = overrides?.existingEntry === undefined ? null : overrides.existingEntry;
     const getEntry = jest.fn().mockResolvedValue(existingEntry);
@@ -72,6 +84,7 @@ describe("EnrollmentEntryService.createEntry", () => {
       service.createEntry({
         teamId: "missing",
         subEventId: "se-uuid",
+        basePlayers: [],
         transaction: fakeTransaction,
         user,
       })
@@ -81,6 +94,7 @@ describe("EnrollmentEntryService.createEntry", () => {
       await service.createEntry({
         teamId: "missing",
         subEventId: "se-uuid",
+        basePlayers: [],
         transaction: fakeTransaction,
         user,
       });
@@ -100,6 +114,7 @@ describe("EnrollmentEntryService.createEntry", () => {
       await service.createEntry({
         teamId: team.id,
         subEventId: "se-uuid",
+        basePlayers: [],
         transaction: fakeTransaction,
         user,
       });
@@ -129,6 +144,7 @@ describe("EnrollmentEntryService.createEntry", () => {
     const result = await service.createEntry({
       teamId: team.id,
       subEventId: "se-uuid",
+      basePlayers: [],
       transaction: fakeTransaction,
       user,
     });
@@ -146,6 +162,7 @@ describe("EnrollmentEntryService.createEntry", () => {
       await service.createEntry({
         teamId: team.id,
         subEventId: "missing-se",
+        basePlayers: [],
         transaction: fakeTransaction,
         user,
       });
@@ -168,6 +185,7 @@ describe("EnrollmentEntryService.createEntry", () => {
       await service.createEntry({
         teamId: team.id,
         subEventId: "se-uuid",
+        basePlayers: [],
         transaction: fakeTransaction,
         user,
       });
@@ -181,7 +199,8 @@ describe("EnrollmentEntryService.createEntry", () => {
   });
 
   it("is idempotent when the existing entry already points to the requested sub-event", async () => {
-    const team = stubTeam({ existingEntry: { subEventId: "se-uuid" } });
+    const existingEntry = stubEntry({ subEventId: "se-uuid" });
+    const team = stubTeam({ existingEntry });
     const subEvent = stubSubEvent();
     const user = userWithPermission(true);
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
@@ -190,15 +209,12 @@ describe("EnrollmentEntryService.createEntry", () => {
     const result = await service.createEntry({
       teamId: team.id,
       subEventId: "se-uuid",
+      basePlayers: [],
       transaction: fakeTransaction,
       user,
     });
 
-    expect(result).toEqual({
-      teamId: team.id,
-      subEventCompetitionId: "se-uuid",
-      alreadyExisted: true,
-    });
+    expect(result.alreadyExisted).toBe(true);
     expect((team as unknown as { _setEntry: jest.Mock })._setEntry).not.toHaveBeenCalled();
     expect(
       (subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry
@@ -211,28 +227,25 @@ describe("EnrollmentEntryService.createEntry", () => {
     const user = userWithPermission(true);
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
-    jest.spyOn(EventEntry, "create").mockResolvedValue({} as unknown as EventEntry);
+    jest.spyOn(EventEntry, "create").mockResolvedValue(stubEntry());
 
     const result = await service.createEntry({
       teamId: team.id,
       subEventId: "se-uuid",
+      basePlayers: [],
       transaction: fakeTransaction,
       user,
     });
 
-    expect(result).toEqual({
-      teamId: team.id,
-      subEventCompetitionId: "se-uuid",
-      alreadyExisted: false,
-    });
+    expect(result.alreadyExisted).toBe(false);
     expect(
       (subEvent as unknown as { _addEventEntry: jest.Mock })._addEventEntry
     ).toHaveBeenCalled();
   });
 
   it("reuses an existing entry when the team already has one pointing to a different sub-event", async () => {
-    const existingEntry = { subEventId: "old-se" } as unknown as EventEntry;
-    const team = stubTeam({ existingEntry: existingEntry as unknown as { subEventId: string } });
+    const existingEntry = stubEntry({ subEventId: "old-se" });
+    const team = stubTeam({ existingEntry });
     const subEvent = stubSubEvent();
     const user = userWithPermission(true);
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
@@ -241,15 +254,101 @@ describe("EnrollmentEntryService.createEntry", () => {
     const result = await service.createEntry({
       teamId: team.id,
       subEventId: "new-se",
+      basePlayers: [],
       transaction: fakeTransaction,
       user,
     });
 
     expect(result.alreadyExisted).toBe(false);
-    // setEntry called with the reused entry (no EventEntry.create)
     expect((team as unknown as { _setEntry: jest.Mock })._setEntry).toHaveBeenCalledWith(
       existingEntry,
       expect.any(Object)
     );
+  });
+
+  it("writes basePlayers into meta.competition.players on a new entry", async () => {
+    const team = stubTeam();
+    const subEvent = stubSubEvent();
+    const user = userWithPermission(true);
+    const createSpy = jest
+      .spyOn(EventEntry, "create")
+      .mockResolvedValue(stubEntry());
+    jest.spyOn(Team, "findByPk").mockResolvedValue(team);
+    jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
+
+    await service.createEntry({
+      teamId: team.id,
+      subEventId: "se-uuid",
+      basePlayers: ["p1", "p2"],
+      transaction: fakeTransaction,
+      user,
+    });
+
+    expect(createSpy).toHaveBeenCalledWith(
+      { meta: { competition: { players: [{ id: "p1" }, { id: "p2" }] } } },
+      expect.any(Object)
+    );
+  });
+
+  it("creates entry without meta when basePlayers is empty", async () => {
+    const team = stubTeam();
+    const subEvent = stubSubEvent();
+    const user = userWithPermission(true);
+    const createSpy = jest
+      .spyOn(EventEntry, "create")
+      .mockResolvedValue(stubEntry());
+    jest.spyOn(Team, "findByPk").mockResolvedValue(team);
+    jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
+
+    await service.createEntry({
+      teamId: team.id,
+      subEventId: "se-uuid",
+      basePlayers: [],
+      transaction: fakeTransaction,
+      user,
+    });
+
+    expect(createSpy).toHaveBeenCalledWith({}, expect.any(Object));
+  });
+
+  it("updates meta.competition.players on an existing entry when basePlayers provided", async () => {
+    const existingEntry = stubEntry({ subEventId: "se-uuid" });
+    const team = stubTeam({ existingEntry });
+    const subEvent = stubSubEvent();
+    const user = userWithPermission(true);
+    jest.spyOn(Team, "findByPk").mockResolvedValue(team);
+    jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
+
+    await service.createEntry({
+      teamId: team.id,
+      subEventId: "se-uuid",
+      basePlayers: ["p1", "p2"],
+      transaction: fakeTransaction,
+      user,
+    });
+
+    expect(existingEntry.meta).toMatchObject({
+      competition: { players: [{ id: "p1" }, { id: "p2" }] },
+    });
+    expect(existingEntry._save).toHaveBeenCalled();
+  });
+
+  it("does not call entry.save when basePlayers is empty on an existing entry", async () => {
+    const existingEntry = stubEntry({ subEventId: "se-uuid" });
+    const team = stubTeam({ existingEntry });
+    const subEvent = stubSubEvent();
+    const user = userWithPermission(true);
+    jest.spyOn(Team, "findByPk").mockResolvedValue(team);
+    jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
+
+    await service.createEntry({
+      teamId: team.id,
+      subEventId: "se-uuid",
+      basePlayers: [],
+      transaction: fakeTransaction,
+      user,
+    });
+
+    expect(existingEntry._save).not.toHaveBeenCalled();
   });
 });
