@@ -8,7 +8,7 @@ This document resolves the open decisions enumerated in the spec's Technical Con
 
 ## R1. HTTP client
 
-**Decision (2026-05-13, supersedes earlier)**: Use **`axios`**. Specifically, construct a per-`TwizzitClient` `AxiosInstance` whose:
+**Decision (2026-05-13, supersedes earlier)**: Use **`axios`**, exposed inside the lib via a `HttpClient` type alias for `AxiosInstance` (kept off the public name surface). Construct a per-`TwizzitClient` HTTP client whose underlying `AxiosInstance`:
 
 - `baseURL` is the configured Twizzit URL.
 - `paramsSerializer` produces the kebab-case bracket syntax Twizzit expects (`organization-ids[]=34245`).
@@ -16,7 +16,7 @@ This document resolves the open decisions enumerated in the spec's Technical Con
 - A **response interceptor** classifies failures into `TwizzitError` variants (`axios.isAxiosError` + `status` + body excerpt) and handles the 401-then-reauth-then-retry-once pattern (FR-013) in one place — no per-endpoint duplication.
 - 429 back-off via `axios-retry` (or a manual interceptor) honouring `Retry-After`, bounded by `maxRateLimitRetries` and `maxRetryBudgetMs` (FR-014).
 
-The lib does NOT re-export axios types (`AxiosError`, `AxiosInstance`) — all consumer-visible failures are `TwizzitError` subclasses (FR-015). The axios instance is constructed inside `src/http.ts` and lives on the `TwizzitClient` instance.
+The lib does NOT re-export axios types (`AxiosError`, `AxiosInstance`) — all consumer-visible failures are `TwizzitError` subclasses (FR-015), and the HTTP client is referred to by the alias `HttpClient`. The axios instance is constructed inside `src/http.ts` (factory: `createHttpClient`) and lives on the `TwizzitClient` instance.
 
 **Rationale**: Earlier the choice was Node global `fetch` to minimise dependencies. In implementation, the missing pieces (interceptor pattern for auth refresh + retry, robust 429 retry with `Retry-After`, kebab-bracket `paramsSerializer`) ended up being re-implemented on top of `fetch` by the MVP and recovery agents. The user directed (2026-05-13) to drop the in-house wrappers and lean on axios's built-in utilities. The dependency cost (~50 KB minified) is negligible for a worker-only lib; the maintainability gain (one interceptor instead of N per-endpoint retry wrappers) is significant.
 
@@ -138,28 +138,33 @@ The lib itself does NOT read `process.env` — consumers read env and pass `cred
 
 ---
 
-## R9. Federation-agnostic seam (FR-008)
+## R9. Federation-agnostic gateway (FR-008)
 
-**Decision**: Define lightweight TS interfaces in `src/seam.ts` describing **read-only** federation capabilities the sync layer depends on:
+**Decision (revised 2026-05-13)**: Define a single read gateway in `src/gateway.ts`:
 
 ```ts
-interface FederationOrganization { id: number; name: string }
-interface FederationContactSource {
-  fetchOrganizations(): Promise<FederationOrganization[]>;
-  fetchContacts(opts?: PaginationBounds): Promise<TwizzitContact[]>; // or generic Contact later
-  fetchMemberships(opts?: PaginationBounds): Promise<TwizzitMembership[]>;
-  fetchMembershipTypes(): Promise<TwizzitMembershipType[]>;
-  fetchExtraFields(): Promise<TwizzitExtraField[]>;
+interface FederationGateway {
+  fetchOrganizations(): Promise<Organization[]>;
+  fetchContacts(opts?: ContactsQuery): Promise<Contact[]>;
+  fetchMemberships(opts?: MembershipsQuery): Promise<Membership[]>;
+  fetchMembershipTypes(): Promise<MembershipType[]>;
+  fetchExtraFields(): Promise<ExtraField[]>;
 }
 ```
 
-`TwizzitClient` implements `FederationContactSource`. The interface stays **inside this lib** for now; if/when a second federation appears, the interface moves to a shared lib and the entity types get extracted to a federation-agnostic shape. Premature abstraction explicitly avoided (per CLAUDE.md guidance).
+The entity types (`Organization`, `Contact`, …) are the same concrete Twizzit shapes exported from `src/schemas/*`. There is no `FederationOrganization` parallel type — when Twizzit is the only federation, `Organization = Twizzit's org shape` is honest and avoids drift.
 
-**Rationale**: Honors N3.1 without paying the abstraction tax up front. The interface is the *seam*; the *implementation* is Twizzit-specific. When `apps/worker/sync` consumes the lib, it codes against the interface, not the concrete class — that's the inflection point where a future federation can plug in.
+`TwizzitClient` implements `FederationGateway`. The interface lives **inside this lib** for now; when a second federation appears, the interface moves to a shared lib and the entity types get generalised at that point — not preemptively.
+
+Earlier name: `FederationContactSource`. Renamed to `FederationGateway` because (a) "ContactSource" implied only contacts, but the interface also yields memberships, types, and fields; (b) "Gateway" is the widely-understood DDD / Clean-Architecture term for "object that encapsulates access to an external system" and reads correctly when more federations show up. Earlier filename: `seam.ts` (internal architecture jargon). Now: `gateway.ts`.
+
+**Rationale**: Honors N3.1 without paying the abstraction tax. Concrete return types (not `unknown[]`) make the interface immediately useful to consumers and let TypeScript narrow at call sites. When `apps/worker/sync` consumes the lib, it codes against the interface.
 
 **Alternatives considered**:
-- No seam — rejected; violates N3.1.
-- Full hexagonal-architecture port/adapter split now — rejected as speculative.
+- No gateway — rejected; violates N3.1.
+- `FederationProvider` — fine but slightly overloaded with NestJS's provider concept.
+- `FederationDataSource` — fine but TypeORM/Apollo-flavored.
+- Full hexagonal port/adapter split — rejected as speculative.
 
 ---
 
@@ -190,6 +195,51 @@ These cannot be settled without a live call to Twizzit or a Swagger inspection. 
 ## Resolved status
 
 All NEEDS-CLARIFICATION items from `plan.md`'s Technical Context are resolved or have an explicit Phase 0 action item. The remaining items (R3 rate limits, R4 page cap, Q1 last-modified) are tracked as Phase 0 prerequisite tasks in `tasks.md` (created by `/speckit-tasks`) and do not block Phase 2 implementation — the design accommodates each unknown.
+
+---
+
+---
+
+## R13. Public surface: generic federation types (2026-05-13)
+
+**Decision**: The lib's public surface exposes ONLY federation-agnostic types — no `TwizzitContact`, `TwizzitMembership`, etc. Define generic interfaces in `src/federation.ts`:
+
+```ts
+interface FederationContact {
+  id, fullName, firstName, lastName, dateOfBirth, gender, nationality, language,
+  accountNumber, registryNumber, federationNumber, memberId, hasProfileImage,
+  address: FederationAddress,
+  emails: FederationEmail[],
+  mobiles: FederationPhone[],
+  home: FederationPhone | null,
+  extraFields: FederationExtraFieldValue[]
+}
+// + FederationOrganization, FederationMembership, FederationMembershipType,
+//   FederationExtraField, FederationExtraFieldValue, FederationLocalisedName,
+//   FederationEmail, FederationPhone, FederationAddress
+```
+
+Each zod schema in `src/schemas/*` takes Twizzit's raw kebab-case wire format as input and `.transform()`s it to the generic shape — the schema's INFERRED OUTPUT type IS the generic type. The raw Twizzit shape is internal to the schema module; it is not exported.
+
+Conventions enforced by the transform layer:
+- camelCase field names (`first-name` → `firstName`, `extra-field-values` → `extraFields`)
+- lowercase locale keys (`EN/NL/FR` → `en/nl/fr`)
+- empty wire strings → `null` for fields where empty is the federation's "absent" convention (`date-of-birth`, `end-date`, `target`, `cc`)
+- email and mobile slots (`email-1/2/3`, `mobile-1/2/3`) consolidated into filtered arrays
+- `memberId` extracted from the contact's extra-field-values where `field.name.en === "Member ID"` and surfaced as a top-level convenience field
+
+**Rationale**: Spec FR-008 always intended a federation-agnostic seam, but the first implementation typed it loosely (`unknown[]`) and the schemas exposed Twizzit's raw shape directly. Under user direction 2026-05-13: a future federation (LFBB, others) must be able to implement `FederationGateway` and return the SAME generic shapes — that's only possible if the consumer-facing types are generic, not Twizzit-specific. Adapter responsibility shifts to the schema: every federation's schemas transform to the shared generic shape.
+
+**Alternatives rejected**:
+- Marker interfaces with concrete subtypes (`TwizzitContact extends FederationContact`) — leaks Twizzit-specific fields into the consumer surface; defeats the abstraction.
+- Generic-parametric `FederationGateway<TContact, TMembership, …>` — TS-heavy, no payoff today; revisit if/when consumers must distinguish federations at the type level.
+- Keep the old setup, just add adapter functions consumers call — pushes the transform burden onto every consumer, multiplies subtle bugs.
+
+**Consequences**:
+- `src/index.ts` exports ONLY `Federation*` types (no `Contact`, `Membership`, etc.).
+- `getMemberId()` helper retired — `memberId` is a top-level field on `FederationContact`.
+- Tests assert generic camelCase shape; fixtures stay as Twizzit wire format (they're the schema INPUT).
+- Spec contracts and data-model documents describe the post-transform generic shape; wire-format details move into [docs/twizzit/api-exploration.md](../../docs/twizzit/api-exploration.md) and the `docs/twizzit/*-swagger.md` files.
 
 ---
 

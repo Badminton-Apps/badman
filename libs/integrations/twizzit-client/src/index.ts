@@ -1,4 +1,4 @@
-/** Main client class — authenticate and call all Twizzit endpoints. */
+/** Main Twizzit client — implements FederationGateway. */
 export { TwizzitClient } from "./client";
 /** Config shape passed to `new TwizzitClient(config)`. */
 export type { TwizzitClientConfig } from "./client";
@@ -31,80 +31,32 @@ export type { TwizzitError } from "./errors";
 /** Common context attached to every Twizzit error (endpoint, occurredAt, attempts). */
 export type { TwizzitErrorContext } from "./errors";
 
-/** Federation-agnostic read interface implemented by TwizzitClient. */
-export type { FederationContactSource } from "./seam";
-/** Lightweight org shape used in the seam interface. */
-export type { FederationOrganization } from "./seam";
+/** Federation-agnostic read gateway implemented by TwizzitClient. */
+export type { FederationGateway } from "./gateway";
 /** Shared pagination bounds (pageSize, maxPages) for list queries. */
-export type { PaginationBounds } from "./seam";
-/** Query options for getContacts / fetchContacts (pagination + lastModified). */
-export type { ContactsQuery } from "./seam";
-/** Query options for getMemberships / fetchMemberships (pagination + lastModified + clubId). */
-export type { MembershipsQuery } from "./seam";
+export type { PaginationBounds } from "./gateway";
+/** Query options for fetchContacts (pagination + lastModified). */
+export type { ContactsQuery } from "./gateway";
+/** Query options for fetchMemberships (pagination + lastModified + clubId). */
+export type { MembershipsQuery } from "./gateway";
 
-/** Zod schema for the POST /authenticate response. */
-export { AuthenticateResponseSchema } from "./schemas/authenticate";
-/** Parsed shape of a successful POST /authenticate response. */
-export type { AuthenticateResponse } from "./schemas/authenticate";
-
-/** Zod schema for a single organisation object. */
-export { OrganizationSchema } from "./schemas/organization";
-/** Zod schema for the GET /organizations array response. */
-export { OrganizationsResponseSchema } from "./schemas/organization";
-/** Parsed shape of a single Twizzit organisation. */
-export type { Organization } from "./schemas/organization";
-
-/** Zod schema for a localised name object (nl/fr/en). */
-export { LocalisedNameSchema } from "./schemas/shared";
-/** Zod schema for an email-address entry. */
-export { EmailSchema } from "./schemas/shared";
-/** Zod schema for a mobile-phone entry. */
-export { MobileSchema } from "./schemas/shared";
-/** Zod schema for a landline-phone entry. */
-export { PhoneSchema } from "./schemas/shared";
-/** Zod schema for a postal address. */
-export { AddressSchema } from "./schemas/shared";
-/** Parsed localised name. */
-export type { LocalisedName } from "./schemas/shared";
-/** Parsed email-address entry. */
-export type { Email } from "./schemas/shared";
-/** Parsed mobile-phone entry. */
-export type { Mobile } from "./schemas/shared";
-/** Parsed landline-phone entry. */
-export type { Phone } from "./schemas/shared";
-/** Parsed postal address. */
-export type { Address } from "./schemas/shared";
-
-/** Zod schema for a single contact. */
-export { ContactSchema } from "./schemas/contact";
-/** Zod schema for the GET /contacts array response. */
-export { ContactsResponseSchema } from "./schemas/contact";
-/** Zod schema for a single extra-field value on a contact. */
-export { ExtraFieldValueSchema } from "./schemas/contact";
-/** Extract the federation member-ID string from a contact's extra fields; returns null if absent. */
-export { getMemberId } from "./schemas/contact";
-/** Parsed shape of a single Twizzit contact. */
-export type { Contact } from "./schemas/contact";
-/** Parsed shape of an extra-field value attached to a contact. */
-export type { ExtraFieldValue } from "./schemas/contact";
-
-/** Zod schema for a single membership record. */
-export { MembershipSchema } from "./schemas/membership";
-/** Zod schema for the GET /memberships array response. */
-export { MembershipsResponseSchema } from "./schemas/membership";
-/** Parsed shape of a single Twizzit membership. */
-export type { Membership } from "./schemas/membership";
-
-/** Zod schema for a single membership-type definition. */
-export { MembershipTypeSchema } from "./schemas/membership-type";
-/** Zod schema for the GET /membershipTypes array response. */
-export { MembershipTypesResponseSchema } from "./schemas/membership-type";
-/** Parsed shape of a membership-type definition. */
-export type { MembershipType } from "./schemas/membership-type";
-
-/** Zod schema for a single extra-field definition. */
-export { ExtraFieldSchema } from "./schemas/extra-field";
-/** Zod schema for the GET /extra-fields array response. */
-export { ExtraFieldsResponseSchema } from "./schemas/extra-field";
-/** Parsed shape of an extra-field definition. */
-export type { ExtraField } from "./schemas/extra-field";
+/** Federation-agnostic organisation shape (id + name). */
+export type { FederationOrganization } from "./federation";
+/** Federation-agnostic person shape (id, names, dates, contact, extra fields, memberId). */
+export type { FederationContact } from "./federation";
+/** Federation-agnostic club↔contact link with type + dates. */
+export type { FederationMembership } from "./federation";
+/** Federation-agnostic membership-type definition (localised name, cadence). */
+export type { FederationMembershipType } from "./federation";
+/** Federation-agnostic custom-field definition (id, localised name, options). */
+export type { FederationExtraField } from "./federation";
+/** Federation-agnostic custom-field value attached to a contact or membership. */
+export type { FederationExtraFieldValue } from "./federation";
+/** Federation-agnostic localised name ({ en, nl, fr }). */
+export type { FederationLocalisedName } from "./federation";
+/** Federation-agnostic email entry ({ target, address }). */
+export type { FederationEmail } from "./federation";
+/** Federation-agnostic phone entry ({ target, countryCode, number }). */
+export type { FederationPhone } from "./federation";
+/** Federation-agnostic postal address. */
+export type { FederationAddress } from "./federation";

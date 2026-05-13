@@ -3,7 +3,6 @@ import * as fs from "fs";
 import MockAdapter from "axios-mock-adapter";
 import { TwizzitClient } from "../src/client";
 import { TwizzitValidationError, TwizzitClientError } from "../src/errors";
-import { getMemberId } from "../src/schemas/contact";
 
 const FIXTURES_DIR = path.resolve(__dirname, "__fixtures__");
 
@@ -40,7 +39,7 @@ function newClient(): { client: TwizzitClient; mock: MockAdapter } {
 
 describe("TwizzitClient entities", () => {
   describe("getMembershipTypes", () => {
-    it("returns the expected 7 BV types with localised names", async () => {
+    it("returns the expected 7 BV types with localised names normalised to en/nl/fr", async () => {
       const { client, mock } = newClient();
       mock.onGet("/membershipTypes").reply(200, loadFixture("membership-types.200.json"));
 
@@ -51,27 +50,27 @@ describe("TwizzitClient entities", () => {
 
       const competitive = types.find((t) => t.id === 51774);
       expect(competitive).toBeDefined();
-      expect(competitive!.name.EN).toBe("Competitive member");
-      expect(competitive!.name.NL).toBe("Competitiespeler");
-      expect(competitive!.name.FR).toBe("Compétiteur");
+      expect(competitive!.name.en).toBe("Competitive member");
+      expect(competitive!.name.nl).toBe("Competitiespeler");
+      expect(competitive!.name.fr).toBe("Compétiteur");
       expect(competitive!.type).toBe("Continuously");
 
       const trial = types.find((t) => t.id === 57922);
       expect(trial).toBeDefined();
       expect(trial!.type).toBe("Fixed length");
       expect(trial!.duration).toBe(21);
-      expect(trial!["duration-unit"]).toBe("Days");
+      expect(trial!.durationUnit).toBe("Days");
 
       const unbound = types.find((t) => t.id === 72908);
       expect(unbound).toBeDefined();
       expect(unbound!.type).toBe("Fixed end date");
-      expect(unbound!["end-date"]).toBe("09-07");
-      expect(unbound!["transfer-date"]).toBe("04-01");
+      expect(unbound!.endDate).toBe("09-07");
+      expect(unbound!.transferDate).toBe("04-01");
     });
   });
 
   describe("getExtraFields", () => {
-    it("returns at least one entry whose name.EN === 'Member ID'", async () => {
+    it("returns at least one entry whose name.en === 'Member ID'", async () => {
       const { client, mock } = newClient();
       mock.onGet("/extra-fields").reply(200, loadFixture("extra-fields.200.json"));
 
@@ -79,7 +78,7 @@ describe("TwizzitClient entities", () => {
       const fields = await client.getExtraFields();
 
       expect(Array.isArray(fields)).toBe(true);
-      const memberIdField = fields.find((f) => f.name.EN === "Member ID");
+      const memberIdField = fields.find((f) => f.name.en === "Member ID");
       expect(memberIdField).toBeDefined();
       expect(memberIdField!.id).toBe(41763);
       expect(memberIdField!.type).toBe("Text");
@@ -88,7 +87,7 @@ describe("TwizzitClient entities", () => {
   });
 
   describe("getContacts happy path", () => {
-    it("parses a single page of contacts from fixture", async () => {
+    it("parses a single page of contacts and surfaces the generic camelCase shape", async () => {
       const { client, mock } = newClient();
       mock.onGet("/contacts").reply(200, loadFixture("contacts.page-1.200.json"));
 
@@ -97,8 +96,11 @@ describe("TwizzitClient entities", () => {
 
       expect(contacts).toHaveLength(5);
       expect(contacts[0].id).toBe(6348001);
-      expect(contacts[0].name).toBe("Test One");
+      expect(contacts[0].fullName).toBe("Test One");
+      expect(contacts[0].firstName).toBeDefined();
+      expect(contacts[0].lastName).toBeDefined();
       expect(contacts[0].gender).toBe("M");
+      expect(contacts[0].address.country.en).toBeDefined();
     });
   });
 
@@ -125,7 +127,6 @@ describe("TwizzitClient entities", () => {
   describe("getContacts two-page pagination", () => {
     it("stitches two pages into one array", async () => {
       const { client, mock } = newClient();
-      // page 1 (5 items) on offset=0, page 2 (2 items) on offset=5
       mock
         .onGet("/contacts", { params: { limit: 5, offset: 0, "organization-ids": [ORG_ID] } })
         .reply(200, loadFixture("contacts.page-1.200.json"))
@@ -143,7 +144,7 @@ describe("TwizzitClient entities", () => {
   });
 
   describe("getMemberships happy path", () => {
-    it("returns memberships including a Loan-type row and normalises empty end-date to null", async () => {
+    it("returns generic camelCase memberships including a Loan-type row and normalises empty end-date to null", async () => {
       const { client, mock } = newClient();
       mock.onGet("/memberships").reply(200, loadFixture("memberships.page-1.200.json"));
 
@@ -152,18 +153,18 @@ describe("TwizzitClient entities", () => {
 
       expect(memberships.length).toBeGreaterThan(0);
 
-      const loanRow = memberships.find((m) => m["membership-type-id"] === 57915);
+      const loanRow = memberships.find((m) => m.membershipTypeId === 57915);
       expect(loanRow).toBeDefined();
-      expect(loanRow!["contact-id"]).toBe(6348001);
+      expect(loanRow!.contactId).toBe(6348001);
 
       const emptyEndDate = memberships.find((m) => m.id === 6437001);
       expect(emptyEndDate).toBeDefined();
-      expect(emptyEndDate!["end-date"]).toBeNull();
+      expect(emptyEndDate!.endDate).toBeNull();
     });
   });
 
-  describe("getMemberId helper", () => {
-    it("returns the embedded Member ID value", async () => {
+  describe("memberId extraction", () => {
+    it("surfaces the embedded Member ID as a top-level field on the contact", async () => {
       const { client, mock } = newClient();
       mock.onGet("/contacts").reply(200, loadFixture("contacts.page-1.200.json"));
 
@@ -172,7 +173,7 @@ describe("TwizzitClient entities", () => {
 
       const contactWithMemberId = contacts.find((c) => c.id === 6348001);
       expect(contactWithMemberId).toBeDefined();
-      expect(getMemberId(contactWithMemberId!)).toBe("50000001");
+      expect(contactWithMemberId!.memberId).toBe("50000001");
     });
 
     it("returns null when contact has no Member ID extra field", async () => {
@@ -184,7 +185,7 @@ describe("TwizzitClient entities", () => {
 
       const contactWithoutMemberId = contacts.find((c) => c.id === 6348002);
       expect(contactWithoutMemberId).toBeDefined();
-      expect(getMemberId(contactWithoutMemberId!)).toBeNull();
+      expect(contactWithoutMemberId!.memberId).toBeNull();
     });
   });
 });
@@ -204,7 +205,6 @@ describe("TwizzitClient pagination edge cases", () => {
 
   it("throws TwizzitClientError with subkind max-pages-exceeded when limit is reached", async () => {
     const { client, mock } = newClient();
-    // Always return a full page → triggers further iteration → maxPages=1 trips
     mock.onGet("/contacts").reply(200, loadFixture("contacts.page-1.200.json"));
 
     await client.authenticate();

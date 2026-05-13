@@ -67,99 +67,94 @@ export interface MembershipsQuery extends PaginationBounds {
 }
 
 /* ============================================================ */
-/* Inferred-from-zod entity types (see data-model.md)            */
+/* Federation-agnostic entity types (see federation.ts, data-model.md) */
 /* ============================================================ */
 
-// These are sketched here. Real types are `z.infer<typeof XxxSchema>` from src/schemas/.
-export type Organization = { id: number; name: string };
-export type Contact = { /* see data-model.md → Contact */ };
-export type Membership = { /* see data-model.md → Membership */ };
-export type MembershipType = { /* see data-model.md → MembershipType */ };
-export type ExtraField = { /* see data-model.md → ExtraField */ };
+// These are sketched here for the contract; real definitions live in src/federation.ts.
+// Conventions: camelCase fields, lowercase locale keys (en/nl/fr), empty wire strings
+// normalised to null. Twizzit's kebab-case wire format is internal; consumers see only these.
+export type FederationOrganization = { id: number | string; name: string };
+export type FederationContact = { /* see data-model.md → FederationContact */ };
+export type FederationMembership = { /* see data-model.md → FederationMembership */ };
+export type FederationMembershipType = { /* see data-model.md → FederationMembershipType */ };
+export type FederationExtraField = { /* see data-model.md → FederationExtraField */ };
+export type FederationExtraFieldValue = { /* see data-model.md → FederationExtraFieldValue */ };
 
 /* ============================================================ */
-/* Federation-agnostic seam (FR-008, research.md R9)             */
+/* Federation-agnostic gateway (FR-008, research.md R9)          */
 /* ============================================================ */
 
-export interface FederationContactSource {
-  fetchOrganizations(): Promise<Organization[]>;
-  fetchContacts(opts?: ContactsQuery): Promise<Contact[]>;
-  fetchMemberships(opts?: MembershipsQuery): Promise<Membership[]>;
-  fetchMembershipTypes(): Promise<MembershipType[]>;
-  fetchExtraFields(): Promise<ExtraField[]>;
+export interface FederationGateway {
+  fetchOrganizations(): Promise<FederationOrganization[]>;
+  fetchContacts(opts?: ContactsQuery): Promise<FederationContact[]>;
+  fetchMemberships(opts?: MembershipsQuery): Promise<FederationMembership[]>;
+  fetchMembershipTypes(): Promise<FederationMembershipType[]>;
+  fetchExtraFields(): Promise<FederationExtraField[]>;
 }
 
 /* ============================================================ */
 /* TwizzitClient — concrete implementation                       */
 /* ============================================================ */
 
-export declare class TwizzitClient implements FederationContactSource {
+export declare class TwizzitClient implements FederationGateway {
   constructor(config: TwizzitClientConfig);
 
   /**
    * POST /authenticate.
    * Idempotent across calls; only re-authenticates when the cached token is near expiry
-   * (≥80% of JWT exp lifetime) or after a 401. Per FR-013, FR-022.
+   * (≥80% of created-on/valid-till lifetime) or after a 401. Per FR-013, FR-022.
    * Throws: TwizzitAuthError, TwizzitNetworkError.
    */
   authenticate(): Promise<void>;
 
   /**
    * GET /organizations.
-   * Caches the result on the instance after the first successful call.
+   * Caches the resolved org id on the instance after the first successful call.
    */
-  getOrganizations(): Promise<Organization[]>;
+  getOrganizations(): Promise<FederationOrganization[]>;
 
   /**
    * GET /contacts — paginated transparently via limit/offset.
    * Throws TwizzitClientError when maxPages is exceeded (FR-021).
    */
-  getContacts(opts?: ContactsQuery): Promise<Contact[]>;
+  getContacts(opts?: ContactsQuery): Promise<FederationContact[]>;
 
-  /**
-   * GET /memberships — paginated transparently.
-   */
-  getMemberships(opts?: MembershipsQuery): Promise<Membership[]>;
+  /** GET /memberships — paginated transparently. */
+  getMemberships(opts?: MembershipsQuery): Promise<FederationMembership[]>;
 
-  /**
-   * GET /membershipTypes — single page; small reference data set.
-   */
-  getMembershipTypes(): Promise<MembershipType[]>;
+  /** GET /membershipTypes — single page; small reference data set. */
+  getMembershipTypes(): Promise<FederationMembershipType[]>;
 
-  /**
-   * GET /extra-fields — single page; reference data.
-   */
-  getExtraFields(): Promise<ExtraField[]>;
+  /** GET /extra-fields — single page; reference data. */
+  getExtraFields(): Promise<FederationExtraField[]>;
 
-  /* FederationContactSource shape — same methods under federation-agnostic names. */
-  fetchOrganizations(): Promise<Organization[]>;
-  fetchContacts(opts?: ContactsQuery): Promise<Contact[]>;
-  fetchMemberships(opts?: MembershipsQuery): Promise<Membership[]>;
-  fetchMembershipTypes(): Promise<MembershipType[]>;
-  fetchExtraFields(): Promise<ExtraField[]>;
+  /* FederationGateway aliases — same methods under federation-agnostic names. */
+  fetchOrganizations(): Promise<FederationOrganization[]>;
+  fetchContacts(opts?: ContactsQuery): Promise<FederationContact[]>;
+  fetchMemberships(opts?: MembershipsQuery): Promise<FederationMembership[]>;
+  fetchMembershipTypes(): Promise<FederationMembershipType[]>;
+  fetchExtraFields(): Promise<FederationExtraField[]>;
 }
 
 /* ============================================================ */
-/* Convenience helpers                                           */
+/* Convenience                                                   */
 /* ============================================================ */
 
-/**
- * Extract the federation "Member ID" from a Contact's extra-field-values.
- * Returns null if absent. Pure function, no I/O.
- */
-export declare function getMemberId(contact: Contact): string | null;
+// Note: the previous `getMemberId(contact)` helper is gone — `memberId` is now
+// a top-level field on FederationContact, normalised by the schema's transform.
 
 /* ============================================================ */
 /* Public exports (index.ts) — for reference                     */
 /* ============================================================ */
 
-// Re-exported from src/index.ts (NOT a re-statement of what's above; just the index list):
+// Re-exported from src/index.ts:
 // - TwizzitClient
 // - TwizzitClientConfig, TwizzitClientCredentials, TwizzitClientRetryPolicy
 // - Logger, noopLogger
-// - PaginationBounds, ContactsQuery, MembershipsQuery
-// - All entity types (Organization, Contact, Membership, MembershipType, ExtraField)
+// - PaginationBounds, ContactsQuery, MembershipsQuery, FederationGateway
+// - Federation* entity types (Organization, Contact, Membership, MembershipType, ExtraField,
+//   ExtraFieldValue, LocalisedName, Email, Phone, Address)
 // - All zod schemas (OrganizationSchema, ContactSchema, MembershipSchema, …)
-// - FederationContactSource
+// - FederationGateway
 // - All TwizzitError variants (see contracts/errors.ts)
 // - getMemberId

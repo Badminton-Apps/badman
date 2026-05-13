@@ -1,12 +1,13 @@
 import { HttpClient } from "../http";
 import { TwizzitValidationError, TwizzitErrorContext } from "../errors";
-import { MembershipTypesResponseSchema, MembershipType } from "../schemas/membership-type";
+import { MembershipTypesResponseSchema } from "../schemas/membership-type";
+import type { FederationMembershipType } from "../federation";
 
 function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return { endpoint, occurredAt: new Date().toISOString(), attempts };
 }
 
-export async function getMembershipTypes(http: HttpClient): Promise<MembershipType[]> {
+export async function getMembershipTypes(http: HttpClient): Promise<FederationMembershipType[]> {
   const endpoint = "GET /membershipTypes";
 
   const response = await http.get("/membershipTypes");

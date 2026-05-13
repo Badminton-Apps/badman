@@ -86,7 +86,7 @@ libs/integrations/twizzit-client/
 │   │                                   #   `TwizzitRateLimitError`, `TwizzitServerError`, `TwizzitClientError`
 │   ├── logger.ts                      # `Logger` interface + `noopLogger`
 │   ├── pagination.ts                  # `paginate()` helper for limit/offset loop with maxPages bound
-│   ├── seam.ts                        # Federation-agnostic interface (FR-008) — `FederationContactSource`,
+│   ├── gateway.ts                     # Federation-agnostic interface (FR-008) — `FederationGateway`,
 │   │                                   #   `FederationMembershipSource` etc. Twizzit client implements these.
 │   ├── endpoints/
 │   │   ├── authenticate.ts            # POST /authenticate

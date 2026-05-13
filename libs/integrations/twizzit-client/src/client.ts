@@ -6,12 +6,14 @@ import { getContacts } from "./endpoints/contacts";
 import { getMemberships } from "./endpoints/memberships";
 import { getMembershipTypes } from "./endpoints/membership-types";
 import { getExtraFields } from "./endpoints/extra-fields";
-import { Organization } from "./schemas/organization";
-import { Contact } from "./schemas/contact";
-import { Membership } from "./schemas/membership";
-import { MembershipType } from "./schemas/membership-type";
-import { ExtraField } from "./schemas/extra-field";
-import { FederationContactSource, ContactsQuery, MembershipsQuery } from "./seam";
+import type {
+  FederationOrganization,
+  FederationContact,
+  FederationMembership,
+  FederationMembershipType,
+  FederationExtraField,
+} from "./federation";
+import { FederationGateway, ContactsQuery, MembershipsQuery } from "./gateway";
 import { HttpClient, createHttpClient } from "./http";
 
 export interface TwizzitClientCredentials {
@@ -49,7 +51,7 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return { endpoint, occurredAt: new Date().toISOString(), attempts };
 }
 
-export class TwizzitClient implements FederationContactSource {
+export class TwizzitClient implements FederationGateway {
   private readonly logger: Logger;
   private readonly credentials: TwizzitClientCredentials;
   private readonly http: HttpClient;
@@ -147,52 +149,62 @@ export class TwizzitClient implements FederationContactSource {
         count: orgs.length,
       });
     }
-    this.session.organizationId = orgs[0].id;
-    return this.session.organizationId;
+    const id = orgs[0].id;
+    if (typeof id !== "number") {
+      throw new TwizzitClientError(
+        "Organization id is not numeric; Twizzit returns numeric ids",
+        makeContext("GET /organizations", 1),
+        0,
+        "",
+        "missing-organization-id"
+      );
+    }
+    this.session.organizationId = id;
+    return id;
   }
 
-  async getOrganizations(): Promise<Organization[]> {
+  async getOrganizations(): Promise<FederationOrganization[]> {
     await this.ensureAuth();
     return getOrganizations(this.http);
   }
 
-  async getContacts(opts?: ContactsQuery): Promise<Contact[]> {
+  async getContacts(opts?: ContactsQuery): Promise<FederationContact[]> {
     await this.ensureAuth();
     await this.ensureOrganizationId();
     return getContacts(this.http, opts);
   }
 
-  async getMemberships(opts?: MembershipsQuery): Promise<Membership[]> {
+  async getMemberships(opts?: MembershipsQuery): Promise<FederationMembership[]> {
     await this.ensureAuth();
     await this.ensureOrganizationId();
     return getMemberships(this.http, opts);
   }
 
-  async getMembershipTypes(): Promise<MembershipType[]> {
+  async getMembershipTypes(): Promise<FederationMembershipType[]> {
     await this.ensureAuth();
     await this.ensureOrganizationId();
     return getMembershipTypes(this.http);
   }
 
-  async getExtraFields(): Promise<ExtraField[]> {
+  async getExtraFields(): Promise<FederationExtraField[]> {
     await this.ensureAuth();
     await this.ensureOrganizationId();
     return getExtraFields(this.http);
   }
 
-  fetchOrganizations(): Promise<Organization[]> {
+  fetchOrganizations(): Promise<FederationOrganization[]> {
     return this.getOrganizations();
   }
-  fetchContacts(opts?: ContactsQuery): Promise<Contact[]> {
+  fetchContacts(opts?: ContactsQuery): Promise<FederationContact[]> {
     return this.getContacts(opts);
   }
-  fetchMemberships(opts?: MembershipsQuery): Promise<Membership[]> {
+  fetchMemberships(opts?: MembershipsQuery): Promise<FederationMembership[]> {
     return this.getMemberships(opts);
   }
-  fetchMembershipTypes(): Promise<MembershipType[]> {
+  fetchMembershipTypes(): Promise<FederationMembershipType[]> {
     return this.getMembershipTypes();
   }
-  fetchExtraFields(): Promise<ExtraField[]> {
+  fetchExtraFields(): Promise<FederationExtraField[]> {
     return this.getExtraFields();
   }
 }

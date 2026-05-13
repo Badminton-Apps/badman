@@ -1,17 +1,21 @@
 import { HttpClient } from "../http";
 import { TwizzitValidationError, TwizzitErrorContext } from "../errors";
-import { ContactsResponseSchema, Contact } from "../schemas/contact";
+import { ContactsResponseSchema } from "../schemas/contact";
+import type { FederationContact } from "../federation";
 import { paginate } from "../pagination";
-import { ContactsQuery } from "../seam";
+import { ContactsQuery } from "../gateway";
 
 function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return { endpoint, occurredAt: new Date().toISOString(), attempts };
 }
 
-export async function getContacts(http: HttpClient, opts?: ContactsQuery): Promise<Contact[]> {
+export async function getContacts(
+  http: HttpClient,
+  opts?: ContactsQuery
+): Promise<FederationContact[]> {
   const endpoint = "GET /contacts";
 
-  return paginate<Contact>({
+  return paginate<FederationContact>({
     fetchPage: async (offset, limit) => {
       const params: Record<string, unknown> = { limit, offset };
       if (opts?.lastModified) {
