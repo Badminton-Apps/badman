@@ -30,7 +30,10 @@ function makeMockFetch(responses: Array<{ status: number; body: string }>): type
   };
 }
 
-function makeCaptureLogger(): { logger: Logger; calls: Array<{ level: string; message: string; meta?: Record<string, unknown> }> } {
+function makeCaptureLogger(): {
+  logger: Logger;
+  calls: Array<{ level: string; message: string; meta?: Record<string, unknown> }>;
+} {
   const calls: Array<{ level: string; message: string; meta?: Record<string, unknown> }> = [];
   const logger: Logger = {
     debug: (message, meta) => calls.push({ level: "debug", message, meta }),
@@ -309,7 +312,7 @@ describe("TwizzitClient token refresh", () => {
       await client.getOrganizations();
 
       // Should have authenticated at least twice
-      const authCalls = calls.filter(c => c === "auth");
+      const authCalls = calls.filter((c) => c === "auth");
       expect(authCalls.length).toBeGreaterThanOrEqual(2);
       expect(calls).toContain("orgs");
     });

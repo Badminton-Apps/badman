@@ -1,6 +1,12 @@
 import { httpRequest } from "../http";
 import { Logger } from "../logger";
-import { TwizzitAuthError, TwizzitServerError, TwizzitClientError, TwizzitValidationError, TwizzitErrorContext } from "../errors";
+import {
+  TwizzitAuthError,
+  TwizzitServerError,
+  TwizzitClientError,
+  TwizzitValidationError,
+  TwizzitErrorContext,
+} from "../errors";
 import { ContactsResponseSchema, Contact } from "../schemas/contact";
 import { redactExcerpt } from "../redact";
 import { paginate } from "../pagination";

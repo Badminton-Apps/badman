@@ -1,6 +1,11 @@
 import { Logger } from "./logger";
 import { redactExcerpt } from "./redact";
-import { TwizzitNetworkError, TwizzitRateLimitError, TwizzitErrorContext, isTwizzitError } from "./errors";
+import {
+  TwizzitNetworkError,
+  TwizzitRateLimitError,
+  TwizzitErrorContext,
+  isTwizzitError,
+} from "./errors";
 
 export interface HttpResponse {
   status: number;
@@ -68,7 +73,15 @@ async function rawHttpRequest(
   redactSecrets: ReadonlyArray<string>,
   logger: Logger
 ): Promise<HttpResponse> {
-  const { url, method, headers = {}, body, signal, fetchFn = globalThis.fetch, postParseSecrets } = opts;
+  const {
+    url,
+    method,
+    headers = {},
+    body,
+    signal,
+    fetchFn = globalThis.fetch,
+    postParseSecrets,
+  } = opts;
 
   logger.debug("http request", { method, url: redactExcerpt(url, redactSecrets) });
 

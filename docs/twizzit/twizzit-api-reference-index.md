@@ -104,3 +104,7 @@ GET  /<resource>?organization-ids%5B%5D=34245   ← every other call
 - See **Integration: Twizzit → Requirements** for the consolidated requirements list.
 - See **Integration: Twizzit → Implementation Plan** for sequencing.
 - See **API exploration** (under `Badman Twizzit sync`) for raw response samples used to compile this index.
+
+## Twizzit client lib
+
+The typed TypeScript client implementing this API surface is `@badman/integrations-twizzit-client`. Source and developer docs: [`libs/integrations/twizzit-client/README.md`](../../libs/integrations/twizzit-client/README.md). Delivered in spec 015 / PR #909.

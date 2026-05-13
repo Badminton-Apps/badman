@@ -1,10 +1,7 @@
 import * as path from "path";
 import * as fs from "fs";
 import { TwizzitClient } from "../src/client";
-import {
-  TwizzitValidationError,
-  TwizzitClientError,
-} from "../src/errors";
+import { TwizzitValidationError, TwizzitClientError } from "../src/errors";
 import { Logger } from "../src/logger";
 import { getMemberId } from "../src/schemas/contact";
 
@@ -37,9 +34,7 @@ function makeMockFetchByUrl(
   return async (input) => {
     const urlStr = input.toString();
     const matchingKey = Object.keys(routes).find((k) => urlStr.includes(k));
-    const resp = matchingKey
-      ? routes[matchingKey]
-      : { status: 404, body: '{"error":"not found"}' };
+    const resp = matchingKey ? routes[matchingKey] : { status: 404, body: '{"error":"not found"}' };
     const body = resp.body;
     return {
       status: resp.status,

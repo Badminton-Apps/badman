@@ -70,9 +70,7 @@ describe("no-forbidden-imports (SC-008)", () => {
     }
 
     if (violations.length > 0) {
-      fail(
-        `Forbidden imports found in lib source:\n${violations.map((v) => `  ${v}`).join("\n")}`
-      );
+      fail(`Forbidden imports found in lib source:\n${violations.map((v) => `  ${v}`).join("\n")}`);
     }
     expect(violations).toHaveLength(0);
   });

@@ -22,6 +22,8 @@
 
 ## Phase 1 — Architect & detailed design (1 week)
 
+**Status (2026-05-13)**: Twizzit API client lib delivered in spec 015 / PR #909 — typed client, all endpoints, 429-retry, credential redaction, offline test suite.
+
 - Map every Twizzit entity we will read (`Contact`, `Membership`, `MembershipType`, `Organization`, the relevant `extra-fields`) to Badman's existing models (`Player`, `Club`, `ClubPlayerMembership`, …).
 - Decide membership-type representation in Badman (replacing `competitionPlayer: bool`). Configuration table vs enum vs typed model.
 - Decide the deduplication & merge strategy for the existing duplicates: in-place merge, side-table audit, or rebuild.
@@ -32,6 +34,8 @@
 **Exit criteria:** ADR(s) merged; a single page that points at every artefact (schema delta, interface, sync module shape).
 
 ## Phase 2 — Schema & matching foundation (≈12 SP)
+
+**Status (2026-05-13)**: Not started. Prerequisite: Phase 0 API key confirmed + Phase 1 ADR merged.
 
 - Add `twizzitId` to `Player`, indexed and unique.
 - Add the membership-type representation; migrate the boolean `competitionPlayer` data into it.

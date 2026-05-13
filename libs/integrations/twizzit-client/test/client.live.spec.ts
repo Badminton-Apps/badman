@@ -43,7 +43,8 @@ if (RUN_LIVE) {
 
   if (!username || !password) {
     describe("TwizzitClient — live mode", () => {
-      it.skip("TWIZZIT_USERNAME and TWIZZIT_PASSWORD must be set to run live tests", () => undefined);
+      it.skip("TWIZZIT_USERNAME and TWIZZIT_PASSWORD must be set to run live tests", () =>
+        undefined);
     });
   } else {
     describe("TwizzitClient — live mode (RUN_TWIZZIT_LIVE_TESTS=1)", () => {

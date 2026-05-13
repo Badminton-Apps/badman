@@ -45,10 +45,7 @@
     },
     "type": "Multiple select",
     "location": "",
-    "options": [
-      "Competitieclub",
-      "Recreantenclub"
-    ],
+    "options": ["Competitieclub", "Recreantenclub"],
     "attributes": []
   },
   {
@@ -60,9 +57,7 @@
     },
     "type": "Multiple select",
     "location": "Contact",
-    "options": [
-      "Wedstrijdleider/Responsable interclubs"
-    ],
+    "options": ["Wedstrijdleider/Responsable interclubs"],
     "attributes": [
       {
         "id": 1907,

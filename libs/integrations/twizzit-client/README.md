@@ -34,17 +34,17 @@ The client never writes to a database, never reads `process.env` itself, and nev
 
 ## Configuration reference
 
-| Field | Type | Required | Default |
-|-------|------|----------|---------|
-| `credentials.username` | `string` | yes | — |
-| `credentials.password` | `string` | yes | — |
-| `baseUrl` | `string` | no | `https://app.twizzit.com/v2/api` |
-| `organizationId` | `number` | no | Resolved lazily on first call |
-| `retry.maxRateLimitRetries` | `number` | no | `3` |
-| `retry.maxRetryBudgetMs` | `number` | no | `120_000` |
-| `retry.initialBackoffMs` | `number` | no | `1_000` |
-| `retry.maxBackoffMs` | `number` | no | `30_000` |
-| `logger` | `Logger` interface | no | No-op |
+| Field                       | Type               | Required | Default                          |
+| --------------------------- | ------------------ | -------- | -------------------------------- |
+| `credentials.username`      | `string`           | yes      | —                                |
+| `credentials.password`      | `string`           | yes      | —                                |
+| `baseUrl`                   | `string`           | no       | `https://app.twizzit.com/v2/api` |
+| `organizationId`            | `number`           | no       | Resolved lazily on first call    |
+| `retry.maxRateLimitRetries` | `number`           | no       | `3`                              |
+| `retry.maxRetryBudgetMs`    | `number`           | no       | `120_000`                        |
+| `retry.initialBackoffMs`    | `number`           | no       | `1_000`                          |
+| `retry.maxBackoffMs`        | `number`           | no       | `30_000`                         |
+| `logger`                    | `Logger` interface | no       | No-op                            |
 
 Pass `process.env.X` from your consumer (worker app) — the lib intentionally does **not** read `process.env`.
 
@@ -52,14 +52,14 @@ Pass `process.env.X` from your consumer (worker app) — the lib intentionally d
 
 ## Endpoint cheatsheet
 
-| Method | Twizzit endpoint | Returns | Notes |
-|--------|------------------|---------|-------|
-| `authenticate()` | `POST /authenticate` | `void` (token cached internally) | Auto-refreshes at ≥80% JWT lifetime; reactive 401-retry as fallback. |
-| `getOrganizations()` | `GET /organizations` | `Organization[]` | Resolved lazily; cached after first success. |
-| `getContacts(opts?)` | `GET /contacts` | `Contact[]` | Paginated via `limit`+`offset`; transparent loop. |
-| `getMemberships(opts?)` | `GET /memberships` | `Membership[]` | Same. |
-| `getMembershipTypes()` | `GET /membershipTypes` | `MembershipType[]` | Single page; reference data. |
-| `getExtraFields()` | `GET /extra-fields` | `ExtraField[]` | Single page; reference data. |
+| Method                  | Twizzit endpoint       | Returns                          | Notes                                                                |
+| ----------------------- | ---------------------- | -------------------------------- | -------------------------------------------------------------------- |
+| `authenticate()`        | `POST /authenticate`   | `void` (token cached internally) | Auto-refreshes at ≥80% JWT lifetime; reactive 401-retry as fallback. |
+| `getOrganizations()`    | `GET /organizations`   | `Organization[]`                 | Resolved lazily; cached after first success.                         |
+| `getContacts(opts?)`    | `GET /contacts`        | `Contact[]`                      | Paginated via `limit`+`offset`; transparent loop.                    |
+| `getMemberships(opts?)` | `GET /memberships`     | `Membership[]`                   | Same.                                                                |
+| `getMembershipTypes()`  | `GET /membershipTypes` | `MembershipType[]`               | Single page; reference data.                                         |
+| `getExtraFields()`      | `GET /extra-fields`    | `ExtraField[]`                   | Single page; reference data.                                         |
 
 `opts` for list methods: `{ pageSize?: number; maxPages?: number; lastModified?: Date }`. `lastModified` is a placeholder for the not-yet-shipped Twizzit filter — safe to leave unset.
 
@@ -77,12 +77,18 @@ try {
 } catch (e) {
   if (!isTwizzitError(e)) throw e;
   switch (e.kind) {
-    case "auth":        /* 401/403 — credentials rejected or expired */ break;
-    case "validation":  /* Zod parse failed — Twizzit schema drifted */ break;
-    case "network":     /* Transport error (ECONNRESET, DNS, etc.)  */ break;
-    case "rate-limit":  /* 429 retry budget exhausted; check e.retryAfterMs */ break;
-    case "server":      /* 5xx from Twizzit; check e.bodyExcerpt     */ break;
-    case "client":      /* 4xx (not 401/429) or max-pages-exceeded   */ break;
+    case "auth":
+      /* 401/403 — credentials rejected or expired */ break;
+    case "validation":
+      /* Zod parse failed — Twizzit schema drifted */ break;
+    case "network":
+      /* Transport error (ECONNRESET, DNS, etc.)  */ break;
+    case "rate-limit":
+      /* 429 retry budget exhausted; check e.retryAfterMs */ break;
+    case "server":
+      /* 5xx from Twizzit; check e.bodyExcerpt     */ break;
+    case "client":
+      /* 4xx (not 401/429) or max-pages-exceeded   */ break;
   }
 }
 ```
@@ -93,10 +99,10 @@ try {
 
 ## Testing modes
 
-| Mode | Trigger | Hits Twizzit? |
-|------|---------|---------------|
-| Offline (default) | `nx test integrations-twizzit-client` | No — uses `test/__fixtures__/*.json` and injected mock fetch. |
-| Live | `RUN_TWIZZIT_LIVE_TESTS=1 nx test integrations-twizzit-client` | Yes — exercises the same describes against real Twizzit. |
+| Mode              | Trigger                                                        | Hits Twizzit?                                                 |
+| ----------------- | -------------------------------------------------------------- | ------------------------------------------------------------- |
+| Offline (default) | `nx test integrations-twizzit-client`                          | No — uses `test/__fixtures__/*.json` and injected mock fetch. |
+| Live              | `RUN_TWIZZIT_LIVE_TESTS=1 nx test integrations-twizzit-client` | Yes — exercises the same describes against real Twizzit.      |
 
 CI runs offline only. Live mode is for periodic drift detection. When Twizzit ships a new field the live suite fails; the fix is: record a new fixture and bump the Zod schema.
 

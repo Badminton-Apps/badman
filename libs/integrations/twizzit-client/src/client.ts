@@ -1,5 +1,10 @@
 import { Logger, noopLogger } from "./logger";
-import { TwizzitAuthError, TwizzitClientError, TwizzitErrorContext, TwizzitRateLimitError } from "./errors";
+import {
+  TwizzitAuthError,
+  TwizzitClientError,
+  TwizzitErrorContext,
+  TwizzitRateLimitError,
+} from "./errors";
 import { authenticate } from "./endpoints/authenticate";
 import { getOrganizations } from "./endpoints/organizations";
 import { getContacts } from "./endpoints/contacts";
@@ -126,7 +131,12 @@ function makeRateLimitFetch(
         );
       }
 
-      logger.warn("rate-limited; will retry", { attempt: attempts, maxRetries: policy.maxRateLimitRetries, waitMs, url });
+      logger.warn("rate-limited; will retry", {
+        attempt: attempts,
+        maxRetries: policy.maxRateLimitRetries,
+        waitMs,
+        url,
+      });
       await new Promise<void>((resolve) => setTimeout(resolve, waitMs));
       backoffMs = Math.min(backoffMs * 2, policy.maxBackoffMs);
     }
@@ -218,10 +228,7 @@ export class TwizzitClient implements FederationContactSource {
     return this.session.token!;
   }
 
-  private async withAuthRetry<T>(
-    endpoint: string,
-    fn: (token: string) => Promise<T>
-  ): Promise<T> {
+  private async withAuthRetry<T>(endpoint: string, fn: (token: string) => Promise<T>): Promise<T> {
     const token = await this.ensureAuth();
     try {
       return await fn(token);
@@ -321,13 +328,7 @@ export class TwizzitClient implements FederationContactSource {
   async getExtraFields(): Promise<ExtraField[]> {
     await this.ensureOrganizationId();
     return this.withAuthRetry("GET /extra-fields", (token) =>
-      getExtraFields(
-        this.baseUrl,
-        this.session.organizationId!,
-        token,
-        this.logger,
-        this.fetchFn
-      )
+      getExtraFields(this.baseUrl, this.session.organizationId!, token, this.logger, this.fetchFn)
     );
   }
 
