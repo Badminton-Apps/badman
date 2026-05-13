@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { LocalisedNameSchema } from "./shared";
 
-const ExtraFieldAttributeSchema = z
+export const ExtraFieldAttributeSchema = z
   .object({
     id: z.number().int(),
     name: z.string(),

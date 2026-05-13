@@ -6,22 +6,17 @@ import {
   PhoneSchema,
   AddressSchema,
 } from "./shared";
+import { ExtraFieldAttributeSchema } from "./extra-field";
 
-const ExtraFieldAttributeSchema = z
-  .object({
-    id: z.number().int(),
-    name: z.string(),
-    type: z.string(),
-  })
-  .strict();
-
-const ExtraFieldRefSchema = z
+const ExtraFieldEmbeddedSchema = z
   .object({
     id: z.number().int(),
     name: LocalisedNameSchema,
     type: z.enum(["Text", "Date", "Single select", "Multiple select", "Checkbox"]),
     location: z.union([z.enum(["Contact", "Membership"]), z.literal(""), z.null()]),
-    extraFieldAttributes: z.array(ExtraFieldAttributeSchema),
+    // Swagger types as [{}]; live data shows string[] for standalone /extra-fields. Loosened until verified.
+    options: z.array(z.unknown()),
+    attributes: z.array(ExtraFieldAttributeSchema),
   })
   .strict();
 
@@ -41,7 +36,7 @@ const ExtraFieldValueValueSchema = z
 
 export const ExtraFieldValueSchema = z
   .object({
-    extraField: ExtraFieldRefSchema,
+    "extra-field": ExtraFieldEmbeddedSchema,
     value: ExtraFieldValueValueSchema,
   })
   .strict();
@@ -52,6 +47,8 @@ export const ContactSchema = z
   .object({
     id: z.number().int(),
     name: z.string(),
+    "first-name": z.string(),
+    "last-name": z.string(),
     "date-of-birth": z
       .string()
       .nullable()
@@ -61,14 +58,14 @@ export const ContactSchema = z
     language: z.string().nullable(),
     "account-number": z.string().nullable(),
     "registry-number": z.string().nullable(),
-    number: z.string().nullable(),
+    number: z.number().int().nullable(),
     "email-1": EmailSchema,
     "email-2": EmailSchema,
     "email-3": EmailSchema,
     "mobile-1": MobileSchema,
     "mobile-2": MobileSchema,
     "mobile-3": MobileSchema,
-    phone: PhoneSchema,
+    home: PhoneSchema,
     address: AddressSchema,
     "has-profile-image": z.boolean(),
     "extra-field-values": z.array(ExtraFieldValueSchema),
@@ -80,7 +77,9 @@ export type Contact = z.infer<typeof ContactSchema>;
 export const ContactsResponseSchema = z.array(ContactSchema);
 
 export function getMemberId(contact: Contact): string | null {
-  const efv = contact["extra-field-values"].find((v) => v.extraField.name.EN === "Member ID");
+  const efv = contact["extra-field-values"].find(
+    (v) => v["extra-field"].name.EN === "Member ID"
+  );
   if (!efv) return null;
   const val = efv.value.value;
   return val === "" ? null : val;
