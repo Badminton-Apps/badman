@@ -1,10 +1,12 @@
 import {
+  EntryCompetitionPlayer,
   EventCompetition,
   EventEntry,
   Player,
   SubEventCompetition,
   Team,
 } from "@badman/backend-database";
+import { IndexCalculationService, isFailure } from "@badman/backend-enrollment";
 import { Injectable, Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Transaction } from "sequelize";
@@ -28,6 +30,8 @@ export interface CreateEntryResult {
 @Injectable()
 export class EnrollmentEntryService {
   private readonly logger = new Logger(EnrollmentEntryService.name);
+
+  constructor(private readonly indexCalculationService: IndexCalculationService) {}
 
   async createEntry({
     teamId,
@@ -102,24 +106,46 @@ export class EnrollmentEntryService {
     const existingEntry = await team.getEntry({ transaction });
     const alreadyExisted = existingEntry?.subEventId === subEventId;
 
-    const entry =
-      existingEntry ??
-      (await EventEntry.create(
-        basePlayers.length > 0
-          ? { meta: { competition: { players: basePlayers.map((id) => ({ id })) } } }
-          : {},
-        { transaction }
-      ));
+    const entry = existingEntry ?? (await EventEntry.create({}, { transaction }));
 
-    if (basePlayers.length > 0 && existingEntry) {
-      entry.meta = {
-        ...entry.meta,
-        competition: {
-          ...entry.meta?.competition,
+    if (basePlayers.length > 0) {
+      const result = await this.indexCalculationService.calculateOne(
+        {
+          key: entry.id as string,
+          type: team.type,
+          subEventCompetitionId: subEventId,
           players: basePlayers.map((id) => ({ id })),
         },
+        { transaction }
+      );
+
+      if (isFailure(result)) {
+        throw new GraphQLError(result.error.message, {
+          extensions: {
+            code:
+              result.error.code === "PLAYER_NOT_FOUND"
+                ? ErrorCode.PLAYER_NOT_FOUND
+                : ErrorCode.INTERNAL_ERROR,
+            ...(result.error.playerIds ? { playerIds: result.error.playerIds } : {}),
+          },
+        });
+      }
+
+      const competitionBasePlayers: EntryCompetitionPlayer[] = result.resolvedPlayers.map((rp) => ({
+        id: rp.id,
+        gender: rp.gender ?? undefined,
+        single: rp.single,
+        double: rp.double,
+        mix: rp.mix,
+        levelException: false,
+        levelExceptionRequested: false,
+      }));
+
+      entry.meta = {
+        ...entry.meta,
+        competition: { teamIndex: result.index, players: competitionBasePlayers },
       };
-      await entry.save({ transaction });
+      await entry.save({ transaction, hooks: false });
     }
 
     if (!alreadyExisted) {

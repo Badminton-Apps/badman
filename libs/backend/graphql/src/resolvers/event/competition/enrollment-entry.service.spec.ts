@@ -1,7 +1,22 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { GraphQLError } from "graphql";
 import { EventEntry, Player, SubEventCompetition, Team } from "@badman/backend-database";
+import { IndexCalculationService } from "@badman/backend-enrollment";
 import { EnrollmentEntryService } from "./enrollment-entry.service";
+
+const mockIndexCalculationService = {
+  calculateOne: jest.fn().mockResolvedValue({
+    _tag: "success",
+    key: "entry-uuid",
+    index: 76,
+    contributingPlayers: [],
+    missingPlayerCount: 0,
+    resolvedPlayers: [
+      { id: "p1", gender: "M", single: 8, double: 7, mix: 6 },
+      { id: "p2", gender: "F", single: 9, double: 8, mix: 7 },
+    ],
+  }),
+};
 
 describe("EnrollmentEntryService.createEntry", () => {
   let service: EnrollmentEntryService;
@@ -68,8 +83,12 @@ describe("EnrollmentEntryService.createEntry", () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EnrollmentEntryService],
+      providers: [
+        EnrollmentEntryService,
+        { provide: IndexCalculationService, useValue: mockIndexCalculationService },
+      ],
     }).compile();
     service = module.get<EnrollmentEntryService>(EnrollmentEntryService);
   });
@@ -266,13 +285,12 @@ describe("EnrollmentEntryService.createEntry", () => {
     );
   });
 
-  it("writes basePlayers into meta.competition.players on a new entry", async () => {
+  it("writes enriched meta.competition.players on a new entry", async () => {
+    const createdEntry = stubEntry();
     const team = stubTeam();
     const subEvent = stubSubEvent();
     const user = userWithPermission(true);
-    const createSpy = jest
-      .spyOn(EventEntry, "create")
-      .mockResolvedValue(stubEntry());
+    jest.spyOn(EventEntry, "create").mockResolvedValue(createdEntry);
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
 
@@ -284,19 +302,27 @@ describe("EnrollmentEntryService.createEntry", () => {
       user,
     });
 
-    expect(createSpy).toHaveBeenCalledWith(
-      { meta: { competition: { players: [{ id: "p1" }, { id: "p2" }] } } },
+    expect(mockIndexCalculationService.calculateOne).toHaveBeenCalledWith(
+      expect.objectContaining({ players: [{ id: "p1" }, { id: "p2" }], subEventCompetitionId: "se-uuid" }),
       expect.any(Object)
     );
+    expect(createdEntry.meta).toMatchObject({
+      competition: {
+        teamIndex: 76,
+        players: [
+          { id: "p1", gender: "M", single: 8, double: 7, mix: 6, levelException: false, levelExceptionRequested: false },
+          { id: "p2", gender: "F", single: 9, double: 8, mix: 7, levelException: false, levelExceptionRequested: false },
+        ],
+      },
+    });
+    expect(createdEntry._save).toHaveBeenCalled();
   });
 
-  it("creates entry without meta when basePlayers is empty", async () => {
+  it("creates entry without calling index service when basePlayers is empty", async () => {
     const team = stubTeam();
     const subEvent = stubSubEvent();
     const user = userWithPermission(true);
-    const createSpy = jest
-      .spyOn(EventEntry, "create")
-      .mockResolvedValue(stubEntry());
+    jest.spyOn(EventEntry, "create").mockResolvedValue(stubEntry());
     jest.spyOn(Team, "findByPk").mockResolvedValue(team);
     jest.spyOn(SubEventCompetition, "findByPk").mockResolvedValue(subEvent);
 
@@ -308,7 +334,7 @@ describe("EnrollmentEntryService.createEntry", () => {
       user,
     });
 
-    expect(createSpy).toHaveBeenCalledWith({}, expect.any(Object));
+    expect(mockIndexCalculationService.calculateOne).not.toHaveBeenCalled();
   });
 
   it("updates meta.competition.players on an existing entry when basePlayers provided", async () => {
@@ -328,7 +354,7 @@ describe("EnrollmentEntryService.createEntry", () => {
     });
 
     expect(existingEntry.meta).toMatchObject({
-      competition: { players: [{ id: "p1" }, { id: "p2" }] },
+      competition: { teamIndex: 76, players: expect.arrayContaining([expect.objectContaining({ id: "p1" }), expect.objectContaining({ id: "p2" })]) },
     });
     expect(existingEntry._save).toHaveBeenCalled();
   });

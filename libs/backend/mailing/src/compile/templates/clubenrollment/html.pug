@@ -43,7 +43,7 @@ block content
                   br
                   strong Basisspelers:
                   ul
-                  each player in (team.entry && team.entry.meta && team.entry.meta.competition && team.entry.meta.competition.players || [])
+                  each player in team.entry.meta.competition.players || []
                     li #{ player.firstName }#{ " " }#{ player.lastName }
                       small #{ " " }(#{ player.memberId })
                         if team.type == "MX"

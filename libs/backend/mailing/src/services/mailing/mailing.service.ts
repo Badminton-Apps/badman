@@ -401,10 +401,6 @@ export class MailingService {
     locations: Location[],
     comments: Comment[]
   ) {
-    this.logger.log(
-      `[sendEnrollmentMail] Preparing enrollment mail — to: ${to.email} (${to.fullName}), club: ${club.name}, mailingEnabled: ${this._mailingEnabled}`
-    );
-
     moment.locale("nl-be");
     const options = {
       from: "info@badman.app",
@@ -666,8 +662,6 @@ export class MailingService {
       this._transporter = nodemailer.createTransport(mailConfig);
 
       const verified = await this._transporter.verify();
-
-      this.logger.log(`[_setupMailing] Mailer verified: ${verified}`);
 
       if (!verified) {
         this._mailingEnabled = false;
