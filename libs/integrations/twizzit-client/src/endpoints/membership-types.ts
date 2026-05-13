@@ -19,10 +19,11 @@ export async function getMembershipTypes(
   organizationId: number,
   token: string,
   logger: Logger,
-  fetchFn?: typeof fetch
+  fetchFn?: typeof fetch,
+  extraSecrets: ReadonlyArray<string> = []
 ): Promise<MembershipType[]> {
   const endpoint = "GET /membershipTypes";
-  const secrets: ReadonlyArray<string> = [token];
+  const secrets: ReadonlyArray<string> = [token, ...extraSecrets];
 
   const url = `${baseUrl}/membershipTypes?organization-ids[]=${organizationId}`;
 
