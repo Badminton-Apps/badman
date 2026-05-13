@@ -211,7 +211,7 @@ type TwizzitError =
   | TwizzitClientError     { kind: "client";     endpoint, status, bodyExcerpt, subkind? }
 ```
 
-**Redaction invariant**: every field on every variant is constructed via the `redact()` helper. The bearer token, password, and full `Authorization` header value MUST NOT appear in any field (FR-016, enforced by `redact.spec.ts`).
+**Construction-time guarantee**: error messages constructed by the lib must NOT string-interpolate the password or bearer token. `bodyExcerpt` is a truncated (max ~200 char) excerpt of the response body — it is not deep-scrubbed for secrets (2026-05-13: deep `redact()` pipeline removed; Twizzit responses do not echo credentials, and platform-level structured-logging redaction handles defence in depth in the consumer). See FR-016 and `research.md` R12.
 
 ---
 
