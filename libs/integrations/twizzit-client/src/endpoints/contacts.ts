@@ -22,10 +22,11 @@ export async function getContacts(
   token: string,
   opts: ContactsQuery | undefined,
   logger: Logger,
-  fetchFn?: typeof fetch
+  fetchFn?: typeof fetch,
+  extraSecrets: ReadonlyArray<string> = []
 ): Promise<Contact[]> {
   const endpoint = "GET /contacts";
-  const secrets: ReadonlyArray<string> = [token];
+  const secrets: ReadonlyArray<string> = [token, ...extraSecrets];
 
   return paginate<Contact>({
     fetchPage: async (offset, limit) => {

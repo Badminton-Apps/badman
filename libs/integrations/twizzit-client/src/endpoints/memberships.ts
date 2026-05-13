@@ -22,10 +22,11 @@ export async function getMemberships(
   token: string,
   opts: MembershipsQuery | undefined,
   logger: Logger,
-  fetchFn?: typeof fetch
+  fetchFn?: typeof fetch,
+  extraSecrets: ReadonlyArray<string> = []
 ): Promise<Membership[]> {
   const endpoint = "GET /memberships";
-  const secrets: ReadonlyArray<string> = [token];
+  const secrets: ReadonlyArray<string> = [token, ...extraSecrets];
 
   return paginate<Membership>({
     fetchPage: async (offset, limit) => {

@@ -19,10 +19,11 @@ export async function getExtraFields(
   organizationId: number,
   token: string,
   logger: Logger,
-  fetchFn?: typeof fetch
+  fetchFn?: typeof fetch,
+  extraSecrets: ReadonlyArray<string> = []
 ): Promise<ExtraField[]> {
   const endpoint = "GET /extra-fields";
-  const secrets: ReadonlyArray<string> = [token];
+  const secrets: ReadonlyArray<string> = [token, ...extraSecrets];
 
   const url = `${baseUrl}/extra-fields?organization-ids[]=${organizationId}`;
 
