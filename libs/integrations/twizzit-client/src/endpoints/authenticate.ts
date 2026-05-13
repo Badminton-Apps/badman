@@ -31,6 +31,17 @@ export async function authenticate(
     method: "POST",
     body: JSON.stringify({ username: credentials.username, password: credentials.password }),
     fetchFn,
+    // The auth response body contains the bearer token, which is unknown at request
+    // time. Extract it here so the debug body-excerpt log redacts it immediately.
+    postParseSecrets: (body: string): ReadonlyArray<string> => {
+      try {
+        const parsed = JSON.parse(body) as Record<string, unknown>;
+        const token = typeof parsed["token"] === "string" ? parsed["token"] : null;
+        return token ? [token] : [];
+      } catch {
+        return [];
+      }
+    },
   };
 
   const response = await httpRequest(requestOpts, secrets, logger);

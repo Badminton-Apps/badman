@@ -1,5 +1,5 @@
 import { Logger, noopLogger } from "./logger";
-import { TwizzitAuthError, TwizzitClientError, TwizzitErrorContext } from "./errors";
+import { TwizzitAuthError, TwizzitClientError, TwizzitErrorContext, TwizzitRateLimitError } from "./errors";
 import { authenticate } from "./endpoints/authenticate";
 import { getOrganizations } from "./endpoints/organizations";
 import { getContacts } from "./endpoints/contacts";
@@ -12,6 +12,7 @@ import { Membership } from "./schemas/membership";
 import { MembershipType } from "./schemas/membership-type";
 import { ExtraField } from "./schemas/extra-field";
 import { FederationContactSource, ContactsQuery, MembershipsQuery } from "./seam";
+import { HttpRetryPolicy } from "./http";
 
 export interface TwizzitClientCredentials {
   username: string;
@@ -51,11 +52,94 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   };
 }
 
+/**
+ * Parse the Retry-After header value (numeric seconds or HTTP-date) into milliseconds.
+ * Returns null if absent or unparseable.
+ */
+function parseRetryAfterMs(header: string | undefined): number | null {
+  if (!header) return null;
+  const seconds = Number(header.trim());
+  if (!Number.isNaN(seconds) && seconds >= 0) return Math.round(seconds * 1000);
+  const ts = Date.parse(header);
+  if (!Number.isNaN(ts)) return Math.max(0, ts - Date.now());
+  return null;
+}
+
+/**
+ * Wraps a fetch function with 429 retry-with-backoff logic.
+ * Endpoints call this wrapped fetch transparently — they never see 429 unless the
+ * budget is exhausted, at which point TwizzitRateLimitError is thrown.
+ */
+function makeRateLimitFetch(
+  innerFetch: typeof fetch,
+  policy: HttpRetryPolicy,
+  logger: Logger,
+  secrets: ReadonlyArray<string> = []
+): typeof fetch {
+  return async (input, init) => {
+    let attempts = 0;
+    let backoffMs = policy.initialBackoffMs;
+    const budgetStart = Date.now();
+    const url = input.toString();
+
+    while (true) {
+      attempts++;
+      const response = await innerFetch(input, init);
+
+      if (response.status !== 429) return response;
+
+      // Need to read body before deciding to retry (so the response stream is consumed)
+      // Clone first so caller can still read it on exhaustion
+      const cloned = response.clone();
+      let retryAfterHeader: string | undefined;
+      cloned.headers.forEach((v, k) => {
+        if (k.toLowerCase() === "retry-after") retryAfterHeader = v;
+      });
+
+      if (attempts > policy.maxRateLimitRetries) {
+        const retryAfterMs = parseRetryAfterMs(retryAfterHeader) ?? backoffMs;
+        logger.warn("rate-limit budget (attempts) exhausted", { attempts, retryAfterMs, url });
+        throw new TwizzitRateLimitError(
+          `Rate limited on ${url} after ${attempts} attempt(s)`,
+          makeContext(url, attempts),
+          retryAfterMs,
+          secrets
+        );
+      }
+
+      const waitMs =
+        parseRetryAfterMs(retryAfterHeader) ?? Math.min(backoffMs, policy.maxBackoffMs);
+
+      const elapsed = Date.now() - budgetStart;
+      if (elapsed + waitMs > policy.maxRetryBudgetMs) {
+        logger.warn("rate-limit budget (time) exhausted", {
+          attempts,
+          waitMs,
+          elapsed,
+          maxRetryBudgetMs: policy.maxRetryBudgetMs,
+        });
+        throw new TwizzitRateLimitError(
+          `Rate limit time budget (${policy.maxRetryBudgetMs}ms) exhausted on ${url}`,
+          makeContext(url, attempts),
+          waitMs,
+          secrets
+        );
+      }
+
+      logger.warn("rate-limited; will retry", { attempt: attempts, maxRetries: policy.maxRateLimitRetries, waitMs, url });
+      await new Promise<void>((resolve) => setTimeout(resolve, waitMs));
+      backoffMs = Math.min(backoffMs * 2, policy.maxBackoffMs);
+    }
+  };
+}
+
 export class TwizzitClient implements FederationContactSource {
   private readonly baseUrl: string;
   private readonly logger: Logger;
-  private readonly fetchFn: typeof fetch | undefined;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used in Phase 4 429-retry wiring
+  /** Raw fetch (may be undefined → use globalThis.fetch). Stored for tests. */
+  private readonly rawFetchFn: typeof fetch | undefined;
+  /** Rate-limit-aware fetch wrapper built from retryPolicy. Passed to endpoints. */
+  private readonly fetchFn: typeof fetch;
   private readonly retryPolicy: Required<TwizzitClientRetryPolicy>;
   private readonly credentials: TwizzitClientCredentials;
 
@@ -69,7 +153,7 @@ export class TwizzitClient implements FederationContactSource {
   constructor(config: TwizzitClientConfig) {
     this.baseUrl = config.baseUrl ?? DEFAULT_BASE_URL;
     this.logger = config.logger ?? noopLogger;
-    this.fetchFn = config.fetch;
+    this.rawFetchFn = config.fetch;
     this.credentials = config.credentials;
     this.retryPolicy = {
       maxRateLimitRetries: config.retry?.maxRateLimitRetries ?? 3,
@@ -77,6 +161,20 @@ export class TwizzitClient implements FederationContactSource {
       maxBackoffMs: config.retry?.maxBackoffMs ?? 30_000,
       initialBackoffMs: config.retry?.initialBackoffMs ?? 1_000,
     };
+
+    const httpRetryPolicy: HttpRetryPolicy = {
+      maxRateLimitRetries: this.retryPolicy.maxRateLimitRetries,
+      maxRetryBudgetMs: this.retryPolicy.maxRetryBudgetMs,
+      maxBackoffMs: this.retryPolicy.maxBackoffMs,
+      initialBackoffMs: this.retryPolicy.initialBackoffMs,
+    };
+
+    // Wrap the inner fetch (or globalThis.fetch) with rate-limit retry logic.
+    // Endpoints see a plain fetch and never handle 429 themselves.
+    const innerFetch = config.fetch ?? globalThis.fetch;
+    this.fetchFn = makeRateLimitFetch(innerFetch, httpRetryPolicy, this.logger, [
+      config.credentials.password,
+    ]);
 
     if (config.organizationId !== undefined) {
       this.session.organizationId = config.organizationId;
@@ -94,11 +192,15 @@ export class TwizzitClient implements FederationContactSource {
   }
 
   async authenticate(): Promise<void> {
+    // For authenticate we pass rawFetchFn (not the rate-limit wrapper) because
+    // the wrapper already uses globalThis.fetch as fallback — but we need to avoid
+    // double-wrapping when a test injects a mock fetch. Use rawFetchFn here so the
+    // mock fetch receives the auth call directly.
     const response = await authenticate(
       this.baseUrl,
       this.credentials,
       this.logger,
-      this.fetchFn
+      this.rawFetchFn
     );
     this.session.token = response.token;
     this.session.createdOn = response["created-on"];
@@ -171,7 +273,7 @@ export class TwizzitClient implements FederationContactSource {
 
   async getOrganizations(): Promise<Organization[]> {
     return this.withAuthRetry("GET /organizations", (token) =>
-      getOrganizations(this.baseUrl, token, this.logger, this.fetchFn)
+      getOrganizations(this.baseUrl, token, this.logger, this.fetchFn, [this.credentials.password])
     );
   }
 

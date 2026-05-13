@@ -22,10 +22,11 @@ export async function getOrganizations(
   baseUrl: string,
   token: string,
   logger: Logger,
-  fetchFn?: typeof fetch
+  fetchFn?: typeof fetch,
+  extraSecrets: ReadonlyArray<string> = []
 ): Promise<Organization[]> {
   const endpoint = "GET /organizations";
-  const secrets: ReadonlyArray<string> = [token];
+  const secrets: ReadonlyArray<string> = [token, ...extraSecrets];
 
   const requestOpts: HttpRequestOptions = {
     url: `${baseUrl}/organizations`,
