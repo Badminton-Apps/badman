@@ -81,9 +81,9 @@ describe("TwizzitError discriminated union", () => {
     expect(classifyError(err)).toBe("client:none");
   });
 
-  it("client variant (max-pages-exceeded) narrows with correct subkind", () => {
-    const err = new TwizzitClientError("msg", ctx, 0, "", "max-pages-exceeded");
-    expect(classifyError(err)).toBe("client:max-pages-exceeded");
+  it("client variant (pagination-runaway) narrows with correct subkind", () => {
+    const err = new TwizzitClientError("msg", ctx, 0, "", "pagination-runaway");
+    expect(classifyError(err)).toBe("client:pagination-runaway");
   });
 
   it("isTwizzitError returns true for all six variants", () => {

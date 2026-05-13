@@ -40,19 +40,38 @@ describe("paginate", () => {
     expect(fetchPage).toHaveBeenCalledTimes(2);
   });
 
-  it("throws TwizzitClientError with subkind max-pages-exceeded when maxPages is reached", async () => {
+  it("truncates and logs a warning when maxPages is reached (no error thrown)", async () => {
     const fetchPage = jest.fn().mockResolvedValue([1, 2]);
-    await expect(paginate({ fetchPage, endpointLabel, pageSize: 2, maxPages: 2 })).rejects.toThrow(
-      TwizzitClientError
-    );
+    const warn = jest.fn();
+    const logger = { debug: jest.fn(), info: jest.fn(), warn, error: jest.fn() };
 
-    const fetchPage2 = jest.fn().mockResolvedValue([1, 2]);
-    try {
-      await paginate({ fetchPage: fetchPage2, endpointLabel, pageSize: 2, maxPages: 2 });
-    } catch (err) {
-      expect(err).toBeInstanceOf(TwizzitClientError);
-      expect((err as TwizzitClientError).subkind).toBe("max-pages-exceeded");
-    }
+    const result = await paginate({
+      fetchPage,
+      endpointLabel,
+      pageSize: 2,
+      maxPages: 2,
+      logger,
+    });
+
+    // 2 pages fetched, each returning 2 items → 4 total.
+    expect(result).toEqual([1, 2, 1, 2]);
+    expect(fetchPage).toHaveBeenCalledTimes(2);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toMatch(/maxPages reached/);
+    expect(warn.mock.calls[0][1]).toMatchObject({ pages: 2, items: 4, maxPages: 2 });
+  });
+
+  it("with no maxPages, fetches until exhausted (federation full-sync mode)", async () => {
+    // Simulate 5 full pages of 100 items, then an empty page → 500 items total.
+    const FULL_PAGE = Array.from({ length: 100 }, (_, i) => i);
+    let calls = 0;
+    const fetchPage = jest.fn().mockImplementation(async () => {
+      calls++;
+      return calls <= 5 ? FULL_PAGE : [];
+    });
+    const result = await paginate({ fetchPage, endpointLabel, pageSize: 100 });
+    expect(result).toHaveLength(500);
+    expect(fetchPage).toHaveBeenCalledTimes(6); // 5 full + 1 empty
   });
 
   it("throws TwizzitClientError with subkind bad-pagination-arg for invalid pageSize", async () => {

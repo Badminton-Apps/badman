@@ -2,7 +2,7 @@ import * as path from "path";
 import * as fs from "fs";
 import MockAdapter from "axios-mock-adapter";
 import { TwizzitClient } from "../src/client";
-import { TwizzitValidationError, TwizzitClientError } from "../src/errors";
+import { TwizzitValidationError } from "../src/errors";
 
 const FIXTURES_DIR = path.resolve(__dirname, "__fixtures__");
 
@@ -41,7 +41,7 @@ describe("TwizzitClient entities", () => {
   describe("getMembershipTypes", () => {
     it("returns the expected 7 BV types with localised names normalised to en/nl/fr", async () => {
       const { client, mock } = newClient();
-      mock.onGet("/membershipTypes").reply(200, loadFixture("membership-types.200.json"));
+      mock.onGet("/membership-types").reply(200, loadFixture("membership-types.200.json"));
 
       await client.authenticate();
       const types = await client.getMembershipTypes();
@@ -203,22 +203,17 @@ describe("TwizzitClient pagination edge cases", () => {
     expect(contactCall!.params).toMatchObject({ limit: 50, offset: 0 });
   });
 
-  it("throws TwizzitClientError with subkind max-pages-exceeded when limit is reached", async () => {
+  it("truncates at maxPages and returns the partial result (sampling mode)", async () => {
     const { client, mock } = newClient();
     mock.onGet("/contacts").reply(200, loadFixture("contacts.page-1.200.json"));
 
     await client.authenticate();
 
-    let caught: TwizzitClientError | undefined;
-    try {
-      await client.getContacts({ pageSize: 5, maxPages: 1 });
-    } catch (err) {
-      caught = err as TwizzitClientError;
-    }
+    // Fixture has 5 records; pageSize=5 → page 1 looks full → would fetch page 2.
+    // With maxPages: 1, we stop after page 1 and return the 5 collected items.
+    const contacts = await client.getContacts({ pageSize: 5, maxPages: 1 });
 
-    expect(caught).toBeInstanceOf(TwizzitClientError);
-    expect(caught!.kind).toBe("client");
-    expect(caught!.subkind).toBe("max-pages-exceeded");
+    expect(contacts).toHaveLength(5);
   });
 
   it("forwards lastModified as a query param", async () => {

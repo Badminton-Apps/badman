@@ -39,14 +39,18 @@ const RawAddressSchema = z
   })
   .strict();
 
+// Live wire format (confirmed 2026-05-13): the embedded extra-field on a contact
+// uses camelCase wrapper keys — `extraField` (not `extra-field`) — and the inner
+// field model uses `extraFieldAttributes` (not `attributes`). There is no
+// `options` field on the embedded variant; that only appears on the standalone
+// `/extra-fields` resource. The Swagger drift docs claimed otherwise; live data wins.
 const RawExtraFieldEmbeddedSchema = z
   .object({
     id: z.number().int(),
     name: RawLocalisedNameSchema,
     type: z.enum(["Text", "Date", "Single select", "Multiple select", "Checkbox"]),
     location: z.union([z.enum(["Contact", "Membership"]), z.literal(""), z.null()]),
-    options: z.array(z.unknown()),
-    attributes: z.array(ExtraFieldAttributeSchema),
+    extraFieldAttributes: z.array(ExtraFieldAttributeSchema),
   })
   .strict();
 
@@ -66,7 +70,7 @@ const RawExtraFieldValueValueSchema = z
 
 const RawExtraFieldValueSchema = z
   .object({
-    "extra-field": RawExtraFieldEmbeddedSchema,
+    extraField: RawExtraFieldEmbeddedSchema,
     value: RawExtraFieldValueValueSchema,
   })
   .strict();
@@ -74,14 +78,14 @@ const RawExtraFieldValueSchema = z
 export const ExtraFieldValueSchema = RawExtraFieldValueSchema.transform(
   (raw): FederationExtraFieldValue => ({
     field: {
-      id: raw["extra-field"].id,
+      id: raw.extraField.id,
       name: {
-        en: raw["extra-field"].name.EN,
-        nl: raw["extra-field"].name.NL,
-        fr: raw["extra-field"].name.FR,
+        en: raw.extraField.name.EN,
+        nl: raw.extraField.name.NL,
+        fr: raw.extraField.name.FR,
       },
-      type: raw["extra-field"].type,
-      location: raw["extra-field"].location === "" ? null : raw["extra-field"].location,
+      type: raw.extraField.type,
+      location: raw.extraField.location === "" ? null : raw.extraField.location,
     },
     value: raw.value.value,
     attributes: raw.value.attributes.map((a) => ({
@@ -110,7 +114,7 @@ const RawContactSchema = z
     "mobile-1": RawPhoneSchema,
     "mobile-2": RawPhoneSchema,
     "mobile-3": RawPhoneSchema,
-    home: RawPhoneSchema,
+    phone: RawPhoneSchema,
     address: RawAddressSchema,
     "has-profile-image": z.boolean(),
     "extra-field-values": z.array(ExtraFieldValueSchema),
@@ -132,7 +136,7 @@ export const ContactSchema = RawContactSchema.transform((raw): FederationContact
   const mobiles = [raw["mobile-1"], raw["mobile-2"], raw["mobile-3"]]
     .map(mapPhone)
     .filter((m) => m.number !== "");
-  const homePhone = mapPhone(raw.home);
+  const homePhone = mapPhone(raw.phone);
   const home: FederationPhone | null = homePhone.number === "" ? null : homePhone;
 
   const extraFields = raw["extra-field-values"];

@@ -30,9 +30,9 @@ const fields = await client.getExtraFields();
 // Federation-agnostic shape — camelCase everywhere, lowercase locale keys (en/nl/fr).
 // `memberId` is surfaced as a top-level field on the contact, extracted from
 // the contact's extra-fields by the schema transform.
-console.log(contacts[0].memberId);     // → "50082790" or null
-console.log(contacts[0].fullName);     // → "Jane Doe"
-console.log(types[0].name.en);         // → "Competitive member"
+console.log(contacts[0].memberId); // → "50082790" or null
+console.log(contacts[0].fullName); // → "Jane Doe"
+console.log(types[0].name.en); // → "Competitive member"
 ```
 
 The client never writes to a database, never reads `process.env` itself, and never string-interpolates your password or token into error messages.
@@ -60,14 +60,14 @@ Pass `process.env.X` from your consumer (worker app) — the lib intentionally d
 
 ## Endpoint cheatsheet
 
-| Method                  | Twizzit endpoint       | Returns                          | Notes                                                                          |
-| ----------------------- | ---------------------- | -------------------------------- | ------------------------------------------------------------------------------ |
-| `authenticate()`        | `POST /authenticate`   | `void` (token cached internally) | Proactive refresh at ≥80 % of `valid-till − created-on`; reactive 401-retry as fallback. JWT treated as opaque. |
-| `getOrganizations()`    | `GET /organizations`   | `FederationOrganization[]`       | Resolved lazily; first org cached as the default `organizationId`.             |
-| `getContacts(opts?)`    | `GET /contacts`        | `FederationContact[]`            | Paginated via `limit`+`offset`; transparent loop bounded by `maxPages` (default 2000). |
-| `getMemberships(opts?)` | `GET /memberships`     | `FederationMembership[]`         | Same. Optional `clubId` filter.                                                |
-| `getMembershipTypes()`  | `GET /membershipTypes` | `FederationMembershipType[]`     | Single page; small reference catalogue.                                        |
-| `getExtraFields()`      | `GET /extra-fields`    | `FederationExtraField[]`         | Single page; reference data.                                                   |
+| Method                  | Twizzit endpoint        | Returns                          | Notes                                                                                                                   |
+| ----------------------- | ----------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `authenticate()`        | `POST /authenticate`    | `void` (token cached internally) | Proactive refresh at ≥80 % of `valid-till − created-on`; reactive 401-retry as fallback. JWT treated as opaque.         |
+| `getOrganizations()`    | `GET /organizations`    | `FederationOrganization[]`       | Resolved lazily; first org cached as the default `organizationId`.                                                      |
+| `getContacts(opts?)`    | `GET /contacts`         | `FederationContact[]`            | Paginated via `limit`+`offset`; default fetches every page (production sync). Pass `maxPages` to truncate for sampling. |
+| `getMemberships(opts?)` | `GET /memberships`      | `FederationMembership[]`         | Same. Optional `clubId` filter.                                                                                         |
+| `getMembershipTypes()`  | `GET /membership-types` | `FederationMembershipType[]`     | Single page; small reference catalogue.                                                                                 |
+| `getExtraFields()`      | `GET /extra-fields`     | `FederationExtraField[]`         | Single page; reference data.                                                                                            |
 
 `opts` for paginated list methods: `{ pageSize?: number; maxPages?: number; lastModified?: Date }`. `lastModified` is a placeholder for a Twizzit filter that has been promised but not yet shipped — safe to leave unset; the param is forwarded to the URL when present.
 
@@ -88,18 +88,18 @@ async function sync(gateway: FederationGateway) {
 
 All public entity types live in `src/federation.ts` and are exported from the lib's barrel:
 
-| Type                          | Purpose                                                                |
-| ----------------------------- | ---------------------------------------------------------------------- |
-| `FederationOrganization`      | `{ id, name }`.                                                        |
-| `FederationContact`           | Person record: names, dates, address, filtered emails/mobiles, extra fields, top-level `memberId`. |
-| `FederationMembership`        | Club↔contact link with type, dates, nullable `clubId`/`seasonId`.       |
-| `FederationMembershipType`    | Localised name (`en`/`nl`/`fr`), `type` (Continuously/Seasonal/…), cadence fields. |
-| `FederationExtraField`        | Custom-field catalogue entry: `id`, localised `name`, `type`, `options`, `attributes`. |
-| `FederationExtraFieldValue`   | A value attached to a contact/membership, with the `field` metadata embedded. |
-| `FederationLocalisedName`     | `{ en, nl, fr }` (lowercase locale keys).                              |
-| `FederationEmail`             | `{ target, address }` (wire `email-N` slots filtered to non-empty).    |
-| `FederationPhone`             | `{ target, countryCode, number }` (wire `cc` → `countryCode`).         |
-| `FederationAddress`           | Address with localised `country`.                                       |
+| Type                        | Purpose                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------- |
+| `FederationOrganization`    | `{ id, name }`.                                                                                    |
+| `FederationContact`         | Person record: names, dates, address, filtered emails/mobiles, extra fields, top-level `memberId`. |
+| `FederationMembership`      | Club↔contact link with type, dates, nullable `clubId`/`seasonId`.                                 |
+| `FederationMembershipType`  | Localised name (`en`/`nl`/`fr`), `type` (Continuously/Seasonal/…), cadence fields.                 |
+| `FederationExtraField`      | Custom-field catalogue entry: `id`, localised `name`, `type`, `options`, `attributes`.             |
+| `FederationExtraFieldValue` | A value attached to a contact/membership, with the `field` metadata embedded.                      |
+| `FederationLocalisedName`   | `{ en, nl, fr }` (lowercase locale keys).                                                          |
+| `FederationEmail`           | `{ target, address }` (wire `email-N` slots filtered to non-empty).                                |
+| `FederationPhone`           | `{ target, countryCode, number }` (wire `cc` → `countryCode`).                                     |
+| `FederationAddress`         | Address with localised `country`.                                                                  |
 
 Twizzit's raw kebab-case wire format is an internal implementation detail of the `src/schemas/*` modules; it is **not** exported. See `docs/twizzit/*-swagger.md` for the wire-format contracts.
 
@@ -117,12 +117,18 @@ try {
 } catch (e) {
   if (!isTwizzitError(e)) throw e;
   switch (e.kind) {
-    case "auth":       /* 401/403 — credentials rejected or expired */ break;
-    case "validation": /* Zod parse failed — Twizzit schema drifted */ break;
-    case "network":    /* Transport error (ECONNRESET, DNS, etc.) */ break;
-    case "rate-limit": /* 429 retry budget exhausted; check e.retryAfterMs */ break;
-    case "server":     /* 5xx from Twizzit; check e.bodyExcerpt */ break;
-    case "client":     /* 4xx (not 401/429) or e.subkind === "max-pages-exceeded" */ break;
+    case "auth":
+      /* 401/403 — credentials rejected or expired */ break;
+    case "validation":
+      /* Zod parse failed — Twizzit schema drifted */ break;
+    case "network":
+      /* Transport error (ECONNRESET, DNS, etc.) */ break;
+    case "rate-limit":
+      /* 429 retry budget exhausted; check e.retryAfterMs */ break;
+    case "server":
+      /* 5xx from Twizzit; check e.bodyExcerpt */ break;
+    case "client":
+      /* 4xx (not 401/429), or subkind === "pagination-runaway" / "bad-pagination-arg" */ break;
   }
 }
 ```
@@ -133,9 +139,9 @@ try {
 
 ## Testing modes
 
-| Mode              | Trigger                                                                                                                              | Hits Twizzit?                                          |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
-| Offline (default) | `nx test integrations-twizzit-client`                                                                                                | No — uses `test/__fixtures__/*.json` + `axios-mock-adapter`. |
+| Mode              | Trigger                                                                                                              | Hits Twizzit?                                                |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Offline (default) | `nx test integrations-twizzit-client`                                                                                | No — uses `test/__fixtures__/*.json` + `axios-mock-adapter`. |
 | Live              | `RUN_TWIZZIT_LIVE_TESTS=1 nx test integrations-twizzit-client --skip-nx-cache --testPathPattern '\.live\.spec\.ts$'` | Yes — exercises all four entity endpoints against staging.   |
 
 CI runs offline only. Live mode is for periodic drift detection. When Twizzit ships a new wire field the live suite throws `TwizzitValidationError` immediately — fix it by updating the raw input schema in `src/schemas/*.ts` (and the matching transform if a new field needs to surface in the generic shape).
@@ -145,20 +151,22 @@ An offline guard (`test/setup.offline.ts`) replaces `globalThis.fetch` with a se
 ```ts
 import MockAdapter from "axios-mock-adapter";
 
-const client = new TwizzitClient({ /* … */ });
+const client = new TwizzitClient({
+  /* … */
+});
 const mock = new MockAdapter(client._http);
-mock.onPost("/authenticate").reply(200, /* … */);
-mock.onGet("/organizations").reply(200, /* … */);
+mock.onPost("/authenticate").reply(200 /* … */);
+mock.onGet("/organizations").reply(200 /* … */);
 ```
 
 ### Live env vars (existing project convention)
 
-| Var                       | Required | Purpose                                                                       |
-| ------------------------- | -------- | ----------------------------------------------------------------------------- |
-| `RUN_TWIZZIT_LIVE_TESTS`  | yes (=`1`) | Gate flag that flips the live `describe` block on.                          |
-| `TWIZZIT_API_USER`        | yes      | Username sent to `POST /authenticate`.                                        |
-| `TWIZZIT_API_PASS`        | yes      | Password sent to `POST /authenticate`.                                        |
-| `TWIZZIT_API`             | no       | Override base URL. Default `https://app.twizzit.com/v2/api`.                  |
+| Var                      | Required   | Purpose                                                      |
+| ------------------------ | ---------- | ------------------------------------------------------------ |
+| `RUN_TWIZZIT_LIVE_TESTS` | yes (=`1`) | Gate flag that flips the live `describe` block on.           |
+| `TWIZZIT_API_USER`       | yes        | Username sent to `POST /authenticate`.                       |
+| `TWIZZIT_API_PASS`       | yes        | Password sent to `POST /authenticate`.                       |
+| `TWIZZIT_API`            | no         | Override base URL. Default `https://app.twizzit.com/v2/api`. |
 
 If your `.env` already has these (the legacy sync uses them too):
 

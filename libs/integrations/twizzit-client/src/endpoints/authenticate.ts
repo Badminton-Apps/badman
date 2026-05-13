@@ -21,12 +21,17 @@ export async function authenticate(
 ): Promise<AuthenticateResponse> {
   const endpoint = "POST /authenticate";
 
+  // Twizzit's /authenticate expects application/x-www-form-urlencoded, not JSON.
+  // Confirmed against the live Swagger UI 2026-05-13: a JSON body returns 401
+  // "User unavailable" even with valid credentials. Passing URLSearchParams makes
+  // axios set Content-Type: application/x-www-form-urlencoded automatically.
+  const body = new URLSearchParams();
+  body.set("username", credentials.username);
+  body.set("password", credentials.password);
+
   let rawData: unknown;
   try {
-    const response = await http.post("/authenticate", {
-      username: credentials.username,
-      password: credentials.password,
-    });
+    const response = await http.post("/authenticate", body);
     rawData = response.data;
   } catch (err: unknown) {
     // Re-throw TwizzitErrors from interceptors unchanged

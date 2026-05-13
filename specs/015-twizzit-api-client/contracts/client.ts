@@ -52,7 +52,12 @@ export interface TwizzitClientConfig {
 export interface PaginationBounds {
   /** Items per page sent as `limit` query param. Default: 100. */
   pageSize?: number;
-  /** Max pages to walk. Default: 2000. Hitting this throws TwizzitClientError. */
+  /**
+   * Optional truncation bound. When set, stop after this many pages and return
+   * what's been collected (a warning is logged). When unset (default for
+   * production sync), fetch every page until the federation returns a short page.
+   * An internal RUNAWAY_PAGE_LIMIT (100_000) acts as the absolute safety net.
+   */
   maxPages?: number;
 }
 

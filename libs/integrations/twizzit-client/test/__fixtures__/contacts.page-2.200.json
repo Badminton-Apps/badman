@@ -39,11 +39,6 @@
       "cc": null,
       "number": ""
     },
-    "home": {
-      "target": null,
-      "cc": null,
-      "number": ""
-    },
     "address": {
       "street": "Teststraat",
       "number": "6",
@@ -59,7 +54,11 @@
     "has-profile-image": false,
     "extra-field-values": [
       {
-        "extra-field": {
+        "value": {
+          "value": "50000006",
+          "attributes": []
+        },
+        "extraField": {
           "id": 41763,
           "name": {
             "EN": "Member ID",
@@ -68,15 +67,15 @@
           },
           "type": "Text",
           "location": "Contact",
-          "options": [],
-          "attributes": []
-        },
-        "value": {
-          "value": "50000006",
-          "attributes": []
+          "extraFieldAttributes": []
         }
       }
-    ]
+    ],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
   },
   {
     "id": 6348007,
@@ -117,11 +116,6 @@
       "cc": null,
       "number": ""
     },
-    "home": {
-      "target": null,
-      "cc": null,
-      "number": ""
-    },
     "address": {
       "street": "Testavenue",
       "number": "7",
@@ -135,6 +129,11 @@
       }
     },
     "has-profile-image": false,
-    "extra-field-values": []
+    "extra-field-values": [],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
   }
 ]
