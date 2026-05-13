@@ -1,223 +1,230 @@
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { Logger } from "./logger";
-import { redactExcerpt } from "./redact";
+import { TwizzitClientRetryPolicy } from "./client";
 import {
+  TwizzitAuthError,
+  TwizzitClientError,
   TwizzitNetworkError,
   TwizzitRateLimitError,
+  TwizzitServerError,
   TwizzitErrorContext,
-  isTwizzitError,
 } from "./errors";
 
-export interface HttpResponse {
-  status: number;
-  body: string;
-  headers: Record<string, string>;
-  json<T = unknown>(): T;
-}
-
-export interface HttpRequestOptions {
-  url: string;
-  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  headers?: Record<string, string>;
-  body?: string;
-  signal?: AbortSignal;
-  fetchFn?: typeof fetch;
-  /**
-   * Called with the raw response body after it is read.
-   * Returns additional secrets to redact when logging the body excerpt.
-   * Use when the response itself contains a new credential (e.g. a bearer token)
-   * that was unknown at request time.
-   */
-  postParseSecrets?: (body: string) => ReadonlyArray<string>;
-}
-
-export interface HttpRetryPolicy {
-  maxRateLimitRetries: number;
-  maxRetryBudgetMs: number;
-  initialBackoffMs: number;
-  maxBackoffMs: number;
-}
-
-function makeContext(url: string, attempts: number): TwizzitErrorContext {
-  return {
-    endpoint: url,
-    occurredAt: new Date().toISOString(),
-    attempts,
-  };
-}
-
 /**
- * Parse the Retry-After header value, returning milliseconds to wait.
- * Accepts either a numeric seconds value or an HTTP-date string.
- * Returns null if the header is absent or unparseable.
+ * Thin shape the lib exposes for its HTTP layer. We alias to `AxiosInstance` because
+ * the existing implementation uses axios's interceptor and `paramsSerializer` features,
+ * and tests bind `axios-mock-adapter` directly to the instance. The alias keeps the
+ * implementation detail off the lib's name surface (no "Axios" in our function or
+ * config-type names) while preserving the structural shape callers and tests rely on.
+ *
+ * If a future swap to a different HTTP library is desired, this alias is the single
+ * type to change; consumers and endpoints reference `HttpClient`, not `AxiosInstance`.
  */
+export type HttpClient = AxiosInstance;
+
+export interface HttpClientOptions {
+  baseUrl: string;
+  getToken: () => string | undefined;
+  getOrganizationId: () => number | undefined;
+  retryPolicy: Required<TwizzitClientRetryPolicy>;
+  logger: Logger;
+  onUnauthorized: () => Promise<void>;
+}
+
+declare module "axios" {
+  interface InternalAxiosRequestConfig {
+    __twizzitAuthRetried?: boolean;
+    __twizzit429Attempts?: number;
+  }
+}
+
+function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
+  return { endpoint, occurredAt: new Date().toISOString(), attempts };
+}
+
 function parseRetryAfterMs(header: string | undefined): number | null {
   if (!header) return null;
   const seconds = Number(header.trim());
   if (!Number.isNaN(seconds) && seconds >= 0) {
     return Math.round(seconds * 1000);
   }
-  // Try HTTP-date
   const ts = Date.parse(header);
   if (!Number.isNaN(ts)) {
-    const delta = ts - Date.now();
-    return Math.max(0, delta);
+    return Math.max(0, ts - Date.now());
   }
   return null;
 }
 
-/**
- * Raw HTTP request without retry logic. Used internally by httpRequest.
- */
-async function rawHttpRequest(
-  opts: HttpRequestOptions,
-  redactSecrets: ReadonlyArray<string>,
-  logger: Logger
-): Promise<HttpResponse> {
-  const {
-    url,
-    method,
-    headers = {},
-    body,
-    signal,
-    fetchFn = globalThis.fetch,
-    postParseSecrets,
-  } = opts;
+export function truncate(value: unknown, maxLen = 200): string {
+  const s = typeof value === "string" ? value : JSON.stringify(value);
+  return s.length > maxLen ? s.slice(0, maxLen) + "…" : s;
+}
 
-  logger.debug("http request", { method, url: redactExcerpt(url, redactSecrets) });
-
-  let response: Response;
-  try {
-    response = await fetchFn(url, {
-      method,
-      headers: { "Content-Type": "application/json", ...headers },
-      body,
-      signal,
-    });
-  } catch (err: unknown) {
-    // Re-throw Twizzit errors (e.g. TwizzitRateLimitError from an injected fetch wrapper)
-    // without wrapping them in a TwizzitNetworkError.
-    if (isTwizzitError(err)) throw err;
-    const code =
-      err instanceof Error && "code" in err
-        ? String((err as NodeJS.ErrnoException).code ?? "UNKNOWN")
-        : "UNKNOWN";
-    const message =
-      err instanceof Error ? redactExcerpt(err.message, redactSecrets) : "Network error";
-    const ctx = makeContext(url, 1);
-    logger.warn("http network error", { code, message });
-    throw new TwizzitNetworkError(message, ctx, code, redactSecrets);
-  }
-
-  let rawBody: string;
-  try {
-    rawBody = await response.text();
-  } catch {
-    rawBody = "";
-  }
-
-  const allSecrets = postParseSecrets
-    ? [...redactSecrets, ...postParseSecrets(rawBody)]
-    : redactSecrets;
-  logger.debug("http response", {
-    status: response.status,
-    bodyExcerpt: redactExcerpt(rawBody, allSecrets),
-  });
-
-  const responseHeaders: Record<string, string> = {};
-  response.headers.forEach((value, key) => {
-    responseHeaders[key.toLowerCase()] = value;
-  });
-
-  const captured = rawBody;
-  return {
-    status: response.status,
-    body: rawBody,
-    headers: responseHeaders,
-    json<T = unknown>(): T {
-      return JSON.parse(captured) as T;
-    },
-  };
+function sleep(ms: number): Promise<void> {
+  return ms <= 0 ? Promise.resolve() : new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
- * HTTP request with optional 429 retry-with-backoff.
- * When retryPolicy is provided, honours Retry-After header (numeric seconds OR HTTP-date),
- * applies exponential back-off otherwise, bounded by maxRateLimitRetries and maxRetryBudgetMs.
- * On exhaustion throws TwizzitRateLimitError carrying retryAfterMs and attempts.
+ * Construct a configured HTTP client for the Twizzit API:
+ * - baseURL + paramsSerializer producing kebab-bracket arrays (organization-ids[]=N)
+ * - Request interceptor injecting Authorization + organization-ids[]
+ * - Response interceptor handling 401-then-reauth-retry-once, 429 + Retry-After,
+ *   and classifying remaining failures into TwizzitError variants.
  */
-export async function httpRequest(
-  opts: HttpRequestOptions,
-  redactSecrets: ReadonlyArray<string>,
-  logger: Logger,
-  retryPolicy?: HttpRetryPolicy
-): Promise<HttpResponse> {
-  const policy = retryPolicy ?? {
-    maxRateLimitRetries: 0,
-    maxRetryBudgetMs: 0,
-    initialBackoffMs: 1000,
-    maxBackoffMs: 30_000,
-  };
+export function createHttpClient(opts: HttpClientOptions): HttpClient {
+  const { baseUrl, getToken, getOrganizationId, retryPolicy, logger, onUnauthorized } = opts;
 
-  let attempts = 0;
-  let backoffMs = policy.initialBackoffMs;
-  const budgetStart = Date.now();
+  const instance = axios.create({
+    baseURL: baseUrl,
+    paramsSerializer: {
+      serialize(params: Record<string, unknown>): string {
+        const parts: string[] = [];
+        for (const [key, value] of Object.entries(params)) {
+          if (value === undefined || value === null) continue;
+          if (Array.isArray(value)) {
+            for (const item of value) {
+              parts.push(`${encodeURIComponent(key)}[]=${encodeURIComponent(String(item))}`);
+            }
+          } else {
+            parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+          }
+        }
+        return parts.join("&");
+      },
+    },
+    timeout: 30_000,
+  });
 
-  while (true) {
-    attempts++;
-    const response = await rawHttpRequest(opts, redactSecrets, logger);
+  // Request interceptor: inject Authorization + organization-ids[]
+  instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    const url = config.url ?? "";
+    if (url !== "/authenticate") {
+      const token = getToken();
+      if (token) {
+        config.headers.set("Authorization", `Bearer ${token}`);
+      }
+      const orgId = getOrganizationId();
+      if (orgId !== undefined) {
+        config.params = { ...(config.params ?? {}), "organization-ids": [orgId] };
+      }
+    }
+    logger.debug("http request", { method: config.method?.toUpperCase(), url });
+    return config;
+  });
 
-    if (response.status !== 429) {
+  // Response interceptor: classify error responses into TwizzitError variants.
+  instance.interceptors.response.use(
+    (response) => {
+      logger.debug("http response", { status: response.status });
       return response;
+    },
+    async (error: unknown): Promise<never | unknown> => {
+      if (
+        error instanceof TwizzitAuthError ||
+        error instanceof TwizzitRateLimitError ||
+        error instanceof TwizzitServerError ||
+        error instanceof TwizzitClientError ||
+        error instanceof TwizzitNetworkError
+      ) {
+        throw error;
+      }
+
+      if (!axios.isAxiosError(error)) {
+        throw error;
+      }
+
+      const config = error.config;
+      const status = error.response?.status;
+      const endpointUrl = config?.url ?? "unknown";
+
+      // Transport-level failure (no response).
+      if (!error.response || status === undefined) {
+        const code = (error.code as string | undefined) ?? "UNKNOWN";
+        throw new TwizzitNetworkError(
+          error.message || "Network error",
+          makeContext(endpointUrl, 1),
+          code
+        );
+      }
+
+      // Any auth-endpoint failure (401, 403, etc.) is an auth error — never re-auth a /authenticate call.
+      if (endpointUrl === "/authenticate" && status >= 400 && status < 500) {
+        throw new TwizzitAuthError(
+          `Authentication failed (HTTP ${status})`,
+          makeContext(endpointUrl, 1),
+          status
+        );
+      }
+
+      // 401 on any other endpoint — re-auth once and retry the original request.
+      if (status === 401 && config) {
+        if (!config.__twizzitAuthRetried) {
+          logger.warn("401 received, re-authenticating once", { url: endpointUrl });
+          config.__twizzitAuthRetried = true;
+          try {
+            await onUnauthorized();
+          } catch {
+            throw new TwizzitAuthError(
+              "Re-authentication failed after 401",
+              makeContext(endpointUrl, 2),
+              401
+            );
+          }
+          return instance.request(config);
+        }
+        throw new TwizzitAuthError(
+          `Double 401 on ${endpointUrl}, giving up`,
+          makeContext(endpointUrl, 2),
+          401
+        );
+      }
+
+      // 429 — Retry-After honoured, bounded by maxRateLimitRetries.
+      if (status === 429 && config) {
+        const attempts = (config.__twizzit429Attempts ?? 0) + 1;
+        config.__twizzit429Attempts = attempts;
+        const retryAfterHeader = error.response.headers?.["retry-after"] as string | undefined;
+        const retryAfterMs = parseRetryAfterMs(retryAfterHeader);
+        if (attempts > retryPolicy.maxRateLimitRetries) {
+          const ms = retryAfterMs ?? retryPolicy.initialBackoffMs;
+          throw new TwizzitRateLimitError(
+            `Rate limited on ${endpointUrl} after ${attempts} attempt(s)`,
+            makeContext(endpointUrl, attempts),
+            ms
+          );
+        }
+        const waitMs =
+          retryAfterMs ??
+          Math.min(
+            retryPolicy.initialBackoffMs * Math.pow(2, attempts - 1),
+            retryPolicy.maxBackoffMs
+          );
+        logger.warn("429; retrying", { url: endpointUrl, attempts, waitMs });
+        await sleep(waitMs);
+        return instance.request(config);
+      }
+
+      if (status >= 500) {
+        throw new TwizzitServerError(
+          `Server error on ${endpointUrl} (${status})`,
+          makeContext(endpointUrl, 1),
+          status,
+          truncate(error.response.data)
+        );
+      }
+
+      if (status >= 400) {
+        throw new TwizzitClientError(
+          `Client error on ${endpointUrl} (${status})`,
+          makeContext(endpointUrl, 1),
+          status,
+          truncate(error.response.data)
+        );
+      }
+
+      throw error;
     }
+  );
 
-    // 429 — check if we can retry
-    const maxRetries = retryPolicy ? policy.maxRateLimitRetries : 0;
-    if (attempts > maxRetries) {
-      const retryAfterMs = parseRetryAfterMs(response.headers["retry-after"]) ?? backoffMs;
-      logger.warn("rate-limit budget exhausted", {
-        attempts,
-        retryAfterMs,
-        url: redactExcerpt(opts.url, redactSecrets),
-      });
-      throw new TwizzitRateLimitError(
-        `Rate limited on ${opts.url} after ${attempts} attempt(s)`,
-        makeContext(opts.url, attempts),
-        retryAfterMs,
-        redactSecrets
-      );
-    }
-
-    const retryAfterMs =
-      parseRetryAfterMs(response.headers["retry-after"]) ??
-      Math.min(backoffMs, policy.maxBackoffMs);
-
-    const elapsed = Date.now() - budgetStart;
-    if (retryPolicy && elapsed + retryAfterMs > policy.maxRetryBudgetMs) {
-      logger.warn("rate-limit budget (time) exhausted", {
-        attempts,
-        retryAfterMs,
-        elapsed,
-        maxRetryBudgetMs: policy.maxRetryBudgetMs,
-      });
-      throw new TwizzitRateLimitError(
-        `Rate limit retry budget (${policy.maxRetryBudgetMs}ms) exhausted on ${opts.url}`,
-        makeContext(opts.url, attempts),
-        retryAfterMs,
-        redactSecrets
-      );
-    }
-
-    logger.warn("rate-limited; will retry", {
-      attempt: attempts,
-      maxRetries,
-      retryAfterMs,
-      url: redactExcerpt(opts.url, redactSecrets),
-    });
-
-    // Wait before retrying
-    await new Promise<void>((resolve) => setTimeout(resolve, retryAfterMs));
-
-    // Exponential back-off for next attempt if no Retry-After header
-    backoffMs = Math.min(backoffMs * 2, policy.maxBackoffMs);
-  }
+  return instance;
 }

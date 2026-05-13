@@ -1,14 +1,6 @@
-import { httpRequest } from "../http";
-import { Logger } from "../logger";
-import {
-  TwizzitAuthError,
-  TwizzitServerError,
-  TwizzitClientError,
-  TwizzitValidationError,
-  TwizzitErrorContext,
-} from "../errors";
+import { HttpClient } from "../http";
+import { TwizzitValidationError, TwizzitErrorContext } from "../errors";
 import { MembershipsResponseSchema, Membership } from "../schemas/membership";
-import { redactExcerpt } from "../redact";
 import { paginate } from "../pagination";
 import { MembershipsQuery } from "../seam";
 
@@ -17,76 +9,25 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
 }
 
 export async function getMemberships(
-  baseUrl: string,
-  organizationId: number,
-  token: string,
-  opts: MembershipsQuery | undefined,
-  logger: Logger,
-  fetchFn?: typeof fetch,
-  extraSecrets: ReadonlyArray<string> = []
+  http: HttpClient,
+  opts?: MembershipsQuery
 ): Promise<Membership[]> {
   const endpoint = "GET /memberships";
-  const secrets: ReadonlyArray<string> = [token, ...extraSecrets];
 
   return paginate<Membership>({
     fetchPage: async (offset, limit) => {
-      let url = `${baseUrl}/memberships?organization-ids[]=${organizationId}&limit=${limit}&offset=${offset}`;
+      const params: Record<string, unknown> = { limit, offset };
       if (opts?.lastModified) {
-        url += `&last-modified=${opts.lastModified.toISOString()}`;
+        params["last-modified"] = opts.lastModified.toISOString();
       }
       if (opts?.clubId !== undefined) {
-        url += `&club-id=${opts.clubId}`;
+        params["club-id"] = opts.clubId;
       }
 
-      const response = await httpRequest(
-        { url, method: "GET", headers: { Authorization: `Bearer ${token}` }, fetchFn },
-        secrets,
-        logger
-      );
+      const response = await http.get("/memberships", { params });
+      const rawData: unknown = response.data;
 
-      if (response.status === 401 || response.status === 403) {
-        throw new TwizzitAuthError(
-          `Unauthorized on ${endpoint} (${response.status})`,
-          makeContext(endpoint, 1),
-          response.status,
-          secrets
-        );
-      }
-      if (response.status >= 500) {
-        throw new TwizzitServerError(
-          `Server error on ${endpoint} (${response.status})`,
-          makeContext(endpoint, 1),
-          response.status,
-          redactExcerpt(response.body, secrets),
-          secrets
-        );
-      }
-      if (response.status >= 400) {
-        throw new TwizzitClientError(
-          `Client error on ${endpoint} (${response.status})`,
-          makeContext(endpoint, 1),
-          response.status,
-          redactExcerpt(response.body, secrets),
-          undefined,
-          secrets
-        );
-      }
-
-      let parsed: unknown;
-      try {
-        parsed = JSON.parse(response.body);
-      } catch {
-        throw new TwizzitValidationError(
-          `Invalid JSON from ${endpoint}`,
-          makeContext(endpoint, 1),
-          "",
-          "expected valid JSON",
-          redactExcerpt(response.body, secrets),
-          secrets
-        );
-      }
-
-      const result = MembershipsResponseSchema.safeParse(parsed);
+      const result = MembershipsResponseSchema.safeParse(rawData);
       if (!result.success) {
         const issue = result.error.issues[0];
         const path = issue ? issue.path.join(".") : "";
@@ -96,8 +37,7 @@ export async function getMemberships(
           makeContext(endpoint, 1),
           path,
           expectation,
-          redactExcerpt(JSON.stringify(parsed), secrets),
-          secrets
+          JSON.stringify(rawData).slice(0, 200)
         );
       }
 

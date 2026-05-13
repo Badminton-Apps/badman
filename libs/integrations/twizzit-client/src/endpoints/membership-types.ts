@@ -1,81 +1,18 @@
-import { httpRequest } from "../http";
-import { Logger } from "../logger";
-import {
-  TwizzitAuthError,
-  TwizzitServerError,
-  TwizzitClientError,
-  TwizzitValidationError,
-  TwizzitErrorContext,
-} from "../errors";
+import { HttpClient } from "../http";
+import { TwizzitValidationError, TwizzitErrorContext } from "../errors";
 import { MembershipTypesResponseSchema, MembershipType } from "../schemas/membership-type";
-import { redactExcerpt } from "../redact";
 
 function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return { endpoint, occurredAt: new Date().toISOString(), attempts };
 }
 
-export async function getMembershipTypes(
-  baseUrl: string,
-  organizationId: number,
-  token: string,
-  logger: Logger,
-  fetchFn?: typeof fetch,
-  extraSecrets: ReadonlyArray<string> = []
-): Promise<MembershipType[]> {
+export async function getMembershipTypes(http: HttpClient): Promise<MembershipType[]> {
   const endpoint = "GET /membershipTypes";
-  const secrets: ReadonlyArray<string> = [token, ...extraSecrets];
 
-  const url = `${baseUrl}/membershipTypes?organization-ids[]=${organizationId}`;
+  const response = await http.get("/membershipTypes");
+  const rawData: unknown = response.data;
 
-  const response = await httpRequest(
-    { url, method: "GET", headers: { Authorization: `Bearer ${token}` }, fetchFn },
-    secrets,
-    logger
-  );
-
-  if (response.status === 401 || response.status === 403) {
-    throw new TwizzitAuthError(
-      `Unauthorized on ${endpoint} (${response.status})`,
-      makeContext(endpoint, 1),
-      response.status,
-      secrets
-    );
-  }
-  if (response.status >= 500) {
-    throw new TwizzitServerError(
-      `Server error on ${endpoint} (${response.status})`,
-      makeContext(endpoint, 1),
-      response.status,
-      redactExcerpt(response.body, secrets),
-      secrets
-    );
-  }
-  if (response.status >= 400) {
-    throw new TwizzitClientError(
-      `Client error on ${endpoint} (${response.status})`,
-      makeContext(endpoint, 1),
-      response.status,
-      redactExcerpt(response.body, secrets),
-      undefined,
-      secrets
-    );
-  }
-
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(response.body);
-  } catch {
-    throw new TwizzitValidationError(
-      `Invalid JSON from ${endpoint}`,
-      makeContext(endpoint, 1),
-      "",
-      "expected valid JSON",
-      redactExcerpt(response.body, secrets),
-      secrets
-    );
-  }
-
-  const result = MembershipTypesResponseSchema.safeParse(parsed);
+  const result = MembershipTypesResponseSchema.safeParse(rawData);
   if (!result.success) {
     const issue = result.error.issues[0];
     const path = issue ? issue.path.join(".") : "";
@@ -85,11 +22,9 @@ export async function getMembershipTypes(
       makeContext(endpoint, 1),
       path,
       expectation,
-      redactExcerpt(JSON.stringify(parsed), secrets),
-      secrets
+      JSON.stringify(rawData).slice(0, 200)
     );
   }
 
-  logger.info("fetched membershipTypes", { count: result.data.length });
   return result.data;
 }

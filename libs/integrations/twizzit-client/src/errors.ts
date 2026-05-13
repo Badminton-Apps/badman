@@ -1,5 +1,3 @@
-import { redact, redactExcerpt } from "./redact";
-
 export interface TwizzitErrorContext {
   endpoint: string;
   occurredAt: string;
@@ -11,15 +9,10 @@ export class TwizzitAuthError extends Error {
   readonly context: TwizzitErrorContext;
   readonly status: number;
 
-  constructor(
-    message: string,
-    context: TwizzitErrorContext,
-    status: number,
-    secrets: ReadonlyArray<string> = []
-  ) {
-    super(redact(message, secrets) as string);
+  constructor(message: string, context: TwizzitErrorContext, status: number) {
+    super(message);
     this.name = "TwizzitAuthError";
-    this.context = redact(context, secrets) as TwizzitErrorContext;
+    this.context = context;
     this.status = status;
   }
 }
@@ -36,15 +29,14 @@ export class TwizzitValidationError extends Error {
     context: TwizzitErrorContext,
     path: string,
     expectation: string,
-    actualSummary: string,
-    secrets: ReadonlyArray<string> = []
+    actualSummary: string
   ) {
-    super(redact(message, secrets) as string);
+    super(message);
     this.name = "TwizzitValidationError";
-    this.context = redact(context, secrets) as TwizzitErrorContext;
-    this.path = redact(path, secrets) as string;
-    this.expectation = redact(expectation, secrets) as string;
-    this.actualSummary = redactExcerpt(actualSummary, secrets);
+    this.context = context;
+    this.path = path;
+    this.expectation = expectation;
+    this.actualSummary = actualSummary;
   }
 }
 
@@ -53,15 +45,10 @@ export class TwizzitNetworkError extends Error {
   readonly context: TwizzitErrorContext;
   readonly code: string;
 
-  constructor(
-    message: string,
-    context: TwizzitErrorContext,
-    code: string,
-    secrets: ReadonlyArray<string> = []
-  ) {
-    super(redact(message, secrets) as string);
+  constructor(message: string, context: TwizzitErrorContext, code: string) {
+    super(message);
     this.name = "TwizzitNetworkError";
-    this.context = redact(context, secrets) as TwizzitErrorContext;
+    this.context = context;
     this.code = code;
   }
 }
@@ -71,15 +58,10 @@ export class TwizzitRateLimitError extends Error {
   readonly context: TwizzitErrorContext;
   readonly retryAfterMs: number;
 
-  constructor(
-    message: string,
-    context: TwizzitErrorContext,
-    retryAfterMs: number,
-    secrets: ReadonlyArray<string> = []
-  ) {
-    super(redact(message, secrets) as string);
+  constructor(message: string, context: TwizzitErrorContext, retryAfterMs: number) {
+    super(message);
     this.name = "TwizzitRateLimitError";
-    this.context = redact(context, secrets) as TwizzitErrorContext;
+    this.context = context;
     this.retryAfterMs = retryAfterMs;
   }
 }
@@ -90,18 +72,12 @@ export class TwizzitServerError extends Error {
   readonly status: number;
   readonly bodyExcerpt: string;
 
-  constructor(
-    message: string,
-    context: TwizzitErrorContext,
-    status: number,
-    bodyExcerpt: string,
-    secrets: ReadonlyArray<string> = []
-  ) {
-    super(redact(message, secrets) as string);
+  constructor(message: string, context: TwizzitErrorContext, status: number, bodyExcerpt: string) {
+    super(message);
     this.name = "TwizzitServerError";
-    this.context = redact(context, secrets) as TwizzitErrorContext;
+    this.context = context;
     this.status = status;
-    this.bodyExcerpt = redactExcerpt(bodyExcerpt, secrets);
+    this.bodyExcerpt = bodyExcerpt;
   }
 }
 
@@ -117,14 +93,13 @@ export class TwizzitClientError extends Error {
     context: TwizzitErrorContext,
     status: number,
     bodyExcerpt: string,
-    subkind?: "max-pages-exceeded" | "bad-pagination-arg" | "missing-organization-id",
-    secrets: ReadonlyArray<string> = []
+    subkind?: "max-pages-exceeded" | "bad-pagination-arg" | "missing-organization-id"
   ) {
-    super(redact(message, secrets) as string);
+    super(message);
     this.name = "TwizzitClientError";
-    this.context = redact(context, secrets) as TwizzitErrorContext;
+    this.context = context;
     this.status = status;
-    this.bodyExcerpt = redactExcerpt(bodyExcerpt, secrets);
+    this.bodyExcerpt = bodyExcerpt;
     this.subkind = subkind;
   }
 }
