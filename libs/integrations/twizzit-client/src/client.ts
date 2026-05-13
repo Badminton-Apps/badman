@@ -331,14 +331,9 @@ export class TwizzitClient implements FederationContactSource {
   async getExtraFields(): Promise<ExtraField[]> {
     await this.ensureOrganizationId();
     return this.withAuthRetry("GET /extra-fields", (token) =>
-      getExtraFields(
-        this.baseUrl,
-        this.session.organizationId!,
-        token,
-        this.logger,
-        this.fetchFn,
-        [this.credentials.password]
-      )
+      getExtraFields(this.baseUrl, this.session.organizationId!, token, this.logger, this.fetchFn, [
+        this.credentials.password,
+      ])
     );
   }
 
