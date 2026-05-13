@@ -1,8 +1,6 @@
-import { httpRequest, HttpRequestOptions } from "../http";
-import { Logger } from "../logger";
+import { HttpClient } from "../http";
 import { TwizzitAuthError, TwizzitValidationError, TwizzitErrorContext } from "../errors";
 import { AuthenticateResponseSchema, AuthenticateResponse } from "../schemas/authenticate";
-import { redactExcerpt } from "../redact";
 
 export interface Credentials {
   username: string;
@@ -18,71 +16,28 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
 }
 
 export async function authenticate(
-  baseUrl: string,
-  credentials: Credentials,
-  logger: Logger,
-  fetchFn?: typeof fetch
+  http: HttpClient,
+  credentials: Credentials
 ): Promise<AuthenticateResponse> {
   const endpoint = "POST /authenticate";
-  const secrets: ReadonlyArray<string> = [credentials.password];
 
-  const requestOpts: HttpRequestOptions = {
-    url: `${baseUrl}/authenticate`,
-    method: "POST",
-    body: JSON.stringify({ username: credentials.username, password: credentials.password }),
-    fetchFn,
-    // The auth response body contains the bearer token, which is unknown at request
-    // time. Extract it here so the debug body-excerpt log redacts it immediately.
-    postParseSecrets: (body: string): ReadonlyArray<string> => {
-      try {
-        const parsed = JSON.parse(body) as Record<string, unknown>;
-        const token = typeof parsed["token"] === "string" ? parsed["token"] : null;
-        return token ? [token] : [];
-      } catch {
-        return [];
-      }
-    },
-  };
-
-  const response = await httpRequest(requestOpts, secrets, logger);
-
-  if (response.status === 401 || response.status === 403) {
-    throw new TwizzitAuthError(
-      `Authentication failed (${response.status})`,
-      makeContext(endpoint, 1),
-      response.status,
-      secrets
-    );
-  }
-
-  if (response.status >= 400) {
-    const { TwizzitClientError } = await import("../errors");
-    throw new TwizzitClientError(
-      `Unexpected status ${response.status} from ${endpoint}`,
-      makeContext(endpoint, 1),
-      response.status,
-      redactExcerpt(response.body, secrets),
-      undefined,
-      secrets
-    );
-  }
-
-  let parsed: unknown;
+  let rawData: unknown;
   try {
-    parsed = JSON.parse(response.body);
-  } catch {
-    const { TwizzitValidationError: TVE } = await import("../errors");
-    throw new TVE(
-      `Invalid JSON from ${endpoint}`,
-      makeContext(endpoint, 1),
-      "",
-      "expected valid JSON",
-      redactExcerpt(response.body, secrets),
-      secrets
-    );
+    const response = await http.post("/authenticate", {
+      username: credentials.username,
+      password: credentials.password,
+    });
+    rawData = response.data;
+  } catch (err: unknown) {
+    // Re-throw TwizzitErrors from interceptors unchanged
+    if (err instanceof TwizzitAuthError || err instanceof TwizzitValidationError) {
+      throw err;
+    }
+    // Any other error (TwizzitNetworkError, TwizzitClientError) bubbles up from the interceptor
+    throw err;
   }
 
-  const result = AuthenticateResponseSchema.safeParse(parsed);
+  const result = AuthenticateResponseSchema.safeParse(rawData);
   if (!result.success) {
     const issue = result.error.issues[0];
     const path = issue ? issue.path.join(".") : "";
@@ -92,11 +47,9 @@ export async function authenticate(
       makeContext(endpoint, 1),
       path,
       expectation,
-      redactExcerpt(JSON.stringify(parsed), secrets),
-      secrets
+      JSON.stringify(rawData).slice(0, 200)
     );
   }
 
-  logger.info("authenticated", { endpoint });
   return result.data;
 }
