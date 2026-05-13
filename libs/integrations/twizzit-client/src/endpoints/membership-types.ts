@@ -1,6 +1,12 @@
 import { httpRequest } from "../http";
 import { Logger } from "../logger";
-import { TwizzitAuthError, TwizzitServerError, TwizzitClientError, TwizzitValidationError, TwizzitErrorContext } from "../errors";
+import {
+  TwizzitAuthError,
+  TwizzitServerError,
+  TwizzitClientError,
+  TwizzitValidationError,
+  TwizzitErrorContext,
+} from "../errors";
 import { MembershipTypesResponseSchema, MembershipType } from "../schemas/membership-type";
 import { redactExcerpt } from "../redact";
 

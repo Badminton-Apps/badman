@@ -113,7 +113,7 @@ describe("redact end-to-end pipeline (T043)", () => {
         text: async () => `{"error":"bad pass: ${LEAK_PASS}"}`,
         clone: () => ({ headers: { forEach: () => undefined } }),
         headers: { forEach: () => undefined },
-      } as unknown as Response);
+      }) as unknown as Response;
 
     const { logger, calls } = makeCaptureLogger();
     const client = new TwizzitClient({

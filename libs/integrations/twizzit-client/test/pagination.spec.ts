@@ -27,20 +27,14 @@ describe("paginate", () => {
   });
 
   it("terminates when page is shorter than pageSize", async () => {
-    const fetchPage = jest
-      .fn()
-      .mockResolvedValueOnce([1, 2])
-      .mockResolvedValueOnce([3]);
+    const fetchPage = jest.fn().mockResolvedValueOnce([1, 2]).mockResolvedValueOnce([3]);
     const result = await paginate({ fetchPage, endpointLabel, pageSize: 2 });
     expect(result).toEqual([1, 2, 3]);
     expect(fetchPage).toHaveBeenCalledTimes(2);
   });
 
   it("terminates when page is empty", async () => {
-    const fetchPage = jest
-      .fn()
-      .mockResolvedValueOnce([1, 2])
-      .mockResolvedValueOnce([]);
+    const fetchPage = jest.fn().mockResolvedValueOnce([1, 2]).mockResolvedValueOnce([]);
     const result = await paginate({ fetchPage, endpointLabel, pageSize: 2 });
     expect(result).toEqual([1, 2]);
     expect(fetchPage).toHaveBeenCalledTimes(2);
@@ -48,9 +42,9 @@ describe("paginate", () => {
 
   it("throws TwizzitClientError with subkind max-pages-exceeded when maxPages is reached", async () => {
     const fetchPage = jest.fn().mockResolvedValue([1, 2]);
-    await expect(
-      paginate({ fetchPage, endpointLabel, pageSize: 2, maxPages: 2 })
-    ).rejects.toThrow(TwizzitClientError);
+    await expect(paginate({ fetchPage, endpointLabel, pageSize: 2, maxPages: 2 })).rejects.toThrow(
+      TwizzitClientError
+    );
 
     const fetchPage2 = jest.fn().mockResolvedValue([1, 2]);
     try {

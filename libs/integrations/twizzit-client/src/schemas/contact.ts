@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { LocalisedNameSchema, EmailSchema, MobileSchema, PhoneSchema, AddressSchema } from "./shared";
+import {
+  LocalisedNameSchema,
+  EmailSchema,
+  MobileSchema,
+  PhoneSchema,
+  AddressSchema,
+} from "./shared";
 
 const ExtraFieldAttributeSchema = z
   .object({
@@ -74,9 +80,7 @@ export type Contact = z.infer<typeof ContactSchema>;
 export const ContactsResponseSchema = z.array(ContactSchema);
 
 export function getMemberId(contact: Contact): string | null {
-  const efv = contact["extra-field-values"].find(
-    (v) => v.extraField.name.EN === "Member ID"
-  );
+  const efv = contact["extra-field-values"].find((v) => v.extraField.name.EN === "Member ID");
   if (!efv) return null;
   const val = efv.value.value;
   return val === "" ? null : val;
