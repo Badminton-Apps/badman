@@ -99,9 +99,12 @@ Extract the `origById` map construction + `competitionPlayers` merge + `dbEntry.
 async createTeams(data, nationalCountsAsMixed, user) {
   const transaction = await this._sequelize.transaction();
   try {
-    const cores = await Promise.all(   // or sequential if ordering matters
-      data.sort(...).map(team => this._createTeamCore(team, nationalCountsAsMixed, user, transaction))
-    );
+    // Sequential — NOT parallel. Team number auto-assignment uses Team.max + 1
+    // which is non-atomic; parallel calls produce duplicate team numbers.
+    const cores: CoreTeamResult[] = [];
+    for (const team of data.sort(...)) {
+      cores.push(await this._createTeamCore(team, nationalCountsAsMixed, user, transaction));
+    }
     const payloads = cores.flatMap(c => c.indexPayload ? [c.indexPayload] : []);
     if (payloads.length > 0) {
       const calcResults = await this.indexCalculationService.calculate(
@@ -110,6 +113,7 @@ async createTeams(data, nationalCountsAsMixed, user) {
       for (const r of calcResults) {
         if (isFailure(r)) this.indexFailureToGraphQLError(r, context);
         const payload = payloads.find(p => p.entryId === r.key)!;
+        // payload.entry is the live EventEntry instance from _createTeamCore
         await this.applyIndexResultToEntry(payload.entry, r, payload.origPlayerMap, transaction);
       }
     }
@@ -122,7 +126,7 @@ async createTeams(data, nationalCountsAsMixed, user) {
 }
 ```
 
-> Note: ordering within `createTeams` (nationals before mixed) must be preserved from the current sort.
+> Ordering within `createTeams` (nationals before mixed) is preserved from the current sort. Sequential iteration is mandatory — see research.md R2.
 
 ## Complexity Tracking
 

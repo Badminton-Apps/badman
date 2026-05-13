@@ -26,6 +26,7 @@ Produced by `_createTeamCore`, consumed by the fan-back step in `createTeams`.
 |-------|------|-------------|
 | `input` | `IndexCalculationInput` | Batch input for this team. `key = dbEntry.id`. |
 | `entryId` | `string` | Alias for `input.key`; used for fan-back map lookup. |
+| `entry` | `EventEntry` | The live Sequelize instance returned by `EventEntry.findOrCreate`. Required by `applyIndexResultToEntry` to write the result back without a second DB fetch. |
 | `origPlayerMap` | `Map<string, EntryCompetitionPlayer>` | Keyed by player ID. Preserves `levelException`, `levelExceptionReason`, `levelExceptionRequested` from the incoming DTO, since those fields are not part of the calculation result. |
 
 ### `CoreTeamResult` (resolver-internal, not persisted)
