@@ -12,7 +12,7 @@ export const MembershipSchema = z
       .string()
       .nullable()
       .transform((v) => (v === "" ? null : v)),
-    "club-id": z.number().int(),
+    "club-id": z.number().int().positive().nullable(),
     "extra-field-values": z.array(ExtraFieldValueSchema),
   })
   .strict();
