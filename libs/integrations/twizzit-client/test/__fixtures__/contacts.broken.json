@@ -39,11 +39,6 @@
       "cc": null,
       "number": ""
     },
-    "home": {
-      "target": null,
-      "cc": null,
-      "number": ""
-    },
     "address": {
       "street": "Teststraat",
       "number": "1",
@@ -57,6 +52,11 @@
       }
     },
     "has-profile-image": false,
-    "extra-field-values": []
+    "extra-field-values": [],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
   }
 ]

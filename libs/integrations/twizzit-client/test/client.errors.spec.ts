@@ -184,20 +184,19 @@ describe("TwizzitClientError variants", () => {
     expect(caught!.subkind).toBeUndefined();
   });
 
-  it("max-pages-exceeded → TwizzitClientError with subkind max-pages-exceeded (smoke; full coverage in entities spec)", async () => {
+  it("bad-pagination-arg → TwizzitClientError with subkind bad-pagination-arg (smoke)", async () => {
     const { paginate } = await import("../src/pagination");
     let caught: TwizzitClientError | undefined;
     try {
       await paginate({
         fetchPage: async () => [1, 2],
         endpointLabel: "test",
-        pageSize: 2,
-        maxPages: 1,
+        pageSize: 0,
       });
     } catch (err) {
       caught = err as TwizzitClientError;
     }
     expect(caught).toBeInstanceOf(TwizzitClientError);
-    expect(caught!.subkind).toBe("max-pages-exceeded");
+    expect(caught!.subkind).toBe("bad-pagination-arg");
   });
 });

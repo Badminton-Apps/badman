@@ -80,7 +80,7 @@ export declare class TwizzitClientError extends Error {
   /** Truncated excerpt (max ~200 chars). Not secret-scrubbed; see file header. */
   readonly bodyExcerpt: string;
   /** Optional internal subkind for lib-emitted client errors. */
-  readonly subkind?: "max-pages-exceeded" | "bad-pagination-arg" | "missing-organization-id";
+  readonly subkind?: "pagination-runaway" | "bad-pagination-arg" | "missing-organization-id";
 }
 
 /** Convenience discriminated union for `catch (e) { if (e instanceof TwizzitError) …` style is NOT used. */

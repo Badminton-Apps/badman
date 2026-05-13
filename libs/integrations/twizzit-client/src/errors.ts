@@ -86,14 +86,14 @@ export class TwizzitClientError extends Error {
   readonly context: TwizzitErrorContext;
   readonly status: number;
   readonly bodyExcerpt: string;
-  readonly subkind?: "max-pages-exceeded" | "bad-pagination-arg" | "missing-organization-id";
+  readonly subkind?: "pagination-runaway" | "bad-pagination-arg" | "missing-organization-id";
 
   constructor(
     message: string,
     context: TwizzitErrorContext,
     status: number,
     bodyExcerpt: string,
-    subkind?: "max-pages-exceeded" | "bad-pagination-arg" | "missing-organization-id"
+    subkind?: "pagination-runaway" | "bad-pagination-arg" | "missing-organization-id"
   ) {
     super(message);
     this.name = "TwizzitClientError";

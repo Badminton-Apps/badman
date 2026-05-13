@@ -39,11 +39,6 @@
       "cc": null,
       "number": ""
     },
-    "home": {
-      "target": null,
-      "cc": null,
-      "number": ""
-    },
     "address": {
       "street": "Teststraat",
       "number": "1",
@@ -59,7 +54,11 @@
     "has-profile-image": false,
     "extra-field-values": [
       {
-        "extra-field": {
+        "value": {
+          "value": "50000001",
+          "attributes": []
+        },
+        "extraField": {
           "id": 41763,
           "name": {
             "EN": "Member ID",
@@ -68,15 +67,15 @@
           },
           "type": "Text",
           "location": "Contact",
-          "options": [],
-          "attributes": []
-        },
-        "value": {
-          "value": "50000001",
-          "attributes": []
+          "extraFieldAttributes": []
         }
       }
-    ]
+    ],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
   },
   {
     "id": 6348002,
@@ -117,11 +116,6 @@
       "cc": null,
       "number": ""
     },
-    "home": {
-      "target": null,
-      "cc": null,
-      "number": ""
-    },
     "address": {
       "street": "Testlaan",
       "number": "2",
@@ -135,7 +129,12 @@
       }
     },
     "has-profile-image": false,
-    "extra-field-values": []
+    "extra-field-values": [],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
   },
   {
     "id": 6348003,
@@ -176,11 +175,6 @@
       "cc": null,
       "number": ""
     },
-    "home": {
-      "target": null,
-      "cc": null,
-      "number": ""
-    },
     "address": {
       "street": "",
       "number": "",
@@ -194,7 +188,12 @@
       }
     },
     "has-profile-image": false,
-    "extra-field-values": []
+    "extra-field-values": [],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
   },
   {
     "id": 6348004,
@@ -235,11 +234,6 @@
       "cc": null,
       "number": ""
     },
-    "home": {
-      "target": null,
-      "cc": null,
-      "number": ""
-    },
     "address": {
       "street": "Testweg",
       "number": "4",
@@ -255,7 +249,11 @@
     "has-profile-image": true,
     "extra-field-values": [
       {
-        "extra-field": {
+        "value": {
+          "value": "50000004",
+          "attributes": []
+        },
+        "extraField": {
           "id": 41763,
           "name": {
             "EN": "Member ID",
@@ -264,15 +262,15 @@
           },
           "type": "Text",
           "location": "Contact",
-          "options": [],
-          "attributes": []
-        },
-        "value": {
-          "value": "50000004",
-          "attributes": []
+          "extraFieldAttributes": []
         }
       }
-    ]
+    ],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
   },
   {
     "id": 6348005,
@@ -313,11 +311,6 @@
       "cc": null,
       "number": ""
     },
-    "home": {
-      "target": "Home",
-      "cc": null,
-      "number": ""
-    },
     "address": {
       "street": "Testplein",
       "number": "5",
@@ -333,24 +326,6 @@
     "has-profile-image": false,
     "extra-field-values": [
       {
-        "extra-field": {
-          "id": 41297,
-          "name": {
-            "EN": "Responsable",
-            "NL": "Wedstrijdleider",
-            "FR": "Responsable interclubs"
-          },
-          "type": "Multiple select",
-          "location": "Contact",
-          "options": [],
-          "attributes": [
-            {
-              "id": 1907,
-              "name": "Behaald op/Obtenu le",
-              "type": "Date"
-            }
-          ]
-        },
         "value": {
           "value": "Wedstrijdleider/Responsable interclubs",
           "attributes": [
@@ -359,10 +334,31 @@
               "value": "2021-08-04"
             }
           ]
+        },
+        "extraField": {
+          "id": 41297,
+          "name": {
+            "EN": "Responsable",
+            "NL": "Wedstrijdleider",
+            "FR": "Responsable interclubs"
+          },
+          "type": "Multiple select",
+          "location": "Contact",
+          "extraFieldAttributes": [
+            {
+              "id": 1907,
+              "name": "Behaald op/Obtenu le",
+              "type": "Date"
+            }
+          ]
         }
       },
       {
-        "extra-field": {
+        "value": {
+          "value": "AABBCCDD-1111-2222-3333-EEFF00112233",
+          "attributes": []
+        },
+        "extraField": {
           "id": 41654,
           "name": {
             "EN": "VOTAS-ID",
@@ -371,14 +367,14 @@
           },
           "type": "Text",
           "location": "Contact",
-          "options": [],
-          "attributes": []
-        },
-        "value": {
-          "value": "AABBCCDD-1111-2222-3333-EEFF00112233",
-          "attributes": []
+          "extraFieldAttributes": []
         }
       }
-    ]
+    ],
+    "phone": {
+      "target": "Home",
+      "cc": null,
+      "number": ""
+    }
   }
 ]

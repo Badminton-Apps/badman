@@ -8,9 +8,9 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
 }
 
 export async function getMembershipTypes(http: HttpClient): Promise<FederationMembershipType[]> {
-  const endpoint = "GET /membershipTypes";
+  const endpoint = "GET /membership-types";
 
-  const response = await http.get("/membershipTypes");
+  const response = await http.get("/membership-types");
   const rawData: unknown = response.data;
 
   const result = MembershipTypesResponseSchema.safeParse(rawData);

@@ -62,20 +62,23 @@ The lib does NOT re-export axios types (`AxiosError`, `AxiosInstance`) — all c
 
 ---
 
-## R4. Pagination page size & `maxPages` default
+## R4. Pagination page size & `maxPages` semantics
 
-**Decision** (provisional, pending gap Q2):
-- Default `pageSize` = **100**. The API exploration doc and Twizzit's verbal guidance suggest 100 is a sane mid-range; the function accepts an override.
-- Default `maxPages` = **2000**. With pageSize 100 this caps a single call at 200 000 items — comfortably above the 160 k contact target documented in the requirements. Hitting `maxPages` MUST throw `TwizzitClientError` with `kind: "max-pages-exceeded"` rather than silently truncating.
-- Twizzit's pagination parameters are `limit` and `offset` (confirmed by the user during clarification).
+**Decision (2026-05-13 revision)**: Two-layer bound.
 
-**Rationale**: A finite hard ceiling is non-negotiable (FR-021). The numbers are conservative-but-not-ridiculous; sync engineers can override per call. Failing loudly when the ceiling is hit forces a deliberate review when the federation crosses a size threshold.
+- Default `pageSize` = **100**. Override per call.
+- User-supplied `maxPages` is a **truncation** bound, not an abort. When set and reached, the helper logs a warning and returns the partial result. When **unset** (the production-sync default), the helper fetches every page until the federation returns a short page.
+- Internal `RUNAWAY_PAGE_LIMIT` = **100 000** pages (not user-configurable). Only trips on pathological federation behaviour (e.g. server bug streaming full pages forever). Hitting it throws `TwizzitClientError` with `subkind: "pagination-runaway"`.
+- Twizzit's pagination parameters are `limit` and `offset` (confirmed by the user during clarification 2026-05-12).
 
-**Action item**: Confirm Twizzit's true page-size cap during the first live call. Adjust the default downward if 100 is over the limit (the lib will surface a 4xx if it is).
+**Rationale**: The original design (`maxPages: 2000` default, throw on overflow) contradicted the actual sync requirement. The Badminton Belgium tenant has ~160 000 contacts; at `pageSize: 100` that's ≈ 1600 pages — comfortably under 2000, but at smaller page sizes (or during growth) you'd hit the ceiling and an entire sync run would abort. More importantly the *semantic* was wrong: callers asking for `maxPages: 1` ("give me a sample") got an exception instead of a one-page array.
+
+Truncation matches what "bound a pull" actually means (FR-021 language). The 100 000-page runaway cap is the actual "no infinite loops" safety the spec asked for.
 
 **Alternatives considered**:
-- `maxPages: Infinity` — rejected, contradicts FR-021.
-- pageSize 500 / 1000 — premature; we don't yet know if Twizzit accepts it.
+- Keep the throw, change live test approach — rejected; the throw semantics don't fit production sync either way.
+- `behaviour: "throw" | "truncate"` option — rejected as needless surface for backwards compat the lib doesn't have yet.
+- `maxPages: Infinity` default — equivalent to unset and exactly what we do.
 
 ---
 
