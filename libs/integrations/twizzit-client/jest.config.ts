@@ -1,4 +1,4 @@
-// SC-005 budget: < 10s; observed median 2026-05-13: 2.8s
+// SC-005 budget: < 10s; observed 2026-05-13: 2.8s–3.2s (48 tests, 6 suites, 1 live-skipped)
 export default {
   displayName: "integrations-twizzit-client",
   preset: "../../../jest.preset.js",
