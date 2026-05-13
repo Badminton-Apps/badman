@@ -10,9 +10,10 @@ import { GraphQLError } from "graphql";
 import { Transaction } from "sequelize";
 import { ErrorCode } from "../../../utils";
 
-export interface CreateEntryArgs {
+interface CreateEntryArgs {
   teamId: string;
   subEventId: string;
+  basePlayers: string[];
   transaction: Transaction;
   user: Player;
 }
@@ -31,6 +32,7 @@ export class EnrollmentEntryService {
   async createEntry({
     teamId,
     subEventId,
+    basePlayers,
     transaction,
     user,
   }: CreateEntryArgs): Promise<CreateEntryResult> {
@@ -98,24 +100,38 @@ export class EnrollmentEntryService {
     }
 
     const existingEntry = await team.getEntry({ transaction });
-    if (existingEntry?.subEventId === subEventId) {
-      return {
-        teamId,
-        entryId: existingEntry.id as string,
-        subEventCompetitionId: subEventId,
-        alreadyExisted: true,
+    const alreadyExisted = existingEntry?.subEventId === subEventId;
+
+    const entry =
+      existingEntry ??
+      (await EventEntry.create(
+        basePlayers.length > 0
+          ? { meta: { competition: { players: basePlayers.map((id) => ({ id })) } } }
+          : {},
+        { transaction }
+      ));
+
+    if (basePlayers.length > 0 && existingEntry) {
+      entry.meta = {
+        ...entry.meta,
+        competition: {
+          ...entry.meta?.competition,
+          players: basePlayers.map((id) => ({ id })),
+        },
       };
+      await entry.save({ transaction });
     }
 
-    const entry = existingEntry ?? (await EventEntry.create({}, { transaction }));
-    await team.setEntry(entry, { transaction });
-    await subEvent.addEventEntry(entry, { transaction });
+    if (!alreadyExisted) {
+      await team.setEntry(entry, { transaction });
+      await subEvent.addEventEntry(entry, { transaction });
+    }
 
     return {
       teamId,
       entryId: entry.id as string,
       subEventCompetitionId: subEventId,
-      alreadyExisted: false,
+      alreadyExisted,
     };
   }
 }
