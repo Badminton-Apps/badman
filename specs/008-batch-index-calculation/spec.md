@@ -57,7 +57,7 @@ The existing Sentry span and slow-warn log on `IndexCalculationService.calculate
 
 - What happens when zero teams have an entry with player metadata? (calculate() receives empty input — must short-circuit, no error)
 - How does the system handle a mix of teams where some have entries and some do not? (only teams with entry player metadata are included in the batch)
-- What happens when a single team's calculation fails within the batch? (failure is scoped to that team; other teams' results are applied normally)
+- What happens when a single team's calculation fails within the batch? (entire mutation fails and rolls back — no partial enrollment)
 - What if two teams share the same set of players? (batch deduplicates player lookups; both teams still receive their own result)
 
 ## Requirements *(mandatory)*
@@ -67,7 +67,7 @@ The existing Sentry span and slow-warn log on `IndexCalculationService.calculate
 - **FR-001**: The team-creation flow MUST collect all `IndexCalculationInput` objects across all teams before invoking `IndexCalculationService`.
 - **FR-002**: The team-creation flow MUST call `IndexCalculationService.calculate()` exactly once per mutation invocation, passing all inputs as a batch.
 - **FR-003**: Results from the batch call MUST be fanned back to each team's entry using the `key` field (set to `dbEntry.id`).
-- **FR-004**: A failure result for one team MUST NOT prevent other teams' index results from being applied.
+- **FR-004**: A failure result for any team MUST cause the entire mutation to fail and roll back — partial enrollment is not permitted.
 - **FR-005**: Teams that have no entry or no player metadata MUST be excluded from the batch input without error.
 - **FR-006**: The batch call MUST pass the same transaction used for team/entry creation, so ranking reads are consistent with the write transaction.
 - **FR-007**: Error handling for a failed team (PLAYER_NOT_FOUND, RANKING_SYSTEM_NOT_FOUND, etc.) MUST produce the same GraphQL error shape as the current per-team implementation.
@@ -82,11 +82,18 @@ The existing Sentry span and slow-warn log on `IndexCalculationService.calculate
 
 ### Measurable Outcomes
 
-- **SC-001**: Enrolling a club with 8 teams completes in under 50% of the time it took before this change (measured by end-to-end mutation duration).
+- **SC-001**: Enrolling a club with 12 teams completes in under 2 seconds end-to-end.
 - **SC-002**: The number of database round-trips during a multi-team enrollment is bounded by a fixed constant (≤ 5) regardless of team count.
 - **SC-003**: All existing index-calculation unit tests pass without modification.
 - **SC-004**: The Sentry span emitted during enrollment reports `index_calc.input_count` equal to the number of teams with player metadata in the batch.
 - **SC-005**: No change in the GraphQL response shape or error codes visible to API callers.
+
+## Clarifications
+
+### Session 2026-05-13
+
+- Q: Should a single team's index calculation failure fail the entire mutation or allow partial success? → A: Fail-fast — any failure rolls back the entire transaction; partial enrollment is not permitted.
+- Q: What is the concrete performance target for SC-001? → A: Under 2 seconds end-to-end for 12 teams.
 
 ## Assumptions
 
