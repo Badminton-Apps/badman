@@ -490,6 +490,13 @@ export class NotificationService {
 
     club.teams = club?.teams?.sort(sortTeams);
     const url = `${this.configService.get("CLIENT_URL")}/club/${club.id}`;
+    const resolvedEmail = email || user.email || "";
+
+    if (!resolvedEmail) {
+      this._logger.warn(
+        `[notifyEnrollment] No email address resolved — adminEmail: "${email}", user.email: "${user.email}". Notification will be skipped by notifier.`
+      );
+    }
 
     notifierEnrollment.notify(
       user,
