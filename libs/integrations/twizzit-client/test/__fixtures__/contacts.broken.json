@@ -1,8 +1,10 @@
-// Synthetic fixture — same as contacts.page-1 but with gender mutated to a non-allowed value
+// Synthetic — same as contacts.page-1 but with gender mutated to a non-allowed value
 [
   {
     "id": 6348001,
     "name": "Test One",
+    "first-name": "Test",
+    "last-name": "One",
     "date-of-birth": "1990-01-01",
     "gender": 7,
     "nationality": "BE",
@@ -37,7 +39,7 @@
       "cc": null,
       "number": ""
     },
-    "phone": {
+    "home": {
       "target": null,
       "cc": null,
       "number": ""
