@@ -1,0 +1,135 @@
+// Synthetic fixture — refresh from staging when credentials are available
+[
+  {
+    "id": 6348006,
+    "name": "Test Six",
+    "date-of-birth": "1978-07-22",
+    "gender": "M",
+    "nationality": "BE",
+    "language": "nl",
+    "account-number": null,
+    "registry-number": null,
+    "number": null,
+    "email-1": {
+      "target": null,
+      "email": "test6@example.invalid"
+    },
+    "email-2": {
+      "target": null,
+      "email": ""
+    },
+    "email-3": {
+      "target": null,
+      "email": ""
+    },
+    "mobile-1": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-2": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-3": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "address": {
+      "street": "Teststraat",
+      "number": "6",
+      "box": "",
+      "postalCode": "5000",
+      "city": "Testplaats",
+      "country": {
+        "EN": "Belgium",
+        "NL": "Belgium",
+        "FR": "Belgium"
+      }
+    },
+    "has-profile-image": false,
+    "extra-field-values": [
+      {
+        "extraField": {
+          "id": 41763,
+          "name": {
+            "EN": "Member ID",
+            "NL": "Member ID",
+            "FR": "Member ID"
+          },
+          "type": "Text",
+          "location": "Contact",
+          "extraFieldAttributes": []
+        },
+        "value": {
+          "value": "50000006",
+          "attributes": []
+        }
+      }
+    ]
+  },
+  {
+    "id": 6348007,
+    "name": "Test Seven",
+    "date-of-birth": "2010-04-12",
+    "gender": "F",
+    "nationality": "BE",
+    "language": "fr",
+    "account-number": null,
+    "registry-number": null,
+    "number": null,
+    "email-1": {
+      "target": null,
+      "email": ""
+    },
+    "email-2": {
+      "target": null,
+      "email": ""
+    },
+    "email-3": {
+      "target": null,
+      "email": ""
+    },
+    "mobile-1": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-2": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-3": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "address": {
+      "street": "Testavenue",
+      "number": "7",
+      "box": "",
+      "postalCode": "6000",
+      "city": "Testville",
+      "country": {
+        "EN": "Belgium",
+        "NL": "Belgium",
+        "FR": "Belgium"
+      }
+    },
+    "has-profile-image": false,
+    "extra-field-values": []
+  }
+]

@@ -1,0 +1,53 @@
+// Synthetic fixture — refresh from staging when credentials are available
+[
+  {
+    "id": 6437001,
+    "contact-id": 6348001,
+    "membership-type-id": 51774,
+    "season-id": null,
+    "start-date": "2023-09-01",
+    "end-date": "",
+    "club-id": 25154,
+    "extra-field-values": []
+  },
+  {
+    "id": 6437002,
+    "contact-id": 6348002,
+    "membership-type-id": 51779,
+    "season-id": null,
+    "start-date": "2023-09-01",
+    "end-date": "2024-11-07",
+    "club-id": 25280,
+    "extra-field-values": []
+  },
+  {
+    "id": 6437003,
+    "contact-id": 6348003,
+    "membership-type-id": 57920,
+    "season-id": null,
+    "start-date": "2022-05-10",
+    "end-date": "",
+    "club-id": 24799,
+    "extra-field-values": []
+  },
+  {
+    "id": 6437004,
+    "contact-id": 6348004,
+    "membership-type-id": 58449,
+    "season-id": null,
+    "start-date": "2018-11-30",
+    "end-date": "2024-11-03",
+    "club-id": 25154,
+    "extra-field-values": []
+  },
+  {
+    "id": 6437005,
+    "contact-id": 6348001,
+    "membership-type-id": 57915,
+    "season-id": null,
+    "start-date": "2024-01-15",
+    "end-date": "2024-06-30",
+    "club-id": 25280,
+    "extra-field-values": []
+  }
+]

@@ -1,0 +1,110 @@
+// Synthetic fixture — refresh from staging when credentials are available
+[
+  {
+    "id": 40736,
+    "name": {
+      "EN": "Excluded until",
+      "NL": "Uitgesloten tot",
+      "FR": "Exclu jusqu'à"
+    },
+    "type": "Date",
+    "location": "Contact",
+    "options": [],
+    "attributes": []
+  },
+  {
+    "id": 40740,
+    "name": {
+      "EN": "Uittreksel strafregister geldig tot",
+      "NL": "Uittreksel strafregister geldig tot",
+      "FR": "Extrait de casier judiciaire valable jusqu'au"
+    },
+    "type": "Date",
+    "location": "Contact",
+    "options": [],
+    "attributes": []
+  },
+  {
+    "id": 40748,
+    "name": {
+      "EN": "2nd club",
+      "NL": "2de club",
+      "FR": "2ème club"
+    },
+    "type": "Checkbox",
+    "location": "Membership",
+    "options": [],
+    "attributes": []
+  },
+  {
+    "id": 40775,
+    "name": {
+      "EN": "Club type",
+      "NL": "Club type",
+      "FR": "Type de club"
+    },
+    "type": "Multiple select",
+    "location": "",
+    "options": [
+      "Competitieclub",
+      "Recreantenclub"
+    ],
+    "attributes": []
+  },
+  {
+    "id": 41297,
+    "name": {
+      "EN": "Responsable",
+      "NL": "Wedstrijdleider",
+      "FR": "Responsable interclubs"
+    },
+    "type": "Multiple select",
+    "location": "Contact",
+    "options": [
+      "Wedstrijdleider/Responsable interclubs"
+    ],
+    "attributes": [
+      {
+        "id": 1907,
+        "name": "Behaald op/Obtenu le",
+        "type": "Date"
+      }
+    ]
+  },
+  {
+    "id": 41654,
+    "name": {
+      "EN": "VOTAS-ID",
+      "NL": "VOTAS-ID",
+      "FR": "VOTAS-ID"
+    },
+    "type": "Text",
+    "location": "Contact",
+    "options": [],
+    "attributes": []
+  },
+  {
+    "id": 41763,
+    "name": {
+      "EN": "Member ID",
+      "NL": "Member ID",
+      "FR": "Member ID"
+    },
+    "type": "Text",
+    "location": "Contact",
+    "options": [],
+    "attributes": []
+  },
+  {
+    "id": 42452,
+    "name": {
+      "EN": "Migratie",
+      "NL": "Migratie",
+      "FR": "Migration"
+    },
+    "type": "Text",
+    "location": "Contact",
+    "options": [],
+    "attributes": []
+  }
+]
