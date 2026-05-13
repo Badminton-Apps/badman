@@ -30,13 +30,19 @@ Source: Twizzit Swagger UI for Badminton Belgium API key. Captured by user, past
 
 **No drift fixes needed for this schema.** Strict-everywhere policy keeps us narrower than Swagger on enums; live data confirms the `options: string[]` choice over Swagger's `[{}]`.
 
-## Cross-cutting note for the schema-refresh follow-up
+## Cross-cutting note — resolved 2026-05-13
 
-The embedded variant of this same model (inside contacts) carries the **kebab-case `extra-field` wrapper key** and **`attributes`** (vs the current camelCase `extraField` / `extraFieldAttributes` in our schema). When the follow-up agent renames those, both the standalone `ExtraFieldSchema` and the embedded `ExtraFieldValueSchema` must end up referencing the SAME `extra-field` shape — share a single zod object literal, don't duplicate.
+> **Live data 2026-05-13 confirms: the embedded `extra-field-values[].extraField` key is camelCase,
+> NOT the kebab-case `extra-field` that the Swagger showed.**
+>
+> The Swagger reuses the standalone `/extra-fields` model definition for the embedded variant, but Twizzit's
+> serialiser actually uses `extraField` (camelCase) + `extraFieldAttributes` (camelCase) in that context.
+> The standalone `/extra-fields` endpoint uses its own independent schema in `src/schemas/extra-field.ts`.
 
-The standalone shape (this file) is already correct for the lib; the embedded `extra-field-values[].extra-field` envelope inside contacts is what needs renaming.
+The embedded `ExtraFieldValueSchema` in `src/schemas/contact.ts` is the correct live-verified shape.
+It is NOT reused from `extra-field.ts` — the two contexts have different key conventions, so a shared
+definition would be wrong. No action needed.
 
 ## Follow-up
 
-- Bundle into the schema-refresh follow-up agent (no code change to `src/schemas/extra-field.ts` itself).
-- Cross-reference: the renames called out in [contacts-swagger.md](contacts-swagger.md) and [memberships-swagger.md](memberships-swagger.md) for the embedded variant must end up reusing the same `ExtraFieldSchema` defined here. Eliminating duplication is the win.
+No code changes needed for this file. The `options: string[]` choice has been confirmed against live data.

@@ -56,50 +56,38 @@ Source: Twizzit Swagger UI for Badminton Belgium API key. Captured by user, past
 ]
 ```
 
-## Drift vs `libs/integrations/twizzit-client/src/schemas/contact.ts` (current as of d9c0b2f8c)
+## Drift vs `libs/integrations/twizzit-client/src/schemas/contact.ts`
 
-| Field | Current schema | Swagger | Action |
-|-------|---------------|---------|--------|
-| `first-name` | absent | `string` | **ADD** as required string |
-| `last-name` | absent | `string` | **ADD** as required string |
-| `number` | `string \| null` | `number` (int) | **CHANGE** to `number` (or `number \| null` — depends on what live data shows for absent values) |
-| `phone` | present | absent — Swagger uses `home` | **RENAME** `phone` → `home` |
-| `extra-field-values[].extraField` | `extraField` (camelCase) | `extra-field` (kebab-case) | **RENAME** field key to `extra-field` — note: the original captured response in [api-exploration.md](api-exploration.md) showed `extraField` (camelCase). One of the two sources is wrong; treat **Swagger as authoritative** until a live re-capture proves otherwise. |
-| `extra-field-values[].extra-field.extraFieldAttributes` | `extraFieldAttributes` | `attributes` | **RENAME** inside the nested object. Also confirms top-level `/extra-fields` shape carries `attributes` (already matches). |
-| `extra-field-values[].extra-field.options` | absent on the embedded variant | present, typed as `[{}]` — array of objects, inner shape unspecified by Swagger | **ADD** `options` inside the embedded extra-field. Provisionally type as `z.array(z.unknown())` until a live response with non-empty options arrives. Note: the *standalone* `/extra-fields` resource carries `options` as `string[]` based on the api-exploration capture — Swagger may be under-documenting the embedded variant by reusing the same `extra-field` model definition without tightening the inner shape. **Verify against live response** before tightening. |
-| `extra-field-values[].extra-field.attributes` (item type) | typed inline | typed as `extra-field-attribute { id, name, type }` (named Swagger model) | shape matches — `{ id: number, name: string, type: string }` — already correct in `ExtraFieldValueSchema`; just confirming. |
+> **Live data 2026-05-13 — Swagger was wrong on multiple points. Schema is correct as-is.**
+>
+> The live test run (`RUN_TWIZZIT_LIVE_TESTS=1`) against the Badminton Belgium staging tenant on 2026-05-13
+> resolved the Swagger vs. api-exploration.md ambiguity. The wire format matches the **camelCase** shapes
+> from api-exploration.md, NOT the Swagger documentation. All items below reflect verified live reality.
 
-## Discrepancy between Swagger and the api-exploration.md capture
+| Field | Wire format (live-verified 2026-05-13) | Swagger (wrong) | Schema status |
+|-------|----------------------------------------|-----------------|---------------|
+| `first-name` | present as `string` | `string` | ✅ already in schema |
+| `last-name` | present as `string` | `string` | ✅ already in schema |
+| `number` | `number \| null` | `number` | ✅ correct |
+| `phone` | **`phone`** (key name) | `home` | ✅ schema uses `phone` — Swagger wrong |
+| `extra-field-values[].extraField` | **`extraField`** (camelCase) | `extra-field` (kebab) | ✅ schema uses `extraField` — Swagger wrong |
+| `extra-field-values[].extraField.extraFieldAttributes` | **`extraFieldAttributes`** (camelCase) | `attributes` | ✅ schema uses `extraFieldAttributes` — Swagger wrong |
+| `extra-field-values[].extraField.options` | **absent** on embedded variant | present (`[{}]`) | ✅ schema omits it (`.strict()` enforced) — Swagger wrong |
+| `value.attributes[].attribute-id` | `attribute-id` (kebab) | `attribute-id` | ✅ match |
 
-The api-exploration.md sample (also pasted by the user during /speckit-specify) showed:
-- `extraField` (camelCase)
-- `extraFieldAttributes` (camelCase)
+## Swagger vs. live resolution
 
-The Swagger says `extra-field` and `attributes`. This conflict needs to be resolved with a live call. **Two possibilities**:
+The Swagger documentation is **incorrect** for the embedded `extra-field-values` subshape. Twizzit's actual
+JSON serialiser uses camelCase for nested object keys (`extraField`, `extraFieldAttributes`) while the top-level
+fields remain kebab-case (`extra-field-values`, `attribute-id`). The Swagger OpenAPI definition reuses a
+shared `extra-field` model definition that documents the **standalone** `/extra-fields` shape — which uses
+different key conventions from the embedded context.
 
-1. Twizzit serialises camelCase in the actual response but Swagger documents it kebab-case (Swagger generator quirk).
-2. Twizzit changed the response format between the api-exploration capture and now.
+The `phone` vs `home` discrepancy is a Swagger authoring error; the live response always contains `phone`.
 
-**Until the next live call confirms which is real, the lib MUST accept the Swagger shape** (kebab-case `extra-field` + `attributes`). The strict-zod policy will surface drift loudly on the first live call — that is exactly what it's for. If the live response is camelCase, we flip the schema in a deliberate fix commit.
+### Deferred items (no longer needed)
 
-### Same-day confirmation 2026-05-13
-
-The user pasted the hierarchical Swagger view a second time on 2026-05-13 to confirm. It includes:
-- `extra-field` as the wrapper key (kebab) — confirmed
-- `attributes` inside the embedded `extra-field` model — confirmed; element type is the named `extra-field-attribute { id: integer, name: string, type: string }`
-- `options` exists on the embedded variant, typed as `[{ }]` — array of objects, inner shape **not defined** by Swagger
-- `value.attributes[].attribute-id` (kebab) — matches our existing schema
-
-No new drift. The earlier table is correct; only the `options` row is loosened from `string[]` to `unknown[]` pending live verification.
-
-## Follow-up actions (after the recovery agent finishes T042–T053)
-
-1. Update `src/schemas/contact.ts` with the six changes in the drift table above.
-2. Regenerate `test/__fixtures__/contacts.page-1.200.json` and `contacts.page-2.200.json` to match the new shape (the existing fixtures are synthetic anyway — agent flagged them as "refresh from staging").
-3. Re-run `npx nx test integrations-twizzit-client` and patch any test that referenced the old field names.
-4. Update [data-model.md](../../specs/015-twizzit-api-client/data-model.md) Contact section. *(Spec is sealed for the current PR; this becomes a follow-up spec edit or an addendum doc.)*
-5. Confirm the change against the live staging response on the next `RUN_TWIZZIT_LIVE_TESTS=1` pass — if Twizzit actually returns camelCase, document the Swagger-vs-runtime mismatch under [gaps-and-open-questions.md](gaps-and-open-questions.md) as a new Q.
-
-## Why not patch now?
-
-A recovery feature agent is running in the background fixing redact tests, Phases 6 + 7, and possibly touching `src/client.ts` / `src/http.ts` / lint output. Schema edits during its run risk merge conflicts. This document is a hand-off note for the next dispatch.
+All "Follow-up actions" listed in earlier versions of this document have been completed or cancelled:
+- Schema already uses `extraField`, `extraFieldAttributes`, `phone`.
+- No `options` field on embedded variant — confirmed absent in live data.
+- `test/__fixtures__/contacts.page-*.200.json` already reflect the live-verified shape.
