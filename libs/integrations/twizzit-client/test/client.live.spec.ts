@@ -109,6 +109,67 @@ describeLive("TwizzitClient — live (RUN_TWIZZIT_LIVE_TESTS=1)", () => {
     );
   });
 
+  it("getContacts({ lastModified }) — probe whether the filter is honoured", async () => {
+    // Strategy: call twice — once with epoch (should return everything),
+    // once with tomorrow (should return nothing if the filter is live).
+    // If both return the same non-zero count the filter is a no-op (gap-doc Q1).
+    const epoch = new Date(0);
+    const tomorrow = new Date(Date.now() + 86_400_000);
+
+    const [withEpoch, withTomorrow] = await Promise.all([
+      client.getContacts({ pageSize: 50, maxPages: 1, lastModified: epoch }),
+      client.getContacts({ pageSize: 50, maxPages: 1, lastModified: tomorrow }),
+    ]);
+
+    // Either call must parse without throwing — that's the hard constraint.
+    expect(Array.isArray(withEpoch)).toBe(true);
+    expect(Array.isArray(withTomorrow)).toBe(true);
+
+    const filterHonoured = withTomorrow.length === 0 && withEpoch.length > 0;
+    const filterNoop = withTomorrow.length > 0 && withTomorrow.length === withEpoch.length;
+
+    // eslint-disable-next-line no-console
+    console.log("[live] lastModified probe (contacts):", {
+      epochPageCount: withEpoch.length,
+      tomorrowPageCount: withTomorrow.length,
+      verdict: filterHonoured
+        ? "FILTER ACTIVE — lastModified works"
+        : filterNoop
+          ? "FILTER NO-OP — Twizzit ignores lastModified (gap-doc Q1 still open)"
+          : "PARTIAL — counts differ but tomorrow != 0; filter may be partially active",
+    });
+
+    // Not asserting a specific outcome — the verdict above is the answer to Q1.
+    // Test fails only on a zod parse error (unexpected schema drift).
+  });
+
+  it("getMemberships({ lastModified }) — probe whether the filter is honoured", async () => {
+    const epoch = new Date(0);
+    const tomorrow = new Date(Date.now() + 86_400_000);
+
+    const [withEpoch, withTomorrow] = await Promise.all([
+      client.getMemberships({ pageSize: 50, maxPages: 1, lastModified: epoch }),
+      client.getMemberships({ pageSize: 50, maxPages: 1, lastModified: tomorrow }),
+    ]);
+
+    expect(Array.isArray(withEpoch)).toBe(true);
+    expect(Array.isArray(withTomorrow)).toBe(true);
+
+    const filterHonoured = withTomorrow.length === 0 && withEpoch.length > 0;
+    const filterNoop = withTomorrow.length > 0 && withTomorrow.length === withEpoch.length;
+
+    // eslint-disable-next-line no-console
+    console.log("[live] lastModified probe (memberships):", {
+      epochPageCount: withEpoch.length,
+      tomorrowPageCount: withTomorrow.length,
+      verdict: filterHonoured
+        ? "FILTER ACTIVE — lastModified works"
+        : filterNoop
+          ? "FILTER NO-OP — Twizzit ignores lastModified (gap-doc Q1 still open)"
+          : "PARTIAL — counts differ but tomorrow != 0; filter may be partially active",
+    });
+  });
+
   it("getMemberships({ maxPages: 1 }) returns one page parsed cleanly", async () => {
     const memberships = await client.getMemberships({ pageSize: 50, maxPages: 1 });
     expect(Array.isArray(memberships)).toBe(true);
