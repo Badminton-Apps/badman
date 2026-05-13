@@ -1,42 +1,24 @@
 # Data Model: Twizzit API Client
 
-**Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md) | **Date**: 2026-05-12
+**Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md) | **Date**: 2026-05-12 *(rewritten 2026-05-13 to capture the generic-types decision)*
 
-These are the **external** entity shapes returned by the Twizzit API, expressed as zod schemas. They are not Badman domain entities — no Sequelize, no GraphQL, no `@badman/backend-database`. Every type a consumer of the lib touches is inferred from the schema below (FR-010). All schemas use zod **strict** mode (Clarification 2026-05-12 #5): unknown keys cause `TwizzitValidationError`. Empty-string conventions (`""` → `null`) are normalised by `.transform()` in the schemas where applicable.
+The lib exposes **only federation-agnostic types** on its public surface (Clarification 2026-05-13). Consumers see `FederationContact`, `FederationMembership`, etc. — never `TwizzitContact`. Each zod schema in `src/schemas/*` takes Twizzit's raw kebab-case wire format as INPUT and `.transform()`s it into the generic camelCase shape as OUTPUT. Twizzit's wire format is documented in [docs/twizzit/api-exploration.md](../../docs/twizzit/api-exploration.md) and the Swagger drift notes under `docs/twizzit/*-swagger.md`; this document describes the **public** (post-transform) shapes.
 
-The relationships are read-only — a Membership references a Contact and a MembershipType by id, but the client does not eagerly resolve those references; the consumer composes them.
+All schemas use strict zod (Clarification 2026-05-12 #5) — unknown wire keys cause `TwizzitValidationError`.
 
 ---
 
-## Shared shapes (`src/schemas/shared.ts`)
+## Shared shapes (`src/federation.ts`)
 
-### LocalisedName
-
-```text
-{
-  EN: string,
-  NL: string,
-  FR: string
-}
-```
-
-Used by `MembershipType.name`, `ExtraField.name`, and country names inside `Contact.address`. All three keys MUST be present (strict).
-
-### Email / Mobile / Phone
+### FederationLocalisedName
 
 ```text
-Email = {
-  target: string | null,   // empty string normalised to null
-  email: string             // may be empty string when slot is unused
-}
-Mobile = Phone = {
-  target: string | null,
-  cc: string | null,        // empty string normalised to null
-  number: string            // may be empty string
-}
+{ en: string, nl: string, fr: string }
 ```
 
-### Address
+All three keys required. Lowercase locale codes (the wire format's `EN/NL/FR` are mapped at parse time).
+
+### FederationAddress
 
 ```text
 {
@@ -45,11 +27,44 @@ Mobile = Phone = {
   box: string,
   postalCode: string,
   city: string,
-  country: LocalisedName
+  country: FederationLocalisedName
 }
 ```
 
-All fields are present strings; empty values appear as `""` rather than absent.
+Empty values stay as empty strings at this level (the wire format does the same); they aren't normalised to `null`.
+
+### FederationEmail
+
+```text
+{ target: string | null, address: string }
+```
+
+Wire `target: ""` is normalised to `null`. Wire `email` becomes `address` (consumer-friendly name). Empty-address entries are filtered out at the contact level — see `FederationContact.emails` below.
+
+### FederationPhone
+
+```text
+{ target: string | null, countryCode: string | null, number: string }
+```
+
+Wire `cc` becomes `countryCode`. Empty `cc`/`target` → `null`. `number` may be empty when the slot is unused (filtered at the contact level).
+
+### FederationExtraFieldValue
+
+```text
+{
+  field: {
+    id: number | string,
+    name: FederationLocalisedName,
+    type: string,
+    location: "Contact" | "Membership" | null
+  },
+  value: string,
+  attributes: Array<{ attributeId: number | string, value: string }>
+}
+```
+
+The wire format keys `extra-field` (kebab) and `attribute-id` (kebab) are renamed to `field` and `attributeId`. Wire `location === ""` is normalised to `null`.
 
 ---
 
@@ -57,155 +72,135 @@ All fields are present strings; empty values appear as `""` rather than absent.
 
 ```text
 {
-  token: string,            // JWT (treated as opaque by this lib)
-  "created-on": number,     // unix-seconds, when Twizzit issued the token
-  "valid-till": number      // unix-seconds, when Twizzit will reject this token
+  token: string,            // JWT (opaque)
+  "created-on": number,     // unix-seconds
+  "valid-till": number      // unix-seconds
 }
 ```
 
-**Notes**: Twizzit returns both `created-on` and `valid-till` in the response body. The observed `valid-till - created-on` is **1800 s (30 minutes)** — significantly shorter than the JWT's own `exp` claim (24 h on the same response). The lib MUST trust the response body's `valid-till` over the JWT's `exp`: the server may invalidate a token before its cryptographic expiry, so the body field is the binding lifetime signal. As a consequence, the lib does **not** parse the JWT payload at all — the token is treated as opaque (per R5 in research.md).
+**Internal only**: not exported. The `TwizzitClient` consumes this to manage its session (token + proactive refresh at 80 % of `valid-till - created-on`); consumers never see the auth response shape directly.
 
 ---
 
-## Organization (`src/schemas/organization.ts`)
+## FederationOrganization
+
+```text
+{ id: number | string, name: string }
+```
+
+For Twizzit's BV tenant: `{ id: 34245, name: "Badminton Belgium" }`.
+
+---
+
+## FederationContact
 
 ```text
 {
-  id: number,    // integer, > 0
-  name: string   // non-empty
+  id: number | string,
+  fullName: string,
+  firstName: string,
+  lastName: string,
+  dateOfBirth: string | null,         // ISO date YYYY-MM-DD, "" → null
+  gender: "M" | "F" | "X" | null,
+  nationality: string | null,
+  language: string | null,
+  accountNumber: string | null,
+  registryNumber: string | null,
+  federationNumber: number | string | null,
+  memberId: string | null,            // extracted from extraFields where field.name.en === "Member ID"
+  hasProfileImage: boolean,
+  address: FederationAddress,
+  emails: FederationEmail[],          // empty slots filtered out
+  mobiles: FederationPhone[],         // empty slots filtered out
+  home: FederationPhone | null,       // null if wire .number === ""
+  extraFields: FederationExtraFieldValue[]
 }
 ```
 
-The lib's `getOrganizations()` returns `Organization[]`. The Badminton Belgium record is `{ id: 34245, name: "Badminton Belgium" }`; the lib does not hard-code this — it's the consumer's job to pick.
+**Wire→generic field renames** applied by the schema's transform:
+- `name` → `fullName`
+- `first-name` → `firstName`, `last-name` → `lastName`
+- `date-of-birth` → `dateOfBirth` (empty string → `null`)
+- `account-number` → `accountNumber`, `registry-number` → `registryNumber`
+- `number` (top-level, federation/toernooi.nl numeric id) → `federationNumber`
+- `email-1`, `email-2`, `email-3` → consolidated into `emails[]`, filtered to non-empty addresses
+- `mobile-1`, `mobile-2`, `mobile-3` → consolidated into `mobiles[]`, filtered to non-empty numbers
+- `home` (wire kebab key matches camelCase here by accident) → `home`, or `null` when its number is empty
+- `has-profile-image` → `hasProfileImage`
+- `extra-field-values` → `extraFields`
+- **Derived**: `memberId` extracted from the `Member ID` extra-field-value (if present and non-empty), surfaced as a top-level convenience field.
 
 ---
 
-## ExtraFieldValue (`src/schemas/contact.ts` → reused by Contact)
+## FederationMembership
 
 ```text
 {
-  extraField: {
-    id: number,
-    name: LocalisedName,
-    type: "Text" | "Date" | "Single select" | "Multiple select" | "Checkbox",
-    location: "Contact" | "Membership" | "" | null,
-    extraFieldAttributes: Array<{
-      id: number,
-      name: string,
-      type: string             // free-form for now; tighten when more samples arrive
-    }>
-  },
-  value: {
-    value: string,             // the stored value; may be empty
-    attributes: Array<{
-      "attribute-id": number,
-      value: string
-    }>
-  }
+  id: number | string,
+  contactId: number | string,
+  membershipTypeId: number | string,
+  clubId: number | string | null,     // Swagger says nullable
+  seasonId: number | string | null,
+  startDate: string,                  // ISO date YYYY-MM-DD
+  endDate: string | null,             // wire "" → null
+  extraFields: FederationExtraFieldValue[]
 }
 ```
 
-**Strictness note**: `extraField.type` is currently a string-union of observed values. If Twizzit introduces a new type (e.g. `"Number"`), the schema will fail loudly (per the strict-everywhere policy) — which is the desired behavior.
+Wire renames: `contact-id`, `membership-type-id`, `season-id`, `club-id`, `start-date`, `end-date`, `extra-field-values` → camelCase per pattern above. `club-id` is nullable per the Swagger contract (memberships-swagger.md).
+
+**Loan memberships** are *separate* rows pointing at the "Loan player" membership type (id 57915 in BV); the client does not eagerly join.
 
 ---
 
-## Contact (`src/schemas/contact.ts`)
+## FederationMembershipType
 
 ```text
 {
-  id: number,
-  name: string,
-  "date-of-birth": string | null,         // ISO date "YYYY-MM-DD"; empty → null
-  gender: "M" | "F" | "X" | null,         // narrow set; widen when needed
-  nationality: string | null,             // ISO 2-letter or null
-  language: string | null,                // "nl" | "fr" | "en" | … ; null when unset
-  "account-number": string | null,
-  "registry-number": string | null,
-  number: string | null,
-  "email-1": Email,
-  "email-2": Email,
-  "email-3": Email,
-  "mobile-1": Mobile,
-  "mobile-2": Mobile,
-  "mobile-3": Mobile,
-  phone: Phone,
-  address: Address,
-  "has-profile-image": boolean,
-  "extra-field-values": ExtraFieldValue[]
-}
-```
-
-**Member ID extraction helper**: not a schema field; the lib MAY expose a derived helper `getMemberId(contact: Contact): string | null` that locates the extra-field-value whose `extraField.name.EN === "Member ID"` and returns its `value.value` (or `null`). This is a convenience over the raw shape and lives next to the schema, not inside it.
-
----
-
-## Membership (`src/schemas/membership.ts`)
-
-```text
-{
-  id: number,
-  "contact-id": number,
-  "membership-type-id": number,
-  "season-id": number | null,
-  "start-date": string,                   // ISO date "YYYY-MM-DD"
-  "end-date": string | null,              // empty string "" normalised to null
-  "club-id": number,
-  "extra-field-values": ExtraFieldValue[]
-}
-```
-
-**Note**: a Loan membership is a *separate* row of this shape with `membership-type-id` pointing at the "Loan player" MembershipType. The client does not eagerly join.
-
----
-
-## MembershipType (`src/schemas/membership-type.ts`)
-
-```text
-{
-  id: number,
-  name: LocalisedName,
+  id: number | string,
+  name: FederationLocalisedName,
   type: "Continuously" | "Seasonal" | "Fixed length" | "Fixed end date",
   duration: number | null,
-  "duration-unit": "Days" | "Months" | "Years" | null,
-  "end-date": string | null,              // "MM-DD" format observed for "Unbound summer"
-  "transfer-date": string | null
+  durationUnit: "Days" | "Months" | "Years" | null,
+  endDate: string | null,             // "MM-DD" format for Fixed-end-date types
+  transferDate: string | null         // "MM-DD" format for the transfer cutoff
 }
 ```
 
-Observed types in BV tenant (as of 2026-05-12): Competitive member (51774), Recreative member (51779), Loan player (57915, Seasonal), Non-player (57920), Trial membership (57922, Fixed length 21 Days), Youth (58449), Unbound summer player (72908, Fixed end date 09-07).
+Wire renames: `duration-unit`, `end-date`, `transfer-date` → camelCase. `name.EN/NL/FR` → `name.en/nl/fr`.
+
+Observed BV types (2026-05-12 capture): Competitive member (51774), Recreative member (51779), Loan player (57915, Seasonal), Non-player (57920), Trial membership (57922, Fixed length 21 Days), Youth (58449), Unbound summer player (72908, Fixed end date 09-07).
 
 ---
 
-## ExtraField (`src/schemas/extra-field.ts`)
+## FederationExtraField
 
 ```text
 {
-  id: number,
-  name: LocalisedName,
+  id: number | string,
+  name: FederationLocalisedName,
   type: "Text" | "Date" | "Single select" | "Multiple select" | "Checkbox",
-  location: "Contact" | "Membership" | "" | null,
-  options: string[],                      // empty array when no options
-  attributes: Array<{
-    id: number,
-    name: string,
-    type: string
-  }>
+  location: "Contact" | "Membership" | null,
+  options: string[],                  // empty array when no options
+  attributes: Array<{ id: number | string, name: string, type: string }>
 }
 ```
 
-Critical extra fields the integration cares about (documented in `twizzit-api-reference-index.md`): `Member ID` (id 41763), `VOTAS-ID` (id 41654), `Migratie` (id 42452), `Wedstrijdleider / Responsable` (id 41297), `Club type` (id 40775).
+Wire `location === ""` is normalised to `null`. Locale keys lowercased.
+
+Critical IDs in the BV tenant (documented in [`twizzit-api-reference-index.md`](../../docs/twizzit/twizzit-api-reference-index.md)): `Member ID` (41763), `VOTAS-ID` (41654), `Migratie` (42452), `Wedstrijdleider / Responsable` (41297), `Club type` (40775).
 
 ---
 
 ## Error variants (`src/errors.ts`)
 
-Not Twizzit-side shapes — these are the discriminated-union errors the lib throws (FR-015):
+Not Twizzit-side shapes — the discriminated-union errors the lib throws (FR-015):
 
 ```text
 type TwizzitError =
   | TwizzitAuthError       { kind: "auth";       endpoint, status, attempts }
   | TwizzitValidationError { kind: "validation"; endpoint, path, expected, actualSummary }
-  | TwizzitNetworkError    { kind: "network";    endpoint, cause: { code, message } }
+  | TwizzitNetworkError    { kind: "network";    endpoint, code }
   | TwizzitRateLimitError  { kind: "rate-limit"; endpoint, retryAfterMs, attempts }
   | TwizzitServerError     { kind: "server";     endpoint, status, bodyExcerpt }
   | TwizzitClientError     { kind: "client";     endpoint, status, bodyExcerpt, subkind? }
@@ -217,15 +212,15 @@ type TwizzitError =
 
 ## Validation policy summary
 
-- **Strict everywhere** — `.strict()` on every object schema. New Twizzit fields fail loudly.
-- **No coercion outside documented normalisations** — empty-string → `null` is the only allowed transform, applied only to the date and contact fields that Twizzit is known to return as `""`.
+- **Strict everywhere** — `.strict()` on every raw wire-format schema. New Twizzit fields fail loudly.
+- **One layer of transformation** — wire kebab/uppercase → generic camelCase/lowercase, applied per-field in each schema's `.transform()`. The only "coercion" beyond renaming is `"" → null` for documented empty-string fields and the email/mobile slot consolidation.
 - **No `.passthrough()`** anywhere.
-- **No optional fields invented to soften strictness** — if Twizzit omits a documented field, the schema fails. We then capture a fixture and decide.
+- **No optional fields invented to soften strictness** — if Twizzit omits a documented wire field, the schema fails. Capture a fixture and decide.
 
 ---
 
 ## Out of scope (deliberately)
 
-- Mapping any Twizzit shape to a Badman `Player`, `Club`, or `ClubPlayerMembership`. That is the Phase 3 sync engine's job.
+- Mapping any `Federation*` shape to a Badman `Player`, `Club`, or `ClubPlayerMembership`. That is the Phase 3 sync engine's job.
 - The `twizzitId` column on `Player`. That is Phase 2 of the broader plan (different scope from this spec).
 - Caching schemas across processes. The schemas are static at module-import time.

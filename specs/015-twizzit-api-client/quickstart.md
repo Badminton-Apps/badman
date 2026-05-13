@@ -111,7 +111,7 @@ Five steps. Each step is one file change.
 1. **Capture a fixture from staging.** Hit the new endpoint with `curl` or a one-off script; save the JSON under `test/__fixtures__/<endpoint>.200.json`. Anonymise per the policy below.
 2. **Write the zod schema.** Create `src/schemas/<resource>.ts` exporting `<Resource>Schema` and `export type <Resource> = z.infer<typeof <Resource>Schema>`. Use `.strict()` everywhere.
 3. **Write the endpoint function.** Create `src/endpoints/<resource>.ts` exporting a method that takes `(http: HttpLayer, opts?: <Opts>)`, calls the HTTP layer, parses the response with the schema, and returns the typed result. Wire it onto `TwizzitClient` in `src/client.ts`.
-4. **Add unit + fixture tests** to `test/client.spec.ts`: happy path, schema failure (synthetic broken fixture), 401 retry path, 429 honour-retry-after, 5xx surfacing, network error. Use `axios-mock-adapter` bound to the lib's internal `AxiosInstance` (the lib exposes it via a testability seam).
+4. **Add unit + fixture tests** to `test/client.spec.ts`: happy path, schema failure (synthetic broken fixture), 401 retry path, 429 honour-retry-after, 5xx surfacing, network error. Use `axios-mock-adapter` bound to the client's internal HTTP instance via the `_http` test accessor.
 5. **Add a live test** to `test/client.live.spec.ts` wrapped in `describe.skip` unless `RUN_TWIZZIT_LIVE_TESTS=1`.
 
 ---

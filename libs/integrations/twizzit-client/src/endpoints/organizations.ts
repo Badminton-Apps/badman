@@ -1,6 +1,7 @@
 import { HttpClient } from "../http";
 import { TwizzitValidationError, TwizzitErrorContext } from "../errors";
-import { OrganizationsResponseSchema, Organization } from "../schemas/organization";
+import { OrganizationsResponseSchema } from "../schemas/organization";
+import type { FederationOrganization } from "../federation";
 
 function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return {
@@ -10,7 +11,7 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   };
 }
 
-export async function getOrganizations(http: HttpClient): Promise<Organization[]> {
+export async function getOrganizations(http: HttpClient): Promise<FederationOrganization[]> {
   const endpoint = "GET /organizations";
 
   const response = await http.get("/organizations");

@@ -1,55 +1,61 @@
 import { z } from "zod";
+import type {
+  FederationLocalisedName,
+  FederationAddress,
+  FederationEmail,
+  FederationPhone,
+} from "../federation";
 
-export const LocalisedNameSchema = z
-  .object({
-    EN: z.string(),
-    NL: z.string(),
-    FR: z.string(),
-  })
+const emptyToNull = (v: string | null): string | null => (v === "" ? null : v);
+
+const RawLocalisedNameSchema = z
+  .object({ EN: z.string(), NL: z.string(), FR: z.string() })
   .strict();
+export const LocalisedNameSchema = RawLocalisedNameSchema.transform(
+  (raw): FederationLocalisedName => ({ en: raw.EN, nl: raw.NL, fr: raw.FR })
+);
 
-export type LocalisedName = z.infer<typeof LocalisedNameSchema>;
-
-export const EmailSchema = z
+const RawEmailSchema = z
   .object({
-    target: z
-      .string()
-      .nullable()
-      .transform((v) => (v === "" ? null : v)),
+    target: z.string().nullable().transform(emptyToNull),
     email: z.string(),
   })
   .strict();
+export const EmailSchema = RawEmailSchema.transform(
+  (raw): FederationEmail => ({ target: raw.target, address: raw.email })
+);
+export const RawEmailSchemaInternal = RawEmailSchema;
 
-export type Email = z.infer<typeof EmailSchema>;
-
-export const MobileSchema = z
+const RawPhoneSchema = z
   .object({
-    target: z
-      .string()
-      .nullable()
-      .transform((v) => (v === "" ? null : v)),
-    cc: z
-      .string()
-      .nullable()
-      .transform((v) => (v === "" ? null : v)),
+    target: z.string().nullable().transform(emptyToNull),
+    cc: z.string().nullable().transform(emptyToNull),
     number: z.string(),
   })
   .strict();
-
-export type Mobile = z.infer<typeof MobileSchema>;
-
+export const MobileSchema = RawPhoneSchema.transform(
+  (raw): FederationPhone => ({ target: raw.target, countryCode: raw.cc, number: raw.number })
+);
 export const PhoneSchema = MobileSchema;
-export type Phone = z.infer<typeof PhoneSchema>;
+export const RawPhoneSchemaInternal = RawPhoneSchema;
 
-export const AddressSchema = z
+const RawAddressSchema = z
   .object({
     street: z.string(),
     number: z.string(),
     box: z.string(),
     postalCode: z.string(),
     city: z.string(),
-    country: LocalisedNameSchema,
+    country: RawLocalisedNameSchema,
   })
   .strict();
-
-export type Address = z.infer<typeof AddressSchema>;
+export const AddressSchema = RawAddressSchema.transform(
+  (raw): FederationAddress => ({
+    street: raw.street,
+    number: raw.number,
+    box: raw.box,
+    postalCode: raw.postalCode,
+    city: raw.city,
+    country: { en: raw.country.EN, nl: raw.country.NL, fr: raw.country.FR },
+  })
+);

@@ -1,12 +1,15 @@
 import { z } from "zod";
+import type { FederationOrganization } from "../federation";
 
-export const OrganizationSchema = z
+const RawOrganizationSchema = z
   .object({
     id: z.number().int().positive(),
     name: z.string().min(1),
   })
   .strict();
 
-export type Organization = z.infer<typeof OrganizationSchema>;
+export const OrganizationSchema = RawOrganizationSchema.transform(
+  (raw): FederationOrganization => ({ id: raw.id, name: raw.name })
+);
 
 export const OrganizationsResponseSchema = z.array(OrganizationSchema);

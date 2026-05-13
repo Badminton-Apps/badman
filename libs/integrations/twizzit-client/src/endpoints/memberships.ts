@@ -1,8 +1,9 @@
 import { HttpClient } from "../http";
 import { TwizzitValidationError, TwizzitErrorContext } from "../errors";
-import { MembershipsResponseSchema, Membership } from "../schemas/membership";
+import { MembershipsResponseSchema } from "../schemas/membership";
+import type { FederationMembership } from "../federation";
 import { paginate } from "../pagination";
-import { MembershipsQuery } from "../seam";
+import { MembershipsQuery } from "../gateway";
 
 function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return { endpoint, occurredAt: new Date().toISOString(), attempts };
@@ -11,10 +12,10 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
 export async function getMemberships(
   http: HttpClient,
   opts?: MembershipsQuery
-): Promise<Membership[]> {
+): Promise<FederationMembership[]> {
   const endpoint = "GET /memberships";
 
-  return paginate<Membership>({
+  return paginate<FederationMembership>({
     fetchPage: async (offset, limit) => {
       const params: Record<string, unknown> = { limit, offset };
       if (opts?.lastModified) {

@@ -1,12 +1,13 @@
 import { HttpClient } from "../http";
 import { TwizzitValidationError, TwizzitErrorContext } from "../errors";
-import { ExtraFieldsResponseSchema, ExtraField } from "../schemas/extra-field";
+import { ExtraFieldsResponseSchema } from "../schemas/extra-field";
+import type { FederationExtraField } from "../federation";
 
 function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return { endpoint, occurredAt: new Date().toISOString(), attempts };
 }
 
-export async function getExtraFields(http: HttpClient): Promise<ExtraField[]> {
+export async function getExtraFields(http: HttpClient): Promise<FederationExtraField[]> {
   const endpoint = "GET /extra-fields";
 
   const response = await http.get("/extra-fields");

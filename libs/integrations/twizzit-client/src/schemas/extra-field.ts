@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LocalisedNameSchema } from "./shared";
+import type { FederationExtraField } from "../federation";
 
 export const ExtraFieldAttributeSchema = z
   .object({
@@ -9,10 +9,10 @@ export const ExtraFieldAttributeSchema = z
   })
   .strict();
 
-export const ExtraFieldSchema = z
+const RawExtraFieldSchema = z
   .object({
     id: z.number().int(),
-    name: LocalisedNameSchema,
+    name: z.object({ EN: z.string(), NL: z.string(), FR: z.string() }).strict(),
     type: z.enum(["Text", "Date", "Single select", "Multiple select", "Checkbox"]),
     location: z.union([z.enum(["Contact", "Membership"]), z.literal(""), z.null()]),
     options: z.array(z.string()),
@@ -20,6 +20,15 @@ export const ExtraFieldSchema = z
   })
   .strict();
 
-export type ExtraField = z.infer<typeof ExtraFieldSchema>;
+export const ExtraFieldSchema = RawExtraFieldSchema.transform(
+  (raw): FederationExtraField => ({
+    id: raw.id,
+    name: { en: raw.name.EN, nl: raw.name.NL, fr: raw.name.FR },
+    type: raw.type,
+    location: raw.location === "" ? null : raw.location,
+    options: raw.options,
+    attributes: raw.attributes,
+  })
+);
 
 export const ExtraFieldsResponseSchema = z.array(ExtraFieldSchema);

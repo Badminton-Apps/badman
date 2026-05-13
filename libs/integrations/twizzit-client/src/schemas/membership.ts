@@ -1,7 +1,8 @@
 import { z } from "zod";
+import type { FederationMembership } from "../federation";
 import { ExtraFieldValueSchema } from "./contact";
 
-export const MembershipSchema = z
+const RawMembershipSchema = z
   .object({
     id: z.number().int(),
     "contact-id": z.number().int(),
@@ -17,6 +18,17 @@ export const MembershipSchema = z
   })
   .strict();
 
-export type Membership = z.infer<typeof MembershipSchema>;
+export const MembershipSchema = RawMembershipSchema.transform(
+  (raw): FederationMembership => ({
+    id: raw.id,
+    contactId: raw["contact-id"],
+    membershipTypeId: raw["membership-type-id"],
+    seasonId: raw["season-id"],
+    startDate: raw["start-date"],
+    endDate: raw["end-date"],
+    clubId: raw["club-id"],
+    extraFields: raw["extra-field-values"],
+  })
+);
 
 export const MembershipsResponseSchema = z.array(MembershipSchema);
