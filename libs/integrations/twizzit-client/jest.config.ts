@@ -1,3 +1,4 @@
+// SC-005 budget: < 10s; observed median 2026-05-13: 2.8s
 export default {
   displayName: "integrations-twizzit-client",
   preset: "../../../jest.preset.js",
@@ -8,4 +9,5 @@ export default {
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../../coverage/libs/integrations/twizzit-client",
   testMatch: ["**/test/**/*.spec.ts", "**/src/**/*.spec.ts"],
+  setupFilesAfterEnv: ["<rootDir>/test/setup.offline.ts"],
 };
