@@ -1,0 +1,60 @@
+// Synthetic fixture — same as contacts.page-1 but with gender mutated to a non-allowed value
+[
+  {
+    "id": 6348001,
+    "name": "Test One",
+    "date-of-birth": "1990-01-01",
+    "gender": 7,
+    "nationality": "BE",
+    "language": "nl",
+    "account-number": null,
+    "registry-number": null,
+    "number": null,
+    "email-1": {
+      "target": "Work",
+      "email": "test1@example.invalid"
+    },
+    "email-2": {
+      "target": null,
+      "email": ""
+    },
+    "email-3": {
+      "target": null,
+      "email": ""
+    },
+    "mobile-1": {
+      "target": "Personal",
+      "cc": "32",
+      "number": "498000001"
+    },
+    "mobile-2": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-3": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "address": {
+      "street": "Teststraat",
+      "number": "1",
+      "box": "",
+      "postalCode": "1000",
+      "city": "Testcity",
+      "country": {
+        "EN": "Belgium",
+        "NL": "Belgium",
+        "FR": "Belgium"
+      }
+    },
+    "has-profile-image": false,
+    "extra-field-values": []
+  }
+]

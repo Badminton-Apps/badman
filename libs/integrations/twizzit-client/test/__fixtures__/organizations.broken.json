@@ -1,0 +1,6 @@
+// Synthetic fixture — same as organizations.200 but one entry is missing the name field
+[
+  {
+    "id": 34245
+  }
+]
