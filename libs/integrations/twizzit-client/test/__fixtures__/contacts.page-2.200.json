@@ -1,8 +1,10 @@
-// Synthetic fixture — refresh from staging when credentials are available
+// Synthetic — refresh from staging when credentials available
 [
   {
     "id": 6348006,
     "name": "Test Six",
+    "first-name": "Test",
+    "last-name": "Six",
     "date-of-birth": "1978-07-22",
     "gender": "M",
     "nationality": "BE",
@@ -37,7 +39,7 @@
       "cc": null,
       "number": ""
     },
-    "phone": {
+    "home": {
       "target": null,
       "cc": null,
       "number": ""
@@ -57,7 +59,7 @@
     "has-profile-image": false,
     "extra-field-values": [
       {
-        "extraField": {
+        "extra-field": {
           "id": 41763,
           "name": {
             "EN": "Member ID",
@@ -66,7 +68,8 @@
           },
           "type": "Text",
           "location": "Contact",
-          "extraFieldAttributes": []
+          "options": [],
+          "attributes": []
         },
         "value": {
           "value": "50000006",
@@ -78,6 +81,8 @@
   {
     "id": 6348007,
     "name": "Test Seven",
+    "first-name": "Test",
+    "last-name": "Seven",
     "date-of-birth": "2010-04-12",
     "gender": "F",
     "nationality": "BE",
@@ -112,7 +117,7 @@
       "cc": null,
       "number": ""
     },
-    "phone": {
+    "home": {
       "target": null,
       "cc": null,
       "number": ""

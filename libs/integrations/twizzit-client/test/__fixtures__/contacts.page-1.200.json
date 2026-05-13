@@ -1,8 +1,10 @@
-// Synthetic fixture — refresh from staging when credentials are available
+// Synthetic — refresh from staging when credentials available
 [
   {
     "id": 6348001,
     "name": "Test One",
+    "first-name": "Test",
+    "last-name": "One",
     "date-of-birth": "1990-01-01",
     "gender": "M",
     "nationality": "BE",
@@ -37,7 +39,7 @@
       "cc": null,
       "number": ""
     },
-    "phone": {
+    "home": {
       "target": null,
       "cc": null,
       "number": ""
@@ -57,7 +59,7 @@
     "has-profile-image": false,
     "extra-field-values": [
       {
-        "extraField": {
+        "extra-field": {
           "id": 41763,
           "name": {
             "EN": "Member ID",
@@ -66,7 +68,8 @@
           },
           "type": "Text",
           "location": "Contact",
-          "extraFieldAttributes": []
+          "options": [],
+          "attributes": []
         },
         "value": {
           "value": "50000001",
@@ -78,6 +81,8 @@
   {
     "id": 6348002,
     "name": "Test Two",
+    "first-name": "Test",
+    "last-name": "Two",
     "date-of-birth": "1995-06-15",
     "gender": "F",
     "nationality": "BE",
@@ -112,7 +117,7 @@
       "cc": null,
       "number": ""
     },
-    "phone": {
+    "home": {
       "target": null,
       "cc": null,
       "number": ""
@@ -135,6 +140,8 @@
   {
     "id": 6348003,
     "name": "Test Three",
+    "first-name": "Test",
+    "last-name": "Three",
     "date-of-birth": null,
     "gender": "X",
     "nationality": null,
@@ -169,7 +176,7 @@
       "cc": null,
       "number": ""
     },
-    "phone": {
+    "home": {
       "target": null,
       "cc": null,
       "number": ""
@@ -192,6 +199,8 @@
   {
     "id": 6348004,
     "name": "Test Four",
+    "first-name": "Test",
+    "last-name": "Four",
     "date-of-birth": "2002-11-20",
     "gender": "M",
     "nationality": "NL",
@@ -226,7 +235,7 @@
       "cc": null,
       "number": ""
     },
-    "phone": {
+    "home": {
       "target": null,
       "cc": null,
       "number": ""
@@ -246,7 +255,7 @@
     "has-profile-image": true,
     "extra-field-values": [
       {
-        "extraField": {
+        "extra-field": {
           "id": 41763,
           "name": {
             "EN": "Member ID",
@@ -255,7 +264,8 @@
           },
           "type": "Text",
           "location": "Contact",
-          "extraFieldAttributes": []
+          "options": [],
+          "attributes": []
         },
         "value": {
           "value": "50000004",
@@ -267,6 +277,8 @@
   {
     "id": 6348005,
     "name": "Test Five",
+    "first-name": "Test",
+    "last-name": "Five",
     "date-of-birth": "1985-03-08",
     "gender": "F",
     "nationality": "BE",
@@ -301,7 +313,7 @@
       "cc": null,
       "number": ""
     },
-    "phone": {
+    "home": {
       "target": "Home",
       "cc": null,
       "number": ""
@@ -321,7 +333,7 @@
     "has-profile-image": false,
     "extra-field-values": [
       {
-        "extraField": {
+        "extra-field": {
           "id": 41297,
           "name": {
             "EN": "Responsable",
@@ -330,7 +342,8 @@
           },
           "type": "Multiple select",
           "location": "Contact",
-          "extraFieldAttributes": [
+          "options": [],
+          "attributes": [
             {
               "id": 1907,
               "name": "Behaald op/Obtenu le",
@@ -349,7 +362,7 @@
         }
       },
       {
-        "extraField": {
+        "extra-field": {
           "id": 41654,
           "name": {
             "EN": "VOTAS-ID",
@@ -358,7 +371,8 @@
           },
           "type": "Text",
           "location": "Contact",
-          "extraFieldAttributes": []
+          "options": [],
+          "attributes": []
         },
         "value": {
           "value": "AABBCCDD-1111-2222-3333-EEFF00112233",

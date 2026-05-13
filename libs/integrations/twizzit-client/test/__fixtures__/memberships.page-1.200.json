@@ -1,4 +1,4 @@
-// Synthetic fixture — refresh from staging when credentials are available
+// Synthetic — refresh from staging when credentials available
 [
   {
     "id": 6437001,
@@ -37,7 +37,7 @@
     "season-id": null,
     "start-date": "2018-11-30",
     "end-date": "2024-11-03",
-    "club-id": 25154,
+    "club-id": null,
     "extra-field-values": []
   },
   {
