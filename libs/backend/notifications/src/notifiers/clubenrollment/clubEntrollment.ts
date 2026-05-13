@@ -45,10 +45,6 @@ export class ClubEnrollmentNotifier extends Notifier<
     data: { club: Club; locations: Location[]; comments: Comment[] },
     args?: { email: string; url: string }
   ): Promise<void> {
-    this.logger.log(
-      `[ClubEnrollmentNotifier] notifyEmail called — player: ${player.fullName} (${player.email}), target email: ${args?.email ?? "(none)"}`
-    );
-
     const email = args?.email ?? player.email;
 
     if (!email) {
@@ -65,10 +61,6 @@ export class ClubEnrollmentNotifier extends Notifier<
       return;
     }
 
-    this.logger.log(
-      `[ClubEnrollmentNotifier] Sending enrollment email — to: ${email}, club: ${data.club.name}, locations: ${data.locations.length}, comments: ${data.comments.length}`
-    );
-
     try {
       await this.mailing.sendEnrollmentMail(
         {
@@ -80,14 +72,9 @@ export class ClubEnrollmentNotifier extends Notifier<
         data.locations,
         data.comments
       );
-      this.logger.log(
-        `[ClubEnrollmentNotifier] Enrollment email sent successfully to ${email}`
-      );
+      this.logger.log(`[ClubEnrollmentNotifier] Enrollment email sent successfully to ${email}`);
     } catch (e) {
-      this.logger.error(
-        `[ClubEnrollmentNotifier] Failed to send enrollment email to ${email}`,
-        e
-      );
+      this.logger.error(`[ClubEnrollmentNotifier] Failed to send enrollment email to ${email}`, e);
       throw e;
     }
   }
