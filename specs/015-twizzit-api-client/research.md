@@ -8,14 +8,26 @@ This document resolves the open decisions enumerated in the spec's Technical Con
 
 ## R1. HTTP client
 
-**Decision**: Use Node's global `fetch` (built-in from Node 18+). No new dependency.
+**Decision (2026-05-13, supersedes earlier)**: Use **`axios`**. Specifically, construct a per-`TwizzitClient` `AxiosInstance` whose:
 
-**Rationale**: The lib's public surface MUST NOT leak the HTTP-client choice (spec assumption). Node-native `fetch` is the lowest-friction option, has zero dependency cost, and is already used by other modern parts of the platform. It returns a `Response` whose `headers`, `status`, and `json()` cover everything the client needs (401 / 429 / 5xx classification, `Retry-After` parsing). We isolate it behind `http.ts` so swapping to `undici.request` or `axios` later remains a single-file change.
+- `baseURL` is the configured Twizzit URL.
+- `paramsSerializer` produces the kebab-case bracket syntax Twizzit expects (`organization-ids[]=34245`).
+- A **request interceptor** injects `Authorization: Bearer <token>` and the `organization-ids[]` query parameter onto every call after `authenticate()` + `getOrganizations()` have run.
+- A **response interceptor** classifies failures into `TwizzitError` variants (`axios.isAxiosError` + `status` + body excerpt) and handles the 401-then-reauth-then-retry-once pattern (FR-013) in one place — no per-endpoint duplication.
+- 429 back-off via `axios-retry` (or a manual interceptor) honouring `Retry-After`, bounded by `maxRateLimitRetries` and `maxRetryBudgetMs` (FR-014).
 
-**Alternatives considered**:
-- `axios` — popular but adds 500+ KB and overlaps with `fetch`. Interceptors are seductive but invite hidden behavior. Rejected.
-- `undici.request` — fastest in benchmarks, but `undici` is already what powers Node fetch; the API is also lower-level (manual body decoding). Rejected for v1.
-- `got` — fine, but ESM-only complications and extra dep. Rejected.
+The lib does NOT re-export axios types (`AxiosError`, `AxiosInstance`) — all consumer-visible failures are `TwizzitError` subclasses (FR-015). The axios instance is constructed inside `src/http.ts` and lives on the `TwizzitClient` instance.
+
+**Rationale**: Earlier the choice was Node global `fetch` to minimise dependencies. In implementation, the missing pieces (interceptor pattern for auth refresh + retry, robust 429 retry with `Retry-After`, kebab-bracket `paramsSerializer`) ended up being re-implemented on top of `fetch` by the MVP and recovery agents. The user directed (2026-05-13) to drop the in-house wrappers and lean on axios's built-in utilities. The dependency cost (~50 KB minified) is negligible for a worker-only lib; the maintainability gain (one interceptor instead of N per-endpoint retry wrappers) is significant.
+
+**Alternatives considered (history kept for context)**:
+- `fetch` — was the original choice; reverted because the auxiliary code grew larger than the dependency it saved.
+- `undici.request` — same downside as fetch for retry/interceptor concerns; lower-level API.
+- `got` — ESM-only, extra dep, fewer middleware options.
+
+**Alternatives also rejected today**:
+- Hand-rolling a `withRetry()` wrapper around `fetch` — what we already had; the rework is to delete it.
+- Using axios but NOT interceptors (just bare requests) — defeats the point of the swap.
 
 ---
 
@@ -178,3 +190,32 @@ These cannot be settled without a live call to Twizzit or a Swagger inspection. 
 ## Resolved status
 
 All NEEDS-CLARIFICATION items from `plan.md`'s Technical Context are resolved or have an explicit Phase 0 action item. The remaining items (R3 rate limits, R4 page cap, Q1 last-modified) are tracked as Phase 0 prerequisite tasks in `tasks.md` (created by `/speckit-tasks`) and do not block Phase 2 implementation — the design accommodates each unknown.
+
+---
+
+## R12. Credential redaction pipeline (2026-05-13 — reversed)
+
+**Decision**: **Remove** the previously-shipped redaction pipeline (`src/redact.ts`, the `extraSecrets` param threaded through every endpoint function, the deep-walking secret-scrub utility, the end-to-end "no LEAK_ME in any serialised output" grep-gate test in `redact.spec.ts`).
+
+What survives: **construction-time discipline**. The lib must not string-interpolate the password or bearer token into error messages it constructs (e.g. `\`Auth failed with password=${password}\`` is forbidden — say `"Authentication failed (HTTP 401)"` instead). That guarantee is structural, not testable via an automated grep.
+
+**Rationale (per user direction 2026-05-13)**:
+
+- The redaction pipeline was over-engineering for this lib's risk surface. Twizzit's HTTP responses do not echo the password (we already verified by inspecting captured 401 responses), so a 5xx body excerpt does not realistically contain credentials.
+- The pipeline cost: a `redact()` utility with edge cases (nested objects, circular refs, primitives), an `extraSecrets` ergonomic across every endpoint, a fragile grep-gate test prone to false positives (test fixtures coincidentally containing the leak sentinel), and ongoing maintenance whenever a new error variant or log site appears.
+- The platform that runs the worker (NestJS Fastify + structured logging) has its own log-level redaction. Defence in depth is fine — defence in *triplicate* is not.
+- The consumer (`apps/worker/sync`) controls `process.env` and never logs the password by construction. The lib never receives the password except for one call (`POST /authenticate`), and that call's outbound body is sent over HTTPS, not logged.
+
+**What this changes in code** (executed by a follow-up rework agent — see tasks.md updates):
+
+- `src/redact.ts` and `test/redact.spec.ts` → DELETED.
+- `src/errors.ts` → drop the "Redaction invariant" note; `bodyExcerpt` is just `string` (truncated for log volume, not scrubbed for secrets).
+- `src/http.ts` → drop the `redactSecrets` arg from request helpers.
+- `src/endpoints/*.ts` → drop the `extraSecrets` arg.
+- `src/client.ts` → stop threading `[password]` to endpoint calls.
+- `test/client.auth.spec.ts` → remove the "credential redaction" describe block.
+- `test/client.errors.spec.ts` → remove the redaction-related assertions; keep the discriminated-union narrowing.
+
+**Alternatives rejected today**:
+- Keep redact, just trim its surface — rejected, the whole concept was the problem.
+- Replace redact with a Pino-style serializer registry — same issue at smaller scale, not worth it for a 6-endpoint lib.

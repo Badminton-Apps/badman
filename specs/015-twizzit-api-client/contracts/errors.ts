@@ -4,8 +4,11 @@
  * Discriminated-union over all failure modes. Every variant is a real Error subclass so
  * stack traces remain useful; the `kind` field makes pattern-matching trivial.
  *
- * Redaction invariant: NO field on ANY variant may contain the bearer token, password,
- * or full Authorization header value. Enforced by test/redact.spec.ts (FR-016, SC-004).
+ * Construction guarantee: error messages constructed by the lib must NOT string-interpolate
+ * the password or bearer token. bodyExcerpt is truncated to ~200 chars but NOT deep-scrubbed
+ * for secrets. The deep redact() pipeline previously mandated here was removed 2026-05-13 —
+ * see research.md R12 for the rationale (Twizzit does not echo credentials in responses, and
+ * the consumer worker handles platform-level structured-logging redaction).
  *
  * Spec: specs/015-twizzit-api-client/spec.md  (FR-015, FR-016)
  */
@@ -36,7 +39,7 @@ export declare class TwizzitValidationError extends Error {
   readonly path: string;
   /** Short human-readable expectation, e.g. "expected string, got null". */
   readonly expectation: string;
-  /** Truncated, redacted excerpt of the actual value (max ~200 chars). */
+  /** Truncated excerpt of the actual value (max ~200 chars). Not secret-scrubbed; see file header. */
   readonly actualSummary: string;
 }
 
@@ -61,7 +64,7 @@ export declare class TwizzitServerError extends Error {
   readonly kind: "server";
   readonly context: TwizzitErrorContext;
   readonly status: number;
-  /** Redacted excerpt of the response body, max ~200 chars. */
+  /** Truncated excerpt of the response body (max ~200 chars). Not secret-scrubbed; see file header. */
   readonly bodyExcerpt: string;
 }
 
@@ -74,6 +77,7 @@ export declare class TwizzitClientError extends Error {
   readonly kind: "client";
   readonly context: TwizzitErrorContext;
   readonly status: number;
+  /** Truncated excerpt (max ~200 chars). Not secret-scrubbed; see file header. */
   readonly bodyExcerpt: string;
   /** Optional internal subkind for lib-emitted client errors. */
   readonly subkind?: "max-pages-exceeded" | "bad-pagination-arg" | "missing-organization-id";

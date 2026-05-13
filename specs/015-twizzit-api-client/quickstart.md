@@ -87,7 +87,7 @@ try {
 }
 ```
 
-**No error field ever contains** your password, the bearer token, or the `Authorization` header value. Verified by a dedicated test (`test/redact.spec.ts`).
+**Construction-time guarantee**: error messages built by the lib do NOT string-interpolate your password or the bearer token. `bodyExcerpt` is a plain ~200-char truncation of the response body — it is NOT deep-scrubbed for secrets. *(2026-05-13: the previously-shipped `redact()` pipeline + `redact.spec.ts` grep gate were retired as over-engineering — see [research.md](../../specs/015-twizzit-api-client/research.md) R12. Twizzit responses don't echo credentials; the consumer worker handles platform-level structured-logging redaction.)*
 
 ---
 
@@ -111,7 +111,7 @@ Five steps. Each step is one file change.
 1. **Capture a fixture from staging.** Hit the new endpoint with `curl` or a one-off script; save the JSON under `test/__fixtures__/<endpoint>.200.json`. Anonymise per the policy below.
 2. **Write the zod schema.** Create `src/schemas/<resource>.ts` exporting `<Resource>Schema` and `export type <Resource> = z.infer<typeof <Resource>Schema>`. Use `.strict()` everywhere.
 3. **Write the endpoint function.** Create `src/endpoints/<resource>.ts` exporting a method that takes `(http: HttpLayer, opts?: <Opts>)`, calls the HTTP layer, parses the response with the schema, and returns the typed result. Wire it onto `TwizzitClient` in `src/client.ts`.
-4. **Add unit + fixture tests** to `test/client.spec.ts`: happy path, schema failure (synthetic broken fixture), 401 retry path, 429 honour-retry-after, 5xx surfacing, network error, redaction.
+4. **Add unit + fixture tests** to `test/client.spec.ts`: happy path, schema failure (synthetic broken fixture), 401 retry path, 429 honour-retry-after, 5xx surfacing, network error. Use `axios-mock-adapter` bound to the lib's internal `AxiosInstance` (the lib exposes it via a testability seam).
 5. **Add a live test** to `test/client.live.spec.ts` wrapped in `describe.skip` unless `RUN_TWIZZIT_LIVE_TESTS=1`.
 
 ---

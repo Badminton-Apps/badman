@@ -12,15 +12,16 @@ Tests run hermetically in CI against recorded fixtures captured from staging Twi
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x targeting Node.js 20+ (matches existing `apps/worker/sync` toolchain).
-**Primary Dependencies**: `zod` (validation + type inference); Node 18+ global `fetch` (no extra HTTP-client dep); `jest` for tests; `nx` for the buildable lib.
+**Primary Dependencies**: `zod` (validation + type inference); `axios` (HTTP client; interceptors for `Authorization` + `organization-ids[]` injection and for 401-retry + 429 back-off, hidden behind the lib's own functions so consumers never `import axios from 'axios'` themselves); optional `axios-retry` for 429 handling; `jest` for tests; `nx` for the buildable lib. *(2026-05-13: previously Node 18+ global `fetch` — superseded by user direction to use axios's built-in utilities.)*
 **Storage**: N/A. The lib is read-only, in-memory only, no DB, no Redis, no filesystem writes outside test fixtures.
 **Testing**: Jest, co-located `*.spec.ts` (offline, fixtures) and `*.live.spec.ts` (gated by `RUN_TWIZZIT_LIVE_TESTS=1`).
 **Target Platform**: Node.js worker process (`apps/worker/sync`); the lib itself is platform-agnostic Node.
 **Project Type**: Buildable Nx library (single project).
 **Performance Goals**: Offline test suite < 10s (SC-005). Live full-fed contacts pull (≈160 k records) must respect Twizzit rate-limit headroom (FR-004) — exact target deferred to Phase 0 research item R3.
 **Constraints**:
-- Zero leakage of password / bearer token / `Authorization` value into logs, errors, fixtures (FR-016, SC-004).
+- No string-interpolation of password / bearer token / `Authorization` value into lib-constructed error messages (FR-016; 2026-05-13 — deep-redaction pipeline removed, construction-time discipline kept).
 - No imports of `@badman/backend-database`, `@badman/backend-graphql`, `@badman/backend-queue`, Sequelize models, NestJS decorators inside the lib (FR-007, FR-020, SC-008).
+- Axios is an implementation detail; the lib's public surface MUST NOT leak axios types (no `AxiosError`, no `AxiosInstance` re-exports). All errors are `TwizzitError` variants.
 - Strict zod everywhere; no `.passthrough()` escape hatch (Clarification 2026-05-12 #5).
 **Scale/Scope**: 6 endpoint functions in v1; designed so a 7th endpoint slots in via the published recipe (SC-006). Multi-page pulls bounded by `maxPages` default (R5 below).
 
@@ -78,12 +79,12 @@ libs/integrations/twizzit-client/
 ├── jest.config.ts
 ├── src/
 │   ├── index.ts                       # Public exports: TwizzitClient, TwizzitError variants, schemas, types
-│   ├── client.ts                      # `TwizzitClient` class, session state, retry orchestration
-│   ├── http.ts                        # Thin fetch wrapper: bearer-injection, org-ids query, 401/429/5xx classification
+│   ├── client.ts                      # `TwizzitClient` class, session state, axios instance ownership
+│   ├── http.ts                        # axios instance factory: request interceptor (Authorization + organization-ids[]),
+│   │                                   #   response interceptor (401-then-reauth-then-retry; 429 back-off; classify to TwizzitError)
 │   ├── errors.ts                      # `TwizzitAuthError`, `TwizzitValidationError`, `TwizzitNetworkError`,
 │   │                                   #   `TwizzitRateLimitError`, `TwizzitServerError`, `TwizzitClientError`
 │   ├── logger.ts                      # `Logger` interface + `noopLogger`
-│   ├── redact.ts                      # Secret-redaction utility (used by every error + log call)
 │   ├── pagination.ts                  # `paginate()` helper for limit/offset loop with maxPages bound
 │   ├── seam.ts                        # Federation-agnostic interface (FR-008) — `FederationContactSource`,
 │   │                                   #   `FederationMembershipSource` etc. Twizzit client implements these.
@@ -110,10 +111,9 @@ libs/integrations/twizzit-client/
     │   ├── memberships.page-1.200.json
     │   ├── membership-types.200.json
     │   └── extra-fields.200.json
-    ├── client.spec.ts                 # Unit + fixture tests (auth, org, each endpoint, redaction, retry, 429, 5xx)
+    ├── client.spec.ts                 # Unit + fixture tests (auth, org, each endpoint, retry, 429, 5xx) — uses axios-mock-adapter or DI seam
     ├── pagination.spec.ts             # Multi-page loop + maxPages bound
-    ├── redact.spec.ts                 # Redaction test (FR-016, SC-004)
-    ├── no-forbidden-imports.spec.ts   # SC-008 enforcement
+    ├── no-forbidden-imports.spec.ts   # SC-008 enforcement (axios remains an internal dep; not re-exported)
     └── client.live.spec.ts            # Opt-in (RUN_TWIZZIT_LIVE_TESTS=1) — hits staging Twizzit
 ```
 
