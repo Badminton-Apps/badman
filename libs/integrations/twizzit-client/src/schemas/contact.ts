@@ -77,9 +77,7 @@ export type Contact = z.infer<typeof ContactSchema>;
 export const ContactsResponseSchema = z.array(ContactSchema);
 
 export function getMemberId(contact: Contact): string | null {
-  const efv = contact["extra-field-values"].find(
-    (v) => v["extra-field"].name.EN === "Member ID"
-  );
+  const efv = contact["extra-field-values"].find((v) => v["extra-field"].name.EN === "Member ID");
   if (!efv) return null;
   const val = efv.value.value;
   return val === "" ? null : val;
