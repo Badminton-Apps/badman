@@ -13,7 +13,7 @@ import {
   TeamNewInput,
   TeamUpdateInput,
 } from "@badman/backend-database";
-import { IndexCalculationService } from "@badman/backend-enrollment";
+import { IndexCalculationInput, IndexCalculationService } from "@badman/backend-enrollment";
 import { SubEventTypeEnum } from "@badman/utils";
 import { ErrorCode } from "../../utils";
 import { TeamsResolver } from "./team.resolver";
@@ -113,6 +113,7 @@ describe("TeamsResolver.createTeam", () => {
       expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "clubId" })
     );
   });
+
 
   it("returns CLUB_NOT_FOUND and rolls back when the club is missing (UUID not in DB)", async () => {
     const user = userWithPermission(true);
@@ -258,20 +259,22 @@ describe("TeamsResolver.createTeam", () => {
 
     // Override the service mock for this test: simulate PLAYER_NOT_FOUND.
     // The resolver should map this to ErrorCode.PLAYER_NOT_FOUND and roll back.
-    const calculateOneMock = (
+    const calculateMock = (
       resolver as unknown as {
-        indexCalculationService: { calculateOne: jest.Mock };
+        indexCalculationService: { calculate: jest.Mock };
       }
-    ).indexCalculationService.calculateOne;
-    calculateOneMock.mockResolvedValueOnce({
-      _tag: "failure",
-      key: "entry-uuid",
-      error: {
-        code: "PLAYER_NOT_FOUND",
-        message: "Players not found: player-1",
-        playerIds: ["player-1"],
+    ).indexCalculationService.calculate;
+    calculateMock.mockResolvedValueOnce([
+      {
+        _tag: "failure",
+        key: "entry-uuid",
+        error: {
+          code: "PLAYER_NOT_FOUND",
+          message: "Players not found: player-1",
+          playerIds: ["player-1"],
+        },
       },
-    });
+    ]);
 
     const input = baseInput({
       entry: {
@@ -426,6 +429,305 @@ describe("TeamsResolver.createTeams", () => {
       expect(r).toHaveProperty("clubId");
       expect(r).toHaveProperty("alreadyExisted", false);
     });
+  });
+
+  // T011: calculate() called once with all inputs when multiple teams have entries
+  it("T011: calls calculate() exactly once with all team inputs when teams have player metadata", async () => {
+    const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
+    jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
+    let counter = 0;
+    jest
+      .spyOn(Team, "create")
+      .mockImplementation(
+        () =>
+          ({
+            id: `team-${++counter}`,
+            clubId: dbClub.id,
+            type: SubEventTypeEnum.MX,
+            setClub: jest.fn(),
+            addPlayer: jest.fn(),
+          }) as never
+      );
+    jest
+      .spyOn(EventEntry, "findOrCreate")
+      .mockImplementation(() =>
+        Promise.resolve([{ id: `entry-${counter}`, meta: {}, save: jest.fn() } as never, true])
+      );
+    const calculateSpy = jest
+      .spyOn(
+        (resolver as unknown as { indexCalculationService: { calculate: jest.Mock } })
+          .indexCalculationService,
+        "calculate"
+      )
+      .mockResolvedValue([
+        {
+          _tag: "success",
+          key: "entry-1",
+          index: 10,
+          contributingPlayers: [],
+          missingPlayerCount: 0,
+          resolvedPlayers: [],
+        },
+        {
+          _tag: "success",
+          key: "entry-2",
+          index: 20,
+          contributingPlayers: [],
+          missingPlayerCount: 0,
+          resolvedPlayers: [],
+        },
+        {
+          _tag: "success",
+          key: "entry-3",
+          index: 30,
+          contributingPlayers: [],
+          missingPlayerCount: 0,
+          resolvedPlayers: [],
+        },
+      ] as never);
+
+    const makeTeam = (n: number): TeamNewInput =>
+      ({
+        clubId: CLUB_UUID,
+        season: 2026,
+        type: SubEventTypeEnum.MX,
+        teamNumber: n,
+        name: `Team ${n}`,
+        entry: {
+          subEventId: `se-${n}`,
+          meta: { competition: { teamIndex: -1, players: [{ id: `p-${n}` }] } },
+        },
+      }) as never;
+
+    await resolver.createTeams([makeTeam(1), makeTeam(2), makeTeam(3)], false, user);
+
+    expect(calculateSpy).toHaveBeenCalledTimes(1);
+    const [inputs] = calculateSpy.mock.calls[0] as [IndexCalculationInput[]];
+    expect(inputs).toHaveLength(3);
+  });
+
+  // T012: teams without player metadata excluded from batch
+  it("T012: excludes teams without entry player metadata from the batch input", async () => {
+    const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
+    jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
+    let counter = 0;
+    jest
+      .spyOn(Team, "create")
+      .mockImplementation(
+        () =>
+          ({
+            id: `team-${++counter}`,
+            clubId: dbClub.id,
+            type: SubEventTypeEnum.MX,
+            setClub: jest.fn(),
+            addPlayer: jest.fn(),
+          }) as never
+      );
+    jest
+      .spyOn(EventEntry, "findOrCreate")
+      .mockResolvedValue([{ id: "entry-1", meta: {}, save: jest.fn() } as never, true]);
+    const calculateSpy = jest
+      .spyOn(
+        (resolver as unknown as { indexCalculationService: { calculate: jest.Mock } })
+          .indexCalculationService,
+        "calculate"
+      )
+      .mockResolvedValue([
+        {
+          _tag: "success",
+          key: "entry-1",
+          index: 10,
+          contributingPlayers: [],
+          missingPlayerCount: 0,
+          resolvedPlayers: [],
+        },
+      ] as never);
+
+    const withPlayers: TeamNewInput = {
+      clubId: CLUB_UUID,
+      season: 2026,
+      type: SubEventTypeEnum.MX,
+      teamNumber: 1,
+      name: "Team A",
+      entry: {
+        subEventId: "se-1",
+        meta: { competition: { teamIndex: -1, players: [{ id: "p-1" }] } },
+      },
+    } as never;
+    const withoutPlayers: TeamNewInput = {
+      clubId: CLUB_UUID,
+      season: 2026,
+      type: SubEventTypeEnum.MX,
+      teamNumber: 2,
+      name: "Team B",
+    } as never;
+
+    await resolver.createTeams([withPlayers, withoutPlayers], false, user);
+
+    expect(calculateSpy).toHaveBeenCalledTimes(1);
+    const [inputs] = calculateSpy.mock.calls[0] as [IndexCalculationInput[]];
+    expect(inputs).toHaveLength(1);
+  });
+
+  // T013: failure in batch throws GraphQLError and rolls back
+  it("T013: throws GraphQLError and rolls back when calculate() returns a failure", async () => {
+    const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
+    jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
+    jest
+      .spyOn(Team, "create")
+      .mockResolvedValue({
+        id: "team-1",
+        clubId: dbClub.id,
+        type: SubEventTypeEnum.MX,
+        setClub: jest.fn(),
+        addPlayer: jest.fn(),
+      } as never);
+    jest
+      .spyOn(EventEntry, "findOrCreate")
+      .mockResolvedValue([{ id: "entry-1", meta: {}, save: jest.fn() } as never, true]);
+    jest
+      .spyOn(
+        (resolver as unknown as { indexCalculationService: { calculate: jest.Mock } })
+          .indexCalculationService,
+        "calculate"
+      )
+      .mockResolvedValue([
+        {
+          _tag: "failure",
+          key: "entry-1",
+          error: {
+            code: "PLAYER_NOT_FOUND",
+            message: "Players not found: p-1",
+            playerIds: ["p-1"],
+          },
+        },
+      ] as never);
+
+    const input: TeamNewInput = {
+      clubId: CLUB_UUID,
+      season: 2026,
+      type: SubEventTypeEnum.MX,
+      teamNumber: 1,
+      name: "Team A",
+      entry: {
+        subEventId: "se-1",
+        meta: { competition: { teamIndex: -1, players: [{ id: "p-1" }] } },
+      },
+    } as never;
+
+    try {
+      await resolver.createTeams([input], false, user);
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.PLAYER_NOT_FOUND);
+    }
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+  });
+
+  // T014: all teams already existed — calculate not called
+  it("T014: does not call calculate() when all teams already existed (idempotent re-submit)", async () => {
+    const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
+    const existingTeam = { id: "existing-team", clubId: dbClub.id } as unknown as Team;
+    jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
+    jest.spyOn(Team, "findOne").mockResolvedValue(existingTeam);
+    const calculateSpy = jest.spyOn(
+      (resolver as unknown as { indexCalculationService: { calculate: jest.Mock } })
+        .indexCalculationService,
+      "calculate"
+    );
+
+    const input: TeamNewInput = {
+      clubId: CLUB_UUID,
+      season: 2026,
+      type: SubEventTypeEnum.MX,
+      teamNumber: 1,
+      name: "Team A",
+      link: "existing-link",
+    } as never;
+
+    const results = await resolver.createTeams([input], false, user);
+
+    expect(calculateSpy).not.toHaveBeenCalled();
+    expect(results[0].alreadyExisted).toBe(true);
+  });
+
+  // T018: calculate called with correct input count
+  it("T018: calculate() input count matches number of teams with player metadata", async () => {
+    const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
+    jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
+    let counter = 0;
+    jest
+      .spyOn(Team, "create")
+      .mockImplementation(
+        () =>
+          ({
+            id: `team-${++counter}`,
+            clubId: dbClub.id,
+            type: SubEventTypeEnum.MX,
+            setClub: jest.fn(),
+            addPlayer: jest.fn(),
+          }) as never
+      );
+    jest
+      .spyOn(EventEntry, "findOrCreate")
+      .mockImplementation(() =>
+        Promise.resolve([{ id: `entry-${counter}`, meta: {}, save: jest.fn() } as never, true])
+      );
+    const calculateSpy = jest
+      .spyOn(
+        (resolver as unknown as { indexCalculationService: { calculate: jest.Mock } })
+          .indexCalculationService,
+        "calculate"
+      )
+      .mockResolvedValue([
+        {
+          _tag: "success",
+          key: "entry-1",
+          index: 5,
+          contributingPlayers: [],
+          missingPlayerCount: 0,
+          resolvedPlayers: [],
+        },
+        {
+          _tag: "success",
+          key: "entry-3",
+          index: 8,
+          contributingPlayers: [],
+          missingPlayerCount: 0,
+          resolvedPlayers: [],
+        },
+      ] as never);
+
+    const makeTeam = (n: number, withPlayers: boolean): TeamNewInput =>
+      ({
+        clubId: CLUB_UUID,
+        season: 2026,
+        type: SubEventTypeEnum.MX,
+        teamNumber: n,
+        name: `Team ${n}`,
+        ...(withPlayers
+          ? {
+              entry: {
+                subEventId: `se-${n}`,
+                meta: { competition: { teamIndex: -1, players: [{ id: `p-${n}` }] } },
+              },
+            }
+          : {}),
+      }) as never;
+
+    // 2 with players, 1 without — expect input count = 2
+    await resolver.createTeams(
+      [makeTeam(1, true), makeTeam(2, false), makeTeam(3, true)],
+      false,
+      user
+    );
+
+    expect(calculateSpy).toHaveBeenCalledTimes(1);
+    const [inputs] = calculateSpy.mock.calls[0] as [IndexCalculationInput[]];
+    expect(inputs).toHaveLength(2);
   });
 });
 

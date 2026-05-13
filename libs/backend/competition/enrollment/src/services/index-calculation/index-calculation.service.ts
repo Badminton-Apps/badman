@@ -442,22 +442,6 @@ export class IndexCalculationService {
 
     const contributingPlayers = resolvedPlayers.filter((p) => contributingIds.has(p.id));
     const missingPlayerCount = Math.max(0, 4 - contributingPlayers.length);
-
-    this.logger.debug({
-      key: input.key,
-      type,
-      playerIds: input.players.map((p) => p.id),
-      resolvedPerPlayer: resolvedPlayers.map(({ id, single, double, mix }) => ({
-        id,
-        single,
-        double,
-        mix,
-      })),
-      bestN: contributingPlayers.map((p) => p.id),
-      missingPlayerCount,
-      index,
-    });
-
     const successResult: IndexCalculationSuccess = {
       _tag: "success",
       key: input.key,
