@@ -7,15 +7,15 @@ Read-only API client for the Twizzit membership platform. Used by Badman worker 
 ## TL;DR
 
 ```ts
-import { TwizzitClient, getMemberId } from "@badman/integrations-twizzit-client";
+import { TwizzitClient } from "@badman/integrations-twizzit-client";
 
 const client = new TwizzitClient({
   credentials: {
-    username: process.env.TWIZZIT_USERNAME!,
-    password: process.env.TWIZZIT_PASSWORD!,
+    username: process.env.TWIZZIT_API_USER!,
+    password: process.env.TWIZZIT_API_PASS!,
   },
   // Optional. Default is https://app.twizzit.com/v2/api.
-  baseUrl: process.env.TWIZZIT_BASE_URL,
+  baseUrl: process.env.TWIZZIT_API,
 });
 
 await client.authenticate();
@@ -25,7 +25,9 @@ const memberships = await client.getMemberships();
 const types = await client.getMembershipTypes();
 const fields = await client.getExtraFields();
 
-console.log(getMemberId(contacts[0])); // → "50082790" or null
+// Federation-agnostic shape — memberId surfaced as a top-level field,
+// camelCase everywhere, lowercase locale keys (en/nl/fr).
+console.log(contacts[0].memberId); // → "50082790" or null
 ```
 
 The client never writes to a database, never reads `process.env` itself, and never logs your password or token.

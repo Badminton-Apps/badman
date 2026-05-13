@@ -13,11 +13,11 @@ import { TwizzitClient, getMemberId } from "@badman/integrations-twizzit-client"
 
 const client = new TwizzitClient({
   credentials: {
-    username: process.env.TWIZZIT_USERNAME!,
-    password: process.env.TWIZZIT_PASSWORD!,
+    username: process.env.TWIZZIT_API_USER!,
+    password: process.env.TWIZZIT_API_PASS!,
   },
   // Optional. Default is https://app.twizzit.com/v2/api.
-  baseUrl: process.env.TWIZZIT_BASE_URL,
+  baseUrl: process.env.TWIZZIT_API,
 });
 
 await client.authenticate();
