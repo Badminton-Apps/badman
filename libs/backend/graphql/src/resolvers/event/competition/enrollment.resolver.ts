@@ -51,6 +51,7 @@ export class EnrollmentResolver {
         subEventId,
         transaction,
         user,
+        basePlayers: [],
       });
       await transaction.commit();
       return result;
