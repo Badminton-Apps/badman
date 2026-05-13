@@ -387,8 +387,10 @@ export class IndexCalculationService {
     genderMap: Map<string, "M" | "F">,
     notFoundIds: Set<string>,
     amountOfLevels: number
-  ): IndexCalculationResult {
-    const missingPlayerIds = input.players.filter((p) => notFoundIds.has(p.id)).map((p) => p.id);
+  ): IndexCalculationResult { 
+    const missingPlayerIds = input.players
+      .filter((p) => notFoundIds.has(p.id))
+      .map((p) => p.id);
 
     if (missingPlayerIds.length > 0) {
       return failure(
