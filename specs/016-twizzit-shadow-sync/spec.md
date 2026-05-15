@@ -28,6 +28,16 @@ This specification covers **initial ingestion only**: shadow tables populated fr
 
 **Lifecycle note**: This worker-based bulk ingest is intentionally **temporary**. It exists to backfill shadow tables while Twizzit does not expose reliable change metadata. If Twizzit adds `lastModifiedDate` (or equivalent), this one-off/few-run worker pattern may be retired in favour of a different sync design.
 
+## Clarifications
+
+### Session 2026-05-15
+
+- Q: Which Twizzit environment should the first shadow backfill target? → A: **Staging first, then production** — validate on a dedicated staging API key/tenant; run production backfill as a separate explicit run once staging counts and rate-limit behaviour are acceptable.
+- Q: Where should staging vs production shadow data live in Postgres? → A: **Per Badman environment** — staging Twizzit credentials on staging Postgres; production credentials on production Postgres. No `source_env` column; isolation via Render env + database pairing.
+- Q: When a single record fails validation, what should the sync run do? → A: **Skip and continue** — log per-record errors; complete the run; list skipped source IDs in sync run metadata.
+- Q: On re-run in the same environment, upsert vs full reload? → A: **Resume-first** — if resuming from the last run’s stored offset/checkpoint, continue paging and **upsert**. Do **not** start a full re-fetch from offset 0 unless the last **completed** run finished more than **7 days** ago; otherwise continue from the last run’s checkpoint (avoid repeating a multi-hour full pull).
+- Q: When a full re-fetch is allowed (>7 days / first run), clear shadow tables first? → A: **Truncate all `twizzit` shadow tables** at the start of a full re-fetch, then load from offset 0 (faithful snapshot of current Twizzit).
+
 ## References & dependencies
 
 - **Domain & API documentation**: [`docs/twizzit/`](../../docs/twizzit/) — requirements, endpoint shapes, exploration notes, swagger captures, gaps, and implementation roadmap. Authoritative API surface for Badminton Belgium is also in the live Swagger linked from [`docs/twizzit/twizzit-api-reference-index.md`](../../docs/twizzit/twizzit-api-reference-index.md).
@@ -77,19 +87,22 @@ As a platform operator, I can run one or a few full-load sync jobs on Render usi
 
 1. **Given** the sync worker is deployed separately from the API on Render, **When** an operator starts an initial full-load job, **Then** ingestion runs in the worker without impacting normal API request handling.
 2. **Given** the sync process encounters an API rate-limit response, **When** the sync is running, **Then** it pauses and retries according to configured throttling rules instead of failing permanently.
-3. **Given** a sync run is interrupted mid-job, **When** the worker restarts, **Then** it continues from the most recent saved checkpoint and does not reprocess already completed chunks unnecessarily.
-4. **Given** initial data has been fully loaded, **When** no further backfill is needed, **Then** the worker does not need to run on a recurring schedule (it may remain available for a manual re-run only).
+3. **Given** a sync run is interrupted mid-job, **When** the worker restarts, **Then** it continues from the most recent saved checkpoint and upserts from that offset forward without restarting from page 0.
+4. **Given** a completed sync run finished less than 7 days ago, **When** an operator triggers another run without an explicit full-restart override, **Then** the system resumes from the last checkpoint rather than re-fetching the entire federation from offset 0.
+5. **Given** initial data has been fully loaded, **When** no further backfill is needed, **Then** the worker does not need to run on a recurring schedule (it may remain available for a manual re-run only).
 
 ---
 
 ### Edge Cases
 
 - What happens when Twizzit returns partial data for a page or entity due to transient API errors?
-- How does the system handle source records that disappear from Twizzit between sync runs?
+- How does the system handle source records that disappear from Twizzit between sync runs? — On the next **full re-fetch** (>7 days), truncate-then-load removes them; **resume** runs do not remove stale rows until a full re-fetch.
 - How does the system handle duplicate source identifiers or conflicting payload shapes across sync runs?
 - What happens when multiple contacts share the same first-name + last-name + date-of-birth triple (Twizzit's uniqueness rule violated in source data)?
-- What happens when `date-of-birth` is null on a contact (observed in live fixtures) — is the record still stored completely for manual review?
+- What happens when `date-of-birth` is null on a contact (observed in live fixtures) — **store the full record** for manual review; null DOB is valid shadow data.
+- What happens when a single record fails zod validation — **skip, log, continue**; see FR-014.
 - What happens when a full refresh cannot complete in one window because rate limits are stricter than expected?
+- What happens when an operator requests a full restart within 7 days of the last completed run — **resume from checkpoint** (FR-016), not a full re-pull.
 - What happens when Twizzit later exposes `lastModifiedDate` — is the bulk worker still needed, or can it be decommissioned?
 
 ## Requirements *(mandatory)*
@@ -108,6 +121,12 @@ As a platform operator, I can run one or a few full-load sync jobs on Render usi
 - **FR-009**: The system MUST persist sync progress checkpoints so interrupted sync runs can resume without restarting the entire dataset.
 - **FR-010**: The system MUST provide operational visibility for each sync run, including status, duration, volume processed, and failure reasons.
 - **FR-011**: Operators MUST be able to trigger another full or partial backfill run manually when data completeness is in doubt (without requiring a permanent cron).
+- **FR-012**: The **first** shadow backfill MUST run against the **staging** Twizzit tenant (credentials); a **production** backfill MUST only run after staging validation, as a separate operator-initiated run with production credentials.
+- **FR-013**: Shadow data MUST reside in the **same PostgreSQL database as the Badman environment being backfilled** (staging Twizzit pull → staging Badman DB; production Twizzit pull → production Badman DB). The system MUST NOT mix staging and production Twizzit data in one database.
+- **FR-014**: When an individual record fails validation or cannot be persisted, the sync MUST **skip that record**, log sufficient context (entity type, source id, error), and **continue** the run. Skipped records MUST be enumerable from sync run metadata. A single bad record MUST NOT abort the entire backfill.
+- **FR-015**: Re-runs in the same database MUST default to **resuming** from the latest checkpoint (stored offset per entity) and **upsert** rows — not restart pagination from offset 0.
+- **FR-016**: A **full re-fetch** from offset 0 (all entities) MUST only be allowed when the last **completed** sync run ended more than **7 days** ago, or when no prior completed run exists. If the operator requests a full restart within 7 days of the last completed run, the system MUST refuse or automatically resume from the last checkpoint instead (operator-visible message).
+- **FR-017**: When a full re-fetch is started (per FR-016), the system MUST **truncate all `twizzit` shadow entity tables** before loading from offset 0, so the result is a complete snapshot of current Twizzit data (no stale rows from a prior backfill). Resume-from-checkpoint runs MUST NOT truncate.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -122,13 +141,15 @@ As a platform operator, I can run one or a few full-load sync jobs on Render usi
 
 ### Measurable Outcomes
 
-- **SC-001**: An initial full-load run captures at least 99% of retrievable records in the configured Twizzit scope, with any skipped records explicitly listed.
+- **SC-001**: An initial full-load run captures at least 99% of retrievable records in the configured Twizzit scope, with any skipped records (validation failures) explicitly listed in sync run metadata.
 - **SC-002**: Sync workload runs only on the dedicated worker service; the main API service shows no material increase in latency or error rate during backfill.
 - **SC-003**: After an unplanned interruption, sync resumes from a saved checkpoint within 15 minutes and avoids reprocessing more than 5% of previously completed units.
 - **SC-004**: Operators can confirm backfill completion from sync run status and record counts without running any comparison or reconciliation step.
 
 ## Assumptions
 
+- **Staging vs production Twizzit**: Twizzit does **not** expose a separate sandbox hostname ([`docs/twizzit/gaps-and-open-questions.md`](../../docs/twizzit/gaps-and-open-questions.md) Q20). Both environments use the same API base URL (`https://app.twizzit.com/v2/api`, overridable via `TWIZZIT_API`). **Staging is a separate API key / credential pair** provisioned by Badminton Vlaanderen in Twizzit (`Beheer → Instellingen → API`) and stored in 1Password — not a different server. The worker selects the tenant solely via `TWIZZIT_API_USER` / `TWIZZIT_API_PASS` (and optionally `TWIZZIT_ORGANIZATION_ID` once resolved). **Action before first run:** confirm with BV which 1Password entry is the staging key vs production key.
+- **Database pairing**: The Render **twizzit-shadow** worker on the staging stack uses staging `DB_*` + staging Twizzit credentials; the production stack uses production `DB_*` + production Twizzit credentials. No cross-environment shadow writes.
 - The application is hosted on **Render**; the sync worker is provisioned as a **separate Render service** from the API.
 - All Twizzit HTTP access goes through **`libs/integrations/twizzit-client`** (spec `015-twizzit-api-client`); the worker does not implement its own client.
 - Internal design details (schema layout, pagination order, Render service definition) are left to `/speckit-plan`, informed by [`docs/twizzit/`](../../docs/twizzit/).
