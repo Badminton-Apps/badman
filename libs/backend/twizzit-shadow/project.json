@@ -1,0 +1,57 @@
+{
+  "name": "backend-twizzit-shadow",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/twizzit-shadow/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "{workspaceRoot}/dist/libs/backend/twizzit-shadow",
+        "tsConfig": "libs/backend/twizzit-shadow/tsconfig.lib.json",
+        "packageJson": "libs/backend/twizzit-shadow/package.json",
+        "main": "libs/backend/twizzit-shadow/src/index.ts",
+        "assets": ["libs/backend/twizzit-shadow/*.md"],
+        "transformers": [
+          {
+            "name": "typescript-transform-paths/nx-transformer"
+          }
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/libs/backend/twizzit-shadow",
+        "{workspaceRoot}\\coverage\\libs\\backend\\twizzit-shadow"
+      ],
+      "options": {
+        "jestConfig": "libs/backend/twizzit-shadow/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "eslintConfig": "libs/backend/twizzit-shadow/eslint.config.js"
+      }
+    }
+  }
+}

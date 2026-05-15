@@ -207,4 +207,32 @@ export class TwizzitClient implements FederationGateway {
   fetchExtraFields(): Promise<FederationExtraField[]> {
     return this.getExtraFields();
   }
+
+  /**
+   * Fetches exactly one page of contacts starting at `offset`.
+   * Used by shadow-sync checkpointed pagination (T030).
+   */
+  async getContactsPage(opts: { offset: number; pageSize: number }): Promise<FederationContact[]> {
+    await this.ensureAuth();
+    await this.ensureOrganizationId();
+    return getContacts(this.http, {
+      pageSize: opts.pageSize,
+      maxPages: 1,
+      startOffset: opts.offset,
+    });
+  }
+
+  /**
+   * Fetches exactly one page of memberships starting at `offset`.
+   * Used by shadow-sync checkpointed pagination (T030).
+   */
+  async getMembershipsPage(opts: { offset: number; pageSize: number }): Promise<FederationMembership[]> {
+    await this.ensureAuth();
+    await this.ensureOrganizationId();
+    return getMemberships(this.http, {
+      pageSize: opts.pageSize,
+      maxPages: 1,
+      startOffset: opts.offset,
+    });
+  }
 }
