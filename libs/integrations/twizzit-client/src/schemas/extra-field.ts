@@ -27,7 +27,7 @@ export const ExtraFieldSchema = RawExtraFieldSchema.transform(
     type: raw.type,
     location: raw.location === "" ? null : raw.location,
     options: raw.options,
-    attributes: raw.attributes,
+    attributes: raw.attributes.map((a) => ({ id: a.id, name: a.name, type: a.type })),
   })
 );
 
