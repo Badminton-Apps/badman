@@ -1,0 +1,380 @@
+// Synthetic — refresh from staging when credentials available
+[
+  {
+    "id": 6348001,
+    "name": "Test One",
+    "first-name": "Test",
+    "last-name": "One",
+    "date-of-birth": "1990-01-01",
+    "gender": "M",
+    "nationality": "BE",
+    "language": "nl",
+    "account-number": null,
+    "registry-number": null,
+    "number": null,
+    "email-1": {
+      "target": "Work",
+      "email": "test1@example.invalid"
+    },
+    "email-2": {
+      "target": null,
+      "email": ""
+    },
+    "email-3": {
+      "target": null,
+      "email": ""
+    },
+    "mobile-1": {
+      "target": "Personal",
+      "cc": "32",
+      "number": "498000001"
+    },
+    "mobile-2": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-3": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "address": {
+      "street": "Teststraat",
+      "number": "1",
+      "box": "",
+      "postalCode": "1000",
+      "city": "Testcity",
+      "country": {
+        "EN": "Belgium",
+        "NL": "Belgium",
+        "FR": "Belgium"
+      }
+    },
+    "has-profile-image": false,
+    "extra-field-values": [
+      {
+        "value": {
+          "value": "50000001",
+          "attributes": []
+        },
+        "extraField": {
+          "id": 41763,
+          "name": {
+            "EN": "Member ID",
+            "NL": "Member ID",
+            "FR": "Member ID"
+          },
+          "type": "Text",
+          "location": "Contact",
+          "extraFieldAttributes": []
+        }
+      }
+    ],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
+  },
+  {
+    "id": 6348002,
+    "name": "Test Two",
+    "first-name": "Test",
+    "last-name": "Two",
+    "date-of-birth": "1995-06-15",
+    "gender": "F",
+    "nationality": "BE",
+    "language": "fr",
+    "account-number": null,
+    "registry-number": null,
+    "number": null,
+    "email-1": {
+      "target": null,
+      "email": "test2@example.invalid"
+    },
+    "email-2": {
+      "target": null,
+      "email": ""
+    },
+    "email-3": {
+      "target": null,
+      "email": ""
+    },
+    "mobile-1": {
+      "target": null,
+      "cc": "32",
+      "number": "498000002"
+    },
+    "mobile-2": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-3": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "address": {
+      "street": "Testlaan",
+      "number": "2",
+      "box": "",
+      "postalCode": "2000",
+      "city": "Testburg",
+      "country": {
+        "EN": "Belgium",
+        "NL": "Belgium",
+        "FR": "Belgium"
+      }
+    },
+    "has-profile-image": false,
+    "extra-field-values": [],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
+  },
+  {
+    "id": 6348003,
+    "name": "Test Three",
+    "first-name": "Test",
+    "last-name": "Three",
+    "date-of-birth": null,
+    "gender": "X",
+    "nationality": null,
+    "language": null,
+    "account-number": null,
+    "registry-number": null,
+    "number": null,
+    "email-1": {
+      "target": null,
+      "email": ""
+    },
+    "email-2": {
+      "target": null,
+      "email": ""
+    },
+    "email-3": {
+      "target": null,
+      "email": ""
+    },
+    "mobile-1": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-2": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-3": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "address": {
+      "street": "",
+      "number": "",
+      "box": "",
+      "postalCode": "",
+      "city": "",
+      "country": {
+        "EN": "Belgium",
+        "NL": "Belgium",
+        "FR": "Belgium"
+      }
+    },
+    "has-profile-image": false,
+    "extra-field-values": [],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
+  },
+  {
+    "id": 6348004,
+    "name": "Test Four",
+    "first-name": "Test",
+    "last-name": "Four",
+    "date-of-birth": "2002-11-20",
+    "gender": "M",
+    "nationality": "NL",
+    "language": "nl",
+    "account-number": null,
+    "registry-number": null,
+    "number": null,
+    "email-1": {
+      "target": null,
+      "email": "test4@example.invalid"
+    },
+    "email-2": {
+      "target": null,
+      "email": ""
+    },
+    "email-3": {
+      "target": null,
+      "email": ""
+    },
+    "mobile-1": {
+      "target": null,
+      "cc": "32",
+      "number": "498000004"
+    },
+    "mobile-2": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-3": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "address": {
+      "street": "Testweg",
+      "number": "4",
+      "box": "",
+      "postalCode": "3000",
+      "city": "Testdorp",
+      "country": {
+        "EN": "Netherlands",
+        "NL": "Nederland",
+        "FR": "Pays-Bas"
+      }
+    },
+    "has-profile-image": true,
+    "extra-field-values": [
+      {
+        "value": {
+          "value": "50000004",
+          "attributes": []
+        },
+        "extraField": {
+          "id": 41763,
+          "name": {
+            "EN": "Member ID",
+            "NL": "Member ID",
+            "FR": "Member ID"
+          },
+          "type": "Text",
+          "location": "Contact",
+          "extraFieldAttributes": []
+        }
+      }
+    ],
+    "phone": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    }
+  },
+  {
+    "id": 6348005,
+    "name": "Test Five",
+    "first-name": "Test",
+    "last-name": "Five",
+    "date-of-birth": "1985-03-08",
+    "gender": "F",
+    "nationality": "BE",
+    "language": "nl",
+    "account-number": null,
+    "registry-number": null,
+    "number": null,
+    "email-1": {
+      "target": "Work",
+      "email": "test5@example.invalid"
+    },
+    "email-2": {
+      "target": null,
+      "email": ""
+    },
+    "email-3": {
+      "target": null,
+      "email": ""
+    },
+    "mobile-1": {
+      "target": "Personal",
+      "cc": "32",
+      "number": "498000005"
+    },
+    "mobile-2": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "mobile-3": {
+      "target": null,
+      "cc": null,
+      "number": ""
+    },
+    "address": {
+      "street": "Testplein",
+      "number": "5",
+      "box": "A",
+      "postalCode": "4000",
+      "city": "Testville",
+      "country": {
+        "EN": "Belgium",
+        "NL": "Belgium",
+        "FR": "Belgium"
+      }
+    },
+    "has-profile-image": false,
+    "extra-field-values": [
+      {
+        "value": {
+          "value": "Wedstrijdleider/Responsable interclubs",
+          "attributes": [
+            {
+              "attribute-id": 1907,
+              "value": "2021-08-04"
+            }
+          ]
+        },
+        "extraField": {
+          "id": 41297,
+          "name": {
+            "EN": "Responsable",
+            "NL": "Wedstrijdleider",
+            "FR": "Responsable interclubs"
+          },
+          "type": "Multiple select",
+          "location": "Contact",
+          "extraFieldAttributes": [
+            {
+              "id": 1907,
+              "name": "Behaald op/Obtenu le",
+              "type": "Date"
+            }
+          ]
+        }
+      },
+      {
+        "value": {
+          "value": "AABBCCDD-1111-2222-3333-EEFF00112233",
+          "attributes": []
+        },
+        "extraField": {
+          "id": 41654,
+          "name": {
+            "EN": "VOTAS-ID",
+            "NL": "VOTAS-ID",
+            "FR": "VOTAS-ID"
+          },
+          "type": "Text",
+          "location": "Contact",
+          "extraFieldAttributes": []
+        }
+      }
+    ],
+    "phone": {
+      "target": "Home",
+      "cc": null,
+      "number": ""
+    }
+  }
+]

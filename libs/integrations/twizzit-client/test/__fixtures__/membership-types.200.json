@@ -1,0 +1,94 @@
+// Synthetic fixture — source-of-truth from api-exploration.md; safe to use as-is (no PII)
+[
+  {
+    "id": 51774,
+    "name": {
+      "EN": "Competitive member",
+      "NL": "Competitiespeler",
+      "FR": "Compétiteur"
+    },
+    "type": "Continuously",
+    "duration": null,
+    "duration-unit": null,
+    "end-date": null,
+    "transfer-date": null
+  },
+  {
+    "id": 51779,
+    "name": {
+      "EN": "Recreative member",
+      "NL": "Recreant",
+      "FR": "Loisir"
+    },
+    "type": "Continuously",
+    "duration": null,
+    "duration-unit": null,
+    "end-date": null,
+    "transfer-date": null
+  },
+  {
+    "id": 57915,
+    "name": {
+      "EN": "Loan player",
+      "NL": "Uitgeleende speler",
+      "FR": "Joueur prêté"
+    },
+    "type": "Seasonal",
+    "duration": null,
+    "duration-unit": null,
+    "end-date": null,
+    "transfer-date": null
+  },
+  {
+    "id": 57920,
+    "name": {
+      "EN": "Non-player",
+      "NL": "Niet-speler",
+      "FR": "Non-joueur"
+    },
+    "type": "Continuously",
+    "duration": null,
+    "duration-unit": null,
+    "end-date": null,
+    "transfer-date": null
+  },
+  {
+    "id": 57922,
+    "name": {
+      "EN": "Trial membership",
+      "NL": "Proeflidmaatschap",
+      "FR": "Affiliation à l'essai"
+    },
+    "type": "Fixed length",
+    "duration": 21,
+    "duration-unit": "Days",
+    "end-date": null,
+    "transfer-date": null
+  },
+  {
+    "id": 58449,
+    "name": {
+      "EN": "Youth",
+      "NL": "Jeugd",
+      "FR": "Jeune"
+    },
+    "type": "Continuously",
+    "duration": null,
+    "duration-unit": null,
+    "end-date": null,
+    "transfer-date": null
+  },
+  {
+    "id": 72908,
+    "name": {
+      "EN": "Unbound summer player",
+      "NL": "Niet gebonden zomerspeler",
+      "FR": "Joueur d'été non lié"
+    },
+    "type": "Fixed end date",
+    "duration": null,
+    "duration-unit": null,
+    "end-date": "09-07",
+    "transfer-date": "04-01"
+  }
+]

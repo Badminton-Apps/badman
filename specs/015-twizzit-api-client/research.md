@@ -1,0 +1,296 @@
+# Phase 0 Research: Twizzit API Client
+
+**Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md) | **Date**: 2026-05-12
+
+This document resolves the open decisions enumerated in the spec's Technical Context and the gap-doc questions tied to SC-007. Each item follows: **Decision** → **Rationale** → **Alternatives considered**.
+
+---
+
+## R1. HTTP client
+
+**Decision (2026-05-13, supersedes earlier)**: Use **`axios`**, exposed inside the lib via a `HttpClient` type alias for `AxiosInstance` (kept off the public name surface). Construct a per-`TwizzitClient` HTTP client whose underlying `AxiosInstance`:
+
+- `baseURL` is the configured Twizzit URL.
+- `paramsSerializer` produces the kebab-case bracket syntax Twizzit expects (`organization-ids[]=34245`).
+- A **request interceptor** injects `Authorization: Bearer <token>` and the `organization-ids[]` query parameter onto every call after `authenticate()` + `getOrganizations()` have run.
+- A **response interceptor** classifies failures into `TwizzitError` variants (`axios.isAxiosError` + `status` + body excerpt) and handles the 401-then-reauth-then-retry-once pattern (FR-013) in one place — no per-endpoint duplication.
+- 429 back-off via `axios-retry` (or a manual interceptor) honouring `Retry-After`, bounded by `maxRateLimitRetries` and `maxRetryBudgetMs` (FR-014).
+
+The lib does NOT re-export axios types (`AxiosError`, `AxiosInstance`) — all consumer-visible failures are `TwizzitError` subclasses (FR-015), and the HTTP client is referred to by the alias `HttpClient`. The axios instance is constructed inside `src/http.ts` (factory: `createHttpClient`) and lives on the `TwizzitClient` instance.
+
+**Rationale**: Earlier the choice was Node global `fetch` to minimise dependencies. In implementation, the missing pieces (interceptor pattern for auth refresh + retry, robust 429 retry with `Retry-After`, kebab-bracket `paramsSerializer`) ended up being re-implemented on top of `fetch` by the MVP and recovery agents. The user directed (2026-05-13) to drop the in-house wrappers and lean on axios's built-in utilities. The dependency cost (~50 KB minified) is negligible for a worker-only lib; the maintainability gain (one interceptor instead of N per-endpoint retry wrappers) is significant.
+
+**Alternatives considered (history kept for context)**:
+- `fetch` — was the original choice; reverted because the auxiliary code grew larger than the dependency it saved.
+- `undici.request` — same downside as fetch for retry/interceptor concerns; lower-level API.
+- `got` — ESM-only, extra dep, fewer middleware options.
+
+**Alternatives also rejected today**:
+- Hand-rolling a `withRetry()` wrapper around `fetch` — what we already had; the rework is to delete it.
+- Using axios but NOT interceptors (just bare requests) — defeats the point of the swap.
+
+---
+
+## R2. Base URL
+
+**Decision**: `https://app.twizzit.com/v2/api` is the default base URL, derived from the Swagger documentation URL `https://app.twizzit.com/v2/api/documentation/...` in `docs/twizzit/twizzit-api-reference-index.md`. The base URL MUST be overridable via the `TWIZZIT_API` environment variable (read by the consumer; see R6) and as a programmatic config field, so a future staging-only host or local mock server can be slotted in without code changes.
+
+**Rationale**: One production host today; same host serves the staging API key (separate tenant), per the spec's Assumption. The override hook is FR-019-adjacent — it lets the live-test harness target a staging URL if Twizzit ever surfaces one.
+
+**Alternatives considered**:
+- Hard-code only — rejected, blocks any future host change without a redeploy.
+- Auto-detect from credentials — over-engineering with no payoff today.
+
+---
+
+## R3. Rate-limit policy & retry tuning
+
+**Decision** (provisional, pending Twizzit confirmation per gap Q3):
+- On `429 Too Many Requests`: honor `Retry-After` header (seconds or HTTP-date) when present; otherwise apply exponential back-off starting at 1 s, doubling, capped at 30 s.
+- Maximum retry attempts on 429: **3**.
+- Max wall-clock retry budget per call: **2 minutes**.
+- These constants live in `TwizzitClient` config with defaults; consumers can tighten (not loosen) them.
+- The live full-pull (≈160 k contacts at the rumored page-size cap of 100 → 1600 pages) is **not** a goal of this lib. Phase 3 sync work will set its own pacing.
+
+**Rationale**: Twizzit explicitly flagged tight limits ("hit the ceiling fast"). A 3-retry / 2-minute budget keeps a single user call bounded and aborts loudly if the federation tenant is throttled, instead of silently slowing every request. The numbers are conservative and easily relaxed once Q3 returns hard numbers.
+
+**Action item** (carry-over to Phase 0 prerequisite tasks): Email Philippe / PandaPanda asking for the published rate-limit numbers (gap Q3). Update this constant set in a follow-up PR if the answer differs materially.
+
+**Alternatives considered**:
+- Unlimited retries — rejected; turns a transient incident into a cron-blocking infinite loop.
+- Single retry — rejected; too brittle for ordinary network blips that aren't 429.
+
+---
+
+## R4. Pagination page size & `maxPages` semantics
+
+**Decision (2026-05-13 revision)**: Two-layer bound.
+
+- Default `pageSize` = **100**. Override per call.
+- User-supplied `maxPages` is a **truncation** bound, not an abort. When set and reached, the helper logs a warning and returns the partial result. When **unset** (the production-sync default), the helper fetches every page until the federation returns a short page.
+- Internal `RUNAWAY_PAGE_LIMIT` = **100 000** pages (not user-configurable). Only trips on pathological federation behaviour (e.g. server bug streaming full pages forever). Hitting it throws `TwizzitClientError` with `subkind: "pagination-runaway"`.
+- Twizzit's pagination parameters are `limit` and `offset` (confirmed by the user during clarification 2026-05-12).
+
+**Rationale**: The original design (`maxPages: 2000` default, throw on overflow) contradicted the actual sync requirement. The Badminton Belgium tenant has ~160 000 contacts; at `pageSize: 100` that's ≈ 1600 pages — comfortably under 2000, but at smaller page sizes (or during growth) you'd hit the ceiling and an entire sync run would abort. More importantly the *semantic* was wrong: callers asking for `maxPages: 1` ("give me a sample") got an exception instead of a one-page array.
+
+Truncation matches what "bound a pull" actually means (FR-021 language). The 100 000-page runaway cap is the actual "no infinite loops" safety the spec asked for.
+
+**Alternatives considered**:
+- Keep the throw, change live test approach — rejected; the throw semantics don't fit production sync either way.
+- `behaviour: "throw" | "truncate"` option — rejected as needless surface for backwards compat the lib doesn't have yet.
+- `maxPages: Infinity` default — equivalent to unset and exactly what we do.
+
+---
+
+## R5. Token lifetime detection
+
+**Decision**: Use the **response body fields** `created-on` and `valid-till` (both unix-seconds, kebab-case) returned by `POST /authenticate`. Compute lifetime = `valid-till - created-on`; schedule proactive refresh at `created-on + 0.8 * lifetime`. Treat the JWT itself as opaque — do not parse, do not introspect, do not validate the signature.
+
+**Rationale**: Confirmed by live API response on 2026-05-12: Twizzit's authenticate response carries `created-on` and `valid-till` directly in the body. The observed `valid-till - created-on` is 1800 s, while the JWT's own `exp` claim shows a 24 h lifetime — the body field is the **shorter** and therefore binding value (the server may invalidate a token before its cryptographic expiry). Trusting the body field also keeps the lib JWT-library-free and resilient to Twizzit changing token format. Reactive `401`-retry (FR-013) remains the safety net for any edge case where the cached `valid-till` and the server's real session state diverge.
+
+**Implementation note**: the zod schema for the authenticate response (`data-model.md`) makes both fields required. If a future Twizzit response omits them, the strict schema fails loudly and we adjust deliberately.
+
+**Alternatives considered**:
+- Parse JWT `exp` claim — rejected; the live response proves the JWT exp is longer than the actual session validity. Using it would cause silent 401s.
+- Always reactive (refresh only on 401) — rejected; observability suffers, and a known-fresh proactive refresh is one fewer source of mid-job latency.
+- Use a JWT library — irrelevant given we trust body fields instead.
+
+---
+
+## R6. Environment variables
+
+**Decision (2026-05-13 revision)**: Reuse the **existing project-wide TWIZZIT env-var names** (per [`.env.example`](../../.env.example)) so consumers, legacy sync code, and live tests all read from a single set of variables:
+
+| Name | Required | Purpose |
+|------|----------|---------|
+| `TWIZZIT_API_USER` | Yes | Username passed to `POST /authenticate`. |
+| `TWIZZIT_API_PASS` | Yes | Password passed to `POST /authenticate`. Surface only via env, never via CLI flags or config files. |
+| `TWIZZIT_API` | No | Override base URL (default `https://app.twizzit.com/v2/api`). |
+| `RUN_TWIZZIT_LIVE_TESTS` | No | Set to `1` to enable the live-mode test suite. Default unset (skipped). |
+
+The lib itself does NOT read `process.env` — consumers (worker apps, tests) read env and pass `credentials` into `new TwizzitClient({ ... })`. This keeps the lib testable and 12-factor-friendly. *(Earlier draft used `TWIZZIT_USERNAME`/`TWIZZIT_PASSWORD`/`TWIZZIT_BASE_URL` — replaced to match the names already in `.env.example`.)*
+
+**Rationale**: Two-secret model matches Twizzit's `POST /authenticate` body contract. Decoupling from `process.env` keeps the lib hermetic; tests pass credentials directly.
+
+**Alternatives considered**:
+- API-key-only (no auth call) — Twizzit doesn't expose an API-key auth flow; this is not optional.
+- Reading `process.env` in the lib — couples the lib to a global, breaks parallel tests with different credentials, complicates Next-style edge runtimes. Rejected.
+
+---
+
+## R7. Live-test gating
+
+**Decision**: Live tests are gated by `RUN_TWIZZIT_LIVE_TESTS=1`. Test files use the suffix `*.live.spec.ts` and call `describe.skip` when the env var is unset. CI MUST NOT set this variable in default workflows; a manual `nx test integrations-twizzit-client -- --testPathPattern .live.spec.ts` is the documented local recipe.
+
+**Rationale**: Matches FR-019 and the project's existing `RUN_INTEGRATION_TESTS=1` convention for postgres-only tests.
+
+---
+
+## R8. Fixture anonymisation policy
+
+**Decision**:
+- Replace personal data in checked-in fixtures: `name`, all `email-*`, all `mobile-*`, `phone`, `address`, `account-number`, `registry-number`, `number` (federation-side number), `nationality` retained, `language` retained.
+- `id`, `contact-id`, `club-id`, `membership-type-id`, `extra-field.id`, and the `"Member ID"` extra-field value are **kept** — they're functionally important for the parser and the values are non-sensitive numerics. Where we want to obscure stable ids in tests, we substitute a deterministic synthetic value documented inline.
+- `date-of-birth` and `gender` retained — they're not directly identifying once name/contact data is replaced.
+- README of the lib documents this policy explicitly.
+
+**Rationale**: Fixtures need to be realistic enough to validate the parser but cannot ship real federation member PII. The split between "structural / identifier" (kept) and "personal" (synthetic) is the cheapest correct cut.
+
+**Alternatives considered**:
+- Anonymise everything including ids — rejected; parser tests would lose their value.
+- Don't anonymise (use real staging data) — rejected; staging is a slice of production with real names.
+
+---
+
+## R9. Federation-agnostic gateway (FR-008)
+
+**Decision (revised 2026-05-13)**: Define a single read gateway in `src/gateway.ts`:
+
+```ts
+interface FederationGateway {
+  fetchOrganizations(): Promise<Organization[]>;
+  fetchContacts(opts?: ContactsQuery): Promise<Contact[]>;
+  fetchMemberships(opts?: MembershipsQuery): Promise<Membership[]>;
+  fetchMembershipTypes(): Promise<MembershipType[]>;
+  fetchExtraFields(): Promise<ExtraField[]>;
+}
+```
+
+The entity types (`Organization`, `Contact`, …) are the same concrete Twizzit shapes exported from `src/schemas/*`. There is no `FederationOrganization` parallel type — when Twizzit is the only federation, `Organization = Twizzit's org shape` is honest and avoids drift.
+
+`TwizzitClient` implements `FederationGateway`. The interface lives **inside this lib** for now; when a second federation appears, the interface moves to a shared lib and the entity types get generalised at that point — not preemptively.
+
+Earlier name: `FederationContactSource`. Renamed to `FederationGateway` because (a) "ContactSource" implied only contacts, but the interface also yields memberships, types, and fields; (b) "Gateway" is the widely-understood DDD / Clean-Architecture term for "object that encapsulates access to an external system" and reads correctly when more federations show up. Earlier filename: `seam.ts` (internal architecture jargon). Now: `gateway.ts`.
+
+**Rationale**: Honors N3.1 without paying the abstraction tax. Concrete return types (not `unknown[]`) make the interface immediately useful to consumers and let TypeScript narrow at call sites. When `apps/worker/sync` consumes the lib, it codes against the interface.
+
+**Alternatives considered**:
+- No gateway — rejected; violates N3.1.
+- `FederationProvider` — fine but slightly overloaded with NestJS's provider concept.
+- `FederationDataSource` — fine but TypeORM/Apollo-flavored.
+- Full hexagonal port/adapter split — rejected as speculative.
+
+### Package layout (2026-05-13 follow-up)
+
+The current layout keeps `gateway.ts` + `federation.ts` (pure type definitions, zero behaviour, zero dependencies on anything else in the lib) co-located with the Twizzit implementation inside `libs/integrations/twizzit-client`. This was a deliberate choice over extracting a separate `libs/integrations/federation-core` shared library now.
+
+**Why not extract `federation-core` upfront**:
+- Both files are zero-implementation interface declarations. Moving them later is a `git mv` + an Nx generator + import-path updates — well under an hour.
+- Per gap-doc G5, LFBB may share the Twizzit tenant with a different membership-type mapping; that's a *config* difference, not a *gateway* difference. The second concrete implementation may never materialise.
+- Premature abstraction is a documented anti-pattern in [CLAUDE.md](../../CLAUDE.md): "three similar lines is better than a premature abstraction."
+
+**Extraction recipe** (when a non-Twizzit federation actually arrives):
+
+1. `npx nx g @nx/js:library federation-core --directory=libs/integrations --bundler=none`.
+2. `git mv libs/integrations/twizzit-client/src/{federation,gateway}.ts libs/integrations/federation-core/src/`.
+3. Update `libs/integrations/federation-core/src/index.ts` to barrel-export everything from those two files.
+4. In `libs/integrations/twizzit-client/src/`: replace `from "./federation"` / `from "./gateway"` imports with `from "@badman/integrations-federation-core"`. Re-export the same names from `index.ts` for backwards compatibility (or break and update consumers — your call at that moment).
+5. The new federation's client (`libs/integrations/lfbb-client` or whatever) depends on `@badman/integrations-federation-core` and implements `FederationGateway`. Zero dependency on twizzit-client.
+
+**Consumer-side discipline (carried forward)**: when `apps/worker/sync` (or any other consumer) is wired up in a future phase, it MUST code against `FederationGateway` — never against `TwizzitClient` directly. That keeps the eventual extraction mechanical. The consumer's DI / construction site is the one place that names the concrete implementation.
+
+**Net**: today's structure satisfies FR-008 fully; the extraction path is documented and cheap; nothing locked in.
+
+---
+
+## R10. Open Twizzit-side questions (SC-007)
+
+These cannot be settled without a live call to Twizzit or a Swagger inspection. The lib design accommodates each:
+
+| Gap-doc Q | Question | Design accommodation |
+|-----------|----------|----------------------|
+| **Q1** | Is `last-modified` filter shipped? | `getContacts`, `getMemberships` accept an optional `lastModified?: Date` argument from day one. Unset = no filter. Adopting it later is purely additive. |
+| **Q2** | Page-size cap & cursor vs offset? | Confirmed offset-based (`limit` + `offset`). Cap unknown; covered by R4 above. If Twizzit returns 422 for too-large pageSize, the surfacing `TwizzitClientError` will tell us — and we'll adjust the default. |
+| **Q5** | Soft-delete representation? | Strict zod (Clarification 2026-05-12 #5). If Twizzit later emits a `deleted`/`archived` field, the next live run throws `TwizzitValidationError` and we ship a deliberate schema bump. If Twizzit signals deletion by omission, the client returns `[]` and downstream layers reconcile. |
+| **Q6** | Dedicated clubs endpoint? | Not part of FR-009. If a `/clubs` endpoint exists in Swagger, it's added later via the published recipe (SC-006). Until then, `club-id` on memberships is the only club reference. |
+| **Q8** | Stable id immutability? | Out of the lib's hands — but assumed-immutable is the only design that works. If Twizzit reassigns ids, the lib still parses correctly; downstream sync logic is what would notice. |
+
+**Action item**: Compile a single email / Slack thread to Philippe / PandaPanda asking Q1, Q3 (rate limits), Q5 (soft-delete), Q6 (clubs endpoint). Answers, when they arrive, are filed under `docs/twizzit/` and trigger schema/config bumps if material.
+
+---
+
+## R11. CI test budget
+
+**Decision**: Offline test suite for the lib targets < 5 s wall-clock (SC-005 target was < 10 s — we leave 50 % headroom). All HTTP calls are stubbed; fixture loading is sync `readFileSync` from `test/__fixtures__/`. Live tests are excluded from CI by default.
+
+**Rationale**: A fast offline suite encourages running it on every save.
+
+---
+
+## Resolved status
+
+All NEEDS-CLARIFICATION items from `plan.md`'s Technical Context are resolved or have an explicit Phase 0 action item. The remaining items (R3 rate limits, R4 page cap, Q1 last-modified) are tracked as Phase 0 prerequisite tasks in `tasks.md` (created by `/speckit-tasks`) and do not block Phase 2 implementation — the design accommodates each unknown.
+
+---
+
+---
+
+## R13. Public surface: generic federation types (2026-05-13)
+
+**Decision**: The lib's public surface exposes ONLY federation-agnostic types — no `TwizzitContact`, `TwizzitMembership`, etc. Define generic interfaces in `src/federation.ts`:
+
+```ts
+interface FederationContact {
+  id, fullName, firstName, lastName, dateOfBirth, gender, nationality, language,
+  accountNumber, registryNumber, federationNumber, memberId, hasProfileImage,
+  address: FederationAddress,
+  emails: FederationEmail[],
+  mobiles: FederationPhone[],
+  home: FederationPhone | null,
+  extraFields: FederationExtraFieldValue[]
+}
+// + FederationOrganization, FederationMembership, FederationMembershipType,
+//   FederationExtraField, FederationExtraFieldValue, FederationLocalisedName,
+//   FederationEmail, FederationPhone, FederationAddress
+```
+
+Each zod schema in `src/schemas/*` takes Twizzit's raw kebab-case wire format as input and `.transform()`s it to the generic shape — the schema's INFERRED OUTPUT type IS the generic type. The raw Twizzit shape is internal to the schema module; it is not exported.
+
+Conventions enforced by the transform layer:
+- camelCase field names (`first-name` → `firstName`, `extra-field-values` → `extraFields`)
+- lowercase locale keys (`EN/NL/FR` → `en/nl/fr`)
+- empty wire strings → `null` for fields where empty is the federation's "absent" convention (`date-of-birth`, `end-date`, `target`, `cc`)
+- email and mobile slots (`email-1/2/3`, `mobile-1/2/3`) consolidated into filtered arrays
+- `memberId` extracted from the contact's extra-field-values where `field.name.en === "Member ID"` and surfaced as a top-level convenience field
+
+**Rationale**: Spec FR-008 always intended a federation-agnostic seam, but the first implementation typed it loosely (`unknown[]`) and the schemas exposed Twizzit's raw shape directly. Under user direction 2026-05-13: a future federation (LFBB, others) must be able to implement `FederationGateway` and return the SAME generic shapes — that's only possible if the consumer-facing types are generic, not Twizzit-specific. Adapter responsibility shifts to the schema: every federation's schemas transform to the shared generic shape.
+
+**Alternatives rejected**:
+- Marker interfaces with concrete subtypes (`TwizzitContact extends FederationContact`) — leaks Twizzit-specific fields into the consumer surface; defeats the abstraction.
+- Generic-parametric `FederationGateway<TContact, TMembership, …>` — TS-heavy, no payoff today; revisit if/when consumers must distinguish federations at the type level.
+- Keep the old setup, just add adapter functions consumers call — pushes the transform burden onto every consumer, multiplies subtle bugs.
+
+**Consequences**:
+- `src/index.ts` exports ONLY `Federation*` types (no `Contact`, `Membership`, etc.).
+- `getMemberId()` helper retired — `memberId` is a top-level field on `FederationContact`.
+- Tests assert generic camelCase shape; fixtures stay as Twizzit wire format (they're the schema INPUT).
+- Spec contracts and data-model documents describe the post-transform generic shape; wire-format details move into [docs/twizzit/api-exploration.md](../../docs/twizzit/api-exploration.md) and the `docs/twizzit/*-swagger.md` files.
+
+---
+
+## R12. Credential redaction pipeline (2026-05-13 — reversed)
+
+**Decision**: **Remove** the previously-shipped redaction pipeline (`src/redact.ts`, the `extraSecrets` param threaded through every endpoint function, the deep-walking secret-scrub utility, the end-to-end "no LEAK_ME in any serialised output" grep-gate test in `redact.spec.ts`).
+
+What survives: **construction-time discipline**. The lib must not string-interpolate the password or bearer token into error messages it constructs (e.g. `\`Auth failed with password=${password}\`` is forbidden — say `"Authentication failed (HTTP 401)"` instead). That guarantee is structural, not testable via an automated grep.
+
+**Rationale (per user direction 2026-05-13)**:
+
+- The redaction pipeline was over-engineering for this lib's risk surface. Twizzit's HTTP responses do not echo the password (we already verified by inspecting captured 401 responses), so a 5xx body excerpt does not realistically contain credentials.
+- The pipeline cost: a `redact()` utility with edge cases (nested objects, circular refs, primitives), an `extraSecrets` ergonomic across every endpoint, a fragile grep-gate test prone to false positives (test fixtures coincidentally containing the leak sentinel), and ongoing maintenance whenever a new error variant or log site appears.
+- The platform that runs the worker (NestJS Fastify + structured logging) has its own log-level redaction. Defence in depth is fine — defence in *triplicate* is not.
+- The consumer (`apps/worker/sync`) controls `process.env` and never logs the password by construction. The lib never receives the password except for one call (`POST /authenticate`), and that call's outbound body is sent over HTTPS, not logged.
+
+**What this changes in code** (executed by a follow-up rework agent — see tasks.md updates):
+
+- `src/redact.ts` and `test/redact.spec.ts` → DELETED.
+- `src/errors.ts` → drop the "Redaction invariant" note; `bodyExcerpt` is just `string` (truncated for log volume, not scrubbed for secrets).
+- `src/http.ts` → drop the `redactSecrets` arg from request helpers.
+- `src/endpoints/*.ts` → drop the `extraSecrets` arg.
+- `src/client.ts` → stop threading `[password]` to endpoint calls.
+- `test/client.auth.spec.ts` → remove the "credential redaction" describe block.
+- `test/client.errors.spec.ts` → remove the redaction-related assertions; keep the discriminated-union narrowing.
+
+**Alternatives rejected today**:
+- Keep redact, just trim its surface — rejected, the whole concept was the problem.
+- Replace redact with a Pino-style serializer registry — same issue at smaller scale, not worth it for a 6-endpoint lib.
