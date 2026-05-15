@@ -154,6 +154,59 @@
         "principle_v_legacy_frontend": "PASS (no diff)"
       },
       "next_step": "open PR targeting develop; run integration tests with docker up (RUN_INTEGRATION_TESTS=1); frontend must update to call recalculateTeamNumbersForGroup instead of parallel updateTeam calls"
+    },
+    "015-twizzit-api-client": {
+      "status": "in_review_qa_approved",
+      "board": "linear",
+      "card_id": "BAD-214",
+      "linear_url": "https://linear.app/dashdot/issue/BAD-214",
+      "linear_status": "Ready for review",
+      "parent_epic": "BAD-5",
+      "project": "Twizzit Integration",
+      "pr_url": "https://github.com/Badminton-Apps/badman/pull/909",
+      "branch": "015-twizzit-api-client",
+      "spec_path": "specs/015-twizzit-api-client",
+      "tasks_total": 53,
+      "phases": "0-7",
+      "mvp_scope": "T005-T026 (Phases 1-3: Nx lib scaffold + foundation + US1 authenticate+organizations)",
+      "tasks_completed": "T005-T051, T053 (32/33 — all in-scope code tasks complete)",
+      "deferred": "T001-T004 (coordination, owner: human), T052 (live quickstart smoke — needs staging creds)",
+      "spec_kit_commits": ["b19f8d3f7"],
+      "implementation_commits": ["d3b316649", "102860383", "d9c0b2f8c", "5ca7f6216", "2501f475c", "2ab1867f6"],
+      "phases_complete": ["Phase 1 Setup", "Phase 2 Foundational", "Phase 3 US1 (MVP)", "Phase 4 US2", "Phase 5 US3", "Phase 6 US4", "Phase 7 Polish"],
+      "tests_passed": 72,
+      "tests_skipped": 1,
+      "tests_total": 73,
+      "offline_suite_seconds": 2.7,
+      "lint_errors": 0,
+      "lint_warnings": 50,
+      "feature_status": "done",
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "constitution_check": {
+        "no_forbidden_imports": "PASS",
+        "no_decorators": "PASS",
+        "no_process_env": "PASS"
+      },
+      "next_step": "human review of MVP; if accepted, dispatch follow-up feature agent for T027-T053 (US2 fixtures+tests, US3 error coverage, US4 CI guard, polish). Out-of-scope endpoint stubs (contacts/memberships/types/fields) already landed but require T027-T030, T041 to claim US2 done.",
+      "deliverables": {
+        "spec": "spec.md",
+        "plan": "plan.md",
+        "research": "research.md",
+        "data_model": "data-model.md",
+        "contracts": "contracts/",
+        "quickstart": "quickstart.md",
+        "tasks": "tasks.md"
+      },
+      "followups": [
+        "T052 live quickstart smoke — run with RUN_TWIZZIT_LIVE_TESTS=1 once staging creds in 1Password",
+        "Schema drift vs Swagger captured in docs/twizzit/{contacts,memberships,membership-types,extra-fields}-swagger.md — schema-refresh agent pending dispatch",
+        "Password not added to extraSecrets on contacts/memberships/types/fields endpoints (only getOrganizations was fixed) — low risk, fold into schema-refresh"
+      ]
     }
   },
   "board": "linear",
