@@ -8,7 +8,7 @@ import {
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
-import { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
+import { CreationOptional, InferAttributes, InferCreationAttributes, NonAttribute } from "sequelize";
 import { SyncCheckpoint } from "./sync-checkpoint.model";
 
 export type SyncRunStatus = "pending" | "running" | "completed" | "failed";
@@ -50,5 +50,5 @@ export class SyncRun extends Model<InferAttributes<SyncRun>, InferCreationAttrib
   declare errorSummary: string | null;
 
   @HasMany(() => SyncCheckpoint, "syncRunId")
-  declare checkpoints: SyncCheckpoint[];
+  declare checkpoints: NonAttribute<SyncCheckpoint[]>;
 }

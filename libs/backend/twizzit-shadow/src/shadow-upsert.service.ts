@@ -5,16 +5,45 @@ import {
   ShadowMembershipType,
   ShadowOrganization,
 } from "@badman/backend-database";
-import {
-  FederationContact,
-  FederationExtraField,
-  FederationMembership,
-  FederationMembershipType,
-  FederationOrganization,
-} from "@badman/integrations-twizzit-client";
 import { Injectable, Logger } from "@nestjs/common";
 import { Transaction } from "sequelize";
 import { RecordSkipTracker } from "./record-skip-tracker";
+
+/**
+ * Minimal Federation* shapes needed by this service.
+ * These intentionally allow extra properties (structural subtyping) so that
+ * the concrete types from `@badman/integrations-twizzit-client` are assignable
+ * without a direct cross-rootDir import.
+ */
+type FederationOrganization = {
+  id: number | string;
+  name: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type FederationExtraField = { id: number | string } & Record<string, any>;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type FederationMembershipType = { id: number | string } & Record<string, any>;
+
+type FederationMembership = {
+  id: number | string;
+  contactId: number | string;
+  membershipTypeId: number | string;
+  clubId: number | string | null;
+  seasonId: number | string | null;
+  startDate: string;
+  endDate: string | null;
+};
+
+type FederationContact = {
+  id: number | string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string | null;
+  gender: string | null;
+  memberId: string | null;
+};
 
 function toNumber(val: number | string | null | undefined): number | null {
   if (val === null || val === undefined) return null;

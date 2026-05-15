@@ -10,7 +10,7 @@ import {
   Table,
   Unique,
 } from "sequelize-typescript";
-import { CreationOptional, InferAttributes, InferCreationAttributes } from "sequelize";
+import { CreationOptional, InferAttributes, InferCreationAttributes, NonAttribute } from "sequelize";
 import { SyncRun } from "./sync-run.model";
 
 export type CheckpointEntityType =
@@ -59,5 +59,5 @@ export class SyncCheckpoint extends Model<
   declare updatedAt: CreationOptional<Date>;
 
   @BelongsTo(() => SyncRun, "syncRunId")
-  declare syncRun: SyncRun;
+  declare syncRun: NonAttribute<SyncRun>;
 }

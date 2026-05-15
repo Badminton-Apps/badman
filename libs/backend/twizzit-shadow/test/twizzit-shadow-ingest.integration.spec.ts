@@ -7,7 +7,9 @@
  *     --testPathPattern integration
  */
 import * as dotenv from "dotenv";
-import { Sequelize, Op } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import * as dbModels from "@badman/backend-database";
+import { Model, ModelCtor } from "sequelize-typescript";
 
 dotenv.config();
 
@@ -21,7 +23,7 @@ describe("TwizzitShadowIngestService (integration)", () => {
   }
 
   if (DB_DIALECT !== "postgres") {
-    it("skipped — DB_DIALECT is not postgres", () => {
+    it("skips when DB_DIALECT is not postgres", () => {
       console.warn("Skipping integration tests: DB_DIALECT is not postgres");
     });
     return;
@@ -30,7 +32,9 @@ describe("TwizzitShadowIngestService (integration)", () => {
   let sequelize: Sequelize;
 
   beforeAll(async () => {
-    const { default: models } = await import("@badman/backend-database");
+    const models = Object.values(dbModels).filter(
+      (m): m is ModelCtor => typeof m === "function" && m.prototype instanceof Model
+    );
 
     sequelize = new Sequelize({
       dialect: "postgres",
@@ -40,21 +44,17 @@ describe("TwizzitShadowIngestService (integration)", () => {
       password: process.env["DB_PASSWORD"],
       database: process.env["DB_DATABASE"],
       logging: false,
-      models: Object.values(models).filter(
-        (m): m is typeof import("sequelize-typescript").Model =>
-          typeof m === "function" && m.prototype instanceof (require("sequelize").Model)
-      ) as never[],
+      models,
     });
 
     await sequelize.authenticate();
   });
 
   afterAll(async () => {
-    // Clean up sentinel data
     const { SyncRun, SyncCheckpoint, ShadowOrganization, ShadowExtraField,
-      ShadowMembershipType, ShadowMembership, ShadowContact } = await import("@badman/backend-database");
+      ShadowMembershipType, ShadowMembership, ShadowContact } = dbModels;
 
-    await SyncCheckpoint.destroy({ where: {}, truncate: true, cascade: true });
+    await SyncCheckpoint.destroy({ where: {}, truncate: true });
     await SyncRun.destroy({ where: {}, truncate: true });
     await ShadowContact.destroy({ where: {}, truncate: true });
     await ShadowMembership.destroy({ where: {}, truncate: true });
@@ -66,7 +66,7 @@ describe("TwizzitShadowIngestService (integration)", () => {
   });
 
   it("can create a sync_run row and update its status", async () => {
-    const { SyncRun } = await import("@badman/backend-database");
+    const { SyncRun } = dbModels;
 
     const run = await SyncRun.create({
       status: "pending",
@@ -90,7 +90,7 @@ describe("TwizzitShadowIngestService (integration)", () => {
   });
 
   it("can upsert shadow_contact rows idempotently", async () => {
-    const { SyncRun, ShadowContact } = await import("@badman/backend-database");
+    const { SyncRun, ShadowContact } = dbModels;
 
     const run = await SyncRun.create({
       status: "running",

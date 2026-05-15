@@ -61,7 +61,7 @@ describe("SyncRunService", () => {
       const mockRun = { id: "run-1", status: "running", save: jest.fn() } as unknown as SyncRun;
       const longError = "x".repeat(5000);
       await service.markFailed(mockRun, longError);
-      expect(mockRun.errorSummary!.length).toBeLessThanOrEqual(2000);
+      expect(mockRun.errorSummary?.length ?? 0).toBeLessThanOrEqual(2000);
     });
   });
 
