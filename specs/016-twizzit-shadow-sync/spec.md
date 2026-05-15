@@ -1,6 +1,6 @@
 # Feature Specification: Twizzit Shadow Sync
 
-**Feature Branch**: `017-speckit-git-feature`  
+**Feature Branch**: `016-twizzit-shadow-sync`  
 **Created**: 2026-05-15  
 **Status**: Draft  
 **Input**: User description: "Next step in my process of integrating the twizzit API into this application are "shadow" tables. I want to just store all data coming in from Twizzit, so that we can compare that data to the data we currently have in the database.

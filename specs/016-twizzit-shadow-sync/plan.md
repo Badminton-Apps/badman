@@ -1,6 +1,6 @@
 # Implementation Plan: Twizzit Shadow Sync
 
-**Branch**: `017-speckit-git-feature` | **Date**: 2026-05-15 | **Spec**: [spec.md](spec.md)
+**Branch**: `016-twizzit-shadow-sync` | **Date**: 2026-05-15 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/016-twizzit-shadow-sync/spec.md`
 
 ## Summary
