@@ -15,4 +15,5 @@ export * from "./team-player-membership.model";
 export * from "./team.model";
 export * from "./faq.model";
 export * from "./system";
+export * from "./twizzit";
 // end:ng42.barrel

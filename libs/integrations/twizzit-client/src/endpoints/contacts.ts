@@ -9,9 +9,14 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return { endpoint, occurredAt: new Date().toISOString(), attempts };
 }
 
+export interface ContactsQueryInternal extends ContactsQuery {
+  /** Starting absolute offset (items). Passed to `paginate.startOffset`. */
+  startOffset?: number;
+}
+
 export async function getContacts(
   http: HttpClient,
-  opts?: ContactsQuery
+  opts?: ContactsQueryInternal
 ): Promise<FederationContact[]> {
   const endpoint = "GET /contacts";
 
@@ -43,6 +48,7 @@ export async function getContacts(
     },
     pageSize: opts?.pageSize,
     maxPages: opts?.maxPages,
+    startOffset: opts?.startOffset,
     endpointLabel: endpoint,
   });
 }

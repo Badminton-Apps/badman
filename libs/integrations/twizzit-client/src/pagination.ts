@@ -25,6 +25,11 @@ export interface PaginateOptions<T> {
    * which is the behaviour required for a complete federation→Badman sync.
    */
   maxPages?: number;
+  /**
+   * Optional starting byte offset (in items). When set, the first fetch starts at
+   * this absolute offset rather than 0. Used by shadow-sync checkpointed pagination.
+   */
+  startOffset?: number;
   endpointLabel: string;
   logger?: Logger;
 }
@@ -45,14 +50,17 @@ export async function paginate<T>(opts: PaginateOptions<T>): Promise<T[]> {
   }
 
   const results: T[] = [];
-  let page = 0;
+  const startOffset = opts.startOffset ?? 0;
+  const startPage = pageSize > 0 ? Math.floor(startOffset / pageSize) : 0;
+  let page = startPage;
 
   while (true) {
-    // User-supplied truncation bound: stop and return what we have, with a warning.
-    if (maxPages !== undefined && page >= maxPages) {
+    // User-supplied truncation bound: counts pages from startPage, not from 0.
+    const pagesElapsed = page - startPage;
+    if (maxPages !== undefined && pagesElapsed >= maxPages) {
       logger?.warn("paginate: maxPages reached; returning partial result", {
         endpoint: endpointLabel,
-        pages: page,
+        pages: pagesElapsed,
         items: results.length,
         maxPages,
       });
@@ -71,7 +79,7 @@ export async function paginate<T>(opts: PaginateOptions<T>): Promise<T[]> {
     }
 
     const offset = page * pageSize;
-    if (page > 0 && page % 10 === 0) {
+    if (pagesElapsed > 0 && pagesElapsed % 10 === 0) {
       logger?.info("paginate: progress", { endpoint: endpointLabel, page, items: results.length });
     }
     const items = await fetchPage(offset, pageSize);

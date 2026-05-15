@@ -9,9 +9,14 @@ function makeContext(endpoint: string, attempts: number): TwizzitErrorContext {
   return { endpoint, occurredAt: new Date().toISOString(), attempts };
 }
 
+export interface MembershipsQueryInternal extends MembershipsQuery {
+  /** Starting absolute offset (items). Passed to `paginate.startOffset`. */
+  startOffset?: number;
+}
+
 export async function getMemberships(
   http: HttpClient,
-  opts?: MembershipsQuery
+  opts?: MembershipsQueryInternal
 ): Promise<FederationMembership[]> {
   const endpoint = "GET /memberships";
 
@@ -46,6 +51,7 @@ export async function getMemberships(
     },
     pageSize: opts?.pageSize,
     maxPages: opts?.maxPages,
+    startOffset: opts?.startOffset,
     endpointLabel: endpoint,
   });
 }

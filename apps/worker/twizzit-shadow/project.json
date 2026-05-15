@@ -1,0 +1,86 @@
+{
+  "name": "worker-twizzit-shadow",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/worker/twizzit-shadow/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "worker-twizzit-shadow:build",
+        "port": 9235,
+        "inspect": "inspect",
+        "host": "0.0.0.0",
+        "watch": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "worker-twizzit-shadow:build:development"
+        },
+        "production": {
+          "buildTarget": "worker-twizzit-shadow:build:production"
+        }
+      }
+    },
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "defaultConfiguration": "development",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "main": "apps/worker/twizzit-shadow/src/main.ts",
+        "tsConfig": "apps/worker/twizzit-shadow/tsconfig.app.json",
+        "outputPath": "dist/apps/worker/twizzit-shadow",
+        "webpackConfig": "apps/worker/twizzit-shadow/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "cwd": "apps/worker/twizzit-shadow",
+          "args": ["--node-env=development"]
+        },
+        "production": {
+          "cwd": "apps/worker/twizzit-shadow",
+          "args": ["--node-env=production"]
+        }
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ./scripts/render.js --app=worker_twizzit_shadow"
+      }
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        "{workspaceRoot}/jest.config.ts",
+        {
+          "externalDependencies": ["jest"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/worker/twizzit-shadow",
+        "{workspaceRoot}\\coverage\\apps\\worker\\twizzit-shadow"
+      ],
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "eslintConfig": "apps/worker/twizzit-shadow/eslint.config.js"
+      }
+    }
+  }
+}
