@@ -1,5 +1,4 @@
 import type { CheckpointEntityType } from "@badman/backend-database";
-import type { FederationGateway } from "@badman/integrations-twizzit-client";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { Sequelize } from "sequelize-typescript";
 import { runPageLoop } from "./pagination/page-runner";
@@ -9,6 +8,29 @@ import { ShadowUpsertService } from "./shadow-upsert.service";
 import { SyncCheckpointService } from "./sync-checkpoint.service";
 import { SyncRunService, SyncRunResult } from "./sync-run.service";
 import { FEDERATION_GATEWAY } from "./tokens";
+
+/**
+ * Minimal gateway surface required by the ingest service.
+ * Mirrors `FederationGateway` from `@badman/integrations-twizzit-client`
+ * to avoid a cross-rootDir TypeScript dependency at build time.
+ */
+export interface IngestFederationGateway {
+  fetchOrganizations(): Promise<{ id: number | string; name: string }[]>;
+  fetchExtraFields(): Promise<{ id: number | string; [key: string]: unknown }[]>;
+  fetchMembershipTypes(): Promise<{ id: number | string; [key: string]: unknown }[]>;
+  fetchMemberships(opts?: {
+    pageSize?: number;
+    maxPages?: number;
+  }): Promise<{ id: number | string; [key: string]: unknown }[]>;
+  fetchContacts(opts?: {
+    pageSize?: number;
+    maxPages?: number;
+  }): Promise<{ id: number | string; [key: string]: unknown }[]>;
+  /** Single-page helper added by TwizzitClient (T030). Optional — falls back to fetchMemberships. */
+  getMembershipsPage?(opts: { offset: number; pageSize: number }): Promise<{ id: number | string; [key: string]: unknown }[]>;
+  /** Single-page helper added by TwizzitClient (T030). Optional — falls back to fetchContacts. */
+  getContactsPage?(opts: { offset: number; pageSize: number }): Promise<{ id: number | string; [key: string]: unknown }[]>;
+}
 
 export interface TwizzitShadowIngestConfig {
   pageSize: number;
@@ -21,7 +43,7 @@ export class TwizzitShadowIngestService {
   private readonly logger = new Logger(TwizzitShadowIngestService.name);
 
   constructor(
-    @Inject(FEDERATION_GATEWAY) private readonly gateway: FederationGateway,
+    @Inject(FEDERATION_GATEWAY) private readonly gateway: IngestFederationGateway,
     private readonly sequelize: Sequelize,
     private readonly syncRunService: SyncRunService,
     private readonly checkpointService: SyncCheckpointService,
@@ -41,33 +63,27 @@ export class TwizzitShadowIngestService {
     const run = await this.syncRunService.create({ organizationId, pageSize, interPageDelayMs });
     await this.syncRunService.markRunning(run);
 
-    const counts: Record<string, number> = {
-      organizations: 0,
-      extraFields: 0,
-      membershipTypes: 0,
-      memberships: 0,
-      contacts: 0,
-    };
+    const counts: Record<string, number> = {};
 
     try {
       // --- Reference entities (no pagination) ---
-      counts.organizations = await this.ingestOrganizations(run.id);
-      counts.extraFields = await this.ingestExtraFields(run.id);
-      counts.membershipTypes = await this.ingestMembershipTypes(run.id);
+      counts["organizations"] = await this.ingestOrganizations(run.id);
+      counts["extraFields"] = await this.ingestExtraFields(run.id);
+      counts["membershipTypes"] = await this.ingestMembershipTypes(run.id);
 
       // --- Paginated entities ---
-      counts.memberships = await this.ingestMemberships(
+      counts["memberships"] = await this.ingestMemberships(
         run.id,
         config,
         mode === "resume" ? resumeFromRunId : null
       );
-      counts.contacts = await this.ingestContacts(
+      counts["contacts"] = await this.ingestContacts(
         run.id,
         config,
         mode === "resume" ? resumeFromRunId : null
       );
 
-      counts.skipped = this.skipTracker.count();
+      counts["skipped"] = this.skipTracker.count();
 
       await this.syncRunService.markCompleted(run, counts);
       this.logger.log("Full backfill completed", { runId: run.id, counts });
@@ -195,9 +211,8 @@ export class TwizzitShadowIngestService {
       config,
       resumeFromRunId,
       async (offset, pageSize) => {
-        const client = this.gateway as import("@badman/integrations-twizzit-client").TwizzitClient;
-        if (typeof client.getMembershipsPage === "function") {
-          return client.getMembershipsPage({ offset, pageSize });
+        if (typeof this.gateway.getMembershipsPage === "function") {
+          return this.gateway.getMembershipsPage({ offset, pageSize });
         }
         return this.gateway.fetchMemberships({ pageSize, maxPages: 1 });
       },
@@ -218,9 +233,8 @@ export class TwizzitShadowIngestService {
       config,
       resumeFromRunId,
       async (offset, pageSize) => {
-        const client = this.gateway as import("@badman/integrations-twizzit-client").TwizzitClient;
-        if (typeof client.getContactsPage === "function") {
-          return client.getContactsPage({ offset, pageSize });
+        if (typeof this.gateway.getContactsPage === "function") {
+          return this.gateway.getContactsPage({ offset, pageSize });
         }
         return this.gateway.fetchContacts({ pageSize, maxPages: 1 });
       },

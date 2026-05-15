@@ -1,4 +1,4 @@
-import type { FederationGateway, FederationContact, FederationMembership } from "@badman/integrations-twizzit-client";
+import type { FederationGateway, FederationMembership } from "@badman/integrations-twizzit-client";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Sequelize } from "sequelize-typescript";
 import { RecordSkipTracker } from "./record-skip-tracker";
@@ -8,27 +8,6 @@ import { SyncCheckpointService } from "./sync-checkpoint.service";
 import { SyncRunService } from "./sync-run.service";
 import { FEDERATION_GATEWAY } from "./tokens";
 import { TwizzitShadowIngestService } from "./twizzit-shadow-ingest.service";
-
-const mockContact: FederationContact = {
-  id: 1,
-  fullName: "A B",
-  firstName: "A",
-  lastName: "B",
-  dateOfBirth: "1990-01-01",
-  gender: "M",
-  nationality: null,
-  language: null,
-  accountNumber: null,
-  registryNumber: null,
-  federationNumber: null,
-  memberId: "MEM-1",
-  hasProfileImage: false,
-  address: { street: "", number: "", box: "", postalCode: "", city: "", country: { en: "", nl: "", fr: "" } },
-  emails: [],
-  mobiles: [],
-  home: null,
-  extraFields: [],
-};
 
 const mockMembership: FederationMembership = {
   id: 100,
@@ -146,9 +125,7 @@ describe("TwizzitShadowIngestService", () => {
       gateway.fetchContacts.mockImplementation(async () => { order.push("con"); return []; });
 
       await service.runFullBackfill({ pageSize: 100, interPageDelayMs: 0 });
-      expect(order).toEqual(["org", "ef", "mt"]);
-      // Note: memberships and contacts go through page runner which may not call gateway
-      // if getContactsPage/getMembershipsPage helpers exist on TwizzitClient
+      expect(order).toEqual(["org", "ef", "mt", "mem", "con"]);
     });
   });
 
@@ -165,13 +142,11 @@ describe("TwizzitShadowIngestService", () => {
       checkpointService.find.mockResolvedValueOnce(null); // for contacts
 
       // Return one page then empty
-      let membershipCallCount = 0;
       const gatewayWithPage = gateway as unknown as {
         getMembershipsPage: jest.Mock;
         getContactsPage: jest.Mock;
       };
       gatewayWithPage.getMembershipsPage = jest.fn().mockImplementation(async (opts: { offset: number }) => {
-        membershipCallCount++;
         if (opts.offset === 300) return [mockMembership];
         return [];
       });
