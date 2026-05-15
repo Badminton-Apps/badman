@@ -28,7 +28,7 @@ export class SyncRun extends Model<InferAttributes<SyncRun>, InferCreationAttrib
   @Column(DataType.TEXT)
   declare status: SyncRunStatus;
 
-  @Column(DataType.BIGINT)
+  @Column({ field: "organization_id", type: DataType.BIGINT })
   declare organizationId: number | null;
 
   @Column({ field: "started_at", type: DataType.DATE })

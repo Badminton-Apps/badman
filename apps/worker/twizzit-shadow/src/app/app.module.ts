@@ -1,7 +1,6 @@
 import { DatabaseModule } from "@badman/backend-database";
 import { LoggingModule } from "@badman/backend-logging";
 import { TwizzitShadowModule } from "@badman/backend-twizzit-shadow";
-import { FEDERATION_GATEWAY } from "@badman/backend-twizzit-shadow";
 import { TwizzitClient } from "@badman/integrations-twizzit-client";
 import { configSchema, load } from "@badman/utils";
 import { Logger, Module } from "@nestjs/common";
@@ -22,16 +21,13 @@ import { TwizzitShadowRunnerService } from "./twizzit-shadow-runner.service";
       name: "worker-twizzit-shadow",
     }),
     DatabaseModule,
-    TwizzitShadowModule,
-  ],
-  providers: [
-    {
-      provide: FEDERATION_GATEWAY,
+    TwizzitShadowModule.forRootAsync({
+      imports: [ConfigModule],
       useFactory: (config: ConfigService, logger: Logger) =>
         new TwizzitClient({
           credentials: {
-            username: config.getOrThrow("TWIZZIT_USERNAME"),
-            password: config.getOrThrow("TWIZZIT_PASSWORD"),
+            username: config.getOrThrow("TWIZZIT_API_USER"),
+            password: config.getOrThrow("TWIZZIT_API_PASS"),
           },
           baseUrl: config.get("TWIZZIT_API"),
           organizationId: config.get("TWIZZIT_ORGANIZATION_ID")
@@ -45,8 +41,8 @@ import { TwizzitShadowRunnerService } from "./twizzit-shadow-runner.service";
           },
         }),
       inject: [ConfigService, WINSTON_MODULE_NEST_PROVIDER],
-    },
-    TwizzitShadowRunnerService,
+    }),
   ],
+  providers: [TwizzitShadowRunnerService],
 })
 export class WorkerTwizzitShadowModule {}
