@@ -6,6 +6,12 @@ This guide walks through validating the two fixes (N+1 cache, pug template) end-
 
 ---
 
+## Baseline
+
+Captured at start of work on branch `018-fix-ranking-n1-and-pug` (2026-05-18). Affected projects on `nx affected --base=develop` were expected to include at minimum: `backend-ranking` (new service + spec), `backend-graphql` (game/ranking resolver edits + specs), `backend-mailing` (pug template edit + renderer spec). Downstream apps (`api`) inherit the touch list. Full `nx affected:test --dry-run` was deferred from the foundational phase to the polish phase (T022) where it gates the PR.
+
+---
+
 ## Prerequisites
 
 ```bash

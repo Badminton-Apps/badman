@@ -5,6 +5,7 @@ import {
   RankingPlaceUpdateInput,
   RankingSystem,
 } from "@badman/backend-database";
+import { RankingSystemService } from "@badman/backend-ranking";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
@@ -16,7 +17,10 @@ import { getRankingProtected } from "@badman/utils";
 export class RankingPlaceResolver {
   private readonly logger = new Logger(RankingPlaceResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private readonly rankingSystemService: RankingSystemService
+  ) {}
 
   @Query(() => RankingPlace)
   async rankingPlace(@Args("id", { type: () => ID }) id: string): Promise<RankingPlace> {
@@ -28,9 +32,7 @@ export class RankingPlaceResolver {
 
     if (!place.single || !place.double || !place.mix) {
       // if one of the levels is not set, get the default from the system
-      const system = await RankingSystem.findByPk(place.systemId, {
-        attributes: ["amountOfLevels"],
-      });
+      const system = await this.rankingSystemService.getById(place.systemId);
       if (!system) {
         throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
       }
@@ -48,10 +50,7 @@ export class RankingPlaceResolver {
     // if one of the levels is not set, get the default from the system
     for (let place of places) {
       if (!place.single || !place.double || !place.mix) {
-        // if one of the levels is not set, get the default from the system
-        const system = await RankingSystem.findByPk(place.systemId, {
-          attributes: ["amountOfLevels", "maxDiffLevels"],
-        });
+        const system = await this.rankingSystemService.getById(place.systemId);
 
         if (!system) {
           throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
@@ -65,8 +64,8 @@ export class RankingPlaceResolver {
   }
 
   @ResolveField(() => RankingSystem)
-  async rankingSystem(@Parent() rankingPlace: RankingPlace): Promise<RankingSystem> {
-    return rankingPlace.getRankingSystem();
+  async rankingSystem(@Parent() rankingPlace: RankingPlace): Promise<RankingSystem | null> {
+    return this.rankingSystemService.getById(rankingPlace.systemId);
   }
 
   @ResolveField(() => Player)

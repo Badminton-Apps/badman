@@ -13,6 +13,7 @@ import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
 import { User } from "@badman/backend-authorization";
+import { RankingSystemService } from "@badman/backend-ranking";
 import { ListArgs } from "../../utils";
 import { CacheControl } from "../../decorators";
 import { Op, Transaction } from "sequelize";
@@ -23,7 +24,10 @@ import moment from "moment";
 export class RankingSystemResolver {
   private readonly logger = new Logger(RankingSystemResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private readonly rankingSystemService: RankingSystemService
+  ) {}
 
   @Query(() => RankingSystem)
   async rankingSystem(
@@ -124,6 +128,7 @@ export class RankingSystemResolver {
       }
 
       await transaction.commit();
+      this.rankingSystemService.invalidate();
       this.logger.log(`Created system ${newSystem.name}`);
       return newSystem;
     } catch (error) {
@@ -201,6 +206,7 @@ export class RankingSystemResolver {
       });
 
       await transaction.commit();
+      this.rankingSystemService.invalidate();
       return dbEvent;
     } catch (e) {
       this.logger.error("rollback", e);
@@ -241,6 +247,7 @@ export class RankingSystemResolver {
       });
 
       await transaction.commit();
+      this.rankingSystemService.invalidate();
       return dbEvent;
     } catch (e) {
       this.logger.error("rollback", e);
@@ -281,6 +288,7 @@ export class RankingSystemResolver {
       });
 
       await transaction.commit();
+      this.rankingSystemService.invalidate();
       return dbEvent;
     } catch (e) {
       this.logger.error("rollback", e);
@@ -359,6 +367,7 @@ export class RankingSystemResolver {
       }
 
       await transaction?.commit();
+      this.rankingSystemService.invalidate();
       this.logger.log(`Copied system ${dbSystem.name} to ${newSystem.name}`);
       return dbSystem;
     } catch (e) {
@@ -408,6 +417,7 @@ export class RankingSystemResolver {
       }
 
       await transaction?.commit();
+      this.rankingSystemService.invalidate();
       this.logger.log(`Copied places ${sourceSystem.name} to ${destinationSystem.name}`);
       return sourceSystem;
     } catch (e) {
@@ -436,6 +446,7 @@ export class RankingSystemResolver {
       });
 
       await transaction.commit();
+      this.rankingSystemService.invalidate();
       return true;
     } catch (e) {
       this.logger.error("rollback", e);
