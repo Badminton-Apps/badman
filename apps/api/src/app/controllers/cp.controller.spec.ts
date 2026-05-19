@@ -1,10 +1,18 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
-import { UnauthorizedException, NotFoundException } from "@nestjs/common";
+import {
+  BadGatewayException,
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+  ServiceUnavailableException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { CpController } from "./cp.controller";
 import { CpDataCollector } from "@badman/backend-generator";
 import { Player } from "@badman/backend-database";
 import { CpPayload } from "@badman/backend-generator";
+import { MailingService } from "@badman/backend-mailing";
 
 // Mock global fetch
 const mockFetch = jest.fn();
@@ -64,6 +72,13 @@ describe("CpController", () => {
             get: jest.fn((key: string) => mockConfigService[key]),
           },
         },
+        {
+          provide: MailingService,
+          useValue: {
+            sendCpExportReadyMail: jest.fn().mockResolvedValue(undefined),
+            sendCpExportFailedMail: jest.fn().mockResolvedValue(undefined),
+          },
+        },
       ],
     }).compile();
 
@@ -79,9 +94,9 @@ describe("CpController", () => {
     it("should reject unauthenticated requests", async () => {
       const noUser = { id: undefined } as unknown as Player;
 
-      await expect(controller.generate(noUser, { eventId: "event-1" })).rejects.toThrow(
-        UnauthorizedException
-      );
+      await expect(
+        controller.generate(noUser, { eventId: "a0000000-0000-4000-8000-000000000001" })
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it("should reject users without export-cp:competition permission", async () => {
@@ -89,9 +104,9 @@ describe("CpController", () => {
         hasAnyPermission: jest.fn().mockResolvedValue(false),
       });
 
-      await expect(controller.generate(user, { eventId: "event-1" })).rejects.toThrow(
-        UnauthorizedException
-      );
+      await expect(
+        controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" })
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it("should call CpDataCollector and trigger workflow_dispatch", async () => {
@@ -99,10 +114,12 @@ describe("CpController", () => {
       mockFetch.mockResolvedValue({ status: 204 });
 
       const result = await controller.generate(user, {
-        eventId: "event-1",
+        eventId: "a0000000-0000-4000-8000-000000000001",
       });
 
-      expect(mockDataCollector.collect).toHaveBeenCalledWith("event-1");
+      expect(mockDataCollector.collect).toHaveBeenCalledWith(
+        "a0000000-0000-4000-8000-000000000001"
+      );
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining("actions/workflows/generate-cp.yml/dispatches"),
         expect.objectContaining({
@@ -126,7 +143,7 @@ describe("CpController", () => {
       const user = mockUser();
       mockFetch.mockResolvedValue({ status: 204 });
 
-      await controller.generate(user, { eventId: "event-1" });
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       const fetchCall = mockFetch.mock.calls[0];
       const body = JSON.parse(fetchCall[1].body);
@@ -144,14 +161,18 @@ describe("CpController", () => {
         text: jest.fn().mockResolvedValue("Validation failed"),
       });
 
-      await expect(controller.generate(user, { eventId: "event-1" })).rejects.toThrow(/502/);
+      await expect(
+        controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" })
+      ).rejects.toThrow(BadGatewayException);
     });
 
     it("should return 503 if GITHUB_TOKEN_CP is not configured", async () => {
       mockConfigService.GITHUB_TOKEN_CP = undefined;
       const user = mockUser();
 
-      await expect(controller.generate(user, { eventId: "event-1" })).rejects.toThrow(/503/);
+      await expect(
+        controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" })
+      ).rejects.toThrow(ServiceUnavailableException);
     });
 
     it("should return 409 if generation is already in progress for same event", async () => {
@@ -159,10 +180,12 @@ describe("CpController", () => {
       mockFetch.mockResolvedValue({ status: 204 });
 
       // First call succeeds
-      await controller.generate(user, { eventId: "event-1" });
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       // Second call should be rejected
-      await expect(controller.generate(user, { eventId: "event-1" })).rejects.toThrow(/409/);
+      await expect(
+        controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" })
+      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -191,7 +214,7 @@ describe("CpController", () => {
       // First, trigger a generation to create a pending record
       const user = mockUser();
       mockFetch.mockResolvedValue({ status: 204 });
-      await controller.generate(user, { eventId: "event-1" });
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       jest.spyOn(Player, "findByPk").mockResolvedValue({
         email: "user@test.be",
@@ -210,7 +233,7 @@ describe("CpController", () => {
     it("should handle failed status", async () => {
       const user = mockUser();
       mockFetch.mockResolvedValue({ status: 204 });
-      await controller.generate(user, { eventId: "event-1" });
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       jest.spyOn(Player, "findByPk").mockResolvedValue({
         email: "user@test.be",
@@ -244,7 +267,7 @@ describe("CpController", () => {
       const mockRes = {} as any;
 
       await expect(controller.download(user, "run-123", mockRes)).rejects.toThrow(
-        UnauthorizedException
+        ForbiddenException
       );
     });
 
@@ -261,7 +284,7 @@ describe("CpController", () => {
       // Set up a completed webhook first
       const user = mockUser();
       mockFetch.mockResolvedValue({ status: 204 });
-      await controller.generate(user, { eventId: "event-1" });
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       jest.spyOn(Player, "findByPk").mockResolvedValue({
         email: "user@test.be",
@@ -304,7 +327,7 @@ describe("CpController", () => {
           arrayBuffer: jest.fn().mockResolvedValue(new ArrayBuffer(100)),
         });
 
-      await controller.generate(user, { eventId: "event-1" });
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       jest.spyOn(Player, "findByPk").mockResolvedValue({
         email: "user@test.be",

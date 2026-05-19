@@ -4142,6 +4142,28 @@ export type I18nTranslations = {
                     "loadMoreCompetitions": string;
                 };
             };
+            "actions": {
+                "edit": string;
+                "delete": string;
+                "export": string;
+                "setRisersFallers": string;
+                "openCloseDate": string;
+                "openCloseEncounterChangeDate": string;
+                "makeOfficial": string;
+                "makeUnofficial": string;
+                "sync": string;
+                "messages": {
+                    "syncSuccess": string;
+                    "syncError": string;
+                    "cpGenerationStarted": string;
+                };
+                "averageLevel": string;
+                "downloadEnrollment": string;
+                "downloadTeams": string;
+                "downloadExceptions": string;
+                "downloadLocations": string;
+                "downloadCp": string;
+            };
             "addCompetitionDialog": {
                 "title": string;
                 "inputs": {

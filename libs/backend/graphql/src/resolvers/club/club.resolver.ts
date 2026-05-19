@@ -31,7 +31,7 @@ import {
 import { GraphQLError } from "graphql";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { ListArgs } from "../../utils";
+import { ListArgs, assertUUID } from "../../utils";
 import { ErrorCode } from "../../utils/error-codes";
 import { AddPlayerToClubResult } from "./add-player-to-club-result.object";
 import { ClubMembershipFilterInput } from "./club-membership-filter.input";
@@ -226,6 +226,14 @@ export class ClubsResolver {
 
   @Mutation(() => Club)
   async removeClub(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
+    const userId = user?.id ?? null;
+    try {
+      assertUUID(id, "id", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "id", value: id, userId });
+      throw e;
+    }
+
     if (!(await user.hasAnyPermission(["remove:club"]))) {
       throw new UnauthorizedException(`You do not have permission to add a club`);
     }
@@ -254,6 +262,15 @@ export class ClubsResolver {
 
   @Mutation(() => Club)
   async updateClub(@User() user: Player, @Args("data") updateClubData: ClubUpdateInput) {
+    const userId = user?.id ?? null;
+    const clubIdArg = updateClubData.id ?? "";
+    try {
+      assertUUID(clubIdArg, "id", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "id", value: clubIdArg, userId });
+      throw e;
+    }
+
     if (!(await user.hasAnyPermission([`${updateClubData.id}_edit:club`, "edit-any:club"]))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
@@ -298,6 +315,15 @@ export class ClubsResolver {
     @User() user: Player,
     @Args("data") addPlayerToClubData: ClubPlayerMembershipNewInput
   ): Promise<AddPlayerToClubResult> {
+    const userId = user?.id ?? null;
+    const clubId = addPlayerToClubData.clubId;
+    try {
+      assertUUID(clubId as string, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
+
     if (
       !(await user.hasAnyPermission([`${addPlayerToClubData.clubId}_edit:club`, "edit-any:club"]))
     ) {

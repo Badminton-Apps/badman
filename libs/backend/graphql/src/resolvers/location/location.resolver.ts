@@ -22,7 +22,7 @@ import {
 } from "@nestjs/graphql";
 import { Point } from "geojson";
 import { Sequelize } from "sequelize-typescript";
-import { ListArgs } from "../../utils";
+import { ErrorCode, ListArgs, assertUUID } from "../../utils";
 
 @ObjectType()
 export class Coordinates {
@@ -79,6 +79,15 @@ export class LocationResolver {
     @Args("data") newLocationData: LocationNewInput,
     @User() user: Player
   ): Promise<Location> {
+    const userId = user?.id ?? null;
+    const clubId = newLocationData.clubId;
+    try {
+      assertUUID(clubId as string, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
+
     const transaction = await this._sequelize.transaction();
     try {
       const dbClub = await Club.findByPk(newLocationData.clubId, {

@@ -1,4 +1,4 @@
-import { GameType } from "@badman/utils";
+import { GameLinkType, GameType } from "@badman/utils";
 import { DrawTournament, EncounterCompetition, Game, GamePlayerMembership } from "../models";
 import { PlayerBuilder } from "./playerBuilder";
 
@@ -38,13 +38,13 @@ export class GameBuilder {
 
   ForCompetition(encounter: EncounterCompetition): GameBuilder {
     this.game.linkId = encounter.id;
-    this.game.linkType = "competition";
+    this.game.linkType = GameLinkType.COMPETITION;
     return this;
   }
 
   ForTournament(draw: DrawTournament): GameBuilder {
     this.game.linkId = draw.id;
-    this.game.linkType = "tournament";
+    this.game.linkType = GameLinkType.TOURNAMENT;
     return this;
   }
 

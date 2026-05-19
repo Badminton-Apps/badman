@@ -361,6 +361,9 @@ export class TeamUpdateInput extends PartialType(
     "entry",
     "prefferedLocation",
     "prefferedLocation2",
+    // teamNumber is intentionally excluded from updateTeam: authoritative numbering
+    // is assigned by submitEnrollment (atomic two-phase write via TeamWriteService).
+    "teamNumber",
   ] as const),
   InputType
 ) {
@@ -384,6 +387,12 @@ export class TeamNewInput extends PartialType(
       "Cross-season continuity id. Reuse this link when registering the same team in a new season.",
   })
   override link?: string;
+
+  // teamNumber is optional on createTeam. When omitted, the server assigns
+  // MAX(teamNumber)+1 for (clubId, season, type). The wizard's authoritative path
+  // is submitEnrollment, which supplies final numbers per team.
+  @Field(() => Int, { nullable: true })
+  teamNumber?: number;
 
   // Include the entry
   @Field(() => EventEntryNewInput, { nullable: true })

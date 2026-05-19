@@ -5,8 +5,8 @@ export class CalculateIndexContributingPlayer {
   @Field(() => ID)
   id!: string;
 
-  @Field(() => String)
-  gender!: string;
+  @Field(() => String, { nullable: true })
+  gender?: string | null;
 
   @Field(() => Int)
   single!: number;
