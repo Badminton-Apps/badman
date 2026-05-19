@@ -5,6 +5,7 @@ import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 import { TournamentResolverModule } from "./tournament.module";
 import { NotificationsModule } from "@badman/backend-notifications";
 import { EnrollmentModule } from "@badman/backend-enrollment";
+import { SubEventCompetitionLoaderService } from "../../loaders";
 
 @Module({
   imports: [
@@ -13,7 +14,12 @@ import { EnrollmentModule } from "@badman/backend-enrollment";
     NotificationsModule,
     EnrollmentModule,
   ],
-  providers: [EventEntryResolver, EntryCompetitionPlayersResolver, EnrollmentFinalizeService],
+  providers: [
+    EventEntryResolver,
+    EntryCompetitionPlayersResolver,
+    EnrollmentFinalizeService,
+    SubEventCompetitionLoaderService,
+  ],
   exports: [EnrollmentFinalizeService],
 })
 export class EventResolverModule {}
