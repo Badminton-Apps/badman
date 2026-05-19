@@ -13,6 +13,7 @@ import {
   RankingSystem,
 } from "@badman/backend-database";
 import { Sync, SyncQueue } from "@badman/backend-queue";
+import { RankingSystemService } from "@badman/backend-ranking";
 import { GameLinkType, getRankingProtected } from "@badman/utils";
 import { InjectQueue } from "@nestjs/bull";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
@@ -28,6 +29,7 @@ export class GamesResolver {
   private readonly logger = new Logger(GamesResolver.name);
   constructor(
     private _sequelize: Sequelize,
+    private readonly rankingSystemService: RankingSystemService,
     @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
   ) {}
 
@@ -100,11 +102,7 @@ export class GamesResolver {
 
     let system: RankingSystem | null = null;
     if (hasNull) {
-      system = await RankingSystem.findOne({
-        where: {
-          primary: true,
-        },
-      });
+      system = await this.rankingSystemService.getPrimary();
     }
 
     return players?.map((gamePlayer: Player & { GamePlayerMembership: GamePlayerMembership }) => {

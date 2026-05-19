@@ -211,6 +211,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/014-validate-clubid-uuid/plan.md](specs/014-validate-clubid-uuid/plan.md)
+[specs/018-fix-ranking-n1-and-pug/plan.md](specs/018-fix-ranking-n1-and-pug/plan.md)
 
 <!-- SPECKIT END -->
