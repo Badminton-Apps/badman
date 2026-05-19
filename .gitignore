@@ -78,3 +78,4 @@ typesense-data/
 .github/instructions/nx.instructions.md
 #Claude
 .claude/settings.local.json
+.claude/worktrees/
