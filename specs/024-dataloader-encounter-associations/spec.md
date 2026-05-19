@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "EncounterCompetition.home / .away / .drawCompetition — per-encounter getHome() / getAway() / getDrawCompetition() — batch Teams + DrawCompetitions referenced across an encounters list."
 
-> **Context note**: The `encounterCompetitions` root query in `encounter.resolver.ts` already eager-loads home and away Teams via `include: [{ model: Team, as: 'home' }, { model: Team, as: 'away' }]`. The N+1 from `.home`, `.away`, and `.drawCompetition` field resolvers applies when encounters are fetched as children of a parent resolver (e.g., `DrawCompetition.encounterCompetitions`) without the eager-load. Additionally, several other field resolvers on `EncounterCompetition` also call per-row Sequelize association getters (`location`, `gameLeader`, `tempHomeCaptain`, etc.) — these are explicitly out of scope for this feature.
+> **Context note**: The `encounterCompetitions` root query already eager-loads home and away Teams via Sequelize `include`. However, the `home`, `away`, and `drawCompetition` `@ResolveField` methods are always invoked by Apollo regardless of what the parent query loaded — and they call `encounter.getHome()`, `encounter.getAway()`, `encounter.getDrawCompetition()` which are Sequelize getter methods that always issue new DB queries. The N+1 therefore applies to all GraphQL query paths that request these fields. Additionally, several other field resolvers on `EncounterCompetition` call per-row getters (`location`, `gameLeader`, `tempHomeCaptain`, etc.) — these are explicitly out of scope for this feature.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -66,5 +66,12 @@ A competition manager opens a draw overview, which returns a list of N `Encounte
 
 - The `dataloader` package (v2.x) is already a runtime dependency (added in feature 019).
 - `encounter.resolver.ts` contains the three field resolvers (`home`, `away`, `drawCompetition`) as separate methods, each currently issuing an individual lookup.
+- The `encounterCompetitions` root query already eager-loads home and away teams via Sequelize `include`, so `encounter.home` and `encounter.away` may be pre-populated for that path. However, the `@ResolveField` methods call `encounter.getHome()` and `encounter.getAway()` — Sequelize association getter methods that always issue new DB queries regardless of the pre-loaded property. The N+1 applies to all GraphQL query paths that request these fields.
 - Pre-condition for shipping: Sentry N+1 alert on encounter association resolvers OR documented hot-path test for a large draw. Listed as opt-in candidate in spec 019.
 - If a shared `TeamLoaderService` already exists from the `TeamAssociationService` DataLoader migration (019), this feature reuses it for home/away team lookups rather than creating a duplicate.
+
+## Clarifications
+
+### Session 2026-05-19
+
+- Q: Does the N+1 for `home`/`away`/`drawCompetition` apply to the root `encounterCompetitions` query path or only to parent-resolver paths? → A: Applies to all paths. Apollo always invokes `@ResolveField` methods; Sequelize getter methods (`getHome()`, `getAway()`, `getDrawCompetition()`) always issue new DB queries regardless of what the parent query eager-loaded. Context note and Assumptions updated accordingly.
