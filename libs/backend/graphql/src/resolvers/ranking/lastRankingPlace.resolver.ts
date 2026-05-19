@@ -1,4 +1,5 @@
 import { Player, RankingLastPlace, RankingSystem } from "@badman/backend-database";
+import { RankingSystemService } from "@badman/backend-ranking";
 import { NotFoundException } from "@nestjs/common";
 import {
   Args,
@@ -24,6 +25,8 @@ export class PagedLastRankingPlace {
 
 @Resolver(() => RankingLastPlace)
 export class LastRankingPlaceResolver {
+  constructor(private readonly rankingSystemService: RankingSystemService) {}
+
   @Query(() => RankingLastPlace)
   async rankingLastPlace(@Args("id", { type: () => ID }) id: string): Promise<RankingLastPlace> {
     const lastRankingPlace = await RankingLastPlace.findByPk(id);
@@ -41,7 +44,11 @@ export class LastRankingPlaceResolver {
 
   @ResolveField(() => RankingSystem)
   async rankingSystem(@Parent() rankingPlace: RankingLastPlace): Promise<RankingSystem> {
-    return rankingPlace.getRankingSystem();
+    const system = await this.rankingSystemService.getById(rankingPlace.systemId);
+    if (!system) {
+      throw new NotFoundException(`${RankingSystem.name}: ${rankingPlace.systemId}`);
+    }
+    return system;
   }
 
   @ResolveField(() => Player)
