@@ -211,6 +211,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/019-graphql-dataloader/plan.md](specs/019-graphql-dataloader/plan.md)
+[specs/020-dataloader-ranking-system/plan.md](specs/020-dataloader-ranking-system/plan.md)
 
 <!-- SPECKIT END -->
