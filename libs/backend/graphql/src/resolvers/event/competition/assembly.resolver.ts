@@ -8,6 +8,7 @@ import {
   RankingPlace,
   RankingSystem,
 } from "@badman/backend-database";
+import { RankingSystemService } from "@badman/backend-ranking";
 import { getRankingProtected, sortPlayers } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
@@ -15,7 +16,10 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/g
 @Resolver(() => AssemblyOutput)
 export class AssemblyResolver {
   private readonly logger = new Logger(AssemblyResolver.name);
-  constructor(private assemblyService: AssemblyValidationService) {}
+  constructor(
+    private assemblyService: AssemblyValidationService,
+    private readonly rankingSystemService: RankingSystemService
+  ) {}
 
   @Query(() => AssemblyOutput, {
     description: `Validate the assembly\n\r**note**: the levels are the ones from may!`,
@@ -40,7 +44,7 @@ export class AssemblyResolver {
       include: [RankingLastPlace],
     });
 
-    const system = await RankingSystem.findByPk(assembly.systemId);
+    const system = await this.rankingSystemService.getById(assembly.systemId);
 
     if (!system) {
       throw new NotFoundException(`${RankingSystem.name}: ${assembly.systemId}`);

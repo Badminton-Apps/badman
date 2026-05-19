@@ -21,7 +21,7 @@ import {
 } from "@nestjs/graphql";
 import { ListArgs } from "../../../utils";
 import { User } from "@badman/backend-authorization";
-import { PointsService } from "@badman/backend-ranking";
+import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { Sequelize } from "sequelize-typescript";
 import { SyncQueue, Sync } from "@badman/backend-queue";
 import { InjectQueue } from "@nestjs/bull";
@@ -47,7 +47,8 @@ export class SubEventTournamentResolver {
   constructor(
     private readonly _sequelize: Sequelize,
     private readonly _pointService: PointsService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    private readonly rankingSystemService: RankingSystemService
   ) {}
 
   @Query(() => SubEventTournament)
@@ -98,10 +99,9 @@ export class SubEventTournamentResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const where = systemId ? { id: systemId } : { primary: true };
-      const system = await RankingSystem.findOne({
-        where,
-      });
+      const system = systemId
+        ? await this.rankingSystemService.getById(systemId)
+        : await this.rankingSystemService.getPrimary();
 
       if (!system) {
         throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);

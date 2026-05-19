@@ -167,12 +167,8 @@ export class GamesResolver {
       );
 
       if (gameData.players) {
+        const system = await this.rankingSystemService.getPrimary();
         for (const player of gameData.players) {
-          const system = await RankingSystem.findOne({
-            where: {
-              primary: true,
-            },
-          });
           const ranking = await RankingLastPlace.findOne({
             where: {
               playerId: player.id,
