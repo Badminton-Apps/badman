@@ -32,7 +32,7 @@ import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nest
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { ListArgs, WhereArgs, queryFixer } from "../../utils";
-import { PointsService } from "@badman/backend-ranking";
+import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 
 @Resolver(() => Player)
 export class PlayersResolver {
@@ -40,8 +40,24 @@ export class PlayersResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private pointService: PointsService
+    private pointService: PointsService,
+    protected readonly rankingSystemService: RankingSystemService
   ) {}
+
+  protected async loadSystemsByIds(
+    ids: (string | null | undefined)[]
+  ): Promise<(id: string | null | undefined) => RankingSystem | undefined> {
+    const uniqueIds = [...new Set(ids.filter((id): id is string => !!id))];
+    const systems = await Promise.all(uniqueIds.map((id) => this.rankingSystemService.getById(id)));
+    const map = new Map<string, RankingSystem>();
+    uniqueIds.forEach((id, idx) => {
+      const sys = systems[idx];
+      if (sys) {
+        map.set(id, sys);
+      }
+    });
+    return (id) => (id ? map.get(id) : undefined);
+  }
 
   private getPlayerFilters() {
     return {
@@ -157,17 +173,11 @@ export class PlayersResolver {
       ...ListArgs.toFindOptions(listArgs),
     });
 
-    // distinct systemIds
-    const systemIds = [...new Set(places.map((place) => place.systemId))];
-    const systems = await RankingSystem.findAll({
-      where: {
-        id: systemIds,
-      },
-    });
+    const findSystem = await this.loadSystemsByIds(places.map((place) => place.systemId));
 
     return (
       places?.map((place) => {
-        const system = systems.find((sys) => sys.id === place.systemId);
+        const system = findSystem(place.systemId);
 
         if (!system) {
           throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
@@ -186,24 +196,18 @@ export class PlayersResolver {
     @Args() listArgs: ListArgs
   ): Promise<RankingLastPlace[]> {
     const opts = ListArgs.toFindOptions(listArgs);
-    const primary = await RankingSystem.findOne({ where: { primary: true } });
+    const primary = await this.rankingSystemService.getPrimary();
     opts.where = { ...opts.where, systemId: primary?.id };
     const places = await player.getRankingLastPlaces({
       order: [["rankingDate", "DESC"]],
       ...opts,
     });
 
-    // distinct systemIds
-    const systemIds = [...new Set(places.map((place) => place.systemId))];
-    const systems = await RankingSystem.findAll({
-      where: {
-        id: systemIds,
-      },
-    });
+    const findSystem = await this.loadSystemsByIds(places.map((place) => place.systemId));
 
     return (
       places?.map((place) => {
-        const system = systems.find((sys) => sys.id === place.systemId);
+        const system = findSystem(place.systemId);
 
         if (!system) {
           throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
@@ -487,10 +491,9 @@ export class PlayersResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const where = systemId ? { id: systemId } : { primary: true };
-      const system = await RankingSystem.findOne({
-        where,
-      });
+      const system = systemId
+        ? await this.rankingSystemService.getById(systemId)
+        : await this.rankingSystemService.getPrimary();
 
       if (!system) {
         throw new NotFoundException(`No ranking system found for ${systemId || "primary"}`);
@@ -565,7 +568,7 @@ export class PlayerTeamResolver extends PlayersResolver {
   ): Promise<RankingLastPlace[]> {
     const args = ListArgs.toFindOptions(listArgs);
 
-    const primary = await RankingSystem.findOne({ where: { primary: true } });
+    const primary = await this.rankingSystemService.getPrimary();
     args.where = {
       ...args.where,
       systemId: primary?.id,
@@ -574,17 +577,11 @@ export class PlayerTeamResolver extends PlayersResolver {
 
     const places = await RankingLastPlace.findAll(args);
 
-    // distinct systemIds
-    const systemIds = [...new Set(places.map((place) => place.systemId))];
-    const systems = await RankingSystem.findAll({
-      where: {
-        id: systemIds,
-      },
-    });
+    const findSystem = await this.loadSystemsByIds(places.map((place) => place.systemId));
 
     return (
       places?.map((place) => {
-        const system = systems.find((sys) => sys.id === place.systemId);
+        const system = findSystem(place.systemId);
 
         if (!system) {
           throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
@@ -615,17 +612,11 @@ export class PlayerTeamResolver extends PlayersResolver {
 
     const places = await RankingPlace.findAll(args);
 
-    // distinct systemIds
-    const systemIds = [...new Set(places.map((place) => place.systemId))];
-    const systems = await RankingSystem.findAll({
-      where: {
-        id: systemIds,
-      },
-    });
+    const findSystem = await this.loadSystemsByIds(places.map((place) => place.systemId));
 
     return (
       places?.map((place) => {
-        const system = systems.find((sys) => sys.id === place.systemId);
+        const system = findSystem(place.systemId);
 
         if (!system) {
           throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);

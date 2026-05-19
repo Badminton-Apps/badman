@@ -31,6 +31,7 @@ import { GraphQLError } from "graphql";
 import { Op, Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { ErrorCode, ListArgs } from "../../utils";
+import { TeamAssociationService } from "./team-association.service";
 import { TeamResult } from "./team-result.object";
 
 @Resolver(() => Team)
@@ -39,7 +40,8 @@ export class TeamsResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private readonly indexCalculationService: IndexCalculationService
+    private readonly indexCalculationService: IndexCalculationService,
+    private readonly teamAssociationService: TeamAssociationService
   ) {}
 
   // ---------------------------------------------------------------------------
@@ -240,6 +242,14 @@ export class TeamsResolver {
 
   @ResolveField(() => [PlayerWithTeamMembershipType])
   async players(@Parent() team: Team, @Args() listArgs: ListArgs) {
+    // When no list args are supplied (the common GetClubTeams case) we batch
+    // all per-team Player lookups across the request into a single query via
+    // TeamAssociationService. When filters/pagination are supplied we fall
+    // back to the per-team association call so the args take effect.
+    const hasFilters = !!(listArgs.where || listArgs.take || listArgs.skip || listArgs.order);
+    if (!hasFilters) {
+      return this.teamAssociationService.getPlayers(team);
+    }
     return team.getPlayers(ListArgs.toFindOptions(listArgs));
   }
 
@@ -278,64 +288,30 @@ export class TeamsResolver {
 
   @ResolveField(() => EventEntry, { nullable: true })
   async entry(@Parent() team: Team): Promise<EventEntry | null> {
-    // Get all entries for the team
-    const entries = await EventEntry.findAll({
-      where: {
-        teamId: team.id,
-      },
-    });
-
-    // Prefer an entry that has been assigned to a draw: once the federation
-    // sync has run the draw assignment, the entry carries a `drawId` and that
-    // entry is the authoritative one (it pins the team to a specific draw
-    // within the subEvent, which is what the encounter/calendar views need).
-    //
-    // However, between team enrollment and the draw being made, entries
-    // exist with `drawId = NULL`. They still carry the `subEventId`, which
-    // is enough for the frontend to resolve `entry.subEventCompetition` and
-    // render the division/Liga label and the edit dialog's competition
-    // field. Before this fallback, freshly-enrolled teams (new enrollment
-    // flow) showed up in the club-teams list without a division until the
-    // sync had assigned a draw, even though the data needed to render the
-    // division was already present on the entry.
-    //
-    // Why both enrollment paths produce drawId = NULL:
-    //   - Old createTeam mutation (this file, ~line 296) does
-    //     EventEntry.findOrCreate keyed on (teamId, subEventId, entryType);
-    //     `EventEntryNewInput` has no `drawId` field, so it is never written.
-    //   - New enrollment flow (EnrollmentEntryService, ~line 110) does
-    //     `EventEntry.create({}, { transaction })` with an empty payload and
-    //     then attaches teamId via `team.setEntry` and subEventId via
-    //     `subEvent.addEventEntry`. Again no `drawId`.
-    // The only place `drawId` gets populated is the federation sync. See
-    // apps/worker/sync/.../competition/processors/standing.processor.ts —
-    // it loads the team with its existing EventEntry filtered by the draw's
-    // subEventId, then runs `entryDraw.drawId = draw.id; entryDraw.save()`.
-    // So sync amends the row created at enrollment time in place; it does
-    // not create a duplicate. Once sync has run, the `find(e => e.drawId)`
-    // branch below wins again and this fallback becomes a no-op.
-    //
-    // Strategy: take the drawId-bearing entry when one exists, otherwise
-    // fall back to any entry for the team. The order of `findAll` is not
-    // guaranteed, but in practice a team has at most one entry per season
-    // until the draw is made, so the fallback is unambiguous in the
-    // pre-draw window.
-    return entries.find((entry: EventEntry) => entry.drawId) ?? entries[0] ?? null;
+    // Delegates to TeamAssociationService which:
+    //   1. Batches all per-team EventEntry lookups in a request into one
+    //      `EventEntry.findAll({ teamId: Op.in([...]) })`.
+    //   2. Groups results by teamId and preserves the existing fallback
+    //      logic: prefer an entry with a `drawId` (federation sync has
+    //      pinned the team to a draw); otherwise fall back to any entry
+    //      for the team (covers freshly-enrolled teams with drawId=NULL).
+    //      See team-association.service.ts:loadEntriesByTeamIds.
+    return this.teamAssociationService.getEntry(team);
   }
 
   @ResolveField(() => Location)
-  async locations(@Parent() team: Team): Promise<Location> {
-    return team.getPrefferedLocation();
+  async locations(@Parent() team: Team): Promise<Location | null> {
+    return this.teamAssociationService.getPrefferedLocation(team);
   }
 
   @ResolveField(() => Player)
-  async captain(@Parent() team: Team): Promise<Player> {
-    return team.getCaptain();
+  async captain(@Parent() team: Team): Promise<Player | null> {
+    return this.teamAssociationService.getCaptain(team);
   }
 
   @ResolveField(() => Club)
-  async club(@Parent() team: Team): Promise<Club> {
-    return team.getClub();
+  async club(@Parent() team: Team): Promise<Club | null> {
+    return this.teamAssociationService.getClub(team);
   }
 
   // Object
