@@ -6,121 +6,86 @@ import {
   Team,
   TeamPlayerMembership,
 } from "@badman/backend-database";
-import { Injectable, Logger, Scope } from "@nestjs/common";
+import { Injectable, Scope } from "@nestjs/common";
+import DataLoader from "dataloader";
 import { Op } from "sequelize";
-
-type Batch<K, V> = {
-  keys: Set<K>;
-  promise: Promise<Map<K, V>> | null;
-};
-
-type BatchState<K, V> = {
-  cache: Map<K, V | null>;
-  batch: Batch<K, V> | null;
-};
 
 /**
  * Request-scoped batching for Team field resolvers.
  *
- * Each method collects all ids requested within one microtask tick, then
- * issues a single `findAll({ id: Op.in })` and resolves every queued caller
- * from the shared result. Subsequent ticks start a fresh batch but reuse
- * the per-request cache built up so far.
- *
- * Lifecycle is bound to one GraphQL request (Scope.REQUEST). No TTL needed:
- * the service instance is discarded when the request ends.
+ * Each DataLoader collects all keys requested within one microtask, issues
+ * one `findAll({ ... [Op.in] })` per loader, and resolves every caller from
+ * the shared result. Cache is per-instance (per request); the instance is
+ * discarded when the request ends so no TTL is needed.
  */
 @Injectable({ scope: Scope.REQUEST })
 export class TeamAssociationService {
-  private readonly logger = new Logger(TeamAssociationService.name);
+  private readonly captainLoader = new DataLoader<string, Player | null>((ids) =>
+    this.batchPlayersByIds(ids)
+  );
+  private readonly locationLoader = new DataLoader<string, Location | null>((ids) =>
+    this.batchLocationsByIds(ids)
+  );
+  private readonly clubLoader = new DataLoader<string, Club | null>((ids) =>
+    this.batchClubsByIds(ids)
+  );
+  private readonly entryLoader = new DataLoader<string, EventEntry | null>((teamIds) =>
+    this.batchEntriesByTeamIds(teamIds)
+  );
+  private readonly playersLoader = new DataLoader<string, Player[]>((teamIds) =>
+    this.batchPlayersByTeamIds(teamIds)
+  );
 
-  private captainState: BatchState<string, Player> = { cache: new Map(), batch: null };
-  private locationState: BatchState<string, Location> = { cache: new Map(), batch: null };
-  private clubState: BatchState<string, Club> = { cache: new Map(), batch: null };
-  private entryState: BatchState<string, EventEntry> = { cache: new Map(), batch: null };
-  private playersState: BatchState<string, Player[]> = { cache: new Map(), batch: null };
-
-  async getCaptain(team: Team): Promise<Player | null> {
-    return this.loadOne(this.captainState, team.captainId, (ids) =>
-      this.loadPlayersByIds(ids)
-    );
+  getCaptain(team: Team): Promise<Player | null> {
+    return team.captainId ? this.captainLoader.load(team.captainId) : Promise.resolve(null);
   }
 
-  async getPrefferedLocation(team: Team): Promise<Location | null> {
-    return this.loadOne(this.locationState, team.prefferedLocationId, (ids) =>
-      this.loadLocationsByIds(ids)
-    );
+  getPrefferedLocation(team: Team): Promise<Location | null> {
+    return team.prefferedLocationId
+      ? this.locationLoader.load(team.prefferedLocationId)
+      : Promise.resolve(null);
   }
 
-  async getClub(team: Team): Promise<Club | null> {
-    return this.loadOne(this.clubState, team.clubId, (ids) => this.loadClubsByIds(ids));
+  getClub(team: Team): Promise<Club | null> {
+    return team.clubId ? this.clubLoader.load(team.clubId) : Promise.resolve(null);
   }
 
-  async getEntry(team: Team): Promise<EventEntry | null> {
-    return this.loadOne(this.entryState, team.id, (ids) => this.loadEntriesByTeamIds(ids));
+  getEntry(team: Team): Promise<EventEntry | null> {
+    return team.id ? this.entryLoader.load(team.id) : Promise.resolve(null);
   }
 
   async getPlayers(team: Team): Promise<Player[]> {
-    const result = await this.loadOne(this.playersState, team.id, (ids) =>
-      this.loadPlayersByTeamIds(ids)
-    );
-    return result ?? [];
+    if (!team.id) return [];
+    return this.playersLoader.load(team.id);
   }
 
-  private loadOne<V>(
-    state: BatchState<string, V>,
-    key: string | null | undefined,
-    loader: (keys: string[]) => Promise<Map<string, V>>
-  ): Promise<V | null> {
-    if (!key) {
-      return Promise.resolve(null);
-    }
-    if (state.cache.has(key)) {
-      return Promise.resolve(state.cache.get(key) ?? null);
-    }
-
-    if (!state.batch) {
-      const batch: Batch<string, V> = { keys: new Set<string>(), promise: null };
-      state.batch = batch;
-      batch.promise = Promise.resolve().then(async () => {
-        state.batch = null;
-        const ids = [...batch.keys];
-        const result = await loader(ids);
-        for (const id of ids) {
-          state.cache.set(id, result.get(id) ?? null);
-        }
-        return result;
-      });
-    }
-
-    state.batch.keys.add(key);
-    return state.batch.promise!.then((m) => m.get(key) ?? null);
+  private async batchPlayersByIds(ids: readonly string[]): Promise<(Player | null)[]> {
+    const players = await Player.findAll({ where: { id: { [Op.in]: [...ids] } } });
+    const map = new Map(players.map((p) => [p.id, p]));
+    return ids.map((id) => map.get(id) ?? null);
   }
 
-  private async loadPlayersByIds(ids: string[]): Promise<Map<string, Player>> {
-    if (ids.length === 0) return new Map();
-    const players = await Player.findAll({ where: { id: { [Op.in]: ids } } });
-    return new Map(players.map((p) => [p.id, p]));
+  private async batchLocationsByIds(ids: readonly string[]): Promise<(Location | null)[]> {
+    const locations = await Location.findAll({ where: { id: { [Op.in]: [...ids] } } });
+    const map = new Map(locations.map((l) => [l.id, l]));
+    return ids.map((id) => map.get(id) ?? null);
   }
 
-  private async loadLocationsByIds(ids: string[]): Promise<Map<string, Location>> {
-    if (ids.length === 0) return new Map();
-    const locations = await Location.findAll({ where: { id: { [Op.in]: ids } } });
-    return new Map(locations.map((l) => [l.id, l]));
+  private async batchClubsByIds(ids: readonly string[]): Promise<(Club | null)[]> {
+    const clubs = await Club.findAll({ where: { id: { [Op.in]: [...ids] } } });
+    const map = new Map(clubs.map((c) => [c.id, c]));
+    return ids.map((id) => map.get(id) ?? null);
   }
 
-  private async loadClubsByIds(ids: string[]): Promise<Map<string, Club>> {
-    if (ids.length === 0) return new Map();
-    const clubs = await Club.findAll({ where: { id: { [Op.in]: ids } } });
-    return new Map(clubs.map((c) => [c.id, c]));
-  }
-
-  private async loadEntriesByTeamIds(teamIds: string[]): Promise<Map<string, EventEntry>> {
-    if (teamIds.length === 0) return new Map();
-    const entries = await EventEntry.findAll({ where: { teamId: { [Op.in]: teamIds } } });
+  private async batchEntriesByTeamIds(
+    teamIds: readonly string[]
+  ): Promise<(EventEntry | null)[]> {
+    const entries = await EventEntry.findAll({
+      where: { teamId: { [Op.in]: [...teamIds] } },
+    });
 
     // Group by teamId; prefer the entry with a drawId (federation-sync has
-    // assigned a draw), otherwise fall back to any entry for the team.
+    // assigned a draw), otherwise fall back to the first entry for the team.
     // Mirrors the pre-existing logic at team.resolver.ts:323.
     const byTeam = new Map<string, EventEntry[]>();
     for (const entry of entries) {
@@ -130,23 +95,18 @@ export class TeamAssociationService {
       byTeam.set(entry.teamId, bucket);
     }
 
-    const result = new Map<string, EventEntry>();
-    for (const [teamId, bucket] of byTeam) {
-      const winner = bucket.find((e) => e.drawId) ?? bucket[0];
-      if (winner) {
-        result.set(teamId, winner);
-      }
-    }
-    return result;
+    return teamIds.map((teamId) => {
+      const bucket = byTeam.get(teamId);
+      if (!bucket || bucket.length === 0) return null;
+      return bucket.find((e) => e.drawId) ?? bucket[0];
+    });
   }
 
-  private async loadPlayersByTeamIds(teamIds: string[]): Promise<Map<string, Player[]>> {
-    if (teamIds.length === 0) return new Map();
-
+  private async batchPlayersByTeamIds(teamIds: readonly string[]): Promise<Player[][]> {
     // Fetch through TeamPlayerMembership so we can group rows back by teamId.
-    // Using a single query keeps this O(1) DB round trip regardless of team count.
+    // One query keeps this O(1) DB round trip regardless of team count.
     const memberships = await TeamPlayerMembership.findAll({
-      where: { teamId: { [Op.in]: teamIds } },
+      where: { teamId: { [Op.in]: [...teamIds] } },
       include: [{ model: Player, required: true }],
     });
 
@@ -154,14 +114,15 @@ export class TeamAssociationService {
     for (const m of memberships as Array<TeamPlayerMembership & { Player?: Player }>) {
       if (!m.teamId || !m.Player) continue;
       const player = m.Player;
-      // Attach the membership row in the same shape Sequelize would produce
-      // through `team.getPlayers()` so downstream resolvers that read
-      // `player.TeamPlayerMembership` keep working.
+      // Attach the membership in the shape `team.getPlayers()` would produce
+      // so downstream consumers reading `player.TeamPlayerMembership` keep
+      // working (e.g. PlayerTeamResolver.teamMembership).
       (player as Player & { TeamPlayerMembership: TeamPlayerMembership }).TeamPlayerMembership = m;
       const bucket = grouped.get(m.teamId) ?? [];
       bucket.push(player);
       grouped.set(m.teamId, bucket);
     }
-    return grouped;
+
+    return teamIds.map((teamId) => grouped.get(teamId) ?? []);
   }
 }
