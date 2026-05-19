@@ -5,6 +5,8 @@
 **Status**: Draft
 **Input**: User description: "EncounterCompetition.home / .away / .drawCompetition — per-encounter getHome() / getAway() / getDrawCompetition() — batch Teams + DrawCompetitions referenced across an encounters list."
 
+> **Context note**: The `encounterCompetitions` root query in `encounter.resolver.ts` already eager-loads home and away Teams via `include: [{ model: Team, as: 'home' }, { model: Team, as: 'away' }]`. The N+1 from `.home`, `.away`, and `.drawCompetition` field resolvers applies when encounters are fetched as children of a parent resolver (e.g., `DrawCompetition.encounterCompetitions`) without the eager-load. Additionally, several other field resolvers on `EncounterCompetition` also call per-row Sequelize association getters (`location`, `gameLeader`, `tempHomeCaptain`, etc.) — these are explicitly out of scope for this feature.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — Fetching a draw's encounters resolves home/away teams and draw in bulk (Priority: P1)
