@@ -33,6 +33,10 @@ import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { ListArgs, WhereArgs, queryFixer } from "../../utils";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
+import { PlayerAssociationService } from "./player-association.service";
+
+const PLAYERS_DEFAULT_TAKE = 25;
+const PLAYERS_MAX_TAKE = 200;
 
 @Resolver(() => Player)
 export class PlayersResolver {
@@ -41,7 +45,8 @@ export class PlayersResolver {
   constructor(
     private _sequelize: Sequelize,
     private pointService: PointsService,
-    protected readonly rankingSystemService: RankingSystemService
+    protected readonly rankingSystemService: RankingSystemService,
+    protected readonly playerAssociations: PlayerAssociationService
   ) {}
 
   protected async loadSystemsByIds(
@@ -104,6 +109,8 @@ export class PlayersResolver {
   @Query(() => PagedPlayer)
   async players(@Args() listArgs: ListArgs): Promise<{ count: number; rows: Player[] }> {
     const options = ListArgs.toFindOptions(listArgs);
+    options.limit = Math.min(options.limit ?? PLAYERS_DEFAULT_TAKE, PLAYERS_MAX_TAKE);
+
     const filters = this.getPlayerFilters();
 
     if (options.where) {
@@ -193,15 +200,10 @@ export class PlayersResolver {
   })
   async rankingLastPlaces(
     @Parent() player: Player,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Args() listArgs: ListArgs
   ): Promise<RankingLastPlace[]> {
-    const opts = ListArgs.toFindOptions(listArgs);
-    const primary = await this.rankingSystemService.getPrimary();
-    opts.where = { ...opts.where, systemId: primary?.id };
-    const places = await player.getRankingLastPlaces({
-      order: [["rankingDate", "DESC"]],
-      ...opts,
-    });
+    const places = await this.playerAssociations.getPrimaryRankingLastPlaces(player);
 
     const findSystem = await this.loadSystemsByIds(places.map((place) => place.systemId));
 
