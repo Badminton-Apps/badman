@@ -637,6 +637,28 @@
         "loadMoreCompetitions": "Charger plus de compétitions..."
       }
     },
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "export": "Exporter",
+      "setRisersFallers": "Définir les montées/descentes",
+      "openCloseDate": "Ouvrir/Fermer la date",
+      "openCloseEncounterChangeDate": "Ouvrir/Fermer la modification de la date de rencontre",
+      "makeOfficial": "Rendre officiel",
+      "makeUnofficial": "Rendre non officiel",
+      "sync": "Synchroniser",
+      "messages": {
+        "syncSuccess": "Compétition synchronisée avec succès",
+        "syncError": "Erreur lors de la synchronisation de la compétition",
+        "cpGenerationStarted": "Génération CP démarrée. Vous recevrez un e-mail lorsque le fichier sera prêt à télécharger."
+      },
+      "averageLevel": "Niveau moyen",
+      "downloadEnrollment": "Télécharger les inscriptions",
+      "downloadTeams": "Télécharger les équipes",
+      "downloadExceptions": "Télécharger les exceptions",
+      "downloadLocations": "Télécharger les emplacements",
+      "downloadCp": "Télécharger le fichier CP"
+    },
     "addCompetitionDialog": {
       "title": "Ajouter une compétition",
       "inputs": {
@@ -1670,6 +1692,15 @@
         "save": "Sauvegarder",
         "success": "Paramètres d'inscription enregistrés avec succès",
         "error": "Échec de l'enregistrement des paramètres d'inscription"
+      }
+    },
+    "avgLevelPage": {
+      "error": "Impossible de charger les données de niveau moyen.",
+      "empty": "Aucune donnée de niveau moyen disponible pour cette compétition.",
+      "eventType": {
+        "M": "Hommes",
+        "F": "Femmes",
+        "MX": "Mixte"
       }
     },
     "adminCompetitionsPage": {

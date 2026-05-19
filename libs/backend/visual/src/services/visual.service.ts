@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
 import { XMLParser } from "fast-xml-parser";
+import * as Sentry from "@sentry/nestjs";
 
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -38,6 +39,7 @@ import {
   XmlTournamentSchema,
   parseResponse,
   validateMany,
+  validateManyLossy,
   validateOne,
 } from "../utils";
 import { z } from "zod";
@@ -74,11 +76,40 @@ export class VisualService {
   }
 
   async getPlayers(tourneyId: string, useCache = true): Promise<XmlPlayer[]> {
-    return this._fetchMany<XmlPlayer>(
-      `${this._vr()}/Tournament/${tourneyId}/Player`,
-      "Player",
+    // Lossy validation: Visual API sporadically returns Player rows without
+    // a MemberID (Sentry #104397491). Such rows are useless downstream
+    // (cannot be matched to a member record) so we drop them with a warn
+    // log + a Sentry breadcrumb instead of killing the whole SyncEvents job.
+    const url = `${this._vr()}/Tournament/${tourneyId}/Player`;
+    const result = await this._getFromApi(url, useCache);
+    const parsed = parseResponse(result, this._parser, this.logger) as XmlResult;
+    return validateManyLossy<XmlPlayer>(
+      parsed.Player,
       XmlPlayerSchema,
-      useCache
+      "Player",
+      this.logger,
+      ({ index, payloadKey, error }) => {
+        Sentry.withScope((scope) => {
+          scope.setLevel("warning");
+          scope.setTag("payload_key", payloadKey);
+          scope.setTag("tournament_id", tourneyId);
+          // Fingerprint by field path so all rows missing the same field
+          // collapse to one Sentry issue across runs. validateManyLossy
+          // validates each element separately, so issue.path already starts
+          // at the field name (no array index to strip).
+          const firstIssue = error.errors[0];
+          const fieldPath = firstIssue?.path.join(".") || "unknown";
+          scope.setFingerprint(["visual-lossy-drop", payloadKey, fieldPath]);
+          scope.setContext("zodError", {
+            index,
+            fieldPath,
+            message: error.message,
+          });
+          Sentry.captureMessage(
+            `Visual API ${payloadKey} entry dropped: missing/invalid ${fieldPath}`
+          );
+        });
+      }
     );
   }
 
@@ -104,6 +135,15 @@ export class VisualService {
     );
   }
 
+  /**
+   * GET /Tournament/{tourneyId}/TeamMatch/{matchId}
+   *
+   * Fetches the individual games within a competition encounter (TeamMatch).
+   *
+   * **Use this for competition encounters.** Returns up to 8 individual
+   * `XmlMatch` records (singles + doubles) — each with MatchOrder, MatchTypeID,
+   * per-set scores, and player MemberIDs.
+   */
   async getTeamMatch(
     tourneyId: string,
     matchId: string | number,
@@ -118,6 +158,11 @@ export class VisualService {
   }
 
   /**
+   * GET /Tournament/{tourneyId}/MatchDetail/{matchId}
+   *
+   * Fetches a single game's detail. Note: byes do NOT appear in this endpoint —
+   * use getGames or getTeamMatch at the parent level to see byes.
+   *
    * The MatchDetail endpoint may return either a single match or an array
    * (XML quirk: 0/1/many sibling tags map to absent / object / array).
    * Always normalise to an array — downstream code shouldn't have to
@@ -136,6 +181,22 @@ export class VisualService {
     );
   }
 
+  /**
+   * GET /Tournament/{tourneyId}/Draw/{drawId}/Match
+   *
+   * Fetches the contents of a draw. Return shape depends on draw type:
+   *
+   * - **Competition draw (poule)** → `XmlTeamMatch[]` — one per encounter.
+   *   Each item has `Code` (encounter code), `Team1`, `Team2`, `MatchTime`,
+   *   `RoundName`, and `Sets.Set` = aggregate team score. No `MatchOrder`.
+   * - **Tournament draw** (individual) → `XmlMatch[]` — individual games with
+   *   `MatchOrder`, `MatchTypeID`, per-set scores, etc.
+   *
+   * **Do NOT** call this with a competition encounter code — the VR API will
+   * treat it as a draw lookup and return the unrelated TeamMatches that happen
+   * to share the numeric ID. For encounter-level game fetch use
+   * {@link VisualService.getTeamMatch}.
+   */
   async getGames(
     tourneyId: string,
     drawId: string | number,

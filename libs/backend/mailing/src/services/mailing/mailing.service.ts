@@ -422,6 +422,8 @@ export class MailingService {
     }>;
 
     await this._sendMail(options);
+
+    this.logger.log(`[sendEnrollmentMail] _sendMail completed for ${to.email}`);
   }
 
   async sendSyncMail(
@@ -623,11 +625,7 @@ export class MailingService {
     await this._sendMail(options);
   }
 
-  async sendCpExportFailedMail(to: {
-    fullName: string;
-    email: string;
-    slug: string;
-  }) {
+  async sendCpExportFailedMail(to: { fullName: string; email: string; slug: string }) {
     const options = {
       from: "info@badman.app",
       to: to.email,

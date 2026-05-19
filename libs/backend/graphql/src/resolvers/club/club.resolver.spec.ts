@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { FindOptions, Op } from "sequelize";
@@ -7,8 +8,10 @@ import {
   ClubPlayerMembership,
   ClubPlayerMembershipNewInput,
   ClubPlayerMembershipUpdateInput,
+  ClubUpdateInput,
   Player,
 } from "@badman/backend-database";
+import { ErrorCode } from "../../utils";
 import { ClubsResolver } from "./club.resolver";
 import { ClubMembershipFilterInput } from "./club-membership-filter.input";
 import { ClubMembershipService } from "./club-membership.service";
@@ -37,16 +40,19 @@ describe("ClubsResolver", () => {
       ...overrides,
     }) as unknown as ClubPlayerMembership;
 
-  const fakeClub = (id = "club-uuid") => ({ id }) as unknown as Club;
+  const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+  const PLAYER_UUID = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
 
-  const fakePlayer = (id = "player-uuid") => ({ id }) as unknown as Player;
+  const fakeClub = (id = CLUB_UUID) => ({ id }) as unknown as Club;
+
+  const fakePlayer = (id = PLAYER_UUID) => ({ id }) as unknown as Player;
 
   const baseAddInput = (
     overrides: Partial<ClubPlayerMembershipNewInput> = {}
   ): ClubPlayerMembershipNewInput =>
     ({
-      clubId: "club-uuid",
-      playerId: "player-uuid",
+      clubId: CLUB_UUID,
+      playerId: PLAYER_UUID,
       start: new Date("2025-09-01"),
       end: undefined,
       membershipType: "NORMAL" as never,
@@ -258,10 +264,88 @@ describe("ClubsResolver", () => {
   });
 
   // ---------------------------------------------------------------------------
+  // BAD_USER_INPUT — UUID validation (014)
+  // ---------------------------------------------------------------------------
+
+  describe("removeClub — UUID validation", () => {
+    it("throws BAD_USER_INPUT and logs warn when id is not a UUID", async () => {
+      const user = userWithPermission(true);
+      const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+      try {
+        await resolver.removeClub(user, "smash-for-fun");
+        fail("expected throw");
+      } catch (err) {
+        const e = err as GraphQLError;
+        expect(e).toBeInstanceOf(GraphQLError);
+        expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+        expect(e.extensions["field"]).toBe("id");
+        expect(e.extensions["value"]).toBe("smash-for-fun");
+      }
+
+      expect(mockTransaction.commit).not.toHaveBeenCalled();
+      expect(mockTransaction.rollback).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "id" })
+      );
+    });
+  });
+
+  describe("updateClub — UUID validation", () => {
+    it("throws BAD_USER_INPUT and logs warn when updateClubData.id is not a UUID", async () => {
+      const user = userWithPermission(true);
+      const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+      const input = { id: "smash-for-fun" } as ClubUpdateInput;
+      try {
+        await resolver.updateClub(user, input);
+        fail("expected throw");
+      } catch (err) {
+        const e = err as GraphQLError;
+        expect(e).toBeInstanceOf(GraphQLError);
+        expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+        expect(e.extensions["field"]).toBe("id");
+        expect(e.extensions["value"]).toBe("smash-for-fun");
+      }
+
+      expect(mockTransaction.commit).not.toHaveBeenCalled();
+      expect(mockTransaction.rollback).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "id" })
+      );
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // addPlayerToClub — 5 cases (004)
   // ---------------------------------------------------------------------------
 
   describe("addPlayerToClub", () => {
+    it("throws BAD_USER_INPUT and logs warn when clubId is not a UUID", async () => {
+      const user = userWithPermission(true);
+      const warnSpy = jest.spyOn(Logger.prototype, "warn");
+
+      try {
+        await resolver.addPlayerToClub(user, baseAddInput({ clubId: "smash-for-fun" }));
+        fail("expected throw");
+      } catch (err) {
+        const e = err as GraphQLError;
+        expect(e).toBeInstanceOf(GraphQLError);
+        expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+        expect(e.extensions["field"]).toBe("clubId");
+        expect(e.extensions["value"]).toBe("smash-for-fun");
+      }
+
+      expect(mockTransaction.commit).not.toHaveBeenCalled();
+      expect(mockTransaction.rollback).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "clubId" })
+      );
+    });
+
     it("rejects unauthorized with PERMISSION_DENIED", async () => {
       const user = userWithPermission(false);
 
@@ -277,18 +361,19 @@ describe("ClubsResolver", () => {
       expect(mockTransaction.commit).not.toHaveBeenCalled();
     });
 
-    it("throws CLUB_NOT_FOUND when club is missing", async () => {
+    it("throws CLUB_NOT_FOUND when club is missing (UUID not in DB)", async () => {
       const user = userWithPermission(true);
+      const missingUUID = "00000000-0000-0000-0000-000000000000";
       jest.spyOn(Club, "findByPk").mockResolvedValue(null);
 
       try {
-        await resolver.addPlayerToClub(user, baseAddInput({ clubId: "missing-club" }));
+        await resolver.addPlayerToClub(user, baseAddInput({ clubId: missingUUID }));
         fail("expected throw");
       } catch (err) {
         const e = err as GraphQLError;
         expect(e).toBeInstanceOf(GraphQLError);
         expect(e.extensions["code"]).toBe("CLUB_NOT_FOUND");
-        expect(e.extensions["clubId"]).toBe("missing-club");
+        expect(e.extensions["clubId"]).toBe(missingUUID);
       }
 
       expect(mockTransaction.rollback).toHaveBeenCalled();
@@ -327,8 +412,8 @@ describe("ClubsResolver", () => {
 
       expect(result.alreadyExisted).toBe(false);
       expect(result.id).toBe("membership-uuid");
-      expect(result.clubId).toBe("club-uuid");
-      expect(result.playerId).toBe("player-uuid");
+      expect(result.clubId).toBe(CLUB_UUID);
+      expect(result.playerId).toBe(PLAYER_UUID);
       expect(result.membershipType).toBe("NORMAL");
       expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
       expect(mockTransaction.rollback).not.toHaveBeenCalled();

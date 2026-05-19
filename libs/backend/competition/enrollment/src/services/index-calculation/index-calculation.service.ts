@@ -359,14 +359,20 @@ export class IndexCalculationService {
       transaction,
     });
 
+    const foundIds = new Set<string>();
     for (const p of dbPlayers) {
+      foundIds.add(p.id);
       if (p.gender) {
         genderMap.set(p.id, p.gender as "M" | "F");
       }
     }
 
+    // Only truly absent players (not in DB at all) are "not found".
+    // Players that exist but have no gender are not an error — they are
+    // simply absent from genderMap and will contribute without gender
+    // filtering (safe for M/F teams; MX will treat them as ungrouped).
     for (const id of playerIds) {
-      if (!genderMap.has(id)) {
+      if (!foundIds.has(id)) {
         notFoundIds.add(id);
       }
     }
@@ -387,10 +393,8 @@ export class IndexCalculationService {
     genderMap: Map<string, "M" | "F">,
     notFoundIds: Set<string>,
     amountOfLevels: number
-  ): IndexCalculationResult { 
-    const missingPlayerIds = input.players
-      .filter((p) => notFoundIds.has(p.id))
-      .map((p) => p.id);
+  ): IndexCalculationResult {
+    const missingPlayerIds = input.players.filter((p) => notFoundIds.has(p.id)).map((p) => p.id);
 
     if (missingPlayerIds.length > 0) {
       return failure(
@@ -424,7 +428,9 @@ export class IndexCalculationService {
 
     const indexPlayers: Partial<IndexPlayer>[] = resolvedPlayers.map((p) => ({
       id: p.id,
-      gender: p.gender,
+      // null/undefined gender → omit the key so getBestPlayers excludes this
+      // player from MX gender groups (same as getIndexFromPlayers behaviour).
+      ...(p.gender ? { gender: p.gender } : {}),
       single: p.single,
       double: p.double,
       mix: p.mix,

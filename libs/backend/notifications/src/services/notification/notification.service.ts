@@ -397,6 +397,7 @@ export class NotificationService {
 
     const user = await Player.findByPk(userId);
     if (!user) {
+      this._logger.error(`[notifyEnrollment] User not found — userId: ${userId}`);
       throw new Error("User not found");
     }
 
@@ -431,6 +432,7 @@ export class NotificationService {
     });
 
     if (!club) {
+      this._logger.error(`[notifyEnrollment] Club not found — clubId: ${clubId}`);
       throw new Error("Club not found");
     }
 
@@ -473,6 +475,12 @@ export class NotificationService {
     });
 
     club.teams?.map((team) => {
+      if (!team?.entry?.meta?.competition) {
+        this._logger.warn(
+          `[notifyEnrollment] Team ${team.name} (id: ${team.id}) has no enrollment meta — base players will be empty in the email`
+        );
+      }
+
       const basePlayers = {
         ...team?.entry?.meta?.competition?.players.map((player) => {
           const basePlayer = players.find((p) => p.id === player.id);
@@ -502,7 +510,7 @@ export class NotificationService {
       user,
       clubId,
       { club, locations, comments },
-      { email: email || user.email || "", url },
+      { email: resolvedEmail, url },
       {
         email: true,
       }

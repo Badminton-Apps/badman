@@ -30,7 +30,7 @@ import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "
 import { GraphQLError } from "graphql";
 import { Op, Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { ErrorCode, ListArgs } from "../../utils";
+import { ErrorCode, ListArgs, assertUUID } from "../../utils";
 import { TeamAssociationService } from "./team-association.service";
 import { TeamResult } from "./team-result.object";
 
@@ -363,6 +363,14 @@ export class TeamsResolver {
   ): Promise<TeamResult> {
     const userId = user?.id ?? null;
     const clubId = newTeamData.clubId ?? "";
+
+    try {
+      assertUUID(clubId, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
+
     const transaction = await this._sequelize.transaction();
     try {
       const core = await this._createTeamCore(
@@ -386,6 +394,7 @@ export class TeamsResolver {
           transaction
         );
       }
+
       await transaction.commit();
       return core.result;
     } catch (e) {
@@ -410,6 +419,18 @@ export class TeamsResolver {
     @User() user: Player
   ): Promise<TeamResult[]> {
     const userId = user?.id ?? null;
+
+    // Validate each team's clubId before entering the loop — fail fast on the first invalid entry
+    for (const team of newTeamData) {
+      const clubId = team.clubId ?? "";
+      try {
+        assertUUID(clubId, "clubId", { userId });
+      } catch (e) {
+        this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+        throw e;
+      }
+    }
+
     const transaction = await this._sequelize.transaction();
     try {
       const cores: Awaited<ReturnType<typeof this._createTeamCore>>[] = [];

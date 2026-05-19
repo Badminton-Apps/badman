@@ -1,41 +1,10 @@
-import { SubEventTypeEnum } from "@badman/utils";
+import {
+  ASSEMBLY_POSITION_ORDER,
+  getAssemblyPositionsInOrder,
+  SubEventTypeEnum,
+} from "@badman/utils";
 
-/**
- * Assembly position order for each team type
- * Defines the order in which assembly positions should be processed for form filling
- */
-export const ASSEMBLY_POSITION_ORDER = {
-  [SubEventTypeEnum.M]: [
-    "double1",
-    "double2",
-    "double3",
-    "double4",
-    "single1",
-    "single2",
-    "single3",
-    "single4",
-  ],
-  [SubEventTypeEnum.F]: [
-    "double1",
-    "double2",
-    "double3",
-    "double4",
-    "single1",
-    "single2",
-    "single3",
-    "single4",
-  ],
-  [SubEventTypeEnum.MX]: [
-    "double1",
-    "double2",
-    "single1",
-    "single3",
-    "single2",
-    "single4",
-    "double3",
-    "double4",
-  ],
-};
+export { ASSEMBLY_POSITION_ORDER, getAssemblyPositionsInOrder };
 
 /**
  * Form headers for each team type in order (1-8)
@@ -102,11 +71,3 @@ export const getHeaderForAssemblyPosition = (
   return formHeaders[positionIndex] || null;
 };
 
-/**
- * Get all assembly positions in the correct order for processing based on team type
- * @param teamType The type of team (M, F, MX, NATIONAL)
- * @returns Array of assembly positions in the order they should be filled
- */
-export const getAssemblyPositionsInOrder = (teamType: SubEventTypeEnum): string[] => {
-  return ASSEMBLY_POSITION_ORDER[teamType] || [];
-};
