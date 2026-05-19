@@ -3,13 +3,13 @@
 **Feature Branch**: `020-dataloader-ranking-system`
 **Created**: 2026-05-19
 **Status**: Draft
-**Input**: User description: "Add a request-scoped DataLoader wrapper around RankingSystemService.getById. The existing RankingSystemService is module-scoped with a 5-minute in-memory TTL cache (getById returns a cached Promise). Eighteen resolver field-resolvers call getById per row, creating N id-lookups that hit the same cached value redundantly. Add a thin request-scoped NestJS service (RankingSystemLoaderService) that owns one DataLoader<string, RankingSystem> per request. The DataLoader batch fn calls the module-scoped RankingSystemService.getById for each unique key (which hits the TTL cache, not the DB). This gains per-request id dedup — if 50 rankingPlace rows share one systemId, only one getById call is made in that request tick — while preserving the cross-request 5-min cache. No DB query pattern changes. Inject RankingSystemLoaderService into the resolvers that currently call RankingSystemService.getById directly."
+**Input**: User description: "Add a request-scoped DataLoader wrapper around RankingSystemService.getById. The existing RankingSystemService is module-scoped with a 5-minute in-memory TTL cache. 16 resolver field-resolvers call getById per row, each triggering a Map lookup and async wrapper even when the cache is warm. getById already deduplicates concurrent in-flight DB calls via an inflight Map, but does NOT deduplicate per-request-tick callers with the same id once the cache is warm — each caller gets its own Promise wrapper. Add a thin request-scoped NestJS service (RankingSystemLoaderService) that owns one DataLoader<string, RankingSystem> per request. The DataLoader batch fn calls the module-scoped RankingSystemService.getById for each unique key (hitting the TTL cache, not the DB). This gains per-request-tick id dedup — if 50 rankingPlace rows share one systemId, only one getById call is made in that request tick — while preserving the cross-request 5-min cache. Note: getById does NOT cache null/not-found results. No DB query pattern changes. Inject RankingSystemLoaderService into the 16 resolver call sites that currently call RankingSystemService.getById directly."
 
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 — Backend engineer sees one getById call per unique systemId per request (Priority: P1)
 
-A backend engineer queries a list of ranking places (e.g., `getRankingLastPlaces` returning 50 rows). All rows share the same `systemId`. Today each row's field resolver calls `RankingSystemService.getById`, hitting the 5-minute cached Promise 50 times in the same tick — 50 calls to the same in-memory structure. After this change, a `RankingSystemLoaderService` (request-scoped) batches all `systemId` values arriving in one microtask tick and issues a single `getById` call per unique id. The engineer confirms via logging or a spy in tests that `RankingSystemService.getById` is called exactly once for that request despite 50 rows sharing the same id.
+A backend engineer queries a list of ranking places (e.g., `getRankingLastPlaces` returning 50 rows). All rows share the same `systemId`. Today each row's field resolver calls `RankingSystemService.getById` independently — 50 Map lookups plus 50 async Promise wrappers for the same cached value in one request tick. `getById` already shares a single DB round-trip for truly concurrent callers (inflight Map), but once the cache is warm each per-tick call still goes through the full async path independently. After this change, a `RankingSystemLoaderService` (request-scoped) batches all `systemId` values arriving in one microtask tick and issues a single `getById` call per unique id. The engineer confirms via logging or a spy in tests that `RankingSystemService.getById` is called exactly once for that request despite 50 rows sharing the same id.
 
 **Why this priority**: Eliminates N redundant calls to the cached service per request. Even though the cache avoids DB hits, 50 Promise resolutions where 1 would do adds unnecessary microtask overhead and obscures future profiling.
 
@@ -43,6 +43,7 @@ A backend engineer queries a list of ranking places (e.g., `getRankingLastPlaces
 - **FR-006**: System MUST NOT introduce additional database queries. The DataLoader batch fn relies entirely on the existing in-memory TTL cache in `RankingSystemService`.
 - **FR-007**: Existing unit tests for `RankingSystemService` MUST continue to pass without modification.
 - **FR-008**: `RankingSystemLoaderService` MUST be exported from `RankingModule` (or the appropriate module) so it can be injected into resolver modules that already import `RankingModule`.
+- **FR-009**: Null/not-found results from `RankingSystemService.getById` (id does not exist) MUST NOT be cached by the DataLoader across request ticks; they propagate as `null` to the caller for that request only.
 
 ### Key Entities
 
@@ -63,6 +64,6 @@ A backend engineer queries a list of ranking places (e.g., `getRankingLastPlaces
 ## Assumptions
 
 - The `dataloader` npm package (v2.x) is already a runtime dependency (added in feature 019-graphql-dataloader).
-- All 18 resolver call sites that call `RankingSystemService.getById` are in `libs/backend/graphql/` and `libs/backend/ranking/`; none are in worker apps.
+- Grep over resolver files confirmed 16 `getById` call sites in `libs/backend/graphql/`; none are in worker apps.
 - `RankingSystemService.getById` is safe to call concurrently from multiple batch-fn invocations in the same tick (it returns a cached Promise, so concurrent calls are idempotent).
 - No Sentry pre-condition check is required for this feature because the N+1 pattern here is within the in-memory cache layer (not the DB), making it low-risk to batch speculatively given the confirmed 18-resolver count.
