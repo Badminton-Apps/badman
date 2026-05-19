@@ -10,7 +10,7 @@ import {
   Standing,
   SubEventCompetition,
 } from "@badman/backend-database";
-import { PointsService } from "@badman/backend-ranking";
+import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { sortStanding } from "@badman/utils";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
@@ -27,7 +27,8 @@ export class DrawCompetitionResolver {
   constructor(
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    @InjectQueue(SyncQueue) private _syncQueue: Queue
+    @InjectQueue(SyncQueue) private _syncQueue: Queue,
+    private readonly rankingSystemService: RankingSystemService
   ) {}
 
   @Query(() => DrawCompetition)
@@ -180,10 +181,9 @@ export class DrawCompetitionResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const where = systemId ? { id: systemId } : { primary: true };
-      const system = await RankingSystem.findOne({
-        where,
-      });
+      const system = systemId
+        ? await this.rankingSystemService.getById(systemId)
+        : await this.rankingSystemService.getPrimary();
 
       if (!system) {
         throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);

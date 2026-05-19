@@ -14,6 +14,15 @@ import {
   TeamUpdateInput,
 } from "@badman/backend-database";
 import { IndexCalculationInput, IndexCalculationService } from "@badman/backend-enrollment";
+import { TeamAssociationService } from "./team-association.service";
+
+const teamAssociationServiceStub = (): Partial<TeamAssociationService> => ({
+  getCaptain: jest.fn().mockResolvedValue(null),
+  getClub: jest.fn().mockResolvedValue(null),
+  getPrefferedLocation: jest.fn().mockResolvedValue(null),
+  getEntry: jest.fn().mockResolvedValue(null),
+  getPlayers: jest.fn().mockResolvedValue([]),
+});
 import { SubEventTypeEnum } from "@badman/utils";
 import { ErrorCode } from "../../utils";
 import { TeamsResolver } from "./team.resolver";
@@ -81,6 +90,10 @@ describe("TeamsResolver.createTeam", () => {
               resolvedPlayers: [],
             }),
           },
+        },
+        {
+          provide: TeamAssociationService,
+          useValue: teamAssociationServiceStub(),
         },
       ],
     }).compile();
@@ -351,6 +364,10 @@ describe("TeamsResolver.createTeams", () => {
               resolvedPlayers: [],
             }),
           },
+        },
+        {
+          provide: TeamAssociationService,
+          useValue: teamAssociationServiceStub(),
         },
       ],
     }).compile();
@@ -794,6 +811,10 @@ describe("TeamsResolver.updateTeam", () => {
               resolvedPlayers: [],
             }),
           },
+        },
+        {
+          provide: TeamAssociationService,
+          useValue: teamAssociationServiceStub(),
         },
       ],
     }).compile();

@@ -20,7 +20,7 @@ import {
 } from "@badman/backend-database";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
-import { PointsService } from "@badman/backend-ranking";
+import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
@@ -67,7 +67,8 @@ export class EncounterCompetitionResolver {
     private _sequelize: Sequelize,
     private _pointService: PointsService,
     private encounterValidationService: EncounterValidationService,
-    private encounterGamesService: EncounterGamesGenerationService
+    private encounterGamesService: EncounterGamesGenerationService,
+    private readonly rankingSystemService: RankingSystemService
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -552,10 +553,9 @@ export class EncounterCompetitionResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const where = systemId ? { id: systemId } : { primary: true };
-      const system = await RankingSystem.findOne({
-        where,
-      });
+      const system = systemId
+        ? await this.rankingSystemService.getById(systemId)
+        : await this.rankingSystemService.getPrimary();
 
       if (!system) {
         throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
