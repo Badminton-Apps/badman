@@ -1,10 +1,11 @@
-import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
+import { Player, RankingPlace } from "@badman/backend-database";
 import { Controller, Get, Logger, OnModuleDestroy, Query, Res } from "@nestjs/common";
 import { FastifyReply } from "fastify";
 import fs, { existsSync, mkdirSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
 import moment from "moment";
 import { join } from "path";
 import { Op } from "sequelize";
+import { RankingSystemService } from "../services/system/ranking-system.service";
 
 @Controller({
   path: "ranking",
@@ -14,7 +15,7 @@ export class RankingController implements OnModuleDestroy {
   private _resultFolder = join(__dirname, "results");
   private _cleanupTimeouts = new Set<NodeJS.Timeout>();
 
-  constructor() {
+  constructor(private readonly rankingSystemService: RankingSystemService) {
     if (existsSync(this._resultFolder)) {
       // Remove
       rmdirSync(this._resultFolder, { recursive: true });
@@ -40,7 +41,7 @@ export class RankingController implements OnModuleDestroy {
     const files: string[] = [];
     for (const system of systemsIds) {
       const fileNameSafe =
-        (await RankingSystem.findByPk(system, { attributes: ["name"] }))?.name?.replace(
+        (await this.rankingSystemService.getById(system))?.name?.replace(
           /[/\\?%*:|"<>]/g,
           "-"
         ) || "unknown";
@@ -120,7 +121,7 @@ export class RankingController implements OnModuleDestroy {
     const files: string[] = [];
     for (const system of systemsIds) {
       const fileNameSafe =
-        (await RankingSystem.findByPk(system, { attributes: ["name"] }))?.name?.replace(
+        (await this.rankingSystemService.getById(system))?.name?.replace(
           /[/\\?%*:|"<>]/g,
           "-"
         ) || "unknown";
@@ -217,7 +218,7 @@ export class RankingController implements OnModuleDestroy {
     const files: string[] = [];
     for (const system of systemsIds) {
       const fileNameSafe =
-        (await RankingSystem.findByPk(system, { attributes: ["name"] }))?.name?.replace(
+        (await this.rankingSystemService.getById(system))?.name?.replace(
           /[/\\?%*:|"<>]/g,
           "-"
         ) ?? "unknown";

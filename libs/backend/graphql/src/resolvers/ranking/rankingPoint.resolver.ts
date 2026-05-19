@@ -4,7 +4,7 @@ import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nest
 import { ListArgs } from "../../utils";
 import { User } from "@badman/backend-authorization";
 import { Sequelize } from "sequelize-typescript";
-import { PointsService } from "@badman/backend-ranking";
+import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 
 @Resolver(() => RankingPoint)
 export class RankingPointResolver {
@@ -12,7 +12,8 @@ export class RankingPointResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private pointService: PointsService
+    private pointService: PointsService,
+    private readonly rankingSystemService: RankingSystemService
   ) {}
 
   @Query(() => RankingPoint)
@@ -45,7 +46,11 @@ export class RankingPointResolver {
 
   @ResolveField(() => RankingSystem)
   async system(@Parent() rankingPoint: RankingPoint): Promise<RankingSystem> {
-    return rankingPoint.getSystem();
+    const system = await this.rankingSystemService.getById(rankingPoint.systemId);
+    if (!system) {
+      throw new NotFoundException(`${RankingSystem.name}: ${rankingPoint.systemId}`);
+    }
+    return system;
   }
 
   @Mutation(() => Boolean)
@@ -61,10 +66,9 @@ export class RankingPointResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const where = systemId ? { id: systemId } : { primary: true };
-      const system = await RankingSystem.findOne({
-        where,
-      });
+      const system = systemId
+        ? await this.rankingSystemService.getById(systemId)
+        : await this.rankingSystemService.getPrimary();
 
       if (!system) {
         throw new NotFoundException(`No ranking system found for ${systemId || "primary"}`);

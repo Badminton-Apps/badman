@@ -16,7 +16,7 @@ import {
   EventEntry,
 } from "@badman/backend-database";
 import { Sync, SyncQueue } from "@badman/backend-queue";
-import { PointsService, StartVisualRankingDate } from "@badman/backend-ranking";
+import { PointsService, RankingSystemService, StartVisualRankingDate } from "@badman/backend-ranking";
 import { IsUUID } from "@badman/utils";
 import { InjectQueue } from "@nestjs/bull";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
@@ -52,7 +52,8 @@ export class EventCompetitionResolver {
   constructor(
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    @InjectQueue(SyncQueue) private _syncQueue: Queue
+    @InjectQueue(SyncQueue) private _syncQueue: Queue,
+    private readonly rankingSystemService: RankingSystemService
   ) {}
 
   @Query(() => EventCompetition)
@@ -158,12 +159,7 @@ export class EventCompetitionResolver {
           });
 
           // getting the primary ranking system, in order to get the ranking groups, which will be added to each sub event
-          const ranking = await RankingSystem.findOne({
-            where: {
-              primary: true,
-            },
-            transaction,
-          });
+          const ranking = await this.rankingSystemService.getPrimary();
 
           if (!ranking) {
             throw new NotFoundException(`${RankingSystem.name}: primary system not found`);
@@ -501,10 +497,9 @@ export class EventCompetitionResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const where = systemId ? { id: systemId } : { primary: true };
-      const system = await RankingSystem.findOne({
-        where,
-      });
+      const system = systemId
+        ? await this.rankingSystemService.getById(systemId)
+        : await this.rankingSystemService.getPrimary();
 
       if (!system) {
         throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);
