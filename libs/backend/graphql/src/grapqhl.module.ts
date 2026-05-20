@@ -13,6 +13,7 @@ import { ApolloServerPluginUsageReporting } from "@apollo/server/plugin/usageRep
 import { ConfigType } from "@badman/utils";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { join } from "node:path";
+import { PlayerLoaderService } from "./loaders";
 import { ResilientDateTimeScalar } from "./scalars";
 import {
   AvailabilityModule,
@@ -92,5 +93,7 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
     CronJobResolverModule,
     SettingResolverModule,
   ],
+  providers: [PlayerLoaderService],
+  exports: [PlayerLoaderService],
 })
 export class GrapqhlModule {}

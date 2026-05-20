@@ -42,6 +42,7 @@ export const configSchema = Joi.object({
   DB_CACHE: Joi.boolean().default(false),
   DB_CACHE_PREFIX: Joi.string().optional(),
   DB_LOGGING: Joi.boolean().optional(),
+  DB_SLOW_QUERY_MS: Joi.number().integer().min(0).optional(),
   ENTER_SCORES_ENABLED: Joi.boolean().optional(),
   HANG_BEFORE_BROWSER_CLEANUP: Joi.boolean().optional(),
   VISUAL_SYNC_ENABLED: Joi.boolean().optional(),
@@ -214,6 +215,7 @@ export type ConfigType = {
   DB_CACHE: boolean;
   DB_CACHE_PREFIX?: string;
   DB_LOGGING?: boolean;
+  DB_SLOW_QUERY_MS?: number;
   REDIS_DATABASE?: number;
   REDIS_HOST?: string;
   REDIS_PORT?: number;
