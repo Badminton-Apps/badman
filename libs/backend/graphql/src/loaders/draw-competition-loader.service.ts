@@ -1,5 +1,5 @@
 import { DrawCompetition } from "@badman/backend-database";
-import { Injectable, Scope } from "@nestjs/common";
+import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
 
@@ -18,6 +18,7 @@ import { Op } from "sequelize";
  */
 @Injectable({ scope: Scope.REQUEST })
 export class DrawCompetitionLoaderService {
+  private readonly logger = new Logger(DrawCompetitionLoaderService.name);
   private readonly loader = new DataLoader<string, DrawCompetition | null>((ids) =>
     this.batchDrawsByIds(ids)
   );
@@ -32,8 +33,16 @@ export class DrawCompetitionLoaderService {
   }
 
   private async batchDrawsByIds(ids: readonly string[]): Promise<(DrawCompetition | null)[]> {
-    const draws = await DrawCompetition.findAll({ where: { id: { [Op.in]: [...ids] } } });
-    const map = new Map(draws.map((d) => [d.id, d]));
-    return ids.map((id) => map.get(id) ?? null);
+    try {
+      if (ids.length > 1 && process.env["NODE_ENV"] !== "production") {
+        this.logger.debug(`batched ${ids.length} draw-competition lookups`);
+      }
+      const draws = await DrawCompetition.findAll({ where: { id: { [Op.in]: [...ids] } } });
+      const map = new Map(draws.map((d) => [d.id, d]));
+      return ids.map((id) => map.get(id) ?? null);
+    } catch (err) {
+      this.logger.error(`batch draw-competition load failed for ${ids.length} ids`, err);
+      throw err;
+    }
   }
 }

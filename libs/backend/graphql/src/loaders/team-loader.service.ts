@@ -1,5 +1,5 @@
 import { Team } from "@badman/backend-database";
-import { Injectable, Scope } from "@nestjs/common";
+import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
 
@@ -17,6 +17,7 @@ import { Op } from "sequelize";
  */
 @Injectable({ scope: Scope.REQUEST })
 export class TeamLoaderService {
+  private readonly logger = new Logger(TeamLoaderService.name);
   private readonly loader = new DataLoader<string, Team | null>((ids) =>
     this.batchTeamsByIds(ids)
   );
@@ -31,8 +32,16 @@ export class TeamLoaderService {
   }
 
   private async batchTeamsByIds(ids: readonly string[]): Promise<(Team | null)[]> {
-    const teams = await Team.findAll({ where: { id: { [Op.in]: [...ids] } } });
-    const map = new Map(teams.map((t) => [t.id, t]));
-    return ids.map((id) => map.get(id) ?? null);
+    try {
+      if (ids.length > 1 && process.env["NODE_ENV"] !== "production") {
+        this.logger.debug(`batched ${ids.length} team lookups`);
+      }
+      const teams = await Team.findAll({ where: { id: { [Op.in]: [...ids] } } });
+      const map = new Map(teams.map((t) => [t.id, t]));
+      return ids.map((id) => map.get(id) ?? null);
+    } catch (err) {
+      this.logger.error(`batch team load failed for ${ids.length} ids`, err);
+      throw err;
+    }
   }
 }
