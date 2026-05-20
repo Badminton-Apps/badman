@@ -12,14 +12,14 @@ import {
   SubEventTournament,
   Team,
 } from "@badman/backend-database";
-import { EnrollmentValidationService, TeamEnrollmentOutput } from "@badman/backend-enrollment";
+import { TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
-import { TeamMembershipType } from "@badman/utils";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
 import { ErrorCode, ListArgs, assertUUID } from "../../utils";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
+import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.service";
 import { FinishEventEntryResult } from "./finish-event-entry-result.object";
 
 @Resolver(() => EventEntry)
@@ -28,7 +28,7 @@ export class EventEntryResolver {
 
   constructor(
     private notificationService: NotificationService,
-    private enrollmentService: EnrollmentValidationService,
+    private enrollmentValidationCache: EnrollmentValidationCacheService,
     private enrollmentFinalizeService: EnrollmentFinalizeService,
     private _sequelize: Sequelize
   ) {}
@@ -89,39 +89,7 @@ export class EventEntryResolver {
     @Parent() eventEntry: EventEntry
   ): Promise<TeamEnrollmentOutput | null> {
     const team = await eventEntry.getTeam();
-    const teamsOfClub = await Team.findAll({
-      where: {
-        clubId: team.clubId,
-        season: team.season,
-      },
-      include: [{ model: Player, as: "players" }, { model: EventEntry }],
-    });
-
-    const validation = await this.enrollmentService.fetchAndValidate(
-      {
-        teams: teamsOfClub.map((t) => ({
-          id: t.id,
-          name: t.name,
-          type: t.type,
-          link: t.link,
-          teamNumber: t.teamNumber,
-          basePlayers: t.entry?.meta?.competition?.players,
-          players: t.players
-            ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.REGULAR)
-            .map((p) => p.id),
-          backupPlayers: t.players
-            ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.BACKUP)
-            .map((p) => p.id),
-          subEventId: t.entry?.subEventId,
-          clubId: t.clubId,
-        })),
-        clubId: team.clubId,
-        season: team.season,
-      },
-      EnrollmentValidationService.defaultValidators()
-    );
-
-    return validation.teams?.find((t) => t.id === team.id) ?? null;
+    return this.enrollmentValidationCache.getForTeam(team);
   }
 
   @Mutation(() => FinishEventEntryResult)
