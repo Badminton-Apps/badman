@@ -1,6 +1,7 @@
 import {
   XmlItemSchema,
   XmlMatchSchema,
+  XmlPlayerSchema,
   XmlRankingCategorySchema,
   XmlRankingPublicationSchema,
   XmlRankingSchema,
@@ -230,6 +231,25 @@ describe("requiredCoercedString invariant", () => {
       expect(result.data.TournamentID).toBe("1");
       expect(result.data.MatchID).toBe("99");
     }
+  });
+
+  // Visual API /Tournament/:id/Player can include roster rows without a
+  // MemberID (anonymous / placeholder entries, Sentry #104397491). Schema
+  // must accept them so the whole sync batch isn't rejected.
+  it("XmlPlayerSchema: accepts a Player row without MemberID", () => {
+    const result = XmlPlayerSchema.safeParse({
+      Firstname: "Jane",
+      Lastname: "Doe",
+      GenderID: 1,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.MemberID).toBeUndefined();
+  });
+
+  it("XmlPlayerSchema: still coerces a numeric MemberID to string", () => {
+    const result = XmlPlayerSchema.safeParse({ MemberID: 12345, Firstname: "Jane" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.MemberID).toBe("12345");
   });
 
   // Visual API sometimes returns TournamentTimezone as a number (Sentry #104397491).
