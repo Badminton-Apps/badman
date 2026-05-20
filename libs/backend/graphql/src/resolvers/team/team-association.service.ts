@@ -4,7 +4,6 @@ import {
   Location,
   Player,
   Team,
-  TeamPlayerMembership,
 } from "@badman/backend-database";
 import { Injectable, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
@@ -103,26 +102,20 @@ export class TeamAssociationService {
   }
 
   private async batchPlayersByTeamIds(teamIds: readonly string[]): Promise<Player[][]> {
-    // Fetch through TeamPlayerMembership so we can group rows back by teamId.
-    // One query keeps this O(1) DB round trip regardless of team count.
-    const memberships = await TeamPlayerMembership.findAll({
-      where: { teamId: { [Op.in]: [...teamIds] } },
-      include: [{ model: Player, required: true }],
+    // Load via the registered Team↔Player M:N association so Sequelize
+    // auto-attaches the through row as `player.TeamPlayerMembership`,
+    // matching the legacy `team.getPlayers()` shape consumed downstream
+    // (e.g. PlayerTeamResolver.teamMembership).
+    const teams = await Team.findAll({
+      where: { id: { [Op.in]: [...teamIds] } },
+      attributes: ["id"],
+      include: [{ model: Player, as: "players" }],
     });
 
     const grouped = new Map<string, Player[]>();
-    for (const m of memberships as Array<TeamPlayerMembership & { Player?: Player }>) {
-      if (!m.teamId || !m.Player) continue;
-      const player = m.Player;
-      // Attach the membership in the shape `team.getPlayers()` would produce
-      // so downstream consumers reading `player.TeamPlayerMembership` keep
-      // working (e.g. PlayerTeamResolver.teamMembership).
-      (player as Player & { TeamPlayerMembership: TeamPlayerMembership }).TeamPlayerMembership = m;
-      const bucket = grouped.get(m.teamId) ?? [];
-      bucket.push(player);
-      grouped.set(m.teamId, bucket);
+    for (const t of teams as Array<Team & { players?: Player[] }>) {
+      grouped.set(t.id, t.players ?? []);
     }
-
     return teamIds.map((teamId) => grouped.get(teamId) ?? []);
   }
 }
