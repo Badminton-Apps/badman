@@ -60,8 +60,8 @@ libs/backend/graphql/src/
 
 1. **Reuse PlayerLoaderService from 022** — same batch fn, same Scope.REQUEST lifecycle. No new service needed.
 2. **Null guard**: `comment.playerId` may be null (anonymous comments). Return `null` without calling `loader.load()`.
-3. **EntryCompetitionPlayersResolver also has Player N+1**: `EntryCompetitionPlayersResolver.player` at `entry.resolver.ts:190-193` calls `Player.findByPk(eventEntryPlayer.id)` per row. Shares the same pattern; consider batching in the same PR if pre-condition is met.
-4. **Sequencing**: Implement after 022 merges. If implementing before 022, create `PlayerLoaderService` in this PR and let 022 pick it up.
+3. **EntryCompetitionPlayersResolver also has Player N+1**: `EntryCompetitionPlayersResolver.player` at `entry.resolver.ts:190-193` calls `Player.findByPk(eventEntryPlayer.id)` per row — same pattern, same fix. Low-effort bonus addition if pre-condition is met.
+4. **Sequencing**: Implement after 022 merges. If implementing before 022, create `PlayerLoaderService` in this PR.
 
 ## Complexity Tracking
 
