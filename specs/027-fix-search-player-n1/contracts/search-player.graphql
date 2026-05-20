@@ -1,0 +1,68 @@
+# GraphQL contract — SearchPlayer
+#
+# This is the exact operation shipped by the new frontend (`@apollo/client@4.x`)
+# and is the contract this feature MUST preserve byte-for-byte. Listed here so
+# reviewers can grep the schema for any drift.
+#
+# Source of truth: the operation issued in production at
+#   POST /graphql  operationName=SearchPlayer
+#
+# Behavioural changes vs. pre-feature behaviour:
+#   - The server may return FEWER rows than `count` indicates, because the
+#     server now caps results at default 25 / max 200 (FR-001..003). `count`
+#     still reflects the true total of matching rows.
+#   - Nested `rankingLastPlaces` continues to be filtered to the primary
+#     ranking system server-side (existing behaviour, retained — see FR-007).
+#
+# Schema surface (queries / fields / args / types) is UNCHANGED.
+
+query SearchPlayer($systemId: ID!, $where: JSONObject) {
+  players(where: $where) {
+    count
+    rows {
+      id
+      fullName
+      firstName
+      lastName
+      memberId
+      gender
+      rankingLastPlaces(where: { systemId: $systemId }) {
+        id
+        single
+        double
+        mix
+      }
+    }
+  }
+}
+
+# --- Relevant schema fragments (from the live Apollo schema) ---
+#
+# type Query {
+#   players(skip: Int, take: Int, where: JSONObject, order: [SortOrderType!]): PagedPlayer!
+#   # ...
+# }
+#
+# type PagedPlayer {
+#   count: Int!
+#   rows: [Player!]!
+# }
+#
+# type Player {
+#   id: ID!
+#   fullName: String
+#   firstName: String
+#   lastName: String
+#   memberId: String
+#   gender: String
+#   rankingLastPlaces(skip: Int, take: Int, where: JSONObject, order: [SortOrderType!]): [RankingLastPlace!]!
+#   # ...
+# }
+#
+# type RankingLastPlace {
+#   id: ID!
+#   single: Int
+#   double: Int
+#   mix: Int
+#   # ...
+# }
