@@ -5,7 +5,7 @@
 
 ## Summary
 
-Replace `comment.getPlayer()` at `comment.resolver.ts:47-49` with the shared `PlayerLoaderService` (DataLoader<string, Player>) introduced by feature 022. If 022 is already merged, this feature is a one-line constructor injection + one-line field resolver change. N Player DB lookups per comment list collapse to 1. Lowest-priority opt-in; pre-condition gate applies.
+Replace `comment.getPlayer()` at `comment.resolver.ts:47-49` with the shared `PlayerLoaderService` (DataLoader<string, Player>) introduced by feature 022. If 022 is already merged, this feature is a one-line constructor injection + one-line field resolver change. N Player DB lookups per comment list collapse to 1. Lowest-priority opt-in; implementation blocked until Sentry signal or hot-path test.
 
 **Pre-condition**: Sentry N+1 alert on `Comment.player` resolver OR documented hot-path test.
 
