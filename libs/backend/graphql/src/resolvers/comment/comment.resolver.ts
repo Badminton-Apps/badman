@@ -17,6 +17,7 @@ import {
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
+import { PlayerLoaderService } from "../../loaders";
 import { ListArgs } from "../../utils";
 
 @Resolver(() => Comment)
@@ -25,7 +26,8 @@ export class CommentResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private playerLoader: PlayerLoaderService
   ) {}
 
   @Query(() => Comment)
@@ -44,8 +46,8 @@ export class CommentResolver {
   }
 
   @ResolveField(() => Player, { nullable: true })
-  async player(@Parent() comment: Comment): Promise<Player> {
-    return comment.getPlayer();
+  async player(@Parent() comment: Comment): Promise<Player | null> {
+    return this.playerLoader.load(comment.playerId);
   }
 
   @Mutation(() => Comment)

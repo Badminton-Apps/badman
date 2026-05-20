@@ -19,12 +19,21 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
       (m) => typeof m === "function" && m.prototype instanceof Model
     ) as ModelCtor[];
 
-    const logging = this.configService.get<boolean>("DB_LOGGING") ? console.log : false;
+    const dbLogging = this.configService.get<boolean>("DB_LOGGING");
+    const slowQueryMs = Number(this.configService.get<string>("DB_SLOW_QUERY_MS") ?? "500");
+    const slowLogger = this.logger;
+    const slowQueryLog = (sql: string, timingMs?: number) => {
+      if (typeof timingMs === "number" && timingMs >= slowQueryMs) {
+        slowLogger.warn(`slow query (${timingMs}ms): ${sql.slice(0, 500)}`);
+      }
+    };
+    const logging = dbLogging ? console.log : slowQueryLog;
 
     const dialect = this.configService.get("DB_DIALECT");
 
     let options: SequelizeModuleOptions = {
       logging,
+      benchmark: true,
     };
 
     if (dialect === "postgres") {
