@@ -7,6 +7,7 @@ import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
 import { EventEntryResolver } from "./entry.resolver";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
+import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.service";
 import { SubEventCompetitionLoaderService } from "../../loaders";
 import { ErrorCode } from "../../utils/error-codes";
 
@@ -87,6 +88,10 @@ describe("EventEntryResolver.finishEventEntry", () => {
         {
           provide: EnrollmentValidationService,
           useValue: mockEnrollmentService,
+        },
+        {
+          provide: EnrollmentValidationCacheService,
+          useValue: { getForTeam: jest.fn() },
         },
         {
           provide: SubEventCompetitionLoaderService,

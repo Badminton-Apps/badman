@@ -6,6 +6,7 @@ import { SubEventCompetitionLoaderService } from "../../loaders";
 import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
+import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.service";
 
 describe("EventEntryResolver — DataLoader field resolvers", () => {
   let resolver: EventEntryResolver;
@@ -34,6 +35,10 @@ describe("EventEntryResolver — DataLoader field resolvers", () => {
         {
           provide: EnrollmentValidationService,
           useValue: { fetchAndValidate: jest.fn() },
+        },
+        {
+          provide: EnrollmentValidationCacheService,
+          useValue: { getForTeam: jest.fn() },
         },
         {
           provide: SubEventCompetitionLoaderService,
