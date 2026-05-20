@@ -80,6 +80,46 @@
         "principle_v_legacy_frontend": "PASS (no diff)"
       },
       "next_step": "human review of MVP delivery; decide whether to merge MVP first or hold for hook refactor (US4); BAD-119 frontend can wire calculateIndex against this branch immediately"
+    },
+    "019-graphql-dataloader": {
+      "status": "done",
+      "branch": "019-graphql-dataloader",
+      "merged_pr": "#923, #925"
+    },
+    "020-dataloader-ranking-system": {
+      "status": "done",
+      "branch": "020-dataloader-ranking-system",
+      "merged_pr": "#926, #933"
+    },
+    "021-dataloader-assembly-player-ranking": {
+      "status": "done",
+      "branch": "021-dataloader-assembly-player-ranking",
+      "merged_pr": "#927, #934"
+    },
+    "022-dataloader-ranking-point-player": {
+      "status": "done",
+      "branch": "022-dataloader-ranking-point-player",
+      "merged_pr": "#928, #935"
+    },
+    "023-dataloader-last-ranking-place-player": {
+      "status": "done",
+      "branch": "023-dataloader-last-ranking-place-player",
+      "merged_pr": "#929, #936"
+    },
+    "024-dataloader-encounter-associations": {
+      "status": "done",
+      "branch": "024-dataloader-encounter-associations",
+      "merged_pr": "#930, #937"
+    },
+    "025-dataloader-subevent-draw-associations": {
+      "status": "done",
+      "branch": "025-dataloader-subevent-draw-associations",
+      "merged_pr": "#931, #938"
+    },
+    "026-dataloader-comment-player": {
+      "status": "done",
+      "branch": "026-dataloader-comment-player",
+      "merged_pr": "#932, #939"
     }
   },
   "board": "linear",
