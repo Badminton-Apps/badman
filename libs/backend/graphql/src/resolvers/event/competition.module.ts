@@ -7,6 +7,12 @@ import { QueueModule } from "@badman/backend-queue";
 import { RankingModule } from "@badman/backend-ranking";
 import { Module } from "@nestjs/common";
 import {
+  DrawCompetitionLoaderService,
+  EventCompetitionLoaderService,
+  SubEventCompetitionLoaderService,
+  TeamLoaderService,
+} from "../../loaders";
+import {
   AssemblyResolver,
   CalculateIndexResolver,
   DrawCompetitionResolver,
@@ -50,6 +56,10 @@ import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
     ClubMembershipService,
     TeamWriteService,
     EnrollmentFinalizeService,
+    TeamLoaderService,
+    DrawCompetitionLoaderService,
+    EventCompetitionLoaderService,
+    SubEventCompetitionLoaderService,
   ],
 })
 export class CompetitionResolverModule {}
