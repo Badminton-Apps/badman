@@ -1,7 +1,6 @@
 import { DatabaseModule } from "@badman/backend-database";
 import { RankingModule } from "@badman/backend-ranking";
 import { Module } from "@nestjs/common";
-import { PlayerLoaderService } from "../../loaders";
 import { LastRankingPlaceResolver } from "./lastRankingPlace.resolver";
 import { RankingPlaceResolver } from "./rankingPlace.resolver";
 import { RankingPointResolver } from "./rankingPoint.resolver";
@@ -16,7 +15,6 @@ import { RankingGroupsResolver } from "./rankingSystemGroup.resolver";
     RankingPointResolver,
     RankingPlaceResolver,
     LastRankingPlaceResolver,
-    PlayerLoaderService,
   ],
 })
 export class RankingResolverModule {}

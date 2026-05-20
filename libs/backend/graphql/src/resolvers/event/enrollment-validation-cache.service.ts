@@ -1,7 +1,7 @@
 import { EventEntry, Player, Team } from "@badman/backend-database";
 import { EnrollmentValidationService, TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { TeamMembershipType } from "@badman/utils";
-import { Injectable, Logger, Scope } from "@nestjs/common";
+import { Injectable, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 
 type ValidationMap = Map<string, TeamEnrollmentOutput>;
@@ -18,7 +18,6 @@ type CacheKey = string; // `${clubId}:${season}`
  */
 @Injectable({ scope: Scope.REQUEST })
 export class EnrollmentValidationCacheService {
-  private readonly logger = new Logger(EnrollmentValidationCacheService.name);
   private readonly loader = new DataLoader<CacheKey, ValidationMap>((keys) =>
     this.batchValidate(keys)
   );
@@ -33,9 +32,6 @@ export class EnrollmentValidationCacheService {
   }
 
   private async batchValidate(keys: readonly CacheKey[]): Promise<ValidationMap[]> {
-    if (keys.length > 1 && process.env["NODE_ENV"] !== "production") {
-      this.logger.debug(`batched ${keys.length} enrollment validations`);
-    }
     return Promise.all(keys.map((key) => this.computeValidation(key)));
   }
 
@@ -43,44 +39,39 @@ export class EnrollmentValidationCacheService {
     const [clubId, seasonStr] = key.split(":");
     const season = Number(seasonStr);
 
-    try {
-      const teamsOfClub = await Team.findAll({
-        where: { clubId, season },
-        include: [{ model: Player, as: "players" }, { model: EventEntry }],
-      });
+    const teamsOfClub = await Team.findAll({
+      where: { clubId, season },
+      include: [{ model: Player, as: "players" }, { model: EventEntry }],
+    });
 
-      const validation = await this.enrollmentService.fetchAndValidate(
-        {
-          teams: teamsOfClub.map((t) => ({
-            id: t.id,
-            name: t.name,
-            type: t.type,
-            link: t.link,
-            teamNumber: t.teamNumber,
-            basePlayers: t.entry?.meta?.competition?.players,
-            players: t.players
-              ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.REGULAR)
-              .map((p) => p.id),
-            backupPlayers: t.players
-              ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.BACKUP)
-              .map((p) => p.id),
-            subEventId: t.entry?.subEventId,
-            clubId: t.clubId,
-          })),
-          clubId,
-          season,
-        },
-        EnrollmentValidationService.defaultValidators()
-      );
+    const validation = await this.enrollmentService.fetchAndValidate(
+      {
+        teams: teamsOfClub.map((t) => ({
+          id: t.id,
+          name: t.name,
+          type: t.type,
+          link: t.link,
+          teamNumber: t.teamNumber,
+          basePlayers: t.entry?.meta?.competition?.players,
+          players: t.players
+            ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.REGULAR)
+            .map((p) => p.id),
+          backupPlayers: t.players
+            ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.BACKUP)
+            .map((p) => p.id),
+          subEventId: t.entry?.subEventId,
+          clubId: t.clubId,
+        })),
+        clubId,
+        season,
+      },
+      EnrollmentValidationService.defaultValidators()
+    );
 
-      const map: ValidationMap = new Map();
-      for (const t of validation.teams ?? []) {
-        if (t.id) map.set(t.id, t);
-      }
-      return map;
-    } catch (err) {
-      this.logger.error(`enrollment validation failed for club ${clubId} season ${season}`, err);
-      throw err;
+    const map: ValidationMap = new Map();
+    for (const t of validation.teams ?? []) {
+      if (t.id) map.set(t.id, t);
     }
+    return map;
   }
 }

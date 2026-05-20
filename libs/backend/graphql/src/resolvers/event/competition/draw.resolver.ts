@@ -15,7 +15,6 @@ import { sortStanding } from "@badman/utils";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
-import { SubEventCompetitionLoaderService } from "../../../loaders";
 import { ListArgs } from "../../../utils";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { InjectQueue } from "@nestjs/bull";
@@ -29,8 +28,7 @@ export class DrawCompetitionResolver {
     private _sequelize: Sequelize,
     private _pointService: PointsService,
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
-    private readonly rankingSystemService: RankingSystemService,
-    private readonly subEventLoader: SubEventCompetitionLoaderService
+    private readonly rankingSystemService: RankingSystemService
   ) {}
 
   @Query(() => DrawCompetition)
@@ -50,7 +48,7 @@ export class DrawCompetitionResolver {
 
   @ResolveField(() => SubEventCompetition)
   async subEventCompetition(@Parent() draw: DrawCompetition): Promise<SubEventCompetition> {
-    return this.subEventLoader.load(draw.subeventId) as Promise<SubEventCompetition>;
+    return draw.getSubEventCompetition();
   }
 
   @ResolveField(() => [EventEntry])

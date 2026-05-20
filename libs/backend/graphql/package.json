@@ -32,9 +32,7 @@
     "moment": "^2.30.1",
     "uuid": "^11.0.5",
     "class-validator": "^0.14.1",
-    "graphql-type-json": "^0.3.2",
-    "graphql": "^16.10.0",
-    "dataloader": "^2.2.3"
+    "graphql-type-json": "^0.3.2"
   },
   "type": "commonjs",
   "main": "./src/index.js",

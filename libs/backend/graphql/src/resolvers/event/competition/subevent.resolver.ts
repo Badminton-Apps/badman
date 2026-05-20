@@ -24,7 +24,6 @@ import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nest
 import { Queue } from "bull";
 import { Cache } from "cache-manager";
 import { Sequelize } from "sequelize-typescript";
-import { EventCompetitionLoaderService } from "../../../loaders";
 import { ListArgs } from "../../../utils";
 
 @Resolver(() => SubEventCompetition)
@@ -36,8 +35,7 @@ export class SubEventCompetitionResolver {
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private _sequelize: Sequelize,
     private _pointService: PointsService,
-    private readonly rankingSystemService: RankingSystemService,
-    private readonly eventCompetitionLoader: EventCompetitionLoaderService
+    private readonly rankingSystemService: RankingSystemService
   ) {}
 
   @Query(() => SubEventCompetition)
@@ -62,7 +60,7 @@ export class SubEventCompetitionResolver {
 
   @ResolveField(() => EventCompetition)
   async eventCompetition(@Parent() subEvent: SubEventCompetition): Promise<EventCompetition> {
-    return this.eventCompetitionLoader.load(subEvent.eventId) as Promise<EventCompetition>;
+    return subEvent.getEventCompetition();
   }
 
   @ResolveField(() => [DrawCompetition])

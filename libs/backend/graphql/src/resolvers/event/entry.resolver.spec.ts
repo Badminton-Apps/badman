@@ -7,7 +7,6 @@ import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
 import { EventEntryResolver } from "./entry.resolver";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
-import { SubEventCompetitionLoaderService } from "../../loaders";
 import { ErrorCode } from "../../utils/error-codes";
 
 // Type helper to cast mocked model objects
@@ -85,10 +84,6 @@ describe("EventEntryResolver.finishEventEntry", () => {
         {
           provide: EnrollmentValidationService,
           useValue: mockEnrollmentService,
-        },
-        {
-          provide: SubEventCompetitionLoaderService,
-          useValue: { load: jest.fn() },
         },
       ],
     }).compile();

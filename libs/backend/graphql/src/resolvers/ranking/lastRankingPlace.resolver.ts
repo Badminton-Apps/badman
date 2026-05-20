@@ -12,7 +12,6 @@ import {
   ResolveField,
   Resolver,
 } from "@nestjs/graphql";
-import { PlayerLoaderService } from "../../loaders";
 import { ListArgs } from "../../utils";
 
 @ObjectType()
@@ -26,10 +25,7 @@ export class PagedLastRankingPlace {
 
 @Resolver(() => RankingLastPlace)
 export class LastRankingPlaceResolver {
-  constructor(
-    private readonly rankingSystemService: RankingSystemService,
-    private readonly playerLoader: PlayerLoaderService
-  ) {}
+  constructor(private readonly rankingSystemService: RankingSystemService) {}
 
   @Query(() => RankingLastPlace)
   async rankingLastPlace(@Args("id", { type: () => ID }) id: string): Promise<RankingLastPlace> {
@@ -55,9 +51,9 @@ export class LastRankingPlaceResolver {
     return system;
   }
 
-  @ResolveField(() => Player, { nullable: true })
-  async player(@Parent() rankingPlace: RankingLastPlace): Promise<Player | null> {
-    return this.playerLoader.load(rankingPlace.playerId);
+  @ResolveField(() => Player)
+  async player(@Parent() rankingPlace: RankingLastPlace): Promise<Player> {
+    return rankingPlace.getPlayer();
   }
 
   // @Mutation(returns => RankingLastPlace)

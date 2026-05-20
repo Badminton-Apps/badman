@@ -21,7 +21,6 @@ import { ListArgs } from "../../utils";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.service";
 import { FinishEventEntryResult } from "./finish-event-entry-result.object";
-import { SubEventCompetitionLoaderService } from "../../loaders";
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
@@ -31,8 +30,7 @@ export class EventEntryResolver {
     private notificationService: NotificationService,
     private enrollmentValidationCache: EnrollmentValidationCacheService,
     private enrollmentFinalizeService: EnrollmentFinalizeService,
-    private _sequelize: Sequelize,
-    private readonly subEventLoader: SubEventCompetitionLoaderService
+    private _sequelize: Sequelize
   ) {}
 
   @Query(() => EventEntry)
@@ -62,7 +60,7 @@ export class EventEntryResolver {
 
   @ResolveField(() => SubEventCompetition, { nullable: true })
   async subEventCompetition(@Parent() eventEntry: EventEntry): Promise<SubEventCompetition> {
-    return this.subEventLoader.load(eventEntry.subEventId) as Promise<SubEventCompetition>;
+    return eventEntry.getSubEventCompetition();
   }
   @ResolveField(() => DrawCompetition, { nullable: true })
   async drawCompetition(@Parent() eventEntry: EventEntry): Promise<DrawCompetition> {
