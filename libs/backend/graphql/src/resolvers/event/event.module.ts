@@ -6,6 +6,7 @@ import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.
 import { TournamentResolverModule } from "./tournament.module";
 import { NotificationsModule } from "@badman/backend-notifications";
 import { EnrollmentModule } from "@badman/backend-enrollment";
+import { SubEventCompetitionLoaderService } from "../../loaders";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EnrollmentModule } from "@badman/backend-enrollment";
     EventEntryResolver,
     EntryCompetitionPlayersResolver,
     EnrollmentFinalizeService,
+    SubEventCompetitionLoaderService,
     EnrollmentValidationCacheService,
   ],
   exports: [EnrollmentFinalizeService],

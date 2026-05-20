@@ -39,6 +39,7 @@ import { Queue } from "bull";
 import { Sequelize } from "sequelize-typescript";
 import { QueryTypes, Op } from "sequelize";
 import { ListArgs } from "../../../utils";
+import { DrawCompetitionLoaderService, TeamLoaderService } from "../../../loaders";
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -68,7 +69,9 @@ export class EncounterCompetitionResolver {
     private _pointService: PointsService,
     private encounterValidationService: EncounterValidationService,
     private encounterGamesService: EncounterGamesGenerationService,
-    private readonly rankingSystemService: RankingSystemService
+    private readonly rankingSystemService: RankingSystemService,
+    private readonly teamLoader: TeamLoaderService,
+    private readonly drawLoader: DrawCompetitionLoaderService
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -278,7 +281,7 @@ export class EncounterCompetitionResolver {
     @Parent() encounter: EncounterCompetition
   ): Promise<DrawCompetition | null> {
     try {
-      return await encounter.getDrawCompetition();
+      return await this.drawLoader.load(encounter.drawId);
     } catch (error) {
       this.logger.debug(
         "[drawCompetition] Client disconnected or error occurred:",
@@ -304,7 +307,7 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => Team)
   async home(@Parent() encounter: EncounterCompetition): Promise<Team | null> {
     try {
-      return await encounter.getHome();
+      return await this.teamLoader.load(encounter.homeTeamId);
     } catch (error) {
       this.logger.debug(
         "[home] Client disconnected or error occurred:",
@@ -317,7 +320,7 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => Team)
   async away(@Parent() encounter: EncounterCompetition): Promise<Team | null> {
     try {
-      return await encounter.getAway();
+      return await this.teamLoader.load(encounter.awayTeamId);
     } catch (error) {
       this.logger.debug(
         "[away] Client disconnected or error occurred:",

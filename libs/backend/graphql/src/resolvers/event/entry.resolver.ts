@@ -14,6 +14,7 @@ import {
 } from "@badman/backend-database";
 import { TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
+import { SubEventCompetitionLoaderService } from "../../loaders";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
@@ -30,7 +31,8 @@ export class EventEntryResolver {
     private notificationService: NotificationService,
     private enrollmentValidationCache: EnrollmentValidationCacheService,
     private enrollmentFinalizeService: EnrollmentFinalizeService,
-    private _sequelize: Sequelize
+    private _sequelize: Sequelize,
+    private readonly subEventLoader: SubEventCompetitionLoaderService
   ) {}
 
   @Query(() => EventEntry)
@@ -60,7 +62,7 @@ export class EventEntryResolver {
 
   @ResolveField(() => SubEventCompetition, { nullable: true })
   async subEventCompetition(@Parent() eventEntry: EventEntry): Promise<SubEventCompetition> {
-    return eventEntry.getSubEventCompetition();
+    return this.subEventLoader.load(eventEntry.subEventId) as Promise<SubEventCompetition>;
   }
   @ResolveField(() => DrawCompetition, { nullable: true })
   async drawCompetition(@Parent() eventEntry: EventEntry): Promise<DrawCompetition> {

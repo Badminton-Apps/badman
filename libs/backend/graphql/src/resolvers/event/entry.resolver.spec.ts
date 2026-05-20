@@ -7,6 +7,7 @@ import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
 import { EventEntryResolver } from "./entry.resolver";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
+import { SubEventCompetitionLoaderService } from "../../loaders";
 import { ErrorCode } from "../../utils/error-codes";
 
 const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
@@ -86,6 +87,10 @@ describe("EventEntryResolver.finishEventEntry", () => {
         {
           provide: EnrollmentValidationService,
           useValue: mockEnrollmentService,
+        },
+        {
+          provide: SubEventCompetitionLoaderService,
+          useValue: { load: jest.fn() },
         },
       ],
     }).compile();
