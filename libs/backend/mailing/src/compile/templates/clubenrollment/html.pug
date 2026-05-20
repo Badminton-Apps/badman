@@ -62,8 +62,8 @@ block content
               div(style="font-size: 16px; width: 100%")
                 p
                   h4 #{ location.name }
-                  each availability in location.availabilities
-                    if availability.days.length
+                  each availability in location.availabilities || []
+                    if availability.days && availability.days.length
                       p
                         strong Speelmomenten:
                         ul
@@ -73,7 +73,7 @@ block content
                     else
                       p
                         strong Geen speelmomenten
-                    if availability.exceptions.length
+                    if availability.exceptions && availability.exceptions.length
                       p
                         strong Uitzonderingen:
                         ul
@@ -97,11 +97,12 @@ block content
             td(style="padding-top: 12px", valign="top")
               div(style="font-size: 16px; width: 100%")
                 p
-                  strong Reeks: #{ comment.competition.name }
+                  strong Reeks: #{ (comment.competition && comment.competition.name) || '-' }
                   br
-                  strong Wie: #{ comment.player.firstName }, #{ comment.player.lastName }
-                  if comment.player.memberId
-                    | (#{ comment.player.memberId })
+                  if comment.player
+                    strong Wie: #{ comment.player.firstName }, #{ comment.player.lastName }
+                    if comment.player.memberId
+                      | (#{ comment.player.memberId })
                   br
                   strong Bericht:
                   br
