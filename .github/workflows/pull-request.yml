@@ -22,5 +22,5 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
 
-      - name: Run affected lint, test, build
-        run: npx --yes nx affected -t lint test build -c ci
+      - name: Run affected lint, test, build (parallel)
+        run: npx --yes nx affected -t lint test build -c ci --parallel=3
