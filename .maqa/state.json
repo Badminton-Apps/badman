@@ -122,9 +122,27 @@
       "merged_pr": "#932, #939"
     },
     "029-evententry-team-standing-loaders": {
-      "status": "todo",
+      "status": "in_review_qa_approved",
       "board": "local",
-      "branch": "029-evententry-team-standing-loaders"
+      "branch": "029-evententry-team-standing-loaders",
+      "implementation_commits": ["96d85a710", "3011f172b"],
+      "tests_passed": 29,
+      "feature_status": "done",
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_transactional_mutations": "PASS (read-only)",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "ci_gate": "none",
+      "next_step": "open PR to develop"
     },
     "028-gate-enrollment-validation": {
       "status": "in_review_qa_approved",
