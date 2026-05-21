@@ -223,7 +223,7 @@ describeOrSkip("VisualService (integration — real VR API)", () => {
       for (const game of playedGames) {
         statuses.add(game.ScoreStatus!);
       }
-      // eslint-disable-next-line no-console
+       
       console.log(
         `[integration] TeamMatch ${playedTeamMatchCode} ScoreStatus values:`,
         Array.from(statuses).sort(),

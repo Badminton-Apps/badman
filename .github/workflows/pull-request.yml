@@ -21,8 +21,6 @@ jobs:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-monorepo
-        with:
-          run-nx-cloud: "false"
 
       - name: Run affected lint, test, build
         run: npx --yes nx affected -t lint test build -c ci

@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { DatabaseModule } from "@badman/backend-database";
 import { Module } from "@nestjs/common";
 import { EncounterGamesGenerationService } from "./services";

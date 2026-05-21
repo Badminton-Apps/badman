@@ -16,10 +16,10 @@ Test tasks are NOT generated as separate items because spec.md does not request 
 These tasks are prerequisites for any migration-running workflow. They are done in the GitHub repository settings UI, not in code. Document the completion in `quickstart.md` (already done) and tick the boxes as each is verified.
 
 - [X] T001 Create `staging` GitHub Environment in repo Settings → Environments; add seven Environment secrets — `DB_IP`, `DB_PORT`, `DB_DATABASE`, `DB_USER`, `DB_PASSWORD`, `DB_DIALECT` (=`postgres`), `DB_SSL` (=`true`) — pointing at the staging DB; no protection rules
-- [ ] T002 [P] In the `staging` Environment, add Environment secrets `STAGING_API_HOOK`, `STAGING_WORKER_SYNC_HOOK`, `STAGING_WORKER_RANKING_HOOK`. Repo-level secret VALUES cannot be read back from GitHub — regenerate each deploy hook at Render.com (Service → Settings → Deploy Hook → Regenerate) and paste the new URLs. Old repo-level secrets become dead once Render rotates.
+- [X] T002 [P] In the `staging` Environment, add Environment secrets `STAGING_API_HOOK`, `STAGING_WORKER_SYNC_HOOK`, `STAGING_WORKER_RANKING_HOOK`. Repo-level secret VALUES cannot be read back from GitHub — regenerate each deploy hook at Render.com (Service → Settings → Deploy Hook → Regenerate) and paste the new URLs. Old repo-level secrets become dead once Render rotates.
 - [X] T003 Create `production` GitHub Environment in repo Settings → Environments; add seven Environment secrets — `DB_IP`, `DB_PORT`, `DB_DATABASE`, `DB_USER`, `DB_PASSWORD`, `DB_DIALECT` (=`postgres`), `DB_SSL` (=`true`) — pointing at the prod DB
 - [X] T004 [P] In the `production` Environment, add Environment secrets `PROD_API_HOOK`, `PROD_WORKER_SYNC_HOOK`, `PROD_WORKER_RANKING_HOOK`. Same procedure as T002 — regenerate at Render.com, paste fresh URLs.
-- [ ] T005 In the `production` Environment, configure protection rules: required reviewers (≥1 named maintainer), enable "Prevent self-review", wait timer 0
+- [X] T005 In the `production` Environment, configure protection rules: required reviewers (≥1 named maintainer), enable "Prevent self-review", wait timer 0
 - [ ] T006 Create the `staging` branch from `develop` and push to origin; add `staging` to branch protection requiring PRs from `develop` and the `validate` job from `pull-request.yml` to pass
 - [ ] T007 Verify outbound DB connectivity from GitHub-hosted runners by running a one-off `psql -c 'SELECT 1'` workflow against the staging DB via the seven `DB_*` env vars; if rejected, escalate (self-hosted runner is the fallback and is out of scope)
 

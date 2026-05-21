@@ -3,7 +3,7 @@
   "version": "6.185.0",
   "dependencies": {
     "tslib": "^2.3.0",
-    "@nestjs/common": "^10.4.15"
+    "@nestjs/common": "^11.0.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

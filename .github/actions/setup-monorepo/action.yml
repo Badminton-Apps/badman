@@ -1,15 +1,7 @@
 name: Setup Monorepo
-description: nx-set-shas, Node from .nvmrc, cached node_modules + Nx cache, optional Nx Cloud bracket. Caller MUST run actions/checkout@v4 with fetch-depth 0 first.
+description: nx-set-shas, Node from .nvmrc, cached node_modules + Nx local cache. Caller MUST run actions/checkout@v4 with fetch-depth 0 first.
 
 inputs:
-  cloud-distribute:
-    description: "Argument for nx-cloud start-ci-run --distribute-on (inline form, e.g. '3 linux-medium-js')."
-    required: false
-    default: "3 linux-medium-js"
-  run-nx-cloud:
-    description: "Whether to bracket the run with Nx Cloud distributed execution. Set 'false' to skip start-ci-run; caller must also skip complete-ci-run."
-    required: false
-    default: "true"
   cache-nx:
     description: "Whether to cache .nx/cache across runs for faster nx affected."
     required: false
@@ -49,8 +41,3 @@ runs:
         restore-keys: |
           ${{ runner.os }}-nx-${{ github.ref_name }}-
           ${{ runner.os }}-nx-
-
-    - name: Start Nx Cloud CI run
-      if: inputs.run-nx-cloud == 'true'
-      shell: bash
-      run: npx --yes nx-cloud start-ci-run --distribute-on="${{ inputs.cloud-distribute }}"

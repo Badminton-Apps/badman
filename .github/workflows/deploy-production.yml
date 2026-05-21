@@ -4,12 +4,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      cloud-run:
-        description: "Run with Nx Cloud distributed CI"
-        required: false
-        default: true
-        type: boolean
 
 permissions:
   actions: read
@@ -57,9 +51,6 @@ jobs:
           echo "NX_HEAD=origin/${{ github.ref_name }}" >> $GITHUB_ENV
 
       - uses: ./.github/actions/setup-monorepo
-        with:
-          cloud-distribute: "3 linux-medium-js"
-          run-nx-cloud: ${{ inputs.cloud-run == false && 'false' || 'true' }}
 
       - name: Run affected lint, test, build
         run: npx --yes nx affected -t lint test build -c ci
@@ -85,10 +76,6 @@ jobs:
         run: node scripts/release.js --dry-run=false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Stop Nx Cloud agents
-        if: always() && inputs.cloud-run != false
-        run: npx --yes nx-cloud complete-ci-run
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -124,8 +111,6 @@ jobs:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-monorepo
-        with:
-          cloud-distribute: "3 linux-medium-js"
 
       - name: Deploy
         run: npx --yes nx affected -t deploy --no-agents
@@ -133,10 +118,6 @@ jobs:
           API_HOOK: ${{ secrets.PROD_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK }}
-
-      - name: Stop Nx Cloud agents
-        if: always()
-        run: npx --yes nx-cloud complete-ci-run
 
   sentry-release:
     needs: deploy-prod

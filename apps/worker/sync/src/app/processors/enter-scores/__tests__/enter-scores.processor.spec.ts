@@ -343,7 +343,7 @@ describe("EnterScoresProcessor", () => {
     it("throws and sends failure email with dialog message when toernooi.nl shows error dialog after save", async () => {
       const dialogMessage = "DE4: Catry, Petra heeft te veel wedstrijden gespeeld.";
       formPage.waitForSaveErrorDialog.mockResolvedValue(dialogMessage);
-      formPage.waitForNavigation.mockImplementation(() => new Promise(() => {}));
+      formPage.waitForNavigation.mockImplementation(() => new Promise(() => { /* noop */ }));
 
       const job = makeJob({ attemptsMade: 2, maxAttempts: 3 });
       await expect(processor.enterScores(job as any)).rejects.toThrow(
@@ -562,7 +562,7 @@ describe("EnterScoresProcessor", () => {
 
       formPage.enterGames
         .mockImplementationOnce(async () => { await firstJobBlocking; })
-        .mockImplementationOnce(async () => {});
+        .mockImplementationOnce(async () => { /* noop */ });
 
       const enc = makeEncounter();
       findByPkSpy.mockResolvedValue(enc as any);

@@ -1,5 +1,5 @@
 import path from "path";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+ 
 const pug = require("pug");
 
 const TEMPLATE_PATH = path.join(__dirname, "html.pug");

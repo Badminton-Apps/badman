@@ -26,10 +26,6 @@ jobs:
       - name: Build affected
         run: npx --yes nx affected -t lint test build -c ci
 
-      - name: Stop Nx Cloud agents
-        if: always()
-        run: npx --yes nx-cloud complete-ci-run
-
   migrate-staging:
     needs: build
     uses: ./.github/workflows/_shared-migrate.yml
@@ -54,7 +50,3 @@ jobs:
           API_HOOK: ${{ secrets.STAGING_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ secrets.STAGING_WORKER_SYNC_HOOK }}
           WORKER_RANKING_HOOK: ${{ secrets.STAGING_WORKER_RANKING_HOOK }}
-
-      - name: Stop Nx Cloud agents
-        if: always()
-        run: npx --yes nx-cloud complete-ci-run

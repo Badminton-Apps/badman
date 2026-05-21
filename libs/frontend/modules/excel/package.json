@@ -3,9 +3,9 @@
   "version": "6.185.0",
   "peerDependencies": {
     "@badman/frontend-models": "*",
-    "@angular/core": "19.2.6",
-    "@angular/common": "19.2.6",
-    "apollo-angular": "^8.0.2",
+    "@angular/core": "20.1.3",
+    "@angular/common": "20.1.3",
+    "apollo-angular": "^11.0.0",
     "file-saver": "^2.0.5",
     "rxjs": "~7.8.1",
     "xlsx": "*"

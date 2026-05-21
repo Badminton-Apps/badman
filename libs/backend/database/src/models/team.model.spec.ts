@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { CreateOptions, UpdateOptions } from "sequelize";
 import { SubEventTypeEnum } from "@badman/utils";
-import { Team } from "@badman/backend-database";
+import { Team } from './team.model';
 
 const makeInstance = (changed: Record<string, boolean>, extras: Partial<Team> = {}) =>
   ({

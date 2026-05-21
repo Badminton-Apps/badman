@@ -61,7 +61,9 @@ export async function acceptCookies(
       // Catch errors from continue/abort — interception may no longer be active
       // (e.g. page closed or browser restarted while request was in-flight)
 
-      action.catch(() => {});
+      action.catch(() => {
+        /* noop */
+      });
     }
   };
 

@@ -675,7 +675,7 @@ export class NotificationService {
         return `${baseClientUrl}/my-club/${team?.clubId}/change-encounter/${encounter.id}`;
       case "club":
         return `${baseClientUrl}/club/${team?.clubId}/change-encounter/${encounter.id}`;
-      case "competition":
+      case "competition": {
         // Use the provided eventId if available, otherwise fetch it
         let competitionEventId = eventId;
         if (!competitionEventId) {
@@ -690,6 +690,7 @@ export class NotificationService {
           competitionEventId = draw?.subEventCompetition?.eventId;
         }
         return `${baseClientUrl}/competition/${competitionEventId}/change-encounter/${encounter.id}`;
+      }
       default:
         // This handles the legacy app, which does not have the context value, and has different routing
         return `${baseLegacyClientUrl}/competition/change-encounter?club=${team?.clubId}&team=${team?.id}&encounter=${encounter.id}&season=${season}`;
