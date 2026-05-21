@@ -41,9 +41,10 @@ async function findOrCreatePlayer(
 
   // Create new player
   console.log("👤 Creating new player...");
+  const slug = `${firstName}-${lastName}`.toLowerCase().replace(/\s+/g, "-");
   const user = await ctx.insert<Player>(
-    `INSERT INTO "Players" (email, "firstName", "lastName", "memberId", gender, "createdAt", "updatedAt", "competitionPlayer", "sub")
-     VALUES (:email, :firstName, :lastName, :memberId, :gender, NOW(), NOW(),:competitionPlayer, :sub)
+    `INSERT INTO "Players" (email, "firstName", "lastName", "memberId", gender, slug, "createdAt", "updatedAt", "competitionPlayer", "sub")
+     VALUES (:email, :firstName, :lastName, :memberId, :gender, :slug, NOW(), NOW(),:competitionPlayer, :sub)
      RETURNING id, email, "firstName", "lastName"`,
     {
       email: userEmail,
@@ -51,6 +52,7 @@ async function findOrCreatePlayer(
       lastName,
       memberId,
       gender,
+      slug,
       competitionPlayer,
       sub,
     }

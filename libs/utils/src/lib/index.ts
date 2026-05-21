@@ -1,3 +1,4 @@
+export * from "./assembly-positions";
 export * from "./comp";
 export * from "./enums";
 export * from "./events";

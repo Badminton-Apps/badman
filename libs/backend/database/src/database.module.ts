@@ -1,6 +1,6 @@
 import { CacheModule } from "@badman/backend-cache";
 import { ConfigType } from "@badman/utils";
-import { Logger, Module, OnModuleInit } from "@nestjs/common";
+import { Logger, Module, OnApplicationBootstrap, OnModuleInit } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { slugifyModel } from "sequelize-slugify";
@@ -20,7 +20,7 @@ import { loadTest } from "./_testing/load-test";
     CacheModule,
   ],
 })
-export class DatabaseModule implements OnModuleInit {
+export class DatabaseModule implements OnModuleInit, OnApplicationBootstrap {
   private readonly logger = new Logger(DatabaseModule.name);
 
   // get sequelize instance
@@ -30,16 +30,6 @@ export class DatabaseModule implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    if (this.configService.get("NODE_ENV") === "test") {
-      // initialize test database
-      this.logger.log("Initializing test database");
-      await this.sequelize.sync({ force: true });
-
-      // load test data
-      this.logger.log("Loading test data");
-      await loadTest();
-    }
-
     this.sequelize.options.logging = false;
 
     this.logger.debug("initialize addons");
@@ -58,5 +48,17 @@ export class DatabaseModule implements OnModuleInit {
     slugifyModel(Team as unknown as Model, {
       source: ["name", "season"],
     });
+  }
+
+  async onApplicationBootstrap() {
+    // Deferred to bootstrap so EnrollmentModule.onModuleInit has registered
+    // IndexCalculationService on EventEntry before test fixtures fire hooks.
+    if (this.configService.get("NODE_ENV") === "test") {
+      this.logger.log("Initializing test database");
+      await this.sequelize.sync({ force: true });
+
+      this.logger.log("Loading test data");
+      await loadTest();
+    }
   }
 }
