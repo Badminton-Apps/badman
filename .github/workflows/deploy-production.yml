@@ -1,0 +1,170 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      cloud-run:
+        description: "Run with Nx Cloud distributed CI"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+run-name: Prod release ${{ github.run_number }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      NEW_VERSION: ${{ steps.create_release.outputs.new_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Merge develop -> main
+        if: github.ref == 'refs/heads/main'
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: develop
+          target_branch: main
+          message: "chore(merge): merge develop into main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pull main
+        if: github.ref == 'refs/heads/main'
+        run: git pull origin main
+
+      - name: Override Base to last release tag
+        run: |
+          TAG_VERSION=$(git describe --first-parent --match 'v*' --abbrev=0 --tags)
+          echo "Found tag: $TAG_VERSION"
+          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+          echo "Found hash: $LAST_TAG_HASH"
+          echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
+          echo "NX_HEAD=origin/${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - uses: ./.github/actions/setup-monorepo
+        with:
+          cloud-distribute: "3 linux-medium-js"
+          run-nx-cloud: ${{ inputs.cloud-run == false && 'false' || 'true' }}
+
+      - name: Run affected lint, test, build
+        run: npx --yes nx affected -t lint test build -c ci
+
+      - name: Coverage reports
+        run: |
+          if find coverage -name "lcov.info" -type f 2>/dev/null | grep -q .; then
+            echo "Coverage files found, merging..."
+            npx --yes lcov-result-merger 'coverage/**/lcov.info' 'coverage/lcov.info'
+          else
+            echo "No coverage files found, creating empty coverage file..."
+            mkdir -p coverage
+            touch coverage/lcov.info
+          fi
+
+      - name: Set Git config
+        run: |
+          git config --local user.email "info@badman.app"
+          git config --local user.name "Badman Releaser"
+
+      - name: Create release
+        id: create_release
+        run: node scripts/release.js --dry-run=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Stop Nx Cloud agents
+        if: always() && inputs.cloud-run != false
+        run: npx --yes nx-cloud complete-ci-run
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
+          retention-days: 30
+
+      - name: Merge main -> develop
+        if: github.ref == 'refs/heads/main'
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: develop
+          message: "chore(merge): merge main into develop"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  migrate-prod:
+    needs: build
+    uses: ./.github/workflows/_shared-migrate.yml
+    with:
+      target-environment: production
+    secrets: inherit
+
+  deploy-prod:
+    needs: migrate-prod
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-monorepo
+        with:
+          cloud-distribute: "3 linux-medium-js"
+
+      - name: Deploy
+        run: npx --yes nx affected -t deploy --no-agents
+        env:
+          API_HOOK: ${{ secrets.PROD_API_HOOK }}
+          WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK }}
+          WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK }}
+
+      - name: Stop Nx Cloud agents
+        if: always()
+        run: npx --yes nx-cloud complete-ci-run
+
+  sentry-release:
+    needs: deploy-prod
+    if: github.ref == 'refs/heads/main' && needs.build.outputs.NEW_VERSION != ''
+    runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: badminton-vlaanderen
+      SENTRY_PROJECT: backend
+      VERSION: ${{ needs.build.outputs.NEW_VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create Sentry release
+        run: |
+          npx --yes @sentry/cli releases new "$VERSION"
+          npx --yes @sentry/cli releases set-commits "$VERSION" --auto
+          npx --yes @sentry/cli releases finalize "$VERSION"
+          npx --yes @sentry/cli releases deploys "$VERSION" new -e production
+
+      - name: Verify Sentry release
+        run: |
+          set -euo pipefail
+          release_info="$(npx --yes @sentry/cli releases list --org "$SENTRY_ORG" --project "$SENTRY_PROJECT" | grep -F "$VERSION" || true)"
+          if [[ -z "$release_info" ]]; then
+            echo "::error::Sentry release '$VERSION' not found."
+            exit 1
+          fi
+          echo "Sentry release '$VERSION' confirmed."

@@ -1,0 +1,60 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: deploy-staging-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-monorepo
+
+      - name: Build affected
+        run: npx --yes nx affected -t lint test build -c ci
+
+      - name: Stop Nx Cloud agents
+        if: always()
+        run: npx --yes nx-cloud complete-ci-run
+
+  migrate-staging:
+    needs: build
+    uses: ./.github/workflows/_shared-migrate.yml
+    with:
+      target-environment: staging
+    secrets: inherit
+
+  deploy-staging:
+    needs: migrate-staging
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-monorepo
+
+      - name: Deploy
+        run: npx --yes nx affected -t deploy --no-agents
+        env:
+          API_HOOK: ${{ secrets.STAGING_API_HOOK }}
+          WORKER_SYNC_HOOK: ${{ secrets.STAGING_WORKER_SYNC_HOOK }}
+          WORKER_RANKING_HOOK: ${{ secrets.STAGING_WORKER_RANKING_HOOK }}
+
+      - name: Stop Nx Cloud agents
+        if: always()
+        run: npx --yes nx-cloud complete-ci-run

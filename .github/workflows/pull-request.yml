@@ -1,0 +1,30 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+  merge_group:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-monorepo
+
+      - name: Run affected lint, test, build
+        run: npx --yes nx affected -t lint test build -c ci
+
+      - name: Stop Nx Cloud agents
+        if: always()
+        run: npx --yes nx-cloud complete-ci-run

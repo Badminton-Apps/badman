@@ -1,0 +1,105 @@
+name: Reusable — Run Migrations
+
+# Reusable workflow that applies pending Sequelize migrations against a single
+# target environment (staging or production).
+#
+# Safety properties:
+#   - environment: ${{ inputs.target-environment }} triggers the env protection
+#     rule (production requires manual reviewer approval) and grants access to
+#     env-scoped DB_* secrets.
+#   - concurrency.group = migrate-<target-env> with cancel-in-progress: false
+#     serializes runs against the same environment so a mid-flight migration
+#     cannot be cancelled.
+#   - Pre-flight invalid-index check runs before sequelize-cli to catch state
+#     left behind by an interrupted CREATE INDEX CONCURRENTLY.
+#
+# Caller pattern:
+#   migrate-staging:
+#     needs: build
+#     uses: ./.github/workflows/_shared-migrate.yml
+#     with:
+#       target-environment: staging
+#     secrets: inherit
+
+on:
+  workflow_call:
+    inputs:
+      target-environment:
+        description: "staging | production"
+        required: true
+        type: string
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.target-environment }}
+    concurrency:
+      group: migrate-${{ inputs.target-environment }}
+      cancel-in-progress: false
+    env:
+      NODE_ENV: ${{ inputs.target-environment }}
+      DB_IP: ${{ secrets.DB_IP }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_DATABASE: ${{ secrets.DB_DATABASE }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_DIALECT: ${{ secrets.DB_DIALECT }}
+      DB_SSL: ${{ secrets.DB_SSL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pre-flight — check for invalid indexes
+        run: node scripts/migrations/check-invalid-indexes.js
+
+      - name: Apply migrations
+        id: migrate
+        run: |
+          set -o pipefail
+          npx --yes sequelize-cli db:migrate --debug 2>&1 | tee migrate.log
+
+      - name: Report applied migrations
+        if: always()
+        run: |
+          {
+            echo "## Migration run — \`${{ inputs.target-environment }}\`"
+            echo ""
+            if [ -f migrate.log ]; then
+              APPLIED=$(grep -E "^== .+: migrated " migrate.log | sed -E 's/^== ([^:]+): migrated.*$/  - \1/' || true)
+              if [ -n "$APPLIED" ]; then
+                echo "**Applied migrations:**"
+                echo ""
+                echo "$APPLIED"
+              else
+                echo "_No pending migrations._"
+              fi
+            else
+              echo "_No migrate.log produced (job failed before sequelize-cli ran)._"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Surface failure details
+        if: failure() && steps.migrate.outcome == 'failure'
+        run: |
+          {
+            echo ""
+            echo "### Migration failure"
+            echo ""
+            FAILED=$(grep -E "^== .+: migrating " migrate.log | tail -1 | sed -E 's/^== ([^:]+): migrating.*$/\1/' || true)
+            if [ -n "$FAILED" ]; then
+              echo "Failing migration: **\`$FAILED\`**"
+              echo ""
+            fi
+            echo "Last 50 lines of \`migrate.log\`:"
+            echo ""
+            echo "\`\`\`"
+            tail -n 50 migrate.log
+            echo "\`\`\`"
+          } >> "$GITHUB_STEP_SUMMARY"
