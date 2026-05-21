@@ -71,6 +71,27 @@ describe("StandingLoaderService", () => {
     });
   });
 
+  describe("preserves id order regardless of DB row order", () => {
+    it("returns rows aligned to input load order even if findAll returns them shuffled", async () => {
+      const shuffled = [
+        { id: "s3", entryId: "entry-3" } as unknown as Standing,
+        { id: "s1", entryId: "entry-1" } as unknown as Standing,
+        { id: "s2", entryId: "entry-2" } as unknown as Standing,
+      ];
+      jest.spyOn(Standing, "findAll").mockResolvedValue(shuffled as never);
+
+      const results = await Promise.all([
+        service.load("entry-1"),
+        service.load("entry-2"),
+        service.load("entry-3"),
+      ]);
+
+      expect((results[0] as Standing).entryId).toBe("entry-1");
+      expect((results[1] as Standing).entryId).toBe("entry-2");
+      expect((results[2] as Standing).entryId).toBe("entry-3");
+    });
+  });
+
   describe("batch failure rejects all callers", () => {
     it("rejects every concurrent caller when findAll throws", async () => {
       const dbError = new Error("DB connection lost");

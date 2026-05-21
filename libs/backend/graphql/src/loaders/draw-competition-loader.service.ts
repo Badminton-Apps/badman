@@ -2,6 +2,7 @@ import { DrawCompetition } from "@badman/backend-database";
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
+import { reindexByKey } from "./dataloader-helpers";
 
 /**
  * Request-scoped DataLoader for batching DrawCompetition lookups by ID.
@@ -38,8 +39,7 @@ export class DrawCompetitionLoaderService {
         this.logger.debug(`batched ${ids.length} draw-competition lookups`);
       }
       const draws = await DrawCompetition.findAll({ where: { id: { [Op.in]: [...ids] } } });
-      const map = new Map(draws.map((d) => [d.id, d]));
-      return ids.map((id) => map.get(id) ?? null);
+      return reindexByKey(ids, draws, (d) => d.id);
     } catch (err) {
       this.logger.error(`batch draw-competition load failed for ${ids.length} ids`, err);
       throw err;

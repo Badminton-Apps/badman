@@ -2,6 +2,7 @@ import { Player } from "@badman/backend-database";
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
+import { reindexByKey } from "./dataloader-helpers";
 
 /**
  * Request-scoped DataLoader for batching Player lookups by ID.
@@ -36,8 +37,7 @@ export class PlayerLoaderService {
         this.logger.debug(`batched ${ids.length} player lookups`);
       }
       const players = await Player.findAll({ where: { id: { [Op.in]: [...ids] } } });
-      const map = new Map(players.map((p) => [p.id, p]));
-      return ids.map((id) => map.get(id) ?? null);
+      return reindexByKey(ids, players, (p) => p.id);
     } catch (err) {
       this.logger.error(`batch player load failed for ${ids.length} ids`, err);
       throw err;
