@@ -195,9 +195,7 @@ export class EnrollmentValidationService {
       );
 
       const backupPlayers = playersForTeam.filter((p) =>
-        t.backupPlayers
-          ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
-          .includes(p.id)
+        t.backupPlayers?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id)
       );
 
       const previousSeasonTeam = previousSeasonTeams.find((p) => p.link === t.link);
@@ -275,7 +273,9 @@ export class EnrollmentValidationService {
 
     const indexResults =
       indexInputs.length > 0
-        ? await this.indexCalculationService.calculate(indexInputs)
+        ? await this.indexCalculationService.calculate(indexInputs, {
+            caller: "EnrollmentValidationService.fetchAndValidate",
+          })
         : [];
     const resultsByKey = new Map(indexResults.map((r) => [r.key, r]));
 

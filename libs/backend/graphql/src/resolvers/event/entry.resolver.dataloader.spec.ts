@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { ConfigService } from "@nestjs/config";
 import { EventEntry, Player, Standing, SubEventCompetition, Team } from "@badman/backend-database";
 import { Sequelize } from "sequelize-typescript";
 import { EventEntryResolver } from "./entry.resolver";
@@ -63,6 +64,10 @@ describe("EventEntryResolver — DataLoader field resolvers", () => {
         {
           provide: EnrollmentValidationCacheService,
           useValue: { getForTeam: jest.fn() },
+        },
+        {
+          provide: ConfigService,
+          useValue: { get: jest.fn().mockReturnValue(false) },
         },
       ],
     }).compile();
@@ -227,7 +232,7 @@ describe("EventEntryResolver — DataLoader field resolvers", () => {
       jest.spyOn(teamLoaderService, "load").mockResolvedValue(fakeTeam);
       jest.spyOn(enrollmentValidationCacheService, "getForTeam").mockResolvedValue(null);
 
-      await resolver.enrollmentValidation(entry);
+      await resolver.enrollmentValidation(entry, true);
 
       expect(teamLoaderService.load).toHaveBeenCalledWith("team-1");
     });
@@ -249,7 +254,7 @@ describe("EventEntryResolver — DataLoader field resolvers", () => {
       // Resolve both team and enrollmentValidation on all entries concurrently
       await Promise.all([
         ...entries.map((e) => resolver.team(e)),
-        ...entries.map((e) => resolver.enrollmentValidation(e)),
+        ...entries.map((e) => resolver.enrollmentValidation(e, true)),
       ]);
 
       // Both team() and enrollmentValidation() must route through teamLoader.load
@@ -263,7 +268,7 @@ describe("EventEntryResolver — DataLoader field resolvers", () => {
       jest.spyOn(teamLoaderService, "load").mockResolvedValue(null);
       const getForTeamSpy = jest.spyOn(enrollmentValidationCacheService, "getForTeam");
 
-      const result = await resolver.enrollmentValidation(entry);
+      const result = await resolver.enrollmentValidation(entry, true);
 
       expect(result).toBeNull();
       expect(getForTeamSpy).not.toHaveBeenCalled();

@@ -382,7 +382,7 @@ export class TeamsResolver {
       if (core.indexPayload) {
         const [calcResult] = await this.indexCalculationService.calculate(
           [core.indexPayload.input],
-          { transaction }
+          { transaction, caller: "TeamsResolver.createTeam" }
         );
         if (isFailure(calcResult)) {
           this.indexFailureToGraphQLError(calcResult, { clubId: core.indexPayload.clubId, userId });
@@ -426,7 +426,12 @@ export class TeamsResolver {
       try {
         assertUUID(clubId, "clubId", { userId });
       } catch (e) {
-        this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+        this.logger.warn({
+          code: ErrorCode.BAD_USER_INPUT,
+          field: "clubId",
+          value: clubId,
+          userId,
+        });
         throw e;
       }
     }
@@ -451,7 +456,7 @@ export class TeamsResolver {
       if (payloads.length > 0) {
         const calcResults = await this.indexCalculationService.calculate(
           payloads.map((p) => p.input),
-          { transaction }
+          { transaction, caller: "TeamsResolver.createTeams" }
         );
         for (const r of calcResults) {
           if (isFailure(r)) {
