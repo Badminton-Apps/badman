@@ -135,7 +135,7 @@ export class EnrollmentEntryService {
           subEventCompetitionId: subEventId,
           players: basePlayers.map((id) => ({ id })),
         },
-        { transaction }
+        { transaction, caller: "EnrollmentEntryService.createEntry" }
       );
 
       if (isFailure(result)) {

@@ -88,10 +88,9 @@ describe("IndexCalculationService", () => {
 
     it("returns RANKING_SYSTEM_NOT_FOUND for every input when neither primary nor explicit system resolves", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(null);
-      jest.spyOn(Player, "findAll").mockResolvedValue([
-        stubPlayer("player-k1"),
-        stubPlayer("player-k2"),
-      ]);
+      jest
+        .spyOn(Player, "findAll")
+        .mockResolvedValue([stubPlayer("player-k1"), stubPlayer("player-k2")]);
 
       const results = await service.calculate([minimalInput("k1"), minimalInput("k2")]);
 
@@ -106,20 +105,21 @@ describe("IndexCalculationService", () => {
 
     it("surfaces INTERNAL_ERROR for an input that throws unexpectedly during processing", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
-      jest.spyOn(Player, "findAll").mockResolvedValue([
-        stubPlayer("player-ok"),
-        stubPlayer("player-boom"),
-      ]);
+      jest
+        .spyOn(Player, "findAll")
+        .mockResolvedValue([stubPlayer("player-ok"), stubPlayer("player-boom")]);
       jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
 
-      const origCompute = (service as unknown as { computeResult: (...a: unknown[]) => unknown }).computeResult.bind(service);
-      jest.spyOn(service as unknown as { computeResult: jest.Mock }, "computeResult").mockImplementation(
-        (...args: unknown[]) => {
+      const origCompute = (
+        service as unknown as { computeResult: (...a: unknown[]) => unknown }
+      ).computeResult.bind(service);
+      jest
+        .spyOn(service as unknown as { computeResult: jest.Mock }, "computeResult")
+        .mockImplementation((...args: unknown[]) => {
           const input = args[0] as IndexCalculationInput;
           if (input.key === "boom") throw new Error("Simulated crash");
           return origCompute(...args);
-        }
-      );
+        });
 
       const results = await service.calculate([minimalInput("ok"), minimalInput("boom")]);
 
@@ -139,9 +139,7 @@ describe("IndexCalculationService", () => {
     it("returns the single result from calculate", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("player-k1")]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([
-        stubPlace("player-k1", 8, 8, 12),
-      ]);
+      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("player-k1", 8, 8, 12)]);
 
       const result = await service.calculateOne({
         key: "k1",
@@ -203,9 +201,7 @@ describe("IndexCalculationService", () => {
     it("defaults all components to amountOfLevels+2 when no RankingPlace row exists", async () => {
       const playerId = "player-norate-0000-0000-0000-000000000000";
 
-      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(
-        stubSystem({ amountOfLevels: 10 })
-      );
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem({ amountOfLevels: 10 }));
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer(playerId)]);
       jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
 
@@ -257,17 +253,15 @@ describe("IndexCalculationService", () => {
   describe("type / season derivation from sub-event", () => {
     it("derives type and season from SubEventCompetition when caller omits them", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
-      jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([
-        stubSubEvent(SubEventTypeEnum.MX, { season: 2024 }),
-      ]);
-      jest.spyOn(Player, "findAll").mockResolvedValue([
-        stubPlayer("p1", "M"),
-        stubPlayer("p2", "F"),
-      ]);
-      const placeSpy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([
-        stubPlace("p1", 6, 6, 6),
-        stubPlace("p2", 6, 6, 6),
-      ]);
+      jest
+        .spyOn(SubEventCompetition, "findAll")
+        .mockResolvedValue([stubSubEvent(SubEventTypeEnum.MX, { season: 2024 })]);
+      jest
+        .spyOn(Player, "findAll")
+        .mockResolvedValue([stubPlayer("p1", "M"), stubPlayer("p2", "F")]);
+      const placeSpy = jest
+        .spyOn(RankingPlace, "findAll")
+        .mockResolvedValue([stubPlace("p1", 6, 6, 6), stubPlace("p2", 6, 6, 6)]);
 
       const result = await service.calculateOne({
         key: "k",
@@ -324,9 +318,9 @@ describe("IndexCalculationService", () => {
 
     it("explicit type/season override the sub-event-derived values", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
-      jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([
-        stubSubEvent(SubEventTypeEnum.M, { season: 2020 }),
-      ]);
+      jest
+        .spyOn(SubEventCompetition, "findAll")
+        .mockResolvedValue([stubSubEvent(SubEventTypeEnum.M, { season: 2020 })]);
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
       const placeSpy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
 
@@ -398,9 +392,9 @@ describe("IndexCalculationService", () => {
   describe("snapshot dedupe", () => {
     it("calls RankingPlace.findAll once when three inputs share the same (system, season)", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
-      jest.spyOn(Player, "findAll").mockResolvedValue([
-        stubPlayer("p1"), stubPlayer("p2"), stubPlayer("p3"),
-      ]);
+      jest
+        .spyOn(Player, "findAll")
+        .mockResolvedValue([stubPlayer("p1"), stubPlayer("p2"), stubPlayer("p3")]);
       const spy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
 
       await service.calculate([
@@ -463,7 +457,7 @@ describe("IndexCalculationService", () => {
   describe("partial failure does not fail the batch", () => {
     it("returns Success for input[0] and PLAYER_NOT_FOUND for input[1]", async () => {
       const goodId = "player-good-0000-0000-0000-000000000000";
-      const badId  = "player-bad--0000-0000-0000-000000000000";
+      const badId = "player-bad--0000-0000-0000-000000000000";
 
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       // Only goodId is in the DB — badId is absent.
@@ -472,7 +466,7 @@ describe("IndexCalculationService", () => {
 
       const results = await service.calculate([
         { key: "good", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: goodId }] },
-        { key: "bad",  type: SubEventTypeEnum.M, season: SEASON, players: [{ id: badId }] },
+        { key: "bad", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: badId }] },
       ]);
 
       expect(results).toHaveLength(2);
@@ -502,9 +496,9 @@ describe("IndexCalculationService", () => {
       const noGenderId = "player-nogender-0000-0000-000000000000";
 
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
-      jest.spyOn(Player, "findAll").mockResolvedValue([
-        { id: noGenderId, gender: null } as unknown as Player,
-      ]);
+      jest
+        .spyOn(Player, "findAll")
+        .mockResolvedValue([{ id: noGenderId, gender: null } as unknown as Player]);
       jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
 
       const result = await service.calculateOne({
@@ -527,13 +521,10 @@ describe("IndexCalculationService", () => {
   describe("computeResult — missing-player count", () => {
     it("sets missingPlayerCount to max(0, 4 − contributingPlayers.length)", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
-      jest.spyOn(Player, "findAll").mockResolvedValue([
-        stubPlayer("p1"), stubPlayer("p2"),
-      ]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([
-        stubPlace("p1", 8, 8, 12),
-        stubPlace("p2", 8, 8, 12),
-      ]);
+      jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1"), stubPlayer("p2")]);
+      jest
+        .spyOn(RankingPlace, "findAll")
+        .mockResolvedValue([stubPlace("p1", 8, 8, 12), stubPlace("p2", 8, 8, 12)]);
 
       const result = await service.calculateOne({
         key: "k",
@@ -555,9 +546,7 @@ describe("IndexCalculationService", () => {
   // -------------------------------------------------------------------------
   describe("RankingPlace fetch error", () => {
     it("falls back to default-fill (amountOfLevels+2) when RankingPlace.findAll throws", async () => {
-      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(
-        stubSystem({ amountOfLevels: 12 })
-      );
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem({ amountOfLevels: 12 }));
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
       jest.spyOn(RankingPlace, "findAll").mockRejectedValue(new Error("DB timeout"));
 
@@ -582,15 +571,22 @@ describe("IndexCalculationService", () => {
   describe("validator parity", () => {
     it("M team, 4 ranked players: matches validator's baseIndex computation", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
-      jest.spyOn(Player, "findAll").mockResolvedValue([
-        stubPlayer("p1"), stubPlayer("p2"), stubPlayer("p3"), stubPlayer("p4"),
-      ]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([
-        stubPlace("p1", 5, 5, 7),
-        stubPlace("p2", 6, 6, 8),
-        stubPlace("p3", 7, 7, 9),
-        stubPlace("p4", 8, 8, 10),
-      ]);
+      jest
+        .spyOn(Player, "findAll")
+        .mockResolvedValue([
+          stubPlayer("p1"),
+          stubPlayer("p2"),
+          stubPlayer("p3"),
+          stubPlayer("p4"),
+        ]);
+      jest
+        .spyOn(RankingPlace, "findAll")
+        .mockResolvedValue([
+          stubPlace("p1", 5, 5, 7),
+          stubPlace("p2", 6, 6, 8),
+          stubPlace("p3", 7, 7, 9),
+          stubPlace("p4", 8, 8, 10),
+        ]);
 
       const result = await service.calculateOne({
         key: "k",
@@ -608,9 +604,14 @@ describe("IndexCalculationService", () => {
 
     it("M team, one unranked player: matches validator's min+2 fallback", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
-      jest.spyOn(Player, "findAll").mockResolvedValue([
-        stubPlayer("p1"), stubPlayer("p2"), stubPlayer("p3"), stubPlayer("p4"),
-      ]);
+      jest
+        .spyOn(Player, "findAll")
+        .mockResolvedValue([
+          stubPlayer("p1"),
+          stubPlayer("p2"),
+          stubPlayer("p3"),
+          stubPlayer("p4"),
+        ]);
       jest.spyOn(RankingPlace, "findAll").mockResolvedValue([
         stubPlace("p1", 5, 5, 7),
         stubPlace("p2", 6, 6, 8),
@@ -630,6 +631,86 @@ describe("IndexCalculationService", () => {
         // Same setup as validator's "Player without RankingPlace falls back…" test → 64
         expect(result.index).toBe(64);
       }
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Caller-tag log enrichment (spec FR-008, SC-004)
+  // T017, T018, T019, T020
+  // -------------------------------------------------------------------------
+  describe("caller-tag log enrichment (FR-008)", () => {
+    // T017 — WARN log includes [CallerTag] when slow (duration > 1000 ms)
+    it("includes [CallerTag] in WARN log line when duration exceeds 1000 ms", async () => {
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
+      jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
+      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
+
+      // Simulate a slow execution by making Date.now() return values 1500 ms apart
+      const nowSpy = jest.spyOn(Date, "now");
+      nowSpy.mockReturnValueOnce(0).mockReturnValue(1500);
+
+      const warnSpy = jest.spyOn(service["logger"], "warn");
+
+      await service.calculate(
+        [{ key: "k", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: "p1" }] }],
+        { caller: "TestCaller" }
+      );
+
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("[TestCaller]"));
+    });
+
+    // T018 — DEBUG log includes [CallerTag] when fast (duration <= 1000 ms)
+    it("includes [CallerTag] in DEBUG log line when duration is within normal range", async () => {
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
+      jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
+      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
+
+      // Fast execution — both Date.now() calls return 0 → duration = 0 ms
+      jest.spyOn(Date, "now").mockReturnValue(0);
+
+      const debugSpy = jest.spyOn(service["logger"], "debug");
+
+      await service.calculate(
+        [{ key: "k", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: "p1" }] }],
+        { caller: "TestCaller" }
+      );
+
+      expect(debugSpy).toHaveBeenCalledWith(expect.stringContaining("[TestCaller]"));
+    });
+
+    // T019 — log lines do NOT include a bracketed tag when caller is omitted
+    it("renders log lines WITHOUT a bracketed tag when options.caller is omitted", async () => {
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
+      jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
+      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
+
+      jest.spyOn(Date, "now").mockReturnValue(0);
+
+      const debugSpy = jest.spyOn(service["logger"], "debug");
+
+      await service.calculate([
+        { key: "k", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: "p1" }] },
+      ]);
+
+      expect(debugSpy).toHaveBeenCalledWith(expect.not.stringContaining("["));
+    });
+
+    // T020 — calculateOne forwards caller to the underlying calculate invocation
+    it("calculateOne forwards caller option to calculate so the log tag appears", async () => {
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
+      jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
+      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
+
+      jest.spyOn(Date, "now").mockReturnValue(0);
+
+      const debugSpy = jest.spyOn(service["logger"], "debug");
+
+      await service.calculateOne(
+        { key: "k", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: "p1" }] },
+        { caller: "SingleCaller" }
+      );
+
+      expect(debugSpy).toHaveBeenCalledWith(expect.stringContaining("[SingleCaller]"));
     });
   });
 });

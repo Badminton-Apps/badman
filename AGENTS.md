@@ -189,6 +189,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/027-fix-search-player-n1/plan.md](specs/027-fix-search-player-n1/plan.md)
+[specs/028-gate-enrollment-validation/plan.md](specs/028-gate-enrollment-validation/plan.md)
 
 <!-- SPECKIT END -->
