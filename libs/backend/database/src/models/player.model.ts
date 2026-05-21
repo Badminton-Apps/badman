@@ -331,17 +331,32 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
     }
   }
 
-  async getPermissions(): Promise<string[]> {
-    let claims = (await this.getClaims()).map((r) => r.name);
-    const roles = await this.getRoles({
-      include: [Claim],
-    });
-    claims = [
-      ...claims,
-      ...roles.map((r) => r?.claims?.map((c) => `${r.linkId}_${c.name}`)).flat(),
-    ].filter((x) => x !== null && x !== undefined);
+  private _cachedPermissions?: Promise<string[]>;
 
-    return claims as string[];
+  async getPermissions(): Promise<string[]> {
+    if (this._cachedPermissions) {
+      return this._cachedPermissions;
+    }
+
+    this._cachedPermissions = (async () => {
+      let claims = (await this.getClaims()).map((r) => r.name);
+      const roles = await this.getRoles({
+        include: [Claim],
+      });
+      claims = [
+        ...claims,
+        ...roles.map((r) => r?.claims?.map((c) => `${r.linkId}_${c.name}`)).flat(),
+      ].filter((x) => x !== null && x !== undefined);
+
+      return claims as string[];
+    })();
+
+    try {
+      return await this._cachedPermissions;
+    } catch (err) {
+      this._cachedPermissions = undefined;
+      throw err;
+    }
   }
 
   // Gets the current ranking for a player, in a given system.

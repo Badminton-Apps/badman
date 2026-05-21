@@ -7,8 +7,12 @@ import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
 import { EventEntryResolver } from "./entry.resolver";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
+import {
+  StandingLoaderService,
+  SubEventCompetitionLoaderService,
+  TeamLoaderService,
+} from "../../loaders";
 import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.service";
-import { SubEventCompetitionLoaderService } from "../../loaders";
 import { ErrorCode } from "../../utils/error-codes";
 
 const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
@@ -90,12 +94,20 @@ describe("EventEntryResolver.finishEventEntry", () => {
           useValue: mockEnrollmentService,
         },
         {
-          provide: EnrollmentValidationCacheService,
-          useValue: { getForTeam: jest.fn() },
-        },
-        {
           provide: SubEventCompetitionLoaderService,
           useValue: { load: jest.fn() },
+        },
+        {
+          provide: TeamLoaderService,
+          useValue: { load: jest.fn() },
+        },
+        {
+          provide: StandingLoaderService,
+          useValue: { load: jest.fn() },
+        },
+        {
+          provide: EnrollmentValidationCacheService,
+          useValue: { getForTeam: jest.fn() },
         },
       ],
     }).compile();

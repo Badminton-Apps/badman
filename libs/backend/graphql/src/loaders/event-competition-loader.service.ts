@@ -1,7 +1,8 @@
 import { EventCompetition } from "@badman/backend-database";
-import { Injectable, Scope } from "@nestjs/common";
+import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
+import { reindexByKey } from "./dataloader-helpers";
 
 /**
  * Request-scoped DataLoader for batching EventCompetition lookups by ID.
@@ -16,6 +17,7 @@ import { Op } from "sequelize";
  */
 @Injectable({ scope: Scope.REQUEST })
 export class EventCompetitionLoaderService {
+  private readonly logger = new Logger(EventCompetitionLoaderService.name);
   private readonly loader = new DataLoader<string, EventCompetition | null>((ids) =>
     this.batchEventCompetitionsByIds(ids)
   );
@@ -32,8 +34,15 @@ export class EventCompetitionLoaderService {
   private async batchEventCompetitionsByIds(
     ids: readonly string[]
   ): Promise<(EventCompetition | null)[]> {
-    const events = await EventCompetition.findAll({ where: { id: { [Op.in]: [...ids] } } });
-    const map = new Map(events.map((e) => [e.id, e]));
-    return ids.map((id) => map.get(id) ?? null);
+    try {
+      if (ids.length > 1 && process.env["NODE_ENV"] !== "production") {
+        this.logger.debug(`batched ${ids.length} event-competition lookups`);
+      }
+      const events = await EventCompetition.findAll({ where: { id: { [Op.in]: [...ids] } } });
+      return reindexByKey(ids, events, (e) => e.id);
+    } catch (err) {
+      this.logger.error(`batch event-competition load failed for ${ids.length} ids`, err);
+      throw err;
+    }
   }
 }

@@ -198,7 +198,11 @@ export type XmlSets = z.infer<typeof XmlSetsSchema>;
 
 export const XmlPlayerSchema = z
   .object({
-    MemberID: requiredCoercedString,
+    // Tournament /Player endpoint occasionally returns roster rows without a
+    // MemberID (anonymous / placeholder entries). Downstream sync code falls
+    // back to first/last-name matching when memberId is absent, so accept the
+    // row instead of rejecting the entire batch.
+    MemberID: requiredCoercedString.optional(),
     Firstname: z.string().optional(),
     Lastname: z.string().optional(),
     GenderID: z.coerce.number().optional(),

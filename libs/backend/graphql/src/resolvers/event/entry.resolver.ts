@@ -14,7 +14,6 @@ import {
 } from "@badman/backend-database";
 import { TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
-import { SubEventCompetitionLoaderService } from "../../loaders";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
@@ -22,6 +21,11 @@ import { ErrorCode, ListArgs, assertUUID } from "../../utils";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
 import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.service";
 import { FinishEventEntryResult } from "./finish-event-entry-result.object";
+import {
+  StandingLoaderService,
+  SubEventCompetitionLoaderService,
+  TeamLoaderService,
+} from "../../loaders";
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
@@ -32,7 +36,9 @@ export class EventEntryResolver {
     private enrollmentValidationCache: EnrollmentValidationCacheService,
     private enrollmentFinalizeService: EnrollmentFinalizeService,
     private _sequelize: Sequelize,
-    private readonly subEventLoader: SubEventCompetitionLoaderService
+    private readonly subEventLoader: SubEventCompetitionLoaderService,
+    private readonly teamLoader: TeamLoaderService,
+    private readonly standingLoader: StandingLoaderService
   ) {}
 
   @Query(() => EventEntry)
@@ -52,7 +58,7 @@ export class EventEntryResolver {
 
   @ResolveField(() => Team)
   async team(@Parent() eventEntry: EventEntry): Promise<Team> {
-    return eventEntry.getTeam();
+    return this.teamLoader.load(eventEntry.teamId) as Promise<Team>;
   }
 
   @ResolveField(() => [Player])
@@ -79,8 +85,8 @@ export class EventEntryResolver {
   }
 
   @ResolveField(() => Standing, { nullable: true })
-  async standing(@Parent() eventEntry: EventEntry): Promise<Standing> {
-    return eventEntry.getStanding();
+  async standing(@Parent() eventEntry: EventEntry): Promise<Standing | null> {
+    return this.standingLoader.load(eventEntry.id);
   }
 
   @ResolveField(() => TeamEnrollmentOutput, {
@@ -90,7 +96,8 @@ export class EventEntryResolver {
   async enrollmentValidation(
     @Parent() eventEntry: EventEntry
   ): Promise<TeamEnrollmentOutput | null> {
-    const team = await eventEntry.getTeam();
+    const team = await this.teamLoader.load(eventEntry.teamId);
+    if (!team) return null;
     return this.enrollmentValidationCache.getForTeam(team);
   }
 
