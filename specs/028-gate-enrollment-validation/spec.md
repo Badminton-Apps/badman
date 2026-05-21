@@ -5,6 +5,14 @@
 **Status**: Draft
 **Input**: User description: "Stop the IndexCalculationService flood that takes the API down during nightly ranking sync by making the EventEntry.enrollmentValidation GraphQL field opt-in instead of always running."
 
+## Clarifications
+
+### Session 2026-05-21
+
+- Q: When the rollout-safety mechanism (FR-010) is engaged and a client explicitly sends `validate: false`, what wins? → A: Explicit caller intent always wins. `validate: false` returns `null`; the rollout-safety override only fills in when the argument is omitted.
+- Q: How is SC-002's "non-enrollment-wizard traffic" attributed in logs? → A: Drop the wizard/non-wizard split. Measure the total `IndexCalculationService` log volume drop instead.
+- Q: Does FR-003 require a code change at the sibling `EnrollmentResolver.enrollmentValidation` resolver? → A: No. The sibling is a top-level `Query` already requiring an explicit `EnrollmentInput` argument; it is opt-in by construction. FR-003 is satisfied by inspection.
+
 ## Background & Problem Context
 
 During the nightly ranking-sync window, the production API repeatedly fails health checks (`{"database":{"message":"timeout of 1000ms exceeded","status":"down"}}`) and restarts. Investigation shows the trigger is **not** ranking-sync itself — sync runs in the separate `worker-sync` process. The API process logs (`appname: 'api'`) show hundreds of `Slow index calculation` warnings emitted by `IndexCalculationService`, with durations climbing from ~1.5 s to ~29 s as the sync worker saturates the shared database.
@@ -83,8 +91,8 @@ As an engineer investigating a future regression, when I see a `Slow index calcu
 
 ### Edge Cases
 
-- A query asks for `enrollmentValidation` with the opt-in **false**: must return `null` and skip computation entirely (no DB hit, no logs).
-- A query asks for `enrollmentValidation` without supplying the argument: must default to the opt-out behavior (return `null`) — never silently compute.
+- A query asks for `enrollmentValidation` with the opt-in **false**: must return `null` and skip computation entirely (no DB hit, no logs), even if the rollout-safety override is engaged.
+- A query asks for `enrollmentValidation` without supplying the argument: must default to the opt-out behavior (return `null`) — never silently compute. The only exception is when the rollout-safety override is engaged, in which case omitted-argument requests fall through to computation per FR-010.
 - Multiple teams of the same club appear in one request and the client opts in: must collapse to one underlying club computation (existing per-request DataLoader behavior preserved).
 - The opted-in computation fails internally: must surface a clear error to the caller, not a silent `null`, so the wizard distinguishes "not requested" from "computation failed".
 - An entry's `meta.competition` is updated by a server-side write (e.g. team create / update mutation, sync worker writing player rosters from Visual): the existing per-entry `IndexCalculationService` recomputation on save MUST still run — that path is correct and rare and is **not** what's flooding the logs.
@@ -95,14 +103,14 @@ As an engineer investigating a future regression, when I see a `Slow index calcu
 
 - **FR-001**: The `EventEntry.enrollmentValidation` GraphQL field MUST accept an opt-in argument and MUST return `null` without invoking any underlying computation when the argument is omitted or set to false.
 - **FR-002**: When the opt-in argument is set to true, the field MUST return the same validation payload that the existing implementation returns today (no change to the shape, set of fields, or values).
-- **FR-003**: The same opt-in semantics MUST apply to every GraphQL field in the schema that today delegates to `EnrollmentValidationCacheService` / `EnrollmentValidationService.fetchAndValidate` (i.e. the sibling `enrollmentValidation` resolver on the competition-enrollment graph node, if present).
+- **FR-003**: The same opt-in semantics MUST apply to every GraphQL field in the schema that today delegates to `EnrollmentValidationCacheService` / `EnrollmentValidationService.fetchAndValidate`. The sibling resolver `EnrollmentResolver.enrollmentValidation` (top-level `Query` at `libs/backend/graphql/src/resolvers/event/competition/enrollment.resolver.ts:28`) is opt-in by construction — it requires a non-default `EnrollmentInput` argument and cannot fire on accidental field traversal — and therefore satisfies FR-003 without code changes. Any future delegating resolver MUST adopt the same opt-in pattern.
 - **FR-004**: Within a single GraphQL request, multiple opted-in lookups for the same `(clubId, season)` MUST collapse to one underlying validation (preserve current per-request DataLoader behavior).
 - **FR-005**: The change MUST NOT remove the `enrollmentValidation` field from the schema, MUST NOT rename it, and MUST NOT change its return type — only add the argument.
 - **FR-006**: When the opted-in computation fails internally (e.g. database error, missing ranking system), the response MUST surface the failure to the caller. It MUST NOT return a misleading `null` (which is now reserved for "not requested").
 - **FR-007**: Server-side write paths that legitimately recompute index data (entry-save hook, team create/update mutations, explicit calculate-index mutation, enrollment-entry create) MUST continue to function unchanged.
 - **FR-008**: Every `IndexCalculationService` log line (DEBUG and WARN) MUST include a stable caller identifier so a triage engineer can distinguish hot paths in production logs.
 - **FR-009**: Existing unit tests for resolvers and the enrollment validation service MUST continue to pass; new tests MUST cover the opt-out (default) and opt-in branches of the gated resolver(s).
-- **FR-010**: A rollout-safety mechanism MUST exist so that if the active frontend has not yet shipped the opt-in argument, the platform team can temporarily flip the default back to "always compute" without redeploying schema changes (e.g. a configuration knob).
+- **FR-010**: A rollout-safety mechanism MUST exist so that if the active frontend has not yet shipped the opt-in argument, the platform team can temporarily flip the default back to "always compute" without redeploying schema changes (e.g. a configuration knob). The mechanism MUST only take effect when the caller omits the opt-in argument. An explicit `validate: false` from the caller MUST always return `null` regardless of the rollout-safety setting (explicit caller intent wins).
 
 ### Key Entities *(include if feature involves data)*
 
@@ -115,7 +123,7 @@ As an engineer investigating a future regression, when I see a `Slow index calcu
 ### Measurable Outcomes
 
 - **SC-001**: During the nightly sync window, zero `Health Check has failed!` events caused by database timeout, measured across at least 14 consecutive nights post-deploy. (Baseline: multiple failures per night, observed 2026-05-21.)
-- **SC-002**: Across a representative 24-hour production window, the volume of `IndexCalculationService` log entries from non-enrollment-wizard traffic drops by at least 95% compared to the 24-hour window prior to deploy.
+- **SC-002**: Across a representative 24-hour production window, the total volume of `IndexCalculationService` log entries (DEBUG + WARN combined) drops by at least 95% compared to the 24-hour window prior to deploy. Wizard-versus-non-wizard attribution is intentionally NOT required for this measurement — a single aggregate count is sufficient. (Wizard traffic is small enough relative to the pre-fix flood that the 95% drop holds in aggregate.)
 - **SC-003**: The enrollment-wizard end-to-end flow (open wizard → see per-team validation for all teams of a club → submit) completes successfully for the test club in staging, with identical validation output before and after the change.
 - **SC-004**: When a triage engineer searches production logs for a single `Slow index calculation` warning, they can identify the originating code path in under 30 seconds from the log line alone, without needing to attach a debugger or open additional dashboards.
 - **SC-005**: No regression in p95 latency of the enrollment-wizard query under typical club sizes (≤ 36 teams) compared to the pre-change baseline.
@@ -134,6 +142,10 @@ As an engineer investigating a future regression, when I see a `Slow index calcu
 - Cross-request caching of enrollment validation results.
 - Splitting `enrollmentValidation` into a dedicated top-level GraphQL query (could be a future refactor, but the field-argument gate achieves the same effect with smaller blast radius).
 - Disabling or rescheduling the ranking-sync cron, or changing connection-pool sizing.
-- Changes to the active frontend (separate repository, separate ticket).
+- Changes to the active frontend (separate repository, separate ticket — tracked as [BAD-228](https://linear.app/dashdot/issue/BAD-228) "Wire `validate: true` into enrollmentValidation queries").
 - Removing the legacy Angular consumer (legacy, not maintained).
 - Changes to the entry-save hook recompute path.
+
+## Related work
+
+- **Frontend follow-up**: [BAD-228](https://linear.app/dashdot/issue/BAD-228) — adds `(validate: true)` to every `enrollmentValidation` selection in the active frontend repo. Must ship with or shortly after this spec's backend deploy; the kill-switch `ENROLLMENT_VALIDATION_DEFAULT_ENABLED=true` is the temporary safety net if the FE rollout lags (see FR-010).
