@@ -14,8 +14,10 @@ import {
 } from "@badman/backend-database";
 import { TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
+import { ConfigType } from "@badman/utils";
 import { SubEventCompetitionLoaderService } from "../../loaders";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
 import { ErrorCode, ListArgs, assertUUID } from "../../utils";
@@ -32,7 +34,8 @@ export class EventEntryResolver {
     private enrollmentValidationCache: EnrollmentValidationCacheService,
     private enrollmentFinalizeService: EnrollmentFinalizeService,
     private _sequelize: Sequelize,
-    private readonly subEventLoader: SubEventCompetitionLoaderService
+    private readonly subEventLoader: SubEventCompetitionLoaderService,
+    private readonly configService: ConfigService<ConfigType>
   ) {}
 
   @Query(() => EventEntry)
@@ -85,11 +88,24 @@ export class EventEntryResolver {
 
   @ResolveField(() => TeamEnrollmentOutput, {
     nullable: true,
-    description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
+    description:
+      "Validate the enrollment. Defaults to null. Pass `validate: true` to compute — " +
+      "this is a club-wide computation; only request it when you really need it. " +
+      "**note**: the levels are the ones from may!",
   })
   async enrollmentValidation(
-    @Parent() eventEntry: EventEntry
+    @Parent() eventEntry: EventEntry,
+    @Args("validate", { type: () => Boolean, nullable: true }) validate?: boolean
   ): Promise<TeamEnrollmentOutput | null> {
+    // Explicit caller intent always wins (spec Clarifications Q1):
+    //   validate === false  → always return null (even if kill-switch is on)
+    //   validate === true   → always compute
+    //   validate === undefined (omitted) → fall through to the rollout-safety env flag
+    if (validate === false) return null;
+    const effectiveValidate =
+      validate === true ||
+      this.configService.get<boolean>("ENROLLMENT_VALIDATION_DEFAULT_ENABLED") === true;
+    if (!effectiveValidate) return null;
     const team = await eventEntry.getTeam();
     return this.enrollmentValidationCache.getForTeam(team);
   }

@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { CompetitionResolverModule } from "./competition.module";
 import { EventEntryResolver, EntryCompetitionPlayersResolver } from "./entry.resolver";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
@@ -10,6 +11,7 @@ import { SubEventCompetitionLoaderService } from "../../loaders";
 
 @Module({
   imports: [
+    ConfigModule,
     CompetitionResolverModule,
     TournamentResolverModule,
     NotificationsModule,
