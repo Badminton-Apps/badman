@@ -10,7 +10,7 @@
     "@badman/backend-validation": "6.185.0",
     "@nestjs/common": "^10.4.15",
     "@nestjs/config": "^3.3.0",
-    "fastify": "^4.29.0",
+    "fastify": "^5.7.3",
     "moment-timezone": "^0.5.47",
     "nestjs-i18n": "^10.5.0",
     "rxjs": "~7.8.1",
