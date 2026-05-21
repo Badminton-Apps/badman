@@ -1,13 +1,17 @@
 name: Setup Monorepo
-description: nx-set-shas, Node from .nvmrc, Nx Cloud start-ci-run, npm ci. Caller MUST run actions/checkout@v4 with fetch-depth 0 first.
+description: nx-set-shas, Node from .nvmrc, cached node_modules + Nx cache, optional Nx Cloud bracket. Caller MUST run actions/checkout@v4 with fetch-depth 0 first.
 
 inputs:
   cloud-distribute:
-    description: "Argument for nx-cloud start-ci-run --distribute-on (inline form, e.g. '3 linux-medium-js'). Pass 'none' to skip the Nx Cloud bracket entirely."
+    description: "Argument for nx-cloud start-ci-run --distribute-on (inline form, e.g. '3 linux-medium-js')."
     required: false
     default: "3 linux-medium-js"
   run-nx-cloud:
     description: "Whether to bracket the run with Nx Cloud distributed execution. Set 'false' to skip start-ci-run; caller must also skip complete-ci-run."
+    required: false
+    default: "true"
+  cache-nx:
+    description: "Whether to cache .nx/cache across runs for faster nx affected."
     required: false
     default: "true"
 
@@ -22,11 +26,31 @@ runs:
         node-version-file: .nvmrc
         cache: npm
 
+    - name: Cache node_modules
+      id: cache-node-modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        # Lockfile + Node version pin the cache key. Bumping .nvmrc invalidates.
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('.nvmrc') }}-${{ hashFiles('package-lock.json') }}
+
+    - name: Install dependencies
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      shell: bash
+      run: npm ci --prefer-offline --no-audit --no-fund
+
+    - name: Cache Nx computation
+      if: inputs.cache-nx == 'true'
+      uses: actions/cache@v4
+      with:
+        path: .nx/cache
+        # Restore latest by branch; key is unique per commit so we always write a fresh entry.
+        key: ${{ runner.os }}-nx-${{ github.ref_name }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-nx-${{ github.ref_name }}-
+          ${{ runner.os }}-nx-
+
     - name: Start Nx Cloud CI run
       if: inputs.run-nx-cloud == 'true'
       shell: bash
       run: npx --yes nx-cloud start-ci-run --distribute-on="${{ inputs.cloud-distribute }}"
-
-    - name: Install dependencies
-      shell: bash
-      run: npm ci
