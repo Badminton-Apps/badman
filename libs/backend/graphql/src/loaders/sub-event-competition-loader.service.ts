@@ -2,6 +2,7 @@ import { SubEventCompetition } from "@badman/backend-database";
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
+import { reindexByKey } from "./dataloader-helpers";
 
 /**
  * Request-scoped DataLoader for batching SubEventCompetition lookups by ID.
@@ -42,8 +43,7 @@ export class SubEventCompetitionLoaderService {
       const subEvents = await SubEventCompetition.findAll({
         where: { id: { [Op.in]: [...ids] } },
       });
-      const map = new Map(subEvents.map((s) => [s.id, s]));
-      return ids.map((id) => map.get(id) ?? null);
+      return reindexByKey(ids, subEvents, (s) => s.id);
     } catch (err) {
       this.logger.error(`batch sub-event-competition load failed for ${ids.length} ids`, err);
       throw err;
