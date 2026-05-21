@@ -3,11 +3,11 @@ description: nx-set-shas, Node from .nvmrc, Nx Cloud start-ci-run, npm ci. Calle
 
 inputs:
   cloud-distribute:
-    description: "Argument for nx-cloud start-ci-run --distribute-on"
+    description: "Argument for nx-cloud start-ci-run --distribute-on (inline form, e.g. '3 linux-medium-js'). Pass 'none' to skip the Nx Cloud bracket entirely."
     required: false
-    default: ".nx/workflows/dynamic-changesets.yaml"
+    default: "3 linux-medium-js"
   run-nx-cloud:
-    description: "Whether to bracket the run with Nx Cloud distributed execution"
+    description: "Whether to bracket the run with Nx Cloud distributed execution. Set 'false' to skip start-ci-run; caller must also skip complete-ci-run."
     required: false
     default: "true"
 
