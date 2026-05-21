@@ -2004,6 +2004,14 @@
           "network": {
             "title": "Erreur réseau",
             "body": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
+          },
+          "server": {
+            "title": "Échec de l'envoi",
+            "body": "Le serveur n'a pas pu traiter votre inscription. Votre brouillon a été conservé — cliquez à nouveau sur S'inscrire pour réessayer."
+          },
+          "validation": {
+            "title": "Corrigez les problèmes signalés",
+            "body": "Certaines équipes ou certains champs contiennent encore des erreurs. Corrigez-les et réessayez."
           }
         }
       },

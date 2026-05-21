@@ -1402,6 +1402,14 @@
           "network": {
             "title": "Netwerkfout",
             "body": "We konden de server niet bereiken. Controleer je verbinding en probeer opnieuw."
+          },
+          "server": {
+            "title": "Indienen mislukt",
+            "body": "De server kon je inschrijving niet verwerken. Je concept is bewaard — klik opnieuw op Inschrijven om het opnieuw te proberen."
+          },
+          "validation": {
+            "title": "Los de gemarkeerde problemen op",
+            "body": "Sommige ploegen of velden bevatten nog fouten. Los ze op en probeer opnieuw."
           }
         }
       },
