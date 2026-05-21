@@ -1693,6 +1693,14 @@
           "network": {
             "title": "Network error",
             "body": "We couldn't reach the server. Check your connection and try again."
+          },
+          "server": {
+            "title": "Submission failed",
+            "body": "The server couldn't process your enrollment. Your draft has been preserved — press Enroll again to retry."
+          },
+          "validation": {
+            "title": "Fix the highlighted issues",
+            "body": "Some teams or fields still have errors. Resolve them and try again."
           }
         }
       },
