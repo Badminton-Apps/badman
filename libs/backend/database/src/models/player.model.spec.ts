@@ -1,5 +1,6 @@
 import "reflect-metadata";
-import { Player } from './player.model';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { Player } from "@badman/backend-database";
 
 type MutablePlayer = Player & {
   getClaims: jest.Mock;
