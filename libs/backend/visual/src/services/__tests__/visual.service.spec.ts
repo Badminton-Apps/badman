@@ -2,7 +2,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { VisualService } from "../visual.service";
-import * as Sentry from "@sentry/nestjs";
 import axios from "axios";
 import { formatInTimeZone } from "date-fns-tz";
 

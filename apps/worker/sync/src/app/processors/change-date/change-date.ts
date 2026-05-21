@@ -112,7 +112,7 @@ export class SyncDateProcessor {
   }
 }
 
-interface Result {
+interface _Result {
   TournamentMatch?: TournamentMatch;
   Error?: XmlError;
   _Version: string;

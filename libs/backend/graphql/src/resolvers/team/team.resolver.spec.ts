@@ -7,8 +7,6 @@ import {
   Club,
   EventEntry,
   Player,
-  RankingLastPlace,
-  RankingSystem,
   Team,
   TeamNewInput,
   TeamUpdateInput,

@@ -591,7 +591,7 @@ export class NotificationService {
     }
   }
 
-  private async _getValidationMessage(team: Team, captainId?: string) {
+  private async _getValidationMessage(team: Team, _captainId?: string) {
     const encountersH = await team.getHomeEncounters({
       attributes: ["id", "date"],
 

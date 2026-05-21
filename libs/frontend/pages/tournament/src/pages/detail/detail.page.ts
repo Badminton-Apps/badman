@@ -24,7 +24,6 @@ import { SeoService } from "@badman/frontend-seo";
 import { sortSubEvents } from "@badman/utils";
 import { TranslatePipe } from "@ngx-translate/core";
 import { MomentModule } from "ngx-moment";
-import { lastValueFrom } from "rxjs";
 import { BreadcrumbService } from "xng-breadcrumb";
 import { AssignRankingGroupsComponent } from "../../components";
 import { TournamentDetailService } from "./detail.service";

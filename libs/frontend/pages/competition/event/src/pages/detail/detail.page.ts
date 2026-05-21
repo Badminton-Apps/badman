@@ -29,7 +29,6 @@ import { sortSubEvents } from "@badman/utils";
 import { TranslatePipe } from "@ngx-translate/core";
 import { MomentModule } from "ngx-moment";
 import { injectQueryParams } from "ngxtension/inject-query-params";
-import { injectRouteData } from "ngxtension/inject-route-data";
 import { BreadcrumbService } from "xng-breadcrumb";
 import { EditSubeventDialogComponent } from "../../dialogs";
 import { EventMenuComponent } from "../../menus/event-menu/event-menu.component";
@@ -41,7 +40,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { Apollo } from "apollo-angular";
 import { EVENT_QUERY } from "../../queries";
 import { transferState } from "@badman/frontend-utils";
-import { map, tap } from "rxjs";
+import { map } from "rxjs";
 import { injectParams } from "ngxtension/inject-params";
 
 @Component({

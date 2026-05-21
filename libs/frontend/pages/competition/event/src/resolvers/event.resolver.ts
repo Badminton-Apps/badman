@@ -2,8 +2,8 @@ import { Injectable, PLATFORM_ID, TransferState, inject } from "@angular/core";
 import { ActivatedRouteSnapshot } from "@angular/router";
 import { EventCompetition } from "@badman/frontend-models";
 import { transferState } from "@badman/frontend-utils";
-import { Apollo, gql } from "apollo-angular";
-import { first, map } from "rxjs/operators";
+import { Apollo } from "apollo-angular";
+import { map } from "rxjs/operators";
 import { EVENT_QUERY } from "../queries";
 
 @Injectable()

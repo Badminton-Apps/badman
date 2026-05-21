@@ -259,7 +259,7 @@ export class GamesResolver {
       const gameHasPlayedAt = game.playedAt !== null;
 
       // used to check the current winner of the game against the update data, to see if the score of the new loser needs to drop
-      const oldGameWinner = game.winner;
+      const _oldGameWinner = game.winner;
 
       const updatedGame = await game.update(
         {

@@ -1,4 +1,4 @@
-import { Component, inject, Signal } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
@@ -12,7 +12,6 @@ import { TranslatePipe } from "@ngx-translate/core";
 import { lastValueFrom } from "rxjs";
 import { EventCompetitionLevelFieldsComponent } from "../../pages/edit/components";
 import { EVENT_QUERY } from "../../queries";
-import { injectParams } from "ngxtension/inject-params";
 
 const UPDATE_SUBEVENT_COMPETITION = gql`
   mutation UpdateSubEventCompetition($data: SubEventCompetitionUpdateInput!) {

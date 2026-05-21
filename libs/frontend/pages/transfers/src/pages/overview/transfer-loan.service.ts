@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Injectable, inject, signal } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { ClubMembership } from "@badman/frontend-models";
 import { endOfSeason, getSeason, startOfSeason } from "@badman/utils";
 import { Apollo, gql } from "apollo-angular";

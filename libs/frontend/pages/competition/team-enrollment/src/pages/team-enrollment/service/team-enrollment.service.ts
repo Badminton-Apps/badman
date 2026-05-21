@@ -1,4 +1,4 @@
-import { Injectable, computed, effect, inject } from "@angular/core";
+import { Injectable, computed, inject } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { Observable } from "rxjs";
 import { map, switchMap, tap } from "rxjs/operators";
@@ -30,8 +30,7 @@ import { loadLocations } from "./queries/locations";
 import { loadTeams } from "./queries/teams";
 import { loadTransersAndLoans } from "./queries/transfers";
 import { validateEnrollment } from "./queries/validate";
-import { AuthenticateService, ClaimService } from "@badman/frontend-auth";
-import { toSignal } from "@angular/core/rxjs-interop";
+import { ClaimService } from "@badman/frontend-auth";
 
 interface TeamEnrollmentState {
   club: Club | null;

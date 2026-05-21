@@ -17,10 +17,10 @@ import { EncounterValidationService } from "./encounter.service";
 
 describe("EncounterValidationService", () => {
   let service: EncounterValidationService;
-  let draw: DrawCompetition;
-  let event: EventCompetition;
-  let subEvent: SubEventCompetition;
-  let encounter: EncounterCompetition;
+  let _draw: DrawCompetition;
+  let _event: EventCompetition;
+  let _subEvent: SubEventCompetition;
+  let _encounter: EncounterCompetition;
   let module: TestingModule;
 
   beforeEach(async () => {
