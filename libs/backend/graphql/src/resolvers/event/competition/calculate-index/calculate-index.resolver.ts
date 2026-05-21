@@ -1,10 +1,6 @@
 import { User } from "@badman/backend-authorization";
 import { Player } from "@badman/backend-database";
-import {
-  IndexCalculationService,
-  isFailure,
-  isSuccess,
-} from "@badman/backend-enrollment";
+import { IndexCalculationService, isFailure, isSuccess } from "@badman/backend-enrollment";
 import { IsUUID } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { Args, Query, Resolver } from "@nestjs/graphql";
@@ -43,9 +39,12 @@ export class CalculateIndexResolver {
 
     const keys = inputs.map((i) => i.key);
     if (new Set(keys).size !== keys.length) {
-      throw new GraphQLError("inputs contains duplicate key values. Each key must be unique within a batch.", {
-        extensions: { code: ErrorCode.BAD_USER_INPUT },
-      });
+      throw new GraphQLError(
+        "inputs contains duplicate key values. Each key must be unique within a batch.",
+        {
+          extensions: { code: ErrorCode.BAD_USER_INPUT },
+        }
+      );
     }
 
     const currentYear = new Date().getFullYear();
@@ -57,10 +56,9 @@ export class CalculateIndexResolver {
         );
       }
       if (input.subEventCompetitionId && !IsUUID(input.subEventCompetitionId)) {
-        throw new GraphQLError(
-          `inputs[${input.key}].subEventCompetitionId is not a valid UUID.`,
-          { extensions: { code: ErrorCode.BAD_USER_INPUT, key: input.key } }
-        );
+        throw new GraphQLError(`inputs[${input.key}].subEventCompetitionId is not a valid UUID.`, {
+          extensions: { code: ErrorCode.BAD_USER_INPUT, key: input.key },
+        });
       }
       for (const player of input.players) {
         if (!IsUUID(player.id)) {
@@ -82,9 +80,14 @@ export class CalculateIndexResolver {
 
     let serviceResults;
     try {
-      serviceResults = await this.indexCalculationService.calculate(serviceInputs);
+      serviceResults = await this.indexCalculationService.calculate(serviceInputs, {
+        caller: "CalculateIndexResolver.calculateIndex",
+      });
     } catch (err) {
-      this.logger.error("IndexCalculationService.calculate threw", err instanceof Error ? err.stack : String(err));
+      this.logger.error(
+        "IndexCalculationService.calculate threw",
+        err instanceof Error ? err.stack : String(err)
+      );
       throw new GraphQLError("Failed to calculate index.", {
         extensions: { code: ErrorCode.INTERNAL_ERROR },
       });
