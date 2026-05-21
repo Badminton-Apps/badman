@@ -120,8 +120,28 @@
       "status": "done",
       "branch": "026-dataloader-comment-player",
       "merged_pr": "#932, #939"
+    },
+    "028-gate-enrollment-validation": {
+      "status": "in_review_qa_approved",
+      "board": "local",
+      "branch": "feat/028-gate-enrollment-validation-impl",
+      "worktree": "/Users/arno/Documents/Projects/Badman/feat-028-gate-enrollment-validation",
+      "tasks_total": 33,
+      "tasks_completed": "T001-T014, T017-T027, T029, T030, T032",
+      "tasks_deferred": "T015-T016 (operational manual verification), T028 (nx affected:test — empty test_command), T031 (operational Quickstart walk), T033 (no checked-in schema.gql)",
+      "implementation_commits": ["2de5cdc1f", "fcdedeaa7", "db6fcad0a"],
+      "feature_status": "done",
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "ci_gate": "none",
+      "next_step": "human review and open PR to develop; run nx affected:test in CI"
     }
   },
   "board": "linear",
   "ci_gate": "none"
 }
+
