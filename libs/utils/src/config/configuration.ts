@@ -46,6 +46,7 @@ export const configSchema = Joi.object({
   ENTER_SCORES_ENABLED: Joi.boolean().optional(),
   HANG_BEFORE_BROWSER_CLEANUP: Joi.boolean().optional(),
   VISUAL_SYNC_ENABLED: Joi.boolean().optional(),
+  ENROLLMENT_VALIDATION_DEFAULT_ENABLED: Joi.boolean().optional().default(false),
   VISUAL_FORCE_CACHE_DEV: Joi.string().valid("true", "false").default("true"),
   REDIS_DATABASE: Joi.number().integer().optional(),
   REDIS_HOST: Joi.when("DB_CACHE", {
@@ -114,7 +115,8 @@ export const configSchema = Joi.object({
   DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH: Joi.when("NODE_ENV", {
     is: Joi.valid("production", "staging"),
     then: Joi.forbidden().messages({
-      "any.unknown": "DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH must not be set when NODE_ENV is production or staging.",
+      "any.unknown":
+        "DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH must not be set when NODE_ENV is production or staging.",
     }),
     otherwise: Joi.boolean().optional(),
   }),
@@ -125,7 +127,8 @@ export const configSchema = Joi.object({
   DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID: Joi.when("NODE_ENV", {
     is: Joi.valid("production", "staging"),
     then: Joi.forbidden().messages({
-      "any.unknown": "DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID must not be set when NODE_ENV is production or staging.",
+      "any.unknown":
+        "DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID must not be set when NODE_ENV is production or staging.",
     }),
     otherwise: Joi.string().uuid().optional(),
   }),
@@ -200,6 +203,8 @@ export const load = () => ({
   VR_CHANGE_DATES: process.env?.["VR_CHANGE_DATES"] === "true",
   VR_ACCEPT_ENCOUNTERS: process.env?.["VR_ACCEPT_ENCOUNTERS"] === "true",
   VISUAL_SYNC_ENABLED: process.env?.["VISUAL_SYNC_ENABLED"] === "true",
+  ENROLLMENT_VALIDATION_DEFAULT_ENABLED:
+    process.env?.["ENROLLMENT_VALIDATION_DEFAULT_ENABLED"] === "true",
 });
 
 export type ConfigType = {
@@ -231,6 +236,7 @@ export type ConfigType = {
   AUTH0_ISSUER_URL: string;
   AUTH0_AUDIENCE: string;
   VISUAL_SYNC_ENABLED: boolean;
+  ENROLLMENT_VALIDATION_DEFAULT_ENABLED: boolean;
   VISUAL_FORCE_CACHE_DEV: string;
   ENTER_SCORES_ENABLED: boolean;
   HANG_BEFORE_BROWSER_CLEANUP: boolean;
