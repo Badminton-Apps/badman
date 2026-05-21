@@ -121,6 +121,11 @@
       "branch": "026-dataloader-comment-player",
       "merged_pr": "#932, #939"
     },
+    "029-evententry-team-standing-loaders": {
+      "status": "todo",
+      "board": "local",
+      "branch": "029-evententry-team-standing-loaders"
+    },
     "028-gate-enrollment-validation": {
       "status": "in_review_qa_approved",
       "board": "local",
