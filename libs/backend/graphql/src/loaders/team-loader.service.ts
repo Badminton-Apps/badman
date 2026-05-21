@@ -2,6 +2,7 @@ import { Team } from "@badman/backend-database";
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
+import { reindexByKey } from "./dataloader-helpers";
 
 /**
  * Request-scoped DataLoader for batching Team lookups by ID.
@@ -37,8 +38,7 @@ export class TeamLoaderService {
         this.logger.debug(`batched ${ids.length} team lookups`);
       }
       const teams = await Team.findAll({ where: { id: { [Op.in]: [...ids] } } });
-      const map = new Map(teams.map((t) => [t.id, t]));
-      return ids.map((id) => map.get(id) ?? null);
+      return reindexByKey(ids, teams, (t) => t.id);
     } catch (err) {
       this.logger.error(`batch team load failed for ${ids.length} ids`, err);
       throw err;

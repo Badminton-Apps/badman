@@ -2,6 +2,7 @@ import { Standing } from "@badman/backend-database";
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
+import { reindexByKey } from "./dataloader-helpers";
 
 /**
  * Request-scoped DataLoader for batching Standing lookups by entryId.
@@ -39,8 +40,7 @@ export class StandingLoaderService {
       const standings = await Standing.findAll({
         where: { entryId: { [Op.in]: [...ids] } },
       });
-      const map = new Map(standings.map((s) => [s.entryId, s]));
-      return ids.map((id) => map.get(id) ?? null);
+      return reindexByKey(ids, standings, (s) => s.entryId);
     } catch (err) {
       this.logger.error(`batch standing load failed for ${ids.length} ids`, err);
       throw err;

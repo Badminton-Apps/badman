@@ -2,6 +2,7 @@ import { EventCompetition } from "@badman/backend-database";
 import { Injectable, Logger, Scope } from "@nestjs/common";
 import DataLoader from "dataloader";
 import { Op } from "sequelize";
+import { reindexByKey } from "./dataloader-helpers";
 
 /**
  * Request-scoped DataLoader for batching EventCompetition lookups by ID.
@@ -38,8 +39,7 @@ export class EventCompetitionLoaderService {
         this.logger.debug(`batched ${ids.length} event-competition lookups`);
       }
       const events = await EventCompetition.findAll({ where: { id: { [Op.in]: [...ids] } } });
-      const map = new Map(events.map((e) => [e.id, e]));
-      return ids.map((id) => map.get(id) ?? null);
+      return reindexByKey(ids, events, (e) => e.id);
     } catch (err) {
       this.logger.error(`batch event-competition load failed for ${ids.length} ids`, err);
       throw err;
