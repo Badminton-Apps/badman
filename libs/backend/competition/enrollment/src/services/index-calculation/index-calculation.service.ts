@@ -76,10 +76,16 @@ export class IndexCalculationService {
    * Calculate index values for a batch of inputs in a single call.
    * Per-input failures are surfaced as IndexCalculationFailure entries;
    * they do not abort the batch.
+   *
+   * @param options.caller Optional stable identifier for the calling code path.
+   *   When provided it is included in every log line as `[<caller>]` and set
+   *   as the `index_calc.caller` Sentry span attribute, enabling triage
+   *   engineers to attribute slow-calculation warnings without a debugger
+   *   (spec FR-008, SC-004).
    */
   async calculate(
     inputs: IndexCalculationInput[],
-    options?: { transaction?: Transaction }
+    options?: { transaction?: Transaction; caller?: string }
   ): Promise<IndexCalculationResult[]> {
     if (inputs.length === 0) {
       return [];
@@ -98,17 +104,21 @@ export class IndexCalculationService {
       },
       async (span) => {
         try {
+          if (options?.caller) {
+            span?.setAttribute("index_calc.caller", options.caller);
+          }
           return await this._calculate(inputs, options);
         } finally {
           const durationMs = Date.now() - start;
           span?.setAttribute("index_calc.duration_ms", durationMs);
+          const callerTag = options?.caller ? ` [${options.caller}]` : "";
           if (durationMs > 1000) {
             this.logger.warn(
-              `Slow index calculation: ${inputs.length} input(s), ${totalPlayers} player ref(s), ${durationMs}ms`
+              `Slow index calculation:${callerTag} ${inputs.length} input(s), ${totalPlayers} player ref(s), ${durationMs}ms`
             );
           } else {
             this.logger.debug(
-              `Index calculation: ${inputs.length} input(s), ${totalPlayers} player ref(s), ${durationMs}ms`
+              `Index calculation:${callerTag} ${inputs.length} input(s), ${totalPlayers} player ref(s), ${durationMs}ms`
             );
           }
         }
@@ -301,7 +311,7 @@ export class IndexCalculationService {
   /** Convenience wrapper for single-input callers (e.g., the entry-model hook). */
   async calculateOne(
     input: IndexCalculationInput,
-    options?: { transaction?: Transaction }
+    options?: { transaction?: Transaction; caller?: string }
   ): Promise<IndexCalculationResult> {
     const results = await this.calculate([input], options);
     return results[0];
@@ -442,22 +452,6 @@ export class IndexCalculationService {
 
     const contributingPlayers = resolvedPlayers.filter((p) => contributingIds.has(p.id));
     const missingPlayerCount = Math.max(0, 4 - contributingPlayers.length);
-
-    this.logger.debug({
-      key: input.key,
-      type,
-      playerIds: input.players.map((p) => p.id),
-      resolvedPerPlayer: resolvedPlayers.map(({ id, single, double, mix }) => ({
-        id,
-        single,
-        double,
-        mix,
-      })),
-      bestN: contributingPlayers.map((p) => p.id),
-      missingPlayerCount,
-      index,
-    });
-
     const successResult: IndexCalculationSuccess = {
       _tag: "success",
       key: input.key,

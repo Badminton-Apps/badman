@@ -48,7 +48,7 @@ interface IIndexCalculationService {
       subEventCompetitionId?: string;
       players: { id: string }[];
     },
-    options?: { transaction?: unknown }
+    options?: { transaction?: unknown; caller?: string }
   ): Promise<
     | {
         _tag: "success";
@@ -249,7 +249,7 @@ export class EventEntry extends Model<
         subEventCompetitionId: instance.subEventId ?? undefined,
         players: (instance.meta.competition.players ?? []).map((p) => ({ id: p.id! })),
       },
-      { transaction: options?.transaction }
+      { transaction: options?.transaction, caller: "EventEntry.recalculateCompetitionIndex" }
     );
 
     if (result._tag === "failure") {

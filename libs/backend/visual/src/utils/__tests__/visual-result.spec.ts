@@ -1,10 +1,14 @@
 import {
   XmlItemSchema,
+  XmlMatchSchema,
+  XmlPlayerSchema,
   XmlRankingCategorySchema,
   XmlRankingPublicationSchema,
   XmlRankingSchema,
+  XmlTeamMatchSchema,
   XmlTournamentDrawSchema,
   XmlTournamentMatchSchema,
+  XmlTournamentSchema,
 } from "../visual-result";
 
 describe("XmlRankingPublicationSchema", () => {
@@ -161,6 +165,61 @@ describe("requiredCoercedString invariant", () => {
     }
   });
 
+  // Visual API sends bare numbers for Team1/Team2 (e.g. team-code IDs) when the
+  // match slot is not yet filled. Schema must drop them to undefined (Sentry #116466287).
+  it("XmlMatchSchema: coerces numeric Team1/Team2 to undefined", () => {
+    const result = XmlMatchSchema.safeParse({ Code: "M1", Team1: 0, Team2: 0 });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Team1).toBeUndefined();
+      expect(result.data.Team2).toBeUndefined();
+    }
+  });
+
+  it("XmlMatchSchema: preserves object Team1/Team2", () => {
+    const result = XmlMatchSchema.safeParse({
+      Code: "M1",
+      Team1: { Code: "T1", Name: "Alpha" },
+      Team2: { Code: "T2", Name: "Beta" },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Team1?.Code).toBe("T1");
+      expect(result.data.Team2?.Code).toBe("T2");
+    }
+  });
+
+  // Visual API sends Match-level Team1/Team2 objects without a Code field —
+  // Code is only set on top-level draw teams (Sentry #116466287 follow-up).
+  it("XmlMatchSchema: accepts Team1/Team2 object without Code", () => {
+    const result = XmlMatchSchema.safeParse({
+      Code: "M1",
+      Team1: { Player1: { MemberID: "P1" } },
+      Team2: { Player1: { MemberID: "P2" } },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Team1?.Code).toBeUndefined();
+      expect(result.data.Team2?.Code).toBeUndefined();
+    }
+  });
+
+  // Visual API sometimes returns CourtName as a numeric court number (Sentry #117823630).
+  it("XmlMatchSchema: coerces numeric CourtName to string", () => {
+    const result = XmlMatchSchema.safeParse({ Code: "M1", CourtName: 3 });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.CourtName).toBe("3");
+  });
+
+  it("XmlTeamMatchSchema: coerces numeric Team1/Team2 to undefined", () => {
+    const result = XmlTeamMatchSchema.safeParse({ Code: "TM1", Team1: 42, Team2: 99 });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.Team1).toBeUndefined();
+      expect(result.data.Team2).toBeUndefined();
+    }
+  });
+
   it("XmlTournamentMatchSchema: accepts numeric MatchID", () => {
     const result = XmlTournamentMatchSchema.safeParse({
       TournamentID: 1,
@@ -172,5 +231,35 @@ describe("requiredCoercedString invariant", () => {
       expect(result.data.TournamentID).toBe("1");
       expect(result.data.MatchID).toBe("99");
     }
+  });
+
+  // Visual API /Tournament/:id/Player can include roster rows without a
+  // MemberID (anonymous / placeholder entries, Sentry #104397491). Schema
+  // must accept them so the whole sync batch isn't rejected.
+  it("XmlPlayerSchema: accepts a Player row without MemberID", () => {
+    const result = XmlPlayerSchema.safeParse({
+      Firstname: "Jane",
+      Lastname: "Doe",
+      GenderID: 1,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.MemberID).toBeUndefined();
+  });
+
+  it("XmlPlayerSchema: still coerces a numeric MemberID to string", () => {
+    const result = XmlPlayerSchema.safeParse({ MemberID: 12345, Firstname: "Jane" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.MemberID).toBe("12345");
+  });
+
+  // Visual API sometimes returns TournamentTimezone as a number (Sentry #104397491).
+  it("XmlTournamentSchema: coerces numeric TournamentTimezone to string", () => {
+    const result = XmlTournamentSchema.safeParse({
+      Code: "T1",
+      Name: "Open 2026",
+      TournamentTimezone: 1,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.TournamentTimezone).toBe("1");
   });
 });

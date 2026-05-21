@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { Club, EventEntry, Logging, Player, Team } from "@badman/backend-database";
@@ -7,6 +8,12 @@ import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
 import { EventEntryResolver } from "./entry.resolver";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
+import {
+  StandingLoaderService,
+  SubEventCompetitionLoaderService,
+  TeamLoaderService,
+} from "../../loaders";
+import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.service";
 import { ErrorCode } from "../../utils/error-codes";
 
 const CLUB_UUID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
@@ -86,6 +93,26 @@ describe("EventEntryResolver.finishEventEntry", () => {
         {
           provide: EnrollmentValidationService,
           useValue: mockEnrollmentService,
+        },
+        {
+          provide: SubEventCompetitionLoaderService,
+          useValue: { load: jest.fn() },
+        },
+        {
+          provide: TeamLoaderService,
+          useValue: { load: jest.fn() },
+        },
+        {
+          provide: StandingLoaderService,
+          useValue: { load: jest.fn() },
+        },
+        {
+          provide: EnrollmentValidationCacheService,
+          useValue: { getForTeam: jest.fn() },
+        },
+        {
+          provide: ConfigService,
+          useValue: { get: jest.fn().mockReturnValue(false) },
         },
       ],
     }).compile();
@@ -431,5 +458,171 @@ describe("EventEntryResolver.finishEventEntry", () => {
     expect(result.success).toBe(true);
     expect(result.alreadyFinalised).toBe(false);
     expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// EventEntryResolver.enrollmentValidation gate (FR-001, FR-002, FR-006, FR-010)
+// T004, T005, T006, T010, T011, T012
+// ---------------------------------------------------------------------------
+describe("EventEntryResolver.enrollmentValidation (gate)", () => {
+  let resolver: EventEntryResolver;
+  let mockCacheService: { getForTeam: jest.Mock };
+  let mockConfigService: { get: jest.Mock };
+  let mockTeamLoader: { load: jest.Mock };
+
+  const stubTeamModel = (id = "team-uuid", clubId = CLUB_UUID, season = 2026) =>
+    asUnknown<Team>({ id, clubId, season });
+
+  const stubEventEntry = (teamId = "team-uuid") =>
+    asUnknown<EventEntry>({ teamId });
+
+  const buildModule = async (enrollmentValidationDefaultEnabled: boolean) => {
+    mockCacheService = { getForTeam: jest.fn() };
+    mockTeamLoader = { load: jest.fn() };
+    mockConfigService = {
+      get: jest.fn((key: string) => {
+        if (key === "ENROLLMENT_VALIDATION_DEFAULT_ENABLED")
+          return enrollmentValidationDefaultEnabled;
+        return undefined;
+      }),
+    };
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        EventEntryResolver,
+        EnrollmentFinalizeService,
+        {
+          provide: Sequelize,
+          useValue: {
+            transaction: jest.fn().mockResolvedValue({
+              commit: jest.fn(),
+              rollback: jest.fn(),
+              LOCK: { UPDATE: "UPDATE" },
+            }),
+          },
+        },
+        {
+          provide: NotificationService,
+          useValue: { notifyEnrollment: jest.fn() },
+        },
+        {
+          provide: EnrollmentValidationService,
+          useValue: { fetchAndValidate: jest.fn() },
+        },
+        {
+          provide: EnrollmentValidationCacheService,
+          useValue: mockCacheService,
+        },
+        {
+          provide: SubEventCompetitionLoaderService,
+          useValue: { load: jest.fn() },
+        },
+        {
+          provide: TeamLoaderService,
+          useValue: mockTeamLoader,
+        },
+        {
+          provide: StandingLoaderService,
+          useValue: { load: jest.fn() },
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
+        },
+      ],
+    }).compile();
+
+    return module.get<EventEntryResolver>(EventEntryResolver);
+  };
+
+  afterEach(() => jest.restoreAllMocks());
+
+  // T004 — validate omitted (undefined) + env flag false → null, no cache call
+  it("returns null and does not call getForTeam when validate is undefined and env flag is false", async () => {
+    resolver = await buildModule(false);
+    const entry = stubEventEntry();
+
+    const result = await resolver.enrollmentValidation(entry, undefined);
+
+    expect(result).toBeNull();
+    expect(mockCacheService.getForTeam).not.toHaveBeenCalled();
+  });
+
+  // T005 — validate explicitly false + env flag false → null, no cache call
+  it("returns null and does not call getForTeam when validate is false and env flag is false", async () => {
+    resolver = await buildModule(false);
+    const entry = stubEventEntry();
+
+    const result = await resolver.enrollmentValidation(entry, false);
+
+    expect(result).toBeNull();
+    expect(mockCacheService.getForTeam).not.toHaveBeenCalled();
+  });
+
+  // T006 — when computation is skipped, teamLoader.load must NOT be called (no unnecessary association fetch)
+  it("does not call teamLoader.load() when computation is skipped", async () => {
+    resolver = await buildModule(false);
+    const entry = stubEventEntry();
+
+    await resolver.enrollmentValidation(entry, undefined);
+
+    expect(mockTeamLoader.load).not.toHaveBeenCalled();
+  });
+
+  // T010 — validate: true → delegates to cache and returns result verbatim
+  it("calls teamLoader.load() once and getForTeam(team) once, returning the cache value when validate is true", async () => {
+    resolver = await buildModule(false);
+    const team = stubTeamModel();
+    mockTeamLoader.load.mockResolvedValue(team);
+    const entry = stubEventEntry();
+    const fakeOutput = { teams: [] } as unknown as ReturnType<typeof mockCacheService.getForTeam>;
+    mockCacheService.getForTeam.mockResolvedValue(fakeOutput);
+
+    const result = await resolver.enrollmentValidation(entry, true);
+
+    expect(mockTeamLoader.load).toHaveBeenCalledTimes(1);
+    expect(mockTeamLoader.load).toHaveBeenCalledWith("team-uuid");
+    expect(mockCacheService.getForTeam).toHaveBeenCalledWith(team);
+    expect(result).toBe(fakeOutput);
+  });
+
+  // T011 — validate omitted + env flag true (kill-switch) → delegates to cache
+  it("delegates to cache when validate is omitted AND ENROLLMENT_VALIDATION_DEFAULT_ENABLED is true", async () => {
+    resolver = await buildModule(true);
+    const team = stubTeamModel();
+    mockTeamLoader.load.mockResolvedValue(team);
+    const entry = stubEventEntry();
+    const fakeOutput = { teams: [] } as unknown as ReturnType<typeof mockCacheService.getForTeam>;
+    mockCacheService.getForTeam.mockResolvedValue(fakeOutput);
+
+    const result = await resolver.enrollmentValidation(entry, undefined);
+
+    expect(mockTeamLoader.load).toHaveBeenCalledTimes(1);
+    expect(mockCacheService.getForTeam).toHaveBeenCalledWith(team);
+    expect(result).toBe(fakeOutput);
+  });
+
+  // T012 — validate: true but cache rejects → rejection surfaces (spec FR-006)
+  it("propagates cache rejection when validate is true (does NOT swallow to null)", async () => {
+    resolver = await buildModule(false);
+    const team = stubTeamModel();
+    mockTeamLoader.load.mockResolvedValue(team);
+    const entry = stubEventEntry();
+    mockCacheService.getForTeam.mockRejectedValue(new Error("DB down"));
+
+    await expect(resolver.enrollmentValidation(entry, true)).rejects.toThrow("DB down");
+  });
+
+  // Edge case: explicit validate: false with kill-switch true → MUST still return null
+  it("returns null when validate is explicitly false even if ENROLLMENT_VALIDATION_DEFAULT_ENABLED is true", async () => {
+    resolver = await buildModule(true);
+    const entry = stubEventEntry();
+
+    const result = await resolver.enrollmentValidation(entry, false);
+
+    expect(result).toBeNull();
+    expect(mockTeamLoader.load).not.toHaveBeenCalled();
+    expect(mockCacheService.getForTeam).not.toHaveBeenCalled();
   });
 });

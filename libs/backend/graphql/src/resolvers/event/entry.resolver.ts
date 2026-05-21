@@ -12,15 +12,22 @@ import {
   SubEventTournament,
   Team,
 } from "@badman/backend-database";
-import { EnrollmentValidationService, TeamEnrollmentOutput } from "@badman/backend-enrollment";
+import { TeamEnrollmentOutput } from "@badman/backend-enrollment";
 import { NotificationService } from "@badman/backend-notifications";
-import { TeamMembershipType } from "@badman/utils";
+import { ConfigType } from "@badman/utils";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { Sequelize } from "sequelize-typescript";
 import { ErrorCode, ListArgs, assertUUID } from "../../utils";
 import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
+import { EnrollmentValidationCacheService } from "./enrollment-validation-cache.service";
 import { FinishEventEntryResult } from "./finish-event-entry-result.object";
+import {
+  StandingLoaderService,
+  SubEventCompetitionLoaderService,
+  TeamLoaderService,
+} from "../../loaders";
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
@@ -28,9 +35,13 @@ export class EventEntryResolver {
 
   constructor(
     private notificationService: NotificationService,
-    private enrollmentService: EnrollmentValidationService,
+    private enrollmentValidationCache: EnrollmentValidationCacheService,
     private enrollmentFinalizeService: EnrollmentFinalizeService,
-    private _sequelize: Sequelize
+    private _sequelize: Sequelize,
+    private readonly subEventLoader: SubEventCompetitionLoaderService,
+    private readonly teamLoader: TeamLoaderService,
+    private readonly standingLoader: StandingLoaderService,
+    private readonly configService: ConfigService<ConfigType>
   ) {}
 
   @Query(() => EventEntry)
@@ -50,7 +61,7 @@ export class EventEntryResolver {
 
   @ResolveField(() => Team)
   async team(@Parent() eventEntry: EventEntry): Promise<Team> {
-    return eventEntry.getTeam();
+    return this.teamLoader.load(eventEntry.teamId) as Promise<Team>;
   }
 
   @ResolveField(() => [Player])
@@ -60,7 +71,7 @@ export class EventEntryResolver {
 
   @ResolveField(() => SubEventCompetition, { nullable: true })
   async subEventCompetition(@Parent() eventEntry: EventEntry): Promise<SubEventCompetition> {
-    return eventEntry.getSubEventCompetition();
+    return this.subEventLoader.load(eventEntry.subEventId) as Promise<SubEventCompetition>;
   }
   @ResolveField(() => DrawCompetition, { nullable: true })
   async drawCompetition(@Parent() eventEntry: EventEntry): Promise<DrawCompetition> {
@@ -77,51 +88,33 @@ export class EventEntryResolver {
   }
 
   @ResolveField(() => Standing, { nullable: true })
-  async standing(@Parent() eventEntry: EventEntry): Promise<Standing> {
-    return eventEntry.getStanding();
+  async standing(@Parent() eventEntry: EventEntry): Promise<Standing | null> {
+    return this.standingLoader.load(eventEntry.id);
   }
 
   @ResolveField(() => TeamEnrollmentOutput, {
     nullable: true,
-    description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
+    description:
+      "Validate the enrollment. Defaults to null. Pass `validate: true` to compute — " +
+      "this is a club-wide computation; only request it when you really need it. " +
+      "**note**: the levels are the ones from may!",
   })
   async enrollmentValidation(
-    @Parent() eventEntry: EventEntry
+    @Parent() eventEntry: EventEntry,
+    @Args("validate", { type: () => Boolean, nullable: true }) validate?: boolean
   ): Promise<TeamEnrollmentOutput | null> {
-    const team = await eventEntry.getTeam();
-    const teamsOfClub = await Team.findAll({
-      where: {
-        clubId: team.clubId,
-        season: team.season,
-      },
-      include: [{ model: Player, as: "players" }, { model: EventEntry }],
-    });
-
-    const validation = await this.enrollmentService.fetchAndValidate(
-      {
-        teams: teamsOfClub.map((t) => ({
-          id: t.id,
-          name: t.name,
-          type: t.type,
-          link: t.link,
-          teamNumber: t.teamNumber,
-          basePlayers: t.entry?.meta?.competition?.players,
-          players: t.players
-            ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.REGULAR)
-            .map((p) => p.id),
-          backupPlayers: t.players
-            ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.BACKUP)
-            .map((p) => p.id),
-          subEventId: t.entry?.subEventId,
-          clubId: t.clubId,
-        })),
-        clubId: team.clubId,
-        season: team.season,
-      },
-      EnrollmentValidationService.defaultValidators()
-    );
-
-    return validation.teams?.find((t) => t.id === team.id) ?? null;
+    // Explicit caller intent always wins (spec Clarifications Q1):
+    //   validate === false  → always return null (even if kill-switch is on)
+    //   validate === true   → always compute
+    //   validate === undefined (omitted) → fall through to the rollout-safety env flag
+    if (validate === false) return null;
+    const effectiveValidate =
+      validate === true ||
+      this.configService.get<boolean>("ENROLLMENT_VALIDATION_DEFAULT_ENABLED") === true;
+    if (!effectiveValidate) return null;
+    const team = await this.teamLoader.load(eventEntry.teamId);
+    if (!team) return null;
+    return this.enrollmentValidationCache.getForTeam(team);
   }
 
   @Mutation(() => FinishEventEntryResult)

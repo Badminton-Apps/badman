@@ -2,6 +2,7 @@
 
 <!--
 Versions (newest first):
+- v1.4 — 2026-05-21 — Add "Enrollment validation: cross-request caching deferred" from feat-028.
 - v1.3 — 2026-05-05 — Remove "Team: teamNumber auto-increment race on createTeam"
   (spec 008, BAD-152). The race still exists for the placeholder number assigned
   by createTeam, but a duplicate placeholder is no longer a numbering risk because
@@ -41,6 +42,7 @@ Versions (newest first):
 | [Team: no DB uniqueness on `Teams(link, season)`](#team-no-db-uniqueness-on-teamslink-season)                                    | Backend  | `libs/backend/database/src/models/team.model.ts`, `libs/backend/graphql/src/resolvers/team/team.resolver.ts`                           | ~half day                        | First observed duplicate `(link, season)` team in prod, OR a contention bug report on the team-create / season-rollover flow | open   |
 | [Team: FE migration of `createTeam` callers (BAD-128)](#team-fe-migration-of-createteam-callers-bad-128)                         | Frontend | active frontend repo (separate); pointer only here                                                                                     | tracked in Linear                | BAD-128 closes                                                                                                               | open   |
 | [Legacy Angular frontend](#legacy-angular-frontend)                                                                              | Frontend | `apps/badman/`, `libs/frontend/`                                                                                                       | 1–2 days                         | New frontend repo solo in prod for one release cycle                                                                         | open   |
+| [Enrollment validation: cross-request caching deferred](#enrollment-validation-cross-request-caching-deferred)                   | Backend  | `libs/backend/competition/enrollment/src/services/cache/enrollment-validation-cache.service.ts`                                        | ~1–2 days                        | First complaint that repeated `enrollmentValidation(validate: true)` calls are slow across separate GraphQL requests         | open   |
 
 ---
 
@@ -104,6 +106,14 @@ Versions (newest first):
 - **What**: A team is meant to be unique per `(link, season)` (the cross-season continuity key plus the season). The `002-team-resolver-improvements` change enforces this _only_ at the application layer via `Team.findOne({ where: { link, season } })` inside a Sequelize transaction at the API's default isolation level. Two truly simultaneous `createTeam` calls for the same `(link, season)` could both pass the read-back check before either commits and produce two team rows.
 - **Why we shipped it**: scoped as a contract/idempotency fix, not a schema change. Adding a `UNIQUE` partial index requires a migration plus a one-time dedupe of any existing duplicates (we don't know yet whether prod has any), plus catching `SequelizeUniqueConstraintError` and translating it into the idempotent-success path. Out of scope for this fix; observed concurrency profile (single user clicking submit) does not warrant the change today. Mirrors the BAD-21 enrollment decision.
 - **Fix**: add a migration introducing `CREATE UNIQUE INDEX teams_link_season_unique ON public."Teams" (link, season) WHERE link IS NOT NULL`. Pre-run a dedupe SELECT to surface any colliding rows; resolve manually before applying. Update the resolver's catch path to translate `SequelizeUniqueConstraintError` into the `alreadyExisted: true` success path (re-fetching by `(link, season)` to populate `teamId` / `clubId`). Add an integration test that fires two concurrent `createTeam` calls and asserts exactly one row.
+- **Status**: open. **Owner**: unowned.
+
+### Enrollment validation: cross-request caching deferred
+
+- **Where**: `libs/backend/competition/enrollment/src/services/cache/enrollment-validation-cache.service.ts`. Reference: `specs/028-gate-enrollment-validation/`.
+- **What**: `EnrollmentValidationCacheService` collapses duplicate `(clubId, season)` lookups _within a single GraphQL request_ (DataLoader-style) but has no cross-request cache. A second `enrollmentValidation(validate: true)` call in a separate request recomputes the full club-wide validation from scratch.
+- **Why we shipped it**: the primary goal of feat-028 was to eliminate unwanted computation entirely (default `null`). Cross-request caching is out of scope per spec (research R-003); it requires cache-invalidation semantics (enrollment changes, player-roster edits, team-delete) that carry meaningful coordination risk.
+- **Fix**: introduce a TTL-backed Redis cache keyed on `(clubId, season, systemId)`; invalidate on `createEnrollment`, `updateTeam`, and player-roster mutations. Assess cache-stampede risk under concurrent enrollment wizard sessions.
 - **Status**: open. **Owner**: unowned.
 
 ## Frontend

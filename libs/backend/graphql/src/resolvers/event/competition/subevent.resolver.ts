@@ -15,7 +15,7 @@ import {
   SubEventCompetitionUpdateInput,
 } from "@badman/backend-database";
 import { Sync, SyncQueue } from "@badman/backend-queue";
-import { PointsService } from "@badman/backend-ranking";
+import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { SubEventTypeEnum } from "@badman/utils";
 import { InjectQueue } from "@nestjs/bull";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
@@ -24,6 +24,7 @@ import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nest
 import { Queue } from "bull";
 import { Cache } from "cache-manager";
 import { Sequelize } from "sequelize-typescript";
+import { EventCompetitionLoaderService } from "../../../loaders";
 import { ListArgs } from "../../../utils";
 
 @Resolver(() => SubEventCompetition)
@@ -34,7 +35,9 @@ export class SubEventCompetitionResolver {
     @Inject(CACHE_MANAGER) private readonly _cacheManager: Cache,
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private _sequelize: Sequelize,
-    private _pointService: PointsService
+    private _pointService: PointsService,
+    private readonly rankingSystemService: RankingSystemService,
+    private readonly eventCompetitionLoader: EventCompetitionLoaderService
   ) {}
 
   @Query(() => SubEventCompetition)
@@ -59,7 +62,7 @@ export class SubEventCompetitionResolver {
 
   @ResolveField(() => EventCompetition)
   async eventCompetition(@Parent() subEvent: SubEventCompetition): Promise<EventCompetition> {
-    return subEvent.getEventCompetition();
+    return this.eventCompetitionLoader.load(subEvent.eventId) as Promise<EventCompetition>;
   }
 
   @ResolveField(() => [DrawCompetition])
@@ -136,11 +139,7 @@ export class SubEventCompetitionResolver {
     });
 
     // Get our ranking system
-    const primarySystem = await RankingSystem.findOne({
-      where: {
-        primary: true,
-      },
-    });
+    const primarySystem = await this.rankingSystemService.getPrimary();
 
     if (!primarySystem) {
       throw new NotFoundException(`${RankingSystem.name}: primary ranking system not found`);
@@ -321,10 +320,9 @@ export class SubEventCompetitionResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const where = systemId ? { id: systemId } : { primary: true };
-      const system = await RankingSystem.findOne({
-        where,
-      });
+      const system = systemId
+        ? await this.rankingSystemService.getById(systemId)
+        : await this.rankingSystemService.getPrimary();
 
       if (!system) {
         throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);

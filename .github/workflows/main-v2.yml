@@ -1,10 +1,11 @@
 name: Release Workflow v2
 
 on:
-  # manual trigger
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
-      # main branch name
       e2e-tests:
         description: "Do e2e tests"
         required: true
@@ -25,7 +26,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-run-name: ${{ github.ref == 'refs/heads/main' && 'Prod' || 'Beta' }} release ${{ inputs.e2e-tests && 'with E2E tests' || '' }} - ${{ github.run_number }}
+run-name: ${{ github.ref == 'refs/heads/main' && 'Prod' || 'Beta' }} release ${{ inputs.e2e-tests == true && 'with E2E tests' || '' }} - ${{ github.run_number }}
 
 # variable to use certain package manager
 env:
@@ -154,7 +155,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: stop agents
-        if: always() && inputs.cloud-run
+        if: always() && inputs.cloud-run == true
         run: npx --yes nx-cloud complete-ci-run
 
       - uses: actions/upload-artifact@v4
@@ -202,3 +203,34 @@ jobs:
           API_HOOK: ${{  secrets.BETA_API_HOOK }}
           WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
           WORKER_RANKING_HOOK: ${{  secrets.BETA_WORKER_RANKING_HOOK }}
+
+  sentry-release:
+    needs: main
+    if: github.ref == 'refs/heads/main' && needs.main.outputs.NEW_VERSION != ''
+    runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: badminton-vlaanderen
+      SENTRY_PROJECT: backend
+      VERSION: ${{ needs.main.outputs.NEW_VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create Sentry release
+        run: |
+          npx --yes @sentry/cli releases new "$VERSION"
+          npx --yes @sentry/cli releases set-commits "$VERSION" --auto
+          npx --yes @sentry/cli releases finalize "$VERSION"
+          npx --yes @sentry/cli releases deploys "$VERSION" new -e production
+
+      - name: Verify Sentry release
+        run: |
+          set -euo pipefail
+          release_info="$(npx --yes @sentry/cli releases list --org "$SENTRY_ORG" --project "$SENTRY_PROJECT" | grep -F "$VERSION" || true)"
+          if [[ -z "$release_info" ]]; then
+            echo "::error::Sentry release '$VERSION' not found."
+            exit 1
+          fi
+          echo "Sentry release '$VERSION' confirmed."

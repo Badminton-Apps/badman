@@ -14,15 +14,12 @@ import {
   TeamWithPlayerMembershipType,
 } from "@badman/backend-database";
 import {
+  IndexCalculationInput,
   IndexCalculationService,
+  IndexCalculationSuccess,
   isFailure,
 } from "@badman/backend-enrollment";
-import {
-  IsUUID,
-  SubEventTypeEnum,
-  TeamMembershipType,
-  getLetterForRegion,
-} from "@badman/utils";
+import { IsUUID, SubEventTypeEnum, TeamMembershipType, getLetterForRegion } from "@badman/utils";
 import {
   BadRequestException,
   Logger,
@@ -31,9 +28,10 @@ import {
 } from "@nestjs/common";
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
-import { Op } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { ErrorCode, ListArgs, assertUUID } from "../../utils";
+import { TeamAssociationService } from "./team-association.service";
 import { TeamResult } from "./team-result.object";
 
 @Resolver(() => Team)
@@ -42,8 +40,183 @@ export class TeamsResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private readonly indexCalculationService: IndexCalculationService
+    private readonly indexCalculationService: IndexCalculationService,
+    private readonly teamAssociationService: TeamAssociationService
   ) {}
+
+  // ---------------------------------------------------------------------------
+  // Private helpers
+  // ---------------------------------------------------------------------------
+
+  /** Logs and throws a GraphQLError for an index-calculation failure. Return type `never` — always throws. */
+  private indexFailureToGraphQLError(
+    result: { error: { code: string; message: string; playerIds?: string[] } },
+    context: { clubId?: string | null; userId?: string | null }
+  ): never {
+    this.logger.warn({ code: result.error.code, ...context }, result.error.message);
+    const code =
+      result.error.code === "PLAYER_NOT_FOUND"
+        ? ErrorCode.PLAYER_NOT_FOUND
+        : ErrorCode.INTERNAL_ERROR;
+    throw new GraphQLError(result.error.message, {
+      extensions: {
+        code,
+        ...(result.error.playerIds ? { playerIds: result.error.playerIds } : {}),
+      },
+    });
+  }
+
+  /** Merges a successful index result onto an EventEntry and saves it. */
+  private async applyIndexResultToEntry(
+    entry: EventEntry,
+    result: IndexCalculationSuccess,
+    origPlayerMap: Map<string, EntryCompetitionPlayer>,
+    transaction: Transaction
+  ): Promise<void> {
+    const competitionPlayers: EntryCompetitionPlayer[] = result.resolvedPlayers.map((rp) => {
+      const orig = origPlayerMap.get(rp.id);
+      return {
+        id: rp.id,
+        gender: rp.gender ?? undefined,
+        single: rp.single,
+        double: rp.double,
+        mix: rp.mix,
+        levelException: orig?.levelException,
+        levelExceptionReason: orig?.levelExceptionReason,
+        levelExceptionRequested: orig?.levelExceptionRequested,
+      };
+    });
+    entry.meta = {
+      ...entry.meta,
+      competition: { teamIndex: result.index, players: competitionPlayers },
+    };
+    await entry.save({ transaction, hooks: false } as Parameters<typeof entry.save>[0]);
+  }
+
+  /**
+   * Core team-creation logic shared by createTeam and createTeams.
+   * Does NOT commit or rollback — the caller owns the transaction.
+   */
+  private async _createTeamCore(
+    newTeamData: TeamNewInput,
+    nationalCountsAsMixed: boolean,
+    user: Player,
+    transaction: Transaction
+  ): Promise<{
+    result: TeamResult;
+    indexPayload?: {
+      input: IndexCalculationInput;
+      entryId: string;
+      entry: EventEntry;
+      origPlayerMap: Map<string, EntryCompetitionPlayer>;
+      clubId: string;
+    };
+  }> {
+    const userId = user?.id ?? null;
+    const clubId = newTeamData.clubId ?? "";
+
+    const dbClub = await Club.findByPk(clubId, { transaction });
+    if (!dbClub) {
+      this.logger.warn({ code: ErrorCode.CLUB_NOT_FOUND, clubId, userId });
+      throw new GraphQLError(`Club not found: ${clubId}`, {
+        extensions: { code: ErrorCode.CLUB_NOT_FOUND, clubId },
+      });
+    }
+
+    if (!(await user.hasAnyPermission([`${dbClub.id}_edit:club`, "edit-any:club"]))) {
+      this.logger.warn({ code: ErrorCode.PERMISSION_DENIED, clubId: dbClub.id, userId });
+      throw new GraphQLError("You do not have permission to create a team for this club.", {
+        extensions: { code: ErrorCode.PERMISSION_DENIED, userId, clubId: dbClub.id },
+      });
+    }
+
+    if (newTeamData.link) {
+      const existing = await Team.findOne({
+        where: { link: newTeamData.link, season: newTeamData.season },
+        transaction,
+      });
+      if (existing) {
+        return { result: { teamId: existing.id, clubId: dbClub.id, alreadyExisted: true } };
+      }
+    }
+
+    if (!newTeamData.teamNumber) {
+      const types = [newTeamData.type];
+      if (nationalCountsAsMixed && newTeamData.type === SubEventTypeEnum.MX) {
+        types.push(SubEventTypeEnum.NATIONAL);
+      }
+      const highestNumber = (await Team.max("teamNumber", {
+        where: { clubId: dbClub.id, type: { [Op.or]: types }, season: newTeamData.season },
+      })) as number;
+      newTeamData.teamNumber = highestNumber + 1;
+    }
+
+    const { players, entry, ...teamData } = newTeamData;
+    const teamDb = await Team.create({ ...(teamData as Team) }, { transaction });
+    await teamDb.setClub(dbClub, { transaction });
+
+    if (players) {
+      this.logger.debug(`Adding players to team ${teamDb.name}`);
+      const dbPlayers = await Player.findAll({
+        where: { id: players.map((p) => p.id) },
+        transaction,
+      });
+      await Promise.all(
+        players.map(async (player) => {
+          const dbPlayer = dbPlayers.find((p) => p.id === player.id);
+          if (!dbPlayer) {
+            this.logger.warn({
+              code: ErrorCode.PLAYER_NOT_FOUND,
+              playerId: player.id,
+              clubId: dbClub.id,
+              userId,
+            });
+            throw new GraphQLError(`Player not found: ${player.id}`, {
+              extensions: { code: ErrorCode.PLAYER_NOT_FOUND, playerId: player.id },
+            });
+          }
+          await teamDb.addPlayer(dbPlayer, {
+            through: { membershipType: player.membershipType, start: new Date() },
+            transaction,
+          });
+        })
+      );
+    }
+
+    if (entry) {
+      this.logger.debug(`Adding entry to team ${teamDb.name}`);
+      const [dbEntry] = await EventEntry.findOrCreate({
+        where: { teamId: teamDb.id, subEventId: entry.subEventId, entryType: "competition" },
+        defaults: { ...(entry as EventEntry) },
+        transaction,
+        hooks: false,
+      });
+
+      if (entry?.meta?.competition?.players) {
+        const playerIds = (entry.meta.competition.players.map((p) => p.id) || []) as string[];
+        const origPlayerMap = new Map(
+          entry.meta.competition.players.map((p) => [p.id as string, p as EntryCompetitionPlayer])
+        );
+        return {
+          result: { teamId: teamDb.id, clubId: dbClub.id, alreadyExisted: false },
+          indexPayload: {
+            input: {
+              key: dbEntry.id!,
+              type: teamDb.type,
+              subEventCompetitionId: entry.subEventId,
+              players: playerIds.map((id) => ({ id })),
+            },
+            entryId: dbEntry.id!,
+            entry: dbEntry,
+            origPlayerMap,
+            clubId: dbClub.id,
+          },
+        };
+      }
+    }
+
+    return { result: { teamId: teamDb.id, clubId: dbClub.id, alreadyExisted: false } };
+  }
 
   @Query(() => Team)
   async team(@Args("id", { type: () => ID }) id: string): Promise<Team> {
@@ -69,6 +242,14 @@ export class TeamsResolver {
 
   @ResolveField(() => [PlayerWithTeamMembershipType])
   async players(@Parent() team: Team, @Args() listArgs: ListArgs) {
+    // When no list args are supplied (the common GetClubTeams case) we batch
+    // all per-team Player lookups across the request into a single query via
+    // TeamAssociationService. When filters/pagination are supplied we fall
+    // back to the per-team association call so the args take effect.
+    const hasFilters = !!(listArgs.where || listArgs.take || listArgs.skip || listArgs.order);
+    if (!hasFilters) {
+      return this.teamAssociationService.getPlayers(team);
+    }
     return team.getPlayers(ListArgs.toFindOptions(listArgs));
   }
 
@@ -107,64 +288,30 @@ export class TeamsResolver {
 
   @ResolveField(() => EventEntry, { nullable: true })
   async entry(@Parent() team: Team): Promise<EventEntry | null> {
-    // Get all entries for the team
-    const entries = await EventEntry.findAll({
-      where: {
-        teamId: team.id,
-      },
-    });
-
-    // Prefer an entry that has been assigned to a draw: once the federation
-    // sync has run the draw assignment, the entry carries a `drawId` and that
-    // entry is the authoritative one (it pins the team to a specific draw
-    // within the subEvent, which is what the encounter/calendar views need).
-    //
-    // However, between team enrollment and the draw being made, entries
-    // exist with `drawId = NULL`. They still carry the `subEventId`, which
-    // is enough for the frontend to resolve `entry.subEventCompetition` and
-    // render the division/Liga label and the edit dialog's competition
-    // field. Before this fallback, freshly-enrolled teams (new enrollment
-    // flow) showed up in the club-teams list without a division until the
-    // sync had assigned a draw, even though the data needed to render the
-    // division was already present on the entry.
-    //
-    // Why both enrollment paths produce drawId = NULL:
-    //   - Old createTeam mutation (this file, ~line 296) does
-    //     EventEntry.findOrCreate keyed on (teamId, subEventId, entryType);
-    //     `EventEntryNewInput` has no `drawId` field, so it is never written.
-    //   - New enrollment flow (EnrollmentEntryService, ~line 110) does
-    //     `EventEntry.create({}, { transaction })` with an empty payload and
-    //     then attaches teamId via `team.setEntry` and subEventId via
-    //     `subEvent.addEventEntry`. Again no `drawId`.
-    // The only place `drawId` gets populated is the federation sync. See
-    // apps/worker/sync/.../competition/processors/standing.processor.ts —
-    // it loads the team with its existing EventEntry filtered by the draw's
-    // subEventId, then runs `entryDraw.drawId = draw.id; entryDraw.save()`.
-    // So sync amends the row created at enrollment time in place; it does
-    // not create a duplicate. Once sync has run, the `find(e => e.drawId)`
-    // branch below wins again and this fallback becomes a no-op.
-    //
-    // Strategy: take the drawId-bearing entry when one exists, otherwise
-    // fall back to any entry for the team. The order of `findAll` is not
-    // guaranteed, but in practice a team has at most one entry per season
-    // until the draw is made, so the fallback is unambiguous in the
-    // pre-draw window.
-    return entries.find((entry: EventEntry) => entry.drawId) ?? entries[0] ?? null;
+    // Delegates to TeamAssociationService which:
+    //   1. Batches all per-team EventEntry lookups in a request into one
+    //      `EventEntry.findAll({ teamId: Op.in([...]) })`.
+    //   2. Groups results by teamId and preserves the existing fallback
+    //      logic: prefer an entry with a `drawId` (federation sync has
+    //      pinned the team to a draw); otherwise fall back to any entry
+    //      for the team (covers freshly-enrolled teams with drawId=NULL).
+    //      See team-association.service.ts:loadEntriesByTeamIds.
+    return this.teamAssociationService.getEntry(team);
   }
 
   @ResolveField(() => Location)
-  async locations(@Parent() team: Team): Promise<Location> {
-    return team.getPrefferedLocation();
+  async locations(@Parent() team: Team): Promise<Location | null> {
+    return this.teamAssociationService.getPrefferedLocation(team);
   }
 
   @ResolveField(() => Player)
-  async captain(@Parent() team: Team): Promise<Player> {
-    return team.getCaptain();
+  async captain(@Parent() team: Team): Promise<Player | null> {
+    return this.teamAssociationService.getCaptain(team);
   }
 
   @ResolveField(() => Club)
-  async club(@Parent() team: Team): Promise<Club> {
-    return team.getClub();
+  async club(@Parent() team: Team): Promise<Club | null> {
+    return this.teamAssociationService.getClub(team);
   }
 
   // Object
@@ -226,185 +373,38 @@ export class TeamsResolver {
 
     const transaction = await this._sequelize.transaction();
     try {
-      const dbClub = await Club.findByPk(clubId, { transaction });
-      if (!dbClub) {
-        this.logger.warn({ code: ErrorCode.CLUB_NOT_FOUND, clubId, userId });
-        throw new GraphQLError(`Club not found: ${clubId}`, {
-          extensions: { code: ErrorCode.CLUB_NOT_FOUND, clubId },
-        });
-      }
-
-      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:club`, "edit-any:club"]))) {
-        this.logger.warn({ code: ErrorCode.PERMISSION_DENIED, clubId: dbClub.id, userId });
-        throw new GraphQLError("You do not have permission to create a team for this club.", {
-          extensions: { code: ErrorCode.PERMISSION_DENIED, userId, clubId: dbClub.id },
-        });
-      }
-
-      // Idempotency: see specs/002-team-resolver-improvements/research.md §R2.
-      // Updates flow through updateTeam (Linear BAD-128).
-      if (newTeamData.link) {
-        const existing = await Team.findOne({
-          where: {
-            link: newTeamData.link,
-            season: newTeamData.season,
-          },
-          transaction,
-        });
-        if (existing) {
-          await transaction.commit();
-          return {
-            teamId: existing.id,
-            clubId: dbClub.id,
-            alreadyExisted: true,
-          };
+      const core = await this._createTeamCore(
+        newTeamData,
+        nationalCountsAsMixed,
+        user,
+        transaction
+      );
+      if (core.indexPayload) {
+        const [calcResult] = await this.indexCalculationService.calculate(
+          [core.indexPayload.input],
+          { transaction, caller: "TeamsResolver.createTeam" }
+        );
+        if (isFailure(calcResult)) {
+          this.indexFailureToGraphQLError(calcResult, { clubId: core.indexPayload.clubId, userId });
         }
-      }
-
-      if (!newTeamData.teamNumber) {
-        const types = [newTeamData.type];
-        if (nationalCountsAsMixed && newTeamData.type === SubEventTypeEnum.MX) {
-          types.push(SubEventTypeEnum.NATIONAL);
-        }
-
-        // Find the highest active team number for the club. Race window when
-        // two concurrent creates omit teamNumber is out of scope (spec Q4).
-        const highestNumber = (await Team.max("teamNumber", {
-          where: {
-            clubId: dbClub.id,
-            type: { [Op.or]: types },
-            season: newTeamData.season,
-          },
-        })) as number;
-        newTeamData.teamNumber = highestNumber + 1;
-      }
-
-      const { players, entry, ...teamData } = newTeamData;
-      const teamDb = await Team.create({ ...(teamData as Team) }, { transaction });
-      await teamDb.setClub(dbClub, { transaction });
-
-      if (players) {
-        this.logger.debug(`Adding players to team ${teamDb.name}`);
-        const dbPlayers = await Player.findAll({
-          where: { id: players.map((p) => p.id) },
-          transaction,
-        });
-        await Promise.all(
-          players.map(async (player) => {
-            const dbPlayer = dbPlayers.find((p) => p.id === player.id);
-            if (!dbPlayer) {
-              this.logger.warn({
-                code: ErrorCode.PLAYER_NOT_FOUND,
-                playerId: player.id,
-                clubId: dbClub.id,
-                userId,
-              });
-              throw new GraphQLError(`Player not found: ${player.id}`, {
-                extensions: { code: ErrorCode.PLAYER_NOT_FOUND, playerId: player.id },
-              });
-            }
-            await teamDb.addPlayer(dbPlayer, {
-              through: {
-                membershipType: player.membershipType,
-                start: new Date(),
-              },
-              transaction,
-            });
-          })
+        await this.applyIndexResultToEntry(
+          core.indexPayload.entry,
+          calcResult as IndexCalculationSuccess,
+          core.indexPayload.origPlayerMap,
+          transaction
         );
       }
 
-      if (entry) {
-        this.logger.debug(`Adding entry to team ${teamDb.name}`);
-        const [dbEntry] = await EventEntry.findOrCreate({
-          where: {
-            teamId: teamDb.id,
-            subEventId: entry.subEventId,
-            entryType: "competition",
-          },
-          defaults: { ...(entry as EventEntry) },
-          transaction,
-          hooks: false,
-        });
-
-        if (entry?.meta?.competition?.players) {
-          // Delegate to IndexCalculationService for the canonical rank lookup
-          // (validator's June 10 cutoff + min+2 fallback) and index math.
-          const playerIds = (entry.meta.competition.players?.map((p) => p.id) || []) as string[];
-          const result = await this.indexCalculationService.calculateOne(
-            {
-              key: dbEntry.id!,
-              type: teamDb.type,
-              subEventCompetitionId: entry.subEventId,
-              players: playerIds.map((id) => ({ id })),
-            },
-            { transaction }
-          );
-          if (isFailure(result)) {
-            this.logger.warn({
-              code: result.error.code,
-              clubId: dbClub.id,
-              userId,
-            }, result.error.message);
-            const code =
-              result.error.code === "PLAYER_NOT_FOUND"
-                ? ErrorCode.PLAYER_NOT_FOUND
-                : result.error.code === "RANKING_SYSTEM_NOT_FOUND"
-                ? ErrorCode.INTERNAL_ERROR
-                : ErrorCode.INTERNAL_ERROR;
-            throw new GraphQLError(result.error.message, {
-              extensions: {
-                code,
-                ...(result.error.playerIds ? { playerIds: result.error.playerIds } : {}),
-              },
-            });
-          }
-
-          const origById = new Map(
-            entry.meta.competition.players.map((p) => [p.id, p])
-          );
-          const competitionPlayers: EntryCompetitionPlayer[] = result.resolvedPlayers.map(
-            (rp) => {
-              const orig = origById.get(rp.id);
-              return {
-                id: rp.id,
-                gender: rp.gender ?? undefined,
-                single: rp.single,
-                double: rp.double,
-                mix: rp.mix,
-                levelException: orig?.levelException,
-                levelExceptionReason: orig?.levelExceptionReason,
-                levelExceptionRequested: orig?.levelExceptionRequested,
-              };
-            }
-          );
-
-          dbEntry.meta = {
-            ...dbEntry.meta,
-            competition: { teamIndex: result.index, players: competitionPlayers },
-          };
-          await dbEntry.save({ transaction, hooks: false });
-        }
-      }
-
       await transaction.commit();
-      return {
-        teamId: teamDb.id,
-        clubId: dbClub.id,
-        alreadyExisted: false,
-      };
+      return core.result;
     } catch (e) {
       await transaction.rollback();
-      if (e instanceof GraphQLError) {
-        throw e;
-      }
+      if (e instanceof GraphQLError) throw e;
       this.logger.error(
         { code: ErrorCode.INTERNAL_ERROR, clubId, userId },
         e instanceof Error ? e.stack : String(e)
       );
-      throw new GraphQLError("Internal error.", {
-        extensions: { code: ErrorCode.INTERNAL_ERROR },
-      });
+      throw new GraphQLError("Internal error.", { extensions: { code: ErrorCode.INTERNAL_ERROR } });
     }
   }
 
@@ -426,34 +426,64 @@ export class TeamsResolver {
       try {
         assertUUID(clubId, "clubId", { userId });
       } catch (e) {
-        this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+        this.logger.warn({
+          code: ErrorCode.BAD_USER_INPUT,
+          field: "clubId",
+          value: clubId,
+          userId,
+        });
         throw e;
       }
     }
 
-    const results: TeamResult[] = [];
+    const transaction = await this._sequelize.transaction();
+    try {
+      const cores: Awaited<ReturnType<typeof this._createTeamCore>>[] = [];
 
-    // we need to sort the teams to make sure we create the teams in the right order
-    for (const team of newTeamData.sort((a, b) => {
-      // nationals should be before mixed
-      if (a.type === SubEventTypeEnum.MX && b.type === SubEventTypeEnum.NATIONAL) {
-        return 1;
-      }
-      if (a.type === SubEventTypeEnum.NATIONAL && b.type === SubEventTypeEnum.MX) {
-        return -1;
+      // Sequential — NOT parallel. Team number auto-assignment uses Team.max + 1
+      // which is non-atomic; concurrent calls produce duplicate team numbers.
+      for (const team of newTeamData.sort((a, b) => {
+        if (a.type === SubEventTypeEnum.MX && b.type === SubEventTypeEnum.NATIONAL) return 1;
+        if (a.type === SubEventTypeEnum.NATIONAL && b.type === SubEventTypeEnum.MX) return -1;
+        if (a.type === b.type) return (a.teamNumber ?? 0) - (b.teamNumber ?? 0);
+        return (a.type ?? a.name ?? "").localeCompare(b.type ?? b.name ?? "");
+      })) {
+        this.logger.debug(`Creating team ${team.name}`);
+        cores.push(await this._createTeamCore(team, nationalCountsAsMixed, user, transaction));
       }
 
-      if (a.type === b.type) {
-        return (a.teamNumber ?? 0) - (b.teamNumber ?? 0);
+      const payloads = cores.flatMap((c) => (c.indexPayload ? [c.indexPayload] : []));
+      if (payloads.length > 0) {
+        const calcResults = await this.indexCalculationService.calculate(
+          payloads.map((p) => p.input),
+          { transaction, caller: "TeamsResolver.createTeams" }
+        );
+        for (const r of calcResults) {
+          if (isFailure(r)) {
+            const payload = payloads.find((p) => p.entryId === r.key);
+            this.indexFailureToGraphQLError(r, { clubId: payload?.clubId, userId });
+          }
+          const payload = payloads.find((p) => p.entryId === r.key)!;
+          await this.applyIndexResultToEntry(
+            payload.entry,
+            r as IndexCalculationSuccess,
+            payload.origPlayerMap,
+            transaction
+          );
+        }
       }
-      return (a.type ?? a.name ?? "").localeCompare(b.type ?? b.name ?? "");
-    })) {
-      this.logger.debug(`Creating team ${team.name}`);
-      const created = await this.createTeam(team, nationalCountsAsMixed, user);
-      results.push(created);
+
+      await transaction.commit();
+      return cores.map((c) => c.result);
+    } catch (e) {
+      await transaction.rollback();
+      if (e instanceof GraphQLError) throw e;
+      this.logger.error(
+        { code: ErrorCode.INTERNAL_ERROR, userId },
+        e instanceof Error ? e.stack : String(e)
+      );
+      throw new GraphQLError("Internal error.", { extensions: { code: ErrorCode.INTERNAL_ERROR } });
     }
-
-    return results;
   }
 
   @Mutation(() => Team)

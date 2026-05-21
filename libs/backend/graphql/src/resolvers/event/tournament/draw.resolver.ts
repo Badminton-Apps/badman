@@ -7,7 +7,7 @@ import {
   RankingSystem,
   SubEventTournament,
 } from "@badman/backend-database";
-import { PointsService } from "@badman/backend-ranking";
+import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
@@ -51,7 +51,8 @@ export class DrawTournamentResolver {
   constructor(
     private readonly _sequelize: Sequelize,
     private readonly _pointService: PointsService,
-    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue
+    @InjectQueue(SyncQueue) private readonly _syncQueue: Queue,
+    private readonly rankingSystemService: RankingSystemService
   ) {}
 
   @Query(() => DrawTournament)
@@ -97,10 +98,9 @@ export class DrawTournamentResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const where = systemId ? { id: systemId } : { primary: true };
-      const system = await RankingSystem.findOne({
-        where,
-      });
+      const system = systemId
+        ? await this.rankingSystemService.getById(systemId)
+        : await this.rankingSystemService.getPrimary();
 
       if (!system) {
         throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || "primary"}`);

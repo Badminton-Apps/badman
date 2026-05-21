@@ -30,7 +30,7 @@ block content
                   | #{ " " }#{ team.name }
                   br
                   strong Afdeling:
-                  if team && team.entry && team.entry.subEventCompetition && team.entry.subEventCompetition.eventCompetition && team.entry.subEventCompetition.name
+                  if team && team.entry && team.entry.subEventCompetition && team.entry.subEventCompetition.eventCompetition && team.entry.subEventCompetition.eventCompetition.name && team.entry.subEventCompetition.name
                     | #{ " " }#{ team.entry.subEventCompetition.eventCompetition.name } - #{ team.entry.subEventCompetition.name }
                   else
                     strong(style="color: red") Geen afdeling gekozen
@@ -43,7 +43,7 @@ block content
                   br
                   strong Basisspelers:
                   ul
-                  each player in team.entry.meta.competition.players || []
+                  each player in (team.entry && team.entry.meta && team.entry.meta.competition && team.entry.meta.competition.players) || []
                     li #{ player.firstName }#{ " " }#{ player.lastName }
                       small #{ " " }(#{ player.memberId })
                         if team.type == "MX"
@@ -62,8 +62,8 @@ block content
               div(style="font-size: 16px; width: 100%")
                 p
                   h4 #{ location.name }
-                  each availability in location.availabilities
-                    if availability.days.length
+                  each availability in location.availabilities || []
+                    if availability.days && availability.days.length
                       p
                         strong Speelmomenten:
                         ul
@@ -73,7 +73,7 @@ block content
                     else
                       p
                         strong Geen speelmomenten
-                    if availability.exceptions.length
+                    if availability.exceptions && availability.exceptions.length
                       p
                         strong Uitzonderingen:
                         ul
@@ -97,11 +97,12 @@ block content
             td(style="padding-top: 12px", valign="top")
               div(style="font-size: 16px; width: 100%")
                 p
-                  strong Reeks: #{ comment.competition.name }
+                  strong Reeks: #{ (comment.competition && comment.competition.name) || '-' }
                   br
-                  strong Wie: #{ comment.player.firstName }, #{ comment.player.lastName }
-                  if comment.player.memberId
-                    | (#{ comment.player.memberId })
+                  if comment.player
+                    strong Wie: #{ comment.player.firstName }, #{ comment.player.lastName }
+                    if comment.player.memberId
+                      | (#{ comment.player.memberId })
                   br
                   strong Bericht:
                   br

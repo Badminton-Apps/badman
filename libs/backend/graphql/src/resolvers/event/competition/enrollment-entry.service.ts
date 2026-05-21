@@ -90,16 +90,35 @@ export class EnrollmentEntryService {
 
     const competitionSeason = subEvent.eventCompetition?.season;
     if (team.season !== competitionSeason) {
-      this.logger.warn({
+      const diagnostic = {
         code: ErrorCode.SEASON_MISMATCH,
-        teamId,
-        subEventCompetitionId: subEventId,
         userId,
+        teamId,
+        teamName: team.name,
+        teamClubId: team.clubId,
+        teamType: team.type,
         teamSeason: team.season,
-        competitionSeason,
-      });
+        subEventCompetitionId: subEventId,
+        subEventName: subEvent.name,
+        subEventType: subEvent.eventType,
+        eventCompetitionId: subEvent.eventCompetition?.id ?? null,
+        eventCompetitionName: subEvent.eventCompetition?.name ?? null,
+        competitionSeason: competitionSeason ?? null,
+        basePlayersCount: basePlayers?.length ?? 0,
+      };
+      this.logger.error(
+        `SEASON_MISMATCH: team ${teamId} (season=${team.season}) vs competition ${subEvent.eventCompetition?.id} (season=${competitionSeason})`,
+        diagnostic
+      );
       throw new GraphQLError("Team season does not match competition season.", {
-        extensions: { code: ErrorCode.SEASON_MISMATCH, teamSeason: team.season, competitionSeason },
+        extensions: {
+          code: ErrorCode.SEASON_MISMATCH,
+          teamId,
+          teamSeason: team.season,
+          subEventCompetitionId: subEventId,
+          eventCompetitionId: subEvent.eventCompetition?.id ?? null,
+          competitionSeason,
+        },
       });
     }
 
@@ -116,7 +135,7 @@ export class EnrollmentEntryService {
           subEventCompetitionId: subEventId,
           players: basePlayers.map((id) => ({ id })),
         },
-        { transaction }
+        { transaction, caller: "EnrollmentEntryService.createEntry" }
       );
 
       if (isFailure(result)) {
