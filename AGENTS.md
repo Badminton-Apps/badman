@@ -200,11 +200,19 @@ Workflows live in [`.github/workflows/`](.github/workflows/). Match the workflow
 |---|---|---|
 | [`pull-request.yml`](.github/workflows/pull-request.yml) | `pull_request`, `merge_group` | Fast PR gate: `nx affected -t lint test -c ci` against `develop` (or PR base). Build is **deliberately excluded** — deploy workflows handle it. Legacy frontend + e2e excluded (Constitution V). |
 | [`deploy-staging.yml`](.github/workflows/deploy-staging.yml) | `push` to `staging`, `workflow_dispatch` | Build affected → run migrations against staging DB → deploy. Calls `_shared-migrate.yml`. |
-| [`deploy-production.yml`](.github/workflows/deploy-production.yml) | `push` to `main`, `workflow_dispatch` | Build affected (NX_BASE = last `v*` tag) → create release tag → run migrations against prod DB → deploy. Calls `_shared-migrate.yml`. |
+| [`deploy-production.yml`](.github/workflows/deploy-production.yml) | `push` to `main`, `workflow_dispatch` | Build affected (NX_BASE = last `v*` tag) → create release tag → run migrations against prod DB → deploy → back-merge `main` → `develop` (skipped when the merge commit contains `[skip back-merge]`, see below). Calls `_shared-migrate.yml`. |
 | [`_shared-migrate.yml`](.github/workflows/_shared-migrate.yml) | `workflow_call` (reusable) | Applies pending Sequelize migrations against `target-environment` input (`staging` \| `production`). Production env requires manual reviewer approval. Concurrency group `migrate-<env>` with `cancel-in-progress: false` so a mid-flight migration cannot be cancelled. Pre-flight invalid-index check guards against interrupted `CREATE INDEX CONCURRENTLY`. |
 | [`claude-code-review.yml`](.github/workflows/claude-code-review.yml) | `pull_request` against `main` | Auto Claude review on PRs targeting `main`. |
 | [`claude.yml`](.github/workflows/claude.yml) | `@claude` mention in issues / PR comments / reviews | On-demand Claude agent for repo. |
 | [`cla.yaml`](.github/workflows/cla.yaml) | PRs from external contributors | CLA signature gate. |
+
+### Skipping the main → develop back-merge
+
+`deploy-production.yml` back-merges `main` into `develop` at the end of every prod deploy so hotfixes that land on `main` flow back to `develop`. **Skip this** when `main` is intentionally diverging from `develop` — typically when removing a feature from prod while keeping it on `develop` for a later release.
+
+To skip: include the literal marker `[skip back-merge]` in the PR's **merge commit message** on `main` (the message GitHub records when you click "Merge pull request", or your CLI merge commit). The workflow gates the back-merge step on `!contains(github.event.head_commit.message, '[skip back-merge]')`.
+
+After skipping, do NOT manually back-merge — that re-introduces whatever you removed. If you later want the change on `develop` too, cherry-pick or rebase the specific commits.
 
 ### Rules for changes
 

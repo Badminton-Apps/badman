@@ -72,8 +72,15 @@ jobs:
           path: coverage/lcov.info
           retention-days: 30
 
+      # Back-merge main -> develop so hotfixes that land on main flow back
+      # to develop. Skip when the merge commit on main contains
+      # `[skip back-merge]` — used when main intentionally diverges from
+      # develop (e.g. reverting/removing a feature from prod while keeping
+      # it on develop for a later release).
       - name: Merge main -> develop
-        if: github.ref == 'refs/heads/main'
+        if: |
+          github.ref == 'refs/heads/main' &&
+          !contains(github.event.head_commit.message, '[skip back-merge]')
         uses: devmasx/merge-branch@master
         with:
           type: now
