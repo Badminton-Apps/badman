@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import { EventEntry, Player, SubEventCompetition, Team } from "@badman/backend-database";
-import { EnrollmentValidationService } from "@badman/backend-enrollment";
+import { EnrollmentValidationService, IndexCalculationService } from "@badman/backend-enrollment";
 import { EnrollmentEntryService } from "./enrollment-entry.service";
 import { EnrollmentResolver } from "./enrollment.resolver";
 
@@ -71,6 +71,14 @@ describe("EnrollmentResolver.createEnrollment", () => {
         {
           provide: EnrollmentValidationService,
           useValue: { fetchAndValidate: jest.fn() },
+        },
+        {
+          provide: IndexCalculationService,
+          useValue: {
+            calculateOne: jest
+              .fn()
+              .mockResolvedValue({ _tag: "success", index: 0, resolvedPlayers: [] }),
+          },
         },
       ],
     }).compile();

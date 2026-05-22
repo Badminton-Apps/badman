@@ -105,6 +105,22 @@ npm run test:affected:coverage
 
 **Coverage Reports**: Generated in `./coverage` directory when running with `--coverage` flag.
 
+## CI / GitHub Actions
+
+Workflows live in [`.github/workflows/`](.github/workflows/). See [AGENTS.md → CI / GitHub Actions](./AGENTS.md#ci--github-actions) for the per-workflow rules.
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| `pull-request.yml` | PR + merge queue | `nx affected` lint + test on the PR base. Build excluded — runs in deploy. |
+| `deploy-staging.yml` | push to `staging` | Build affected → migrate staging DB → deploy. |
+| `deploy-production.yml` | push to `main` | Build affected (base = last release tag) → tag release → migrate prod DB → deploy. |
+| `_shared-migrate.yml` | reusable (`workflow_call`) | Applies pending Sequelize migrations. Production requires manual approval. Concurrency-locked per env. |
+| `claude-code-review.yml` | PR → `main` | Automatic Claude review. |
+| `claude.yml` | `@claude` mention | On-demand Claude agent. |
+| `cla.yaml` | External-contributor PRs | CLA gate. |
+
+**Branching → workflow mapping**: `develop`-based PRs run `pull-request.yml` only. Merging to `staging` deploys staging. Merging to `main` deploys production. Do not push directly to `staging` or `main` — use PRs.
+
 ## Legacy readme content
 
 everything below this should be further reviewed, and edited or removed

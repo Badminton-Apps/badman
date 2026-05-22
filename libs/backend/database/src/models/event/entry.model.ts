@@ -30,7 +30,7 @@ import { EntryMetaType } from "../../types";
 import { Relation } from "../../wrapper";
 import { Player } from "../player.model";
 import { Team } from "../team.model";
-import { DrawCompetition, EventCompetition, SubEventCompetition } from "./competition";
+import { DrawCompetition, SubEventCompetition } from "./competition";
 import { Standing } from "./standing.model";
 import { DrawTournament, SubEventTournament } from "./tournament";
 
