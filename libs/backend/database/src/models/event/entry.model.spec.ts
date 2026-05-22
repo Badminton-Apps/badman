@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { SaveOptions } from "sequelize";
-import { EventEntry } from "@badman/backend-database";
+import { EventEntry } from "./entry.model";
 
 const PLAYER_UUID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 const ENTRY_UUID = "b1ffcd00-0d1c-5fg9-cc7e-7cc0ce491b23";
@@ -114,7 +114,7 @@ describe("EventEntry.recalculateCompetitionIndex", () => {
         subEventCompetitionId: SUBEVENT_UUID,
         players: [{ id: PLAYER_UUID }],
       },
-      { transaction: tx }
+      { transaction: tx, caller: "EventEntry.recalculateCompetitionIndex" }
     );
   });
 

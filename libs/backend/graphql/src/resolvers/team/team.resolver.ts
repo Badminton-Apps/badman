@@ -19,7 +19,7 @@ import {
   IndexCalculationSuccess,
   isFailure,
 } from "@badman/backend-enrollment";
-import { IsUUID, SubEventTypeEnum, TeamMembershipType, getLetterForRegion } from "@badman/utils";
+import { IsUUID, SubEventTypeEnum, TeamMembershipType } from "@badman/utils";
 import {
   BadRequestException,
   Logger,

@@ -8,7 +8,7 @@ import {
   Team,
 } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
-import { getBrowser, startBrowserHealthMonitoring } from "@badman/backend-pupeteer";
+import { startBrowserHealthMonitoring } from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { SearchService } from "@badman/backend-search";
 import { ConfigType } from "@badman/utils";

@@ -27,7 +27,14 @@ async function waitForTerminal(
   if (!job) throw new Error(`Job ${jobId} not found`);
 
   return Promise.race([
-    job.finished().then(() => {}).catch(() => {}),
+    job
+      .finished()
+      .then(() => {
+        /* noop */
+      })
+      .catch(() => {
+        /* noop */
+      }),
     new Promise<void>((_, reject) =>
       setTimeout(() => reject(new Error(`Timed out waiting for job ${jobId}`)), timeout)
     ),

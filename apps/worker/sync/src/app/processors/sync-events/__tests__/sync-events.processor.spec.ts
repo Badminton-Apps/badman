@@ -1,4 +1,4 @@
-import { CronJob, EventCompetition, EventTournament } from "@badman/backend-database";
+import { CronJob } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
 import { VisualService, XmlTournamentTypeID } from "@badman/backend-visual";
 import { PointsService } from "@badman/backend-ranking";
@@ -6,7 +6,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { SyncEventsProcessor } from "../sync-events.processor";
 import { CompetitionSyncer } from "../competition-sync";
 import { TournamentSyncer } from "../tournament-sync";
-import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Sequelize } from "sequelize-typescript";
 
 // ──────────────────────────────────────────────────────────────────────────────

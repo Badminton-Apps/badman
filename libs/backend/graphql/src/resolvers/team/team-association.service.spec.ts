@@ -110,25 +110,22 @@ describe("TeamAssociationService — request-scoped batching", () => {
     expect(entry2?.id).toBe("e2-fallback");
   });
 
-  it("getPlayers: batches via TeamPlayerMembership join and groups by teamId", async () => {
-    // Build mocks without back-references — the service mutates the player
-    // object to attach the membership, and a jest worker would choke on a
-    // circular `player <-> membership` graph during result serialization.
-    const m1: Partial<TeamPlayerMembership> & { Player: Partial<Player> } = {
-      teamId: "t1",
-      Player: { id: "p1" },
+  it("getPlayers: batches via Team M:N include and groups by teamId", async () => {
+    const membership = { teamId: "t1" } as unknown as TeamPlayerMembership;
+    const team1 = {
+      id: "t1",
+      players: [
+        { id: "p1", TeamPlayerMembership: membership } as unknown as Player,
+        { id: "p2" } as Player,
+      ],
     };
-    const m2: Partial<TeamPlayerMembership> & { Player: Partial<Player> } = {
-      teamId: "t1",
-      Player: { id: "p2" },
-    };
-    const m3: Partial<TeamPlayerMembership> & { Player: Partial<Player> } = {
-      teamId: "t2",
-      Player: { id: "p3" },
+    const team2 = {
+      id: "t2",
+      players: [{ id: "p3" } as Player],
     };
     const findAll = jest
-      .spyOn(TeamPlayerMembership, "findAll")
-      .mockResolvedValue([m1, m2, m3] as unknown as TeamPlayerMembership[]);
+      .spyOn(Team, "findAll")
+      .mockResolvedValue([team1, team2] as unknown as Team[]);
 
     const [t1Players, t2Players] = await Promise.all([
       service.getPlayers({ id: "t1" } as Team),
@@ -138,9 +135,8 @@ describe("TeamAssociationService — request-scoped batching", () => {
     expect(findAll).toHaveBeenCalledTimes(1);
     expect(t1Players.map((p) => p.id)).toEqual(["p1", "p2"]);
     expect(t2Players.map((p) => p.id)).toEqual(["p3"]);
-    // Membership attached so player.TeamPlayerMembership keeps working
     expect(
       (t1Players[0] as Player & { TeamPlayerMembership: TeamPlayerMembership }).TeamPlayerMembership
-    ).toBe(m1);
+    ).toBe(membership);
   });
 });

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { Club, Team, TeamPlayerMembership } from "@badman/backend-database";
+import { Team, TeamPlayerMembership } from "@badman/backend-database";
 import { TeamWriteService } from "./team-write.service";
 
 describe("TeamWriteService", () => {
