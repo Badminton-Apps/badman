@@ -21,7 +21,7 @@ These tasks are prerequisites for any migration-running workflow. They are done 
 - [X] T004 [P] In the `production` Environment, add Environment secrets `PROD_API_HOOK`, `PROD_WORKER_SYNC_HOOK`, `PROD_WORKER_RANKING_HOOK`. Same procedure as T002 — regenerate at Render.com, paste fresh URLs.
 - [X] T005 In the `production` Environment, configure protection rules: required reviewers (≥1 named maintainer), enable "Prevent self-review", wait timer 0
 - [ ] T006 Create the `staging` branch from `develop` and push to origin; add `staging` to branch protection requiring PRs from `develop` and the `validate` job from `pull-request.yml` to pass
-- [ ] T007 Verify outbound DB connectivity from GitHub-hosted runners by running a one-off `psql -c 'SELECT 1'` workflow against the staging DB via the seven `DB_*` env vars; if rejected, escalate (self-hosted runner is the fallback and is out of scope)
+- [X] T007 Verify outbound DB connectivity from GitHub-hosted runners by running a one-off `psql -c 'SELECT 1'` workflow against the staging DB via the seven `DB_*` env vars; if rejected, escalate (self-hosted runner is the fallback and is out of scope)
 
 ---
 
@@ -51,10 +51,10 @@ This story is the MVP — it can ship and be observed in isolation before US2/US
 - [X] T013 [US1] In [.github/workflows/pull-request.yml](.github/workflows/pull-request.yml), delete the `coverage reports` step and the `coverage-report` artifact upload (FR-016)
 - [X] T014 [US1] In [.github/workflows/pull-request.yml](.github/workflows/pull-request.yml), delete the `SonarCloud Scan` step entirely (FR-016, Q3)
 - [X] T015 [US1] In [.github/workflows/pull-request.yml](.github/workflows/pull-request.yml), change the `nx affected -t test build -c ci` line to `nx affected -t lint typecheck test build -c ci` (adds explicit lint + typecheck per FR-002)
-- [ ] T016 [US1] Open a draft PR with a no-op change (e.g. whitespace in README) targeting `develop`; verify the `validate` job completes green within 8 minutes
-- [ ] T017 [US1] On the same PR, push a commit that introduces a deliberately failing unit test (or a lint violation); verify the job reports red with the offending test/rule name in logs (acceptance scenario 2/3 of US1)
+- [X] T016 [US1] Open a draft PR with a no-op change (e.g. whitespace in README) targeting `develop`; verify the `validate` job completes green within 8 minutes
+- [X] T017 [US1] On the same PR, push a commit that introduces a deliberately failing unit test (or a lint violation); verify the job reports red with the offending test/rule name in logs (acceptance scenario 2/3 of US1)
 - [ ] T018 [US1] On a separate throwaway long-lived branch with NO reachable `v*` tag in its history, open a PR; verify the job does NOT fail at any tag-lookup step (acceptance scenario 4 of US1)
-- [ ] T019 [US1] In branch protection for `develop` (and `main`, `staging`), set the required status check to the `validate` job from `pull-request.yml`
+- [X] T019 [US1] In branch protection for `develop` (and `main`, `staging`), set the required status check to the `validate` job from `pull-request.yml`
 
 **Checkpoint**: US1 complete. SC-001 (100% PRs get pass/fail) starts accumulating immediately. SC-002 (≤8 min median) measurable after ~10 PRs.
 
@@ -71,8 +71,8 @@ This story is the MVP — it can ship and be observed in isolation before US2/US
 - [X] T020 [US2] Create [.github/workflows/deploy-staging.yml](.github/workflows/deploy-staging.yml) per [contracts/workflow-triggers.md](contracts/workflow-triggers.md) with `on: { push: { branches: [staging] }, workflow_dispatch: }`, three jobs: `build`, `migrate-staging` (depends on `build`, uses `_shared-migrate.yml`), `deploy-staging` (depends on `migrate-staging`)
 - [X] T021 [US2] In `migrate-staging` job, declare `environment: staging`, `concurrency: { group: migrate-staging, cancel-in-progress: false }`, pass `secrets: inherit` (the env-scoped `DB_*` secrets become available because the called workflow's `migrate-staging` job declares `environment: staging`) and `inputs.target-environment: staging`
 - [X] T022 [US2] In `deploy-staging` job, declare `environment: staging` and run `npx nx affected -t deploy --no-agents` with env `API_HOOK=${{ secrets.STAGING_API_HOOK }}`, `WORKER_SYNC_HOOK=${{ secrets.STAGING_WORKER_SYNC_HOOK }}`, `WORKER_RANKING_HOOK=${{ secrets.STAGING_WORKER_RANKING_HOOK }}`
-- [ ] T023 [US2] Push a no-op commit to `staging`; verify `migrate-staging` step summary reads "No pending migrations." and `deploy-staging` completes green (fixture T1 of [contracts/migration-runner.md](contracts/migration-runner.md))
-- [ ] T024 [US2] Author a trivial fixture migration on a throwaway feature branch (e.g. `CREATE TABLE _migrate_smoke_test`), merge to `develop` then to `staging`; verify the migration filename appears in the step summary and that the row exists in staging's `SequelizeMeta` within 30 minutes of merge (fixture T2; SC-004)
+- [X] T023 [US2] Push a no-op commit to `staging`; verify `migrate-staging` step summary reads "No pending migrations." and `deploy-staging` completes green (fixture T1 of [contracts/migration-runner.md](contracts/migration-runner.md))
+- [X] T024 [US2] Author a trivial fixture migration on a throwaway feature branch (e.g. `CREATE TABLE _migrate_smoke_test`), merge to `develop` then to `staging`; verify the migration filename appears in the step summary and that the row exists in staging's `SequelizeMeta` within 30 minutes of merge (fixture T2; SC-004)
 - [ ] T025 [US2] Re-run the same workflow via `workflow_dispatch`; verify it reports "No pending migrations." and does not double-apply (FR-008; fixture T3; US2 acceptance scenario 4)
 - [ ] T026 [US2] Author a deliberately failing migration (`up: async () => { throw new Error('boom'); }`), merge to `staging`; verify `migrate-staging` red with the filename surfaced AND `deploy-staging` did NOT run (FR-009; SC-007; fixture T4; US2 acceptance scenario 3); roll back via `DROP TABLE` + revert PR
 - [ ] T027 [US2] Manually leave an `INVALID` index on staging DB (`CREATE INDEX CONCURRENTLY ...; UPDATE pg_index SET indisvalid = false ...` or simulate by interrupting a real one), push any commit to `staging`; verify pre-flight from T008 reports the index name and migration step does not run (FR-011; SC-008; fixture T5)
