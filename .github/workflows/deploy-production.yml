@@ -22,24 +22,8 @@ jobs:
       NEW_VERSION: ${{ steps.create_release.outputs.new_version }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Merge develop -> main
-        if: github.ref == 'refs/heads/main'
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: develop
-          target_branch: main
-          message: "chore(merge): merge develop into main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Pull main
-        if: github.ref == 'refs/heads/main'
-        run: git pull origin main
 
       - name: Override Base to last release tag
         run: |
