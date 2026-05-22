@@ -4,6 +4,7 @@ import { APP_FILTER } from "@nestjs/core";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { PrematureCloseFilter } from "./filters/premature-close.filter";
 import { AppController, ImageController } from "./controllers";
+import { CpController } from "./controllers/cp.controller";
 
 import { AuthorizationModule } from "@badman/backend-authorization";
 import { DatabaseModule } from "@badman/backend-database";
@@ -82,7 +83,7 @@ const envFilePath = join(projectRoot, envFileName);
     SocketModule,
     TransferLoanModule,
   ],
-  controllers: [AppController, ImageController, CalendarController],
+  controllers: [AppController, ImageController, CalendarController, CpController],
   providers: [
     Logger,
     { provide: APP_FILTER, useClass: PrematureCloseFilter },

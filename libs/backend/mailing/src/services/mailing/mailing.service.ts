@@ -596,6 +596,55 @@ export class MailingService {
     await this._sendMail(options);
   }
 
+  async sendCpExportReadyMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    downloadUrl: string
+  ) {
+    const options = {
+      from: "info@badman.app",
+      to: to.email,
+      subject: "CP bestand klaar",
+      template: "cpExportReady",
+      context: {
+        user: to.fullName,
+        downloadUrl,
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      user: string;
+      downloadUrl: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
+  async sendCpExportFailedMail(to: {
+    fullName: string;
+    email: string;
+    slug: string;
+  }) {
+    const options = {
+      from: "info@badman.app",
+      to: to.email,
+      subject: "CP bestand mislukt",
+      template: "cpExportFailed",
+      context: {
+        user: to.fullName,
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      user: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
   private async _setupMailing() {
     if (this.initialized) return;
     if ((this.configService.get<boolean>("MAIL_ENABLED") ?? false) == false) {
