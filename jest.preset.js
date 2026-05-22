@@ -1,3 +1,4 @@
+const path = require("path");
 const nxPreset = require("@nx/jest/preset").default;
 
 module.exports = {
@@ -10,4 +11,7 @@ module.exports = {
   // Cap workers explicitly so multiple nx projects running in parallel do not
   // each spin up 4 jest workers on a 4-vCPU runner.
   maxWorkers: 2,
+  // Register a no-op IndexCalculationService on EventEntry so test fixtures
+  // that save the model do not crash on the BeforeCreate/BeforeUpdate hook.
+  setupFiles: [path.join(__dirname, "jest.setup.js")],
 };
