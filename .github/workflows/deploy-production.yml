@@ -72,22 +72,24 @@ jobs:
           path: coverage/lcov.info
           retention-days: 30
 
-      # Back-merge main -> develop so hotfixes that land on main flow back
-      # to develop. Skip when the merge commit on main contains
-      # `[skip back-merge]` — used when main intentionally diverges from
-      # develop (e.g. reverting/removing a feature from prod while keeping
-      # it on develop for a later release).
-      - name: Merge main -> develop
-        if: |
-          github.ref == 'refs/heads/main' &&
-          !contains(github.event.head_commit.message, '[skip back-merge]')
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: main
-          target_branch: develop
-          message: "chore(merge): merge main into develop"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      # Back-merge main -> develop temporarily disabled.
+      # Reason: main is intentionally diverging from develop while we hold
+      # back features (CP export, backend encounter games generation) from
+      # prod. Auto back-merge would wipe those features from develop.
+      # Re-enable once main and develop are aligned again. When re-enabling,
+      # the `[skip back-merge]` gate (see AGENTS.md) is the documented way
+      # to opt out per-deploy.
+      # - name: Merge main -> develop
+      #   if: |
+      #     github.ref == 'refs/heads/main' &&
+      #     !contains(github.event.head_commit.message, '[skip back-merge]')
+      #   uses: devmasx/merge-branch@master
+      #   with:
+      #     type: now
+      #     from_branch: main
+      #     target_branch: develop
+      #     message: "chore(merge): merge main into develop"
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
 
   migrate-prod:
     needs: build
