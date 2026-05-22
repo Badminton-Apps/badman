@@ -192,6 +192,27 @@ Pattern:
    - Mutation succeeds: updates, commits transaction, returns result
    - Mutation rolls back on unexpected errors
 
+## CI / GitHub Actions
+
+Workflows live in [`.github/workflows/`](.github/workflows/). Match the workflow to the branch you are working on — see [Branching](#branching) for base-branch rules.
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| [`pull-request.yml`](.github/workflows/pull-request.yml) | `pull_request`, `merge_group` | Fast PR gate: `nx affected -t lint test -c ci` against `develop` (or PR base). Build is **deliberately excluded** — deploy workflows handle it. Legacy frontend + e2e excluded (Constitution V). |
+| [`deploy-staging.yml`](.github/workflows/deploy-staging.yml) | `push` to `staging`, `workflow_dispatch` | Build affected → run migrations against staging DB → deploy. Calls `_shared-migrate.yml`. |
+| [`deploy-production.yml`](.github/workflows/deploy-production.yml) | `push` to `main`, `workflow_dispatch` | Build affected (NX_BASE = last `v*` tag) → create release tag → run migrations against prod DB → deploy. Calls `_shared-migrate.yml`. |
+| [`_shared-migrate.yml`](.github/workflows/_shared-migrate.yml) | `workflow_call` (reusable) | Applies pending Sequelize migrations against `target-environment` input (`staging` \| `production`). Production env requires manual reviewer approval. Concurrency group `migrate-<env>` with `cancel-in-progress: false` so a mid-flight migration cannot be cancelled. Pre-flight invalid-index check guards against interrupted `CREATE INDEX CONCURRENTLY`. |
+| [`claude-code-review.yml`](.github/workflows/claude-code-review.yml) | `pull_request` against `main` | Auto Claude review on PRs targeting `main`. |
+| [`claude.yml`](.github/workflows/claude.yml) | `@claude` mention in issues / PR comments / reviews | On-demand Claude agent for repo. |
+| [`cla.yaml`](.github/workflows/cla.yaml) | PRs from external contributors | CLA signature gate. |
+
+### Rules for changes
+
+- Editing a workflow → run `actionlint` mentally (or via pre-commit); ensure `nx affected` invocations keep `--exclude="${{ steps.legacy.outputs.list }}"` and `-c ci`.
+- Adding a deploy step that touches the DB → call `_shared-migrate.yml`. Do **not** add a parallel migration job; the shared workflow holds the concurrency lock and env-protection contract.
+- Long-running or destructive step → set `concurrency.cancel-in-progress: false` to prevent half-applied state.
+- New env-scoped secrets → bind them through the `environment:` key on the job, not at the workflow level, so non-prod runs cannot read prod creds.
+
 ## Reference docs (`docs/`)
 
 Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones before starting work in those areas.
