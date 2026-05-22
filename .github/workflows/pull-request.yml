@@ -22,5 +22,7 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
 
-      - name: Run affected lint, test, build (parallel)
-        run: npx --yes nx affected -t lint test build -c ci --parallel=3
+      - name: Run affected lint + test (parallel)
+        # Build deliberately excluded — deploy workflows (deploy-staging.yml,
+        # deploy-production.yml) run it on push. PR checks stay fast.
+        run: npx --yes nx affected -t lint test -c ci --parallel=3
