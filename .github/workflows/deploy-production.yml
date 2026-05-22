@@ -120,6 +120,7 @@ jobs:
     needs: [build, deploy-prod]
     if: github.ref == 'refs/heads/main' && needs.build.outputs.NEW_VERSION != ''
     runs-on: ubuntu-latest
+    environment: production
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: badminton-vlaanderen
