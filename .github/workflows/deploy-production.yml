@@ -21,7 +21,7 @@ jobs:
     outputs:
       NEW_VERSION: ${{ steps.create_release.outputs.new_version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Merge develop -> main
         if: github.ref == 'refs/heads/main'
@@ -33,7 +33,7 @@ jobs:
           message: "chore(merge): merge develop into main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -133,7 +133,7 @@ jobs:
       SENTRY_PROJECT: backend
       VERSION: ${{ needs.build.outputs.NEW_VERSION }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
