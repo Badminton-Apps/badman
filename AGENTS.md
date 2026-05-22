@@ -146,7 +146,27 @@ Workers are lean NestJS apps importing only needed modules. Bull processors use 
 
 ## Branching
 
-- For new features, always create a new branch from `develop` (unless it's a hotfix or specified otherwise) with a descriptive name (e.g. `feat/enrollment-settings`, `fix/login-redirect`).
+**Base branch is load-bearing.** A wrong base mixes unreleased work into a hotfix lane, or strands a prod fix behind unreleased features. Get this right before the first commit.
+
+### Decision rules
+
+- **Base off `develop`** → PR target `develop`. Use for: `feat/*`, `refactor/*`, `chore/*`, `perf/*`, `test/*`, `docs/*`, and any `fix/*` for a bug that is **not yet in production** (i.e. only exists on `develop` or a feature branch).
+- **Base off `main`** → PR target `main`. Use ONLY for `hotfix/*` fixing a bug that is **already shipped to production**. After merge to `main`, back-merge `main` into `develop` so the fix is not lost.
+- **Never** base off `develop` and PR into `main` (drags unreleased features into prod). **Never** base off `main` and PR into `develop` for non-hotfix work.
+
+### When in doubt, ASK — do not guess
+
+Before creating a branch, if any of the following is unclear, stop and ask the user explicitly:
+
+1. Is the bug **already in production on `main`**, or only on `develop`/a feature branch?
+2. Does the user want this **shipped immediately** (hotfix path) or **bundled in the next release** (develop path)?
+3. The branch name uses `fix/*` — is it a hotfix (`main`) or a regular fix (`develop`)?
+
+Phrase the question concretely, e.g. _"Is this fixing a bug live in production (→ branch off `main`, PR into `main`), or a bug only on `develop` (→ branch off `develop`, PR into `develop`)?"_ Do not proceed until answered.
+
+### Naming
+
+Descriptive kebab-case after the type prefix: `feat/enrollment-settings`, `fix/login-redirect`, `hotfix/ranking-null-deref`, `chore/remove-cp-export`.
 
 ## Testing
 
