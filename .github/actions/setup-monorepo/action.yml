@@ -1,0 +1,43 @@
+name: Setup Monorepo
+description: nx-set-shas, Node from .nvmrc, cached node_modules + Nx local cache. Caller MUST run actions/checkout@v4 with fetch-depth 0 first.
+
+inputs:
+  cache-nx:
+    description: "Whether to cache .nx/cache across runs for faster nx affected."
+    required: false
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Derive SHAs for nx affected
+      uses: nrwl/nx-set-shas@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+
+    - name: Cache node_modules
+      id: cache-node-modules
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        # Lockfile + Node version pin the cache key. Bumping .nvmrc invalidates.
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('.nvmrc') }}-${{ hashFiles('package-lock.json') }}
+
+    - name: Install dependencies
+      if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      shell: bash
+      run: npm ci --prefer-offline --no-audit --no-fund
+
+    - name: Cache Nx computation
+      if: inputs.cache-nx == 'true'
+      uses: actions/cache@v4
+      with:
+        path: .nx/cache
+        # Restore latest by branch; key is unique per commit so we always write a fresh entry.
+        key: ${{ runner.os }}-nx-${{ github.ref_name }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-nx-${{ github.ref_name }}-
+          ${{ runner.os }}-nx-

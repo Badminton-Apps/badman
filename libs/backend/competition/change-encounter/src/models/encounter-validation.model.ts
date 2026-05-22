@@ -1,4 +1,4 @@
-import { DrawCompetition, EncounterCompetition, Location, Team } from "@badman/backend-database";
+import { DrawCompetition, EncounterCompetition, Location } from "@badman/backend-database";
 import { Field, ID, InputType, ObjectType } from "@nestjs/graphql";
 import { EncounterValidationError } from "./encounter-validation-error.model";
 

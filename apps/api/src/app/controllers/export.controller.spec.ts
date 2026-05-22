@@ -5,6 +5,7 @@ import { EnrollmentService } from "../services/export/enrollment.service";
 import { ExceptionsService } from "../services/export/exceptions.service";
 import { LocationsService } from "../services/export/locations.service";
 import { TeamsService } from "../services/export/teams.service";
+import { AvgLevelService } from "../services/export/avg-level.service";
 import { Player } from "@badman/backend-database";
 import { toCSV, toXlsx } from "@badman/backend-utils";
 
@@ -65,6 +66,7 @@ describe("ExportController", () => {
         { provide: ExceptionsService, useValue: {} },
         { provide: LocationsService, useValue: {} },
         { provide: EnrollmentService, useValue: {} },
+        { provide: AvgLevelService, useValue: {} },
       ],
     }).compile();
 

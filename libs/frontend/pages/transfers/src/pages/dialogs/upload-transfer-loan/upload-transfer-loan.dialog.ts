@@ -18,7 +18,6 @@ import { lastValueFrom, Subscription } from "rxjs";
 import { TRANSFERLOAN_CONFIG } from "../../../injection";
 import { ITransferLoanConfig } from "../../../interfaces/transfer-loan-config.interface";
 import { SelectSeasonComponent } from "@badman/frontend-components";
-import { getSeason } from "@badman/utils";
 
 @Component({
   selector: "badman-upload-transfer-loan",

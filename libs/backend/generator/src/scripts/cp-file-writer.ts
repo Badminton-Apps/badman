@@ -124,7 +124,7 @@ async function main() {
   console.log(`Copying template: ${templatePath} → ${outputPath}`);
   await copyFile(templatePath, outputPath);
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+   
   let ADODB;
   try {
     ADODB = require("node-adodb");

@@ -14,7 +14,7 @@ import { DrawCompetition, EventCompetition, SubEventCompetition } from "@badman/
 import { TranslatePipe } from "@ngx-translate/core";
 import { Apollo, gql } from "apollo-angular";
 import { injectDestroy } from "ngxtension/inject-destroy";
-import { BehaviorSubject, takeUntil, zip } from "rxjs";
+import { BehaviorSubject, takeUntil } from "rxjs";
 
 @Component({
   imports: [

@@ -42,7 +42,7 @@ interface MembershipStepData {
   }[];
 }
 
-interface ContactStepData {
+interface _ContactStepData {
   contacts: TwizzitContact[];
 }
 

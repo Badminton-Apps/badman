@@ -1,5 +1,4 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { InjectQueue } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { GlobalConsumer } from "../global";
 import { SyncQueue } from "@badman/backend-queue";

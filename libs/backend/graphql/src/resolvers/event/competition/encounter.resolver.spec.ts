@@ -3,7 +3,6 @@ import {
   DrawCompetition,
   EncounterCompetition,
   Team,
-  Player,
 } from "@badman/backend-database";
 import { getQueueToken } from "@nestjs/bull";
 import { Sequelize } from "sequelize-typescript";

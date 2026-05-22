@@ -147,7 +147,7 @@ export class TeamWriteService {
 
   async applyTeamNumbersTwoPhase({
     teams,
-    clubId,
+    clubId: _clubId,
     transaction,
   }: ApplyTeamNumbersArgs): Promise<ApplyTeamNumbersResult[]> {
     // Pass B-1: vacate all unique slots with temp values (no hook)

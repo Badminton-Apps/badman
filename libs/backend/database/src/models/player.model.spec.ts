@@ -1,4 +1,5 @@
 import "reflect-metadata";
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { Player } from "@badman/backend-database";
 
 type MutablePlayer = Player & {

@@ -10,7 +10,7 @@ import { matchesAvailabilityWindow } from "../encounter-location-utils";
  * "Within" uses moment's isBetween which is exclusive of endpoints.
  */
 
-function makeEncounterDate(isoDateStr: string): Date {
+function _makeEncounterDate(isoDateStr: string): Date {
   return new Date(isoDateStr);
 }
 

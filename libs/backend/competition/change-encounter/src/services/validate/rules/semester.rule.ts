@@ -29,7 +29,7 @@ export class SemesterRule extends Rule {
     const errors = [] as EncounterValidationError<SemesterRuleParams>[];
     const warnings = [] as EncounterValidationError<SemesterRuleParams>[];
     const valid = true;
-    const { encountersSem1, encountersSem2, suggestedDates, encounter, season, semseter1, index } =
+    const { encountersSem1, encountersSem2, suggestedDates, encounter, season, semseter1, index: _index } =
       changeEncounter;
 
     const error = this.findEncounterInSemseter(

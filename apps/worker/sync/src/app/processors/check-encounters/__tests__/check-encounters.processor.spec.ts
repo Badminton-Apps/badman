@@ -9,7 +9,7 @@ import { SearchService } from "@badman/backend-search";
 // Prevent startBrowserHealthMonitoring() from starting a real setInterval so the test process can exit
 jest.mock("@badman/backend-pupeteer", () => ({
   ...jest.requireActual("@badman/backend-pupeteer"),
-  startBrowserHealthMonitoring: jest.fn(() => () => {}),
+  startBrowserHealthMonitoring: jest.fn(() => () => { /* noop */ }),
 }));
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -92,7 +92,7 @@ function makeEncounter(overrides: Partial<Record<string, unknown>> = {}) {
   };
 }
 
-function makeConfig(overrides: Record<string, unknown> = {}) {
+function makeConfig(_overrides: Record<string, unknown> = {}) {
   const defaults: Record<string, unknown> = {
     VR_API_USER: "user",
     VR_API_PASS: "pass",

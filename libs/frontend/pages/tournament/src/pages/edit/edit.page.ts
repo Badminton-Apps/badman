@@ -8,7 +8,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { Router, RouterModule } from "@angular/router";
-import { HasClaimComponent, PageHeaderComponent } from "@badman/frontend-components";
+import { PageHeaderComponent } from "@badman/frontend-components";
 import { EventTournament } from "@badman/frontend-models";
 import { SeoService } from "@badman/frontend-seo";
 import { TranslatePipe } from "@ngx-translate/core";

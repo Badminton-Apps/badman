@@ -2,7 +2,6 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { VisualService } from "../visual.service";
-import * as Sentry from "@sentry/nestjs";
 import axios from "axios";
 import { formatInTimeZone } from "date-fns-tz";
 
@@ -505,14 +504,10 @@ describe("VisualService", () => {
 
     // Regression: Sentry #104397491 — Visual API sporadically returns Player
     // rows without a MemberID. Strict validation killed the whole SyncEvents
-    // job; lossy validation must drop the bad rows, keep the good ones, and
-    // report each drop to Sentry as a warning (fingerprinted per field path
-    // so all rows with the same defect collapse into one issue).
-    it("drops Player entries missing MemberID instead of throwing", async () => {
-      const warnSpy = jest.spyOn((service as any).logger, "warn").mockImplementation(() => undefined);
-      (Sentry.captureMessage as jest.Mock).mockClear();
-      (Sentry.withScope as jest.Mock).mockClear();
-
+    // job. XmlPlayerSchema marks MemberID optional; downstream sync code falls
+    // back to first/last-name matching when memberId is absent. Rows are kept,
+    // not dropped.
+    it("keeps Player entries missing MemberID instead of throwing", async () => {
       httpGet.mockResolvedValueOnce({
         data: JSON.stringify({
           Player: [
@@ -526,15 +521,8 @@ describe("VisualService", () => {
 
       const result = await service.getPlayers(TOURNEY_ID, false);
 
-      expect(result).toHaveLength(2);
-      expect(result.map((p) => p.MemberID)).toEqual(["M001", "M002"]);
-      expect(warnSpy).toHaveBeenCalledTimes(2);
-      expect(warnSpy.mock.calls[0][0]).toMatch(/dropping invalid Player entry at index 0/);
-      expect(warnSpy.mock.calls[1][0]).toMatch(/dropping invalid Player entry at index 2/);
-      expect(Sentry.captureMessage).toHaveBeenCalledTimes(2);
-      expect(Sentry.captureMessage).toHaveBeenCalledWith(
-        expect.stringMatching(/Visual API Player entry dropped.*MemberID/)
-      );
+      expect(result).toHaveLength(4);
+      expect(result.map((p) => p.MemberID)).toEqual([undefined, "M001", undefined, "M002"]);
     });
 
     it("returns empty array when the API has no players", async () => {

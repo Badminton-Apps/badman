@@ -4,11 +4,15 @@
   "sourceRoot": "libs/frontend/modules/html-injects/src",
   "prefix": "badman",
   "projectType": "library",
-  "tags": [],
+  "tags": [
+    "scope:legacy"
+  ],
   "targets": {
     "build": {
       "executor": "@nx/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/html-injects"],
+      "outputs": [
+        "{workspaceRoot}/dist/libs/frontend/modules/html-injects"
+      ],
       "options": {
         "project": "libs/frontend/modules/html-injects/ng-package.json",
         "tsConfig": "libs/frontend/modules/html-injects/tsconfig.lib.json"
@@ -30,7 +34,9 @@
         "{workspaceRoot}/jest.preset.js",
         "{workspaceRoot}/jest.config.ts",
         {
-          "externalDependencies": ["jest"]
+          "externalDependencies": [
+            "jest"
+          ]
         }
       ],
       "outputs": [

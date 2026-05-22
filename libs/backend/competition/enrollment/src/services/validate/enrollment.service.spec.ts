@@ -11,7 +11,6 @@ import {
 } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
 import { ConfigModule } from "@nestjs/config";
-import { Op } from "sequelize";
 import { EnrollmentValidationService } from "./enrollment.service";
 import { IndexCalculationService } from "../index-calculation/index-calculation.service";
 import { TeamContinuityRule } from "./rules";
@@ -219,15 +218,47 @@ describe("EnrollmentValidationService", () => {
       // Player.findAll is called both by the validator (gender + names) and by
       // IndexCalculationService (gender). Same return is fine for both.
       jest.spyOn(Player, "findAll").mockResolvedValue(players);
-      // The service's RankingPlace.findAll consults `rankingDate <= June 10 of season`.
-      // Filter the in-memory rows by that predicate so the cutoff still drives the result.
-      jest.spyOn(RankingPlace, "findAll").mockImplementation((opts) => {
-        const cutoff = (opts as { where: { rankingDate: Record<symbol, Date> } }).where.rankingDate[Op.lte];
-        const allPlaces = players.flatMap(
-          (p) => (p as unknown as { rankingPlaces?: RankingPlace[] }).rankingPlaces ?? []
-        );
-        return Promise.resolve(allPlaces.filter((rp) => rp.rankingDate && rp.rankingDate <= cutoff));
-      });
+      // IndexCalculationService now fetches latest places per player via
+      // `_fetchLatestPlacesPerPlayer` (raw SQL DISTINCT ON). Mock that method
+      // directly: emulate DB-side DISTINCT ON + rankingDate <= cutoff filter.
+      const indexService = module.get<IndexCalculationService>(IndexCalculationService);
+      jest
+        .spyOn(
+          indexService as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock },
+          "_fetchLatestPlacesPerPlayer"
+        )
+        .mockImplementation(((
+          playerIds: string[],
+          _systemId: string,
+          cutoff: Date
+        ) => {
+          const allPlaces = players.flatMap(
+            (p) => (p as unknown as { rankingPlaces?: RankingPlace[] }).rankingPlaces ?? []
+          );
+          const wanted = new Set(playerIds);
+          const eligible = allPlaces
+            .filter((rp) => rp.playerId && wanted.has(rp.playerId))
+            .filter((rp) => rp.rankingDate && rp.rankingDate <= cutoff)
+            .sort(
+              (a, b) =>
+                (b.rankingDate?.getTime() ?? 0) - (a.rankingDate?.getTime() ?? 0)
+            );
+          // DISTINCT ON (playerId) — keep first row per player in DESC date order.
+          const latestByPlayer = new Map<string, RankingPlace>();
+          for (const rp of eligible) {
+            if (rp.playerId && !latestByPlayer.has(rp.playerId)) {
+              latestByPlayer.set(rp.playerId, rp);
+            }
+          }
+          return Promise.resolve(
+            [...latestByPlayer.values()].map((rp) => ({
+              playerId: rp.playerId as string,
+              single: rp.single ?? null,
+              double: rp.double ?? null,
+              mix: rp.mix ?? null,
+            }))
+          );
+        }) as unknown as () => Promise<unknown>);
     };
 
     test("M team: baseIndex sums single+double of 4 base players", async () => {
@@ -396,11 +427,13 @@ describe("EnrollmentValidationService", () => {
         ],
       });
 
-      // Verify the service was queried with the validator's June 10 cutoff.
-      const rankingPlaceCalls = (RankingPlace.findAll as unknown as jest.SpyInstance).mock.calls;
-      expect(rankingPlaceCalls.length).toBeGreaterThan(0);
-      const args = rankingPlaceCalls[0][0] as { where: { rankingDate: Record<symbol, Date> } };
-      const cutoff = args.where.rankingDate[Op.lte];
+      // Verify the IndexCalculationService was queried with the validator's June 10 cutoff.
+      const indexService = module.get<IndexCalculationService>(IndexCalculationService);
+      const fetchSpy = (
+        indexService as unknown as { _fetchLatestPlacesPerPlayer: jest.SpyInstance }
+      )._fetchLatestPlacesPerPlayer;
+      expect(fetchSpy.mock.calls.length).toBeGreaterThan(0);
+      const cutoff = fetchSpy.mock.calls[0][2] as Date;
       expect(cutoff.getFullYear()).toBe(SEASON);
       expect(cutoff.getMonth()).toBe(5); // June (0-indexed)
       expect(cutoff.getDate()).toBe(10);
