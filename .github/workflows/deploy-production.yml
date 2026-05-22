@@ -117,7 +117,7 @@ jobs:
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK }}
 
   sentry-release:
-    needs: deploy-prod
+    needs: [build, deploy-prod]
     if: github.ref == 'refs/heads/main' && needs.build.outputs.NEW_VERSION != ''
     runs-on: ubuntu-latest
     env:
