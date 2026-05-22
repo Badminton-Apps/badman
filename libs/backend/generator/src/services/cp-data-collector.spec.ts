@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { NotFoundException } from "@nestjs/common";
 import { I18nService } from "nestjs-i18n";
 import { CpDataCollector } from "./cp-data-collector";
-import { EventCompetition, Player, Club } from "@badman/backend-database";
+import { EventCompetition, Player } from "@badman/backend-database";
 import { EnrollmentValidationService } from "@badman/backend-enrollment";
 import { TeamMembershipType } from "@badman/utils";
 

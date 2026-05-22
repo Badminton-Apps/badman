@@ -1,4 +1,4 @@
-import { CronJob, EventCompetition, EventTournament } from "@badman/backend-database";
+import { CronJob } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
 import { VisualService, XmlTournamentTypeID } from "@badman/backend-visual";
 import { PointsService } from "@badman/backend-ranking";
@@ -8,7 +8,6 @@ import * as Sentry from "@sentry/nestjs";
 import { SyncEventsProcessor } from "../sync-events.processor";
 import { CompetitionSyncer } from "../competition-sync";
 import { TournamentSyncer } from "../tournament-sync";
-import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Sequelize } from "sequelize-typescript";
 
 jest.mock("@sentry/nestjs", () => ({
@@ -104,7 +103,7 @@ describe("SyncEventsProcessor", () => {
   let competitionSyncSpy: jest.SpyInstance;
   let tournamentSyncSpy: jest.SpyInstance;
 
-  async function buildModule(configOverrides: Record<string, unknown> = {}) {
+  async function buildModule(_configOverrides: Record<string, unknown> = {}) {
     visualService = makeVisualService();
     notificationService = makeNotificationService();
     sequelize = makeSequelize();

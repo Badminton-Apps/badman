@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { EncounterCompetition, Game, GamePlayerMembership, RankingSystem } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
 import { Sequelize } from "sequelize-typescript";
@@ -79,7 +80,7 @@ describe("EncounterGamesGenerationService", () => {
       );
       (GamePlayerMembership.create as jest.Mock).mockResolvedValue({});
       (RankingSystem.findOne as jest.Mock).mockResolvedValue({ id: "system-uuid" });
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+       
       const { RankingLastPlace } = require("@badman/backend-database");
       (RankingLastPlace.findOne as jest.Mock).mockResolvedValue(null);
 

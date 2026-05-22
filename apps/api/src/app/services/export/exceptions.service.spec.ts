@@ -55,21 +55,30 @@ describe("ExceptionsService", () => {
     jest.restoreAllMocks();
   });
 
-  // --- dateRangeToDays helper ---
+  // --- dateRangeToBelgianDays helper ---
 
-  describe("dateRangeToDays", () => {
+  describe("dateRangeToBelgianDays", () => {
     it("returns empty array when start is undefined", () => {
-      expect(service.dateRangeToDays(undefined)).toEqual([]);
+      expect(service.dateRangeToBelgianDays(undefined)).toEqual([]);
     });
 
     it("returns single day when end is absent", () => {
-      const days = service.dateRangeToDays(new Date("2024-12-25"));
-      expect(days).toHaveLength(1);
+      const days = service.dateRangeToBelgianDays(new Date("2024-12-25T12:00:00Z"));
+      expect(days).toEqual(["25/12/2024"]);
     });
 
     it("returns one entry per day for a range", () => {
-      const days = service.dateRangeToDays(new Date("2024-12-23"), new Date("2024-12-25"));
-      expect(days).toHaveLength(3);
+      const days = service.dateRangeToBelgianDays(
+        new Date("2024-12-23T12:00:00Z"),
+        new Date("2024-12-25T12:00:00Z")
+      );
+      expect(days).toEqual(["23/12/2024", "24/12/2024", "25/12/2024"]);
+    });
+
+    it("uses Brussels calendar for UTC dates near midnight (CEST)", () => {
+      // 2024-03-31T23:00:00Z = 2024-04-01T01:00 Brussels (CEST +2 already in effect)
+      const days = service.dateRangeToBelgianDays(new Date("2024-03-31T23:00:00Z"));
+      expect(days).toEqual(["01/04/2024"]);
     });
   });
 

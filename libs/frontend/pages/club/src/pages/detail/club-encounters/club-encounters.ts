@@ -16,7 +16,6 @@ import {
   openRequestFilter,
   validationFilter,
 } from "./club-encounters.service";
-import { map } from "rxjs";
 
 @Component({
   selector: "badman-club-encounters",

@@ -54,7 +54,7 @@ async function checkTmpDirectories() {
     console.log(`\n📊 Total directories: ${chromeProfileDirs.length}`);
     console.log(`📊 Total size: ${totalSize.toFixed(1)}MB`);
 
-    const oldDirs = chromeProfileDirs.filter(async (dir) => {
+    const _oldDirs = chromeProfileDirs.filter(async (dir) => {
       try {
         const stats = await fs.stat(path.join(tmpDir, dir.name));
         const ageHours = (now - stats.mtime.getTime()) / (1000 * 60 * 60);

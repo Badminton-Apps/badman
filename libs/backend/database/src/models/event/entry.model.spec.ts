@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { SaveOptions } from "sequelize";
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { EventEntry } from "@badman/backend-database";
 
 const PLAYER_UUID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
@@ -114,7 +115,7 @@ describe("EventEntry.recalculateCompetitionIndex", () => {
         subEventCompetitionId: SUBEVENT_UUID,
         players: [{ id: PLAYER_UUID }],
       },
-      { transaction: tx }
+      { transaction: tx, caller: "EventEntry.recalculateCompetitionIndex" }
     );
   });
 

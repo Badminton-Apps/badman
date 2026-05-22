@@ -3,7 +3,9 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/badman-e2e-desktop/src",
   "projectType": "application",
-  "implicitDependencies": ["badman-e2e"],
+  "implicitDependencies": [
+    "badman-e2e"
+  ],
   "targets": {
     "e2e": {
       "executor": "@nx/playwright:playwright",
@@ -16,5 +18,8 @@
         }
       }
     }
-  }
+  },
+  "tags": [
+    "scope:legacy"
+  ]
 }

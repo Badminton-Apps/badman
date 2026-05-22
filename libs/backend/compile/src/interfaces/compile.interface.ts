@@ -1,5 +1,4 @@
 import { Readable } from "stream";
-import { ConfigService } from "@nestjs/config";
 import { ModuleMetadata, FactoryProvider } from "@nestjs/common";
 import { Type } from "@nestjs/common";
 import { Options as JuiceOptions } from "juice";

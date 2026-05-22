@@ -1,7 +1,7 @@
-import { EncounterCompetition, Location, Team } from "@badman/backend-database";
+import { EncounterCompetition, Location } from "@badman/backend-database";
 import { ValidationService } from "@badman/backend-validation";
 import { Injectable, Logger } from "@nestjs/common";
-import { Op, WhereOptions } from "sequelize";
+import { Op } from "sequelize";
 import {
   EncounterValidationOutput,
   EncounterValidationData,

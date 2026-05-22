@@ -211,6 +211,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/029-evententry-team-standing-loaders/plan.md](specs/029-evententry-team-standing-loaders/plan.md)
+[specs/030-ci-lean-migrations/plan.md](specs/030-ci-lean-migrations/plan.md)
 
 <!-- SPECKIT END -->

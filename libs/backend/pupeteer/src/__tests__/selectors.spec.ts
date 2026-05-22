@@ -18,7 +18,7 @@ function makeMockElementHandle(overrides: Partial<{ $: jest.Mock; $$: jest.Mock;
       return overrides.$?.(selector) ?? Promise.resolve(null);
     },
     $$: jest.fn().mockResolvedValue([]),
-    evaluateHandle: jest.fn().mockImplementation((fn: (el: unknown) => unknown) => {
+    evaluateHandle: jest.fn().mockImplementation((_fn: (el: unknown) => unknown) => {
       const handle = { asElement: () => makeMockElementHandle() };
       return Promise.resolve(handle);
     }),

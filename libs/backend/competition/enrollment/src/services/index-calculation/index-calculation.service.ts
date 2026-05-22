@@ -8,7 +8,7 @@ import {
 import { Injectable, Logger } from "@nestjs/common";
 import * as Sentry from "@sentry/nestjs";
 import moment from "moment";
-import { Op, Transaction } from "sequelize";
+import { QueryTypes, Transaction } from "sequelize";
 import {
   IndexCalculationContributingPlayer,
   IndexCalculationFailure,
@@ -334,23 +334,62 @@ export class IndexCalculationService {
     if (playerIds.length === 0) return new Map();
 
     const cutoff = moment([season, 5, 10]).toDate();
-    const rows = await RankingPlace.findAll({
-      where: {
-        playerId: playerIds,
-        systemId,
-        rankingDate: { [Op.lte]: cutoff },
-      },
-      order: [["rankingDate", "DESC"]],
-      transaction,
-    });
+    const rows = await this._fetchLatestPlacesPerPlayer(
+      playerIds,
+      systemId,
+      cutoff,
+      transaction
+    );
 
     const map = new Map<string, RankingPlace>();
     for (const row of rows) {
-      if (row.playerId && !map.has(row.playerId)) {
-        map.set(row.playerId, row);
+      if (row.playerId) {
+        map.set(row.playerId, row as unknown as RankingPlace);
       }
     }
     return map;
+  }
+
+  /**
+   * Returns one row per player — the most-recent RankingPlace at or before
+   * `cutoff` for the given `systemId`. Uses Postgres `DISTINCT ON` and selects
+   * only the columns needed for index calculation, avoiding full-history
+   * fetches and Sequelize model hydration.
+   *
+   * Extracted so unit tests can mock the DB boundary without standing up the
+   * Sequelize raw-query plumbing.
+   */
+  protected async _fetchLatestPlacesPerPlayer(
+    playerIds: string[],
+    systemId: string,
+    cutoff: Date,
+    transaction?: Transaction
+  ): Promise<
+    Array<{ playerId: string; single: number | null; double: number | null; mix: number | null }>
+  > {
+    const sequelize = RankingPlace.sequelize;
+    if (!sequelize) {
+      throw new Error("RankingPlace.sequelize is not initialized");
+    }
+
+    return sequelize.query<{
+      playerId: string;
+      single: number | null;
+      double: number | null;
+      mix: number | null;
+    }>(
+      `SELECT DISTINCT ON ("playerId") "playerId", "single", "double", "mix"
+       FROM ranking."RankingPlaces"
+       WHERE "systemId" = :systemId
+         AND "rankingDate" <= :cutoff
+         AND "playerId" IN (:playerIds)
+       ORDER BY "playerId", "rankingDate" DESC`,
+      {
+        type: QueryTypes.SELECT,
+        replacements: { systemId, cutoff, playerIds },
+        transaction,
+      }
+    );
   }
 
   /** Batch-resolve player gender from the Player table. */

@@ -45,7 +45,7 @@ export class SearchService {
     );
   }
 
-  async searchPlayers(parts: string[], queries: WhereOptions[] = []): Promise<Player[]> {
+  async searchPlayers(parts: string[], _queries: WhereOptions[] = []): Promise<Player[]> {
     if (parts.length === 0) {
       return [];
     }

@@ -8,10 +8,10 @@ import {
   SubEventCompetition,
   Team,
 } from "@badman/backend-database";
-import { eachDayOfInterval } from "date-fns";
-import { format, toZonedTime } from "date-fns-tz";
+import { formatInTimeZone } from "date-fns-tz";
 
 const BRUSSELS_TZ = "Europe/Brussels";
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 const HEADERS = ["Club ID", "Clubnaam", "Locatie", "Datum", "Velden"] as const;
 
@@ -23,15 +23,29 @@ type ExportResult = {
 
 @Injectable()
 export class ExceptionsService {
-  dateRangeToDays(start?: Date | string, end?: Date | string): Date[] {
+  // Iterate Brussels calendar days between start and end (inclusive), independent of the
+  // system timezone the runner happens to be in. Returns formatted dd/MM/yyyy strings directly.
+  dateRangeToBelgianDays(start?: Date | string, end?: Date | string): string[] {
     if (!start) return [];
     const startDate = start instanceof Date ? start : new Date(start);
     const endDate = end ? (end instanceof Date ? end : new Date(end)) : startDate;
-    return eachDayOfInterval({ start: startDate, end: endDate });
+
+    // Anchor each input to noon UTC of its Brussels calendar day. Noon avoids DST-transition
+    // edge cases (DST shifts happen at 01:00 UTC; noon is safely far from the boundary).
+    const startBrusselsDay = formatInTimeZone(startDate, BRUSSELS_TZ, "yyyy-MM-dd");
+    const endBrusselsDay = formatInTimeZone(endDate, BRUSSELS_TZ, "yyyy-MM-dd");
+    const startAnchor = new Date(`${startBrusselsDay}T12:00:00Z`);
+    const endAnchor = new Date(`${endBrusselsDay}T12:00:00Z`);
+
+    const days: string[] = [];
+    for (let t = startAnchor.getTime(); t <= endAnchor.getTime(); t += ONE_DAY_MS) {
+      days.push(formatInTimeZone(new Date(t), BRUSSELS_TZ, "dd/MM/yyyy"));
+    }
+    return days;
   }
 
   formatBelgianDate(date: Date): string {
-    return format(toZonedTime(date, BRUSSELS_TZ), "dd/MM/yyyy", { timeZone: BRUSSELS_TZ });
+    return formatInTimeZone(date, BRUSSELS_TZ, "dd/MM/yyyy");
   }
 
   async getExceptions(eventId: string): Promise<ExportResult> {
@@ -72,11 +86,11 @@ export class ExceptionsService {
       return club.locations.flatMap((location) =>
         location.availabilities.flatMap((availability) =>
           (availability.exceptions ?? []).flatMap((exception) =>
-            this.dateRangeToDays(exception.start, exception.end).map((day) => ({
+            this.dateRangeToBelgianDays(exception.start, exception.end).map((formattedDate) => ({
               club,
               location,
               exception,
-              formattedDate: this.formatBelgianDate(day),
+              formattedDate,
             }))
           )
         )

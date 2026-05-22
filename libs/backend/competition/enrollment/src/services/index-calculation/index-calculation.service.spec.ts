@@ -7,7 +7,6 @@ import {
   SubEventCompetition,
 } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
-import { Op } from "sequelize";
 import { IndexCalculationService } from "./index-calculation.service";
 import { IndexCalculationInput } from "./index-calculation.types";
 
@@ -108,7 +107,7 @@ describe("IndexCalculationService", () => {
       jest
         .spyOn(Player, "findAll")
         .mockResolvedValue([stubPlayer("player-ok"), stubPlayer("player-boom")]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       const origCompute = (
         service as unknown as { computeResult: (...a: unknown[]) => unknown }
@@ -139,7 +138,7 @@ describe("IndexCalculationService", () => {
     it("returns the single result from calculate", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("player-k1")]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("player-k1", 8, 8, 12)]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([stubPlace("player-k1", 8, 8, 12)]);
 
       const result = await service.calculateOne({
         key: "k1",
@@ -160,37 +159,33 @@ describe("IndexCalculationService", () => {
     it("queries RankingPlace with rankingDate <= June 10 of season (validator's rule)", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      const spy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      const spy = jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       await service.calculate([
         { key: "k", type: SubEventTypeEnum.M, season: 2024, players: [{ id: "p1" }] },
       ]);
 
       expect(spy).toHaveBeenCalledTimes(1);
-      const args = spy.mock.calls[0][0] as {
-        where: { rankingDate: Record<symbol, Date> };
-      };
-      const lteSym = Object.getOwnPropertySymbols(args.where.rankingDate).find(
-        (s) => s === Op.lte
-      )!;
-      expect(lteSym).toBeDefined();
-      const cutoff = args.where.rankingDate[lteSym];
+      // Positional args: (playerIds, systemId, cutoff, transaction)
+      const callArgs = spy.mock.calls[0] as unknown as [string[], string, Date, unknown];
+      const cutoff = callArgs[2];
       expect(cutoff.getFullYear()).toBe(2024);
       expect(cutoff.getMonth()).toBe(5); // June (0-indexed)
       expect(cutoff.getDate()).toBe(10);
     });
 
-    it("does NOT filter by updatePossible (validator does not either)", async () => {
+    it("does not query for updatePossible (validator does not either)", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      const spy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      const spy = jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       await service.calculate([
         { key: "k", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: "p1" }] },
       ]);
 
-      const args = spy.mock.calls[0][0] as { where: Record<string, unknown> };
-      expect(args.where).not.toHaveProperty("updatePossible");
+      // Helper signature takes (playerIds, systemId, cutoff, transaction) only —
+      // no updatePossible filter passes through.
+      expect(spy.mock.calls[0]).toHaveLength(4);
     });
   });
 
@@ -203,7 +198,7 @@ describe("IndexCalculationService", () => {
 
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem({ amountOfLevels: 10 }));
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer(playerId)]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       const result = await service.calculateOne({
         key: "k",
@@ -225,7 +220,7 @@ describe("IndexCalculationService", () => {
       const playerId = "p1";
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer(playerId)]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([
         // single=4 only; double / mix missing
         stubPlace(playerId, 4, undefined, undefined),
       ]);
@@ -260,7 +255,7 @@ describe("IndexCalculationService", () => {
         .spyOn(Player, "findAll")
         .mockResolvedValue([stubPlayer("p1", "M"), stubPlayer("p2", "F")]);
       const placeSpy = jest
-        .spyOn(RankingPlace, "findAll")
+        .spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer")
         .mockResolvedValue([stubPlace("p1", 6, 6, 6), stubPlace("p2", 6, 6, 6)]);
 
       const result = await service.calculateOne({
@@ -272,13 +267,7 @@ describe("IndexCalculationService", () => {
 
       expect(result._tag).toBe("success");
       // Cutoff on June 10 2024 — derived from sub-event's EventCompetition.season
-      const args = placeSpy.mock.calls[0][0] as {
-        where: { rankingDate: Record<symbol, Date> };
-      };
-      const lteSym = Object.getOwnPropertySymbols(args.where.rankingDate).find(
-        (s) => s === Op.lte
-      )!;
-      const cutoff = args.where.rankingDate[lteSym];
+      const cutoff = placeSpy.mock.calls[0][2] as Date;
       expect(cutoff.getFullYear()).toBe(2024);
       expect(cutoff.getMonth()).toBe(5);
       expect(cutoff.getDate()).toBe(10);
@@ -322,7 +311,7 @@ describe("IndexCalculationService", () => {
         .spyOn(SubEventCompetition, "findAll")
         .mockResolvedValue([stubSubEvent(SubEventTypeEnum.M, { season: 2020 })]);
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      const placeSpy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      const placeSpy = jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       await service.calculateOne({
         key: "k",
@@ -332,14 +321,9 @@ describe("IndexCalculationService", () => {
         players: [{ id: "p1" }],
       });
 
-      const args = placeSpy.mock.calls[0][0] as {
-        where: { rankingDate: Record<symbol, Date> };
-      };
-      const lteSym = Object.getOwnPropertySymbols(args.where.rankingDate).find(
-        (s) => s === Op.lte
-      )!;
       // explicit season = 2024 wins, not sub-event's 2020
-      expect(args.where.rankingDate[lteSym].getFullYear()).toBe(2024);
+      const cutoff = placeSpy.mock.calls[0][2] as Date;
+      expect(cutoff.getFullYear()).toBe(2024);
     });
   });
 
@@ -350,7 +334,7 @@ describe("IndexCalculationService", () => {
     it("uses primary system when input.systemId is omitted", async () => {
       const findOneSpy = jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      const placeSpy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      const placeSpy = jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       await service.calculateOne({
         key: "k",
@@ -362,8 +346,9 @@ describe("IndexCalculationService", () => {
       expect(findOneSpy).toHaveBeenCalledWith(
         expect.objectContaining({ where: { primary: true } })
       );
-      const args = placeSpy.mock.calls[0][0] as { where: { systemId: string } };
-      expect(args.where.systemId).toBe(SYSTEM_ID);
+      // Positional args: (playerIds, systemId, cutoff, transaction)
+      const systemId = placeSpy.mock.calls[0][1] as string;
+      expect(systemId).toBe(SYSTEM_ID);
     });
 
     it("honors caller-supplied input.systemId, falling back to primary if not found", async () => {
@@ -371,7 +356,7 @@ describe("IndexCalculationService", () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem()); // primary
       jest.spyOn(RankingSystem, "findAll").mockResolvedValue([otherSystem]);
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      const placeSpy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      const placeSpy = jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       await service.calculateOne({
         key: "k",
@@ -381,8 +366,8 @@ describe("IndexCalculationService", () => {
         players: [{ id: "p1" }],
       });
 
-      const args = placeSpy.mock.calls[0][0] as { where: { systemId: string } };
-      expect(args.where.systemId).toBe("other-system");
+      const systemId = placeSpy.mock.calls[0][1] as string;
+      expect(systemId).toBe("other-system");
     });
   });
 
@@ -390,12 +375,12 @@ describe("IndexCalculationService", () => {
   // Snapshot dedupe
   // -------------------------------------------------------------------------
   describe("snapshot dedupe", () => {
-    it("calls RankingPlace.findAll once when three inputs share the same (system, season)", async () => {
+    it("fetches latest places once when three inputs share the same (system, season)", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest
         .spyOn(Player, "findAll")
         .mockResolvedValue([stubPlayer("p1"), stubPlayer("p2"), stubPlayer("p3")]);
-      const spy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      const spy = jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       await service.calculate([
         { key: "k1", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: "p1" }] },
@@ -404,14 +389,14 @@ describe("IndexCalculationService", () => {
       ]);
 
       expect(spy).toHaveBeenCalledTimes(1);
-      const args = spy.mock.calls[0][0] as { where: { playerId: string[] } };
-      expect(args.where.playerId).toEqual(expect.arrayContaining(["p1", "p2", "p3"]));
+      const playerIds = spy.mock.calls[0][0] as string[];
+      expect(playerIds).toEqual(expect.arrayContaining(["p1", "p2", "p3"]));
     });
 
-    it("calls RankingPlace.findAll once per unique season when inputs span two seasons", async () => {
+    it("fetches latest places once per unique season when inputs span two seasons", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1"), stubPlayer("p2")]);
-      const spy = jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      const spy = jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       await service.calculate([
         { key: "k1", type: SubEventTypeEnum.M, season: 2024, players: [{ id: "p1" }] },
@@ -423,18 +408,19 @@ describe("IndexCalculationService", () => {
   });
 
   // -------------------------------------------------------------------------
-  // fetchPlaceMap dedup: most-recent row per player kept
+  // fetchPlaceMap: maps the DB-deduped latest place per player
+  // (DISTINCT ON is performed at the SQL layer; the service maps row -> player.)
   // -------------------------------------------------------------------------
-  describe("fetchPlaceMap dedup", () => {
-    it("keeps only the most-recent RankingPlace row per player (first in DESC order)", async () => {
+  describe("fetchPlaceMap mapping", () => {
+    it("maps the single (most-recent) row per player into the place map", async () => {
       const playerId = "player-dedup-0000-0000-000000000000";
 
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer(playerId)]);
 
+      // DB-side DISTINCT ON returns exactly one row per player.
       const newer = stubPlace(playerId, 4, 4, 4, new Date(SEASON, 5, 5)); // June 5
-      const older = stubPlace(playerId, 8, 8, 8, new Date(SEASON, 2, 1)); // March 1
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([newer, older]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([newer]);
 
       const result = await service.calculateOne({
         key: "k",
@@ -462,7 +448,7 @@ describe("IndexCalculationService", () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       // Only goodId is in the DB — badId is absent.
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer(goodId)]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace(goodId, 8, 8, 8)]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([stubPlace(goodId, 8, 8, 8)]);
 
       const results = await service.calculate([
         { key: "good", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: goodId }] },
@@ -483,7 +469,7 @@ describe("IndexCalculationService", () => {
     it("does not call Player.findAll when the input player list is empty", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       const playerSpy = jest.spyOn(Player, "findAll").mockResolvedValue([]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       await service.calculate([
         { key: "k", type: SubEventTypeEnum.M, season: SEASON, players: [] },
@@ -499,7 +485,7 @@ describe("IndexCalculationService", () => {
       jest
         .spyOn(Player, "findAll")
         .mockResolvedValue([{ id: noGenderId, gender: null } as unknown as Player]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([]);
 
       const result = await service.calculateOne({
         key: "k",
@@ -522,7 +508,7 @@ describe("IndexCalculationService", () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1"), stubPlayer("p2")]);
       jest
-        .spyOn(RankingPlace, "findAll")
+        .spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer")
         .mockResolvedValue([stubPlace("p1", 8, 8, 12), stubPlace("p2", 8, 8, 12)]);
 
       const result = await service.calculateOne({
@@ -544,10 +530,10 @@ describe("IndexCalculationService", () => {
   // RankingPlace fetch failure tolerance
   // -------------------------------------------------------------------------
   describe("RankingPlace fetch error", () => {
-    it("falls back to default-fill (amountOfLevels+2) when RankingPlace.findAll throws", async () => {
+    it("falls back to default-fill (amountOfLevels+2) when the place fetch throws", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem({ amountOfLevels: 12 }));
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      jest.spyOn(RankingPlace, "findAll").mockRejectedValue(new Error("DB timeout"));
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockRejectedValue(new Error("DB timeout"));
 
       const result = await service.calculateOne({
         key: "k",
@@ -579,7 +565,7 @@ describe("IndexCalculationService", () => {
           stubPlayer("p4"),
         ]);
       jest
-        .spyOn(RankingPlace, "findAll")
+        .spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer")
         .mockResolvedValue([
           stubPlace("p1", 5, 5, 7),
           stubPlace("p2", 6, 6, 8),
@@ -611,7 +597,7 @@ describe("IndexCalculationService", () => {
           stubPlayer("p3"),
           stubPlayer("p4"),
         ]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([
         stubPlace("p1", 5, 5, 7),
         stubPlace("p2", 6, 6, 8),
         stubPlace("p3", 7, 7, 9),
@@ -642,7 +628,7 @@ describe("IndexCalculationService", () => {
     it("includes [CallerTag] in WARN log line when duration exceeds 1000 ms", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
 
       // Simulate a slow execution by making Date.now() return values 1500 ms apart
       const nowSpy = jest.spyOn(Date, "now");
@@ -662,7 +648,7 @@ describe("IndexCalculationService", () => {
     it("includes [CallerTag] in DEBUG log line when duration is within normal range", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
 
       // Fast execution — both Date.now() calls return 0 → duration = 0 ms
       jest.spyOn(Date, "now").mockReturnValue(0);
@@ -681,7 +667,7 @@ describe("IndexCalculationService", () => {
     it("renders log lines WITHOUT a bracketed tag when options.caller is omitted", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
 
       jest.spyOn(Date, "now").mockReturnValue(0);
 
@@ -698,7 +684,7 @@ describe("IndexCalculationService", () => {
     it("calculateOne forwards caller option to calculate so the log tag appears", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
-      jest.spyOn(RankingPlace, "findAll").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
+      jest.spyOn(service as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock }, "_fetchLatestPlacesPerPlayer").mockResolvedValue([stubPlace("p1", 5, 5, 7)]);
 
       jest.spyOn(Date, "now").mockReturnValue(0);
 
