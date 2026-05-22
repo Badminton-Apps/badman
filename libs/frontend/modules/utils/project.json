@@ -4,11 +4,15 @@
   "sourceRoot": "libs/frontend/modules/utils/src",
   "prefix": "badman",
   "projectType": "library",
-  "tags": [],
+  "tags": [
+    "scope:legacy"
+  ],
   "targets": {
     "build": {
       "executor": "@nx/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/libs/frontend/modules/utils"],
+      "outputs": [
+        "{workspaceRoot}/dist/libs/frontend/modules/utils"
+      ],
       "options": {
         "project": "libs/frontend/modules/utils/ng-package.json",
         "tsConfig": "libs/frontend/modules/utils/tsconfig.lib.json"
@@ -30,7 +34,9 @@
         "{workspaceRoot}/jest.preset.js",
         "{workspaceRoot}/jest.config.ts",
         {
-          "externalDependencies": ["jest"]
+          "externalDependencies": [
+            "jest"
+          ]
         }
       ],
       "outputs": [

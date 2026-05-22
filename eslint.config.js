@@ -1,5 +1,6 @@
 const { FlatCompat } = require("@eslint/eslintrc");
 const nxEslintPlugin = require("@nx/eslint-plugin");
+const unusedImports = require("eslint-plugin-unused-imports");
 const js = require("@eslint/js");
 
 const compat = new FlatCompat({
@@ -8,7 +9,15 @@ const compat = new FlatCompat({
 });
 
 module.exports = [
-  { plugins: { "@nx": nxEslintPlugin } },
+  { plugins: { "@nx": nxEslintPlugin, "unused-imports": unusedImports } },
+  {
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.cts", "**/*.mts", "**/*.cjs", "**/*.mjs"],
+    rules: {
+      // Auto-removable: unused imports. Reported separately from the
+      // typescript-eslint rule so eslint --fix can strip them.
+      "unused-imports/no-unused-imports": "warn",
+    },
+  },
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     rules: {
@@ -34,6 +43,15 @@ module.exports = [
       ...config.rules,
       "@/no-extra-semi": "error",
       "no-extra-semi": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          caughtErrors: "none",
+        },
+      ],
     },
   })),
   ...compat.config({ extends: ["plugin:@nx/javascript"] }).map((config) => ({
@@ -43,6 +61,19 @@ module.exports = [
       ...config.rules,
       "@/no-extra-semi": "error",
       "no-extra-semi": "off",
+      // Base no-unused-vars (with _-prefix opt-out + catch-clause skip) handles JS.
+      // The TS-ESLint variant has no parser context here and double-reports —
+      // disable it on .js so the base rule is authoritative.
+      "@typescript-eslint/no-unused-vars": "off",
+      "no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          caughtErrors: "none",
+        },
+      ],
     },
   })),
   ...compat.config({ env: { jest: true } }).map((config) => ({
