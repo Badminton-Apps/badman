@@ -52,8 +52,12 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
 
+      - name: Resolve legacy projects (scope:legacy tag)
+        id: legacy
+        run: echo "list=$(node scripts/ci/legacy-projects.js)" >> "$GITHUB_OUTPUT"
+
       - name: Run affected lint, test, build
-        run: npx --yes nx affected -t lint test build -c ci
+        run: npx --yes nx affected -t lint test build -c ci --exclude="${{ steps.legacy.outputs.list }}"
 
       - name: Coverage reports
         run: |

@@ -3,7 +3,10 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/badman-e2e/src",
   "projectType": "application",
-  "implicitDependencies": ["badman", "api"],
+  "implicitDependencies": [
+    "badman",
+    "api"
+  ],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint",
@@ -11,5 +14,8 @@
         "eslintConfig": "apps/badman-e2e/eslint.config.js"
       }
     }
-  }
+  },
+  "tags": [
+    "scope:legacy"
+  ]
 }

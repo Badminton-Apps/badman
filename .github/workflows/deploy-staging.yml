@@ -23,8 +23,12 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
 
+      - name: Resolve legacy projects (scope:legacy tag)
+        id: legacy
+        run: echo "list=$(node scripts/ci/legacy-projects.js)" >> "$GITHUB_OUTPUT"
+
       - name: Build affected
-        run: npx --yes nx affected -t lint test build -c ci
+        run: npx --yes nx affected -t lint test build -c ci --exclude="${{ steps.legacy.outputs.list }}"
 
   migrate-staging:
     needs: build

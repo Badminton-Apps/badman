@@ -22,7 +22,12 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
 
+      - name: Resolve legacy projects (scope:legacy tag)
+        id: legacy
+        run: echo "list=$(node scripts/ci/legacy-projects.js)" >> "$GITHUB_OUTPUT"
+
       - name: Run affected lint + test (parallel)
         # Build deliberately excluded — deploy workflows (deploy-staging.yml,
         # deploy-production.yml) run it on push. PR checks stay fast.
-        run: npx --yes nx affected -t lint test -c ci --parallel=3
+        # Legacy frontend + e2e excluded per Constitution V.
+        run: npx --yes nx affected -t lint test -c ci --parallel=3 --exclude="${{ steps.legacy.outputs.list }}"
