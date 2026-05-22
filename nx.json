@@ -7,6 +7,16 @@
     "version": {
       "specifierSource": "conventional-commits",
       "currentVersionResolver": "git-tag"
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github"
+      }
+    },
+    "git": {
+      "commit": true,
+      "tag": true,
+      "push": true
     }
   },
   "namedInputs": {
