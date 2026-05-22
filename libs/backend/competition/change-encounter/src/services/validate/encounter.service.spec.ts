@@ -17,10 +17,14 @@ import { EncounterValidationService } from "./encounter.service";
 
 describe("EncounterValidationService", () => {
   let service: EncounterValidationService;
-  let _draw: DrawCompetition;
-  let _event: EventCompetition;
-  let _subEvent: SubEventCompetition;
-  let _encounter: EncounterCompetition;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let draw: DrawCompetition;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let event: EventCompetition;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let subEvent: SubEventCompetition;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let encounter: EncounterCompetition;
   let module: TestingModule;
 
   beforeEach(async () => {

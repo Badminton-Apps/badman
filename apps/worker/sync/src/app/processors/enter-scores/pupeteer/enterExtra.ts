@@ -121,7 +121,7 @@ export async function enableInputValidation(
   },
   logger?: any
 ) {
-  const { page, _timeout } = pupeteer;
+  const { page, timeout: _timeout } = pupeteer;
   if (!page) {
     throw new Error("No page provided");
   }
