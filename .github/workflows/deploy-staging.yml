@@ -1,0 +1,56 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: deploy-staging-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-monorepo
+
+      - name: Resolve legacy projects (scope:legacy tag)
+        id: legacy
+        run: echo "list=$(node scripts/ci/legacy-projects.js)" >> "$GITHUB_OUTPUT"
+
+      - name: Build affected
+        run: npx --yes nx affected -t lint test build -c ci --exclude="${{ steps.legacy.outputs.list }}"
+
+  migrate-staging:
+    needs: build
+    uses: ./.github/workflows/_shared-migrate.yml
+    with:
+      target-environment: staging
+    secrets: inherit
+
+  deploy-staging:
+    needs: migrate-staging
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup-monorepo
+
+      - name: Deploy
+        run: npx --yes nx affected -t deploy --no-agents
+        env:
+          API_HOOK: ${{ secrets.STAGING_API_HOOK }}
+          WORKER_SYNC_HOOK: ${{ secrets.STAGING_WORKER_SYNC_HOOK }}
+          WORKER_RANKING_HOOK: ${{ secrets.STAGING_WORKER_RANKING_HOOK }}
