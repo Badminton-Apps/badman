@@ -38,6 +38,7 @@ export const ErrorCode = {
   NO_TEAMS_TO_FINALISE: "NO_TEAMS_TO_FINALISE",
 
   // Atomic enrollment submission (libs/backend/graphql/src/resolvers/event/competition/submit-enrollment.resolver.ts)
+  ENROLLMENT_CLOSED: "ENROLLMENT_CLOSED",
   VALIDATION_FAILED: "VALIDATION_FAILED",
 } as const;
 

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { Player } from "@badman/backend-database";
+import { AdminSetting, Player } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
@@ -81,6 +81,9 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
     resolver = module.get<SubmitEnrollmentResolver>(SubmitEnrollmentResolver);
     submitService = module.get(SubmitEnrollmentService);
     notificationService = module.get(NotificationService);
+
+    // Default: no AdminSetting row → gate skipped
+    jest.spyOn(AdminSetting, "findOne").mockResolvedValue(null);
 
     // Default: service succeeds
     submitService.run.mockResolvedValue(defaultServiceResult);
@@ -240,6 +243,71 @@ describe("SubmitEnrollmentResolver.submitEnrollment", () => {
 
     expect(result.teams).toHaveLength(1);
     expect(result.teams[0].entryId).toBe("entry-uuid");
+  });
+
+  // Enrollment window gate
+  it("throws ENROLLMENT_CLOSED when toggle is off", async () => {
+    const user = makeUser(["edit-any:club"]);
+    jest.spyOn(AdminSetting, "findOne").mockResolvedValue({
+      enabled: false,
+      startDate: null,
+      endDate: null,
+    } as AdminSetting);
+
+    await expect(resolver.submitEnrollment(user, makeInput())).rejects.toMatchObject({
+      extensions: { code: ErrorCode.ENROLLMENT_CLOSED },
+    });
+    expect(submitService.run).not.toHaveBeenCalled();
+  });
+
+  it("throws ENROLLMENT_CLOSED when endDate has passed", async () => {
+    const user = makeUser(["edit-any:club"]);
+    const yesterday = new Date(Date.now() - 86_400_000);
+    jest.spyOn(AdminSetting, "findOne").mockResolvedValue({
+      enabled: true,
+      startDate: null,
+      endDate: yesterday,
+    } as AdminSetting);
+
+    await expect(resolver.submitEnrollment(user, makeInput())).rejects.toMatchObject({
+      extensions: { code: ErrorCode.ENROLLMENT_CLOSED },
+    });
+  });
+
+  it("throws ENROLLMENT_CLOSED when startDate is in the future", async () => {
+    const user = makeUser(["edit-any:club"]);
+    const tomorrow = new Date(Date.now() + 86_400_000);
+    jest.spyOn(AdminSetting, "findOne").mockResolvedValue({
+      enabled: true,
+      startDate: tomorrow,
+      endDate: null,
+    } as AdminSetting);
+
+    await expect(resolver.submitEnrollment(user, makeInput())).rejects.toMatchObject({
+      extensions: { code: ErrorCode.ENROLLMENT_CLOSED },
+    });
+  });
+
+  it("allows submission when toggle is on and dates are in range", async () => {
+    const user = makeUser(["edit-any:club"]);
+    const yesterday = new Date(Date.now() - 86_400_000);
+    const tomorrow = new Date(Date.now() + 86_400_000);
+    jest.spyOn(AdminSetting, "findOne").mockResolvedValue({
+      enabled: true,
+      startDate: yesterday,
+      endDate: tomorrow,
+    } as AdminSetting);
+
+    await resolver.submitEnrollment(user, makeInput());
+    expect(submitService.run).toHaveBeenCalled();
+  });
+
+  it("allows submission when no enrollment setting row exists", async () => {
+    const user = makeUser(["edit-any:club"]);
+    jest.spyOn(AdminSetting, "findOne").mockResolvedValue(null);
+
+    await resolver.submitEnrollment(user, makeInput());
+    expect(submitService.run).toHaveBeenCalled();
   });
 
   // GraphQLErrors from service are rethrown without wrapping
