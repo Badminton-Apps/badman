@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Explicit version to release (e.g. 7.0.0). Leave empty to derive from conventional commits."
+        required: false
+        type: string
+        default: ""
 
 permissions:
   actions: read
@@ -61,7 +67,12 @@ jobs:
 
       - name: Create release
         id: create_release
-        run: node scripts/release.js --dry-run=false
+        run: |
+          if [ -n "${{ inputs.release_version }}" ]; then
+            node scripts/release.js --dry-run=false --version="${{ inputs.release_version }}"
+          else
+            node scripts/release.js --dry-run=false
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
