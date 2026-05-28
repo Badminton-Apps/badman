@@ -46,8 +46,11 @@ function updateVersion(filePath, newVersion) {
 function extractLatestChangelogEntry(changelogPath) {
   if (!fs.existsSync(changelogPath)) return "";
   const raw = fs.readFileSync(changelogPath, "utf8");
-  const match = raw.match(/^## [^\n]*[\s\S]*?(?=^## |\Z)/m);
-  return match ? match[0].trimEnd() : "";
+  // Split on `## ` headings; sections[0] is anything before the first heading
+  // (usually empty/preamble), sections[1] is the most recent entry.
+  const sections = raw.split(/^## /m);
+  if (sections.length < 2) return "";
+  return ("## " + sections[1]).trimEnd();
 }
 
 function truncateBody(body, repoSlug, tag) {
