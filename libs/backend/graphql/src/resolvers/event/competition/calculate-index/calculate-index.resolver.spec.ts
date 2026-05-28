@@ -211,7 +211,9 @@ describe("CalculateIndexResolver", () => {
         (p) => !("gender" in p) || p.gender === undefined
       );
       if (hasUngenderedPlayers) {
-        test.skip(`${fixture.name} (skipped: un-gendered player)`, () => undefined);
+        test.skip(`${fixture.name} (skipped: un-gendered player)`, () => {
+          /* noop */
+        });
         continue;
       }
 

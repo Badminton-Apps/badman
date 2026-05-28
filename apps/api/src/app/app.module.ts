@@ -89,8 +89,7 @@ const envFilePath = join(projectRoot, envFileName);
     SocketModule,
     TransferLoanModule,
   ],
-
-  controllers: [AppController, ImageController, CalendarController, CpController,ExportController],
+  controllers: [AppController, ImageController, CalendarController, CpController, ExportController],
   providers: [
     Logger, TeamsService, ExceptionsService, LocationsService, EnrollmentService, AvgLevelService,
     { provide: APP_FILTER, useClass: PrematureCloseFilter },

@@ -22,7 +22,7 @@
     "@nestjs/config": "^4.0.0",
     "sequelize-typescript": "^2.1.6",
     "sequelize": "^6.37.5",
-    "cron": "^4.0.0",
+    "cron": "4.4.0",
     "@nestjs/bull": "^11.0.0",
     "bull": "^4.16.5",
     "moment-timezone": "^0.5.47",

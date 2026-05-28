@@ -10,7 +10,6 @@ import { EncounterCompetitionResolver } from "./encounter.resolver";
 import { DrawCompetitionLoaderService } from "../../../loaders/draw-competition-loader.service";
 import { TeamLoaderService } from "../../../loaders/team-loader.service";
 import { EncounterValidationService } from "@badman/backend-change-encounter";
-import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { SyncQueue } from "@badman/backend-queue";
 
@@ -46,10 +45,6 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
         },
         {
           provide: EncounterValidationService,
-          useValue: {},
-        },
-        {
-          provide: EncounterGamesGenerationService,
           useValue: {},
         },
         {

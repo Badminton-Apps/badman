@@ -74,7 +74,11 @@ describe("EnrollmentResolver.createEnrollment", () => {
         },
         {
           provide: IndexCalculationService,
-          useValue: { computeBaseIndexForPlayers: jest.fn() },
+          useValue: {
+            calculateOne: jest
+              .fn()
+              .mockResolvedValue({ _tag: "success", index: 0, resolvedPlayers: [] }),
+          },
         },
       ],
     }).compile();

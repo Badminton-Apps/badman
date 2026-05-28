@@ -116,6 +116,14 @@ Versions (newest first):
 - **Fix**: introduce a TTL-backed Redis cache keyed on `(clubId, season, systemId)`; invalidate on `createEnrollment`, `updateTeam`, and player-roster mutations. Assess cache-stampede risk under concurrent enrollment wizard sessions.
 - **Status**: open. **Owner**: unowned.
 
+### Enrollment validation: cross-request caching deferred
+
+- **Where**: `libs/backend/competition/enrollment/src/services/cache/enrollment-validation-cache.service.ts`. Reference: `specs/028-gate-enrollment-validation/`.
+- **What**: `EnrollmentValidationCacheService` collapses duplicate `(clubId, season)` lookups _within a single GraphQL request_ (DataLoader-style) but has no cross-request cache. A second `enrollmentValidation(validate: true)` call in a separate request recomputes the full club-wide validation from scratch.
+- **Why we shipped it**: the primary goal of feat-028 was to eliminate unwanted computation entirely (default `null`). Cross-request caching is out of scope per spec (research R-003); it requires cache-invalidation semantics (enrollment changes, player-roster edits, team-delete) that carry meaningful coordination risk.
+- **Fix**: introduce a TTL-backed Redis cache keyed on `(clubId, season, systemId)`; invalidate on `createEnrollment`, `updateTeam`, and player-roster mutations. Assess cache-stampede risk under concurrent enrollment wizard sessions.
+- **Status**: open. **Owner**: unowned.
+
 ## Frontend
 
 ### Team: FE migration of `createTeam` callers (BAD-128)

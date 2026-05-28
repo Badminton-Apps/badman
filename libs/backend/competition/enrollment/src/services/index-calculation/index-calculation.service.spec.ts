@@ -481,7 +481,7 @@ describe("IndexCalculationService", () => {
     it("succeeds (without gender filtering) when a player exists in DB but has no gender", async () => {
       const noGenderId = "player-nogender-0000-0000-000000000000";
 
-      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem({ amountOfLevels: 12 }));
+      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest
         .spyOn(Player, "findAll")
         .mockResolvedValue([{ id: noGenderId, gender: null } as unknown as Player]);

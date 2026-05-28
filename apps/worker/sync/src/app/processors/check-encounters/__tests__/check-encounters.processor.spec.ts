@@ -9,7 +9,9 @@ import { SearchService } from "@badman/backend-search";
 // Prevent startBrowserHealthMonitoring() from starting a real setInterval so the test process can exit
 jest.mock("@badman/backend-pupeteer", () => ({
   ...jest.requireActual("@badman/backend-pupeteer"),
-  startBrowserHealthMonitoring: jest.fn(() => () => { /* noop */ }),
+  startBrowserHealthMonitoring: jest.fn(() => () => {
+    /* noop */
+  }),
 }));
 
 // ──────────────────────────────────────────────────────────────────────────────
