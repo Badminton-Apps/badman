@@ -1474,6 +1474,15 @@ export type I18nTranslations = {
                     "error": string;
                 };
             };
+            "avgLevelPage": {
+                "error": string;
+                "empty": string;
+                "eventType": {
+                    "M": string;
+                    "F": string;
+                    "MX": string;
+                };
+            };
             "adminCompetitionsPage": {
                 "title": string;
                 "seasonSelectLabel": string;
@@ -1700,6 +1709,14 @@ export type I18nTranslations = {
                     "retryNotification": string;
                     "error": {
                         "network": {
+                            "title": string;
+                            "body": string;
+                        };
+                        "server": {
+                            "title": string;
+                            "body": string;
+                        };
+                        "validation": {
                             "title": string;
                             "body": string;
                         };
@@ -3383,6 +3400,7 @@ export type I18nTranslations = {
                 "actions": {
                     "edit": string;
                     "delete": string;
+                    "export": string;
                     "setRisersFallers": string;
                     "openCloseDate": string;
                     "openCloseEncounterChangeDate": string;
@@ -3392,7 +3410,14 @@ export type I18nTranslations = {
                     "messages": {
                         "syncSuccess": string;
                         "syncError": string;
+                        "cpGenerationStarted": string;
                     };
+                    "averageLevel": string;
+                    "downloadEnrollment": string;
+                    "downloadTeams": string;
+                    "downloadExceptions": string;
+                    "downloadLocations": string;
+                    "downloadCp": string;
                 };
                 "addCompetitionDialog": {
                     "title": string;
