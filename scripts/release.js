@@ -87,6 +87,19 @@ function truncateBody(body, repoSlug, tag) {
 
     console.log(`Workspace version: ${workspaceVersion}`);
 
+    // nx returns null/undefined when conventional commits since the last tag
+    // contain no `feat:` / `fix:` (or BREAKING CHANGE) entries — i.e. nothing
+    // to bump. Don't fall through and create a `vnull` tag, write null into
+    // version.json files, or call gh with no version. Exit cleanly so the
+    // workflow can still deploy the existing build.
+    if (workspaceVersion == null) {
+      core.info(
+        "No version bump detected from conventional commits since the last release tag — skipping changelog and GitHub release. Deploy will continue with the existing version."
+      );
+      core.setOutput("NEW_VERSION", "");
+      return;
+    }
+
     // update version.json files
     walkDir("./apps", workspaceVersion);
 
