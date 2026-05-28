@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import {
