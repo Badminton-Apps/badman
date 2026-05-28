@@ -1456,6 +1456,15 @@
         "error": "Failed to save enrollment settings"
       }
     },
+    "avgLevelPage": {
+      "error": "Failed to load average level data.",
+      "empty": "No average level data available for this competition.",
+      "eventType": {
+        "M": "Men",
+        "F": "Women",
+        "MX": "Mixed"
+      }
+    },
     "adminCompetitionsPage": {
       "title": "Admin Competitions",
       "seasonSelectLabel": "Season",
@@ -3308,6 +3317,7 @@
       "actions": {
         "edit": "Edit",
         "delete": "Delete",
+        "export": "Export",
         "setRisersFallers": "Set risers/fallers",
         "openCloseDate": "Open/Close date",
         "openCloseEncounterChangeDate": "Open / close move encounters",
@@ -3316,8 +3326,15 @@
         "sync": "Sync",
         "messages": {
           "syncSuccess": "Competition successfully synced",
-          "syncError": "Error syncing competition"
-        }
+          "syncError": "Error syncing competition",
+          "cpGenerationStarted": "CP generation started. You will receive an email when the file is ready for download."
+        },
+        "averageLevel": "Average level",
+        "downloadEnrollment": "Download enrollment",
+        "downloadTeams": "Download teams",
+        "downloadExceptions": "Download exceptions",
+        "downloadLocations": "Download locations",
+        "downloadCp": "Download CP file"
       },
       "addCompetitionDialog": {
         "title": "Add competition",

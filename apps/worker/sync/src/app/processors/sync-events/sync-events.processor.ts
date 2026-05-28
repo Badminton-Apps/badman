@@ -1,9 +1,11 @@
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService } from "@badman/backend-ranking";
 import { VisualService, XmlTournament, XmlTournamentTypeID } from "@badman/backend-visual";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job } from "bull";
+import * as Sentry from "@sentry/nestjs";
 import { Sequelize } from "sequelize-typescript";
 import { CompetitionSyncer } from "./competition-sync";
 import { TournamentSyncer } from "./tournament-sync";
@@ -31,9 +33,14 @@ export class SyncEventsProcessor {
     pointService: PointsService,
     private notificationService: NotificationService,
     private visualService: VisualService,
-    private _sequelize: Sequelize
+    private _sequelize: Sequelize,
+    private _encounterGamesGenerationService: EncounterGamesGenerationService
   ) {
-    this._competitionSync = new CompetitionSyncer(this.visualService, pointService);
+    this._competitionSync = new CompetitionSyncer(
+      this.visualService,
+      pointService,
+      this._encounterGamesGenerationService
+    );
     this._tournamentSync = new TournamentSyncer(this.visualService, pointService);
   }
 
@@ -193,8 +200,25 @@ export class SyncEventsProcessor {
             }
           }
         } catch (e) {
-          this.logger.error("Rollback", e);
+          this.logger.error(`Rollback for ${xmlTournament?.Name}`, e);
           await transaction.rollback();
+
+          // Report to Sentry but DO NOT re-throw — one bad tournament must
+          // not abort the whole run. The outer catch still handles non-loop
+          // failures (e.g. searchEvents itself throwing). See Sentry
+          // #104397491 for the originating incident.
+          Sentry.withScope((scope) => {
+            scope.setTag("queue", SyncQueue);
+            scope.setTag("job_name", Sync.SyncEvents);
+            scope.setContext("tournament", {
+              code: xmlTournament?.Code,
+              name: xmlTournament?.Name,
+              typeId: xmlTournament?.TypeID,
+              index: i,
+              total: toProcess,
+            });
+            Sentry.captureException(e);
+          });
 
           if (job.data?.userId) {
             const userIds = Array.isArray(job.data?.userId) ? job.data?.userId : [job.data?.userId];
@@ -208,7 +232,7 @@ export class SyncEventsProcessor {
               });
             }
           }
-          throw e;
+          continue;
         }
       }
     } catch (e) {

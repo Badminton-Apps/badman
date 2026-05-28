@@ -5,6 +5,15 @@ import { VisualService } from "../visual.service";
 import axios from "axios";
 import { formatInTimeZone } from "date-fns-tz";
 
+jest.mock("@sentry/nestjs", () => ({
+  __esModule: true,
+  withScope: jest.fn((cb: (scope: any) => void) => {
+    cb({ setLevel: jest.fn(), setTag: jest.fn(), setContext: jest.fn(), setFingerprint: jest.fn() });
+  }),
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
+
 jest.mock("axios", () => {
   const mockAxios: any = jest.fn().mockResolvedValue({ data: "" });
   mockAxios.create = jest.fn().mockReturnValue({
@@ -470,6 +479,56 @@ describe("VisualService", () => {
       await expect(service.getPoints(RANKING_ID, "PUB1", "CAT1", false)).rejects.toThrow(
         /Invalid RankingPublicationPoints response/
       );
+    });
+  });
+
+  describe("getPlayers", () => {
+    const TOURNEY_ID = "T-LOSSY-1";
+
+    it("returns the validated player list", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: JSON.stringify({
+          Player: [
+            { MemberID: "M001", Firstname: "Alice", Lastname: "A" },
+            { MemberID: 12345, Firstname: "Bob", Lastname: "B" },
+          ],
+        }),
+      });
+
+      const result = await service.getPlayers(TOURNEY_ID, false);
+
+      expect(result).toHaveLength(2);
+      expect(result[0].MemberID).toBe("M001");
+      expect(result[1].MemberID).toBe("12345");
+    });
+
+    // Regression: Sentry #104397491 — Visual API sporadically returns Player
+    // rows without a MemberID. Strict validation killed the whole SyncEvents
+    // job. XmlPlayerSchema marks MemberID optional; downstream sync code falls
+    // back to first/last-name matching when memberId is absent. Rows are kept,
+    // not dropped.
+    it("keeps Player entries missing MemberID instead of throwing", async () => {
+      httpGet.mockResolvedValueOnce({
+        data: JSON.stringify({
+          Player: [
+            { Firstname: "NoID" },
+            { MemberID: "M001", Firstname: "Alice" },
+            { Firstname: "AlsoNoID" },
+            { MemberID: "M002", Firstname: "Bob" },
+          ],
+        }),
+      });
+
+      const result = await service.getPlayers(TOURNEY_ID, false);
+
+      expect(result).toHaveLength(4);
+      expect(result.map((p) => p.MemberID)).toEqual([undefined, "M001", undefined, "M002"]);
+    });
+
+    it("returns empty array when the API has no players", async () => {
+      httpGet.mockResolvedValueOnce({ data: `<?xml version="1.0"?><Result></Result>` });
+
+      expect(await service.getPlayers(TOURNEY_ID, false)).toEqual([]);
     });
   });
 

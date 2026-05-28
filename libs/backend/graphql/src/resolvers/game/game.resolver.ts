@@ -14,7 +14,7 @@ import {
 } from "@badman/backend-database";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { RankingSystemService } from "@badman/backend-ranking";
-import { getRankingProtected } from "@badman/utils";
+import { GameLinkType, getRankingProtected } from "@badman/utils";
 import { InjectQueue } from "@nestjs/bull";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
@@ -68,7 +68,7 @@ export class GamesResolver {
 
   @ResolveField(() => EncounterCompetition)
   async competition(@Parent() game: Game): Promise<EncounterCompetition | null> {
-    if (game.linkType == "competition") {
+    if (game.linkType == GameLinkType.COMPETITION) {
       return game.getCompetition();
     }
     return null;
@@ -76,7 +76,7 @@ export class GamesResolver {
 
   @ResolveField(() => DrawTournament)
   async tournament(@Parent() game: Game): Promise<DrawTournament | null> {
-    if (game.linkType == "tournament") {
+    if (game.linkType == GameLinkType.TOURNAMENT) {
       return game.getTournament();
     }
 
@@ -259,7 +259,7 @@ export class GamesResolver {
       const gameHasPlayedAt = game.playedAt !== null;
 
       // used to check the current winner of the game against the update data, to see if the score of the new loser needs to drop
-      const oldGameWinner = game.winner;
+      const _oldGameWinner = game.winner;
 
       const updatedGame = await game.update(
         {

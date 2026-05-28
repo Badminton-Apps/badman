@@ -341,7 +341,7 @@ export class EncounterChangeCompetitionResolver {
 
       if (!encounterChangeDate && !canRequestNewDates) {
         // Get the encounter data needed for the date comparison
-        const encounter = await encounterChange.getEncounter();
+        const _encounter = await encounterChange.getEncounter();
 
         const encounterDateEqualsEventSeason =
           event?.season &&

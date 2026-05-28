@@ -242,7 +242,7 @@ export class RankingSyncer {
     });
   }
 
-  private async processPointsWithSeparateTransactions(args: {
+  private async processPointsWithSeparateTransactions(_args: {
     transaction: Transaction;
     start?: Date;
     stop?: Date;

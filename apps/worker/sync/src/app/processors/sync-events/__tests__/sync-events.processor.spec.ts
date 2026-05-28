@@ -2,11 +2,22 @@ import { CronJob } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
 import { VisualService, XmlTournamentTypeID } from "@badman/backend-visual";
 import { PointsService } from "@badman/backend-ranking";
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { Test, TestingModule } from "@nestjs/testing";
+import * as Sentry from "@sentry/nestjs";
 import { SyncEventsProcessor } from "../sync-events.processor";
 import { CompetitionSyncer } from "../competition-sync";
 import { TournamentSyncer } from "../tournament-sync";
 import { Sequelize } from "sequelize-typescript";
+
+jest.mock("@sentry/nestjs", () => ({
+  __esModule: true,
+  withScope: jest.fn((cb: (scope: any) => void) => {
+    cb({ setLevel: jest.fn(), setTag: jest.fn(), setContext: jest.fn(), setFingerprint: jest.fn() });
+  }),
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -92,7 +103,7 @@ describe("SyncEventsProcessor", () => {
   let competitionSyncSpy: jest.SpyInstance;
   let tournamentSyncSpy: jest.SpyInstance;
 
-  async function buildModule(configOverrides: Record<string, unknown> = {}) {
+  async function buildModule(_configOverrides: Record<string, unknown> = {}) {
     visualService = makeVisualService();
     notificationService = makeNotificationService();
     sequelize = makeSequelize();
@@ -105,6 +116,10 @@ describe("SyncEventsProcessor", () => {
         { provide: NotificationService, useValue: notificationService },
         { provide: PointsService, useValue: pointsService },
         { provide: Sequelize, useValue: sequelize },
+        {
+          provide: EncounterGamesGenerationService,
+          useValue: { generate: jest.fn().mockResolvedValue(undefined) },
+        },
       ],
     }).compile();
 
@@ -236,18 +251,36 @@ describe("SyncEventsProcessor", () => {
       expect(sequelize._mockTransaction.rollback).not.toHaveBeenCalled();
     });
 
-    it("rolls back transaction on syncer error", async () => {
+    it("rolls back transaction on syncer error, reports to Sentry, and does not throw", async () => {
       const event = makeXmlEvent();
       visualService.getChangeEvents.mockResolvedValue([event] as any);
       competitionSyncSpy.mockRejectedValue(new Error("Sync failed"));
 
       const job = makeJob();
-      await expect(processor.syncEvents(job as any)).rejects.toThrow("Sync failed");
+      await expect(processor.syncEvents(job as any)).resolves.toBeUndefined();
 
       expect(sequelize._mockTransaction.rollback).toHaveBeenCalled();
       expect(sequelize._mockTransaction.commit).not.toHaveBeenCalled();
+      expect(Sentry.captureException).toHaveBeenCalledWith(expect.objectContaining({ message: "Sync failed" }));
     });
 
+    it("continues with next tournament after a prior one fails (Sentry #104397491 resilience)", async () => {
+      (Sentry.captureException as jest.Mock).mockClear();
+      const event1 = makeXmlEvent({ Name: "Bad Event", ID: "event-1" });
+      const event2 = makeXmlEvent({ Name: "Good Event", ID: "event-2" });
+      visualService.getChangeEvents.mockResolvedValue([event1, event2] as any);
+      competitionSyncSpy
+        .mockRejectedValueOnce(new Error("Visual API returned a malformed Player payload"))
+        .mockResolvedValueOnce({ event: { id: "comp-good" } } as any);
+
+      const job = makeJob();
+      await expect(processor.syncEvents(job as any)).resolves.toBeUndefined();
+
+      expect(competitionSyncSpy).toHaveBeenCalledTimes(2);
+      expect(sequelize._mockTransaction.rollback).toHaveBeenCalledTimes(1);
+      expect(sequelize._mockTransaction.commit).toHaveBeenCalledTimes(1);
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("notifications", () => {
@@ -264,13 +297,13 @@ describe("SyncEventsProcessor", () => {
       });
     });
 
-    it("notifies user of failed sync", async () => {
+    it("notifies user of failed sync without aborting the job", async () => {
       const event = makeXmlEvent();
       visualService.getChangeEvents.mockResolvedValue([event] as any);
       competitionSyncSpy.mockRejectedValue(new Error("Sync failed"));
 
       const job = makeJob({ userId: "user-1" });
-      await expect(processor.syncEvents(job as any)).rejects.toThrow();
+      await expect(processor.syncEvents(job as any)).resolves.toBeUndefined();
 
       expect(notificationService.notifySyncFinished).toHaveBeenCalledWith("user-1", {
         event: expect.objectContaining({ name: event.Name }),

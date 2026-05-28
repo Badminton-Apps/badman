@@ -6,7 +6,8 @@
     "@nestjs/common": "^11.0.0",
     "fastify": "^5.0.0",
     "@fastify/multipart": "^9.0.0",
-    "multer": "1.4.5-lts.1"
+    "multer": "1.4.5-lts.1",
+    "xlsx": "*"
   },
   "type": "commonjs",
   "main": "./src/index.js",

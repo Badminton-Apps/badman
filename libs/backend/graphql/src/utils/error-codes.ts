@@ -26,7 +26,6 @@ export const ErrorCode = {
   CLUB_NOT_FOUND: "CLUB_NOT_FOUND",
   PLAYER_NOT_FOUND: "PLAYER_NOT_FOUND",
   RANKING_NOT_FOUND: "RANKING_NOT_FOUND",
-  TEAM_NUMBER_CONFLICT: "TEAM_NUMBER_CONFLICT",
 
   // Club membership (libs/backend/graphql/src/resolvers/club/club.resolver.ts)
   MEMBERSHIP_NOT_FOUND: "MEMBERSHIP_NOT_FOUND",

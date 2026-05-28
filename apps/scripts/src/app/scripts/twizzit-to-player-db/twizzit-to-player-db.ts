@@ -232,7 +232,7 @@ interface InputExcel {
   "Linked contact IDs": string;
 }
 
-interface OutputExcel {
+interface _OutputExcel {
   Lidnummer: string;
   Naam: string;
   Voornaam: string;

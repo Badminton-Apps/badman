@@ -1,0 +1,15 @@
+{
+  "name": "@badman/backend-encounter-games",
+  "version": "6.185.0",
+  "dependencies": {
+    "@badman/backend-database": "6.185.0",
+    "@badman/utils": "6.185.0",
+    "tslib": "^2.6.2",
+    "@nestjs/common": "^11.0.0",
+    "sequelize": "^6.37.5",
+    "sequelize-typescript": "^2.1.6"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts"
+}

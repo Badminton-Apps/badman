@@ -267,7 +267,7 @@ export class CompileService implements CompileInterface, OnModuleInit, OnModuleD
     this.logger.debug("Generating pdf from html");
 
     let page;
-    let cleanup: (() => Promise<void>) | undefined;
+    let _cleanup: (() => Promise<void>) | undefined;
     try {
       // Use shared browser management with timeout
       page = await Promise.race([

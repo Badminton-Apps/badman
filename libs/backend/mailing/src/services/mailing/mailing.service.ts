@@ -422,6 +422,8 @@ export class MailingService {
     }>;
 
     await this._sendMail(options);
+
+    this.logger.log(`[sendEnrollmentMail] _sendMail completed for ${to.email}`);
   }
 
   async sendSyncMail(
@@ -589,6 +591,51 @@ export class MailingService {
       error: string;
       timestamp: string;
       toernooiUrl?: string;
+      user: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
+  async sendCpExportReadyMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    downloadUrl: string
+  ) {
+    const options = {
+      from: "info@badman.app",
+      to: to.email,
+      subject: "CP bestand klaar",
+      template: "cpExportReady",
+      context: {
+        user: to.fullName,
+        downloadUrl,
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      user: string;
+      downloadUrl: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
+  async sendCpExportFailedMail(to: { fullName: string; email: string; slug: string }) {
+    const options = {
+      from: "info@badman.app",
+      to: to.email,
+      subject: "CP bestand mislukt",
+      template: "cpExportFailed",
+      context: {
+        user: to.fullName,
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
       user: string;
       settingsSlug: string;
     }>;

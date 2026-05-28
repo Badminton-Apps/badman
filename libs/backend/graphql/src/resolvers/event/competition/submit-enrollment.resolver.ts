@@ -5,7 +5,7 @@ import { Logger } from "@nestjs/common";
 import { Args, Mutation, Resolver } from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
-import { ErrorCode } from "../../../utils";
+import { ErrorCode, assertUUID } from "../../../utils";
 import { SubmitEnrollmentInput } from "./submit-enrollment.input";
 import { SubmitEnrollmentResult } from "./submit-enrollment-result.object";
 import { SubmitEnrollmentService } from "./submit-enrollment.service";
@@ -26,6 +26,14 @@ export class SubmitEnrollmentResolver {
     @Args("input") input: SubmitEnrollmentInput
   ): Promise<SubmitEnrollmentResult> {
     const { clubId, season, adminEmail } = input;
+    const userId = user?.id ?? null;
+
+    try {
+      assertUUID(clubId, "clubId", { userId });
+    } catch (e) {
+      this.logger.warn({ code: ErrorCode.BAD_USER_INPUT, field: "clubId", value: clubId, userId });
+      throw e;
+    }
 
     if (!(await user.hasAnyPermission([`${clubId}_edit:club`, "edit-any:club"]))) {
       throw new GraphQLError("Permission denied", {

@@ -45,31 +45,38 @@ export class ClubEnrollmentNotifier extends Notifier<
     data: { club: Club; locations: Location[]; comments: Comment[] },
     args?: { email: string; url: string }
   ): Promise<void> {
-    this.logger.debug(
-      `Sending Email to ${player.fullName} (${player.email}), target ${args?.email}`
-    );
     const email = args?.email ?? player.email;
 
     if (!email) {
-      this.logger.debug(`No email found for ${player.fullName}`);
+      this.logger.warn(
+        `[ClubEnrollmentNotifier] Skipping email — no email address for player ${player.fullName} (id: ${player.id})`
+      );
       return;
     }
 
     if (!player?.slug) {
-      this.logger.debug(`No slug found for ${player.fullName}`);
+      this.logger.warn(
+        `[ClubEnrollmentNotifier] Skipping email — no slug for player ${player.fullName} (id: ${player.id})`
+      );
       return;
     }
 
-    await this.mailing.sendEnrollmentMail(
-      {
-        fullName: player.fullName,
-        email,
-        slug: player.slug,
-      },
-      data.club,
-      data.locations,
-      data.comments
-    );
+    try {
+      await this.mailing.sendEnrollmentMail(
+        {
+          fullName: player.fullName,
+          email,
+          slug: player.slug,
+        },
+        data.club,
+        data.locations,
+        data.comments
+      );
+      this.logger.log(`[ClubEnrollmentNotifier] Enrollment email sent successfully to ${email}`);
+    } catch (e) {
+      this.logger.error(`[ClubEnrollmentNotifier] Failed to send enrollment email to ${email}`, e);
+      throw e;
+    }
   }
 
   notifySms(

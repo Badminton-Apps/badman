@@ -94,7 +94,7 @@ function makeEncounter(overrides: Partial<Record<string, unknown>> = {}) {
   };
 }
 
-function makeConfig(overrides: Record<string, unknown> = {}) {
+function makeConfig(_overrides: Record<string, unknown> = {}) {
   const defaults: Record<string, unknown> = {
     VR_API_USER: "user",
     VR_API_PASS: "pass",

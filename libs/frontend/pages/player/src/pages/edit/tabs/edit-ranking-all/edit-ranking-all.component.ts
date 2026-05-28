@@ -1,3 +1,4 @@
+/* eslint-disable no-unexpected-multiline */
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, input, inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";

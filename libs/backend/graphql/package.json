@@ -12,6 +12,7 @@
     "@badman/backend-queue": "6.185.0",
     "@badman/backend-ranking": "6.185.0",
     "@badman/backend-change-encounter": "6.185.0",
+    "@badman/backend-encounter-games": "6.185.0",
     "@badman/backend-orchestrator": "6.185.0",
     "tslib": "^2.8.1",
     "@nestjs/graphql": "^13.0.0",
