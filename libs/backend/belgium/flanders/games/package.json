@@ -1,6 +1,6 @@
 {
   "name": "@badman/belgium-flanders-games",
-  "version": "6.185.0",
+  "version": "6.186.0",
   "dependencies": {
     "tslib": "^2.3.0",
     "@nestjs/common": "^11.0.0"
