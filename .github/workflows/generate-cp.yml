@@ -3,8 +3,8 @@ name: Generate CP File
 on:
   workflow_dispatch:
     inputs:
-      payload:
-        description: "CpPayload JSON (base64-encoded)"
+      gist_id:
+        description: "GitHub Gist ID containing CpPayload JSON"
         required: true
       callback_url:
         description: "Backend webhook URL for completion notification"
@@ -28,17 +28,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Decode payload
+      - name: Fetch payload from Gist
         shell: bash
         run: |
           node --input-type=module -e "
             import fs from 'node:fs';
-            const decoded = Buffer.from(process.env.PAYLOAD_B64, 'base64').toString('utf-8');
-            fs.writeFileSync('payload.json', decoded);
-            console.log('Payload decoded, size:', decoded.length, 'bytes');
+            const res = await fetch('https://api.github.com/gists/${{ inputs.gist_id }}', {
+              headers: {
+                Authorization: 'Bearer ${{ secrets.GITHUB_TOKEN_CP }}',
+                Accept: 'application/vnd.github.v3+json',
+              },
+            });
+            if (!res.ok) throw new Error('Gist fetch failed: ' + res.status);
+            const gist = await res.json();
+            const content = gist.files['payload.json'].content;
+            fs.writeFileSync('payload.json', content);
+            console.log('Payload fetched, size:', content.length, 'bytes');
           "
-        env:
-          PAYLOAD_B64: ${{ inputs.payload }}
 
       - name: Build file writer
         run: npx nx build backend-generator
