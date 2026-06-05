@@ -2245,7 +2245,8 @@
           },
           "messages": {
             "successAdd": "Team is toegevoegd",
-            "successEdit": "Team is bijgewerkt"
+            "successEdit": "Team is bijgewerkt",
+            "error": "Er is iets misgegaan. Probeer het opnieuw."
           },
           "buttons": {
             "cancel": "Annuleren",

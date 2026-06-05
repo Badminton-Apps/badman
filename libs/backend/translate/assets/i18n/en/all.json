@@ -2527,7 +2527,8 @@
           },
           "messages": {
             "successAdd": "Team is added",
-            "successEdit": "Team is updated"
+            "successEdit": "Team is updated",
+            "error": "Something went wrong. Please try again."
           },
           "buttons": {
             "cancel": "Cancel",
