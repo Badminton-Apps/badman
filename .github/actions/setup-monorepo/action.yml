@@ -1,5 +1,5 @@
 name: Setup Monorepo
-description: nx-set-shas, Node from .nvmrc, cached node_modules + Nx local cache. Caller MUST run actions/checkout@v4 with fetch-depth 0 first.
+description: nx-set-shas, Node from .nvmrc, cached node_modules + Nx local cache. Caller MUST run actions/checkout@v5 with fetch-depth 0 first.
 
 inputs:
   cache-nx:
