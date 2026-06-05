@@ -17,7 +17,6 @@ import {
   Logger,
   NotFoundException,
   Param,
-  PayloadTooLargeException,
   Post,
   Res,
   ServiceUnavailableException,
@@ -34,6 +33,7 @@ interface CpGenerationRecord {
   locale: string;
   status: "pending" | "completed" | "failed";
   createdAt: Date;
+  gistId?: string;
 }
 
 @Controller("cp")
@@ -92,32 +92,26 @@ export class CpController {
     this.logger.log(`Collecting CP data for event ${eventId}`);
     const payload = await this.dataCollector.collect(eventId);
 
-    // Base64 encode
-    const payloadJson = JSON.stringify(payload);
-    const payloadBase64 = Buffer.from(payloadJson).toString("base64");
-
-    // Validate size (GitHub workflow_dispatch input limit is 65535 chars)
-    if (payloadBase64.length > 65535) {
-      throw new PayloadTooLargeException(
-        `Competition data is too large for export (${payloadBase64.length} chars, max 65535). Contact support.`
-      );
-    }
-
     // Trigger GitHub Actions workflow
-    const githubToken = this.configService.get("GITHUB_TOKEN_CP");
+    const githubToken = this.configService.get("GH_TOKEN_CP");
     const repoOwner = this.configService.get("GITHUB_REPO_OWNER") || "Badminton-Apps";
     const repoName = this.configService.get("GITHUB_REPO_NAME") || "badman";
     const callbackUrl = this.configService.get("CP_CALLBACK_URL");
 
     if (!githubToken) {
-      throw new ServiceUnavailableException(
-        "CP export is not configured (missing GITHUB_TOKEN_CP)"
-      );
+      throw new ServiceUnavailableException("CP export is not configured (missing GH_TOKEN_CP)");
     }
     if (!callbackUrl) {
       throw new ServiceUnavailableException(
         "CP export is not configured (missing CP_CALLBACK_URL)"
       );
+    }
+
+    let gistId: string;
+    try {
+      gistId = await this._createGist(JSON.stringify(payload), githubToken);
+    } catch {
+      throw new BadGatewayException("Failed to upload payload to GitHub Gist");
     }
 
     const workflowUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/actions/workflows/generate-cp.yml/dispatches`;
@@ -132,7 +126,7 @@ export class CpController {
       body: JSON.stringify({
         ref: "develop",
         inputs: {
-          payload: payloadBase64,
+          gist_id: gistId,
           callback_url: callbackUrl,
           requesting_user_id: user.id,
         },
@@ -142,6 +136,7 @@ export class CpController {
     if (response.status !== 204) {
       const errorBody = await response.text();
       this.logger.error(`GitHub API error: ${response.status} ${errorBody}`);
+      await this._deleteGist(gistId, githubToken);
       throw new BadGatewayException(
         `Failed to trigger CP generation: GitHub API returned ${response.status}`
       );
@@ -156,6 +151,7 @@ export class CpController {
       locale,
       status: "pending",
       createdAt: new Date(),
+      gistId,
     };
     this.generations.set(trackingId, record);
     this.pendingByEvent.set(eventId, trackingId);
@@ -191,6 +187,14 @@ export class CpController {
         record.runId = body.run_id;
         record.status = body.status === "completed" ? "completed" : "failed";
         matchedTrackingId = trackingId;
+
+        // Best-effort Gist cleanup
+        if (record.gistId) {
+          const githubToken = this.configService.get("GH_TOKEN_CP");
+          if (githubToken) {
+            await this._deleteGist(record.gistId, githubToken);
+          }
+        }
 
         // Clean up pending-by-event
         this.pendingByEvent.delete(record.eventId);
@@ -255,7 +259,7 @@ export class CpController {
     }
 
     // Fetch artifact from GitHub
-    const githubToken = this.configService.get("GITHUB_TOKEN_CP");
+    const githubToken = this.configService.get("GH_TOKEN_CP");
     const repoOwner = this.configService.get("GITHUB_REPO_OWNER") || "Badminton-Apps";
     const repoName = this.configService.get("GITHUB_REPO_NAME") || "badman";
 
@@ -342,6 +346,44 @@ export class CpController {
       email: player.email,
       slug: player.slug,
     });
+  }
+
+  private async _createGist(content: string, token: string): Promise<string> {
+    const res = await fetch("https://api.github.com/gists", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github.v3+json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        public: false,
+        files: { "payload.json": { content } },
+      }),
+    });
+
+    if (res.status !== 201) {
+      const body = await res.text();
+      this.logger.error(`Gist create failed: ${res.status} ${body}`);
+      throw new BadGatewayException(`GitHub Gist API returned ${res.status}`);
+    }
+
+    const data = (await res.json()) as { id: string };
+    return data.id;
+  }
+
+  private async _deleteGist(gistId: string, token: string): Promise<void> {
+    const res = await fetch(`https://api.github.com/gists/${gistId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github.v3+json",
+      },
+    });
+
+    if (res.status !== 204 && res.status !== 404) {
+      this.logger.warn(`Gist delete returned unexpected status ${res.status} for gist ${gistId}`);
+    }
   }
 
   /**
