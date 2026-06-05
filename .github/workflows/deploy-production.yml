@@ -28,7 +28,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      NEW_VERSION: ${{ steps.create_release.outputs.new_version }}
+      NEW_VERSION: ${{ steps.create_release.outputs.NEW_VERSION }}
     steps:
       - uses: actions/checkout@v5
         with:
