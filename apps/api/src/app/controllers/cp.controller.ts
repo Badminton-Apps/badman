@@ -93,15 +93,13 @@ export class CpController {
     const payload = await this.dataCollector.collect(eventId);
 
     // Trigger GitHub Actions workflow
-    const githubToken = this.configService.get("GITHUB_TOKEN_CP");
+    const githubToken = this.configService.get("GH_TOKEN_CP");
     const repoOwner = this.configService.get("GITHUB_REPO_OWNER") || "Badminton-Apps";
     const repoName = this.configService.get("GITHUB_REPO_NAME") || "badman";
     const callbackUrl = this.configService.get("CP_CALLBACK_URL");
 
     if (!githubToken) {
-      throw new ServiceUnavailableException(
-        "CP export is not configured (missing GITHUB_TOKEN_CP)"
-      );
+      throw new ServiceUnavailableException("CP export is not configured (missing GH_TOKEN_CP)");
     }
     if (!callbackUrl) {
       throw new ServiceUnavailableException(
@@ -192,7 +190,7 @@ export class CpController {
 
         // Best-effort Gist cleanup
         if (record.gistId) {
-          const githubToken = this.configService.get("GITHUB_TOKEN_CP");
+          const githubToken = this.configService.get("GH_TOKEN_CP");
           if (githubToken) {
             await this._deleteGist(record.gistId, githubToken);
           }
@@ -261,7 +259,7 @@ export class CpController {
     }
 
     // Fetch artifact from GitHub
-    const githubToken = this.configService.get("GITHUB_TOKEN_CP");
+    const githubToken = this.configService.get("GH_TOKEN_CP");
     const repoOwner = this.configService.get("GITHUB_REPO_OWNER") || "Badminton-Apps";
     const repoName = this.configService.get("GITHUB_REPO_NAME") || "badman";
 

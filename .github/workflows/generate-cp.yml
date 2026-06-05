@@ -35,7 +35,7 @@ jobs:
             import fs from 'node:fs';
             const res = await fetch('https://api.github.com/gists/${{ inputs.gist_id }}', {
               headers: {
-                Authorization: 'Bearer ${{ secrets.GITHUB_TOKEN_CP }}',
+                Authorization: 'Bearer ${{ secrets.GH_TOKEN_CP }}',
                 Accept: 'application/vnd.github.v3+json',
               },
             });

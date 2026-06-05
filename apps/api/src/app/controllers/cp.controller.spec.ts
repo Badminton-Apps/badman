@@ -54,7 +54,7 @@ describe("CpController", () => {
     } as any;
 
     mockConfigService = {
-      GITHUB_TOKEN_CP: "ghp_test_token",
+      GH_TOKEN_CP: "ghp_test_token",
       GITHUB_REPO_OWNER: "Badminton-Apps",
       GITHUB_REPO_NAME: "badman",
       CP_CALLBACK_URL: "https://api.test.com/cp/webhook",
@@ -166,8 +166,8 @@ describe("CpController", () => {
       ).rejects.toThrow(BadGatewayException);
     });
 
-    it("should return 503 if GITHUB_TOKEN_CP is not configured", async () => {
-      mockConfigService.GITHUB_TOKEN_CP = undefined;
+    it("should return 503 if GH_TOKEN_CP is not configured", async () => {
+      mockConfigService.GH_TOKEN_CP = undefined;
       const user = mockUser();
 
       await expect(
