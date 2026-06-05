@@ -37,6 +37,7 @@ jobs:
       group: migrate-${{ inputs.target-environment }}
       cancel-in-progress: false
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       NODE_ENV: ${{ inputs.target-environment }}
       DB_IP: ${{ secrets.DB_IP }}
       DB_PORT: ${{ secrets.DB_PORT }}
@@ -46,7 +47,7 @@ jobs:
       DB_DIALECT: ${{ secrets.DB_DIALECT }}
       DB_SSL: ${{ secrets.DB_SSL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v4
         with:

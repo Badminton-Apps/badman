@@ -21,13 +21,16 @@ concurrency:
 
 run-name: Prod release ${{ github.run_number }}
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
       NEW_VERSION: ${{ steps.create_release.outputs.new_version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -114,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -138,7 +141,7 @@ jobs:
       SENTRY_PROJECT: backend
       VERSION: ${{ needs.build.outputs.NEW_VERSION }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
