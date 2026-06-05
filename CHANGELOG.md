@@ -1,3 +1,20 @@
+## 6.186.1 (2026-06-05)
+
+### 🚀 Features
+
+- **cp:** route payload through GitHub Gist to bypass 65KB dispatch limit ([026dea752](https://github.com/Badminton-Apps/badman/commit/026dea752))
+
+### 🩹 Fixes
+
+- **ci:** use run-many --all for deploy jobs, skip NX cache restore ([91d6ec13e](https://github.com/Badminton-Apps/badman/commit/91d6ec13e))
+- **config:** rename GITHUB_TOKEN_CP → GH_TOKEN_CP in ConfigType ([56993b887](https://github.com/Badminton-Apps/badman/commit/56993b887))
+- **cp:** rename secret GITHUB_TOKEN_CP → GH_TOKEN_CP ([3a0f9faf0](https://github.com/Badminton-Apps/badman/commit/3a0f9faf0))
+- **release:** replace JS-invalid `\Z` regex; add lefthook pre-commit/pre-push ([ef52bbec5](https://github.com/Badminton-Apps/badman/commit/ef52bbec5))
+
+### ❤️ Thank You
+
+- Arno Soontjens @ArnoSoontjens
+
 ## 6.186.0 (2026-05-28)
 
 ### 🚀 Features

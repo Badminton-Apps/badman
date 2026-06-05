@@ -1,8 +1,8 @@
 {
   "name": "@badman/frontend-models",
-  "version": "6.186.0",
+  "version": "6.186.1",
   "peerDependencies": {
-    "@badman/utils": "6.186.0",
+    "@badman/utils": "6.186.1",
     "moment": "^2.30.1"
   },
   "dependencies": {},
