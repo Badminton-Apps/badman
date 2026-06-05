@@ -111,7 +111,12 @@ describe("CpController", () => {
 
     it("should call CpDataCollector and trigger workflow_dispatch", async () => {
       const user = mockUser();
-      mockFetch.mockResolvedValue({ status: 204 });
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        }) // _createGist
+        .mockResolvedValueOnce({ status: 204 }); // workflow dispatch
 
       const result = await controller.generate(user, {
         eventId: "a0000000-0000-4000-8000-000000000001",
@@ -139,26 +144,47 @@ describe("CpController", () => {
       await expect(controller.generate(user, { eventId: "" })).rejects.toThrow();
     });
 
-    it("should base64-encode the payload in the workflow dispatch", async () => {
+    it("should pass gist_id in the workflow dispatch inputs", async () => {
       const user = mockUser();
-      mockFetch.mockResolvedValue({ status: 204 });
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-xyz" }),
+        }) // _createGist
+        .mockResolvedValueOnce({ status: 204 }); // workflow dispatch
 
       await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
-      const fetchCall = mockFetch.mock.calls[0];
-      const body = JSON.parse(fetchCall[1].body);
+      const dispatchCall = mockFetch.mock.calls[1]; // second fetch = dispatch
+      const body = JSON.parse(dispatchCall[1].body);
 
-      // Verify payload input is base64
-      const decoded = Buffer.from(body.inputs.payload, "base64").toString("utf-8");
-      const payload = JSON.parse(decoded);
-      expect(payload.event.name).toBe("Test");
+      expect(body.inputs.gist_id).toBe("gist-xyz");
+      expect(body.inputs.payload).toBeUndefined();
     });
 
-    it("should return 502 if GitHub API fails", async () => {
+    it("should return 502 if GitHub API dispatch fails", async () => {
       const user = mockUser();
-      mockFetch.mockResolvedValue({
-        status: 422,
-        text: jest.fn().mockResolvedValue("Validation failed"),
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        }) // _createGist
+        .mockResolvedValueOnce({
+          status: 422,
+          text: jest.fn().mockResolvedValue("Validation failed"),
+        }) // dispatch fails
+        .mockResolvedValueOnce({ status: 204 }); // _deleteGist cleanup
+
+      await expect(
+        controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" })
+      ).rejects.toThrow(BadGatewayException);
+    });
+
+    it("should return 502 if Gist creation fails", async () => {
+      const user = mockUser();
+      mockFetch.mockResolvedValueOnce({
+        status: 500,
+        text: jest.fn().mockResolvedValue("Server Error"),
       });
 
       await expect(
@@ -177,12 +203,17 @@ describe("CpController", () => {
 
     it("should return 409 if generation is already in progress for same event", async () => {
       const user = mockUser();
-      mockFetch.mockResolvedValue({ status: 204 });
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        })
+        .mockResolvedValueOnce({ status: 204 });
 
       // First call succeeds
       await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
-      // Second call should be rejected
+      // Second call should be rejected (no fetch needed — blocked before Gist creation)
       await expect(
         controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" })
       ).rejects.toThrow(ConflictException);
@@ -213,7 +244,13 @@ describe("CpController", () => {
     it("should accept valid webhook and update generation record", async () => {
       // First, trigger a generation to create a pending record
       const user = mockUser();
-      mockFetch.mockResolvedValue({ status: 204 });
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        })
+        .mockResolvedValueOnce({ status: 204 }) // dispatch
+        .mockResolvedValueOnce({ status: 204 }); // _deleteGist on webhook
       await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       jest.spyOn(Player, "findByPk").mockResolvedValue({
@@ -232,7 +269,13 @@ describe("CpController", () => {
 
     it("should handle failed status", async () => {
       const user = mockUser();
-      mockFetch.mockResolvedValue({ status: 204 });
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        })
+        .mockResolvedValueOnce({ status: 204 }) // dispatch
+        .mockResolvedValueOnce({ status: 204 }); // _deleteGist on webhook
       await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       jest.spyOn(Player, "findByPk").mockResolvedValue({
@@ -283,7 +326,13 @@ describe("CpController", () => {
     it("should return 410 for failed generation", async () => {
       // Set up a completed webhook first
       const user = mockUser();
-      mockFetch.mockResolvedValue({ status: 204 });
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        })
+        .mockResolvedValueOnce({ status: 204 }) // dispatch
+        .mockResolvedValueOnce({ status: 204 }); // _deleteGist on webhook
       await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
 
       jest.spyOn(Player, "findByPk").mockResolvedValue({
@@ -306,7 +355,12 @@ describe("CpController", () => {
       // Set up a completed generation
       const user = mockUser();
       mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        }) // _createGist
         .mockResolvedValueOnce({ status: 204 }) // workflow dispatch
+        .mockResolvedValueOnce({ status: 204 }) // _deleteGist on webhook
         .mockResolvedValueOnce({
           // artifacts list
           ok: true,
