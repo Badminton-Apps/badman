@@ -1,7 +1,13 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Sequelize } from "sequelize-typescript";
-import { Player, RankingGroup } from "@badman/backend-database";
+import {
+  Game,
+  Player,
+  RankingGroup,
+  SubEventCompetition,
+  SubEventTournament,
+} from "@badman/backend-database";
 import { PointsService } from "@badman/backend-ranking";
 import { RankingGroupsResolver } from "./rankingSystemGroup.resolver";
 
@@ -11,7 +17,10 @@ describe("RankingGroupsResolver", () => {
   let mockPointsService: { createRankingPointforGame: jest.Mock };
 
   const buildUser = (allowed: boolean) =>
-    ({ id: "user-uuid", hasAnyPermission: jest.fn().mockResolvedValue(allowed) }) as unknown as Player;
+    ({
+      id: "user-uuid",
+      hasAnyPermission: jest.fn().mockResolvedValue(allowed),
+    }) as unknown as Player;
 
   beforeEach(async () => {
     mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
@@ -78,10 +87,9 @@ describe("RankingGroupsResolver", () => {
       } as unknown as RankingGroup;
       jest.spyOn(RankingGroup, "findByPk").mockResolvedValue(fakeGroup);
 
-      const db = require("@badman/backend-database");
-      jest.spyOn(db.Game, "findAll").mockResolvedValue([]);
-      jest.spyOn(db.SubEventCompetition, "findAll").mockResolvedValue([]);
-      jest.spyOn(db.SubEventTournament, "findAll").mockResolvedValue([]);
+      jest.spyOn(Game, "findAll").mockResolvedValue([]);
+      jest.spyOn(SubEventCompetition, "findAll").mockResolvedValue([]);
+      jest.spyOn(SubEventTournament, "findAll").mockResolvedValue([]);
 
       const result = await resolver.addSubEventsToRankingGroup(
         buildUser(true),
