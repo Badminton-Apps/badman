@@ -138,6 +138,7 @@ jobs:
           API_HOOK: ${{ secrets.PROD_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK }}
+          GH_TOKEN_CP: ${{ secrets.GH_TOKEN_CP }}
 
   sentry-release:
     needs: [build, deploy-prod]
