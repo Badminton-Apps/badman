@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-seo",
-  "version": "6.187.0",
+  "version": "6.187.1",
   "peerDependencies": {
     "@angular/core": "20.1.3",
     "@angular/common": "20.1.3",

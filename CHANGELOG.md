@@ -1,3 +1,15 @@
+## 6.187.1 (2026-06-08)
+
+### 🩹 Fixes
+
+- **backend-graphql:** replace dynamic require with static imports in spec ([95b55f7b4](https://github.com/Badminton-Apps/badman/commit/95b55f7b4))
+- **hooks:** add --output-style=static to skip Nx PTY crash on macOS ([e34372316](https://github.com/Badminton-Apps/badman/commit/e34372316))
+- **tools:** remove unused totalLines/totalHit vars ([429430fa2](https://github.com/Badminton-Apps/badman/commit/429430fa2))
+
+### ❤️ Thank You
+
+- Arno Soontjens @ArnoSoontjens
+
 ## 6.187.0 (2026-06-08)
 
 ### 🚀 Features

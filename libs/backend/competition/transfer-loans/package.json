@@ -1,11 +1,11 @@
 {
   "name": "@badman/backend-transfer-loan",
-  "version": "6.187.0",
+  "version": "6.187.1",
   "dependencies": {
     "tslib": "^2.6.2",
-    "@badman/backend-utils": "6.187.0",
-    "@badman/backend-database": "6.187.0",
-    "@badman/utils": "6.187.0",
+    "@badman/backend-utils": "6.187.1",
+    "@badman/backend-database": "6.187.1",
+    "@badman/utils": "6.187.1",
     "@fastify/multipart": "^9.0.0",
     "@nestjs/common": "^11.0.0",
     "fastify": "^5.0.0",
