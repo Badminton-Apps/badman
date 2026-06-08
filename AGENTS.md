@@ -4,6 +4,21 @@ This file (`AGENTS.md`) is the single source of truth for AI-assisted developmen
 
 **`CLAUDE.md` is a symbolic link** to `AGENTS.md` in the repository root (`CLAUDE.md` → `AGENTS.md`). Tools that read either path see the same content. **Edit `AGENTS.md` only**—do not replace the symlink with a duplicate file, or Claude Code and Cursor will drift apart.
 
+## Environment Setup
+
+Required for dev and AI-assisted scripts:
+
+```bash
+# Copy .env.local if it doesn't exist (contains LINEAR_API_KEY for issue creation)
+cp .env.local.example .env.local  # or manually source .env before running scripts
+
+# Load environment in your shell (add to ~/.zshrc or ~/.bashrc for persistence):
+source /path/to/badman/.env.local
+```
+
+**Variables needed for scripts:**
+- `LINEAR_API_KEY` — for creating Linear issues from CLI
+
 ## Project Overview
 
 Competitive badminton management platform (Badman). Nx monorepo with NestJS (backend API + workers), Sequelize ORM (PostgreSQL), Apollo GraphQL (code-first), Bull queues (Redis).
@@ -50,6 +65,17 @@ prettier --check .
 
 # Seed test data
 npm run seed:test-data
+
+# Run full coverage report (all non-legacy libs/apps, no DB required)
+# Produces: text summary to console + lcov.info per lib under coverage/
+npm run test:coverage:all
+
+# Update coverage threshold after adding tests:
+# 1. Run: npm run test:coverage:all
+# 2. Find the "Lines %" for backend-graphql in the console output
+# 3. Round down to nearest 5%
+# 4. Edit libs/backend/graphql/jest.config.ts → coverageThreshold.global.*
+# 5. Commit the updated jest.config.ts
 ```
 
 ## Architecture
@@ -258,6 +284,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/030-ci-lean-migrations/plan.md](specs/030-ci-lean-migrations/plan.md)
+[specs/032-resolver-test-coverage/plan.md](specs/032-resolver-test-coverage/plan.md)
 
 <!-- SPECKIT END -->

@@ -7,4 +7,14 @@ export default {
   },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../../coverage/libs/backend/graphql",
+  coverageReporters: ["text", "lcov"],
+  testPathIgnorePatterns: ["/node_modules/", "\\.integration\\.spec\\.ts$"],
+  coverageThreshold: {
+    global: {
+      lines: 45,
+      branches: 30,
+      functions: 25,
+      statements: 50,
+    },
+  },
 };
