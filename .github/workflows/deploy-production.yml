@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Explicit version to release (e.g. 7.0.0). Leave empty to derive from conventional commits."
+        required: false
+        type: string
+        default: ""
 
 permissions:
   actions: read
@@ -37,13 +43,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Pull main
-        if: github.ref == 'refs/heads/main'
-        run: git pull origin main
-
       - name: Override Base to last release tag
         run: |
-          TAG_VERSION=$(git describe --first-parent --match 'v*' --abbrev=0 --tags)
+          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags)
           echo "Found tag: $TAG_VERSION"
           LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
           echo "Found hash: $LAST_TAG_HASH"
@@ -77,7 +79,12 @@ jobs:
 
       - name: Create release
         id: create_release
-        run: node scripts/release.js --dry-run=false
+        run: |
+          if [ -n "${{ inputs.release_version }}" ]; then
+            node scripts/release.js --dry-run=false --version="${{ inputs.release_version }}"
+          else
+            node scripts/release.js --dry-run=false
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -88,15 +95,24 @@ jobs:
           path: coverage/lcov.info
           retention-days: 30
 
-      - name: Merge main -> develop
-        if: github.ref == 'refs/heads/main'
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: main
-          target_branch: develop
-          message: "chore(merge): merge main into develop"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      # Back-merge main -> develop temporarily disabled.
+      # Reason: main is intentionally diverging from develop while we hold
+      # back features (CP export, backend encounter games generation) from
+      # prod. Auto back-merge would wipe those features from develop.
+      # Re-enable once main and develop are aligned again. When re-enabling,
+      # the `[skip back-merge]` gate (see AGENTS.md) is the documented way
+      # to opt out per-deploy.
+      # - name: Merge main -> develop
+      #   if: |
+      #     github.ref == 'refs/heads/main' &&
+      #     !contains(github.event.head_commit.message, '[skip back-merge]')
+      #   uses: devmasx/merge-branch@master
+      #   with:
+      #     type: now
+      #     from_branch: main
+      #     target_branch: develop
+      #     message: "chore(merge): merge main into develop"
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
 
   migrate-prod:
     needs: build
@@ -124,9 +140,10 @@ jobs:
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK }}
 
   sentry-release:
-    needs: deploy-prod
+    needs: [build, deploy-prod]
     if: github.ref == 'refs/heads/main' && needs.build.outputs.NEW_VERSION != ''
     runs-on: ubuntu-latest
+    environment: production
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: badminton-vlaanderen

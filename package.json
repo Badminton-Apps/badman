@@ -3,6 +3,7 @@
   "version": "6.130.0-beta.12",
   "license": "MIT",
   "scripts": {
+    "prepare": "lefthook install || true",
     "ng": "nx",
     "start": "nx serve",
     "start:prod": "node -r dotenv/config --max-old-space-size=1536 dist/apps/api/main.js",
@@ -235,6 +236,7 @@
     "jest-preset-angular": "14.6.0",
     "jest-util": "30.0.5",
     "jsonc-eslint-parser": "^2.4.0",
+    "lefthook": "^2.1.8",
     "ng-packagr": "20.1.0",
     "nx": "21.3.7",
     "prettier": "3.4.2",

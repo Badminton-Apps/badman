@@ -4,6 +4,7 @@ import {
   Location,
   Player,
   Team,
+  TeamPlayerMembership,
 } from "@badman/backend-database";
 import { TeamAssociationService } from "./team-association.service";
 
@@ -109,18 +110,22 @@ describe("TeamAssociationService — request-scoped batching", () => {
     expect(entry2?.id).toBe("e2-fallback");
   });
 
-  it("getPlayers: batches via Team↔Player M:N include and groups by teamId", async () => {
-    const t1Stub = {
+  it("getPlayers: batches via Team M:N include and groups by teamId", async () => {
+    const membership = { teamId: "t1" } as unknown as TeamPlayerMembership;
+    const team1 = {
       id: "t1",
-      players: [{ id: "p1" } as Player, { id: "p2" } as Player],
-    } as unknown as Team;
-    const t2Stub = {
+      players: [
+        { id: "p1", TeamPlayerMembership: membership } as unknown as Player,
+        { id: "p2" } as Player,
+      ],
+    };
+    const team2 = {
       id: "t2",
       players: [{ id: "p3" } as Player],
-    } as unknown as Team;
+    };
     const findAll = jest
       .spyOn(Team, "findAll")
-      .mockResolvedValue([t1Stub, t2Stub] as unknown as Team[]);
+      .mockResolvedValue([team1, team2] as unknown as Team[]);
 
     const [t1Players, t2Players] = await Promise.all([
       service.getPlayers({ id: "t1" } as Team),
@@ -130,5 +135,8 @@ describe("TeamAssociationService — request-scoped batching", () => {
     expect(findAll).toHaveBeenCalledTimes(1);
     expect(t1Players.map((p) => p.id)).toEqual(["p1", "p2"]);
     expect(t2Players.map((p) => p.id)).toEqual(["p3"]);
+    expect(
+      (t1Players[0] as Player & { TeamPlayerMembership: TeamPlayerMembership }).TeamPlayerMembership
+    ).toBe(membership);
   });
 });

@@ -1,0 +1,31 @@
+# Lefthook config — local Git hooks
+# Installed by `npm install` (postinstall hook) or `npx lefthook install`.
+# Skip with `git commit --no-verify` / `git push --no-verify` when needed.
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: eslint
+      glob: "*.{js,jsx,ts,tsx}"
+      # Stage any auto-fixes lefthook applies; ESLint exits non-zero on
+      # remaining errors so the commit is blocked.
+      run: npx eslint --fix {staged_files} && git add {staged_files}
+
+    - name: prettier
+      glob: "*.{js,jsx,ts,tsx,json,md,yml,yaml,scss,css,html,pug}"
+      exclude:
+        - "libs/utils/src/lib/i18n.generated.ts"
+        - "**/CHANGELOG.md"
+        - "**/all.json"
+      run: npx prettier --write {staged_files} && git add {staged_files}
+
+pre-push:
+  jobs:
+    - name: affected-lint
+      # Mirror the CI lint gate so issues like the `\Z` regex escape don't
+      # only surface after a 10-minute pipeline. Legacy projects stay
+      # excluded (Constitution V).
+      run: |
+        BASE_REF=$(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/develop 2>/dev/null || git rev-parse HEAD~1)
+        NX_BASE="$BASE_REF" NX_HEAD=HEAD \
+          npx nx affected -t lint --exclude="$(node scripts/ci/legacy-projects.js)"

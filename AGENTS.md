@@ -153,7 +153,27 @@ Workers are lean NestJS apps importing only needed modules. Bull processors use 
 
 ## Branching
 
-- For new features, always create a new branch from `develop` (unless it's a hotfix or specified otherwise) with a descriptive name (e.g. `feat/enrollment-settings`, `fix/login-redirect`).
+**Base branch is load-bearing.** A wrong base mixes unreleased work into a hotfix lane, or strands a prod fix behind unreleased features. Get this right before the first commit.
+
+### Decision rules
+
+- **Base off `develop`** → PR target `develop`. Use for: `feat/*`, `refactor/*`, `chore/*`, `perf/*`, `test/*`, `docs/*`, and any `fix/*` for a bug that is **not yet in production** (i.e. only exists on `develop` or a feature branch).
+- **Base off `main`** → PR target `main`. Use ONLY for `hotfix/*` fixing a bug that is **already shipped to production**. After merge to `main`, back-merge `main` into `develop` so the fix is not lost.
+- **Never** base off `develop` and PR into `main` (drags unreleased features into prod). **Never** base off `main` and PR into `develop` for non-hotfix work.
+
+### When in doubt, ASK — do not guess
+
+Before creating a branch, if any of the following is unclear, stop and ask the user explicitly:
+
+1. Is the bug **already in production on `main`**, or only on `develop`/a feature branch?
+2. Does the user want this **shipped immediately** (hotfix path) or **bundled in the next release** (develop path)?
+3. The branch name uses `fix/*` — is it a hotfix (`main`) or a regular fix (`develop`)?
+
+Phrase the question concretely, e.g. _"Is this fixing a bug live in production (→ branch off `main`, PR into `main`), or a bug only on `develop` (→ branch off `develop`, PR into `develop`)?"_ Do not proceed until answered.
+
+### Naming
+
+Descriptive kebab-case after the type prefix: `feat/enrollment-settings`, `fix/login-redirect`, `hotfix/ranking-null-deref`, `chore/remove-cp-export`.
 
 ## Testing
 
@@ -193,6 +213,33 @@ Pattern:
    - Mutation handles not-found (`NotFoundException`)
    - Mutation succeeds: updates, commits transaction, returns result
    - Mutation rolls back on unexpected errors
+
+## CI / GitHub Actions
+
+Workflows live in [`.github/workflows/`](.github/workflows/). Match the workflow to the branch you are working on — see [Branching](#branching) for base-branch rules.
+
+| Workflow | Trigger | Purpose |
+|---|---|---|
+| [`pull-request.yml`](.github/workflows/pull-request.yml) | `pull_request`, `merge_group` | Fast PR gate: `nx affected -t lint test -c ci` against `develop` (or PR base). Build is **deliberately excluded** — deploy workflows handle it. Legacy frontend + e2e excluded (Constitution V). |
+| [`deploy-staging.yml`](.github/workflows/deploy-staging.yml) | `push` to `staging`, `workflow_dispatch` | Build affected → run migrations against staging DB → deploy. Calls `_shared-migrate.yml`. |
+| [`deploy-production.yml`](.github/workflows/deploy-production.yml) | `push` to `main`, `workflow_dispatch` | Build affected (NX_BASE = last `v*` tag) → create release tag → run migrations against prod DB → deploy. The `main` → `develop` back-merge step is **currently commented out** (main intentionally diverges from develop); re-enable once branches align. Calls `_shared-migrate.yml`. |
+| [`_shared-migrate.yml`](.github/workflows/_shared-migrate.yml) | `workflow_call` (reusable) | Applies pending Sequelize migrations against `target-environment` input (`staging` \| `production`). Production env requires manual reviewer approval. Concurrency group `migrate-<env>` with `cancel-in-progress: false` so a mid-flight migration cannot be cancelled. Pre-flight invalid-index check guards against interrupted `CREATE INDEX CONCURRENTLY`. |
+| [`claude-code-review.yml`](.github/workflows/claude-code-review.yml) | `pull_request` against `main` | Auto Claude review on PRs targeting `main`. |
+| [`claude.yml`](.github/workflows/claude.yml) | `@claude` mention in issues / PR comments / reviews | On-demand Claude agent for repo. |
+| [`cla.yaml`](.github/workflows/cla.yaml) | PRs from external contributors | CLA signature gate. |
+
+### Main → develop back-merge (currently disabled)
+
+The back-merge step in `deploy-production.yml` is **commented out** for now because `main` intentionally lags `develop` (CP export and backend encounter games generation are held back from prod). Auto back-merge would wipe those features from `develop`.
+
+When re-enabling the step, keep the per-deploy opt-out gate: include the literal marker `[skip back-merge]` in the merge commit message on `main` and the workflow will skip that run via `!contains(github.event.head_commit.message, '[skip back-merge]')`. Use it whenever `main` should not flow back to `develop` for a specific deploy (e.g. another feature removal). After skipping, do NOT manually back-merge — cherry-pick or rebase the specific commits if needed.
+
+### Rules for changes
+
+- Editing a workflow → run `actionlint` mentally (or via pre-commit); ensure `nx affected` invocations keep `--exclude="${{ steps.legacy.outputs.list }}"` and `-c ci`.
+- Adding a deploy step that touches the DB → call `_shared-migrate.yml`. Do **not** add a parallel migration job; the shared workflow holds the concurrency lock and env-protection contract.
+- Long-running or destructive step → set `concurrency.cancel-in-progress: false` to prevent half-applied state.
+- New env-scoped secrets → bind them through the `environment:` key on the job, not at the workflow level, so non-prod runs cannot read prod creds.
 
 ## Reference docs (`docs/`)
 

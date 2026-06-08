@@ -1,5 +1,5 @@
 import { User } from "@badman/backend-authorization";
-import { Player } from "@badman/backend-database";
+import { AdminSetting, Player } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
 import { Logger } from "@nestjs/common";
 import { Args, Mutation, Resolver } from "@nestjs/graphql";
@@ -39,6 +39,19 @@ export class SubmitEnrollmentResolver {
       throw new GraphQLError("Permission denied", {
         extensions: { code: ErrorCode.PERMISSION_DENIED, clubId },
       });
+    }
+
+    const enrollmentSetting = await AdminSetting.findOne({ where: { key: "enrollment" } });
+    if (enrollmentSetting) {
+      const now = new Date();
+      const afterStart = !enrollmentSetting.startDate || now >= enrollmentSetting.startDate;
+      const beforeEnd = !enrollmentSetting.endDate || now <= enrollmentSetting.endDate;
+      const isOpen = enrollmentSetting.enabled && afterStart && beforeEnd;
+      if (!isOpen) {
+        throw new GraphQLError("Enrollment is currently closed", {
+          extensions: { code: ErrorCode.ENROLLMENT_CLOSED },
+        });
+      }
     }
 
     const confirmed = await user.hasAnyPermission(["change:transfer"]);

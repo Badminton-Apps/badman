@@ -168,7 +168,7 @@ export const configSchema = Joi.object({
   }),
 
   CP_PASS: Joi.string().optional(),
-  GITHUB_TOKEN_CP: Joi.string().optional(),
+  GH_TOKEN_CP: Joi.string().optional(),
   GITHUB_REPO_OWNER: Joi.string().optional(),
   GITHUB_REPO_NAME: Joi.string().optional(),
   CP_CALLBACK_URL: Joi.string().optional(),
@@ -263,7 +263,7 @@ export type ConfigType = {
   TWIZZIT_API_USER: string;
   TWIZZIT_API_PASS: string;
   CP_PASS?: string;
-  GITHUB_TOKEN_CP?: string;
+  GH_TOKEN_CP?: string;
   GITHUB_REPO_OWNER?: string;
   GITHUB_REPO_NAME?: string;
   CP_CALLBACK_URL?: string;
