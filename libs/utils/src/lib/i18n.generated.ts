@@ -2546,6 +2546,7 @@ export type I18nTranslations = {
                         "messages": {
                             "successAdd": string;
                             "successEdit": string;
+                            "error": string;
                         };
                         "buttons": {
                             "cancel": string;
