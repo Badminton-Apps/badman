@@ -44,9 +44,6 @@ if (lcovFiles.length === 0) {
 
 console.log("\n📊 Coverage Summary\n");
 
-const totalLines = 0;
-const totalHit = 0;
-
 const results = lcovFiles
   .map((file) => {
     const libName = file.match(/coverage\/libs\/(backend|apps)\/([^/]+)\//)?.[2] || "unknown";
