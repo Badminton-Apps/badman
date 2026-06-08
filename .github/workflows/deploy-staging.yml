@@ -13,6 +13,9 @@ concurrency:
   group: deploy-staging-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -47,9 +50,11 @@ jobs:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-monorepo
+        with:
+          cache-nx: "false"
 
       - name: Deploy
-        run: npx --yes nx affected -t deploy --no-agents
+        run: npx --yes nx run-many -t deploy --all --no-agents
         env:
           API_HOOK: ${{ secrets.STAGING_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ secrets.STAGING_WORKER_SYNC_HOOK }}
