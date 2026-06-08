@@ -16,10 +16,13 @@ describe("EncounterChangeCompetitionResolver", () => {
     notifyEncounterChange: jest.Mock;
     notifyEncounterChangeFinished: jest.Mock;
   };
-  let mockEncounterService: {};
+  let mockEncounterService: object;
 
   const buildUser = (allowed: boolean) =>
-    ({ id: "user-uuid", hasAnyPermission: jest.fn().mockResolvedValue(allowed) }) as unknown as Player;
+    ({
+      id: "user-uuid",
+      hasAnyPermission: jest.fn().mockResolvedValue(allowed),
+    }) as unknown as Player;
 
   beforeEach(async () => {
     mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
@@ -116,7 +119,9 @@ describe("EncounterChangeCompetitionResolver", () => {
       } as unknown as EncounterCompetition;
       jest.spyOn(EncounterChange, "findByPk").mockResolvedValue(fakeChange);
       jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(fakeEncounter);
-      const result = await resolver.updateEncounterChange(buildUser(true), { id: "ec-uuid" } as any);
+      const result = await resolver.updateEncounterChange(buildUser(true), {
+        id: "ec-uuid",
+      } as any);
       expect(fakeChange.update).toHaveBeenCalled();
       expect(result).toBe(updated);
     });
@@ -143,7 +148,10 @@ describe("EncounterChangeCompetitionResolver", () => {
       const fakeEncounter = { home: fakeTeam, away: null } as unknown as EncounterCompetition;
       jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(fakeEncounter);
       await expect(
-        resolver.addChangeEncounter(buildUser(false), { encounterId: "enc-uuid", home: true } as any)
+        resolver.addChangeEncounter(buildUser(false), {
+          encounterId: "enc-uuid",
+          home: true,
+        } as any)
       ).rejects.toThrow(UnauthorizedException);
     });
   });
