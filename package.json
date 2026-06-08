@@ -14,6 +14,7 @@
     "test:coverage": "npx nx test worker-sync --coverage --skip-nx-cache",
     "test:affected": "nx affected:test",
     "test:affected:coverage": "nx affected:test --coverage",
+    "test:coverage:all": "nx run-many --target=test --all --coverage --skip-nx-cache --exclude=badman,frontend-models,frontend-components,frontend-html-injects,frontend-vitals,frontend-translation,frontend-auth,frontend-excel,frontend-pdf,frontend-utils,frontend-graphql,frontend-queue,frontend-cp,frontend-twizzit,frontend-seo,frontend-club,frontend-ranking,frontend-role,frontend-general,frontend-tournament,frontend-transfers,frontend-team,frontend-job,frontend-rule,frontend-team-assembly,frontend-change-encounter,frontend-team-enrollment,frontend-event,frontend-notifications,frontend-player",
     "lint": "nx lint",
     "e2e": "nx run-many --target=e2e",
     "e2e:ui": "nx run-many --target=e2e --ui",
