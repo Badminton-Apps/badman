@@ -57,7 +57,7 @@ describe("CpController", () => {
       GH_TOKEN_CP: "ghp_test_token",
       GITHUB_REPO_OWNER: "Badminton-Apps",
       GITHUB_REPO_NAME: "badman",
-      CP_CALLBACK_URL: "https://api.test.com/cp/webhook",
+      CP_CALLBACK_URL: "https://api.test.com/api/cp/webhook",
       CP_WEBHOOK_SECRET: "test-secret",
       CLIENT_URL: "https://badman.app",
     };
