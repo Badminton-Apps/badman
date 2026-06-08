@@ -263,14 +263,10 @@ export class SubmitEnrollmentService {
 
     const eventIds = [...new Set(subEvents.map((se) => se.eventId))];
     for (const eventId of eventIds) {
-      try {
-        await Comment.create(
-          { linkType: "competition", linkId: eventId, clubId, message: remarks },
-          { transaction }
-        );
-      } catch (e) {
-        this.logger.warn(`Failed to write remark for event ${eventId}`, e);
-      }
+      await Comment.create(
+        { linkType: "competition", linkId: eventId, clubId, message: remarks },
+        { transaction }
+      );
     }
   }
 }
