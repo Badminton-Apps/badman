@@ -79,3 +79,4 @@ typesense-data/
 #Claude
 .claude/settings.local.json
 .claude/worktrees/
+.env.local

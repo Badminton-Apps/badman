@@ -4,6 +4,21 @@ This file (`AGENTS.md`) is the single source of truth for AI-assisted developmen
 
 **`CLAUDE.md` is a symbolic link** to `AGENTS.md` in the repository root (`CLAUDE.md` → `AGENTS.md`). Tools that read either path see the same content. **Edit `AGENTS.md` only**—do not replace the symlink with a duplicate file, or Claude Code and Cursor will drift apart.
 
+## Environment Setup
+
+Required for dev and AI-assisted scripts:
+
+```bash
+# Copy .env.local if it doesn't exist (contains LINEAR_API_KEY for issue creation)
+cp .env.local.example .env.local  # or manually source .env before running scripts
+
+# Load environment in your shell (add to ~/.zshrc or ~/.bashrc for persistence):
+source /path/to/badman/.env.local
+```
+
+**Variables needed for scripts:**
+- `LINEAR_API_KEY` — for creating Linear issues from CLI
+
 ## Project Overview
 
 Competitive badminton management platform (Badman). Nx monorepo with NestJS (backend API + workers), Sequelize ORM (PostgreSQL), Apollo GraphQL (code-first), Bull queues (Redis).
