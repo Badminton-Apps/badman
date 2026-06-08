@@ -54,3 +54,4 @@ jobs:
           API_HOOK: ${{ secrets.STAGING_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ secrets.STAGING_WORKER_SYNC_HOOK }}
           WORKER_RANKING_HOOK: ${{ secrets.STAGING_WORKER_RANKING_HOOK }}
+          GH_TOKEN_CP: ${{ secrets.GH_TOKEN_CP }}
