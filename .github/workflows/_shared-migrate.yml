@@ -37,6 +37,7 @@ jobs:
       group: migrate-${{ inputs.target-environment }}
       cancel-in-progress: false
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       NODE_ENV: ${{ inputs.target-environment }}
       DB_IP: ${{ secrets.DB_IP }}
       DB_PORT: ${{ secrets.DB_PORT }}

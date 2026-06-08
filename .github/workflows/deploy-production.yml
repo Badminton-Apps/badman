@@ -21,24 +21,15 @@ concurrency:
 
 run-name: Prod release ${{ github.run_number }}
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      NEW_VERSION: ${{ steps.create_release.outputs.new_version }}
+      NEW_VERSION: ${{ steps.create_release.outputs.NEW_VERSION }}
     steps:
-      - uses: actions/checkout@v5
-
-      - name: Merge develop -> main
-        if: github.ref == 'refs/heads/main'
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: develop
-          target_branch: main
-          message: "chore(merge): merge develop into main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
@@ -131,13 +122,16 @@ jobs:
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-monorepo
+        with:
+          cache-nx: "false"
 
       - name: Deploy
-        run: npx --yes nx affected -t deploy --no-agents
+        run: npx --yes nx run-many -t deploy --all --no-agents
         env:
           API_HOOK: ${{ secrets.PROD_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK }}
+          GH_TOKEN_CP: ${{ secrets.GH_TOKEN_CP }}
 
   sentry-release:
     needs: [build, deploy-prod]
