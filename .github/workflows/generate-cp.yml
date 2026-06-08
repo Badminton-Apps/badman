@@ -21,16 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install pnpm
-        run: npm install -g pnpm@10.33.0
-
       - uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
-          cache: "pnpm"
+          cache: "npm"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Fetch payload from Gist
         shell: bash
