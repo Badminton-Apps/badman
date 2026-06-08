@@ -50,6 +50,17 @@ prettier --check .
 
 # Seed test data
 npm run seed:test-data
+
+# Run full coverage report (all non-legacy libs/apps, no DB required)
+# Produces: text summary to console + lcov.info per lib under coverage/
+npm run test:coverage:all
+
+# Update coverage threshold after adding tests:
+# 1. Run: npm run test:coverage:all
+# 2. Find the "Lines %" for backend-graphql in the console output
+# 3. Round down to nearest 5%
+# 4. Edit libs/backend/graphql/jest.config.ts → coverageThreshold.global.*
+# 5. Commit the updated jest.config.ts
 ```
 
 ## Architecture
@@ -211,6 +222,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/030-ci-lean-migrations/plan.md](specs/030-ci-lean-migrations/plan.md)
+[specs/032-resolver-test-coverage/plan.md](specs/032-resolver-test-coverage/plan.md)
 
 <!-- SPECKIT END -->
