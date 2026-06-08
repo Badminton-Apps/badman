@@ -2078,6 +2078,15 @@
     },
     "locations": {
       "exceptions": "Exceptions"
+    },
+    "clubPage": {
+      "teams": {
+        "addEditTeamDialog": {
+          "messages": {
+            "error": "Une erreur s'est produite. Veuillez réessayer."
+          }
+        }
+      }
     }
   }
 }

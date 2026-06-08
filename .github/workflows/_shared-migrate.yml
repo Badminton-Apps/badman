@@ -46,9 +46,9 @@ jobs:
       DB_DIALECT: ${{ secrets.DB_DIALECT }}
       DB_SSL: ${{ secrets.DB_SSL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
           cache: npm
