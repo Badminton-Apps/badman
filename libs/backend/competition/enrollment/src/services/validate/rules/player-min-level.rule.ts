@@ -26,6 +26,8 @@ export class PlayerMinLevelRule extends Rule {
               warnings.push({
                 message: "all.v1.entryTeamDrawer.validation.warnings.player-min-level",
                 params: {
+                  playerFullName: player.player?.fullName,
+                  playerRanking: player.single,
                   player: {
                     id: player?.id,
                     fullName: player.player?.fullName,
@@ -39,6 +41,8 @@ export class PlayerMinLevelRule extends Rule {
               errors.push({
                 message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
                 params: {
+                  playerFullName: player.player?.fullName,
+                  playerRanking: player.single,
                   player: {
                     id: player?.id,
                     fullName: player.player?.fullName,
@@ -59,6 +63,8 @@ export class PlayerMinLevelRule extends Rule {
               warnings.push({
                 message: "all.v1.entryTeamDrawer.validation.warnings.player-min-level",
                 params: {
+                  playerFullName: player.player?.fullName,
+                  playerRanking: player.double,
                   player: {
                     id: player?.id,
                     fullName: player.player?.fullName,
@@ -72,6 +78,8 @@ export class PlayerMinLevelRule extends Rule {
               errors.push({
                 message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
                 params: {
+                  playerFullName: player.player?.fullName,
+                  playerRanking: player.double,
                   player: {
                     id: player?.id,
                     fullName: player.player?.fullName,
@@ -93,6 +101,8 @@ export class PlayerMinLevelRule extends Rule {
               warnings.push({
                 message: "all.v1.entryTeamDrawer.validation.warnings.player-min-level",
                 params: {
+                  playerFullName: player.player?.fullName,
+                  playerRanking: player.mix,
                   player: {
                     id: player?.id,
                     fullName: player.player?.fullName,
@@ -106,6 +116,8 @@ export class PlayerMinLevelRule extends Rule {
               errors.push({
                 message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
                 params: {
+                  playerFullName: player.player?.fullName,
+                  playerRanking: player.mix,
                   player: {
                     id: player?.id,
                     fullName: player.player?.fullName,
@@ -129,6 +141,8 @@ export class PlayerMinLevelRule extends Rule {
                 ? "all.v1.teamFormation.errors.player-min-level"
                 : "all.v1.entryTeamDrawer.validation.errors.player-min-level",
               params: {
+                playerFullName: player.player?.fullName,
+                playerRanking: player.single,
                 player: {
                   id: player?.id,
                   fullName: player.player?.fullName,
@@ -149,6 +163,8 @@ export class PlayerMinLevelRule extends Rule {
                 ? "all.v1.teamFormation.errors.player-min-level"
                 : "all.v1.entryTeamDrawer.validation.errors.player-min-level",
               params: {
+                playerFullName: player.player?.fullName,
+                playerRanking: player.double,
                 player: {
                   id: player?.id,
                   fullName: player.player?.fullName,
@@ -170,11 +186,9 @@ export class PlayerMinLevelRule extends Rule {
                 ? "all.v1.teamFormation.errors.player-min-level"
                 : "all.v1.entryTeamDrawer.validation.errors.player-min-level",
               params: {
-                player: {
-                  id: player?.id,
-                  fullName: player.player?.fullName,
-                  ranking: player.mix,
-                },
+                playerFullName: player.player?.fullName,
+                playerRanking: player.mix,
+                player: { id: player?.id, fullName: player.player?.fullName, ranking: player.mix },
                 minLevel: subEvent.maxLevel,
                 rankingType: "mix",
               },
