@@ -15,5 +15,13 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-authorization",
+    "test": "nx test backend-authorization",
+    "lint": "nx lint backend-authorization"
+  },
+  "nx": {
+    "includedScripts": []
+  }
 }

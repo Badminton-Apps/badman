@@ -10,5 +10,13 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-micro",
+    "test": "nx test backend-micro",
+    "lint": "nx lint backend-micro"
+  },
+  "nx": {
+    "includedScripts": []
+  }
 }

@@ -17,5 +17,13 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-mailing",
+    "test": "nx test backend-mailing",
+    "lint": "nx lint backend-mailing"
+  },
+  "nx": {
+    "includedScripts": []
+  }
 }

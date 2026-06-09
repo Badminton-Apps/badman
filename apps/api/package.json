@@ -1,0 +1,15 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "nx build api",
+    "test": "nx test api",
+    "lint": "nx lint api",
+    "dev": "nx serve api"
+  },
+  "nx": {
+    "includedScripts": []
+  }
+}
