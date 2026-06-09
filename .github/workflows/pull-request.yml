@@ -47,4 +47,11 @@ jobs:
         env:
           TURBO_SCM_BASE: ${{ env.NX_BASE }}
           TURBO_SCM_HEAD: ${{ env.NX_HEAD }}
-        run: npx --yes turbo run lint test --affected --concurrency=3
+        # --concurrency=1: during Stage A the per-package scripts wrap the Nx CLI
+        # (`nx lint/test <proj>`). Running several `nx` processes at once races on
+        # Nx project-graph computation ("no name provided: scripts"), so the
+        # parity shadow must serialize the Nx invocations. Turborepo's own
+        # parallelism returns in Stage B once the scripts call jest/eslint/tsc
+        # directly (no Nx). turbo.json also drops `^build` on lint/test for Stage A
+        # because Nx already resolves build deps internally.
+        run: npx --yes turbo run lint test --affected --concurrency=1

@@ -3,16 +3,12 @@
   "globalDependencies": ["tsconfig.base.json", ".nvmrc"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
       "outputs": []
     },
     "test": {
-      "dependsOn": ["^build"],
       "outputs": []
     },
-    "lint": {
-      "dependsOn": ["^build"]
-    },
+    "lint": {},
     "dev": {
       "cache": false,
       "persistent": true
