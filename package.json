@@ -284,8 +284,6 @@
   "overrides": {
     "string-length": {
       "strip-ansi": "^6.0.0"
-    },
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/config": "^4.0.0"
+    }
   }
 }
