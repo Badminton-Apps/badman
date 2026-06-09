@@ -36,10 +36,7 @@
       "mvp_scope": "T001-T025 (Phases 1-4: US1 + US2)",
       "tasks_completed": "T001-T025 (25/36)",
       "deferred": "T026-T036 (Phases 5-7: US4 hook refactor, US3 perf, polish)",
-      "implementation_commits": [
-        "b7de5cf39",
-        "ae63d6a61"
-      ],
+      "implementation_commits": ["b7de5cf39", "ae63d6a61"],
       "tests_passed": 126,
       "tests_skipped": 2,
       "qa_status": "approved",
@@ -66,10 +63,7 @@
       "tasks_total": 24,
       "tasks_completed": "T001, T003-T020 (19/24)",
       "deferred": "T002 (docker check), T021 (nx affected:test), T022 (manual quickstart walk), T023 (verify only), T024 (frontend PR \u2014 separate repo)",
-      "implementation_commits": [
-        "e407d0553",
-        "cf539101b"
-      ],
+      "implementation_commits": ["e407d0553", "cf539101b"],
       "tests_passed": 12,
       "tests_total": 12,
       "qa_status": "approved",
@@ -98,12 +92,7 @@
       "tasks_total": 23,
       "tasks_completed": "T001-T021, T023 (22/23)",
       "deferred": "T022 (manual quickstart walk \u2014 needs running API + docker DB)",
-      "spec_kit_commits": [
-        "fba14cd80",
-        "0a1254a79",
-        "a5a66aca7",
-        "14c6286bf"
-      ],
+      "spec_kit_commits": ["fba14cd80", "0a1254a79", "a5a66aca7", "14c6286bf"],
       "implementation_commits": [
         "16bc84aee",
         "1df5d7521",
@@ -144,19 +133,12 @@
         "plan": "plan.md",
         "research": "research.md",
         "data_model": "data-model.md",
-        "contracts": [
-          "team-renumber-mutation.md",
-          "team-renumbering-service.md"
-        ],
+        "contracts": ["team-renumber-mutation.md", "team-renumbering-service.md"],
         "frontend_impact": "frontend-impact.md",
         "quickstart": "quickstart.md",
         "tasks": "tasks.md"
       },
-      "spec_kit_commits": [
-        "038b5ca10",
-        "666d98c6d",
-        "f67027148"
-      ],
+      "spec_kit_commits": ["038b5ca10", "666d98c6d", "f67027148"],
       "tasks_total": 43,
       "tasks_completed": "T001-T021, T024, T029-T033, T034-T036, T038-T041 (37/43)",
       "deferred": [
@@ -228,11 +210,7 @@
       "tasks_total": 33,
       "tasks_completed": "T001-T014, T017-T027, T029, T030, T032",
       "tasks_deferred": "T015-T016 (operational manual verification), T028 (nx affected:test \u2014 empty test_command), T031 (operational Quickstart walk), T033 (no checked-in schema.gql)",
-      "implementation_commits": [
-        "2de5cdc1f",
-        "fcdedeaa7",
-        "db6fcad0a"
-      ],
+      "implementation_commits": ["2de5cdc1f", "fcdedeaa7", "db6fcad0a"],
       "feature_status": "done",
       "qa_status": "approved",
       "qa_checks": {
@@ -247,10 +225,7 @@
       "status": "in_review_qa_approved",
       "board": "local",
       "branch": "029-evententry-team-standing-loaders",
-      "implementation_commits": [
-        "96d85a710",
-        "3011f172b"
-      ],
+      "implementation_commits": ["96d85a710", "3011f172b"],
       "tests_passed": 29,
       "feature_status": "done",
       "qa_status": "approved",
@@ -273,6 +248,29 @@
       "status": "todo",
       "board": "linear",
       "branch": "032-resolver-test-coverage"
+    },
+    "034-cp-webhook-hardening": {
+      "status": "in_review_qa_approved",
+      "board": "local",
+      "branch": "034-cp-webhook-hardening",
+      "tasks_done": "19/19",
+      "tests_passed": 25,
+      "feature_status": "done",
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS"
+      },
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_transactional_mutations": "PASS (REST controller)",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "ci_gate": "none",
+      "next_step": "open PR targeting develop"
     }
   },
   "board": "linear",
