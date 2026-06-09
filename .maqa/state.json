@@ -249,6 +249,28 @@
       "board": "linear",
       "branch": "032-resolver-test-coverage"
     },
+    "035-multi-provider-mail": {
+      "status": "in_review_qa_approved",
+      "board": "local",
+      "branch": "035-multi-provider-mail",
+      "tasks_done": "17/17",
+      "tests_passed": 29,
+      "feature_status": "done",
+      "qa_status": "approved",
+      "qa_checks": {
+        "lint": "PASS",
+        "tests": "PASS"
+      },
+      "constitution_check": {
+        "principle_i_codefirst_graphql": "PASS (no resolver changes)",
+        "principle_ii_i18n": "PASS (no diff)",
+        "principle_iii_transactional_mutations": "PASS (no mutation changes)",
+        "principle_iv_resolver_tests": "PASS",
+        "principle_v_legacy_frontend": "PASS (no diff)"
+      },
+      "ci_gate": "none",
+      "next_step": "open PR targeting develop"
+    },
     "034-cp-webhook-hardening": {
       "status": "in_review_qa_approved",
       "board": "local",
