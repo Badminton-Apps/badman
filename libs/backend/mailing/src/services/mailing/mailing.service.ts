@@ -10,25 +10,22 @@ import {
   SubEventCompetition,
 } from "@badman/backend-database";
 import { ConfigType } from "@badman/utils";
-import { Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger, Optional } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { writeFile } from "fs/promises";
 import moment from "moment-timezone";
-import nodemailer, { Transporter } from "nodemailer";
 import { lastValueFrom } from "rxjs";
+import { IMailTransport, MAIL_TRANSPORT_TOKEN } from "../../providers";
 
 @Injectable()
 export class MailingService {
   private readonly logger = new Logger(MailingService.name);
-  private _transporter?: Transporter;
-  private _mailingEnabled = false;
-  private initialized = false;
-
-  private subjectPrefix = "";
+  private readonly subjectPrefix: string;
 
   constructor(
-    private compileService: CompileService,
-    private configService: ConfigService<ConfigType>
+    private readonly compileService: CompileService,
+    private readonly configService: ConfigService<ConfigType>,
+    @Optional() @Inject(MAIL_TRANSPORT_TOKEN) private readonly mailTransport: IMailTransport | null
   ) {
     this.subjectPrefix = this.configService.get<string>("MAIL_SUBJECT_PREFIX") || "";
   }
@@ -268,7 +265,7 @@ export class MailingService {
 
     const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
 
-    //  mail to reponsible
+    //  mail to responsible
     moment.locale("nl-be");
     const optionsMailResp = {
       from: "info@badman.app",
@@ -643,57 +640,7 @@ export class MailingService {
     await this._sendMail(options);
   }
 
-  private async _setupMailing() {
-    if (this.initialized) return;
-    if ((this.configService.get<boolean>("MAIL_ENABLED") ?? false) == false) {
-      return;
-    }
-
-    const mailConfig = {
-      host: this.configService.get("MAIL_HOST"),
-      port: 465,
-      auth: {
-        user: this.configService.get("MAIL_USER"),
-        pass: this.configService.get("MAIL_PASS"),
-      },
-    };
-
-    try {
-      this._transporter = nodemailer.createTransport(mailConfig);
-
-      const verified = await this._transporter.verify();
-
-      if (!verified) {
-        this._mailingEnabled = false;
-        this.logger.warn("Mailing disabled due to config setup failing");
-        return;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this._transporter.use("compile", (mail: any, callback) => {
-        const template = mail.data.template;
-        const context = mail.data.context;
-        lastValueFrom(
-          this.compileService.toHtml(template, {
-            locals: context,
-          })
-        ).then((html) => {
-          mail.data.html = html;
-          callback();
-        });
-      });
-
-      this._mailingEnabled = true;
-      this.initialized = true;
-    } catch (e) {
-      this._mailingEnabled = false;
-      this.logger.warn("Mailing disabled due to config setup failing", e);
-    }
-  }
-
   private async _sendMail<T>(options: MailOptions<T>) {
-    await this._setupMailing();
-
     // Append subject prefix
     if (this.subjectPrefix) {
       options.subject = `${this.subjectPrefix} ${options.subject}`;
@@ -703,8 +650,8 @@ export class MailingService {
       // add clientUrl to context
       options.context.clientUrl = this.configService.get("CLIENT_URL") ?? "";
 
-      // Only save to file if mailing is completely disabled
-      if (this._mailingEnabled === false) {
+      // When no transport, compile and optionally save to file (dev workflow)
+      if (!this.mailTransport) {
         const compiled = await lastValueFrom(
           this.compileService.toHtml(options.template, {
             locals: options.context,
@@ -720,16 +667,14 @@ export class MailingService {
 
       // Apply development email override if not in production
       if (this.configService.get("NODE_ENV") !== "production") {
-        // Check if the to is filled in
         options.to = Array.isArray(options.to) ? options.to : [options.to];
         if (options.to === null || options.to.length === 0) {
-          this.logger.error("no mail adress?", { error: options });
+          this.logger.error("no mail address?", { error: options });
           return;
         }
         const to = options.to ?? [];
         const cc = ((Array.isArray(options.cc) ? options.cc : [options.cc]) ?? []) as string[];
 
-        // Use DEV_EMAIL_DESTINATION environment variable, fallback to dev@pandapanda.be if not set
         const devEmailDestination = this.configService.get("DEV_EMAIL_DESTINATION");
 
         if (!devEmailDestination) {
@@ -740,17 +685,23 @@ export class MailingService {
         options.to = [devEmailDestination];
         options.cc = [];
 
-        options.subject += ` overwritten email original(to: ${to?.join(",")}, cc: ${cc.join(
-          ","
-        )}) `;
+        options.subject += ` overwritten email original(to: ${to?.join(",")}, cc: ${cc.join(",")}) `;
       }
 
-      if (!this._transporter) {
-        this.logger.error("No transporter available - email not sent");
-        return;
-      }
+      // Compile template to HTML
+      const html = await lastValueFrom(
+        this.compileService.toHtml(options.template, {
+          locals: options.context,
+        } as CompileOptions)
+      );
 
-      await this._transporter.sendMail(options);
+      await this.mailTransport.send({
+        from: options.from,
+        to: options.to,
+        cc: options.cc,
+        subject: options.subject,
+        html,
+      });
     } catch (e) {
       this.logger.error("Error sending email:", e);
     }
@@ -760,8 +711,8 @@ export class MailingService {
 interface MailOptions<T> {
   from: string;
   to: string | string[];
-  cc: string | string[];
+  cc?: string | string[];
   subject: string;
   template: string;
-  context: T & { clientUrl: string };
+  context: T & { clientUrl?: string };
 }

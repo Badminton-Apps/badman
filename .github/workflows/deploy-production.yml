@@ -133,6 +133,40 @@ jobs:
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK }}
           GH_TOKEN_CP: ${{ secrets.GH_TOKEN_CP }}
 
+  # The Render deploy hook is fire-and-forget: deploy-prod returns as soon as
+  # the hook POST succeeds, NOT when the new build is live. This job polls the
+  # public /api/version endpoint until the server reports the freshly-released
+  # version, catching a stale build cache (or failed Render build) that would
+  # otherwise silently keep serving old code. Skipped when no version bump
+  # happened (NEW_VERSION empty) since there is nothing new to assert against.
+  verify-prod-version:
+    needs: [build, deploy-prod]
+    if: github.ref == 'refs/heads/main' && needs.build.outputs.NEW_VERSION != ''
+    runs-on: ubuntu-latest
+    env:
+      EXPECTED_VERSION: ${{ needs.build.outputs.NEW_VERSION }}
+      # URI versioning (defaultVersion "1" in main.ts) puts every route under /api/v1.
+      API_URL: https://api.badman.app/api/v1/version
+    steps:
+      - name: Wait for live server to report released version
+        run: |
+          set -euo pipefail
+          echo "Expecting version '$EXPECTED_VERSION' at $API_URL"
+          deadline=$((SECONDS + 900)) # 15 min — covers Render build + boot
+          attempt=0
+          while [ "$SECONDS" -lt "$deadline" ]; do
+            attempt=$((attempt + 1))
+            live="$(curl -fsS --max-time 10 "$API_URL" | jq -r '.version // empty' 2>/dev/null || true)"
+            echo "Attempt $attempt: live version='${live:-<unreachable>}'"
+            if [ "$live" = "$EXPECTED_VERSION" ]; then
+              echo "Live server is serving $EXPECTED_VERSION"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::Live server never reported version '$EXPECTED_VERSION' within 15 min — stale build cache or failed Render deploy."
+          exit 1
+
   sentry-release:
     needs: [build, deploy-prod]
     if: github.ref == 'refs/heads/main' && needs.build.outputs.NEW_VERSION != ''

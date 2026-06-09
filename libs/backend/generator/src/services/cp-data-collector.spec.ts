@@ -544,6 +544,169 @@ describe("CpDataCollector", () => {
       expect(payload.memos[0].memo).toContain("Club comment here");
     });
 
+    it("should pass flat playerFullName in translate args for enrollment validation errors", async () => {
+      const club = mockClub({
+        getLocations: jest.fn().mockResolvedValue([]),
+        getComments: jest.fn().mockResolvedValue([]),
+      });
+
+      const team = mockTeam({ getClub: jest.fn().mockResolvedValue(club) });
+      const entry = mockEntry({
+        meta: { competition: { teamIndex: 1, players: [] } },
+        getTeam: jest.fn().mockResolvedValue(team),
+      });
+      const subEvent = mockSubEvent({
+        getEventEntries: jest.fn().mockResolvedValue([entry]),
+      });
+      const event = mockEvent({
+        getSubEventCompetitions: jest.fn().mockResolvedValue([subEvent]),
+      });
+
+      jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+      jest.spyOn(Player, "findAll").mockResolvedValue([]);
+
+      mockValidation.fetchAndValidate.mockResolvedValue({
+        teams: [
+          {
+            id: "team-1",
+            errors: [
+              {
+                message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
+                params: {
+                  playerFullName: "Jan Janssens",
+                  playerRanking: 3,
+                  minLevel: 4,
+                  rankingType: "single",
+                },
+              },
+            ],
+          },
+        ],
+      } as any);
+
+      await collector.collect("event-1");
+
+      expect(mockI18n.translate).toHaveBeenCalledWith(
+        "all.v1.entryTeamDrawer.validation.errors.player-min-level",
+        expect.objectContaining({
+          args: expect.objectContaining({
+            playerFullName: "Jan Janssens",
+          }),
+        })
+      );
+    });
+
+    it("should render player name in memo when translation uses flat {playerFullName} syntax", async () => {
+       
+      const format = require("string-format");
+      mockI18n.translate.mockImplementation((_key: string, options?: { args?: unknown }) => {
+        const template =
+          "{playerFullName} heeft een index van {playerRanking} in {rankingType} en mag minimaal {minLevel} zijn.";
+        return format(template, options?.args ?? {});
+      });
+
+      const club = mockClub({
+        getLocations: jest.fn().mockResolvedValue([]),
+        getComments: jest.fn().mockResolvedValue([]),
+      });
+      const team = mockTeam({ getClub: jest.fn().mockResolvedValue(club) });
+      const entry = mockEntry({
+        meta: { competition: { teamIndex: 1, players: [] } },
+        getTeam: jest.fn().mockResolvedValue(team),
+      });
+      const subEvent = mockSubEvent({
+        getEventEntries: jest.fn().mockResolvedValue([entry]),
+      });
+      const event = mockEvent({
+        getSubEventCompetitions: jest.fn().mockResolvedValue([subEvent]),
+      });
+
+      jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+      jest.spyOn(Player, "findAll").mockResolvedValue([]);
+
+      mockValidation.fetchAndValidate.mockResolvedValue({
+        teams: [
+          {
+            id: "team-1",
+            errors: [
+              {
+                message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
+                params: {
+                  playerFullName: "Jan Janssens",
+                  playerRanking: 3,
+                  minLevel: 4,
+                  rankingType: "single",
+                },
+              },
+            ],
+          },
+        ],
+      } as any);
+
+      const payload = await collector.collect("event-1");
+
+      expect(payload.memos[0].memo).toContain("Jan Janssens");
+      expect(payload.memos[0].memo).toContain(
+        "Jan Janssens heeft een index van 3 in single en mag minimaal 4 zijn."
+      );
+    });
+
+    it("regression: nested {player.fullName} params produce empty name with flat {playerFullName} template", async () => {
+      // Documents the original bug: rules were emitting { player: { fullName } } (nested)
+      // but translations expected flat {playerFullName}. string-format can't resolve
+      // a flat key from a nested object → player name renders as empty string.
+       
+      const format = require("string-format");
+      mockI18n.translate.mockImplementation((_key: string, options?: { args?: unknown }) => {
+        const template = "{playerFullName} heeft een index van {playerRanking} in {rankingType}";
+        return format(template, options?.args ?? {});
+      });
+
+      const club = mockClub({
+        getLocations: jest.fn().mockResolvedValue([]),
+        getComments: jest.fn().mockResolvedValue([]),
+      });
+      const team = mockTeam({ getClub: jest.fn().mockResolvedValue(club) });
+      const entry = mockEntry({
+        meta: { competition: { teamIndex: 1, players: [] } },
+        getTeam: jest.fn().mockResolvedValue(team),
+      });
+      const subEvent = mockSubEvent({
+        getEventEntries: jest.fn().mockResolvedValue([entry]),
+      });
+      const event = mockEvent({
+        getSubEventCompetitions: jest.fn().mockResolvedValue([subEvent]),
+      });
+
+      jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(event);
+      jest.spyOn(Player, "findAll").mockResolvedValue([]);
+
+      mockValidation.fetchAndValidate.mockResolvedValue({
+        teams: [
+          {
+            id: "team-1",
+            errors: [
+              {
+                message: "all.v1.entryTeamDrawer.validation.errors.player-min-level",
+                params: {
+                  // Nested params (the old broken shape) — cannot resolve {playerFullName}
+                  player: { id: "player-1", fullName: "Jan Janssens", ranking: 3 },
+                  minLevel: 4,
+                  rankingType: "single",
+                },
+              },
+            ],
+          },
+        ],
+      } as any);
+
+      const payload = await collector.collect("event-1");
+
+      // {playerFullName} with nested params → empty → name absent from memo
+      expect(payload.memos[0].memo).not.toContain("Jan Janssens");
+      expect(payload.memos[0].memo).toContain(" heeft een index van  in single");
+    });
+
     it("should strip HTML tags from validation error messages", async () => {
       const club = mockClub({
         getLocations: jest.fn().mockResolvedValue([]),
