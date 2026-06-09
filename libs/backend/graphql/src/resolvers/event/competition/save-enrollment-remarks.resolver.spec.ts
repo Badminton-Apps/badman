@@ -131,6 +131,22 @@ describe("SaveEnrollmentRemarksResolver.saveEnrollmentRemarks", () => {
     );
   });
 
+  // AC5: adminEmail empty string → normalized to null
+  it("AC5: adminEmail empty string → create called with adminEmail: null", async () => {
+    const user = makeUser();
+    jest.spyOn(Club, "findByPk").mockResolvedValue(fakeClub);
+    const createSpy = jest
+      .spyOn(EnrollmentRemark, "create")
+      .mockResolvedValue({ createdAt: new Date() } as EnrollmentRemark);
+
+    await resolver.saveEnrollmentRemarks(user, makeInput({ adminEmail: "" }));
+
+    expect(createSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ adminEmail: null }),
+      expect.anything()
+    );
+  });
+
   // --- US2 Error Paths ---
 
   // US2-AC1: Club.findByPk returns null → throws CLUB_NOT_FOUND
@@ -164,6 +180,25 @@ describe("SaveEnrollmentRemarksResolver.saveEnrollmentRemarks", () => {
       const e = err as GraphQLError;
       expect(e).toBeInstanceOf(GraphQLError);
       expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+    }
+
+    expect(createSpy).not.toHaveBeenCalled();
+    expect(fakeSequelize.transaction).not.toHaveBeenCalled();
+  });
+
+  // US2-AC2b: remarks > 10000 chars → throws BAD_USER_INPUT with length info, no DB write
+  it("US2-AC2b: remarks exceeding max length → throws BAD_USER_INPUT with actualLength, no DB write", async () => {
+    const user = makeUser();
+    const createSpy = jest.spyOn(EnrollmentRemark, "create");
+
+    try {
+      await resolver.saveEnrollmentRemarks(user, makeInput({ remarks: "x".repeat(10_001) }));
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["actualLength"]).toBe(10_001);
     }
 
     expect(createSpy).not.toHaveBeenCalled();
