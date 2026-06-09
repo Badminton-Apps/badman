@@ -146,6 +146,14 @@ Sources: clarifications in [spec.md](spec.md) (Session 2026-06-09), the installe
 
 **Stage B relevance:** this only matters while Nx and per-package scripts coexist. Once `project.json`/Nx are removed (D11), `includedScripts: []` is irrelevant and SHOULD be dropped so the scripts are the package's real tasks.
 
+## D12c — Stage A gotcha: enabling npm workspaces activates stale per-lib dep pins (CONFIRMED in impl)
+
+**Problem (second Stage A CI failure):** before workspaces, the lib `package.json` `dependencies` blocks were **inert** — Nx resolved everything from the root `node_modules` via `tsconfig.paths`, and npm never installed per-lib deps. Several blocks are **stale** (e.g. `libs/backend/pupeteer` and `libs/backend/generator` pin `@nestjs/common: ^10`, generator pins `@nestjs/config: ^3`, while root is `@nestjs/common@11` / `@nestjs/config@4`). Turning on npm `workspaces` made npm honor those pins and install **nested** `node_modules/@nestjs/common@10` inside those libs. Result: two copies of `@nestjs/common` → `Logger` from root v11 ≠ `Logger` from pupeteer's v10 → `TS2322 … Property 'context' is protected but type 'Logger' is not a class derived from 'Logger'`, failing `worker-sync:test:ci` (it consumes pupeteer's `acceptCookies`/`signIn`).
+
+**Fix (Stage A):** root `package.json` `overrides` forcing the duplicated type-bearing packages to the root major — `"@nestjs/common": "^11.0.0"`, `"@nestjs/config": "^4.0.0"`. This collapses them to a single install (what they actually used pre-workspaces). Verified: no nested `@nestjs/*` copies remain; `worker-sync:test` → 22 suites / 311 tests pass. Value-only nested dups (`file-type`, `lodash`, `dotenv-expand`, `@tokenizer/inflate`) don't break type identity and were left alone.
+
+**Stage B relevance:** the real cause is unmaintained lib dep pins. Stage B (D13/FR-021) derives each package's deps from its actual imports, so the stale `^10` pins get corrected and these `overrides` SHOULD be removed. Until then, the overrides are the Stage A guardrail.
+
 ## D11 — Nx removal
 
 **Decision**: Remove `nx.json`, every `project.json`, `jest.preset.js`'s Nx import, `.nx/`, all `@nx/*` and `nx` devDependencies, and Nx-specific scripts in root `package.json` (`ng`, `nx`, `start:*` rewritten to `turbo run`). Done last in the cutover, after Turborepo equivalents verified green.
