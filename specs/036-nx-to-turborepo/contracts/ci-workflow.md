@@ -1,6 +1,20 @@
 # Contract: CI / Deploy Workflows
 
-How the GitHub Actions workflows change. Verifies FR-007, FR-008, FR-010, FR-013, SC-004, SC-005, SC-013.
+How the GitHub Actions workflows change. Verifies FR-007, FR-008, FR-010, FR-013, FR-017, SC-004, SC-005, SC-013.
+
+## Phase 1 — double-run parity gate (transitional)
+
+While Nx and Turborepo coexist (FR-017 Phase 1), the PR workflow runs BOTH and they must agree:
+
+```yaml
+- uses: ./.github/actions/setup-monorepo # still npm + nx-set-shas in Phase 1
+- run: npx nx affected -t lint test -c ci --exclude="${{ steps.legacy.outputs.list }}" # authoritative
+- run: npx turbo run lint test --affected --continue # shadow/verify
+# Compare: same affected packages, same pass/fail. Turborepo result is non-blocking until trusted,
+# then promoted to authoritative and the nx line removed (start of Phase 2).
+```
+
+## Phase 2 — Turborepo-only end state
 
 ## `setup-monorepo` composite action (rewrite)
 
@@ -59,4 +73,5 @@ corepack enable && pnpm install --frozen-lockfile && pnpm turbo run build --filt
 | Prod base        | prod build affected since last `v*` tag, not whole repo (FR-013)                                                      |
 | Migration safety | `_shared-migrate.yml` untouched: concurrency lock + prod approval intact (FR-010)                                     |
 | Release          | merge release PR → single repo-wide version bump + changelog + tag + GitHub release, no manual files (FR-012, SC-007) |
-| Atomic           | post-merge `develop` green; no Nx artifacts remain (SC-009, SC-013)                                                   |
+| Phase 1 parity   | double-run PR shows Turborepo and Nx select the same affected set + same pass/fail before Nx removal (FR-017, SC-013) |
+| Atomic Phase 2   | post-cutover `develop` green; no Nx artifacts remain; no mixed-resolution intermediate (SC-009, SC-013)               |

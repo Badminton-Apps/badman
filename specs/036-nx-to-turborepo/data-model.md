@@ -81,4 +81,4 @@ Nx project (project.json + tsconfig.paths alias + @nx executor)
   = Turborepo package (verified by `turbo run build test lint --filter=<pkg>`)
 ```
 
-The repo is only green when **all** packages have transitioned (atomic cutover, FR-017) — intermediate states mix resolution mechanisms and are expected to be red on the branch, never on `develop`.
+This per-package transition is the **Phase 2** structural step (FR-017). It is atomic: the repo is only green when **all** packages have transitioned, because intermediate states mix `tsconfig.paths` and `workspace:*` resolution. (Phase 1 — adding `turbo.json` + per-package scripts over the _existing_ Nx structure with `tsconfig.paths` intact — is the incremental, coexisting step that precedes this and is verified via the CI double-run.)

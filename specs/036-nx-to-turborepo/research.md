@@ -140,7 +140,49 @@ Sources: clarifications in [spec.md](spec.md) (Session 2026-06-09), the installe
 
 **Decision**: Remove `nx.json`, every `project.json`, `jest.preset.js`'s Nx import, `.nx/`, all `@nx/*` and `nx` devDependencies, and Nx-specific scripts in root `package.json` (`ng`, `nx`, `start:*` rewritten to `turbo run`). Done last in the cutover, after Turborepo equivalents verified green.
 
-**Rationale**: FR-015, SC-009. Atomic with the rest of the cutover (FR-017).
+**Rationale**: FR-015, SC-009. Performed in Phase 2 (FR-017), after Turborepo equivalents are verified green via the Phase 1 double-run.
+
+---
+
+## D12 — Migration phasing & double-run verification (official guide)
+
+**Decision**: Two phases per the official [Turborepo "Migrating from Nx" guide](https://turborepo.dev/docs/guides/migrating-from-nx).
+
+- **Phase 1 (incremental coexistence)**: keep Nx, npm, `tsconfig.paths`, and the `apps/`+`libs/` layout untouched. Add `.turbo` to `.gitignore` (guide step 1), add `turbo.json` (step 8) and per-package `build`/`test`/`lint` scripts that initially wrap the existing builders, install Turborepo as a dev dep (step 7). CI **double-runs** the same tasks through both runners (`turbo run lint test` _and_ `nx affected -t lint test`) to confirm identical affected sets and pass/fail before Nx is trusted/removed.
+- **Phase 2 (atomic structural cutover)**: the `libs/`→`packages/` move, drop `tsconfig.paths` for `workspace:*` + `exports` (D2), `nest build` (D3), pnpm (D4), CI rewrite to Turborepo-only (D8), and Nx removal (D11) — all in one PR.
+
+**Rationale**: The guide explicitly encourages coexistence ("you will have both Nx and Turborepo in your repository at the same time") and lists three techniques: migrate one task at a time, one package at a time, or double-run. Double-run is the strongest parity check for a 32-package backend. The only step that genuinely cannot coexist is the `tsconfig.paths`↔`workspace:*` resolution swap, so it is isolated to the atomic Phase 2. This revises the earlier single-big-bang decision (clarify Q5) after reading the guide.
+
+**Alternatives**: single big-bang (original Q5) — no incremental parity check; fully incremental per-package — longest dual-tool window. Hybrid chosen.
+
+---
+
+## D13 — Dependency location: install where used (official guide)
+
+**Decision**: Move dependencies from the repo-root `package.json` into the packages/apps that use them. Internal `@badman/*` → `workspace:*` (D2); external runtime/dev deps → each consumer's `package.json`. Root keeps only workspace-root tooling (turbo, release-please, formatters).
+
+**Rationale**: Guide "Advanced migration considerations" — Nx historically installs everything at root; Turborepo prefers per-package deps to "improve cache hit ratios, help dependency pruning capability, and clarify which dependencies are meant for which packages." Derive each package's dep list by scanning its imports (same scan that satisfies VR-2). Can proceed progressively during Phase 1; MUST be complete by Phase 2 (FR-021, SC-014).
+
+**Risk**: large mechanical change across 32 packages; pnpm strictness will surface every missing declaration as a build/test failure (intended — it finds real phantom deps).
+
+---
+
+## D14 — CLI / command equivalents (corrections from guide)
+
+| Nx                             | Turborepo                                         |
+| ------------------------------ | ------------------------------------------------- |
+| `nx run <t>`                   | `turbo run <t>`                                   |
+| `nx run-many … --projects=web` | `turbo run … --filter=web`                        |
+| `nx affected -t lint test`     | `turbo run lint test --affected`                  |
+| `nx generate`                  | `turbo generate` (if code generators are adopted) |
+| `nx reset` (clear cache)       | `turbo … --force` / clear `.turbo`                |
+| `--parallel=<n>`               | `--concurrency=<n>`                               |
+| `--nxBail`                     | `--continue` (inverse)                            |
+| `--graph`                      | `--graph`                                         |
+| `--output-style`               | `--log-order`                                     |
+| `--verbose`                    | `--verbosity`                                     |
+
+**Note**: today's CI uses `nx affected … --parallel=3`; the Turborepo equivalent is `--concurrency=3` (not `--parallel`). Quickstart and CI contract updated accordingly. The repo makes little/no use of Nx generators, so `turbo generate` adoption is optional.
 
 ---
 
