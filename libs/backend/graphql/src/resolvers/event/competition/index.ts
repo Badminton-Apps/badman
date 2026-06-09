@@ -12,5 +12,7 @@ export * from "./submit-enrollment.resolver";
 export * from "./submit-enrollment.service";
 export * from "./submit-enrollment.input";
 export * from "./submit-enrollment-result.object";
+export * from "./save-enrollment-remarks.resolver";
+export * from "./save-enrollment-remarks.input";
 
 // end:ng42.barrel

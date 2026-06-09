@@ -517,6 +517,22 @@ export class NotificationService {
     );
   }
 
+  async notifyRescueRemarks(
+    club: Club,
+    season: number,
+    remarks: string,
+    submittedAt: Date
+  ): Promise<void> {
+    try {
+      await this.mailing.sendRescueRemarksMail(club, season, remarks, submittedAt);
+    } catch (error) {
+      this._logger.warn(
+        `[notifyRescueRemarks] Failed to send rescue remarks mail for club ${club.id} season ${season}`,
+        error
+      );
+    }
+  }
+
   async notifySyncEncounterFailed({
     encounter,
     url,

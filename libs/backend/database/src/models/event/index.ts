@@ -1,6 +1,7 @@
 // start:ng42.barrel
 export * from "./competition";
 export * from "./tournament";
+export * from "./enrollment-remark.model";
 
 export * from "./availability.model";
 export * from "./court.model";

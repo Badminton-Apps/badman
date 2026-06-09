@@ -625,6 +625,29 @@ export class MailingService {
     await this._sendMail(options);
   }
 
+  async sendRescueRemarksMail(club: Club, season: number, remarks: string, submittedAt: Date) {
+    const options = {
+      from: "info@badman.app",
+      to: ["jeroen@badmintonvlaanderen.be", "arno@dashdot.be"],
+      cc: [],
+      subject: `Inschrijving opmerking gered - ${club.name} (seizoen ${season})`,
+      template: "rescue-remarks",
+      context: {
+        clubName: club.name,
+        season,
+        remarks,
+        submittedAt: submittedAt.toISOString(),
+      },
+    } as unknown as MailOptions<{
+      clubName: string;
+      season: number;
+      remarks: string;
+      submittedAt: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
   async sendCpExportFailedMail(to: { fullName: string; email: string; slug: string }) {
     const options = {
       from: "info@badman.app",

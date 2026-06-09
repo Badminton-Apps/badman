@@ -1,0 +1,29 @@
+extends ../../layouts/layout.pug
+
+block title
+  h1.text-center
+    | Inschrijving opmerking gered
+
+block content
+  p.text-center
+    p Beste beheerder,
+      br
+      br
+      | Een clubbeheerder heeft een geredde inschrijvingsopmerking ingediend.
+
+  table
+    tr
+      td
+        strong Club:
+        |#{ clubName }
+    tr
+      td
+        strong Seizoen:
+        |#{ season }
+    tr
+      td
+        strong Ingediend op:
+        |#{ submittedAt }
+
+  h2 Opmerkingen
+  p(style="white-space: pre-wrap") #{ remarks }
