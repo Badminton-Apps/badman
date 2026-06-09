@@ -136,6 +136,16 @@ Sources: clarifications in [spec.md](spec.md) (Session 2026-06-09), the installe
 
 ---
 
+## D12b — Stage A gotcha: Nx infers tasks from package.json scripts (CONFIRMED in impl)
+
+**Problem (hit on the first Stage A CI run):** in an Nx workspace that defines projects via `project.json`, adding `build`/`test`/`lint` scripts to a project's `package.json` makes Nx infer those scripts as `nx:run-script` targets that **override the real executors** (observed: `utils:test` flipped from `@nx/jest:jest` to `nx:run-script`). `nx affected -t test` then runs the npm script `nx test <proj>`, which re-enters Nx, re-processes the project graph, and fails — surfacing an unrelated nameless project (`projects … have no name provided: scripts`, from the repo-root `scripts/package.json` named `badman_scripts`). All affected lint/test cascade to `No cached ProjectGraph is available`. A stale restored `.nx/cache` made it deterministic in CI while passing locally on a warm cache.
+
+**Fix (required for Stage A coexistence):** every scaffolded `package.json` MUST include `"nx": { "includedScripts": [] }`. This disables Nx npm-script target inference, so `project.json` + plugin executors stay authoritative (parity with `develop`); Turborepo still runs the scripts because Turborepo reads `package.json` `scripts` directly, independent of Nx. Implemented by `scripts/migration/stage-a-scaffold.js`.
+
+**Verification:** `nx run utils:test` → 94 jest tests pass (no re-entry); `nx show projects` → full graph; `turbo run lint --filter=@badman/utils` passes.
+
+**Stage B relevance:** this only matters while Nx and per-package scripts coexist. Once `project.json`/Nx are removed (D11), `includedScripts: []` is irrelevant and SHOULD be dropped so the scripts are the package's real tasks.
+
 ## D11 — Nx removal
 
 **Decision**: Remove `nx.json`, every `project.json`, `jest.preset.js`'s Nx import, `.nx/`, all `@nx/*` and `nx` devDependencies, and Nx-specific scripts in root `package.json` (`ng`, `nx`, `start:*` rewritten to `turbo run`). Done last in the cutover, after Turborepo equivalents verified green.
