@@ -12,5 +12,13 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-translate",
+    "test": "nx test backend-translate",
+    "lint": "nx lint backend-translate"
+  },
+  "nx": {
+    "includedScripts": []
+  }
 }

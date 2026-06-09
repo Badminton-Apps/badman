@@ -18,5 +18,13 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-twizzit",
+    "test": "nx test backend-twizzit",
+    "lint": "nx lint backend-twizzit"
+  },
+  "nx": {
+    "includedScripts": []
+  }
 }

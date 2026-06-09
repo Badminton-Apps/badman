@@ -1,0 +1,15 @@
+{
+  "name": "worker-belgium-flanders-points",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "nx build worker-belgium-flanders-points",
+    "test": "nx test worker-belgium-flanders-points",
+    "lint": "nx lint worker-belgium-flanders-points",
+    "dev": "nx serve worker-belgium-flanders-points"
+  },
+  "nx": {
+    "includedScripts": []
+  }
+}

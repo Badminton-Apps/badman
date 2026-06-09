@@ -136,6 +136,31 @@ Sources: clarifications in [spec.md](spec.md) (Session 2026-06-09), the installe
 
 ---
 
+## D12b — Stage A gotcha: Nx infers tasks from package.json scripts (CONFIRMED in impl)
+
+**Problem (hit on the first Stage A CI run):** in an Nx workspace that defines projects via `project.json`, adding `build`/`test`/`lint` scripts to a project's `package.json` makes Nx infer those scripts as `nx:run-script` targets that **override the real executors** (observed: `utils:test` flipped from `@nx/jest:jest` to `nx:run-script`). `nx affected -t test` then runs the npm script `nx test <proj>`, which re-enters Nx, re-processes the project graph, and fails — surfacing an unrelated nameless project (`projects … have no name provided: scripts`, from the repo-root `scripts/package.json` named `badman_scripts`). All affected lint/test cascade to `No cached ProjectGraph is available`. A stale restored `.nx/cache` made it deterministic in CI while passing locally on a warm cache.
+
+**Fix (required for Stage A coexistence):** every scaffolded `package.json` MUST include `"nx": { "includedScripts": [] }`. This disables Nx npm-script target inference, so `project.json` + plugin executors stay authoritative (parity with `develop`); Turborepo still runs the scripts because Turborepo reads `package.json` `scripts` directly, independent of Nx. Implemented by `scripts/migration/stage-a-scaffold.js`.
+
+**Verification:** `nx run utils:test` → 94 jest tests pass (no re-entry); `nx show projects` → full graph; `turbo run lint --filter=@badman/utils` passes.
+
+**Stage B relevance:** this only matters while Nx and per-package scripts coexist. Once `project.json`/Nx are removed (D11), `includedScripts: []` is irrelevant and SHOULD be dropped so the scripts are the package's real tasks.
+
+**Related (Stage A CI, several rounds): the Stage A double-run must NOT execute Nx — use `--dry`.** Because the Stage A package scripts wrap `nx <target> <proj>`, having Turborepo _execute_ them means invoking the Nx CLI nested under `npm run` once per package. That nested invocation **deterministically** fails Nx project-graph computation with `no name provided: scripts`, even though the authoritative root-level `nx affected` in the same job succeeds (it gets an Nx cache hit and skips a full recompute). Two wrong guesses cost CI rounds: (1) a concurrency race — disproven, `--concurrency=1` failed identically; (2) the `includedScripts: []` fix — necessary for the authoritative `nx affected` path but it does **not** make the nested `npm run test → nx test <proj>` path safe. **Resolution:** the double-run's only job is to confirm Turborepo selects the _same affected package set_ as Nx (FR-017/SC-013); it never needed to run the tasks. Switch it to `turbo run lint test --affected --dry=text`, which resolves and prints Turborepo's task graph **without invoking Nx at all** — immune to the graph error. Pass/fail parity is already covered by the authoritative `nx affected` line running for real. Turborepo executes tasks for real only in Stage B, once the package scripts call `jest`/`eslint`/`tsc` directly (no Nx underneath). Net Stage A lesson: every one of these gotchas (D12b/D12c + this) stems from `nx` sitting under the package scripts — all evaporate when Nx is removed in Stage B.
+
+## D12c — Stage A gotcha: enabling npm workspaces activates stale per-lib dep pins (CONFIRMED in impl)
+
+**Problem (second Stage A CI failure):** before workspaces, the lib `package.json` `dependencies` blocks were **inert** — Nx resolved everything from the root `node_modules` via `tsconfig.paths`, and npm never installed per-lib deps. Several blocks are **stale** (e.g. `libs/backend/pupeteer` and `libs/backend/generator` pin `@nestjs/common: ^10`, generator pins `@nestjs/config: ^3`, while root is `@nestjs/common@11` / `@nestjs/config@4`). Turning on npm `workspaces` made npm honor those pins and install **nested** `node_modules/@nestjs/common@10` inside those libs. Result: two copies of `@nestjs/common` → `Logger` from root v11 ≠ `Logger` from pupeteer's v10 → `TS2322 … Property 'context' is protected but type 'Logger' is not a class derived from 'Logger'`, failing `worker-sync:test:ci` (it consumes pupeteer's `acceptCookies`/`signIn`).
+
+**Fix (Stage A) — what actually worked:** correct the stale pins **at source** in the lib `package.json`s (pupeteer/generator `@nestjs/common` `^10` → `^11`; generator `@nestjs/config` `^3` → `^4`; `@nestjs/schedule ^6` already matched root) and **commit the regenerated `package-lock.json`**. Value-only nested dups (`file-type`, `lodash`, `dotenv-expand`, `@tokenizer/inflate`) don't break type identity and were left alone.
+
+**Two false starts worth recording (both cost a CI round):**
+
+1. **Root `overrides` did NOT work.** `"overrides": { "@nestjs/common": "^11.0.0" }` did not rewrite the nested workspace entries in `package-lock.json` (`npm install --package-lock-only` reported "up to date" with the nested v10 still present). Correcting the pins at source is the deterministic fix.
+2. **The lockfile must be committed.** The first attempt fixed `node_modules` on disk via `npm install` but never staged the changed `package-lock.json`. CI runs **`npm ci`** (strict, lockfile-authoritative), so it kept reinstalling the nested copy. **Always verify Stage A changes with `npm ci`, not `npm install`** — `npm install` mutates/dedupes on the fly and hides lockfile drift that `npm ci` will expose in CI. Verified fix: `npm ci` → no nested `@nestjs/common` on disk → `worker-sync:test` passes (22 suites / 311 tests).
+
+**Stage B relevance:** the real cause is unmaintained lib dep pins. Stage B (D13/FR-021) derives each package's deps from its actual imports, so the stale `^10` pins get corrected and these `overrides` SHOULD be removed. Until then, the overrides are the Stage A guardrail.
+
 ## D11 — Nx removal
 
 **Decision**: Remove `nx.json`, every `project.json`, `jest.preset.js`'s Nx import, `.nx/`, all `@nx/*` and `nx` devDependencies, and Nx-specific scripts in root `package.json` (`ng`, `nx`, `start:*` rewritten to `turbo run`). Done last in the cutover, after Turborepo equivalents verified green.
