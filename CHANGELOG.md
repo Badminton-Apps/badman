@@ -1,3 +1,15 @@
+## 6.187.2 (2026-06-09)
+
+### 🩹 Fixes
+
+- **cp:** add node_modules/nx cache and correct webhook path ([b9cdcbb66](https://github.com/Badminton-Apps/badman/commit/b9cdcbb66))
+- **cp:** harden webhook error handling, validation, and logging ([048061f2a](https://github.com/Badminton-Apps/badman/commit/048061f2a))
+- **enrollment:** propagate Comment.create errors, await save in addComment ([58806f87c](https://github.com/Badminton-Apps/badman/commit/58806f87c))
+
+### ❤️ Thank You
+
+- Arno Soontjens @ArnoSoontjens
+
 ## 6.187.1 (2026-06-08)
 
 ### 🩹 Fixes

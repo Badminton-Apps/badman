@@ -1,10 +1,10 @@
 {
   "name": "@badman/backend-database",
-  "version": "6.187.1",
+  "version": "6.187.2",
   "dependencies": {
-    "@badman/utils": "6.187.1",
-    "@badman/backend-cache": "6.187.1",
-    "@badman/backend-queue": "6.187.1",
+    "@badman/utils": "6.187.2",
+    "@badman/backend-cache": "6.187.2",
+    "@badman/backend-queue": "6.187.2",
     "tslib": "^2.8.1",
     "@nestjs/graphql": "^13.0.0",
     "@nestjs/common": "^11.0.0",
