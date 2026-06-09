@@ -14,6 +14,12 @@ This feature is a **sequential infrastructure migration**, not a set of independ
 
 User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spec.md), but stories are **not** independently deliverable — US3/US4/US5 depend on US1's build parity. The MVP is "Stage A merged + US1 build/test parity proven."
 
+> **PROGRESS (2026-06-10):**
+>
+> - **Stage A — MERGED to `develop`.** Turborepo coexists with Nx; double-run is `--dry` affected-set parity (non-blocking). Gotchas D12b/D12c recorded.
+> - **Stage B — IN PROGRESS on branch `feat/036-turborepo-stage-b`.** Wave 1 done + pushed: legacy frontend deleted (T010/T011/T014). **Next up = the intertwined pnpm + `libs/`→`packages/` + drop-`tsconfig.paths` core (T015–T026)** — must land together because internal deps are pinned `"@badman/x":"6.187.0"` (unpublished), so pnpm install only works once they become `workspace:*` in real package members.
+> - **Verification rule (hard-won):** verify with the EXACT CI commands from a clean `npm ci`/`pnpm install --frozen-lockfile` + full `nx`/`turbo` run — never `npm install` or a filtered subset. Stale `node_modules` and empty `nx affected` sets have produced false greens twice.
+
 **High-risk packages** (call out during per-package tasks): `backend-graphql` (largest, most internal deps), `backend-database` (depended on by everything), `backend-twizzit` (`node-adodb` native external), `backend-translate` (ships i18n assets — Constitution II), `backend-competition/*` + `backend-belgium/flanders/*` (nested dirs, flat aliases).
 
 ---
@@ -51,11 +57,11 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 
 **Independent test**: `apps/badman*` and `libs/frontend/*` absent; backend build+test green; no dangling references.
 
-- [ ] T010 [US6] Delete `apps/badman`, `apps/badman-e2e`, `apps/badman-e2e-desktop`, `apps/badman-e2e-mobile`, and all `libs/frontend/*` (29 libs)
-- [ ] T011 [P] [US6] Remove their `@badman/frontend-*` entries from `tsconfig.base.json` `paths` and any references in remaining configs
-- [ ] T012 [P] [US6] Remove Angular/Nx-frontend devDependencies (`@nx/angular`, `@angular-devkit/*`, `ng-packagr`, Playwright e2e deps if unused elsewhere) from root `package.json`
-- [ ] T013 [US6] Delete `scripts/ci/legacy-projects.js` and remove the `scope:legacy` resolve step + `--exclude` from all workflows (FE no longer exists to exclude)
-- [ ] T014 [US6] Verify the API still boots and serves with the frontend bundle removed — guard or remove any static-SPA-serving code in `apps/api` that hard-requires the built Angular bundle (research D10 risk); i18n asset serving MUST remain intact (Constitution II)
+- [x] T010 [US6] Delete `apps/badman`, `apps/badman-e2e`, `apps/badman-e2e-desktop`, `apps/badman-e2e-mobile`, and all `libs/frontend/*` (29 libs) — done (Stage B Wave 1, commit on `feat/036-turborepo-stage-b`, −76.6k lines)
+- [x] T011 [P] [US6] Remove their `@badman/frontend-*` entries from `tsconfig.base.json` `paths` and any references in remaining configs — done (29 paths stripped, 33 backend paths remain)
+- [ ] T012 [P] [US6] Remove Angular/Nx-frontend devDependencies (`@nx/angular`, `@angular-devkit/*`, `ng-packagr`, Playwright e2e deps if unused elsewhere) from root `package.json` — **DEFERRED**: harmless-but-unused now; prune during the pnpm step (T016) with a clean `npm ci`/`pnpm install` verify, alongside `@nx/*` removal (T050)
+- [ ] T013 [US6] Delete `scripts/ci/legacy-projects.js` and remove the `scope:legacy` resolve step + `--exclude` from all workflows (FE no longer exists to exclude) — **DEFERRED to Phase 6 CI rewrite (T038)**: script left in place, now returns empty so existing workflows still pass
+- [x] T014 [US6] Verify the API still boots and serves with the frontend bundle removed — done: `ServeStaticModule` guarded with `existsSync(staticFrontendRoot)` in `apps/api/src/app/app.module.ts` (serves a bundle only if present, no-op otherwise); i18n assets untouched (Constitution II); `nx build api` green
 
 **Checkpoint**: backend builds + tests green with zero frontend projects.
 
