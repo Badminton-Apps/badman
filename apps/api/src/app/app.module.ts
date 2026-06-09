@@ -30,17 +30,27 @@ import { TwizzitModule } from "@badman/backend-twizzit";
 import { SocketModule } from "@badman/backend-websockets";
 import { ConfigType, configSchema, load } from "@badman/utils";
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { existsSync } from "fs";
 import { join } from "path";
 import versionPackage from "../version.json";
 import { CleanEnvironmentModule } from "./clean-environment.module";
 import { CalendarController } from "./controllers/ical.controller";
 
 const productionModules = [];
-if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") {
-  Logger.debug(`Adding static file serving to folder: ${join(__dirname, "..", "badman")}`);
+// The Angular frontend now lives in a separate repository (Constitution v2.0.0,
+// Principle V). This API only serves a frontend bundle if one has been placed at
+// dist/apps/api/../badman/browser by the deploy pipeline; when absent (the common
+// case after the legacy frontend was removed from this repo) static serving is
+// skipped rather than booting a ServeStaticModule pointed at a missing directory.
+const staticFrontendRoot = join(__dirname, "..", "badman", "browser");
+if (
+  (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") &&
+  existsSync(staticFrontendRoot)
+) {
+  Logger.debug(`Serving static frontend bundle from: ${staticFrontendRoot}`);
   productionModules.push(
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, "..", "badman", "browser"),
+      rootPath: staticFrontendRoot,
       exclude: ["api/*", "/graphql"],
     })
   );
@@ -91,7 +101,12 @@ const envFilePath = join(projectRoot, envFileName);
   ],
   controllers: [AppController, ImageController, CalendarController, CpController, ExportController],
   providers: [
-    Logger, TeamsService, ExceptionsService, LocationsService, EnrollmentService, AvgLevelService,
+    Logger,
+    TeamsService,
+    ExceptionsService,
+    LocationsService,
+    EnrollmentService,
+    AvgLevelService,
     { provide: APP_FILTER, useClass: PrematureCloseFilter },
   ],
 })
