@@ -14,5 +14,8 @@
     "build": "nx build utils",
     "test": "nx test utils",
     "lint": "nx lint utils"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

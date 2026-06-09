@@ -15,5 +15,8 @@
     "build": "nx build belgium-flanders-point",
     "test": "nx test belgium-flanders-point",
     "lint": "nx lint belgium-flanders-point"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

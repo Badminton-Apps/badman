@@ -12,5 +12,8 @@
     "build": "nx build belgium-flanders-games",
     "test": "nx test belgium-flanders-games",
     "lint": "nx lint belgium-flanders-games"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

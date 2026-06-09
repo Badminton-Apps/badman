@@ -22,5 +22,8 @@
     "build": "nx build backend-generator",
     "test": "nx test backend-generator",
     "lint": "nx lint backend-generator"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

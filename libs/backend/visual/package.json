@@ -26,5 +26,8 @@
     "build": "nx build backend-visual",
     "test": "nx test backend-visual",
     "lint": "nx lint backend-visual"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

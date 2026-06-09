@@ -15,5 +15,8 @@
     "build": "nx build backend-pupeteer",
     "test": "nx test backend-pupeteer",
     "lint": "nx lint backend-pupeteer"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

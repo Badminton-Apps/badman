@@ -21,5 +21,8 @@
     "build": "nx build backend-notifications",
     "test": "nx test backend-notifications",
     "lint": "nx lint backend-notifications"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

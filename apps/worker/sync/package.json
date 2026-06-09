@@ -8,5 +8,8 @@
     "test": "nx test worker-sync",
     "lint": "nx lint worker-sync",
     "dev": "nx serve worker-sync"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

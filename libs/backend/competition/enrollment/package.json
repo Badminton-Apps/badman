@@ -21,5 +21,8 @@
     "build": "nx build backend-enrollment",
     "test": "nx test backend-enrollment",
     "lint": "nx lint backend-enrollment"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

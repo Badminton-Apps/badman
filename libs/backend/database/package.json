@@ -24,5 +24,8 @@
     "build": "nx build backend-database",
     "test": "nx test backend-database",
     "lint": "nx lint backend-database"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

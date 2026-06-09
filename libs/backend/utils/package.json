@@ -17,5 +17,8 @@
     "build": "nx build backend-utils",
     "test": "nx test backend-utils",
     "lint": "nx lint backend-utils"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

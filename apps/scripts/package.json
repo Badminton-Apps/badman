@@ -8,5 +8,8 @@
     "test": "nx test scripts",
     "lint": "nx lint scripts",
     "dev": "nx serve scripts"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

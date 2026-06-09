@@ -29,5 +29,8 @@
     "build": "nx build backend-ranking",
     "test": "nx test backend-ranking",
     "lint": "nx lint backend-ranking"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

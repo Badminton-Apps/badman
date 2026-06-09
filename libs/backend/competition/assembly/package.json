@@ -27,5 +27,8 @@
     "build": "nx build backend-assembly",
     "test": "nx test backend-assembly",
     "lint": "nx lint backend-assembly"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

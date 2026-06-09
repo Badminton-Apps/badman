@@ -21,5 +21,8 @@
     "build": "nx build backend-transfer-loan",
     "test": "nx test backend-transfer-loan",
     "lint": "nx lint backend-transfer-loan"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

@@ -8,5 +8,8 @@
     "test": "nx test worker-ranking",
     "lint": "nx lint worker-ranking",
     "dev": "nx serve worker-ranking"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

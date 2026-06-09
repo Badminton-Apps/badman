@@ -18,5 +18,8 @@
     "build": "nx build backend-search",
     "test": "nx test backend-search",
     "lint": "nx lint backend-search"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

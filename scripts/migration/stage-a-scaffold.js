@@ -57,6 +57,11 @@ for (const { dir, name, targets } of inScope) {
     created.push(name);
   }
   pkg.scripts = { ...(pkg.scripts || {}), ...scriptFor(name, targets) };
+  // CRITICAL: stop Nx from inferring tasks from these npm scripts. Without this,
+  // Nx turns `test`/`build` into `nx:run-script` targets that re-invoke nx
+  // (infinite re-entry + broken project graph). project.json executors must stay
+  // authoritative during Stage A coexistence; Turborepo still runs the scripts.
+  pkg.nx = { ...(pkg.nx || {}), includedScripts: [] };
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
 }
 

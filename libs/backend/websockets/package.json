@@ -18,5 +18,8 @@
     "build": "nx build backend-websockets",
     "test": "nx test backend-websockets",
     "lint": "nx lint backend-websockets"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

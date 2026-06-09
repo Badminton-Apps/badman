@@ -22,5 +22,8 @@
     "build": "nx build backend-change-encounter",
     "test": "nx test backend-change-encounter",
     "lint": "nx lint backend-change-encounter"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

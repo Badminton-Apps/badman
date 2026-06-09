@@ -19,5 +19,8 @@
     "build": "nx build backend-logging",
     "test": "nx test backend-logging",
     "lint": "nx lint backend-logging"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

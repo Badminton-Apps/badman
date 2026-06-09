@@ -16,5 +16,8 @@
     "build": "nx build belgium-flanders-place",
     "test": "nx test belgium-flanders-place",
     "lint": "nx lint belgium-flanders-place"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

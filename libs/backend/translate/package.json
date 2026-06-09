@@ -17,5 +17,8 @@
     "build": "nx build backend-translate",
     "test": "nx test backend-translate",
     "lint": "nx lint backend-translate"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

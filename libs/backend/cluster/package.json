@@ -13,5 +13,8 @@
     "build": "nx build backend-cluster",
     "test": "nx test backend-cluster",
     "lint": "nx lint backend-cluster"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

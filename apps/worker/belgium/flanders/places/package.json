@@ -8,5 +8,8 @@
     "test": "nx test worker-belgium-flanders-places",
     "lint": "nx lint worker-belgium-flanders-places",
     "dev": "nx serve worker-belgium-flanders-places"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

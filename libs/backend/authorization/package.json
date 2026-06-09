@@ -20,5 +20,8 @@
     "build": "nx build backend-authorization",
     "test": "nx test backend-authorization",
     "lint": "nx lint backend-authorization"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

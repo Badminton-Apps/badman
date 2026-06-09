@@ -23,5 +23,8 @@
     "build": "nx build backend-orchestrator",
     "test": "nx test backend-orchestrator",
     "lint": "nx lint backend-orchestrator"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

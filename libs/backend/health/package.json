@@ -15,5 +15,8 @@
     "build": "nx build backend-health",
     "test": "nx test backend-health",
     "lint": "nx lint backend-health"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

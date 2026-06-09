@@ -20,5 +20,8 @@
     "build": "nx build backend-queue",
     "test": "nx test backend-queue",
     "lint": "nx lint backend-queue"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

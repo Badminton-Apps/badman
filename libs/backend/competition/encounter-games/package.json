@@ -16,5 +16,8 @@
     "build": "nx build backend-encounter-games",
     "test": "nx test backend-encounter-games",
     "lint": "nx lint backend-encounter-games"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }

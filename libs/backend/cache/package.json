@@ -19,5 +19,8 @@
     "build": "nx build backend-cache",
     "test": "nx test backend-cache",
     "lint": "nx lint backend-cache"
+  },
+  "nx": {
+    "includedScripts": []
   }
 }
