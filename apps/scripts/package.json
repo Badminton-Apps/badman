@@ -1,0 +1,12 @@
+{
+  "name": "scripts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "nx build scripts",
+    "test": "nx test scripts",
+    "lint": "nx lint scripts",
+    "dev": "nx serve scripts"
+  }
+}

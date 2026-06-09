@@ -16,5 +16,10 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-compile",
+    "test": "nx test backend-compile",
+    "lint": "nx lint backend-compile"
+  }
 }

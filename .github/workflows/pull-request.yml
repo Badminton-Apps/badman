@@ -33,4 +33,18 @@ jobs:
         # Build deliberately excluded — deploy workflows (deploy-staging.yml,
         # deploy-production.yml) run it on push. PR checks stay fast.
         # Legacy frontend + e2e excluded per Constitution V.
+        # AUTHORITATIVE during the Nx→Turborepo migration Stage A (feature 036).
         run: npx --yes nx affected -t lint test -c ci --parallel=3 --exclude="${{ steps.legacy.outputs.list }}"
+
+      - name: "[036 Stage A] Turborepo double-run (non-blocking parity check)"
+        # Shadow-run the same tasks through Turborepo to verify it selects the
+        # same affected set and pass/fail as Nx before Nx is removed (spec FR-017,
+        # SC-013). Non-blocking until parity is trusted, then promoted to
+        # authoritative and the Nx line above is removed (start of Stage B).
+        # nx-set-shas (in setup-monorepo) exports NX_BASE/NX_HEAD; map them to
+        # Turborepo's SCM range.
+        continue-on-error: true
+        env:
+          TURBO_SCM_BASE: ${{ env.NX_BASE }}
+          TURBO_SCM_HEAD: ${{ env.NX_HEAD }}
+        run: npx --yes turbo run lint test --affected --concurrency=3

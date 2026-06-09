@@ -8,5 +8,10 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-cluster",
+    "test": "nx test backend-cluster",
+    "lint": "nx lint backend-cluster"
+  }
 }

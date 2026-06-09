@@ -1,0 +1,12 @@
+{
+  "name": "worker-ranking",
+  "version": "0.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "nx build worker-ranking",
+    "test": "nx test worker-ranking",
+    "lint": "nx lint worker-ranking",
+    "dev": "nx serve worker-ranking"
+  }
+}

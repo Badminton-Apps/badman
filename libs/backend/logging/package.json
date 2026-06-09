@@ -14,5 +14,10 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-logging",
+    "test": "nx test backend-logging",
+    "lint": "nx lint backend-logging"
+  }
 }

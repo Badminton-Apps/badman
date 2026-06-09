@@ -19,5 +19,10 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "nx build backend-database",
+    "test": "nx test backend-database",
+    "lint": "nx lint backend-database"
+  }
 }

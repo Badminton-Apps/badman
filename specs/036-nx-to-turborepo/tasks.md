@@ -22,11 +22,11 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 
 **Purpose**: Introduce Turborepo alongside Nx without changing structure or removing anything.
 
-- [ ] T001 Add `.turbo` to `.gitignore` at repo root (FR-022)
-- [ ] T002 Install Turborepo as a root devDependency (`turbo`) and add `packageManager` field to root `package.json` (still npm at this stage)
-- [ ] T003 Create root `turbo.json` per [contracts/turbo-pipeline.md](contracts/turbo-pipeline.md) with `build`/`test`/`lint`/`dev` tasks (`build`/`test`/`lint` → `dependsOn: ["^build"]`, `build` outputs `dist/**`, `test` outputs `coverage/**`, `dev` `cache:false persistent:true`); add `globalDependencies: ["tsconfig.base.json", ".nvmrc"]`
-- [ ] T004 Add a `build`/`test`/`lint` script to each `apps/*` and `libs/**` `package.json` (create the file where only `project.json` exists) that **wraps the existing Nx builder** (e.g. `"build": "nx build <project>"`), so both runners produce identical output during Stage A
-- [ ] T005 Verify the Turborepo task graph matches the Nx graph: `npx turbo run build --dry=json` lists every non-legacy project with correct `^build` ordering; reconcile any missing internal-dependency edges
+- [x] T001 Add `.turbo` to `.gitignore` at repo root (FR-022)
+- [x] T002 Install Turborepo as a root devDependency (`turbo`) and add `packageManager` field to root `package.json` (still npm at this stage)
+- [x] T003 Create root `turbo.json` per [contracts/turbo-pipeline.md](contracts/turbo-pipeline.md) with `build`/`test`/`lint`/`dev` tasks (`build`/`test`/`lint` → `dependsOn: ["^build"]`, `build` outputs `dist/**`, `test` outputs `coverage/**`, `dev` `cache:false persistent:true`); add `globalDependencies: ["tsconfig.base.json", ".nvmrc"]`
+- [x] T004 Add a `build`/`test`/`lint` script to each `apps/*` and `libs/**` `package.json` (create the file where only `project.json` exists) that **wraps the existing Nx builder** (e.g. `"build": "nx build <project>"`), so both runners produce identical output during Stage A
+- [x] T005 Verify the Turborepo task graph matches the Nx graph: `npx turbo run build --dry=json` lists every non-legacy project with correct `^build` ordering; reconcile any missing internal-dependency edges
 
 **Checkpoint**: `npx turbo run build` and `npx turbo run test` succeed locally with the same results as `nx run-many`.
 
@@ -36,8 +36,8 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 
 **Purpose**: Prove Turborepo selects the same affected set and pass/fail as Nx in CI before trusting it (FR-017, SC-013). Blocks Stage B.
 
-- [ ] T006 Update `pull-request.yml` to **double-run**: keep the authoritative `nx affected -t lint test` line, add a non-blocking `npx turbo run lint test --affected --continue` line (see [contracts/ci-workflow.md](contracts/ci-workflow.md) "Phase 1")
-- [ ] T007 Cache `.turbo` in the `setup-monorepo` composite action via `actions/cache` (key on lockfile + ref), alongside the existing `.nx/cache` step (FR-008)
+- [x] T006 Update `pull-request.yml` to **double-run**: keep the authoritative `nx affected -t lint test` line, add a non-blocking `npx turbo run lint test --affected --continue` line (see [contracts/ci-workflow.md](contracts/ci-workflow.md) "Phase 1")
+- [x] T007 Cache `.turbo` in the `setup-monorepo` composite action via `actions/cache` (key on lockfile + ref), alongside the existing `.nx/cache` step (FR-008)
 - [ ] T008 Open a throwaway PR touching exactly one library; confirm Turborepo and Nx report the **same affected packages** and **same pass/fail** (SC-013). Record the parity evidence in the Stage A PR description
 - [ ] T009 Open a second PR touching one app; confirm parity again, including a warm-cache re-run showing Turborepo cache hits (SC-003)
 
