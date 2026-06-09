@@ -421,33 +421,10 @@ describe("CpController", () => {
   });
 
   describe("GET /cp/download/:runId", () => {
-    it("should reject unauthenticated requests", async () => {
-      const noUser = { id: undefined } as unknown as Player;
-      const mockRes = {} as any;
-
-      await expect(controller.download(noUser, "run-123", mockRes)).rejects.toThrow(
-        UnauthorizedException
-      );
-    });
-
-    it("should reject users without permission", async () => {
-      const user = mockUser({
-        hasAnyPermission: jest.fn().mockResolvedValue(false),
-      });
-      const mockRes = {} as any;
-
-      await expect(controller.download(user, "run-123", mockRes)).rejects.toThrow(
-        ForbiddenException
-      );
-    });
-
     it("should return 404 for unknown runId", async () => {
-      const user = mockUser();
       const mockRes = {} as any;
 
-      await expect(controller.download(user, "unknown-run", mockRes)).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(controller.download("unknown-run", mockRes)).rejects.toThrow(NotFoundException);
     });
 
     it("should return 410 for failed generation", async () => {
@@ -475,7 +452,7 @@ describe("CpController", () => {
 
       const mockRes = {} as any;
 
-      await expect(controller.download(user, "gh-run-failed", mockRes)).rejects.toThrow(/failed/i);
+      await expect(controller.download("gh-run-failed", mockRes)).rejects.toThrow(/failed/i);
     });
 
     it("should fetch artifact from GitHub and stream to response", async () => {
@@ -527,7 +504,7 @@ describe("CpController", () => {
         send: jest.fn(),
       } as any;
 
-      await controller.download(user, "gh-run-ok", mockRes);
+      await controller.download("gh-run-ok", mockRes);
 
       expect(mockRes.header).toHaveBeenCalledWith(
         "Content-Disposition",
