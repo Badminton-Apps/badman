@@ -130,10 +130,7 @@ export class PlayerClubRule extends Rule {
         return {
           message: "all.v1.entryTeamDrawer.validation.errors.player-club-none",
           params: {
-            player: {
-              fullName: player.fullName,
-              id: player.id,
-            },
+            playerFullName: player.fullName,
           },
         } as EnrollmentValidationError;
       }
@@ -154,18 +151,9 @@ export class PlayerClubRule extends Rule {
       return {
         message: "all.v1.entryTeamDrawer.validation.errors.player-club",
         params: {
-          player: {
-            fullName: player.fullName,
-            id: player.id,
-          },
-          club: {
-            name: club.name,
-            id: club.id,
-          },
-          activeClub: {
-            name: firstClub.name,
-            id: firstClub.id,
-          },
+          playerFullName: player.fullName,
+          clubName: club.name,
+          activeClubName: firstClub.name,
         },
       } as EnrollmentValidationError;
     });

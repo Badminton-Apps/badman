@@ -26,10 +26,7 @@ export class PlayerCompStatusRule extends Rule {
           errors.push({
             message: "all.v1.entryTeamDrawer.validation.errors.comp-status-base",
             params: {
-              player: {
-                id: player?.id,
-                fullName: player.player?.fullName,
-              },
+              playerFullName: player.player?.fullName,
             },
           });
         }
@@ -45,10 +42,7 @@ export class PlayerCompStatusRule extends Rule {
           warnings.push({
             message: "all.v1.entryTeamDrawer.validation.errors.comp-status-team",
             params: {
-              player: {
-                id: player?.id,
-                fullName: player.player?.fullName,
-              },
+              playerFullName: player.player?.fullName,
             },
           });
         }
