@@ -285,6 +285,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/034-cp-webhook-hardening/plan.md](specs/034-cp-webhook-hardening/plan.md)
+[specs/035-multi-provider-mail/plan.md](specs/035-multi-provider-mail/plan.md)
 
 <!-- SPECKIT END -->
