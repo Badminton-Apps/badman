@@ -2,6 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import {
   BadGatewayException,
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   NotFoundException,
@@ -287,6 +288,132 @@ describe("CpController", () => {
         run_id: "gh-run-789",
         user_id: "user-1",
         status: "failed",
+      });
+
+      expect(result).toEqual({ ok: true });
+    });
+
+    // T012
+    it("should return 400 if run_id is missing", async () => {
+      await expect(
+        controller.webhook("test-secret", { run_id: "", user_id: "user-1", status: "completed" })
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    // T013
+    it("should return 400 if user_id is missing", async () => {
+      await expect(
+        controller.webhook("test-secret", { run_id: "run-1", user_id: "", status: "completed" })
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    // T014
+    it("should return 400 if status is missing", async () => {
+      await expect(
+        controller.webhook("test-secret", { run_id: "run-1", user_id: "user-1", status: "" })
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    // T015
+    it("should return 400 for invalid status value", async () => {
+      await expect(
+        controller.webhook("test-secret", {
+          run_id: "run-1",
+          user_id: "user-1",
+          status: "success",
+        })
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    // T016
+    it("should return { ok: true } even when email dispatch throws", async () => {
+      const user = mockUser();
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        })
+        .mockResolvedValueOnce({ status: 204 }) // dispatch
+        .mockResolvedValueOnce({ status: 204 }); // _deleteGist on webhook
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
+
+      jest.spyOn(Player, "findByPk").mockResolvedValue({
+        email: "user@test.be",
+        fullName: "Test User",
+      } as any);
+
+      // Make the mailing service throw
+      const mailingService = (controller as any).mailingService;
+      jest
+        .spyOn(mailingService, "sendCpExportReadyMail")
+        .mockRejectedValue(new Error("SMTP error"));
+
+      const result = await controller.webhook("test-secret", {
+        run_id: "gh-run-email-throws",
+        user_id: "user-1",
+        status: "completed",
+      });
+
+      expect(result).toEqual({ ok: true });
+    });
+
+    // T017
+    it("should return { ok: true } for duplicate run_id without re-sending email", async () => {
+      const user = mockUser();
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        })
+        .mockResolvedValueOnce({ status: 204 }) // dispatch
+        .mockResolvedValueOnce({ status: 204 }); // _deleteGist on webhook
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
+
+      jest.spyOn(Player, "findByPk").mockResolvedValue({
+        email: "user@test.be",
+        fullName: "Test User",
+      } as any);
+
+      const mailingService = (controller as any).mailingService;
+      const sendMailSpy = jest.spyOn(mailingService, "sendCpExportReadyMail");
+
+      // First delivery
+      await controller.webhook("test-secret", {
+        run_id: "gh-run-dup",
+        user_id: "user-1",
+        status: "completed",
+      });
+
+      // Second delivery with same run_id (idempotency guard)
+      const result = await controller.webhook("test-secret", {
+        run_id: "gh-run-dup",
+        user_id: "user-1",
+        status: "completed",
+      });
+
+      expect(result).toEqual({ ok: true });
+      // Mail must have been sent exactly once, not twice
+      expect(sendMailSpy).toHaveBeenCalledTimes(1);
+    });
+
+    // T018
+    it("should return { ok: true } when Player.findByPk returns null", async () => {
+      const user = mockUser();
+      mockFetch
+        .mockResolvedValueOnce({
+          status: 201,
+          json: jest.fn().mockResolvedValue({ id: "gist-abc" }),
+        })
+        .mockResolvedValueOnce({ status: 204 }) // dispatch
+        .mockResolvedValueOnce({ status: 204 }); // _deleteGist on webhook
+      await controller.generate(user, { eventId: "a0000000-0000-4000-8000-000000000001" });
+
+      jest.spyOn(Player, "findByPk").mockResolvedValue(null);
+
+      const result = await controller.webhook("test-secret", {
+        run_id: "gh-run-nullplayer",
+        user_id: "user-1",
+        status: "completed",
       });
 
       expect(result).toEqual({ ok: true });
