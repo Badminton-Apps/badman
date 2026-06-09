@@ -11,6 +11,6 @@ export class SaveEnrollmentRemarksInput {
   @Field(() => String)
   remarks!: string;
 
-  @Field(() => String, { nullable: true })
-  adminEmail?: string;
+  @Field(() => String)
+  adminEmail!: string;
 }

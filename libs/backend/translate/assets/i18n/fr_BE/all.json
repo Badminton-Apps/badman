@@ -1823,7 +1823,8 @@
           "admin": "Admin",
           "adminSettings": "Paramètres d'administration",
           "copyCompetitions": "Copier les compétitions",
-          "adminCompetitions": "Admin Compétitions"
+          "adminCompetitions": "Admin Compétitions",
+          "enrollmentAddRemarks": "Ajouter des remarques d'inscription"
         },
         "tooltips": {
           "registrationClosed": "Inscriptions fermées"
@@ -2075,6 +2076,15 @@
           "import": "Importer"
         }
       }
+    },
+    "rescueDialog": {
+      "title": "Envoyer les remarques d'inscription",
+      "description": "Vos remarques de la saison d'inscription 2026 n'ont pas été envoyées à la fédération. Vous pouvez les envoyer maintenant ou ajouter de nouvelles remarques ci-dessous.",
+      "remarksLabel": "Remarques",
+      "send": "Envoyer à la fédération",
+      "dismiss": "Fermer",
+      "success": "Remarques envoyées avec succès",
+      "error": "Échec de l'envoi. Veuillez réessayer."
     },
     "locations": {
       "exceptions": "Exceptions"

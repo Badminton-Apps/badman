@@ -1752,6 +1752,15 @@ export type I18nTranslations = {
                     };
                 };
             };
+            "rescueDialog": {
+                "title": string;
+                "description": string;
+                "remarksLabel": string;
+                "send": string;
+                "dismiss": string;
+                "success": string;
+                "error": string;
+            };
             "messages": {
                 "buttons": {
                     "hide": string;
@@ -1780,6 +1789,7 @@ export type I18nTranslations = {
                         "adminSettings": string;
                         "copyCompetitions": string;
                         "adminCompetitions": string;
+                        "enrollmentAddRemarks": string;
                     };
                     "auth": {
                         "logIn": string;

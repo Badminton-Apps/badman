@@ -17,6 +17,7 @@ source /path/to/badman/.env.local
 ```
 
 **Variables needed for scripts:**
+
 - `LINEAR_API_KEY` — for creating Linear issues from CLI
 
 ## Project Overview
@@ -244,15 +245,15 @@ Pattern:
 
 Workflows live in [`.github/workflows/`](.github/workflows/). Match the workflow to the branch you are working on — see [Branching](#branching) for base-branch rules.
 
-| Workflow | Trigger | Purpose |
-|---|---|---|
-| [`pull-request.yml`](.github/workflows/pull-request.yml) | `pull_request`, `merge_group` | Fast PR gate: `nx affected -t lint test -c ci` against `develop` (or PR base). Build is **deliberately excluded** — deploy workflows handle it. Legacy frontend + e2e excluded (Constitution V). |
-| [`deploy-staging.yml`](.github/workflows/deploy-staging.yml) | `push` to `staging`, `workflow_dispatch` | Build affected → run migrations against staging DB → deploy. Calls `_shared-migrate.yml`. |
-| [`deploy-production.yml`](.github/workflows/deploy-production.yml) | `push` to `main`, `workflow_dispatch` | Build affected (NX_BASE = last `v*` tag) → create release tag → run migrations against prod DB → deploy. The `main` → `develop` back-merge step is **currently commented out** (main intentionally diverges from develop); re-enable once branches align. Calls `_shared-migrate.yml`. |
-| [`_shared-migrate.yml`](.github/workflows/_shared-migrate.yml) | `workflow_call` (reusable) | Applies pending Sequelize migrations against `target-environment` input (`staging` \| `production`). Production env requires manual reviewer approval. Concurrency group `migrate-<env>` with `cancel-in-progress: false` so a mid-flight migration cannot be cancelled. Pre-flight invalid-index check guards against interrupted `CREATE INDEX CONCURRENTLY`. |
-| [`claude-code-review.yml`](.github/workflows/claude-code-review.yml) | `pull_request` against `main` | Auto Claude review on PRs targeting `main`. |
-| [`claude.yml`](.github/workflows/claude.yml) | `@claude` mention in issues / PR comments / reviews | On-demand Claude agent for repo. |
-| [`cla.yaml`](.github/workflows/cla.yaml) | PRs from external contributors | CLA signature gate. |
+| Workflow                                                             | Trigger                                             | Purpose                                                                                                                                                                                                                                                                                                                                                         |
+| -------------------------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`pull-request.yml`](.github/workflows/pull-request.yml)             | `pull_request`, `merge_group`                       | Fast PR gate: `nx affected -t lint test -c ci` against `develop` (or PR base). Build is **deliberately excluded** — deploy workflows handle it. Legacy frontend + e2e excluded (Constitution V).                                                                                                                                                                |
+| [`deploy-staging.yml`](.github/workflows/deploy-staging.yml)         | `push` to `staging`, `workflow_dispatch`            | Build affected → run migrations against staging DB → deploy. Calls `_shared-migrate.yml`.                                                                                                                                                                                                                                                                       |
+| [`deploy-production.yml`](.github/workflows/deploy-production.yml)   | `push` to `main`, `workflow_dispatch`               | Build affected (NX_BASE = last `v*` tag) → create release tag → run migrations against prod DB → deploy. The `main` → `develop` back-merge step is **currently commented out** (main intentionally diverges from develop); re-enable once branches align. Calls `_shared-migrate.yml`.                                                                          |
+| [`_shared-migrate.yml`](.github/workflows/_shared-migrate.yml)       | `workflow_call` (reusable)                          | Applies pending Sequelize migrations against `target-environment` input (`staging` \| `production`). Production env requires manual reviewer approval. Concurrency group `migrate-<env>` with `cancel-in-progress: false` so a mid-flight migration cannot be cancelled. Pre-flight invalid-index check guards against interrupted `CREATE INDEX CONCURRENTLY`. |
+| [`claude-code-review.yml`](.github/workflows/claude-code-review.yml) | `pull_request` against `main`                       | Auto Claude review on PRs targeting `main`.                                                                                                                                                                                                                                                                                                                     |
+| [`claude.yml`](.github/workflows/claude.yml)                         | `@claude` mention in issues / PR comments / reviews | On-demand Claude agent for repo.                                                                                                                                                                                                                                                                                                                                |
+| [`cla.yaml`](.github/workflows/cla.yaml)                             | PRs from external contributors                      | CLA signature gate.                                                                                                                                                                                                                                                                                                                                             |
 
 ### Main → develop back-merge (currently disabled)
 
@@ -284,6 +285,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/032-resolver-test-coverage/plan.md](specs/032-resolver-test-coverage/plan.md)
+[specs/033-rescue-enrollment-remarks/plan.md](specs/033-rescue-enrollment-remarks/plan.md)
 
 <!-- SPECKIT END -->

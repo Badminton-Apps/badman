@@ -33,6 +33,7 @@ describe("SaveEnrollmentRemarksResolver.saveEnrollmentRemarks", () => {
     clubId: CLUB_UUID,
     season: 2025,
     remarks: "Wij spelen enkel op maandag.",
+    adminEmail: "admin@myclub.be",
     ...overrides,
   });
 
@@ -115,34 +116,18 @@ describe("SaveEnrollmentRemarksResolver.saveEnrollmentRemarks", () => {
     );
   });
 
-  // AC4: no adminEmail → create called with adminEmail: null
-  it("AC4: no adminEmail → create called with adminEmail: null", async () => {
+  // AC4: adminEmail with surrounding whitespace → stored trimmed
+  it("AC4: adminEmail with surrounding whitespace → stored trimmed", async () => {
     const user = makeUser();
     jest.spyOn(Club, "findByPk").mockResolvedValue(fakeClub);
     const createSpy = jest
       .spyOn(EnrollmentRemark, "create")
       .mockResolvedValue({ createdAt: new Date() } as EnrollmentRemark);
 
-    await resolver.saveEnrollmentRemarks(user, makeInput({ adminEmail: undefined }));
+    await resolver.saveEnrollmentRemarks(user, makeInput({ adminEmail: "  admin@myclub.be  " }));
 
     expect(createSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ adminEmail: null }),
-      expect.anything()
-    );
-  });
-
-  // AC5: adminEmail empty string → normalized to null
-  it("AC5: adminEmail empty string → create called with adminEmail: null", async () => {
-    const user = makeUser();
-    jest.spyOn(Club, "findByPk").mockResolvedValue(fakeClub);
-    const createSpy = jest
-      .spyOn(EnrollmentRemark, "create")
-      .mockResolvedValue({ createdAt: new Date() } as EnrollmentRemark);
-
-    await resolver.saveEnrollmentRemarks(user, makeInput({ adminEmail: "" }));
-
-    expect(createSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ adminEmail: null }),
+      expect.objectContaining({ adminEmail: "admin@myclub.be" }),
       expect.anything()
     );
   });
@@ -223,8 +208,46 @@ describe("SaveEnrollmentRemarksResolver.saveEnrollmentRemarks", () => {
     expect(fakeSequelize.transaction).not.toHaveBeenCalled();
   });
 
-  // US2-AC4: user.id undefined → throws PERMISSION_DENIED
-  it("US2-AC4: unauthenticated user (id undefined) → throws PERMISSION_DENIED", async () => {
+  // US2-AC4: adminEmail empty string → throws BAD_USER_INPUT, no DB write
+  it("US2-AC4: empty adminEmail → throws BAD_USER_INPUT, no DB write", async () => {
+    const user = makeUser();
+    const createSpy = jest.spyOn(EnrollmentRemark, "create");
+
+    try {
+      await resolver.saveEnrollmentRemarks(user, makeInput({ adminEmail: "" }));
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("adminEmail");
+    }
+
+    expect(createSpy).not.toHaveBeenCalled();
+    expect(fakeSequelize.transaction).not.toHaveBeenCalled();
+  });
+
+  // US2-AC4b: adminEmail whitespace-only → throws BAD_USER_INPUT, no DB write
+  it("US2-AC4b: whitespace-only adminEmail → throws BAD_USER_INPUT, no DB write", async () => {
+    const user = makeUser();
+    const createSpy = jest.spyOn(EnrollmentRemark, "create");
+
+    try {
+      await resolver.saveEnrollmentRemarks(user, makeInput({ adminEmail: "   " }));
+      fail("expected throw");
+    } catch (err) {
+      const e = err as GraphQLError;
+      expect(e).toBeInstanceOf(GraphQLError);
+      expect(e.extensions["code"]).toBe(ErrorCode.BAD_USER_INPUT);
+      expect(e.extensions["field"]).toBe("adminEmail");
+    }
+
+    expect(createSpy).not.toHaveBeenCalled();
+    expect(fakeSequelize.transaction).not.toHaveBeenCalled();
+  });
+
+  // US2-AC5: user.id undefined → throws PERMISSION_DENIED
+  it("US2-AC5: unauthenticated user (id undefined) → throws PERMISSION_DENIED", async () => {
     const user = makeUser(null);
 
     try {
@@ -239,8 +262,8 @@ describe("SaveEnrollmentRemarksResolver.saveEnrollmentRemarks", () => {
     expect(fakeSequelize.transaction).not.toHaveBeenCalled();
   });
 
-  // US2-AC5: EnrollmentRemark.create throws → transaction.rollback() called, error propagated
-  it("US2-AC5: create throws unexpected error → rollback called, error propagated", async () => {
+  // US2-AC6: EnrollmentRemark.create throws → transaction.rollback() called, error propagated
+  it("US2-AC6: create throws unexpected error → rollback called, error propagated", async () => {
     const user = makeUser();
     jest.spyOn(Club, "findByPk").mockResolvedValue(fakeClub);
     jest.spyOn(EnrollmentRemark, "create").mockRejectedValue(new Error("db-boom"));

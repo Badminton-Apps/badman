@@ -1734,6 +1734,15 @@
         }
       }
     },
+    "rescueDialog": {
+      "title": "Send enrollment remarks",
+      "description": "Your remarks from the 2026 enrollment season were not sent to the federation. You can send them now, or add new remarks below.",
+      "remarksLabel": "Remarks",
+      "send": "Send to federation",
+      "dismiss": "Dismiss",
+      "success": "Remarks sent successfully",
+      "error": "Failed to send remarks. Please try again."
+    },
     "messages": {
       "buttons": {
         "hide": "Hide {messageType}",
@@ -1761,7 +1770,8 @@
           "admin": "Admin",
           "adminSettings": "Admin Settings",
           "copyCompetitions": "Copy Competitions",
-          "adminCompetitions": "Admin Competitions"
+          "adminCompetitions": "Admin Competitions",
+          "enrollmentAddRemarks": "Add enrollment remarks"
         },
         "auth": {
           "logIn": "Log in",

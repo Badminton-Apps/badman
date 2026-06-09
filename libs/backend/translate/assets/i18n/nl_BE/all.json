@@ -1452,6 +1452,15 @@
         }
       }
     },
+    "rescueDialog": {
+      "title": "Inschrijvingsopmerkingen verzenden",
+      "description": "Uw opmerkingen van het inschrijvingsseizoen 2026 werden niet naar de federatie verzonden. U kunt ze nu verzenden of nieuwe opmerkingen toevoegen.",
+      "remarksLabel": "Opmerkingen",
+      "send": "Verzenden naar federatie",
+      "dismiss": "Sluiten",
+      "success": "Opmerkingen succesvol verzonden",
+      "error": "Verzenden mislukt. Probeer opnieuw."
+    },
     "messages": {
       "buttons": {
         "hide": "Verberg {messageType}",
@@ -1479,7 +1488,8 @@
           "admin": "Admin",
           "adminSettings": "Admin Instellingen",
           "copyCompetitions": "Competities kopiëren",
-          "adminCompetitions": "Admin Competities"
+          "adminCompetitions": "Admin Competities",
+          "enrollmentAddRemarks": "Inschrijvingsopmerkingen toevoegen"
         },
         "auth": {
           "logIn": "Inloggen",

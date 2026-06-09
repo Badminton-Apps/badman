@@ -22,7 +22,7 @@ export class SaveEnrollmentRemarksResolver {
   @Mutation(() => Boolean, {
     description:
       "Persist rescued enrollment remarks for a club. Requires an authenticated session. " +
-      "Errors: PERMISSION_DENIED (unauthenticated), BAD_USER_INPUT (invalid clubId, empty remarks, or remarks too long), CLUB_NOT_FOUND (unknown clubId).",
+      "Errors: PERMISSION_DENIED (unauthenticated), BAD_USER_INPUT (invalid clubId, empty/whitespace remarks, remarks too long, or empty adminEmail), CLUB_NOT_FOUND (unknown clubId).",
   })
   async saveEnrollmentRemarks(
     @User() user: Player,
@@ -31,7 +31,7 @@ export class SaveEnrollmentRemarksResolver {
     const { clubId, season, remarks, adminEmail } = input;
 
     this.logger.log(
-      `[saveEnrollmentRemarks] incoming — userId: ${user?.id ?? "anonymous"}, clubId: ${clubId}, season: ${season}, adminEmail: ${adminEmail ? "provided" : "absent"}`
+      `[saveEnrollmentRemarks] incoming — userId: ${user?.id ?? "anonymous"}, clubId: ${clubId}, season: ${season}, adminEmail: ${adminEmail}`
     );
 
     // FR-006: require authenticated session
@@ -83,8 +83,16 @@ export class SaveEnrollmentRemarksResolver {
       );
     }
 
-    // normalize adminEmail: treat empty string as absent
-    const normalizedEmail = adminEmail?.trim() || null;
+    // validate adminEmail: required, non-empty after trim
+    const trimmedEmail = adminEmail.trim();
+    if (trimmedEmail.length === 0) {
+      this.logger.warn(
+        `[saveEnrollmentRemarks] rejected — empty adminEmail, userId: ${user.id}, clubId: ${clubId}`
+      );
+      throw new GraphQLError("E-mailadres mag niet leeg zijn.", {
+        extensions: { code: ErrorCode.BAD_USER_INPUT, field: "adminEmail" },
+      });
+    }
 
     // verify club exists
     this.logger.log(`[saveEnrollmentRemarks] looking up club ${clubId}`);
@@ -102,7 +110,7 @@ export class SaveEnrollmentRemarksResolver {
     const transaction = await this._sequelize.transaction();
     try {
       this.logger.log(
-        `[saveEnrollmentRemarks] inserting record — clubId: ${clubId}, season: ${season}, remarksLength: ${trimmedRemarks.length}, adminEmail: ${normalizedEmail ?? "null"}`
+        `[saveEnrollmentRemarks] inserting record — clubId: ${clubId}, season: ${season}, remarksLength: ${trimmedRemarks.length}, adminEmail: ${trimmedEmail}`
       );
 
       const record = await EnrollmentRemark.create(
@@ -110,7 +118,7 @@ export class SaveEnrollmentRemarksResolver {
           clubId,
           season,
           remarks: trimmedRemarks,
-          adminEmail: normalizedEmail,
+          adminEmail: trimmedEmail,
           source: "rescue",
         },
         { transaction }
