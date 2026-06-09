@@ -246,7 +246,7 @@ describe("SubmitEnrollmentService", () => {
     expect(createSpy).toHaveBeenCalledTimes(2);
   });
 
-  it("swallows Comment.create error and continues", async () => {
+  it("propagates Comment.create error so enrollment fails loudly", async () => {
     jest
       .spyOn(SubEventCompetition, "findAll")
       .mockResolvedValue([{ id: "se1", eventId: "event-uuid" } as never]);
@@ -255,7 +255,7 @@ describe("SubmitEnrollmentService", () => {
 
     await expect(
       service.run({ input, user: fakeUser, confirmed: false, transaction: fakeTransaction })
-    ).resolves.not.toThrow();
+    ).rejects.toThrow("db-write-failure");
   });
 
   it("does not write Comment when remarks is empty string", async () => {

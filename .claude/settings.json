@@ -1,10 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep *)",
-      "Bash(find *)",
-      "Bash(ls *)",
-      "Bash(cat *)"
+      "Bash(npx jest --config *)",
+      "Bash(npx biome check *)",
+      "Bash(npx ctx7@latest *)",
+      "Bash(npx nx test *)",
+      "Bash(npx nx lint *)"
     ],
     "additionalDirectories": [
       "/home/arno/Documents/Work/PandaPanda/Projects/Badman/badman/docs/estimates"
