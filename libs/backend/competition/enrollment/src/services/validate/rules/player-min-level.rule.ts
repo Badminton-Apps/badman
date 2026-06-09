@@ -28,6 +28,11 @@ export class PlayerMinLevelRule extends Rule {
                 params: {
                   playerFullName: player.player?.fullName,
                   playerRanking: player.single,
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.single,
+                  },
                   minLevel: subEvent.maxLevel,
                   rankingType: "single",
                 },
@@ -38,6 +43,11 @@ export class PlayerMinLevelRule extends Rule {
                 params: {
                   playerFullName: player.player?.fullName,
                   playerRanking: player.single,
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.single,
+                  },
                   minLevel: subEvent.maxLevel,
                   rankingType: "single",
                 },
@@ -55,6 +65,11 @@ export class PlayerMinLevelRule extends Rule {
                 params: {
                   playerFullName: player.player?.fullName,
                   playerRanking: player.double,
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.double,
+                  },
                   minLevel: subEvent.maxLevel,
                   rankingType: "double",
                 },
@@ -65,6 +80,11 @@ export class PlayerMinLevelRule extends Rule {
                 params: {
                   playerFullName: player.player?.fullName,
                   playerRanking: player.double,
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.double,
+                  },
                   minLevel: subEvent.maxLevel,
                   rankingType: "double",
                 },
@@ -83,6 +103,11 @@ export class PlayerMinLevelRule extends Rule {
                 params: {
                   playerFullName: player.player?.fullName,
                   playerRanking: player.mix,
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.mix,
+                  },
                   minLevel: subEvent.maxLevel,
                   rankingType: "mix",
                 },
@@ -93,6 +118,11 @@ export class PlayerMinLevelRule extends Rule {
                 params: {
                   playerFullName: player.player?.fullName,
                   playerRanking: player.mix,
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.mix,
+                  },
                   minLevel: subEvent.maxLevel,
                   rankingType: "mix",
                 },
@@ -113,6 +143,11 @@ export class PlayerMinLevelRule extends Rule {
               params: {
                 playerFullName: player.player?.fullName,
                 playerRanking: player.single,
+                player: {
+                  id: player?.id,
+                  fullName: player.player?.fullName,
+                  ranking: player.single,
+                },
                 minLevel: subEvent.maxLevel,
                 rankingType: "single",
               },
@@ -130,6 +165,11 @@ export class PlayerMinLevelRule extends Rule {
               params: {
                 playerFullName: player.player?.fullName,
                 playerRanking: player.double,
+                player: {
+                  id: player?.id,
+                  fullName: player.player?.fullName,
+                  ranking: player.double,
+                },
                 minLevel: subEvent.maxLevel,
                 rankingType: "double",
               },
@@ -148,6 +188,7 @@ export class PlayerMinLevelRule extends Rule {
               params: {
                 playerFullName: player.player?.fullName,
                 playerRanking: player.mix,
+                player: { id: player?.id, fullName: player.player?.fullName, ranking: player.mix },
                 minLevel: subEvent.maxLevel,
                 rankingType: "mix",
               },

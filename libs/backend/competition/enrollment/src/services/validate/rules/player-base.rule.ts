@@ -50,6 +50,7 @@ export class PlayerBaseRule extends Rule {
               message: "all.v1.entryTeamDrawer.validation.errors.base-other-team",
               params: {
                 playerFullName: player.player?.fullName,
+                player: { id: player.player?.id, fullName: player.player?.fullName },
                 teamId: team?.id,
               },
             });
@@ -68,6 +69,7 @@ export class PlayerBaseRule extends Rule {
               message: "all.v1.entryTeamDrawer.validation.warnings.base-other-team",
               params: {
                 playerFullName: player.player?.fullName,
+                player: { id: player.player?.id, fullName: player.player?.fullName },
                 teamId: team?.id,
               },
             });

@@ -72,6 +72,9 @@ export class PlayerSubEventRule extends Rule {
                 playerFullName: player.player?.fullName,
                 teamName: team?.name,
                 subEventName: subEvent?.name,
+                player: { id: player.id, fullName: player.player?.fullName },
+                team: { name: team?.name },
+                subEvent: { name: subEvent?.name },
               },
             },
           ]);

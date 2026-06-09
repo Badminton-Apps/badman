@@ -27,6 +27,7 @@ export class PlayerCompStatusRule extends Rule {
             message: "all.v1.entryTeamDrawer.validation.errors.comp-status-base",
             params: {
               playerFullName: player.player?.fullName,
+              player: { id: player?.id, fullName: player.player?.fullName },
             },
           });
         }
@@ -43,6 +44,7 @@ export class PlayerCompStatusRule extends Rule {
             message: "all.v1.entryTeamDrawer.validation.errors.comp-status-team",
             params: {
               playerFullName: player.player?.fullName,
+              player: { id: player?.id, fullName: player.player?.fullName },
             },
           });
         }

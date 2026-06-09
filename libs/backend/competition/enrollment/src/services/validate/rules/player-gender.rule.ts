@@ -57,7 +57,8 @@ export class PlayerGenderRule extends Rule {
         message: "all.v1.entryTeamDrawer.validation.errors.player-gender",
         params: {
           playerFullName: p?.player?.fullName,
-          player: { gender: p?.gender },
+          playerGender: p?.gender,
+          player: { id: p?.id, fullName: p?.player?.fullName, gender: p?.gender },
           gender,
           teamId: team?.id,
         },
