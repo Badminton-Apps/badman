@@ -3038,7 +3038,8 @@
             "editPlayerRankingDialog": {
               "title": "Edit ranking",
               "messages": {
-                "success": "Ranking updated"
+                "success": "Ranking updated",
+                "error": "Error updating ranking"
               },
               "form": {
                 "single": "Single",
