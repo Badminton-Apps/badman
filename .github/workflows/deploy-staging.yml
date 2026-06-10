@@ -56,7 +56,9 @@ jobs:
         # Each deployable app's `deploy` script POSTs its Render deploy hook.
         run: pnpm turbo run deploy
         env:
-          API_HOOK: ${{ secrets.STAGING_API_HOOK }}
-          WORKER_SYNC_HOOK: ${{ secrets.STAGING_WORKER_SYNC_HOOK }}
-          WORKER_RANKING_HOOK: ${{ secrets.STAGING_WORKER_RANKING_HOOK }}
+          # NOTE: the staging Render hook secrets are named BETA_* (legacy
+          # naming, predates the staging branch) — do not "fix" to STAGING_*.
+          API_HOOK: ${{ secrets.BETA_API_HOOK }}
+          WORKER_SYNC_HOOK: ${{ secrets.BETA_WORKER_SYNC_HOOK }}
+          WORKER_RANKING_HOOK: ${{ secrets.BETA_WORKER_RANKING_HOOK }}
           GH_TOKEN_CP: ${{ secrets.GH_TOKEN_CP }}
