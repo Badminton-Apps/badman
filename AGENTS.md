@@ -233,12 +233,15 @@ Versioning is **commit-driven** — contributors never hand-author release metad
 
 ### Integration test convention
 
-Integration tests exercise behaviour that unit tests cannot fake — postgres-only features (advisory locks, deferred constraints), real association loading, multi-row transaction semantics. Reference: [`packages/backend-graphql/src/resolvers/team/team-renumbering.integration.spec.ts`](packages/backend-graphql/src/resolvers/team/team-renumbering.integration.spec.ts).
+Integration tests exercise behaviour that unit tests cannot fake — real infrastructure (Redis, postgres-only features), external APIs, multi-row transaction semantics. **They are skipped by default and never run in the CI gate** — each suite opts in explicitly. Current examples:
+
+- [`apps/worker/sync/src/app/queue/__tests__/queue.integration.spec.ts`](apps/worker/sync/src/app/queue/__tests__/queue.integration.spec.ts) — Bull queue against `redis-memory-server`. Gated behind `RUN_INTEGRATION_TESTS=1`. **Caveat**: `redis-memory-server` downloads and compiles Redis from source on first run (takes minutes, then caches the binary per machine) — this is exactly why the suite must never run in the default/CI path.
+- [`packages/backend-visual/src/__integration__/visual.service.integration.spec.ts`](packages/backend-visual/src/__integration__/visual.service.integration.spec.ts) — real VR/Visual API. Gated on credentials presence (`VR_API_USER`/`VR_API_PASS`); skips itself when they're absent.
 
 Conventions:
 
 1. **Filename** — `*.integration.spec.ts`, co-located with the unit under test (`foo.service.ts` → `foo.integration.spec.ts`).
-2. **Opt-in gate** — guard the entire `describe` with `process.env["RUN_INTEGRATION_TESTS"] === "1"`. Default test runs MUST skip them.
+2. **Opt-in gate** — guard the entire suite so default test runs skip it: `const describeOrSkip = process.env["RUN_INTEGRATION_TESTS"] === "1" ? describe : describe.skip;` for infrastructure-heavy suites, or a credentials-presence check for suites that call external APIs. A suite that runs unguarded in the CI gate is a bug (cold runners make infra-heavy suites flaky — see the Redis-compile caveat above).
 3. **Connection** — load `.env` via `dotenv`, build a fresh `new Sequelize({ dialect: 'postgres', host: DB_IP, ... , models: <all models from @badman/backend-database> })`. Pass every model exported from the barrel (cross-model associations need the full graph). Skip the suite (warn, don't fail) when `DB_DIALECT` is not `postgres`.
 4. **Sentinel scope** — pick a season number that cannot collide with seed/dev data (e.g. `9999`) and create an ad-hoc test club in `beforeAll`. Use `Op.in` cleanup keyed on `clubId + season`.
 5. **Self-clean** — `beforeEach` wipes the sentinel scope; `afterAll` deletes the club, the suite-owned players + rankings, and closes the connection. Never leak rows past the suite.
