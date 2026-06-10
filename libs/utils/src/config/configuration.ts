@@ -108,6 +108,8 @@ export const configSchema = Joi.object({
   DEV_EMAIL_DESTINATION: Joi.string()
     .email({ tlds: { allow: false } })
     .optional(),
+  MAIL_PROVIDER: Joi.string().valid("smtp", "resend").default("smtp"),
+  RESEND_API_KEY: Joi.string().optional(),
   /**
    * DEV ONLY - Forbidden in production/staging. When true AND NODE_ENV=development only:
    * queue-job accepts unauthenticated requests (no JWT). Uses DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID.
@@ -246,6 +248,8 @@ export type ConfigType = {
   MAIL_HOST?: string;
   MAIL_SUBJECT_PREFIX?: string;
   DEV_EMAIL_DESTINATION?: string;
+  MAIL_PROVIDER?: string;
+  RESEND_API_KEY?: string;
   /** @deprecated DEV ONLY - never set in production. Allows unauthenticated queue-job when NODE_ENV=development. */
   DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH?: boolean;
   /** @deprecated DEV ONLY - Player UUID to impersonate for unauthenticated queue-job. */

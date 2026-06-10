@@ -28,4 +28,4 @@ pre-push:
       run: |
         BASE_REF=$(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/develop 2>/dev/null || git rev-parse HEAD~1)
         NX_BASE="$BASE_REF" NX_HEAD=HEAD \
-          npx nx affected -t lint --exclude="$(node scripts/ci/legacy-projects.js)"
+          npx nx affected -t lint --output-style=static --exclude="$(node scripts/ci/legacy-projects.js)"

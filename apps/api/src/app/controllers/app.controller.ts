@@ -1,4 +1,4 @@
-import { User } from "@badman/backend-authorization";
+import { AllowAnonymous, User } from "@badman/backend-authorization";
 
 import { Player } from "@badman/backend-database";
 import { PlannerService } from "@badman/backend-generator";
@@ -19,6 +19,7 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { Queue } from "bull";
 import { FastifyReply } from "fastify";
+import versionPackage from "../../version.json";
 
 @Controller()
 export class AppController {
@@ -131,6 +132,17 @@ export class AppController {
       default:
         throw new HttpException("Unknown queue", 500);
     }
+  }
+
+  /**
+   * Reports the version baked into this running build. Used by the deploy
+   * pipeline to assert the live server actually serves the freshly-released
+   * artifact (guards against a stale build cache silently shipping old code).
+   */
+  @Get("version")
+  @AllowAnonymous()
+  getVersion() {
+    return { version: versionPackage.version };
   }
 
   @Get("planner")

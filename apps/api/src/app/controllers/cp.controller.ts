@@ -16,6 +16,7 @@ import {
   HttpException,
   Logger,
   NotFoundException,
+  OnModuleInit,
   Param,
   Post,
   Res,
@@ -37,7 +38,7 @@ interface CpGenerationRecord {
 }
 
 @Controller("cp")
-export class CpController {
+export class CpController implements OnModuleInit {
   private readonly logger = new Logger(CpController.name);
 
   /**
@@ -54,6 +55,13 @@ export class CpController {
     private mailingService: MailingService
   ) {}
 
+  onModuleInit() {
+    const secret = this.configService.get("CP_WEBHOOK_SECRET");
+    if (!secret) {
+      this.logger.warn("CP_WEBHOOK_SECRET is not configured — all webhook calls will be rejected");
+    }
+  }
+
   @Post("generate")
   async generate(@User() user: Player, @Body() body: { eventId: string; locale?: string }) {
     if (!user?.id) {
@@ -65,6 +73,8 @@ export class CpController {
     if (!hasPermission) {
       throw new ForbiddenException("Insufficient permissions");
     }
+
+    this._cleanupExpiredRecords();
 
     const { eventId, locale = "nl_BE" } = body;
     if (!eventId || !IsUUID(eventId)) {
@@ -124,7 +134,7 @@ export class CpController {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ref: "develop",
+        ref: "main",
         inputs: {
           gist_id: gistId,
           callback_url: callbackUrl,
@@ -176,9 +186,36 @@ export class CpController {
       throw new UnauthorizedException("Invalid webhook secret");
     }
 
-    this.logger.log(
-      `CP webhook received: run_id=${body.run_id}, status=${body.status}, user_id=${body.user_id}`
-    );
+    this._cleanupExpiredRecords();
+
+    // T007: Validate required fields
+    if (!body.run_id || !body.user_id || !body.status) {
+      throw new BadRequestException("run_id, user_id, and status are required");
+    }
+
+    // T008: Validate status enum
+    if (body.status !== "completed" && body.status !== "failed") {
+      throw new BadRequestException(
+        `Invalid status: ${body.status}. Must be "completed" or "failed"`
+      );
+    }
+
+    // T009: Idempotency guard
+    const existingRecord = this.generations.get(body.run_id);
+    if (existingRecord && existingRecord.status !== "pending") {
+      this.logger.warn("Duplicate webhook delivery", {
+        runId: body.run_id,
+        existingStatus: existingRecord.status,
+      });
+      return { ok: true };
+    }
+
+    // T010: Structured receipt log
+    this.logger.log("Webhook received", {
+      runId: body.run_id,
+      userId: body.user_id,
+      status: body.status,
+    });
 
     // Find the pending record for this user and update it with the real run_id
     let matchedTrackingId: string | undefined;
@@ -188,11 +225,18 @@ export class CpController {
         record.status = body.status === "completed" ? "completed" : "failed";
         matchedTrackingId = trackingId;
 
-        // Best-effort Gist cleanup
+        // T004: Best-effort Gist cleanup wrapped in try/catch
         if (record.gistId) {
           const githubToken = this.configService.get("GH_TOKEN_CP");
           if (githubToken) {
-            await this._deleteGist(record.gistId, githubToken);
+            try {
+              await this._deleteGist(record.gistId, githubToken);
+            } catch (e) {
+              this.logger.warn("Gist cleanup failed", {
+                gistId: record.gistId,
+                error: String(e),
+              });
+            }
           }
         }
 
@@ -200,6 +244,19 @@ export class CpController {
         this.pendingByEvent.delete(record.eventId);
         break;
       }
+    }
+
+    // T011: Structured record-match log
+    if (matchedTrackingId) {
+      this.logger.log("Matched pending record", {
+        runId: body.run_id,
+        trackingId: matchedTrackingId,
+      });
+    } else {
+      this.logger.warn("No pending record found — storing by run_id directly", {
+        runId: body.run_id,
+        userId: body.user_id,
+      });
     }
 
     // Also store by run_id for download lookups
@@ -220,28 +277,43 @@ export class CpController {
       });
     }
 
-    // Send email notification
+    // T005/T006: Send email notification wrapped in try/catch
     if (body.status === "completed") {
-      await this._sendCompletionEmail(body.user_id, body.run_id);
+      try {
+        await this._sendCompletionEmail(body.user_id, body.run_id);
+        this.logger.log("Completion email dispatched", {
+          runId: body.run_id,
+          userId: body.user_id,
+        });
+      } catch (e) {
+        this.logger.error("Failed to send completion email", {
+          runId: body.run_id,
+          userId: body.user_id,
+          error: String(e),
+        });
+      }
     } else {
-      await this._sendFailureEmail(body.user_id);
+      try {
+        await this._sendFailureEmail(body.user_id);
+        this.logger.log("Failure email dispatched", {
+          runId: body.run_id,
+          userId: body.user_id,
+        });
+      } catch (e) {
+        this.logger.error("Failed to send failure email", {
+          runId: body.run_id,
+          userId: body.user_id,
+          error: String(e),
+        });
+      }
     }
 
     return { ok: true };
   }
 
   @Get("download/:runId")
-  async download(@User() user: Player, @Param("runId") runId: string, @Res() res: FastifyReply) {
-    if (!user?.id) {
-      throw new UnauthorizedException("Authentication required");
-    }
-
-    const hasPermission = await user.hasAnyPermission(["edit:competition"]);
-    if (!hasPermission) {
-      throw new ForbiddenException("Insufficient permissions");
-    }
-
-    // Verify ownership (or admin)
+  @AllowAnonymous()
+  async download(@Param("runId") runId: string, @Res() res: FastifyReply) {
     const record = this.generations.get(runId);
     if (!record) {
       throw new NotFoundException("Generation not found or expired");
@@ -319,10 +391,8 @@ export class CpController {
       return;
     }
 
-    const record = this.generations.get(runId);
-    const locale = record?.locale;
-    const clientUrl = this.configService.get("CLIENT_URL") || "";
-    const downloadUrl = `${clientUrl}/${locale}/cp/download/${runId}`;
+    const callbackUrl = this.configService.get("CP_CALLBACK_URL") || "";
+    const downloadUrl = callbackUrl.replace("/webhook", `/download/${runId}`);
 
     this.logger.log(
       `CP file ready for user ${player.fullName} (${player.email}). Download: ${downloadUrl}`

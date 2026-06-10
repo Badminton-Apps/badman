@@ -152,6 +152,7 @@
     "ngxtension": "^4.3.2",
     "node-geocoder": "^4.4.1",
     "nodemailer": "^6.10.0",
+    "resend": "^4.0.0",
     "parse5": "^7.2.1",
     "pg": "^8.13.3",
     "pug": "^3.0.3",
@@ -271,6 +272,5 @@
     "string-length": {
       "strip-ansi": "^6.0.0"
     }
-  },
-  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
+  }
 }

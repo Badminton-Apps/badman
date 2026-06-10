@@ -88,7 +88,7 @@ export class CommentResolver {
 
       // update comment if already exists
       comment.message = newCommentData.message;
-      comment.save({ transaction });
+      await comment.save({ transaction });
 
       switch (newCommentData.linkType) {
         case "competition":

@@ -69,12 +69,12 @@ export class PlayerSubEventRule extends Rule {
             {
               message: `all.v1.entryTeamDrawer.validation.errors.player-subevent`,
               params: {
-                player: {
-                  id: player.id,
-                  fullName: player.player?.fullName,
-                },
-                team,
-                subEvent,
+                playerFullName: player.player?.fullName,
+                teamName: team?.name,
+                subEventName: subEvent?.name,
+                player: { id: player.id, fullName: player.player?.fullName },
+                team: { name: team?.name },
+                subEvent: { name: subEvent?.name },
               },
             },
           ]);
