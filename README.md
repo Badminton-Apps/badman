@@ -7,7 +7,12 @@
 
 ### 2. Install dependencies
 
-run: `npm install` (currently using node 20.19.0)
+```bash
+corepack enable   # provides pnpm at the version pinned in package.json
+pnpm install
+```
+
+(currently using node 20.19.0 — see `.nvmrc`)
 
 ### 3. Creating database
 
@@ -29,13 +34,13 @@ It is best to restore your local database with a copy of the production database
 
 ### 5. Start redis server
 
-- ensure you have redis installed on local machine
-- in terminal, run ` redis-server --port 6379` to open redis server
+- easiest: `npm run docker:up` (starts PostgreSQL, Redis and pgAdmin from `docker-compose.dev.yml`)
+- or run a local redis manually: `redis-server --port 6379`
 
 ### 6. Start client and server
 
-- run: `npm start` for the legacy client (running on port 3000)
-- run: `npm start api` for the api (running on port 5010)
+- run: `pnpm start:server` for the API + sync worker in watch mode (API on port 5010)
+- the frontend lives in the separate `badman-frontend` repository (the legacy Angular client was removed from this repo)
 
 ### 7. Run database migrations (if first time runninf)
 
@@ -66,58 +71,64 @@ Steps:
 There are currently 2 async workers that can be run on the application, which sync various data to and from `Toernooi.nl`, the platform that serves as the source of truth for all competition and tournament scheduling, clubs and teams, encounter results, and player rankings. The workers are:
 
 - `Ranking`: syncs all player ranking data, as encounters are updated
-  - to start, run `npm run start worker-ranking`
-- `Sync`: Syncs all encounter, competition and tournament data to and from `Toernooi.nl
-  - to start, run `npm run start worker-sync`
+  - to start, run `pnpm turbo run dev --filter=worker-ranking`
+- `Sync`: Syncs all encounter, competition and tournament data to and from `Toernooi.nl`
+  - to start, run `pnpm turbo run dev --filter=worker-sync` (or `pnpm start:server` for API + sync together)
+
+⚠️ Booting a worker locally makes it a consumer of the **shared dev Redis queue** — it will immediately process any jobs already sitting there, including jobs with external side effects (see Linear BAD-259). Check your env flags (`ENTER_SCORES_ENABLED`, `VR_*`) before starting workers.
 
 Note: These workers heavily rely on the toernooi.nl system, and utilize the `VR_API_USER` and `VR_API_PASS` env variables. These variables should be available by request to the PandaPanda team. Be careful though: if the sync worker has actual credentials, there is the potential that "production" data on the toernooi.nl website will be affected. Refer to PandaPanda's documentation on the badman workers to understand what things can be affected, and the standard sync schedule for each worker before running them with true credentials. Otherwise, add `Test` as the value of each variable to ensure data does not get updated.
 
 ### 10. Testing
 
-This is an Nx monorepo using Jest for testing. Run tests using npm scripts or nx commands:
+This is a Turborepo + pnpm monorepo using Jest. Each app/package has its own `jest.config.ts`; the shared base lives in the root `jest.preset.js`.
 
 #### Run Tests
 
-- `npx nx test <project>` - Run tests for a specific project (e.g., `npx nx test worker-sync`)
-- `npm run test:affected` - Run tests for projects affected by recent changes
-- `npm run test:affected:coverage` - Run affected tests with coverage reports
+- `pnpm turbo run test --filter=<pkg>` — run tests for one package (e.g. `--filter=worker-sync` or `--filter=@badman/backend-graphql`)
+- `pnpm test:affected` — run tests for packages affected by recent changes
+- `pnpm test` — run the whole suite (turbo caches unchanged packages; add `--force` to re-execute everything)
 
 #### Run Tests with Coverage
 
-- `npx nx test <project> --coverage` - Run tests for a project with coverage
-- `npm run test:coverage` - Run tests for all projects with coverage
+- `pnpm test:coverage:all` — full coverage report (lcov + text under root `./coverage`)
+- `pnpm turbo run test --filter=<pkg> -- --coverage` — coverage for one package
 
-#### Examples
+#### Integration tests (opt-in, not run by CI)
+
+Files named `*.integration.spec.ts` are **skipped by default** and only execute when explicitly opted in:
+
+- `RUN_INTEGRATION_TESTS=1` gates infrastructure-heavy suites. Example: the Bull queue suite (`apps/worker/sync/src/app/queue/__tests__/queue.integration.spec.ts`) boots `redis-memory-server`, which **downloads and compiles Redis from source on first run** (minutes; cached afterwards) — exactly why it isn't part of the CI gate.
+
+  ```bash
+  cd apps/worker/sync && RUN_INTEGRATION_TESTS=1 pnpm exec jest queue.integration
+  ```
+
+- Suites that hit external APIs gate on credentials instead: the Visual/VR suite (`packages/backend-visual/src/__integration__/`) only runs when `VR_API_USER`/`VR_API_PASS` are set.
 
 ```bash
-# Run worker-sync tests (275 tests)
-npx nx test worker-sync
-
-# Run worker-sync tests with coverage reports
-npx nx test worker-sync --coverage
-
-# Run tests for projects affected by recent changes
-npm run test:affected
-
-# Run affected tests with coverage
-npm run test:affected:coverage
+# Examples
+pnpm turbo run test --filter=worker-sync        # one package
+pnpm test:affected                              # affected only
+pnpm test:coverage:all                          # everything, with coverage
 ```
 
-**Coverage Reports**: Generated in `./coverage` directory when running with `--coverage` flag.
+**Coverage Reports**: generated in `./coverage` when running with `--coverage`.
 
 ## CI / GitHub Actions
 
 Workflows live in [`.github/workflows/`](.github/workflows/). See [AGENTS.md → CI / GitHub Actions](./AGENTS.md#ci--github-actions) for the per-workflow rules.
 
-| Workflow | Trigger | Purpose |
-|---|---|---|
-| `pull-request.yml` | PR + merge queue | `nx affected` lint + test on the PR base. Build excluded — runs in deploy. |
-| `deploy-staging.yml` | push to `staging` | Build affected → migrate staging DB → deploy. |
-| `deploy-production.yml` | push to `main` | Build affected (base = last release tag) → tag release → migrate prod DB → deploy. |
-| `_shared-migrate.yml` | reusable (`workflow_call`) | Applies pending Sequelize migrations. Production requires manual approval. Concurrency-locked per env. |
-| `claude-code-review.yml` | PR → `main` | Automatic Claude review. |
-| `claude.yml` | `@claude` mention | On-demand Claude agent. |
-| `cla.yaml` | External-contributor PRs | CLA gate. |
+| Workflow                 | Trigger                    | Purpose                                                                                                |
+| ------------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pull-request.yml`       | PR + merge queue           | `pnpm turbo run lint test --affected` on the PR base. Build excluded — runs in deploy.                 |
+| `deploy-staging.yml`     | push to `staging`          | Full-graph lint/test/build (turbo cache) → migrate staging DB → deploy via Render hooks.               |
+| `deploy-production.yml`  | push to `main`             | Full-graph lint/test/build → migrate prod DB → deploy → verify live version.                           |
+| `release-please.yml`     | push to `main`             | Commit-driven release PR; merging it bumps versions, tags `vX.Y.Z`, writes CHANGELOG.                  |
+| `_shared-migrate.yml`    | reusable (`workflow_call`) | Applies pending Sequelize migrations. Production requires manual approval. Concurrency-locked per env. |
+| `claude-code-review.yml` | PR → `main`                | Automatic Claude review.                                                                               |
+| `claude.yml`             | `@claude` mention          | On-demand Claude agent.                                                                                |
+| `cla.yaml`               | External-contributor PRs   | CLA gate.                                                                                              |
 
 **Branching → workflow mapping**: `develop`-based PRs run `pull-request.yml` only. Merging to `staging` deploys staging. Merging to `main` deploys production. Do not push directly to `staging` or `main` — use PRs.
 
@@ -146,18 +157,6 @@ for debugging the workers use following ports:
 
 - worker-sync: 9230
 - worker-ranking: 9231
-
-### Generate pwa assets
-
-https://github.com/elegantapp/pwa-asset-generator
-
-### splash
-
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --dark-mode  --opaque false --background "#303030"`
-
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --icon-only --favicon --dark-mode  --opaque false --background "rgba(0, 0, 0, 0)"`
-
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --icon-only --dark-mode  --opaque false --background "rgba(0, 0, 0, 1)"`
 
 ### speedtest
 

@@ -4,12 +4,44 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "build": "nx build worker-sync",
-    "test": "nx test worker-sync",
-    "lint": "nx lint worker-sync",
-    "dev": "nx serve worker-sync"
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "deploy": "node ../../../scripts/render.js --app=worker_sync"
   },
-  "nx": {
-    "includedScripts": []
+  "dependencies": {
+    "tslib": "^2.8.1",
+    "@badman/backend-compile": "workspace:*",
+    "@badman/backend-database": "workspace:*",
+    "@badman/backend-encounter-games": "workspace:*",
+    "@badman/backend-logging": "workspace:*",
+    "@badman/backend-mailing": "workspace:*",
+    "@badman/backend-notifications": "workspace:*",
+    "@badman/backend-pupeteer": "workspace:*",
+    "@badman/backend-queue": "workspace:*",
+    "@badman/backend-ranking": "workspace:*",
+    "@badman/backend-search": "workspace:*",
+    "@badman/backend-translate": "workspace:*",
+    "@badman/backend-twizzit": "workspace:*",
+    "@badman/backend-visual": "workspace:*",
+    "@badman/backend-websockets": "workspace:*",
+    "@badman/utils": "workspace:*",
+    "@nestjs/bull": "^11.0.0",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-fastify": "^11.0.0",
+    "@sentry/nestjs": "^10.43.0",
+    "axios": "^1.7.9",
+    "bull": "^4.16.5",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "fast-xml-parser": "^4.5.1",
+    "nest-winston": "^1.10.2",
+    "puppeteer": "^23.11.1",
+    "sequelize": "^6.37.5",
+    "sequelize-typescript": "^2.1.6"
   }
 }

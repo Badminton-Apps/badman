@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "include-component-in-tag": false,
+  "tag-separator": "",
+  "packages": {
+    ".": {
+      "package-name": "badman",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        { "type": "json", "path": "apps/api/src/version.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "apps/worker/sync/src/version.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "apps/worker/ranking/src/version.json", "jsonpath": "$.version" },
+        {
+          "type": "json",
+          "path": "apps/worker/belgium/flanders/places/src/version.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "apps/worker/belgium/flanders/points/src/version.json",
+          "jsonpath": "$.version"
+        }
+      ]
+    }
+  }
+}
