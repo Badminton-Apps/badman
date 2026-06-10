@@ -151,6 +151,9 @@ importers:
       date-fns-tz:
         specifier: ^3.2.0
         version: 3.2.0(date-fns@4.4.0)
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.6.1
       express:
         specifier: 4.21.2
         version: 4.21.2
@@ -1737,6 +1740,9 @@ importers:
       date-fns-tz:
         specifier: ^3.2.0
         version: 3.2.0(date-fns@4.4.0)
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.6.1
       fast-xml-parser:
         specifier: ^4.5.1
         version: 4.5.6

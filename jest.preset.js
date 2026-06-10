@@ -8,6 +8,10 @@ module.exports = {
   // preset only carries the repo-wide behaviour.
   passWithNoTests: true,
   coverageReporters: ["html", "text", "lcov"],
+  // Cold ts-jest compiles of large suites (assembly, graphql) can push the
+  // first test past Jest's 5s default when the whole repo runs in parallel —
+  // give every suite the same headroom worker-sync always had.
+  testTimeout: 30000,
   // Bull/Redis, NestJS DI containers, and worker pools can leave open handles
   // after tests resolve. forceExit prevents jest from hanging at the end of a
   // suite (CI runs were stalling for several minutes per project after
