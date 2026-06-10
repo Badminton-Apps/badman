@@ -1,43 +1,38 @@
 name: Setup Monorepo
-description: nx-set-shas, Node from .nvmrc, cached node_modules + Nx local cache. Caller MUST run actions/checkout@v5 with fetch-depth 0 first.
+description: pnpm (via packageManager pin) + Node from .nvmrc, frozen install, Turborepo local cache. Caller MUST run actions/checkout@v5 with fetch-depth 0 first.
 
 inputs:
-  cache-nx:
-    description: "Whether to cache .nx/cache across runs for faster nx affected."
+  cache-turbo:
+    description: "Whether to cache the Turborepo local cache across runs."
     required: false
     default: "true"
 
 runs:
   using: composite
   steps:
-    - name: Derive SHAs for nx affected
-      uses: nrwl/nx-set-shas@v4
+    - name: Install pnpm (version from packageManager field)
+      uses: pnpm/action-setup@v4
 
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v5
       with:
         node-version-file: .nvmrc
-        cache: npm
-
-    - name: Cache node_modules
-      id: cache-node-modules
-      uses: actions/cache@v4
-      with:
-        path: node_modules
-        # Lockfile + Node version pin the cache key. Bumping .nvmrc invalidates.
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('.nvmrc') }}-${{ hashFiles('package-lock.json') }}
+        cache: pnpm
 
     - name: Install dependencies
-      if: steps.cache-node-modules.outputs.cache-hit != 'true'
       shell: bash
-      run: npm ci --prefer-offline --no-audit --no-fund
+      run: pnpm install --frozen-lockfile
 
-    - name: Cache Nx computation
-      if: inputs.cache-nx == 'true'
+    - name: Cache Turborepo computation
+      if: inputs.cache-turbo == 'true'
       uses: actions/cache@v4
       with:
-        path: .nx/cache
+        # turbo 2.x writes its local cache under .turbo/cache; older layouts
+        # used node_modules/.cache/turbo — cache both to be version-proof.
+        path: |
+          .turbo/cache
+          node_modules/.cache/turbo
         # Restore latest by branch; key is unique per commit so we always write a fresh entry.
-        key: ${{ runner.os }}-nx-${{ github.ref_name }}-${{ github.sha }}
+        key: ${{ runner.os }}-turbo-${{ github.ref_name }}-${{ github.sha }}
         restore-keys: |
-          ${{ runner.os }}-nx-${{ github.ref_name }}-
-          ${{ runner.os }}-nx-
+          ${{ runner.os }}-turbo-${{ github.ref_name }}-
+          ${{ runner.os }}-turbo-

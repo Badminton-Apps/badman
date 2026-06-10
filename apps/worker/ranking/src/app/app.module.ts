@@ -1,3 +1,4 @@
+import { join } from "path";
 import { CronJob, DatabaseModule, Service } from "@badman/backend-database";
 import { LoggingModule } from "@badman/backend-logging";
 import { QueueModule, RankingQueue } from "@badman/backend-queue";
@@ -13,6 +14,11 @@ import { RankingProcessor } from "./processors";
   imports: [
     ConfigModule.forRoot({
       cache: true,
+      // Resolve .env at the workspace root via an absolute path: this file
+      // compiles to <app>/dist/app/, and `turbo run dev` runs apps with the
+      // package dir (not the workspace root) as cwd, so the default
+      // cwd-relative lookup misses the root .env.
+      envFilePath: join(__dirname, "..", "..", "..", "..", "..", ".env"),
       validationSchema: configSchema,
       load: [load],
     }),

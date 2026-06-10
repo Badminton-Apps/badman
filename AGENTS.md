@@ -9,6 +9,9 @@ This file (`AGENTS.md`) is the single source of truth for AI-assisted developmen
 Required for dev and AI-assisted scripts:
 
 ```bash
+# pnpm is pinned via the packageManager field; corepack provides it
+corepack enable
+
 # Copy .env.local if it doesn't exist (contains LINEAR_API_KEY for issue creation)
 cp .env.local.example .env.local  # or manually source .env before running scripts
 
@@ -22,40 +25,49 @@ source /path/to/badman/.env.local
 
 ## Project Overview
 
-Competitive badminton management platform (Badman). Nx monorepo with NestJS (backend API + workers), Sequelize ORM (PostgreSQL), Apollo GraphQL (code-first), Bull queues (Redis).
+Competitive badminton management platform (Badman). **Backend-only Turborepo + pnpm monorepo** with NestJS (backend API + workers), Sequelize ORM (PostgreSQL), Apollo GraphQL (code-first), Bull queues (Redis).
 
-**IMPORTANT:** The Angular frontend code in this repo (`apps/badman/`, `libs/frontend/`) is **LEGACY** and must NOT be used for new development. It exists only as a reference. The active frontend lives in a separate repository.
+**The frontend lives in a separate repository** (Constitution v2.0.0, Principle V). The legacy Angular frontend was removed from this repo; do not reintroduce frontend code here.
+
+Orchestration: Turborepo (`turbo.json`) over pnpm workspaces (`pnpm-workspace.yaml`). Deployable apps live under `apps/`; shared libraries are **compiled internal packages** under `packages/`, imported as `@badman/<name>` and resolved via `workspace:*` dependencies + each package's `exports` map (no tsconfig path aliases).
 
 ## Common Commands
 
 ```bash
+# Install (frozen, what CI runs)
+pnpm install --frozen-lockfile
+
 # Start Docker containers (PostgreSQL, Redis, pgAdmin)
 npm run docker:up
 
-# Serve API + sync worker in dev
-nx run-many --target=serve --projects=api,worker-sync --parallel
+# Serve API + sync worker in dev (watch mode; builds dependencies first)
+pnpm start:server          # = turbo run dev --filter=api --filter=worker-sync
 
-# Build a specific project
-nx build api
-nx build backend-graphql
+# Serve the ranking workers
+pnpm start:ranking
 
-# Run tests for a specific lib
-nx test backend-graphql
-# Or directly:
-npx jest --config libs/backend/graphql/jest.config.ts
+# Build everything / one project (dependencies build first via ^build)
+pnpm build                 # = turbo run build
+pnpm turbo run build --filter=api
+pnpm turbo run build --filter=@badman/backend-graphql
 
-# Run only affected tests
-nx affected:test
+# Run tests for a specific package
+pnpm turbo run test --filter=@badman/backend-graphql
+# Or run jest directly inside the package (deps must be built once first):
+cd packages/backend-graphql && pnpm test
+
+# Run only affected tests (vs a base; CI sets TURBO_SCM_BASE to the PR base)
+pnpm turbo run test --affected
 
 # Run integration tests against the dev postgres (docker-compose.dev.yml)
 # Off by default; set RUN_INTEGRATION_TESTS=1 to opt in. Files named *.integration.spec.ts
-# guard themselves with that env var, so a normal `nx test` run skips them.
+# guard themselves with that env var, so a normal test run skips them.
 npm run docker:up
-RUN_INTEGRATION_TESTS=1 npx jest --config libs/backend/graphql/jest.config.ts \
+cd packages/backend-graphql && RUN_INTEGRATION_TESTS=1 pnpm exec jest \
   --testPathPattern <feature>.integration
 
-# Lint a specific project
-nx lint backend-graphql
+# Lint a specific package
+pnpm turbo run lint --filter=@badman/backend-graphql
 
 # Run database migrations
 npx sequelize-cli db:migrate
@@ -67,43 +79,47 @@ prettier --check .
 # Seed test data
 npm run seed:test-data
 
-# Run full coverage report (all non-legacy libs/apps, no DB required)
-# Produces: text summary to console + lcov.info per lib under coverage/
-npm run test:coverage:all
+# Full coverage report (all packages, no DB required)
+# Produces: text summary per package + lcov.info under root coverage/
+pnpm test:coverage:all     # = turbo run test -- --coverage
 
 # Update coverage threshold after adding tests:
-# 1. Run: npm run test:coverage:all
-# 2. Find the "Lines %" for backend-graphql in the console output
+# 1. Run: pnpm test:coverage:all
+# 2. Find the "Lines %" for backend-graphql in the output
 # 3. Round down to nearest 5%
-# 4. Edit libs/backend/graphql/jest.config.ts → coverageThreshold.global.*
+# 4. Edit packages/backend-graphql/jest.config.ts → coverageThreshold.global.*
 # 5. Commit the updated jest.config.ts
+
+# Cache notes: turbo caches build/test/lint per package. A no-change re-run is
+# near-instant (>>> FULL TURBO). To force re-execution: append --force.
 ```
 
 ## Architecture
 
-### Apps
+### Apps (`apps/`)
 
-- **`apps/api/`** — NestJS GraphQL API (Fastify adapter, port 5010). Serves Angular frontend as static files in production.
-- **`apps/badman/`** — **LEGACY** Angular frontend. Do not modify; reference only.
+- **`apps/api/`** — NestJS GraphQL API (Fastify adapter, port 5010). Built with `nest build` to `apps/api/dist`.
+- **`apps/scripts/`** — one-off operational scripts app.
 - **`apps/worker/ranking/`** — Bull queue worker for ranking recalculation.
 - **`apps/worker/sync/`** — Bull queue worker for federation data sync.
 - **`apps/worker/belgium/flanders/places|points/`** — Workers for Belgian Flanders federation data.
 
-### Libs (import as `@badman/<name>`)
+Each app builds with `nest build` into its own `dist/` (e.g. `apps/api/dist/main.js`), copies `src/assets` via `nest-cli.json`, and declares its runtime dependencies in its own `package.json` (internal ones as `workspace:*`).
 
-**Backend** (`libs/backend/`): Each lib is a buildable NestJS module. Key ones:
+### Packages (import as `@badman/<name>`, `packages/`)
+
+Each package is a compiled workspace library: `tsc` emits to `<pkg>/dist`, consumers resolve through the package `exports`. The package **name equals the import alias** (e.g. `packages/backend-competition/assembly` is `@badman/backend-assembly`). Key ones:
 
 - `@badman/backend-database` — All Sequelize models + `DatabaseModule`
 - `@badman/backend-graphql` — All resolvers + `GrapqhlModule` + scalars + query utilities
 - `@badman/backend-authorization` — JWT/Auth0 guard (`PermGuard`), `@User()` decorator, `@AllowAnonymous()`
 - `@badman/backend-queue` — Bull queue setup, queue name constants
-- `@badman/backend-translate` — `nestjs-i18n` module, i18n JSON files
+- `@badman/backend-translate` — `nestjs-i18n` module, i18n JSON files (assets ship inside the package's `dist`)
 - `@badman/backend-enrollment` — Enrollment validation rule engine
 - `@badman/backend-ranking` — Ranking calculation services
+- `@badman/utils` — business-logic helpers, enums, config schema, **`i18n.generated.ts`** (emitted by **nestjs-i18n** when the API boots—see Translation / i18n below; never edit manually).
 
-**Shared** (`libs/utils/`): `@badman/utils` — business-logic helpers, enums, config schema, **`i18n.generated.ts`** (emitted by **nestjs-i18n** when the API boots—see Translation / i18n below; never edit manually).
-
-**Frontend** (`libs/frontend/`): **LEGACY** Angular libs. Reference only — do not modify.
+Adding a dependency between packages: add `"@badman/<name>": "workspace:*"` to the consumer's `package.json` and run `pnpm install`. Do NOT add tsconfig path aliases — they were removed in the Turborepo migration.
 
 ### Sequelize Models (Code-First GraphQL)
 
@@ -123,7 +139,7 @@ Input types are derived via `PartialType`/`OmitType` from the same model class. 
 
 ### Resolver Pattern
 
-Resolvers live in `libs/backend/graphql/src/resolvers/<domain>/`. Each domain has `*.resolver.ts`, `*.module.ts`, `*.resolver.spec.ts`.
+Resolvers live in `packages/backend-graphql/src/resolvers/<domain>/`. Each domain has `*.resolver.ts`, `*.module.ts`, `*.resolver.spec.ts`.
 
 - Queries call model statics directly (`Model.findAll`, `Model.findByPk`)
 - Mutations always use a Sequelize transaction with commit/rollback
@@ -131,8 +147,8 @@ Resolvers live in `libs/backend/graphql/src/resolvers/<domain>/`. Each domain ha
 - Slug support: `IsUUID(id)` decides between `findByPk` and `findOne({ where: { slug } })`
 - Paged results use inline `@ObjectType()` with `{ count: number; rows: T[] }`
 - `ListArgs` / `queryFixer()` utilities translate GraphQL filter operators to Sequelize `Op` symbols
-- **Classified errors**: when a mutation needs to expose distinct, machine-readable failure modes to clients, throw `GraphQLError` from the `graphql` package with `extensions.code` set to a constant from the shared registry [`libs/backend/graphql/src/utils/error-codes.ts`](libs/backend/graphql/src/utils/error-codes.ts) (`ErrorCode.PERMISSION_DENIED`, `ErrorCode.INTERNAL_ERROR`, etc.). Do NOT inline string literals — clients pin behavior to these codes and the registry is the single source of truth. Adding a new code: append a key to `error-codes.ts` and document the per-code `extensions` payload in the resolver's contract document under `specs/`. Reference implementations: [`enrollment.resolver.ts`](libs/backend/graphql/src/resolvers/event/competition/enrollment.resolver.ts) and [`team.resolver.ts`](libs/backend/graphql/src/resolvers/team/team.resolver.ts) (`createEnrollment` / `createTeam`).
-- **Idempotent create mutations**: when a create mutation has a natural uniqueness key (e.g. `(link, season)` for teams, `(teamId, subEventId)` for enrollments, `(clubId, playerId, season, type)` for club memberships), it MUST be idempotent on re-submission. Return a result `@ObjectType` carrying the entity's identifiers plus `alreadyExisted: boolean` (`true` = existing row matched, no write; `false` = fresh row created). Do NOT throw a duplicate error. Reference implementations: `TeamResult` ([`team-result.object.ts`](libs/backend/graphql/src/resolvers/team/team-result.object.ts)) and `EnrollmentResult` ([`enrollment-result.object.ts`](libs/backend/graphql/src/resolvers/event/competition/enrollment-result.object.ts)). See Constitution Principle III.
+- **Classified errors**: when a mutation needs to expose distinct, machine-readable failure modes to clients, throw `GraphQLError` from the `graphql` package with `extensions.code` set to a constant from the shared registry [`packages/backend-graphql/src/utils/error-codes.ts`](packages/backend-graphql/src/utils/error-codes.ts) (`ErrorCode.PERMISSION_DENIED`, `ErrorCode.INTERNAL_ERROR`, etc.). Do NOT inline string literals — clients pin behavior to these codes and the registry is the single source of truth. Adding a new code: append a key to `error-codes.ts` and document the per-code `extensions` payload in the resolver's contract document under `specs/`. Reference implementations: [`enrollment.resolver.ts`](packages/backend-graphql/src/resolvers/event/competition/enrollment.resolver.ts) and [`team.resolver.ts`](packages/backend-graphql/src/resolvers/team/team.resolver.ts) (`createEnrollment` / `createTeam`).
+- **Idempotent create mutations**: when a create mutation has a natural uniqueness key (e.g. `(link, season)` for teams, `(teamId, subEventId)` for enrollments, `(clubId, playerId, season, type)` for club memberships), it MUST be idempotent on re-submission. Return a result `@ObjectType` carrying the entity's identifiers plus `alreadyExisted: boolean` (`true` = existing row matched, no write; `false` = fresh row created). Do NOT throw a duplicate error. Reference implementations: `TeamResult` ([`team-result.object.ts`](packages/backend-graphql/src/resolvers/team/team-result.object.ts)) and `EnrollmentResult` ([`enrollment-result.object.ts`](packages/backend-graphql/src/resolvers/event/competition/enrollment-result.object.ts)). See Constitution Principle III.
 
 ### Auth Flow
 
@@ -140,15 +156,16 @@ Resolvers live in `libs/backend/graphql/src/resolvers/<domain>/`. Each domain ha
 
 ### Translation / i18n
 
-- JSON files: `libs/backend/translate/assets/i18n/{en,nl_BE,fr_BE}/all.json`
+- JSON files: `packages/backend-translate/assets/i18n/{en,nl_BE,fr_BE}/all.json`
 - Fallback language: `nl_BE`
 - Single `all` namespace; keys follow dot-notation: `all.button.save`, `all.v1.enrollment.validation.*`
+- At build time the package copies `assets/` into its own `dist/`; the translate module resolves them via `__dirname`, so no app-level asset copying exists.
 
-#### `libs/utils/src/lib/i18n.generated.ts` (nestjs-i18n — do not edit)
+#### `packages/utils/src/lib/i18n.generated.ts` (nestjs-i18n — do not edit)
 
-That file is **not** hand-maintained. **nestjs-i18n** writes it when the API process starts, using `typesOutputPath` in `libs/backend/translate/src/translate.module.ts` (it merges loaded JSON into TypeScript types). **Never edit `i18n.generated.ts` manually**—not even to “match” JSON changes.
+That file is **not** hand-maintained. **nestjs-i18n** writes it when the API process starts, using `typesOutputPath` in `packages/backend-translate/src/translate.module.ts` (it merges loaded JSON into TypeScript types). **Never edit `i18n.generated.ts` manually**—not even to “match” JSON changes.
 
-After you change `all.json`, regenerate the types by **starting the API once** (e.g. `nx run api:serve`) and wait until the log shows types were written, or rely on your usual dev server. Commit the updated `i18n.generated.ts` together with the JSON changes once the process has regenerated it.
+After you change `all.json`, regenerate the types by **starting the API once** (e.g. `pnpm turbo run dev --filter=api`) and wait until the log shows types were written, or rely on your usual dev server. Commit the updated `i18n.generated.ts` together with the JSON changes once the process has regenerated it.
 
 The **`translation-manager` agent** updates **`all.json` only** (all locales). It does not replace nestjs-i18n for the `.ts` file.
 
@@ -173,6 +190,7 @@ Typical user phrases that mean “use `translation-manager` now”: “add trans
 - Config: `.sequelizerc` → `database/config/config.js` (reads from `.env`)
 - Run: `npx sequelize-cli db:migrate`
 - Pattern: plain JS with `up`/`down` functions, all wrapped in transactions
+- Migrations are independent of the task runner (no turbo involvement).
 
 ### Worker Pattern
 
@@ -202,20 +220,28 @@ Phrase the question concretely, e.g. _"Is this fixing a bug live in production (
 
 Descriptive kebab-case after the type prefix: `feat/enrollment-settings`, `fix/login-redirect`, `hotfix/ranking-null-deref`, `chore/remove-cp-export`.
 
+## Releases (release-please)
+
+Versioning is **commit-driven** — contributors never hand-author release metadata. Write Conventional Commits (`feat:`, `fix:`, `feat!:`/`BREAKING CHANGE:`); [`release-please.yml`](.github/workflows/release-please.yml) maintains a release PR on `main`. Merging that PR bumps the single repo-wide version (`package.json` + every app's `src/version.json` via `release-please-config.json`), writes `CHANGELOG.md`, tags `vX.Y.Z` and creates the GitHub release. `deploy-production.yml` ships whatever version the current `main` commit carries and verifies the live `/api/v1/version` afterwards.
+
 ## Testing
 
-- Test runner: Jest (via Nx or directly: `npx jest --config <lib>/jest.config.ts`)
+- Test runner: Jest, configured per package (`<pkg>/jest.config.ts`, shared base in root `jest.preset.js`)
+- Run via turbo (`pnpm turbo run test --filter=<pkg>`) or directly inside a package (`pnpm test`); cross-package imports resolve to built `dist`, so build dependencies once first (`turbo` does this automatically via `^build`)
 - Test files are co-located next to the source file: `foo.resolver.ts` → `foo.resolver.spec.ts`
 - Use `@nestjs/testing` `Test.createTestingModule` to wire up the unit under test with mocked dependencies
 
 ### Integration test convention
 
-Integration tests exercise behaviour that unit tests cannot fake — postgres-only features (advisory locks, deferred constraints), real association loading, multi-row transaction semantics. Reference: [`libs/backend/graphql/src/resolvers/team/team-renumbering.integration.spec.ts`](libs/backend/graphql/src/resolvers/team/team-renumbering.integration.spec.ts).
+Integration tests exercise behaviour that unit tests cannot fake — real infrastructure (Redis, postgres-only features), external APIs, multi-row transaction semantics. **They are skipped by default and never run in the CI gate** — each suite opts in explicitly. Current examples:
+
+- [`apps/worker/sync/src/app/queue/__tests__/queue.integration.spec.ts`](apps/worker/sync/src/app/queue/__tests__/queue.integration.spec.ts) — Bull queue against `redis-memory-server`. Gated behind `RUN_INTEGRATION_TESTS=1`. **Caveat**: `redis-memory-server` downloads and compiles Redis from source on first run (takes minutes, then caches the binary per machine) — this is exactly why the suite must never run in the default/CI path.
+- [`packages/backend-visual/src/__integration__/visual.service.integration.spec.ts`](packages/backend-visual/src/__integration__/visual.service.integration.spec.ts) — real VR/Visual API. Gated on credentials presence (`VR_API_USER`/`VR_API_PASS`); skips itself when they're absent.
 
 Conventions:
 
 1. **Filename** — `*.integration.spec.ts`, co-located with the unit under test (`foo.service.ts` → `foo.integration.spec.ts`).
-2. **Opt-in gate** — guard the entire `describe` with `process.env["RUN_INTEGRATION_TESTS"] === "1"`. Default `nx test` runs MUST skip them.
+2. **Opt-in gate** — guard the entire suite so default test runs skip it: `const describeOrSkip = process.env["RUN_INTEGRATION_TESTS"] === "1" ? describe : describe.skip;` for infrastructure-heavy suites, or a credentials-presence check for suites that call external APIs. A suite that runs unguarded in the CI gate is a bug (cold runners make infra-heavy suites flaky — see the Redis-compile caveat above).
 3. **Connection** — load `.env` via `dotenv`, build a fresh `new Sequelize({ dialect: 'postgres', host: DB_IP, ... , models: <all models from @badman/backend-database> })`. Pass every model exported from the barrel (cross-model associations need the full graph). Skip the suite (warn, don't fail) when `DB_DIALECT` is not `postgres`.
 4. **Sentinel scope** — pick a season number that cannot collide with seed/dev data (e.g. `9999`) and create an ad-hoc test club in `beforeAll`. Use `Op.in` cleanup keyed on `clubId + season`.
 5. **Self-clean** — `beforeEach` wipes the sentinel scope; `afterAll` deletes the club, the suite-owned players + rankings, and closes the connection. Never leak rows past the suite.
@@ -225,7 +251,7 @@ Run via the integration-test command in the Common Commands block above.
 
 ### Resolver test convention
 
-See the reference implementation in `libs/backend/graphql/src/resolvers/enrollmentSetting/enrollmentSetting.resolver.spec.ts`.
+See the reference implementation in `packages/backend-graphql/src/resolvers/enrollmentSetting/enrollmentSetting.resolver.spec.ts`.
 
 Pattern:
 
@@ -243,30 +269,33 @@ Pattern:
 
 ## CI / GitHub Actions
 
-Workflows live in [`.github/workflows/`](.github/workflows/). Match the workflow to the branch you are working on — see [Branching](#branching) for base-branch rules.
+Workflows live in [`.github/workflows/`](.github/workflows/). Match the workflow to the branch you are working on — see [Branching](#branching) for base-branch rules. All workflows install with `pnpm install --frozen-lockfile` via the [`setup-monorepo`](.github/actions/setup-monorepo/action.yml) composite action, which also restores the Turborepo local cache.
 
 | Workflow                                                             | Trigger                                             | Purpose                                                                                                                                                                                                                                                                                                                                                         |
 | -------------------------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`pull-request.yml`](.github/workflows/pull-request.yml)             | `pull_request`, `merge_group`                       | Fast PR gate: `nx affected -t lint test -c ci` against `develop` (or PR base). Build is **deliberately excluded** — deploy workflows handle it. Legacy frontend + e2e excluded (Constitution V).                                                                                                                                                                |
-| [`deploy-staging.yml`](.github/workflows/deploy-staging.yml)         | `push` to `staging`, `workflow_dispatch`            | Build affected → run migrations against staging DB → deploy. Calls `_shared-migrate.yml`.                                                                                                                                                                                                                                                                       |
-| [`deploy-production.yml`](.github/workflows/deploy-production.yml)   | `push` to `main`, `workflow_dispatch`               | Build affected (NX_BASE = last `v*` tag) → create release tag → run migrations against prod DB → deploy. The `main` → `develop` back-merge step is **currently commented out** (main intentionally diverges from develop); re-enable once branches align. Calls `_shared-migrate.yml`.                                                                          |
+| [`pull-request.yml`](.github/workflows/pull-request.yml)             | `pull_request`, `merge_group`                       | Fast PR gate: `pnpm turbo run lint test --affected` against the PR base (`TURBO_SCM_BASE`). Build is **deliberately excluded** — deploy workflows handle it.                                                                                                                                                                                                    |
+| [`deploy-staging.yml`](.github/workflows/deploy-staging.yml)         | `push` to `staging`, `workflow_dispatch`            | Full-graph `lint test build` (turbo cache keeps unchanged packages near-free) → run migrations against staging DB → `turbo run deploy` (Render hooks). Calls `_shared-migrate.yml`.                                                                                                                                                                             |
+| [`deploy-production.yml`](.github/workflows/deploy-production.yml)   | `push` to `main`, `workflow_dispatch`               | Full-graph `lint test build` → migrations against prod DB → `turbo run deploy` → verify live `/api/v1/version` reports the shipped version → Sentry release (only when the push bumped the version). The `main` → `develop` back-merge step is **currently disabled** (main intentionally diverges from develop); re-enable once branches align.                |
+| [`release-please.yml`](.github/workflows/release-please.yml)         | `push` to `main`                                    | Maintains the commit-driven release PR; merging it bumps versions, writes CHANGELOG, tags `vX.Y.Z`, creates the GitHub release. Replaces `nx release`.                                                                                                                                                                                                          |
 | [`_shared-migrate.yml`](.github/workflows/_shared-migrate.yml)       | `workflow_call` (reusable)                          | Applies pending Sequelize migrations against `target-environment` input (`staging` \| `production`). Production env requires manual reviewer approval. Concurrency group `migrate-<env>` with `cancel-in-progress: false` so a mid-flight migration cannot be cancelled. Pre-flight invalid-index check guards against interrupted `CREATE INDEX CONCURRENTLY`. |
+| [`generate-cp.yml`](.github/workflows/generate-cp.yml)               | `workflow_dispatch` (backend webhook)               | Windows runner builds `@badman/backend-generator` via turbo and produces a `.cp` file from a Gist payload.                                                                                                                                                                                                                                                      |
 | [`claude-code-review.yml`](.github/workflows/claude-code-review.yml) | `pull_request` against `main`                       | Auto Claude review on PRs targeting `main`.                                                                                                                                                                                                                                                                                                                     |
 | [`claude.yml`](.github/workflows/claude.yml)                         | `@claude` mention in issues / PR comments / reviews | On-demand Claude agent for repo.                                                                                                                                                                                                                                                                                                                                |
 | [`cla.yaml`](.github/workflows/cla.yaml)                             | PRs from external contributors                      | CLA signature gate.                                                                                                                                                                                                                                                                                                                                             |
 
 ### Main → develop back-merge (currently disabled)
 
-The back-merge step in `deploy-production.yml` is **commented out** for now because `main` intentionally lags `develop` (CP export and backend encounter games generation are held back from prod). Auto back-merge would wipe those features from `develop`.
+The back-merge step in `deploy-production.yml` is **disabled** for now because `main` intentionally lags `develop` (CP export and backend encounter games generation are held back from prod). Auto back-merge would wipe those features from `develop`.
 
 When re-enabling the step, keep the per-deploy opt-out gate: include the literal marker `[skip back-merge]` in the merge commit message on `main` and the workflow will skip that run via `!contains(github.event.head_commit.message, '[skip back-merge]')`. Use it whenever `main` should not flow back to `develop` for a specific deploy (e.g. another feature removal). After skipping, do NOT manually back-merge — cherry-pick or rebase the specific commits if needed.
 
 ### Rules for changes
 
-- Editing a workflow → run `actionlint` mentally (or via pre-commit); ensure `nx affected` invocations keep `--exclude="${{ steps.legacy.outputs.list }}"` and `-c ci`.
+- Editing a workflow → run `actionlint` mentally (or via pre-commit); keep `--affected` + `TURBO_SCM_BASE` on the PR gate, full-graph runs on deploys.
 - Adding a deploy step that touches the DB → call `_shared-migrate.yml`. Do **not** add a parallel migration job; the shared workflow holds the concurrency lock and env-protection contract.
 - Long-running or destructive step → set `concurrency.cancel-in-progress: false` to prevent half-applied state.
 - New env-scoped secrets → bind them through the `environment:` key on the job, not at the workflow level, so non-prod runs cannot read prod creds.
+- Render builds the apps server-side from its dashboard build command (`pnpm install --frozen-lockfile && pnpm turbo run build --filter=<svc>`; start: `node apps/<path>/dist/main.js`). Changing build output paths requires a matching dashboard update.
 
 ## Reference docs (`docs/`)
 
@@ -285,6 +314,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/035-multi-provider-mail/plan.md](specs/035-multi-provider-mail/plan.md)
+[specs/036-nx-to-turborepo/plan.md](specs/036-nx-to-turborepo/plan.md)
 
 <!-- SPECKIT END -->

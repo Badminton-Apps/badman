@@ -9,7 +9,8 @@ export class ImageController {
   private readonly logger = new Logger(ImageController.name);
 
   constructor() {
-    const path = join(__dirname, "assets", "PTSans-Regular.ttf");
+    // Compiles to dist/app/controllers/; assets are copied to dist/assets.
+    const path = join(__dirname, "..", "..", "assets", "PTSans-Regular.ttf");
 
     // check if file exists
     if (existsSync(path)) {

@@ -80,3 +80,6 @@ typesense-data/
 .claude/settings.local.json
 .claude/worktrees/
 .env.local
+
+# Turborepo (feature 036)
+.turbo
