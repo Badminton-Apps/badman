@@ -14,7 +14,7 @@ pre-commit:
     - name: prettier
       glob: "*.{js,jsx,ts,tsx,json,md,yml,yaml,scss,css,html,pug}"
       exclude:
-        - "libs/utils/src/lib/i18n.generated.ts"
+        - "packages/utils/src/lib/i18n.generated.ts"
         - "**/CHANGELOG.md"
         - "**/all.json"
       run: npx prettier --write {staged_files} && git add {staged_files}
