@@ -1,0 +1,29 @@
+name: Release Please
+
+# Commit-driven releasing (feature 036, replaces `nx release`): on every push
+# to main, release-please maintains a "release PR" whose changelog and version
+# bump are derived from conventional commits. Merging that PR:
+#   - bumps package.json + every app's src/version.json (extra-files)
+#   - writes CHANGELOG.md
+#   - tags vX.Y.Z and creates the GitHub release
+# Contributors never hand-author release metadata (spec FR-012).
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

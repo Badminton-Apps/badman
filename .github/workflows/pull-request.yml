@@ -25,31 +25,10 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
 
-      - name: Resolve legacy projects (scope:legacy tag)
-        id: legacy
-        run: echo "list=$(node scripts/ci/legacy-projects.js)" >> "$GITHUB_OUTPUT"
-
-      - name: Run affected lint + test (parallel)
+      - name: Run affected lint + test
         # Build deliberately excluded — deploy workflows (deploy-staging.yml,
         # deploy-production.yml) run it on push. PR checks stay fast.
-        # Legacy frontend + e2e excluded per Constitution V.
-        # AUTHORITATIVE during the Nx→Turborepo migration Stage A (feature 036).
-        run: npx --yes nx affected -t lint test -c ci --parallel=3 --exclude="${{ steps.legacy.outputs.list }}"
-
-      - name: "[036 Stage A] Turborepo affected-set parity (non-blocking)"
-        # Stage A parity signal: confirm Turborepo selects the SAME affected
-        # packages as the authoritative `nx affected` line above (spec FR-017,
-        # SC-013). We use `--dry` (list the task graph) rather than executing:
-        # the Stage A package scripts wrap the Nx CLI, and invoking `nx <target>`
-        # nested under `npm run` recomputes the Nx project graph and fails
-        # deterministically ("no name provided: scripts") even though the
-        # authoritative root-level `nx affected` succeeds. `--dry` never invokes
-        # Nx, so it gives a clean affected-set comparison without that breakage.
-        # Pass/fail parity is already covered by the authoritative line running
-        # for real. Turborepo executes tasks for real in Stage B, once the
-        # package scripts call jest/eslint/tsc directly (no Nx underneath).
-        continue-on-error: true
+        # --affected compares against the PR base (TURBO_SCM_BASE).
         env:
-          TURBO_SCM_BASE: ${{ env.NX_BASE }}
-          TURBO_SCM_HEAD: ${{ env.NX_HEAD }}
-        run: npx --yes turbo run lint test --affected --dry=text
+          TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha }}
+        run: pnpm turbo run lint test --affected --concurrency=3
