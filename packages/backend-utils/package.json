@@ -7,7 +7,7 @@
     "fastify": "^5.0.0",
     "@fastify/multipart": "^9.0.0",
     "multer": "1.4.5-lts.1",
-    "xlsx": "*"
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
   },
   "type": "commonjs",
   "main": "./dist/index.js",

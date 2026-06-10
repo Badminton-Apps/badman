@@ -6,5 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "tsBuildInfoFile": "./dist/.tsbuildinfo"
-  }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "src/**/*.spec.ts", "src/**/*.test.ts", "jest.config.ts"]
 }

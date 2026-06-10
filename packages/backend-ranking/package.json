@@ -14,7 +14,7 @@
     "moment": "^2.30.1",
     "sequelize": "^6.37.5",
     "@fastify/multipart": "^9.0.0",
-    "xlsx": "*",
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz",
     "@nestjs/config": "^4.0.0",
     "@nestjs/bull": "^11.0.0",
     "bull": "^4.16.5",

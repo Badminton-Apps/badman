@@ -6,7 +6,7 @@
     "@badman/utils": "workspace:*",
     "tslib": "^2.8.1",
     "@nestjs/common": "^11.0.0",
-    "xlsx": "*",
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz",
     "fastify": "^5.0.0",
     "moment-timezone": "^0.5.47",
     "sequelize": "^6.37.5",

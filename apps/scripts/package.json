@@ -25,6 +25,6 @@
     "puppeteer": "^23.11.1",
     "sequelize": "^6.37.5",
     "sequelize-typescript": "^2.1.6",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+    "xlsx": "file:../../vendor/xlsx-0.20.3.tgz"
   }
 }

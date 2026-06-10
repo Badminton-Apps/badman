@@ -11,7 +11,7 @@
     "@nestjs/config": "^4.0.0",
     "web-push": "^3.6.7",
     "moment": "^2.30.1",
-    "nestjs-i18n": "^10.5.0"
+    "nestjs-i18n": "~10.5.1"
   },
   "type": "commonjs",
   "main": "./dist/index.js",

@@ -4,7 +4,7 @@
   "dependencies": {
     "@badman/backend-database": "workspace:*",
     "@badman/utils": "workspace:*",
-    "tslib": "^2.6.2",
+    "tslib": "^2.8.1",
     "@nestjs/common": "^11.0.0",
     "sequelize": "^6.37.5",
     "sequelize-typescript": "^2.1.6"

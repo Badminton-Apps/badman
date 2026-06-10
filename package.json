@@ -65,7 +65,6 @@
     "@nestjs/websockets": "^11.0.0",
     "@sentry/nestjs": "^10.43.0",
     "@socket.io/redis-adapter": "^8.3.0",
-    "@swc/core": "^1.10.16",
     "archiver": "^7.0.1",
     "axios": "^1.7.9",
     "axios-rate-limit": "^1.4.0",
@@ -98,7 +97,7 @@
     "moment-timezone": "^0.5.47",
     "multer": "1.4.5-lts.1",
     "nest-winston": "^1.10.2",
-    "nestjs-i18n": "^10.5.0",
+    "nestjs-i18n": "~10.5.1",
     "node-geocoder": "^4.4.1",
     "nodemailer": "^6.10.0",
     "resend": "^4.0.0",
@@ -118,7 +117,7 @@
     "uuid": "^11.0.5",
     "web-push": "^3.6.7",
     "winston": "^3.17.0",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "xlsx": "file:vendor/xlsx-0.20.3.tgz",
     "zod": "^3.25.75"
   },
   "devDependencies": {
