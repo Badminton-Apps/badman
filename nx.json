@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "main",
-  "defaultProject": "badman",
+  "defaultProject": "api",
   "parallel": 15,
   "release": {
     "version": {
