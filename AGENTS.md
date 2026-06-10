@@ -295,7 +295,7 @@ When re-enabling the step, keep the per-deploy opt-out gate: include the literal
 - Adding a deploy step that touches the DB → call `_shared-migrate.yml`. Do **not** add a parallel migration job; the shared workflow holds the concurrency lock and env-protection contract.
 - Long-running or destructive step → set `concurrency.cancel-in-progress: false` to prevent half-applied state.
 - New env-scoped secrets → bind them through the `environment:` key on the job, not at the workflow level, so non-prod runs cannot read prod creds.
-- Render builds the apps server-side from its dashboard build command (`pnpm install --frozen-lockfile && pnpm turbo run build --filter=<svc>`; start: `node apps/<path>/dist/main.js`). Changing build output paths requires a matching dashboard update.
+- Render builds the apps server-side from its dashboard build command (`pnpm install --frozen-lockfile && pnpm turbo run build --filter=<svc>`; start: `node -r dotenv/config --max-old-space-size=1536 apps/<path>/dist/main.js` — keep the pre-existing Node flags; the heap cap forces GC before Render's container memory limit, preventing hard OOM kills). Changing build output paths requires a matching dashboard update.
 
 ## Reference docs (`docs/`)
 
