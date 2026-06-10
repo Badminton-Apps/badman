@@ -7,6 +7,7 @@ import {
   Location,
   Player,
   PlayerWithTeamMembershipType,
+  RankingSystem,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
@@ -19,7 +20,7 @@ import {
   IndexCalculationSuccess,
   isFailure,
 } from "@badman/backend-enrollment";
-import { IsUUID, SubEventTypeEnum, TeamMembershipType } from "@badman/utils";
+import { IsUUID, SubEventTypeEnum, TeamMembershipType, getIndexFromPlayers } from "@badman/utils";
 import {
   BadRequestException,
   Logger,
@@ -781,6 +782,10 @@ export class TeamsResolver {
         throw new UnauthorizedException();
       }
 
+      if (!playerCompetition.id) {
+        throw new BadRequestException("player.id is required");
+      }
+
       const player = await Player.findByPk(playerCompetition.id);
       if (!player) {
         throw new NotFoundException(`${Player.name}: ${playerCompetition.id}`);
@@ -797,7 +802,11 @@ export class TeamsResolver {
         throw new NotFoundException(`${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`);
       }
 
-      const currentPlayer = entry.meta?.competition?.players.find(
+      if (!entry.meta?.competition?.players) {
+        throw new BadRequestException("No players in base?");
+      }
+
+      const currentPlayer = entry.meta.competition.players.find(
         (p) => p.id === playerCompetition.id
       );
       if (!currentPlayer) {
@@ -810,23 +819,46 @@ export class TeamsResolver {
         ...playerCompetition,
       };
 
-      if (!entry.meta?.competition?.players) {
-        throw new BadRequestException("No players in base?");
-      }
-
       // update the player in the meta
       entry.meta.competition.players = entry.meta.competition.players.map((p) =>
         p.id === playerCompetition.id ? updatedPlayer : p
       );
 
-      // create a new meta object to trigger the update
-      entry.meta = {
-        ...entry.meta,
-      };
+      if (!team.type) {
+        throw new BadRequestException(`Team ${teamId} has no type set`);
+      }
+
+      // recalculate teamIndex from the manually-set player values
+      // (bypass the @BeforeUpdate hook which would overwrite with RankingPlace data)
+      const rankingSystem = await RankingSystem.findOne({ where: { primary: true }, transaction });
+      const amountOfLevels = rankingSystem?.amountOfLevels ?? 12;
+
+      entry.meta.competition.teamIndex = getIndexFromPlayers(
+        team.type as SubEventTypeEnum,
+        entry.meta.competition.players.map((p) => ({
+          id: p.id,
+          single: p.single,
+          double: p.double,
+          mix: p.mix,
+          gender: p.gender,
+        })),
+        amountOfLevels
+      );
+
+      entry.meta = { ...entry.meta };
       entry.changed("meta", true);
-      await entry.save({ transaction });
+
+      this.logger.debug(
+        `updatePlayerMetaForSubEvent: saving entry ${entry.id} with player ${playerCompetition.id} → single=${updatedPlayer.single} double=${updatedPlayer.double} mix=${updatedPlayer.mix} teamIndex=${entry.meta.competition?.teamIndex}`
+      );
+
+      // hooks: false prevents the @BeforeUpdate hook from overwriting manually-set rankings with RankingPlace data
+      await entry.save({ transaction, hooks: false });
 
       await transaction.commit();
+      this.logger.log(
+        `updatePlayerMetaForSubEvent: committed entry ${entry.id} for player ${playerCompetition.id}`
+      );
       return entry;
     } catch (e) {
       this.logger.warn("rollback", e);
