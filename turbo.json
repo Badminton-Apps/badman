@@ -19,7 +19,11 @@
       "persistent": true
     },
     "deploy": {
-      "cache": false
+      "cache": false,
+      // Turborepo runs tasks in strict env mode: vars not declared here are
+      // stripped from the task environment. The deploy scripts read their
+      // Render hook URLs from these vars (see scripts/render.js).
+      "passThroughEnv": ["API_HOOK", "WORKER_SYNC_HOOK", "WORKER_RANKING_HOOK", "GH_TOKEN_CP"]
     }
   }
 }
