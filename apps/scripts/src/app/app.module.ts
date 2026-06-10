@@ -1,3 +1,4 @@
+import { join } from "path";
 import { DatabaseModule } from "@badman/backend-database";
 import { EnrollmentModule } from "@badman/backend-enrollment";
 import { PupeteerModule } from "@badman/backend-pupeteer";
@@ -12,6 +13,11 @@ import { RecalculateEntryIndexService, TwizzitToPlayerDbService } from "./script
   imports: [
     ConfigModule.forRoot({
       cache: true,
+      // Resolve .env at the workspace root via an absolute path: this file
+      // compiles to <app>/dist/app/, and `turbo run dev` runs apps with the
+      // package dir (not the workspace root) as cwd, so the default
+      // cwd-relative lookup misses the root .env.
+      envFilePath: join(__dirname, "..", "..", "..", "..", ".env"),
       validationSchema: configSchema,
       load: [load],
     }),

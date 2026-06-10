@@ -62,7 +62,14 @@ async function waitForEvent(
   });
 }
 
-describe("Bull queue integration (Phase 3)", () => {
+// Opt-in gate (repo integration-test convention): redis-memory-server
+// downloads and COMPILES Redis from source on a machine without a cached
+// binary — on a cold CI runner that blows the beforeAll timeout and makes
+// the suite flaky. Run locally with RUN_INTEGRATION_TESTS=1 (first run
+// compiles the binary once, then it's cached).
+const describeOrSkip = process.env["RUN_INTEGRATION_TESTS"] === "1" ? describe : describe.skip;
+
+describeOrSkip("Bull queue integration (Phase 3)", () => {
   let redisServer: RedisMemoryServer;
   let redisPort: number;
   let queue: Queue;

@@ -21,26 +21,25 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Install pnpm (version from packageManager field)
+        uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v5
         with:
           node-version-file: ".nvmrc"
-
-      - uses: actions/cache@v4
-        id: node-cache
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          cache: pnpm
 
       - name: Install dependencies
-        if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - uses: actions/cache@v4
         with:
-          path: .nx/cache
-          key: ${{ runner.os }}-nx-generator-${{ hashFiles('package-lock.json', 'libs/backend/generator/**') }}
+          path: |
+            .turbo/cache
+            node_modules/.cache/turbo
+          key: ${{ runner.os }}-turbo-generator-${{ hashFiles('pnpm-lock.yaml', 'packages/backend-generator/**') }}
           restore-keys: |
-            ${{ runner.os }}-nx-generator-
+            ${{ runner.os }}-turbo-generator-
 
       - name: Fetch payload from Gist
         shell: bash
@@ -60,11 +59,11 @@ jobs:
             console.log('Payload fetched, size:', content.length, 'bytes');
           "
 
-      - name: Build file writer
-        run: npx nx build backend-generator
+      - name: Build file writer (and its dependency graph)
+        run: pnpm turbo run build --filter=@badman/backend-generator
 
       - name: Generate CP file
-        run: node dist/libs/backend/generator/src/scripts/cp-file-writer.js payload.json
+        run: node packages/backend-generator/dist/scripts/cp-file-writer.js payload.json
         env:
           CP_PASS: ${{ secrets.CP_PASS }}
 
