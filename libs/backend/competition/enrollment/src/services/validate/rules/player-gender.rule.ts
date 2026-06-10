@@ -56,11 +56,9 @@ export class PlayerGenderRule extends Rule {
       return wrong.map((p) => ({
         message: "all.v1.entryTeamDrawer.validation.errors.player-gender",
         params: {
-          player: {
-            id: p?.id,
-            fullName: p?.player?.fullName,
-            gender: p?.gender,
-          },
+          playerFullName: p?.player?.fullName,
+          playerGender: p?.gender,
+          player: { id: p?.id, fullName: p?.player?.fullName, gender: p?.gender },
           gender,
           teamId: team?.id,
         },

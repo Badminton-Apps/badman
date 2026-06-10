@@ -49,10 +49,8 @@ export class PlayerBaseRule extends Rule {
             errors.push({
               message: "all.v1.entryTeamDrawer.validation.errors.base-other-team",
               params: {
-                player: {
-                  id: player.player?.id,
-                  fullName: player.player?.fullName,
-                },
+                playerFullName: player.player?.fullName,
+                player: { id: player.player?.id, fullName: player.player?.fullName },
                 teamId: team?.id,
               },
             });
@@ -70,10 +68,8 @@ export class PlayerBaseRule extends Rule {
             warnings.push({
               message: "all.v1.entryTeamDrawer.validation.warnings.base-other-team",
               params: {
-                player: {
-                  id: player.player?.id,
-                  fullName: player.player?.fullName,
-                },
+                playerFullName: player.player?.fullName,
+                player: { id: player.player?.id, fullName: player.player?.fullName },
                 teamId: team?.id,
               },
             });

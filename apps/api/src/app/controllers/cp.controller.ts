@@ -134,7 +134,7 @@ export class CpController implements OnModuleInit {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ref: "develop",
+        ref: "main",
         inputs: {
           gist_id: gistId,
           callback_url: callbackUrl,
@@ -312,17 +312,8 @@ export class CpController implements OnModuleInit {
   }
 
   @Get("download/:runId")
-  async download(@User() user: Player, @Param("runId") runId: string, @Res() res: FastifyReply) {
-    if (!user?.id) {
-      throw new UnauthorizedException("Authentication required");
-    }
-
-    const hasPermission = await user.hasAnyPermission(["edit:competition"]);
-    if (!hasPermission) {
-      throw new ForbiddenException("Insufficient permissions");
-    }
-
-    // Verify ownership (or admin)
+  @AllowAnonymous()
+  async download(@Param("runId") runId: string, @Res() res: FastifyReply) {
     const record = this.generations.get(runId);
     if (!record) {
       throw new NotFoundException("Generation not found or expired");
@@ -400,10 +391,8 @@ export class CpController implements OnModuleInit {
       return;
     }
 
-    const record = this.generations.get(runId);
-    const locale = record?.locale;
-    const clientUrl = this.configService.get("CLIENT_URL") || "";
-    const downloadUrl = `${clientUrl}/${locale}/cp/download/${runId}`;
+    const callbackUrl = this.configService.get("CP_CALLBACK_URL") || "";
+    const downloadUrl = callbackUrl.replace("/webhook", `/download/${runId}`);
 
     this.logger.log(
       `CP file ready for user ${player.fullName} (${player.email}). Download: ${downloadUrl}`
