@@ -48,6 +48,11 @@ module.exports = [
     plugins: { "@typescript-eslint": tsPlugin },
     rules: {
       ...tsPlugin.configs.recommended.rules,
+      // Parity with the previous plugin:@nx/typescript baseline (FR-004): the
+      // codebase passed lint with these relaxed; tightening them is a separate
+      // initiative, not part of the build-tool migration.
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-require-imports": "off",
       "@/no-extra-semi": "error",
       "no-extra-semi": "off",
       "@typescript-eslint/no-unused-vars": [
