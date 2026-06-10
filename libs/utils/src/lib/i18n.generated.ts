@@ -3057,6 +3057,7 @@ export type I18nTranslations = {
                                 "title": string;
                                 "messages": {
                                     "success": string;
+                                    "error": string;
                                 };
                                 "form": {
                                     "single": string;
@@ -3948,6 +3949,15 @@ export type I18nTranslations = {
                                 "startBeforeEnd": string;
                                 "startRequired": string;
                                 "endRequired": string;
+                            };
+                        };
+                    };
+                };
+                "basePlayers": {
+                    "team": {
+                        "editPlayerRankingDialog": {
+                            "messages": {
+                                "error": string;
                             };
                         };
                     };
