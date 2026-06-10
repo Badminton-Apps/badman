@@ -1849,6 +1849,15 @@
             }
           }
         }
+      },
+      "basePlayers": {
+        "team": {
+          "editPlayerRankingDialog": {
+            "messages": {
+              "error": "Erreur lors de la mise à jour du classement"
+            }
+          }
+        }
       }
     },
     "enrollment": {

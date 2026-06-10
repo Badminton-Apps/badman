@@ -1,11 +1,18 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { Sequelize } from "sequelize-typescript";
 import {
   Club,
+  EntryCompetitionPlayersInputType,
   EventEntry,
   Player,
+  RankingSystem,
   Team,
   TeamNewInput,
   TeamUpdateInput,
@@ -123,7 +130,6 @@ describe("TeamsResolver.createTeam", () => {
       expect.objectContaining({ code: ErrorCode.BAD_USER_INPUT, field: "clubId" })
     );
   });
-
 
   it("returns CLUB_NOT_FOUND and rolls back when the club is missing (UUID not in DB)", async () => {
     const user = userWithPermission(true);
@@ -450,18 +456,16 @@ describe("TeamsResolver.createTeams", () => {
     const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
     jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
     let counter = 0;
-    jest
-      .spyOn(Team, "create")
-      .mockImplementation(
-        () =>
-          ({
-            id: `team-${++counter}`,
-            clubId: dbClub.id,
-            type: SubEventTypeEnum.MX,
-            setClub: jest.fn(),
-            addPlayer: jest.fn(),
-          }) as never
-      );
+    jest.spyOn(Team, "create").mockImplementation(
+      () =>
+        ({
+          id: `team-${++counter}`,
+          clubId: dbClub.id,
+          type: SubEventTypeEnum.MX,
+          setClub: jest.fn(),
+          addPlayer: jest.fn(),
+        }) as never
+    );
     jest
       .spyOn(EventEntry, "findOrCreate")
       .mockImplementation(() =>
@@ -525,18 +529,16 @@ describe("TeamsResolver.createTeams", () => {
     const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
     jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
     let counter = 0;
-    jest
-      .spyOn(Team, "create")
-      .mockImplementation(
-        () =>
-          ({
-            id: `team-${++counter}`,
-            clubId: dbClub.id,
-            type: SubEventTypeEnum.MX,
-            setClub: jest.fn(),
-            addPlayer: jest.fn(),
-          }) as never
-      );
+    jest.spyOn(Team, "create").mockImplementation(
+      () =>
+        ({
+          id: `team-${++counter}`,
+          clubId: dbClub.id,
+          type: SubEventTypeEnum.MX,
+          setClub: jest.fn(),
+          addPlayer: jest.fn(),
+        }) as never
+    );
     jest
       .spyOn(EventEntry, "findOrCreate")
       .mockResolvedValue([{ id: "entry-1", meta: {}, save: jest.fn() } as never, true]);
@@ -587,15 +589,13 @@ describe("TeamsResolver.createTeams", () => {
   it("T013: throws GraphQLError and rolls back when calculate() returns a failure", async () => {
     const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
     jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
-    jest
-      .spyOn(Team, "create")
-      .mockResolvedValue({
-        id: "team-1",
-        clubId: dbClub.id,
-        type: SubEventTypeEnum.MX,
-        setClub: jest.fn(),
-        addPlayer: jest.fn(),
-      } as never);
+    jest.spyOn(Team, "create").mockResolvedValue({
+      id: "team-1",
+      clubId: dbClub.id,
+      type: SubEventTypeEnum.MX,
+      setClub: jest.fn(),
+      addPlayer: jest.fn(),
+    } as never);
     jest
       .spyOn(EventEntry, "findOrCreate")
       .mockResolvedValue([{ id: "entry-1", meta: {}, save: jest.fn() } as never, true]);
@@ -673,18 +673,16 @@ describe("TeamsResolver.createTeams", () => {
     const dbClub = { id: CLUB_UUID, name: "Test club" } as unknown as Club;
     jest.spyOn(Club, "findByPk").mockResolvedValue(dbClub);
     let counter = 0;
-    jest
-      .spyOn(Team, "create")
-      .mockImplementation(
-        () =>
-          ({
-            id: `team-${++counter}`,
-            clubId: dbClub.id,
-            type: SubEventTypeEnum.MX,
-            setClub: jest.fn(),
-            addPlayer: jest.fn(),
-          }) as never
-      );
+    jest.spyOn(Team, "create").mockImplementation(
+      () =>
+        ({
+          id: `team-${++counter}`,
+          clubId: dbClub.id,
+          type: SubEventTypeEnum.MX,
+          setClub: jest.fn(),
+          addPlayer: jest.fn(),
+        }) as never
+    );
     jest
       .spyOn(EventEntry, "findOrCreate")
       .mockImplementation(() =>
@@ -918,6 +916,275 @@ describe("TeamsResolver.updateTeam", () => {
     dbTeam._update.mockRejectedValue(new Error("DB exploded"));
 
     await expect(resolver.updateTeam(baseInput(), user)).rejects.toThrow("DB exploded");
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+    expect(mockTransaction.commit).not.toHaveBeenCalled();
+  });
+});
+
+describe("TeamsResolver.updatePlayerMetaForSubEvent", () => {
+  let resolver: TeamsResolver;
+  let mockTransaction: { commit: jest.Mock; rollback: jest.Mock };
+
+  const TEAM_UUID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+  const SUBEVENT_UUID = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+  const PLAYER_UUID = "cccccccc-cccc-cccc-cccc-cccccccccccc";
+  const ENTRY_UUID = "dddddddd-dddd-dddd-dddd-dddddddddddd";
+
+  const userWithPermission = (allowed: boolean) =>
+    ({
+      id: "user-uuid",
+      hasAnyPermission: jest.fn().mockResolvedValue(allowed),
+    }) as unknown as Player;
+
+  const stubTeam = (overrides: Partial<Team> = {}) =>
+    ({
+      id: TEAM_UUID,
+      clubId: "club-uuid",
+      type: SubEventTypeEnum.M,
+      ...overrides,
+    }) as unknown as Team;
+
+  const stubEntry = () => {
+    const save = jest.fn().mockResolvedValue(undefined);
+    const changed = jest.fn();
+    const entry = {
+      id: ENTRY_UUID,
+      meta: {
+        competition: {
+          teamIndex: -1,
+          players: [{ id: PLAYER_UUID, single: 10, double: 10, mix: 10, gender: "M" }],
+        },
+      },
+      save,
+      changed,
+      _save: save,
+    };
+    return entry as unknown as EventEntry & { _save: jest.Mock };
+  };
+
+  const stubPlayer = () => ({ id: PLAYER_UUID, gender: "M" }) as unknown as Player;
+
+  const playerInput = (overrides: Partial<EntryCompetitionPlayersInputType> = {}) =>
+    ({
+      id: PLAYER_UUID,
+      single: 7,
+      double: 12,
+      mix: 12,
+      ...overrides,
+    }) as EntryCompetitionPlayersInputType;
+
+  beforeEach(async () => {
+    mockTransaction = { commit: jest.fn(), rollback: jest.fn() };
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        TeamsResolver,
+        {
+          provide: Sequelize,
+          useValue: { transaction: jest.fn().mockResolvedValue(mockTransaction) },
+        },
+        {
+          provide: IndexCalculationService,
+          useValue: {
+            calculate: jest.fn().mockResolvedValue([]),
+            calculateOne: jest.fn().mockResolvedValue({
+              _tag: "success",
+              key: "",
+              index: 0,
+              contributingPlayers: [],
+              missingPlayerCount: 0,
+              resolvedPlayers: [],
+            }),
+          },
+        },
+        { provide: TeamAssociationService, useValue: teamAssociationServiceStub() },
+      ],
+    }).compile();
+    resolver = module.get<TeamsResolver>(TeamsResolver);
+  });
+
+  afterEach(() => jest.restoreAllMocks());
+
+  it("throws BadRequestException when player.id is missing", async () => {
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam());
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        {} as EntryCompetitionPlayersInputType,
+        userWithPermission(true)
+      )
+    ).rejects.toThrow(BadRequestException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("throws NotFoundException when team is missing", async () => {
+    jest.spyOn(Team, "findByPk").mockResolvedValue(null);
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        playerInput(),
+        userWithPermission(true)
+      )
+    ).rejects.toThrow(NotFoundException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("throws UnauthorizedException when user lacks permission", async () => {
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam());
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        playerInput(),
+        userWithPermission(false)
+      )
+    ).rejects.toThrow(UnauthorizedException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("throws NotFoundException when player is missing from DB", async () => {
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam());
+    jest.spyOn(Player, "findByPk").mockResolvedValue(null);
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        playerInput(),
+        userWithPermission(true)
+      )
+    ).rejects.toThrow(NotFoundException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("throws NotFoundException when entry is missing", async () => {
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam());
+    jest.spyOn(Player, "findByPk").mockResolvedValue(stubPlayer());
+    jest.spyOn(EventEntry, "findOne").mockResolvedValue(null);
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        playerInput(),
+        userWithPermission(true)
+      )
+    ).rejects.toThrow(NotFoundException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("throws BadRequestException when entry has no competition players", async () => {
+    const emptyEntry = {
+      id: ENTRY_UUID,
+      meta: undefined,
+      save: jest.fn(),
+      changed: jest.fn(),
+    } as unknown as EventEntry;
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam());
+    jest.spyOn(Player, "findByPk").mockResolvedValue(stubPlayer());
+    jest.spyOn(EventEntry, "findOne").mockResolvedValue(emptyEntry);
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        playerInput(),
+        userWithPermission(true)
+      )
+    ).rejects.toThrow(BadRequestException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("throws BadRequestException when player is not in the base", async () => {
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam());
+    jest.spyOn(Player, "findByPk").mockResolvedValue(stubPlayer());
+    jest.spyOn(EventEntry, "findOne").mockResolvedValue(stubEntry());
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        playerInput({ id: "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee" }),
+        userWithPermission(true)
+      )
+    ).rejects.toThrow(BadRequestException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("throws BadRequestException when team has no type set", async () => {
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam({ type: undefined }));
+    jest.spyOn(Player, "findByPk").mockResolvedValue(stubPlayer());
+    jest.spyOn(EventEntry, "findOne").mockResolvedValue(stubEntry());
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        playerInput(),
+        userWithPermission(true)
+      )
+    ).rejects.toThrow(BadRequestException);
+
+    expect(mockTransaction.rollback).toHaveBeenCalled();
+  });
+
+  it("saves with hooks: false, updates player values, recalculates teamIndex, and commits", async () => {
+    const entry = stubEntry();
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam());
+    jest.spyOn(Player, "findByPk").mockResolvedValue(stubPlayer());
+    jest.spyOn(EventEntry, "findOne").mockResolvedValue(entry);
+    jest
+      .spyOn(RankingSystem, "findOne")
+      .mockResolvedValue({ amountOfLevels: 8 } as unknown as RankingSystem);
+
+    const result = await resolver.updatePlayerMetaForSubEvent(
+      TEAM_UUID,
+      SUBEVENT_UUID,
+      playerInput(),
+      userWithPermission(true)
+    );
+
+    const updated = entry.meta!.competition!.players.find((p) => p.id === PLAYER_UUID)!;
+    expect(updated.single).toBe(7);
+    expect(updated.double).toBe(12);
+    expect(updated.mix).toBe(12);
+    expect(entry.meta!.competition!.teamIndex).not.toBe(-1);
+    expect(entry._save).toHaveBeenCalledWith(expect.objectContaining({ hooks: false }));
+    expect(mockTransaction.commit).toHaveBeenCalledTimes(1);
+    expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    expect(result).toBe(entry);
+  });
+
+  it("rolls back and rethrows on unexpected save error", async () => {
+    const entry = stubEntry();
+    entry._save.mockRejectedValue(new Error("DB exploded"));
+    jest.spyOn(Team, "findByPk").mockResolvedValue(stubTeam());
+    jest.spyOn(Player, "findByPk").mockResolvedValue(stubPlayer());
+    jest.spyOn(EventEntry, "findOne").mockResolvedValue(entry);
+    jest
+      .spyOn(RankingSystem, "findOne")
+      .mockResolvedValue({ amountOfLevels: 8 } as unknown as RankingSystem);
+
+    await expect(
+      resolver.updatePlayerMetaForSubEvent(
+        TEAM_UUID,
+        SUBEVENT_UUID,
+        playerInput(),
+        userWithPermission(true)
+      )
+    ).rejects.toThrow("DB exploded");
 
     expect(mockTransaction.rollback).toHaveBeenCalled();
     expect(mockTransaction.commit).not.toHaveBeenCalled();
