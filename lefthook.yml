@@ -23,9 +23,7 @@ pre-push:
   jobs:
     - name: affected-lint
       # Mirror the CI lint gate so issues like the `\Z` regex escape don't
-      # only surface after a 10-minute pipeline. Legacy projects stay
-      # excluded (Constitution V).
+      # only surface after a 10-minute pipeline.
       run: |
-        BASE_REF=$(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD origin/develop 2>/dev/null || git rev-parse HEAD~1)
-        NX_BASE="$BASE_REF" NX_HEAD=HEAD \
-          npx nx affected -t lint --output-style=static --exclude="$(node scripts/ci/legacy-projects.js)"
+        BASE_REF=$(git merge-base HEAD origin/develop 2>/dev/null || git merge-base HEAD origin/main 2>/dev/null || git rev-parse HEAD~1)
+        TURBO_SCM_BASE="$BASE_REF" pnpm turbo run lint --affected --output-logs=errors-only
