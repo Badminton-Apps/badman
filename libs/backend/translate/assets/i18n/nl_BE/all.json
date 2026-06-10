@@ -2756,7 +2756,8 @@
             "editPlayerRankingDialog": {
               "title": "Ranking bewerken",
               "messages": {
-                "success": "Ranking bijgewerkt"
+                "success": "Ranking bijgewerkt",
+                "error": "Fout bij het bijwerken van de ranking"
               },
               "form": {
                 "single": "Enkelspel",
