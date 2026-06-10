@@ -7,3 +7,14 @@ packages:
   - "packages/*"
   - "packages/backend-competition/*"
   - "packages/backend-belgium/flanders/*"
+
+# Native/postinstall build scripts that are allowed to run (pnpm 10 blocks all
+# by default). These match what the previous npm install executed.
+onlyBuiltDependencies:
+  - "@apollo/protobufjs"
+  - canvas
+  - lefthook
+  - msgpackr-extract
+  - puppeteer
+  - redis-memory-server
+  - sqlite3
