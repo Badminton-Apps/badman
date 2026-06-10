@@ -1,3 +1,19 @@
+## 6.188.0 (2026-06-10)
+
+### 🚀 Features
+
+- **mailing:** add Resend provider, abstract transport via IMailTransport ([62bfccb34](https://github.com/Badminton-Apps/badman/commit/62bfccb34))
+
+### 🩹 Fixes
+
+- **cp:** correct webhook callback URL to include /v1 prefix ([6f38c97f4](https://github.com/Badminton-Apps/badman/commit/6f38c97f4))
+- **enrollment:** emit flat params from validation rules so player names appear in CP memos ([cde4ea0a1](https://github.com/Badminton-Apps/badman/commit/cde4ea0a1))
+- **enrollment:** restore nested param objects alongside flat keys in validation rules ([082068e29](https://github.com/Badminton-Apps/badman/commit/082068e29))
+
+### ❤️ Thank You
+
+- Arno Soontjens @ArnoSoontjens
+
 ## 6.187.2 (2026-06-09)
 
 ### 🩹 Fixes
