@@ -17,7 +17,7 @@ import { EVENTS, configSchema, load, ConfigType } from "@badman/utils";
 import { Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_FILTER } from "@nestjs/core";
-import { join } from "path";
+import { dirname, join } from "path";
 import versionPackage from "../version.json";
 import { EncounterFormPageService } from "./processors/enter-scores/encounter-form-page.service";
 import { EncounterDetailPageService } from "./processors/check-encounters/encounter-detail-page.service";
@@ -101,7 +101,15 @@ import {
       imports: [ConfigModule],
       useFactory: (configService: ConfigService<ConfigType>) => ({
         view: {
-          root: join(__dirname, "compile", "libs", "mailing"),
+          // The pug templates ship inside the compiled @badman/backend-mailing
+          // package (dist/compile/libs/mailing). Resolve them from the package
+          // itself instead of assuming they were copied into this app's bundle.
+          root: join(
+            dirname(require.resolve("@badman/backend-mailing")),
+            "compile",
+            "libs",
+            "mailing"
+          ),
           engine: "pug",
         },
         debug: configService.get("NODE_ENV") === "development",

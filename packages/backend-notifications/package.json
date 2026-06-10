@@ -1,0 +1,31 @@
+{
+  "name": "@badman/backend-notifications",
+  "version": "6.187.0",
+  "dependencies": {
+    "@badman/backend-database": "workspace:*",
+    "@badman/utils": "workspace:*",
+    "@badman/backend-mailing": "workspace:*",
+    "@badman/backend-change-encounter": "workspace:*",
+    "tslib": "^2.8.1",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.0",
+    "web-push": "^3.6.7",
+    "moment": "^2.30.1",
+    "nestjs-i18n": "^10.5.0"
+  },
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "private": true,
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  }
+}

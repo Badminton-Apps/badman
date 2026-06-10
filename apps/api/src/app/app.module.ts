@@ -37,12 +37,12 @@ import { CleanEnvironmentModule } from "./clean-environment.module";
 import { CalendarController } from "./controllers/ical.controller";
 
 const productionModules = [];
-// The Angular frontend now lives in a separate repository (Constitution v2.0.0,
-// Principle V). This API only serves a frontend bundle if one has been placed at
-// dist/apps/api/../badman/browser by the deploy pipeline; when absent (the common
-// case after the legacy frontend was removed from this repo) static serving is
-// skipped rather than booting a ServeStaticModule pointed at a missing directory.
-const staticFrontendRoot = join(__dirname, "..", "badman", "browser");
+// The Angular frontend lives in a separate repository (Constitution v2.0.0,
+// Principle V). This API only serves a frontend bundle if the deploy pipeline
+// has placed one at apps/api/dist/client; when absent (the normal case) static
+// serving is skipped instead of booting ServeStaticModule on a missing dir.
+// This file compiles to apps/api/dist/app/, so one level up is dist/.
+const staticFrontendRoot = join(__dirname, "..", "client");
 if (
   (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "test") &&
   existsSync(staticFrontendRoot)
@@ -56,11 +56,11 @@ if (
   );
 }
 
-// Resolve .env relative to the project root, not process.cwd().
-// The webpack bundle outputs to dist/apps/api/, so __dirname is three levels
-// below the workspace root. Using an absolute path avoids failures when the
-// NX executor (or a deployment runner) sets a different working directory.
-const projectRoot = join(__dirname, "..", "..", "..");
+// Resolve .env relative to the workspace root, not process.cwd().
+// This file compiles to apps/api/dist/app/app.module.js, so the workspace root
+// is four levels up (app → dist → api → apps → root). Using an absolute path
+// avoids failures when a runner sets a different working directory.
+const projectRoot = join(__dirname, "..", "..", "..", "..");
 const envFileName = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
 const envFilePath = join(projectRoot, envFileName);
 
