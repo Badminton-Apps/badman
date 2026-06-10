@@ -19,7 +19,10 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 > - **Stage A — MERGED to `develop`.**
 > - **Stage B Wave 1 (FE deletion) — MERGED to `develop`.**
 > - **Stage B core — DONE on branch `feat/036-turborepo-cutover`** (libs→packages, pnpm, nest build, Nx removed, CI/release-please/docs rewritten). Verified: clean-room `pnpm install --frozen-lockfile` + `turbo run build test lint --force` = **114/114 green, 4m30s**; warm cache 862ms FULL TURBO.
-> - **Open items**: T034–T036 (live dev/serve verification — needs docker + manual run), T040/T040b + T049 (need a real PR/CI run + release dry-run), T044 (**external: Render dashboard** build command → `pnpm install --frozen-lockfile && pnpm turbo run build --filter=<svc>`; start → `node apps/<path>/dist/main.js` — dist moved INTO packages), T051 (root package.json still carries runtime deps as walk-up fallback for database/seeders + scripts; apps/libs declare their own — full SC-014 cleanup deferred), T008/T009 (obsolete — Stage A double-run superseded by the cutover).
+> - **MERGED to `develop` as PR #1011 (2026-06-10); staging deploy green end-to-end (2026-06-11)** — CI build/migrate/deploy, Render build + boot with new dashboard commands, live `beta.badman.app/api/v1/version` 200.
+> - **Post-merge fixes** (all from the staging dress rehearsal): #1019 (wrong cause, superseded), #1021 (turbo strict env mode stripped Render hook vars — `passThroughEnv` on deploy task; also fixes prod), #1023 (migrate pre-flight: AggregateError empty .message hid a transient DB blip; added retry + unwrap), #1024 (version.json 6.187.0 vs package.json 6.188.0 — would false-fail prod verify), #1025 (Release-As: 7.0.0 — next release is a major).
+> - **Remaining open**: T051 (root runtime-dep cleanup — deferred, tech-debt registry), first prod deploy + first release-please release PR (v7.0.0) self-verify on the main push.
+> - T008/T009 obsolete (Stage A double-run superseded); T018/T019 skipped by design (single root tsconfig/eslint instead of config packages).
 > - **Verification lesson (3rd cache layer)**: jest/ts-jest keeps a transform+diagnostics cache in os.tmpdir() that survives `turbo --force` AND node_modules wipes — it masked the phantom-dotenv and timeout failures locally that CI then hit. Clear with `rm -rf $TMPDIR/jest*` before claiming a cold-run result.
 > - **Deferred-with-registry**: remote cache, nestjs-i18n ~10.5.1 pin, relaxed lint rules → docs/tech-debt.md "Turborepo migration deferrals".
 
@@ -47,8 +50,8 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 
 - [x] T006 Update `pull-request.yml` to **double-run**: keep the authoritative `nx affected -t lint test` line, add a non-blocking `npx turbo run lint test --affected --continue` line (see [contracts/ci-workflow.md](contracts/ci-workflow.md) "Phase 1")
 - [x] T007 Cache `.turbo` in the `setup-monorepo` composite action via `actions/cache` (key on lockfile + ref), alongside the existing `.nx/cache` step (FR-008)
-- [ ] T008 Open a throwaway PR touching exactly one library; confirm Turborepo and Nx report the **same affected packages** and **same pass/fail** (SC-013). Record the parity evidence in the Stage A PR description
-- [ ] T009 Open a second PR touching one app; confirm parity again, including a warm-cache re-run showing Turborepo cache hits (SC-003)
+- [x] ~~T008~~ OBSOLETE — Stage A double-run superseded by the cutover merge; parity proven via `--dry=text` on the full set. Open a throwaway PR touching exactly one library; confirm Turborepo and Nx report the **same affected packages** and **same pass/fail** (SC-013). Record the parity evidence in the Stage A PR description
+- [x] ~~T009~~ OBSOLETE — same; warm-cache hits proven in CI + locally (862ms FULL TURBO). Open a second PR touching one app; confirm parity again, including a warm-cache re-run showing Turborepo cache hits (SC-003)
 
 **Checkpoint (Stage A complete)**: merge the Stage A PR to `develop`. Turborepo runs in CI (non-authoritative), Nx still authoritative, repo otherwise unchanged. **This is the MVP.**
 
@@ -84,8 +87,8 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 
 ### 4b — Shared config packages (research D7, structure best-practice)
 
-- [ ] T018 [P] [US1] Create `config/typescript-config` package (`@badman/typescript-config`) exporting `base.json` + `library.json` (emit `dist`, `declaration`+`declarationMap`); seed from current `tsconfig.base.json` compiler options
-- [ ] T019 [P] [US1] Create `config/eslint-config` package (`@badman/eslint-config`) exporting the shared flat config from current root `eslint.config.mjs`; drop `@nx/eslint-plugin` rules
+- [x] ~~T018~~ SKIPPED BY DESIGN — kept a single root `tsconfig.base.json` instead of a config package (less indirection for a backend-only repo). Create `config/typescript-config` package (`@badman/typescript-config`) exporting `base.json` + `library.json` (emit `dist`, `declaration`+`declarationMap`); seed from current `tsconfig.base.json` compiler options
+- [x] ~~T019~~ SKIPPED BY DESIGN — single root `eslint.config.js` (typescript-eslint direct) instead of a config package. Create `config/eslint-config` package (`@badman/eslint-config`) exporting the shared flat config from current root `eslint.config.mjs`; drop `@nx/eslint-plugin` rules
 
 ### 4c — Convert libraries to compiled packages (per package; VR-1…VR-6)
 
@@ -120,9 +123,9 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 
 **Independent test**: run the documented serve command; API responds on 5010; editing a file reloads.
 
-- [ ] T034 [US2] Verify `pnpm dev --filter=api --filter=worker-sync` starts both with watch reload (FR-006); fix any `nest start --watch` config gaps
-- [ ] T035 [P] [US2] Verify ranking + belgium-flanders worker dev commands start in watch mode
-- [ ] T036 [P] [US2] Update [quickstart.md](quickstart.md) command table if any serve invocation differs from documented
+- [x] T034 [US2] DONE — live smoke: API on 5010 + GraphQL, watch reload exercised (env-path fix hot-reloaded), sync worker processed real Bull jobs. Verify `pnpm dev --filter=api --filter=worker-sync` starts both with watch reload (FR-006); fix any `nest start --watch` config gaps
+- [x] T035 [P] [US2] DONE — `pnpm start:ranking` boots all 3 in watch mode (tsc watching, Nest + microservice clusters started; verified 2026-06-11). Verify ranking + belgium-flanders worker dev commands start in watch mode
+- [x] T036 [P] [US2] DONE — table matches root scripts (`pnpm dev --filter=...`, `start:ranking`). Update [quickstart.md](quickstart.md) command table if any serve invocation differs from documented
 
 **Checkpoint**: day-to-day dev loop works without Nx.
 
@@ -137,7 +140,7 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 - [x] T037 [US3] Rewrite `setup-monorepo` action: pnpm (`pnpm/action-setup` + `setup-node` `cache:pnpm`, `pnpm install --frozen-lockfile`), cache `.turbo`, remove `nrwl/nx-set-shas` and `.nx/cache` (see [contracts/ci-workflow.md](contracts/ci-workflow.md))
 - [x] T038 [US3] Rewrite `pull-request.yml` to `pnpm turbo run lint test --affected` (drop the Nx line + double-run; build stays excluded from PR gate)
 - [x] T039 [US3] Confirm `--concurrency` replaces the old `--parallel=3` where concurrency limiting is wanted (research D14)
-- [ ] T040 [US3] Verify affected scoping (SC-004) and cache hit on re-run (SC-005) on a real PR
+- [x] T040 [US3] DONE — PR gate green on real PRs (#1019/#1021/#1023/#1024) with `--affected` + TURBO_SCM_BASE; CI turbo cache restored on deploys. Verify affected scoping (SC-004) and cache hit on re-run (SC-005) on a real PR
 - [x] T040b [US3] Verify cache-input correctness (FR-009): edit one library's source, run `pnpm turbo run build`, confirm that library **and its dependents** rebuild while unrelated packages stay cached; edit a shared input declared in `globalDependencies` (e.g. `tsconfig.base.json`) and confirm the expected broad invalidation — guards against stale-cache false passes
 
 **Checkpoint**: PR gate is Turborepo-only and at least as fast as the Nx gate.
@@ -153,7 +156,7 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 - [x] T041 [US4] Rewrite `deploy-staging.yml` to `pnpm turbo run lint test build --affected`; keep the `_shared-migrate.yml` call UNCHANGED (concurrency lock intact)
 - [x] T042 [US4] Rewrite `deploy-production.yml` affected base: keep the `git describe --match 'v*'` step but export `TURBO_SCM_BASE`/`TURBO_SCM_HEAD` and run `pnpm turbo run … --affected` (FR-013); keep prod approval gate via `_shared-migrate.yml` (FR-010)
 - [x] T043 [US4] Replace `nx run-many -t deploy --all` with `pnpm turbo run deploy` (each app's `deploy` script runs `scripts/render.js --app=<name>`)
-- [ ] T044 [US4] Update the **Render.com dashboard** build command for api + 4 workers to `corepack enable && pnpm install --frozen-lockfile && pnpm turbo run build --filter=<svc>` (external, out-of-band — research/plan flag); confirm start path `dist/apps/<svc>/main.js` unchanged
+- [x] T044 [US4] DONE — dashboard updated; staging built + booted on Render, live `/api/v1/version` 200. Build: `corepack enable && pnpm install --frozen-lockfile --prod=false && pnpm turbo run build --filter=<svc>` (worker-sync adds `npx puppeteer browsers install chrome`); start: `node -r dotenv/config --max-old-space-size=1536 apps/<path>/dist/main.js`. Update the **Render.com dashboard** build command for api + 4 workers to `corepack enable && pnpm install --frozen-lockfile && pnpm turbo run build --filter=<svc>` (external, out-of-band — research/plan flag); confirm start path `dist/apps/<svc>/main.js` unchanged
 - [x] T045 [US4] Confirm `npx sequelize-cli db:migrate` is unchanged and unaffected (FR-011)
 
 **Checkpoint**: staging deploy succeeds end-to-end with migrations + gates.
@@ -169,7 +172,7 @@ User-story labels (`[US1]`…`[US6]`) are kept for traceability to [spec.md](spe
 - [x] T046 [US5] Add `release-please-config.json` + `.release-please-manifest.json` configured for a single repo-wide version (`release-type: node`/`simple`, one component) (research D9)
 - [x] T047 [US5] Add a release workflow using `googleapis/release-please-action`; remove the `nx release` step from `deploy-production.yml`
 - [x] T048 [US5] Wire the release tag so `deploy-production.yml`'s `git describe --match 'v*'` base resolution still finds the latest version (FR-013); document the chosen trigger (release-PR-merge vs push)
-- [ ] T049 [US5] Dry-run on a test branch: conventional commits produce the expected bump + changelog with no manual files (SC-007)
+- [x] T049 [US5] DONE — local `release-please release-pr --dry-run`: 6.188.0→6.189.0, changelog from commits, all 5 version.json via extra-files; next release forced to 7.0.0 via Release-As footer (#1025). Dry-run on a test branch: conventional commits produce the expected bump + changelog with no manual files (SC-007)
 
 **Checkpoint**: releases are commit-driven and single-version.
 
