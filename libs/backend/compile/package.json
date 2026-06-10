@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-compile",
-  "version": "6.188.0",
+  "version": "6.188.1",
   "dependencies": {
-    "@badman/backend-pupeteer": "6.188.0",
-    "@badman/utils": "6.188.0",
+    "@badman/backend-pupeteer": "6.188.1",
+    "@badman/utils": "6.188.1",
     "tslib": "^2.8.1",
     "@nestjs/common": "^11.0.0",
     "juice": "^11.0.0",

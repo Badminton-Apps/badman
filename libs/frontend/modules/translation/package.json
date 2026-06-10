@@ -1,9 +1,9 @@
 {
   "name": "@badman/frontend-translation",
-  "version": "6.188.0",
+  "version": "6.188.1",
   "peerDependencies": {
-    "@badman/utils": "6.188.0",
-    "@badman/frontend-auth": "6.188.0",
+    "@badman/utils": "6.188.1",
+    "@badman/frontend-auth": "6.188.1",
     "@angular/common": "20.1.3",
     "@angular/core": "20.1.3",
     "@angular/material": "20.1.3",

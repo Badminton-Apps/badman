@@ -1,3 +1,13 @@
+## 6.188.1 (2026-06-10)
+
+### 🩹 Fixes
+
+- **team:** fix updatePlayerMetaForSubEvent not persisting edits ([94c2295e6](https://github.com/Badminton-Apps/badman/commit/94c2295e6))
+
+### ❤️ Thank You
+
+- Arno Soontjens @ArnoSoontjens
+
 ## 6.188.0 (2026-06-10)
 
 ### 🚀 Features
