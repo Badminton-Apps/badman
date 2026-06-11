@@ -176,10 +176,10 @@
     "node-adodb": "https://github.com/nuintun/node-adodb/tree/master"
   },
   "volta": {
-    "node": "20.19.0"
+    "node": "22.22.3"
   },
   "engines": {
-    "node": "20.19.0"
+    "node": "22.22.3"
   },
   "browserslist": [
     "defaults"
