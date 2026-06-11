@@ -210,8 +210,8 @@ importers:
         specifier: ^4.4.1
         version: 4.4.1(encoding@0.1.13)
       nodemailer:
-        specifier: ^6.10.0
-        version: 6.10.1
+        specifier: ^8.0.0
+        version: 8.0.11
       parse5:
         specifier: ^7.2.1
         version: 7.3.0
@@ -1347,8 +1347,8 @@ importers:
         specifier: ^0.5.47
         version: 0.5.48
       nodemailer:
-        specifier: ^6.10.0
-        version: 6.10.1
+        specifier: ^8.0.0
+        version: 8.0.11
       resend:
         specifier: ^4.0.0
         version: 4.8.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -6130,8 +6130,8 @@ packages:
     resolution: {integrity: sha512-Uzmd6LXpouKo8EUK68IjH4+E01w/hXyV3R3g/geCJo+rXLNfh1xucB+LOzYEOQPSiUK3h/xZf0cQGcSsmyL2Og==}
     engines: {node: '>=18'}
 
-  nodemailer@6.10.1:
-    resolution: {integrity: sha512-Z+iLaBGVaSjbIzQ4pX6XV41HrooLsQ10ZWPUehGmuantvzWoDVBnmsdUcOIDM1t+yPor5pDhVlDESgOMEGxhHA==}
+  nodemailer@8.0.11:
+    resolution: {integrity: sha512-nrO/pDAUKl+wXX+lx16tDLbnm0fW6sK/x8mgohaCpg+CdCEl482bD4tCuAZk2DyliruiNTIZxRCoWkDqJEnAiA==}
     engines: {node: '>=6.0.0'}
 
   nopt@5.0.0:
@@ -12553,7 +12553,7 @@ snapshots:
 
   node-releases@2.0.47: {}
 
-  nodemailer@6.10.1: {}
+  nodemailer@8.0.11: {}
 
   nopt@5.0.0:
     dependencies:
