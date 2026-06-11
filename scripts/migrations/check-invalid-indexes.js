@@ -46,7 +46,9 @@ async function main() {
     console.error(`  DROP INDEX CONCURRENTLY "${r.schema}"."${r.index}";`);
   }
   console.error("");
-  console.error("Then investigate why the previous migration run was interrupted before re-running this workflow.");
+  console.error(
+    "Then investigate why the previous migration run was interrupted before re-running this workflow."
+  );
   process.exit(1);
 }
 
@@ -75,7 +77,10 @@ async function queryWithRetry(sql, attempts = 3, delayMs = 5000) {
     } catch (err) {
       lastErr = err;
       await client.end().catch(() => {});
-      console.error(`[check-invalid-indexes] attempt ${attempt}/${attempts} failed:`, describe(err));
+      console.error(
+        `[check-invalid-indexes] attempt ${attempt}/${attempts} failed:`,
+        describe(err)
+      );
       if (attempt < attempts) await new Promise((r) => setTimeout(r, delayMs));
     }
   }
