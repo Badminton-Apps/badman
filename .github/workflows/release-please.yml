@@ -27,3 +27,6 @@ jobs:
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+          # Without this the action targets the repo DEFAULT branch (develop)
+          # and opens release PRs there — releases must cut from main.
+          target-branch: main
