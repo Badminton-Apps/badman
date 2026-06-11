@@ -38,6 +38,29 @@ module.exports = [
       "unused-imports/no-unused-imports": "warn",
     },
   },
+  // Ranking write protection: ban direct RankingPlace writes outside the writer service.
+  // All writes MUST go through RankingPlaceWriterService.
+  // Contract: specs/037-ranking-write-protection/contracts/ranking-place-writer.md
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    ignores: [
+      "**/ranking-place-writer.service.ts",
+      "**/ranking-place-writer.service.spec.ts",
+      "**/ranking-place-writer.integration.spec.ts",
+    ],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "CallExpression[callee.object.name='RankingPlace'][callee.property.name=/^(bulkCreate|create|upsert|findOrCreate)$/]",
+          message:
+            "Direct RankingPlace writes are banned. Use RankingPlaceWriterService instead. " +
+            "See: specs/037-ranking-write-protection/contracts/ranking-place-writer.md",
+        },
+      ],
+    },
+  },
   // TypeScript (was plugin:@nx/typescript — typescript-eslint recommended)
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.cts", "**/*.mts"],

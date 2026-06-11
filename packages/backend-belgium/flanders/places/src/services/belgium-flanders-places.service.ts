@@ -1,11 +1,18 @@
-import { Player, RankingPlace, RankingPoint, RankingSystem } from "@badman/backend-database";
-import { GameType, getRankingProtected } from "@badman/utils";
+import {
+  Player,
+  RankingPlace,
+  RankingPlaceWriterService,
+  RankingPoint,
+  RankingSystem,
+} from "@badman/backend-database";
+import { GameType } from "@badman/utils";
 import { Injectable } from "@nestjs/common";
 import moment from "moment";
 import { Op, Transaction } from "sequelize";
 
 @Injectable()
 export class BelgiumFlandersPlacesService {
+  constructor(private readonly writer: RankingPlaceWriterService) {}
   public async newPlaceForPlayer(
     player: Player,
     system: RankingSystem,
@@ -100,15 +107,14 @@ export class BelgiumFlandersPlacesService {
     newRanking.mixPointsDowngrade = mix.downgrade;
 
     if (options?.updateRanking) {
-      // Protections
-      newRanking = getRankingProtected(newRanking, system);
       newRanking.updatePossible = true;
     } else {
       newRanking.updatePossible = false;
     }
 
-    // Save the new ranking
-    await newRanking.save({ transaction: options?.transaction });
+    // Route through sanctioned writer — applies getRankingProtected (silent clamp)
+    // and keeps RankingLastPlace snapshot consistent.
+    await this.writer.upsertOne(newRanking, system, { transaction: options?.transaction });
   }
 
   private async _getNewPlace(

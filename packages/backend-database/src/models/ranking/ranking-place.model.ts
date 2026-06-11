@@ -1,20 +1,29 @@
+/**
+ * RankingPlace model — read-write shape for the ranking."RankingPlaces" table.
+ *
+ * WRITES: all creates/updates MUST go through RankingPlaceWriterService.
+ * See: specs/037-ranking-write-protection/contracts/ranking-place-writer.md
+ *
+ * The after-hooks (RankingLastPlace propagation, GamePlayerMembership rewrites)
+ * were deleted in the 037-ranking-write-protection refactor. Their behaviour now
+ * lives explicitly in RankingPlaceWriterService.
+ *
+ * The clamp-only before-hooks below are a safety net for rogue direct writes
+ * (e.g. .save() calls the eslint ban cannot see). They warn + no-op for systems
+ * without configured amountOfLevels / maxDiffLevels.
+ */
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
   BuildOptions,
-  DestroyOptions,
-  Op,
   SaveOptions,
-  UpdateOptions,
 } from "sequelize";
 import {
-  AfterBulkCreate,
-  AfterBulkUpdate,
-  AfterCreate,
-  AfterDestroy,
-  AfterUpdate,
-  AfterUpsert,
+  BeforeBulkCreate,
+  BeforeCreate,
+  BeforeUpdate,
+  BeforeUpsert,
   BelongsTo,
   Column,
   DataType,
@@ -27,11 +36,27 @@ import {
   Table,
   Unique,
 } from "sequelize-typescript";
-import { GamePlayerMembership } from "../event";
+import { getRankingProtected } from "@badman/utils";
 import { Player } from "../player.model";
 import { RankingLastPlace } from "./ranking-last-place.model";
 import { RankingSystem } from "./ranking-system.model";
 import { Relation } from "../../wrapper";
+
+/** Module-level cache: systemId → RankingSystem, refreshed every 5 minutes. */
+const _systemCache = new Map<string, { system: RankingSystem; expiresAt: number }>();
+const SYSTEM_CACHE_TTL_MS = 5 * 60 * 1000;
+
+async function _getCachedSystem(systemId: string): Promise<RankingSystem | null> {
+  const cached = _systemCache.get(systemId);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.system;
+  }
+  const system = await RankingSystem.findByPk(systemId);
+  if (system) {
+    _systemCache.set(systemId, { system, expiresAt: Date.now() + SYSTEM_CACHE_TTL_MS });
+  }
+  return system ?? null;
+}
 
 @Table({
   timestamps: true,
@@ -184,263 +209,66 @@ export class RankingPlace extends Model {
   getRankingSystem!: BelongsToGetAssociationMixin<RankingSystem>;
   setRankingSystem!: BelongsToSetAssociationMixin<RankingSystem, string>;
 
-  // #region Hooks
+  // #region Clamp-only safety-net hooks
+  // These hooks are NOT the enforcement path — RankingPlaceWriterService is.
+  // They guard against rogue direct writes that bypass the service.
+  // They warn + no-op for unconfigured systems to avoid breaking unrelated writes.
 
-  @AfterUpdate
-  static async updateLatestRankingsUpdates(
-    instances: RankingPlace[] | RankingPlace,
-    options: UpdateOptions
-  ) {
-    if (!Array.isArray(instances)) {
-      instances = [instances];
-    }
-
-    await this.updateLatestRankings(instances, options, "update");
+  @BeforeCreate
+  @BeforeUpsert
+  static async clampOnWrite(instance: RankingPlace, _options: SaveOptions): Promise<void> {
+    await RankingPlace._applyClamp([instance]);
   }
 
-  // @BeforeCreate
-  // @BeforeBulkCreate
-  // static async addEmptyValues(instances: RankingPlace[] | RankingPlace, options: SaveOptions) {
-  //   if (!Array.isArray(instances)) {
-  //     instances = [instances];
-  //   }
-
-  //   for (const instance of instances) {
-  //     // We are missing values
-  //     if (!instance.single || !instance.double || !instance.mix) {
-  //       const prevRankingPlace = await RankingPlace.findOne({
-  //         where: {
-  //           playerId: instance.playerId,
-  //           systemId: instance.systemId,
-  //           rankingDate: {
-  //             [Op.lt]: instance.rankingDate,
-  //           },
-  //         },
-  //         limit: 1,
-  //         order: [['rankingDate', 'DESC']],
-  //         transaction: options?.transaction,
-  //       });
-
-  //       if (prevRankingPlace) {
-  //         if ((instance.single ?? 0) === 0) {
-  //           instance.single = prevRankingPlace.single;
-  //         }
-  //         if ((instance.double ?? 0) === 0) {
-  //           instance.double = prevRankingPlace.double;
-  //         }
-  //         if ((instance.mix ?? 0) === 0) {
-  //           instance.mix = prevRankingPlace.mix;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
-  @AfterUpdate
-  @AfterUpsert
-  @AfterBulkUpdate
-  static async updateGames(instances: RankingPlace[] | RankingPlace, options: UpdateOptions) {
-    if (!Array.isArray(instances)) {
-      instances = [instances];
-    }
-
-    await this.updateGameRanking(
-      instances.filter((r) => r && r?.playerId && r?.systemId && r?.rankingDate),
-      options
-    );
+  @BeforeUpdate
+  static async clampOnUpdate(instance: RankingPlace, _options: SaveOptions): Promise<void> {
+    await RankingPlace._applyClamp([instance]);
   }
 
-  @AfterCreate
-  @AfterUpsert
-  @AfterBulkCreate
-  static async updateLatestRankingsCreate(
-    instances: RankingPlace[] | RankingPlace,
-    options: SaveOptions
-  ) {
-    if (!Array.isArray(instances)) {
-      instances = [instances];
-    }
-
-    const instancesToCheck = instances.filter(
-      (r) => r && r?.playerId && r?.systemId && r?.rankingDate
-    );
-
-    await this.updateLatestRankings(instancesToCheck, options, "create");
+  @BeforeBulkCreate
+  static async clampOnBulkCreate(instances: RankingPlace[], _options: SaveOptions): Promise<void> {
+    await RankingPlace._applyClamp(instances);
   }
 
-  @AfterDestroy
-  static async updateLatestRankingsDestroy(
-    instances: RankingPlace[] | RankingPlace,
-    options: DestroyOptions
-  ) {
-    if (!Array.isArray(instances)) {
-      instances = [instances];
-    }
+  private static async _applyClamp(instances: RankingPlace[]): Promise<void> {
+    // Group by systemId to batch cache lookups
+    const systemIds = [...new Set(instances.map((i) => i.systemId).filter(Boolean))] as string[];
 
-    const currentInstances: RankingPlace[] = [];
-
-    for (const instance of instances) {
-      const lastRanking = await RankingPlace.findOne({
-        where: {
-          playerId: instance.playerId,
-          systemId: instance.systemId,
-        },
-        transaction: options?.transaction,
-        limit: 1,
-        order: [["rankingDate", "DESC"]],
-      });
-      if (lastRanking) {
-        currentInstances.push(lastRanking);
-      }
-    }
-
-    await this.updateLatestRankings(currentInstances, options, "destroy");
-  }
-
-  static async updateLatestRankings(
-    instances: RankingPlace[],
-    options: SaveOptions | UpdateOptions,
-    type: "create" | "update" | "destroy"
-  ) {
-    const rankingLastPlaces = instances.map((r) => r.asLastRankingPlace());
-    const whereOr = rankingLastPlaces?.map((r) => {
-      if (!r) {
-        throw new Error(`RankingLastPlace is undefined`);
-      } else if (!r.playerId) {
-        throw new Error(`RankingLastPlace.playerId is undefined`);
-      } else if (!r.systemId) {
-        throw new Error(`RankingLastPlace.systemId is undefined`);
-      } else if (!r.rankingDate) {
-        throw new Error(`RankingLastPlace.rankingDate is undefined`);
+    for (const systemId of systemIds) {
+      let system: RankingSystem | null;
+      try {
+        system = await _getCachedSystem(systemId);
+      } catch {
+        console.warn(
+          `[RankingPlace] clamp hook: failed to load system ${systemId} — skipping clamp`
+        );
+        continue;
       }
 
-      const filter: {
-        playerId?: string;
-        systemId?: string;
-      } = {
-        playerId: r.playerId,
-        systemId: r.systemId,
-      };
+      if (!system || system.amountOfLevels == null || system.maxDiffLevels == null) {
+        console.warn(
+          `[RankingPlace] clamp hook: system ${systemId} is unconfigured (missing amountOfLevels or maxDiffLevels) — skipping clamp`
+        );
+        continue;
+      }
 
-      return filter;
-    });
-
-    // Find where the last ranking place is not the same as the current one
-    const current = await RankingLastPlace.findAll({
-      where: {
-        [Op.or]: whereOr,
-      },
-      transaction: options.transaction,
-    });
-
-    // Filter out if the last ranking is not newer than the current one
-    const updateInstances =
-      type == "create"
-        ? rankingLastPlaces
-        : rankingLastPlaces.filter(
-            (l) =>
-              current.findIndex((c) => c.playerId === l.playerId && c.systemId === l.systemId) > -1
+      for (const inst of instances.filter((i) => i.systemId === systemId)) {
+        try {
+          const protected_ = getRankingProtected(
+            { single: inst.single, double: inst.double, mix: inst.mix },
+            system
           );
-
-    for (const instance of updateInstances || []) {
-      const [lastPlace, created] = await RankingLastPlace.findOrCreate({
-        where: {
-          playerId: instance.playerId,
-          systemId: instance.systemId,
-        },
-        defaults: instance,
-        transaction: options.transaction,
-      });
-
-      if (!created) {
-        if (
-          !lastPlace.rankingDate ||
-          !instance.rankingDate ||
-          new Date(instance.rankingDate) >= new Date(lastPlace.rankingDate)
-        ) {
-          const updateInstance = Object.fromEntries(
-            Object.entries(instance).filter(([_, value]) => value !== undefined && value !== null)
-          );
-          await lastPlace.update(updateInstance, { transaction: options.transaction });
+          inst.single = protected_.single;
+          inst.double = protected_.double;
+          inst.mix = protected_.mix;
+        } catch {
+          // getRankingProtected throws for missing config — already guarded above
         }
       }
     }
   }
 
-  static async updateGameRanking(instances: RankingPlace[], options: UpdateOptions) {
-    try {
-      for (const instance of instances) {
-        // find next ranking place
-        const nextRankingPlace = await RankingPlace.findOne({
-          where: {
-            playerId: instance.playerId,
-            systemId: instance.systemId,
-            rankingDate: {
-              [Op.gt]: instance.rankingDate,
-            },
-          },
-          limit: 1,
-          order: [["rankingDate", "ASC"]],
-          transaction: options?.transaction,
-        });
-
-        const endDate = nextRankingPlace?.rankingDate;
-        const dates: { [key: string]: unknown }[] = [
-          {
-            playedAt: {
-              [Op.gte]: instance.rankingDate,
-            },
-          },
-        ];
-
-        if (endDate) {
-          dates.push({
-            playedAt: {
-              [Op.lt]: endDate,
-            },
-          });
-        }
-
-        const p = await instance.getPlayer();
-        const games = await p.getGames({
-          where: {
-            [Op.and]: dates,
-          },
-
-          transaction: options?.transaction,
-        });
-
-        const gamePlayerMemberships =
-          games?.map((g) => {
-            return {
-              gameId: g.id,
-              playerId: p.id,
-              systemId: instance.systemId,
-              single: instance.single,
-              double: instance.double,
-              mix: instance.mix,
-            };
-          }) || [];
-
-        for (const membership of gamePlayerMemberships) {
-          const [playerMembership, created] = await GamePlayerMembership.findOrCreate({
-            where: {
-              playerId: membership.playerId,
-              gameId: membership.gameId,
-            },
-            defaults: membership,
-            transaction: options?.transaction,
-          });
-
-          if (!created) {
-            await playerMembership.update(membership, { transaction: options?.transaction });
-          }
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
+  // #endregion
 
   asLastRankingPlace() {
     return {

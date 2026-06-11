@@ -2,6 +2,7 @@ import { Player, RankingPlace, RankingSystem, SubEventCompetition } from "@badma
 import {
   getBestPlayersFromTeam,
   getIndexFromPlayers,
+  getRankingProtected,
   IndexPlayer,
   SubEventTypeEnum,
 } from "@badman/utils";
@@ -26,10 +27,10 @@ import {
  *   • ORDER BY rankingDate DESC, keep the first row per player
  *   • No `updatePossible` filter — both confirmed and in-progress rows count,
  *     same as the validator.
- *   • Missing per-discipline values fall back to
- *     `min(single, double, mix) + 2` (validator's "min+2" penalty).
- *     A player with no RankingPlace at all therefore gets
- *     `amountOfLevels + 2` per discipline.
+ *   • Missing per-discipline values fall back to the shared derivation rule
+ *     (`getRankingProtected` with the system's `maxDiffLevels`).
+ *     A player with no RankingPlace at all gets `amountOfLevels` per discipline
+ *     (capped at worst level — unified with the write-time rule; FR-008).
  *
  * `subEventCompetitionId` does NOT influence the cutoff — it is consulted only
  * to derive `type` (M / F / MX / NATIONAL) and/or `season` when the caller
@@ -296,7 +297,8 @@ export class IndexCalculationService {
             placeMap,
             genderMap,
             notFoundIds,
-            sys.amountOfLevels ?? 12
+            sys.amountOfLevels ?? 12,
+            sys.maxDiffLevels ?? 2
           )
         );
       } catch (err) {
@@ -426,9 +428,14 @@ export class IndexCalculationService {
 
   /**
    * Compute a single IndexCalculationResult given pre-fetched data.
-   * Mirrors `EnrollmentValidationService.getPlayers` per-discipline fallback:
-   *   bestRankingMin2 = min(s, d, m) + 2  (each component defaults to amountOfLevels first)
-   *   missing components default to bestRankingMin2.
+   *
+   * Missing per-discipline values fall back to the shared derivation rule
+   * (getRankingProtected) using the system's configured maxDiffLevels.
+   *
+   * Per spec clarification 2026-06-11 (FR-008, D5): ghost players (no ranking
+   * record at all) are now capped at amountOfLevels — fully unified with the
+   * shared rule. The previous amountOfLevels + 2 "validator parity" constant
+   * is intentionally removed.
    */
   private computeResult(
     input: IndexCalculationInput,
@@ -436,7 +443,8 @@ export class IndexCalculationService {
     placeMap: Map<string, RankingPlace>,
     genderMap: Map<string, "M" | "F">,
     notFoundIds: Set<string>,
-    amountOfLevels: number
+    amountOfLevels: number,
+    maxDiffLevels: number
   ): IndexCalculationResult {
     const missingPlayerIds = input.players.filter((p) => notFoundIds.has(p.id)).map((p) => p.id);
 
@@ -452,21 +460,24 @@ export class IndexCalculationService {
     const resolvedPlayers: IndexCalculationContributingPlayer[] = input.players.map((p) => {
       const place = placeMap.get(p.id);
       const gender = genderMap.get(p.id) as "M" | "F";
-      const rawSingle = place?.single;
-      const rawDouble = place?.double;
-      const rawMix = place?.mix;
-      const bestRankingMin2 =
-        Math.min(
-          rawSingle ?? amountOfLevels,
-          rawDouble ?? amountOfLevels,
-          rawMix ?? amountOfLevels
-        ) + 2;
+
+      // Apply the shared derivation rule (FR-008): fills missing categories using
+      // maxDiffLevels from the system config, caps at amountOfLevels.
+      const protected_ = getRankingProtected(
+        {
+          single: place?.single,
+          double: place?.double,
+          mix: place?.mix,
+        },
+        { amountOfLevels, maxDiffLevels }
+      );
+
       return {
         id: p.id,
         gender,
-        single: rawSingle ?? bestRankingMin2,
-        double: rawDouble ?? bestRankingMin2,
-        mix: rawMix ?? bestRankingMin2,
+        single: protected_.single!,
+        double: protected_.double!,
+        mix: protected_.mix!,
       };
     });
 

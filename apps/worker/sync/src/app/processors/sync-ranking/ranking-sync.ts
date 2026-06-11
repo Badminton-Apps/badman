@@ -1,4 +1,10 @@
-import { Player, RankingLastPlace, RankingPlace, RankingSystem } from "@badman/backend-database";
+import {
+  Player,
+  RankingLastPlace,
+  RankingPlace,
+  RankingPlaceWriterService,
+  RankingSystem,
+} from "@badman/backend-database";
 import { Sync } from "@badman/backend-queue";
 import { VisualService } from "@badman/backend-visual";
 import { RankingSystems, Ranking, Gender } from "@badman/utils";
@@ -46,7 +52,8 @@ export class RankingSyncer {
   constructor(
     private readonly _visualService: VisualService,
     private readonly rankingQ: Queue,
-    private readonly _sequelize: Sequelize
+    private readonly _sequelize: Sequelize,
+    private readonly writer: RankingPlaceWriterService
   ) {
     this.processor = new Processor(undefined, { logger: this.logger });
 
@@ -265,9 +272,7 @@ export class RankingSyncer {
 
     const totalPublications = publicationsToProcess.length;
     const runStart = Date.now();
-    this.logger.log(
-      `Processing ${totalPublications} publications with separate transactions`
-    );
+    this.logger.log(`Processing ${totalPublications} publications with separate transactions`);
 
     for (const [index, publication] of publicationsToProcess.entries()) {
       // Create a separate transaction for each publication
@@ -479,46 +484,18 @@ export class RankingSyncer {
       });
     }
 
-    // Process ranking places in very small chunks
+    // Route all ranking place writes through the sanctioned writer service.
+    // The writer handles fill-from-previous, getRankingProtected, chunked upsert,
+    // and explicit RankingLastPlace snapshot propagation.
     const instances = Array.from(rankingPlaces).map(([, place]) => place.toJSON());
     const placeCount = instances.length;
-    const chunkSize = 500; // Ultra small chunks to prevent lock exhaustion
-    const totalChunks = Math.ceil(placeCount / chunkSize);
-    this.logger.log(`Creating/updating ${placeCount} ranking places in ${totalChunks} chunks`);
+    this.logger.log(`Creating/updating ${placeCount} ranking places via RankingPlaceWriterService`);
 
-    for (let i = 0; i < instances.length; i += chunkSize) {
-      const chunk = instances.slice(i, i + chunkSize);
-      const chunkNum = Math.floor(i / chunkSize) + 1;
-
-      // Only log every 5th chunk (or first/last) to avoid noise on big publications
-      if (chunkNum === 1 || chunkNum === totalChunks || chunkNum % 5 === 0) {
-        this.logger.log(
-          `  chunk ${chunkNum}/${totalChunks} (${chunk.length} records)`
-        );
-      }
-
-      await RankingPlace.bulkCreate(chunk, {
-        updateOnDuplicate: [
-          "updatePossible",
-          "single",
-          "singlePoints",
-          "singleRank",
-          "double",
-          "doublePoints",
-          "doubleRank",
-          "mix",
-          "mixPoints",
-          "mixRank",
-        ],
-        transaction,
-        returning: false,
-      });
-
-      // Longer delay between batches to prevent lock exhaustion
-      if (i + chunkSize < instances.length) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-    }
+    await this.writer.upsertMany(instances, ranking.system, {
+      transaction,
+      chunkSize: 500,
+      propagateGameMemberships: false,
+    });
 
     // Clear memory immediately
     rankingPlaces.clear();
@@ -544,27 +521,29 @@ export class RankingSyncer {
         return;
       }
 
-      // find any ranking place where single, double or mix is null
+      // Tripwire: find any ranking place where single, double or mix is null.
+      // After Release A this query should return nothing — if it finds rows, a
+      // write is bypassing RankingPlaceWriterService (FR-009 tripwire detector).
       const playersWithMissingRankings = await RankingPlace.findAll({
         where: {
           rankingDate: lastPublication.date,
           systemId: system?.id,
           [Op.or]: [{ single: null }, { double: null }, { mix: null }],
-          transaction: args.transaction,
         },
+        transaction: args.transaction,
       });
 
       if (playersWithMissingRankings.length > 0) {
-        this.logger.log(
-          `Queueing ${playersWithMissingRankings.length} players for ranking creation`
+        this.logger.warn(
+          `Tripwire: ${playersWithMissingRankings.length} ranking places still have null categories — a writer may be bypassing RankingPlaceWriterService`
         );
 
-        // qyueu them for ranking check on low priority
+        // Queue repair jobs with the PLAYER id (not the RankingPlace id — bug fix T020)
         for (const player of playersWithMissingRankings) {
           this.rankingQ.add(
             Sync.CheckRanking,
             {
-              playerId: player.id,
+              playerId: player.playerId,
             },
             {
               priority: 9999,

@@ -3,6 +3,7 @@ import {
   RankingPlace,
   RankingPlaceNewInput,
   RankingPlaceUpdateInput,
+  RankingPlaceWriterService,
   RankingSystem,
 } from "@badman/backend-database";
 import { RankingSystemService } from "@badman/backend-ranking";
@@ -19,7 +20,8 @@ export class RankingPlaceResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private readonly rankingSystemService: RankingSystemService
+    private readonly rankingSystemService: RankingSystemService,
+    private readonly writer: RankingPlaceWriterService
   ) {}
 
   @Query(() => RankingPlace)
@@ -91,23 +93,23 @@ export class RankingPlaceResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const rankingPlace = await RankingPlace.findByPk(updateRankingPlaceData.id, {
-        transaction,
-      });
+      const existing = await RankingPlace.findByPk(updateRankingPlaceData.id, { transaction });
 
-      if (!rankingPlace) {
+      if (!existing) {
         throw new NotFoundException(`${RankingPlace.name}: ${updateRankingPlaceData.id}`);
       }
 
-      // Update rankingPlace
-      await rankingPlace.update(updateRankingPlaceData, {
-        transaction,
-      });
+      const system = await this.rankingSystemService.getById(existing.systemId);
+      if (!system) {
+        throw new NotFoundException(`${RankingSystem.name}: ${existing.systemId}`);
+      }
 
-      // Commit transaction
+      // Merge input with existing row, then silently clamp via writer (US1.3 / D6)
+      const merged: Partial<RankingPlace> = { ...existing.toJSON(), ...updateRankingPlaceData };
+      const result = await this.writer.upsertOne(merged, system, { transaction });
+
       await transaction.commit();
-
-      return rankingPlace;
+      return result;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
@@ -132,20 +134,21 @@ export class RankingPlaceResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const player = await Player.findByPk(newRankingPlaceData.playerId, {
-        transaction,
-      });
+      const player = await Player.findByPk(newRankingPlaceData.playerId, { transaction });
 
       if (!player) {
         throw new NotFoundException(`${Player.name}: ${newRankingPlaceData.playerId}`);
       }
 
-      // Update club
-      const place = await RankingPlace.create({ ...newRankingPlaceData }, { transaction });
+      const system = await this.rankingSystemService.getById(newRankingPlaceData.systemId);
+      if (!system) {
+        throw new NotFoundException(`${RankingSystem.name}: ${newRankingPlaceData.systemId}`);
+      }
 
-      // Commit transaction
+      // Silently clamp via writer (US1.3 / D6 — no validation error returned)
+      const place = await this.writer.upsertOne(newRankingPlaceData, system, { transaction });
+
       await transaction.commit();
-
       return place;
     } catch (error) {
       this.logger.error(error);
@@ -153,6 +156,7 @@ export class RankingPlaceResolver {
       throw error;
     }
   }
+
   @Mutation(() => Boolean)
   async removeRankingPlace(@User() user: Player, @Args("id", { type: () => ID }) id: string) {
     const rankingPlace = await RankingPlace.findByPk(id);
@@ -170,14 +174,10 @@ export class RankingPlaceResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      // Update rankingPlace
-      await rankingPlace.destroy({
-        transaction,
-      });
+      // Destroy via writer — re-points RankingLastPlace snapshot
+      await this.writer.remove(rankingPlace, { transaction });
 
-      // Commit transaction
       await transaction.commit();
-
       return true;
     } catch (error) {
       this.logger.error(error);

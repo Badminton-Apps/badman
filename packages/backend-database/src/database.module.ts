@@ -8,6 +8,7 @@ import { Model, Sequelize } from "sequelize-typescript";
 import { Club, EventCompetition, EventTournament, Player, Team } from "./models";
 import { SequelizeConfigProvider } from "./provider";
 import { loadTest } from "./_testing/load-test";
+import { RankingPlaceWriterService } from "./services";
 
 @Module({
   imports: [
@@ -19,6 +20,8 @@ import { loadTest } from "./_testing/load-test";
     ConfigModule,
     CacheModule,
   ],
+  providers: [RankingPlaceWriterService],
+  exports: [RankingPlaceWriterService],
 })
 export class DatabaseModule implements OnModuleInit, OnApplicationBootstrap {
   private readonly logger = new Logger(DatabaseModule.name);

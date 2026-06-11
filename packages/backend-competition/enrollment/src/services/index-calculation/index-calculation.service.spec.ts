@@ -18,6 +18,7 @@ const stubSystem = (overrides?: Partial<RankingSystem>): RankingSystem =>
   ({
     id: SYSTEM_ID,
     amountOfLevels: 12,
+    maxDiffLevels: 2,
     primary: true,
     ...overrides,
   }) as unknown as RankingSystem;
@@ -212,11 +213,17 @@ describe("IndexCalculationService", () => {
   // -------------------------------------------------------------------------
   // min+2 fallback (validator parity)
   // -------------------------------------------------------------------------
-  describe("validator-parity per-discipline fallback (min+2)", () => {
-    it("defaults all components to amountOfLevels+2 when no RankingPlace row exists", async () => {
+  describe("shared-rule per-discipline fallback (getRankingProtected)", () => {
+    it("defaults all components to amountOfLevels (not +2) when no RankingPlace row exists", async () => {
+      // Spec clarification 2026-06-11 (FR-008, D5): ghost players capped at
+      // amountOfLevels — full unification with the shared rule.
+      // Previous expectation was amountOfLevels+2 = 12 (amountOfLevels=10+2).
+      // New expectation: amountOfLevels = 10 (worst level, no over-shoot).
       const playerId = "player-norate-0000-0000-0000-000000000000";
 
-      jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem({ amountOfLevels: 10 }));
+      jest
+        .spyOn(RankingSystem, "findOne")
+        .mockResolvedValue(stubSystem({ amountOfLevels: 10, maxDiffLevels: 2 }));
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer(playerId)]);
       jest
         .spyOn(
@@ -234,14 +241,14 @@ describe("IndexCalculationService", () => {
 
       expect(result._tag).toBe("success");
       if (result._tag === "success") {
-        // min(10,10,10)+2 = 12 per discipline
-        expect(result.contributingPlayers[0].single).toBe(12);
-        expect(result.contributingPlayers[0].double).toBe(12);
-        expect(result.contributingPlayers[0].mix).toBe(12);
+        // getRankingProtected: single=double=mix=amountOfLevels=10 (no spread violation)
+        expect(result.contributingPlayers[0].single).toBe(10);
+        expect(result.contributingPlayers[0].double).toBe(10);
+        expect(result.contributingPlayers[0].mix).toBe(10);
       }
     });
 
-    it("fills missing components with min(s,d,m)+2 when at least one component is rated", async () => {
+    it("fills missing components with getRankingProtected(min+maxDiffLevels) when at least one component is rated", async () => {
       const playerId = "p1";
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer(playerId)]);
@@ -611,7 +618,7 @@ describe("IndexCalculationService", () => {
   // RankingPlace fetch failure tolerance
   // -------------------------------------------------------------------------
   describe("RankingPlace fetch error", () => {
-    it("falls back to default-fill (amountOfLevels+2) when the place fetch throws", async () => {
+    it("falls back to default-fill (capped at amountOfLevels) when the place fetch throws", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem({ amountOfLevels: 12 }));
       jest.spyOn(Player, "findAll").mockResolvedValue([stubPlayer("p1")]);
       jest
@@ -628,10 +635,11 @@ describe("IndexCalculationService", () => {
         players: [{ id: "p1" }],
       });
 
-      // No crash — all components default to amountOfLevels+2 = 14.
+      // No crash — all components default to amountOfLevels (ghost players are
+      // capped at the worst level per FR-008, clarification 2026-06-11).
       expect(result._tag).toBe("success");
       if (result._tag === "success") {
-        expect(result.contributingPlayers[0].single).toBe(14);
+        expect(result.contributingPlayers[0].single).toBe(12);
       }
     });
   });
@@ -676,7 +684,7 @@ describe("IndexCalculationService", () => {
       }
     });
 
-    it("M team, one unranked player: matches validator's min+2 fallback", async () => {
+    it("M team, one unranked player: falls back to amountOfLevels (capped)", async () => {
       jest.spyOn(RankingSystem, "findOne").mockResolvedValue(stubSystem());
       jest
         .spyOn(Player, "findAll")
@@ -707,8 +715,9 @@ describe("IndexCalculationService", () => {
 
       expect(result._tag).toBe("success");
       if (result._tag === "success") {
-        // Same setup as validator's "Player without RankingPlace falls back…" test → 64
-        expect(result.index).toBe(64);
+        // Unranked p4 contributes 12+12 (capped at amountOfLevels, FR-008):
+        // (5+5)+(6+6)+(7+7)+12+12 = 60 — was 64 under the abandoned uncapped +2 rule.
+        expect(result.index).toBe(60);
       }
     });
   });
