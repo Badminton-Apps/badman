@@ -1,3 +1,4 @@
+import { CronJob, RankingPlaceWriterService } from "@badman/backend-database";
 import { SyncQueue, Sync } from "@badman/backend-queue";
 import { VisualService } from "@badman/backend-visual";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
@@ -5,7 +6,6 @@ import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
 import { Sequelize } from "sequelize-typescript";
 import { RankingSyncer } from "./ranking-sync";
-import { CronJob } from "@badman/backend-database";
 import { startLockRenewal } from "../../utils";
 
 @Processor({
@@ -19,9 +19,10 @@ export class SyncRankingProcessor {
   constructor(
     private _sequelize: Sequelize,
     visualService: VisualService,
-    @InjectQueue(SyncQueue) readonly rankingQ: Queue
+    @InjectQueue(SyncQueue) readonly rankingQ: Queue,
+    private readonly rankingPlaceWriter: RankingPlaceWriterService
   ) {
-    this._rankingSync = new RankingSyncer(visualService, rankingQ, _sequelize);
+    this._rankingSync = new RankingSyncer(visualService, rankingQ, _sequelize, rankingPlaceWriter);
   }
 
   @Process({

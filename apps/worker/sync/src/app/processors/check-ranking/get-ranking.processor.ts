@@ -1,4 +1,9 @@
-import { Player, RankingPlace, RankingSystem } from "@badman/backend-database";
+import {
+  Player,
+  RankingPlace,
+  RankingPlaceWriterService,
+  RankingSystem,
+} from "@badman/backend-database";
 import { acceptCookies, getPage, selectBadmninton } from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Process, Processor } from "@nestjs/bull";
@@ -13,7 +18,7 @@ import { getRanking, getViaRanking, searchPlayer } from "./pupeteer";
 export class CheckRankingProcessor {
   private readonly logger = new Logger(CheckRankingProcessor.name);
 
-  constructor() {
+  constructor(private readonly writer: RankingPlaceWriterService) {
     this.logger.debug("Check ranking initialized");
   }
 
@@ -22,7 +27,7 @@ export class CheckRankingProcessor {
     concurrency: 1,
   })
   async syncRankingJob(job: Job<{ playerId: string }>): Promise<void> {
-    this.syncRanking(job.data.playerId);
+    await this.syncRanking(job.data.playerId);
   }
 
   async syncRanking(playerId: string): Promise<void> {
@@ -49,7 +54,7 @@ export class CheckRankingProcessor {
       return;
     }
 
-    // Find all rankingplaces since the last update
+    // Find all ranking places for fill-from-previous (last known values)
     const rankingPlaces = await RankingPlace.findAll({
       where: {
         systemId: primary.id,
@@ -73,39 +78,43 @@ export class CheckRankingProcessor {
       await acceptCookies({ page }, { logger: this.logger });
       await selectBadmninton({ page });
 
-      // Processing player
-      const result = await getViaRanking({ page }, player);
-
+      // Processing player: try the direct ranking-page route first
       let single: number | undefined;
       let double: number | undefined;
       let mix: number | undefined;
 
-      if (!result) {
-        // ranking was not found
+      const result = await getViaRanking({ page }, player);
+
+      if (result) {
+        // getViaRanking navigated to the player's profile page — now extract ranking
+        // Bug fix (D3.1): the old code never called getRanking here, leaving single/double/mix unassigned.
+        try {
+          const ranking = await getRanking({ page, timeout: 2000 });
+          if (ranking.single) single = ranking.single;
+          if (ranking.double) double = ranking.double;
+          if (ranking.mix) mix = ranking.mix;
+        } catch {
+          this.logger.debug(
+            `getViaRanking navigation succeeded but getRanking failed — will try search route`
+          );
+        }
+      }
+
+      // Fall back to search-by-player-links route if the direct route yielded nothing
+      if (!single && !double && !mix) {
         const links = await searchPlayer({ page }, player);
         if (links.length === 0) {
           this.logger.warn(`Player ${player.fullName} not found`);
           return;
         }
 
-        // iterate over links and extract ranking
         for (const url of links) {
           await page.goto(`https://www.toernooi.nl/${url}`);
-          // Get Ranking and set local variables
           try {
-            // Extract ranking
             const ranking = await getRanking({ page, timeout: 200 });
-
-            // We found our player
-            if (ranking.single) {
-              single = ranking.single;
-            }
-            if (ranking.double) {
-              double = ranking.double;
-            }
-            if (ranking.mix) {
-              mix = ranking.mix;
-            }
+            if (ranking.single) single = ranking.single;
+            if (ranking.double) double = ranking.double;
+            if (ranking.mix) mix = ranking.mix;
             break;
           } catch (error) {
             continue;
@@ -113,35 +122,33 @@ export class CheckRankingProcessor {
         }
       }
 
-      if (!single || !double || !mix) {
-        this.logger.warn(`No ranking found for ${player.fullName}`);
+      // Bug fix (D3.1 / FR-005): only skip when ZERO categories were found.
+      // Partial results are acceptable — fill from last-known before derivation.
+      const foundCount = [single, double, mix].filter(Boolean).length;
+      if (foundCount === 0) {
+        this.logger.warn(
+          `No ranking categories found for ${player.fullName} — skipping (cannot derive from nothing)`
+        );
         return;
       }
 
-      this.logger.debug(`Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`);
+      this.logger.debug(
+        `Setting ranking for ${player.fullName}: single=${single ?? "last-known"} double=${double ?? "last-known"} mix=${mix ?? "last-known"}`
+      );
 
-      for (const rankingPlace of rankingPlaces) {
-        // Update player
-        rankingPlace.single = single;
-        rankingPlace.double = double;
-        rankingPlace.mix = mix;
-
-        rankingPlace.changed("single", true);
-        rankingPlace.changed("double", true);
-        rankingPlace.changed("mix", true);
-
-        await rankingPlace.save();
-
-        if (rankingPlace.updatePossible) {
-          break;
-        }
-      }
+      // Route through writer — fills missing categories from last-known values,
+      // applies getRankingProtected, updates rows newest-first, propagates snapshot.
+      await this.writer.updateForPlayer(
+        player.id,
+        primary,
+        { single, double, mix },
+        { propagateGameMemberships: true }
+      );
     } catch (error) {
       this.logger.error(error);
       this.logger.error(`Error while processing player ${player.fullName}`);
     } finally {
       try {
-        // Close page properly (let shared browser manage itself)
         if (page) {
           await page.close();
           this.logger.debug(`Synced ${player.fullName}`);
