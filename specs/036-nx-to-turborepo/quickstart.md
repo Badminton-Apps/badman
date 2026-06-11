@@ -15,7 +15,7 @@ npm run docker:up               # unchanged — Postgres/Redis/pgAdmin
 | Task                    | Old (Nx)                                                           | New (Turborepo + pnpm)                                                |
 | ----------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- |
 | Serve API + sync worker | `nx run-many --target=serve --projects=api,worker-sync --parallel` | `pnpm dev --filter=api --filter=worker-sync`                          |
-| Serve ranking workers   | `npm run start:ranking`                                            | `pnpm dev --filter=worker-ranking --filter=worker-belgium-flanders-*` |
+| Serve ranking workers   | `npm run start:ranking`                                            | `pnpm dev --filter=worker-ranking` (Flanders processors run inside it, BAD-261) |
 | Build one project       | `nx build api`                                                     | `pnpm turbo run build --filter=api`                                   |
 | Build everything        | `nx run-many -t build`                                             | `pnpm build` (→ `turbo run build`)                                    |
 | Test one package        | `nx test backend-graphql`                                          | `pnpm turbo run test --filter=@badman/backend-graphql`                |

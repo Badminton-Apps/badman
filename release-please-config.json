@@ -8,17 +8,19 @@
       "package-name": "badman",
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
-        { "type": "json", "path": "apps/api/src/version.json", "jsonpath": "$.version" },
-        { "type": "json", "path": "apps/worker/sync/src/version.json", "jsonpath": "$.version" },
-        { "type": "json", "path": "apps/worker/ranking/src/version.json", "jsonpath": "$.version" },
         {
           "type": "json",
-          "path": "apps/worker/belgium/flanders/places/src/version.json",
+          "path": "apps/api/src/version.json",
           "jsonpath": "$.version"
         },
         {
           "type": "json",
-          "path": "apps/worker/belgium/flanders/points/src/version.json",
+          "path": "apps/worker/sync/src/version.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "apps/worker/ranking/src/version.json",
           "jsonpath": "$.version"
         }
       ]
