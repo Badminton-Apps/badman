@@ -1,4 +1,11 @@
-import { Club, ClubPlayerMembership, Player, RankingPlace } from "@badman/backend-database";
+import {
+  Club,
+  ClubPlayerMembership,
+  Player,
+  RankingPlace,
+  RankingPlaceWriterService,
+  RankingSystem,
+} from "@badman/backend-database";
 import { ClubMembershipType } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import moment, { Moment } from "moment";
@@ -9,7 +16,10 @@ import { Sequelize } from "sequelize-typescript";
 export class UpdateRankingService {
   private readonly _logger = new Logger(UpdateRankingService.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private readonly writer: RankingPlaceWriterService
+  ) {}
 
   async processFileUpload(
     data: MembersRolePerGroupData[],
@@ -299,23 +309,20 @@ export class UpdateRankingService {
         }
       }
 
-      // Use findOrCreate and update for PostgreSQL compatibility
-      for (const item of toUpdate) {
-        const itemData = item.toJSON();
-        const [instance, created] = await RankingPlace.findOrCreate({
-          where: {
-            playerId: itemData.playerId,
-            systemId: itemData.systemId,
-            rankingDate: itemData.rankingDate,
-          },
-          defaults: itemData,
-          transaction,
-        });
-
-        if (!created) {
-          // Update the existing instance with new data
-          await instance.update(itemData, { transaction });
+      if (toUpdate.length > 0) {
+        // Fetch the system once for this chunk run (needed by the writer)
+        const system = await RankingSystem.findByPk(rankingSystemId, { transaction });
+        if (!system) {
+          this._logger.warn(`RankingSystem ${rankingSystemId} not found — skipping writer upsert`);
+          continue;
         }
+
+        // Route through sanctioned writer — applies fill-from-previous + getRankingProtected
+        await this.writer.upsertMany(
+          toUpdate.map((p) => p.toJSON()),
+          system,
+          { transaction }
+        );
       }
     }
   }
