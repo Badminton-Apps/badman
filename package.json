@@ -126,6 +126,8 @@
     "@nestjs/schematics": "11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@prettier/plugin-pug": "^3.2.1",
+    "@swc/core": "^1.15.41",
+    "@swc/jest": "^0.2.39",
     "@types/archiver": "^6.0.3",
     "@types/compression": "^1.7.5",
     "@types/consolidate": "^0.14.4",
@@ -177,6 +179,11 @@
   "overrides": {
     "string-length": {
       "strip-ansi": "^6.0.0"
+    }
+  },
+  "pnpm": {
+    "overrides": {
+      "graphql": "^16.14.2"
     }
   }
 }
