@@ -12,7 +12,6 @@ packages:
 # by default). These match what the previous npm install executed.
 onlyBuiltDependencies:
   - "@apollo/protobufjs"
-  - canvas
   - lefthook
   - msgpackr-extract
   - puppeteer
