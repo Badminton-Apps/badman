@@ -5,4 +5,5 @@ export * from "./database.module";
 export * from "./_testing";
 export * from "./types";
 export * from "./models";
+export * from "./services";
 // end:ng42.barrel
