@@ -4,8 +4,23 @@ const path = require("path");
 // values below reproduce what this repo actually relied on from it).
 module.exports = {
   testEnvironment: "node",
-  // Per-package jest.config.ts files define their own ts-jest transform; this
-  // preset only carries the repo-wide behaviour.
+  // Single repo-wide transform: @swc/jest (transpile-only, near-zero compile
+  // cost vs ts-jest). Type-checking is the build step's job (tsc), not the
+  // test runner's. decorators + decoratorMetadata are required by NestJS DI
+  // and sequelize-typescript; keep target in sync with tsconfig.base.json.
+  transform: {
+    "^.+\\.ts$": [
+      "@swc/jest",
+      {
+        jsc: {
+          parser: { syntax: "typescript", decorators: true },
+          transform: { legacyDecorator: true, decoratorMetadata: true },
+          target: "es2022",
+        },
+        module: { type: "commonjs" },
+      },
+    ],
+  },
   passWithNoTests: true,
   coverageReporters: ["html", "text", "lcov"],
   // Cold ts-jest compiles of large suites (assembly, graphql) can push the
