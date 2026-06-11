@@ -364,7 +364,7 @@ describe("EnrollmentValidationService", () => {
       expect(data.teams[0].baseIndex).toBe(87);
     });
 
-    test("Player without RankingPlace falls back to min(s,d,m)+2 = amountOfLevels+2 per discipline", async () => {
+    test("Player without RankingPlace falls back to amountOfLevels (capped) per discipline", async () => {
       const players = [
         stubPlayerWithRanking("p1", "M", 5, 5, 7),
         stubPlayerWithRanking("p2", "M", 6, 6, 8),
@@ -388,14 +388,15 @@ describe("EnrollmentValidationService", () => {
         ],
       });
 
-      // Three rated players + one unrated. Unrated: min(12,12,12)+2 = 14 per discipline → single+double = 28.
-      // (5+5)+(6+6)+(7+7)+14+14 = 10+12+14+28 = 64
-      expect(data.teams[0].baseIndex).toBe(64);
+      // Three rated players + one unrated. Unrated: capped at amountOfLevels = 12
+      // per discipline (FR-008, clarification 2026-06-11) → single+double = 24.
+      // (5+5)+(6+6)+(7+7)+12+12 = 10+12+14+24 = 60
+      expect(data.teams[0].baseIndex).toBe(60);
     });
 
-    test("Cutoff: a RankingPlace dated after June 10 of season is ignored; players fall back to amountOfLevels+2", async () => {
+    test("Cutoff: a RankingPlace dated after June 10 of season is ignored; players fall back to amountOfLevels", async () => {
       // p1-p3 have rows BEFORE cutoff. p4 has only an AFTER-cutoff row → service ignores it
-      // and falls back to min(12,12,12)+2 = 14 per discipline.
+      // and falls back to amountOfLevels = 12 per discipline (capped, FR-008).
       const players = [
         stubPlayerWithRanking("p1", "M", 5, 5, 7, RANKING_DATE_BEFORE_CUTOFF),
         stubPlayerWithRanking("p2", "M", 6, 6, 8, RANKING_DATE_BEFORE_CUTOFF),
@@ -431,9 +432,9 @@ describe("EnrollmentValidationService", () => {
       expect(cutoff.getDate()).toBe(10);
       expect(RANKING_DATE_AFTER_CUTOFF.getTime()).toBeGreaterThan(cutoff.getTime());
 
-      // p4's stronger after-cutoff row is excluded; min+2 fallback yields 14+14=28 for that player.
-      // (5+5)+(6+6)+(7+7)+14+14 = 64
-      expect(data.teams[0].baseIndex).toBe(64);
+      // p4's stronger after-cutoff row is excluded; capped fallback yields 12+12=24 for that player.
+      // (5+5)+(6+6)+(7+7)+12+12 = 60
+      expect(data.teams[0].baseIndex).toBe(60);
     });
 
     test("Enrollment-only flow: only basePlayers populated; teamIndex defaults to 4-player penalty", async () => {
