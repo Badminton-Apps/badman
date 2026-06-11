@@ -189,5 +189,10 @@
     "string-length": {
       "strip-ansi": "^6.0.0"
     }
+  },
+  "pnpm": {
+    "overrides": {
+      "graphql": "^16.14.2"
+    }
   }
 }
