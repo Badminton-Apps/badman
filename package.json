@@ -121,11 +121,13 @@
     "zod": "^3.25.75"
   },
   "devDependencies": {
-    "turbo": "^2.5.6",
     "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.20.0",
     "@nestjs/schematics": "11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@prettier/plugin-pug": "^3.2.1",
+    "@swc/core": "^1.15.41",
+    "@swc/jest": "^0.2.39",
     "@types/archiver": "^6.0.3",
     "@types/compression": "^1.7.5",
     "@types/consolidate": "^0.14.4",
@@ -155,8 +157,8 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.4.0",
     "ts-node": "10.9.2",
-    "typescript": "~5.8.0",
-    "@eslint/js": "^9.20.0"
+    "turbo": "^2.5.6",
+    "typescript": "~5.8.0"
   },
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.18",
