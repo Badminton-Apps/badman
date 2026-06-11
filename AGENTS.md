@@ -222,6 +222,8 @@ Descriptive kebab-case after the type prefix: `feat/enrollment-settings`, `fix/l
 
 ## Releases (release-please)
 
+**Merge methods (matters for the changelog):** **squash-merge feature PRs** (squash commit takes the PR title — keep PR titles conventional); **merge-commit the promotion PRs** (develop→staging→main) — never squash those, or branch histories diverge permanently. Rationale: with merge commits on feature PRs, release-please parses both the PR title and the underlying commits, producing duplicate changelog entries (observed in v7.0.0).
+
 Versioning is **commit-driven** — contributors never hand-author release metadata. Write Conventional Commits (`feat:`, `fix:`, `feat!:`/`BREAKING CHANGE:`); [`release-please.yml`](.github/workflows/release-please.yml) maintains a release PR on `main`. Merging that PR bumps the single repo-wide version (`package.json` + every app's `src/version.json` via `release-please-config.json`), writes `CHANGELOG.md`, tags `vX.Y.Z` and creates the GitHub release. `deploy-production.yml` ships whatever version the current `main` commit carries and verifies the live `/api/v1/version` afterwards.
 
 ## Testing
