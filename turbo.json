@@ -1,0 +1,29 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["tsconfig.base.json", "jest.preset.js", "jest.setup.js", ".nvmrc"],
+  "globalEnv": ["NODE_ENV"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "deploy": {
+      "cache": false,
+      // Turborepo runs tasks in strict env mode: vars not declared here are
+      // stripped from the task environment. The deploy scripts read their
+      // Render hook URLs from these vars (see scripts/render.js).
+      "passThroughEnv": ["API_HOOK", "WORKER_SYNC_HOOK", "WORKER_RANKING_HOOK", "GH_TOKEN_CP"]
+    }
+  }
+}

@@ -4,16 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      release_version:
-        description: "Explicit version to release (e.g. 7.0.0). Leave empty to derive from conventional commits."
-        required: false
-        type: string
-        default: ""
 
 permissions:
   actions: read
-  contents: write
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,33 +18,29 @@ run-name: Prod release ${{ github.run_number }}
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+# Versioning note (feature 036): `nx release` (scripts/release.js) is gone.
+# release-please.yml now maintains a release PR on main; merging that PR bumps
+# package.json + the apps' version.json, tags vX.Y.Z and creates the GitHub
+# release. This workflow deploys every push to main and verifies the live
+# server reports the version that this commit ships.
 jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      NEW_VERSION: ${{ steps.create_release.outputs.NEW_VERSION }}
+      VERSION: ${{ steps.version.outputs.VERSION }}
+      VERSION_CHANGED: ${{ steps.version.outputs.CHANGED }}
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Override Base to last release tag
-        run: |
-          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags)
-          echo "Found tag: $TAG_VERSION"
-          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
-          echo "Found hash: $LAST_TAG_HASH"
-          echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
-          echo "NX_HEAD=origin/${{ github.ref_name }}" >> $GITHUB_ENV
-
       - uses: ./.github/actions/setup-monorepo
 
-      - name: Resolve legacy projects (scope:legacy tag)
-        id: legacy
-        run: echo "list=$(node scripts/ci/legacy-projects.js)" >> "$GITHUB_OUTPUT"
-
-      - name: Run affected lint, test, build
-        run: npx --yes nx affected -t lint test build -c ci --exclude="${{ steps.legacy.outputs.list }}"
+      - name: Lint, test, build
+        # Full graph on deploys (no --affected): Turborepo cache keeps
+        # unchanged packages near-free; deploys never skip work due to
+        # base-resolution guesswork.
+        run: pnpm turbo run lint test build
 
       - name: Coverage reports
         run: |
@@ -63,21 +53,17 @@ jobs:
             touch coverage/lcov.info
           fi
 
-      - name: Set Git config
+      - name: Determine shipped version
+        id: version
+        # The version this commit ships is whatever release-please last wrote
+        # to package.json. CHANGED indicates whether THIS push bumped it
+        # (i.e. a release-PR merge) — gates the Sentry release.
         run: |
-          git config --local user.email "info@badman.app"
-          git config --local user.name "Badman Releaser"
-
-      - name: Create release
-        id: create_release
-        run: |
-          if [ -n "${{ inputs.release_version }}" ]; then
-            node scripts/release.js --dry-run=false --version="${{ inputs.release_version }}"
-          else
-            node scripts/release.js --dry-run=false
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION=$(node -p "require('./package.json').version")
+          PREV=$(git show HEAD~1:package.json 2>/dev/null | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).version" || echo "")
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+          if [ "$VERSION" != "$PREV" ]; then echo "CHANGED=true" >> "$GITHUB_OUTPUT"; else echo "CHANGED=false" >> "$GITHUB_OUTPUT"; fi
+          echo "Shipping version $VERSION (changed since previous commit: $([ "$VERSION" != "$PREV" ] && echo yes || echo no))"
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -93,17 +79,6 @@ jobs:
       # Re-enable once main and develop are aligned again. When re-enabling,
       # the `[skip back-merge]` gate (see AGENTS.md) is the documented way
       # to opt out per-deploy.
-      # - name: Merge main -> develop
-      #   if: |
-      #     github.ref == 'refs/heads/main' &&
-      #     !contains(github.event.head_commit.message, '[skip back-merge]')
-      #   uses: devmasx/merge-branch@master
-      #   with:
-      #     type: now
-      #     from_branch: main
-      #     target_branch: develop
-      #     message: "chore(merge): merge main into develop"
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
 
   migrate-prod:
     needs: build
@@ -123,10 +98,11 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
         with:
-          cache-nx: "false"
+          cache-turbo: "false"
 
       - name: Deploy
-        run: npx --yes nx run-many -t deploy --all --no-agents
+        # Each deployable app's `deploy` script POSTs its Render deploy hook.
+        run: pnpm turbo run deploy
         env:
           API_HOOK: ${{ secrets.PROD_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK }}
@@ -135,20 +111,19 @@ jobs:
 
   # The Render deploy hook is fire-and-forget: deploy-prod returns as soon as
   # the hook POST succeeds, NOT when the new build is live. This job polls the
-  # public /api/version endpoint until the server reports the freshly-released
-  # version, catching a stale build cache (or failed Render build) that would
-  # otherwise silently keep serving old code. Skipped when no version bump
-  # happened (NEW_VERSION empty) since there is nothing new to assert against.
+  # public /api/version endpoint until the server reports the version this
+  # commit ships, catching a stale build cache (or failed Render build) that
+  # would otherwise silently keep serving old code.
   verify-prod-version:
     needs: [build, deploy-prod]
-    if: github.ref == 'refs/heads/main' && needs.build.outputs.NEW_VERSION != ''
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
-      EXPECTED_VERSION: ${{ needs.build.outputs.NEW_VERSION }}
+      EXPECTED_VERSION: ${{ needs.build.outputs.VERSION }}
       # URI versioning (defaultVersion "1" in main.ts) puts every route under /api/v1.
       API_URL: https://api.badman.app/api/v1/version
     steps:
-      - name: Wait for live server to report released version
+      - name: Wait for live server to report shipped version
         run: |
           set -euo pipefail
           echo "Expecting version '$EXPECTED_VERSION' at $API_URL"
@@ -169,14 +144,14 @@ jobs:
 
   sentry-release:
     needs: [build, deploy-prod]
-    if: github.ref == 'refs/heads/main' && needs.build.outputs.NEW_VERSION != ''
+    if: github.ref == 'refs/heads/main' && needs.build.outputs.VERSION_CHANGED == 'true'
     runs-on: ubuntu-latest
     environment: production
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       SENTRY_ORG: badminton-vlaanderen
       SENTRY_PROJECT: backend
-      VERSION: ${{ needs.build.outputs.NEW_VERSION }}
+      VERSION: ${{ needs.build.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v5
         with:

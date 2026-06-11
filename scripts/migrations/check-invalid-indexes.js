@@ -22,18 +22,7 @@ async function main() {
     process.exit(2);
   }
 
-  const client = new Client({
-    host: process.env.DB_IP,
-    port: Number(process.env.DB_PORT),
-    database: process.env.DB_DATABASE,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
-  });
-
-  await client.connect();
-
-  const { rows } = await client.query(`
+  const rows = await queryWithRetry(`
     SELECT n.nspname AS schema, c.relname AS index
     FROM pg_index i
     JOIN pg_class c ON c.oid = i.indexrelid
@@ -41,8 +30,6 @@ async function main() {
     WHERE NOT i.indisvalid
     ORDER BY n.nspname, c.relname;
   `);
-
-  await client.end();
 
   if (rows.length === 0) {
     console.log("[check-invalid-indexes] OK — no invalid indexes.");
@@ -59,11 +46,61 @@ async function main() {
     console.error(`  DROP INDEX CONCURRENTLY "${r.schema}"."${r.index}";`);
   }
   console.error("");
-  console.error("Then investigate why the previous migration run was interrupted before re-running this workflow.");
+  console.error(
+    "Then investigate why the previous migration run was interrupted before re-running this workflow."
+  );
   process.exit(1);
 }
 
+/**
+ * Connect and run the query, retrying on transient connection failures
+ * (runner network blips, brief DB unavailability). A new Client per attempt:
+ * pg Clients are single-use after a failed connect.
+ */
+async function queryWithRetry(sql, attempts = 3, delayMs = 5000) {
+  let lastErr;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const client = new Client({
+      host: process.env.DB_IP,
+      port: Number(process.env.DB_PORT),
+      database: process.env.DB_DATABASE,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
+      connectionTimeoutMillis: 15000,
+    });
+    try {
+      await client.connect();
+      const { rows } = await client.query(sql);
+      await client.end();
+      return rows;
+    } catch (err) {
+      lastErr = err;
+      await client.end().catch(() => {});
+      console.error(
+        `[check-invalid-indexes] attempt ${attempt}/${attempts} failed:`,
+        describe(err)
+      );
+      if (attempt < attempts) await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+  throw lastErr;
+}
+
+/**
+ * AggregateError (e.g. multi-address ECONNREFUSED) has an empty .message;
+ * unwrap it so CI logs show the actual cause instead of a blank line.
+ */
+function describe(err) {
+  if (err instanceof AggregateError) {
+    const parts = err.errors.map((e) => e.message || e.code || String(e));
+    return `AggregateError: [${parts.join("; ")}]`;
+  }
+  return err.message || err.code || String(err);
+}
+
 main().catch((err) => {
-  console.error("[check-invalid-indexes] ERROR:", err.message);
+  console.error("[check-invalid-indexes] ERROR:", describe(err));
+  if (err.stack) console.error(err.stack);
   process.exit(2);
 });

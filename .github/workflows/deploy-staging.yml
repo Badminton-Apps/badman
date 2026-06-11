@@ -26,12 +26,11 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
 
-      - name: Resolve legacy projects (scope:legacy tag)
-        id: legacy
-        run: echo "list=$(node scripts/ci/legacy-projects.js)" >> "$GITHUB_OUTPUT"
-
-      - name: Build affected
-        run: npx --yes nx affected -t lint test build -c ci --exclude="${{ steps.legacy.outputs.list }}"
+      - name: Lint, test, build
+        # Deploys run the FULL graph (no --affected): Turborepo's cache makes
+        # unchanged packages near-free, and deploys should never skip work
+        # because of base-resolution guesswork.
+        run: pnpm turbo run lint test build
 
   migrate-staging:
     needs: build
@@ -51,11 +50,16 @@ jobs:
 
       - uses: ./.github/actions/setup-monorepo
         with:
-          cache-nx: "false"
+          cache-turbo: "false"
 
       - name: Deploy
-        run: npx --yes nx run-many -t deploy --all --no-agents
+        # Each deployable app's `deploy` script POSTs its Render deploy hook.
+        run: pnpm turbo run deploy
         env:
+          # STAGING_*_HOOK live on the `staging` environment (env-scoped).
+          # Repo-level BETA_*_HOOK are legacy duplicates — don't use them.
+          # These vars only reach render.js because turbo.json declares them
+          # in the deploy task's passThroughEnv (turbo strips undeclared vars).
           API_HOOK: ${{ secrets.STAGING_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ secrets.STAGING_WORKER_SYNC_HOOK }}
           WORKER_RANKING_HOOK: ${{ secrets.STAGING_WORKER_RANKING_HOOK }}
