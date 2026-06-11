@@ -12,7 +12,7 @@ corepack enable   # provides pnpm at the version pinned in package.json
 pnpm install
 ```
 
-(currently using node 20.19.0 — see `.nvmrc`)
+(currently using node 22.22.3 — see `.nvmrc`; `nvm use` or volta picks it up automatically)
 
 ### 3. Creating database
 
