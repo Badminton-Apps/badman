@@ -5,10 +5,12 @@ import { QueueModule, RankingQueue } from "@badman/backend-queue";
 import { RankingModule } from "@badman/backend-ranking";
 import { EventsGateway, SocketModule } from "@badman/backend-websockets";
 import { EVENTS, configSchema, load } from "@badman/utils";
+import { BelgiumFlandersPlacesModule } from "@badman/belgium-flanders-places";
+import { BelgiumFlandersPointsModule } from "@badman/belgium-flanders-points";
 import { Logger, Module, OnApplicationBootstrap } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import versionPackage from "../version.json";
-import { RankingProcessor } from "./processors";
+import { PlacesProcessor, PointProcessor, RankingProcessor } from "./processors";
 
 @Module({
   imports: [
@@ -30,8 +32,14 @@ import { RankingProcessor } from "./processors";
     DatabaseModule,
     RankingModule,
     SocketModule,
+    // The Flanders points/places simulation queues are fed by RankingModule's
+    // services, which block on job.finished(). Their processors used to live
+    // in standalone worker apps that were never deployed (BAD-261), so prod
+    // enqueues hung forever. Consume them here, in the same worker.
+    BelgiumFlandersPlacesModule,
+    BelgiumFlandersPointsModule,
   ],
-  providers: [RankingProcessor],
+  providers: [RankingProcessor, PlacesProcessor, PointProcessor],
 })
 export class WorkerRankingModule implements OnApplicationBootstrap {
   protected logger = new Logger(WorkerRankingModule.name);

@@ -548,90 +548,6 @@ importers:
         specifier: file:../../vendor/xlsx-0.20.3.tgz
         version: file:vendor/xlsx-0.20.3.tgz
 
-  apps/worker/belgium/flanders/places:
-    dependencies:
-      '@badman/backend-cluster':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-cluster
-      '@badman/backend-database':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-database
-      '@badman/backend-logging':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-logging
-      '@badman/backend-queue':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-queue
-      '@badman/belgium-flanders-places':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-belgium/flanders/places
-      '@badman/utils':
-        specifier: workspace:*
-        version: link:../../../../../packages/utils
-      '@nestjs/bull':
-        specifier: ^11.0.0
-        version: 11.0.4(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.26)(bull@4.16.5)
-      '@nestjs/common':
-        specifier: ^11.0.0
-        version: 11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/config':
-        specifier: ^4.0.0
-        version: 4.0.4(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: ^11.0.0
-        version: 11.1.26(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.1.26)(@nestjs/platform-express@11.1.26)(@nestjs/websockets@11.1.26)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/microservices':
-        specifier: ^11.0.0
-        version: 11.1.26(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.26)(@nestjs/websockets@11.1.26)(cache-manager@6.4.3)(ioredis@5.11.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      bull:
-        specifier: ^4.16.5
-        version: 4.16.5
-      tslib:
-        specifier: ^2.8.1
-        version: 2.8.1
-
-  apps/worker/belgium/flanders/points:
-    dependencies:
-      '@badman/backend-cluster':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-cluster
-      '@badman/backend-database':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-database
-      '@badman/backend-logging':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-logging
-      '@badman/backend-queue':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-queue
-      '@badman/belgium-flanders-points':
-        specifier: workspace:*
-        version: link:../../../../../packages/backend-belgium/flanders/points
-      '@badman/utils':
-        specifier: workspace:*
-        version: link:../../../../../packages/utils
-      '@nestjs/bull':
-        specifier: ^11.0.0
-        version: 11.0.4(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.26)(bull@4.16.5)
-      '@nestjs/common':
-        specifier: ^11.0.0
-        version: 11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/config':
-        specifier: ^4.0.0
-        version: 4.0.4(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: ^11.0.0
-        version: 11.1.26(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.1.26)(@nestjs/platform-express@11.1.26)(@nestjs/websockets@11.1.26)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/microservices':
-        specifier: ^11.0.0
-        version: 11.1.26(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.26)(@nestjs/websockets@11.1.26)(cache-manager@6.4.3)(ioredis@5.11.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      bull:
-        specifier: ^4.16.5
-        version: 4.16.5
-      tslib:
-        specifier: ^2.8.1
-        version: 2.8.1
-
   apps/worker/ranking:
     dependencies:
       '@badman/backend-database':
@@ -649,6 +565,12 @@ importers:
       '@badman/backend-websockets':
         specifier: workspace:*
         version: link:../../../packages/backend-websockets
+      '@badman/belgium-flanders-places':
+        specifier: workspace:*
+        version: link:../../../packages/backend-belgium/flanders/places
+      '@badman/belgium-flanders-points':
+        specifier: workspace:*
+        version: link:../../../packages/backend-belgium/flanders/points
       '@badman/utils':
         specifier: workspace:*
         version: link:../../../packages/utils

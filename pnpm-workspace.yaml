@@ -3,7 +3,6 @@ packages:
   - "apps/scripts"
   - "apps/worker/sync"
   - "apps/worker/ranking"
-  - "apps/worker/belgium/flanders/*"
   - "packages/*"
   - "packages/backend-competition/*"
   - "packages/backend-belgium/flanders/*"

@@ -102,7 +102,6 @@ pnpm test:coverage:all     # = turbo run test -- --coverage
 - **`apps/scripts/`** — one-off operational scripts app.
 - **`apps/worker/ranking/`** — Bull queue worker for ranking recalculation.
 - **`apps/worker/sync/`** — Bull queue worker for federation data sync.
-- **`apps/worker/belgium/flanders/places|points/`** — Workers for Belgian Flanders federation data.
 
 Each app builds with `nest build` into its own `dist/` (e.g. `apps/api/dist/main.js`), copies `src/assets` via `nest-cli.json`, and declares its runtime dependencies in its own `package.json` (internal ones as `workspace:*`).
 
@@ -194,7 +193,7 @@ Typical user phrases that mean “use `translation-manager` now”: “add trans
 
 ### Worker Pattern
 
-Workers are lean NestJS apps importing only needed modules. Bull processors use `@Processor({ name })` and `@Process(jobName)` decorators. Queues: `ranking`, `sync`, `badminton-belgium-flanders-points`, `badminton-belgium-flanders-places`.
+Workers are lean NestJS apps importing only needed modules. Bull processors use `@Processor({ name })` and `@Process(jobName)` decorators. Queues: `ranking`, `sync`, `badminton-belgium-flanders-points`, `badminton-belgium-flanders-places` (the Flanders simulation queues are consumed by **worker-ranking** — their former standalone apps were never deployed, see BAD-261).
 
 ## Branching
 
