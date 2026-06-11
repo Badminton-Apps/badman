@@ -1,6 +1,6 @@
 {
   "name": "badman-mono",
-  "version": "6.188.0",
+  "version": "7.0.0",
   "license": "MIT",
   "packageManager": "pnpm@10.34.1+sha512.b58fbde6dca66a929538021581f648b4570b6ca19b18e7cbd7f2c07a7b24454155388dacdf08f2af3678e88a6d1fe04f9d609df24bf51735a060ea041b374ab7",
   "scripts": {
@@ -39,7 +39,7 @@
     "@fast-csv/parse": "^5.0.2",
     "@fastify/compress": "^8.0.0",
     "@fastify/multipart": "^9.0.0",
-    "@fastify/static": "^8.0.0",
+    "@fastify/static": "^9.0.0",
     "@keyv/redis": "^4.2.0",
     "@logtail/node": "~0.5.2",
     "@logtail/winston": "^0.5.2",
@@ -82,7 +82,7 @@
     "date-fns-tz": "^3.2.0",
     "dotenv": "^16.4.5",
     "express": "4.21.2",
-    "fast-xml-parser": "^4.5.1",
+    "fast-xml-parser": "^5.0.0",
     "fastify": "^5.0.0",
     "fastify-plugin": "^5.0.0",
     "geojson": "^0.5.0",

@@ -38,7 +38,7 @@
     "bull": "^4.16.5",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
-    "fast-xml-parser": "^4.5.1",
+    "fast-xml-parser": "^5.0.0",
     "nest-winston": "^1.10.2",
     "puppeteer": "^23.11.1",
     "sequelize": "^6.37.5",
