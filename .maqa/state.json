@@ -293,6 +293,37 @@
       },
       "ci_gate": "none",
       "next_step": "open PR targeting develop"
+    },
+    "037-ranking-write-protection": {
+      "status": "in_review_qa_approved",
+      "board": "linear",
+      "card_id": "BAD-264",
+      "related_cards": ["BAD-231", "BAD-265", "BAD-266"],
+      "branch": "037-ranking-write-protection",
+      "scope": "Release A only: phases 1-6 (T001-T025) + T034/T035; US5 (T026-T032) gated on prod soak; T033 coordinator",
+      "feature_status": "done",
+      "tasks_completed": "T001, T003-T021, T022, T024-T025 (23/35)",
+      "deferred": "T002+T023 (need live DB), T026-T032 (US5 Release B gate), T033 (coordinator), T034-T035 (optional)",
+      "implementation_commits": [
+        "d735387ab",
+        "413e91bad",
+        "64fab807c",
+        "9cd7a0bc5",
+        "18b6ce4d6",
+        "5ba0d24ef",
+        "b02586eb1",
+        "cb7d94196"
+      ],
+      "coordinator_fixes": "CreationAttributes casts (4 TS build errors agent masked via diagnostics:false \u2014 hack reverted); 4 ghost-player test expectations (14->12 / 64->60)",
+      "qa_status": "approved",
+      "qa_checks": {
+        "text": "PASS",
+        "links": "PASS",
+        "security": "PASS",
+        "contract": "PASS",
+        "constitution": "PASS"
+      },
+      "next_step": "human review; open PR 1 -> develop (Release A, closes BAD-264/BAD-265); US5/Release B gated on next bimonthly publication"
     }
   },
   "board": "linear",
