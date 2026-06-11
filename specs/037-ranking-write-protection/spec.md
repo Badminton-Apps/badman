@@ -76,7 +76,7 @@ Team-enrollment validation derives missing player levels using the same shared r
 
 **Why this priority**: Divergent copies silently disagree the moment the rule changes; the frontend's copy was already removed for this reason (BAD-119).
 
-**Independent Test**: Run the enrollment index calculation test suite with the system's max-diff explicitly configured to 2; all outcomes are unchanged.
+**Independent Test**: Run the enrollment index calculation test suite with the system's max-diff explicitly configured to 2; all outcomes are unchanged except the player-with-no-record case (now capped at the worst level).
 
 **Acceptance Scenarios**:
 
