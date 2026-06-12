@@ -1,6 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { DrawCompetition, EncounterCompetition, Team } from "@badman/backend-database";
+import { DrawCompetition, EncounterCompetition, Player, Team } from "@badman/backend-database";
 import { getQueueToken } from "@nestjs/bull";
+import { Op, QueryTypes } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { EncounterCompetitionResolver } from "./encounter.resolver";
 import { DrawCompetitionLoaderService } from "../../../loaders/draw-competition-loader.service";
@@ -9,6 +10,35 @@ import { EncounterValidationService } from "@badman/backend-change-encounter";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { SyncQueue } from "@badman/backend-queue";
+
+const makeModule = async (sequelizeMock: Partial<Sequelize>) => {
+  const module: TestingModule = await Test.createTestingModule({
+    providers: [
+      EncounterCompetitionResolver,
+      {
+        provide: getQueueToken(SyncQueue),
+        useValue: { add: jest.fn() },
+      },
+      {
+        provide: Sequelize,
+        useValue: { transaction: jest.fn(), ...sequelizeMock },
+      },
+      { provide: PointsService, useValue: {} },
+      { provide: EncounterValidationService, useValue: {} },
+      { provide: EncounterGamesGenerationService, useValue: {} },
+      { provide: RankingSystemService, useValue: {} },
+      { provide: TeamLoaderService, useValue: { load: jest.fn() } },
+      { provide: DrawCompetitionLoaderService, useValue: { load: jest.fn() } },
+    ],
+  }).compile();
+  return module;
+};
+
+const makePlayer = (id: string | undefined) =>
+  ({ id, hasAnyPermission: jest.fn().mockReturnValue(false) }) as unknown as Player;
+
+const makeEncounterModel = (id: string) =>
+  ({ id, date: new Date("2025-01-01") }) as unknown as EncounterCompetition;
 
 describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
   let resolver: EncounterCompetitionResolver;
@@ -25,44 +55,7 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
     }) as unknown as EncounterCompetition;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        EncounterCompetitionResolver,
-        {
-          provide: getQueueToken(SyncQueue),
-          useValue: { add: jest.fn() },
-        },
-        {
-          provide: Sequelize,
-          useValue: { transaction: jest.fn() },
-        },
-        {
-          provide: PointsService,
-          useValue: {},
-        },
-        {
-          provide: EncounterValidationService,
-          useValue: {},
-        },
-        {
-          provide: EncounterGamesGenerationService,
-          useValue: {},
-        },
-        {
-          provide: RankingSystemService,
-          useValue: {},
-        },
-        {
-          provide: TeamLoaderService,
-          useValue: { load: jest.fn() },
-        },
-        {
-          provide: DrawCompetitionLoaderService,
-          useValue: { load: jest.fn() },
-        },
-      ],
-    }).compile();
-
+    const module = await makeModule({});
     resolver = module.get<EncounterCompetitionResolver>(EncounterCompetitionResolver);
     teamLoaderService = module.get<TeamLoaderService>(TeamLoaderService);
     drawLoaderService = module.get<DrawCompetitionLoaderService>(DrawCompetitionLoaderService);
@@ -188,5 +181,109 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
       expect(homeResult).toBe(teamA);
       expect(awayResult).toBe(teamB);
     });
+  });
+});
+
+describe("EncounterCompetitionResolver — playerEncounterCompetitions", () => {
+  let resolver: EncounterCompetitionResolver;
+  let sequelizeQuerySpy: jest.SpyInstance;
+  const queryMock = jest.fn();
+
+  beforeEach(async () => {
+    const module = await makeModule({ query: queryMock });
+    resolver = module.get<EncounterCompetitionResolver>(EncounterCompetitionResolver);
+    sequelizeQuerySpy = queryMock;
+  });
+
+  afterEach(() => jest.restoreAllMocks());
+
+  it("returns [] when user has no id", async () => {
+    const result = await resolver.playerEncounterCompetitions(makePlayer(undefined), {});
+    expect(result).toEqual([]);
+    expect(sequelizeQuerySpy).not.toHaveBeenCalled();
+  });
+
+  it("returns [] when raw query finds no matching encounters", async () => {
+    sequelizeQuerySpy.mockResolvedValue([]);
+    jest.spyOn(EncounterCompetition, "findAll").mockResolvedValue([]);
+
+    const result = await resolver.playerEncounterCompetitions(makePlayer("player-1"), {});
+    expect(result).toEqual([]);
+    expect(EncounterCompetition.findAll).not.toHaveBeenCalled();
+  });
+
+  it("returns [] when raw query result is not an array (defensive guard)", async () => {
+    sequelizeQuerySpy.mockResolvedValue(null as never);
+
+    const result = await resolver.playerEncounterCompetitions(makePlayer("player-1"), {});
+    expect(result).toEqual([]);
+  });
+
+  it("returns [] and does not throw when raw query rejects", async () => {
+    sequelizeQuerySpy.mockRejectedValue(new Error("DB exploded"));
+
+    const result = await resolver.playerEncounterCompetitions(makePlayer("player-1"), {});
+    expect(result).toEqual([]);
+  });
+
+  it("fetches encounters by IDs returned from raw query", async () => {
+    const enc1 = makeEncounterModel("enc-1");
+    const enc2 = makeEncounterModel("enc-2");
+
+    sequelizeQuerySpy.mockResolvedValue([
+      { id: "enc-1", date: new Date() },
+      { id: "enc-2", date: new Date() },
+    ]);
+    jest.spyOn(EncounterCompetition, "findAll").mockResolvedValue([enc1, enc2]);
+
+    const result = await resolver.playerEncounterCompetitions(makePlayer("player-1"), {
+      take: 3,
+      skip: 0,
+    });
+
+    expect(result).toEqual([enc1, enc2]);
+    expect(EncounterCompetition.findAll).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: { [Op.in]: ["enc-1", "enc-2"] } },
+      })
+    );
+  });
+
+  it("passes playerId as replacement to raw query", async () => {
+    sequelizeQuerySpy.mockResolvedValue([]);
+
+    await resolver.playerEncounterCompetitions(makePlayer("player-abc"), {});
+
+    expect(sequelizeQuerySpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        replacements: { playerId: "player-abc" },
+        type: QueryTypes.SELECT,
+      })
+    );
+  });
+
+  it("skips rows with non-string id in raw query result", async () => {
+    sequelizeQuerySpy.mockResolvedValue([{ id: 42 }, { id: "valid-enc" }, null, {}]);
+    const enc = makeEncounterModel("valid-enc");
+    jest.spyOn(EncounterCompetition, "findAll").mockResolvedValue([enc]);
+
+    const result = await resolver.playerEncounterCompetitions(makePlayer("player-1"), {});
+    expect(result).toEqual([enc]);
+  });
+
+  it("uses CTE + UNION query shape, not correlated subquery", async () => {
+    sequelizeQuerySpy.mockResolvedValue([]);
+
+    await resolver.playerEncounterCompetitions(makePlayer("player-1"), {});
+
+    const sql: string = sequelizeQuerySpy.mock.calls[0][0];
+
+    // CTE must pre-compute completed encounters once
+    expect(sql).toMatch(/WITH\s+completed\s+AS/i);
+    // UNION branches replace the multi-join
+    expect(sql).toMatch(/\bUNION\b/i);
+    // Must NOT use a correlated subquery for the 8-game check
+    expect(sql).not.toMatch(/SELECT\s+COUNT\s*\(\s*\*\s*\)\s*FROM\s+event\."Games"/i);
   });
 });

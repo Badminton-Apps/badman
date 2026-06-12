@@ -104,53 +104,72 @@ export class EncounterCompetitionResolver {
         return [];
       }
 
-      // Execute the raw query with proper error handling
+      // CTE pre-computes completed encounters once (avoids per-row correlated subquery).
+      // UNION branches let each player-involvement path hit its own index independently;
+      // UNION (not UNION ALL) deduplicates, so no outer DISTINCT needed.
       const queryResult = await this._sequelize.query(
         `
-        SELECT DISTINCT ec.id, ec."date"
+        WITH completed AS (
+          SELECT "linkId" AS id
+          FROM event."Games"
+          WHERE "linkType" = 'competition'
+            AND "winner" IS NOT NULL
+            AND "winner" != 0
+          GROUP BY "linkId"
+          HAVING COUNT(*) = 8
+        )
+        -- 1. Game leader / temp captains
+        SELECT ec.id, ec."date"
         FROM event."EncounterCompetitions" ec
-        LEFT JOIN "Teams" t_home ON ec."homeTeamId" = t_home.id
-        LEFT JOIN "Teams" t_away ON ec."awayTeamId" = t_away.id
-        LEFT JOIN "TeamPlayerMemberships" tpm_home ON t_home.id = tpm_home."teamId" AND tpm_home."playerId" = :playerId
-        LEFT JOIN "TeamPlayerMemberships" tpm_away ON t_away.id = tpm_away."teamId" AND tpm_away."playerId" = :playerId
-        LEFT JOIN event."Games" g ON g."linkId" = ec.id AND g."linkType" = 'competition'
-        LEFT JOIN event."GamePlayerMemberships" gpm ON g.id = gpm."gameId" AND gpm."playerId" = :playerId
+        INNER JOIN completed c ON c.id = ec.id
         WHERE ec."date" IS NOT NULL
           AND (
-            -- 1. Game Leader
             ec."gameLeaderId" = :playerId
-            OR
-            -- 2. Temp Captains
-            ec."tempHomeCaptainId" = :playerId
-            OR
-            ec."tempAwayCaptainId" = :playerId
-            OR
-            -- 3. Team Captains
-            t_home."captainId" = :playerId
-            OR
-            t_away."captainId" = :playerId
-            OR
-            -- 4. Team Members (active memberships)
-            (tpm_home."playerId" = :playerId 
-             AND tpm_home."start" <= ec."date"
-             AND (tpm_home."end" IS NULL OR tpm_home."end" >= ec."date"))
-            OR
-            (tpm_away."playerId" = :playerId
-             AND tpm_away."start" <= ec."date"
-             AND (tpm_away."end" IS NULL OR tpm_away."end" >= ec."date"))
-            OR
-            -- 5. Game Players
-            gpm."playerId" = :playerId
+            OR ec."tempHomeCaptainId" = :playerId
+            OR ec."tempAwayCaptainId" = :playerId
           )
-          AND (
-            -- Must have exactly 8 completed games
-            SELECT COUNT(*)
-            FROM event."Games" g_count
-            WHERE g_count."linkId" = ec.id 
-              AND g_count."linkType" = 'competition'
-              AND g_count."winner" IS NOT NULL 
-              AND g_count."winner" != 0
-          ) = 8
+        UNION
+        -- 2. Home team captain
+        SELECT ec.id, ec."date"
+        FROM event."EncounterCompetitions" ec
+        INNER JOIN completed c ON c.id = ec.id
+        JOIN "Teams" t ON t.id = ec."homeTeamId" AND t."captainId" = :playerId
+        WHERE ec."date" IS NOT NULL
+        UNION
+        -- 3. Away team captain
+        SELECT ec.id, ec."date"
+        FROM event."EncounterCompetitions" ec
+        INNER JOIN completed c ON c.id = ec.id
+        JOIN "Teams" t ON t.id = ec."awayTeamId" AND t."captainId" = :playerId
+        WHERE ec."date" IS NOT NULL
+        UNION
+        -- 4. Home team member (active membership)
+        SELECT ec.id, ec."date"
+        FROM event."EncounterCompetitions" ec
+        INNER JOIN completed c ON c.id = ec.id
+        JOIN "TeamPlayerMemberships" tpm ON tpm."teamId" = ec."homeTeamId"
+          AND tpm."playerId" = :playerId
+          AND tpm."start" <= ec."date"
+          AND (tpm."end" IS NULL OR tpm."end" >= ec."date")
+        WHERE ec."date" IS NOT NULL
+        UNION
+        -- 5. Away team member (active membership)
+        SELECT ec.id, ec."date"
+        FROM event."EncounterCompetitions" ec
+        INNER JOIN completed c ON c.id = ec.id
+        JOIN "TeamPlayerMemberships" tpm ON tpm."teamId" = ec."awayTeamId"
+          AND tpm."playerId" = :playerId
+          AND tpm."start" <= ec."date"
+          AND (tpm."end" IS NULL OR tpm."end" >= ec."date")
+        WHERE ec."date" IS NOT NULL
+        UNION
+        -- 6. Game player
+        SELECT ec.id, ec."date"
+        FROM event."EncounterCompetitions" ec
+        INNER JOIN completed c ON c.id = ec.id
+        JOIN event."Games" g ON g."linkId" = ec.id AND g."linkType" = 'competition'
+        JOIN event."GamePlayerMemberships" gpm ON gpm."gameId" = g.id AND gpm."playerId" = :playerId
+        WHERE ec."date" IS NOT NULL
       `,
         {
           replacements: { playerId: targetPlayerId },
