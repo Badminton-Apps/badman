@@ -115,4 +115,11 @@ export class EncounterChangeDateUpdateInput extends PartialType(
 export class EncounterChangeDateNewInput extends PartialType(
   OmitType(EncounterChangeDateUpdateInput, ["id"] as const),
   InputType
-) {}
+) {
+  /** @deprecated Used only by the deprecated addChangeEncounter mutation — remove when that mutation is removed */
+  @Field(() => Boolean, {
+    nullable: true,
+    deprecationReason: "Use finalizeEncounterChange instead",
+  })
+  selected?: boolean;
+}

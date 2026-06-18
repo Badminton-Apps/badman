@@ -130,7 +130,7 @@ export class EncounterChangeNewInput extends PartialType(
   accepted?: boolean;
 
   @Field(() => [EncounterChangeDateNewInput], { nullable: true })
-  dates?: Relation<EncounterChangeDate[]>;
+  dates?: EncounterChangeDateNewInput[];
 
   @Field(() => String, { nullable: true })
   frontendContext?: FrontendContextType;
