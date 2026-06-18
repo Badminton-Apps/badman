@@ -9,6 +9,7 @@ import {
   Comment,
   DrawCompetition,
   EncounterChange,
+  EncounterChangeDate,
   EncounterCompetition,
   Game,
   Location,
@@ -18,6 +19,11 @@ import {
   updateEncounterCompetitionInput,
   updateTempTeamCaptainInput,
 } from "@badman/backend-database";
+import {
+  ChangeEncounterDateStatus,
+  ChangeEncounterParty,
+  EncounterChangeViewState,
+} from "@badman/utils";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
@@ -345,6 +351,54 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => EncounterChange)
   async encounterChange(@Parent() encounter: EncounterCompetition): Promise<EncounterChange> {
     return encounter.getEncounterChange();
+  }
+
+  @ResolveField(() => String, { nullable: true })
+  async changeStatus(
+    @Parent() encounter: EncounterCompetition,
+    @User() user: Player
+  ): Promise<EncounterChangeViewState | null> {
+    const encounterChange = await encounter.getEncounterChange({
+      include: [{ model: EncounterChangeDate }],
+    });
+
+    if (!encounterChange) return null;
+
+    const homeTeam = await this.teamLoader.load(encounter.homeTeamId);
+    const awayTeam = await this.teamLoader.load(encounter.awayTeamId);
+
+    const isHome =
+      homeTeam != null && (await user.hasAnyPermission([`${homeTeam.clubId}_change:encounter`]));
+    const isAway =
+      awayTeam != null && (await user.hasAnyPermission([`${awayTeam.clubId}_change:encounter`]));
+
+    if (!isHome && !isAway) return null;
+
+    const viewerParty = isHome ? ChangeEncounterParty.HOME : ChangeEncounterParty.AWAY;
+
+    // Exclude historical dates (NULL status from pre-migration rows)
+    const dates = (encounterChange.dates ?? []).filter((d) => d.status != null);
+
+    if (dates.some((d) => d.status === ChangeEncounterDateStatus.ACCEPTED)) {
+      return EncounterChangeViewState.MOVED;
+    }
+
+    const liveDates = dates.filter(
+      (d) =>
+        d.status === ChangeEncounterDateStatus.PENDING ||
+        d.status === ChangeEncounterDateStatus.TENTATIVELY_ACCEPTED
+    );
+
+    if (liveDates.length > 0) {
+      return encounterChange.lastActionBy === viewerParty
+        ? EncounterChangeViewState.PROPOSAL_SENT
+        : EncounterChangeViewState.ACTION_REQUIRED;
+    }
+
+    // All dates are REJECTED or RESOLVED — no live dates remain
+    return encounterChange.lastActionBy === viewerParty
+      ? EncounterChangeViewState.ACTION_REQUIRED
+      : EncounterChangeViewState.REJECTED_WAITING;
   }
 
   @ResolveField(() => Boolean)

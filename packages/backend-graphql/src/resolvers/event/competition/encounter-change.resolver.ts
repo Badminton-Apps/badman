@@ -6,7 +6,6 @@ import {
   EncounterCompetition,
   EventCompetition,
   Location,
-  Deprecated,
   Logging,
   Player,
   SubEventCompetition,
@@ -117,12 +116,6 @@ export class EncounterChangeCompetitionResolver {
     deprecationReason:
       "Use proposeEncounterChangeDates, triageEncounterChange, or finalizeEncounterChange",
   })
-  @Deprecated(
-    "Use proposeEncounterChangeDates, triageEncounterChange, or finalizeEncounterChange",
-    {
-      reason: "Use proposeEncounterChangeDates, triageEncounterChange, or finalizeEncounterChange",
-    }
-  )
   async addChangeEncounter(
     @User() user: Player,
     @Args("data") newChangeEncounter: EncounterChangeNewInput

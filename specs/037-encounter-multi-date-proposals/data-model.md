@@ -38,16 +38,19 @@ export enum ChangeEncounterDateStatus {
 
 **State machine:**
 
-```
-PENDING ──────────────────► TENTATIVELY_ACCEPTED ──────► ACCEPTED (terminal, one per change)
-   │                              │                            │
-   │ (reject)                     │ (reject)                   │ (sibling finalized)
-   ▼                              ▼                            ▼
-REJECTED (terminal)          REJECTED (terminal)          RESOLVED (terminal, siblings)
-   │
-   │ (sibling finalized)
-   ▼
-RESOLVED (terminal — for PENDING siblings on finalization)
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING: proposer adds the date
+    PENDING --> TENTATIVELY_ACCEPTED: away endorses
+    PENDING --> REJECTED: either party rejects
+    TENTATIVELY_ACCEPTED --> REJECTED: away withdraws / home rejects
+    PENDING --> ACCEPTED: home finalizes an away-proposed date
+    TENTATIVELY_ACCEPTED --> ACCEPTED: home finalizes an endorsed date
+    PENDING --> RESOLVED: a sibling date is finalized
+    TENTATIVELY_ACCEPTED --> RESOLVED: a sibling date is finalized
+    ACCEPTED --> [*]
+    REJECTED --> [*]
+    RESOLVED --> [*]
 ```
 
 - `PENDING` — newly proposed, not yet acted on by the other party

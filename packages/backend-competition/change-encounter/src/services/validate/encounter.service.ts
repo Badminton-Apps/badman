@@ -26,7 +26,7 @@ export class EncounterValidationService extends ValidationService<
     await this.registerRule(DatePeriodRule);
     await this.registerRule(TeamClubRule);
     await this.registerRule(ExceptionRule);
-    await this.registerRule(LocationRule, { activated: false });
+    await this.registerRule(LocationRule, { activated: true });
 
     this._logger.log("Rules initialized");
   }

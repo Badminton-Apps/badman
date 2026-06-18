@@ -47,7 +47,7 @@
   - UPDATE `EncounterChange.lastActionBy/lastActionAt`
   - Notify opposing team captain (`team.captainId`)
   - Wrap in Sequelize transaction with commit/rollback
-- [ ] T010 [US1] Add unit test cases for `proposeEncounterChangeDates` in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.spec.ts`:
+- [x] T010 [US1] Add unit test cases for `proposeEncounterChangeDates` in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.spec.ts`:
   - Home party can propose dates → rows inserted with correct fields
   - Away party can also propose dates
   - Deadline passed → throws `DEADLINE_PASSED`
@@ -75,7 +75,7 @@
     - `newDates` → INSERT with `status=PENDING`, `proposedBy=AWAY`, validate season bounds
     - UPDATE `lastActionBy=AWAY`, `lastActionAt=NOW()`
   - Single notification to home team captain
-- [ ] T012 [US2] Add unit test cases for `triageEncounterChange` in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.spec.ts`:
+- [x] T012 [US2] Add unit test cases for `triageEncounterChange` in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.spec.ts`:
   - Full triage (endorse + reject + new date) applies atomically
   - Home party calling → `PERMISSION_DENIED`
   - Endorsing a non-PENDING date → `INVALID_STATE`
@@ -94,7 +94,7 @@
 
 **Independent Test**: Call `finalizeEncounterChange` with a `TENTATIVELY_ACCEPTED` date as home club admin → selected date is `ACCEPTED`, siblings are `RESOLVED`, `encounter.date` updated.
 
-- [ ] T013 [US3] Activate `LocationRule` in `packages/backend-competition/change-encounter/src/services/validate/encounter.service.ts` — change `activated: false` to `activated: true`
+- [x] T013 [US3] Activate `LocationRule` in `packages/backend-competition/change-encounter/src/services/validate/encounter.service.ts` — change `activated: false` to `activated: true`
 - [x] T014 [US3] Implement `finalizeEncounterChange` mutation in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.ts`:
   - Verify actor is HOME (else `PERMISSION_DENIED`)
   - Load `EncounterChangeDate` → must be `TENTATIVELY_ACCEPTED` or `proposedBy=AWAY` (else `DATE_NOT_ENDORSED`)
@@ -107,7 +107,7 @@
     - Update `encounter.locationId` if date carries one
     - Enqueue sync job
   - Notify both parties
-- [ ] T015 [US3] Add unit test cases for `finalizeEncounterChange` in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.spec.ts`:
+- [x] T015 [US3] Add unit test cases for `finalizeEncounterChange` in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.spec.ts`:
   - `TENTATIVELY_ACCEPTED` date → accepted, siblings resolved, encounter.date updated
   - Away-proposed date (`proposedBy=AWAY`) → same outcome
   - `PENDING` date (not endorsed) → `DATE_NOT_ENDORSED`
@@ -126,12 +126,12 @@
 
 **Independent Test**: After each action in the flow, `EncounterCompetition.changeStatus` returns the correct value for each party independently (see spec §8 acceptance scenarios).
 
-- [ ] T016 [US4] Add `@ResolveField(() => String, { nullable: true })` named `changeStatus` to `EncounterCompetitionResolver` in `packages/backend-graphql/src/resolvers/event/competition/encounter.resolver.ts`:
+- [x] T016 [US4] Add `@ResolveField(() => String, { nullable: true })` named `changeStatus` to `EncounterCompetitionResolver` in `packages/backend-graphql/src/resolvers/event/competition/encounter.resolver.ts`:
   - Use `@Parent() encounter: EncounterCompetition` + `@User() user: Player`
   - Load `encounterChange` with `dates` via `encounter.getChange({ include: [EncounterChangeDate] })` if not already loaded
   - Resolve HOME/AWAY party via `user.hasAnyPermission([homeTeam.clubId + '_change:encounter'])`
   - Derive status per logic in `data-model.md` (null → MOVED → PROPOSAL_SENT/ACTION_REQUIRED → REJECTED_WAITING)
-- [ ] T017 [US4] Add unit test cases for `changeStatus` in `packages/backend-graphql/src/resolvers/event/competition/encounter.resolver.spec.ts`:
+- [x] T017 [US4] Add unit test cases for `changeStatus` in `packages/backend-graphql/src/resolvers/event/competition/encounter.resolver.spec.ts`:
   - No change request → null
   - An ACCEPTED date exists → `MOVED`
   - Live dates, `lastActionBy === viewer` → `PROPOSAL_SENT`
@@ -150,10 +150,8 @@
 
 **Independent Test**: An `EncounterChangeDate` with a conflicting home venue date returns `availabilityHome=NOT_POSSIBLE`; a free date returns `availabilityHome=POSSIBLE`.
 
-- [ ] T018 [US5] Verify that `availabilityHome` and `availabilityAway` on `EncounterChangeDate` are populated at read time (not stored). Confirm the existing `@ResolveField` for these fields in `encounter-change.resolver.ts` is compatible with the new `status`/`proposedBy` fields and produces correct values. Patch if needed.
-- [ ] T019 [US5] Add/update unit test cases in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.spec.ts` covering:
-  - Date with home venue conflict → `availabilityHome=NOT_POSSIBLE`
-  - Date with free home venue → `availabilityHome=POSSIBLE`
+- [x] T018 [US5] ~~Verify that `availabilityHome` and `availabilityAway` are populated at read time (not stored).~~ **N/A** — fields are stored DB columns (no `@ResolveField`); no conflict with new `status`/`proposedBy` fields; no patch needed. New mutations leave these null (old `addChangeEncounter` flow still writes them).
+- [x] T019 [US5] ~~Add unit tests for computed availability symbols.~~ **N/A** — no computation to test; fields are stored columns returned as-is by the `dates` ResolveField. Added pass-through tests for `dates()` resolver instead.
 
 **Checkpoint**: Proposed dates show venue availability symbols for easy triage.
 
@@ -162,10 +160,10 @@
 ## Phase 7: Polish & Cross-Cutting Concerns
 
 - [x] T020 [P] Mark `addChangeEncounter` mutation as `@deprecated` (add GraphQL `@deprecated` directive and JSDoc `@deprecated` comment) in `packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.ts`. Do NOT remove — keep functional for frontend migration.
-- [ ] T021 [P] Update `EncounterChangeUpdateInput` in `packages/backend-database/src/models/event/competition/encounter-change/encounter-change.model.ts` to remove the `accepted` and `home` fields (now redundant); keep other fields intact.
-- [ ] T022 Run `pnpm turbo run test --filter=@badman/backend-graphql` and verify all existing + new tests pass
-- [ ] T023 Run `pnpm turbo run test --filter=@badman/backend-competition-change-encounter` and verify `LocationRule` activation does not break existing validation tests
-- [ ] T024 Run `npx sequelize-cli db:migrate` against local dev DB and verify the migration applies cleanly; run `db:migrate:undo` and re-apply to verify `down` works
+- [x] T021 [P] Update `EncounterChangeUpdateInput` in `packages/backend-database/src/models/event/competition/encounter-change/encounter-change.model.ts` to remove the `accepted` and `home` fields (now redundant); keep other fields intact.
+- [x] T022 Run `pnpm turbo run test --filter=@badman/backend-graphql` and verify all existing + new tests pass
+- [x] T023 Run `pnpm turbo run test --filter=@badman/backend-competition-change-encounter` and verify `LocationRule` activation does not break existing validation tests
+- [x] T024 Run `npx sequelize-cli db:migrate` against local dev DB and verify the migration applies cleanly; run `db:migrate:undo` and re-apply to verify `down` works
 
 ---
 
