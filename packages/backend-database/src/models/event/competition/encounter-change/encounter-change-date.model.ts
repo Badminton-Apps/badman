@@ -1,4 +1,8 @@
-import { ChangeEncounterAvailability } from "@badman/utils";
+import {
+  ChangeEncounterAvailability,
+  ChangeEncounterDateStatus,
+  ChangeEncounterParty,
+} from "@badman/utils";
 import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
@@ -43,9 +47,13 @@ export class EncounterChangeDate extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Field(() => Boolean, { nullable: true })
-  @Column(DataType.BOOLEAN)
-  selected?: boolean;
+  @Field(() => String)
+  @Column(DataType.ENUM(...Object.values(ChangeEncounterParty)))
+  proposedBy!: ChangeEncounterParty;
+
+  @Field(() => String)
+  @Column(DataType.ENUM(...Object.values(ChangeEncounterDateStatus)))
+  status!: ChangeEncounterDateStatus;
 
   @BelongsTo(() => EncounterChange, {
     foreignKey: "encounterChangeId",
@@ -92,7 +100,14 @@ export class EncounterChangeDate extends Model {
 
 @InputType()
 export class EncounterChangeDateUpdateInput extends PartialType(
-  OmitType(EncounterChangeDate, ["createdAt", "updatedAt", "encounterChange", "location"] as const),
+  OmitType(EncounterChangeDate, [
+    "createdAt",
+    "updatedAt",
+    "encounterChange",
+    "location",
+    "proposedBy",
+    "status",
+  ] as const),
   InputType
 ) {}
 
