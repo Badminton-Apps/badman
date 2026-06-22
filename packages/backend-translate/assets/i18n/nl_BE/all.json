@@ -2421,6 +2421,12 @@
             "original": "Origineel",
             "inProgress": "In uitvoering"
           },
+          "status": {
+            "proposal_sent": "Voorstel verzonden",
+            "action_required": "Actie vereist",
+            "rejected_waiting": "Wacht op antwoord",
+            "moved": "Verplaatst"
+          },
           "originalDate": "Oorspronkelijke datum",
           "home": "Thuis",
           "away": "Uit",
@@ -3572,7 +3578,32 @@
           "addProposal": "Voorstel toevoegen",
           "accept": "Accepteren",
           "reject": "Weigeren",
-          "delete": "Verwijderen"
+          "delete": "Verwijderen",
+          "submitTriage": "Indienen",
+          "finalize": "Finaliseren"
+        },
+        "messages": {
+          "proposalAddedSuccess": "Voorstel toegevoegd",
+          "proposalAddedError": "Fout bij het toevoegen van het voorstel",
+          "proposalAcceptedSuccess": "Voorstel geaccepteerd",
+          "proposalAcceptedError": "Fout bij het accepteren van het voorstel",
+          "proposalRejectedSuccess": "Voorstel geweigerd",
+          "proposalRejectedError": "Fout bij het weigeren van het voorstel",
+          "proposalDeletedSuccess": "Voorstel verwijderd",
+          "proposalDeletedError": "Fout bij het verwijderen van het voorstel",
+          "generalError": "Iets ging mis bij het verplaatsen van de ontmoeting",
+          "triageSuccess": "Voorstellen succesvol ingediend",
+          "triageError": "Fout bij het indienen van voorstellen",
+          "finalizeSuccess": "Datum succesvol gefinaliseerd",
+          "finalizeError": "Fout bij het finaliseren van de datum"
+        },
+        "history": "Geschiedenis",
+        "status": {
+          "pending": "In afwachting",
+          "tentativelyaccepted": "Voorlopig geaccepteerd",
+          "accepted": "Geaccepteerd",
+          "rejected": "Afgewezen",
+          "resolved": "Opgelost"
         }
       },
       "messages": {
@@ -3619,7 +3650,14 @@
             "otherEncounters": "Andere ontmoetings",
             "messages": {
               "success": "Aanvraag verstuurd",
-              "error": "Fout bij het versturen van de aanvraag"
+              "error": "Fout bij het versturen van de aanvraag",
+              "duplicateDate": "Deze datum is al voorgesteld",
+              "deadlinePassed": "De deadline voor het aanvragen van datumwijzigingen is verstreken",
+              "outsideCompetitionSeason": "Datum valt buiten het competitieseizoen",
+              "dateNotEndorsed": "Deze datum is niet door de uitploeg goedgekeurd",
+              "validationFailed": "Deze datum kon niet worden gevalideerd",
+              "permissionDenied": "U hebt geen toestemming om deze actie uit te voeren",
+              "invalidState": "Deze actie kan niet worden uitgevoerd in de huidige staat"
             }
           }
         }

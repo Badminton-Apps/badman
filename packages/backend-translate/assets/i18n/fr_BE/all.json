@@ -2088,7 +2088,117 @@
     "locations": {
       "exceptions": "Exceptions"
     },
+    "changeEncounter": {
+      "title": "Déplacer la rencontre",
+      "encounterNotFound": "Rencontre non trouvée",
+      "proposals": {
+        "title": "Propositions",
+        "proposalPeriod": "La période pour faire des propositions est du 1er juin au 31 août.",
+        "noProposals": "Aucune proposition",
+        "date": "Date",
+        "time": "Heure",
+        "location": "Emplacement",
+        "buttons": {
+          "addProposal": "Ajouter une proposition",
+          "accept": "Accepter",
+          "reject": "Rejeter",
+          "delete": "Supprimer",
+          "submitTriage": "Soumettre",
+          "finalize": "Finaliser"
+        },
+        "messages": {
+          "proposalAddedSuccess": "Proposition ajoutée avec succès",
+          "proposalAddedError": "Erreur lors de l'ajout de la proposition",
+          "proposalAcceptedSuccess": "Proposition acceptée",
+          "proposalAcceptedError": "Erreur lors de l'acceptation de la proposition",
+          "proposalRejectedSuccess": "Proposition rejetée",
+          "proposalRejectedError": "Erreur lors du rejet de la proposition",
+          "proposalDeletedSuccess": "Proposition supprimée",
+          "proposalDeletedError": "Erreur lors de la suppression de la proposition",
+          "generalError": "Quelque chose s'est mal passé lors du déplacement de la rencontre",
+          "triageSuccess": "Propositions soumises avec succès",
+          "triageError": "Erreur lors de la soumission des propositions",
+          "finalizeSuccess": "Date finalisée avec succès",
+          "finalizeError": "Erreur lors de la finalisation de la date"
+        },
+        "history": "Historique",
+        "status": {
+          "pending": "En attente",
+          "tentativelyaccepted": "Provisoirement acceptée",
+          "accepted": "Acceptée",
+          "rejected": "Rejetée",
+          "resolved": "Résolue"
+        }
+      },
+      "messages": {
+        "title": "Messages",
+        "noMessages": "Pas de messages",
+        "messages": {
+          "messageSentSuccess": "Message envoyé avec succès",
+          "messageSentError": "Erreur lors de l'envoi du message"
+        },
+        "label": "Message",
+        "placeholder": "Écrivez un message",
+        "proposalPeriodInfo": "La période pour faire des propositions est du 1er juin au 31 août."
+      },
+      "calendar": {
+        "encounterNotFound": "Rencontre non trouvée",
+        "filter": {
+          "labels": {
+            "homeTeam": "Équipe à domicile",
+            "awayTeam": "Équipe à l'extérieur"
+          },
+          "options": {
+            "allTeams": "Toutes les équipes"
+          }
+        },
+        "buttons": {
+          "close": "Fermer"
+        },
+        "dayContent": {
+          "otherEncounters": "Autres rencontres",
+          "originalDate": "Date originale",
+          "proposal": "Proposition",
+          "buttons": {
+            "courtsAvailable": "terrain(s) disponible(s)"
+          },
+          "eventWarning": "La compétition n'est pas autorisée",
+          "drawer": {
+            "courts": "terrain(s)",
+            "proposal": "Proposition",
+            "originalDate": "Date originale",
+            "availableCourts": "Terrain(s) disponible(s)",
+            "buttons": {
+              "sendRequest": "Envoyer la demande"
+            },
+            "otherEncounters": "Autres rencontres",
+            "messages": {
+              "success": "Demande envoyée avec succès",
+              "error": "Erreur lors de l'envoi de la demande",
+              "duplicateDate": "Cette date a déjà été proposée",
+              "deadlinePassed": "La date limite pour demander une modification de date est dépassée",
+              "outsideCompetitionSeason": "La date est en dehors de la saison compétitive",
+              "dateNotEndorsed": "Cette date n'a pas été approuvée par l'équipe adverse",
+              "validationFailed": "Cette date n'a pas pu être validée",
+              "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action",
+              "invalidState": "Cette action ne peut pas être effectuée dans l'état actuel"
+            }
+          }
+        }
+      }
+    },
     "clubPage": {
+      "noClubFound": "Aucun club trouvé",
+      "encounters": {
+        "table": {
+          "status": {
+            "proposal_sent": "Proposition envoyée",
+            "action_required": "Action requise",
+            "rejected_waiting": "Attente de réponse",
+            "moved": "Déplacée"
+          }
+        }
+      },
       "teams": {
         "addEditTeamDialog": {
           "messages": {

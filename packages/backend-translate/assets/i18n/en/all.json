@@ -2703,6 +2703,12 @@
             "original": "Original",
             "inProgress": "In progress"
           },
+          "status": {
+            "proposal_sent": "Proposal sent",
+            "action_required": "Action required",
+            "rejected_waiting": "Waiting for response",
+            "moved": "Moved"
+          },
           "originalDate": "Original date",
           "home": "Home",
           "away": "Away",
@@ -3794,7 +3800,32 @@
           "reject": "Reject",
           "accept": "Accept",
           "addProposal": "Add proposal",
-          "delete": "Delete"
+          "delete": "Delete",
+          "submitTriage": "Submit",
+          "finalize": "Finalize"
+        },
+        "messages": {
+          "proposalAddedSuccess": "Proposal added successfully",
+          "proposalAddedError": "Error adding proposal",
+          "proposalAcceptedSuccess": "Proposal accepted successfully",
+          "proposalAcceptedError": "Error accepting proposal",
+          "proposalRejectedSuccess": "Proposal rejected successfully",
+          "proposalRejectedError": "Error rejecting proposal",
+          "proposalDeletedSuccess": "Proposal deleted successfully",
+          "proposalDeletedError": "Error deleting proposal",
+          "generalError": "Something went wrong while moving the encounter",
+          "triageSuccess": "Proposals submitted successfully",
+          "triageError": "Failed to submit proposals",
+          "finalizeSuccess": "Date finalized successfully",
+          "finalizeError": "Failed to finalize date"
+        },
+        "history": "History",
+        "status": {
+          "pending": "Pending",
+          "tentativelyaccepted": "Tentatively accepted",
+          "accepted": "Accepted",
+          "rejected": "Rejected",
+          "resolved": "Resolved"
         }
       },
       "messages": {
@@ -3841,7 +3872,14 @@
             "otherEncounters": "Other encounters",
             "messages": {
               "success": "Request sent successfully",
-              "error": "Error sending request"
+              "error": "Error sending request",
+              "duplicateDate": "This date has already been proposed",
+              "deadlinePassed": "The deadline for requesting date changes has passed",
+              "outsideCompetitionSeason": "Date is outside the competition season",
+              "dateNotEndorsed": "This date has not been endorsed by the away team",
+              "validationFailed": "This date could not be validated",
+              "permissionDenied": "You don't have permission to perform this action",
+              "invalidState": "This action cannot be performed in the current state"
             }
           }
         }

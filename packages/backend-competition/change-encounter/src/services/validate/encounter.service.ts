@@ -169,6 +169,7 @@ export class EncounterValidationService extends ValidationService<
     },
     runFor?: { playerId?: string; teamId?: string; clubId?: string }
   ) {
+    console.log("validate", args, runFor);
     const data = await super.validate(args, runFor);
 
     return {

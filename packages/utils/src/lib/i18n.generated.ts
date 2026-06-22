@@ -2721,6 +2721,12 @@ export type I18nTranslations = {
                             "original": string;
                             "inProgress": string;
                         };
+                        "status": {
+                            "proposal_sent": string;
+                            "action_required": string;
+                            "rejected_waiting": string;
+                            "moved": string;
+                        };
                         "originalDate": string;
                         "home": string;
                         "away": string;
@@ -3872,12 +3878,26 @@ export type I18nTranslations = {
                         "proposalDeletedSuccess": string;
                         "proposalDeletedError": string;
                         "generalError": string;
+                        "triageSuccess": string;
+                        "triageError": string;
+                        "finalizeSuccess": string;
+                        "finalizeError": string;
                     };
                     "buttons": {
                         "reject": string;
                         "accept": string;
                         "addProposal": string;
                         "delete": string;
+                        "submitTriage": string;
+                        "finalize": string;
+                    };
+                    "history": string;
+                    "status": {
+                        "pending": string;
+                        "tentativelyaccepted": string;
+                        "accepted": string;
+                        "rejected": string;
+                        "resolved": string;
                     };
                 };
                 "messages": {
@@ -3925,6 +3945,8 @@ export type I18nTranslations = {
                             "messages": {
                                 "success": string;
                                 "error": string;
+                                "duplicateDate": string;
+                                "deadlinePassed": string;
                             };
                         };
                     };

@@ -13,6 +13,7 @@ import { Sync, SyncQueue } from "@badman/backend-queue";
 import { ChangeEncounterDateStatus, ChangeEncounterParty, LoggingAction } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectQueue } from "@nestjs/bull";
+import * as Sentry from "@sentry/nestjs";
 import { GraphQLError } from "graphql";
 import { Queue } from "bull";
 import moment from "moment-timezone";
@@ -158,11 +159,11 @@ export class EncounterChangeService {
       throw e;
     }
 
-    const updatedEncounter = await EncounterCompetition.findByPk(input.encounterId);
-    if (updatedEncounter) {
+    const encounterForNotification = await EncounterCompetition.findByPk(input.encounterId);
+    if (encounterForNotification) {
       //TODO: check if th notification Service works as expected
       this.notificationService.notifyEncounterChange(
-        updatedEncounter,
+        encounterForNotification,
         isHome,
         undefined,
         event?.id
@@ -282,9 +283,14 @@ export class EncounterChangeService {
       throw e;
     }
 
-    const updatedEncounter = await EncounterCompetition.findByPk(encounter.id);
-    if (updatedEncounter) {
-      this.notificationService.notifyEncounterChange(updatedEncounter, false, undefined, event?.id);
+    const encounterForNotification = await EncounterCompetition.findByPk(encounter.id);
+    if (encounterForNotification) {
+      this.notificationService.notifyEncounterChange(
+        encounterForNotification,
+        false,
+        undefined,
+        event?.id
+      );
     }
 
     return { encounterChange };
@@ -318,10 +324,20 @@ export class EncounterChangeService {
       });
     }
 
-    const encounterChange = changeDate.encounterChange!;
-    const encounter = encounterChange.encounter!;
-    const homeTeam = await encounter.getHome();
+    const encounterChange = changeDate.encounterChange;
+    if (!encounterChange) {
+      throw new GraphQLError(`EncounterChange not found: ${changeDate.encounterChangeId}`, {
+        extensions: { code: ErrorCode.ENCOUNTER_CHANGE_NOT_FOUND },
+      });
+    }
+    const encounter = encounterChange.encounter;
+    if (!encounter) {
+      throw new GraphQLError(`Encounter not found: ${encounterChange.encounterId}`, {
+        extensions: { code: ErrorCode.ENCOUNTER_NOT_FOUND },
+      });
+    }
 
+    const homeTeam = await encounter.getHome();
     const isHome = await user.hasAnyPermission([
       `${homeTeam.clubId}_change:encounter`,
       "change-any:encounter",
@@ -431,6 +447,7 @@ export class EncounterChangeService {
         `[finalize] failed to queue sync job encounterId=${encounter.id}`,
         syncError
       );
+      Sentry.captureException(syncError);
     }
 
     const updatedEncounter = await EncounterCompetition.findByPk(encounter.id);

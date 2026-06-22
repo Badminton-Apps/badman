@@ -332,8 +332,9 @@ async function createEncounters(ctx, drawId, teamId, opponentTeamId, encounterCo
                :homeCaptainAccepted, :awayCaptainAccepted, false, NOW(), NOW())`,
       {
         drawId,
-        homeTeamId: i % 2 === 0 ? teamId : opponentTeamId,
-        awayTeamId: i % 2 === 0 ? opponentTeamId : teamId,
+        // First half = sem1 (H→A), second half = sem2 (A→H return matches)
+        homeTeamId: i < halfCount ? teamId : opponentTeamId,
+        awayTeamId: i < halfCount ? opponentTeamId : teamId,
         date: encounterDate,
         originalDate: encounterDate,
         homeScore: i % 3 === 0 ? 4 : 0,
