@@ -3947,6 +3947,11 @@ export type I18nTranslations = {
                                 "error": string;
                                 "duplicateDate": string;
                                 "deadlinePassed": string;
+                                "outsideCompetitionSeason": string;
+                                "dateNotEndorsed": string;
+                                "validationFailed": string;
+                                "permissionDenied": string;
+                                "invalidState": string;
                             };
                         };
                     };
