@@ -144,6 +144,14 @@ export type I18nTranslations = {
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
+                "email": {
+                    "action": {
+                        "propose": string;
+                        "endorse": string;
+                        "reject": string;
+                        "counter": string;
+                    };
+                };
                 "not-possible": string;
                 "possible": string;
                 "re-open": string;
