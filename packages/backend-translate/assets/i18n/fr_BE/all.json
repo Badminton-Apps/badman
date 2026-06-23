@@ -132,6 +132,14 @@
         "select-one-date": "Veuillez sélectionner au moins 1 jour",
         "select-one-date-or-comment": "Veuillez commenter (au moins 15 caractères) ou choisir une date."
       },
+      "email": {
+        "action": {
+          "propose": "{actingTeamName} a introduit une demande de déplacement de la rencontre entre {home} et {away}.",
+          "endorse": "{actingTeamName} a approuvé une date proposée pour la rencontre entre {home} et {away}.",
+          "reject": "{actingTeamName} a refusé les dates proposées pour la rencontre entre {home} et {away}.",
+          "counter": "{actingTeamName} a proposé des contre-dates pour la rencontre entre {home} et {away}."
+        }
+      },
       "not-possible": "Non disponible",
       "possible": "Disponible",
       "re-open": "La demande précédente est terminée, vous pouvez la rouvrir et les données initialement proposées seront à nouveau visibles. La nouvelle demande n'est renvoyée qu'une fois que vous avez cliqué sur soumettre après la réouverture",

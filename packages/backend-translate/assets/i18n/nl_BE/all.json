@@ -132,6 +132,14 @@
         "select-one-date": "Gelieve minstens 1 dag te selecteren.",
         "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
       },
+      "email": {
+        "action": {
+          "propose": "{actingTeamName} heeft een aanvraag ingediend om de ontmoeting tussen {home} en {away} te verplaatsen.",
+          "endorse": "{actingTeamName} heeft een voorgestelde datum goedgekeurd voor de ontmoeting tussen {home} en {away}.",
+          "reject": "{actingTeamName} heeft de voorgestelde datums afgewezen voor de ontmoeting tussen {home} en {away}.",
+          "counter": "{actingTeamName} heeft tegendatums voorgesteld voor de ontmoeting tussen {home} en {away}."
+        }
+      },
       "not-possible": "Niet beschikbaar",
       "possible": "Beschikbaar",
       "re-open": "De vorige aanvraag is afgewerkt, je kan deze heropenen en dan zullen de oorspronkelijk voorgestelde data opnieuw zichtbaar zijn. De nieuwe aanvraag is pas opnieuw verstuurd eenmaal je op verzenden hebt geklikt na het heropenen.",

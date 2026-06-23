@@ -137,6 +137,14 @@
         "select-one-date": "Please select at least 1 day",
         "select-one-date-or-comment": "Please comment (at least 15 characters) or choose a date."
       },
+      "email": {
+        "action": {
+          "propose": "{actingTeamName} has submitted a request to reschedule the encounter between {home} and {away}.",
+          "endorse": "{actingTeamName} has approved a proposed date for the encounter between {home} and {away}.",
+          "reject": "{actingTeamName} has rejected the proposed dates for the encounter between {home} and {away}.",
+          "counter": "{actingTeamName} has proposed counter-dates for the encounter between {home} and {away}."
+        }
+      },
       "not-possible": "Not available",
       "possible": "Available",
       "re-open": "The previous request has been completed, you can reopen it and then the originally proposed data will be visible again. The new request is only resent once you clicked submit after reopening",
