@@ -2411,6 +2411,7 @@
             "opponent": "Tegenstander",
             "homeAway": "Thuis/Uit",
             "date": "Datum",
+            "location": "Locatie",
             "status": "Status",
             "validation": "Validatie",
             "changeEncounterDate": "Wijzig wedstrijddatum",
@@ -2430,7 +2431,12 @@
           "originalDate": "Oorspronkelijke datum",
           "home": "Thuis",
           "away": "Uit",
-          "noData": "Geen ontmoetingen gevonden"
+          "noData": "Geen ontmoetingen gevonden",
+          "validation": {
+            "valid": "Datum en tijd binnen speeltijdvakken, locatie beschikbaar",
+            "warnings": "Datum en tijd buiten standaard speeltijdvakken",
+            "invalid": "Locatie niet beschikbaar of al vol op dit moment"
+          }
         }
       },
       "teamEnrollment": {

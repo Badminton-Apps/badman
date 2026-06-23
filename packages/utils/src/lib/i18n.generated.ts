@@ -2711,6 +2711,7 @@ export type I18nTranslations = {
                             "opponent": string;
                             "homeAway": string;
                             "date": string;
+                            "location": string;
                             "status": string;
                             "validation": string;
                             "changeEncounterDate": string;
@@ -2731,6 +2732,11 @@ export type I18nTranslations = {
                         "home": string;
                         "away": string;
                         "noData": string;
+                        "validation": {
+                            "valid": string;
+                            "warnings": string;
+                            "invalid": string;
+                        };
                     };
                 };
                 "teamEnrollment": {

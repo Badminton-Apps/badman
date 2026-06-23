@@ -2221,6 +2221,29 @@
         "clubEnrollment": "Mise à jour de l'inscription au club",
         "default": "Notification"
       }
+    },
+    "clubPage": {
+      "noClubFound": "Aucun club trouvé",
+      "encounters": {
+        "table": {
+          "headers": {
+            "team": "Équipe",
+            "opponent": "Adversaire",
+            "homeAway": "Domicile/Extérieur",
+            "date": "Date",
+            "location": "Emplacement",
+            "status": "Statut",
+            "validation": "Validation",
+            "changeEncounterDate": "Modifier la date de la rencontre",
+            "view": "Afficher"
+          },
+          "validation": {
+            "valid": "Date et heure dans les créneaux de jeu, lieu disponible",
+            "warnings": "Date et heure en dehors des créneaux de jeu standard",
+            "invalid": "Lieu indisponible ou déjà complet à cette heure"
+          }
+        }
+      }
     }
   }
 }

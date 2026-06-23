@@ -2693,6 +2693,7 @@
             "opponent": "Opponent",
             "homeAway": "Home/Away",
             "date": "Date",
+            "location": "Location",
             "status": "Status",
             "validation": "Validation",
             "changeEncounterDate": "Change encounter date",
@@ -2712,7 +2713,12 @@
           "originalDate": "Original date",
           "home": "Home",
           "away": "Away",
-          "noData": "No encounters found"
+          "noData": "No encounters found",
+          "validation": {
+            "valid": "Date and time within playing slots, venue available",
+            "warnings": "Date and time outside standard playing slots",
+            "invalid": "Venue unavailable or already full at this time"
+          }
         }
       },
       "teamEnrollment": {
