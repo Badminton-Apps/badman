@@ -208,8 +208,8 @@ export class CommentResolver {
       throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
     }
 
-    // send notification
-    this.notificationService.notifyEncounterChange(link, home.clubId === comment.clubId);
+    // send notification to the opposing party only
+    this.notificationService.notifyEncounterChangeMessage(link, home.clubId === comment.clubId);
   }
   private async encounterComment(
     link: EncounterCompetition,

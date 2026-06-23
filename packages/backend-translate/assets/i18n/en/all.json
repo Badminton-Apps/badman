@@ -137,6 +137,14 @@
         "select-one-date": "Please select at least 1 day",
         "select-one-date-or-comment": "Please comment (at least 15 characters) or choose a date."
       },
+      "email": {
+        "action": {
+          "propose": "{actingTeamName} has submitted a request to reschedule the encounter between {home} and {away}.",
+          "endorse": "{actingTeamName} has approved a proposed date for the encounter between {home} and {away}.",
+          "reject": "{actingTeamName} has rejected the proposed dates for the encounter between {home} and {away}.",
+          "counter": "{actingTeamName} has proposed counter-dates for the encounter between {home} and {away}."
+        }
+      },
       "not-possible": "Not available",
       "possible": "Available",
       "re-open": "The previous request has been completed, you can reopen it and then the originally proposed data will be visible again. The new request is only resent once you clicked submit after reopening",
@@ -2693,6 +2701,7 @@
             "opponent": "Opponent",
             "homeAway": "Home/Away",
             "date": "Date",
+            "location": "Location",
             "status": "Status",
             "validation": "Validation",
             "changeEncounterDate": "Change encounter date",
@@ -2712,7 +2721,12 @@
           "originalDate": "Original date",
           "home": "Home",
           "away": "Away",
-          "noData": "No encounters found"
+          "noData": "No encounters found",
+          "validation": {
+            "valid": "Date and time within playing slots, venue available",
+            "warnings": "Date and time outside standard playing slots",
+            "invalid": "Venue unavailable or already full at this time"
+          }
         }
       },
       "teamEnrollment": {
@@ -3794,7 +3808,11 @@
           "proposalRejectedError": "Error rejecting proposal",
           "proposalDeletedSuccess": "Proposal deleted successfully",
           "proposalDeletedError": "Error deleting proposal",
-          "generalError": "Something went wrong while moving the encounter"
+          "generalError": "Something went wrong while moving the encounter",
+          "triageSuccess": "Proposals submitted successfully",
+          "triageError": "Failed to submit proposals",
+          "finalizeSuccess": "Date finalized successfully",
+          "finalizeError": "Failed to finalize date"
         },
         "buttons": {
           "reject": "Reject",
@@ -3804,28 +3822,14 @@
           "submitTriage": "Submit",
           "finalize": "Finalize"
         },
-        "messages": {
-          "proposalAddedSuccess": "Proposal added successfully",
-          "proposalAddedError": "Error adding proposal",
-          "proposalAcceptedSuccess": "Proposal accepted successfully",
-          "proposalAcceptedError": "Error accepting proposal",
-          "proposalRejectedSuccess": "Proposal rejected successfully",
-          "proposalRejectedError": "Error rejecting proposal",
-          "proposalDeletedSuccess": "Proposal deleted successfully",
-          "proposalDeletedError": "Error deleting proposal",
-          "generalError": "Something went wrong while moving the encounter",
-          "triageSuccess": "Proposals submitted successfully",
-          "triageError": "Failed to submit proposals",
-          "finalizeSuccess": "Date finalized successfully",
-          "finalizeError": "Failed to finalize date"
-        },
         "history": "History",
         "status": {
           "pending": "Pending",
           "tentativelyaccepted": "Tentatively accepted",
           "accepted": "Accepted",
           "rejected": "Rejected",
-          "resolved": "Resolved"
+          "resolved": "Resolved",
+          "tentatively_accepted": "Tentatively accepted"
         }
       },
       "messages": {
@@ -3887,6 +3891,20 @@
     },
     "locations": {
       "exceptions": "Exceptions"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No new notifications",
+      "types": {
+        "encounterChangeNew": "New rescheduling request received",
+        "encounterChangeConfirmation": "Action required: rescheduling request",
+        "encounterChangeFinished": "Encounter successfully rescheduled",
+        "encounterHasComment": "New message on rescheduling request",
+        "encounterNotAccepted": "Encounter result not accepted",
+        "encounterNotEntered": "Encounter result not entered",
+        "clubEnrollment": "Club enrollment update",
+        "default": "Notification"
+      }
     }
   }
 }
