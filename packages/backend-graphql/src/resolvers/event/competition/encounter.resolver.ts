@@ -348,9 +348,11 @@ export class EncounterCompetitionResolver {
     return encounter.getAssemblies(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => EncounterChange)
-  async encounterChange(@Parent() encounter: EncounterCompetition): Promise<EncounterChange> {
-    return encounter.getEncounterChange();
+  @ResolveField(() => EncounterChange, { nullable: true })
+  async encounterChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<EncounterChange | null> {
+    return this._getLatestEncounterChange(encounter.id);
   }
 
   @ResolveField(() => String, { nullable: true })
@@ -358,14 +360,16 @@ export class EncounterCompetitionResolver {
     @Parent() encounter: EncounterCompetition,
     @User() user: Player
   ): Promise<EncounterChangeViewState | null> {
-    const encounterChange = await encounter.getEncounterChange({
+    const encounterChange = await this._getLatestEncounterChange(encounter.id, {
       include: [{ model: EncounterChangeDate }],
     });
 
     if (!encounterChange) return null;
 
-    const homeTeam = await this.teamLoader.load(encounter.homeTeamId);
-    const awayTeam = await this.teamLoader.load(encounter.awayTeamId);
+    const [homeTeam, awayTeam] = await Promise.all([
+      this.teamLoader.load(encounter.homeTeamId),
+      this.teamLoader.load(encounter.awayTeamId),
+    ]);
 
     const isHome =
       homeTeam != null && (await user.hasAnyPermission([`${homeTeam.clubId}_change:encounter`]));
@@ -557,8 +561,7 @@ export class EncounterCompetitionResolver {
     @Args("date") date: Date,
 
     @Args("updateBadman") updateBadman: boolean,
-    @Args("updateVisual") updateVisual: boolean,
-    @Args("closeChangeRequests") closeChangeRequests: boolean
+    @Args("updateVisual") updateVisual: boolean
   ) {
     const encounter = await EncounterCompetition.findByPk(id);
 
@@ -585,13 +588,6 @@ export class EncounterCompetitionResolver {
           removeOnFail: false,
         }
       );
-    }
-
-    if (closeChangeRequests) {
-      const change = await encounter.getEncounterChange();
-      if (change) {
-        await change.update({ accepted: true });
-      }
     }
 
     return true;
@@ -759,5 +755,16 @@ export class EncounterCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  private async _getLatestEncounterChange(
+    encounterId: string,
+    options?: Parameters<typeof EncounterChange.findOne>[0]
+  ): Promise<EncounterChange | null> {
+    return EncounterChange.findOne({
+      ...options,
+      where: { encounterId },
+      order: [["createdAt", "DESC"]],
+    });
   }
 }
