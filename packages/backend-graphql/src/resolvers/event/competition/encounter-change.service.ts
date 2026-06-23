@@ -10,7 +10,12 @@ import {
 import { EncounterValidationService } from "@badman/backend-change-encounter";
 import { NotificationService } from "@badman/backend-notifications";
 import { Sync, SyncQueue } from "@badman/backend-queue";
-import { ChangeEncounterDateStatus, ChangeEncounterParty, LoggingAction } from "@badman/utils";
+import {
+  ChangeEncounterDateStatus,
+  ChangeEncounterParty,
+  EncounterChangeAction,
+  LoggingAction,
+} from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectQueue } from "@nestjs/bull";
 import * as Sentry from "@sentry/nestjs";
@@ -161,12 +166,10 @@ export class EncounterChangeService {
 
     const encounterForNotification = await EncounterCompetition.findByPk(input.encounterId);
     if (encounterForNotification) {
-      //TODO: check if th notification Service works as expected
       this.notificationService.notifyEncounterChange(
         encounterForNotification,
         isHome,
-        undefined,
-        event?.id
+        EncounterChangeAction.PROPOSE
       );
     }
 
@@ -194,7 +197,12 @@ export class EncounterChangeService {
       });
     }
 
-    const encounter = encounterChange.encounter!;
+    const encounter = encounterChange.encounter;
+    if (!encounter) {
+      throw new GraphQLError(`Encounter not found: ${encounterChange.encounterId}`, {
+        extensions: { code: ErrorCode.ENCOUNTER_NOT_FOUND },
+      });
+    }
     const awayTeam = await encounter.getAway();
 
     const isAway = await user.hasAnyPermission([
@@ -227,42 +235,45 @@ export class EncounterChangeService {
     try {
       const allDates = await encounterChange.getDates({ transaction });
 
-      for (const id of input.endorseIds ?? []) {
-        const date = allDates.find((d) => d.id === id);
+      for (const endorsementId of input.endorseIds ?? []) {
+        const date = allDates.find((d) => d.id === endorsementId);
         if (!date || date.status !== ChangeEncounterDateStatus.PENDING) {
-          throw new GraphQLError(`Date ${id} is not in PENDING status and cannot be endorsed`, {
-            extensions: { code: ErrorCode.INVALID_STATE },
-          });
+          throw new GraphQLError(
+            `Date ${endorsementId} is not in PENDING status and cannot be endorsed`,
+            {
+              extensions: { code: ErrorCode.INVALID_STATE },
+            }
+          );
         }
-        this.logger.debug(`[triage] endorsing dateId=${id}`);
+        this.logger.debug(`[triage] endorsing dateId=${endorsementId}`);
         date.status = ChangeEncounterDateStatus.TENTATIVELY_ACCEPTED;
         await date.save({ transaction });
       }
 
-      for (const id of input.rejectIds ?? []) {
-        const date = allDates.find((d) => d.id === id);
+      for (const rejectionId of input.rejectIds ?? []) {
+        const date = allDates.find((d) => d.id === rejectionId);
         if (
           !date ||
           (date.status !== ChangeEncounterDateStatus.PENDING &&
             date.status !== ChangeEncounterDateStatus.TENTATIVELY_ACCEPTED)
         ) {
           throw new GraphQLError(
-            `Date ${id} cannot be rejected — must be PENDING or TENTATIVELY_ACCEPTED`,
+            `Date ${rejectionId} cannot be rejected — must be PENDING or TENTATIVELY_ACCEPTED`,
             { extensions: { code: ErrorCode.INVALID_STATE } }
           );
         }
-        this.logger.debug(`[triage] rejecting dateId=${id}`);
+        this.logger.debug(`[triage] rejecting dateId=${rejectionId}`);
         date.status = ChangeEncounterDateStatus.REJECTED;
         await date.save({ transaction });
       }
 
-      for (const d of input.newDates ?? []) {
-        const parsedDate = moment(d.date).toDate();
+      for (const newDate of input.newDates ?? []) {
+        const parsedDate = moment(newDate.date).toDate();
         await EncounterChangeDate.create(
           {
             encounterChangeId: encounterChange.id,
             date: parsedDate,
-            locationId: d.locationId,
+            locationId: newDate.locationId,
             proposedBy: ChangeEncounterParty.AWAY,
             status: ChangeEncounterDateStatus.PENDING,
           },
@@ -285,12 +296,20 @@ export class EncounterChangeService {
 
     const encounterForNotification = await EncounterCompetition.findByPk(encounter.id);
     if (encounterForNotification) {
-      this.notificationService.notifyEncounterChange(
-        encounterForNotification,
-        false,
-        undefined,
-        event?.id
-      );
+      const hasNewDates = (input.newDates ?? []).length > 0;
+      const hasEndorsements = (input.endorseIds ?? []).length > 0;
+      const hasRejections = (input.rejectIds ?? []).length > 0;
+
+      let action: EncounterChangeAction;
+      if (hasNewDates) {
+        action = EncounterChangeAction.COUNTER;
+      } else if (hasRejections && !hasEndorsements) {
+        action = EncounterChangeAction.REJECT;
+      } else {
+        action = EncounterChangeAction.ENDORSE;
+      }
+
+      this.notificationService.notifyEncounterChange(encounterForNotification, false, action);
     }
 
     return { encounterChange };
@@ -455,12 +474,7 @@ export class EncounterChangeService {
       const locationHasChanged =
         encounter.originalLocationId != null &&
         encounter.originalLocationId !== encounter.locationId;
-      this.notificationService.notifyEncounterChangeFinished(
-        updatedEncounter,
-        locationHasChanged,
-        undefined,
-        undefined
-      );
+      this.notificationService.notifyEncounterChangeFinished(updatedEncounter, locationHasChanged);
     }
 
     return { encounter: updatedEncounter ?? encounter, encounterChange };

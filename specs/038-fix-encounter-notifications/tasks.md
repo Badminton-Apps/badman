@@ -32,7 +32,7 @@ description: "Task list for fix-encounter-notifications"
 
 ### Implementation
 
-- [ ] T001 [US2] Remove the `notifierNew.notify(...)` block and `CompetitionEncounterChangeNewRequestNotifier` instantiation from `notifyEncounterChange` in `packages/backend-notifications/src/services/notification/notification.service.ts` (approximately lines 109–140; keep the `notifierConform.notify(...)` block that sends to `confReqTeam`)
+- [x] T001 [US2] Remove the `notifierNew.notify(...)` block and `CompetitionEncounterChangeNewRequestNotifier` instantiation from `notifyEncounterChange` in `packages/backend-notifications/src/services/notification/notification.service.ts` (approximately lines 109–140; keep the `notifierConform.notify(...)` block that sends to `confReqTeam`)
 
 **Checkpoint**: US2 complete — `notifyEncounterChange` now sends exactly one email (to the opposing party). Trigger a proposal and confirm only the opposing captain's email is queued.
 
@@ -46,11 +46,11 @@ description: "Task list for fix-encounter-notifications"
 
 ### Implementation
 
-- [ ] T002 [US3] Add `async notifyEncounterChangeMessage(encounter: EncounterCompetition, isHomeCommenting: boolean): Promise<void>` to `NotificationService` in `packages/backend-notifications/src/services/notification/notification.service.ts`. The method must: load `homeTeam`/`awayTeam` with captain; identify `opposingTeam = isHomeCommenting ? awayTeam : homeTeam`; build URL `${CLIENT_URL}/my-club/${opposingTeam.clubId}/change-encounter/${encounter.id}`; call `new CompetitionEncounterHasCommentNotifier(this.mailing, this.push).notify(opposingTeam.captain, encounter.id, { encounter }, { email: opposingTeam.email, url })` only if captain and email exist.
+- [x] T002 [US3] Add `async notifyEncounterChangeMessage(encounter: EncounterCompetition, isHomeCommenting: boolean): Promise<void>` to `NotificationService` in `packages/backend-notifications/src/services/notification/notification.service.ts`. The method must: load `homeTeam`/`awayTeam` with captain; identify `opposingTeam = isHomeCommenting ? awayTeam : homeTeam`; build URL `${CLIENT_URL}/my-club/${opposingTeam.clubId}/change-encounter/${encounter.id}`; call `new CompetitionEncounterHasCommentNotifier(this.mailing, this.push).notify(opposingTeam.captain, encounter.id, { encounter }, { email: opposingTeam.email, url })` only if captain and email exist.
 
-- [ ] T003 [US3] In `packages/backend-graphql/src/resolvers/comment/comment.resolver.ts`, change the notification call inside `encounterChangeComment` (line ~212) from `this.notificationService.notifyEncounterChange(link, home.clubId === comment.clubId)` to `this.notificationService.notifyEncounterChangeMessage(link, home.clubId === comment.clubId)`.
+- [x] T003 [US3] In `packages/backend-graphql/src/resolvers/comment/comment.resolver.ts`, change the notification call inside `encounterChangeComment` (line ~212) from `this.notificationService.notifyEncounterChange(link, home.clubId === comment.clubId)` to `this.notificationService.notifyEncounterChangeMessage(link, home.clubId === comment.clubId)`.
 
-- [ ] T004 [US3] Update `packages/backend-graphql/src/resolvers/comment/comment.resolver.spec.ts`: replace the spy on `notificationService.notifyEncounterChange` for the `encounterChange` linkType path with a spy on `notificationService.notifyEncounterChangeMessage`; add assertions that (a) `notifyEncounterChangeMessage` is called with `(encounter, true)` when the home club comments, (b) `notifyEncounterChangeMessage` is called with `(encounter, false)` when the away club comments, (c) `notifyEncounterChange` is NOT called for `encounterChange` linkType.
+- [x] T004 [US3] Update `packages/backend-graphql/src/resolvers/comment/comment.resolver.spec.ts`: replace the spy on `notificationService.notifyEncounterChange` for the `encounterChange` linkType path with a spy on `notificationService.notifyEncounterChangeMessage`; add assertions that (a) `notifyEncounterChangeMessage` is called with `(encounter, true)` when the home club comments, (b) `notifyEncounterChangeMessage` is called with `(encounter, false)` when the away club comments, (c) `notifyEncounterChange` is NOT called for `encounterChange` linkType.
 
 **Checkpoint**: US3 complete — posting a chat message triggers `notifyEncounterChangeMessage`; only the opposing captain receives a "has comment" email. Unit tests pass.
 
@@ -64,11 +64,11 @@ description: "Task list for fix-encounter-notifications"
 
 ### Implementation
 
-- [ ] T005 [P] [US4] In `_getEncounterChangeUrl` in `packages/backend-notifications/src/services/notification/notification.service.ts`, change the `default` switch case from `return \`${baseLegacyClientUrl}/competition/change-encounter?club=...\`` to `return \`${baseClientUrl}/my-club/${team?.clubId}/change-encounter/${encounter.id}\``.
+- [x] T005 [P] [US4] In `_getEncounterChangeUrl` in `packages/backend-notifications/src/services/notification/notification.service.ts`, change the `default` switch case from `return \`${baseLegacyClientUrl}/competition/change-encounter?club=...\`` to `return \`${baseClientUrl}/my-club/${team?.clubId}/change-encounter/${encounter.id}\``.
 
-- [ ] T006 [P] [US4] In `notifyEncounterHasComment` in `packages/backend-notifications/src/services/notification/notification.service.ts`, replace the hardcoded `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}` URL with `\`${this.configService.get("CLIENT_URL")}/competition/${event.id}\``(uses the already-validated`event.id` UUID).
+- [x] T006 [P] [US4] In `notifyEncounterHasComment` in `packages/backend-notifications/src/services/notification/notification.service.ts`, replace the hardcoded `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}` URL with `\`${this.configService.get("CLIENT_URL")}/competition/${event.id}\``(uses the already-validated`event.id` UUID).
 
-- [ ] T007 [P] [US4] In `notifyEncounterNotAccepted` in `packages/backend-notifications/src/services/notification/notification.service.ts`, replace the hardcoded `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}` URL with `\`${this.configService.get("CLIENT_URL")}/my-club/${awayTeam.clubId}/change-encounter/${encounter.id}\``(use`awayTeam`which is already loaded via`getAway()` earlier in the method).
+- [x] T007 [P] [US4] In `notifyEncounterNotAccepted` in `packages/backend-notifications/src/services/notification/notification.service.ts`, replace the hardcoded `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}` URL with `\`${this.configService.get("CLIENT_URL")}/my-club/${awayTeam.clubId}/change-encounter/${encounter.id}\``(use`awayTeam`which is already loaded via`getAway()` earlier in the method).
 
 **Checkpoint**: US4 complete — no toernooi.nl or LEGACY_CLIENT_URL appears in any encounter-change notification email. Log-inspect the generated URLs in dev or staging.
 
@@ -82,9 +82,9 @@ description: "Task list for fix-encounter-notifications"
 
 ### Implementation
 
-- [ ] T008 [US5] In `sendConfirmationRequestMail` in `packages/backend-mailing/src/services/mailing/mailing.service.ts`, add `actingTeamName: string` to the mail context (derive it from the existing `isHome` flag and `encounter.home?.name` / `encounter.away?.name`, e.g. `actingTeamName: isHome ? encounter.home?.name ?? '' : encounter.away?.name ?? ''`). Pass this field in the `context` object sent to the `encounterchange` template.
+- [x] T008 [US5] In `sendConfirmationRequestMail` in `packages/backend-mailing/src/services/mailing/mailing.service.ts`, add `actingTeamName: string` to the mail context (derive it from the existing `isHome` flag and `encounter.home?.name` / `encounter.away?.name`, e.g. `actingTeamName: isHome ? encounter.home?.name ?? '' : encounter.away?.name ?? ''`). Pass this field in the `context` object sent to the `encounterchange` template.
 
-- [ ] T009 [US5] In `packages/backend-mailing/src/compile/templates/encounterchange/html.pug`, update the body paragraph to use `actingTeamName`: replace the generic "er is een aanvraag tot wijziging van de aankomende ontmoeting tussen..." sentence with one that states the acting team: e.g. `| #{ actingTeamName } heeft een aanvraag ingediend om de ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name } te verplaatsen.`
+- [x] T009 [US5] In `packages/backend-mailing/src/compile/templates/encounterchange/html.pug`, update the body paragraph to use `actingTeamName`: replace the generic "er is een aanvraag tot wijziging van de aankomende ontmoeting tussen..." sentence with one that states the acting team: e.g. `| #{ actingTeamName } heeft een aanvraag ingediend om de ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name } te verplaatsen.`
 
 **Checkpoint**: US5 complete — the confirmation email body clearly names the requesting team. Inspect `mails/encounterchange.html` in dev mode after triggering a proposal.
 
@@ -94,13 +94,13 @@ description: "Task list for fix-encounter-notifications"
 
 **Purpose**: Verify all changes pass linting and tests; confirm the full notification flow in staging.
 
-- [ ] T010 [P] Run `pnpm turbo run test --filter=@badman/backend-graphql` and confirm all comment resolver tests pass (including the updated T004 assertions).
+- [x] T010 [P] Run `pnpm turbo run test --filter=@badman/backend-graphql` and confirm all comment resolver tests pass (including the updated T004 assertions).
 
-- [ ] T011 [P] Run `pnpm turbo run test --filter=@badman/backend-notifications` and confirm any existing notification service tests still pass (update mocks if `sendNewRequestMail` spy is no longer called).
+- [x] T011 [P] Run `pnpm turbo run test --filter=@badman/backend-notifications` and confirm any existing notification service tests still pass (update mocks if `sendNewRequestMail` spy is no longer called).
 
-- [ ] T012 [P] Run `pnpm turbo run lint --filter=@badman/backend-notifications --filter=@badman/backend-graphql --filter=@badman/backend-mailing` and fix any lint errors.
+- [x] T012 [P] Run `pnpm turbo run lint --filter=@badman/backend-notifications --filter=@badman/backend-graphql --filter=@badman/backend-mailing` and fix any lint errors.
 
-- [ ] T013 Run `pnpm turbo run build --filter=api` and confirm the API builds without TypeScript errors.
+- [x] T013 Run `pnpm turbo run build --filter=api` and confirm the API builds without TypeScript errors.
 
 ---
 

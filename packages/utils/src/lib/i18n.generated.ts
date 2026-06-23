@@ -3898,6 +3898,7 @@ export type I18nTranslations = {
                         "accepted": string;
                         "rejected": string;
                         "resolved": string;
+                        "tentatively_accepted": string;
                     };
                 };
                 "messages": {
@@ -3959,6 +3960,20 @@ export type I18nTranslations = {
             };
             "locations": {
                 "exceptions": string;
+            };
+            "notifications": {
+                "title": string;
+                "empty": string;
+                "types": {
+                    "encounterChangeNew": string;
+                    "encounterChangeConfirmation": string;
+                    "encounterChangeFinished": string;
+                    "encounterHasComment": string;
+                    "encounterNotAccepted": string;
+                    "encounterNotEntered": string;
+                    "clubEnrollment": string;
+                    "default": string;
+                };
             };
             "editClubPage": {
                 "locations": {

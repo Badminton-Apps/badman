@@ -9,7 +9,7 @@ import {
   Location,
   SubEventCompetition,
 } from "@badman/backend-database";
-import { ConfigType } from "@badman/utils";
+import { ConfigType, EncounterChangeAction } from "@badman/utils";
 import { Inject, Injectable, Logger, Optional } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { writeFile } from "fs/promises";
@@ -112,7 +112,9 @@ export class MailingService {
     },
     encounter: EncounterCompetition,
     isHome: boolean,
-    url: string
+    url: string,
+    actingTeamName?: string,
+    action?: EncounterChangeAction
   ) {
     // fetch event
     const event = await encounter.getDrawCompetition({
@@ -141,6 +143,9 @@ export class MailingService {
       context: {
         captain: to.fullName,
         isHome,
+        actingTeamName:
+          actingTeamName ?? (isHome ? encounter.home?.name : encounter.away?.name) ?? "",
+        action: action ?? EncounterChangeAction.PROPOSE,
         season: eventCompetition.season,
         url,
         encounter: {
@@ -153,6 +158,8 @@ export class MailingService {
     } as MailOptions<{
       captain: string;
       isHome: boolean;
+      actingTeamName: string;
+      action: EncounterChangeAction;
       season: number;
       isChangedLocation: boolean;
       url: string;
@@ -338,7 +345,11 @@ export class MailingService {
       subject: `Ontmoeting ${encounter.home?.name} tegen ${encounter.away?.name} heeft een opmerking`,
       template: "hasComment",
       context: {
-        encounter: encounter.toJSON(),
+        encounter: {
+          ...encounter.toJSON(),
+          home: encounter.home?.toJSON(),
+          away: encounter.away?.toJSON(),
+        },
         url,
         contact: to.fullName,
         date: moment(encounter.date).tz("Europe/Brussels").format("LLLL"),

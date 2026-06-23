@@ -3572,7 +3572,11 @@
           "proposalRejectedError": "Fout bij het weigeren van het voorstel",
           "proposalDeletedSuccess": "Voorstel verwijderd",
           "proposalDeletedError": "Fout bij het verwijderen van het voorstel",
-          "generalError": "Iets ging mis bij het verplaatsen van de ontmoeting"
+          "generalError": "Iets ging mis bij het verplaatsen van de ontmoeting",
+          "triageSuccess": "Voorstellen succesvol ingediend",
+          "triageError": "Fout bij het indienen van voorstellen",
+          "finalizeSuccess": "Datum succesvol gefinaliseerd",
+          "finalizeError": "Fout bij het finaliseren van de datum"
         },
         "buttons": {
           "addProposal": "Voorstel toevoegen",
@@ -3582,28 +3586,14 @@
           "submitTriage": "Indienen",
           "finalize": "Finaliseren"
         },
-        "messages": {
-          "proposalAddedSuccess": "Voorstel toegevoegd",
-          "proposalAddedError": "Fout bij het toevoegen van het voorstel",
-          "proposalAcceptedSuccess": "Voorstel geaccepteerd",
-          "proposalAcceptedError": "Fout bij het accepteren van het voorstel",
-          "proposalRejectedSuccess": "Voorstel geweigerd",
-          "proposalRejectedError": "Fout bij het weigeren van het voorstel",
-          "proposalDeletedSuccess": "Voorstel verwijderd",
-          "proposalDeletedError": "Fout bij het verwijderen van het voorstel",
-          "generalError": "Iets ging mis bij het verplaatsen van de ontmoeting",
-          "triageSuccess": "Voorstellen succesvol ingediend",
-          "triageError": "Fout bij het indienen van voorstellen",
-          "finalizeSuccess": "Datum succesvol gefinaliseerd",
-          "finalizeError": "Fout bij het finaliseren van de datum"
-        },
         "history": "Geschiedenis",
         "status": {
           "pending": "In afwachting",
           "tentativelyaccepted": "Voorlopig geaccepteerd",
           "accepted": "Geaccepteerd",
           "rejected": "Afgewezen",
-          "resolved": "Opgelost"
+          "resolved": "Opgelost",
+          "tentatively_accepted": "Voorlopig geaccepteerd"
         }
       },
       "messages": {
@@ -3665,6 +3655,20 @@
     },
     "locations": {
       "exceptions": "Uitzonderingen"
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "empty": "Geen nieuwe meldingen",
+      "types": {
+        "encounterChangeNew": "Nieuw verplaatsingsverzoek ontvangen",
+        "encounterChangeConfirmation": "Actie vereist: verplaatsingsverzoek",
+        "encounterChangeFinished": "Ontmoeting succesvol verplaatst",
+        "encounterHasComment": "Nieuw bericht over verplaatsingsverzoek",
+        "encounterNotAccepted": "Ontmoetingsresultaat niet geaccepteerd",
+        "encounterNotEntered": "Ontmoetingsresultaat niet ingevoerd",
+        "clubEnrollment": "Club-inschrijvingsupdate",
+        "default": "Melding"
+      }
     }
   }
 }

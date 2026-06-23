@@ -2127,7 +2127,8 @@
           "tentativelyaccepted": "Provisoirement acceptée",
           "accepted": "Acceptée",
           "rejected": "Rejetée",
-          "resolved": "Résolue"
+          "resolved": "Résolue",
+          "tentatively_accepted": "Provisoirement acceptée"
         }
       },
       "messages": {
@@ -2205,6 +2206,20 @@
             "error": "Une erreur s'est produite. Veuillez réessayer."
           }
         }
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "Aucune nouvelle notification",
+      "types": {
+        "encounterChangeNew": "Nouvelle demande de replanification reçue",
+        "encounterChangeConfirmation": "Action requise : demande de replanification",
+        "encounterChangeFinished": "Rencontre replanifiée avec succès",
+        "encounterHasComment": "Nouveau message sur la demande de replanification",
+        "encounterNotAccepted": "Résultat de la rencontre non accepté",
+        "encounterNotEntered": "Résultat de la rencontre non saisi",
+        "clubEnrollment": "Mise à jour de l'inscription au club",
+        "default": "Notification"
       }
     }
   }

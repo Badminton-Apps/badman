@@ -10,7 +10,14 @@ block content
       | Beste #{ captain },
       br
       br
-      | Wij willen u graag informeren dat er een aanvraag tot wijziging van de aankomende ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name } is binnengekomen.
+      if action === "ENDORSE"
+        | #{ actingTeamName } heeft een voorgestelde datum goedgekeurd voor de ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name }.
+      else if action === "REJECT"
+        | #{ actingTeamName } heeft de voorgestelde datums afgewezen voor de ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name }.
+      else if action === "COUNTER"
+        | #{ actingTeamName } heeft tegendatums voorgesteld voor de ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name }.
+      else
+        | #{ actingTeamName } heeft een aanvraag ingediend om de ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name } te verplaatsen.
     p
       a(href=url)
         | Klik hier om het verzoek te bekijken

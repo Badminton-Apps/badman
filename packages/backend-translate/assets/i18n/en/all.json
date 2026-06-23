@@ -3794,7 +3794,11 @@
           "proposalRejectedError": "Error rejecting proposal",
           "proposalDeletedSuccess": "Proposal deleted successfully",
           "proposalDeletedError": "Error deleting proposal",
-          "generalError": "Something went wrong while moving the encounter"
+          "generalError": "Something went wrong while moving the encounter",
+          "triageSuccess": "Proposals submitted successfully",
+          "triageError": "Failed to submit proposals",
+          "finalizeSuccess": "Date finalized successfully",
+          "finalizeError": "Failed to finalize date"
         },
         "buttons": {
           "reject": "Reject",
@@ -3804,28 +3808,14 @@
           "submitTriage": "Submit",
           "finalize": "Finalize"
         },
-        "messages": {
-          "proposalAddedSuccess": "Proposal added successfully",
-          "proposalAddedError": "Error adding proposal",
-          "proposalAcceptedSuccess": "Proposal accepted successfully",
-          "proposalAcceptedError": "Error accepting proposal",
-          "proposalRejectedSuccess": "Proposal rejected successfully",
-          "proposalRejectedError": "Error rejecting proposal",
-          "proposalDeletedSuccess": "Proposal deleted successfully",
-          "proposalDeletedError": "Error deleting proposal",
-          "generalError": "Something went wrong while moving the encounter",
-          "triageSuccess": "Proposals submitted successfully",
-          "triageError": "Failed to submit proposals",
-          "finalizeSuccess": "Date finalized successfully",
-          "finalizeError": "Failed to finalize date"
-        },
         "history": "History",
         "status": {
           "pending": "Pending",
           "tentativelyaccepted": "Tentatively accepted",
           "accepted": "Accepted",
           "rejected": "Rejected",
-          "resolved": "Resolved"
+          "resolved": "Resolved",
+          "tentatively_accepted": "Tentatively accepted"
         }
       },
       "messages": {
@@ -3887,6 +3877,20 @@
     },
     "locations": {
       "exceptions": "Exceptions"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No new notifications",
+      "types": {
+        "encounterChangeNew": "New rescheduling request received",
+        "encounterChangeConfirmation": "Action required: rescheduling request",
+        "encounterChangeFinished": "Encounter successfully rescheduled",
+        "encounterHasComment": "New message on rescheduling request",
+        "encounterNotAccepted": "Encounter result not accepted",
+        "encounterNotEntered": "Encounter result not entered",
+        "clubEnrollment": "Club enrollment update",
+        "default": "Notification"
+      }
     }
   }
 }
