@@ -99,13 +99,22 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       }
 
       if (!dbEncounter) {
-        // FInd one with same teams
-        dbEncounter =
-          encounters.find(
-            (e) => e.homeTeamId === team1?.id && e.awayTeamId === team2?.id && e.drawId === draw.id
-          ) || null;
+        // Only fall back to team-pair matching when there is exactly one
+        // unmatched encounter for this pair — avoids collapsing multiple
+        // encounters in 3x/4x formats into the same row.
+        const unmatchedSamePair = encounters.filter(
+          (e) =>
+            e.homeTeamId === team1?.id &&
+            e.awayTeamId === team2?.id &&
+            e.drawId === draw.id &&
+            !this._dbEncounters.find((d) => d.encounter.id === e.id)
+        );
 
-        if (!dbEncounter) {
+        if (unmatchedSamePair.length === 1) {
+          dbEncounter = unmatchedSamePair[0];
+          dbEncounter.visualCode = xmlTeamMatch.Code;
+          await dbEncounter.save({ transaction: this.transaction });
+        } else {
           dbEncounter = await new EncounterCompetition({
             drawId: draw.id,
             visualCode: xmlTeamMatch.Code,
@@ -113,9 +122,6 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
             homeTeamId: team1?.id,
             awayTeamId: team2?.id,
           }).save({ transaction: this.transaction });
-        } else {
-          dbEncounter.visualCode = xmlTeamMatch.Code;
-          await dbEncounter.save({ transaction: this.transaction });
         }
       }
 
