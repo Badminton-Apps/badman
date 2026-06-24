@@ -144,6 +144,14 @@ export type I18nTranslations = {
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
+                "email": {
+                    "action": {
+                        "propose": string;
+                        "endorse": string;
+                        "reject": string;
+                        "counter": string;
+                    };
+                };
                 "not-possible": string;
                 "possible": string;
                 "re-open": string;
@@ -2711,6 +2719,7 @@ export type I18nTranslations = {
                             "opponent": string;
                             "homeAway": string;
                             "date": string;
+                            "location": string;
                             "status": string;
                             "validation": string;
                             "changeEncounterDate": string;
@@ -2721,10 +2730,21 @@ export type I18nTranslations = {
                             "original": string;
                             "inProgress": string;
                         };
+                        "status": {
+                            "proposal_sent": string;
+                            "action_required": string;
+                            "rejected_waiting": string;
+                            "moved": string;
+                        };
                         "originalDate": string;
                         "home": string;
                         "away": string;
                         "noData": string;
+                        "validation": {
+                            "valid": string;
+                            "warnings": string;
+                            "invalid": string;
+                        };
                     };
                 };
                 "teamEnrollment": {
@@ -3872,12 +3892,27 @@ export type I18nTranslations = {
                         "proposalDeletedSuccess": string;
                         "proposalDeletedError": string;
                         "generalError": string;
+                        "triageSuccess": string;
+                        "triageError": string;
+                        "finalizeSuccess": string;
+                        "finalizeError": string;
                     };
                     "buttons": {
                         "reject": string;
                         "accept": string;
                         "addProposal": string;
                         "delete": string;
+                        "submitTriage": string;
+                        "finalize": string;
+                    };
+                    "history": string;
+                    "status": {
+                        "pending": string;
+                        "tentativelyaccepted": string;
+                        "accepted": string;
+                        "rejected": string;
+                        "resolved": string;
+                        "tentatively_accepted": string;
                     };
                 };
                 "messages": {
@@ -3925,6 +3960,13 @@ export type I18nTranslations = {
                             "messages": {
                                 "success": string;
                                 "error": string;
+                                "duplicateDate": string;
+                                "deadlinePassed": string;
+                                "outsideCompetitionSeason": string;
+                                "dateNotEndorsed": string;
+                                "validationFailed": string;
+                                "permissionDenied": string;
+                                "invalidState": string;
                             };
                         };
                     };
@@ -3932,6 +3974,20 @@ export type I18nTranslations = {
             };
             "locations": {
                 "exceptions": string;
+            };
+            "notifications": {
+                "title": string;
+                "empty": string;
+                "types": {
+                    "encounterChangeNew": string;
+                    "encounterChangeConfirmation": string;
+                    "encounterChangeFinished": string;
+                    "encounterHasComment": string;
+                    "encounterNotAccepted": string;
+                    "encounterNotEntered": string;
+                    "clubEnrollment": string;
+                    "default": string;
+                };
             };
             "editClubPage": {
                 "locations": {

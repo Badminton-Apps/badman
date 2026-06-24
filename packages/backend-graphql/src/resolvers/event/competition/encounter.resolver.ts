@@ -9,6 +9,7 @@ import {
   Comment,
   DrawCompetition,
   EncounterChange,
+  EncounterChangeDate,
   EncounterCompetition,
   Game,
   Location,
@@ -18,6 +19,11 @@ import {
   updateEncounterCompetitionInput,
   updateTempTeamCaptainInput,
 } from "@badman/backend-database";
+import {
+  ChangeEncounterDateStatus,
+  ChangeEncounterParty,
+  EncounterChangeViewState,
+} from "@badman/utils";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
@@ -342,9 +348,61 @@ export class EncounterCompetitionResolver {
     return encounter.getAssemblies(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => EncounterChange)
-  async encounterChange(@Parent() encounter: EncounterCompetition): Promise<EncounterChange> {
-    return encounter.getEncounterChange();
+  @ResolveField(() => EncounterChange, { nullable: true })
+  async encounterChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<EncounterChange | null> {
+    return this._getLatestEncounterChange(encounter.id);
+  }
+
+  @ResolveField(() => EncounterChangeViewState, { nullable: true })
+  async changeStatus(
+    @Parent() encounter: EncounterCompetition,
+    @User() user: Player
+  ): Promise<EncounterChangeViewState | null> {
+    const encounterChange = await this._getLatestEncounterChange(encounter.id, {
+      include: [{ model: EncounterChangeDate }],
+    });
+
+    if (!encounterChange) return null;
+
+    const [homeTeam, awayTeam] = await Promise.all([
+      this.teamLoader.load(encounter.homeTeamId),
+      this.teamLoader.load(encounter.awayTeamId),
+    ]);
+
+    const isHome =
+      homeTeam != null && (await user.hasAnyPermission([`${homeTeam.clubId}_change:encounter`]));
+    const isAway =
+      awayTeam != null && (await user.hasAnyPermission([`${awayTeam.clubId}_change:encounter`]));
+
+    if (!isHome && !isAway) return null;
+
+    const viewerParty = isHome ? ChangeEncounterParty.HOME : ChangeEncounterParty.AWAY;
+
+    // Exclude historical dates (NULL status from pre-migration rows)
+    const dates = (encounterChange.dates ?? []).filter((d) => d.status != null);
+
+    if (dates.some((d) => d.status === ChangeEncounterDateStatus.ACCEPTED)) {
+      return EncounterChangeViewState.MOVED;
+    }
+
+    const liveDates = dates.filter(
+      (d) =>
+        d.status === ChangeEncounterDateStatus.PENDING ||
+        d.status === ChangeEncounterDateStatus.TENTATIVELY_ACCEPTED
+    );
+
+    if (liveDates.length > 0) {
+      return encounterChange.lastActionBy === viewerParty
+        ? EncounterChangeViewState.PROPOSAL_SENT
+        : EncounterChangeViewState.ACTION_REQUIRED;
+    }
+
+    // All dates are REJECTED or RESOLVED — no live dates remain
+    return encounterChange.lastActionBy === viewerParty
+      ? EncounterChangeViewState.ACTION_REQUIRED
+      : EncounterChangeViewState.REJECTED_WAITING;
   }
 
   @ResolveField(() => Boolean)
@@ -503,8 +561,7 @@ export class EncounterCompetitionResolver {
     @Args("date") date: Date,
 
     @Args("updateBadman") updateBadman: boolean,
-    @Args("updateVisual") updateVisual: boolean,
-    @Args("closeChangeRequests") closeChangeRequests: boolean
+    @Args("updateVisual") updateVisual: boolean
   ) {
     const encounter = await EncounterCompetition.findByPk(id);
 
@@ -531,13 +588,6 @@ export class EncounterCompetitionResolver {
           removeOnFail: false,
         }
       );
-    }
-
-    if (closeChangeRequests) {
-      const change = await encounter.getEncounterChange();
-      if (change) {
-        await change.update({ accepted: true });
-      }
     }
 
     return true;
@@ -705,5 +755,16 @@ export class EncounterCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  private async _getLatestEncounterChange(
+    encounterId: string,
+    options?: Parameters<typeof EncounterChange.findOne>[0]
+  ): Promise<EncounterChange | null> {
+    return EncounterChange.findOne({
+      ...options,
+      where: { encounterId },
+      order: [["createdAt", "DESC"]],
+    });
   }
 }

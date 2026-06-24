@@ -300,7 +300,7 @@ module.exports = {
         const ctx = new SeederContext(sequelize, QueryTypes, transaction);
 
         const now = new Date();
-        const season = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+        const season = now.getMonth() >= 4 ? now.getFullYear() : now.getFullYear() - 1;
         const previousSeason = season - 1;
         console.log(`📅 Using season: ${season}\n`);
         console.log(`📅 Using previous season for historical teams: ${previousSeason}\n`);
@@ -351,9 +351,11 @@ module.exports = {
           }
         );
 
+        await ensureClubAdminPermission(ctx, opponent.clubId, opponentUser.id);
+
         await seedLocationsForClub(ctx, opponent.clubId, season, OPPONENT_LOCATIONS(season));
 
-        await createEncounters(ctx, drawId, home.teamId, opponent.teamId, ENCOUNTER_COUNT);
+        await createEncounters(ctx, drawId, home.teamId, opponent.teamId, ENCOUNTER_COUNT, season);
 
         console.log("📊 Summary:");
         console.log(`   • Club: TEAM AWESOME (${home.clubId})`);

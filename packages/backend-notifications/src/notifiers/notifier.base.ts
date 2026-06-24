@@ -105,7 +105,8 @@ export abstract class Notifier<T, A = { email: string }> {
               this.allowedInterval
             } (send on: ${lastSend.format("DD-MM-YYYY HH:mm:ss")})`
           );
-          (logAction.meta as any)["reason"] = "Already sent in the last interval";
+          (logAction.meta as Record<string, unknown>)["reason"] =
+            "Already sent in the last interval";
           logAction.changed("meta", true);
           await logAction.save();
           return;
@@ -115,7 +116,7 @@ export abstract class Notifier<T, A = { email: string }> {
           this.logger.debug(
             `Notification already sent to ${player.fullName} enough (${totalAmount}) times`
           );
-          (logAction.meta as any)["reason"] = "Already sent enough times";
+          (logAction.meta as Record<string, unknown>)["reason"] = "Already sent enough times";
           logAction.changed("meta", true);
           await logAction.save();
           return;

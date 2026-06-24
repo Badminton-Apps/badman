@@ -9,20 +9,18 @@ import {
   EventCompetition,
   EventEntry,
   EventTournament,
-  FrontendContextType,
   Player,
   SubEventCompetition,
   Team,
 } from "@badman/backend-database";
 import { MailingService } from "@badman/backend-mailing";
-import { ConfigType, I18nTranslations, sortTeams } from "@badman/utils";
+import { ConfigType, EncounterChangeAction, I18nTranslations, sortTeams } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { I18nService } from "nestjs-i18n";
 import {
   CompetitionEncounterChangeConfirmationRequestNotifier,
   CompetitionEncounterChangeFinishRequestNotifier,
-  CompetitionEncounterChangeNewRequestNotifier,
   CompetitionEncounterHasCommentNotifier,
   CompetitionEncounterNotAcceptedNotifier,
   CompetitionEncounterNotEnteredNotifier,
@@ -48,41 +46,21 @@ export class NotificationService {
   async notifyEncounterChange(
     encounter: EncounterCompetition,
     homeTeamRequests: boolean,
-    frontendContext?: FrontendContextType,
-    eventId?: string
+    action: EncounterChangeAction = EncounterChangeAction.PROPOSE
   ) {
     this._logger.log(
       `[notifyEncounterChange] Starting notification for encounter ${encounter.id}, homeTeamRequests: ${homeTeamRequests}`
     );
 
-    const homeTeam = await Team.findByPk(encounter.homeTeamId, {
-      include: [
-        {
-          association: "captain",
-        },
-      ],
-    });
-    const awayTeam = await Team.findByPk(encounter.awayTeamId, {
-      include: [
-        {
-          association: "captain",
-        },
-      ],
-    });
-
-    if (!homeTeam || !awayTeam) {
+    const teams = await this._loadEncounterTeams(encounter);
+    if (!teams) {
       this._logger.error(
         `[notifyEncounterChange] Teams not found - homeTeamId: ${encounter.homeTeamId}, awayTeamId: ${encounter.awayTeamId}`
       );
       return;
     }
 
-    // just make sure the teams are loaded
-    encounter.home = homeTeam;
-    encounter.away = awayTeam;
-
-    const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
-
+    const { homeTeam, awayTeam } = teams;
     const newReqTeam = homeTeamRequests ? homeTeam : awayTeam;
     const confReqTeam = homeTeamRequests ? awayTeam : homeTeam;
 
@@ -90,63 +68,22 @@ export class NotificationService {
       `[notifyEncounterChange] Teams loaded - newReqTeam: ${newReqTeam.name} (${newReqTeam.email}), confReqTeam: ${confReqTeam.name} (${confReqTeam.email})`
     );
 
-    // Generate URLs based on who made the request vs who needs to confirm
-    const newReqUrl = await this._getEncounterChangeUrl(
-      encounter,
-      frontendContext,
-      season,
-      newReqTeam,
-      eventId
-    );
-    const confReqUrl = await this._getEncounterChangeUrl(
-      encounter,
-      frontendContext,
-      season,
-      confReqTeam,
-      eventId
-    );
+    const confReqUrl = `${this.configService.get("CLIENT_URL")}/my-club/${confReqTeam.clubId}/change-encounter/${encounter.id}`;
 
-    const notifierNew = new CompetitionEncounterChangeNewRequestNotifier(this.mailing, this.push);
     const notifierConform = new CompetitionEncounterChangeConfirmationRequestNotifier(
       this.mailing,
       this.push
     );
 
-    // Check for potential duplicate email scenario
-    if (
-      newReqTeam.email &&
-      confReqTeam.email &&
-      newReqTeam.email.toLowerCase() === confReqTeam.email.toLowerCase()
-    ) {
-      this._logger.warn(
-        `[notifyEncounterChange] Potential duplicate email detected: ${newReqTeam.email} for both teams`
-      );
-    }
-
-    if (newReqTeam.captain && newReqTeam.email) {
-      this._logger.log(
-        `[notifyEncounterChange] Sending new request notification to ${newReqTeam.captain.email} (team email: ${newReqTeam.email})`
-      );
-      notifierNew.notify(
-        newReqTeam.captain,
-        encounter.id,
-        { encounter, isHome: homeTeamRequests, url: newReqUrl },
-        { email: newReqTeam.email }
-      );
-    } else {
-      this._logger.warn(
-        `[notifyEncounterChange] Skipping new request notification - captain: ${!!newReqTeam.captain}, email: ${!!newReqTeam.email}`
-      );
-    }
-
-    if (confReqTeam.captain && confReqTeam.email && confReqTeam.email !== newReqTeam.email) {
+    // Only notify the opposing party — the acting party must not receive their own action as an email
+    if (confReqTeam.captain && confReqTeam.email) {
       this._logger.log(
         `[notifyEncounterChange] Sending confirmation request notification to ${confReqTeam.captain.email} (team email: ${confReqTeam.email})`
       );
       notifierConform.notify(
         confReqTeam.captain,
         encounter.id,
-        { encounter, isHome: !homeTeamRequests, url: confReqUrl },
+        { encounter, isHome: !homeTeamRequests, url: confReqUrl, action },
         { email: confReqTeam.email }
       );
     } else {
@@ -154,9 +91,7 @@ export class NotificationService {
         ? "no captain"
         : !confReqTeam.email
           ? "no email"
-          : confReqTeam.email === newReqTeam.email
-            ? "duplicate email"
-            : "unknown";
+          : "unknown";
       this._logger.warn(
         `[notifyEncounterChange] Skipping confirmation notification - reason: ${skipReason}`
       );
@@ -167,11 +102,47 @@ export class NotificationService {
     );
   }
 
+  async notifyEncounterChangeMessage(
+    encounter: EncounterCompetition,
+    isHomeCommenting: boolean
+  ): Promise<void> {
+    this._logger.log(
+      `[notifyEncounterChangeMessage] encounterId=${encounter.id} isHomeCommenting=${isHomeCommenting}`
+    );
+
+    const teams = await this._loadEncounterTeams(encounter);
+    if (!teams) {
+      this._logger.error(
+        `[notifyEncounterChangeMessage] Teams not found - homeTeamId: ${encounter.homeTeamId}, awayTeamId: ${encounter.awayTeamId}`
+      );
+      return;
+    }
+
+    const { homeTeam, awayTeam } = teams;
+    const opposingTeam = isHomeCommenting ? awayTeam : homeTeam;
+    const url = `${this.configService.get("CLIENT_URL")}/my-club/${opposingTeam.clubId}/change-encounter/${encounter.id}`;
+
+    const notifier = new CompetitionEncounterHasCommentNotifier(this.mailing, this.push);
+
+    if (opposingTeam.captain && opposingTeam.email) {
+      this._logger.log(
+        `[notifyEncounterChangeMessage] Notifying opposing captain ${opposingTeam.captain.email}`
+      );
+      notifier.notify(
+        opposingTeam.captain,
+        encounter.id,
+        { encounter },
+        { email: opposingTeam.email, url }
+      );
+    } else {
+      const reason = !opposingTeam.captain ? "no captain" : "no email";
+      this._logger.warn(`[notifyEncounterChangeMessage] Skipping — ${reason}`);
+    }
+  }
+
   async notifyEncounterChangeFinished(
     encounter: EncounterCompetition,
-    locationHasChanged: boolean,
-    frontendContext?: FrontendContextType,
-    eventId?: string
+    locationHasChanged: boolean
   ) {
     this._logger.log(
       `[notifyEncounterChangeFinished] Starting finished notification for encounter ${encounter.id}, locationHasChanged: ${locationHasChanged}`
@@ -181,53 +152,23 @@ export class NotificationService {
       this.mailing,
       this.push
     );
-    const homeTeam = await Team.findByPk(encounter.homeTeamId, {
-      include: [
-        {
-          association: "captain",
-        },
-      ],
-    });
-    const awayTeam = await Team.findByPk(encounter.awayTeamId, {
-      include: [
-        {
-          association: "captain",
-        },
-      ],
-    });
 
-    if (!homeTeam || !awayTeam) {
+    const teams = await this._loadEncounterTeams(encounter);
+    if (!teams) {
       this._logger.error(
         `[notifyEncounterChangeFinished] Teams not found - homeTeamId: ${encounter.homeTeamId}, awayTeamId: ${encounter.awayTeamId}`
       );
       return;
     }
 
-    // just make sure the teams are loaded
-    encounter.home = homeTeam;
-    encounter.away = awayTeam;
-
+    const { homeTeam, awayTeam } = teams;
     this._logger.log(
       `[notifyEncounterChangeFinished] Teams loaded - homeTeam: ${homeTeam.name} (${homeTeam.email}), awayTeam: ${awayTeam.name} (${awayTeam.email})`
     );
 
-    const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
-
-    // For finished notifications, both teams get the same URL since the change is complete
-    const homeTeamUrl = await this._getEncounterChangeUrl(
-      encounter,
-      frontendContext,
-      season,
-      homeTeam,
-      eventId
-    );
-    const awayTeamUrl = await this._getEncounterChangeUrl(
-      encounter,
-      frontendContext,
-      season,
-      awayTeam,
-      eventId
-    );
+    const clientUrl = this.configService.get("CLIENT_URL");
+    const homeTeamUrl = `${clientUrl}/my-club/${homeTeam.clubId}/change-encounter/${encounter.id}`;
+    const awayTeamUrl = `${clientUrl}/my-club/${awayTeam.clubId}/change-encounter/${encounter.id}`;
 
     if (homeTeam.captain && homeTeam.email) {
       this._logger.log(
@@ -323,10 +264,7 @@ export class NotificationService {
       throw new Error("Event not found");
     }
 
-    // Property was loaded when sending notification
-    const eventId = event?.visualCode;
-    const matchId = encounter.visualCode;
-    const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
+    const url = `${this.configService.get("CLIENT_URL")}/competition/${event.id}`;
     const email = event.contactEmail ?? event.contact?.email;
 
     if (!email) {
@@ -356,10 +294,7 @@ export class NotificationService {
       ],
     });
 
-    // Property was loaded when sending notification
-    const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
-    const matchId = encounter.visualCode;
-    const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
+    const url = `${this.configService.get("CLIENT_URL")}/my-club/${awayTeam.clubId}/change-encounter/${encounter.id}`;
 
     if (awayTeam.captain && awayTeam.email) {
       notifierNotAccepted.notify(
@@ -591,6 +526,23 @@ export class NotificationService {
     }
   }
 
+  private async _loadEncounterTeams(
+    encounter: EncounterCompetition
+  ): Promise<{ homeTeam: Team; awayTeam: Team } | null> {
+    const [homeTeam, awayTeam] = await Promise.all([
+      Team.findByPk(encounter.homeTeamId, { include: [{ association: "captain" }] }),
+      Team.findByPk(encounter.awayTeamId, { include: [{ association: "captain" }] }),
+    ]);
+
+    if (!homeTeam || !awayTeam) {
+      return null;
+    }
+
+    encounter.home = homeTeam;
+    encounter.away = awayTeam;
+    return { homeTeam, awayTeam };
+  }
+
   private async _getValidationMessage(team: Team, _captainId?: string) {
     const encountersH = await team.getHomeEncounters({
       attributes: ["id", "date"],
@@ -658,42 +610,5 @@ export class NotificationService {
     }
 
     return errors;
-  }
-
-  private async _getEncounterChangeUrl(
-    encounter: EncounterCompetition,
-    frontendContext?: FrontendContextType,
-    season?: number,
-    team?: Team,
-    eventId?: string
-  ): Promise<string> {
-    const baseClientUrl = this.configService.get("CLIENT_URL");
-    const baseLegacyClientUrl = this.configService.get("LEGACY_CLIENT_URL");
-
-    switch (frontendContext) {
-      case "my-club":
-        return `${baseClientUrl}/my-club/${team?.clubId}/change-encounter/${encounter.id}`;
-      case "club":
-        return `${baseClientUrl}/club/${team?.clubId}/change-encounter/${encounter.id}`;
-      case "competition": {
-        // Use the provided eventId if available, otherwise fetch it
-        let competitionEventId = eventId;
-        if (!competitionEventId) {
-          const draw = await encounter.getDrawCompetition({
-            include: [
-              {
-                model: SubEventCompetition,
-                attributes: ["id", "eventId"],
-              },
-            ],
-          });
-          competitionEventId = draw?.subEventCompetition?.eventId;
-        }
-        return `${baseClientUrl}/competition/${competitionEventId}/change-encounter/${encounter.id}`;
-      }
-      default:
-        // This handles the legacy app, which does not have the context value, and has different routing
-        return `${baseLegacyClientUrl}/competition/change-encounter?club=${team?.clubId}&team=${team?.id}&encounter=${encounter.id}&season=${season}`;
-    }
   }
 }

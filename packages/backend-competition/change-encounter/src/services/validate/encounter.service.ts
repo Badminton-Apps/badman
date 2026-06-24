@@ -26,7 +26,7 @@ export class EncounterValidationService extends ValidationService<
     await this.registerRule(DatePeriodRule);
     await this.registerRule(TeamClubRule);
     await this.registerRule(ExceptionRule);
-    await this.registerRule(LocationRule, { activated: false });
+    await this.registerRule(LocationRule, { activated: true });
 
     this._logger.log("Rules initialized");
   }
@@ -169,6 +169,7 @@ export class EncounterValidationService extends ValidationService<
     },
     runFor?: { playerId?: string; teamId?: string; clubId?: string }
   ) {
+    console.log("validate", args, runFor);
     const data = await super.validate(args, runFor);
 
     return {

@@ -39,6 +39,16 @@ export const ErrorCode = {
   // Atomic enrollment submission (packages/backend-graphql/src/resolvers/event/competition/submit-enrollment.resolver.ts)
   ENROLLMENT_CLOSED: "ENROLLMENT_CLOSED",
   VALIDATION_FAILED: "VALIDATION_FAILED",
+
+  // Encounter date change (packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.ts)
+  ENCOUNTER_NOT_FOUND: "ENCOUNTER_NOT_FOUND",
+  ENCOUNTER_CHANGE_NOT_FOUND: "ENCOUNTER_CHANGE_NOT_FOUND",
+  ENCOUNTER_CHANGE_DATE_NOT_FOUND: "ENCOUNTER_CHANGE_DATE_NOT_FOUND",
+  DEADLINE_PASSED: "DEADLINE_PASSED",
+  DATE_OUT_OF_SEASON: "DATE_OUT_OF_SEASON",
+  DUPLICATE_DATE: "DUPLICATE_DATE",
+  INVALID_STATE: "INVALID_STATE",
+  DATE_NOT_ENDORSED: "DATE_NOT_ENDORSED",
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
