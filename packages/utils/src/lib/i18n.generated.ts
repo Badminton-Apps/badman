@@ -2713,6 +2713,20 @@ export type I18nTranslations = {
                         "changedDate": string;
                         "homeGames": string;
                     };
+                    "adminChangeDateDialog": {
+                        "title": string;
+                        "dateLabel": string;
+                        "locationLabel": string;
+                        "locationNone": string;
+                        "messages": {
+                            "success": string;
+                            "error": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "confirm": string;
+                        };
+                    };
                     "table": {
                         "headers": {
                             "team": string;

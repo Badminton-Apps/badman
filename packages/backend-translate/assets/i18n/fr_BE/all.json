@@ -2199,12 +2199,42 @@
     "clubPage": {
       "noClubFound": "Aucun club trouvé",
       "encounters": {
+        "adminChangeDateDialog": {
+          "title": "Modifier la date de la rencontre",
+          "dateLabel": "Date et heure",
+          "locationLabel": "Emplacement",
+          "locationNone": "Aucun emplacement",
+          "messages": {
+            "success": "Date modifiée avec succès",
+            "error": "Échec de la modification de la date"
+          },
+          "buttons": {
+            "cancel": "Annuler",
+            "confirm": "Confirmer"
+          }
+        },
         "table": {
+          "headers": {
+            "team": "Équipe",
+            "opponent": "Adversaire",
+            "homeAway": "Domicile/Extérieur",
+            "date": "Date",
+            "location": "Emplacement",
+            "status": "Statut",
+            "validation": "Validation",
+            "changeEncounterDate": "Modifier la date de la rencontre",
+            "view": "Afficher"
+          },
           "status": {
             "proposal_sent": "Proposition envoyée",
             "action_required": "Action requise",
             "rejected_waiting": "Attente de réponse",
             "moved": "Déplacée"
+          },
+          "validation": {
+            "valid": "Date et heure dans les créneaux de jeu, lieu disponible",
+            "warnings": "Date et heure en dehors des créneaux de jeu standard",
+            "invalid": "Lieu indisponible ou déjà complet à cette heure"
           }
         }
       },
@@ -2228,29 +2258,6 @@
         "encounterNotEntered": "Résultat de la rencontre non saisi",
         "clubEnrollment": "Mise à jour de l'inscription au club",
         "default": "Notification"
-      }
-    },
-    "clubPage": {
-      "noClubFound": "Aucun club trouvé",
-      "encounters": {
-        "table": {
-          "headers": {
-            "team": "Équipe",
-            "opponent": "Adversaire",
-            "homeAway": "Domicile/Extérieur",
-            "date": "Date",
-            "location": "Emplacement",
-            "status": "Statut",
-            "validation": "Validation",
-            "changeEncounterDate": "Modifier la date de la rencontre",
-            "view": "Afficher"
-          },
-          "validation": {
-            "valid": "Date et heure dans les créneaux de jeu, lieu disponible",
-            "warnings": "Date et heure en dehors des créneaux de jeu standard",
-            "invalid": "Lieu indisponible ou déjà complet à cette heure"
-          }
-        }
       }
     }
   }

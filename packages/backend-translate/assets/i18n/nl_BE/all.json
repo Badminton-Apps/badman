@@ -2413,6 +2413,20 @@
           "changedDate": "Gewijzigde datum",
           "homeGames": "Thuiswedstrijden"
         },
+        "adminChangeDateDialog": {
+          "title": "Wijzig wedstrijddatum",
+          "dateLabel": "Datum & tijd",
+          "locationLabel": "Locatie",
+          "locationNone": "Geen locatie",
+          "messages": {
+            "success": "Datum succesvol gewijzigd",
+            "error": "Datum wijzigen mislukt"
+          },
+          "buttons": {
+            "cancel": "Annuleren",
+            "confirm": "Bevestigen"
+          }
+        },
         "table": {
           "headers": {
             "team": "Team",
