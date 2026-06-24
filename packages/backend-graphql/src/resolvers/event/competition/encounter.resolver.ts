@@ -355,7 +355,7 @@ export class EncounterCompetitionResolver {
     return this._getLatestEncounterChange(encounter.id);
   }
 
-  @ResolveField(() => String, { nullable: true })
+  @ResolveField(() => EncounterChangeViewState, { nullable: true })
   async changeStatus(
     @Parent() encounter: EncounterCompetition,
     @User() user: Player

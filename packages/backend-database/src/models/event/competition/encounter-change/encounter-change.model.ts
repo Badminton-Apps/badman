@@ -1,5 +1,13 @@
-import { ChangeEncounterParty } from "@badman/utils";
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
+import { ChangeEncounterParty, EncounterChangeViewState } from "@badman/utils";
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+  registerEnumType,
+} from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -37,6 +45,8 @@ import {
 
 // New GraphQL enum type for frontend context with lowercase values
 export type FrontendContextType = "my-club" | "club" | "competition";
+
+registerEnumType(EncounterChangeViewState, { name: "EncounterChangeViewState" });
 
 @Table({
   timestamps: true,
