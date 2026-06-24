@@ -3959,7 +3959,8 @@ export type I18nTranslations = {
                         "originalDate": string;
                         "proposal": string;
                         "buttons": {
-                            "courtsAvailable": string;
+                            "spaceForEncounters": string;
+                            "courtsAvailableTooltip": string;
                         };
                         "eventWarning": string;
                         "drawer": {

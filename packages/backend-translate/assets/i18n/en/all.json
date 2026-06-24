@@ -3876,7 +3876,8 @@
           "originalDate": "Original date",
           "proposal": "Proposal",
           "buttons": {
-            "courtsAvailable": "court(s) available"
+            "spaceForEncounters": "Space for {count} more encounters",
+            "courtsAvailableTooltip": "{courts} courts available"
           },
           "eventWarning": "Competition is not allowed",
           "drawer": {

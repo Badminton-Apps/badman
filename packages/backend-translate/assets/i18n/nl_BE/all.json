@@ -3654,7 +3654,8 @@
           "originalDate": "Oorspronkelijke datum",
           "proposal": "Voorstel",
           "buttons": {
-            "courtsAvailable": "veld(en) beschikbaar"
+            "spaceForEncounters": "Ruimte voor nog {count} ontmoetingen",
+            "courtsAvailableTooltip": "{courts} velden beschikbaar"
           },
           "eventWarning": "Competitie is niet toegestaan",
           "drawer": {

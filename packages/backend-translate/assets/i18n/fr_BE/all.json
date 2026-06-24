@@ -2169,7 +2169,8 @@
           "originalDate": "Date originale",
           "proposal": "Proposition",
           "buttons": {
-            "courtsAvailable": "terrain(s) disponible(s)"
+            "spaceForEncounters": "Place pour {count} rencontres supplémentaires",
+            "courtsAvailableTooltip": "{courts} terrains disponibles"
           },
           "eventWarning": "La compétition n'est pas autorisée",
           "drawer": {
