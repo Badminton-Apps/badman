@@ -2,7 +2,7 @@ import { EncounterCompetition, EventCompetition, Game } from "@badman/backend-da
 import { VisualService, XmlTeamMatch, XmlTournament } from "@badman/backend-visual";
 import { GameLinkType, runParallel } from "@badman/utils";
 import { Logger } from "@nestjs/common";
-import { isAfter } from "date-fns";
+import { isAfter, isEqual } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 import { Op } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
@@ -99,20 +99,37 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       }
 
       if (!dbEncounter) {
-        // Find one with same teams that hasn't been consumed yet in this sync
-        // run. Without the exclusion, the same DB row is returned for every
-        // toornoi match of that home/away pair (3x/4x formats), collapsing
-        // multiple encounters into one row.
+        // Match by teams + draw + date. Two encounters for the same pair in a
+        // 3x/4x draw have different MatchTimes, so the date is a natural unique
+        // key and no in-memory exclusion is needed.
+        // If toornoi has no MatchTime yet (unscheduled), fall back to the first
+        // unmatched encounter for that pair.
         dbEncounter =
-          encounters.find(
-            (e) =>
-              e.homeTeamId === team1?.id &&
-              e.awayTeamId === team2?.id &&
-              e.drawId === draw.id &&
-              !this._dbEncounters.some((d) => d.encounter.id === e.id)
-          ) || null;
+          encounters.find((e) => {
+            if (e.homeTeamId !== team1?.id || e.awayTeamId !== team2?.id || e.drawId !== draw.id) {
+              return false;
+            }
+
+            if (matchDate != null) {
+              const matches = e.date != null && isEqual(e.date, matchDate);
+              this.logger.debug(
+                `[${xmlTeamMatch.Code}] date check: toornoi=${matchDate.toISOString()} db=${e.date != null ? new Date(e.date).toISOString() : "null"} match=${matches} (enc ${e.id})`
+              );
+              return matches;
+            }
+
+            // No MatchTime from toornoi — fall back to first unconsumed row for this pair
+            const unconsumed = !this._dbEncounters.some((d) => d.encounter.id === e.id);
+            this.logger.debug(
+              `[${xmlTeamMatch.Code}] no matchTime — fallback to unconsumed enc ${e.id}: ${unconsumed}`
+            );
+            return unconsumed;
+          }) || null;
 
         if (!dbEncounter) {
+          this.logger.log(
+            `[${xmlTeamMatch.Code}] no DB match found — creating new encounter (${team1?.id} vs ${team2?.id}, date=${matchDate?.toISOString() ?? "null"})`
+          );
           dbEncounter = await new EncounterCompetition({
             drawId: draw.id,
             visualCode: xmlTeamMatch.Code,
@@ -121,6 +138,9 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
             awayTeamId: team2?.id,
           }).save({ transaction: this.transaction });
         } else {
+          this.logger.debug(
+            `[${xmlTeamMatch.Code}] matched existing enc ${dbEncounter.id} — updating visualCode`
+          );
           dbEncounter.visualCode = xmlTeamMatch.Code;
           await dbEncounter.save({ transaction: this.transaction });
         }

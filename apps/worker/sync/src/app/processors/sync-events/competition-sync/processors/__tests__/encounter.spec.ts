@@ -1,6 +1,12 @@
 import { EncounterCompetition, Game } from "@badman/backend-database";
 import { VisualService, XmlTournament } from "@badman/backend-visual";
+import { fromZonedTime } from "date-fns-tz";
 import { CompetitionSyncEncounterProcessor } from "../encounter";
+
+/** Convert a Brussels local time string to the UTC Date the processor produces. */
+function bd(isoLocal: string): Date {
+  return fromZonedTime(isoLocal, "Europe/Brussels");
+}
 
 jest.mock("@badman/backend-database", () => ({
   EncounterCompetition: jest.fn(),
@@ -142,36 +148,86 @@ describe("CompetitionSyncEncounterProcessor — 3x/4x format", () => {
     // same home/away direction for the same pair, which is exactly what
     // triggers the collapse bug in the original find().
     //
+    // Each match has a unique MatchTime so the date-based matching path is
+    // exercised (matchDate != null branch). The DB encounter dates are
+    // pre-populated to match, using the same fromZonedTime conversion the
+    // processor applies. Rounds r07, r11, r13, r14 share the same home/away
+    // direction as an earlier round — their distinct dates are what prevents
+    // the collision.
+    //
     // DB has 8 pre-created encounters (2x planning: one each direction per pair).
+    // For pairs that play 3x, one DB row carries the date of the first encounter;
+    // the second and third encounters will be created fresh by the processor.
     const dbEncounters = [
-      makeDbEncounter({ id: "enc-dend-geraar-home", homeTeamId: "dend", awayTeamId: "geraar" }),
-      makeDbEncounter({ id: "enc-geraar-dend-home", homeTeamId: "geraar", awayTeamId: "dend" }),
-      makeDbEncounter({ id: "enc-dend-ghent-home", homeTeamId: "dend", awayTeamId: "ghent" }),
-      makeDbEncounter({ id: "enc-ghent-dend-home", homeTeamId: "ghent", awayTeamId: "dend" }),
-      makeDbEncounter({ id: "enc-dend-lok2-home", homeTeamId: "dend", awayTeamId: "lok2" }),
-      makeDbEncounter({ id: "enc-lok2-dend-home", homeTeamId: "lok2", awayTeamId: "dend" }),
-      makeDbEncounter({ id: "enc-dend-lok3-home", homeTeamId: "dend", awayTeamId: "lok3" }),
-      makeDbEncounter({ id: "enc-lok3-dend-home", homeTeamId: "lok3", awayTeamId: "dend" }),
+      makeDbEncounter({
+        id: "enc-dend-geraar-home",
+        homeTeamId: "dend",
+        awayTeamId: "geraar",
+        date: bd("2025-10-05T14:00:00"),
+      }), // r01
+      makeDbEncounter({
+        id: "enc-geraar-dend-home",
+        homeTeamId: "geraar",
+        awayTeamId: "dend",
+        date: bd("2025-10-12T14:00:00"),
+      }), // r06
+      makeDbEncounter({
+        id: "enc-dend-ghent-home",
+        homeTeamId: "dend",
+        awayTeamId: "ghent",
+        date: null,
+      }),
+      makeDbEncounter({
+        id: "enc-ghent-dend-home",
+        homeTeamId: "ghent",
+        awayTeamId: "dend",
+        date: bd("2025-10-12T16:00:00"),
+      }), // r02
+      makeDbEncounter({
+        id: "enc-dend-lok2-home",
+        homeTeamId: "dend",
+        awayTeamId: "lok2",
+        date: bd("2025-10-19T14:00:00"),
+      }), // r03
+      makeDbEncounter({
+        id: "enc-lok2-dend-home",
+        homeTeamId: "lok2",
+        awayTeamId: "dend",
+        date: bd("2025-11-02T14:00:00"),
+      }), // r08
+      makeDbEncounter({
+        id: "enc-dend-lok3-home",
+        homeTeamId: "dend",
+        awayTeamId: "lok3",
+        date: bd("2025-11-09T14:00:00"),
+      }), // r09
+      makeDbEncounter({
+        id: "enc-lok3-dend-home",
+        homeTeamId: "lok3",
+        awayTeamId: "dend",
+        date: bd("2025-10-26T14:00:00"),
+      }), // r04
     ];
 
     const draw = makeDraw(dbEncounters);
 
     // 12 toornoi matches — home/away mirrors the real schedule.
     // Rounds r07, r11, r13, r14 repeat the same home/away direction as an
-    // earlier match for that pair → these are the 4 the bug collapses.
+    // earlier match for that pair but carry different MatchTimes → the
+    // date-based lookup correctly treats them as new encounters.
     const xmlMatches = [
-      makeXmlTeamMatch("r01", "Dendermondse", "Geraardsbergen"), // round 1  — Dend home
-      makeXmlTeamMatch("r02", "4Ghent", "Dendermondse"), // round 2  — 4Ghent home
-      makeXmlTeamMatch("r03", "Dendermondse", "Lokerse2"), // round 3  — Dend home
-      makeXmlTeamMatch("r04", "Lokerse3", "Dendermondse"), // round 4  — Lok3 home
-      makeXmlTeamMatch("r06", "Geraardsbergen", "Dendermondse"), // round 6  — Geraar home
-      makeXmlTeamMatch("r07", "4Ghent", "Dendermondse"), // round 7  — 4Ghent home AGAIN ← collision
-      makeXmlTeamMatch("r08", "Lokerse2", "Dendermondse"), // round 8  — Lok2 home
-      makeXmlTeamMatch("r09", "Dendermondse", "Lokerse3"), // round 9  — Dend home
-      makeXmlTeamMatch("r11", "Dendermondse", "Geraardsbergen"), // round 11 — Dend home AGAIN ← collision
-      makeXmlTeamMatch("r12", "Dendermondse", "4Ghent"), // round 12 — Dend home
-      makeXmlTeamMatch("r13", "Lokerse2", "Dendermondse"), // round 13 — Lok2 home AGAIN ← collision
-      makeXmlTeamMatch("r14", "Dendermondse", "Lokerse3"), // round 14 — Dend home AGAIN ← collision
+      makeXmlTeamMatch("r01", "Dendermondse", "Geraardsbergen", "2025-10-05T14:00:00"), // Dend home
+      makeXmlTeamMatch("r02", "4Ghent", "Dendermondse", "2025-10-12T16:00:00"), // 4Ghent home
+      makeXmlTeamMatch("r03", "Dendermondse", "Lokerse2", "2025-10-19T14:00:00"), // Dend home
+      makeXmlTeamMatch("r04", "Lokerse3", "Dendermondse", "2025-10-26T14:00:00"), // Lok3 home
+      makeXmlTeamMatch("r06", "Geraardsbergen", "Dendermondse", "2025-10-12T14:00:00"), // Geraar home
+      makeXmlTeamMatch("r07", "4Ghent", "Dendermondse", "2025-11-16T16:00:00"), // 4Ghent home AGAIN ← was collision
+      makeXmlTeamMatch("r08", "Lokerse2", "Dendermondse", "2025-11-02T14:00:00"), // Lok2 home
+      makeXmlTeamMatch("r09", "Dendermondse", "Lokerse3", "2025-11-09T14:00:00"), // Dend home
+      makeXmlTeamMatch("r11", "Dendermondse", "Geraardsbergen", "2025-11-23T14:00:00"), // Dend home AGAIN ← was collision
+      makeXmlTeamMatch("r12", "Dendermondse", "4Ghent", "2025-11-30T14:00:00"), // Dend home
+      makeXmlTeamMatch("r13", "Lokerse2", "Dendermondse", "2025-12-07T14:00:00"), // Lok2 home AGAIN ← was collision
+      makeXmlTeamMatch("r14", "Dendermondse", "Lokerse3", "2025-12-14T14:00:00"), // Dend home AGAIN ← was collision
     ];
 
     visualService.getGames.mockResolvedValue(xmlMatches);
