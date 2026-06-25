@@ -2695,6 +2695,20 @@
           "changedDate": "Changed date",
           "homeGames": "Home games"
         },
+        "adminChangeDateDialog": {
+          "title": "Change encounter date",
+          "dateLabel": "Date & time",
+          "locationLabel": "Location",
+          "locationNone": "No location",
+          "messages": {
+            "success": "Date changed successfully",
+            "error": "Failed to change date"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "confirm": "Confirm"
+          }
+        },
         "table": {
           "headers": {
             "team": "Team",
@@ -3862,7 +3876,8 @@
           "originalDate": "Original date",
           "proposal": "Proposal",
           "buttons": {
-            "courtsAvailable": "court(s) available"
+            "spaceForEncounters": "Space for {count} more encounters",
+            "courtsAvailableTooltip": "{courts} courts available"
           },
           "eventWarning": "Competition is not allowed",
           "drawer": {
