@@ -14,7 +14,6 @@ import { ConfigType } from "@badman/utils";
 })
 export class SyncDateProcessor {
   private readonly logger = new Logger(SyncDateProcessor.name);
-  private visualFormat = "YYYY-MM-DDTHH:mm:ss";
 
   constructor(private configService: ConfigService<ConfigType>) {
     this.logger.debug("SyncDateConsumer");
@@ -47,6 +46,11 @@ export class SyncDateProcessor {
         return;
       }
 
+      if (!encounter.visualCode) {
+        this.logger.error(`No visual code found for encounter ${encounter.id} — cannot sync date`);
+        return;
+      }
+
       const url = `${this.configService.get("VR_API")}/Tournament/${event.visualCode}/Match/${
         encounter.visualCode
       }/Date`;
@@ -61,7 +65,7 @@ export class SyncDateProcessor {
     <TournamentMatch>
         <TournamentID>${event.visualCode}</TournamentID>
         <MatchID>${encounter.visualCode}</MatchID>
-        <MatchDate>${formatEncounterDateForApi(encounter.date as Date, "Europe/Brussels", this.visualFormat)}</MatchDate>
+        <MatchDate>${formatEncounterDateForApi(encounter.date as Date, "Europe/Brussels")}</MatchDate>
     </TournamentMatch>
   `;
 
@@ -99,10 +103,14 @@ export class SyncDateProcessor {
           this.logger.error(options);
           throw new Error(bodyPut.Error?.Message);
         }
+
+        encounter.dateSyncedAt = new Date();
       } else {
         this.logger.debug(options);
+        this.logger.log(
+          `[SyncDateProcessor] Skipping VR API call in non-production — dateSyncedAt NOT updated`
+        );
       }
-      encounter.dateSyncedAt = new Date();
     } catch (error) {
       this.logger.error(error);
       encounter.dateSyncedAt = undefined;
