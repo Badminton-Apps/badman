@@ -903,5 +903,24 @@ describe("VisualService", () => {
 
       expect(result).toEqual([]);
     });
+
+    it("returns all 12 TeamMatch payloads in a 3x/4x competition draw", async () => {
+      const teamMatches = Array.from(
+        { length: 12 },
+        (_, i) =>
+          `<TeamMatch><Code>${i + 1}</Code>` +
+          `<Team1><Name>Team A</Name></Team1>` +
+          `<Team2><Name>Team B</Name></Team2>` +
+          `</TeamMatch>`
+      ).join("");
+
+      httpGet.mockResolvedValueOnce({
+        data: `<?xml version="1.0"?><Result>${teamMatches}</Result>`,
+      });
+
+      const result = await service.getGames("T1", "D1", false);
+
+      expect(result).toHaveLength(12);
+    });
   });
 });

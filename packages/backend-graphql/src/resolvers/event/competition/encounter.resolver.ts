@@ -9,16 +9,25 @@ import {
   Comment,
   DrawCompetition,
   EncounterChange,
+  EncounterChangeDate,
   EncounterCompetition,
   Game,
   Location,
+  Logging,
   Player,
   RankingSystem,
   Team,
   updateEncounterCompetitionInput,
   updateTempTeamCaptainInput,
 } from "@badman/backend-database";
+import {
+  ChangeEncounterDateStatus,
+  ChangeEncounterParty,
+  EncounterChangeViewState,
+  LoggingAction,
+} from "@badman/utils";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
+import { NotificationService } from "@badman/backend-notifications";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
@@ -71,7 +80,8 @@ export class EncounterCompetitionResolver {
     private encounterGamesService: EncounterGamesGenerationService,
     private readonly rankingSystemService: RankingSystemService,
     private readonly teamLoader: TeamLoaderService,
-    private readonly drawLoader: DrawCompetitionLoaderService
+    private readonly drawLoader: DrawCompetitionLoaderService,
+    private readonly notificationService: NotificationService
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -342,9 +352,61 @@ export class EncounterCompetitionResolver {
     return encounter.getAssemblies(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => EncounterChange)
-  async encounterChange(@Parent() encounter: EncounterCompetition): Promise<EncounterChange> {
-    return encounter.getEncounterChange();
+  @ResolveField(() => EncounterChange, { nullable: true })
+  async encounterChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<EncounterChange | null> {
+    return this._getLatestEncounterChange(encounter.id);
+  }
+
+  @ResolveField(() => EncounterChangeViewState, { nullable: true })
+  async changeStatus(
+    @Parent() encounter: EncounterCompetition,
+    @User() user: Player
+  ): Promise<EncounterChangeViewState | null> {
+    const encounterChange = await this._getLatestEncounterChange(encounter.id, {
+      include: [{ model: EncounterChangeDate }],
+    });
+
+    if (!encounterChange) return null;
+
+    const [homeTeam, awayTeam] = await Promise.all([
+      this.teamLoader.load(encounter.homeTeamId),
+      this.teamLoader.load(encounter.awayTeamId),
+    ]);
+
+    const isHome =
+      homeTeam != null && (await user.hasAnyPermission([`${homeTeam.clubId}_change:encounter`]));
+    const isAway =
+      awayTeam != null && (await user.hasAnyPermission([`${awayTeam.clubId}_change:encounter`]));
+
+    if (!isHome && !isAway) return null;
+
+    const viewerParty = isHome ? ChangeEncounterParty.HOME : ChangeEncounterParty.AWAY;
+
+    // Exclude historical dates (NULL status from pre-migration rows)
+    const dates = (encounterChange.dates ?? []).filter((d) => d.status != null);
+
+    if (dates.some((d) => d.status === ChangeEncounterDateStatus.ACCEPTED)) {
+      return EncounterChangeViewState.MOVED;
+    }
+
+    const liveDates = dates.filter(
+      (d) =>
+        d.status === ChangeEncounterDateStatus.PENDING ||
+        d.status === ChangeEncounterDateStatus.TENTATIVELY_ACCEPTED
+    );
+
+    if (liveDates.length > 0) {
+      return encounterChange.lastActionBy === viewerParty
+        ? EncounterChangeViewState.PROPOSAL_SENT
+        : EncounterChangeViewState.ACTION_REQUIRED;
+    }
+
+    // All dates are REJECTED or RESOLVED — no live dates remain
+    return encounterChange.lastActionBy === viewerParty
+      ? EncounterChangeViewState.ACTION_REQUIRED
+      : EncounterChangeViewState.REJECTED_WAITING;
   }
 
   @ResolveField(() => Boolean)
@@ -497,14 +559,13 @@ export class EncounterCompetitionResolver {
   }
 
   @Mutation(() => Boolean)
-  async changeDate(
+  async adminChangeEncounterDate(
     @User() user: Player,
     @Args("id", { type: () => ID }) id: string,
     @Args("date") date: Date,
-
+    @Args("locationId", { type: () => ID, nullable: true }) locationId: string | undefined,
     @Args("updateBadman") updateBadman: boolean,
-    @Args("updateVisual") updateVisual: boolean,
-    @Args("closeChangeRequests") closeChangeRequests: boolean
+    @Args("updateVisual") updateVisual: boolean
   ) {
     const encounter = await EncounterCompetition.findByPk(id);
 
@@ -517,27 +578,46 @@ export class EncounterCompetitionResolver {
     }
 
     if (updateBadman) {
-      await encounter.update({ date: date });
+      const locationChanged = !!locationId && locationId !== encounter.locationId;
+      this.logger.log(
+        `[adminChangeEncounterDate] encounterId=${encounter.id} date=${date.toISOString()} locationId=${locationId ?? "unchanged"} actor=${user.id}`
+      );
+      const transaction = await this._sequelize.transaction();
+      try {
+        const updates: { date: Date; locationId?: string } = { date };
+        if (locationChanged) {
+          updates.locationId = locationId;
+        }
+        await encounter.update(updates, { transaction });
+        await Logging.create(
+          {
+            action: LoggingAction.EncounterChanged,
+            playerId: user.id,
+            meta: {
+              encounterId: encounter.id,
+              date,
+              originalDate: encounter.originalDate,
+            },
+          },
+          { transaction }
+        );
+        await transaction.commit();
+        this.logger.log(`[adminChangeEncounterDate] committed encounterId=${encounter.id}`);
+      } catch (e) {
+        await transaction.rollback();
+        this.logger.error(`[adminChangeEncounterDate] rollback encounterId=${encounter.id}`, e);
+        throw e;
+      }
+
+      this.notificationService.notifyEncounterChangeFinished(encounter, locationChanged);
     }
 
     if (updateVisual) {
       await this.syncQueue.add(
         Sync.ChangeDate,
-        {
-          encounterId: encounter.id,
-        },
-        {
-          removeOnComplete: true,
-          removeOnFail: false,
-        }
+        { encounterId: encounter.id },
+        { removeOnComplete: true, removeOnFail: false }
       );
-    }
-
-    if (closeChangeRequests) {
-      const change = await encounter.getEncounterChange();
-      if (change) {
-        await change.update({ accepted: true });
-      }
     }
 
     return true;
@@ -705,5 +785,16 @@ export class EncounterCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  private async _getLatestEncounterChange(
+    encounterId: string,
+    options?: Parameters<typeof EncounterChange.findOne>[0]
+  ): Promise<EncounterChange | null> {
+    return EncounterChange.findOne({
+      ...options,
+      where: { encounterId },
+      order: [["createdAt", "DESC"]],
+    });
   }
 }
