@@ -1,12 +1,5 @@
-import {
-  EncounterChange,
-  EncounterChangeDate,
-  EncounterChangeUpdateInput,
-  EncounterCompetition,
-  Location,
-  Player,
-} from "@badman/backend-database";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { EncounterChange, EncounterChangeDate, Location, Player } from "@badman/backend-database";
+import { NotFoundException } from "@nestjs/common";
 import {
   Args,
   Field,
@@ -89,37 +82,6 @@ export class EncounterChangeCompetitionResolver {
     @Args("input") input: FinalizeEncounterChangeInput
   ): Promise<FinalizeEncounterChangeResult> {
     return this.encounterChangeService.finalize(user, input);
-  }
-
-  @Mutation(() => EncounterChange)
-  async updateEncounterChange(
-    @User() user: Player,
-    @Args("data") updateChangeEncounter: EncounterChangeUpdateInput
-  ): Promise<EncounterChange> {
-    const encounterChange = await EncounterChange.findByPk(updateChangeEncounter.id);
-    if (!encounterChange) {
-      throw new NotFoundException(updateChangeEncounter.id);
-    }
-
-    const encounter = await EncounterCompetition.findByPk(encounterChange.encounterId);
-    if (!encounter) {
-      throw new NotFoundException(`${EncounterCompetition.name}: ${encounterChange.encounterId}`);
-    }
-
-    const homeTeam = await encounter.getHome();
-    const awayTeam = await encounter.getAway();
-
-    if (
-      !(await user.hasAnyPermission([
-        `${homeTeam.clubId}_change:encounter`,
-        `${awayTeam.clubId}_change:encounter`,
-        "change-any:encounter",
-      ]))
-    ) {
-      throw new UnauthorizedException(`You do not have permission to edit this encounter`);
-    }
-
-    return encounterChange.update(updateChangeEncounter);
   }
 }
 
