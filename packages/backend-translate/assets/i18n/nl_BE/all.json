@@ -2425,7 +2425,8 @@
           "buttons": {
             "cancel": "Annuleren",
             "confirm": "Bevestigen"
-          }
+          },
+          "triggerButton": "Datum direct wijzigen (admin)"
         },
         "table": {
           "headers": {
