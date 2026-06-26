@@ -2707,7 +2707,8 @@
           "buttons": {
             "cancel": "Cancel",
             "confirm": "Confirm"
-          }
+          },
+          "triggerButton": "Change date directly (admin)"
         },
         "table": {
           "headers": {

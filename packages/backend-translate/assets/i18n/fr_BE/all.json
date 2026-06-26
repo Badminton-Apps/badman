@@ -2212,7 +2212,8 @@
           "buttons": {
             "cancel": "Annuler",
             "confirm": "Confirmer"
-          }
+          },
+          "triggerButton": "Modifier la date directement (admin)"
         },
         "table": {
           "headers": {

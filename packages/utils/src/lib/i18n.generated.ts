@@ -2726,6 +2726,7 @@ export type I18nTranslations = {
                             "cancel": string;
                             "confirm": string;
                         };
+                        "triggerButton": string;
                     };
                     "table": {
                         "headers": {
