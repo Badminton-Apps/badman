@@ -310,7 +310,7 @@ module.exports = {
 
         const home = await seedClubWithPlayersAndTeams(
           ctx,
-          "TEAM AWESOME",
+          "BC Home",
           user,
           season,
           previousSeason,
@@ -335,7 +335,7 @@ module.exports = {
         const opponentUser = await seedUserAndClaims(ctx, config.awayTeam);
         const opponent = await seedClubWithPlayersAndTeams(
           ctx,
-          "THE OPPONENTS",
+          "BC Away",
           opponentUser,
           season,
           previousSeason,
@@ -358,10 +358,10 @@ module.exports = {
         await createEncounters(ctx, drawId, home.teamId, opponent.teamId, ENCOUNTER_COUNT, season);
 
         console.log("📊 Summary:");
-        console.log(`   • Club: TEAM AWESOME (${home.clubId})`);
+        console.log(`   • Club: BC Home (${home.clubId})`);
         console.log(`   • Team: ${home.teamId} with ${home.players.length} players`);
         console.log(`   • User: ${config.homeTeam.email}`);
-        console.log(`   • Opponent Club: THE OPPONENTS (${opponent.clubId})`);
+        console.log(`   • Opponent Club: BC Away (${opponent.clubId})`);
         console.log(
           `   • Opponent Team: ${opponent.teamId} with ${opponent.players.length} players`
         );
@@ -370,11 +370,11 @@ module.exports = {
         console.log(`   • SubEvent: Test SubEvent M (${subEventId})`);
         console.log(`   • Draw: Test Draw (${drawId})`);
         console.log(
-          `   • Locations: TEAM AWESOME [${HOME_LOCATIONS(season).length}], THE OPPONENTS [${OPPONENT_LOCATIONS(season).length}]`
+          `   • Locations: BC Home [${HOME_LOCATIONS(season).length}], BC Away [${OPPONENT_LOCATIONS(season).length}]`
         );
         console.log(`   • Encounters: ${ENCOUNTER_COUNT}`);
         console.log(
-          `   • Historical teams (season ${previousSeason}): TEAM AWESOME [${home.historicalTeamIds.join(", ")}], THE OPPONENTS [${opponent.historicalTeamIds.join(", ")}]`
+          `   • Historical teams (season ${previousSeason}): BC Home [${home.historicalTeamIds.join(", ")}], BC Away [${opponent.historicalTeamIds.join(", ")}]`
         );
         console.log("\n✨ Seed completed successfully!");
       });
@@ -470,7 +470,7 @@ module.exports = {
       console.log("📍 Step 2: Finding test clubs...\n");
       const clubs = await sequelize.query(
         `SELECT DISTINCT c.id, c."createdAt" FROM "Clubs" c
-         WHERE c.name IN ('TEAM AWESOME', 'THE OPPONENTS')
+         WHERE c.name IN ('BC Home', 'BC Away')
          ORDER BY c."createdAt" ASC`,
         { type: Sequelize.QueryTypes.SELECT }
       );
@@ -485,19 +485,29 @@ module.exports = {
           "clubId"
         );
 
+        // Find seed user IDs by sub so we can exclude them from player deletion.
+        // These are real users (Hans, Ine) — we only want to delete the generated fake players.
+        const homeSub = config.homeTeam.sub || "";
+        const awaySub = config.awayTeam.sub || "";
+        const seedUserRows = await sequelize.query(
+          `SELECT id FROM "Players" WHERE (sub = :homeSub AND :homeSub <> '') OR (sub = :awaySub AND :awaySub <> '')`,
+          { replacements: { homeSub, awaySub }, type: Sequelize.QueryTypes.SELECT }
+        );
+        const seedUserIds = new Set(seedUserRows.map((p) => p.id));
+        console.log(`📍 Excluding ${seedUserIds.size} seed user(s) from player deletion\n`);
+
         console.log("📍 Step 3.5: Finding test players via club membership...\n");
-        const testPlayers = await sequelize.query(
+        const allClubPlayers = await sequelize.query(
           `SELECT DISTINCT p.id
            FROM "Players" p
            JOIN "ClubPlayerMemberships" cpm ON cpm."playerId" = p.id
-           WHERE cpm."clubId" IN (${clubPlaceholders})
-           UNION
-           SELECT id FROM "Players" WHERE email IN (:userEmail, :opponentUserEmail)`,
+           WHERE cpm."clubId" IN (${clubPlaceholders})`,
           {
-            replacements: { ...clubReplacements, userEmail, opponentUserEmail },
+            replacements: clubReplacements,
             type: Sequelize.QueryTypes.SELECT,
           }
         );
+        const testPlayers = allClubPlayers.filter((p) => !seedUserIds.has(p.id));
         console.log(`📍 Found ${testPlayers?.length || 0} test players\n`);
 
         for (const task of CLEANUP_TASKS) {

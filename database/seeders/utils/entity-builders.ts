@@ -30,8 +30,8 @@ async function findOrCreatePlayer(
   // Note: QueryTypes.SELECT returns the array directly, not [results, metadata]
   const slug = `${firstName}-${lastName}`.toLowerCase().replace(/\s+/g, "-");
   const existingUsers = await ctx.query<Player>(
-    `SELECT id, email, "firstName", "lastName" FROM "Players" WHERE email = :email OR slug = :slug LIMIT 1`,
-    { email: userEmail, slug }
+    `SELECT id, email, "firstName", "lastName" FROM "Players" WHERE email = :email OR slug = :slug OR (:sub <> '' AND sub = :sub) LIMIT 1`,
+    { email: userEmail, slug, sub }
   );
 
   if (existingUsers && existingUsers.length > 0) {
