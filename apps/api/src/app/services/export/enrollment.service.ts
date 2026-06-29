@@ -47,27 +47,26 @@ export class EnrollmentService {
       ],
     });
 
-    // Collect all player IDs across all entries for bulk resolution
+    // Collect all player IDs across all entries for bulk resolution.
+    // Entries are fetched via subEventId (always set at enrollment time).
+    // drawCompetition is included to populate the Reeks column when the entry
+    // has been assigned to a draw; entries not yet assigned get an empty Reeks.
     const allPlayerIds: string[] = [];
     const allEntries: {
       subEvent: SubEventCompetition;
-      draw: DrawCompetition;
       entry: EventEntry;
     }[] = [];
 
     for (const subEvent of subEvents) {
-      const draws = await subEvent.getDrawCompetitions();
-      for (const draw of draws) {
-        const entries = await draw.getEventEntries({
-          include: [{ model: Team }],
-          order: [["team", "name", "ASC"]],
-        });
-        for (const entry of entries) {
-          for (const meta of entry.meta?.competition?.players ?? []) {
-            if (meta.id) allPlayerIds.push(meta.id);
-          }
-          allEntries.push({ subEvent, draw, entry });
+      const entries = await subEvent.getEventEntries({
+        include: [{ model: Team }, { model: DrawCompetition }],
+        order: [["team", "name", "ASC"]],
+      });
+      for (const entry of entries) {
+        for (const meta of entry.meta?.competition?.players ?? []) {
+          if (meta.id) allPlayerIds.push(meta.id);
         }
+        allEntries.push({ subEvent, entry });
       }
     }
 
@@ -77,11 +76,13 @@ export class EnrollmentService {
 
     const rows: (string | number | undefined | null)[][] = [];
 
-    for (const { subEvent, draw, entry } of allEntries) {
+    for (const { subEvent, entry } of allEntries) {
       if (!entry.team) {
         this.logger.warn(`Entry ${entry.id} has no team — skipping`);
         continue;
       }
+
+      const drawName = entry.drawCompetition?.name ?? "";
 
       for (const meta of (entry.meta?.competition?.players ?? []).sort(sortPlayers)) {
         if (!meta.id) continue;
@@ -97,7 +98,7 @@ export class EnrollmentService {
             meta.double ?? 0,
             meta.mix ?? 0,
             subEvent.name,
-            draw.name,
+            drawName,
             isMixed,
             entry.meta?.competition?.teamIndex
           )
