@@ -54,10 +54,12 @@ function makeEntry(overrides: {
   team?: Team | null;
   players?: { id: string; single?: number; double?: number; mix?: number }[];
   teamIndex?: number;
+  drawCompetition?: Partial<DrawCompetition> | null;
 }): EventEntry {
   return {
     id: "entry-1",
     team: overrides.team !== undefined ? overrides.team : makeTeam(),
+    drawCompetition: overrides.drawCompetition !== undefined ? overrides.drawCompetition : null,
     meta: {
       competition: {
         teamIndex: overrides.teamIndex ?? 1,
@@ -67,18 +69,11 @@ function makeEntry(overrides: {
   } as unknown as EventEntry;
 }
 
-function makeDrawWithEntries(entries: EventEntry[]): DrawCompetition {
-  return {
-    name: "Heren - Groep 1",
-    getEventEntries: jest.fn().mockResolvedValue(entries),
-  } as unknown as DrawCompetition;
-}
-
-function makeSubEvent(eventType: string, draws: DrawCompetition[]): SubEventCompetition {
+function makeSubEvent(eventType: string, entries: EventEntry[]): SubEventCompetition {
   return {
     name: "Heren",
     eventType,
-    getDrawCompetitions: jest.fn().mockResolvedValue(draws),
+    getEventEntries: jest.fn().mockResolvedValue(entries),
   } as unknown as SubEventCompetition;
 }
 
@@ -113,10 +108,8 @@ describe("EnrollmentService", () => {
 
   it("returns exactly 1 row for a single player entry", async () => {
     const player = makePlayer();
-    const draw = makeDrawWithEntries([
-      makeEntry({ players: [{ id: PLAYER_ID, single: 5, double: 4, mix: 3 }] }),
-    ]);
-    const subEvent = makeSubEvent(SubEventTypeEnum.M, [draw]);
+    const entry = makeEntry({ players: [{ id: PLAYER_ID, single: 5, double: 4, mix: 3 }] });
+    const subEvent = makeSubEvent(SubEventTypeEnum.M, [entry]);
 
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent("Test", [subEvent]));
     jest.spyOn(Player, "findAll").mockResolvedValue([player]);
@@ -130,8 +123,7 @@ describe("EnrollmentService", () => {
 
   it("skips entry with no team and logs a warning", async () => {
     const warnSpy = jest.spyOn(service["logger"], "warn");
-    const draw = makeDrawWithEntries([makeEntry({ team: null })]);
-    const subEvent = makeSubEvent(SubEventTypeEnum.M, [draw]);
+    const subEvent = makeSubEvent(SubEventTypeEnum.M, [makeEntry({ team: null })]);
 
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent("Test", [subEvent]));
     jest.spyOn(Player, "findAll").mockResolvedValue([]);
@@ -143,8 +135,9 @@ describe("EnrollmentService", () => {
   });
 
   it("skips player row when player ID not found in map", async () => {
-    const draw = makeDrawWithEntries([makeEntry({ players: [{ id: "unknown-id" }] })]);
-    const subEvent = makeSubEvent(SubEventTypeEnum.M, [draw]);
+    const subEvent = makeSubEvent(SubEventTypeEnum.M, [
+      makeEntry({ players: [{ id: "unknown-id" }] }),
+    ]);
 
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent("Test", [subEvent]));
     jest.spyOn(Player, "findAll").mockResolvedValue([]);
@@ -156,10 +149,8 @@ describe("EnrollmentService", () => {
 
   it("MX sub-event: col 10 = single+double+mix, col 11 is empty", async () => {
     const player = makePlayer();
-    const draw = makeDrawWithEntries([
-      makeEntry({ players: [{ id: PLAYER_ID, single: 5, double: 4, mix: 3 }] }),
-    ]);
-    const subEvent = makeSubEvent(SubEventTypeEnum.MX, [draw]);
+    const entry = makeEntry({ players: [{ id: PLAYER_ID, single: 5, double: 4, mix: 3 }] });
+    const subEvent = makeSubEvent(SubEventTypeEnum.MX, [entry]);
 
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent("Test", [subEvent]));
     jest.spyOn(Player, "findAll").mockResolvedValue([player]);
@@ -172,10 +163,8 @@ describe("EnrollmentService", () => {
 
   it("non-MX sub-event: col 10 is empty, col 11 = single+double", async () => {
     const player = makePlayer();
-    const draw = makeDrawWithEntries([
-      makeEntry({ players: [{ id: PLAYER_ID, single: 5, double: 4, mix: 3 }] }),
-    ]);
-    const subEvent = makeSubEvent(SubEventTypeEnum.M, [draw]);
+    const entry = makeEntry({ players: [{ id: PLAYER_ID, single: 5, double: 4, mix: 3 }] });
+    const subEvent = makeSubEvent(SubEventTypeEnum.M, [entry]);
 
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent("Test", [subEvent]));
     jest.spyOn(Player, "findAll").mockResolvedValue([player]);
@@ -188,19 +177,11 @@ describe("EnrollmentService", () => {
 
   it("strips sub-event name prefix from draw name in Reeks column", async () => {
     const player = makePlayer();
-    const draw = {
-      name: "Heren - Groep 1",
-      getEventEntries: jest
-        .fn()
-        .mockResolvedValue([
-          makeEntry({ players: [{ id: PLAYER_ID, single: 5, double: 4, mix: 0 }] }),
-        ]),
-    } as unknown as DrawCompetition;
-    const subEvent = {
-      name: "Heren",
-      eventType: SubEventTypeEnum.M,
-      getDrawCompetitions: jest.fn().mockResolvedValue([draw]),
-    } as unknown as SubEventCompetition;
+    const entry = makeEntry({
+      players: [{ id: PLAYER_ID, single: 5, double: 4, mix: 0 }],
+      drawCompetition: { name: "Heren - Groep 1" } as DrawCompetition,
+    });
+    const subEvent = makeSubEvent(SubEventTypeEnum.M, [entry]);
 
     jest.spyOn(EventCompetition, "findByPk").mockResolvedValue(makeEvent("Test", [subEvent]));
     jest.spyOn(Player, "findAll").mockResolvedValue([player]);
