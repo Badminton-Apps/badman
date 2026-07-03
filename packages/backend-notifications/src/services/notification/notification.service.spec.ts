@@ -187,23 +187,29 @@ describe("NotificationService", () => {
       expect(notifySpy).not.toHaveBeenCalled();
     });
 
-    it("skips notification when opposing team has no email", async () => {
+    it("still notifies (in-platform) when opposing team has no email", async () => {
       const homeTeam = buildTeam("home", "club-h", buildPlayer("home@club.be"));
+      const awayCaptain = buildPlayer("away@club.be");
       const awayTeam = {
-        ...buildTeam("away", "club-a", buildPlayer("away@club.be")),
+        ...buildTeam("away", "club-a", awayCaptain),
         email: undefined,
       } as unknown as Team;
 
       jest.spyOn(Team, "findByPk").mockResolvedValueOnce(homeTeam).mockResolvedValueOnce(awayTeam);
 
-      const notifySpy = jest.spyOn(
-        CompetitionEncounterChangeConfirmationRequestNotifier.prototype,
-        "notify"
-      );
+      const notifySpy = jest
+        .spyOn(CompetitionEncounterChangeConfirmationRequestNotifier.prototype, "notify")
+        .mockResolvedValue(undefined);
 
       await service.notifyEncounterChange(buildEncounter("h", "a"), true);
 
-      expect(notifySpy).not.toHaveBeenCalled();
+      expect(notifySpy).toHaveBeenCalledTimes(1);
+      expect(notifySpy).toHaveBeenCalledWith(
+        awayCaptain,
+        "enc-1",
+        expect.objectContaining({ isHome: false }),
+        { email: "" }
+      );
     });
 
     it("builds a CLIENT_URL-based URL for the opposing team", async () => {
@@ -297,6 +303,31 @@ describe("NotificationService", () => {
       await service.notifyEncounterChangeMessage(buildEncounter("h", "a"), true);
 
       expect(notifySpy).not.toHaveBeenCalled();
+    });
+
+    it("still notifies (in-platform) when opposing team has no email", async () => {
+      const homeTeam = buildTeam("home", "club-h", buildPlayer("home@club.be"));
+      const awayCaptain = buildPlayer("away@club.be");
+      const awayTeam = {
+        ...buildTeam("away", "club-a", awayCaptain),
+        email: undefined,
+      } as unknown as Team;
+
+      jest.spyOn(Team, "findByPk").mockResolvedValueOnce(homeTeam).mockResolvedValueOnce(awayTeam);
+
+      const notifySpy = jest
+        .spyOn(CompetitionEncounterHasCommentNotifier.prototype, "notify")
+        .mockResolvedValue(undefined);
+
+      await service.notifyEncounterChangeMessage(buildEncounter("h", "a"), true);
+
+      expect(notifySpy).toHaveBeenCalledTimes(1);
+      expect(notifySpy).toHaveBeenCalledWith(
+        awayCaptain,
+        "enc-1",
+        expect.objectContaining({ encounter: expect.anything() }),
+        expect.objectContaining({ email: "" })
+      );
     });
 
     it("builds a CLIENT_URL-based URL for the opposing team", async () => {
