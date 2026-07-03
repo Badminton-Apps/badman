@@ -68,7 +68,7 @@ async function findOrCreatePlayer(
       "syncSuccessNotification", "syncFailedNotification",
       "clubEnrollmentNotification", "synEncounterFailed",
       "createdAt", "updatedAt")
-     VALUES (gen_random_uuid(), :playerId, 0, 0, 0, 2, 2, 2, 0, 0, 2, 2, NOW(), NOW())
+     VALUES (gen_random_uuid(), :playerId, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, NOW(), NOW())
      ON CONFLICT DO NOTHING`,
     { playerId: user.id }
   );

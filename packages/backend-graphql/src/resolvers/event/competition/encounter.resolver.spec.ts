@@ -18,6 +18,7 @@ import { EncounterGamesGenerationService } from "@badman/backend-encounter-games
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { NotificationService } from "@badman/backend-notifications";
 import { Sync, SyncQueue } from "@badman/backend-queue";
+import { EncounterChangeService } from "./encounter-change.service";
 import {
   ChangeEncounterDateStatus,
   ChangeEncounterParty,
@@ -31,6 +32,7 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
   let drawLoaderService: DrawCompetitionLoaderService;
   let syncQueue: { add: jest.Mock };
   let notificationService: { notifyEncounterChangeFinished: jest.Mock };
+  let encounterChangeService: { resolveProposalsForAdminChange: jest.Mock };
 
   const makeEncounter = (overrides: Partial<EncounterCompetition> = {}) =>
     ({
@@ -44,6 +46,9 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
   beforeEach(async () => {
     syncQueue = { add: jest.fn() };
     notificationService = { notifyEncounterChangeFinished: jest.fn() };
+    encounterChangeService = {
+      resolveProposalsForAdminChange: jest.fn().mockResolvedValue(undefined),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -88,6 +93,10 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
         {
           provide: NotificationService,
           useValue: notificationService,
+        },
+        {
+          provide: EncounterChangeService,
+          useValue: encounterChangeService,
         },
       ],
     }).compile();
@@ -296,6 +305,21 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
       expect(await resolver.changeStatus(encounter, anonUser)).toBeNull();
     });
 
+    it("returns MOVED for admin user (change-any:encounter) when a date is ACCEPTED", async () => {
+      const adminUser = {
+        id: "admin-uuid",
+        hasAnyPermission: jest.fn().mockResolvedValue(true),
+      } as unknown as Player;
+      const change = makeChange(ChangeEncounterParty.HOME, [
+        makeDate(ChangeEncounterDateStatus.ACCEPTED),
+        makeDate(ChangeEncounterDateStatus.RESOLVED),
+      ]);
+      const encounter = makeEncounterWithChange(change);
+      expect(await resolver.changeStatus(encounter, adminUser)).toBe(
+        EncounterChangeViewState.MOVED
+      );
+    });
+
     it("skips historical dates (null status) when deriving state", async () => {
       const change = makeChange(ChangeEncounterParty.HOME, [
         makeDate(null),
@@ -383,7 +407,7 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
       ).rejects.toThrow(UnauthorizedException);
     });
 
-    it("updateBadman=true: updates date, creates Logging entry, commits, notifies", async () => {
+    it("updateBadman=true: updates date, resolves proposals, creates Logging entry, commits, notifies and returns encounter", async () => {
       const encounter = makeDbEncounter();
       jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
       const loggingCreate = jest.spyOn(Logging, "create").mockResolvedValue(undefined as never);
@@ -397,8 +421,14 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
         false
       );
 
-      expect(result).toBe(true);
+      expect(result).toBe(encounter);
       expect(encounter.update).toHaveBeenCalledWith({ date: newDate }, expect.any(Object));
+      expect(encounterChangeService.resolveProposalsForAdminChange).toHaveBeenCalledWith(
+        "enc-uuid",
+        newDate,
+        "loc-uuid", // falls back to encounter.locationId
+        expect.any(Object) // transaction
+      );
       expect(loggingCreate).toHaveBeenCalledWith(
         expect.objectContaining({ meta: expect.objectContaining({ date: newDate }) }),
         expect.any(Object)
