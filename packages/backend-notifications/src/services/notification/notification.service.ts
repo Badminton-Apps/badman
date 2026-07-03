@@ -119,7 +119,7 @@ export class NotificationService {
 
     const notifier = new CompetitionEncounterHasCommentNotifier(this.mailing, this.push);
 
-    if (opposingTeam.captain && opposingTeam.email) {
+    if (opposingTeam.captain) {
       this._logger.log(
         `[notifyEncounterChangeMessage] Notifying opposing captain ${opposingTeam.captain.email}`
       );
@@ -127,11 +127,10 @@ export class NotificationService {
         opposingTeam.captain,
         encounter.id,
         { encounter },
-        { email: opposingTeam.email, url }
+        { email: opposingTeam.email ?? "", url }
       );
     } else {
-      const reason = !opposingTeam.captain ? "no captain" : "no email";
-      this._logger.warn(`[notifyEncounterChangeMessage] Skipping — ${reason}`);
+      this._logger.warn(`[notifyEncounterChangeMessage] Skipping — no captain`);
     }
   }
 
