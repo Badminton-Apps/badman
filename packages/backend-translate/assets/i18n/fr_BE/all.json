@@ -2106,6 +2106,7 @@
         "date": "Date",
         "time": "Heure",
         "location": "Emplacement",
+        "previousRounds": "Rounds précédents",
         "buttons": {
           "addProposal": "Ajouter une proposition",
           "accept": "Accepter",
@@ -2136,7 +2137,8 @@
           "accepted": "Acceptée",
           "rejected": "Rejetée",
           "resolved": "Résolue",
-          "tentatively_accepted": "Provisoirement acceptée"
+          "tentatively_accepted": "Provisoirement acceptée",
+          "possible": "Date possible"
         }
       },
       "messages": {

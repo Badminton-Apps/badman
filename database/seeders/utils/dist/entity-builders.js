@@ -59,6 +59,19 @@ async function findOrCreatePlayer(
     }
   );
   console.log(`✅ Created new player: ${user.firstName} ${user.lastName} (${user.email})\n`);
+  // Create default settings row so notifications work out of the box
+  await ctx.query(
+    `INSERT INTO personal."Settings" (id, "playerId",
+      "encounterNotEnteredNotification", "encounterNotAcceptedNotification",
+      "encounterChangeNewNotification", "encounterChangeConfirmationNotification",
+      "encounterChangeFinishedNotification", "encounterHasCommentNotification",
+      "syncSuccessNotification", "syncFailedNotification",
+      "clubEnrollmentNotification", "synEncounterFailed",
+      "createdAt", "updatedAt")
+     VALUES (gen_random_uuid(), :playerId, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, NOW(), NOW())
+     ON CONFLICT DO NOTHING`,
+    { playerId: user.id }
+  );
   return user;
 }
 /**

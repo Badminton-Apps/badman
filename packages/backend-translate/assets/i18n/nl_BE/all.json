@@ -3592,6 +3592,7 @@
         "date": "Datum",
         "time": "Tijd",
         "location": "Locatie",
+        "previousRounds": "Vorige rondes",
         "messages": {
           "proposalAddedSuccess": "Voorstel toegevoegd",
           "proposalAddedError": "Fout bij het toevoegen van het voorstel",
@@ -3622,7 +3623,8 @@
           "accepted": "Geaccepteerd",
           "rejected": "Afgewezen",
           "resolved": "Opgelost",
-          "tentatively_accepted": "Voorlopig geaccepteerd"
+          "tentatively_accepted": "Voorlopig geaccepteerd",
+          "possible": "Mogelijke datum"
         }
       },
       "messages": {
@@ -3665,7 +3667,7 @@
             "originalDate": "Oorspronkelijke datum",
             "availableCourts": "Beschikbare veld(en)",
             "buttons": {
-              "sendRequest": "Aanvraag versturen"
+              "sendRequest": "Datum toevoegen"
             },
             "otherEncounters": "Andere ontmoetings",
             "messages": {

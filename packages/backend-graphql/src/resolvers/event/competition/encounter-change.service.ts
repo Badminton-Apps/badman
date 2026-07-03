@@ -109,10 +109,23 @@ export class EncounterChangeService {
     }
 
     const transaction = await this._sequelize.transaction();
-    let encounterChange: EncounterChange;
+    let encounterChange: EncounterChange | null = null;
 
     try {
-      encounterChange = await encounter.getEncounterChange({ transaction });
+      const latestChange = await EncounterChange.findOne({
+        where: { encounterId: encounter.id },
+        order: [["createdAt", "DESC"]],
+        transaction,
+      });
+
+      if (latestChange) {
+        const latestDates = await latestChange.getDates({ transaction });
+        const wasAccepted = latestDates.some(
+          (d) => d.status === ChangeEncounterDateStatus.ACCEPTED
+        );
+        encounterChange = wasAccepted ? null : latestChange;
+      }
+
       if (!encounterChange) {
         this.logger.debug(`[propose] creating new EncounterChange for encounterId=${encounter.id}`);
         encounterChange = await EncounterChange.create(
@@ -478,6 +491,52 @@ export class EncounterChangeService {
     }
 
     return { encounter: updatedEncounter ?? encounter, encounterChange };
+  }
+
+  /**
+   * Resolves all open proposals for an encounter after an admin date change.
+   * Marks every PENDING/TENTATIVELY_ACCEPTED EncounterChangeDate as RESOLVED
+   * and inserts a new ACCEPTED entry for the admin-chosen date.
+   * Must be called inside an existing transaction.
+   */
+  async resolveProposalsForAdminChange(
+    encounterId: string,
+    date: Date,
+    locationId: string | undefined,
+    transaction: import("sequelize").Transaction
+  ): Promise<void> {
+    const encounterChange = await EncounterChange.findOne({
+      where: { encounterId },
+      transaction,
+    });
+
+    if (!encounterChange) return;
+
+    const openDates = await encounterChange.getDates({ transaction });
+    for (const d of openDates) {
+      if (
+        d.status === ChangeEncounterDateStatus.PENDING ||
+        d.status === ChangeEncounterDateStatus.TENTATIVELY_ACCEPTED
+      ) {
+        d.status = ChangeEncounterDateStatus.RESOLVED;
+        await d.save({ transaction });
+        this.logger.debug(`[resolveProposalsForAdminChange] dateId=${d.id} → RESOLVED`);
+      }
+    }
+
+    await EncounterChangeDate.create(
+      {
+        encounterChangeId: encounterChange.id,
+        date,
+        locationId,
+        proposedBy: ChangeEncounterParty.HOME,
+        status: ChangeEncounterDateStatus.ACCEPTED,
+      },
+      { transaction }
+    );
+    this.logger.debug(
+      `[resolveProposalsForAdminChange] created ACCEPTED date=${date.toISOString()} for encounterId=${encounterId}`
+    );
   }
 
   private async _loadEvent(encounter: EncounterCompetition): Promise<EventCompetition | null> {

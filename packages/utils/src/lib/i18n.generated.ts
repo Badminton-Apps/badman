@@ -3897,6 +3897,7 @@ export type I18nTranslations = {
                     "date": string;
                     "time": string;
                     "location": string;
+                    "previousRounds": string;
                     "messages": {
                         "proposalAddedSuccess": string;
                         "proposalAddedError": string;
@@ -3928,6 +3929,7 @@ export type I18nTranslations = {
                         "rejected": string;
                         "resolved": string;
                         "tentatively_accepted": string;
+                        "possible": string;
                     };
                 };
                 "messages": {
