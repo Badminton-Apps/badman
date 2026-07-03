@@ -28,6 +28,7 @@ import {
 } from "@badman/utils";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { NotificationService } from "@badman/backend-notifications";
+import { EncounterChangeService } from "./encounter-change.service";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
@@ -81,7 +82,8 @@ export class EncounterCompetitionResolver {
     private readonly rankingSystemService: RankingSystemService,
     private readonly teamLoader: TeamLoaderService,
     private readonly drawLoader: DrawCompetitionLoaderService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly encounterChangeService: EncounterChangeService
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -359,6 +361,14 @@ export class EncounterCompetitionResolver {
     return this._getLatestEncounterChange(encounter.id);
   }
 
+  @ResolveField(() => [EncounterChange], { nullable: true })
+  async encounterChanges(@Parent() encounter: EncounterCompetition): Promise<EncounterChange[]> {
+    return EncounterChange.findAll({
+      where: { encounterId: encounter.id },
+      order: [["createdAt", "DESC"]],
+    });
+  }
+
   @ResolveField(() => EncounterChangeViewState, { nullable: true })
   async changeStatus(
     @Parent() encounter: EncounterCompetition,
@@ -375,10 +385,14 @@ export class EncounterCompetitionResolver {
       this.teamLoader.load(encounter.awayTeamId),
     ]);
 
+    const isAdmin = await user.hasAnyPermission(["change-any:encounter"]);
     const isHome =
-      homeTeam != null && (await user.hasAnyPermission([`${homeTeam.clubId}_change:encounter`]));
+      isAdmin ||
+      (homeTeam != null && (await user.hasAnyPermission([`${homeTeam.clubId}_change:encounter`])));
     const isAway =
-      awayTeam != null && (await user.hasAnyPermission([`${awayTeam.clubId}_change:encounter`]));
+      !isHome &&
+      awayTeam != null &&
+      (await user.hasAnyPermission([`${awayTeam.clubId}_change:encounter`]));
 
     if (!isHome && !isAway) return null;
 
@@ -558,7 +572,7 @@ export class EncounterCompetitionResolver {
     return true;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => EncounterCompetition)
   async adminChangeEncounterDate(
     @User() user: Player,
     @Args("id", { type: () => ID }) id: string,
@@ -566,7 +580,7 @@ export class EncounterCompetitionResolver {
     @Args("locationId", { type: () => ID, nullable: true }) locationId: string | undefined,
     @Args("updateBadman") updateBadman: boolean,
     @Args("updateVisual") updateVisual: boolean
-  ) {
+  ): Promise<EncounterCompetition> {
     const encounter = await EncounterCompetition.findByPk(id);
 
     if (!encounter) {
@@ -589,6 +603,14 @@ export class EncounterCompetitionResolver {
           updates.locationId = locationId;
         }
         await encounter.update(updates, { transaction });
+
+        await this.encounterChangeService.resolveProposalsForAdminChange(
+          encounter.id,
+          date,
+          locationId ?? encounter.locationId ?? undefined,
+          transaction
+        );
+
         await Logging.create(
           {
             action: LoggingAction.EncounterChanged,
@@ -620,7 +642,7 @@ export class EncounterCompetitionResolver {
       );
     }
 
-    return true;
+    return encounter;
   }
 
   @Mutation(() => Boolean)

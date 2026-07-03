@@ -3814,6 +3814,7 @@
         "date": "Date",
         "time": "Time",
         "location": "Location",
+        "previousRounds": "Previous rounds",
         "messages": {
           "proposalAddedSuccess": "Proposal added successfully",
           "proposalAddedError": "Error adding proposal",
@@ -3844,7 +3845,8 @@
           "accepted": "Accepted",
           "rejected": "Rejected",
           "resolved": "Resolved",
-          "tentatively_accepted": "Tentatively accepted"
+          "tentatively_accepted": "Tentatively accepted",
+          "possible": "Possible date"
         }
       },
       "messages": {

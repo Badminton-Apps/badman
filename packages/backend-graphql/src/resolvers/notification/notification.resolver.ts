@@ -9,7 +9,8 @@ import {
   Player,
 } from "@badman/backend-database";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { ListArgs } from "../../utils";
 
@@ -47,6 +48,21 @@ export class NotificationResolver {
   @ResolveField(() => Club)
   async club(@Parent() notification: Notification): Promise<Club> {
     return notification.getClub();
+  }
+
+  @Mutation(() => Int)
+  async markAllNotificationsAsRead(@User() user: Player): Promise<number> {
+    if (!user?.id) {
+      throw new UnauthorizedException();
+    }
+
+    const [count] = await Notification.update(
+      { read: true },
+      { where: { sendToId: user.id, read: { [Op.ne]: true } } }
+    );
+
+    this.logger.log(`[markAllNotificationsAsRead] userId=${user.id} count=${count}`);
+    return count;
   }
 
   @Mutation(() => Notification)

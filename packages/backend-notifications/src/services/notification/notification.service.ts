@@ -76,7 +76,7 @@ export class NotificationService {
     );
 
     // Only notify the opposing party — the acting party must not receive their own action as an email
-    if (confReqTeam.captain && confReqTeam.email) {
+    if (confReqTeam.captain) {
       this._logger.log(
         `[notifyEncounterChange] Sending confirmation request notification to ${confReqTeam.captain.email} (team email: ${confReqTeam.email})`
       );
@@ -84,16 +84,11 @@ export class NotificationService {
         confReqTeam.captain,
         encounter.id,
         { encounter, isHome: !homeTeamRequests, url: confReqUrl, action },
-        { email: confReqTeam.email }
+        { email: confReqTeam.email ?? "" }
       );
     } else {
-      const skipReason = !confReqTeam.captain
-        ? "no captain"
-        : !confReqTeam.email
-          ? "no email"
-          : "unknown";
       this._logger.warn(
-        `[notifyEncounterChange] Skipping confirmation notification - reason: ${skipReason}`
+        `[notifyEncounterChange] Skipping confirmation notification - reason: no captain`
       );
     }
 
@@ -170,7 +165,7 @@ export class NotificationService {
     const homeTeamUrl = `${clientUrl}/my-club/${homeTeam.clubId}/change-encounter/${encounter.id}`;
     const awayTeamUrl = `${clientUrl}/my-club/${awayTeam.clubId}/change-encounter/${encounter.id}`;
 
-    if (homeTeam.captain && homeTeam.email) {
+    if (homeTeam.captain) {
       this._logger.log(
         `[notifyEncounterChangeFinished] Sending finished notification to home team captain ${homeTeam.captain.email} (team email: ${homeTeam.email})`
       );
@@ -179,34 +174,27 @@ export class NotificationService {
         homeTeam.captain,
         encounter.id,
         { encounter, locationHasChanged, isHome: true, validation, url: homeTeamUrl },
-        { email: homeTeam.email }
+        { email: homeTeam.email ?? "" }
       );
     } else {
       this._logger.warn(
-        `[notifyEncounterChangeFinished] Skipping home team notification - captain: ${!!homeTeam.captain}, email: ${!!homeTeam.email}`
+        `[notifyEncounterChangeFinished] Skipping home team notification - reason: no captain`
       );
     }
 
-    if (awayTeam.captain && awayTeam.email && awayTeam.email !== homeTeam.email) {
+    if (awayTeam.captain && awayTeam.captain.id !== homeTeam.captain?.id) {
       this._logger.log(
         `[notifyEncounterChangeFinished] Sending finished notification to away team captain ${awayTeam.captain.email} (team email: ${awayTeam.email})`
       );
       const validation = await this._getValidationMessage(awayTeam);
-
       notifierFinished.notify(
         awayTeam.captain,
         encounter.id,
         { encounter, locationHasChanged, isHome: false, validation, url: awayTeamUrl },
-        { email: awayTeam.email }
+        { email: awayTeam.email ?? "" }
       );
     } else {
-      const skipReason = !awayTeam.captain
-        ? "no captain"
-        : !awayTeam.email
-          ? "no email"
-          : awayTeam.email === homeTeam.email
-            ? "duplicate email"
-            : "unknown";
+      const skipReason = !awayTeam.captain ? "no captain" : "same captain as home";
       this._logger.warn(
         `[notifyEncounterChangeFinished] Skipping away team notification - reason: ${skipReason}`
       );
