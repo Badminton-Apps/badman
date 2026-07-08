@@ -694,7 +694,9 @@ export type I18nTranslations = {
             "september": string;
         };
         "notifications": {
+            "empty": string;
             "noNotifications": string;
+            "title": string;
             "types": {
                 "encounterNotAcceptedNotification": string;
                 "encounterNotEnteredNotification": string;
@@ -1476,6 +1478,15 @@ export type I18nTranslations = {
                     "openDate": string;
                     "startDate": string;
                     "closeDate": string;
+                    "endDate": string;
+                    "save": string;
+                    "success": string;
+                    "error": string;
+                };
+                "movingEncounters": {
+                    "title": string;
+                    "enabled": string;
+                    "startDate": string;
                     "endDate": string;
                     "save": string;
                     "success": string;
@@ -2830,6 +2841,7 @@ export type I18nTranslations = {
                                 "oost-vlaanderen": string;
                                 "vlaams-brabant": string;
                                 "west-vlaanderen": string;
+                                "liga": string;
                             };
                             "clubId": string;
                             "messages": {
@@ -3889,6 +3901,10 @@ export type I18nTranslations = {
             };
             "changeEncounter": {
                 "title": string;
+                "disabled": {
+                    "title": string;
+                    "message": string;
+                };
                 "encounterNotFound": string;
                 "proposals": {
                     "title": string;
@@ -3964,6 +3980,7 @@ export type I18nTranslations = {
                         "buttons": {
                             "spaceForEncounters": string;
                             "courtsAvailableTooltip": string;
+                            "alreadyProposedTooltip": string;
                         };
                         "eventWarning": string;
                         "drawer": {
@@ -3996,6 +4013,7 @@ export type I18nTranslations = {
             "notifications": {
                 "title": string;
                 "empty": string;
+                "markAllAsRead": string;
                 "types": {
                     "encounterChangeNew": string;
                     "encounterChangeConfirmation": string;
@@ -4024,6 +4042,14 @@ export type I18nTranslations = {
                                 "startRequired": string;
                                 "endRequired": string;
                             };
+                        };
+                    };
+                };
+                "generalInfoTab": {
+                    "title": string;
+                    "generalForm": {
+                        "states": {
+                            "liga": string;
                         };
                     };
                 };

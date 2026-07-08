@@ -27,12 +27,34 @@ export class NotificationResolver {
 
   @Query(() => [Notification])
   async notifications(@Args() listArgs: ListArgs): Promise<Notification[]> {
-    return Notification.findAll(ListArgs.toFindOptions(listArgs));
+    const results = await Notification.findAll(ListArgs.toFindOptions(listArgs));
+    this.logger.debug(
+      `[notifications] returned ${results.length} notifications: ${results
+        .map(
+          (n) =>
+            `{id=${n.id} type=${n.type} linkType=${n.linkType} linkId=${n.linkId} read=${n.read}}`
+        )
+        .join(", ")}`
+    );
+    return results;
   }
 
   @ResolveField(() => EncounterCompetition)
   async encounter(@Parent() notification: Notification): Promise<EncounterCompetition> {
-    return notification.getEncounter();
+    this.logger.debug(
+      `[encounter] resolving encounter for notification id=${notification.id} linkType=${notification.linkType} linkId=${notification.linkId}`
+    );
+    const encounter = await notification.getEncounter();
+    if (!encounter) {
+      this.logger.warn(
+        `[encounter] no encounter found for notification id=${notification.id} linkId=${notification.linkId}`
+      );
+    } else {
+      this.logger.debug(
+        `[encounter] resolved encounterId=${encounter.id} homeTeamId=${encounter.homeTeamId} awayTeamId=${encounter.awayTeamId}`
+      );
+    }
+    return encounter;
   }
 
   @ResolveField(() => EventCompetition)
@@ -81,6 +103,10 @@ export class NotificationResolver {
       if (dbNotification.sendToId !== user.id) {
         throw new UnauthorizedException();
       }
+
+      this.logger.log(
+        `[updateNotification] notificationId=${dbNotification.id} type=${dbNotification.type} linkType=${dbNotification.linkType} linkId=${dbNotification.linkId} userId=${user.id}`
+      );
 
       await dbNotification.update(
         { ...dbNotification.toJSON(), ...updateNotificationData },

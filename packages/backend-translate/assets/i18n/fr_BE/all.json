@@ -1202,7 +1202,9 @@
     "september": "Septembre"
   },
   "notifications": {
+    "empty": "Aucune notification",
     "noNotifications": "Aucune notification",
+    "title": "Notifications",
     "types": {
       "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie.",
       "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie."
@@ -1700,6 +1702,15 @@
         "save": "Sauvegarder",
         "success": "Paramètres d'inscription enregistrés avec succès",
         "error": "Échec de l'enregistrement des paramètres d'inscription"
+      },
+      "movingEncounters": {
+        "title": "Déplacement des rencontres",
+        "enabled": "Déplacements ouverts",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "save": "Sauvegarder",
+        "success": "Paramètres de déplacement des rencontres enregistrés avec succès",
+        "error": "Échec de l'enregistrement des paramètres de déplacement des rencontres"
       }
     },
     "avgLevelPage": {
@@ -1855,6 +1866,14 @@
               "startRequired": "La date de début est requise",
               "endRequired": "La date de fin est requise"
             }
+          }
+        }
+      },
+      "generalInfoTab": {
+        "title": "General info",
+        "generalForm": {
+          "states": {
+            "liga": "Ligue"
           }
         }
       },
@@ -2098,6 +2117,10 @@
     },
     "changeEncounter": {
       "title": "Déplacer la rencontre",
+      "disabled": {
+        "title": "Déplacements fermés",
+        "message": "Le déplacement des rencontres est actuellement fermé. Veuillez réessayer plus tard."
+      },
       "encounterNotFound": "Rencontre non trouvée",
       "proposals": {
         "title": "Propositions",
@@ -2172,7 +2195,8 @@
           "proposal": "Proposition",
           "buttons": {
             "spaceForEncounters": "Place pour {count} rencontres supplémentaires",
-            "courtsAvailableTooltip": "{courts} terrains disponibles"
+            "courtsAvailableTooltip": "{courts} terrains disponibles",
+            "alreadyProposedTooltip": "Cette date a déjà été proposée"
           },
           "eventWarning": "La compétition n'est pas autorisée",
           "drawer": {
@@ -2253,6 +2277,7 @@
     "notifications": {
       "title": "Notifications",
       "empty": "Aucune nouvelle notification",
+      "markAllAsRead": "Tout marquer comme lu",
       "types": {
         "encounterChangeNew": "Nouvelle demande de replanification reçue",
         "encounterChangeConfirmation": "Action requise : demande de replanification",
