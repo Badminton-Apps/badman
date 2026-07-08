@@ -682,7 +682,9 @@
     "september": "September"
   },
   "notifications": {
+    "empty": "Geen notificaties",
     "noNotifications": "Geen notificaties",
+    "title": "Notificaties",
     "types": {
       "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven.",
       "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven."
@@ -1180,6 +1182,15 @@
         "save": "Opslaan",
         "success": "Inschrijvingsinstellingen succesvol opgeslagen",
         "error": "Inschrijvingsinstellingen opslaan mislukt"
+      },
+      "movingEncounters": {
+        "title": "Verplaatsen ontmoetingen",
+        "enabled": "Verplaatsingen open",
+        "startDate": "Startdatum",
+        "endDate": "Einddatum",
+        "save": "Opslaan",
+        "success": "Instellingen voor verplaatsen ontmoetingen succesvol opgeslagen",
+        "error": "Instellingen voor verplaatsen ontmoetingen opslaan mislukt"
       }
     },
     "avgLevelPage": {
@@ -2529,7 +2540,8 @@
               "namur": "Namen",
               "oost-vlaanderen": "Oost-Vlaanderen",
               "vlaams-brabant": "Vlaams-Brabant",
-              "west-vlaanderen": "West-Vlaanderen"
+              "west-vlaanderen": "West-Vlaanderen",
+              "liga": "Liga"
             },
             "clubId": "Club ID",
             "messages": {
@@ -3584,6 +3596,10 @@
     },
     "changeEncounter": {
       "title": "Verplaats ontmoeting",
+      "disabled": {
+        "title": "Verplaatsingen gesloten",
+        "message": "Het verplaatsen van ontmoetingen is momenteel gesloten. Probeer later opnieuw."
+      },
       "encounterNotFound": "Ontmoeting niet gevonden",
       "proposals": {
         "title": "Voorstellen",
@@ -3658,7 +3674,8 @@
           "proposal": "Voorstel",
           "buttons": {
             "spaceForEncounters": "Ruimte voor nog {count} ontmoetingen",
-            "courtsAvailableTooltip": "{courts} velden beschikbaar"
+            "courtsAvailableTooltip": "{courts} velden beschikbaar",
+            "alreadyProposedTooltip": "Deze datum is al voorgesteld"
           },
           "eventWarning": "Competitie is niet toegestaan",
           "drawer": {
@@ -3691,6 +3708,7 @@
     "notifications": {
       "title": "Meldingen",
       "empty": "Geen nieuwe meldingen",
+      "markAllAsRead": "Alles als gelezen markeren",
       "types": {
         "encounterChangeNew": "Nieuw verplaatsingsverzoek ontvangen",
         "encounterChangeConfirmation": "Actie vereist: verplaatsingsverzoek",

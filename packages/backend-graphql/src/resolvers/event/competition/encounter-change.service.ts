@@ -505,12 +505,20 @@ export class EncounterChangeService {
     locationId: string | undefined,
     transaction: import("sequelize").Transaction
   ): Promise<void> {
-    const encounterChange = await EncounterChange.findOne({
+    let encounterChange = await EncounterChange.findOne({
       where: { encounterId },
       transaction,
     });
 
-    if (!encounterChange) return;
+    if (!encounterChange) {
+      encounterChange = await EncounterChange.create(
+        { encounterId, lastActionBy: ChangeEncounterParty.HOME, lastActionAt: new Date() },
+        { transaction }
+      );
+      this.logger.debug(
+        `[resolveProposalsForAdminChange] created new EncounterChange for encounterId=${encounterId}`
+      );
+    }
 
     const openDates = await encounterChange.getDates({ transaction });
     for (const d of openDates) {
