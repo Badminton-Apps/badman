@@ -143,7 +143,9 @@ describe("NotificationService", () => {
         awayCaptain,
         encounter.id,
         expect.objectContaining({ isHome: false }),
-        { email: "away@team.be" }
+        { email: "away@team.be" },
+        undefined, // force
+        { clubId: "club-a" }
       );
     });
 
@@ -167,7 +169,9 @@ describe("NotificationService", () => {
         homeCaptain,
         encounter.id,
         expect.objectContaining({ isHome: true }),
-        { email: "home@team.be" }
+        { email: "home@team.be" },
+        undefined, // force
+        { clubId: "club-h" }
       );
     });
 
@@ -208,7 +212,9 @@ describe("NotificationService", () => {
         awayCaptain,
         "enc-1",
         expect.objectContaining({ isHome: false }),
-        { email: "" }
+        { email: "" },
+        undefined, // force
+        { clubId: "club-a" }
       );
     });
 
@@ -264,7 +270,9 @@ describe("NotificationService", () => {
         awayCaptain,
         encounter.id,
         expect.objectContaining({ encounter }),
-        expect.objectContaining({ email: "away@team.be" })
+        expect.objectContaining({ email: "away@team.be" }),
+        undefined, // force
+        { clubId: "club-a" }
       );
     });
 
@@ -288,7 +296,9 @@ describe("NotificationService", () => {
         homeCaptain,
         encounter.id,
         expect.objectContaining({ encounter }),
-        expect.objectContaining({ email: "home@team.be" })
+        expect.objectContaining({ email: "home@team.be" }),
+        undefined, // force
+        { clubId: "club-h" }
       );
     });
 
@@ -326,7 +336,9 @@ describe("NotificationService", () => {
         awayCaptain,
         "enc-1",
         expect.objectContaining({ encounter: expect.anything() }),
-        expect.objectContaining({ email: "" })
+        expect.objectContaining({ email: "" }),
+        undefined, // force
+        { clubId: "club-a" }
       );
     });
 

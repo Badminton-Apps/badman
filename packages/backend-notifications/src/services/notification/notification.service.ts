@@ -84,7 +84,9 @@ export class NotificationService {
         confReqTeam.captain,
         encounter.id,
         { encounter, isHome: !homeTeamRequests, url: confReqUrl, action },
-        { email: confReqTeam.email ?? "" }
+        { email: confReqTeam.email ?? "" },
+        undefined, // force
+        { clubId: confReqTeam.clubId }
       );
     } else {
       this._logger.warn(
@@ -127,7 +129,9 @@ export class NotificationService {
         opposingTeam.captain,
         encounter.id,
         { encounter },
-        { email: opposingTeam.email ?? "", url }
+        { email: opposingTeam.email ?? "", url },
+        undefined, // force
+        { clubId: opposingTeam.clubId }
       );
     } else {
       this._logger.warn(`[notifyEncounterChangeMessage] Skipping — no captain`);
@@ -173,7 +177,9 @@ export class NotificationService {
         homeTeam.captain,
         encounter.id,
         { encounter, locationHasChanged, isHome: true, validation, url: homeTeamUrl },
-        { email: homeTeam.email ?? "" }
+        { email: homeTeam.email ?? "" },
+        undefined, // force
+        { clubId: homeTeam.clubId }
       );
     } else {
       this._logger.warn(
@@ -190,7 +196,9 @@ export class NotificationService {
         awayTeam.captain,
         encounter.id,
         { encounter, locationHasChanged, isHome: false, validation, url: awayTeamUrl },
-        { email: awayTeam.email ?? "" }
+        { email: awayTeam.email ?? "" },
+        undefined, // force
+        { clubId: awayTeam.clubId }
       );
     } else {
       const skipReason = !awayTeam.captain ? "no captain" : "same captain as home";
