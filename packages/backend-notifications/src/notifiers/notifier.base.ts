@@ -32,7 +32,8 @@ export abstract class Notifier<T, A = { email: string }> {
       email?: boolean;
       push?: boolean;
       sms?: boolean;
-    }
+    },
+    meta?: Record<string, unknown>
   ): Promise<void> {
     try {
       if (!player) {
@@ -165,6 +166,7 @@ export abstract class Notifier<T, A = { email: string }> {
           linkId,
           linkType: this.linkType,
           type: this.type,
+          meta: meta ? JSON.stringify(meta) : undefined,
         });
 
         await notif.save();
