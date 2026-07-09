@@ -3894,6 +3894,7 @@ export type I18nTranslations = {
                 "messages": {
                     "success": string;
                     "error": string;
+                    "noSettingsFound": string;
                 };
                 "buttons": {
                     "save": string;
