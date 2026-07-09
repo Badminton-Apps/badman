@@ -3588,7 +3588,8 @@
       },
       "messages": {
         "success": "Notificaties succesvol bijgewerkt",
-        "error": "Fout bij het bijwerken van notificaties"
+        "error": "Fout bij het bijwerken van notificaties",
+        "noSettingsFound": "Geen instellingen gevonden"
       },
       "buttons": {
         "save": "Opslaan"

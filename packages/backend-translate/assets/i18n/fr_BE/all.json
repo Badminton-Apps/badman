@@ -2288,6 +2288,11 @@
         "clubEnrollment": "Mise à jour de l'inscription au club",
         "default": "Notification"
       }
+    },
+    "settings": {
+      "messages": {
+        "noSettingsFound": "Aucun paramètre trouvé"
+      }
     }
   }
 }
