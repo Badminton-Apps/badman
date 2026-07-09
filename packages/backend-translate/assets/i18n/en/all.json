@@ -3810,7 +3810,8 @@
       },
       "messages": {
         "success": "Notifications successfully updated",
-        "error": "Error while updating notifications"
+        "error": "Error while updating notifications",
+        "noSettingsFound": "No settings found"
       },
       "buttons": {
         "save": "Save"
