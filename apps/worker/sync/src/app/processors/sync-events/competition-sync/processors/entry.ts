@@ -518,8 +518,10 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         };
 
         // Update entry meta with Visual API data
+        // hooks: false — skips the @BeforeUpdate recalculateCompetitionIndex hook which
+        // requires IndexCalculationService (an enrollment concern not present in the sync worker).
         entry.meta = entryMeta;
-        await entry.save({ transaction: this.transaction });
+        await entry.save({ transaction: this.transaction, hooks: false });
 
         this.logger.debug(
           `Updated entry meta with Visual API data: ${players.length} players for team ${team.name}`
