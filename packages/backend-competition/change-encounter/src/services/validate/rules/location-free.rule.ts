@@ -1,9 +1,4 @@
-import {
-  AvailabilityDay,
-  EncounterChange,
-  EncounterCompetition,
-  Location,
-} from "@badman/backend-database";
+import { AvailabilityDay, EncounterCompetition, Location } from "@badman/backend-database";
 import { Logger } from "@nestjs/common";
 import moment from "moment-timezone";
 import {
@@ -133,16 +128,10 @@ export class LocationRule extends Rule {
         locationId: locationId,
         date: encounterDate,
       },
-      include: [
-        {
-          attributes: ["id", "accepted"],
-          model: EncounterChange,
-        },
-      ],
     });
 
-    // all encounters that are on this day and don't have a encounterChange.accepted == false
-    let count = encsOnDayAndLocation.filter((r) => r.encounterChange?.accepted !== false).length;
+    // Option A: original slots stay occupied until finalization — count all encounters on the date
+    let count = encsOnDayAndLocation.length;
     let countWithouteRplaced = encsOnDayAndLocation.length;
 
     if (isSuggested) {

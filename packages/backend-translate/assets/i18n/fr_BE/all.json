@@ -132,6 +132,14 @@
         "select-one-date": "Veuillez sélectionner au moins 1 jour",
         "select-one-date-or-comment": "Veuillez commenter (au moins 15 caractères) ou choisir une date."
       },
+      "email": {
+        "action": {
+          "propose": "{actingTeamName} a introduit une demande de déplacement de la rencontre entre {home} et {away}.",
+          "endorse": "{actingTeamName} a approuvé une date proposée pour la rencontre entre {home} et {away}.",
+          "reject": "{actingTeamName} a refusé les dates proposées pour la rencontre entre {home} et {away}.",
+          "counter": "{actingTeamName} a proposé des contre-dates pour la rencontre entre {home} et {away}."
+        }
+      },
       "not-possible": "Non disponible",
       "possible": "Disponible",
       "re-open": "La demande précédente est terminée, vous pouvez la rouvrir et les données initialement proposées seront à nouveau visibles. La nouvelle demande n'est renvoyée qu'une fois que vous avez cliqué sur soumettre après la réouverture",
@@ -1194,7 +1202,9 @@
     "september": "Septembre"
   },
   "notifications": {
+    "empty": "Aucune notification",
     "noNotifications": "Aucune notification",
+    "title": "Notifications",
     "types": {
       "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie.",
       "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie."
@@ -1692,6 +1702,15 @@
         "save": "Sauvegarder",
         "success": "Paramètres d'inscription enregistrés avec succès",
         "error": "Échec de l'enregistrement des paramètres d'inscription"
+      },
+      "movingEncounters": {
+        "title": "Déplacement des rencontres",
+        "enabled": "Déplacements ouverts",
+        "startDate": "Date de début",
+        "endDate": "Date de fin",
+        "save": "Sauvegarder",
+        "success": "Paramètres de déplacement des rencontres enregistrés avec succès",
+        "error": "Échec de l'enregistrement des paramètres de déplacement des rencontres"
       }
     },
     "avgLevelPage": {
@@ -1847,6 +1866,14 @@
               "startRequired": "La date de début est requise",
               "endRequired": "La date de fin est requise"
             }
+          }
+        }
+      },
+      "generalInfoTab": {
+        "title": "General info",
+        "generalForm": {
+          "states": {
+            "liga": "Ligue"
           }
         }
       },
@@ -2088,13 +2115,183 @@
     "locations": {
       "exceptions": "Exceptions"
     },
+    "changeEncounter": {
+      "title": "Déplacer la rencontre",
+      "disabled": {
+        "title": "Déplacements fermés",
+        "message": "Le déplacement des rencontres est actuellement fermé. Veuillez réessayer plus tard."
+      },
+      "encounterNotFound": "Rencontre non trouvée",
+      "proposals": {
+        "title": "Propositions",
+        "proposalPeriod": "La période pour faire des propositions est du 1er juin au 31 août.",
+        "noProposals": "Aucune proposition",
+        "date": "Date",
+        "time": "Heure",
+        "location": "Emplacement",
+        "previousRounds": "Rounds précédents",
+        "buttons": {
+          "addProposal": "Ajouter une proposition",
+          "accept": "Accepter",
+          "reject": "Rejeter",
+          "delete": "Supprimer",
+          "submitTriage": "Soumettre",
+          "finalize": "Finaliser"
+        },
+        "messages": {
+          "proposalAddedSuccess": "Proposition ajoutée avec succès",
+          "proposalAddedError": "Erreur lors de l'ajout de la proposition",
+          "proposalAcceptedSuccess": "Proposition acceptée",
+          "proposalAcceptedError": "Erreur lors de l'acceptation de la proposition",
+          "proposalRejectedSuccess": "Proposition rejetée",
+          "proposalRejectedError": "Erreur lors du rejet de la proposition",
+          "proposalDeletedSuccess": "Proposition supprimée",
+          "proposalDeletedError": "Erreur lors de la suppression de la proposition",
+          "generalError": "Quelque chose s'est mal passé lors du déplacement de la rencontre",
+          "triageSuccess": "Propositions soumises avec succès",
+          "triageError": "Erreur lors de la soumission des propositions",
+          "finalizeSuccess": "Date finalisée avec succès",
+          "finalizeError": "Erreur lors de la finalisation de la date"
+        },
+        "history": "Historique",
+        "status": {
+          "pending": "En attente",
+          "tentativelyaccepted": "Provisoirement acceptée",
+          "accepted": "Acceptée",
+          "rejected": "Rejetée",
+          "resolved": "Résolue",
+          "tentatively_accepted": "Provisoirement acceptée",
+          "possible": "Date possible"
+        }
+      },
+      "messages": {
+        "title": "Messages",
+        "noMessages": "Pas de messages",
+        "messages": {
+          "messageSentSuccess": "Message envoyé avec succès",
+          "messageSentError": "Erreur lors de l'envoi du message"
+        },
+        "label": "Message",
+        "placeholder": "Écrivez un message",
+        "proposalPeriodInfo": "La période pour faire des propositions est du 1er juin au 31 août."
+      },
+      "calendar": {
+        "encounterNotFound": "Rencontre non trouvée",
+        "filter": {
+          "labels": {
+            "homeTeam": "Équipe à domicile",
+            "awayTeam": "Équipe à l'extérieur"
+          },
+          "options": {
+            "allTeams": "Toutes les équipes"
+          }
+        },
+        "buttons": {
+          "close": "Fermer"
+        },
+        "dayContent": {
+          "otherEncounters": "Autres rencontres",
+          "originalDate": "Date originale",
+          "proposal": "Proposition",
+          "buttons": {
+            "spaceForEncounters": "Place pour {count} rencontres supplémentaires",
+            "courtsAvailableTooltip": "{courts} terrains disponibles",
+            "alreadyProposedTooltip": "Cette date a déjà été proposée"
+          },
+          "eventWarning": "La compétition n'est pas autorisée",
+          "drawer": {
+            "courts": "terrain(s)",
+            "proposal": "Proposition",
+            "originalDate": "Date originale",
+            "availableCourts": "Terrain(s) disponible(s)",
+            "buttons": {
+              "sendRequest": "Envoyer la demande"
+            },
+            "otherEncounters": "Autres rencontres",
+            "messages": {
+              "success": "Demande envoyée avec succès",
+              "error": "Erreur lors de l'envoi de la demande",
+              "duplicateDate": "Cette date a déjà été proposée",
+              "deadlinePassed": "La date limite pour demander une modification de date est dépassée",
+              "outsideCompetitionSeason": "La date est en dehors de la saison compétitive",
+              "dateNotEndorsed": "Cette date n'a pas été approuvée par l'équipe adverse",
+              "validationFailed": "Cette date n'a pas pu être validée",
+              "permissionDenied": "Vous n'avez pas la permission d'effectuer cette action",
+              "invalidState": "Cette action ne peut pas être effectuée dans l'état actuel"
+            }
+          }
+        }
+      }
+    },
     "clubPage": {
+      "noClubFound": "Aucun club trouvé",
+      "encounters": {
+        "adminChangeDateDialog": {
+          "title": "Modifier la date de la rencontre",
+          "dateLabel": "Date et heure",
+          "locationLabel": "Emplacement",
+          "locationNone": "Aucun emplacement",
+          "messages": {
+            "success": "Date modifiée avec succès",
+            "error": "Échec de la modification de la date"
+          },
+          "buttons": {
+            "cancel": "Annuler",
+            "confirm": "Confirmer"
+          },
+          "triggerButton": "Modifier la date directement (admin)"
+        },
+        "table": {
+          "headers": {
+            "team": "Équipe",
+            "opponent": "Adversaire",
+            "homeAway": "Domicile/Extérieur",
+            "date": "Date",
+            "location": "Emplacement",
+            "status": "Statut",
+            "validation": "Validation",
+            "changeEncounterDate": "Modifier la date de la rencontre",
+            "view": "Afficher"
+          },
+          "status": {
+            "proposal_sent": "Proposition envoyée",
+            "action_required": "Action requise",
+            "rejected_waiting": "Attente de réponse",
+            "moved": "Déplacée"
+          },
+          "validation": {
+            "valid": "Date et heure dans les créneaux de jeu, lieu disponible",
+            "warnings": "Date et heure en dehors des créneaux de jeu standard",
+            "invalid": "Lieu indisponible ou déjà complet à cette heure"
+          }
+        }
+      },
       "teams": {
         "addEditTeamDialog": {
           "messages": {
             "error": "Une erreur s'est produite. Veuillez réessayer."
           }
         }
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "Aucune nouvelle notification",
+      "markAllAsRead": "Tout marquer comme lu",
+      "types": {
+        "encounterChangeNew": "Nouvelle demande de replanification reçue",
+        "encounterChangeConfirmation": "Action requise : demande de replanification",
+        "encounterChangeFinished": "Rencontre replanifiée avec succès",
+        "encounterHasComment": "Nouveau message sur la demande de replanification",
+        "encounterNotAccepted": "Résultat de la rencontre non accepté",
+        "encounterNotEntered": "Résultat de la rencontre non saisi",
+        "clubEnrollment": "Mise à jour de l'inscription au club",
+        "default": "Notification"
+      }
+    },
+    "settings": {
+      "messages": {
+        "noSettingsFound": "Aucun paramètre trouvé"
       }
     }
   }

@@ -32,7 +32,8 @@ export abstract class Notifier<T, A = { email: string }> {
       email?: boolean;
       push?: boolean;
       sms?: boolean;
-    }
+    },
+    meta?: Record<string, unknown>
   ): Promise<void> {
     try {
       if (!player) {
@@ -105,7 +106,8 @@ export abstract class Notifier<T, A = { email: string }> {
               this.allowedInterval
             } (send on: ${lastSend.format("DD-MM-YYYY HH:mm:ss")})`
           );
-          (logAction.meta as any)["reason"] = "Already sent in the last interval";
+          (logAction.meta as Record<string, unknown>)["reason"] =
+            "Already sent in the last interval";
           logAction.changed("meta", true);
           await logAction.save();
           return;
@@ -115,7 +117,7 @@ export abstract class Notifier<T, A = { email: string }> {
           this.logger.debug(
             `Notification already sent to ${player.fullName} enough (${totalAmount}) times`
           );
-          (logAction.meta as any)["reason"] = "Already sent enough times";
+          (logAction.meta as Record<string, unknown>)["reason"] = "Already sent enough times";
           logAction.changed("meta", true);
           await logAction.save();
           return;
@@ -164,6 +166,7 @@ export abstract class Notifier<T, A = { email: string }> {
           linkId,
           linkType: this.linkType,
           type: this.type,
+          meta: meta ? JSON.stringify(meta) : undefined,
         });
 
         await notif.save();

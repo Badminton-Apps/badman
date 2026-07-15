@@ -137,6 +137,14 @@
         "select-one-date": "Please select at least 1 day",
         "select-one-date-or-comment": "Please comment (at least 15 characters) or choose a date."
       },
+      "email": {
+        "action": {
+          "propose": "{actingTeamName} has submitted a request to reschedule the encounter between {home} and {away}.",
+          "endorse": "{actingTeamName} has approved a proposed date for the encounter between {home} and {away}.",
+          "reject": "{actingTeamName} has rejected the proposed dates for the encounter between {home} and {away}.",
+          "counter": "{actingTeamName} has proposed counter-dates for the encounter between {home} and {away}."
+        }
+      },
       "not-possible": "Not available",
       "possible": "Available",
       "re-open": "The previous request has been completed, you can reopen it and then the originally proposed data will be visible again. The new request is only resent once you clicked submit after reopening",
@@ -679,7 +687,9 @@
     "september": "September"
   },
   "notifications": {
+    "empty": "No notifications",
     "noNotifications": "No notifications",
+    "title": "Notifications",
     "types": {
       "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> has not yet been entered.",
       "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> has not yet been entered."
@@ -1454,6 +1464,15 @@
         "save": "Save",
         "success": "Enrollment settings saved successfully",
         "error": "Failed to save enrollment settings"
+      },
+      "movingEncounters": {
+        "title": "Moving encounters",
+        "enabled": "Rescheduling open",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "save": "Save",
+        "success": "Moving encounter settings saved successfully",
+        "error": "Failed to save moving encounter settings"
       }
     },
     "avgLevelPage": {
@@ -2687,12 +2706,28 @@
           "changedDate": "Changed date",
           "homeGames": "Home games"
         },
+        "adminChangeDateDialog": {
+          "title": "Change encounter date",
+          "dateLabel": "Date & time",
+          "locationLabel": "Location",
+          "locationNone": "No location",
+          "messages": {
+            "success": "Date changed successfully",
+            "error": "Failed to change date"
+          },
+          "buttons": {
+            "cancel": "Cancel",
+            "confirm": "Confirm"
+          },
+          "triggerButton": "Change date directly (admin)"
+        },
         "table": {
           "headers": {
             "team": "Team",
             "opponent": "Opponent",
             "homeAway": "Home/Away",
             "date": "Date",
+            "location": "Location",
             "status": "Status",
             "validation": "Validation",
             "changeEncounterDate": "Change encounter date",
@@ -2703,10 +2738,21 @@
             "original": "Original",
             "inProgress": "In progress"
           },
+          "status": {
+            "proposal_sent": "Proposal sent",
+            "action_required": "Action required",
+            "rejected_waiting": "Waiting for response",
+            "moved": "Moved"
+          },
           "originalDate": "Original date",
           "home": "Home",
           "away": "Away",
-          "noData": "No encounters found"
+          "noData": "No encounters found",
+          "validation": {
+            "valid": "Date and time within playing slots, venue available",
+            "warnings": "Date and time outside standard playing slots",
+            "invalid": "Venue unavailable or already full at this time"
+          }
         }
       },
       "teamEnrollment": {
@@ -2776,7 +2822,8 @@
               "namur": "Namur",
               "oost-vlaanderen": "East Flanders",
               "vlaams-brabant": "Flemish Brabant",
-              "west-vlaanderen": "West Flanders"
+              "west-vlaanderen": "West Flanders",
+              "liga": "League"
             },
             "clubId": "Club ID",
             "messages": {
@@ -3763,7 +3810,8 @@
       },
       "messages": {
         "success": "Notifications successfully updated",
-        "error": "Error while updating notifications"
+        "error": "Error while updating notifications",
+        "noSettingsFound": "No settings found"
       },
       "buttons": {
         "save": "Save"
@@ -3771,6 +3819,10 @@
     },
     "changeEncounter": {
       "title": "Change encounter",
+      "disabled": {
+        "title": "Rescheduling closed",
+        "message": "Encounter rescheduling is currently closed. Please check back later."
+      },
       "encounterNotFound": "Encounter not found",
       "proposals": {
         "title": "Proposal",
@@ -3779,6 +3831,7 @@
         "date": "Date",
         "time": "Time",
         "location": "Location",
+        "previousRounds": "Previous rounds",
         "messages": {
           "proposalAddedSuccess": "Proposal added successfully",
           "proposalAddedError": "Error adding proposal",
@@ -3788,13 +3841,29 @@
           "proposalRejectedError": "Error rejecting proposal",
           "proposalDeletedSuccess": "Proposal deleted successfully",
           "proposalDeletedError": "Error deleting proposal",
-          "generalError": "Something went wrong while moving the encounter"
+          "generalError": "Something went wrong while moving the encounter",
+          "triageSuccess": "Proposals submitted successfully",
+          "triageError": "Failed to submit proposals",
+          "finalizeSuccess": "Date finalized successfully",
+          "finalizeError": "Failed to finalize date"
         },
         "buttons": {
           "reject": "Reject",
           "accept": "Accept",
           "addProposal": "Add proposal",
-          "delete": "Delete"
+          "delete": "Delete",
+          "submitTriage": "Submit",
+          "finalize": "Finalize"
+        },
+        "history": "History",
+        "status": {
+          "pending": "Pending",
+          "tentativelyaccepted": "Tentatively accepted",
+          "accepted": "Accepted",
+          "rejected": "Rejected",
+          "resolved": "Resolved",
+          "tentatively_accepted": "Tentatively accepted",
+          "possible": "Possible date"
         }
       },
       "messages": {
@@ -3827,7 +3896,9 @@
           "originalDate": "Original date",
           "proposal": "Proposal",
           "buttons": {
-            "courtsAvailable": "court(s) available"
+            "spaceForEncounters": "Space for {count} more encounters",
+            "courtsAvailableTooltip": "{courts} courts available",
+            "alreadyProposedTooltip": "This date has already been proposed"
           },
           "eventWarning": "Competition is not allowed",
           "drawer": {
@@ -3841,7 +3912,14 @@
             "otherEncounters": "Other encounters",
             "messages": {
               "success": "Request sent successfully",
-              "error": "Error sending request"
+              "error": "Error sending request",
+              "duplicateDate": "This date has already been proposed",
+              "deadlinePassed": "The deadline for requesting date changes has passed",
+              "outsideCompetitionSeason": "Date is outside the competition season",
+              "dateNotEndorsed": "This date has not been endorsed by the away team",
+              "validationFailed": "This date could not be validated",
+              "permissionDenied": "You don't have permission to perform this action",
+              "invalidState": "This action cannot be performed in the current state"
             }
           }
         }
@@ -3849,6 +3927,21 @@
     },
     "locations": {
       "exceptions": "Exceptions"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "empty": "No new notifications",
+      "markAllAsRead": "Mark all as read",
+      "types": {
+        "encounterChangeNew": "New rescheduling request received",
+        "encounterChangeConfirmation": "Action required: rescheduling request",
+        "encounterChangeFinished": "Encounter successfully rescheduled",
+        "encounterHasComment": "New message on rescheduling request",
+        "encounterNotAccepted": "Encounter result not accepted",
+        "encounterNotEntered": "Encounter result not entered",
+        "clubEnrollment": "Club enrollment update",
+        "default": "Notification"
+      }
     }
   }
 }

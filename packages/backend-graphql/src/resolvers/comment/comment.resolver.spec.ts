@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { Comment, Player } from "@badman/backend-database";
+import { Comment, EncounterCompetition, Player, Team } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
 import { Sequelize } from "sequelize-typescript";
 import { PlayerLoaderService } from "../../loaders";
@@ -28,6 +28,7 @@ describe("CommentResolver", () => {
           provide: NotificationService,
           useValue: {
             notifyEncounterChange: jest.fn(),
+            notifyEncounterChangeMessage: jest.fn(),
           },
         },
         {
@@ -42,6 +43,65 @@ describe("CommentResolver", () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  // ── encounterChangeComment notification routing ───────────────────────────
+
+  describe("addComment — encounterChange linkType notification", () => {
+    const homeClubId = "club-home";
+    const awayClubId = "club-away";
+
+    const buildSetup = (commentingClubId: string) => {
+      const homeTeam = { id: "team-home", clubId: homeClubId } as unknown as Team;
+      const awayTeam = { id: "team-away", clubId: awayClubId } as unknown as Team;
+      const encounter = {
+        id: "enc-1",
+        getHome: jest.fn().mockResolvedValue(homeTeam),
+        getAway: jest.fn().mockResolvedValue(awayTeam),
+        addHomeCommentsChange: jest.fn().mockResolvedValue(undefined),
+        addAwayCommentsChange: jest.fn().mockResolvedValue(undefined),
+      } as unknown as EncounterCompetition;
+
+      const comment = { clubId: commentingClubId, playerId: "player-1" } as unknown as Comment;
+      const user = {
+        id: "player-1",
+        hasAnyPermission: jest.fn().mockResolvedValue(true),
+      } as unknown as Player;
+
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+
+      return { encounter, comment, user };
+    };
+
+    it("calls notifyEncounterChangeMessage(encounter, true) when home club comments", async () => {
+      const { encounter, comment, user } = buildSetup(homeClubId);
+      const notificationService = resolver[
+        "notificationService"
+      ] as jest.Mocked<NotificationService>;
+
+      await resolver["encounterChangeComment"](encounter, comment, user, {} as never);
+
+      expect(notificationService.notifyEncounterChangeMessage).toHaveBeenCalledWith(
+        encounter,
+        true
+      );
+      expect(notificationService.notifyEncounterChange).not.toHaveBeenCalled();
+    });
+
+    it("calls notifyEncounterChangeMessage(encounter, false) when away club comments", async () => {
+      const { encounter, comment, user } = buildSetup(awayClubId);
+      const notificationService = resolver[
+        "notificationService"
+      ] as jest.Mocked<NotificationService>;
+
+      await resolver["encounterChangeComment"](encounter, comment, user, {} as never);
+
+      expect(notificationService.notifyEncounterChangeMessage).toHaveBeenCalledWith(
+        encounter,
+        false
+      );
+      expect(notificationService.notifyEncounterChange).not.toHaveBeenCalled();
+    });
   });
 
   // ── player ResolveField ───────────────────────────────────────────────────
