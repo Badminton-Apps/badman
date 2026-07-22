@@ -65,6 +65,9 @@ export class ClaimResolver {
       }
 
       await transaction.commit();
+      this.logger.warn(
+        `[permission-change] actor=${user.id} action=${active ? "grant" : "revoke"} target=${playerId} claim=${claimId}`
+      );
       return true;
     } catch (error) {
       this.logger.error(error);
@@ -96,6 +99,10 @@ export class ClaimResolver {
         } else {
           await player.removeClaim(claimId, { transaction });
         }
+
+        this.logger.warn(
+          `[permission-change] actor=${user.id} action=${active ? "grant" : "revoke"} target=${playerId} claim=${claimId}`
+        );
       }
 
       await transaction.commit();
