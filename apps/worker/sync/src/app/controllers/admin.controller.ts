@@ -1,6 +1,6 @@
-import { SyncQueue } from "@badman/backend-queue";
+import { Sync, SyncQueue } from "@badman/backend-queue";
 import { InjectQueue } from "@nestjs/bull";
-import { Controller, Get, Param, Post, Logger } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Logger } from "@nestjs/common";
 import { Queue } from "bull";
 
 @Controller("admin/jobs")
@@ -60,6 +60,31 @@ export class AdminJobsController {
     ]);
 
     return { waiting, active, completed, failed, delayed };
+  }
+
+  @Post("trigger/sync-events")
+  async triggerSyncEvents(
+    @Body()
+    body: {
+      id?: string | string[];
+      search?: string;
+      date?: string;
+      startDate?: string;
+      skip?: string[];
+      only?: string[];
+      official?: boolean;
+      offset?: number;
+      limit?: number;
+      userId?: string | string[];
+    } = {}
+  ) {
+    const job = await this.queue.add(Sync.SyncEvents, body, {
+      removeOnComplete: 5,
+      removeOnFail: 5,
+      attempts: 1,
+    });
+    this.logger.log(`Triggered SyncEvents job ${job.id} with data: ${JSON.stringify(body)}`);
+    return { success: true, jobId: job.id, name: job.name, data: body };
   }
 
   @Post(":id/retry")
