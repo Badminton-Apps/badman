@@ -56,7 +56,13 @@ export class LocationRule extends Rule {
       false
     );
     if (err.length) {
-      errors.push(...err);
+      // When a date change is being proposed/finalized the current slot will be
+      // replaced — its capacity issues are irrelevant to accepting the new date.
+      if (suggestedDates && suggestedDates.length > 0) {
+        warnings.push(...err);
+      } else {
+        errors.push(...err);
+      }
     }
 
     if (warn.length) {
