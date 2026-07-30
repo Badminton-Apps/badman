@@ -48,36 +48,24 @@ export class LocationRule extends Rule {
       };
     }
 
-    const { err, warn } = await this.checkifLocationIsFree(
-      encounter.date,
-      encounter.locationId,
-      encounter.id,
-      locations,
-      false
-    );
-    if (err.length) {
-      // When a date change is being proposed/finalized the current slot will be
-      // replaced — its capacity issues are irrelevant to accepting the new date.
-      if (suggestedDates && suggestedDates.length > 0) {
-        warnings.push(...err);
-      } else {
-        errors.push(...err);
-      }
-    }
-
-    if (warn.length) {
+    if (!suggestedDates || suggestedDates.length === 0) {
+      // No date change proposed: validate the current slot normally.
+      const { err, warn } = await this.checkifLocationIsFree(
+        encounter.date,
+        encounter.locationId,
+        encounter.id,
+        locations
+      );
+      errors.push(...err);
       warnings.push(...warn);
-    }
-
-    // if we have suggested dates for the working encounter, we need to check if that date would give a warning
-    if (suggestedDates && encounter) {
+    } else {
+      // A date change is proposed: the encounter is moving away from the current
+      // slot, so its capacity is irrelevant. Only validate the proposed dates.
       for (const suggestedDate of suggestedDates) {
         if (moment(suggestedDate.date).isSame(encounter.date, "minute")) {
-          // if the suggested date is the same as the current date, we can skip this
           continue;
         }
 
-        // Check if the suggested location is available for the suggested date
         const suggestedLocation = locations.find((l) => l.id === suggestedDate.locationId);
         if (!suggestedLocation) {
           warnings.push({
@@ -98,12 +86,8 @@ export class LocationRule extends Rule {
           locations,
           true
         );
-        if (err.length) {
-          warnings.push(...err);
-        }
-        if (warn.length) {
-          warnings.push(...warn);
-        }
+        errors.push(...err);
+        warnings.push(...warn);
       }
     }
 
@@ -136,13 +120,10 @@ export class LocationRule extends Rule {
       },
     });
 
-    // Option A: original slots stay occupied until finalization — count all encounters on the date
+    // Count all encounters on that date; add 1 for the encounter being moved there (suggested).
     let count = encsOnDayAndLocation.length;
-    let countWithouteRplaced = encsOnDayAndLocation.length;
-
     if (isSuggested) {
       count++;
-      countWithouteRplaced++;
     }
 
     const location = locations.find((r) => r.id === locationId);
@@ -172,8 +153,10 @@ export class LocationRule extends Rule {
     }
 
     if (slot) {
+      // Overcapacity is always advisory — teams cannot control how many other
+      // encounters are booked at their location, so this is never a hard error.
       if (count > (slot?.courts ?? 0) / 2) {
-        err.push({
+        warn.push({
           message: "all.competition.change-encounter.errors.location-not-free",
           params: {
             encounterId: encounterId,
@@ -182,20 +165,6 @@ export class LocationRule extends Rule {
             availableCourts: slot?.courts ?? 0,
             requiredCourts: count * 2,
             conflictingEncounters: count,
-            timeSlot: `${tzDay} ${tzTime}`,
-            dayOfWeek: tzDay,
-          },
-        });
-      } else if (countWithouteRplaced > (slot?.courts ?? 0) / 2) {
-        warn.push({
-          message: "all.competition.change-encounter.errors.location-not-free",
-          params: {
-            encounterId: encounterId,
-            date: encounterDate,
-            locationName: location?.name,
-            availableCourts: slot?.courts ?? 0,
-            requiredCourts: countWithouteRplaced * 2,
-            conflictingEncounters: countWithouteRplaced,
             timeSlot: `${tzDay} ${tzTime}`,
             dayOfWeek: tzDay,
           },
