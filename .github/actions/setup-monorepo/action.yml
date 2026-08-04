@@ -20,6 +20,11 @@ runs:
 
     - name: Install dependencies
       shell: bash
+      # REDIS_MEMORY_SERVER_DISABLE_POSTINSTALL skips the redis-memory-server
+      # source compile step. The binary is only needed for integration tests
+      # (RUN_INTEGRATION_TESTS=1) which never run in CI.
+      env:
+        REDISMS_DISABLE_POSTINSTALL: "1"
       run: pnpm install --frozen-lockfile
 
     - name: Cache Turborepo computation
