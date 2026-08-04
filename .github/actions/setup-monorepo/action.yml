@@ -24,7 +24,7 @@ runs:
       # source compile step. The binary is only needed for integration tests
       # (RUN_INTEGRATION_TESTS=1) which never run in CI.
       env:
-        REDIS_MEMORY_SERVER_DISABLE_POSTINSTALL: "1"
+        REDISMS_DISABLE_POSTINSTALL: "1"
       run: pnpm install --frozen-lockfile
 
     - name: Cache Turborepo computation
