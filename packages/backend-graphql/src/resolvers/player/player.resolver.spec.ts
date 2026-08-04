@@ -189,7 +189,7 @@ describe("PlayersResolver — setting ResolveField (auto-create)", () => {
     const created = { id: "settings-new", playerId: "player-1" } as unknown as Setting;
     const player = {
       id: "player-1",
-      sub: "auth0|6a66f1cc4c5f8ad111ba80ac", // real sub from production DB
+      sub: "auth0|test-claimed-player",
       getSetting: jest.fn().mockResolvedValue(null),
     } as unknown as Player;
 
