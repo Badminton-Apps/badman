@@ -47,11 +47,11 @@ export class EncounterValidationService extends ValidationService<
       include: [
         {
           association: "home",
-          attributes: ["id", "clubId"],
+          attributes: ["id", "name", "clubId"],
         },
         {
           association: "away",
-          attributes: ["id", "clubId"],
+          attributes: ["id", "name", "clubId"],
         },
       ],
     });
