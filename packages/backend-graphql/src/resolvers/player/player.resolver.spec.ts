@@ -1,6 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { NotFoundException } from "@nestjs/common";
-import { Player, RankingLastPlace, RankingPlace, RankingSystem } from "@badman/backend-database";
+import {
+  Player,
+  RankingLastPlace,
+  RankingPlace,
+  RankingSystem,
+  Setting,
+} from "@badman/backend-database";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { Sequelize } from "sequelize-typescript";
 import { ListArgs } from "../../utils";
@@ -136,6 +142,79 @@ describe("PlayersResolver — RankingSystemService integration", () => {
 
     expect(findAndCountAll).toHaveBeenCalledTimes(1);
     expect(findAndCountAll.mock.calls[0][0]?.limit).toBe(50);
+  });
+});
+
+describe("PlayersResolver — setting ResolveField (auto-create)", () => {
+  let resolver: PlayersResolver;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PlayersResolver,
+        { provide: Sequelize, useValue: { transaction: jest.fn() } },
+        { provide: PointsService, useValue: {} },
+        {
+          provide: RankingSystemService,
+          useValue: { getPrimary: jest.fn(), getById: jest.fn() },
+        },
+        {
+          provide: PlayerAssociationService,
+          useValue: { getPrimaryRankingLastPlaces: jest.fn().mockResolvedValue([]) },
+        },
+      ],
+    }).compile();
+
+    resolver = module.get<PlayersResolver>(PlayersResolver);
+  });
+
+  afterEach(() => jest.restoreAllMocks());
+
+  it("returns existing settings when the player already has a settings row", async () => {
+    const existing = { id: "settings-1", playerId: "player-1" } as unknown as Setting;
+    const player = {
+      id: "player-1",
+      sub: "auth0|abc123",
+      getSetting: jest.fn().mockResolvedValue(existing),
+    } as unknown as Player;
+
+    const result = await resolver.setting(player);
+
+    expect(result).toBe(existing);
+    expect(player.getSetting).toHaveBeenCalledTimes(1);
+  });
+
+  it("auto-creates and returns a default settings row when player has sub but no settings", async () => {
+    // Evy Andries / Jeffrey Buysse scenario: logged-in player, no settings row yet
+    const created = { id: "settings-new", playerId: "player-1" } as unknown as Setting;
+    const player = {
+      id: "player-1",
+      sub: "auth0|test-claimed-player",
+      getSetting: jest.fn().mockResolvedValue(null),
+    } as unknown as Player;
+
+    jest.spyOn(Setting, "create").mockResolvedValue(created as never);
+
+    const result = await resolver.setting(player);
+
+    expect(Setting.create).toHaveBeenCalledWith({ playerId: "player-1" });
+    expect(result).toBe(created);
+  });
+
+  it("returns null for federation-imported players without a sub (no settings created)", async () => {
+    // 93k federation players — no login, no settings row should be created
+    const player = {
+      id: "player-federation",
+      sub: undefined,
+      getSetting: jest.fn().mockResolvedValue(null),
+    } as unknown as Player;
+
+    const create = jest.spyOn(Setting, "create");
+
+    const result = await resolver.setting(player);
+
+    expect(result).toBeNull();
+    expect(create).not.toHaveBeenCalled();
   });
 });
 

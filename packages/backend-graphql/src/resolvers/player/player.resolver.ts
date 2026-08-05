@@ -287,7 +287,15 @@ export class PlayersResolver {
 
   @ResolveField(() => Setting, { nullable: true })
   async setting(@Parent() player: Player): Promise<Setting> {
-    return player.getSetting();
+    let setting = await player.getSetting();
+
+    // Only auto-create for players who have claimed their account (have an Auth0 sub).
+    // Federation-imported players without a sub should not get settings rows created.
+    if (!setting && player.sub) {
+      setting = await Setting.create({ playerId: player.id });
+    }
+
+    return setting;
   }
 
   @Mutation(() => Player)
