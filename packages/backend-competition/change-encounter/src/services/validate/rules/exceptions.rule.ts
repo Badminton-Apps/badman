@@ -1,5 +1,4 @@
 import { InfoEvent } from "@badman/backend-database";
-import { Logger } from "@nestjs/common";
 import moment from "moment";
 import {
   EncounterValidationData,
@@ -22,7 +21,6 @@ export type ExceptionRuleParams = {
  */
 export class ExceptionRule extends Rule {
   static override readonly description = "all.rules.change-encounter.exceptions";
-  private readonly logger = new Logger(ExceptionRule.name);
 
   async validate(changeEncounter: EncounterValidationData): Promise<EncounterValidationOutput> {
     const errors = [] as EncounterValidationError<ExceptionRuleParams>[];
@@ -35,22 +33,27 @@ export class ExceptionRule extends Rule {
       throw new Error("No date provided");
     }
 
-    const error = this.findEncountersOnExceptionDays(encounter.date, encounter.id, infoEvents);
-    if (error.length) {
-      errors.push(...error);
+    // Current encounter date on a blocked day → warning only (the encounter is being moved away from it)
+    const currentDateIssues = this.findEncountersOnExceptionDays(
+      encounter.date,
+      encounter.id,
+      infoEvents
+    );
+    if (currentDateIssues.length) {
+      warnings.push(...currentDateIssues);
     }
 
-    // if we have suggested dates for the working encounter, we need to check if that date would give a warning
+    // Proposed dates on a blocked day → error (prevents scheduling to a blocked day)
     if (suggestedDates && encounter) {
       for (const suggestedDate of suggestedDates) {
-        const warning = this.findEncountersOnExceptionDays(
+        const proposedDateIssues = this.findEncountersOnExceptionDays(
           suggestedDate.date,
           encounter.id,
           infoEvents
         );
 
-        if (warning.length) {
-          warnings.push(...warning);
+        if (proposedDateIssues.length) {
+          errors.push(...proposedDateIssues);
         }
       }
     }
