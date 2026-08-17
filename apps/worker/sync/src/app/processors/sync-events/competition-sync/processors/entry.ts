@@ -425,7 +425,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
       // VisualService normalises Structure.Item to an array.
       const teamItem = xmlDraw.Structure.Item.find(
-        (item) => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code
+        (item) => item.Team?.Name?.indexOf(team.name ?? "") !== -1 && item.Team?.Code
       );
       if (!teamItem?.Team?.Code) {
         this.logger.warn(`Team code not found for ${team.name} in draw structure`);
@@ -476,7 +476,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         const dbPlayers = await Player.findAll({
           where: {
             memberId: {
-              [Op.in]: memberIds,
+              [Op.in]: memberIds.filter((id): id is string => id !== undefined),
             },
           },
           include: [
