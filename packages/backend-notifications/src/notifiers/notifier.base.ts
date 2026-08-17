@@ -13,6 +13,8 @@ export abstract class Notifier<T, A = { email: string }> {
   protected allowedInterval: unitOfTime.Diff = "day";
   protected allowedIntervalUnit = 1;
   protected allowedAmount?: number = undefined;
+  /** Set to false in subclasses to disable throttling entirely (every invocation sends). */
+  protected allowedThrottle = true;
 
   constructor(
     protected mailing: MailingService,
@@ -98,7 +100,7 @@ export abstract class Notifier<T, A = { email: string }> {
         meta: { linkId, linkType: this.linkType, type: NotificationType[type] },
       });
 
-      if (notification) {
+      if (this.allowedThrottle && notification) {
         const lastSend = moment(notification.createdAt);
         if (moment().diff(lastSend, this.allowedInterval) < this.allowedIntervalUnit) {
           this.logger.debug(
