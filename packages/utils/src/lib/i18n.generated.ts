@@ -3886,6 +3886,10 @@ export type I18nTranslations = {
                         "title": string;
                         "description": string;
                     };
+                    "encounterHasCommentNotification": {
+                        "title": string;
+                        "description": string;
+                    };
                     "types": {
                         "email": string;
                         "push": string;

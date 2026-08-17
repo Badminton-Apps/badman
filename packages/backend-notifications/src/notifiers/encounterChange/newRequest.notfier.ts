@@ -1,7 +1,6 @@
 import { EncounterCompetition, NotificationOptionsTypes, Player } from "@badman/backend-database";
 import { Notifier } from "../notifier.base";
 import { RequestOptions } from "web-push";
-import { unitOfTime } from "moment";
 
 export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
   encounter: EncounterCompetition;
@@ -10,7 +9,7 @@ export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
 }> {
   protected linkType = "encounterCompetition";
   protected type: keyof NotificationOptionsTypes = "encounterChangeNewNotification";
-  protected override allowedInterval: unitOfTime.Diff = "second";
+  protected override allowedThrottle = false;
 
   private readonly options = (encounter: EncounterCompetition) => {
     return {

@@ -3581,6 +3581,10 @@
           "title": "Team inschrijving",
           "description": "Ontvang een melding wanneer een team zich inschrijft."
         },
+        "encounterHasCommentNotification": {
+          "title": "Nieuw bericht over verplaatsingsverzoek",
+          "description": "Ontvang een melding wanneer er een nieuw bericht wordt geplaatst bij een verplaatsingsverzoek."
+        },
         "types": {
           "email": "Email",
           "push": "Push"
