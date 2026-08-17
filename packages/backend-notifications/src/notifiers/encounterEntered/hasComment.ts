@@ -13,7 +13,7 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
 > {
   protected linkType = "encounterCompetition";
   protected type: keyof NotificationOptionsTypes = "encounterHasCommentNotification";
-  protected override allowedAmount = 1;
+  protected override allowedThrottle = false;
 
   private readonly options = (url: string, encounter: EncounterCompetition) => {
     return {

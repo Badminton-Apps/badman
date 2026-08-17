@@ -3803,6 +3803,10 @@
           "title": "Team registration",
           "description": "Receive a notification when a team registers."
         },
+        "encounterHasCommentNotification": {
+          "title": "New message on rescheduling request",
+          "description": "Receive a notification when a new message is posted on a rescheduling request."
+        },
         "types": {
           "email": "Email",
           "push": "Push"
