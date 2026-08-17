@@ -83,7 +83,13 @@ export class NotificationService {
       notifierConform.notify(
         confReqTeam.captain,
         encounter.id,
-        { encounter, isHome: !homeTeamRequests, url: confReqUrl, action },
+        {
+          encounter,
+          isHome: !homeTeamRequests,
+          url: confReqUrl,
+          action,
+          actingTeamName: newReqTeam.name,
+        },
         { email: confReqTeam.email ?? "" },
         undefined, // force
         { clubId: confReqTeam.clubId }

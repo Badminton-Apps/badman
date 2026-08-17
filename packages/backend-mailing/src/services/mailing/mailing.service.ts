@@ -144,7 +144,7 @@ export class MailingService {
         captain: to.fullName,
         isHome,
         actingTeamName:
-          actingTeamName ?? (isHome ? encounter.home?.name : encounter.away?.name) ?? "",
+          actingTeamName ?? (isHome ? encounter.away?.name : encounter.home?.name) ?? "",
         action: action ?? EncounterChangeAction.PROPOSE,
         season: eventCompetition.season,
         url,
