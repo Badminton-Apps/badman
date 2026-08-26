@@ -88,15 +88,7 @@ export class EncounterChangeService {
 
     const event = await this._loadEvent(encounter);
 
-    if (event?.changeCloseRequestDatePeriod1 && event?.changeCloseRequestDatePeriod2) {
-      const closedDate = this._getDeadlineDate(encounter, event);
-      if (moment().isAfter(moment(closedDate))) {
-        this.logger.warn(`[propose] deadline passed encounterId=${encounter.id}`);
-        throw new GraphQLError("The deadline for requesting date changes has passed", {
-          extensions: { code: ErrorCode.DEADLINE_PASSED },
-        });
-      }
-    }
+    this._assertDeadlineNotPassed(encounter, event, "propose");
 
     const season = event?.season ?? new Date().getFullYear();
     for (const d of input.dates) {
@@ -232,6 +224,9 @@ export class EncounterChangeService {
     }
 
     const event = await this._loadEvent(encounter);
+
+    this._assertDeadlineNotPassed(encounter, event, "triage");
+
     const season = event?.season ?? new Date().getFullYear();
 
     for (const d of input.newDates ?? []) {
@@ -391,6 +386,9 @@ export class EncounterChangeService {
         { extensions: { code: ErrorCode.DATE_NOT_ENDORSED } }
       );
     }
+
+    const event = await this._loadEvent(encounter);
+    this._assertDeadlineNotPassed(encounter, event, "finalize");
 
     this.logger.debug(`[finalize] running validation for encounterId=${encounter.id}`);
     const validationResult = await this.encounterValidationService.validate({
@@ -552,6 +550,23 @@ export class EncounterChangeService {
       include: [{ model: SubEventCompetition, attributes: ["id", "eventId"] }],
     });
     return EventCompetition.findByPk(draw?.subEventCompetition?.eventId);
+  }
+
+  private _assertDeadlineNotPassed(
+    encounter: EncounterCompetition,
+    event: EventCompetition | null,
+    context: string
+  ): void {
+    if (!event?.changeCloseRequestDatePeriod1 || !event?.changeCloseRequestDatePeriod2) {
+      return;
+    }
+    const closedDate = this._getDeadlineDate(encounter, event);
+    if (moment().isAfter(moment(closedDate))) {
+      this.logger.warn(`[${context}] deadline passed encounterId=${encounter.id}`);
+      throw new GraphQLError("The deadline for requesting date changes has passed", {
+        extensions: { code: ErrorCode.DEADLINE_PASSED },
+      });
+    }
   }
 
   private _getDeadlineDate(

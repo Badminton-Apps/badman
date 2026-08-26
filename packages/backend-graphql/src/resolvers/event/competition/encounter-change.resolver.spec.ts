@@ -192,6 +192,15 @@ describe("EncounterChangeCompetitionResolver", () => {
         resolver.triageEncounterChange(buildUser(false), input as any)
       ).rejects.toMatchObject({ extensions: { code: ErrorCode.DATE_OUT_OF_SEASON } });
     });
+
+    it("propagates DEADLINE_PASSED when module is closed", async () => {
+      mockEncounterChangeService.triage.mockRejectedValue(
+        new GraphQLError("deadline", { extensions: { code: ErrorCode.DEADLINE_PASSED } })
+      );
+      await expect(
+        resolver.triageEncounterChange(buildUser(true), input as any)
+      ).rejects.toMatchObject({ extensions: { code: ErrorCode.DEADLINE_PASSED } });
+    });
   });
 
   // ---------------------------------------------------------------------------
@@ -238,6 +247,15 @@ describe("EncounterChangeCompetitionResolver", () => {
       await expect(
         resolver.finalizeEncounterChange(buildUser(true), input as any)
       ).rejects.toMatchObject({ extensions: { code: ErrorCode.VALIDATION_FAILED } });
+    });
+
+    it("propagates DEADLINE_PASSED when module is closed", async () => {
+      mockEncounterChangeService.finalize.mockRejectedValue(
+        new GraphQLError("deadline", { extensions: { code: ErrorCode.DEADLINE_PASSED } })
+      );
+      await expect(
+        resolver.finalizeEncounterChange(buildUser(true), input as any)
+      ).rejects.toMatchObject({ extensions: { code: ErrorCode.DEADLINE_PASSED } });
     });
   });
 
