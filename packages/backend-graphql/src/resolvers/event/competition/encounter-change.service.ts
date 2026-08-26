@@ -88,7 +88,7 @@ export class EncounterChangeService {
 
     const event = await this._loadEvent(encounter);
 
-    this._assertNewRequestDeadlineNotPassed(encounter, event, "propose");
+    this._assertDeadlineNotPassed(encounter, event, "propose");
 
     const season = event?.season ?? new Date().getFullYear();
     for (const d of input.dates) {
@@ -225,12 +225,7 @@ export class EncounterChangeService {
 
     const event = await this._loadEvent(encounter);
 
-    // Endorsing/rejecting existing dates is allowed until the accept window closes.
-    // Counter-proposing new dates is additionally gated by the new-request deadline.
-    this._assertAcceptDeadlineNotPassed(encounter, event, "triage");
-    if ((input.newDates ?? []).length > 0) {
-      this._assertNewRequestDeadlineNotPassed(encounter, event, "triage:counter-propose");
-    }
+    this._assertDeadlineNotPassed(encounter, event, "triage");
 
     const season = event?.season ?? new Date().getFullYear();
 
@@ -393,7 +388,7 @@ export class EncounterChangeService {
     }
 
     const event = await this._loadEvent(encounter);
-    this._assertAcceptDeadlineNotPassed(encounter, event, "finalize");
+    this._assertDeadlineNotPassed(encounter, event, "finalize");
 
     this.logger.debug(`[finalize] running validation for encounterId=${encounter.id}`);
     const validationResult = await this.encounterValidationService.validate({
@@ -557,12 +552,7 @@ export class EncounterChangeService {
     return EventCompetition.findByPk(draw?.subEventCompetition?.eventId);
   }
 
-  /**
-   * Throws DEADLINE_PASSED if the "new requests" window has closed
-   * (changeCloseRequestDatePeriod — "Sluit nieuwe aanvragen").
-   * Used for: propose, triage counter-proposals.
-   */
-  private _assertNewRequestDeadlineNotPassed(
+  private _assertDeadlineNotPassed(
     encounter: EncounterCompetition,
     event: EventCompetition | null,
     context: string
@@ -578,34 +568,8 @@ export class EncounterChangeService {
       ? event.changeCloseRequestDatePeriod1
       : event.changeCloseRequestDatePeriod2;
     if (moment().isAfter(moment(closedDate))) {
-      this.logger.warn(`[${context}] new-request deadline passed encounterId=${encounter.id}`);
+      this.logger.warn(`[${context}] deadline passed encounterId=${encounter.id}`);
       throw new GraphQLError("The deadline for requesting date changes has passed", {
-        extensions: { code: ErrorCode.DEADLINE_PASSED },
-      });
-    }
-  }
-
-  /**
-   * Throws DEADLINE_PASSED if the "accept/finalize" window has closed
-   * (changeCloseDatePeriod — "Sluit aanvaarde aanvragen").
-   * Used for: triage (endorse/reject), finalize.
-   */
-  private _assertAcceptDeadlineNotPassed(
-    encounter: EncounterCompetition,
-    event: EventCompetition | null,
-    context: string
-  ): void {
-    if (!event?.changeCloseDatePeriod1 || !event?.changeCloseDatePeriod2) {
-      return;
-    }
-    const isSeason1 =
-      !!event.season &&
-      (encounter.date?.getFullYear() === event.season ||
-        encounter.date?.getFullYear() === event.season + 1);
-    const closedDate = isSeason1 ? event.changeCloseDatePeriod1 : event.changeCloseDatePeriod2;
-    if (moment().isAfter(moment(closedDate))) {
-      this.logger.warn(`[${context}] accept deadline passed encounterId=${encounter.id}`);
-      throw new GraphQLError("The deadline for accepting date changes has passed", {
         extensions: { code: ErrorCode.DEADLINE_PASSED },
       });
     }
