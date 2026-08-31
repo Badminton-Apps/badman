@@ -120,21 +120,17 @@ export class CheckRankingProcessor {
 
       this.logger.debug(`Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`);
 
-      for (const rankingPlace of rankingPlaces) {
-        // Update player
-        rankingPlace.single = single;
-        rankingPlace.double = double;
-        rankingPlace.mix = mix;
-
-        rankingPlace.changed("single", true);
-        rankingPlace.changed("double", true);
-        rankingPlace.changed("mix", true);
-
+      // Only fill null values in the most recent ranking place.
+      // Using null-coalescing (??): if the existing value is already set (e.g. a
+      // manually corrected May snapshot), it is preserved. The May snapshot is the
+      // season's enrollment cutoff and must never be overwritten by a live sync.
+      const rankingPlace = rankingPlaces[0];
+      if (rankingPlace) {
+        rankingPlace.single = rankingPlace.single ?? single;
+        rankingPlace.double = rankingPlace.double ?? double;
+        rankingPlace.mix = rankingPlace.mix ?? mix;
+        // Sequelize dirty-tracking detects changes; save() is a no-op if nothing changed.
         await rankingPlace.save();
-
-        if (rankingPlace.updatePossible) {
-          break;
-        }
       }
     } catch (error) {
       this.logger.error(error);
