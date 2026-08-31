@@ -2,7 +2,7 @@ import { Service } from "@badman/backend-database";
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ConfigType } from "@badman/utils";
-import { isProductionEnv } from "../utils/env";
+import { isDeployedEnv } from "../utils/env";
 
 type ServiceStatus = "suspended" | "not_suspended";
 
@@ -17,8 +17,10 @@ export class RenderService {
 
   constructor(private readonly configService: ConfigService<ConfigType>) {
     const nodeEnv = this.configService.get<string>("NODE_ENV");
-    if (!isProductionEnv(nodeEnv)) {
-      this._logger.verbose(`Render API disabled (only runs in production, NODE_ENV=${nodeEnv})`);
+    if (!isDeployedEnv(nodeEnv)) {
+      this._logger.verbose(
+        `Render API disabled (only runs in production/staging, NODE_ENV=${nodeEnv})`
+      );
     } else {
       const api = this.configService.get<string>("RENDER_API_URL");
       const apiKey = this.configService.get<string>("RENDER_API_KEY");
@@ -40,8 +42,10 @@ export class RenderService {
 
   async startService(service: Service) {
     const nodeEnv = this.configService.get<string>("NODE_ENV");
-    if (!isProductionEnv(nodeEnv)) {
-      this._logger.verbose(`Skipping startService for ${service.name} (only runs in production)`);
+    if (!isDeployedEnv(nodeEnv)) {
+      this._logger.verbose(
+        `Skipping startService for ${service.name} (only runs in production/staging)`
+      );
       return;
     }
 
@@ -80,8 +84,10 @@ export class RenderService {
 
   async suspendService(service: Service) {
     const nodeEnv = this.configService.get<string>("NODE_ENV");
-    if (!isProductionEnv(nodeEnv)) {
-      this._logger.verbose(`Skipping suspendService for ${service.name} (only runs in production)`);
+    if (!isDeployedEnv(nodeEnv)) {
+      this._logger.verbose(
+        `Skipping suspendService for ${service.name} (only runs in production/staging)`
+      );
       return;
     }
     if (!service.renderId) {
