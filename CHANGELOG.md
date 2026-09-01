@@ -8,6 +8,76 @@
 
 - Arno Soontjens @ArnoSoontjens
 
+## [7.1.0](https://github.com/Badminton-Apps/badman/compare/v7.0.1...v7.1.0) (2026-09-01)
+
+
+### Features
+
+* **encounter-change:** multi-date proposal flow — Phase 1 ([357d0ee](https://github.com/Badminton-Apps/badman/commit/357d0ee5daab47f9bcfb8a9a6106f1d81ae8cf0d))
+* **encounter:** add adminChangeEncounterDate mutation for admin force-reschedule ([7c65ddd](https://github.com/Badminton-Apps/badman/commit/7c65dddc1689557ac6438ed49ee7d9678635eeb5))
+* **encounter:** admin force-reschedule mutation ([5d13208](https://github.com/Badminton-Apps/badman/commit/5d1320824840410561457e315fdbe1f3f5b3585d))
+* **encounter:** multi-date proposals & counter-offer flow (phases 2–7) ([d4d2d5a](https://github.com/Badminton-Apps/badman/commit/d4d2d5aede7248b9ae52de9d5ae7464f9452e9d6))
+* **graphql:** register EncounterChangeViewState as a proper GraphQL enum ([9b9c7c0](https://github.com/Badminton-Apps/badman/commit/9b9c7c046fdf9097f4e64433e3f0a4dd8a4b849c))
+* **notifications:** add encounterHasCommentNotification i18n translations ([58fcf88](https://github.com/Badminton-Apps/badman/commit/58fcf88df772be3b3665912205ff2f11bd07271a))
+* **notifications:** add i18n translations for encounterHasCommentNotification setting ([0e8bfa8](https://github.com/Badminton-Apps/badman/commit/0e8bfa8c53efe9b3b45a57d11883bed0337daa40))
+* **orchestrator:** enable auto-suspend for staging environment ([b6eb5cd](https://github.com/Badminton-Apps/badman/commit/b6eb5cd3fd58d0718e19af27126d42efcd2d03f8))
+* **orchestrator:** enable auto-suspend for staging environment ([09663f6](https://github.com/Badminton-Apps/badman/commit/09663f6c3833e7934ac62d7ac1773ee87a507636))
+
+
+### Bug Fixes
+
+* **assembly:** use correct i18n key prefix for validation error messages ([18c8d47](https://github.com/Badminton-Apps/badman/commit/18c8d47d701a8fc82266f8419351087e5137c66b))
+* **assembly:** use correct i18n key prefix for validation error messages ([8c9564b](https://github.com/Badminton-Apps/badman/commit/8c9564bbd3ab276ac5076f6a38feede9a2190ff2))
+* **change-date:** fix three bugs in SyncDateProcessor and add missing tests ([848fb7b](https://github.com/Badminton-Apps/badman/commit/848fb7b4449e9e8db52bbd9e2a2c8865d921450f))
+* **change-date:** fix three bugs in SyncDateProcessor and add missing… ([ff82440](https://github.com/Badminton-Apps/badman/commit/ff824403ccf04d83b34825e29138ec7a94cb7136))
+* **change-encounter:** allow swap when both encounters are temporaril… ([215b27d](https://github.com/Badminton-Apps/badman/commit/215b27d6945e3e8230be25de119235e0f96572d9))
+* **change-encounter:** allow swap when both encounters are temporarily in the same semester ([1a7649f](https://github.com/Badminton-Apps/badman/commit/1a7649f97c5a9d0081e84c05ef25f49079a91447))
+* **change-encounter:** always treat overcapacity as warning, never hard error ([35263bf](https://github.com/Badminton-Apps/badman/commit/35263bf0bc0cc913a8252439eeeb2a6d6ec3d0d1))
+* **change-encounter:** demote current-slot capacity error to warning … ([5699254](https://github.com/Badminton-Apps/badman/commit/5699254876f919a30dbb06eae2b6afd74baeae2f))
+* **change-encounter:** demote current-slot capacity error to warning when a date change is proposed ([008fd11](https://github.com/Badminton-Apps/badman/commit/008fd11bc606db149b37041d65e90d9ed395e8ef))
+* **change-encounter:** enforce deadline on triage and finalize mutations ([de59ef5](https://github.com/Badminton-Apps/badman/commit/de59ef5d02da60547fa77567a72c453a8556dfa6))
+* **change-encounter:** enforce deadline on triage and finalize mutations ([a893c0a](https://github.com/Badminton-Apps/badman/commit/a893c0a0d4a9f5fbd75bc385c8c87d4d774b6acc))
+* **change-encounter:** exception-day blocks finalization when current date is on a blocked info-event ([6ddb247](https://github.com/Badminton-Apps/badman/commit/6ddb24790884cbee917938c30f680d1f9d79e296))
+* **change-encounter:** exception-day blocks finalization when current date is on a blocked info-event ([34ec708](https://github.com/Badminton-Apps/badman/commit/34ec70824f4f40fe91b81da77327c004e3486c7f))
+* **change-encounter:** single deadline gates all three mutations ([92591f3](https://github.com/Badminton-Apps/badman/commit/92591f3cb0e2666a8f7bbbd4e967fdc30ff90be3))
+* **change-encounter:** single deadline gates all three mutations ([ba5e5a4](https://github.com/Badminton-Apps/badman/commit/ba5e5a4c3acbb99831696b7a9295036c5686a924))
+* **change-encounter:** skip current-slot capacity check when a date change is proposed ([a669049](https://github.com/Badminton-Apps/badman/commit/a6690490046c6535ac120b95d71616844845a3f6))
+* **change-encounter:** skip current-slot capacity check when a date change is proposed ([250b380](https://github.com/Badminton-Apps/badman/commit/250b38024f2b090cc8145bf5fe82089f4b8ed342))
+* **change-encounter:** use correct deadline per mutation action ([1994451](https://github.com/Badminton-Apps/badman/commit/1994451480fbb3847e4d239788c5c0420c0f99ca))
+* **deps:** update dependency multer to v2.2.0 [security] ([e27483a](https://github.com/Badminton-Apps/badman/commit/e27483a3a9e856956b67023b3a822f32673a1169))
+* **deps:** update dependency multer to v2.2.0 [security] ([2dfea5f](https://github.com/Badminton-Apps/badman/commit/2dfea5f4ecf728bfb2593bb90e29fc6fe063704c))
+* **encounter-change:** remove deprecated updateEncounterChange mutation and stale tests ([cd8e2d6](https://github.com/Badminton-Apps/badman/commit/cd8e2d6c7d3f68abd88e9ac9c145ad2f641a83ab))
+* **encounter-change:** remove deprecated updateEncounterChange mutation and stale tests ([37e98eb](https://github.com/Badminton-Apps/badman/commit/37e98eb4df0f9dfc11f855002347e42c2845dde3))
+* **encounter-sync:** use date-based matching with isEqual for 3x/4x draw dedup ([e3f1408](https://github.com/Badminton-Apps/badman/commit/e3f14083171c53ec4931b1112dbaac89449dc2e8))
+* **encounter:** fix season calculation and semester split in encounter validation ([d0d17fe](https://github.com/Badminton-Apps/badman/commit/d0d17fe7c6354112114570e1e5fe6d29c858256b))
+* **encounter:** fix season calculation and semester split in encounter validation ([b86a383](https://github.com/Badminton-Apps/badman/commit/b86a38348fc54d9d986f3232dcfac35d01e17e40))
+* **encounter:** resolve proposals on admin date change, hasMany encou… ([1271944](https://github.com/Badminton-Apps/badman/commit/12719445647ba9b922c28b0db25a53caa60cb2ea))
+* **encounter:** resolve proposals on admin date change, hasMany encounter changes, fix notification settings seed ([accbe4b](https://github.com/Badminton-Apps/badman/commit/accbe4b6f2fb27cd2fb5a502929166da380dc07b))
+* **encounter:** restore selected field on deprecated EncounterChangeDateNewInput ([150cac7](https://github.com/Badminton-Apps/badman/commit/150cac763defbf851a9d9d614efb76867d723567))
+* **encounter:** seed movingEncounters setting and fix admin date change record ([eea496b](https://github.com/Badminton-Apps/badman/commit/eea496be2d8311a731ea9352961e87a3a3efe2c8))
+* **encounter:** seed movingEncounters setting and fix admin date change record ([9304703](https://github.com/Badminton-Apps/badman/commit/93047031a0ea1444f16e7a30192d141d6de5bd57))
+* **export:** query enrollment entries by subEventId instead of drawId ([d8d95ba](https://github.com/Badminton-Apps/badman/commit/d8d95ba0c630e56d239af5146ab298ed1eb45f7e))
+* **export:** query enrollment entries by subEventId instead of drawId ([e38c6cc](https://github.com/Badminton-Apps/badman/commit/e38c6ccdda962ef2dda15f1486c67e6d191e9ffa))
+* **i18n:** add triggerButton translation for admin change date feature ([b5b1865](https://github.com/Badminton-Apps/badman/commit/b5b186547da0ec6ad015211fc0db4993be604bc0))
+* **i18n:** add triggerButton translation for admin change date feature ([ff92270](https://github.com/Badminton-Apps/badman/commit/ff92270d57bbd0b483495ee187aa526c1e14622f))
+* **notifications:** fix encounter change email notification bugs ([a661f40](https://github.com/Badminton-Apps/badman/commit/a661f401f7d5108bcc7f21aec9f3ce5cb2bf95da))
+* **notifications:** remove per-day throttle for encounter-change notifiers ([cb23d55](https://github.com/Badminton-Apps/badman/commit/cb23d552e5bd11a6d3369cd683baa6c4c27aed9c))
+* **notifications:** send encounter-change notifications without team … ([bf51f4c](https://github.com/Badminton-Apps/badman/commit/bf51f4c451c8c4eef776839dc25f34b44bd8e4a2))
+* **notifications:** send encounter-change notifications without team email ([ccd299a](https://github.com/Badminton-Apps/badman/commit/ccd299af9c2fc047879cce91adb470657ebe95cb))
+* **notifications:** store recipient clubId in notification meta for correct click routing ([60a6e74](https://github.com/Badminton-Apps/badman/commit/60a6e748285668bfb8c0e6a02bf56226373be8cf))
+* **notifications:** store recipient clubId in notification meta for correct click routing ([55a672c](https://github.com/Badminton-Apps/badman/commit/55a672c865f54cf04149c3410d190bce6c92892e))
+* **player:** auto-create settings row on first read for claimed players ([79b6b86](https://github.com/Badminton-Apps/badman/commit/79b6b8615a78e04cb046d97f4660b10e8bd04442))
+* **player:** auto-create settings row on first read for claimed players ([e124cf5](https://github.com/Badminton-Apps/badman/commit/e124cf54d0af57beca630b307c233b98f8060a6c))
+* **player:** auto-create settings row on first read for claimed players ([f50d6b0](https://github.com/Badminton-Apps/badman/commit/f50d6b04411d866e9f66c171265999bb65be7772))
+* **ranking:** preserve May snapshot and manual corrections across competition sync ([9290a12](https://github.com/Badminton-Apps/badman/commit/9290a12b3626e589511ac28f97ff8f066685a2c9))
+* **ranking:** preserve May snapshot and manual corrections across competition sync ([af0bf10](https://github.com/Badminton-Apps/badman/commit/af0bf105f128b3a8514890531f71fcde281f3106))
+* semester swap rule + settings auto-create + CI redis postinstall ([700d923](https://github.com/Badminton-Apps/badman/commit/700d9233fa625e769d910cd6a873aca99eacf905))
+* **sync:** handle 3x/4x round formats in encounter sync ([89305d6](https://github.com/Badminton-Apps/badman/commit/89305d6a2b9195358ef2435c8cdfe8f92249d2f0))
+* **sync:** handle 3x/4x round formats in encounter sync ([a27ef50](https://github.com/Badminton-Apps/badman/commit/a27ef50583b19de350a7926814dfcda771d36288))
+* **sync:** handle 3x/4x round formats in encounter sync ([8d73dcd](https://github.com/Badminton-Apps/badman/commit/8d73dcd5cf9a9384cb543c4f917c5e1bd63c1bd4))
+* **sync:** skip index recalculation hook when saving entry meta in sy… ([188e2ad](https://github.com/Badminton-Apps/badman/commit/188e2adcbe23f0ac80215a7b763a1b65c7aa3390))
+* **sync:** skip index recalculation hook when saving entry meta in sync worker ([92037b3](https://github.com/Badminton-Apps/badman/commit/92037b31489cf7691c9c74ce390cc9a685cfef10))
+
 ## [7.0.1](https://github.com/Badminton-Apps/badman/compare/v7.0.0...v7.0.1) (2026-06-11)
 
 
