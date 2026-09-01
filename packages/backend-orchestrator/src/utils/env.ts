@@ -1,7 +1,8 @@
 /**
- * True only when NODE_ENV is production. Used to gate Render API calls and
- * orchestrator start/stop behavior so the sync worker is only run on Render in production.
+ * True when NODE_ENV is production or staging. Used to gate Render API calls and
+ * orchestrator start/stop behavior so the sync worker is auto-suspended on Render
+ * in both environments.
  */
-export function isProductionEnv(nodeEnv: string | undefined): boolean {
-  return nodeEnv === "production";
+export function isDeployedEnv(nodeEnv: string | undefined): boolean {
+  return nodeEnv === "production" || nodeEnv === "staging";
 }
