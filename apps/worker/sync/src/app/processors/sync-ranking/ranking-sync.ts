@@ -9,7 +9,7 @@ import { subWeeks, format, isAfter, isBefore } from "date-fns";
 import { Op, Transaction, Sequelize } from "sequelize";
 import { isPublicationUsedForUpdate, parsePublicationDate } from "./ranking-utils";
 import { ProcessStep, Processor } from "../../processing";
-import { correctWrongPlayers } from "../../utils";
+import { correctWrongPlayers, ensureDefaultRanking } from "../../utils";
 interface RankingStepData {
   visualCode: string;
   system: RankingSystem;
@@ -265,9 +265,7 @@ export class RankingSyncer {
 
     const totalPublications = publicationsToProcess.length;
     const runStart = Date.now();
-    this.logger.log(
-      `Processing ${totalPublications} publications with separate transactions`
-    );
+    this.logger.log(`Processing ${totalPublications} publications with separate transactions`);
 
     for (const [index, publication] of publicationsToProcess.entries()) {
       // Create a separate transaction for each publication
@@ -477,6 +475,13 @@ export class RankingSyncer {
         transaction,
         returning: false,
       });
+
+      // Safety net: ensure every new player has at least a default 12-12-12 ranking.
+      // The RankingPlace bulk-create below will overwrite with real levels via the
+      // AfterBulkCreate hook, so this is a no-op for players with real rankings.
+      for (const [, player] of newPlayers) {
+        await ensureDefaultRanking(player, { transaction, systemId: ranking.system.id });
+      }
     }
 
     // Process ranking places in very small chunks
@@ -492,9 +497,7 @@ export class RankingSyncer {
 
       // Only log every 5th chunk (or first/last) to avoid noise on big publications
       if (chunkNum === 1 || chunkNum === totalChunks || chunkNum % 5 === 0) {
-        this.logger.log(
-          `  chunk ${chunkNum}/${totalChunks} (${chunk.length} records)`
-        );
+        this.logger.log(`  chunk ${chunkNum}/${totalChunks} (${chunk.length} records)`);
       }
 
       await RankingPlace.bulkCreate(chunk, {

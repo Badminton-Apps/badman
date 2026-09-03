@@ -307,6 +307,28 @@ export class PlayersResolver {
         { transaction }
       );
 
+      // Ensure every manually created player starts with the default levels (12-12-12).
+      const system = await RankingSystem.findOne({
+        where: { primary: true },
+        attributes: ["id"],
+        transaction,
+      });
+
+      if (system) {
+        await RankingLastPlace.findOrCreate({
+          where: { playerId: player.id, systemId: system.id },
+          defaults: {
+            playerId: player.id,
+            systemId: system.id,
+            single: 12,
+            double: 12,
+            mix: 12,
+            gender: player.gender,
+          },
+          transaction,
+        });
+      }
+
       await transaction.commit();
 
       return player;
