@@ -138,13 +138,17 @@ export async function acceptCookies(
         logger?.warn("Network idle timeout, continuing anyway:", error?.message || error);
       }
 
-      // Check for consent dialog frame without waiting
-      const consentDialogFrame = await page.$(
-        'iframe[src="https://nojazz.eu/nl/cmp/consentui-2.2-consentmode/"]'
-      );
-      logger?.debug("consentDialog found:", !!consentDialogFrame);
+      // Check for consent dialog frame without waiting.
+      // Use partial match on the iframe src to be resilient to CMP version bumps
+      // (e.g. consentui-2.2-consentmode → consent-ui-2.3-disclose between seasons).
+      const consentDialogFrame = await page.$('iframe[src*="nojazz.eu/nl/cmp/"]');
 
       if (consentDialogFrame) {
+        const cmpSrc = await consentDialogFrame
+          .evaluate((el) => (el as HTMLIFrameElement).src)
+          .catch(() => "(unknown)");
+        logger?.log(`CMP consent iframe detected (${cmpSrc}) — attempting to dismiss`);
+
         const frame = await consentDialogFrame.contentFrame();
         if (frame) {
           try {
@@ -152,7 +156,7 @@ export async function acceptCookies(
               timeout: 1000,
             });
             if (greenButton) {
-              logger?.debug("Found green button in consent dialog, clicking");
+              logger?.log("CMP consent dialog: clicking accept button");
               await greenButton.click();
               try {
                 await page.waitForNavigation({
@@ -163,25 +167,40 @@ export async function acceptCookies(
                   error instanceof Error &&
                   (error.message?.includes("detached") || error.message?.includes("Frame"))
                 ) {
-                  logger?.debug("Frame detached - page may have already navigated:", error.message);
+                  logger?.debug(
+                    "CMP dismiss: frame detached — page may have already navigated:",
+                    error.message
+                  );
                 } else {
                   logger?.debug(
-                    "Navigation after consent click timeout:",
+                    "CMP dismiss: navigation timeout (continuing):",
                     error instanceof Error ? error.message : error
                   );
                 }
               }
-              logger?.debug("Consent dialog handled successfully");
+              logger?.log("CMP consent dialog dismissed successfully");
             }
           } catch (error: any) {
-            logger?.debug(
-              "No green button found in consent dialog:",
-              error?.message || "Unknown error"
+            // The accept button was not found inside the CMP iframe. This means the CMP
+            // changed its internal structure. The dialog will remain on screen and will
+            // block the login button click, causing sign-in to time out.
+            // ACTION REQUIRED: inspect the CMP iframe at ${cmpSrc} and update the button selector.
+            logger?.warn(
+              `CMP consent dialog found (${cmpSrc}) but accept button "#consentui .btn.green" was not found inside it. ` +
+                `The dialog will block the login button — sign-in will likely time out. ` +
+                `Check if the CMP updated its internal button selector: ${error?.message || "unknown error"}`
             );
           }
+        } else {
+          logger?.warn(
+            `CMP consent iframe found (${cmpSrc}) but its content frame is not accessible. ` +
+              `The dialog may block the login button.`
+          );
         }
       } else {
-        logger?.debug("No consent dialog frame found, continuing");
+        logger?.debug(
+          "No CMP consent iframe found (nojazz.eu/nl/cmp/) — skipping CMP dismiss step"
+        );
       }
 
       // Final check to ensure page is ready

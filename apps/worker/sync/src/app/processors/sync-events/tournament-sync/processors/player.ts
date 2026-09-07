@@ -2,7 +2,7 @@ import { EventTournament, Player } from "@badman/backend-database";
 import { Op } from "sequelize";
 import { StepProcessor, StepOptions } from "../../../../processing";
 import { VisualService, XmlTournament, XmlGenderID } from "@badman/backend-visual";
-import { correctWrongPlayers } from "../../../../utils";
+import { correctWrongPlayers, ensureDefaultRanking } from "../../../../utils";
 import { Logger } from "@nestjs/common";
 
 export class TournamentSyncPlayerProcessor extends StepProcessor {
@@ -84,6 +84,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
         foundPlayer = await new Player(xmlPlayer?.player).save({
           transaction: this.transaction,
         });
+        await ensureDefaultRanking(foundPlayer, { transaction: this.transaction });
         // Push to the list if player exists twice
         players.push(foundPlayer);
         memberId = foundPlayer.memberId;
