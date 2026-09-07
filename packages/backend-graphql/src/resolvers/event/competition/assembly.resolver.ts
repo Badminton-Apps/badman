@@ -8,6 +8,7 @@ import {
   RankingPlace,
   RankingSystem,
 } from "@badman/backend-database";
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { RankingSystemService } from "@badman/backend-ranking";
 import { getRankingProtected, sortPlayers } from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
@@ -18,7 +19,8 @@ export class AssemblyResolver {
   private readonly logger = new Logger(AssemblyResolver.name);
   constructor(
     private assemblyService: AssemblyValidationService,
-    private readonly rankingSystemService: RankingSystemService
+    private readonly rankingSystemService: RankingSystemService,
+    private readonly encounterGamesService: EncounterGamesGenerationService
   ) {}
 
   @Query(() => AssemblyOutput, {
@@ -181,16 +183,30 @@ export class AssemblyResolver {
 
         updateData.assembly = updatedAssembly;
 
-        return assemblyDb.update(updateData);
+        const updated = await assemblyDb.update(updateData);
+        await this._refreshEncounterGames(assembly.encounterId);
+        return updated;
       }
 
       this.logger.debug(
         `CREATED: A new assembly for encounter with ID ${assembly.encounterId} was created.`
       );
+      await this._refreshEncounterGames(assembly.encounterId);
       return assemblyDb;
     } catch (error) {
       this.logger.error(error);
       return null;
+    }
+  }
+
+  private async _refreshEncounterGames(encounterId: string): Promise<void> {
+    try {
+      await this.encounterGamesService.generateGames(encounterId);
+    } catch (err) {
+      // Non-fatal: log and continue — the assembly itself was saved successfully
+      this.logger.warn(
+        `generateGames after assembly save failed for encounter ${encounterId}: ${(err as Error)?.message}`
+      );
     }
   }
 }

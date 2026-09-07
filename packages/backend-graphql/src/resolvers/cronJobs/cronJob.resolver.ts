@@ -5,7 +5,7 @@ import {
   CronJobUpdateInput,
   Player,
 } from "@badman/backend-database";
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 import { ListArgs } from "../../utils";
 import * as cron from "cron";
 import { User } from "@badman/backend-authorization";
@@ -33,6 +33,24 @@ export class CronJobResolver {
 
     const cronTime = cron.sendAt(job.cronTime);
     return cronTime.toISO();
+  }
+
+  @Mutation(() => CronJob)
+  async runCronJob(
+    @User() user: Player,
+    @Args("id", { type: () => ID }) id: string
+  ): Promise<CronJob> {
+    if (!(await user.hasAnyPermission(["change:job"]))) {
+      throw new UnauthorizedException(`You do not have permission to run this CronJob`);
+    }
+
+    const cronJobDb = await CronJob.findByPk(id);
+    if (!cronJobDb) {
+      throw new NotFoundException(`${CronJob.name}: ${id}`);
+    }
+
+    await this._cronsService.runJob(cronJobDb);
+    return cronJobDb;
   }
 
   @Mutation(() => CronJob)

@@ -2,6 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { NotFoundException } from "@nestjs/common";
 import { Assembly, Player } from "@badman/backend-database";
 import { AssemblyValidationService } from "@badman/backend-assembly";
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { RankingSystemService } from "@badman/backend-ranking";
 import { AssemblyResolver } from "./assembly.resolver";
 
@@ -9,18 +10,21 @@ describe("AssemblyResolver", () => {
   let resolver: AssemblyResolver;
   let mockAssemblyService: { validate: jest.Mock };
   let mockRankingSystemService: { getPrimary: jest.Mock; getById: jest.Mock };
+  let mockEncounterGamesService: { generateGames: jest.Mock };
 
   const buildUser = (id = "user-uuid") => ({ id, fullName: "Test User" }) as unknown as Player;
 
   beforeEach(async () => {
     mockAssemblyService = { validate: jest.fn() };
     mockRankingSystemService = { getPrimary: jest.fn(), getById: jest.fn() };
+    mockEncounterGamesService = { generateGames: jest.fn().mockResolvedValue([]) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AssemblyResolver,
         { provide: AssemblyValidationService, useValue: mockAssemblyService },
         { provide: RankingSystemService, useValue: mockRankingSystemService },
+        { provide: EncounterGamesGenerationService, useValue: mockEncounterGamesService },
       ],
     }).compile();
 
