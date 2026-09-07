@@ -12,7 +12,7 @@ import { EncounterGamesGenerationService } from "./encounter-games-generation.se
 jest.mock("@badman/backend-database", () => ({
   EncounterCompetition: { findByPk: jest.fn() },
   Game: { findAll: jest.fn(), create: jest.fn() },
-  GamePlayerMembership: { create: jest.fn() },
+  GamePlayerMembership: { create: jest.fn(), destroy: jest.fn() },
   RankingLastPlace: { findOne: jest.fn() },
   RankingSystem: { findOne: jest.fn() },
   Team: {},
@@ -110,12 +110,19 @@ describe("EncounterGamesGenerationService", () => {
 
     it("should be idempotent: skip already-existing orders", async () => {
       (EncounterCompetition.findByPk as jest.Mock).mockResolvedValue(mockEncounter);
-      // Orders 1-7 already exist
+      // Orders 1-7 already exist (with update mock for gameType correction)
+      const existingGames = Array.from({ length: 7 }, (_, i) => ({
+        order: i + 1,
+        gameType: "D",
+        winner: null,
+        update: jest.fn().mockResolvedValue(undefined),
+      }));
       (Game.findAll as jest.Mock)
-        .mockResolvedValueOnce(Array.from({ length: 7 }, (_, i) => ({ order: i + 1 })))
+        .mockResolvedValueOnce(existingGames)
         .mockResolvedValueOnce(Array.from({ length: 8 }, (_, i) => ({ order: i + 1 })));
       (Game.create as jest.Mock).mockResolvedValue({ id: "game-8", order: 8 });
       (GamePlayerMembership.create as jest.Mock).mockResolvedValue({});
+      (GamePlayerMembership.destroy as jest.Mock).mockResolvedValue(0);
       (RankingSystem.findOne as jest.Mock).mockResolvedValue(null);
 
       await service.generateGames(encounterId);
@@ -128,7 +135,9 @@ describe("EncounterGamesGenerationService", () => {
       );
     });
 
-    it("should use MX game type for all MX team slots", async () => {
+    it("should use correct game types for MX team slots", async () => {
+      // MX order: double1, double2, single1, single3, single2, single4, double3, double4
+      // Expected:    D        D        S        S        S        S       MX       MX
       const mxEncounter = {
         ...mockEncounter,
         home: { type: SubEventTypeEnum.MX },
@@ -144,11 +153,11 @@ describe("EncounterGamesGenerationService", () => {
 
       await service.generateGames(encounterId);
 
-      // All 8 games should have gameType MX
-      for (let i = 1; i <= 8; i++) {
+      const expectedTypes = ["D", "D", "S", "S", "S", "S", "MX", "MX"];
+      for (let i = 0; i < 8; i++) {
         expect(Game.create).toHaveBeenNthCalledWith(
-          i,
-          expect.objectContaining({ gameType: "MX" }),
+          i + 1,
+          expect.objectContaining({ gameType: expectedTypes[i] }),
           expect.objectContaining({ transaction: expect.anything() })
         );
       }
