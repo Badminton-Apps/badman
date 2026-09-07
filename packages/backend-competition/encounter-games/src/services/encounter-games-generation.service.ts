@@ -87,22 +87,52 @@ export class EncounterGamesGenerationService {
     // 6. Load primary ranking system once
     const system = await RankingSystem.findOne({ where: { primary: true }, transaction });
 
-    // 7. Build slots and create missing games
+    // 7. Build slots and create missing games; refresh memberships for existing unplayed ones
     const newGames: Game[] = [];
 
     for (let i = 0; i < positions.length; i++) {
       const order = i + 1;
       const assemblyPosition = positions[i];
-
-      // Skip already-existing slots (idempotency)
-      if (existingOrders.has(order)) {
-        this.logger.debug(`Slot ${order} already exists for encounter ${encounterId}, skipping`);
-        continue;
-      }
-
       const homePlayerIds = this.extractPlayerIds(homeData, assemblyPosition);
       const awayPlayerIds = this.extractPlayerIds(awayData, assemblyPosition);
       const gameType = this.resolveGameType(teamType, assemblyPosition);
+
+      if (existingOrders.has(order)) {
+        // Slot already exists — for unplayed games, refresh the game type and player
+        // memberships whenever assembly data is available. This handles the case where
+        // the slot was created before the assembly was submitted (game type was
+        // incorrectly defaulted, player memberships were empty).
+        const existingGame = existingGames.find((g) => g.order === order);
+        const isUnplayed =
+          existingGame && (existingGame.winner == null || existingGame.winner === 0);
+        const hasAssemblyData = homePlayerIds.length > 0 || awayPlayerIds.length > 0;
+
+        if (existingGame && isUnplayed) {
+          // Fix the game type if it was set incorrectly (e.g. all-MX bug for mixed teams)
+          if (existingGame.gameType !== gameType) {
+            await existingGame.update({ gameType }, { transaction });
+            this.logger.debug(
+              `Fixed gameType for slot ${order} (${assemblyPosition}): ${existingGame.gameType} → ${gameType}`
+            );
+          }
+          if (hasAssemblyData) {
+            await GamePlayerMembership.destroy({ where: { gameId: existingGame.id }, transaction });
+            await this.createPlayerMemberships(
+              existingGame.id,
+              homePlayerIds,
+              awayPlayerIds,
+              system?.id,
+              transaction
+            );
+            this.logger.debug(
+              `Refreshed player memberships for slot ${order} (${assemblyPosition}) in encounter ${encounterId}`
+            );
+          }
+        } else {
+          this.logger.debug(`Slot ${order} already exists for encounter ${encounterId}, skipping`);
+        }
+        continue;
+      }
 
       const game = await Game.create(
         {
@@ -151,7 +181,11 @@ export class EncounterGamesGenerationService {
 
   private resolveGameType(teamType: SubEventTypeEnum, position: string): GameType {
     if (teamType === SubEventTypeEnum.MX) {
-      return GameType.MX;
+      // For mixed teams: single* = singles, double1/double2 = men's/women's doubles,
+      // double3/double4 = mixed doubles (Gemengd Dubbel)
+      if (position.startsWith("single")) return GameType.S;
+      if (position === "double1" || position === "double2") return GameType.D;
+      return GameType.MX; // double3, double4
     }
     return position.startsWith("single") ? GameType.S : GameType.D;
   }
