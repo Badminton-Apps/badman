@@ -14,7 +14,13 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from "@badman/backend-visual";
-import { GameLinkType, GameStatus, GameType, getRankingProtected, runParallel } from "@badman/utils";
+import {
+  GameLinkType,
+  GameStatus,
+  GameType,
+  getRankingProtected,
+  runParallel,
+} from "@badman/utils";
 import { Logger, NotFoundException } from "@nestjs/common";
 import { isAfter, isBefore, subWeeks } from "date-fns";
 import { Op } from "sequelize";
@@ -104,9 +110,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         );
       }
     } else {
-      this.logger.warn(
-        `Skipping generateGames for encounter ${encounter.id} — no homeTeamId set`
-      );
+      this.logger.warn(`Skipping generateGames for encounter ${encounter.id} — no homeTeamId set`);
     }
 
     // only get info for games that have been played
@@ -186,6 +190,17 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       const originalWinner = game?.winner;
 
       if (!game) {
+        // Guard: never exceed 8 game slots per encounter. If all fallbacks missed
+        // and we already have 8 games, the Visual API is returning unexpected data
+        // (e.g. a 9th match due to a walkover or data issue). Log and skip rather
+        // than creating a duplicate slot.
+        if (games.length >= 8) {
+          this.logger.warn(
+            `Encounter ${encounter.id} already has ${games.length} games — skipping Visual match ${xmlMatch.Code} (order ${xmlMatch.MatchOrder}) to prevent duplicate slot`
+          );
+          continue;
+        }
+
         game = new Game({
           visualCode: xmlMatch.Code,
           winner: reverseMapWinnerValue(xmlMatch.Winner),
@@ -520,5 +535,4 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     }
     return returnPlayer;
   }
-
 }
