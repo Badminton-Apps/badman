@@ -129,6 +129,16 @@ describe("QueueResolver", () => {
       expect(syncQueue.getActive).toHaveBeenLastCalledWith(0, 199);
     });
 
+    it("returns nothing for a non-positive or missing limit", async () => {
+      for (const limit of [0, -1, null, undefined]) {
+        await expect(
+          resolver.queueJobs(buildUser(true), "sync", "active", limit as number)
+        ).resolves.toEqual([]);
+      }
+
+      expect(syncQueue.getActive).not.toHaveBeenCalled();
+    });
+
     it("rejects an unknown queue with BAD_USER_INPUT", async () => {
       expect.assertions(2);
       try {

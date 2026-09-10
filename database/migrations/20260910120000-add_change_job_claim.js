@@ -11,7 +11,7 @@
  * matches the value already used in production: "job".
  */
 const claim = {
-  id: "c3d4e5f6-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+  id: "f4b91170-ca0e-4c29-b5f6-b654ccaad00f",
   name: "change:job",
   description: "Run and edit cron jobs, and inspect the queues",
   category: "job",

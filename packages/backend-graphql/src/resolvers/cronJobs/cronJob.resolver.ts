@@ -88,8 +88,18 @@ export class CronJobResolver {
     // Reinitialize the cron jobs. This re-reads the CronJobs table, so it has to run
     // after the commit — otherwise it re-registers the pre-update schedule. It is
     // deliberately outside the try/catch: the write is already durable, so a failure
-    // to re-register must not roll back a committed transaction.
-    this._cronsService.onModuleInit();
+    // to re-register must not roll back a committed transaction. It is async and
+    // deletes every registered cron before re-adding them, so a rejection must be
+    // caught here — an unhandled rejection would take the process down and leave the
+    // scheduler empty.
+    try {
+      await this._cronsService.onModuleInit();
+    } catch (error) {
+      this.logger.error(
+        `Failed to re-register cron jobs after updating ${updateCronJobData.id}`,
+        error
+      );
+    }
 
     return result;
   }

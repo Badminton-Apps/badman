@@ -53,6 +53,7 @@ Known claim names as of 2026-06-08:
 | `add:faq`                         | global | Add FAQ entries                       |
 | `add:club`                        | global | Add a new club                        |
 | `change:enrollment`               | global | Open/close enrollment settings        |
+| `change:job`                      | global | Run/edit cron jobs, inspect queues    |
 | `change:rules`                    | global | Edit ranking rules                    |
 | `change:transfer`                 | global | Accept/reject player transfers        |
 | `edit:faq`                        | global | Edit FAQ content                      |

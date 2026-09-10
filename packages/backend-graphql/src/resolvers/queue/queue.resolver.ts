@@ -43,8 +43,15 @@ export class QueueResolver {
 
     const queue = this._getQueue(queueName);
     const listableState = this._getState(state);
+
+    // An explicit `null` bypasses the default, and a client can pass 0 or a negative
+    // number. Bull's range is inclusive, so clamping to 0 would still return one job.
+    if (limit == null || limit <= 0) {
+      return [];
+    }
+
     // Bull's range is inclusive on both ends, so `limit` items means `limit - 1`.
-    const end = Math.max(0, Math.min(limit, 200) - 1);
+    const end = Math.min(limit, 200) - 1;
 
     const jobs = await this._fetchJobs(queue, listableState, end);
     return jobs.map((job) => this._toQueueJob(job, queueName, listableState));

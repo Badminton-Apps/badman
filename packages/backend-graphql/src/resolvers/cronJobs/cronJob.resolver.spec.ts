@@ -146,7 +146,23 @@ describe("CronJobResolver", () => {
 
       await expect(
         resolver.updateCronJob(buildUser(true), { id: "j-uuid" } as any)
-      ).rejects.toThrow("scheduler blew up");
+      ).resolves.toEqual({ id: "j-uuid" });
+
+      expect(mockTransaction.commit).toHaveBeenCalled();
+      expect(mockTransaction.rollback).not.toHaveBeenCalled();
+    });
+
+    it("swallows an async re-registration failure instead of leaking a rejection", async () => {
+      mockCronService.onModuleInit.mockRejectedValue(new Error("scheduler blew up later"));
+
+      const fakeCronJob = {
+        update: jest.fn().mockResolvedValue({ id: "j-uuid" }),
+      } as unknown as CronJob;
+      jest.spyOn(CronJob, "findByPk").mockResolvedValue(fakeCronJob);
+
+      await expect(
+        resolver.updateCronJob(buildUser(true), { id: "j-uuid" } as any)
+      ).resolves.toEqual({ id: "j-uuid" });
 
       expect(mockTransaction.commit).toHaveBeenCalled();
       expect(mockTransaction.rollback).not.toHaveBeenCalled();
