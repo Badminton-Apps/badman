@@ -337,7 +337,9 @@ export class MailingService {
     },
     encounter: EncounterCompetition,
     url: string,
-    comments?: EncounterComment[]
+    comments?: EncounterComment[],
+    /** True when the url points outside badman (the toernooi.nl match page) */
+    externalLink = false
   ) {
     moment.locale("nl-be");
     const options = {
@@ -356,6 +358,7 @@ export class MailingService {
         date: moment(encounter.date).tz("Europe/Brussels").format("LLLL"),
         settingsSlug: to.slug,
         comments: comments ?? [],
+        externalLink,
       },
     } as MailOptions<{
       encounter: EncounterCompetition;
@@ -364,6 +367,7 @@ export class MailingService {
       date: string;
       settingsSlug: string;
       comments: EncounterComment[];
+      externalLink: boolean;
     }>;
 
     await this._sendMail(options);
