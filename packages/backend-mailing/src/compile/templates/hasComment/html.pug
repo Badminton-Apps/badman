@@ -22,9 +22,21 @@ block content
       |
       | heeft een opmerking.
       br
+    if comments && comments.length
+      each comment in comments
+        p
+          em
+            | "#{ comment.message }"
+          if comment.user
+            br
+            small
+              | — #{ comment.user }
+              if comment.date
+                |
+                | (#{ comment.date })
     p
       a(href=`${url}`)
-        | Ga naar ontmoeting
+        | Bekijk de opmerking op toernooi.nl
     p
       | Met sportieve groeten,
       br
