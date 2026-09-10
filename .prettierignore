@@ -16,3 +16,16 @@
 # so formatting them only fights the generator.
 /.claude
 /.specify
+
+# Sequelize migrations and seeders are append-only historical records — a
+# migration is never edited after it has run anywhere. Includes the
+# deliberately-committed seeders/utils/dist build output.
+/database
+
+# Long-form internal documentation, including the point-in-time
+# docs/estimates/** feature write-ups.
+/docs
+
+# Generated or externally-owned config.
+/maqa-config.yml
+/.github/workflows
