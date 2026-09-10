@@ -23,7 +23,11 @@ export class CronJobResolver {
   ) {}
 
   @Query(() => [CronJob])
-  async cronJobs(@Args() listArgs: ListArgs): Promise<CronJob[]> {
+  async cronJobs(@User() user: Player, @Args() listArgs: ListArgs): Promise<CronJob[]> {
+    if (!(await user.hasAnyPermission(["change:job"]))) {
+      throw new UnauthorizedException(`You do not have permission to view the CronJobs`);
+    }
+
     return CronJob.findAll(ListArgs.toFindOptions(listArgs));
   }
 
@@ -61,6 +65,8 @@ export class CronJobResolver {
 
     // Do transaction
     const transaction = await this._sequelize.transaction();
+    let result: CronJob;
+
     try {
       const cronJobDb = await CronJob.findByPk(updateCronJobData.id, { transaction });
 
@@ -69,20 +75,23 @@ export class CronJobResolver {
       }
 
       // Update CronJob
-      const result = await cronJobDb.update(updateCronJobData, { transaction });
-
-      // Reinitialize the cron jobs
-      this._cronsService.onModuleInit();
+      result = await cronJobDb.update(updateCronJobData, { transaction });
 
       // Commit transaction
       await transaction.commit();
-
-      return result;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
       throw error;
     }
+
+    // Reinitialize the cron jobs. This re-reads the CronJobs table, so it has to run
+    // after the commit — otherwise it re-registers the pre-update schedule. It is
+    // deliberately outside the try/catch: the write is already durable, so a failure
+    // to re-register must not roll back a committed transaction.
+    this._cronsService.onModuleInit();
+
+    return result;
   }
 }
 
