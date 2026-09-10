@@ -1,10 +1,6 @@
 # Add files here to ignore them from prettier formatting
 /dist
 /coverage
-/.nx/cache
-.angular
-
-/.nx/workspace-data
 
 # Markdown is prose, not source. Prettier reflows tables and wraps text in
 # ways that produce large diffs with no reader benefit, and every doc in this
