@@ -213,8 +213,8 @@ importers:
         specifier: ^4.4.1
         version: 4.4.1(encoding@0.1.13)
       nodemailer:
-        specifier: ^8.0.0
-        version: 8.0.11
+        specifier: ^9.0.0
+        version: 9.1.1
       parse5:
         specifier: ^7.2.1
         version: 7.3.0
@@ -1356,8 +1356,8 @@ importers:
         specifier: ^0.5.47
         version: 0.5.48
       nodemailer:
-        specifier: ^8.0.0
-        version: 8.0.11
+        specifier: ^9.0.0
+        version: 9.1.1
       resend:
         specifier: ^4.0.0
         version: 4.8.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -4491,6 +4491,7 @@ packages:
   cron-parser@4.9.0:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
+    deprecated: v4 is no longer maintained, upgrade to v5
 
   cron@4.4.0:
     resolution: {integrity: sha512-fkdfq+b+AHI4cKdhZlppHveI/mgz2qpiYxcm+t5E5TsxX7QrLS1VE0+7GENEk9z0EeGPcpSciGv6ez24duWhwQ==}
@@ -4836,6 +4837,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -6234,7 +6236,7 @@ packages:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
   node-adodb@https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373:
-    resolution: {gitHosted: true, integrity: sha512-3kEZtRgNk7/bIZdSvjm1Lf4wbcgMvww5/WYDwezOveTxygMWCiaPzqXGY0F9ZtTFEa0ZiPiikBh5TVAw/e1kKA==, tarball: https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373}
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373}
     version: 5.0.3
     engines: {node: '>=6.0.0'}
     os: [win32]
@@ -6271,8 +6273,8 @@ packages:
     resolution: {integrity: sha512-Uzmd6LXpouKo8EUK68IjH4+E01w/hXyV3R3g/geCJo+rXLNfh1xucB+LOzYEOQPSiUK3h/xZf0cQGcSsmyL2Og==}
     engines: {node: '>=18'}
 
-  nodemailer@8.0.11:
-    resolution: {integrity: sha512-nrO/pDAUKl+wXX+lx16tDLbnm0fW6sK/x8mgohaCpg+CdCEl482bD4tCuAZk2DyliruiNTIZxRCoWkDqJEnAiA==}
+  nodemailer@9.1.1:
+    resolution: {integrity: sha512-izw9mVKFix6YSnC9eLgV6g1opl9DUlRio9ZNcq+Wu9Ujn2UwF+8Nl0B8nz22kEC+CTZCvinkxwJ0DeFbb6NwcQ==}
     engines: {node: '>=6.0.0'}
 
   nopt@5.0.0:
@@ -12803,7 +12805,7 @@ snapshots:
 
   node-releases@2.0.47: {}
 
-  nodemailer@8.0.11: {}
+  nodemailer@9.1.1: {}
 
   nopt@5.0.0:
     dependencies:
