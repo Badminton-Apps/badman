@@ -77,18 +77,12 @@ export class EncounterFormPageService {
     timeout = 20000
   ): Promise<void> {
     this._assertPage();
-    await signIn(
-      { page: this.page!, timeout },
-      { username, password, logger: this.logger }
-    );
+    await signIn({ page: this.page!, timeout }, { username, password, logger: this.logger });
   }
 
   async waitForSignInConfirmation(timeout = 5000): Promise<boolean> {
     this._assertPage();
-    return waitForSignInConfirmation(
-      { page: this.page!, timeout },
-      { logger: this.logger }
-    );
+    return waitForSignInConfirmation({ page: this.page!, timeout }, { logger: this.logger });
   }
 
   async enterEditMode(encounter: EncounterCompetition): Promise<void> {
@@ -103,10 +97,7 @@ export class EncounterFormPageService {
 
   async enterGames(encounter: EncounterCompetition, transaction: Transaction): Promise<void> {
     this._assertPage();
-    await enterGames(
-      { page: this.page! },
-      { encounter, logger: this.logger, transaction }
-    );
+    await enterGames({ page: this.page! }, { encounter, logger: this.logger, transaction });
   }
 
   async enterGameLeader(fullName: string): Promise<void> {
@@ -153,7 +144,10 @@ export class EncounterFormPageService {
     return clickSaveButton({ page: this.page!, timeout }, { logger: this.logger });
   }
 
-  async waitForNavigation(opts: { waitUntil: "networkidle0" | "load" | "domcontentloaded"; timeout: number }): Promise<void> {
+  async waitForNavigation(opts: {
+    waitUntil: "networkidle0" | "load" | "domcontentloaded";
+    timeout: number;
+  }): Promise<void> {
     this._assertPage();
     await waitForNavigation({ page: this.page! }, opts, { logger: this.logger });
   }

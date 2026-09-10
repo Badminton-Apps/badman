@@ -1,4 +1,15 @@
-import { format, parse, setHours, setMinutes, getHours, getMinutes, isAfter, isBefore, addMinutes, subMinutes } from "date-fns";
+import {
+  format,
+  parse,
+  setHours,
+  setMinutes,
+  getHours,
+  getMinutes,
+  isAfter,
+  isBefore,
+  addMinutes,
+  subMinutes,
+} from "date-fns";
 
 /**
  * Returns true when an encounter's start time falls within a ±15-minute window
@@ -25,5 +36,8 @@ export function matchesAvailabilityWindow(
   startTime.setSeconds(0);
   startTime.setMilliseconds(0);
 
-  return isAfter(new Date(encounterDate), subMinutes(startTime, 15)) && isBefore(new Date(encounterDate), addMinutes(startTime, 15));
+  return (
+    isAfter(new Date(encounterDate), subMinutes(startTime, 15)) &&
+    isBefore(new Date(encounterDate), addMinutes(startTime, 15))
+  );
 }
