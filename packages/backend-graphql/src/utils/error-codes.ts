@@ -40,6 +40,9 @@ export const ErrorCode = {
   ENROLLMENT_CLOSED: "ENROLLMENT_CLOSED",
   VALIDATION_FAILED: "VALIDATION_FAILED",
 
+  // Queue introspection (packages/backend-graphql/src/resolvers/queue/queue.resolver.ts)
+  QUEUE_JOB_NOT_FOUND: "QUEUE_JOB_NOT_FOUND",
+
   // Encounter date change (packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.ts)
   ENCOUNTER_NOT_FOUND: "ENCOUNTER_NOT_FOUND",
   ENCOUNTER_CHANGE_NOT_FOUND: "ENCOUNTER_CHANGE_NOT_FOUND",
