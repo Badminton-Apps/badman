@@ -1780,7 +1780,10 @@
           "admin": "Admin",
           "adminSettings": "Admin Settings",
           "copyCompetitions": "Copy Competitions",
-          "adminCompetitions": "Admin Competitions"
+          "adminCompetitions": "Admin Competitions",
+          "dev": "Developer",
+          "devQueue": "Queues",
+          "devLogin": "Developer login"
         },
         "auth": {
           "logIn": "Log in",
