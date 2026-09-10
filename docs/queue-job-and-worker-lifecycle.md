@@ -58,13 +58,13 @@ async getQueueJob(
 
 ### Request fields
 
-| Field | Type | Required | Default | Notes |
-|---|---|---|---|---|
-| `job` | string | yes | — | Job name, e.g. `"UpdateRanking"` for ranking sync |
-| `queue` | string | yes | — | Either `"ranking"` or `"sync"` (see `libs/backend/queue/src/queues.ts`) |
-| `jobArgs` | object | yes | `{}` | Job-specific payload; `userId` is injected by the controller |
-| `removeOnComplete` | boolean | no | `true` | Bull option |
-| `removeOnFail` | number\|boolean | no | `50` | Bull option |
+| Field              | Type            | Required | Default | Notes                                                                   |
+| ------------------ | --------------- | -------- | ------- | ----------------------------------------------------------------------- |
+| `job`              | string          | yes      | —       | Job name, e.g. `"UpdateRanking"` for ranking sync                       |
+| `queue`            | string          | yes      | —       | Either `"ranking"` or `"sync"` (see `libs/backend/queue/src/queues.ts`) |
+| `jobArgs`          | object          | yes      | `{}`    | Job-specific payload; `userId` is injected by the controller            |
+| `removeOnComplete` | boolean         | no       | `true`  | Bull option                                                             |
+| `removeOnFail`     | number\|boolean | no       | `50`    | Bull option                                                             |
 
 ### DEV-only auth bypass
 
@@ -278,24 +278,28 @@ The resulting enqueue is then picked up by the orchestrator's 1-minute check and
 
 ## Release-Time Deploy Hooks
 
-**Source:** `.github/workflows/main-v2.yml:191-204` and `scripts/render.js`
+**Source:** `.github/workflows/deploy-production.yml:103-110` and `scripts/render.js`
 
 Separate from the runtime lifecycle, each Render service has a **deploy hook** (a URL that triggers a redeploy). These are used only at release time:
 
 ```yaml
-- name: Deploy to Prod
-  if: github.ref == 'refs/heads/main'
-  run: ${{ env.PACKAGE_MANAGER }} run nx -- affected -t deploy --no-agents
+- name: Deploy
+  run: pnpm turbo run deploy
   env:
     API_HOOK: ${{ secrets.PROD_API_HOOK }}
     WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK }}
     WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK }}
+    GH_TOKEN_CP: ${{ secrets.GH_TOKEN_CP }}
 ```
 
-The nx `deploy` target in each app's `project.json` (for example `apps/worker/ranking/project.json:49-53`) runs:
+The `deploy` task is declared in [`turbo.json`](../turbo.json) with `cache: false` and a
+`passThroughEnv` list for the hook URLs — Turborepo runs tasks in strict env mode, so a
+var missing from that list is stripped before `render.js` can read it. Each app implements
+the task as a `deploy` script in its own `package.json` (for example
+`apps/worker/ranking/package.json`):
 
 ```
-node ./scripts/render.js --app=worker_ranking
+node ../../../scripts/render.js --app=worker_ranking
 ```
 
 `scripts/render.js` resolves the env var `<APP>_HOOK` and POSTs to it with no body. Render interprets this as "pull the latest image and redeploy."
@@ -308,21 +312,21 @@ node ./scripts/render.js --app=worker_ranking
 
 ### Environment variables (API)
 
-| Variable | Purpose |
-|---|---|
-| `NODE_ENV` | Must be `production` for the orchestrator and Render calls to run |
-| `RENDER_API_URL` | Base URL, typically `https://api.render.com/v1` |
-| `RENDER_API_KEY` | Bearer token for the Render API |
-| `RENDER_WAIT_TIME` | Optional. Idle milliseconds before suspending a worker (default 300000 = 5 min) |
-| `DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH` | DEV only. `"true"` to bypass JWT on `/queue-job` |
-| `DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID` | DEV only. UUID of the player to impersonate when bypass is active |
+| Variable                                | Purpose                                                                         |
+| --------------------------------------- | ------------------------------------------------------------------------------- |
+| `NODE_ENV`                              | Must be `production` for the orchestrator and Render calls to run               |
+| `RENDER_API_URL`                        | Base URL, typically `https://api.render.com/v1`                                 |
+| `RENDER_API_KEY`                        | Bearer token for the Render API                                                 |
+| `RENDER_WAIT_TIME`                      | Optional. Idle milliseconds before suspending a worker (default 300000 = 5 min) |
+| `DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH` | DEV only. `"true"` to bypass JWT on `/queue-job`                                |
+| `DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID`       | DEV only. UUID of the player to impersonate when bypass is active               |
 
 ### Environment variables (sync worker)
 
-| Variable | Purpose |
-|---|---|
-| `WORKER_IDLE_TIMEOUT_MS` | Milliseconds before the worker closes the browser (default 1800000 = 30 min) |
-| `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` | Required for websocket adapter and Bull |
+| Variable                                       | Purpose                                                                      |
+| ---------------------------------------------- | ---------------------------------------------------------------------------- |
+| `WORKER_IDLE_TIMEOUT_MS`                       | Milliseconds before the worker closes the browser (default 1800000 = 30 min) |
+| `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` | Required for websocket adapter and Bull                                      |
 
 ### Database state
 
@@ -331,10 +335,10 @@ node ./scripts/render.js --app=worker_ranking
 
 ### GitHub Actions secrets (release-time)
 
-| Secret | Purpose |
-|---|---|
-| `PROD_API_HOOK` / `BETA_API_HOOK` | Deploy hook URL for the API |
-| `PROD_WORKER_SYNC_HOOK` / `BETA_WORKER_SYNC_HOOK` | Deploy hook for sync worker |
+| Secret                                                  | Purpose                        |
+| ------------------------------------------------------- | ------------------------------ |
+| `PROD_API_HOOK` / `BETA_API_HOOK`                       | Deploy hook URL for the API    |
+| `PROD_WORKER_SYNC_HOOK` / `BETA_WORKER_SYNC_HOOK`       | Deploy hook for sync worker    |
 | `PROD_WORKER_RANKING_HOOK` / `BETA_WORKER_RANKING_HOOK` | Deploy hook for ranking worker |
 
 ---
@@ -342,14 +346,17 @@ node ./scripts/render.js --app=worker_ranking
 ## File Reference Map
 
 ### API / endpoint
+
 - `apps/api/src/app/controllers/app.controller.ts` — `POST /queue-job` handler
 
 ### Queue primitives
+
 - `libs/backend/queue/src/queues.ts` — `SyncQueue` / `RankingQueue` constants
 - `libs/backend/queue/src/events/ranking.ts` — `UpdateRankingJob` interface and `Ranking` enum
 - `libs/backend/queue/src/events/sync.ts` — sync job types
 
 ### Orchestrator (start/stop workers)
+
 - `libs/backend/orchestrator/src/orchestrators/base.orchestrator.ts` — cron + start/stop logic
 - `libs/backend/orchestrator/src/orchestrators/ranking.orchestrator.ts` — ranking-queue-bound instance
 - `libs/backend/orchestrator/src/orchestrators/sync.orchestrator.ts` — sync-queue-bound instance
@@ -357,6 +364,7 @@ node ./scripts/render.js --app=worker_ranking
 - `libs/backend/orchestrator/src/crons/cron.ts` — `CronService` (schedule-driven enqueues)
 
 ### Worker apps
+
 - `apps/worker/ranking/src/main.ts` — bootstrap
 - `apps/worker/ranking/src/app/app.module.ts` — module + boot-time cron reset
 - `apps/worker/ranking/src/app/processors/update/update.processor.ts` — `UpdateRanking` job processor
@@ -366,11 +374,14 @@ node ./scripts/render.js --app=worker_ranking
 - `apps/worker/sync/src/app/controllers/admin.controller.ts` — `/admin/jobs/*` queue introspection endpoints
 
 ### Release / deploy
-- `.github/workflows/main-v2.yml` — release pipeline, calls deploy hooks
+
+- `.github/workflows/deploy-production.yml` — release pipeline, calls deploy hooks
 - `scripts/render.js` — POSTs to a Render deploy hook URL
-- `apps/worker/ranking/project.json` — nx `deploy` target
-- `apps/worker/sync/project.json` — nx `deploy` target
+- `turbo.json` — declares the `deploy` task and its `passThroughEnv` hook vars
+- `apps/worker/ranking/package.json` — `deploy` script
+- `apps/worker/sync/package.json` — `deploy` script
 
 ### Related docs
+
 - `docs/sync-process.md` — deeper dive into the sync pipeline
 - `docs/encounter-games-sync.md` — encounter-game sync specifics
