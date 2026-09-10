@@ -18,10 +18,10 @@ export class GlobalConsumer implements OnModuleInit {
     });
   }
 
-
   @OnGlobalQueueError()
   onGlobalError(err: Error | undefined) {
-    const message = err instanceof Error ? err.message : err != null ? String(err) : "unknown error";
+    const message =
+      err instanceof Error ? err.message : err != null ? String(err) : "unknown error";
     const stack = err instanceof Error ? err.stack : undefined;
     this.logger.error(`Queue error: ${message}`, stack);
     Sentry.setTag("queue", SyncQueue);

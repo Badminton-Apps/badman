@@ -19,9 +19,7 @@ function makeInput(overrides: Partial<EncounterCheckInput> = {}): EncounterCheck
 describe("determineEncounterAction", () => {
   describe("when checkEncounterForFilledIn is false", () => {
     it("should return none", () => {
-      const result = determineEncounterAction(
-        makeInput({ checkEncounterForFilledIn: false })
-      );
+      const result = determineEncounterAction(makeInput({ checkEncounterForFilledIn: false }));
       expect(result).toEqual({ action: "none" });
     });
   });
@@ -38,9 +36,7 @@ describe("determineEncounterAction", () => {
       const now = new Date();
       const encounterDate = subHours(now, 25);
 
-      const result = determineEncounterAction(
-        makeInput({ entered: false, encounterDate, now })
-      );
+      const result = determineEncounterAction(makeInput({ entered: false, encounterDate, now }));
       expect(result).toEqual({ action: "notify-not-entered" });
     });
 
@@ -48,9 +44,7 @@ describe("determineEncounterAction", () => {
       const now = new Date();
       const encounterDate = subHours(now, 23);
 
-      const result = determineEncounterAction(
-        makeInput({ entered: false, encounterDate, now })
-      );
+      const result = determineEncounterAction(makeInput({ entered: false, encounterDate, now }));
       expect(result).toEqual({ action: "none" });
     });
   });
@@ -174,9 +168,7 @@ describe("determineEncounterAction", () => {
 
   describe("when encounter is entered and accepted", () => {
     it("should return none", () => {
-      const result = determineEncounterAction(
-        makeInput({ entered: true, accepted: true })
-      );
+      const result = determineEncounterAction(makeInput({ entered: true, accepted: true }));
       expect(result).toEqual({ action: "none" });
     });
   });

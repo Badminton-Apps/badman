@@ -77,7 +77,8 @@ export function isPublicationUsedForUpdate(
     const daysUntilMonday = dayOfWeek === 1 ? 0 : dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
     const firstMondayOfMonth = addDays(firstOfMonth, daysUntilMonday);
     const margin = addDays(firstMondayOfMonth, 2);
-    canUpdate = isEqual(startOfDay(date), startOfDay(firstMondayOfMonth)) ||
+    canUpdate =
+      isEqual(startOfDay(date), startOfDay(firstMondayOfMonth)) ||
       (isAfter(date, firstMondayOfMonth) && isBefore(date, margin));
   }
 

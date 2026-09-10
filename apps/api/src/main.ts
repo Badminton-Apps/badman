@@ -66,7 +66,7 @@ async function bootstrap() {
     origin: function (origin, callback) {
       return callback(null, true);
     },
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
     optionsSuccessStatus: 200,
   });
