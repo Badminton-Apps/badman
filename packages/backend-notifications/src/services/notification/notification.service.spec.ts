@@ -1,5 +1,6 @@
 import { EncounterCompetition, Player, Team } from "@badman/backend-database";
 import { EncounterValidationService } from "@badman/backend-change-encounter";
+import { buildCommentDedupeKey, UNKNOWN_COMMENT_DEDUPE_KEY } from "@badman/utils";
 import { MailingService } from "@badman/backend-mailing";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
@@ -359,6 +360,87 @@ describe("NotificationService", () => {
 
       const callArgs = notifySpy.mock.calls[0][3] as { url: string };
       expect(callArgs.url).toBe(`${CLIENT_URL}/my-club/club-a/change-encounter/enc-1`);
+    });
+  });
+
+  // ── notifyEncounterHasComment ─────────────────────────────────────────────
+
+  describe("notifyEncounterHasComment", () => {
+    const comment = {
+      message: "Scores manueel ingegeven",
+      user: "BC Den Dijk",
+      date: "zo 6-9-2026 16:16",
+    };
+
+    const buildCommentedEncounter = (visualCode: string | null = "752") =>
+      ({
+        id: "enc-1",
+        visualCode,
+        home: { name: "Den Dijk 2G" },
+        away: { name: "W&L BV 5G" },
+        drawCompetition: {
+          subEventCompetition: {
+            eventCompetition: {
+              id: "event-1",
+              visualCode: "E0230E0A",
+              contactEmail: "contact@vlaanderen.be",
+              contact: {
+                ...buildPlayer("contact@vlaanderen.be"),
+                slug: "contact",
+              },
+            },
+          },
+        },
+      }) as unknown as EncounterCompetition;
+
+    it("links to the toernooi.nl match page, where the comment lives", async () => {
+      const notifySpy = jest
+        .spyOn(CompetitionEncounterHasCommentNotifier.prototype, "notify")
+        .mockResolvedValue(undefined);
+
+      await service.notifyEncounterHasComment(buildCommentedEncounter(), [comment]);
+
+      const callArgs = notifySpy.mock.calls[0][3] as { url: string };
+      expect(callArgs.url).toBe(
+        "https://www.toernooi.nl/sport/teammatch.aspx?id=E0230E0A&match=752"
+      );
+    });
+
+    it("falls back to the competition page when the encounter has no visual code", async () => {
+      const notifySpy = jest
+        .spyOn(CompetitionEncounterHasCommentNotifier.prototype, "notify")
+        .mockResolvedValue(undefined);
+
+      await service.notifyEncounterHasComment(buildCommentedEncounter(null), [comment]);
+
+      const callArgs = notifySpy.mock.calls[0][3] as { url: string };
+      expect(callArgs.url).toBe(`${CLIENT_URL}/competition/event-1`);
+    });
+
+    it("passes the comments and a content-based dedupe key", async () => {
+      const notifySpy = jest
+        .spyOn(CompetitionEncounterHasCommentNotifier.prototype, "notify")
+        .mockResolvedValue(undefined);
+
+      await service.notifyEncounterHasComment(buildCommentedEncounter(), [comment]);
+
+      expect(notifySpy.mock.calls[0][2]).toEqual(expect.objectContaining({ comments: [comment] }));
+      expect(notifySpy.mock.calls[0][5]).toEqual({
+        dedupeKey: buildCommentDedupeKey([comment]),
+        comments: [comment],
+      });
+    });
+
+    it("uses the unknown dedupe key when the comments could not be read", async () => {
+      const notifySpy = jest
+        .spyOn(CompetitionEncounterHasCommentNotifier.prototype, "notify")
+        .mockResolvedValue(undefined);
+
+      await service.notifyEncounterHasComment(buildCommentedEncounter(), []);
+
+      expect(notifySpy.mock.calls[0][5]).toEqual(
+        expect.objectContaining({ dedupeKey: UNKNOWN_COMMENT_DEDUPE_KEY })
+      );
     });
   });
 });

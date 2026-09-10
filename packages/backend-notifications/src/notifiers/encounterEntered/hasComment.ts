@@ -1,10 +1,12 @@
 import { EncounterCompetition, NotificationOptionsTypes, Player } from "@badman/backend-database";
+import { EncounterComment } from "@badman/utils";
 import { Notifier } from "../notifier.base";
 import * as webPush from "web-push";
 
 export class CompetitionEncounterHasCommentNotifier extends Notifier<
   {
     encounter: EncounterCompetition;
+    comments?: EncounterComment[];
   },
   {
     email: string;
@@ -15,11 +17,19 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
   protected type: keyof NotificationOptionsTypes = "encounterHasCommentNotification";
   protected override allowedThrottle = false;
 
-  private readonly options = (url: string, encounter: EncounterCompetition) => {
+  private readonly options = (
+    url: string,
+    encounter: EncounterCompetition,
+    comments?: EncounterComment[]
+  ) => {
+    const comment = comments?.[0]?.message;
+
     return {
       notification: {
         title: "Opmerking geplaatst",
-        body: `Ontmoeting ${encounter.home?.name} tegen ${encounter.away?.name} heeft een opmerking`,
+        body: comment
+          ? `Ontmoeting ${encounter.home?.name} tegen ${encounter.away?.name}: ${comment}`
+          : `Ontmoeting ${encounter.home?.name} tegen ${encounter.away?.name} heeft een opmerking`,
         actions: [{ action: "goto", title: "Ga naar wedstrijd" }],
         data: {
           onActionClick: {
@@ -33,7 +43,7 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
 
   async notifyPush(
     player: Player,
-    data: { encounter: EncounterCompetition },
+    data: { encounter: EncounterCompetition; comments?: EncounterComment[] },
     args?: { email: string; url: string }
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
@@ -41,12 +51,15 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
       throw new Error("No url provided");
     }
 
-    await this.pushService.sendNotification(player, this.options(args.url, data.encounter));
+    await this.pushService.sendNotification(
+      player,
+      this.options(args.url, data.encounter, data.comments)
+    );
   }
 
   async notifyEmail(
     player: Player,
-    data: { encounter: EncounterCompetition },
+    data: { encounter: EncounterCompetition; comments?: EncounterComment[] },
     args?: { email: string; url: string }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
@@ -72,14 +85,15 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
         slug: player.slug,
       },
       data.encounter,
-      args.url
+      args.url,
+      data.comments
     );
   }
 
   notifySms(
     player: Player,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    data: { encounter: EncounterCompetition },
+    data: { encounter: EncounterCompetition; comments?: EncounterComment[] },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string }
   ): Promise<void> {

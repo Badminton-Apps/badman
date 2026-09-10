@@ -14,7 +14,14 @@ import {
   Team,
 } from "@badman/backend-database";
 import { MailingService } from "@badman/backend-mailing";
-import { ConfigType, EncounterChangeAction, I18nTranslations, sortTeams } from "@badman/utils";
+import {
+  buildCommentDedupeKey,
+  ConfigType,
+  EncounterChangeAction,
+  EncounterComment,
+  I18nTranslations,
+  sortTeams,
+} from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { I18nService } from "nestjs-i18n";
@@ -251,15 +258,20 @@ export class NotificationService {
     );
   }
 
-  async notifyEncounterHasComment(encounter: EncounterCompetition) {
-    const notifierNotEntered = new CompetitionEncounterHasCommentNotifier(this.mailing, this.push);
+  async notifyEncounterHasComment(encounter: EncounterCompetition, comments?: EncounterComment[]) {
+    const notifierHasComment = new CompetitionEncounterHasCommentNotifier(this.mailing, this.push);
 
     const event = encounter.drawCompetition?.subEventCompetition?.eventCompetition;
     if (!event) {
       throw new Error("Event not found");
     }
 
-    const url = `${this.configService.get("CLIENT_URL")}/competition/${event.id}`;
+    // The comment only exists on toernooi.nl (it is not synced into badman),
+    // so link to the page that actually shows it.
+    const url =
+      event.visualCode && encounter.visualCode
+        ? `https://www.toernooi.nl/sport/teammatch.aspx?id=${event.visualCode}&match=${encounter.visualCode}`
+        : `${this.configService.get("CLIENT_URL")}/competition/${event.id}`;
     const email = event.contactEmail ?? event.contact?.email;
 
     if (!email) {
@@ -273,7 +285,19 @@ export class NotificationService {
       contact = (await Player.findByPk(event.contactId ?? event.contact?.id)) as Player;
     }
 
-    notifierNotEntered.notify(contact, encounter.id, { encounter }, { email, url });
+    // The check-encounters cron re-checks the same encounter every run, and the
+    // comment stays on toernooi.nl. Only notify again for comments we did not
+    // report yet.
+    const dedupeKey = buildCommentDedupeKey(comments);
+
+    notifierHasComment.notify(
+      contact,
+      encounter.id,
+      { encounter, comments },
+      { email, url },
+      undefined, // force
+      { dedupeKey, comments }
+    );
   }
 
   async notifyEncounterNotAccepted(encounter: EncounterCompetition) {
