@@ -31,7 +31,11 @@ jest.mock("../pupeteer/enterGames", () => ({
   enterGames: jest.fn(),
 }));
 
-import { getPage, acceptCookies as mockAcceptCookies, signIn as mockSignIn } from "@badman/backend-pupeteer";
+import {
+  getPage,
+  acceptCookies as mockAcceptCookies,
+  signIn as mockSignIn,
+} from "@badman/backend-pupeteer";
 import {
   clearFields,
   clickSaveButton,
@@ -136,7 +140,9 @@ describe("EncounterFormPageService", () => {
     it("throws 'Page not open — call open() first' for methods called before open()", async () => {
       await expect(service.acceptCookies()).rejects.toThrow("Page not open — call open() first");
       await expect(service.signIn("u", "p")).rejects.toThrow("Page not open — call open() first");
-      await expect(service.getRowErrorMessages()).rejects.toThrow("Page not open — call open() first");
+      await expect(service.getRowErrorMessages()).rejects.toThrow(
+        "Page not open — call open() first"
+      );
       await expect(service.clickSaveButton()).rejects.toThrow("Page not open — call open() first");
     });
   });
