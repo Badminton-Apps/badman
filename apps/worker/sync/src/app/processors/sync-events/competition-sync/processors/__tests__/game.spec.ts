@@ -1,9 +1,4 @@
-import {
-  Game,
-  GamePlayerMembership,
-  Player,
-  RankingSystem,
-} from "@badman/backend-database";
+import { Game, GamePlayerMembership, Player, RankingSystem } from "@badman/backend-database";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { VisualService, XmlMatchTypeID, XmlScoreStatus } from "@badman/backend-visual";
 import { GameLinkType, GameStatus } from "@badman/utils";
@@ -121,12 +116,10 @@ describe("CompetitionSyncGameProcessor — per-field merge policy", () => {
       { Code: "TOURN-1" } as never,
       visualService as unknown as VisualService,
       gamesService as unknown as EncounterGamesGenerationService,
-      { transaction: {} as never },
+      { transaction: {} as never }
     );
 
-    processor.encounters = [
-      { encounter: makeEncounter() as never, internalId: 100 },
-    ];
+    processor.encounters = [{ encounter: makeEncounter() as never, internalId: 100 }];
   });
 
   describe("local filled, toernooi empty", () => {

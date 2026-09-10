@@ -179,7 +179,10 @@ export class CheckEncounterProcessor {
                 try {
                   await this.detailPage.close();
                 } catch (closeErr) {
-                  this.logger.debug("Error closing destroyed page:", (closeErr as Error)?.message ?? closeErr);
+                  this.logger.debug(
+                    "Error closing destroyed page:",
+                    (closeErr as Error)?.message ?? closeErr
+                  );
                 }
                 // Next iteration will re-open via ensurePageOpenForEncounter()
               } else {
@@ -396,7 +399,8 @@ export class CheckEncounterProcessor {
         encounter.enteredOn = enteredOn;
 
         try {
-          const { endedOn, startedOn, usedShuttle, gameLeader } = await this.detailPage.getDetailInfo();
+          const { endedOn, startedOn, usedShuttle, gameLeader } =
+            await this.detailPage.getDetailInfo();
 
           this.logger.debug(
             `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`

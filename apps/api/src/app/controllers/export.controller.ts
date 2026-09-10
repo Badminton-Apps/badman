@@ -245,10 +245,7 @@ export class ExportController {
       headers,
       rows,
     });
-    res.header(
-      "Content-Disposition",
-      `attachment; filename="${eventName}-avg-level.${extension}"`
-    );
+    res.header("Content-Disposition", `attachment; filename="${eventName}-avg-level.${extension}"`);
     res.header("Content-Type", contentType);
     res.send(payload);
 
