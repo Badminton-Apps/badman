@@ -20,6 +20,7 @@ module.exports = [
       "**/coverage/**",
       "**/i18n.generated.ts",
       "specs/**",
+      "**/*.md",
     ],
   },
   { plugins: { "unused-imports": unusedImports } },
