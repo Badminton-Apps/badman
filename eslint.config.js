@@ -12,12 +12,14 @@ const compat = new FlatCompat({
 module.exports = [
   {
     // Never lint build output or caches — dist/ now lives inside each package.
+    // specs/ holds point-in-time feature records, not maintained source.
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
       "**/.turbo/**",
       "**/coverage/**",
       "**/i18n.generated.ts",
+      "specs/**",
     ],
   },
   { plugins: { "unused-imports": unusedImports } },

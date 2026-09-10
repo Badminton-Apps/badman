@@ -5,3 +5,8 @@
 .angular
 
 /.nx/workspace-data
+
+# Feature specifications are point-in-time records written by humans and
+# spec-kit agents. They are documentation of past decisions, not maintained
+# source, so reformatting them only creates churn and diff noise.
+/specs
