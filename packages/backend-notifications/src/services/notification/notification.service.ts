@@ -268,10 +268,10 @@ export class NotificationService {
 
     // The comment only exists on toernooi.nl (it is not synced into badman),
     // so link to the page that actually shows it.
-    const url =
-      event.visualCode && encounter.visualCode
-        ? `https://www.toernooi.nl/sport/teammatch.aspx?id=${event.visualCode}&match=${encounter.visualCode}`
-        : `${this.configService.get("CLIENT_URL")}/competition/${event.id}`;
+    const isToernooiUrl = !!event.visualCode && !!encounter.visualCode;
+    const url = isToernooiUrl
+      ? `https://www.toernooi.nl/sport/teammatch.aspx?id=${event.visualCode}&match=${encounter.visualCode}`
+      : `${this.configService.get("CLIENT_URL")}/competition/${event.id}`;
     const email = event.contactEmail ?? event.contact?.email;
 
     if (!email) {
@@ -294,7 +294,7 @@ export class NotificationService {
       contact,
       encounter.id,
       { encounter, comments },
-      { email, url },
+      { email, url, externalLink: isToernooiUrl },
       undefined, // force
       { dedupeKey, comments }
     );

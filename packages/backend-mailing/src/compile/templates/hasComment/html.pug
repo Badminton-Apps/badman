@@ -36,7 +36,10 @@ block content
                 | (#{ comment.date })
     p
       a(href=`${url}`)
-        | Bekijk de opmerking op toernooi.nl
+        if externalLink
+          | Bekijk de opmerking op toernooi.nl
+        else
+          | Ga naar ontmoeting
     p
       | Met sportieve groeten,
       br

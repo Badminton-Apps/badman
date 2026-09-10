@@ -11,6 +11,7 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
   {
     email: string;
     url: string;
+    externalLink?: boolean;
   }
 > {
   protected linkType = "encounterCompetition";
@@ -44,7 +45,7 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
   async notifyPush(
     player: Player,
     data: { encounter: EncounterCompetition; comments?: EncounterComment[] },
-    args?: { email: string; url: string }
+    args?: { email: string; url: string; externalLink?: boolean }
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
     if (!args?.url) {
@@ -60,7 +61,7 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
   async notifyEmail(
     player: Player,
     data: { encounter: EncounterCompetition; comments?: EncounterComment[] },
-    args?: { email: string; url: string }
+    args?: { email: string; url: string; externalLink?: boolean }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
     const email = args?.email ?? player.email;
@@ -86,7 +87,8 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
       },
       data.encounter,
       args.url,
-      data.comments
+      data.comments,
+      args.externalLink
     );
   }
 
@@ -95,7 +97,7 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition; comments?: EncounterComment[] },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string }
+    args?: { email: string; url?: string; externalLink?: boolean }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

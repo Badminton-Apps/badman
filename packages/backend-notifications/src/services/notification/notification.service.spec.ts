@@ -358,8 +358,9 @@ describe("NotificationService", () => {
       const encounter = buildEncounter("home-id", "away-id");
       await service.notifyEncounterChangeMessage(encounter, true);
 
-      const callArgs = notifySpy.mock.calls[0][3] as { url: string };
+      const callArgs = notifySpy.mock.calls[0][3] as { url: string; externalLink?: boolean };
       expect(callArgs.url).toBe(`${CLIENT_URL}/my-club/club-a/change-encounter/enc-1`);
+      expect(callArgs.externalLink).toBeUndefined();
     });
   });
 
@@ -406,6 +407,16 @@ describe("NotificationService", () => {
       );
     });
 
+    it("marks the toernooi.nl link as external, so the mail labels it as such", async () => {
+      const notifySpy = jest
+        .spyOn(CompetitionEncounterHasCommentNotifier.prototype, "notify")
+        .mockResolvedValue(undefined);
+
+      await service.notifyEncounterHasComment(buildCommentedEncounter(), [comment]);
+
+      expect(notifySpy.mock.calls[0][3]).toEqual(expect.objectContaining({ externalLink: true }));
+    });
+
     it("falls back to the competition page when the encounter has no visual code", async () => {
       const notifySpy = jest
         .spyOn(CompetitionEncounterHasCommentNotifier.prototype, "notify")
@@ -413,8 +424,9 @@ describe("NotificationService", () => {
 
       await service.notifyEncounterHasComment(buildCommentedEncounter(null), [comment]);
 
-      const callArgs = notifySpy.mock.calls[0][3] as { url: string };
+      const callArgs = notifySpy.mock.calls[0][3] as { url: string; externalLink: boolean };
       expect(callArgs.url).toBe(`${CLIENT_URL}/competition/event-1`);
+      expect(callArgs.externalLink).toBe(false);
     });
 
     it("passes the comments and a content-based dedupe key", async () => {
