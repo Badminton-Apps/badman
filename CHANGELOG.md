@@ -8,6 +8,15 @@
 
 - Arno Soontjens @ArnoSoontjens
 
+## [7.1.1](https://github.com/Badminton-Apps/badman/compare/v7.1.0...v7.1.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* **notifications:** keep the badman link for encounter chat mails ([eb09ef1](https://github.com/Badminton-Apps/badman/commit/eb09ef13ef924ae609d9a67ef26fd139fd3acc29))
+* **notifications:** stop repeated encounter comment mails ([d8b9a27](https://github.com/Badminton-Apps/badman/commit/d8b9a271d0ede44b72327d7ac902a6ab01cffbbd))
+* **notifications:** stop repeated encounter comment mails ([0bcabc3](https://github.com/Badminton-Apps/badman/commit/0bcabc331b5332cb0f59a51c28b0791dfd09f949))
+
 ## [7.1.0](https://github.com/Badminton-Apps/badman/compare/v7.0.1...v7.1.0) (2026-09-08)
 
 
