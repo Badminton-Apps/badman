@@ -11,8 +11,7 @@
     "nestjs-i18n": "~10.5.1",
     "tslib": "^2.8.1"
   },
-  "//the original node-adodb version is:": "github:nuintun/node-adodb",
-  "//But waiting for following issue:": "https://github.com/nrwl/nx/issues/29478",
+  "//node-adodb is a Windows-only optional dep declared in the root package.json": "It is pinned to the tarball URL https://github.com/nuintun/node-adodb/tree/master rather than the shorthand github:nuintun/node-adodb. The shorthand was originally blocked by an Nx lockfile bug; Nx is gone, so switching back is untested but no longer blocked.",
   "type": "commonjs",
   "main": "./dist/index.js",
   "scripts": {

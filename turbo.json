@@ -1,6 +1,15 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["tsconfig.base.json", "jest.preset.js", "jest.setup.js", ".nvmrc"],
+  "globalDependencies": [
+    "tsconfig.base.json",
+    "jest.preset.js",
+    "jest.setup.js",
+    ".nvmrc",
+    // lint output depends on these; without them a config change
+    // leaves every package's lint result cached and stale.
+    "eslint.config.js",
+    ".prettierignore"
+  ],
   "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {

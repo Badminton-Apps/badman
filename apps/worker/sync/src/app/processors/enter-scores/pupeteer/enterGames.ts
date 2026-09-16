@@ -290,7 +290,11 @@ export async function enterGames(
     }
 
     // Select players for all 4 positions (t1p1, t1p2, t2p1, t2p2)
-    const playerPositions: { position: "t1p1" | "t1p2" | "t2p1" | "t2p2"; team: number; player: number }[] = [
+    const playerPositions: {
+      position: "t1p1" | "t1p2" | "t2p1" | "t2p2";
+      team: number;
+      player: number;
+    }[] = [
       { position: "t1p1", team: 1, player: 1 },
       { position: "t1p2", team: 1, player: 2 },
       { position: "t2p1", team: 2, player: 1 },

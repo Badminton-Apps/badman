@@ -4,96 +4,99 @@ applyTo: "**"
 
 # GitHub Copilot Instructions for Badman Project
 
+`AGENTS.md` in the repository root is the single source of truth for AI-assisted development in this repo. This file is a short orientation; when the two disagree, `AGENTS.md` wins.
+
 ## Project Overview
 
-Badman is a comprehensive badminton management system built with Angular 19, Node.js, and TypeScript using Nx monorepo architecture. The application handles player management, tournament organization, ranking systems, and club administration.
+Badman is a comprehensive badminton management system built with NestJS and TypeScript in a Turborepo monorepo. The application handles player management, tournament organization, ranking systems, and club administration.
+
+This repository is **backend-only** — the frontend lives in a separate repository. Do not add frontend code here.
 
 ## Architecture & Technologies
 
-- **Monorepo**: Nx workspace with advanced dependency management
-- **Frontend**: Angular 19 with Material Design, PWA capabilities
-- **Backend**: Node.js with GraphQL API
-- **Database**: PostgreSQL with Sequelize ORM
+- **Monorepo**: Turborepo over pnpm workspaces
+- **Backend**: NestJS with a code-first Apollo GraphQL API (Fastify adapter)
+- **Database**: PostgreSQL with Sequelize ORM (`sequelize-typescript`)
+- **Queues**: Bull on Redis
 - **Cache**: Redis
-- **Testing**: Jest (unit), Playwright (E2E)
-- **Build Tools**: Webpack, Angular CLI
+- **Testing**: Jest, per-package config with a shared `jest.preset.js`
+- **Build Tools**: `nest build` for apps, `tsc` for packages
 
 ## Key Directory Structure
 
 ### Applications (`apps/`)
 
-- `apps/badman/` - Main Angular frontend (serves at localhost:3000)
-- `apps/api/` - GraphQL API server and business logic
-- `apps/worker/` - Background workers for sync, ranking, and regional processing
-- `apps/scripts/` - Development and deployment scripts
-- `apps/*-e2e/` - End-to-end test suites (desktop, mobile, shared base)
+- `apps/api/` - GraphQL API server and business logic (serves at localhost:5010)
+- `apps/worker/sync/` - Federation data sync worker
+- `apps/worker/ranking/` - Ranking recalculation worker
+- `apps/worker/belgium/flanders/{places,points}/` - Regional workers
+- `apps/scripts/` - One-off operational scripts
 
-### Libraries (`libs/`)
+### Packages (`packages/`)
 
-**Backend Libraries** (`libs/backend/`):
+Compiled internal libraries. `tsc` emits to `<pkg>/dist` and consumers resolve through the package `exports` map.
 
-- Core: `authorization/`, `database/`, `graphql/`, `cache/`, `queue/`
-- Business: `competition/`, `ranking/`, `notifications/`, `mailing/`
-- Integrations: `twizzit/`, `belgium/flanders/`
-- Utils: `search/`, `translate/`, `visual/`, `validation/`, `websockets/`
-
-**Frontend Libraries** (`libs/frontend/`):
-
-- Core: `models/`, `graphql/`, `auth/`, `components/`, `utils/`
-- Pages: `club/`, `player/`, `team/`, `ranking/`, `tournament/`, `competition/`
-- Services: `seo/`, `translation/`, `pdf/`, `excel/`, `notifications/`, `queue/`
-
-**Shared**: `libs/utils/` - Cross-platform utilities
+- Core: `backend-authorization/`, `backend-database/`, `backend-graphql/`, `backend-cache/`, `backend-queue/`
+- Business: `backend-competition/{assembly,change-encounter,encounter-games,enrollment,transfer-loans}/`, `backend-ranking/`, `backend-notifications/`, `backend-mailing/`
+- Integrations: `backend-twizzit/`, `backend-visual/`, `backend-belgium/flanders/{games,places,points}/`
+- Utils: `utils/`, `backend-utils/`, `backend-search/`, `backend-translate/`, `backend-validation/`, `backend-websockets/`
 
 ### Other Important Directories
 
-- `database/` - Migrations, config, scripts
+- `database/` - Migrations, config, seeders
 - `mails/` - HTML email templates
 - `scripts/` - Build and deployment scripts
+- `specs/` - Feature specifications
 - `types/` - Global TypeScript definitions
 
 ## Development Guidelines
 
 ### File Creation Patterns
 
-- **Angular Components**: Place in appropriate feature library under `libs/frontend/`
-- **Backend Services**: Place in relevant domain library under `libs/backend/`
-- **Shared Models**: Use `libs/frontend/models/` or `libs/utils/`
-- **GraphQL**: Schema in `libs/backend/graphql/`, queries in `libs/frontend/graphql/`
-- **Tests**: Co-locate with source files or in `apps/*-e2e/` for E2E tests
+- **Backend Services**: Place in the relevant domain package under `packages/`
+- **Resolvers**: `packages/backend-graphql/src/resolvers/<domain>/` — one `*.resolver.ts`, `*.module.ts`, `*.resolver.spec.ts` per domain
+- **Models**: `packages/backend-database/` — Sequelize models double as GraphQL `@ObjectType` declarations
+- **Shared enums and helpers**: `packages/utils/`
+- **Tests**: Co-locate with source files (`foo.resolver.ts` → `foo.resolver.spec.ts`)
 
 ### Naming Conventions
 
-- Libraries follow domain-driven design (e.g., `competition`, `ranking`, `player`)
-- Angular components use kebab-case with feature prefix
+- Packages follow domain-driven design (e.g., `competition`, `ranking`, `enrollment`)
 - Backend services use PascalCase
 - Database models follow Sequelize conventions
 
 ### Import Patterns
 
-- Use Nx library imports: `@badman/frontend-models`, `@badman/backend-database`
-- Prefer barrel exports from library index files
-- GraphQL imports typically from `@badman/frontend-graphql`
+- Import packages by their alias: `@badman/backend-database`, `@badman/utils`
+- To add a dependency between packages, add `"@badman/<name>": "workspace:*"` to the consumer's `package.json` and run `pnpm install`. There are **no tsconfig path aliases** — resolution goes through each package's `exports` map
+- The alias is the package's `name` field and does not always match its directory (`packages/backend-competition/assembly` is `@badman/backend-assembly`) — check the `package.json`
+- Prefer barrel exports from a package's index file
 
 ### Common File Types
 
-- `.component.ts/.html/.scss` - Angular components
-- `.service.ts` - Angular/Node.js services
+- `.service.ts` - NestJS services
 - `.resolver.ts` - GraphQL resolvers
 - `.model.ts` - Database models (Sequelize)
 - `.interface.ts` - TypeScript interfaces
 - `.spec.ts` - Jest unit tests
-- `.e2e-spec.ts` - Playwright E2E tests
+- `.integration.spec.ts` - Integration tests (opt-in, skipped by default)
 
 ### Key Configuration Files
 
-- `nx.json` - Nx workspace config
-- `project.json` - Per-app/library configuration
+- `turbo.json` - Task pipeline, caching and task dependencies
+- `pnpm-workspace.yaml` - Which directories are workspace packages
+- Each app/package `package.json` - Its own scripts and `workspace:*` dependencies
 - `tsconfig.*.json` - TypeScript configs
-- `jest.config.ts` - Test configuration
+- `jest.preset.js` + per-package `jest.config.ts` - Test configuration
 - `schema.gql` - GraphQL schema
 
-When suggesting code changes, consider the modular architecture and ensure proper separation between frontend/backend concerns. Follow Nx best practices for library boundaries and dependency management.
+### Common Commands
+
+- `pnpm turbo run build --filter=<name>` - Build one app or package
+- `pnpm turbo run test --filter=<name>` - Test one package
+- `pnpm start:server` - Serve the API and sync worker in watch mode
+
+When suggesting code changes, respect the package boundaries and express cross-package dependencies through `workspace:*` rather than reaching into another package's source.
 
 ## Fetching data
 

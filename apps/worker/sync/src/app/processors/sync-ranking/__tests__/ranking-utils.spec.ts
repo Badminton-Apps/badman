@@ -25,44 +25,60 @@ describe("isPublicationUsedForUpdate", () => {
   describe("first Monday of the month", () => {
     it("returns true when date is exactly the first Monday of an update month", () => {
       // January 2024: first Monday is the 1st
-      expect(isPublicationUsedForUpdate(make("2024-01-01"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(true);
+      expect(
+        isPublicationUsedForUpdate(make("2024-01-01"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(true);
     });
 
     it("returns true when date is exactly the first Monday (mid-week start month)", () => {
       // March 2024: 1st is a Friday → first Monday is the 4th
-      expect(isPublicationUsedForUpdate(make("2024-03-04"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(true);
+      expect(
+        isPublicationUsedForUpdate(make("2024-03-04"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(true);
     });
 
     it("returns true when date is 1 day after the first Monday (within exclusive isBetween window)", () => {
       // March 2024 first Monday = 4th → 5th is within the window
-      expect(isPublicationUsedForUpdate(make("2024-03-05"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(true);
+      expect(
+        isPublicationUsedForUpdate(make("2024-03-05"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(true);
     });
 
     it("returns false when date is exactly 2 days after the first Monday (exclusive boundary)", () => {
       // isBetween is exclusive of endpoints → margin endpoint is outside the window
       // March 2024 first Monday = 4th, margin = 6th → 6th is excluded
-      expect(isPublicationUsedForUpdate(make("2024-03-06"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(false);
+      expect(
+        isPublicationUsedForUpdate(make("2024-03-06"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(false);
     });
 
     it("returns false when date is 3 days after the first Monday", () => {
       // March 2024 first Monday = 4th → 7th is outside
-      expect(isPublicationUsedForUpdate(make("2024-03-07"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(false);
+      expect(
+        isPublicationUsedForUpdate(make("2024-03-07"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(false);
     });
 
     it("returns false when date is before the first Monday in an update month", () => {
       // March 2024: 1st is a Friday, first Monday is 4th → 1st should be false
-      expect(isPublicationUsedForUpdate(make("2024-03-01"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(false);
+      expect(
+        isPublicationUsedForUpdate(make("2024-03-01"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(false);
     });
 
     it("returns false for a non-update month even if date is first Monday", () => {
       // February 2024 is not in UPDATE_MONTHS → always false
       // First Monday of Feb 2024 = 5th
-      expect(isPublicationUsedForUpdate(make("2024-02-05"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(false);
+      expect(
+        isPublicationUsedForUpdate(make("2024-02-05"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(false);
     });
 
     it("returns false for a mid-month date in an update month", () => {
       // January 2024, 15th is a normal Monday but not the first
-      expect(isPublicationUsedForUpdate(make("2024-01-15"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(false);
+      expect(
+        isPublicationUsedForUpdate(make("2024-01-15"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(false);
     });
   });
 
@@ -71,15 +87,21 @@ describe("isPublicationUsedForUpdate", () => {
   describe("month starting on Monday (.date(1).day(8) edge case)", () => {
     it("returns true when the 1st of the month is already a Monday", () => {
       // January 2024: 1st is Monday
-      expect(isPublicationUsedForUpdate(make("2024-01-01"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(true);
+      expect(
+        isPublicationUsedForUpdate(make("2024-01-01"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(true);
     });
 
     it("returns true for the day after when the 1st is already Monday", () => {
-      expect(isPublicationUsedForUpdate(make("2024-01-02"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(true);
+      expect(
+        isPublicationUsedForUpdate(make("2024-01-02"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(true);
     });
 
     it("returns false 3 days after when the 1st is already Monday", () => {
-      expect(isPublicationUsedForUpdate(make("2024-01-04"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(false);
+      expect(
+        isPublicationUsedForUpdate(make("2024-01-04"), UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
+      ).toBe(false);
     });
   });
 
@@ -90,17 +112,13 @@ describe("isPublicationUsedForUpdate", () => {
       // September 5 2021 is the bad date override in production; here we use it as a good date
       const date = make("2021-09-13"); // a Monday in September
       const iso = date.toISOString();
-      expect(
-        isPublicationUsedForUpdate(date, UPDATE_MONTHS, [iso], [])
-      ).toBe(true);
+      expect(isPublicationUsedForUpdate(date, UPDATE_MONTHS, [iso], [])).toBe(true);
     });
 
     it("forces true even when the month is not in updateMonths", () => {
       const date = make("2024-02-14"); // February, not an update month
       const iso = date.toISOString();
-      expect(
-        isPublicationUsedForUpdate(date, UPDATE_MONTHS, [iso], [])
-      ).toBe(true);
+      expect(isPublicationUsedForUpdate(date, UPDATE_MONTHS, [iso], [])).toBe(true);
     });
   });
 
@@ -109,9 +127,7 @@ describe("isPublicationUsedForUpdate", () => {
       // March 4 2024 is a first Monday; we blacklist it
       const date = make("2024-03-04");
       const iso = date.toISOString();
-      expect(
-        isPublicationUsedForUpdate(date, UPDATE_MONTHS, [], [iso])
-      ).toBe(false);
+      expect(isPublicationUsedForUpdate(date, UPDATE_MONTHS, [], [iso])).toBe(false);
     });
   });
 
@@ -144,9 +160,7 @@ describe("isPublicationUsedForUpdate", () => {
       expect(() =>
         isPublicationUsedForUpdate(invalid, UPDATE_MONTHS, GOOD_DATES, BAD_DATES)
       ).not.toThrow();
-      expect(isPublicationUsedForUpdate(invalid, UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(
-        false
-      );
+      expect(isPublicationUsedForUpdate(invalid, UPDATE_MONTHS, GOOD_DATES, BAD_DATES)).toBe(false);
     });
   });
 });

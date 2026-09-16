@@ -70,4 +70,3 @@ export const getHeaderForAssemblyPosition = (
   // Return the corresponding header
   return formHeaders[positionIndex] || null;
 };
-

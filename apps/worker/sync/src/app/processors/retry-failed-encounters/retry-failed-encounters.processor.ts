@@ -84,11 +84,7 @@ export class RetryFailedEncounterSyncProcessor {
             `finished: ${encounter.finished}, enteredOn: ${encounter.enteredOn}, scoresSyncedAt: ${encounter.scoresSyncedAt}`
         );
 
-        await this.syncQueue.add(
-          Sync.EnterScores,
-          { encounterId },
-          getSyncJobOptions({ jobId })
-        );
+        await this.syncQueue.add(Sync.EnterScores, { encounterId }, getSyncJobOptions({ jobId }));
 
         queued++;
       }

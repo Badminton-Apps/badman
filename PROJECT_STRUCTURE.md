@@ -4,169 +4,146 @@ Welcome to the Badman project! This document provides an overview of the project
 
 ## 🏗️ Overview
 
-Badman is a comprehensive badminton management system built with Angular, Node.js, and TypeScript using the Nx monorepo architecture. The application handles everything from player management and tournament organization to ranking systems and club administration.
+Badman is a comprehensive badminton management system built with Node.js and TypeScript in a Turborepo monorepo. The application handles everything from player management and tournament organization to ranking systems and club administration.
+
+This repository is **backend-only** — the frontend lives in a separate repository (Constitution v2.0.0, Principle V). Do not reintroduce frontend code here.
 
 ## 🎯 Key Technologies
 
-- **Frontend**: Angular 19 with Material Design
-- **Backend**: Node.js with GraphQL API
-- **Database**: PostgreSQL with Sequelize ORM
-- **Monorepo**: Nx workspace with advanced dependency management
+- **Backend**: NestJS with a code-first Apollo GraphQL API
+- **Database**: PostgreSQL with Sequelize ORM (`sequelize-typescript`)
+- **Monorepo**: Turborepo over pnpm workspaces
+- **Queues**: Bull on Redis
 - **Cache**: Redis
-- **Testing**: Jest, Playwright (E2E)
-- **Build**: Webpack, Angular CLI
+- **Testing**: Jest (per-package config, shared `jest.preset.js`)
+- **Build**: `nest build` for apps, `tsc` for packages
 
 ## 📁 Project Structure
 
 ### 🚀 Applications (`apps/`)
 
+Deployable NestJS apps. Each builds into its own `dist/` and declares its runtime dependencies in its own `package.json` (internal ones as `workspace:*`). The name in the table is the turbo filter, e.g. `pnpm turbo run build --filter=api`.
+
 #### Main Applications
 
-- **`apps/badman/`** - Primary Angular frontend application
-
-  - The main web client for badminton management
-  - Material Design UI with PWA capabilities
-  - Serves at `http://localhost:3000` in development
-  - Tags: `type:app`, `scope:client`
-
-- **`apps/api/`** - GraphQL API server
-  - Node.js backend with GraphQL endpoint
+- **`apps/api/`** (`api`) — GraphQL API server
+  - NestJS on the Fastify adapter, serving at `http://localhost:5010` in development
   - Handles all business logic and data operations
   - Integrates with external badminton federation APIs
-  - Serves the main API for the frontend
 
 #### Worker Applications
 
-- **`apps/worker/sync/`** - Data synchronization worker
+- **`apps/worker/sync/`** (`worker-sync`) — Data synchronization worker
 
   - Syncs data with external badminton federation systems
   - Handles background data processing tasks
 
-- **`apps/worker/ranking/`** - Ranking calculation worker
+- **`apps/worker/ranking/`** (`worker-ranking`) — Ranking calculation worker
 
   - Processes player and team rankings
   - Handles complex ranking algorithms
 
-- **`apps/worker/belgium/flanders/`** - Regional workers
-  - **`places/`** - Manages venue and location data for Flanders region
-  - **`points/`** - Calculates region-specific point systems
+- **`apps/worker/belgium/flanders/`** — Regional workers
+  - **`places/`** (`worker-belgium-flanders-places`) — Manages venue and location data for the Flanders region
+  - **`points/`** (`worker-belgium-flanders-points`) — Calculates region-specific point systems
 
 #### Development & Testing
 
-- **`apps/scripts/`** - Development and deployment scripts
-- **`apps/badman-e2e/`** - End-to-end test suite (shared base)
-- **`apps/badman-e2e-desktop/`** - Desktop-specific E2E tests
-- **`apps/badman-e2e-mobile/`** - Mobile-specific E2E tests
+- **`apps/scripts/`** (`scripts`) — One-off operational scripts
 
-### 📚 Libraries (`libs/`)
+### 📚 Packages (`packages/`)
 
-The project follows a modular architecture with separate backend and frontend libraries:
+Shared code lives in **compiled internal packages**: `tsc` emits to `<pkg>/dist` and consumers resolve through the package `exports` map. There are no tsconfig path aliases — to depend on a package, add `"@badman/<name>": "workspace:*"` to the consumer's `package.json` and run `pnpm install`.
 
-#### Backend Libraries (`libs/backend/`)
+The import alias is the package's `name` field and **does not always match its directory** — always check the `package.json`.
 
-- **Core Services**:
+#### Core Services
 
-  - `authorization/` - Authentication and permission management
-  - `database/` - Database models and ORM configuration
-  - `graphql/` - GraphQL schema and resolvers
-  - `cache/` - Redis caching layer
-  - `queue/` - Background job processing
+| Directory                         | Import alias                                                           |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `packages/backend-authorization/` | `@badman/backend-authorization` — JWT/Auth0 guard, `@User()` decorator |
+| `packages/backend-database/`      | `@badman/backend-database` — all Sequelize models + `DatabaseModule`   |
+| `packages/backend-graphql/`       | `@badman/backend-graphql` — all resolvers, scalars, query utilities    |
+| `packages/backend-cache/`         | `@badman/backend-cache` — Redis caching layer                          |
+| `packages/backend-queue/`         | `@badman/backend-queue` — Bull queue setup and queue name constants    |
+| `packages/backend-cluster/`       | `@badman/backend-cluster`                                              |
+| `packages/backend-orchestrator/`  | `@badman/backend-orchestrator`                                         |
+| `packages/backend-micro/`         | `@badman/backend-micro`                                                |
+| `packages/backend-health/`        | `@badman/backend-health`                                               |
+| `packages/backend-logging/`       | `@badman/backend-logging`                                              |
 
-- **Business Logic**:
+#### Business Logic
 
-  - `competition/` - Tournament and competition management
-    - `assembly/` - Team assembly logic
-    - `change-encounter/` - Match change handling
-    - `enrollment/` - Competition enrollment
-    - `transfer-loans/` - Player transfers and loans
-  - `ranking/` - Player and team ranking systems
-  - `notifications/` - Email and push notifications
-  - `mailing/` - Email template and sending
+| Directory                                        | Import alias                                                     |
+| ------------------------------------------------ | ---------------------------------------------------------------- |
+| `packages/backend-competition/assembly/`         | `@badman/backend-assembly` — team assembly logic                 |
+| `packages/backend-competition/change-encounter/` | `@badman/backend-change-encounter` — match change handling       |
+| `packages/backend-competition/encounter-games/`  | `@badman/backend-encounter-games`                                |
+| `packages/backend-competition/enrollment/`       | `@badman/backend-enrollment` — enrollment validation rule engine |
+| `packages/backend-competition/transfer-loans/`   | `@badman/backend-transfer-loan` — player transfers and loans     |
+| `packages/backend-ranking/`                      | `@badman/backend-ranking` — ranking calculation services         |
+| `packages/backend-notifications/`                | `@badman/backend-notifications` — email and push notifications   |
+| `packages/backend-mailing/`                      | `@badman/backend-mailing` — email templating and sending         |
 
-- **External Integrations**:
+#### External Integrations
 
-  - `twizzit/` - Integration with Twizzit tournament software
-  - `belgium/flanders/` - Belgian Flanders federation integration
-    - `games/` - Game data processing
-    - `places/` - Venue management
-    - `points/` - Point system calculations
+| Directory                                   | Import alias                                            |
+| ------------------------------------------- | ------------------------------------------------------- |
+| `packages/backend-twizzit/`                 | `@badman/backend-twizzit` — Twizzit tournament software |
+| `packages/backend-visual/`                  | `@badman/backend-visual` — VR/Visual federation API     |
+| `packages/backend-belgium/flanders/games/`  | `@badman/belgium-flanders-games`                        |
+| `packages/backend-belgium/flanders/places/` | `@badman/belgium-flanders-places`                       |
+| `packages/backend-belgium/flanders/points/` | `@badman/belgium-flanders-points`                       |
 
-- **Utilities**:
-  - `search/` - Search functionality
-  - `translate/` - Internationalization
-  - `visual/` - Chart and visualization generation
-  - `validation/` - Data validation rules
-  - `websockets/` - Real-time communication
+#### Utilities
 
-#### Frontend Libraries (`libs/frontend/`)
-
-- **Core Modules**:
-
-  - `models/` - TypeScript interfaces and data models
-  - `graphql/` - GraphQL client and queries
-  - `auth/` - Authentication services
-  - `components/` - Reusable UI components
-  - `utils/` - Utility functions
-
-- **Feature Pages**:
-
-  - `club/` - Club management interface
-  - `player/` - Player profiles and management
-  - `team/` - Team management
-  - `ranking/` - Ranking displays and management
-  - `tournament/` - Tournament organization
-  - `competition/` - Competition-specific features
-    - `event/` - Event management
-    - `team-assembly/` - Team formation tools
-    - `team-enrollment/` - Team registration
-    - `change-encounter/` - Match change requests
-
-- **Services & Modules**:
-  - `seo/` - Search engine optimization
-  - `translation/` - Multi-language support
-  - `pdf/` - PDF generation
-  - `excel/` - Excel export functionality
-  - `notifications/` - In-app notifications
-  - `queue/` - Background task management
-
-#### Shared Libraries
-
-- **`libs/utils/`** - Shared utility functions used across backend and frontend
+| Directory                      | Import alias                                                                  |
+| ------------------------------ | ----------------------------------------------------------------------------- |
+| `packages/utils/`              | `@badman/utils` — business helpers, enums, config schema, `i18n.generated.ts` |
+| `packages/backend-utils/`      | `@badman/backend-utils`                                                       |
+| `packages/backend-search/`     | `@badman/backend-search` — search functionality                               |
+| `packages/backend-translate/`  | `@badman/backend-translate` — `nestjs-i18n` module + i18n JSON assets         |
+| `packages/backend-validation/` | `@badman/backend-validation` — data validation rules                          |
+| `packages/backend-websockets/` | `@badman/backend-websockets` — real-time communication                        |
+| `packages/backend-compile/`    | `@badman/backend-compile`                                                     |
+| `packages/backend-generator/`  | `@badman/backend-generator` — `.cp` file generation                           |
+| `packages/backend-pupeteer/`   | `@badman/backend-pupeteer` — headless browser helpers                         |
 
 ### 🗄️ Additional Directories
 
-- **`database/`** - Database configuration and migrations
-
-  - `migrations/` - Sequelize database migrations
-  - `config/` - Database connection configurations
-  - `scripts/` - Database utility scripts
-
-- **`scripts/`** - Build and deployment scripts
-- **`mails/`** - Email templates (HTML)
-- **`files/`** - Static files and uploads
-- **`coverage/`** - Test coverage reports
-- **`tmp/`** - Temporary build files
-- **`types/`** - Global TypeScript type definitions
+- **`database/`** — Database configuration and migrations
+  - `migrations/` — Sequelize database migrations
+  - `config/` — Database connection configurations
+  - `seeders/` — Seed data
+- **`scripts/`** — Build and deployment scripts
+- **`specs/`** — Feature specifications (Spec Kit)
+- **`docs/`** — Long-form internal documentation
+- **`mails/`** — Email templates (HTML)
+- **`coverage/`** — Test coverage reports
+- **`types/`** — Global TypeScript type definitions
 
 ## 📖 Key Files for New Contributors
 
 ### Configuration Files
 
-- **`nx.json`** - Nx workspace configuration
-- **`package.json`** - Dependencies and scripts
-- **`tsconfig.base.json`** - TypeScript base configuration
-- **`jest.config.ts`** - Testing configuration
-- **`docker-compose.dev.yml`** - Development environment setup
+- **`turbo.json`** — Turborepo task pipeline, caching and task dependencies
+- **`pnpm-workspace.yaml`** — Which directories are workspace packages
+- **`package.json`** — Root dependencies and the `turbo run …` scripts
+- **`tsconfig.base.json`** — TypeScript base configuration
+- **`jest.preset.js`** — Shared Jest preset consumed by each package's `jest.config.ts`
+- **`.sequelizerc`** — Points `sequelize-cli` at `database/config/config.js`
+- **`docker-compose.dev.yml`** — Development environment setup (PostgreSQL, Redis, pgAdmin)
 
 ### Documentation
 
-- **`README.md`** - Basic setup and development guide
-- **`CONTRIBUTING.md`** - Contribution guidelines and workflow
-- **`CODE_OF_CONDUCT.md`** - Community guidelines
-- **`LICENSE.md`** - Project license
+- **`AGENTS.md`** (symlinked as `CLAUDE.md`) — Single source of truth for AI-assisted development
+- **`README.md`** — Basic setup and development guide
+- **`CONTRIBUTING.md`** — Contribution guidelines and workflow
+- **`CODE_OF_CONDUCT.md`** — Community guidelines
+- **`LICENSE.md`** — Project license
 
 ### Development Helpers
 
-- **`proxy.conf.json`** - Development proxy configuration
-- **`migrations.json`** - Database migration tracking
-- **`schema.gql`** - GraphQL schema definition
+- **`schema.gql`** — Generated GraphQL schema definition
+- **`lefthook.yml`** — Pre-commit hooks (eslint, prettier)
+- **`release-please-config.json`** — Commit-driven release configuration

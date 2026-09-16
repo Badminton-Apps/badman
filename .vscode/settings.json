@@ -6,7 +6,6 @@
     "connectionId": "badman",
     "projectKey": "Badminton-Apps_badman"
   },
-  "nxConsole.generateAiAgentRules": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,

@@ -84,12 +84,8 @@ describe("RetryFailedEncounterSyncProcessor", () => {
 
   beforeEach(async () => {
     await buildModule();
-    cronJobFindOneSpy = jest
-      .spyOn(CronJob, "findOne")
-      .mockResolvedValue(makeCronJob() as any);
-    findAllSpy = jest
-      .spyOn(EncounterCompetition, "findAll")
-      .mockResolvedValue([]);
+    cronJobFindOneSpy = jest.spyOn(CronJob, "findOne").mockResolvedValue(makeCronJob() as any);
+    findAllSpy = jest.spyOn(EncounterCompetition, "findAll").mockResolvedValue([]);
   });
 
   afterEach(() => {
@@ -107,9 +103,7 @@ describe("RetryFailedEncounterSyncProcessor", () => {
     });
 
     it("returns early when CronJob already running", async () => {
-      cronJobFindOneSpy.mockResolvedValue(
-        makeCronJob({ running: true, amount: 1 }) as any
-      );
+      cronJobFindOneSpy.mockResolvedValue(makeCronJob({ running: true, amount: 1 }) as any);
 
       const job = makeJob();
       await processor.retryFailedEncounters(job as any);
@@ -213,9 +207,7 @@ describe("RetryFailedEncounterSyncProcessor", () => {
       findAllSpy.mockRejectedValue(new Error("DB error"));
 
       const job = makeJob();
-      await expect(
-        processor.retryFailedEncounters(job as any)
-      ).rejects.toThrow("DB error");
+      await expect(processor.retryFailedEncounters(job as any)).rejects.toThrow("DB error");
 
       // amount should still be decremented in finally
       expect(cronJob.amount).toBe(0);

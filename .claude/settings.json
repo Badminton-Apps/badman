@@ -4,8 +4,8 @@
       "Bash(npx jest --config *)",
       "Bash(npx biome check *)",
       "Bash(npx ctx7@latest *)",
-      "Bash(npx nx test *)",
-      "Bash(npx nx lint *)"
+      "Bash(pnpm turbo run test *)",
+      "Bash(pnpm turbo run lint *)"
     ],
     "additionalDirectories": [
       "/home/arno/Documents/Work/PandaPanda/Projects/Badman/badman/docs/estimates"
