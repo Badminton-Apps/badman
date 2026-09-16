@@ -94,11 +94,26 @@ export abstract class Notifier<T, A = { email: string }> {
         },
       });
 
+      const dedupeKey = meta?.["dedupeKey"] as string | undefined;
+
       const logAction = await Logging.create({
         action: LoggingAction.SendNotification,
         playerId: player.id,
         meta: { linkId, linkType: this.linkType, type: NotificationType[type] },
       });
+
+      if (dedupeKey && notification) {
+        const previousKey = this.readDedupeKey(notification.meta);
+        if (previousKey === dedupeKey) {
+          this.logger.debug(
+            `Notification ${this.type} already sent to ${player.fullName} for this content, skipping`
+          );
+          (logAction.meta as Record<string, unknown>)["reason"] = "Already sent for this content";
+          logAction.changed("meta", true);
+          await logAction.save();
+          return;
+        }
+      }
 
       if (this.allowedThrottle && notification) {
         const lastSend = moment(notification.createdAt);
@@ -181,6 +196,24 @@ export abstract class Notifier<T, A = { email: string }> {
     } catch (error) {
       this.logger.error(`Notification failed for player ${player?.fullName || "unknown"}:`, error);
       // Don't rethrow - we want to continue processing even if notifications fail
+    }
+  }
+
+  /**
+   * Reads the dedupe key from a stored notification, so we can tell whether we
+   * would be notifying about content that was already sent.
+   */
+  private readDedupeKey(meta?: string | null): string | undefined {
+    if (!meta) {
+      return undefined;
+    }
+
+    try {
+      const parsed = typeof meta === "string" ? JSON.parse(meta) : meta;
+      return (parsed as { dedupeKey?: string })?.dedupeKey;
+    } catch {
+      this.logger.debug(`Could not parse notification meta, ignoring dedupe key`);
+      return undefined;
     }
   }
 }

@@ -9,7 +9,7 @@ import {
   Location,
   SubEventCompetition,
 } from "@badman/backend-database";
-import { ConfigType, EncounterChangeAction } from "@badman/utils";
+import { ConfigType, EncounterChangeAction, EncounterComment } from "@badman/utils";
 import { Inject, Injectable, Logger, Optional } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { writeFile } from "fs/promises";
@@ -336,7 +336,10 @@ export class MailingService {
       slug: string;
     },
     encounter: EncounterCompetition,
-    url: string
+    url: string,
+    comments?: EncounterComment[],
+    /** True when the url points outside badman (the toernooi.nl match page) */
+    externalLink = false
   ) {
     moment.locale("nl-be");
     const options = {
@@ -354,6 +357,8 @@ export class MailingService {
         contact: to.fullName,
         date: moment(encounter.date).tz("Europe/Brussels").format("LLLL"),
         settingsSlug: to.slug,
+        comments: comments ?? [],
+        externalLink,
       },
     } as MailOptions<{
       encounter: EncounterCompetition;
@@ -361,6 +366,8 @@ export class MailingService {
       contact: string;
       date: string;
       settingsSlug: string;
+      comments: EncounterComment[];
+      externalLink: boolean;
     }>;
 
     await this._sendMail(options);
