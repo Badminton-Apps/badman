@@ -32,6 +32,7 @@ import {
 import { CronJobResolverModule } from "./resolvers/cronJobs/cronJob.module";
 import { SettingResolverModule } from "./resolvers/setting/setting.module";
 import { ServiceResolverModule } from "./resolvers/services/serice.module";
+import { QueueResolverModule } from "./resolvers/queue/queue.module";
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { ServiceResolverModule } from "./resolvers/services/serice.module";
     NotificationResolverModule,
     ServiceResolverModule,
     CronJobResolverModule,
+    QueueResolverModule,
     SettingResolverModule,
   ],
   providers: [PlayerLoaderService],

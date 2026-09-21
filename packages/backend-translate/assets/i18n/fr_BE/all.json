@@ -1842,7 +1842,10 @@
           "admin": "Admin",
           "adminSettings": "Paramètres d'administration",
           "copyCompetitions": "Copier les compétitions",
-          "adminCompetitions": "Admin Compétitions"
+          "adminCompetitions": "Admin Compétitions",
+          "dev": "Développeur",
+          "devQueue": "Files d'attente",
+          "devLogin": "Connexion Développeur"
         },
         "tooltips": {
           "registrationClosed": "Inscriptions fermées"

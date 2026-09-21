@@ -1498,7 +1498,10 @@
           "admin": "Admin",
           "adminSettings": "Admin Instellingen",
           "copyCompetitions": "Competities kopiëren",
-          "adminCompetitions": "Admin Competities"
+          "adminCompetitions": "Admin Competities",
+          "dev": "Ontwikkelaar",
+          "devQueue": "Wachtrijen",
+          "devLogin": "Ontwikkelaar Aanmelding"
         },
         "auth": {
           "logIn": "Inloggen",
