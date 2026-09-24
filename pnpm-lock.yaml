@@ -1070,8 +1070,8 @@ importers:
         specifier: ^2.30.1
         version: 2.30.1
       multer:
-        specifier: 2.2.0
-        version: 2.2.0
+        specifier: 2.3.0
+        version: 2.3.0
       sequelize:
         specifier: ^6.37.5
         version: 6.37.8(pg@8.21.0)(sqlite3@5.1.7)
@@ -4491,6 +4491,7 @@ packages:
   cron-parser@4.9.0:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
+    deprecated: v4 is no longer maintained, upgrade to v5
 
   cron@4.4.0:
     resolution: {integrity: sha512-fkdfq+b+AHI4cKdhZlppHveI/mgz2qpiYxcm+t5E5TsxX7QrLS1VE0+7GENEk9z0EeGPcpSciGv6ez24duWhwQ==}
@@ -4836,6 +4837,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -6175,8 +6177,8 @@ packages:
     resolution: {integrity: sha512-mo+QTzKlx8R7E5ylSXxWzGoXoZbOsRMpyitcht8By2KHvMbf3tjwosZ/Mu/XYU6UuJ3VZnODIrak5ZrPiPyB6A==}
     engines: {node: '>= 10.16.0'}
 
-  multer@2.2.0:
-    resolution: {integrity: sha512-6rdyFg2kLrMh9Jee7/BMPuV9lEAd7lLW2YUpF9/YxR7njyoUwwQ0ZPh3TaIY50Sw6vlyD2HW3wGOkTS4P79xrQ==}
+  multer@2.3.0:
+    resolution: {integrity: sha512-cjNbm3sttszgZeGfJR124D+jFEfkXCVAsoPBmFn9X7UxmDSFHWqE2CoEj0vrmSpuAFnqWR1Szcm9QTsiHr60Xw==}
     engines: {node: '>= 10.16.0'}
 
   mute-stream@2.0.0:
@@ -6234,7 +6236,7 @@ packages:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
   node-adodb@https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373:
-    resolution: {gitHosted: true, integrity: sha512-3kEZtRgNk7/bIZdSvjm1Lf4wbcgMvww5/WYDwezOveTxygMWCiaPzqXGY0F9ZtTFEa0ZiPiikBh5TVAw/e1kKA==, tarball: https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373}
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373}
     version: 5.0.3
     engines: {node: '>=6.0.0'}
     os: [win32]
@@ -12702,7 +12704,7 @@ snapshots:
       concat-stream: 2.0.0
       type-is: 1.6.18
 
-  multer@2.2.0:
+  multer@2.3.0:
     dependencies:
       append-field: 1.0.0
       busboy: 1.6.0
