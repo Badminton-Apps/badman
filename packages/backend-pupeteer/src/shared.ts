@@ -25,6 +25,11 @@ export function decrementActiveRequestCount(): void {
   }
 }
 
+/** Number of getBrowser calls still holding the browser (for diagnostics and tests). */
+export function getActiveRequestCount(): number {
+  return activeRequestCount;
+}
+
 // Function to check if browser is safe to restart
 function isBrowserSafeToRestart(): boolean {
   return activeRequestCount === 0 && !isRestarting;
@@ -58,12 +63,29 @@ export async function getBrowser(headless = true, args: string[] = []): Promise<
 
   // If browser is being created, wait for it
   if (browserPromise) {
-    return browserPromise;
+    try {
+      return await browserPromise;
+    } catch (error) {
+      // No page will be opened for this call, so release its count
+      decrementActiveRequestCount();
+      throw error;
+    }
   }
 
   // Create the browser
-  browserPromise = createSharedBrowser(headless, args);
-  sharedBrowser = await browserPromise;
+  const launch = createSharedBrowser(headless, args);
+  browserPromise = launch;
+  try {
+    sharedBrowser = await launch;
+  } catch (error) {
+    // Don't cache a failed launch, or every later call re-throws the same error until restart.
+    // Only reset if no newer launch replaced this one in the meantime (e.g. a concurrent getPage recovery).
+    if (browserPromise === launch) {
+      resetBrowserState();
+    }
+    decrementActiveRequestCount();
+    throw error;
+  }
   browserStartTime = Date.now();
   return sharedBrowser;
 }

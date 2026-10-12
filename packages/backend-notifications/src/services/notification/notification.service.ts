@@ -290,7 +290,7 @@ export class NotificationService {
     // report yet.
     const dedupeKey = buildCommentDedupeKey(comments);
 
-    notifierHasComment.notify(
+    await notifierHasComment.notify(
       contact,
       encounter.id,
       { encounter, comments },
