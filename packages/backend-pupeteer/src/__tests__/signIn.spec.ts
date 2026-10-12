@@ -69,6 +69,7 @@ describe("signIn", () => {
     await signIn({ page: page as never, timeout: 100 }, { username: "u", password: "p" });
 
     expect(acceptCookies).toHaveBeenCalledWith({ page, timeout: 100 }, expect.any(Object));
+    expect(page.goto).toHaveBeenCalledTimes(2);
     expect(loginElement.click).toHaveBeenCalled();
   });
 
@@ -89,6 +90,9 @@ describe("signIn", () => {
 
   it("skips login when the profile menu is present on the homepage", async () => {
     const page = makePage();
+    page.url
+      .mockReturnValueOnce("https://www.toernooi.nl/cookiewall/")
+      .mockReturnValue("https://www.toernooi.nl/");
     page.waitForSelector
       .mockRejectedValueOnce(new Error("no profile menu")) // initial check
       .mockRejectedValueOnce(new Error("no profile menu")) // re-check on stuck page

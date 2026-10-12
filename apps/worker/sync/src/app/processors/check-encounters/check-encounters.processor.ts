@@ -360,10 +360,10 @@ export class CheckEncounterProcessor {
           await this.notificationService.notifyEncounterHasComment(encounter, comments);
           break;
         case "notify-not-entered":
-          this.notificationService.notifyEncounterNotEntered(encounter);
+          await this.notificationService.notifyEncounterNotEntered(encounter);
           break;
         case "notify-not-accepted":
-          this.notificationService.notifyEncounterNotAccepted(encounter);
+          await this.notificationService.notifyEncounterNotAccepted(encounter);
           break;
         case "auto-accept": {
           this.logger.debug(
@@ -373,7 +373,7 @@ export class CheckEncounterProcessor {
           const succesfull = await this.detailPage.acceptEncounter();
           if (!succesfull) {
             this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
-            this.notificationService.notifyEncounterNotAccepted(encounter);
+            await this.notificationService.notifyEncounterNotAccepted(encounter);
           }
           break;
         }
