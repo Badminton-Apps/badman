@@ -8,6 +8,28 @@
 
 - Arno Soontjens @ArnoSoontjens
 
+## [7.1.2](https://github.com/Badminton-Apps/badman/compare/v7.1.1...v7.1.2) (2026-10-12)
+
+
+### Bug Fixes
+
+* **notifications:** quote the newest comment in the push message ([92199d4](https://github.com/Badminton-Apps/badman/commit/92199d419246db6219c6798aaf09316ae331712f))
+* **notifications:** retry failed comment mails and claim before sending ([9453424](https://github.com/Badminton-Apps/badman/commit/9453424d096cfcb9530c96ff79af57acd711cd6f))
+* **notifications:** retry failed comment mails and quote the newest comment ([16af3f8](https://github.com/Badminton-Apps/badman/commit/16af3f81c5386aa503cc444e52a75eed554974cc))
+* **pupeteer:** do not cache a failed browser launch ([dfc006c](https://github.com/Badminton-Apps/badman/commit/dfc006c11e8665a3457830df302877812b11b8b0))
+* **pupeteer:** do not cache a failed browser launch ([b8ad049](https://github.com/Badminton-Apps/badman/commit/b8ad04939ea222276851711f68f5bad2ec7fa681))
+* **pupeteer:** release request count and guard reset on failed launch ([781f4ff](https://github.com/Badminton-Apps/badman/commit/781f4ff56b38538ea17b2bcf875eb61d9195c911))
+* **sync:** accept the cookie wall when the sign-in retry lands on it ([ad746bd](https://github.com/Badminton-Apps/badman/commit/ad746bd6e8d819d21b552f2d3ddff420db71bffd))
+* **sync:** address review follow-ups from encounter sync fixes ([d873e2d](https://github.com/Badminton-Apps/badman/commit/d873e2d989bf8716cf9fd36946be2c1d6845ea58))
+* **sync:** address review follow-ups from encounter sync fixes ([2e30617](https://github.com/Badminton-Apps/badman/commit/2e3061739bf4c8ee3e4e8941d2a52d818bbf2e4a))
+* **sync:** only click the suggestion that matches the player ([36c231d](https://github.com/Badminton-Apps/badman/commit/36c231d9107298bb7b0680860313ee6dce12deed))
+* **sync:** recover enter-scores sign-in when the login link is missing ([f5b1877](https://github.com/Badminton-Apps/badman/commit/f5b187778f561ca76f5ae85d8e3196b7094af74b))
+* **sync:** recover enter-scores sign-in when the login link is missing ([c373d04](https://github.com/Badminton-Apps/badman/commit/c373d041ba63f90b970b398e00165c9b9bbc31e7))
+* **sync:** retry unknown-player suggestion lookup in enter-scores ([1cb0255](https://github.com/Badminton-Apps/badman/commit/1cb02553207ea2bbd960997adc45aad8c64ad9b8))
+* **sync:** retry unknown-player suggestion lookup in enter-scores ([24ca02c](https://github.com/Badminton-Apps/badman/commit/24ca02c5a74de68c83f91e21cb5dba914f5d2e1c))
+* **sync:** wait for the edit form instead of network idle in enter-scores ([b33c463](https://github.com/Badminton-Apps/badman/commit/b33c4638f026f7ad35fdb15085c9f13d7aebd8a3))
+* **sync:** wait for the edit form instead of network idle in enter-scores ([0931080](https://github.com/Badminton-Apps/badman/commit/0931080fa0251e2cb49d09ea268a48ee565b258b))
+
 ## [7.1.1](https://github.com/Badminton-Apps/badman/compare/v7.1.0...v7.1.1) (2026-09-16)
 
 
