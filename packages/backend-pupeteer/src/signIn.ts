@@ -1,5 +1,6 @@
 import { Page } from "puppeteer";
 import { waitForSelectors } from "./selectors";
+import { acceptCookies } from "./accept-cookies";
 import { Logger } from "@nestjs/common";
 
 const HOME_URL = "https://www.toernooi.nl/";
@@ -81,6 +82,11 @@ export async function signIn(
           waitUntil: "domcontentloaded",
           timeout: (timeout || 5000) * 3,
         });
+        // Without stored consent the homepage redirects straight back to the cookie wall
+        if (targetPage.url().includes("/cookiewall")) {
+          logger?.warn("Homepage redirected to the cookie wall, accepting cookies before retrying");
+          await acceptCookies({ page: targetPage, timeout }, { logger });
+        }
         if (await hasProfileMenu(targetPage)) {
           logger?.log("User is already signed in (profileMenu found on homepage), skipping login");
           return;

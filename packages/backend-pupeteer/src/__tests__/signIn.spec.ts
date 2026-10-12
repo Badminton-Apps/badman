@@ -1,8 +1,12 @@
 import { signIn } from "../signIn";
 import { waitForSelectors } from "../selectors";
+import { acceptCookies } from "../accept-cookies";
 
 jest.mock("../selectors", () => ({
   waitForSelectors: jest.fn(),
+}));
+jest.mock("../accept-cookies", () => ({
+  acceptCookies: jest.fn().mockResolvedValue(undefined),
 }));
 
 const waitForSelectorsMock = waitForSelectors as jest.Mock;
@@ -22,6 +26,7 @@ const loginElement = { click: jest.fn(), type: jest.fn() };
 describe("signIn", () => {
   beforeEach(() => {
     waitForSelectorsMock.mockReset();
+    (acceptCookies as jest.Mock).mockClear();
     loginElement.click.mockReset();
     loginElement.type.mockReset();
   });
@@ -49,6 +54,37 @@ describe("signIn", () => {
     expect(loginElement.click).toHaveBeenCalled();
     expect(loginElement.type).toHaveBeenCalledWith("u");
     expect(loginElement.type).toHaveBeenCalledWith("p");
+  });
+
+  it("accepts the cookie wall when the homepage redirects back to it", async () => {
+    const page = makePage();
+    page.url
+      .mockReturnValueOnce("https://www.toernooi.nl/cookiewall/") // stuck page
+      .mockReturnValue("https://www.toernooi.nl/cookiewall/?returnurl=%2F"); // after goto home
+    page.waitForSelector.mockRejectedValue(new Error("no profile menu"));
+    waitForSelectorsMock
+      .mockRejectedValueOnce(new Error("Waiting failed: 20000ms exceeded"))
+      .mockResolvedValue(loginElement);
+
+    await signIn({ page: page as never, timeout: 100 }, { username: "u", password: "p" });
+
+    expect(acceptCookies).toHaveBeenCalledWith({ page, timeout: 100 }, expect.any(Object));
+    expect(loginElement.click).toHaveBeenCalled();
+  });
+
+  it("does not touch cookies when the homepage loads normally", async () => {
+    const page = makePage();
+    page.url
+      .mockReturnValueOnce("https://www.toernooi.nl/cookiewall/")
+      .mockReturnValue("https://www.toernooi.nl/");
+    page.waitForSelector.mockRejectedValue(new Error("no profile menu"));
+    waitForSelectorsMock
+      .mockRejectedValueOnce(new Error("Waiting failed: 20000ms exceeded"))
+      .mockResolvedValue(loginElement);
+
+    await signIn({ page: page as never, timeout: 100 }, { username: "u", password: "p" });
+
+    expect(acceptCookies).not.toHaveBeenCalled();
   });
 
   it("skips login when the profile menu is present on the homepage", async () => {

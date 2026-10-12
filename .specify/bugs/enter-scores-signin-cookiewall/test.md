@@ -20,6 +20,11 @@ Unit tests pin the recovery behaviour and pass; no regressions in the package. T
 | Lint | `pnpm turbo run lint --filter=@badman/backend-pupeteer` | pass | 0 errors, 7 pre-existing warnings |
 | Type-check / build | `pnpm turbo run build` | pass for backend-pupeteer; `@badman/backend-compile` build fails in this worktree (`node_modules` missing, unrelated) | |
 
+## Changes after review
+
+- If the homepage retry is redirected to the cookie wall, `signIn` now accepts it with `acceptCookies` before looking for the login link (2 new tests).
+- Live run (2026-10-12, visible browser, save disabled): a fresh browser profile signed in normally, so the original failure (accepted cookies plus expired session) was not reproduced. The root cause remains inferred from the 4 Oct log.
+
 ## Residual Risks
 
 - If the cookie wall is not the cause, the homepage retry may not help.
