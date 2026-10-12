@@ -3,6 +3,89 @@ import { selectOptionByValue } from "../utils/selectSelectOption";
 import { waitForSelectors } from "@badman/backend-pupeteer";
 import { Logger } from "@nestjs/common";
 
+const SUGGEST_ATTEMPTS = 3;
+const SUGGEST_TIMEOUT = 10000;
+/** Time for the debounced autocomplete to replace a list rendered for a partial memberId. */
+const SUGGEST_SETTLE_MS = 1000;
+
+async function suggestionTexts(page: Page): Promise<{ link: ElementHandle; text: string }[]> {
+  const links = await page.$$("#ulSearchSuggest li a");
+  return Promise.all(
+    links.map(async (link) => ({
+      link,
+      text: (await page.evaluate((el) => el.textContent, link)) ?? "",
+    }))
+  );
+}
+
+/**
+ * Picks the suggestion for this player: one whose text contains the memberId, or a single
+ * suggestion that is still the same after the list had time to settle. Returns null when the
+ * list is ambiguous, so a stale or partial-match entry is never clicked.
+ */
+async function pickSuggestion(page: Page, memberId: string, logger?: Logger) {
+  const first = await suggestionTexts(page);
+  const match = first.find((s) => s.text.includes(memberId));
+  if (match) return match.link;
+
+  await new Promise((resolve) => setTimeout(resolve, SUGGEST_SETTLE_MS));
+  const settled = await suggestionTexts(page);
+  const settledMatch = settled.find((s) => s.text.includes(memberId));
+  if (settledMatch) return settledMatch.link;
+  if (settled.length === 1 && first.length === 1 && settled[0].text === first[0].text) {
+    logger?.warn(
+      `Suggestion "${settled[0].text.trim()}" does not show memberId ${memberId}; using the only suggestion`
+    );
+    return settled[0].link;
+  }
+  logger?.warn(
+    `No unambiguous suggestion for memberId ${memberId}: ${settled.map((s) => `"${s.text.trim()}"`).join(", ") || "none"}`
+  );
+  return null;
+}
+
+/**
+ * Types the memberId into the dialog's search box and returns the suggestion for that player.
+ * The TS autocomplete is debounced and Ajax-backed, so retry with a cleared field and
+ * slower typing before giving up with an error that names the player.
+ */
+export async function findPlayerSuggestion(
+  page: Page,
+  memberId: string,
+  timeout = 5000,
+  logger?: Logger
+): Promise<ElementHandle> {
+  await waitForSelectors([["#playersuggest"]], page, timeout);
+
+  for (let attempt = 1; attempt <= SUGGEST_ATTEMPTS; attempt++) {
+    const playerInput = await page.$("#playersuggest");
+    if (!playerInput) {
+      throw new Error("Player suggest input not found");
+    }
+
+    await playerInput.click({ clickCount: 3 });
+    await page.keyboard.press("Backspace");
+    await playerInput.type(memberId, { delay: 50 });
+    logger?.debug(`Typed memberId: ${memberId} (attempt ${attempt}/${SUGGEST_ATTEMPTS})`);
+
+    try {
+      await waitForSelectors([["#ulSearchSuggest li a"]], page, SUGGEST_TIMEOUT);
+      const suggestionLink = await pickSuggestion(page, memberId, logger);
+      if (suggestionLink) {
+        return suggestionLink;
+      }
+    } catch (error) {
+      logger?.warn(
+        `No suggestion for memberId ${memberId} (attempt ${attempt}/${SUGGEST_ATTEMPTS}): ${(error as Error).message}`
+      );
+    }
+  }
+
+  throw new Error(
+    `TS returned no player suggestion for memberId ${memberId} after ${SUGGEST_ATTEMPTS} attempts`
+  );
+}
+
 export async function addUnknownPlayer(
   pupeteer: {
     page: Page | null;
@@ -27,29 +110,7 @@ export async function addUnknownPlayer(
     await waitForSelectors([['[aria-describedby="dlgTeamPlayers"]']], page, timeout);
     logger.debug("Dialog with aria-describedby='dlgTeamPlayers' appeared");
 
-    // Wait for the input with id="playersuggest" to be visible
-    await waitForSelectors([["#playersuggest"]], page, timeout);
-    const playerInput = await page.$("#playersuggest");
-
-    if (!playerInput) {
-      throw new Error("Player suggest input not found");
-    }
-
-    // Select and fill the input with memberId
-    await playerInput.click();
-    await playerInput.type(memberId);
-    logger.debug(`Typed memberId: ${memberId} into player suggest input`);
-
-    // Wait for the suggestion list to appear
-    await waitForSelectors([["#ulSearchSuggest"]], page, timeout);
-
-    // Wait for the li element with an a tag inside
-    await waitForSelectors([["#ulSearchSuggest li a"]], page, timeout);
-
-    const suggestionLink = await page.$("#ulSearchSuggest li a");
-    if (!suggestionLink) {
-      throw new Error("Suggestion link not found");
-    }
+    const suggestionLink = await findPlayerSuggestion(page, memberId, timeout, logger);
 
     // Get the bounding box to find the middle of the element
     const boundingBox = await suggestionLink.boundingBox();
