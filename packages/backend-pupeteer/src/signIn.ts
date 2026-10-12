@@ -1,6 +1,17 @@
 import { Page } from "puppeteer";
 import { waitForSelectors } from "./selectors";
+import { acceptCookies } from "./accept-cookies";
 import { Logger } from "@nestjs/common";
+
+const HOME_URL = "https://www.toernooi.nl/";
+
+async function hasProfileMenu(page: Page): Promise<boolean> {
+  try {
+    return !!(await page.waitForSelector("#profileMenu", { timeout: 2000 }));
+  } catch {
+    return false;
+  }
+}
 
 export async function signIn(
   pupeteer: {
@@ -57,18 +68,36 @@ export async function signIn(
       const msg =
         loginButtonError instanceof Error ? loginButtonError.message : String(loginButtonError);
       logger?.warn("Log in button not found, re-checking if already signed in:", msg);
+      if (await hasProfileMenu(targetPage)) {
+        logger?.log("User is already signed in (profileMenu found after retry), skipping login");
+        return;
+      }
+
+      // We may be stranded on a page without the masthead (e.g. the cookie wall), so
+      // go to the homepage and look once more before giving up.
+      const stuckUrl = targetPage.url();
+      logger?.warn(`No login button on ${stuckUrl}, retrying from ${HOME_URL}`);
       try {
-        const profileMenu = await targetPage.waitForSelector("#profileMenu", { timeout: 2000 });
-        if (profileMenu) {
-          logger?.log("User is already signed in (profileMenu found after retry), skipping login");
+        await targetPage.goto(HOME_URL, {
+          waitUntil: "domcontentloaded",
+          timeout: (timeout || 5000) * 3,
+        });
+        // Without stored consent the homepage redirects straight back to the cookie wall
+        if (targetPage.url().includes("/cookiewall")) {
+          logger?.warn("Homepage redirected to the cookie wall, accepting cookies before retrying");
+          await acceptCookies({ page: targetPage, timeout }, { logger });
+        }
+        if (await hasProfileMenu(targetPage)) {
+          logger?.log("User is already signed in (profileMenu found on homepage), skipping login");
           return;
         }
-      } catch {
-        // profileMenu not found, so we really need to log in and can't
+        element = await waitForSelectors(loginButtonSelectors, targetPage, timeout);
+      } catch (retryError: unknown) {
+        const retryMsg = retryError instanceof Error ? retryError.message : String(retryError);
+        throw new Error(
+          `Login button not found on ${stuckUrl} or after retry on ${HOME_URL}. Site layout may have changed. ${msg} | ${retryMsg}`
+        );
       }
-      throw new Error(
-        `Login button not found. Site layout may have changed or we're not on the expected page. ${msg}`
-      );
     }
     if (!element) throw new Error("Login button not found");
 
