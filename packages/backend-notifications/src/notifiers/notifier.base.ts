@@ -141,11 +141,19 @@ export abstract class Notifier<T, A = { email: string }> {
         }
       }
 
+      // With a dedupe key, claim the content before sending so an overlapping run sees it
+      // and skips; the claim is removed again if no channel delivered, so the next run retries.
+      const claim = dedupeKey ? await this.saveNotification(player, linkId, meta) : undefined;
+      let attempted = false;
+      let delivered = false;
+
       this.logger.debug(`Sending notification to ${player.fullName || "unknown"} (${type})`);
 
       if (type & NotificationType.PUSH || force?.push) {
+        attempted = true;
         try {
           await this.notifyPush(player, data, args);
+          delivered = true;
         } catch (error) {
           this.logger.error(
             `Failed to send push notification to ${player.fullName || "unknown"}:`,
@@ -155,8 +163,10 @@ export abstract class Notifier<T, A = { email: string }> {
       }
 
       if (type & NotificationType.EMAIL || force?.email) {
+        attempted = true;
         try {
           await this.notifyEmail(player, data, args);
+          delivered = true;
         } catch (error) {
           this.logger.error(
             `Failed to send email notification to ${player.fullName || "unknown"}:`,
@@ -166,8 +176,10 @@ export abstract class Notifier<T, A = { email: string }> {
       }
 
       if (type & NotificationType.SMS || force?.sms) {
+        attempted = true;
         try {
           await this.notifySms(player, data, args);
+          delivered = true;
         } catch (error) {
           this.logger.error(
             `Failed to send SMS notification to ${player.fullName || "unknown"}:`,
@@ -176,26 +188,47 @@ export abstract class Notifier<T, A = { email: string }> {
         }
       }
 
-      // Create notification once
-      try {
-        const notif = new Notification({
-          sendToId: player.id,
-          linkId,
-          linkType: this.linkType,
-          type: this.type,
-          meta: meta ? JSON.stringify(meta) : undefined,
-        });
-
-        await notif.save();
-      } catch (error) {
-        this.logger.error(
-          `Failed to save notification record for ${player.fullName || "unknown"}:`,
-          error
-        );
+      if (dedupeKey) {
+        if (claim && attempted && !delivered) {
+          this.logger.warn(
+            `Notification ${this.type} to ${player.fullName || "unknown"} failed on every channel, will retry next run`
+          );
+          await claim
+            .destroy()
+            .catch((error: unknown) =>
+              this.logger.error(`Failed to release notification claim:`, error)
+            );
+        }
+        return;
       }
+
+      // Create notification once
+      await this.saveNotification(player, linkId, meta);
     } catch (error) {
       this.logger.error(`Notification failed for player ${player?.fullName || "unknown"}:`, error);
       // Don't rethrow - we want to continue processing even if notifications fail
+    }
+  }
+
+  private async saveNotification(
+    player: Player,
+    linkId?: string,
+    meta?: Record<string, unknown>
+  ): Promise<Notification | undefined> {
+    try {
+      return await Notification.create({
+        sendToId: player.id,
+        linkId,
+        linkType: this.linkType,
+        type: this.type,
+        meta: meta ? JSON.stringify(meta) : undefined,
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to save notification record for ${player.fullName || "unknown"}:`,
+        error
+      );
+      return undefined;
     }
   }
 
