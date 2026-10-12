@@ -86,6 +86,11 @@ export async function signIn(
         if (targetPage.url().includes("/cookiewall")) {
           logger?.warn("Homepage redirected to the cookie wall, accepting cookies before retrying");
           await acceptCookies({ page: targetPage, timeout }, { logger });
+          // acceptCookies loads /cookiewall/ without a return url, so it may not land on the homepage
+          await targetPage.goto(HOME_URL, {
+            waitUntil: "domcontentloaded",
+            timeout: (timeout || 5000) * 3,
+          });
         }
         if (await hasProfileMenu(targetPage)) {
           logger?.log("User is already signed in (profileMenu found on homepage), skipping login");

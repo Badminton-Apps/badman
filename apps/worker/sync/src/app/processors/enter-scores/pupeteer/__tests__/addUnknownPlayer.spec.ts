@@ -41,6 +41,14 @@ describe("findPlayerSuggestion", () => {
     await expect(findPlayerSuggestion(page as never, "50081774")).resolves.toBe(wanted);
   });
 
+  it("does not match a longer memberId that contains the wanted one", async () => {
+    waitForSelectorsMock.mockResolvedValue({});
+    const wanted = link("Peeters, Jan (5012)");
+    const { page } = makePage([[link("Soetemans, Nele (50123)"), wanted]]);
+
+    await expect(findPlayerSuggestion(page as never, "5012")).resolves.toBe(wanted);
+  });
+
   it("does not click a partial-match list that the autocomplete then replaces", async () => {
     waitForSelectorsMock.mockResolvedValue({});
     const wanted = link("Soetemans, Nele (50081774)");

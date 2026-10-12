@@ -18,6 +18,11 @@ async function suggestionTexts(page: Page): Promise<{ link: ElementHandle; text:
   );
 }
 
+/** Whole-token match, so memberId 5012 does not match a suggestion for 50123. */
+function showsMemberId(text: string, memberId: string): boolean {
+  return text.split(/[^\p{L}\p{N}]+/u).includes(memberId);
+}
+
 /**
  * Picks the suggestion for this player: one whose text contains the memberId, or a single
  * suggestion that is still the same after the list had time to settle. Returns null when the
@@ -25,12 +30,12 @@ async function suggestionTexts(page: Page): Promise<{ link: ElementHandle; text:
  */
 async function pickSuggestion(page: Page, memberId: string, logger?: Logger) {
   const first = await suggestionTexts(page);
-  const match = first.find((s) => s.text.includes(memberId));
+  const match = first.find((s) => showsMemberId(s.text, memberId));
   if (match) return match.link;
 
   await new Promise((resolve) => setTimeout(resolve, SUGGEST_SETTLE_MS));
   const settled = await suggestionTexts(page);
-  const settledMatch = settled.find((s) => s.text.includes(memberId));
+  const settledMatch = settled.find((s) => showsMemberId(s.text, memberId));
   if (settledMatch) return settledMatch.link;
   if (settled.length === 1 && first.length === 1 && settled[0].text === first[0].text) {
     logger?.warn(
