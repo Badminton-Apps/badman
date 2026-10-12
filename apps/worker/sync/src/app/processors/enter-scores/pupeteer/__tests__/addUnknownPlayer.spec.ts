@@ -6,17 +6,16 @@ jest.mock("@badman/backend-pupeteer", () => ({
 }));
 
 const waitForSelectorsMock = waitForSelectors as jest.Mock;
+const link = (text: string) => ({ text });
 
-function makePage(suggestion: unknown = { id: "suggestion" }) {
+/** Each call to page.$$ returns the next list of suggestions (the last one repeats). */
+function makePage(lists: { text: string }[][]) {
   const input = { click: jest.fn(), type: jest.fn() };
+  let call = 0;
   const page = {
-    $: jest.fn(async (selector: string) =>
-      selector === "#playersuggest"
-        ? input
-        : selector === "#ulSearchSuggest li a"
-          ? suggestion
-          : null
-    ),
+    $: jest.fn(async (selector: string) => (selector === "#playersuggest" ? input : null)),
+    $$: jest.fn(async () => lists[Math.min(call++, lists.length - 1)]),
+    evaluate: jest.fn(async (_fn: unknown, el: { text: string }) => el.text),
     keyboard: { press: jest.fn() },
   };
   return { page, input };
@@ -25,39 +24,60 @@ function makePage(suggestion: unknown = { id: "suggestion" }) {
 describe("findPlayerSuggestion", () => {
   beforeEach(() => waitForSelectorsMock.mockReset());
 
-  it("returns the suggestion on the first attempt", async () => {
+  it("returns the suggestion that shows the memberId", async () => {
     waitForSelectorsMock.mockResolvedValue({});
-    const { page, input } = makePage();
+    const wanted = link("Soetemans, Nele (50081774)");
+    const { page, input } = makePage([[wanted]]);
 
-    await expect(findPlayerSuggestion(page as never, "50081774")).resolves.toEqual({
-      id: "suggestion",
-    });
-    expect(input.type).toHaveBeenCalledTimes(1);
+    await expect(findPlayerSuggestion(page as never, "50081774")).resolves.toBe(wanted);
     expect(input.type).toHaveBeenCalledWith("50081774", { delay: 50 });
   });
 
-  it("clears the field and retypes when the first attempt shows no suggestion", async () => {
-    waitForSelectorsMock
-      .mockResolvedValueOnce({}) // #playersuggest
-      .mockRejectedValueOnce(new Error("Waiting failed: 10000ms exceeded"))
-      .mockResolvedValueOnce({});
-    const { page, input } = makePage();
+  it("picks the matching suggestion among several", async () => {
+    waitForSelectorsMock.mockResolvedValue({});
+    const wanted = link("Soetemans, Nele (50081774)");
+    const { page } = makePage([[link("Peeters, Jan (50081700)"), wanted]]);
 
-    await expect(findPlayerSuggestion(page as never, "50081774")).resolves.toBeDefined();
-    expect(input.type).toHaveBeenCalledTimes(2);
-    expect(input.click).toHaveBeenCalledWith({ clickCount: 3 });
-    expect(page.keyboard.press).toHaveBeenCalledWith("Backspace");
+    await expect(findPlayerSuggestion(page as never, "50081774")).resolves.toBe(wanted);
   });
 
-  it("throws an error naming the memberId after all attempts fail", async () => {
-    waitForSelectorsMock
-      .mockResolvedValueOnce({})
-      .mockRejectedValue(new Error("Waiting failed: 10000ms exceeded"));
-    const { page, input } = makePage();
+  it("does not click a partial-match list that the autocomplete then replaces", async () => {
+    waitForSelectorsMock.mockResolvedValue({});
+    const wanted = link("Soetemans, Nele (50081774)");
+    const { page } = makePage([[link("Peeters, Jan (5008)")], [wanted]]);
+
+    await expect(findPlayerSuggestion(page as never, "50081774")).resolves.toBe(wanted);
+  });
+
+  it("uses a single suggestion without the memberId once the list is stable", async () => {
+    waitForSelectorsMock.mockResolvedValue({});
+    const only = link("Soetemans, Nele");
+    const { page } = makePage([[only]]);
+
+    await expect(findPlayerSuggestion(page as never, "50081774")).resolves.toBe(only);
+  });
+
+  it("never clicks an ambiguous list and fails with an error naming the memberId", async () => {
+    waitForSelectorsMock.mockResolvedValue({});
+    const { page, input } = makePage([[link("Peeters, Jan"), link("Janssens, An")]]);
 
     await expect(findPlayerSuggestion(page as never, "50081774")).rejects.toThrow(
       "TS returned no player suggestion for memberId 50081774 after 3 attempts"
     );
     expect(input.type).toHaveBeenCalledTimes(3);
+  });
+
+  it("clears the field and retypes when no suggestion appears", async () => {
+    const wanted = link("Soetemans, Nele (50081774)");
+    waitForSelectorsMock
+      .mockResolvedValueOnce({}) // #playersuggest
+      .mockRejectedValueOnce(new Error("Waiting failed: 10000ms exceeded"))
+      .mockResolvedValueOnce({});
+    const { page, input } = makePage([[wanted]]);
+
+    await expect(findPlayerSuggestion(page as never, "50081774")).resolves.toBe(wanted);
+    expect(input.type).toHaveBeenCalledTimes(2);
+    expect(input.click).toHaveBeenCalledWith({ clickCount: 3 });
+    expect(page.keyboard.press).toHaveBeenCalledWith("Backspace");
   });
 });

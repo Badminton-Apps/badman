@@ -5,9 +5,47 @@ import { Logger } from "@nestjs/common";
 
 const SUGGEST_ATTEMPTS = 3;
 const SUGGEST_TIMEOUT = 10000;
+/** Time for the debounced autocomplete to replace a list rendered for a partial memberId. */
+const SUGGEST_SETTLE_MS = 1000;
+
+async function suggestionTexts(page: Page): Promise<{ link: ElementHandle; text: string }[]> {
+  const links = await page.$$("#ulSearchSuggest li a");
+  return Promise.all(
+    links.map(async (link) => ({
+      link,
+      text: (await page.evaluate((el) => el.textContent, link)) ?? "",
+    }))
+  );
+}
 
 /**
- * Types the memberId into the dialog's search box and returns the first suggestion.
+ * Picks the suggestion for this player: one whose text contains the memberId, or a single
+ * suggestion that is still the same after the list had time to settle. Returns null when the
+ * list is ambiguous, so a stale or partial-match entry is never clicked.
+ */
+async function pickSuggestion(page: Page, memberId: string, logger?: Logger) {
+  const first = await suggestionTexts(page);
+  const match = first.find((s) => s.text.includes(memberId));
+  if (match) return match.link;
+
+  await new Promise((resolve) => setTimeout(resolve, SUGGEST_SETTLE_MS));
+  const settled = await suggestionTexts(page);
+  const settledMatch = settled.find((s) => s.text.includes(memberId));
+  if (settledMatch) return settledMatch.link;
+  if (settled.length === 1 && first.length === 1 && settled[0].text === first[0].text) {
+    logger?.warn(
+      `Suggestion "${settled[0].text.trim()}" does not show memberId ${memberId}; using the only suggestion`
+    );
+    return settled[0].link;
+  }
+  logger?.warn(
+    `No unambiguous suggestion for memberId ${memberId}: ${settled.map((s) => `"${s.text.trim()}"`).join(", ") || "none"}`
+  );
+  return null;
+}
+
+/**
+ * Types the memberId into the dialog's search box and returns the suggestion for that player.
  * The TS autocomplete is debounced and Ajax-backed, so retry with a cleared field and
  * slower typing before giving up with an error that names the player.
  */
@@ -32,7 +70,7 @@ export async function findPlayerSuggestion(
 
     try {
       await waitForSelectors([["#ulSearchSuggest li a"]], page, SUGGEST_TIMEOUT);
-      const suggestionLink = await page.$("#ulSearchSuggest li a");
+      const suggestionLink = await pickSuggestion(page, memberId, logger);
       if (suggestionLink) {
         return suggestionLink;
       }
