@@ -26,4 +26,5 @@ None.
 
 ## Follow-ups
 
-- `activeRequestCount` leak on failed launches and retry paths.
+- Done after review: a failed launch now releases `activeRequestCount` (for the launching call and for callers waiting on it), and the reset only runs if no newer launch replaced this one. Three tests added.
+- Still open: `getPage`'s own retry paths increment the count again on each recursion.

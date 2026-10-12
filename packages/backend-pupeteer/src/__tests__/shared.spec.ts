@@ -53,6 +53,7 @@ type SharedModule = {
   getPage: (headless?: boolean, args?: string[]) => Promise<unknown>;
   getBrowser: (headless?: boolean, args?: string[]) => Promise<unknown>;
   restartBrowser: () => Promise<void>;
+  getActiveRequestCount: () => number;
   createProtocolTimeoutGuard: (logger: { warn: (...args: unknown[]) => void }) => {
     install: () => void;
     remove: () => void;
@@ -173,6 +174,63 @@ describe("forceCloseBrowser (via getPage error paths)", () => {
 });
 
 describe("getBrowser", () => {
+  it("a failed launch does not leak the active request count", async () => {
+    mockLaunch.mockRejectedValueOnce(new Error("Could not find Chrome"));
+
+    await expect(shared.getBrowser(true, [])).rejects.toThrow("Could not find Chrome");
+    expect(shared.getActiveRequestCount()).toBe(0);
+  });
+
+  it("concurrent callers of one failing launch all reject and release their count", async () => {
+    mockLaunch.mockRejectedValueOnce(new Error("Could not find Chrome"));
+
+    const results = await Promise.allSettled([
+      shared.getBrowser(true, []),
+      shared.getBrowser(true, []),
+    ]);
+
+    expect(results.map((r) => r.status)).toEqual(["rejected", "rejected"]);
+    expect(mockLaunch).toHaveBeenCalledTimes(1);
+    expect(shared.getActiveRequestCount()).toBe(0);
+  });
+
+  it("a stale failed launch does not wipe a newer launch started meanwhile", async () => {
+    const flush = () => new Promise((r) => setImmediate(r));
+    const browser1 = makeMockBrowser();
+    const browserB = makeMockBrowser();
+    let rejectPages2!: (e: Error) => void;
+    let rejectA!: (e: Error) => void;
+    let resolveB!: (b: unknown) => void;
+    browser1.pages
+      .mockRejectedValueOnce(new Error("Browser disconnected"))
+      .mockImplementationOnce(() => new Promise((_, rej) => (rejectPages2 = rej)));
+    mockLaunch
+      .mockResolvedValueOnce(browser1)
+      .mockImplementationOnce(() => new Promise((_, rej) => (rejectA = rej)))
+      .mockImplementationOnce(() => new Promise((res) => (resolveB = res)));
+
+    await shared.getBrowser(true, []);
+    // Two jobs hold the same dead browser; the first restarts it (launch A)...
+    const p1 = shared.getPage(true, []);
+    const p2 = shared.getPage(true, []);
+    p1.catch(() => null);
+    for (let i = 0; i < 5; i++) await flush();
+    // ...then the second notices too and starts launch B while A is still pending.
+    rejectPages2(new Error("Browser disconnected"));
+    for (let i = 0; i < 5; i++) await flush();
+    rejectA(new Error("launch A failed"));
+    for (let i = 0; i < 5; i++) await flush();
+
+    // A's failure must not clear B: a new caller waits for B instead of launching again.
+    const p3 = shared.getBrowser(true, []);
+    resolveB(browserB);
+
+    await expect(p3).resolves.toBe(browserB);
+    await expect(p2).resolves.toBeDefined();
+    await expect(p1).rejects.toThrow("launch A failed");
+    expect(mockLaunch).toHaveBeenCalledTimes(3);
+  });
+
   it("a failed launch is not cached: the next call launches again", async () => {
     const mockBrowser = makeMockBrowser();
     mockLaunch
