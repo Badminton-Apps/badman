@@ -357,7 +357,7 @@ export class CheckEncounterProcessor {
 
       switch (checkAction.action) {
         case "notify-has-comment":
-          this.notificationService.notifyEncounterHasComment(encounter, comments);
+          await this.notificationService.notifyEncounterHasComment(encounter, comments);
           break;
         case "notify-not-entered":
           this.notificationService.notifyEncounterNotEntered(encounter);

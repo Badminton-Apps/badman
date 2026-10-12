@@ -34,7 +34,7 @@ describe("Notifier (base)", () => {
     logAction = { meta: {}, changed: jest.fn(), save: jest.fn().mockResolvedValue(undefined) };
     jest.spyOn(Logging, "create").mockResolvedValue(logAction as never);
     jest.spyOn(Notification, "count").mockResolvedValue(1);
-    jest.spyOn(Notification.prototype, "save").mockResolvedValue(undefined as never);
+    jest.spyOn(Notification, "create").mockResolvedValue({ destroy: jest.fn() } as never);
   });
 
   afterEach(() => {
@@ -84,6 +84,67 @@ describe("Notifier (base)", () => {
     });
 
     expect(notifier.notifyEmail).toHaveBeenCalledTimes(1);
+  });
+
+  it("claims the content before sending, so an overlapping run sees it", async () => {
+    jest.spyOn(Notification, "findOne").mockResolvedValue(null as never);
+    const order: string[] = [];
+    (Notification.create as jest.Mock).mockImplementation(async () => {
+      order.push("save");
+      return { destroy: jest.fn() };
+    });
+    notifier.notifyEmail.mockImplementation(async () => {
+      order.push("email");
+    });
+
+    await notifier.notify(buildPlayer(), "encounter-1", { value: "x" }, undefined, undefined, {
+      dedupeKey: "abc",
+    });
+
+    expect(order).toEqual(["save", "email"]);
+  });
+
+  it("releases the claim when every channel failed, so the next run retries", async () => {
+    jest.spyOn(Notification, "findOne").mockResolvedValue(null as never);
+    const destroy = jest.fn().mockResolvedValue(undefined);
+    (Notification.create as jest.Mock).mockResolvedValue({ destroy });
+    notifier.notifyEmail.mockRejectedValue(new Error("SMTP down"));
+
+    await notifier.notify(buildPlayer(), "encounter-1", { value: "x" }, undefined, undefined, {
+      dedupeKey: "abc",
+    });
+
+    expect(destroy).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the claim when at least one channel delivered", async () => {
+    jest.spyOn(Notification, "findOne").mockResolvedValue(null as never);
+    const destroy = jest.fn().mockResolvedValue(undefined);
+    (Notification.create as jest.Mock).mockResolvedValue({ destroy });
+    const player = {
+      ...buildPlayer(),
+      getSetting: async () => ({
+        encounterHasCommentNotification: NotificationType.EMAIL | NotificationType.PUSH,
+      }),
+    } as unknown as Player;
+    notifier.notifyPush.mockRejectedValue(new Error("push expired"));
+
+    await notifier.notify(player, "encounter-1", { value: "x" }, undefined, undefined, {
+      dedupeKey: "abc",
+    });
+
+    expect(notifier.notifyEmail).toHaveBeenCalledTimes(1);
+    expect(destroy).not.toHaveBeenCalled();
+    expect(Notification.create).toHaveBeenCalledTimes(1);
+  });
+
+  it("without a dedupe key, still saves one record after sending even if sending failed", async () => {
+    jest.spyOn(Notification, "findOne").mockResolvedValue(null as never);
+    notifier.notifyEmail.mockRejectedValue(new Error("SMTP down"));
+
+    await notifier.notify(buildPlayer(), "encounter-1", { value: "x" });
+
+    expect(Notification.create).toHaveBeenCalledTimes(1);
   });
 
   it("notifies when no dedupe key is passed", async () => {
