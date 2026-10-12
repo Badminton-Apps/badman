@@ -3,6 +3,51 @@ import { selectOptionByValue } from "../utils/selectSelectOption";
 import { waitForSelectors } from "@badman/backend-pupeteer";
 import { Logger } from "@nestjs/common";
 
+const SUGGEST_ATTEMPTS = 3;
+const SUGGEST_TIMEOUT = 10000;
+
+/**
+ * Types the memberId into the dialog's search box and returns the first suggestion.
+ * The TS autocomplete is debounced and Ajax-backed, so retry with a cleared field and
+ * slower typing before giving up with an error that names the player.
+ */
+export async function findPlayerSuggestion(
+  page: Page,
+  memberId: string,
+  timeout = 5000,
+  logger?: Logger
+): Promise<ElementHandle> {
+  await waitForSelectors([["#playersuggest"]], page, timeout);
+
+  for (let attempt = 1; attempt <= SUGGEST_ATTEMPTS; attempt++) {
+    const playerInput = await page.$("#playersuggest");
+    if (!playerInput) {
+      throw new Error("Player suggest input not found");
+    }
+
+    await playerInput.click({ clickCount: 3 });
+    await page.keyboard.press("Backspace");
+    await playerInput.type(memberId, { delay: 50 });
+    logger?.debug(`Typed memberId: ${memberId} (attempt ${attempt}/${SUGGEST_ATTEMPTS})`);
+
+    try {
+      await waitForSelectors([["#ulSearchSuggest li a"]], page, SUGGEST_TIMEOUT);
+      const suggestionLink = await page.$("#ulSearchSuggest li a");
+      if (suggestionLink) {
+        return suggestionLink;
+      }
+    } catch (error) {
+      logger?.warn(
+        `No suggestion for memberId ${memberId} (attempt ${attempt}/${SUGGEST_ATTEMPTS}): ${(error as Error).message}`
+      );
+    }
+  }
+
+  throw new Error(
+    `TS returned no player suggestion for memberId ${memberId} after ${SUGGEST_ATTEMPTS} attempts`
+  );
+}
+
 export async function addUnknownPlayer(
   pupeteer: {
     page: Page | null;
@@ -27,29 +72,7 @@ export async function addUnknownPlayer(
     await waitForSelectors([['[aria-describedby="dlgTeamPlayers"]']], page, timeout);
     logger.debug("Dialog with aria-describedby='dlgTeamPlayers' appeared");
 
-    // Wait for the input with id="playersuggest" to be visible
-    await waitForSelectors([["#playersuggest"]], page, timeout);
-    const playerInput = await page.$("#playersuggest");
-
-    if (!playerInput) {
-      throw new Error("Player suggest input not found");
-    }
-
-    // Select and fill the input with memberId
-    await playerInput.click();
-    await playerInput.type(memberId);
-    logger.debug(`Typed memberId: ${memberId} into player suggest input`);
-
-    // Wait for the suggestion list to appear
-    await waitForSelectors([["#ulSearchSuggest"]], page, timeout);
-
-    // Wait for the li element with an a tag inside
-    await waitForSelectors([["#ulSearchSuggest li a"]], page, timeout);
-
-    const suggestionLink = await page.$("#ulSearchSuggest li a");
-    if (!suggestionLink) {
-      throw new Error("Suggestion link not found");
-    }
+    const suggestionLink = await findPlayerSuggestion(page, memberId, timeout, logger);
 
     // Get the bounding box to find the middle of the element
     const boundingBox = await suggestionLink.boundingBox();
