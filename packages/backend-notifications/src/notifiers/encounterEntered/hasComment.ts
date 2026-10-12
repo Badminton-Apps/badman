@@ -23,7 +23,8 @@ export class CompetitionEncounterHasCommentNotifier extends Notifier<
     encounter: EncounterCompetition,
     comments?: EncounterComment[]
   ) => {
-    const comment = comments?.[0]?.message;
+    // toernooi.nl lists comments oldest first, so the newest is last
+    const comment = comments?.[comments.length - 1]?.message;
 
     return {
       notification: {
