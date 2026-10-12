@@ -173,6 +173,17 @@ describe("forceCloseBrowser (via getPage error paths)", () => {
 });
 
 describe("getBrowser", () => {
+  it("a failed launch is not cached: the next call launches again", async () => {
+    const mockBrowser = makeMockBrowser();
+    mockLaunch
+      .mockRejectedValueOnce(new Error("Could not find Chrome"))
+      .mockResolvedValue(mockBrowser);
+
+    await expect(shared.getBrowser(true, [])).rejects.toThrow("Could not find Chrome");
+    await expect(shared.getBrowser(true, [])).resolves.toBe(mockBrowser);
+    expect(mockLaunch).toHaveBeenCalledTimes(2);
+  });
+
   it("aged browser is closed and replaced", async () => {
     jest.useFakeTimers();
     const firstBrowser = makeMockBrowser();

@@ -63,7 +63,13 @@ export async function getBrowser(headless = true, args: string[] = []): Promise<
 
   // Create the browser
   browserPromise = createSharedBrowser(headless, args);
-  sharedBrowser = await browserPromise;
+  try {
+    sharedBrowser = await browserPromise;
+  } catch (error) {
+    // Don't cache a failed launch, or every later call re-throws the same error until restart
+    resetBrowserState();
+    throw error;
+  }
   browserStartTime = Date.now();
   return sharedBrowser;
 }
