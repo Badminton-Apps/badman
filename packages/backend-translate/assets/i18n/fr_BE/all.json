@@ -2272,6 +2272,11 @@
             "error": "Une erreur s'est produite. Veuillez réessayer."
           }
         }
+      },
+      "assemblyMatrix": {
+        "tooltipMessages": {
+          "betterMeta": "{player.fullName} est plus fort qu'un des joueurs de base, attention à ne pas passer sous l'index de l'équipe."
+        }
       }
     },
     "notifications": {
