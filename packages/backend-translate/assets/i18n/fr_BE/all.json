@@ -2225,6 +2225,32 @@
     },
     "clubPage": {
       "noClubFound": "Aucun club trouvé",
+      "actions": {
+        "addPlayerDialog": {
+          "title": "Ajouter un joueur",
+          "createTitle": "Créer un nouveau joueur",
+          "noResults": "Aucun joueur trouvé pour « {search} ».",
+          "levelsTitle": "Niveaux de départ",
+          "levelsHint": "Laissez un niveau vide pour utiliser la valeur par défaut (12).",
+          "messages": {
+            "success": "Le joueur a été ajouté",
+            "error": "Impossible d’ajouter le joueur",
+            "createSuccess": "{name} a été créé et ajouté au club",
+            "createError": "Impossible de créer le joueur",
+            "linkError": "Le joueur a été créé, mais n’a pas pu être ajouté au club. Réessayez."
+          },
+          "buttons": {
+            "cancel": "Annuler",
+            "addPlayer": "Ajouter un joueur",
+            "createPlayer": "Créer un nouveau joueur",
+            "back": "Retour"
+          },
+          "errors": {
+            "required": "Obligatoire",
+            "levelRange": "Entrez un nombre entier de 1 à 12"
+          }
+        }
+      },
       "encounters": {
         "adminChangeDateDialog": {
           "title": "Modifier la date de la rencontre",

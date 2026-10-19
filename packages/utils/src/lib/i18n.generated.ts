@@ -2508,10 +2508,24 @@ export type I18nTranslations = {
                         "title": string;
                         "messages": {
                             "success": string;
+                            "error": string;
+                            "createSuccess": string;
+                            "createError": string;
+                            "linkError": string;
                         };
                         "buttons": {
                             "cancel": string;
                             "addPlayer": string;
+                            "createPlayer": string;
+                            "back": string;
+                        };
+                        "createTitle": string;
+                        "noResults": string;
+                        "levelsTitle": string;
+                        "levelsHint": string;
+                        "errors": {
+                            "required": string;
+                            "levelRange": string;
                         };
                     };
                     "twizzitOverview": string;
