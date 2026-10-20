@@ -2503,11 +2503,12 @@
           },
           "createTitle": "Create new player",
           "noResults": "No player found for \"{search}\".",
+          "existingPlayer": "{name} already has member id {memberId} and has been selected.",
           "levelsTitle": "Start levels",
-          "levelsHint": "Leave a level empty to use the default (12).",
+          "levelsHint": "Leave a level empty to use the default ({max}).",
           "errors": {
             "required": "Required",
-            "levelRange": "Enter a whole number from 1 to 12"
+            "levelRange": "Enter a whole number from 1 to {max}"
           }
         },
         "twizzitOverview": "Twizzit overview",

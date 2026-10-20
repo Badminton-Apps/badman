@@ -2221,11 +2221,12 @@
           },
           "createTitle": "Nieuwe speler aanmaken",
           "noResults": "Geen speler gevonden voor \"{search}\".",
+          "existingPlayer": "{name} heeft al lidnummer {memberId} en is geselecteerd.",
           "levelsTitle": "Startniveaus",
-          "levelsHint": "Laat een niveau leeg om de standaardwaarde (12) te gebruiken.",
+          "levelsHint": "Laat een niveau leeg om de standaardwaarde ({max}) te gebruiken.",
           "errors": {
             "required": "Verplicht",
-            "levelRange": "Geef een geheel getal van 1 tot 12"
+            "levelRange": "Geef een geheel getal van 1 tot {max}"
           }
         },
         "twizzitOverview": "Twizzit overzicht",

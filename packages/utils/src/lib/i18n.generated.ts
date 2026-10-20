@@ -2521,6 +2521,7 @@ export type I18nTranslations = {
                         };
                         "createTitle": string;
                         "noResults": string;
+                        "existingPlayer": string;
                         "levelsTitle": string;
                         "levelsHint": string;
                         "errors": {

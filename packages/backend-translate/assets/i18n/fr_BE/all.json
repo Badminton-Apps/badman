@@ -2230,8 +2230,9 @@
           "title": "Ajouter un joueur",
           "createTitle": "Créer un nouveau joueur",
           "noResults": "Aucun joueur trouvé pour « {search} ».",
+          "existingPlayer": "{name} a déjà le numéro de membre {memberId} et a été sélectionné(e).",
           "levelsTitle": "Niveaux de départ",
-          "levelsHint": "Laissez un niveau vide pour utiliser la valeur par défaut (12).",
+          "levelsHint": "Laissez un niveau vide pour utiliser la valeur par défaut ({max}).",
           "messages": {
             "success": "Le joueur a été ajouté",
             "error": "Impossible d’ajouter le joueur",
@@ -2247,7 +2248,7 @@
           },
           "errors": {
             "required": "Obligatoire",
-            "levelRange": "Entrez un nombre entier de 1 à 12"
+            "levelRange": "Entrez un nombre entier de 1 à {max}"
           }
         }
       },
