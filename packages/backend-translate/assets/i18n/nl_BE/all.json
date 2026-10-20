@@ -2207,11 +2207,26 @@
         "addPlayerDialog": {
           "title": "Voeg speler toe",
           "messages": {
-            "success": "Speler is toegevoegd"
+            "success": "Speler is toegevoegd",
+            "error": "Speler kon niet toegevoegd worden",
+            "createSuccess": "{name} is aangemaakt en toegevoegd aan de club",
+            "createError": "Speler kon niet aangemaakt worden",
+            "linkError": "De speler is aangemaakt, maar kon niet aan de club toegevoegd worden. Probeer opnieuw."
           },
           "buttons": {
             "cancel": "Annuleren",
-            "addPlayer": "Voeg speler toe"
+            "addPlayer": "Voeg speler toe",
+            "createPlayer": "Nieuwe speler aanmaken",
+            "back": "Terug"
+          },
+          "createTitle": "Nieuwe speler aanmaken",
+          "noResults": "Geen speler gevonden voor \"{search}\".",
+          "existingPlayer": "{name} heeft al lidnummer {memberId} en is geselecteerd.",
+          "levelsTitle": "Startniveaus",
+          "levelsHint": "Laat een niveau leeg om de standaardwaarde ({max}) te gebruiken.",
+          "errors": {
+            "required": "Verplicht",
+            "levelRange": "Geef een geheel getal van 1 tot {max}"
           }
         },
         "twizzitOverview": "Twizzit overzicht",
