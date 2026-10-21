@@ -32,7 +32,12 @@ import { EncounterChangeService } from "./encounter-change.service";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
-import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import {
   Args,
   Field,
@@ -68,6 +73,11 @@ export class PlayerEncounterCompetition {
   @Field(() => [EncounterCompetition])
   rows?: EncounterCompetition[];
 }
+
+const tempCaptainKey = {
+  home: "tempHomeCaptainId",
+  away: "tempAwayCaptainId",
+} as const;
 
 @Resolver(() => EncounterCompetition)
 export class EncounterCompetitionResolver {
@@ -698,15 +708,29 @@ export class EncounterCompetitionResolver {
 
   @Mutation(() => Boolean)
   async updateGameLeader(
+    @User() user: Player,
     @Args("encounterId") encounterId: string,
     @Args("gameLeaderId") gameLeaderId: string
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
-      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
+      const encounter = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+        include: [
+          { model: Team, as: "home" },
+          { model: Team, as: "away" },
+        ],
+      });
 
       if (!encounter) {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
+
+      // The home side appoints the game leader.
+      if (!(await this._canManageSide(user, encounter, "home"))) {
+        throw new UnauthorizedException(
+          `You do not have permission to change the game leader of this encounter`
+        );
       }
 
       await encounter.update({ gameLeaderId }, { transaction }); // Ensure transaction is passed here
@@ -722,15 +746,37 @@ export class EncounterCompetitionResolver {
 
   @Mutation(() => Boolean)
   async updateTempTeamCaptain(
+    @User() user: Player,
     @Args("encounterId") encounterId: string,
     @Args("data") updateTempTeamCaptainData: updateTempTeamCaptainInput
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
-      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
+      const encounter = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+        include: [
+          { model: Team, as: "home" },
+          { model: Team, as: "away" },
+        ],
+      });
 
       if (!encounter) {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
+
+      const sides = (["home", "away"] as const).filter(
+        (side) => updateTempTeamCaptainData[tempCaptainKey[side]] !== undefined
+      );
+      if (sides.length === 0) {
+        throw new BadRequestException(`tempHomeCaptainId or tempAwayCaptainId is required`);
+      }
+
+      for (const side of sides) {
+        if (!(await this._canManageSide(user, encounter, side))) {
+          throw new UnauthorizedException(
+            `You do not have permission to change the ${side} captain of this encounter`
+          );
+        }
       }
 
       await encounter.update(updateTempTeamCaptainData, { transaction });
@@ -742,6 +788,25 @@ export class EncounterCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  /**
+   * Whether the user may manage one side's encounter staff: encounter admins, that club's
+   * result enterers, that team's (temporary) captain, and the game leader, who sets both
+   * captains on the encounter form. Expects `home` and `away` to be included.
+   */
+  private async _canManageSide(
+    user: Player,
+    encounter: EncounterCompetition,
+    side: "home" | "away"
+  ): Promise<boolean> {
+    const team = encounter[side];
+    const staffIds = [encounter.gameLeaderId, team?.captainId, encounter[tempCaptainKey[side]]];
+    if (user?.id && staffIds.includes(user.id)) {
+      return true;
+    }
+
+    return user.hasAnyPermission(["change-any:encounter", `${team?.clubId}_enter:results`]);
   }
 
   @Mutation(() => EncounterCompetition)
