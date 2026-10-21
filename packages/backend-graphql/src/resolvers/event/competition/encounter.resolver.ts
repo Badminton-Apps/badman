@@ -698,15 +698,28 @@ export class EncounterCompetitionResolver {
 
   @Mutation(() => Boolean)
   async updateGameLeader(
+    @User() user: Player,
     @Args("encounterId") encounterId: string,
     @Args("gameLeaderId") gameLeaderId: string
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
-      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
+      const encounter = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+        include: [
+          { model: Team, as: "home" },
+          { model: Team, as: "away" },
+        ],
+      });
 
       if (!encounter) {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
+
+      if (!(await this._canManageEncounterStaff(user, encounter))) {
+        throw new UnauthorizedException(
+          `You do not have permission to change the game leader of this encounter`
+        );
       }
 
       await encounter.update({ gameLeaderId }, { transaction }); // Ensure transaction is passed here
@@ -722,15 +735,28 @@ export class EncounterCompetitionResolver {
 
   @Mutation(() => Boolean)
   async updateTempTeamCaptain(
+    @User() user: Player,
     @Args("encounterId") encounterId: string,
     @Args("data") updateTempTeamCaptainData: updateTempTeamCaptainInput
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
-      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
+      const encounter = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+        include: [
+          { model: Team, as: "home" },
+          { model: Team, as: "away" },
+        ],
+      });
 
       if (!encounter) {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
+
+      if (!(await this._canManageEncounterStaff(user, encounter))) {
+        throw new UnauthorizedException(
+          `You do not have permission to change the captain of this encounter`
+        );
       }
 
       await encounter.update(updateTempTeamCaptainData, { transaction });
@@ -742,6 +768,33 @@ export class EncounterCompetitionResolver {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  /**
+   * Game leader and temporary captains are set by the people running the encounter:
+   * encounter admins, either club's result enterers, the current game leader, and the
+   * (temporary) captains of both teams. Expects `home` and `away` to be included.
+   */
+  private async _canManageEncounterStaff(
+    user: Player,
+    encounter: EncounterCompetition
+  ): Promise<boolean> {
+    const staffIds = [
+      encounter.gameLeaderId,
+      encounter.home?.captainId,
+      encounter.away?.captainId,
+      encounter.tempHomeCaptainId,
+      encounter.tempAwayCaptainId,
+    ];
+    if (user?.id && staffIds.includes(user.id)) {
+      return true;
+    }
+
+    return user.hasAnyPermission([
+      "change-any:encounter",
+      `${encounter.home?.clubId}_enter:results`,
+      `${encounter.away?.clubId}_enter:results`,
+    ]);
   }
 
   @Mutation(() => EncounterCompetition)

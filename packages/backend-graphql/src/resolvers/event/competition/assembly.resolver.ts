@@ -2,16 +2,18 @@ import { AssemblyInput, AssemblyOutput, AssemblyValidationService } from "@badma
 import { User } from "@badman/backend-authorization";
 import {
   Assembly,
+  EncounterCompetition,
   Player,
   PlayerRankingType,
   RankingLastPlace,
   RankingPlace,
   RankingSystem,
+  Team,
 } from "@badman/backend-database";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { RankingSystemService } from "@badman/backend-ranking";
 import { getRankingProtected, sortPlayers } from "@badman/utils";
-import { Logger, NotFoundException } from "@nestjs/common";
+import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 
 @Resolver(() => AssemblyOutput)
@@ -100,6 +102,22 @@ export class AssemblyResolver {
     if (!assembly.encounterId) throw new Error("Encounter is required");
     if (!assembly.teamId) throw new Error("Team is required");
     if (!user?.id) throw new Error("User is required");
+
+    const [encounter, team] = await Promise.all([
+      EncounterCompetition.findByPk(assembly.encounterId),
+      Team.findByPk(assembly.teamId),
+    ]);
+    if (!encounter) {
+      throw new NotFoundException(`${EncounterCompetition.name}: ${assembly.encounterId}`);
+    }
+    if (!team) {
+      throw new NotFoundException(`${Team.name}: ${assembly.teamId}`);
+    }
+
+    // Checked outside the try below: its catch swallows errors and returns null.
+    if (!(await this._canEditAssembly(user, encounter, team))) {
+      throw new UnauthorizedException(`You do not have permission to edit this team's assembly`);
+    }
 
     this.logger.debug(
       `Saving assembly for encounter ${assembly.encounterId} and team ${assembly.teamId}, by player ${user.fullName}`
@@ -197,6 +215,33 @@ export class AssemblyResolver {
       this.logger.error(error);
       return null;
     }
+  }
+
+  /**
+   * The team's captain, its temporary captain for this encounter, and club or encounter
+   * admins may save an assembly.
+   */
+  private async _canEditAssembly(
+    user: Player,
+    encounter: EncounterCompetition,
+    team: Team
+  ): Promise<boolean> {
+    const tempCaptainId =
+      encounter.homeTeamId === team.id
+        ? encounter.tempHomeCaptainId
+        : encounter.awayTeamId === team.id
+          ? encounter.tempAwayCaptainId
+          : undefined;
+    if (user.id === team.captainId || user.id === tempCaptainId) {
+      return true;
+    }
+
+    return user.hasAnyPermission([
+      "change-any:encounter",
+      "edit-any:club",
+      `${team.clubId}_edit:team`,
+      `${team.clubId}_enter:results`,
+    ]);
   }
 
   private async _refreshEncounterGames(encounterId: string): Promise<void> {

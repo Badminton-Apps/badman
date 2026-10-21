@@ -538,4 +538,105 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
       expect(tx.commit).not.toHaveBeenCalled();
     });
   });
+
+  describe.each([
+    {
+      name: "updateGameLeader",
+      call: (r: EncounterCompetitionResolver, user: Player) =>
+        r.updateGameLeader(user, "enc-uuid", "new-leader-uuid"),
+      expectedUpdate: { gameLeaderId: "new-leader-uuid" },
+    },
+    {
+      name: "updateTempTeamCaptain",
+      call: (r: EncounterCompetitionResolver, user: Player) =>
+        r.updateTempTeamCaptain(user, "enc-uuid", { tempHomeCaptainId: "temp-uuid" }),
+      expectedUpdate: { tempHomeCaptainId: "temp-uuid" },
+    },
+  ])("$name authorization", ({ call, expectedUpdate }) => {
+    const buildUser = (id: string, allowed = false) =>
+      ({ id, hasAnyPermission: jest.fn().mockResolvedValue(allowed) }) as unknown as Player;
+
+    const makeDbEncounter = (overrides: Partial<EncounterCompetition> = {}) =>
+      ({
+        id: "enc-uuid",
+        gameLeaderId: "leader-uuid",
+        tempHomeCaptainId: null,
+        tempAwayCaptainId: "temp-away-uuid",
+        home: { clubId: "home-club", captainId: "home-captain-uuid" },
+        away: { clubId: "away-club", captainId: "away-captain-uuid" },
+        update: jest.fn().mockResolvedValue(undefined),
+        ...overrides,
+      }) as unknown as EncounterCompetition;
+
+    const transaction = () =>
+      (resolver["_sequelize"] as unknown as { transaction: jest.Mock }).transaction.mock.results[0]
+        .value as Promise<{ commit: jest.Mock; rollback: jest.Mock }>;
+
+    it("throws NotFoundException when encounter does not exist", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(null);
+
+      await expect(call(resolver, buildUser("admin-uuid", true))).rejects.toThrow(
+        NotFoundException
+      );
+    });
+
+    it("rejects a user who is not staff and lacks permissions, without updating", async () => {
+      const encounter = makeDbEncounter();
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+      const user = buildUser("stranger-uuid");
+
+      await expect(call(resolver, user)).rejects.toThrow(UnauthorizedException);
+
+      expect(user.hasAnyPermission).toHaveBeenCalledWith([
+        "change-any:encounter",
+        "home-club_enter:results",
+        "away-club_enter:results",
+      ]);
+      expect(encounter.update).not.toHaveBeenCalled();
+      const tx = await transaction();
+      expect(tx.rollback).toHaveBeenCalled();
+      expect(tx.commit).not.toHaveBeenCalled();
+    });
+
+    it("rejects an anonymous user even when staff ids are unset", async () => {
+      const encounter = makeDbEncounter({
+        gameLeaderId: undefined,
+        tempAwayCaptainId: undefined,
+        home: { clubId: "home-club" } as Team,
+      });
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+      const anonymous = {
+        hasAnyPermission: jest.fn().mockResolvedValue(false),
+      } as unknown as Player;
+
+      await expect(call(resolver, anonymous)).rejects.toThrow(UnauthorizedException);
+      expect(encounter.update).not.toHaveBeenCalled();
+    });
+
+    it("allows a user with a club or encounter permission", async () => {
+      const encounter = makeDbEncounter();
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+
+      await expect(call(resolver, buildUser("club-admin-uuid", true))).resolves.toBe(true);
+
+      expect(encounter.update).toHaveBeenCalledWith(expectedUpdate, expect.any(Object));
+      expect((await transaction()).commit).toHaveBeenCalled();
+    });
+
+    it.each([
+      ["the game leader", "leader-uuid"],
+      ["the home captain", "home-captain-uuid"],
+      ["the away captain", "away-captain-uuid"],
+      ["a temporary captain", "temp-away-uuid"],
+    ])("allows %s without any permission", async (_role, userId) => {
+      const encounter = makeDbEncounter();
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+      const user = buildUser(userId);
+
+      await expect(call(resolver, user)).resolves.toBe(true);
+
+      expect(user.hasAnyPermission).not.toHaveBeenCalled();
+      expect(encounter.update).toHaveBeenCalledWith(expectedUpdate, expect.any(Object));
+    });
+  });
 });
