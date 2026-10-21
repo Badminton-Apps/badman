@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Assembly, EncounterCompetition, Player, Team } from "@badman/backend-database";
 import { AssemblyValidationService } from "@badman/backend-assembly";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
@@ -77,6 +77,24 @@ describe("AssemblyResolver", () => {
     it("throws NotFoundException when the team does not exist", async () => {
       jest.spyOn(Team, "findByPk").mockResolvedValue(null);
       await expect(resolver.createAssembly(buildUser(), input)).rejects.toThrow(NotFoundException);
+    });
+
+    it("rejects a team that does not play in the encounter, even for its captain", async () => {
+      jest.spyOn(Team, "findByPk").mockResolvedValue({
+        id: "unrelated-team-uuid",
+        clubId: "club-uuid",
+        captainId: "captain-uuid",
+      } as unknown as Team);
+      const findOrCreate = jest.spyOn(Assembly, "findOrCreate");
+
+      await expect(
+        resolver.createAssembly(buildUser("captain-uuid", false), {
+          encounterId: "enc-uuid",
+          teamId: "unrelated-team-uuid",
+        } as any)
+      ).rejects.toThrow(BadRequestException);
+      expect(findOrCreate).not.toHaveBeenCalled();
+      expect(mockEncounterGamesService.generateGames).not.toHaveBeenCalled();
     });
 
     it("rejects a user who is not the captain and lacks permissions, without saving", async () => {

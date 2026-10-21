@@ -1048,9 +1048,6 @@ importers:
 
   packages/backend-competition/transfer-loans:
     dependencies:
-      '@badman/backend-authorization':
-        specifier: workspace:*
-        version: link:../../backend-authorization
       '@badman/backend-database':
         specifier: workspace:*
         version: link:../../backend-database

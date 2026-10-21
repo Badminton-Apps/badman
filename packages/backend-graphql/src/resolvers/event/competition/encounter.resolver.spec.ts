@@ -24,7 +24,7 @@ import {
   ChangeEncounterParty,
   EncounterChangeViewState,
 } from "@badman/utils";
-import { NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 
 describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
   let resolver: EncounterCompetitionResolver;
@@ -539,28 +539,15 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
     });
   });
 
-  describe.each([
-    {
-      name: "updateGameLeader",
-      call: (r: EncounterCompetitionResolver, user: Player) =>
-        r.updateGameLeader(user, "enc-uuid", "new-leader-uuid"),
-      expectedUpdate: { gameLeaderId: "new-leader-uuid" },
-    },
-    {
-      name: "updateTempTeamCaptain",
-      call: (r: EncounterCompetitionResolver, user: Player) =>
-        r.updateTempTeamCaptain(user, "enc-uuid", { tempHomeCaptainId: "temp-uuid" }),
-      expectedUpdate: { tempHomeCaptainId: "temp-uuid" },
-    },
-  ])("$name authorization", ({ call, expectedUpdate }) => {
-    const buildUser = (id: string, allowed = false) =>
+  describe("encounter staff authorization", () => {
+    const buildUser = (id: string | undefined, allowed = false) =>
       ({ id, hasAnyPermission: jest.fn().mockResolvedValue(allowed) }) as unknown as Player;
 
     const makeDbEncounter = (overrides: Partial<EncounterCompetition> = {}) =>
       ({
         id: "enc-uuid",
         gameLeaderId: "leader-uuid",
-        tempHomeCaptainId: null,
+        tempHomeCaptainId: "temp-home-uuid",
         tempAwayCaptainId: "temp-away-uuid",
         home: { clubId: "home-club", captainId: "home-captain-uuid" },
         away: { clubId: "away-club", captainId: "away-captain-uuid" },
@@ -572,71 +559,161 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
       (resolver["_sequelize"] as unknown as { transaction: jest.Mock }).transaction.mock.results[0]
         .value as Promise<{ commit: jest.Mock; rollback: jest.Mock }>;
 
-    it("throws NotFoundException when encounter does not exist", async () => {
-      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(null);
+    describe("updateGameLeader", () => {
+      const call = (user: Player) => resolver.updateGameLeader(user, "enc-uuid", "new-leader-uuid");
 
-      await expect(call(resolver, buildUser("admin-uuid", true))).rejects.toThrow(
-        NotFoundException
-      );
-    });
-
-    it("rejects a user who is not staff and lacks permissions, without updating", async () => {
-      const encounter = makeDbEncounter();
-      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
-      const user = buildUser("stranger-uuid");
-
-      await expect(call(resolver, user)).rejects.toThrow(UnauthorizedException);
-
-      expect(user.hasAnyPermission).toHaveBeenCalledWith([
-        "change-any:encounter",
-        "home-club_enter:results",
-        "away-club_enter:results",
-      ]);
-      expect(encounter.update).not.toHaveBeenCalled();
-      const tx = await transaction();
-      expect(tx.rollback).toHaveBeenCalled();
-      expect(tx.commit).not.toHaveBeenCalled();
-    });
-
-    it("rejects an anonymous user even when staff ids are unset", async () => {
-      const encounter = makeDbEncounter({
-        gameLeaderId: undefined,
-        tempAwayCaptainId: undefined,
-        home: { clubId: "home-club" } as Team,
+      it("throws NotFoundException when encounter does not exist", async () => {
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(null);
+        await expect(call(buildUser("admin-uuid", true))).rejects.toThrow(NotFoundException);
       });
-      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
-      const anonymous = {
-        hasAnyPermission: jest.fn().mockResolvedValue(false),
-      } as unknown as Player;
 
-      await expect(call(resolver, anonymous)).rejects.toThrow(UnauthorizedException);
-      expect(encounter.update).not.toHaveBeenCalled();
+      it.each([
+        ["a stranger", "stranger-uuid"],
+        ["the away captain", "away-captain-uuid"],
+        ["the away temporary captain", "temp-away-uuid"],
+        ["an anonymous caller", undefined],
+      ])("rejects %s without a home-side permission", async (_role, userId) => {
+        const encounter = makeDbEncounter();
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const user = buildUser(userId);
+
+        await expect(call(user)).rejects.toThrow(UnauthorizedException);
+
+        expect(user.hasAnyPermission).toHaveBeenCalledWith([
+          "change-any:encounter",
+          "home-club_enter:results",
+        ]);
+        expect(encounter.update).not.toHaveBeenCalled();
+        const tx = await transaction();
+        expect(tx.rollback).toHaveBeenCalled();
+        expect(tx.commit).not.toHaveBeenCalled();
+      });
+
+      it("allows a user with a home-side permission", async () => {
+        const encounter = makeDbEncounter();
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+
+        await expect(call(buildUser("club-admin-uuid", true))).resolves.toBe(true);
+
+        expect(encounter.update).toHaveBeenCalledWith(
+          { gameLeaderId: "new-leader-uuid" },
+          expect.any(Object)
+        );
+        expect((await transaction()).commit).toHaveBeenCalled();
+      });
+
+      it.each([
+        ["the game leader", "leader-uuid"],
+        ["the home captain", "home-captain-uuid"],
+        ["the home temporary captain", "temp-home-uuid"],
+      ])("allows %s without any permission", async (_role, userId) => {
+        const encounter = makeDbEncounter();
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const user = buildUser(userId);
+
+        await expect(call(user)).resolves.toBe(true);
+        expect(user.hasAnyPermission).not.toHaveBeenCalled();
+      });
     });
 
-    it("allows a user with a club or encounter permission", async () => {
-      const encounter = makeDbEncounter();
-      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+    describe("updateTempTeamCaptain", () => {
+      it("throws NotFoundException when encounter does not exist", async () => {
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(null);
+        await expect(
+          resolver.updateTempTeamCaptain(buildUser("admin-uuid", true), "enc-uuid", {
+            tempHomeCaptainId: "x",
+          })
+        ).rejects.toThrow(NotFoundException);
+      });
 
-      await expect(call(resolver, buildUser("club-admin-uuid", true))).resolves.toBe(true);
+      it("rejects input that sets neither side", async () => {
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+        await expect(
+          resolver.updateTempTeamCaptain(buildUser("admin-uuid", true), "enc-uuid", {})
+        ).rejects.toThrow(BadRequestException);
+      });
 
-      expect(encounter.update).toHaveBeenCalledWith(expectedUpdate, expect.any(Object));
-      expect((await transaction()).commit).toHaveBeenCalled();
-    });
+      it.each([
+        ["a stranger", "stranger-uuid", { tempHomeCaptainId: "x" }, "home-club"],
+        ["an anonymous caller", undefined, { tempAwayCaptainId: "x" }, "away-club"],
+        // Without side scoping, a captain could make themselves the other side's temp captain
+        // and then edit that team's assembly.
+        [
+          "the home captain on the away side",
+          "home-captain-uuid",
+          { tempAwayCaptainId: "home-captain-uuid" },
+          "away-club",
+        ],
+        [
+          "the away temporary captain on the home side",
+          "temp-away-uuid",
+          { tempHomeCaptainId: "x" },
+          "home-club",
+        ],
+      ])("rejects %s, without updating", async (_role, userId, data, clubId) => {
+        const encounter = makeDbEncounter();
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const user = buildUser(userId);
 
-    it.each([
-      ["the game leader", "leader-uuid"],
-      ["the home captain", "home-captain-uuid"],
-      ["the away captain", "away-captain-uuid"],
-      ["a temporary captain", "temp-away-uuid"],
-    ])("allows %s without any permission", async (_role, userId) => {
-      const encounter = makeDbEncounter();
-      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
-      const user = buildUser(userId);
+        await expect(resolver.updateTempTeamCaptain(user, "enc-uuid", data)).rejects.toThrow(
+          UnauthorizedException
+        );
 
-      await expect(call(resolver, user)).resolves.toBe(true);
+        expect(user.hasAnyPermission).toHaveBeenCalledWith([
+          "change-any:encounter",
+          `${clubId}_enter:results`,
+        ]);
+        expect(encounter.update).not.toHaveBeenCalled();
+        expect((await transaction()).rollback).toHaveBeenCalled();
+      });
 
-      expect(user.hasAnyPermission).not.toHaveBeenCalled();
-      expect(encounter.update).toHaveBeenCalledWith(expectedUpdate, expect.any(Object));
+      it("rejects when only one of two requested sides is allowed", async () => {
+        const encounter = makeDbEncounter();
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+
+        await expect(
+          resolver.updateTempTeamCaptain(buildUser("home-captain-uuid"), "enc-uuid", {
+            tempHomeCaptainId: "x",
+            tempAwayCaptainId: "y",
+          })
+        ).rejects.toThrow(UnauthorizedException);
+        expect(encounter.update).not.toHaveBeenCalled();
+      });
+
+      it.each([
+        ["the home captain", "home-captain-uuid", { tempHomeCaptainId: "x" }],
+        ["the away captain", "away-captain-uuid", { tempAwayCaptainId: "x" }],
+        ["the away temporary captain", "temp-away-uuid", { tempAwayCaptainId: null }],
+        // The encounter form lets the game leader set both captains.
+        [
+          "the game leader on both sides",
+          "leader-uuid",
+          { tempHomeCaptainId: "x", tempAwayCaptainId: "y" },
+        ],
+      ])("allows %s without any permission", async (_role, userId, data) => {
+        const encounter = makeDbEncounter();
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const user = buildUser(userId);
+
+        await expect(resolver.updateTempTeamCaptain(user, "enc-uuid", data as never)).resolves.toBe(
+          true
+        );
+
+        expect(user.hasAnyPermission).not.toHaveBeenCalled();
+        expect(encounter.update).toHaveBeenCalledWith(data, expect.any(Object));
+        expect((await transaction()).commit).toHaveBeenCalled();
+      });
+
+      it("allows a user with that side's club permission", async () => {
+        const encounter = makeDbEncounter();
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+
+        await expect(
+          resolver.updateTempTeamCaptain(buildUser("club-admin-uuid", true), "enc-uuid", {
+            tempAwayCaptainId: "x",
+          })
+        ).resolves.toBe(true);
+      });
     });
   });
 });

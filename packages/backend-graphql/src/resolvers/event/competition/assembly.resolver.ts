@@ -13,7 +13,12 @@ import {
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { RankingSystemService } from "@badman/backend-ranking";
 import { getRankingProtected, sortPlayers } from "@badman/utils";
-import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 
 @Resolver(() => AssemblyOutput)
@@ -112,6 +117,9 @@ export class AssemblyResolver {
     }
     if (!team) {
       throw new NotFoundException(`${Team.name}: ${assembly.teamId}`);
+    }
+    if (team.id !== encounter.homeTeamId && team.id !== encounter.awayTeamId) {
+      throw new BadRequestException(`Team ${team.id} does not play in encounter ${encounter.id}`);
     }
 
     // Checked outside the try below: its catch swallows errors and returns null.
@@ -219,7 +227,7 @@ export class AssemblyResolver {
 
   /**
    * The team's captain, its temporary captain for this encounter, and club or encounter
-   * admins may save an assembly.
+   * admins may save an assembly. Expects `team` to play in `encounter`.
    */
   private async _canEditAssembly(
     user: Player,
@@ -227,11 +235,7 @@ export class AssemblyResolver {
     team: Team
   ): Promise<boolean> {
     const tempCaptainId =
-      encounter.homeTeamId === team.id
-        ? encounter.tempHomeCaptainId
-        : encounter.awayTeamId === team.id
-          ? encounter.tempAwayCaptainId
-          : undefined;
+      encounter.homeTeamId === team.id ? encounter.tempHomeCaptainId : encounter.tempAwayCaptainId;
     if (user.id === team.captainId || user.id === tempCaptainId) {
       return true;
     }

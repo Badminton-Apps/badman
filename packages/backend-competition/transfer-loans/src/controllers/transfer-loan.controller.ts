@@ -1,18 +1,9 @@
-import { User } from "@badman/backend-authorization";
-import { Player } from "@badman/backend-database";
 import { File, UploadGuard } from "@badman/backend-utils";
 import { MultipartValue, MultipartFile } from "@fastify/multipart";
-import {
-  Controller,
-  ForbiddenException,
-  Logger,
-  Post,
-  Res,
-  UnauthorizedException,
-  UseGuards,
-} from "@nestjs/common";
+import { Controller, Logger, Post, Res, UseGuards } from "@nestjs/common";
 import { FastifyReply } from "fastify";
 import "multer";
+import { ChangeTransferGuard } from "../guards";
 import { LoansService } from "../services/loans.service.ts";
 import { TransferService } from "../services/transfers.service";
 
@@ -28,15 +19,9 @@ export class TransferLoanController {
   ) {}
 
   @Post("process")
-  @UseGuards(UploadGuard)
-  async process(@User() user: Player, @File() file: MultipartFile, @Res() res: FastifyReply) {
-    if (!user?.id) {
-      throw new UnauthorizedException("Login required");
-    }
-    if (!(await user.hasAnyPermission(["change:transfer"]))) {
-      throw new ForbiddenException("Insufficient permissions");
-    }
-
+  // Guards run in order: authorize before UploadGuard reads the multipart body.
+  @UseGuards(ChangeTransferGuard, UploadGuard)
+  async process(@File() file: MultipartFile, @Res() res: FastifyReply) {
     const buffer = await file.toBuffer();
     const transferOrLoan = (file.fields["transferOrLoan"] as MultipartValue)?.value;
     const season = parseInt((file.fields["season"] as MultipartValue)?.value as string, 10);

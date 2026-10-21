@@ -32,7 +32,12 @@ import { EncounterChangeService } from "./encounter-change.service";
 import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
-import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import {
   Args,
   Field,
@@ -68,6 +73,11 @@ export class PlayerEncounterCompetition {
   @Field(() => [EncounterCompetition])
   rows?: EncounterCompetition[];
 }
+
+const tempCaptainKey = {
+  home: "tempHomeCaptainId",
+  away: "tempAwayCaptainId",
+} as const;
 
 @Resolver(() => EncounterCompetition)
 export class EncounterCompetitionResolver {
@@ -716,7 +726,8 @@ export class EncounterCompetitionResolver {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
       }
 
-      if (!(await this._canManageEncounterStaff(user, encounter))) {
+      // The home side appoints the game leader.
+      if (!(await this._canManageSide(user, encounter, "home"))) {
         throw new UnauthorizedException(
           `You do not have permission to change the game leader of this encounter`
         );
@@ -753,10 +764,19 @@ export class EncounterCompetitionResolver {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
       }
 
-      if (!(await this._canManageEncounterStaff(user, encounter))) {
-        throw new UnauthorizedException(
-          `You do not have permission to change the captain of this encounter`
-        );
+      const sides = (["home", "away"] as const).filter(
+        (side) => updateTempTeamCaptainData[tempCaptainKey[side]] !== undefined
+      );
+      if (sides.length === 0) {
+        throw new BadRequestException(`tempHomeCaptainId or tempAwayCaptainId is required`);
+      }
+
+      for (const side of sides) {
+        if (!(await this._canManageSide(user, encounter, side))) {
+          throw new UnauthorizedException(
+            `You do not have permission to change the ${side} captain of this encounter`
+          );
+        }
       }
 
       await encounter.update(updateTempTeamCaptainData, { transaction });
@@ -771,30 +791,22 @@ export class EncounterCompetitionResolver {
   }
 
   /**
-   * Game leader and temporary captains are set by the people running the encounter:
-   * encounter admins, either club's result enterers, the current game leader, and the
-   * (temporary) captains of both teams. Expects `home` and `away` to be included.
+   * Whether the user may manage one side's encounter staff: encounter admins, that club's
+   * result enterers, that team's (temporary) captain, and the game leader, who sets both
+   * captains on the encounter form. Expects `home` and `away` to be included.
    */
-  private async _canManageEncounterStaff(
+  private async _canManageSide(
     user: Player,
-    encounter: EncounterCompetition
+    encounter: EncounterCompetition,
+    side: "home" | "away"
   ): Promise<boolean> {
-    const staffIds = [
-      encounter.gameLeaderId,
-      encounter.home?.captainId,
-      encounter.away?.captainId,
-      encounter.tempHomeCaptainId,
-      encounter.tempAwayCaptainId,
-    ];
+    const team = encounter[side];
+    const staffIds = [encounter.gameLeaderId, team?.captainId, encounter[tempCaptainKey[side]]];
     if (user?.id && staffIds.includes(user.id)) {
       return true;
     }
 
-    return user.hasAnyPermission([
-      "change-any:encounter",
-      `${encounter.home?.clubId}_enter:results`,
-      `${encounter.away?.clubId}_enter:results`,
-    ]);
+    return user.hasAnyPermission(["change-any:encounter", `${team?.clubId}_enter:results`]);
   }
 
   @Mutation(() => EncounterCompetition)
