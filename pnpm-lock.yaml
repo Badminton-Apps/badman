@@ -270,8 +270,8 @@ importers:
         specifier: file:vendor/xlsx-0.20.3.tgz
         version: file:vendor/xlsx-0.20.3.tgz
       zod:
-        specifier: ^3.25.75
-        version: 3.25.76
+        specifier: ^4.0.0
+        version: 4.6.7
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
@@ -1722,8 +1722,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       zod:
-        specifier: ^3.25.75
-        version: 3.25.76
+        specifier: ^4.0.0
+        version: 4.6.7
 
   packages/backend-websockets:
     dependencies:
@@ -2985,6 +2985,7 @@ packages:
   '@opentelemetry/sdk-trace-base@2.7.1':
     resolution: {integrity: sha512-NAYIlsF8MPUsKqJMiDQJTMPOmlbawC1Iz/omMLygZ1C9am8fTKYjTaI+OZM+WTY3t3Glo0wnOg/6/pac6RGPPw==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
@@ -4491,6 +4492,7 @@ packages:
   cron-parser@4.9.0:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
+    deprecated: v4 is no longer maintained, upgrade to v5
 
   cron@4.4.0:
     resolution: {integrity: sha512-fkdfq+b+AHI4cKdhZlppHveI/mgz2qpiYxcm+t5E5TsxX7QrLS1VE0+7GENEk9z0EeGPcpSciGv6ez24duWhwQ==}
@@ -4836,6 +4838,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -6234,7 +6237,7 @@ packages:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
   node-adodb@https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373:
-    resolution: {gitHosted: true, integrity: sha512-3kEZtRgNk7/bIZdSvjm1Lf4wbcgMvww5/WYDwezOveTxygMWCiaPzqXGY0F9ZtTFEa0ZiPiikBh5TVAw/e1kKA==, tarball: https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373}
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373}
     version: 5.0.3
     engines: {node: '>=6.0.0'}
     os: [win32]
@@ -7776,8 +7779,8 @@ packages:
   zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
 snapshots:
 
@@ -14468,4 +14471,4 @@ snapshots:
 
   zod@3.23.8: {}
 
-  zod@3.25.76: {}
+  zod@4.6.7: {}
