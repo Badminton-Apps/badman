@@ -17,8 +17,10 @@ import {
   enterGameLeader,
   enterShuttle,
   enterStartHour,
+  ExistingResult,
   getCurrentUrl,
   getRowErrorMessages,
+  readExistingResult,
   waitForNavigation,
   waitForNetworkIdle,
   waitForSaveErrorDialog,
@@ -84,6 +86,11 @@ export class EncounterFormPageService {
   async enterEditMode(encounter: EncounterCompetition): Promise<void> {
     this._assertPage();
     await enterEditMode({ page: this.page! }, encounter);
+  }
+
+  async readExistingResult(): Promise<ExistingResult> {
+    this._assertPage();
+    return readExistingResult({ page: this.page! }, { logger: this.logger });
   }
 
   async clearFields(): Promise<void> {

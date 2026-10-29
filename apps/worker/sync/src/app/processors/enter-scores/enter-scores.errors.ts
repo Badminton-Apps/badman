@@ -5,6 +5,7 @@ export enum EnterScoresErrorCode {
   COOKIE_ACCEPT = "COOKIE_ACCEPT",
   SITE_UNREACHABLE = "SITE_UNREACHABLE",
   SIGN_IN = "SIGN_IN",
+  RESULT_ALREADY_PRESENT = "RESULT_ALREADY_PRESENT",
   ENTER_GAMES = "ENTER_GAMES",
   ROW_VALIDATION = "ROW_VALIDATION",
   SAVE_BUTTON = "SAVE_BUTTON",
@@ -20,6 +21,7 @@ export type EnterScoresPhase =
   | "cookie_accept"
   | "sign_in"
   | "edit_mode"
+  | "existing_result_check"
   | "clear_fields"
   | "enter_games"
   | "optional_fields"

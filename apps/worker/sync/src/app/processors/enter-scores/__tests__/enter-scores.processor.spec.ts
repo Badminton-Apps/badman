@@ -31,6 +31,7 @@ function makeJob(
     opts: { attempts: maxAttempts },
     extendLock: jest.fn().mockResolvedValue(undefined),
     progress: jest.fn(),
+    discard: jest.fn(),
   };
 }
 
@@ -77,6 +78,7 @@ function makeFormPageService() {
     signIn: jest.fn().mockResolvedValue(undefined),
     waitForSignInConfirmation: jest.fn().mockResolvedValue(true),
     enterEditMode: jest.fn().mockResolvedValue(undefined),
+    readExistingResult: jest.fn().mockResolvedValue({ filledRows: [], resultEntered: null }),
     clearFields: jest.fn().mockResolvedValue(undefined),
     enterGames: jest.fn().mockResolvedValue(undefined),
     enterGameLeader: jest.fn().mockResolvedValue(undefined),
@@ -191,6 +193,57 @@ describe("EnterScoresProcessor", () => {
 
       await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("enc-1 not found");
       expect(formPage.enterEditMode).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── Existing result on toernooi.nl ─────────────────────────────────────────
+
+  describe("existing result on toernooi.nl", () => {
+    const filledRow = {
+      matchId: "m-1",
+      header: "HD1",
+      players: ["111", "222", "333", "444"],
+      sets: ["21-18", "21-14", ""],
+      winner: "1",
+    };
+
+    it("reads the existing result before clearing the form", async () => {
+      await processor.enterScores(makeJob() as any);
+
+      expect(formPage.readExistingResult).toHaveBeenCalledTimes(1);
+      expect(formPage.readExistingResult.mock.invocationCallOrder[0]).toBeLessThan(
+        formPage.clearFields.mock.invocationCallOrder[0]
+      );
+    });
+
+    it.each([
+      ["filled games", { filledRows: [filledRow], resultEntered: null }],
+      ["only a team result", { filledRows: [], resultEntered: "BARET BC on Tue 21/04/2026 17:03" }],
+    ])("never clears, enters or saves when toernooi.nl already has %s", async (_, existing) => {
+      formPage.readExistingResult.mockResolvedValue(existing);
+      const encounter = makeEncounter();
+      findByPkSpy.mockResolvedValue(encounter as any);
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toMatchObject({
+        code: "RESULT_ALREADY_PRESENT",
+      });
+
+      expect(formPage.clearFields).not.toHaveBeenCalled();
+      expect(formPage.enterGames).not.toHaveBeenCalled();
+      expect(formPage.clickSaveButton).not.toHaveBeenCalled();
+      expect(encounter.update).not.toHaveBeenCalled();
+    });
+
+    it("discards the job so Bull does not retry it", async () => {
+      formPage.readExistingResult.mockResolvedValue({
+        filledRows: [filledRow],
+        resultEntered: null,
+      });
+      const job = makeJob();
+
+      await expect(processor.enterScores(job as any)).rejects.toThrow();
+
+      expect(job.discard).toHaveBeenCalledTimes(1);
     });
   });
 

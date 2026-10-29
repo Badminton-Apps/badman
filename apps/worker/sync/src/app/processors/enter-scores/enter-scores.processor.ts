@@ -635,6 +635,18 @@ export class EnterScoresProcessor {
       this.logger.log("Entering edit mode");
       await this.formPage.enterEditMode(encounter);
 
+      this._currentPhase = "existing_result_check";
+      const existing = await this.formPage.readExistingResult();
+      if (existing.filledRows.length > 0 || existing.resultEntered) {
+        // Badman may only fill an empty result; one entered by a club or the sports commission
+        // is never overwritten (C320 art. 62, confirmed by BV). Retrying cannot change that.
+        job.discard();
+        throw new EnterScoresError(
+          EnterScoresErrorCode.RESULT_ALREADY_PRESENT,
+          `Toernooi.nl already has a result for encounter ${encounter.visualCode} (${existing.filledRows.length} filled games, entered: ${existing.resultEntered ?? "unknown"}); not overwriting`
+        );
+      }
+
       this._currentPhase = "clear_fields";
       this.logger.log("Clearing fields");
       await this.formPage.clearFields();
