@@ -71,11 +71,7 @@ export class EncounterFormPageService {
     await acceptCookies({ page: this.page!, timeout }, { logger: this.logger });
   }
 
-  async signIn(
-    username: string | undefined,
-    password: string | undefined,
-    timeout = 20000
-  ): Promise<void> {
+  async signIn(username: string, password: string, timeout = 20000): Promise<void> {
     this._assertPage();
     await signIn({ page: this.page!, timeout }, { username, password, logger: this.logger });
   }

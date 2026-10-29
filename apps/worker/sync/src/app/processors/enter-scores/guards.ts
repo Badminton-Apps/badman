@@ -11,14 +11,16 @@ export interface EnterScoresConfig {
   password?: string;
 }
 
-export interface EnterScoresPreflightResult {
-  canProceed: boolean;
-  reason?: string;
+interface EnterScoresPreflightBase {
   /** true = headless browser, false = visible browser */
   headless: boolean;
   /** Whether to actually click the save button */
   shouldSave: boolean;
 }
+
+export type EnterScoresPreflightResult =
+  | (EnterScoresPreflightBase & { canProceed: false; reason: string })
+  | (EnterScoresPreflightBase & { canProceed: true; username: string; password: string });
 
 /**
  * Determines whether the EnterScores job can proceed and how it should behave.
@@ -36,7 +38,13 @@ export function enterScoresPreflight(config: EnterScoresConfig): EnterScoresPref
   const headless = !config.visualSyncEnabled;
   const shouldSave = config.nodeEnv === "production" || config.enterScoresEnabled;
 
-  return { canProceed: true, headless, shouldSave };
+  return {
+    canProceed: true,
+    username: config.username,
+    password: config.password,
+    headless,
+    shouldSave,
+  };
 }
 
 /**

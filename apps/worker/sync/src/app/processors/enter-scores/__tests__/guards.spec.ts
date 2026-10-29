@@ -12,8 +12,16 @@ describe("enterScoresPreflight", () => {
   it("should not proceed without credentials", () => {
     const result = enterScoresPreflight({ ...baseConfig, username: undefined });
 
-    expect(result.canProceed).toBe(false);
-    expect(result.reason).toContain("No username or password");
+    expect(result).toMatchObject({
+      canProceed: false,
+      reason: expect.stringContaining("No username or password"),
+    });
+  });
+
+  it("returns the credentials when it can proceed", () => {
+    const result = enterScoresPreflight(baseConfig);
+
+    expect(result).toMatchObject({ canProceed: true, username: "user", password: "pass" });
   });
 
   it("should not proceed without password", () => {

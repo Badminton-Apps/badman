@@ -205,6 +205,12 @@ export class EnterScoresProcessor {
   private async enterGamesWithTransaction(encounter: EncounterCompetition): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
     const transaction = await this._transactionManager.getTransaction(transactionId);
+    if (!transaction) {
+      throw new EnterScoresError(
+        EnterScoresErrorCode.ENTER_GAMES,
+        `Transaction ${transactionId} not found`
+      );
+    }
     try {
       await this.formPage.enterGames(encounter, transaction);
       await this._transactionManager.commitTransaction(transactionId);
@@ -282,7 +288,7 @@ export class EnterScoresProcessor {
       if (msg != null && msg.length > 0) {
         return { type: "dialog", message: msg };
       }
-      await new Promise<never>(() => {
+      return new Promise<never>(() => {
         /* never resolves so race is won by nav */
       });
     };
@@ -547,7 +553,7 @@ export class EnterScoresProcessor {
       password: this._password,
     });
 
-    if (!preflight.canProceed) {
+    if (preflight.canProceed === false) {
       this.logger.error(preflight.reason);
       throw new EnterScoresError(EnterScoresErrorCode.PREFLIGHT, preflight.reason);
     }
@@ -604,7 +610,7 @@ export class EnterScoresProcessor {
       this._currentPhase = "sign_in";
       this.logger.log(`Signing in as ${this._username}`);
       try {
-        await this.formPage.signIn(this._username, this._password, 20000);
+        await this.formPage.signIn(preflight.username, preflight.password, 20000);
         this.logger.log("✅ Sign in completed successfully");
       } catch (error: unknown) {
         if (!this.isTimeoutError(error)) {
