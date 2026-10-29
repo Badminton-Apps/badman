@@ -21,7 +21,7 @@ import { ToernooiUnreachableError } from "@badman/backend-pupeteer";
 import { startLockRenewal } from "../../utils";
 import { EnterScoresError, EnterScoresErrorCode, EnterScoresPhase } from "./enter-scores.errors";
 import { EncounterFormPageService } from "./encounter-form-page.service";
-import { enterScoresPreflight, isFinalAttempt } from "./guards";
+import { enterScoresPreflight, isFinalAttempt, isSeasonOpen } from "./guards";
 
 @Processor({
   name: SyncQueue,
@@ -131,7 +131,7 @@ export class EnterScoresProcessor {
               model: SubEventCompetition,
               include: [
                 {
-                  attributes: ["id", "visualCode"],
+                  attributes: ["id", "visualCode", "season"],
                   model: EventCompetition,
                 },
               ],
@@ -449,6 +449,7 @@ export class EnterScoresProcessor {
     // A skipped push is discarded, so there is no later attempt to report it on.
     const finalAttempt =
       errorCode === EnterScoresErrorCode.RESULT_ALREADY_PRESENT ||
+      errorCode === EnterScoresErrorCode.SEASON_CLOSED ||
       isFinalAttempt(job.attemptsMade, maxAttempts);
 
     Sentry.setTag("processor", "enter-scores");
@@ -624,6 +625,21 @@ export class EnterScoresProcessor {
       this.logger.log("Getting encounter");
       encounter = await this.loadEncounter(encounterId);
 
+      this._currentPhase = "season_check";
+      const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
+      if (season == null || !isSeasonOpen(season, new Date())) {
+        // Results of a closed season are final; a retried old job must never reach toernooi.nl.
+        await this.writeAuditLog(LoggingAction.ResultPushSkipped, encounter, job, {
+          reason: "season_closed",
+          season,
+        });
+        job.discard();
+        throw new EnterScoresError(
+          EnterScoresErrorCode.SEASON_CLOSED,
+          `Season ${season ?? "unknown"} of encounter ${encounter.visualCode} is closed; not pushing`
+        );
+      }
+
       this.logger.log(
         `Entering scores for following encounter: Visual Code: ${encounter.visualCode}, Encounter id: ${encounterId}`
       );
@@ -683,7 +699,10 @@ export class EnterScoresProcessor {
       if (existing.filledRows.length > 0 || existing.resultEntered) {
         // Badman may only fill an empty result; one entered by a club or the sports commission
         // is never overwritten (C320 art. 62, confirmed by BV). Retrying cannot change that.
-        await this.writeAuditLog(LoggingAction.ResultPushSkipped, encounter, job, { existing });
+        await this.writeAuditLog(LoggingAction.ResultPushSkipped, encounter, job, {
+          reason: "result_present",
+          existing,
+        });
         job.discard();
         throw new EnterScoresError(
           EnterScoresErrorCode.RESULT_ALREADY_PRESENT,

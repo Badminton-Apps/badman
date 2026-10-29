@@ -47,6 +47,16 @@ export function enterScoresPreflight(config: EnterScoresConfig): EnterScoresPref
   };
 }
 
+// Competition season n (2025 = 2025-26) runs 1 Sep - 30 Apr, but some leagues still play
+// in May and June, so a season only closes on 1 July of the following year.
+export function isSeasonOpen(season: number, now: Date): boolean {
+  return now < new Date(season + 1, 6, 1);
+}
+
+export function oldestOpenSeason(now: Date): number {
+  return now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+}
+
 /**
  * Determines whether a failure email should be sent based on the job attempt.
  */

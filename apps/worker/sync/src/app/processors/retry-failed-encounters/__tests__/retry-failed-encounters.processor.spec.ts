@@ -1,3 +1,4 @@
+import { Op, Sequelize } from "sequelize";
 import { CronJob, EncounterCompetition } from "@badman/backend-database";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -148,6 +149,44 @@ describe("RetryFailedEncounterSyncProcessor", () => {
           jobId: "enter-scores-enc-2",
         })
       );
+    });
+
+    it("only selects encounters from seasons that are still open", async () => {
+      jest
+        .useFakeTimers({
+          doNotFake: [
+            "nextTick",
+            "setImmediate",
+            "setTimeout",
+            "clearTimeout",
+            "setInterval",
+            "clearInterval",
+            "queueMicrotask",
+          ],
+        })
+        .setSystemTime(new Date("2026-09-08T09:00:00"));
+      try {
+        await processor.retryFailedEncounters(makeJob() as any);
+      } finally {
+        jest.useRealTimers();
+      }
+
+      const [query] = findAllSpy.mock.calls[0];
+      const eventInclude = query.include[0].include[0].include[0];
+      expect(eventInclude.where).toEqual({ season: { [Op.gte]: 2026 } });
+      expect(query.where.date).toEqual({ [Op.lt]: new Date("2026-09-08T09:00:00") });
+    });
+
+    it("only selects encounters that have a visual code and were entered", async () => {
+      await processor.retryFailedEncounters(makeJob() as any);
+
+      const [query] = findAllSpy.mock.calls[0];
+      const queryGenerator = new Sequelize({ dialect: "postgres" }).getQueryInterface()
+        .queryGenerator as unknown as { whereQuery: (where: unknown) => string };
+      const sql = queryGenerator.whereQuery(query.where);
+      expect(sql).toMatch(/"visualCode" IS NOT NULL/);
+      expect(sql).toMatch(/"enteredOn" IS NOT NULL/);
+      expect(sql).not.toMatch(/!= NULL/);
     });
 
     it("skips encounters that already have an EnterScores job queued", async () => {

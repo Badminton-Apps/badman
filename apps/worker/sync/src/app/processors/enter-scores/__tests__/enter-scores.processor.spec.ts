@@ -36,6 +36,9 @@ function makeJob(
   };
 }
 
+// A season that has not started yet is always open, whenever the tests run.
+const OPEN_SEASON = new Date().getFullYear() + 1;
+
 function makeEncounter(overrides: Partial<Record<string, unknown>> = {}) {
   return {
     id: "enc-1",
@@ -46,7 +49,7 @@ function makeEncounter(overrides: Partial<Record<string, unknown>> = {}) {
     gameLeader: { fullName: "John Doe" },
     drawCompetition: {
       subEventCompetition: {
-        eventCompetition: { id: "event-1", visualCode: "EV001" },
+        eventCompetition: { id: "event-1", visualCode: "EV001", season: OPEN_SEASON },
       },
     },
     games: [],
@@ -248,6 +251,41 @@ describe("EnterScoresProcessor", () => {
     });
   });
 
+  // ── Closed season ──────────────────────────────────────────────────────────
+
+  describe("closed season", () => {
+    function encounterInSeason(season: number | undefined) {
+      return makeEncounter({
+        drawCompetition: {
+          subEventCompetition: {
+            eventCompetition: { id: "event-1", visualCode: "EV001", season },
+          },
+        },
+      });
+    }
+
+    it.each([
+      ["a closed season", 2000],
+      ["an unknown season", undefined],
+    ])("never touches toernooi.nl for %s", async (_, season) => {
+      findByPkSpy.mockResolvedValue(encounterInSeason(season) as any);
+      const logSpy = jest.spyOn(Logging, "create").mockResolvedValue({} as any);
+      const job = makeJob();
+
+      await expect(processor.enterScores(job as any)).rejects.toMatchObject({
+        code: "SEASON_CLOSED",
+      });
+
+      expect(formPage.acceptCookies).not.toHaveBeenCalled();
+      expect(formPage.signIn).not.toHaveBeenCalled();
+      expect(job.discard).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith({
+        action: LoggingAction.ResultPushSkipped,
+        meta: expect.objectContaining({ reason: "season_closed", season }),
+      });
+    });
+  });
+
   // ── Audit trail ────────────────────────────────────────────────────────────
 
   describe("audit trail", () => {
@@ -292,6 +330,7 @@ describe("EnterScoresProcessor", () => {
           visualCode: "VC001",
           jobId: "job-1",
           attempt: 2,
+          reason: "result_present",
           existing,
         },
       });

@@ -10,8 +10,9 @@ import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { startLockRenewal } from "../../utils";
+import { oldestOpenSeason } from "../enter-scores/guards";
 
 @Processor({
   name: SyncQueue,
@@ -42,7 +43,7 @@ export class RetryFailedEncounterSyncProcessor {
       return;
     }
 
-    cronJob.amount++;
+    cronJob.amount = (cronJob.amount ?? 0) + 1;
     await cronJob.save();
 
     const stopLockRenewal = startLockRenewal(job);
@@ -97,7 +98,7 @@ export class RetryFailedEncounterSyncProcessor {
       throw error;
     } finally {
       stopLockRenewal();
-      cronJob.amount--;
+      cronJob.amount = (cronJob.amount ?? 1) - 1;
       cronJob.lastRun = new Date();
       await cronJob.save();
       this.logger.log("Finished retry failed encounter sync job");
@@ -107,12 +108,10 @@ export class RetryFailedEncounterSyncProcessor {
   private async findFailedEncounters(): Promise<EncounterCompetition[]> {
     const now = new Date();
 
-    // Current season starts August 1. If we're before August, use previous year.
-    const year = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
-    const seasonStart = new Date(year, 7, 1); // August 1
+    const season = oldestOpenSeason(now);
 
     this.logger.debug(
-      `Searching for encounters from season starting ${seasonStart.toISOString()} to ${now.toISOString()}`
+      `Searching for encounters from season ${season} onwards up to ${now.toISOString()}`
     );
 
     // The scoresSyncedAt column was added on 2026-03-09. All encounters before that
@@ -122,13 +121,12 @@ export class RetryFailedEncounterSyncProcessor {
 
     const encounters = await EncounterCompetition.findAll({
       where: {
-        visualCode: { [Op.ne]: null },
-        date: {
-          [Op.gte]: seasonStart,
-          [Op.lt]: now, // only past encounters
-        },
+        [Op.and]: [
+          Sequelize.where(Sequelize.col("EncounterCompetition.visualCode"), { [Op.not]: null }),
+          Sequelize.where(Sequelize.col("EncounterCompetition.enteredOn"), { [Op.not]: null }),
+        ],
+        date: { [Op.lt]: now }, // only past encounters
         finished: true,
-        enteredOn: { [Op.ne]: null },
         scoresSyncedAt: null,
         updatedAt: { [Op.gte]: migrationDate },
       },
@@ -147,6 +145,7 @@ export class RetryFailedEncounterSyncProcessor {
                   model: EventCompetition,
                   required: true,
                   attributes: ["id", "visualCode"],
+                  where: { season: { [Op.gte]: season } },
                 },
               ],
             },
@@ -164,7 +163,7 @@ export class RetryFailedEncounterSyncProcessor {
 
     this.logger.debug(
       `Query returned ${encounters.length} encounters matching criteria: ` +
-        `finished=true, enteredOn!=null, scoresSyncedAt=null, has games, current season, past date, updatedAt >= migration (${migrationDate.toISOString()})`
+        `finished=true, enteredOn!=null, scoresSyncedAt=null, has games, open season, past date, updatedAt >= migration (${migrationDate.toISOString()})`
     );
 
     return encounters;

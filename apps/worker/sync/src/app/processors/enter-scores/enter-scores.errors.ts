@@ -5,6 +5,7 @@ export enum EnterScoresErrorCode {
   COOKIE_ACCEPT = "COOKIE_ACCEPT",
   SITE_UNREACHABLE = "SITE_UNREACHABLE",
   SIGN_IN = "SIGN_IN",
+  SEASON_CLOSED = "SEASON_CLOSED",
   RESULT_ALREADY_PRESENT = "RESULT_ALREADY_PRESENT",
   ENTER_GAMES = "ENTER_GAMES",
   ROW_VALIDATION = "ROW_VALIDATION",
@@ -18,6 +19,7 @@ export type EnterScoresPhase =
   | "preflight"
   | "browser_open"
   | "load_encounter"
+  | "season_check"
   | "cookie_accept"
   | "sign_in"
   | "edit_mode"
