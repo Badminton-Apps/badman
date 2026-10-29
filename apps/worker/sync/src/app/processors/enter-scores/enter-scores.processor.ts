@@ -7,6 +7,7 @@ import {
   EventCompetition,
   Assembly,
   Team,
+  Logging,
 } from "@badman/backend-database";
 import { SyncQueue, Sync, TransactionManager } from "@badman/backend-queue";
 import { MailingService } from "@badman/backend-mailing";
@@ -14,7 +15,7 @@ import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
-import { ConfigType } from "@badman/utils";
+import { ConfigType, LoggingAction } from "@badman/utils";
 import * as Sentry from "@sentry/nestjs";
 import { ToernooiUnreachableError } from "@badman/backend-pupeteer";
 import { startLockRenewal } from "../../utils";
@@ -164,6 +165,45 @@ export class EnterScoresProcessor {
       );
     }
     return encounter;
+  }
+
+  private toPushedGames(encounter: EncounterCompetition) {
+    return (encounter.games ?? []).map((game) => ({
+      order: game.order,
+      gameType: game.gameType,
+      winner: game.winner,
+      sets: [
+        [game.set1Team1, game.set1Team2],
+        [game.set2Team1, game.set2Team2],
+        [game.set3Team1, game.set3Team2],
+      ]
+        .filter(([team1, team2]) => team1 != null && team2 != null)
+        .map(([team1, team2]) => `${team1}-${team2}`),
+    }));
+  }
+
+  private async writeAuditLog(
+    action: LoggingAction.ResultPushed | LoggingAction.ResultPushSkipped,
+    encounter: EncounterCompetition,
+    job: Job<{ encounterId: string }>,
+    details: Record<string, unknown>
+  ): Promise<void> {
+    try {
+      await Logging.create({
+        action,
+        meta: {
+          encounterId: encounter.id,
+          visualCode: encounter.visualCode,
+          jobId: String(job.id),
+          attempt: job.attemptsMade + 1,
+          ...details,
+        },
+      });
+    } catch (error: unknown) {
+      this.logger.error(
+        `Could not write ${action} audit log for encounter ${encounter.id}: ${(error as Error)?.message ?? error}`
+      );
+    }
   }
 
   private async sendNotificationEmail(
@@ -404,9 +444,12 @@ export class EnterScoresProcessor {
     devEmailDestination: string | undefined
   ): Promise<void> {
     const maxAttempts = job.opts?.attempts ?? 1;
-    const finalAttempt = isFinalAttempt(job.attemptsMade, maxAttempts);
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorCode = error instanceof EnterScoresError ? error.code : undefined;
+    // A skipped push is discarded, so there is no later attempt to report it on.
+    const finalAttempt =
+      errorCode === EnterScoresErrorCode.RESULT_ALREADY_PRESENT ||
+      isFinalAttempt(job.attemptsMade, maxAttempts);
 
     Sentry.setTag("processor", "enter-scores");
     Sentry.setTag("error_code", errorCode ?? "UNKNOWN");
@@ -640,6 +683,7 @@ export class EnterScoresProcessor {
       if (existing.filledRows.length > 0 || existing.resultEntered) {
         // Badman may only fill an empty result; one entered by a club or the sports commission
         // is never overwritten (C320 art. 62, confirmed by BV). Retrying cannot change that.
+        await this.writeAuditLog(LoggingAction.ResultPushSkipped, encounter, job, { existing });
         job.discard();
         throw new EnterScoresError(
           EnterScoresErrorCode.RESULT_ALREADY_PRESENT,
@@ -664,6 +708,9 @@ export class EnterScoresProcessor {
       if (preflight.shouldSave) {
         await this.waitForSaveResult();
         await encounter.update({ scoresSyncedAt: new Date() });
+        await this.writeAuditLog(LoggingAction.ResultPushed, encounter, job, {
+          games: this.toPushedGames(encounter),
+        });
       } else {
         this.logger.log("Skipping save button because we are not in production");
       }

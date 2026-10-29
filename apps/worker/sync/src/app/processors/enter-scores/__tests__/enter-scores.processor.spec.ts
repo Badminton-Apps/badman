@@ -1,4 +1,5 @@
-import { EncounterCompetition } from "@badman/backend-database";
+import { EncounterCompetition, Logging } from "@badman/backend-database";
+import { LoggingAction } from "@badman/utils";
 import { TransactionManager } from "@badman/backend-queue";
 import { MailingService } from "@badman/backend-mailing";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -244,6 +245,104 @@ describe("EnterScoresProcessor", () => {
       await expect(processor.enterScores(job as any)).rejects.toThrow();
 
       expect(job.discard).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ── Audit trail ────────────────────────────────────────────────────────────
+
+  describe("audit trail", () => {
+    const existing = {
+      filledRows: [
+        {
+          matchId: "m-1",
+          header: "HD1",
+          players: ["111", "222", "333", "444"],
+          sets: ["21-18", "21-14", ""],
+          winner: "1",
+        },
+      ],
+      resultEntered: "Herentalse badmintoncub on Fri 24/04/2026 22:11",
+    };
+    const game = {
+      order: 1,
+      gameType: "D",
+      winner: 1,
+      set1Team1: 21,
+      set1Team2: 18,
+      set2Team1: 21,
+      set2Team2: 14,
+      set3Team1: null,
+      set3Team2: null,
+    };
+    let logSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      logSpy = jest.spyOn(Logging, "create").mockResolvedValue({} as any);
+    });
+
+    it("logs what toernooi.nl already had when it skips the push", async () => {
+      formPage.readExistingResult.mockResolvedValue(existing);
+
+      await expect(processor.enterScores(makeJob({ attemptsMade: 1 }) as any)).rejects.toThrow();
+
+      expect(logSpy).toHaveBeenCalledWith({
+        action: LoggingAction.ResultPushSkipped,
+        meta: {
+          encounterId: "enc-1",
+          visualCode: "VC001",
+          jobId: "job-1",
+          attempt: 2,
+          existing,
+        },
+      });
+    });
+
+    it("logs the games it pushed after a successful save", async () => {
+      findByPkSpy.mockResolvedValue(makeEncounter({ games: [game] }) as any);
+
+      await processor.enterScores(makeJob() as any);
+
+      expect(logSpy).toHaveBeenCalledWith({
+        action: LoggingAction.ResultPushed,
+        meta: {
+          encounterId: "enc-1",
+          visualCode: "VC001",
+          jobId: "job-1",
+          attempt: 1,
+          games: [{ order: 1, gameType: "D", winner: 1, sets: ["21-18", "21-14"] }],
+        },
+      });
+    });
+
+    it("logs nothing when it does not save (dev mode)", async () => {
+      await buildModule({ ENTER_SCORES_ENABLED: false });
+      logSpy = jest.spyOn(Logging, "create").mockResolvedValue({} as any);
+      findByPkSpy = jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeEncounter({ games: [game] }) as any);
+
+      await processor.enterScores(makeJob() as any);
+
+      expect(logSpy).not.toHaveBeenCalled();
+    });
+
+    it("still reports the skip when writing the log fails", async () => {
+      formPage.readExistingResult.mockResolvedValue(existing);
+      logSpy.mockRejectedValue(new Error("db down"));
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toMatchObject({
+        code: "RESULT_ALREADY_PRESENT",
+      });
+    });
+
+    it("sends the failure email on the first attempt when it skips the push", async () => {
+      formPage.readExistingResult.mockResolvedValue(existing);
+
+      await expect(
+        processor.enterScores(makeJob({ attemptsMade: 0, maxAttempts: 3 }) as any)
+      ).rejects.toThrow();
+
+      expect(mailingService.sendEnterScoresFailedMail).toHaveBeenCalledTimes(1);
     });
   });
 
