@@ -408,6 +408,26 @@ describe("EnterScoresProcessor", () => {
         })
       );
     });
+
+    it.each([
+      ["browser_open", "open"],
+      ["cookie_accept", "acceptCookies"],
+      ["sign_in", "signIn"],
+      ["edit_mode", "enterEditMode"],
+      ["existing_result_check", "readExistingResult"],
+      ["clear_fields", "clearFields"],
+      ["enter_games", "enterGames"],
+      ["optional_fields", "enterGameLeader"],
+      ["input_validation", "enableInputValidation"],
+      ["row_validation", "getRowErrorMessages"],
+      ["save", "clickSaveButton"],
+    ] as const)("reports phase %s when %s fails", async (phase, method) => {
+      formPage[method].mockRejectedValue(new Error(`${method} broke`));
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow();
+
+      expect(Sentry.setContext).toHaveBeenCalledWith("job", expect.objectContaining({ phase }));
+    });
   });
 
   // ── Happy path ─────────────────────────────────────────────────────────────
