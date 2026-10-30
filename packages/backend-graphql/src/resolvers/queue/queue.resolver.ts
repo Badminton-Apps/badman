@@ -13,7 +13,7 @@ import { QueueJob, QueueStats } from "./queue.object";
 const QUEUE_PERMISSION = "change:job";
 
 /** The states a job can be listed by. Bull knows more, these are the useful ones. */
-const LISTABLE_STATES = ["waiting", "active", "failed"] as const;
+const LISTABLE_STATES = ["waiting", "active", "delayed", "failed"] as const;
 type ListableState = (typeof LISTABLE_STATES)[number];
 
 @Resolver(() => QueueJob)
@@ -84,12 +84,38 @@ export class QueueResolver {
       });
     }
 
-    await job.retry();
+    // `job.retry()` clears failedReason on the job, so take the snapshot first. It also
+    // moves the job back to waiting; report that state rather than re-reading, which
+    // would race with a worker picking it straight up.
+    const retried = this._toQueueJob(job, queueName, "waiting");
+    try {
+      await job.retry();
+    } catch (error) {
+      throw this._retryRaceError(error, id, queueName);
+    }
     this.logger.log(`Retried job ${id} (${job.name}) on queue ${queueName}`);
 
-    // `job.retry()` moves it back to waiting; report the state it lands in rather
-    // than re-reading, which would race with a worker picking it straight up.
-    return this._toQueueJob(job, queueName, "waiting");
+    return retried;
+  }
+
+  // Between getState() and retry() a worker can pick the job up or Bull can evict it;
+  // Bull then rejects with one of these messages.
+  private _retryRaceError(error: unknown, id: string, queueName: string): unknown {
+    const message = error instanceof Error ? error.message : "";
+    if (message === "Couldn't retry job: The job doesn't exist") {
+      return new GraphQLError(`Job ${id} not found in queue ${queueName}`, {
+        extensions: { code: ErrorCode.QUEUE_JOB_NOT_FOUND, jobId: id, queue: queueName },
+      });
+    }
+    if (
+      message === "Couldn't retry job: The job is locked" ||
+      message === "Couldn't retry job: The job has been already retried or has not failed"
+    ) {
+      return new GraphQLError(`Job ${id} changed state before it could be retried`, {
+        extensions: { code: ErrorCode.INVALID_STATE, jobId: id, queue: queueName },
+      });
+    }
+    return error;
   }
 
   private async _assertPermission(user: Player): Promise<void> {
@@ -138,6 +164,8 @@ export class QueueResolver {
         return queue.getActive(0, end);
       case "waiting":
         return queue.getWaiting(0, end);
+      case "delayed":
+        return queue.getDelayed(0, end);
     }
   }
 

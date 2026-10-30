@@ -16,6 +16,7 @@ type MockQueue = {
   getFailed: jest.Mock;
   getActive: jest.Mock;
   getWaiting: jest.Mock;
+  getDelayed: jest.Mock;
   getJob: jest.Mock;
 };
 
@@ -28,6 +29,7 @@ const buildQueue = (counts = 0): MockQueue => ({
   getFailed: jest.fn().mockResolvedValue([]),
   getActive: jest.fn().mockResolvedValue([]),
   getWaiting: jest.fn().mockResolvedValue([]),
+  getDelayed: jest.fn().mockResolvedValue([]),
   getJob: jest.fn().mockResolvedValue(null),
 });
 
@@ -139,6 +141,23 @@ describe("QueueResolver", () => {
       expect(syncQueue.getActive).not.toHaveBeenCalled();
     });
 
+    it("lists delayed jobs, where retries wait during their backoff", async () => {
+      syncQueue.getDelayed.mockResolvedValue([
+        {
+          id: 11,
+          name: "EnterScores",
+          data: { encounterId: "enc-1" },
+          attemptsMade: 1,
+          opts: { attempts: 3 },
+        },
+      ]);
+
+      const result = await resolver.queueJobs(buildUser(true), "sync", "delayed", 10);
+
+      expect(syncQueue.getDelayed).toHaveBeenCalledWith(0, 9);
+      expect(result).toEqual([expect.objectContaining({ id: "11", state: "delayed" })]);
+    });
+
     it("rejects an unknown queue with BAD_USER_INPUT", async () => {
       expect.assertions(2);
       try {
@@ -219,6 +238,64 @@ describe("QueueResolver", () => {
       expect(result.id).toBe("7");
       expect(result.state).toBe("waiting");
       expect(result.queue).toBe("sync");
+    });
+
+    it("reports the failure it retried, which Bull clears on retry", async () => {
+      const job = {
+        id: 7,
+        name: "EnterScores",
+        failedReason: "[SAVE_FAILED] save did not stick",
+        attemptsMade: 3,
+        opts: { attempts: 3 },
+        getState: jest.fn().mockResolvedValue("failed"),
+        retry: jest.fn(async () => {
+          job.failedReason = null as unknown as string;
+        }),
+      };
+      syncQueue.getJob.mockResolvedValue(job);
+
+      const result = await resolver.retryQueueJob(buildUser(true), "sync", "7");
+
+      expect(result.failedReason).toBe("[SAVE_FAILED] save did not stick");
+      expect(result.state).toBe("waiting");
+    });
+
+    it.each([
+      ["Couldn't retry job: The job doesn't exist", ErrorCode.QUEUE_JOB_NOT_FOUND],
+      ["Couldn't retry job: The job is locked", ErrorCode.INVALID_STATE],
+      [
+        "Couldn't retry job: The job has been already retried or has not failed",
+        ErrorCode.INVALID_STATE,
+      ],
+    ])("maps Bull's retry race '%s' to %s", async (message, code) => {
+      syncQueue.getJob.mockResolvedValue({
+        id: 7,
+        name: "SyncEvents",
+        opts: {},
+        getState: jest.fn().mockResolvedValue("failed"),
+        retry: jest.fn().mockRejectedValue(new Error(message)),
+      });
+
+      expect.assertions(2);
+      try {
+        await resolver.retryQueueJob(buildUser(true), "sync", "7");
+      } catch (error) {
+        expect(error).toBeInstanceOf(GraphQLError);
+        expect((error as GraphQLError).extensions.code).toBe(code);
+      }
+    });
+
+    it("rethrows an unexpected retry error unchanged", async () => {
+      const failure = new Error("redis down");
+      syncQueue.getJob.mockResolvedValue({
+        id: 7,
+        name: "SyncEvents",
+        opts: {},
+        getState: jest.fn().mockResolvedValue("failed"),
+        retry: jest.fn().mockRejectedValue(failure),
+      });
+
+      await expect(resolver.retryQueueJob(buildUser(true), "sync", "7")).rejects.toBe(failure);
     });
 
     it("resolves the job from the queue that was named", async () => {
