@@ -1,8 +1,5 @@
-import {
-  EnterScoresError,
-  EnterScoresErrorCode,
-  isResultAlreadyPresent,
-} from "../enter-scores.errors";
+import { isResultAlreadyPresent } from "@badman/backend-queue";
+import { EnterScoresError, EnterScoresErrorCode } from "../enter-scores.errors";
 
 describe("EnterScoresError", () => {
   it("prefixes the message with the error code so it survives in the job's failedReason", () => {
@@ -13,7 +10,7 @@ describe("EnterScoresError", () => {
   });
 });
 
-describe("isResultAlreadyPresent", () => {
+describe("isResultAlreadyPresent from @badman/backend-queue", () => {
   it("is true for a push skipped because toernooi.nl already has a result", () => {
     const { message } = new EnterScoresError(EnterScoresErrorCode.RESULT_ALREADY_PRESENT, "x");
 

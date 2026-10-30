@@ -49,7 +49,3 @@ export class EnterScoresError extends Error {
     }
   }
 }
-
-export function isResultAlreadyPresent(failedReason: string | undefined): boolean {
-  return failedReason?.startsWith(`[${EnterScoresErrorCode.RESULT_ALREADY_PRESENT}]`) ?? false;
-}

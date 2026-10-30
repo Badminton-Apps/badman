@@ -1,6 +1,7 @@
 import { Op, Sequelize } from "sequelize";
 import { CronJob, EncounterCompetition } from "@badman/backend-database";
 import { Sync, SyncQueue } from "@badman/backend-queue";
+import { Logger } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getQueueToken } from "@nestjs/bull";
 import { RetryFailedEncounterSyncProcessor } from "../retry-failed-encounters.processor";
@@ -284,6 +285,53 @@ describe("RetryFailedEncounterSyncProcessor", () => {
       );
       expect(failed.retry).toHaveBeenCalled();
       expect(waiting.retry).not.toHaveBeenCalled();
+    });
+
+    describe("logging", () => {
+      let logSpy: jest.SpyInstance;
+      let debugSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        logSpy = jest.spyOn(Logger.prototype, "log").mockImplementation();
+        debugSpy = jest.spyOn(Logger.prototype, "debug").mockImplementation();
+        findAllSpy.mockResolvedValue([makeEncounter({ id: "enc-1", visualCode: "VC001" })] as any);
+      });
+
+      it("logs a queued encounter with its visual code and sync state", async () => {
+        await processor.retryFailedEncounters(makeJob() as any);
+
+        expect(logSpy).toHaveBeenCalledWith(
+          expect.stringMatching(
+            /Queueing EnterScores retry for encounter VC001 \(enc-1\).*scoresSyncedAt/
+          )
+        );
+      });
+
+      it("logs a retried encounter with its visual code and previous failure", async () => {
+        syncQueue.getJob.mockResolvedValue(
+          makeQueueJob("failed", { failedReason: "[SAVE_FAILED] save did not stick" })
+        );
+
+        await processor.retryFailedEncounters(makeJob() as any);
+
+        expect(logSpy).toHaveBeenCalledWith(
+          "Retrying failed EnterScores job for encounter VC001 (enc-1) — previous failure: [SAVE_FAILED] save did not stick"
+        );
+      });
+
+      it.each([
+        ["waiting", undefined, "EnterScores job is waiting"],
+        ["failed", "[RESULT_ALREADY_PRESENT] x", "toernooi.nl already has a result"],
+      ])(
+        "logs a skipped %s job with its visual code and reason",
+        async (state, failedReason, reason) => {
+          syncQueue.getJob.mockResolvedValue(makeQueueJob(state, { failedReason }));
+
+          await processor.retryFailedEncounters(makeJob() as any);
+
+          expect(debugSpy).toHaveBeenCalledWith(`Skipping encounter VC001 (enc-1) — ${reason}`);
+        }
+      );
     });
 
     describe("failed jobs of closed seasons", () => {

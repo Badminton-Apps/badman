@@ -6,16 +6,19 @@ import {
   Game,
   SubEventCompetition,
 } from "@badman/backend-database";
-import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
+import {
+  EnterScoresRequest,
+  EnterScoresRequestOutcome,
+  requestEnterScores,
+  Sync,
+  SyncQueue,
+} from "@badman/backend-queue";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
 import { Op, Sequelize } from "sequelize";
 import { startLockRenewal } from "../../utils";
-import { isResultAlreadyPresent } from "../enter-scores/enter-scores.errors";
 import { isSeasonOpen, oldestOpenSeason } from "../enter-scores/guards";
-
-type RetryOutcome = "queued" | "retried" | "skipped";
 
 @Processor({
   name: SyncQueue,
@@ -73,43 +76,24 @@ export class RetryFailedEncounterSyncProcessor {
     }
   }
 
-  private async requeue(encounter: EncounterCompetition): Promise<RetryOutcome> {
-    const encounterId = encounter.id;
-    const visualCode = encounter.visualCode;
-    const existingJob = await this.syncQueue.getJob(`enter-scores-${encounterId}`);
-
-    if (!existingJob) {
-      this.logger.log(
-        `Queueing EnterScores retry for encounter ${visualCode} (${encounterId}) — ` +
-          `finished: ${encounter.finished}, enteredOn: ${encounter.enteredOn}, scoresSyncedAt: ${encounter.scoresSyncedAt}`
-      );
-      await this.syncQueue.add(
-        Sync.EnterScores,
-        { encounterId },
-        getSyncJobOptions({ jobId: `enter-scores-${encounterId}` })
-      );
-      return "queued";
+  private logRequest(encounter: EncounterCompetition, request: EnterScoresRequest): void {
+    const label = `encounter ${encounter.visualCode} (${encounter.id})`;
+    switch (request.outcome) {
+      case "queued":
+        this.logger.log(
+          `Queueing EnterScores retry for ${label} — ` +
+            `finished: ${encounter.finished}, enteredOn: ${encounter.enteredOn}, scoresSyncedAt: ${encounter.scoresSyncedAt}`
+        );
+        break;
+      case "retried":
+        this.logger.log(
+          `Retrying failed EnterScores job for ${label} — previous failure: ${request.failedReason}`
+        );
+        break;
+      case "skipped":
+        this.logger.debug(`Skipping ${label} — ${request.reason}`);
+        break;
     }
-
-    const state = await existingJob.getState();
-    if (state !== "failed") {
-      this.logger.debug(
-        `Skipping encounter ${visualCode} (${encounterId}) — EnterScores job is ${state}`
-      );
-      return "skipped";
-    }
-
-    if (isResultAlreadyPresent(existingJob.failedReason)) {
-      this.logger.debug(
-        `Skipping encounter ${visualCode} (${encounterId}) — toernooi.nl already has a result`
-      );
-      return "skipped";
-    }
-
-    // add() is a no-op while a job with the same id exists, so a failed job must be retried.
-    this.logger.log(`Retrying failed EnterScores job for encounter ${visualCode} (${encounterId})`);
-    await existingJob.retry();
-    return "retried";
   }
 
   @Process({ name: Sync.RetryFailedEncounterSync, concurrency: 1 })
@@ -150,10 +134,15 @@ export class RetryFailedEncounterSyncProcessor {
 
       this.logger.log(`Found ${encounters.length} encounters with failed score sync`);
 
-      const outcomes: Record<RetryOutcome, number> = { queued: 0, retried: 0, skipped: 0 };
+      const outcomes: Record<EnterScoresRequestOutcome, number> = {
+        queued: 0,
+        retried: 0,
+        skipped: 0,
+      };
       for (const encounter of encounters) {
-        const outcome = await this.requeue(encounter);
-        outcomes[outcome] += 1;
+        const request = await requestEnterScores(this.syncQueue, encounter.id);
+        this.logRequest(encounter, request);
+        outcomes[request.outcome] += 1;
       }
 
       this.logger.log(
