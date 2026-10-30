@@ -1,5 +1,7 @@
-import { Page } from "puppeteer";
+import { EncounterComment } from "@badman/utils";
 import { Logger } from "@nestjs/common";
+import { Page } from "puppeteer";
+import { mapCommentRows } from "../comment-rows";
 
 export async function detailComment(
   pupeteer: {
@@ -12,7 +14,7 @@ export async function detailComment(
   args?: {
     logger?: Logger;
   }
-) {
+): Promise<{ hasComment: boolean; comments: EncounterComment[] }> {
   const { logger } = args || {};
   logger?.verbose("detailComment");
   const { page } = pupeteer;
@@ -24,14 +26,13 @@ export async function detailComment(
     // Check if page is still connected
     if (page.isClosed()) {
       logger?.debug("Page is closed, cannot check for comments");
-      return { hasComment: false };
+      return { hasComment: false, comments: [] };
     }
 
     const selector = ".content .wrapper--legacy table";
-    let hasComment = false;
 
     // Use page.$$eval to avoid element handle disposal issues
-    const hasCommentResult = await page.$$eval(selector, (tables) => {
+    const rawRows = await page.$$eval(selector, (tables) => {
       // iterate over tables find where caption contains 'Opmerkingen'
       for (const table of tables) {
         const caption = table.querySelector("caption");
@@ -44,17 +45,17 @@ export async function detailComment(
           continue;
         }
 
-        // if selector exists, check if tbody has more than 1 row
-        const rows = table.querySelectorAll("tr");
-        if (rows.length > 1) {
-          return true; // Found comment
-        }
+        // Only the body rows hold comments, the header row describes the columns
+        const rows = Array.from(table.querySelectorAll("tbody tr"));
+        return rows.map((row) =>
+          Array.from(row.querySelectorAll("td")).map((cell) => cell.textContent ?? "")
+        );
       }
-      return false; // No comment found
+      return [] as string[][];
     });
 
-    hasComment = hasCommentResult;
-    return { hasComment };
+    const comments = mapCommentRows(rawRows);
+    return { hasComment: comments.length > 0, comments };
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error);
     // Handle disposed element handles, page closure, or destroyed execution context
@@ -67,7 +68,7 @@ export async function detailComment(
       logger?.debug(
         "Page or context was disposed/destroyed while checking for comments, assuming no comment"
       );
-      return { hasComment: false };
+      return { hasComment: false, comments: [] };
     }
 
     // Re-throw other errors

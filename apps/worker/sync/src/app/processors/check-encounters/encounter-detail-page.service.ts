@@ -1,4 +1,5 @@
 import { EncounterCompetition } from "@badman/backend-database";
+import { EncounterComment } from "@badman/utils";
 import {
   acceptCookies,
   createProtocolTimeoutGuard,
@@ -90,7 +91,7 @@ export class EncounterDetailPageService {
     return detailAccepted({ page: this.page! }, { logger: this.logger });
   }
 
-  async getDetailComment(): Promise<{ hasComment: boolean }> {
+  async getDetailComment(): Promise<{ hasComment: boolean; comments: EncounterComment[] }> {
     this._assertPage();
     return detailComment({ page: this.page! }, { logger: this.logger });
   }

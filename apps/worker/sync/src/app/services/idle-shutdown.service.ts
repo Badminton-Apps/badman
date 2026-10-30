@@ -16,8 +16,7 @@ export class IdleShutdownService implements OnModuleInit, OnModuleDestroy {
     @InjectQueue(SyncQueue) private readonly queue: Queue,
     private readonly configService: ConfigService<ConfigType>
   ) {
-    this.idleTimeoutMs =
-      this.configService.get<number>("WORKER_IDLE_TIMEOUT_MS") ?? 30 * 60 * 1000; // 30 min default
+    this.idleTimeoutMs = this.configService.get<number>("WORKER_IDLE_TIMEOUT_MS") ?? 30 * 60 * 1000; // 30 min default
   }
 
   onModuleInit() {

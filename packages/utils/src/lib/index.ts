@@ -1,5 +1,6 @@
 export * from "./assembly-positions";
 export * from "./comp";
+export * from "./encounter-comment-dedupe-key";
 export * from "./enums";
 export * from "./events";
 export * from "./game-label";

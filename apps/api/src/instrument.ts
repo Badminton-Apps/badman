@@ -8,10 +8,6 @@ if (dsn) {
     sendDefaultPii: true,
     enabled: process.env.NODE_ENV === "production",
     tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE ?? "0.1"),
-    ignoreErrors: [
-      "ERR_STREAM_PREMATURE_CLOSE",
-      "Premature close",
-      "FST_ERR_REQ_ABORTED",
-    ],
+    ignoreErrors: ["ERR_STREAM_PREMATURE_CLOSE", "Premature close", "FST_ERR_REQ_ABORTED"],
   });
 }

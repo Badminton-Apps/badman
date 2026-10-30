@@ -16,11 +16,13 @@ jest.mock("@sentry/nestjs", () => ({
 // Helpers
 // ──────────────────────────────────────────────────────────────────────────────
 
-function makeJob(overrides: Partial<{
-  encounterId: string;
-  attemptsMade: number;
-  maxAttempts: number;
-}> = {}) {
+function makeJob(
+  overrides: Partial<{
+    encounterId: string;
+    attemptsMade: number;
+    maxAttempts: number;
+  }> = {}
+) {
   const { encounterId = "enc-1", attemptsMade = 0, maxAttempts = 3 } = overrides;
   return {
     id: "job-1",
@@ -83,7 +85,9 @@ function makeFormPageService() {
     enterEndHour: jest.fn().mockResolvedValue(undefined),
     enableInputValidation: jest.fn().mockResolvedValue(undefined),
     getRowErrorMessages: jest.fn().mockResolvedValue([]),
-    getCurrentUrl: jest.fn().mockReturnValue("https://www.toernooi.nl/sport/teammatch.aspx?id=EV001&match=VC001"),
+    getCurrentUrl: jest
+      .fn()
+      .mockReturnValue("https://www.toernooi.nl/sport/teammatch.aspx?id=EV001&match=VC001"),
     clickSaveButton: jest.fn().mockResolvedValue(true),
     waitForNavigation: jest.fn().mockResolvedValue(undefined),
     waitForNetworkIdle: jest.fn().mockResolvedValue(undefined),
@@ -113,7 +117,10 @@ describe("EnterScoresProcessor", () => {
   let processor: EnterScoresProcessor;
   let formPage: ReturnType<typeof makeFormPageService>;
   let transactionManager: ReturnType<typeof makeTransactionManager>;
-  let mailingService: { sendEnterScoresSuccessMail: jest.Mock; sendEnterScoresFailedMail: jest.Mock };
+  let mailingService: {
+    sendEnterScoresSuccessMail: jest.Mock;
+    sendEnterScoresFailedMail: jest.Mock;
+  };
   let findByPkSpy: jest.SpyInstance;
 
   async function buildModule(configOverrides: Record<string, unknown> = {}) {
@@ -154,7 +161,9 @@ describe("EnterScoresProcessor", () => {
   describe("preflight checks", () => {
     it("throws when no username is configured", async () => {
       await buildModule({ VR_API_USER: undefined });
-      findByPkSpy = jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeEncounter() as any);
+      findByPkSpy = jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeEncounter() as any);
 
       await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
         "No username or password configured for Visual sync"
@@ -164,7 +173,9 @@ describe("EnterScoresProcessor", () => {
 
     it("throws when no password is configured", async () => {
       await buildModule({ VR_API_PASS: undefined });
-      findByPkSpy = jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeEncounter() as any);
+      findByPkSpy = jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeEncounter() as any);
 
       await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
         "No username or password configured for Visual sync"
@@ -249,7 +260,12 @@ describe("EnterScoresProcessor", () => {
     });
 
     it("skips optional fields when not set on encounter", async () => {
-      const encounter = makeEncounter({ gameLeader: null, shuttle: null, startHour: null, endHour: null });
+      const encounter = makeEncounter({
+        gameLeader: null,
+        shuttle: null,
+        startHour: null,
+        endHour: null,
+      });
       findByPkSpy.mockResolvedValue(encounter as any);
 
       await processor.enterScores(makeJob() as any);
@@ -271,7 +287,9 @@ describe("EnterScoresProcessor", () => {
   describe("dev mode (shouldSave = false)", () => {
     beforeEach(async () => {
       await buildModule({ ENTER_SCORES_ENABLED: false, NODE_ENV: "test" });
-      findByPkSpy = jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeEncounter() as any);
+      findByPkSpy = jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeEncounter() as any);
     });
 
     it("skips clicking save and does not update encounter", async () => {
@@ -310,7 +328,9 @@ describe("EnterScoresProcessor", () => {
     it("throws when row error messages are present before save", async () => {
       formPage.getRowErrorMessages.mockResolvedValue(["Player 1 invalid", "Score missing"]);
 
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow("Row validation failed");
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
+        "Row validation failed"
+      );
     });
 
     it("treats row errors after save as failure (throws)", async () => {
@@ -373,7 +393,9 @@ describe("EnterScoresProcessor", () => {
       const encounter = makeEncounter();
       findByPkSpy.mockResolvedValue(encounter as any);
       formPage.waitForNavigation.mockRejectedValue(new Error("Navigation timeout"));
-      formPage.getCurrentUrl.mockReturnValue("https://www.toernooi.nl/sport/teammatch.aspx?id=EV001&match=VC001");
+      formPage.getCurrentUrl.mockReturnValue(
+        "https://www.toernooi.nl/sport/teammatch.aspx?id=EV001&match=VC001"
+      );
       formPage.getRowErrorMessages.mockResolvedValue([]);
 
       await processor.enterScores(makeJob() as any);
@@ -455,7 +477,9 @@ describe("EnterScoresProcessor", () => {
 
     it("does not send failure email when no DEV_EMAIL_DESTINATION is configured", async () => {
       await buildModule({ DEV_EMAIL_DESTINATION: undefined });
-      findByPkSpy = jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeEncounter() as any);
+      findByPkSpy = jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeEncounter() as any);
       formPage.enterGames.mockRejectedValue(new Error("game error"));
 
       const job = makeJob({ attemptsMade: 2, maxAttempts: 3 });
@@ -525,7 +549,8 @@ describe("EnterScoresProcessor", () => {
 
       // Make enterGames take some time so we can detect overlap
       formPage.enterGames.mockImplementation(async () => {
-        const encId = findByPkSpy.mock.results[findByPkSpy.mock.results.length - 1]?.value?.visualCode;
+        const encId =
+          findByPkSpy.mock.results[findByPkSpy.mock.results.length - 1]?.value?.visualCode;
         executionLog.push(`start:${encId}`);
         await new Promise((r) => setTimeout(r, 50));
         executionLog.push(`end:${encId}`);
@@ -563,10 +588,14 @@ describe("EnterScoresProcessor", () => {
     it("starts lock renewal before waiting for the serial lock", async () => {
       // Make the first job slow so the second has to wait
       let resolveFirstJob: () => void;
-      const firstJobBlocking = new Promise<void>((r) => { resolveFirstJob = r; });
+      const firstJobBlocking = new Promise<void>((r) => {
+        resolveFirstJob = r;
+      });
 
       formPage.enterGames
-        .mockImplementationOnce(async () => { await firstJobBlocking; })
+        .mockImplementationOnce(async () => {
+          await firstJobBlocking;
+        })
         .mockImplementationOnce(async () => {
           /* noop */
         });
@@ -575,7 +604,11 @@ describe("EnterScoresProcessor", () => {
       findByPkSpy.mockResolvedValue(enc as any);
 
       const job1 = makeJob({ encounterId: "e1" });
-      const job2 = { ...makeJob({ encounterId: "e2" }), id: "job-2", extendLock: jest.fn().mockResolvedValue(undefined) };
+      const job2 = {
+        ...makeJob({ encounterId: "e2" }),
+        id: "job-2",
+        extendLock: jest.fn().mockResolvedValue(undefined),
+      };
 
       const p1 = processor.enterScores(job1 as any);
       const p2 = processor.enterScores(job2 as any);
@@ -630,9 +663,7 @@ describe("EnterScoresProcessor", () => {
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce(["Post-save validation error"]);
 
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
-        /row validation/i
-      );
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(/row validation/i);
     });
 
     it("includes 'row validation' when save fails due to row-validation errors after save", async () => {
@@ -642,9 +673,7 @@ describe("EnterScoresProcessor", () => {
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce(["Post-save row error"]);
 
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
-        /row validation/i
-      );
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(/row validation/i);
     });
   });
 
@@ -657,9 +686,7 @@ describe("EnterScoresProcessor", () => {
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce(["Bad score for game 3"]);
 
-      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(
-        /Bad score for game 3/
-      );
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow(/Bad score for game 3/);
     });
   });
 });

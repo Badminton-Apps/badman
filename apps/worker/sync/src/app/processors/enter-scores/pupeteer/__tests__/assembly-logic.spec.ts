@@ -1,8 +1,5 @@
 import { SubEventTypeEnum } from "@badman/utils";
-import {
-  getHeaderForAssemblyPosition,
-  getAssemblyPositionsInOrder,
-} from "../assemblyPositions";
+import { getHeaderForAssemblyPosition, getAssemblyPositionsInOrder } from "../assemblyPositions";
 import { matchGamesToAssembly } from "../matchGamesToAssembly";
 import { fixMixedDoublesPlayerOrder } from "../fixMixedDoublesPlayerOrder";
 
@@ -109,10 +106,7 @@ describe("matchGamesToAssembly", () => {
   });
 
   it("returns empty map when assembly data is null", () => {
-    const assemblies = [
-      makeAssembly("home-team", null),
-      makeAssembly("away-team", null),
-    ];
+    const assemblies = [makeAssembly("home-team", null), makeAssembly("away-team", null)];
     const games = [makeGame("g1", ["p1", "p2"])];
     const result = matchGamesToAssembly(games, assemblies, SubEventTypeEnum.M, encounter);
     expect(result.size).toBe(0);
@@ -209,10 +203,7 @@ describe("matchGamesToAssembly", () => {
 // ---------------------------------------------------------------------------
 
 describe("fixMixedDoublesPlayerOrder", () => {
-  function makeDoubleGame(
-    t1p1Gender: string,
-    t2p1Gender: string
-  ) {
+  function makeDoubleGame(t1p1Gender: string, t2p1Gender: string) {
     const t1p1update = jest.fn().mockResolvedValue(undefined);
     const t1p2update = jest.fn().mockResolvedValue(undefined);
     const t2p1update = jest.fn().mockResolvedValue(undefined);
@@ -275,8 +266,14 @@ describe("fixMixedDoublesPlayerOrder", () => {
     const t1p2 = game.players.find(
       (p: any) => p.GamePlayerMembership.team === 1 && p.id === "t1p2"
     );
-    expect(t1p1.GamePlayerMembership.update).toHaveBeenCalledWith({ player: 2 }, { transaction: tx });
-    expect(t1p2.GamePlayerMembership.update).toHaveBeenCalledWith({ player: 1 }, { transaction: tx });
+    expect(t1p1.GamePlayerMembership.update).toHaveBeenCalledWith(
+      { player: 2 },
+      { transaction: tx }
+    );
+    expect(t1p2.GamePlayerMembership.update).toHaveBeenCalledWith(
+      { player: 1 },
+      { transaction: tx }
+    );
     // In-memory update
     expect(t1p1.GamePlayerMembership.player).toBe(2);
     expect(t1p2.GamePlayerMembership.player).toBe(1);
@@ -293,8 +290,14 @@ describe("fixMixedDoublesPlayerOrder", () => {
     const t2p2 = game.players.find(
       (p: any) => p.GamePlayerMembership.team === 2 && p.id === "t2p2"
     );
-    expect(t2p1.GamePlayerMembership.update).toHaveBeenCalledWith({ player: 2 }, { transaction: tx });
-    expect(t2p2.GamePlayerMembership.update).toHaveBeenCalledWith({ player: 1 }, { transaction: tx });
+    expect(t2p1.GamePlayerMembership.update).toHaveBeenCalledWith(
+      { player: 2 },
+      { transaction: tx }
+    );
+    expect(t2p2.GamePlayerMembership.update).toHaveBeenCalledWith(
+      { player: 1 },
+      { transaction: tx }
+    );
     expect(t2p1.GamePlayerMembership.player).toBe(2);
     expect(t2p2.GamePlayerMembership.player).toBe(1);
   });

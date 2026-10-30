@@ -115,7 +115,7 @@ function makeDetailPageService() {
     hasTime: jest.fn().mockResolvedValue(true),
     getDetailEntered: jest.fn().mockResolvedValue({ entered: false, enteredOn: null }),
     getDetailAccepted: jest.fn().mockResolvedValue({ accepted: false, acceptedOn: null }),
-    getDetailComment: jest.fn().mockResolvedValue({ hasComment: false }),
+    getDetailComment: jest.fn().mockResolvedValue({ hasComment: false, comments: [] }),
     signIn: jest.fn().mockResolvedValue(undefined),
     acceptEncounter: jest.fn().mockResolvedValue(true),
     getDetailInfo: jest.fn().mockResolvedValue({
@@ -410,6 +410,23 @@ describe("CheckEncounterProcessor", () => {
       await processor.syncEncounter(job as any);
 
       expect(notificationService.notifyEncounterNotEntered).toHaveBeenCalledWith(encounter);
+    });
+
+    it("forwards the scraped comments when the encounter has a comment", async () => {
+      const encounter = makeEncounter();
+      const comments = [
+        { message: "Scores manueel ingegeven", user: "BC Den Dijk", date: "zo 6-9-2026 16:16" },
+      ];
+      findByPkSpy.mockResolvedValue(encounter as any);
+      detailPage.getDetailComment.mockResolvedValue({ hasComment: true, comments });
+
+      const job = makeJob({ encounterId: "enc-1" });
+      await processor.syncEncounter(job as any);
+
+      expect(notificationService.notifyEncounterHasComment).toHaveBeenCalledWith(
+        encounter,
+        comments
+      );
     });
 
     it("sends notification when encounter not accepted", async () => {

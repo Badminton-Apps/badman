@@ -79,10 +79,7 @@ export class CalendarController {
     });
 
     res.header("Content-Type", "text/calendar; charset=utf-8");
-    res.header(
-      "Content-Disposition",
-      `attachment; filename="calendar-${teamName}.ics"`
-    );
+    res.header("Content-Disposition", `attachment; filename="calendar-${teamName}.ics"`);
     return res.send(calendar.toString());
   }
 }

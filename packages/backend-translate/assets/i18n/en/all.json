@@ -340,7 +340,7 @@
         "no-subevent": "Please choose a series",
         "none": "No errors found",
         "player-club": "Player <strong>{player.fullName}</strong> is not part of {club.name} (current club: {activeClub.name})",
-        "player-club-none": "No club known for player <strong>{player.fullName}<strong>",
+        "player-club-none": "No club known for player <strong>{player.fullName}</strong>",
         "player-gender": "<strong>{player.fullName}</strong> is a <strong>{player.gender}</strong> but a <strong>{gender}</strong> was expected",
         "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> and may be at least <strong>{minLevel}</strong> .",
         "player-subevent": "<strong>{player.fullName}</strong> is part of the base team <strong>{team.name}</strong> that also plays in <strong>{subEvent.name}</strong> ",
@@ -2492,11 +2492,26 @@
         "addPlayerDialog": {
           "title": "Add player",
           "messages": {
-            "success": "Player is added"
+            "success": "Player is added",
+            "error": "Could not add the player",
+            "createSuccess": "{name} has been created and added to the club",
+            "createError": "Could not create the player",
+            "linkError": "The player was created but could not be added to the club. Try again."
           },
           "buttons": {
             "cancel": "Cancel",
-            "addPlayer": "Add player"
+            "addPlayer": "Add player",
+            "createPlayer": "Create new player",
+            "back": "Back"
+          },
+          "createTitle": "Create new player",
+          "noResults": "No player found for \"{search}\".",
+          "existingPlayer": "{name} already has member id {memberId} and has been selected.",
+          "levelsTitle": "Start levels",
+          "levelsHint": "Leave a level empty to use the default ({max}).",
+          "errors": {
+            "required": "Required",
+            "levelRange": "Enter a whole number from 1 to {max}"
           }
         },
         "twizzitOverview": "Twizzit overview",

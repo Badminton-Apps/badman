@@ -9,13 +9,21 @@ jest.mock("@sentry/nestjs", () => ({
   setContext: jest.fn(),
   captureException: jest.fn(),
   captureMessage: jest.fn(),
-  withScope: jest.fn((callback: (scope: { setFingerprint: () => void; setTag: () => void; setContext: () => void }) => void) => {
-    callback({
-      setFingerprint: jest.fn(),
-      setTag: jest.fn(),
-      setContext: jest.fn(),
-    });
-  }),
+  withScope: jest.fn(
+    (
+      callback: (scope: {
+        setFingerprint: () => void;
+        setTag: () => void;
+        setContext: () => void;
+      }) => void
+    ) => {
+      callback({
+        setFingerprint: jest.fn(),
+        setTag: jest.fn(),
+        setContext: jest.fn(),
+      });
+    }
+  ),
 }));
 
 describe("GlobalConsumer", () => {
@@ -124,9 +132,7 @@ describe("GlobalConsumer", () => {
     });
 
     it("handles error when fetching job from queue", async () => {
-      (mockQueue.getJob as jest.Mock).mockRejectedValue(
-        new Error("Redis connection error")
-      );
+      (mockQueue.getJob as jest.Mock).mockRejectedValue(new Error("Redis connection error"));
 
       const error = new Error("Original error");
       await consumer.onError("job-123", error);
@@ -225,9 +231,7 @@ describe("GlobalConsumer", () => {
       const loggerWarnSpy = jest.spyOn(Logger.prototype, "warn").mockImplementation();
       stalledHandler(mockStalledJob);
 
-      expect(loggerWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("stalled-job")
-      );
+      expect(loggerWarnSpy).toHaveBeenCalledWith(expect.stringContaining("stalled-job"));
       loggerWarnSpy.mockRestore();
     });
   });
