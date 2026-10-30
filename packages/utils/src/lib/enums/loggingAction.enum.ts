@@ -9,4 +9,6 @@ export enum LoggingAction {
 
   ResultPushed = "ResultPushed",
   ResultPushSkipped = "ResultPushSkipped",
+
+  GameDeleted = "GameDeleted",
 }
