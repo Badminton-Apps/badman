@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { NotFoundException } from "@nestjs/common";
-import { Assembly, Player } from "@badman/backend-database";
+import { BadRequestException, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Assembly, EncounterCompetition, Player, Team } from "@badman/backend-database";
 import { AssemblyValidationService } from "@badman/backend-assembly";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { RankingSystemService } from "@badman/backend-ranking";
@@ -12,7 +12,12 @@ describe("AssemblyResolver", () => {
   let mockRankingSystemService: { getPrimary: jest.Mock; getById: jest.Mock };
   let mockEncounterGamesService: { generateGames: jest.Mock };
 
-  const buildUser = (id = "user-uuid") => ({ id, fullName: "Test User" }) as unknown as Player;
+  const buildUser = (id = "user-uuid", allowed = true) =>
+    ({
+      id,
+      fullName: "Test User",
+      hasAnyPermission: jest.fn().mockResolvedValue(allowed),
+    }) as unknown as Player;
 
   beforeEach(async () => {
     mockAssemblyService = { validate: jest.fn() };
@@ -47,6 +52,87 @@ describe("AssemblyResolver", () => {
   });
 
   describe("createAssembly (mutation)", () => {
+    const input = { encounterId: "enc-uuid", teamId: "t-uuid" } as any;
+
+    beforeEach(() => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue({
+        id: "enc-uuid",
+        homeTeamId: "t-uuid",
+        awayTeamId: "other-team-uuid",
+        tempHomeCaptainId: "temp-home-uuid",
+        tempAwayCaptainId: "temp-away-uuid",
+      } as unknown as EncounterCompetition);
+      jest.spyOn(Team, "findByPk").mockResolvedValue({
+        id: "t-uuid",
+        clubId: "club-uuid",
+        captainId: "captain-uuid",
+      } as unknown as Team);
+    });
+
+    it("throws NotFoundException when the encounter does not exist", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(null);
+      await expect(resolver.createAssembly(buildUser(), input)).rejects.toThrow(NotFoundException);
+    });
+
+    it("throws NotFoundException when the team does not exist", async () => {
+      jest.spyOn(Team, "findByPk").mockResolvedValue(null);
+      await expect(resolver.createAssembly(buildUser(), input)).rejects.toThrow(NotFoundException);
+    });
+
+    it("rejects a team that does not play in the encounter, even for its captain", async () => {
+      jest.spyOn(Team, "findByPk").mockResolvedValue({
+        id: "unrelated-team-uuid",
+        clubId: "club-uuid",
+        captainId: "captain-uuid",
+      } as unknown as Team);
+      const findOrCreate = jest.spyOn(Assembly, "findOrCreate");
+
+      await expect(
+        resolver.createAssembly(buildUser("captain-uuid", false), {
+          encounterId: "enc-uuid",
+          teamId: "unrelated-team-uuid",
+        } as any)
+      ).rejects.toThrow(BadRequestException);
+      expect(findOrCreate).not.toHaveBeenCalled();
+      expect(mockEncounterGamesService.generateGames).not.toHaveBeenCalled();
+    });
+
+    it("rejects a user who is not the captain and lacks permissions, without saving", async () => {
+      const findOrCreate = jest.spyOn(Assembly, "findOrCreate");
+      const user = buildUser("stranger-uuid", false);
+
+      await expect(resolver.createAssembly(user, input)).rejects.toThrow(UnauthorizedException);
+
+      expect(user.hasAnyPermission).toHaveBeenCalledWith([
+        "change-any:encounter",
+        "edit-any:club",
+        "club-uuid_edit:team",
+        "club-uuid_enter:results",
+      ]);
+      expect(findOrCreate).not.toHaveBeenCalled();
+    });
+
+    it("rejects the other side's temporary captain", async () => {
+      const findOrCreate = jest.spyOn(Assembly, "findOrCreate");
+
+      await expect(
+        resolver.createAssembly(buildUser("temp-away-uuid", false), input)
+      ).rejects.toThrow(UnauthorizedException);
+      expect(findOrCreate).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      ["the team captain", "captain-uuid"],
+      ["the team's temporary captain", "temp-home-uuid"],
+    ])("allows %s without any permission", async (_role, userId) => {
+      const newAssembly = { id: "a-new" } as unknown as Assembly;
+      jest.spyOn(Assembly, "findOrCreate").mockResolvedValue([newAssembly, true]);
+      const user = buildUser(userId, false);
+
+      await expect(resolver.createAssembly(user, input)).resolves.toBe(newAssembly);
+      expect(user.hasAnyPermission).not.toHaveBeenCalled();
+    });
+
     it("throws Error when assembly input is null", async () => {
       await expect(resolver.createAssembly(buildUser(), null as any)).rejects.toThrow(
         "Assembly is required"
