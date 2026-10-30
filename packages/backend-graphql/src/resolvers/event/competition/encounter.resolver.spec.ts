@@ -30,7 +30,7 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
   let resolver: EncounterCompetitionResolver;
   let teamLoaderService: TeamLoaderService;
   let drawLoaderService: DrawCompetitionLoaderService;
-  let syncQueue: { add: jest.Mock };
+  let syncQueue: { add: jest.Mock; getJob: jest.Mock };
   let notificationService: { notifyEncounterChangeFinished: jest.Mock };
   let encounterChangeService: { resolveProposalsForAdminChange: jest.Mock };
 
@@ -44,7 +44,7 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
     }) as unknown as EncounterCompetition;
 
   beforeEach(async () => {
-    syncQueue = { add: jest.fn() };
+    syncQueue = { add: jest.fn(), getJob: jest.fn().mockResolvedValue(null) };
     notificationService = { notifyEncounterChangeFinished: jest.fn() };
     encounterChangeService = {
       resolveProposalsForAdminChange: jest.fn().mockResolvedValue(undefined),
@@ -714,6 +714,160 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
           })
         ).resolves.toBe(true);
       });
+    });
+  });
+
+  describe("updateEncounterCompetition", () => {
+    const resultEnterer = {
+      id: "leader-uuid",
+      hasAnyPermission: jest.fn().mockResolvedValue(true),
+    } as unknown as Player;
+
+    const outsider = {
+      id: "outsider-uuid",
+      hasAnyPermission: jest.fn().mockResolvedValue(false),
+    } as unknown as Player;
+
+    const confirm = { finished: true, enteredOn: new Date("2026-10-29T20:00:00Z") };
+
+    function makeDbEncounter(overrides: Record<string, unknown> = {}) {
+      const encounter = {
+        id: "enc-uuid",
+        visualCode: "VC001",
+        finished: false,
+        enteredOn: null,
+        scoresSyncedAt: null,
+        gameLeaderId: "leader-uuid",
+        home: { clubId: "home-club" },
+        away: { clubId: "away-club" },
+        toJSON: () => ({ id: "enc-uuid" }),
+        ...overrides,
+      } as unknown as EncounterCompetition;
+      // Like Sequelize, update() resolves to the instance itself.
+      encounter.update = jest.fn().mockResolvedValue(encounter);
+      return encounter;
+    }
+
+    function useTransaction(commit: jest.Mock = jest.fn().mockResolvedValue(undefined)) {
+      const tx = { commit, rollback: jest.fn().mockResolvedValue(undefined) };
+      (
+        resolver["_sequelize"] as unknown as { transaction: jest.Mock }
+      ).transaction.mockResolvedValue(tx);
+      return tx;
+    }
+
+    it("rejects a user without result rights and never touches the queue", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      const tx = useTransaction();
+
+      await expect(
+        resolver.updateEncounterCompetition(outsider, "enc-uuid", { ...confirm })
+      ).rejects.toThrow(UnauthorizedException);
+
+      expect(tx.commit).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("requests the toernooi.nl push only after the result is committed", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      const tx = useTransaction();
+
+      await expect(
+        resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm })
+      ).resolves.toEqual({ id: "enc-uuid" });
+
+      expect(syncQueue.add).toHaveBeenCalledWith(
+        Sync.EnterScores,
+        { encounterId: "enc-uuid" },
+        expect.objectContaining({ jobId: "enter-scores-enc-uuid" })
+      );
+      expect(tx.commit.mock.invocationCallOrder[0]).toBeLessThan(
+        syncQueue.add.mock.invocationCallOrder[0]
+      );
+    });
+
+    it("still requests a push on a later update while a finished result is not synced", async () => {
+      jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeDbEncounter({ finished: true, enteredOn: confirm.enteredOn }));
+      useTransaction();
+
+      await resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { comments: "late" });
+
+      expect(syncQueue.add).toHaveBeenCalledTimes(1);
+    });
+
+    it.each([
+      ["the result was already synced", { scoresSyncedAt: new Date() }, { ...confirm }],
+      ["the encounter is not finished", {}, { comments: "still playing" }],
+      ["the result is not entered", {}, { finished: true }],
+    ])("does not request a push when %s", async (_, encounterOverrides, data) => {
+      jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeDbEncounter(encounterOverrides));
+      useTransaction();
+
+      await resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", data);
+
+      expect(syncQueue.getJob).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("retries a failed push when the result is confirmed again", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      useTransaction();
+      const failed = {
+        failedReason: "[SAVE_FAILED] save did not stick",
+        getState: jest.fn().mockResolvedValue("failed"),
+        retry: jest.fn().mockResolvedValue(undefined),
+      };
+      syncQueue.getJob.mockResolvedValue(failed);
+
+      await resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm });
+
+      expect(failed.retry).toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("does not push and surfaces the commit error when the commit fails", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      const tx = useTransaction(jest.fn().mockRejectedValue(new Error("connection lost")));
+
+      await expect(
+        resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm })
+      ).rejects.toThrow("connection lost");
+
+      expect(tx.rollback).not.toHaveBeenCalled();
+      expect(syncQueue.getJob).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("rolls back and does not push when the update fails", async () => {
+      const encounter = makeDbEncounter();
+      encounter.update = jest.fn().mockRejectedValue(new Error("DB failure"));
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+      const tx = useTransaction();
+
+      await expect(
+        resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm })
+      ).rejects.toThrow("DB failure");
+
+      expect(tx.rollback).toHaveBeenCalled();
+      expect(tx.commit).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("returns the saved result when the queue fails after the commit", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      const tx = useTransaction();
+      syncQueue.add.mockRejectedValue(new Error("redis down"));
+
+      await expect(
+        resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm })
+      ).resolves.toEqual({ id: "enc-uuid" });
+
+      expect(tx.commit).toHaveBeenCalled();
+      expect(tx.rollback).not.toHaveBeenCalled();
     });
   });
 });

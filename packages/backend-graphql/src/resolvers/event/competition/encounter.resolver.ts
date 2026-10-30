@@ -29,7 +29,7 @@ import {
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { NotificationService } from "@badman/backend-notifications";
 import { EncounterChangeService } from "./encounter-change.service";
-import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
+import { requestEnterScores, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
 import {
@@ -809,6 +809,21 @@ export class EncounterCompetitionResolver {
     return user.hasAnyPermission(["change-any:encounter", `${team?.clubId}_enter:results`]);
   }
 
+  private async requestResultPush(encounter: EncounterCompetition): Promise<void> {
+    const label = `encounter ${encounter.visualCode} (${encounter.id})`;
+    try {
+      const request = await requestEnterScores(this.syncQueue, encounter.id);
+      if (request.outcome === "skipped") {
+        this.logger.log(`EnterScores not requested for ${label} — ${request.reason}`);
+      } else {
+        this.logger.log(`EnterScores ${request.outcome} for ${label}`);
+      }
+    } catch (error) {
+      // The result is already committed; the RetryFailedEncounterSync cron requests the push later.
+      this.logger.error(`Requesting EnterScores for ${label} failed`, error);
+    }
+  }
+
   @Mutation(() => EncounterCompetition)
   async updateEncounterCompetition(
     @User() user: Player,
@@ -817,6 +832,8 @@ export class EncounterCompetitionResolver {
   ) {
     this.logger.log("Updating encounter record with id:", `${encounterId}`);
     const transaction = await this._sequelize.transaction();
+    let result: EncounterCompetition;
+    let shouldUpdateToernooiNL: boolean;
     try {
       const encounter = await EncounterCompetition.findByPk(encounterId, {
         transaction,
@@ -853,25 +870,27 @@ export class EncounterCompetitionResolver {
 
       const notYetSynced = encounter.scoresSyncedAt == null;
 
-      const shouldUpdateToernooiNL = willBeFinished && willHaveEnteredOn && notYetSynced;
+      shouldUpdateToernooiNL = willBeFinished && willHaveEnteredOn && notYetSynced;
 
-      const result = await encounter.update(updateEncounterCompetitionData, { transaction });
-
-      if (shouldUpdateToernooiNL) {
-        await this.syncQueue.add(
-          Sync.EnterScores,
-          { encounterId: encounter.id },
-          getSyncJobOptions({ jobId: `enter-scores-${encounter.id}` })
-        );
-      }
-
-      await transaction.commit();
-      return result.toJSON();
+      result = await encounter.update(updateEncounterCompetitionData, { transaction });
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
       throw error;
     }
+
+    try {
+      await transaction.commit();
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+
+    if (shouldUpdateToernooiNL) {
+      await this.requestResultPush(result);
+    }
+
+    return result.toJSON();
   }
 
   private async _getLatestEncounterChange(
