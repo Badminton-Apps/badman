@@ -1,5 +1,7 @@
+import { Op, Sequelize } from "sequelize";
 import { CronJob, EncounterCompetition } from "@badman/backend-database";
 import { Sync, SyncQueue } from "@badman/backend-queue";
+import { Logger } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getQueueToken } from "@nestjs/bull";
 import { RetryFailedEncounterSyncProcessor } from "../retry-failed-encounters.processor";
@@ -55,8 +57,46 @@ function makeEncounter(overrides: Partial<Record<string, unknown>> = {}) {
 function makeSyncQueue() {
   return {
     add: jest.fn().mockResolvedValue({ id: "queued-job-1" }),
-    getJobs: jest.fn().mockResolvedValue([]),
+    getJob: jest.fn().mockResolvedValue(null),
+    getFailed: jest.fn().mockResolvedValue([]),
   };
+}
+
+function makeQueueJob(
+  state: string,
+  overrides: { name?: string; encounterId?: string; failedReason?: string } = {}
+) {
+  return {
+    name: overrides.name ?? Sync.EnterScores,
+    data: { encounterId: overrides.encounterId ?? "enc-1" },
+    failedReason: overrides.failedReason,
+    getState: jest.fn().mockResolvedValue(state),
+    retry: jest.fn().mockResolvedValue(undefined),
+    remove: jest.fn().mockResolvedValue(undefined),
+  };
+}
+
+function withSeason(id: string, season: number) {
+  return {
+    id,
+    drawCompetition: { subEventCompetition: { eventCompetition: { season } } },
+  };
+}
+
+function atDate(date: string) {
+  jest
+    .useFakeTimers({
+      doNotFake: [
+        "nextTick",
+        "setImmediate",
+        "setTimeout",
+        "clearTimeout",
+        "setInterval",
+        "clearInterval",
+        "queueMicrotask",
+      ],
+    })
+    .setSystemTime(new Date(date));
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -150,35 +190,92 @@ describe("RetryFailedEncounterSyncProcessor", () => {
       );
     });
 
-    it("skips encounters that already have an EnterScores job queued", async () => {
-      const encounters = [makeEncounter({ id: "enc-1", visualCode: "VC001" })];
-      findAllSpy.mockResolvedValue(encounters as any);
+    it("only selects encounters from seasons that are still open", async () => {
+      atDate("2026-09-08T09:00:00");
+      try {
+        await processor.retryFailedEncounters(makeJob() as any);
+      } finally {
+        jest.useRealTimers();
+      }
 
-      // Simulate an existing EnterScores job for enc-1
-      syncQueue.getJobs.mockResolvedValue([
-        { name: Sync.EnterScores, data: { encounterId: "enc-1" } },
-      ]);
+      const [query] = findAllSpy.mock.calls[0];
+      const eventInclude = query.include[0].include[0].include[0];
+      expect(eventInclude.where).toEqual({ season: { [Op.gte]: 2026 } });
+      expect(query.where.date).toEqual({ [Op.lt]: new Date("2026-09-08T09:00:00") });
+    });
 
-      const job = makeJob();
-      await processor.retryFailedEncounters(job as any);
+    it("only selects encounters that have a visual code and were entered", async () => {
+      await processor.retryFailedEncounters(makeJob() as any);
 
+      const [query] = findAllSpy.mock.calls[0];
+      const queryGenerator = new Sequelize({ dialect: "postgres" }).getQueryInterface()
+        .queryGenerator as unknown as { whereQuery: (where: unknown) => string };
+      const sql = queryGenerator.whereQuery(query.where);
+      expect(sql).toMatch(/"visualCode" IS NOT NULL/);
+      expect(sql).toMatch(/"enteredOn" IS NOT NULL/);
+      expect(sql).not.toMatch(/!= NULL/);
+    });
+
+    it.each(["active", "waiting", "delayed"])(
+      "skips an encounter whose EnterScores job is still %s",
+      async (state) => {
+        findAllSpy.mockResolvedValue([makeEncounter({ id: "enc-1" })] as any);
+        const pending = makeQueueJob(state);
+        syncQueue.getJob.mockResolvedValue(pending);
+
+        await processor.retryFailedEncounters(makeJob() as any);
+
+        expect(syncQueue.getJob).toHaveBeenCalledWith("enter-scores-enc-1");
+        expect(syncQueue.add).not.toHaveBeenCalled();
+        expect(pending.retry).not.toHaveBeenCalled();
+      }
+    );
+
+    it("retries a failed EnterScores job, since add() is ignored for an existing job id", async () => {
+      findAllSpy.mockResolvedValue([makeEncounter({ id: "enc-1" })] as any);
+      const failed = makeQueueJob("failed", { failedReason: "[SAVE_FAILED] Save did not stick" });
+      syncQueue.getJob.mockResolvedValue(failed);
+
+      await processor.retryFailedEncounters(makeJob() as any);
+
+      expect(failed.retry).toHaveBeenCalled();
       expect(syncQueue.add).not.toHaveBeenCalled();
     });
 
-    it("queues some and skips others when mixed", async () => {
-      const encounters = [
+    it("leaves a push that was skipped because toernooi.nl already has a result", async () => {
+      findAllSpy.mockResolvedValue([makeEncounter({ id: "enc-1" })] as any);
+      const skipped = makeQueueJob("failed", { failedReason: "[RESULT_ALREADY_PRESENT] skipped" });
+      syncQueue.getJob.mockResolvedValue(skipped);
+
+      await processor.retryFailedEncounters(makeJob() as any);
+
+      expect(skipped.retry).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("retries a season-closed push once its season is open again after a correction", async () => {
+      findAllSpy.mockResolvedValue([makeEncounter({ id: "enc-1" })] as any);
+      const corrected = makeQueueJob("failed", { failedReason: "[SEASON_CLOSED] season 2000" });
+      syncQueue.getJob.mockResolvedValue(corrected);
+
+      await processor.retryFailedEncounters(makeJob() as any);
+
+      expect(corrected.retry).toHaveBeenCalled();
+    });
+
+    it("queues, retries and skips per encounter when mixed", async () => {
+      findAllSpy.mockResolvedValue([
         makeEncounter({ id: "enc-1", visualCode: "VC001" }),
         makeEncounter({ id: "enc-2", visualCode: "VC002" }),
-      ];
-      findAllSpy.mockResolvedValue(encounters as any);
+        makeEncounter({ id: "enc-3", visualCode: "VC003" }),
+      ] as any);
+      const waiting = makeQueueJob("waiting", { encounterId: "enc-1" });
+      const failed = makeQueueJob("failed", { encounterId: "enc-3", failedReason: "boom" });
+      syncQueue.getJob.mockImplementation(async (id: string) =>
+        id === "enter-scores-enc-1" ? waiting : id === "enter-scores-enc-3" ? failed : null
+      );
 
-      // enc-1 already queued, enc-2 is not
-      syncQueue.getJobs.mockResolvedValue([
-        { name: Sync.EnterScores, data: { encounterId: "enc-1" } },
-      ]);
-
-      const job = makeJob();
-      await processor.retryFailedEncounters(job as any);
+      await processor.retryFailedEncounters(makeJob() as any);
 
       expect(syncQueue.add).toHaveBeenCalledTimes(1);
       expect(syncQueue.add).toHaveBeenCalledWith(
@@ -186,6 +283,108 @@ describe("RetryFailedEncounterSyncProcessor", () => {
         { encounterId: "enc-2" },
         expect.any(Object)
       );
+      expect(failed.retry).toHaveBeenCalled();
+      expect(waiting.retry).not.toHaveBeenCalled();
+    });
+
+    describe("logging", () => {
+      let logSpy: jest.SpyInstance;
+      let debugSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        logSpy = jest.spyOn(Logger.prototype, "log").mockImplementation();
+        debugSpy = jest.spyOn(Logger.prototype, "debug").mockImplementation();
+        findAllSpy.mockResolvedValue([makeEncounter({ id: "enc-1", visualCode: "VC001" })] as any);
+      });
+
+      it("logs a queued encounter with its visual code and sync state", async () => {
+        await processor.retryFailedEncounters(makeJob() as any);
+
+        expect(logSpy).toHaveBeenCalledWith(
+          expect.stringMatching(
+            /Queueing EnterScores retry for encounter VC001 \(enc-1\).*scoresSyncedAt/
+          )
+        );
+      });
+
+      it("logs a retried encounter with its visual code and previous failure", async () => {
+        syncQueue.getJob.mockResolvedValue(
+          makeQueueJob("failed", { failedReason: "[SAVE_FAILED] save did not stick" })
+        );
+
+        await processor.retryFailedEncounters(makeJob() as any);
+
+        expect(logSpy).toHaveBeenCalledWith(
+          "Retrying failed EnterScores job for encounter VC001 (enc-1) — previous failure: [SAVE_FAILED] save did not stick"
+        );
+      });
+
+      it.each([
+        ["waiting", undefined, "EnterScores job is waiting"],
+        ["failed", "[RESULT_ALREADY_PRESENT] x", "toernooi.nl already has a result"],
+      ])(
+        "logs a skipped %s job with its visual code and reason",
+        async (state, failedReason, reason) => {
+          syncQueue.getJob.mockResolvedValue(makeQueueJob(state, { failedReason }));
+
+          await processor.retryFailedEncounters(makeJob() as any);
+
+          expect(debugSpy).toHaveBeenCalledWith(`Skipping encounter VC001 (enc-1) — ${reason}`);
+        }
+      );
+    });
+
+    describe("failed jobs of closed seasons", () => {
+      it("removes failed EnterScores jobs whose season has closed or whose encounter is gone", async () => {
+        const closed = makeQueueJob("failed", { encounterId: "enc-old" });
+        const open = makeQueueJob("failed", { encounterId: "enc-open" });
+        const gone = makeQueueJob("failed", { encounterId: "enc-gone" });
+        const otherJob = makeQueueJob("failed", { name: "SyncEvents", encounterId: "enc-old" });
+        syncQueue.getFailed.mockResolvedValue([closed, open, gone, otherJob]);
+        findAllSpy.mockImplementation(async (query: any) =>
+          query.where?.id ? [withSeason("enc-old", 2025), withSeason("enc-open", 2026)] : []
+        );
+
+        atDate("2026-09-08T09:00:00");
+        try {
+          await processor.retryFailedEncounters(makeJob() as any);
+        } finally {
+          jest.useRealTimers();
+        }
+
+        expect(findAllSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ where: { id: ["enc-old", "enc-open", "enc-gone"] } })
+        );
+        expect(closed.remove).toHaveBeenCalled();
+        expect(gone.remove).toHaveBeenCalled();
+        expect(open.remove).not.toHaveBeenCalled();
+        expect(otherJob.remove).not.toHaveBeenCalled();
+      });
+
+      it("keeps a season open until 1 July of the following year", async () => {
+        const job2025 = makeQueueJob("failed", { encounterId: "enc-2025" });
+        syncQueue.getFailed.mockResolvedValue([job2025]);
+        findAllSpy.mockImplementation(async (query: any) =>
+          query.where?.id ? [withSeason("enc-2025", 2025)] : []
+        );
+
+        atDate("2026-06-30T09:00:00");
+        try {
+          await processor.retryFailedEncounters(makeJob() as any);
+        } finally {
+          jest.useRealTimers();
+        }
+
+        expect(job2025.remove).not.toHaveBeenCalled();
+      });
+
+      it("does not query encounters when there are no failed EnterScores jobs", async () => {
+        syncQueue.getFailed.mockResolvedValue([makeQueueJob("failed", { name: "SyncEvents" })]);
+
+        await processor.retryFailedEncounters(makeJob() as any);
+
+        expect(findAllSpy).toHaveBeenCalledTimes(1);
+      });
     });
 
     it("increments and decrements CronJob amount", async () => {

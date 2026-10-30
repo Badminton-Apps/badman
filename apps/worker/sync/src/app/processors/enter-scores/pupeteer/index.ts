@@ -9,6 +9,7 @@ export * from "./enterExtra";
 export * from "./enterScores";
 export * from "./getCurrentUrl";
 export * from "./getRowErrorMessages";
+export * from "./readExistingResult";
 export * from "./selectPlayer";
 export * from "./waitForNavigation";
 export * from "./waitForNetworkIdle";

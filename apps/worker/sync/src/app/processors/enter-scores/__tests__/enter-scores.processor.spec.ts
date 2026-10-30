@@ -1,4 +1,5 @@
-import { EncounterCompetition } from "@badman/backend-database";
+import { EncounterCompetition, Logging } from "@badman/backend-database";
+import { LoggingAction } from "@badman/utils";
 import { TransactionManager } from "@badman/backend-queue";
 import { MailingService } from "@badman/backend-mailing";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -31,8 +32,12 @@ function makeJob(
     opts: { attempts: maxAttempts },
     extendLock: jest.fn().mockResolvedValue(undefined),
     progress: jest.fn(),
+    discard: jest.fn(),
   };
 }
+
+// A season that has not started yet is always open, whenever the tests run.
+const OPEN_SEASON = new Date().getFullYear() + 1;
 
 function makeEncounter(overrides: Partial<Record<string, unknown>> = {}) {
   return {
@@ -44,7 +49,7 @@ function makeEncounter(overrides: Partial<Record<string, unknown>> = {}) {
     gameLeader: { fullName: "John Doe" },
     drawCompetition: {
       subEventCompetition: {
-        eventCompetition: { id: "event-1", visualCode: "EV001" },
+        eventCompetition: { id: "event-1", visualCode: "EV001", season: OPEN_SEASON },
       },
     },
     games: [],
@@ -77,6 +82,7 @@ function makeFormPageService() {
     signIn: jest.fn().mockResolvedValue(undefined),
     waitForSignInConfirmation: jest.fn().mockResolvedValue(true),
     enterEditMode: jest.fn().mockResolvedValue(undefined),
+    readExistingResult: jest.fn().mockResolvedValue({ filledRows: [], resultEntered: null }),
     clearFields: jest.fn().mockResolvedValue(undefined),
     enterGames: jest.fn().mockResolvedValue(undefined),
     enterGameLeader: jest.fn().mockResolvedValue(undefined),
@@ -194,6 +200,191 @@ describe("EnterScoresProcessor", () => {
     });
   });
 
+  // ── Existing result on toernooi.nl ─────────────────────────────────────────
+
+  describe("existing result on toernooi.nl", () => {
+    const filledRow = {
+      matchId: "m-1",
+      header: "HD1",
+      players: ["111", "222", "333", "444"],
+      sets: ["21-18", "21-14", ""],
+      winner: "1",
+    };
+
+    it("reads the existing result before clearing the form", async () => {
+      await processor.enterScores(makeJob() as any);
+
+      expect(formPage.readExistingResult).toHaveBeenCalledTimes(1);
+      expect(formPage.readExistingResult.mock.invocationCallOrder[0]).toBeLessThan(
+        formPage.clearFields.mock.invocationCallOrder[0]
+      );
+    });
+
+    it.each([
+      ["filled games", { filledRows: [filledRow], resultEntered: null }],
+      ["only a team result", { filledRows: [], resultEntered: "BARET BC on Tue 21/04/2026 17:03" }],
+    ])("never clears, enters or saves when toernooi.nl already has %s", async (_, existing) => {
+      formPage.readExistingResult.mockResolvedValue(existing);
+      const encounter = makeEncounter();
+      findByPkSpy.mockResolvedValue(encounter as any);
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toMatchObject({
+        code: "RESULT_ALREADY_PRESENT",
+      });
+
+      expect(formPage.clearFields).not.toHaveBeenCalled();
+      expect(formPage.enterGames).not.toHaveBeenCalled();
+      expect(formPage.clickSaveButton).not.toHaveBeenCalled();
+      expect(encounter.update).not.toHaveBeenCalled();
+    });
+
+    it("discards the job so Bull does not retry it", async () => {
+      formPage.readExistingResult.mockResolvedValue({
+        filledRows: [filledRow],
+        resultEntered: null,
+      });
+      const job = makeJob();
+
+      await expect(processor.enterScores(job as any)).rejects.toThrow();
+
+      expect(job.discard).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ── Closed season ──────────────────────────────────────────────────────────
+
+  describe("closed season", () => {
+    function encounterInSeason(season: number | undefined) {
+      return makeEncounter({
+        drawCompetition: {
+          subEventCompetition: {
+            eventCompetition: { id: "event-1", visualCode: "EV001", season },
+          },
+        },
+      });
+    }
+
+    it.each([
+      ["a closed season", 2000],
+      ["an unknown season", undefined],
+    ])("never touches toernooi.nl for %s", async (_, season) => {
+      findByPkSpy.mockResolvedValue(encounterInSeason(season) as any);
+      const logSpy = jest.spyOn(Logging, "create").mockResolvedValue({} as any);
+      const job = makeJob();
+
+      await expect(processor.enterScores(job as any)).rejects.toMatchObject({
+        code: "SEASON_CLOSED",
+      });
+
+      expect(formPage.acceptCookies).not.toHaveBeenCalled();
+      expect(formPage.signIn).not.toHaveBeenCalled();
+      expect(job.discard).toHaveBeenCalledTimes(1);
+      expect(logSpy).toHaveBeenCalledWith({
+        action: LoggingAction.ResultPushSkipped,
+        meta: expect.objectContaining({ reason: "season_closed", season }),
+      });
+    });
+  });
+
+  // ── Audit trail ────────────────────────────────────────────────────────────
+
+  describe("audit trail", () => {
+    const existing = {
+      filledRows: [
+        {
+          matchId: "m-1",
+          header: "HD1",
+          players: ["111", "222", "333", "444"],
+          sets: ["21-18", "21-14", ""],
+          winner: "1",
+        },
+      ],
+      resultEntered: "Herentalse badmintoncub on Fri 24/04/2026 22:11",
+    };
+    const game = {
+      order: 1,
+      gameType: "D",
+      winner: 1,
+      set1Team1: 21,
+      set1Team2: 18,
+      set2Team1: 21,
+      set2Team2: 14,
+      set3Team1: null,
+      set3Team2: null,
+    };
+    let logSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      logSpy = jest.spyOn(Logging, "create").mockResolvedValue({} as any);
+    });
+
+    it("logs what toernooi.nl already had when it skips the push", async () => {
+      formPage.readExistingResult.mockResolvedValue(existing);
+
+      await expect(processor.enterScores(makeJob({ attemptsMade: 1 }) as any)).rejects.toThrow();
+
+      expect(logSpy).toHaveBeenCalledWith({
+        action: LoggingAction.ResultPushSkipped,
+        meta: {
+          encounterId: "enc-1",
+          visualCode: "VC001",
+          jobId: "job-1",
+          attempt: 2,
+          reason: "result_present",
+          existing,
+        },
+      });
+    });
+
+    it("logs the games it pushed after a successful save", async () => {
+      findByPkSpy.mockResolvedValue(makeEncounter({ games: [game] }) as any);
+
+      await processor.enterScores(makeJob() as any);
+
+      expect(logSpy).toHaveBeenCalledWith({
+        action: LoggingAction.ResultPushed,
+        meta: {
+          encounterId: "enc-1",
+          visualCode: "VC001",
+          jobId: "job-1",
+          attempt: 1,
+          games: [{ order: 1, gameType: "D", winner: 1, sets: ["21-18", "21-14"] }],
+        },
+      });
+    });
+
+    it("logs nothing when it does not save (dev mode)", async () => {
+      await buildModule({ ENTER_SCORES_ENABLED: false });
+      logSpy = jest.spyOn(Logging, "create").mockResolvedValue({} as any);
+      findByPkSpy = jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeEncounter({ games: [game] }) as any);
+
+      await processor.enterScores(makeJob() as any);
+
+      expect(logSpy).not.toHaveBeenCalled();
+    });
+
+    it("still reports the skip when writing the log fails", async () => {
+      formPage.readExistingResult.mockResolvedValue(existing);
+      logSpy.mockRejectedValue(new Error("db down"));
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toMatchObject({
+        code: "RESULT_ALREADY_PRESENT",
+      });
+    });
+
+    it("sends the failure email on the first attempt when it skips the push", async () => {
+      formPage.readExistingResult.mockResolvedValue(existing);
+
+      await expect(
+        processor.enterScores(makeJob({ attemptsMade: 0, maxAttempts: 3 }) as any)
+      ).rejects.toThrow();
+
+      expect(mailingService.sendEnterScoresFailedMail).toHaveBeenCalledTimes(1);
+    });
+  });
+
   // ── Sentry context on failure ─────────────────────────────────────────────
 
   describe("Sentry context on failure", () => {
@@ -216,6 +407,26 @@ describe("EnterScoresProcessor", () => {
           errorCode: "ENCOUNTER_NOT_FOUND",
         })
       );
+    });
+
+    it.each([
+      ["browser_open", "open"],
+      ["cookie_accept", "acceptCookies"],
+      ["sign_in", "signIn"],
+      ["edit_mode", "enterEditMode"],
+      ["existing_result_check", "readExistingResult"],
+      ["clear_fields", "clearFields"],
+      ["enter_games", "enterGames"],
+      ["optional_fields", "enterGameLeader"],
+      ["input_validation", "enableInputValidation"],
+      ["row_validation", "getRowErrorMessages"],
+      ["save", "clickSaveButton"],
+    ] as const)("reports phase %s when %s fails", async (phase, method) => {
+      formPage[method].mockRejectedValue(new Error(`${method} broke`));
+
+      await expect(processor.enterScores(makeJob() as any)).rejects.toThrow();
+
+      expect(Sentry.setContext).toHaveBeenCalledWith("job", expect.objectContaining({ phase }));
     });
   });
 

@@ -25,12 +25,14 @@ import {
   EncounterChangeViewState,
 } from "@badman/utils";
 import { BadRequestException, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { GraphQLError } from "graphql";
+import { ErrorCode } from "../../../utils/error-codes";
 
 describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
   let resolver: EncounterCompetitionResolver;
   let teamLoaderService: TeamLoaderService;
   let drawLoaderService: DrawCompetitionLoaderService;
-  let syncQueue: { add: jest.Mock };
+  let syncQueue: { add: jest.Mock; getJob: jest.Mock };
   let notificationService: { notifyEncounterChangeFinished: jest.Mock };
   let encounterChangeService: { resolveProposalsForAdminChange: jest.Mock };
 
@@ -44,7 +46,7 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
     }) as unknown as EncounterCompetition;
 
   beforeEach(async () => {
-    syncQueue = { add: jest.fn() };
+    syncQueue = { add: jest.fn(), getJob: jest.fn().mockResolvedValue(null) };
     notificationService = { notifyEncounterChangeFinished: jest.fn() };
     encounterChangeService = {
       resolveProposalsForAdminChange: jest.fn().mockResolvedValue(undefined),
@@ -713,6 +715,277 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
             tempAwayCaptainId: "x",
           })
         ).resolves.toBe(true);
+      });
+    });
+  });
+
+  describe("updateEncounterCompetition", () => {
+    const resultEnterer = {
+      id: "leader-uuid",
+      hasAnyPermission: jest.fn().mockResolvedValue(true),
+    } as unknown as Player;
+
+    const outsider = {
+      id: "outsider-uuid",
+      hasAnyPermission: jest.fn().mockResolvedValue(false),
+    } as unknown as Player;
+
+    const confirm = { finished: true, enteredOn: new Date("2026-10-29T20:00:00Z") };
+
+    function makeDbEncounter(overrides: Record<string, unknown> = {}) {
+      const encounter = {
+        id: "enc-uuid",
+        visualCode: "VC001",
+        finished: false,
+        enteredOn: null,
+        scoresSyncedAt: null,
+        gameLeaderId: "leader-uuid",
+        home: { clubId: "home-club" },
+        away: { clubId: "away-club" },
+        toJSON: () => ({ id: "enc-uuid" }),
+        ...overrides,
+      } as unknown as EncounterCompetition;
+      // Like Sequelize, update() resolves to the instance itself.
+      encounter.update = jest.fn().mockResolvedValue(encounter);
+      return encounter;
+    }
+
+    function useTransaction(commit: jest.Mock = jest.fn().mockResolvedValue(undefined)) {
+      const tx = { commit, rollback: jest.fn().mockResolvedValue(undefined) };
+      (
+        resolver["_sequelize"] as unknown as { transaction: jest.Mock }
+      ).transaction.mockResolvedValue(tx);
+      return tx;
+    }
+
+    it("rejects a user without result rights and never touches the queue", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      const tx = useTransaction();
+
+      await expect(
+        resolver.updateEncounterCompetition(outsider, "enc-uuid", { ...confirm })
+      ).rejects.toThrow(UnauthorizedException);
+
+      expect(tx.commit).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("requests the toernooi.nl push only after the result is committed", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      const tx = useTransaction();
+
+      await expect(
+        resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm })
+      ).resolves.toEqual({ id: "enc-uuid" });
+
+      expect(syncQueue.add).toHaveBeenCalledWith(
+        Sync.EnterScores,
+        { encounterId: "enc-uuid" },
+        expect.objectContaining({ jobId: "enter-scores-enc-uuid" })
+      );
+      expect(tx.commit.mock.invocationCallOrder[0]).toBeLessThan(
+        syncQueue.add.mock.invocationCallOrder[0]
+      );
+    });
+
+    it("still requests a push on a later update while a finished result is not synced", async () => {
+      jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeDbEncounter({ finished: true, enteredOn: confirm.enteredOn }));
+      useTransaction();
+
+      await resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { comments: "late" });
+
+      expect(syncQueue.add).toHaveBeenCalledTimes(1);
+    });
+
+    it.each([
+      ["the result was already synced", { scoresSyncedAt: new Date() }, { ...confirm }],
+      ["the encounter is not finished", {}, { comments: "still playing" }],
+      ["the result is not entered", {}, { finished: true }],
+    ])("does not request a push when %s", async (_, encounterOverrides, data) => {
+      jest
+        .spyOn(EncounterCompetition, "findByPk")
+        .mockResolvedValue(makeDbEncounter(encounterOverrides));
+      useTransaction();
+
+      await resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", data);
+
+      expect(syncQueue.getJob).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("retries a failed push when the result is confirmed again", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      useTransaction();
+      const failed = {
+        failedReason: "[SAVE_FAILED] save did not stick",
+        getState: jest.fn().mockResolvedValue("failed"),
+        retry: jest.fn().mockResolvedValue(undefined),
+      };
+      syncQueue.getJob.mockResolvedValue(failed);
+
+      await resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm });
+
+      expect(failed.retry).toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("does not push and surfaces the commit error when the commit fails", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      const tx = useTransaction(jest.fn().mockRejectedValue(new Error("connection lost")));
+
+      await expect(
+        resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm })
+      ).rejects.toThrow("connection lost");
+
+      expect(tx.rollback).not.toHaveBeenCalled();
+      expect(syncQueue.getJob).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("rolls back and does not push when the update fails", async () => {
+      const encounter = makeDbEncounter();
+      encounter.update = jest.fn().mockRejectedValue(new Error("DB failure"));
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+      const tx = useTransaction();
+
+      await expect(
+        resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm })
+      ).rejects.toThrow("DB failure");
+
+      expect(tx.rollback).toHaveBeenCalled();
+      expect(tx.commit).not.toHaveBeenCalled();
+      expect(syncQueue.add).not.toHaveBeenCalled();
+    });
+
+    it("returns the saved result when the queue fails after the commit", async () => {
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(makeDbEncounter());
+      const tx = useTransaction();
+      syncQueue.add.mockRejectedValue(new Error("redis down"));
+
+      await expect(
+        resolver.updateEncounterCompetition(resultEnterer, "enc-uuid", { ...confirm })
+      ).resolves.toEqual({ id: "enc-uuid" });
+
+      expect(tx.commit).toHaveBeenCalled();
+      expect(tx.rollback).not.toHaveBeenCalled();
+    });
+
+    describe("result rights", () => {
+      const HOUR = 60 * 60 * 1000;
+      const withinWindow = () => new Date(Date.now() - 2 * HOUR);
+      const afterWindow = () => new Date(Date.now() - 37 * HOUR);
+
+      const userWith = (id: string, claims: string[] = []) =>
+        ({
+          id,
+          hasAnyPermission: jest.fn(async (permissions: string[]) =>
+            permissions.some((permission) => claims.includes(permission))
+          ),
+        }) as unknown as Player;
+
+      const gameLeader = userWith("leader-uuid");
+      const homeClubAdmin = userWith("home-admin-uuid", ["home-club_enter:results"]);
+      const awayClubAdmin = userWith("away-admin-uuid", ["away-club_enter:results"]);
+      const encounterAdmin = userWith("admin-uuid", ["change-any:encounter"]);
+
+      async function expectWindowClosed(promise: Promise<unknown>) {
+        const error = await promise.catch((e) => e);
+        expect(error).toBeInstanceOf(GraphQLError);
+        expect((error as GraphQLError).extensions["code"]).toBe(
+          ErrorCode.RESULT_EDIT_WINDOW_CLOSED
+        );
+      }
+
+      it.each([
+        ["the game leader", gameLeader],
+        ["the home club admin", homeClubAdmin],
+      ])("lets %s confirm the result within 36 hours", async (_, user) => {
+        const encounter = makeDbEncounter({ date: withinWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(user, "enc-uuid", { ...confirm })
+        ).resolves.toEqual({ id: "enc-uuid" });
+        expect(encounter.update).toHaveBeenCalled();
+      });
+
+      it("rejects the away club admin, even within 36 hours", async () => {
+        const encounter = makeDbEncounter({ date: withinWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const tx = useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(awayClubAdmin, "enc-uuid", { ...confirm })
+        ).rejects.toThrow(UnauthorizedException);
+        expect(encounter.update).not.toHaveBeenCalled();
+        expect(tx.rollback).toHaveBeenCalled();
+      });
+
+      it.each([
+        ["the game leader", gameLeader],
+        ["the home club admin", homeClubAdmin],
+      ])("stops %s once 36 hours have passed", async (_, user) => {
+        const encounter = makeDbEncounter({ date: afterWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const tx = useTransaction();
+
+        await expectWindowClosed(
+          resolver.updateEncounterCompetition(user, "enc-uuid", { ...confirm })
+        );
+        expect(encounter.update).not.toHaveBeenCalled();
+        expect(tx.rollback).toHaveBeenCalled();
+        expect(syncQueue.add).not.toHaveBeenCalled();
+      });
+
+      it("still rejects a user without result rights as unauthorized after 36 hours", async () => {
+        jest
+          .spyOn(EncounterCompetition, "findByPk")
+          .mockResolvedValue(makeDbEncounter({ date: afterWindow() }));
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(awayClubAdmin, "enc-uuid", { ...confirm })
+        ).rejects.toThrow(UnauthorizedException);
+      });
+
+      it("lets an encounter admin correct the result after 36 hours", async () => {
+        const encounter = makeDbEncounter({ date: afterWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(encounterAdmin, "enc-uuid", { ...confirm })
+        ).resolves.toEqual({ id: "enc-uuid" });
+        expect(encounter.update).toHaveBeenCalled();
+      });
+
+      it("applies the per-side captain check when a temporary captain is sent", async () => {
+        const encounter = makeDbEncounter({ date: withinWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(homeClubAdmin, "enc-uuid", {
+            tempAwayCaptainId: "home-admin-uuid",
+          })
+        ).rejects.toThrow(UnauthorizedException);
+        expect(encounter.update).not.toHaveBeenCalled();
+      });
+
+      it("lets the game leader set the temporary captain of either side", async () => {
+        const encounter = makeDbEncounter({ date: withinWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(gameLeader, "enc-uuid", {
+            tempHomeCaptainId: "p1",
+            tempAwayCaptainId: "p2",
+          })
+        ).resolves.toEqual({ id: "enc-uuid" });
       });
     });
   });

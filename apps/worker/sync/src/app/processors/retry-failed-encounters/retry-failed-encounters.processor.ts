@@ -6,12 +6,19 @@ import {
   Game,
   SubEventCompetition,
 } from "@badman/backend-database";
-import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
+import {
+  EnterScoresRequest,
+  EnterScoresRequestOutcome,
+  requestEnterScores,
+  Sync,
+  SyncQueue,
+} from "@badman/backend-queue";
 import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { startLockRenewal } from "../../utils";
+import { isSeasonOpen, oldestOpenSeason } from "../enter-scores/guards";
 
 @Processor({
   name: SyncQueue,
@@ -20,6 +27,74 @@ export class RetryFailedEncounterSyncProcessor {
   private readonly logger = new Logger(RetryFailedEncounterSyncProcessor.name);
 
   constructor(@InjectQueue(SyncQueue) private readonly syncQueue: Queue) {}
+
+  private async removeClosedSeasonJobs(): Promise<void> {
+    const failedJobs = (await this.syncQueue.getFailed()).filter(
+      (job) => job.name === Sync.EnterScores
+    );
+    if (failedJobs.length === 0) {
+      return;
+    }
+
+    const encounters = await EncounterCompetition.findAll({
+      where: { id: failedJobs.map((job) => job.data.encounterId) },
+      attributes: ["id"],
+      include: [
+        {
+          model: DrawCompetition,
+          required: true,
+          attributes: ["id"],
+          include: [
+            {
+              model: SubEventCompetition,
+              required: true,
+              attributes: ["id"],
+              include: [{ model: EventCompetition, required: true, attributes: ["id", "season"] }],
+            },
+          ],
+        },
+      ],
+    });
+    const now = new Date();
+    const openEncounterIds = new Set(
+      encounters
+        .filter((encounter) => {
+          const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
+          return season != null && isSeasonOpen(season, now);
+        })
+        .map((encounter) => encounter.id)
+    );
+
+    const closedJobs = failedJobs.filter((job) => !openEncounterIds.has(job.data.encounterId));
+    for (const job of closedJobs) {
+      await job.remove();
+    }
+    if (closedJobs.length > 0) {
+      this.logger.log(
+        `Removed ${closedJobs.length} failed EnterScores jobs of closed seasons or deleted encounters`
+      );
+    }
+  }
+
+  private logRequest(encounter: EncounterCompetition, request: EnterScoresRequest): void {
+    const label = `encounter ${encounter.visualCode} (${encounter.id})`;
+    switch (request.outcome) {
+      case "queued":
+        this.logger.log(
+          `Queueing EnterScores retry for ${label} — ` +
+            `finished: ${encounter.finished}, enteredOn: ${encounter.enteredOn}, scoresSyncedAt: ${encounter.scoresSyncedAt}`
+        );
+        break;
+      case "retried":
+        this.logger.log(
+          `Retrying failed EnterScores job for ${label} — previous failure: ${request.failedReason}`
+        );
+        break;
+      case "skipped":
+        this.logger.debug(`Skipping ${label} — ${request.reason}`);
+        break;
+    }
+  }
 
   @Process({ name: Sync.RetryFailedEncounterSync, concurrency: 1 })
   async retryFailedEncounters(job: Job) {
@@ -42,12 +117,14 @@ export class RetryFailedEncounterSyncProcessor {
       return;
     }
 
-    cronJob.amount++;
+    cronJob.amount = (cronJob.amount ?? 0) + 1;
     await cronJob.save();
 
     const stopLockRenewal = startLockRenewal(job);
 
     try {
+      await this.removeClosedSeasonJobs();
+
       const encounters = await this.findFailedEncounters();
 
       if (encounters.length === 0) {
@@ -57,47 +134,26 @@ export class RetryFailedEncounterSyncProcessor {
 
       this.logger.log(`Found ${encounters.length} encounters with failed score sync`);
 
-      let queued = 0;
-      let skipped = 0;
-
+      const outcomes: Record<EnterScoresRequestOutcome, number> = {
+        queued: 0,
+        retried: 0,
+        skipped: 0,
+      };
       for (const encounter of encounters) {
-        const encounterId = encounter.id;
-        const visualCode = encounter.visualCode;
-        const jobId = `enter-scores-${encounterId}`;
-
-        // Check if there's already an active/waiting EnterScores job for this encounter
-        const existingJobs = await this.syncQueue.getJobs(["active", "waiting"]);
-        const alreadyQueued = existingJobs.some(
-          (j) => j.name === Sync.EnterScores && j.data?.encounterId === encounterId
-        );
-
-        if (alreadyQueued) {
-          this.logger.debug(
-            `Skipping encounter ${visualCode} (${encounterId}) — EnterScores job already queued`
-          );
-          skipped++;
-          continue;
-        }
-
-        this.logger.log(
-          `Queueing EnterScores retry for encounter ${visualCode} (${encounterId}) — ` +
-            `finished: ${encounter.finished}, enteredOn: ${encounter.enteredOn}, scoresSyncedAt: ${encounter.scoresSyncedAt}`
-        );
-
-        await this.syncQueue.add(Sync.EnterScores, { encounterId }, getSyncJobOptions({ jobId }));
-
-        queued++;
+        const request = await requestEnterScores(this.syncQueue, encounter.id);
+        this.logRequest(encounter, request);
+        outcomes[request.outcome] += 1;
       }
 
       this.logger.log(
-        `Retry complete: ${queued} encounters queued for re-sync, ${skipped} skipped (already queued)`
+        `Retry complete: ${outcomes.queued} queued, ${outcomes.retried} retried, ${outcomes.skipped} skipped`
       );
     } catch (error) {
       this.logger.error("Error during retry of failed encounter syncs", error);
       throw error;
     } finally {
       stopLockRenewal();
-      cronJob.amount--;
+      cronJob.amount = (cronJob.amount ?? 1) - 1;
       cronJob.lastRun = new Date();
       await cronJob.save();
       this.logger.log("Finished retry failed encounter sync job");
@@ -107,12 +163,10 @@ export class RetryFailedEncounterSyncProcessor {
   private async findFailedEncounters(): Promise<EncounterCompetition[]> {
     const now = new Date();
 
-    // Current season starts August 1. If we're before August, use previous year.
-    const year = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
-    const seasonStart = new Date(year, 7, 1); // August 1
+    const season = oldestOpenSeason(now);
 
     this.logger.debug(
-      `Searching for encounters from season starting ${seasonStart.toISOString()} to ${now.toISOString()}`
+      `Searching for encounters from season ${season} onwards up to ${now.toISOString()}`
     );
 
     // The scoresSyncedAt column was added on 2026-03-09. All encounters before that
@@ -122,13 +176,12 @@ export class RetryFailedEncounterSyncProcessor {
 
     const encounters = await EncounterCompetition.findAll({
       where: {
-        visualCode: { [Op.ne]: null },
-        date: {
-          [Op.gte]: seasonStart,
-          [Op.lt]: now, // only past encounters
-        },
+        [Op.and]: [
+          Sequelize.where(Sequelize.col("EncounterCompetition.visualCode"), { [Op.not]: null }),
+          Sequelize.where(Sequelize.col("EncounterCompetition.enteredOn"), { [Op.not]: null }),
+        ],
+        date: { [Op.lt]: now }, // only past encounters
         finished: true,
-        enteredOn: { [Op.ne]: null },
         scoresSyncedAt: null,
         updatedAt: { [Op.gte]: migrationDate },
       },
@@ -147,6 +200,7 @@ export class RetryFailedEncounterSyncProcessor {
                   model: EventCompetition,
                   required: true,
                   attributes: ["id", "visualCode"],
+                  where: { season: { [Op.gte]: season } },
                 },
               ],
             },
@@ -164,7 +218,7 @@ export class RetryFailedEncounterSyncProcessor {
 
     this.logger.debug(
       `Query returned ${encounters.length} encounters matching criteria: ` +
-        `finished=true, enteredOn!=null, scoresSyncedAt=null, has games, current season, past date, updatedAt >= migration (${migrationDate.toISOString()})`
+        `finished=true, enteredOn!=null, scoresSyncedAt=null, has games, open season, past date, updatedAt >= migration (${migrationDate.toISOString()})`
     );
 
     return encounters;
