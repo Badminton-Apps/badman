@@ -1799,6 +1799,9 @@ export type I18nTranslations = {
                         "adminSettings": string;
                         "copyCompetitions": string;
                         "adminCompetitions": string;
+                        "dev": string;
+                        "devQueue": string;
+                        "devLogin": string;
                     };
                     "auth": {
                         "logIn": string;
