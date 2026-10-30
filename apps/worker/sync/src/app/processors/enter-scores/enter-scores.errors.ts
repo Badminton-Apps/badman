@@ -40,10 +40,16 @@ export class EnterScoresError extends Error {
     message: string,
     options?: { cause?: unknown }
   ) {
-    super(message);
+    // Bull only keeps the message as failedReason; the code in it lets the retry cron
+    // tell a push skipped for an existing result from a real failure.
+    super(`[${code}] ${message}`);
     this.name = "EnterScoresError";
     if (options?.cause !== undefined) {
       this.cause = options.cause;
     }
   }
+}
+
+export function isResultAlreadyPresent(failedReason: string | undefined): boolean {
+  return failedReason?.startsWith(`[${EnterScoresErrorCode.RESULT_ALREADY_PRESENT}]`) ?? false;
 }

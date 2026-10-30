@@ -12,7 +12,10 @@ import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
 import { Op, Sequelize } from "sequelize";
 import { startLockRenewal } from "../../utils";
-import { oldestOpenSeason } from "../enter-scores/guards";
+import { isResultAlreadyPresent } from "../enter-scores/enter-scores.errors";
+import { isSeasonOpen, oldestOpenSeason } from "../enter-scores/guards";
+
+type RetryOutcome = "queued" | "retried" | "skipped";
 
 @Processor({
   name: SyncQueue,
@@ -21,6 +24,93 @@ export class RetryFailedEncounterSyncProcessor {
   private readonly logger = new Logger(RetryFailedEncounterSyncProcessor.name);
 
   constructor(@InjectQueue(SyncQueue) private readonly syncQueue: Queue) {}
+
+  private async removeClosedSeasonJobs(): Promise<void> {
+    const failedJobs = (await this.syncQueue.getFailed()).filter(
+      (job) => job.name === Sync.EnterScores
+    );
+    if (failedJobs.length === 0) {
+      return;
+    }
+
+    const encounters = await EncounterCompetition.findAll({
+      where: { id: failedJobs.map((job) => job.data.encounterId) },
+      attributes: ["id"],
+      include: [
+        {
+          model: DrawCompetition,
+          required: true,
+          attributes: ["id"],
+          include: [
+            {
+              model: SubEventCompetition,
+              required: true,
+              attributes: ["id"],
+              include: [{ model: EventCompetition, required: true, attributes: ["id", "season"] }],
+            },
+          ],
+        },
+      ],
+    });
+    const now = new Date();
+    const openEncounterIds = new Set(
+      encounters
+        .filter((encounter) => {
+          const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
+          return season != null && isSeasonOpen(season, now);
+        })
+        .map((encounter) => encounter.id)
+    );
+
+    const closedJobs = failedJobs.filter((job) => !openEncounterIds.has(job.data.encounterId));
+    for (const job of closedJobs) {
+      await job.remove();
+    }
+    if (closedJobs.length > 0) {
+      this.logger.log(
+        `Removed ${closedJobs.length} failed EnterScores jobs of closed seasons or deleted encounters`
+      );
+    }
+  }
+
+  private async requeue(encounter: EncounterCompetition): Promise<RetryOutcome> {
+    const encounterId = encounter.id;
+    const visualCode = encounter.visualCode;
+    const existingJob = await this.syncQueue.getJob(`enter-scores-${encounterId}`);
+
+    if (!existingJob) {
+      this.logger.log(
+        `Queueing EnterScores retry for encounter ${visualCode} (${encounterId}) — ` +
+          `finished: ${encounter.finished}, enteredOn: ${encounter.enteredOn}, scoresSyncedAt: ${encounter.scoresSyncedAt}`
+      );
+      await this.syncQueue.add(
+        Sync.EnterScores,
+        { encounterId },
+        getSyncJobOptions({ jobId: `enter-scores-${encounterId}` })
+      );
+      return "queued";
+    }
+
+    const state = await existingJob.getState();
+    if (state !== "failed") {
+      this.logger.debug(
+        `Skipping encounter ${visualCode} (${encounterId}) — EnterScores job is ${state}`
+      );
+      return "skipped";
+    }
+
+    if (isResultAlreadyPresent(existingJob.failedReason)) {
+      this.logger.debug(
+        `Skipping encounter ${visualCode} (${encounterId}) — toernooi.nl already has a result`
+      );
+      return "skipped";
+    }
+
+    // add() is a no-op while a job with the same id exists, so a failed job must be retried.
+    this.logger.log(`Retrying failed EnterScores job for encounter ${visualCode} (${encounterId})`);
+    await existingJob.retry();
+    return "retried";
+  }
 
   @Process({ name: Sync.RetryFailedEncounterSync, concurrency: 1 })
   async retryFailedEncounters(job: Job) {
@@ -49,6 +139,8 @@ export class RetryFailedEncounterSyncProcessor {
     const stopLockRenewal = startLockRenewal(job);
 
     try {
+      await this.removeClosedSeasonJobs();
+
       const encounters = await this.findFailedEncounters();
 
       if (encounters.length === 0) {
@@ -58,40 +150,14 @@ export class RetryFailedEncounterSyncProcessor {
 
       this.logger.log(`Found ${encounters.length} encounters with failed score sync`);
 
-      let queued = 0;
-      let skipped = 0;
-
+      const outcomes: Record<RetryOutcome, number> = { queued: 0, retried: 0, skipped: 0 };
       for (const encounter of encounters) {
-        const encounterId = encounter.id;
-        const visualCode = encounter.visualCode;
-        const jobId = `enter-scores-${encounterId}`;
-
-        // Check if there's already an active/waiting EnterScores job for this encounter
-        const existingJobs = await this.syncQueue.getJobs(["active", "waiting"]);
-        const alreadyQueued = existingJobs.some(
-          (j) => j.name === Sync.EnterScores && j.data?.encounterId === encounterId
-        );
-
-        if (alreadyQueued) {
-          this.logger.debug(
-            `Skipping encounter ${visualCode} (${encounterId}) — EnterScores job already queued`
-          );
-          skipped++;
-          continue;
-        }
-
-        this.logger.log(
-          `Queueing EnterScores retry for encounter ${visualCode} (${encounterId}) — ` +
-            `finished: ${encounter.finished}, enteredOn: ${encounter.enteredOn}, scoresSyncedAt: ${encounter.scoresSyncedAt}`
-        );
-
-        await this.syncQueue.add(Sync.EnterScores, { encounterId }, getSyncJobOptions({ jobId }));
-
-        queued++;
+        const outcome = await this.requeue(encounter);
+        outcomes[outcome] += 1;
       }
 
       this.logger.log(
-        `Retry complete: ${queued} encounters queued for re-sync, ${skipped} skipped (already queued)`
+        `Retry complete: ${outcomes.queued} queued, ${outcomes.retried} retried, ${outcomes.skipped} skipped`
       );
     } catch (error) {
       this.logger.error("Error during retry of failed encounter syncs", error);
