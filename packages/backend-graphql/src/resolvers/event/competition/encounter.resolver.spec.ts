@@ -25,6 +25,8 @@ import {
   EncounterChangeViewState,
 } from "@badman/utils";
 import { BadRequestException, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { GraphQLError } from "graphql";
+import { ErrorCode } from "../../../utils/error-codes";
 
 describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
   let resolver: EncounterCompetitionResolver;
@@ -868,6 +870,123 @@ describe("EncounterCompetitionResolver — DataLoader field resolvers", () => {
 
       expect(tx.commit).toHaveBeenCalled();
       expect(tx.rollback).not.toHaveBeenCalled();
+    });
+
+    describe("result rights", () => {
+      const HOUR = 60 * 60 * 1000;
+      const withinWindow = () => new Date(Date.now() - 2 * HOUR);
+      const afterWindow = () => new Date(Date.now() - 37 * HOUR);
+
+      const userWith = (id: string, claims: string[] = []) =>
+        ({
+          id,
+          hasAnyPermission: jest.fn(async (permissions: string[]) =>
+            permissions.some((permission) => claims.includes(permission))
+          ),
+        }) as unknown as Player;
+
+      const gameLeader = userWith("leader-uuid");
+      const homeClubAdmin = userWith("home-admin-uuid", ["home-club_enter:results"]);
+      const awayClubAdmin = userWith("away-admin-uuid", ["away-club_enter:results"]);
+      const encounterAdmin = userWith("admin-uuid", ["change-any:encounter"]);
+
+      async function expectWindowClosed(promise: Promise<unknown>) {
+        const error = await promise.catch((e) => e);
+        expect(error).toBeInstanceOf(GraphQLError);
+        expect((error as GraphQLError).extensions["code"]).toBe(
+          ErrorCode.RESULT_EDIT_WINDOW_CLOSED
+        );
+      }
+
+      it.each([
+        ["the game leader", gameLeader],
+        ["the home club admin", homeClubAdmin],
+      ])("lets %s confirm the result within 36 hours", async (_, user) => {
+        const encounter = makeDbEncounter({ date: withinWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(user, "enc-uuid", { ...confirm })
+        ).resolves.toEqual({ id: "enc-uuid" });
+        expect(encounter.update).toHaveBeenCalled();
+      });
+
+      it("rejects the away club admin, even within 36 hours", async () => {
+        const encounter = makeDbEncounter({ date: withinWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const tx = useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(awayClubAdmin, "enc-uuid", { ...confirm })
+        ).rejects.toThrow(UnauthorizedException);
+        expect(encounter.update).not.toHaveBeenCalled();
+        expect(tx.rollback).toHaveBeenCalled();
+      });
+
+      it.each([
+        ["the game leader", gameLeader],
+        ["the home club admin", homeClubAdmin],
+      ])("stops %s once 36 hours have passed", async (_, user) => {
+        const encounter = makeDbEncounter({ date: afterWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const tx = useTransaction();
+
+        await expectWindowClosed(
+          resolver.updateEncounterCompetition(user, "enc-uuid", { ...confirm })
+        );
+        expect(encounter.update).not.toHaveBeenCalled();
+        expect(tx.rollback).toHaveBeenCalled();
+        expect(syncQueue.add).not.toHaveBeenCalled();
+      });
+
+      it("still rejects a user without result rights as unauthorized after 36 hours", async () => {
+        jest
+          .spyOn(EncounterCompetition, "findByPk")
+          .mockResolvedValue(makeDbEncounter({ date: afterWindow() }));
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(awayClubAdmin, "enc-uuid", { ...confirm })
+        ).rejects.toThrow(UnauthorizedException);
+      });
+
+      it("lets an encounter admin correct the result after 36 hours", async () => {
+        const encounter = makeDbEncounter({ date: afterWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(encounterAdmin, "enc-uuid", { ...confirm })
+        ).resolves.toEqual({ id: "enc-uuid" });
+        expect(encounter.update).toHaveBeenCalled();
+      });
+
+      it("applies the per-side captain check when a temporary captain is sent", async () => {
+        const encounter = makeDbEncounter({ date: withinWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(homeClubAdmin, "enc-uuid", {
+            tempAwayCaptainId: "home-admin-uuid",
+          })
+        ).rejects.toThrow(UnauthorizedException);
+        expect(encounter.update).not.toHaveBeenCalled();
+      });
+
+      it("lets the game leader set the temporary captain of either side", async () => {
+        const encounter = makeDbEncounter({ date: withinWindow() });
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        useTransaction();
+
+        await expect(
+          resolver.updateEncounterCompetition(gameLeader, "enc-uuid", {
+            tempHomeCaptainId: "p1",
+            tempAwayCaptainId: "p2",
+          })
+        ).resolves.toEqual({ id: "enc-uuid" });
+      });
     });
   });
 });
