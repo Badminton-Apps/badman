@@ -1,6 +1,7 @@
 import { EncounterCompetition, Game } from "@badman/backend-database";
 import { VisualService, XmlTournament } from "@badman/backend-visual";
 import { fromZonedTime } from "date-fns-tz";
+import { Op, Sequelize } from "sequelize";
 import { CompetitionSyncEncounterProcessor } from "../encounter";
 
 /** Convert a Brussels local time string to the UTC Date the processor produces. */
@@ -17,7 +18,17 @@ jest.mock("@badman/backend-database", () => ({
 }));
 
 jest.mock("sequelize", () => ({
-  Op: { in: Symbol("in"), ne: Symbol("ne"), and: Symbol("and"), or: Symbol("or") },
+  Op: {
+    in: Symbol("in"),
+    ne: Symbol("ne"),
+    not: Symbol("not"),
+    and: Symbol("and"),
+    or: Symbol("or"),
+  },
+  Sequelize: {
+    col: (name: string) => ({ col: name }),
+    where: (column: unknown, condition: unknown) => ({ column, condition }),
+  },
 }));
 
 // ─── helpers ────────────────────────────────────────────────────────────────
@@ -104,6 +115,39 @@ describe("CompetitionSyncEncounterProcessor — 3x/4x format", () => {
   });
 
   afterEach(() => jest.restoreAllMocks());
+
+  it("keeps the existing date when toernooi.nl has no MatchTime for the encounter", async () => {
+    const planned = bd("2025-10-05T14:00:00");
+    const dbEncounter = makeDbEncounter({ visualCode: "1", date: planned });
+    const draw = makeDraw([dbEncounter]);
+    visualService.getGames.mockResolvedValue([makeXmlTeamMatch("1")]);
+
+    const processor = makeProcessor(visualService);
+    processor.draws = [{ draw: draw as never, internalId: 10 }];
+    await processor.process();
+
+    expect(dbEncounter.date).toEqual(planned);
+  });
+
+  it("does not destroy a removed encounter that has locally entered games", async () => {
+    const kept = makeDbEncounter({ id: "enc-1", visualCode: "1" });
+    const removed = makeDbEncounter({ id: "enc-scored", visualCode: "9" });
+    const draw = makeDraw([kept, removed]);
+    visualService.getGames.mockResolvedValue([makeXmlTeamMatch("1")]);
+    (Game.findAll as jest.Mock).mockResolvedValue([{ linkId: "enc-scored" }]);
+
+    const processor = makeProcessor(visualService);
+    processor.draws = [{ draw: draw as never, internalId: 10 }];
+    await processor.process();
+
+    const [{ where }] = (Game.findAll as jest.Mock).mock.calls[0];
+    expect(where[Op.or]).toEqual([
+      Sequelize.where(Sequelize.col("set1Team1"), { [Op.not]: null }),
+      Sequelize.where(Sequelize.col("set1Team2"), { [Op.not]: null }),
+      { winner: { [Op.ne]: 0 } },
+    ]);
+    expect(Game.destroy).not.toHaveBeenCalled();
+  });
 
   it("creates one encounter per TeamMatch in a standard 2x draw (baseline)", async () => {
     const dbEncounters = [makeDbEncounter(), makeDbEncounter()];
