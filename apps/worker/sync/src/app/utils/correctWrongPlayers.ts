@@ -5216,16 +5216,6 @@ export const correctWrongPlayers = (player: {
       memberId: undefined,
     };
   }
-  if (
-    (player.firstName === "Elias" && player.lastName === "Goossens") ||
-    player.memberId === "50641964"
-  ) {
-    return {
-      ...player,
-      memberId: "50529021",
-    };
-  }
-
   if (player.memberId === "30026445") {
     return {
       ...player,
@@ -5245,13 +5235,6 @@ export const correctWrongPlayers = (player: {
     return {
       ...player,
       memberId: "50588737",
-    };
-  }
-
-  if (player.memberId === "50711059") {
-    return {
-      ...player,
-      memberId: "50090114",
     };
   }
 
