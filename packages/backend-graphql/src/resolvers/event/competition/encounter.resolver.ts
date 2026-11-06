@@ -29,7 +29,8 @@ import {
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { NotificationService } from "@badman/backend-notifications";
 import { EncounterChangeService } from "./encounter-change.service";
-import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
+import { assertResultEditWindowOpen } from "./result-edit-window";
+import { requestEnterScores, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
 import {
@@ -764,20 +765,12 @@ export class EncounterCompetitionResolver {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
       }
 
-      const sides = (["home", "away"] as const).filter(
-        (side) => updateTempTeamCaptainData[tempCaptainKey[side]] !== undefined
-      );
+      const sides = this._tempCaptainSides(updateTempTeamCaptainData);
       if (sides.length === 0) {
         throw new BadRequestException(`tempHomeCaptainId or tempAwayCaptainId is required`);
       }
 
-      for (const side of sides) {
-        if (!(await this._canManageSide(user, encounter, side))) {
-          throw new UnauthorizedException(
-            `You do not have permission to change the ${side} captain of this encounter`
-          );
-        }
-      }
+      await this._assertCanManageSides(user, encounter, sides);
 
       await encounter.update(updateTempTeamCaptainData, { transaction });
 
@@ -809,6 +802,56 @@ export class EncounterCompetitionResolver {
     return user.hasAnyPermission(["change-any:encounter", `${team?.clubId}_enter:results`]);
   }
 
+  private _tempCaptainSides(data: { tempHomeCaptainId?: string; tempAwayCaptainId?: string }) {
+    return (["home", "away"] as const).filter((side) => data[tempCaptainKey[side]] !== undefined);
+  }
+
+  private async _assertCanManageSides(
+    user: Player,
+    encounter: EncounterCompetition,
+    sides: readonly ("home" | "away")[]
+  ): Promise<void> {
+    for (const side of sides) {
+      if (!(await this._canManageSide(user, encounter, side))) {
+        throw new UnauthorizedException(
+          `You do not have permission to change the ${side} captain of this encounter`
+        );
+      }
+    }
+  }
+
+  /**
+   * Encounter admins may always change the result. The game leader and the home club may
+   * within the result edit window; the away club has no entry right (BV).
+   */
+  private async _assertCanEditResult(user: Player, encounter: EncounterCompetition) {
+    if (await user.hasAnyPermission(["change-any:encounter"])) return;
+
+    const entersResult =
+      (user?.id != null && encounter.gameLeaderId === user.id) ||
+      (await user.hasAnyPermission([`${encounter.home?.clubId}_enter:results`]));
+    if (!entersResult) {
+      throw new UnauthorizedException(`You do not have permission to edit this encounter`);
+    }
+
+    assertResultEditWindowOpen(encounter);
+  }
+
+  private async requestResultPush(encounter: EncounterCompetition): Promise<void> {
+    const label = `encounter ${encounter.visualCode} (${encounter.id})`;
+    try {
+      const request = await requestEnterScores(this.syncQueue, encounter.id);
+      if (request.outcome === "skipped") {
+        this.logger.log(`EnterScores not requested for ${label} — ${request.reason}`);
+      } else {
+        this.logger.log(`EnterScores ${request.outcome} for ${label}`);
+      }
+    } catch (error) {
+      // The result is already committed; the RetryFailedEncounterSync cron requests the push later.
+      this.logger.error(`Requesting EnterScores for ${label} failed`, error);
+    }
+  }
+
   @Mutation(() => EncounterCompetition)
   async updateEncounterCompetition(
     @User() user: Player,
@@ -817,6 +860,8 @@ export class EncounterCompetitionResolver {
   ) {
     this.logger.log("Updating encounter record with id:", `${encounterId}`);
     const transaction = await this._sequelize.transaction();
+    let result: EncounterCompetition;
+    let shouldUpdateToernooiNL: boolean;
     try {
       const encounter = await EncounterCompetition.findByPk(encounterId, {
         transaction,
@@ -830,16 +875,12 @@ export class EncounterCompetitionResolver {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
       }
 
-      const hasPermission =
-        (await user.hasAnyPermission([
-          "change-any:encounter",
-          `${encounter.home?.clubId}_enter:results`,
-          `${encounter.away?.clubId}_enter:results`,
-        ])) || encounter.gameLeaderId === user.id;
-
-      if (!hasPermission) {
-        throw new UnauthorizedException(`You do not have permission to edit this encounter`);
-      }
+      await this._assertCanEditResult(user, encounter);
+      await this._assertCanManageSides(
+        user,
+        encounter,
+        this._tempCaptainSides(updateEncounterCompetitionData)
+      );
 
       // Trigger a toernooi.nl score sync whenever the encounter is finished AND has scores entered,
       // but hasn't been synced yet (scoresSyncedAt is null). Robust against the frontend sending
@@ -853,25 +894,27 @@ export class EncounterCompetitionResolver {
 
       const notYetSynced = encounter.scoresSyncedAt == null;
 
-      const shouldUpdateToernooiNL = willBeFinished && willHaveEnteredOn && notYetSynced;
+      shouldUpdateToernooiNL = willBeFinished && willHaveEnteredOn && notYetSynced;
 
-      const result = await encounter.update(updateEncounterCompetitionData, { transaction });
-
-      if (shouldUpdateToernooiNL) {
-        await this.syncQueue.add(
-          Sync.EnterScores,
-          { encounterId: encounter.id },
-          getSyncJobOptions({ jobId: `enter-scores-${encounter.id}` })
-        );
-      }
-
-      await transaction.commit();
-      return result.toJSON();
+      result = await encounter.update(updateEncounterCompetitionData, { transaction });
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
       throw error;
     }
+
+    try {
+      await transaction.commit();
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+
+    if (shouldUpdateToernooiNL) {
+      await this.requestResultPush(result);
+    }
+
+    return result.toJSON();
   }
 
   private async _getLatestEncounterChange(

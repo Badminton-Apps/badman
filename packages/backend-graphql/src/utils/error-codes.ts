@@ -43,6 +43,9 @@ export const ErrorCode = {
   // Queue introspection (packages/backend-graphql/src/resolvers/queue/queue.resolver.ts)
   QUEUE_JOB_NOT_FOUND: "QUEUE_JOB_NOT_FOUND",
 
+  // Result entry (packages/backend-graphql/src/resolvers/event/competition/result-edit-window.ts)
+  RESULT_EDIT_WINDOW_CLOSED: "RESULT_EDIT_WINDOW_CLOSED",
+
   // Encounter date change (packages/backend-graphql/src/resolvers/event/competition/encounter-change.resolver.ts)
   ENCOUNTER_NOT_FOUND: "ENCOUNTER_NOT_FOUND",
   ENCOUNTER_CHANGE_NOT_FOUND: "ENCOUNTER_CHANGE_NOT_FOUND",
