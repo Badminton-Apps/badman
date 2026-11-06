@@ -204,6 +204,13 @@ describe("RetryFailedEncounterSyncProcessor", () => {
       expect(query.where.date).toEqual({ [Op.lt]: new Date("2026-09-08T09:00:00") });
     });
 
+    it("selects the most recent encounters first, so old skipped pushes cannot fill the batch", async () => {
+      await processor.retryFailedEncounters(makeJob() as any);
+
+      const [query] = findAllSpy.mock.calls[0];
+      expect(query.order).toEqual([["date", "DESC"]]);
+    });
+
     it("only selects encounters that have a visual code and were entered", async () => {
       await processor.retryFailedEncounters(makeJob() as any);
 

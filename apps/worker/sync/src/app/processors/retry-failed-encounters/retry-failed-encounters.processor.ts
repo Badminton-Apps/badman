@@ -213,6 +213,9 @@ export class RetryFailedEncounterSyncProcessor {
         },
       ],
       attributes: ["id", "visualCode", "date", "finished", "enteredOn", "scoresSyncedAt"],
+      // Pushes skipped for an existing result keep scoresSyncedAt null and match forever;
+      // newest first keeps them from crowding fresh failures out of the batch.
+      order: [["date", "DESC"]],
       limit: 50,
     });
 
