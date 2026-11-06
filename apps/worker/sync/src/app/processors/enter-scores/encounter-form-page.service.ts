@@ -17,8 +17,10 @@ import {
   enterGameLeader,
   enterShuttle,
   enterStartHour,
+  ExistingResult,
   getCurrentUrl,
   getRowErrorMessages,
+  readExistingResult,
   waitForNavigation,
   waitForNetworkIdle,
   waitForSaveErrorDialog,
@@ -71,11 +73,7 @@ export class EncounterFormPageService {
     await acceptCookies({ page: this.page!, timeout }, { logger: this.logger });
   }
 
-  async signIn(
-    username: string | undefined,
-    password: string | undefined,
-    timeout = 20000
-  ): Promise<void> {
+  async signIn(username: string, password: string, timeout = 20000): Promise<void> {
     this._assertPage();
     await signIn({ page: this.page!, timeout }, { username, password, logger: this.logger });
   }
@@ -88,6 +86,11 @@ export class EncounterFormPageService {
   async enterEditMode(encounter: EncounterCompetition): Promise<void> {
     this._assertPage();
     await enterEditMode({ page: this.page! }, encounter);
+  }
+
+  async readExistingResult(): Promise<ExistingResult> {
+    this._assertPage();
+    return readExistingResult({ page: this.page! }, { logger: this.logger });
   }
 
   async clearFields(): Promise<void> {

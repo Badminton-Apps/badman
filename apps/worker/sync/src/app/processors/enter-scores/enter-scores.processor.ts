@@ -7,6 +7,7 @@ import {
   EventCompetition,
   Assembly,
   Team,
+  Logging,
 } from "@badman/backend-database";
 import { SyncQueue, Sync, TransactionManager } from "@badman/backend-queue";
 import { MailingService } from "@badman/backend-mailing";
@@ -14,13 +15,13 @@ import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Job } from "bull";
-import { ConfigType } from "@badman/utils";
+import { ConfigType, LoggingAction } from "@badman/utils";
 import * as Sentry from "@sentry/nestjs";
 import { ToernooiUnreachableError } from "@badman/backend-pupeteer";
 import { startLockRenewal } from "../../utils";
 import { EnterScoresError, EnterScoresErrorCode, EnterScoresPhase } from "./enter-scores.errors";
 import { EncounterFormPageService } from "./encounter-form-page.service";
-import { enterScoresPreflight, isFinalAttempt } from "./guards";
+import { enterScoresPreflight, isFinalAttempt, isSeasonOpen } from "./guards";
 
 @Processor({
   name: SyncQueue,
@@ -130,7 +131,7 @@ export class EnterScoresProcessor {
               model: SubEventCompetition,
               include: [
                 {
-                  attributes: ["id", "visualCode"],
+                  attributes: ["id", "visualCode", "season"],
                   model: EventCompetition,
                 },
               ],
@@ -164,6 +165,45 @@ export class EnterScoresProcessor {
       );
     }
     return encounter;
+  }
+
+  private toPushedGames(encounter: EncounterCompetition) {
+    return (encounter.games ?? []).map((game) => ({
+      order: game.order,
+      gameType: game.gameType,
+      winner: game.winner,
+      sets: [
+        [game.set1Team1, game.set1Team2],
+        [game.set2Team1, game.set2Team2],
+        [game.set3Team1, game.set3Team2],
+      ]
+        .filter(([team1, team2]) => team1 != null && team2 != null)
+        .map(([team1, team2]) => `${team1}-${team2}`),
+    }));
+  }
+
+  private async writeAuditLog(
+    action: LoggingAction.ResultPushed | LoggingAction.ResultPushSkipped,
+    encounter: EncounterCompetition,
+    job: Job<{ encounterId: string }>,
+    details: Record<string, unknown>
+  ): Promise<void> {
+    try {
+      await Logging.create({
+        action,
+        meta: {
+          encounterId: encounter.id,
+          visualCode: encounter.visualCode,
+          jobId: String(job.id),
+          attempt: job.attemptsMade + 1,
+          ...details,
+        },
+      });
+    } catch (error: unknown) {
+      this.logger.error(
+        `Could not write ${action} audit log for encounter ${encounter.id}: ${(error as Error)?.message ?? error}`
+      );
+    }
   }
 
   private async sendNotificationEmail(
@@ -205,6 +245,12 @@ export class EnterScoresProcessor {
   private async enterGamesWithTransaction(encounter: EncounterCompetition): Promise<void> {
     const transactionId = await this._transactionManager.transaction();
     const transaction = await this._transactionManager.getTransaction(transactionId);
+    if (!transaction) {
+      throw new EnterScoresError(
+        EnterScoresErrorCode.ENTER_GAMES,
+        `Transaction ${transactionId} not found`
+      );
+    }
     try {
       await this.formPage.enterGames(encounter, transaction);
       await this._transactionManager.commitTransaction(transactionId);
@@ -282,7 +328,7 @@ export class EnterScoresProcessor {
       if (msg != null && msg.length > 0) {
         return { type: "dialog", message: msg };
       }
-      await new Promise<never>(() => {
+      return new Promise<never>(() => {
         /* never resolves so race is won by nav */
       });
     };
@@ -390,6 +436,129 @@ export class EnterScoresProcessor {
     throw new EnterScoresError(EnterScoresErrorCode.SAVE_FAILED, failureMessage);
   }
 
+  private async step<T>(phase: EnterScoresPhase, run: () => Promise<T>): Promise<T> {
+    this._currentPhase = phase;
+    this.logger.log(`Step: ${phase}`);
+    return run();
+  }
+
+  private async openBrowser(headless: boolean): Promise<void> {
+    if (!this.formPage.hasPage()) {
+      const browserFlags = [
+        "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
+        "--disable-save-password-bubble",
+        "--disable-credentials-enable-service",
+        "--disable-credential-saving",
+        "--password-store=basic",
+        "--no-default-browser-check",
+      ];
+      await this.formPage.open(headless, browserFlags);
+    }
+  }
+
+  private async assertSeasonOpen(
+    encounter: EncounterCompetition,
+    job: Job<{ encounterId: string }>
+  ): Promise<void> {
+    const season = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.season;
+    if (season == null || !isSeasonOpen(season, new Date())) {
+      // Results of a closed season are final; a retried old job must never reach toernooi.nl.
+      await this.writeAuditLog(LoggingAction.ResultPushSkipped, encounter, job, {
+        reason: "season_closed",
+        season,
+      });
+      job.discard();
+      throw new EnterScoresError(
+        EnterScoresErrorCode.SEASON_CLOSED,
+        `Season ${season ?? "unknown"} of encounter ${encounter.visualCode} is closed; not pushing`
+      );
+    }
+  }
+
+  private async acceptCookiesOrContinue(): Promise<void> {
+    try {
+      await this.formPage.acceptCookies(20000);
+      this.logger.log("✅ Cookie acceptance completed successfully");
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      if (this.isTimeoutError(error)) {
+        this.logger.warn("Cookie acceptance timeout (continuing):", msg);
+      } else if (msg.includes("Could not find element")) {
+        this.logger.warn(
+          "Cookie accept button not found (cookies likely already accepted, continuing):",
+          msg
+        );
+      } else {
+        const code =
+          error instanceof ToernooiUnreachableError
+            ? EnterScoresErrorCode.SITE_UNREACHABLE
+            : EnterScoresErrorCode.COOKIE_ACCEPT;
+        throw new EnterScoresError(code, msg, { cause: error });
+      }
+    }
+  }
+
+  private async signInOrConfirm(username: string, password: string): Promise<void> {
+    this.logger.log(`Signing in as ${username}`);
+    try {
+      await this.formPage.signIn(username, password, 20000);
+      this.logger.log("✅ Sign in completed successfully");
+    } catch (error: unknown) {
+      if (!this.isTimeoutError(error)) {
+        throw new EnterScoresError(EnterScoresErrorCode.SIGN_IN, (error as Error).message, {
+          cause: error,
+        });
+      }
+
+      this.logger.warn("Sign in timeout - checking if signed in anyway");
+      const signedIn = await this.formPage.waitForSignInConfirmation(5000).catch(() => false);
+      if (!signedIn) {
+        throw new EnterScoresError(
+          EnterScoresErrorCode.SIGN_IN,
+          `Sign in failed: ${(error as Error).message}`,
+          { cause: error }
+        );
+      }
+      this.logger.log("✅ User appears to be signed in despite timeout");
+    }
+  }
+
+  private async assertNoExistingResult(
+    encounter: EncounterCompetition,
+    job: Job<{ encounterId: string }>
+  ): Promise<void> {
+    const existing = await this.formPage.readExistingResult();
+    if (existing.filledRows.length > 0 || existing.resultEntered) {
+      // Badman may only fill an empty result; one entered by a club or the sports commission
+      // is never overwritten (C320 art. 62, confirmed by BV). Retrying cannot change that.
+      await this.writeAuditLog(LoggingAction.ResultPushSkipped, encounter, job, {
+        reason: "result_present",
+        existing,
+      });
+      job.discard();
+      throw new EnterScoresError(
+        EnterScoresErrorCode.RESULT_ALREADY_PRESENT,
+        `Toernooi.nl already has a result for encounter ${encounter.visualCode} (${existing.filledRows.length} filled games, entered: ${existing.resultEntered ?? "unknown"}); not overwriting`
+      );
+    }
+  }
+
+  private async saveIfAllowed(
+    encounter: EncounterCompetition,
+    job: Job<{ encounterId: string }>,
+    shouldSave: boolean
+  ): Promise<void> {
+    if (shouldSave) {
+      await this.waitForSaveResult();
+      await encounter.update({ scoresSyncedAt: new Date() });
+      await this.writeAuditLog(LoggingAction.ResultPushed, encounter, job, {
+        games: this.toPushedGames(encounter),
+      });
+    } else {
+      this.logger.log("Skipping save button because we are not in production");
+    }
+  }
+
   private async handleFailure(
     error: unknown,
     job: Job<{ encounterId: string }>,
@@ -398,9 +567,13 @@ export class EnterScoresProcessor {
     devEmailDestination: string | undefined
   ): Promise<void> {
     const maxAttempts = job.opts?.attempts ?? 1;
-    const finalAttempt = isFinalAttempt(job.attemptsMade, maxAttempts);
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorCode = error instanceof EnterScoresError ? error.code : undefined;
+    // A skipped push is discarded, so there is no later attempt to report it on.
+    const finalAttempt =
+      errorCode === EnterScoresErrorCode.RESULT_ALREADY_PRESENT ||
+      errorCode === EnterScoresErrorCode.SEASON_CLOSED ||
+      isFinalAttempt(job.attemptsMade, maxAttempts);
 
     Sentry.setTag("processor", "enter-scores");
     Sentry.setTag("error_code", errorCode ?? "UNKNOWN");
@@ -547,7 +720,7 @@ export class EnterScoresProcessor {
       password: this._password,
     });
 
-    if (!preflight.canProceed) {
+    if (preflight.canProceed === false) {
       this.logger.error(preflight.reason);
       throw new EnterScoresError(EnterScoresErrorCode.PREFLIGHT, preflight.reason);
     }
@@ -556,101 +729,31 @@ export class EnterScoresProcessor {
     const encounterId = job.data.encounterId;
     let encounter: EncounterCompetition | null = null;
     const devEmailDestination = this.configService.get<string>("DEV_EMAIL_DESTINATION");
-    const openFlags = [
-      "--disable-features=PasswordManagerEnabled,AutofillKeyBoardAccessoryView,AutofillEnableAccountWalletStorage",
-      "--disable-save-password-bubble",
-      "--disable-credentials-enable-service",
-      "--disable-credential-saving",
-      "--password-store=basic",
-      "--no-default-browser-check",
-    ];
     try {
-      this._currentPhase = "browser_open";
-      this.logger.debug("Creating browser");
-      if (!this.formPage.hasPage()) {
-        await this.formPage.open(preflight.headless, openFlags);
-      }
-
-      this._currentPhase = "load_encounter";
-      this.logger.log("Getting encounter");
-      encounter = await this.loadEncounter(encounterId);
+      await this.step("browser_open", () => this.openBrowser(preflight.headless));
+      const loaded = await this.step("load_encounter", () => this.loadEncounter(encounterId));
+      encounter = loaded;
+      await this.step("season_check", () => this.assertSeasonOpen(loaded, job));
 
       this.logger.log(
-        `Entering scores for following encounter: Visual Code: ${encounter.visualCode}, Encounter id: ${encounterId}`
+        `Entering scores for following encounter: Visual Code: ${loaded.visualCode}, Encounter id: ${encounterId}`
       );
 
-      this._currentPhase = "cookie_accept";
-      try {
-        await this.formPage.acceptCookies(20000);
-        this.logger.log("✅ Cookie acceptance completed successfully");
-      } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : String(error);
-        if (this.isTimeoutError(error)) {
-          this.logger.warn("Cookie acceptance timeout (continuing):", msg);
-        } else if (msg.includes("Could not find element")) {
-          this.logger.warn(
-            "Cookie accept button not found (cookies likely already accepted, continuing):",
-            msg
-          );
-        } else {
-          const code =
-            error instanceof ToernooiUnreachableError
-              ? EnterScoresErrorCode.SITE_UNREACHABLE
-              : EnterScoresErrorCode.COOKIE_ACCEPT;
-          throw new EnterScoresError(code, msg, { cause: error });
-        }
-      }
-
-      this._currentPhase = "sign_in";
-      this.logger.log(`Signing in as ${this._username}`);
-      try {
-        await this.formPage.signIn(this._username, this._password, 20000);
-        this.logger.log("✅ Sign in completed successfully");
-      } catch (error: unknown) {
-        if (!this.isTimeoutError(error)) {
-          throw new EnterScoresError(EnterScoresErrorCode.SIGN_IN, (error as Error).message, {
-            cause: error,
-          });
-        }
-
-        this.logger.warn("Sign in timeout - checking if signed in anyway");
-        const signedIn = await this.formPage.waitForSignInConfirmation(5000).catch(() => false);
-        if (!signedIn) {
-          throw new EnterScoresError(
-            EnterScoresErrorCode.SIGN_IN,
-            `Sign in failed: ${(error as Error).message}`,
-            { cause: error }
-          );
-        }
-        this.logger.log("✅ User appears to be signed in despite timeout");
-      }
-
-      this._currentPhase = "edit_mode";
-      this.logger.log("Entering edit mode");
-      await this.formPage.enterEditMode(encounter);
-
-      this._currentPhase = "clear_fields";
-      this.logger.log("Clearing fields");
-      await this.formPage.clearFields();
-
-      this._currentPhase = "enter_games";
-      await this.enterGamesWithTransaction(encounter);
-      this._currentPhase = "optional_fields";
-      await this.enterOptionalFields(encounter);
-      this._currentPhase = "input_validation";
-      await this.formPage.enableInputValidation();
-      this._currentPhase = "row_validation";
-      await this.validateRowMessages();
-
-      this._currentPhase = "save";
-      if (preflight.shouldSave) {
-        await this.waitForSaveResult();
-        await encounter.update({ scoresSyncedAt: new Date() });
-      } else {
-        this.logger.log("Skipping save button because we are not in production");
-      }
-      this._currentPhase = "notification";
-      await this.sendNotificationEmail(encounter, devEmailDestination);
+      await this.step("cookie_accept", () => this.acceptCookiesOrContinue());
+      await this.step("sign_in", () =>
+        this.signInOrConfirm(preflight.username, preflight.password)
+      );
+      await this.step("edit_mode", () => this.formPage.enterEditMode(loaded));
+      await this.step("existing_result_check", () => this.assertNoExistingResult(loaded, job));
+      await this.step("clear_fields", () => this.formPage.clearFields());
+      await this.step("enter_games", () => this.enterGamesWithTransaction(loaded));
+      await this.step("optional_fields", () => this.enterOptionalFields(loaded));
+      await this.step("input_validation", () => this.formPage.enableInputValidation());
+      await this.step("row_validation", () => this.validateRowMessages());
+      await this.step("save", () => this.saveIfAllowed(loaded, job, preflight.shouldSave));
+      await this.step("notification", () =>
+        this.sendNotificationEmail(loaded, devEmailDestination)
+      );
     } catch (error: unknown) {
       const normalizedError = this.normalizePageError(error);
       await this.handleFailure(normalizedError, job, encounter, encounterId, devEmailDestination);
