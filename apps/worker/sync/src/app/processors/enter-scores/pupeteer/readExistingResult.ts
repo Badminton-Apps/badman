@@ -1,5 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { Page } from "puppeteer";
+import { EnterScoresError, EnterScoresErrorCode } from "../enter-scores.errors";
 
 export interface ExistingMatchRow {
   matchId: string;
@@ -44,6 +45,15 @@ export async function readExistingResult(
       };
     })
   );
+
+  // No rows means the form did not load or its markup changed; reading that as "empty"
+  // would let the push overwrite a result we could not see.
+  if (rows.length === 0) {
+    throw new EnterScoresError(
+      EnterScoresErrorCode.EXISTING_RESULT_UNREADABLE,
+      "No game rows found on the encounter form; cannot check for an existing result"
+    );
+  }
 
   // A team result entered on its own (e.g. a forfeit) leaves the game rows empty;
   // toernooi.nl then only shows who entered it in the header table.

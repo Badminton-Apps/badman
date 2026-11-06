@@ -1,3 +1,4 @@
+import { EnterScoresErrorCode } from "../../enter-scores.errors";
 import { ExistingMatchRow, readExistingResult } from "../readExistingResult";
 
 const emptyRow: ExistingMatchRow = {
@@ -65,6 +66,12 @@ describe("readExistingResult", () => {
       resultEntered: "BARET BC on Tue 21/04/2026 17:03",
     });
     expect(page.$$eval).toHaveBeenCalledWith("th", expect.any(Function));
+  });
+
+  it("fails with a coded error when the form shows no game rows, instead of reporting it empty", async () => {
+    await expect(readExistingResult({ page: makePage([]) as never })).rejects.toMatchObject({
+      code: EnterScoresErrorCode.EXISTING_RESULT_UNREADABLE,
+    });
   });
 
   it("returns no team result when the form has none", async () => {
