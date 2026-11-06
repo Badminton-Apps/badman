@@ -21,6 +21,7 @@ import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nest
 import { Queue } from "bull";
 import { Op } from "sequelize";
 import { ListArgs } from "../../utils";
+import { assertResultEditWindowOpen } from "../event/competition/result-edit-window";
 
 import { Sequelize } from "sequelize-typescript";
 
@@ -129,6 +130,17 @@ export class GamesResolver {
     });
   }
 
+  /** Encounter admins may always edit games; the game leader within the result edit window. */
+  private async _assertCanEditGames(user: Player, encounter: EncounterCompetition) {
+    if (await user.hasAnyPermission(["change-any:encounter"])) return;
+
+    if (encounter.gameLeaderId !== user.id) {
+      throw new NotFoundException("You are not the game leader");
+    }
+
+    assertResultEditWindowOpen(encounter);
+  }
+
   @Mutation(() => Game)
   async createGame(@Args("data") newGameData: GameNewInput, @User() user: Player): Promise<Game> {
     const transaction = await this._sequelize.transaction();
@@ -141,9 +153,7 @@ export class GamesResolver {
         throw new NotFoundException(`${EncounterCompetition.name}: ${newGameData.linkId}`);
       }
 
-      if (encounter.gameLeaderId !== user.id) {
-        throw new NotFoundException("You are not the game leader");
-      }
+      await this._assertCanEditGames(user, encounter);
 
       const gameData = { ...newGameData };
 
@@ -235,9 +245,7 @@ export class GamesResolver {
         throw new NotFoundException(`${EncounterCompetition.name}: ${updateGameData.linkId}`);
       }
 
-      if (encounter.gameLeaderId !== user.id) {
-        throw new NotFoundException("You are not the game leader");
-      }
+      await this._assertCanEditGames(user, encounter);
 
       const gameData = { ...updateGameData };
 

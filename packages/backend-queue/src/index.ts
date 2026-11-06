@@ -4,3 +4,4 @@ export * from "./sync-job-options";
 
 export * from "./events";
 export * from "./services";
+export * from "./enter-scores-request";
