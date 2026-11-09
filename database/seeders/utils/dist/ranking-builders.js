@@ -1,16 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addRankingToPlayer = exports.createRankingLastPlace = exports.createRankingPlace = exports.findOrGetPrimaryRankingSystem = void 0;
+exports.addRankingToPlayer = exports.createRankingLastPlace = exports.createRankingPlace = exports.findOrGetPrimaryRankingSystem = exports.SEEDED_RANKING_SYSTEM_NAME = void 0;
 const error_handler_1 = require("./error-handler");
+exports.SEEDED_RANKING_SYSTEM_NAME = "Seeded ranking system";
 /**
- * Find or get the primary ranking system
+ * Find the primary ranking system, or create one when the database has none
+ * (a fresh database built from migrations only). The values mirror the
+ * primary system in the backend test fixtures (packages/backend-database/src/_testing/load-test.ts).
  */
 async function findOrGetPrimaryRankingSystem(ctx) {
     const systems = await ctx.query(`SELECT id FROM ranking."RankingSystems" WHERE "primary" = true LIMIT 1`);
     if (systems && systems.length > 0) {
         return systems[0];
     }
-    throw new Error("No primary ranking system found. Please create a ranking system first.");
+    console.log(`No primary ranking system found, creating "${exports.SEEDED_RANKING_SYSTEM_NAME}"`);
+    const [created] = await ctx.query(`INSERT INTO ranking."RankingSystems"
+       (name, "primary", "rankingSystem", "amountOfLevels", "procentWinning", "procentWinningPlus1", "procentLosing", "maxDiffLevels")
+     VALUES (:name, true, 'BVL', 12, 75, 50, 30, 2)
+     RETURNING id`, { name: exports.SEEDED_RANKING_SYSTEM_NAME });
+    return created;
 }
 /**
  * Generate random ranking values (between 0 and 12, with max difference of 2 between any two values)

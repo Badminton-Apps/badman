@@ -6,22 +6,9 @@ This file (`AGENTS.md`) is the single source of truth for AI-assisted developmen
 
 ## Environment Setup
 
-Required for dev and AI-assisted scripts:
+The full local setup (Node, pnpm via corepack, `.env`, docker, database, migrations, seeders, Auth0 login) is in [`README.md`](README.md). Keep it in sync when you change any part of the setup.
 
-```bash
-# pnpm is pinned via the packageManager field; corepack provides it
-corepack enable
-
-# Copy .env.local if it doesn't exist (contains LINEAR_API_KEY for issue creation)
-cp .env.local.example .env.local  # or manually source .env before running scripts
-
-# Load environment in your shell (add to ~/.zshrc or ~/.bashrc for persistence):
-source /path/to/badman/.env.local
-```
-
-**Variables needed for scripts:**
-
-- `LINEAR_API_KEY` — for creating Linear issues from CLI
+**Optional, for AI-assisted scripts:** the `speckit-maqa-linear-*` commands read `LINEAR_API_KEY` from your shell. Export it yourself (e.g. in `~/.zshrc`); it is not part of `.env`.
 
 ## Project Overview
 
