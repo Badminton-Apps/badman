@@ -4,7 +4,6 @@ import { MODULE_METADATA } from "@nestjs/common/constants";
 // Importing the module runs ConfigModule.forRoot, which validates the env; CI has no .env file.
 const REQUIRED_ENV = {
   CLIENT_URL: "http://localhost:3000",
-  LEGACY_CLIENT_URL: "http://localhost:3000",
   AUTH0_ISSUER_URL: "https://auth.example.test",
   AUTH0_AUDIENCE: "test-audience",
   VR_API: "http://localhost:4000",

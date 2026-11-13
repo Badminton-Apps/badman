@@ -154,9 +154,3 @@ export class DrawCompetitionUpdateInput extends PartialType(
   OmitType(DrawCompetition, ["createdAt", "updatedAt", "subEventCompetition"] as const),
   InputType
 ) {}
-
-@InputType()
-export class DrawCompetitionNewInput extends PartialType(
-  OmitType(DrawCompetitionUpdateInput, ["id"] as const),
-  InputType
-) {}

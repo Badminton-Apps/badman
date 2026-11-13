@@ -1,4 +1,3 @@
-import { EncounterValidationOutput } from "@badman/backend-change-encounter";
 import { CompileOptions, CompileService } from "@badman/backend-compile";
 import {
   Club,
@@ -42,66 +41,6 @@ export class MailingService {
     } as MailOptions<{
       settingsSlug: string;
     }>);
-  }
-
-  async sendNewRequestMail(
-    to: {
-      fullName: string;
-      email: string;
-      slug: string;
-    },
-    encounter: EncounterCompetition,
-    isHome: boolean,
-    url: string
-  ) {
-    // fetch event
-    const event = await encounter.getDrawCompetition({
-      attributes: ["id"],
-      include: [
-        {
-          model: SubEventCompetition,
-          attributes: ["id"],
-          include: [
-            {
-              model: EventCompetition,
-              attributes: ["id", "season"],
-            },
-          ],
-        },
-      ],
-    });
-
-    const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
-
-    moment.locale("nl-be");
-    const options = {
-      from: "info@badman.app",
-      to: to.email,
-      subject: `Aanvraag voor ontmoeting tussen ${encounter.home?.name} en ${encounter.away?.name}`,
-      template: "encounterchange",
-      context: {
-        captain: to.fullName,
-        isHome,
-        season: eventCompetition.season,
-        url,
-        encounter: {
-          ...encounter.toJSON(),
-          home: encounter.home?.toJSON(),
-          away: encounter.away?.toJSON(),
-        },
-        settingsSlug: to.slug,
-      },
-    } as MailOptions<{
-      captain: string;
-      isHome: boolean;
-      season: number;
-      isChangedLocation: boolean;
-      url: string;
-      encounter: EncounterCompetition;
-      settingsSlug: string;
-    }>;
-
-    await this._sendMail(options);
   }
 
   async sendConfirmationRequestMail(
@@ -504,37 +443,6 @@ export class MailingService {
       urlBadman?: string;
       user: string;
       settingsSlug: string;
-    }>;
-
-    await this._sendMail(options);
-  }
-
-  async sendOpenRequestMail(
-    to: {
-      fullName: string;
-      email: string;
-      slug: string;
-    },
-    encounters: EncounterCompetition[],
-    validation: EncounterValidationOutput[]
-  ) {
-    moment.locale("nl-be");
-    const options = {
-      from: "info@badman.app",
-      to: to.email,
-      subject: `Synchronisatie encounter failed`,
-      template: "synEncounterFailed",
-      context: {
-        encounters: encounters.map((e) => e.toJSON()),
-        validation,
-        user: to.fullName,
-      },
-    } as MailOptions<{
-      encounters: EncounterCompetition[];
-      validation: [];
-      url?: string;
-      urlBadman?: string;
-      user: string;
     }>;
 
     await this._sendMail(options);

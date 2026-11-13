@@ -40,7 +40,6 @@ export const configSchema = Joi.object({
   }),
   DB_SSL: Joi.boolean().optional(),
   DB_CACHE: Joi.boolean().default(false),
-  DB_CACHE_PREFIX: Joi.string().optional(),
   DB_LOGGING: Joi.boolean().optional(),
   DB_SLOW_QUERY_MS: Joi.number().integer().min(0).optional(),
   ENTER_SCORES_ENABLED: Joi.boolean().optional(),
@@ -71,7 +70,6 @@ export const configSchema = Joi.object({
   QUEUE_JOB_TIMEOUT_MS: Joi.number().integer().min(60000).optional(),
 
   CLIENT_URL: Joi.string().uri().required(),
-  LEGACY_CLIENT_URL: Joi.string().uri().required(),
   LOGTAIL_TOKEN: Joi.string().optional(),
   SENTRY_DSN: Joi.when("NODE_ENV", {
     is: "production",
@@ -182,8 +180,6 @@ export const configSchema = Joi.object({
     otherwise: Joi.string().optional(),
   }),
 
-  GRAPH_ID: Joi.string().optional(),
-
   RENDER_API_KEY: Joi.when("NODE_ENV", {
     is: Joi.valid("production", "staging", "beta"),
     then: Joi.string().required(),
@@ -220,7 +216,6 @@ export type ConfigType = {
   DB_DIALECT?: string;
   DB_SSL?: boolean;
   DB_CACHE: boolean;
-  DB_CACHE_PREFIX?: string;
   DB_LOGGING?: boolean;
   DB_SLOW_QUERY_MS?: number;
   REDIS_DATABASE?: number;
@@ -233,7 +228,6 @@ export type ConfigType = {
   QUEUE_MAX_STALLED_COUNT?: number;
   QUEUE_JOB_TIMEOUT_MS?: number;
   CLIENT_URL: string;
-  LEGACY_CLIENT_URL: string;
   LOGTAIL_TOKEN?: string;
   AUTH0_ISSUER_URL: string;
   AUTH0_AUDIENCE: string;
@@ -273,7 +267,6 @@ export type ConfigType = {
   CP_CALLBACK_URL?: string;
   CP_WEBHOOK_SECRET?: string;
   APOLLO_GRAPH_REF?: string;
-  GRAPH_ID: string;
   RENDER_API_KEY: string;
   RENDER_API_URL: string;
   RENDER_WAIT_TIME?: number;

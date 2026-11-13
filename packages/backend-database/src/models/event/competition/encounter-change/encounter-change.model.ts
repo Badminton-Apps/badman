@@ -37,14 +37,7 @@ import {
 
 import { Relation } from "../../../../wrapper";
 import { EncounterCompetition } from "../encounter-competition.model";
-import {
-  EncounterChangeDate,
-  EncounterChangeDateNewInput,
-  EncounterChangeDateUpdateInput,
-} from "./encounter-change-date.model";
-
-// New GraphQL enum type for frontend context with lowercase values
-export type FrontendContextType = "my-club" | "club" | "competition";
+import { EncounterChangeDate, EncounterChangeDateUpdateInput } from "./encounter-change-date.model";
 
 registerEnumType(EncounterChangeViewState, { name: "EncounterChangeViewState" });
 
@@ -126,22 +119,4 @@ export class EncounterChangeUpdateInput extends PartialType(
 ) {
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })
   dates?: Relation<EncounterChangeDate[]>;
-}
-
-@InputType()
-export class EncounterChangeNewInput extends PartialType(
-  OmitType(EncounterChangeUpdateInput, ["id", "dates"] as const),
-  InputType
-) {
-  @Field(() => Boolean, { nullable: true })
-  home?: boolean;
-
-  @Field(() => Boolean, { nullable: true })
-  accepted?: boolean;
-
-  @Field(() => [EncounterChangeDateNewInput], { nullable: true })
-  dates?: EncounterChangeDateNewInput[];
-
-  @Field(() => String, { nullable: true })
-  frontendContext?: FrontendContextType;
 }

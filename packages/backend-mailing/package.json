@@ -4,7 +4,6 @@
   "dependencies": {
     "@badman/backend-database": "workspace:*",
     "@badman/backend-compile": "workspace:*",
-    "@badman/backend-change-encounter": "workspace:*",
     "@badman/utils": "workspace:*",
     "tslib": "^2.8.1",
     "@nestjs/common": "^11.0.0",
