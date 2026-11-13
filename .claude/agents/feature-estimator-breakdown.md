@@ -9,7 +9,7 @@ You are a senior technical project manager. Your job is to translate a technical
 
 ## Translations
 
-For anything related to i18n keys, `libs/backend/translate/assets/i18n/`, or adding, updating, or removing user-facing copy across languages, **use the translation-manager agent**. Do not edit translation JSON files yourself.
+For anything related to i18n keys, `packages/backend-translate/assets/i18n/`, or adding, updating, or removing user-facing copy across languages, **use the translation-manager agent**. Do not edit translation JSON files yourself.
 
 ## AI-Assistance Estimation Parameters
 

@@ -1,4 +1,3 @@
-// start:ng42.barrel
 export * from "./_rule.base";
 export * from "./player-comp-status.rule";
 export * from "./player-gender.rule";
@@ -9,4 +8,3 @@ export * from "./team-subtitudes.rule";
 export * from "./team-base-index.rule";
 export * from "./team-club-base.rule";
 export * from "./team-subevent-index.rule";
-// end:ng42.barrel
