@@ -2,7 +2,6 @@ import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
 import { ClubMembershipType } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import moment from "moment";
-import "multer";
 import { Op } from "sequelize";
 import * as XLSX from "xlsx";
 
