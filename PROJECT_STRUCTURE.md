@@ -44,8 +44,8 @@ Deployable NestJS apps. Each builds into its own `dist/` and declares its runtim
   - Handles complex ranking algorithms
 
 - **`apps/worker/belgium/flanders/`** — Regional workers
-  - **`places/`** (`worker-belgium-flanders-places`) — Manages venue and location data for the Flanders region
-  - **`points/`** (`worker-belgium-flanders-points`) — Calculates region-specific point systems
+  - **`places/`** (`worker-belgium-flanders-places`) — Calculates ranking places (levels) for the Flanders ranking system
+  - **`points/`** (`worker-belgium-flanders-points`) — Calculates ranking points from games for the Flanders ranking system
 
 #### Development & Testing
 

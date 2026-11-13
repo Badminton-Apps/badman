@@ -20,14 +20,4 @@ module.exports = {
   trailingComma: "es5",
   quoteProps: "as-needed",
   arrowParens: "always",
-
-  // File-specific overrides
-  overrides: [
-    {
-      files: "*.html",
-      options: {
-        parser: "angular",
-      },
-    },
-  ],
 };
