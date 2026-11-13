@@ -301,12 +301,6 @@ export class EventCompetitionUpdateInput extends PartialType(
   subEventCompetitions?: SubEventCompetition[];
 }
 
-@InputType()
-export class EventCompetitionNewInput extends PartialType(
-  OmitType(EventCompetitionUpdateInput, ["id"] as const),
-  InputType
-) {}
-
 export interface EventException {
   start?: Date;
   end?: Date;
