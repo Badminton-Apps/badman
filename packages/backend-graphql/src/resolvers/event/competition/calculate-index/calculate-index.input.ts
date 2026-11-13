@@ -1,10 +1,8 @@
 import { SubEventTypeEnum } from "@badman/utils";
 import { Field, ID, InputType, Int } from "@nestjs/graphql";
-import { IsInt, IsOptional, IsUUID, Min } from "class-validator";
 @InputType()
 export class CalculateIndexPlayerInput {
   @Field(() => ID)
-  @IsUUID()
   id!: string;
 }
 
@@ -19,8 +17,6 @@ export class CalculateIndexInput {
   type!: SubEventTypeEnum;
 
   @Field(() => Int)
-  @IsInt()
-  @Min(1990)
   season!: number;
 
   /**
@@ -30,8 +26,6 @@ export class CalculateIndexInput {
    * `<= June 10 of season` (validator's rule).
    */
   @Field(() => ID, { nullable: true })
-  @IsOptional()
-  @IsUUID()
   subEventCompetitionId?: string;
 
   @Field(() => [CalculateIndexPlayerInput])

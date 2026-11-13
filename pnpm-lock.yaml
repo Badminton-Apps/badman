@@ -131,9 +131,6 @@ importers:
       cache-manager:
         specifier: ^6.4.0
         version: 6.4.3
-      class-validator:
-        specifier: ^0.14.1
-        version: 0.14.4
       compression:
         specifier: ^1.8.0
         version: 1.8.1
@@ -200,9 +197,6 @@ importers:
       moment-timezone:
         specifier: ^0.5.47
         version: 0.5.48
-      multer:
-        specifier: 1.4.5-lts.1
-        version: 1.4.5-lts.1
       nest-winston:
         specifier: ^1.10.2
         version: 1.10.2(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(winston@3.19.0)
@@ -251,9 +245,6 @@ importers:
       sqlite3:
         specifier: ^5.1.7
         version: 5.1.7
-      ts-md5:
-        specifier: ^1.3.1
-        version: 1.3.1
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -315,9 +306,6 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
-      '@types/multer':
-        specifier: ^1.4.12
-        version: 1.4.13
       '@types/node':
         specifier: ^22.19.21
         version: 22.19.21
@@ -1039,9 +1027,6 @@ importers:
       sequelize:
         specifier: ^6.37.5
         version: 6.37.8(pg@8.21.0)(sqlite3@5.1.7)
-      ts-md5:
-        specifier: ^1.3.1
-        version: 1.3.1
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -1069,9 +1054,6 @@ importers:
       moment:
         specifier: ^2.30.1
         version: 2.30.1
-      multer:
-        specifier: 2.2.0
-        version: 2.2.0
       sequelize:
         specifier: ^6.37.5
         version: 6.37.8(pg@8.21.0)(sqlite3@5.1.7)
@@ -1253,9 +1235,6 @@ importers:
       cache-manager:
         specifier: ^6.4.0
         version: 6.4.3
-      class-validator:
-        specifier: ^0.14.1
-        version: 0.14.4
       cron:
         specifier: 4.4.0
         version: 4.4.0
@@ -1652,9 +1631,6 @@ importers:
       fastify:
         specifier: ^5.0.0
         version: 5.8.5
-      multer:
-        specifier: 1.4.5-lts.1
-        version: 1.4.5-lts.1
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -3421,9 +3397,6 @@ packages:
   '@types/ms@2.1.0':
     resolution: {integrity: sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==}
 
-  '@types/multer@1.4.13':
-    resolution: {integrity: sha512-bhhdtPw7JqCiEfC9Jimx5LqX9BDIPJEh2q/fQ4bqbBPtyEZYr3cvF22NwG0DmPZNYA0CAf2CnqDB4KIGGpJcaw==}
-
   '@types/node-fetch@2.6.13':
     resolution: {integrity: sha512-QGpRVpzSaUs30JBSGPjOg4Uveu384erbHBoT1zeONvyCfwQxIkUshLAOqN/k9EjGviPRmWTTe6aH2qySWKTVSw==}
 
@@ -4235,10 +4208,6 @@ packages:
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
-
-  concat-stream@1.6.2:
-    resolution: {integrity: sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==}
-    engines: {'0': node >= 0.8}
 
   concat-stream@2.0.0:
     resolution: {integrity: sha512-MWufYdFw53ccGjCA+Ol7XJYpAlW6/prSMzuPOTRnJGcGzuhLn4Scrz7qf6o8bROZ514ltazcIFJZevcfbo0x7A==}
@@ -6132,10 +6101,6 @@ packages:
   mkdirp-classic@0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
 
-  mkdirp@0.5.6:
-    resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
-    hasBin: true
-
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
@@ -6166,17 +6131,8 @@ packages:
   msgpackr@1.12.1:
     resolution: {integrity: sha512-4EUH9tQHnMmEgzW/MdAP0KIfa1T9AF+htl0ffe2n5vb2EKn9y2co8ccpgWko6S52Jy1PQZKwRnx5/KkYjtd9MQ==}
 
-  multer@1.4.5-lts.1:
-    resolution: {integrity: sha512-ywPWvcDMeH+z9gQq5qYHCCy+ethsk4goepZ45GLD63fOu0YcNecQxi64nDs3qluZB+murG3/D4dJ7+dGctcCQQ==}
-    engines: {node: '>= 6.0.0'}
-    deprecated: Multer 1.x is impacted by a number of vulnerabilities, which have been patched in 2.x. You should upgrade to the latest 2.x version.
-
   multer@2.1.1:
     resolution: {integrity: sha512-mo+QTzKlx8R7E5ylSXxWzGoXoZbOsRMpyitcht8By2KHvMbf3tjwosZ/Mu/XYU6UuJ3VZnODIrak5ZrPiPyB6A==}
-    engines: {node: '>= 10.16.0'}
-
-  multer@2.2.0:
-    resolution: {integrity: sha512-6rdyFg2kLrMh9Jee7/BMPuV9lEAd7lLW2YUpF9/YxR7njyoUwwQ0ZPh3TaIY50Sw6vlyD2HW3wGOkTS4P79xrQ==}
     engines: {node: '>= 10.16.0'}
 
   mute-stream@2.0.0:
@@ -6234,7 +6190,7 @@ packages:
     resolution: {integrity: sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==}
 
   node-adodb@https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373:
-    resolution: {gitHosted: true, integrity: sha512-3kEZtRgNk7/bIZdSvjm1Lf4wbcgMvww5/WYDwezOveTxygMWCiaPzqXGY0F9ZtTFEa0ZiPiikBh5TVAw/e1kKA==, tarball: https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373}
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/nuintun/node-adodb/tar.gz/1089dae636e23ba6ca61c027b75543d095871373}
     version: 5.0.3
     engines: {node: '>=6.0.0'}
     os: [win32]
@@ -7391,10 +7347,6 @@ packages:
         optional: true
       jest-util:
         optional: true
-
-  ts-md5@1.3.1:
-    resolution: {integrity: sha512-DiwiXfwvcTeZ5wCE0z+2A9EseZsztaiZtGrtSaY5JOD7ekPnR/GoIVD5gXZAlK9Na9Kvpo9Waz5rW64WKAWApg==}
-    engines: {node: '>=12'}
 
   ts-node@10.9.2:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
@@ -9640,10 +9592,6 @@ snapshots:
 
   '@types/ms@2.1.0': {}
 
-  '@types/multer@1.4.13':
-    dependencies:
-      '@types/express': 4.17.21
-
   '@types/node-fetch@2.6.13':
     dependencies:
       '@types/node': 22.19.21
@@ -10632,13 +10580,6 @@ snapshots:
       - supports-color
 
   concat-map@0.0.1: {}
-
-  concat-stream@1.6.2:
-    dependencies:
-      buffer-from: 1.1.2
-      inherits: 2.0.4
-      readable-stream: 2.3.8
-      typedarray: 0.0.6
 
   concat-stream@2.0.0:
     dependencies:
@@ -12649,10 +12590,6 @@ snapshots:
 
   mkdirp-classic@0.5.3: {}
 
-  mkdirp@0.5.6:
-    dependencies:
-      minimist: 1.2.8
-
   mkdirp@1.0.4: {}
 
   module-details-from-path@1.0.4: {}
@@ -12685,24 +12622,7 @@ snapshots:
     optionalDependencies:
       msgpackr-extract: 3.0.4
 
-  multer@1.4.5-lts.1:
-    dependencies:
-      append-field: 1.0.0
-      busboy: 1.6.0
-      concat-stream: 1.6.2
-      mkdirp: 0.5.6
-      object-assign: 4.1.1
-      type-is: 1.6.18
-      xtend: 4.0.2
-
   multer@2.1.1:
-    dependencies:
-      append-field: 1.0.0
-      busboy: 1.6.0
-      concat-stream: 2.0.0
-      type-is: 1.6.18
-
-  multer@2.2.0:
     dependencies:
       append-field: 1.0.0
       busboy: 1.6.0
@@ -14083,8 +14003,6 @@ snapshots:
       '@jest/types': 30.4.1
       babel-jest: 29.7.0(@babel/core@7.29.7)
       jest-util: 30.0.5
-
-  ts-md5@1.3.1: {}
 
   ts-node@10.9.2(@swc/core@1.15.41)(@types/node@22.19.21)(typescript@5.8.3):
     dependencies:

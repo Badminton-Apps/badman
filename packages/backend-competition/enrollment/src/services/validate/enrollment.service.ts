@@ -35,7 +35,7 @@ import {
 import { PartialType, PickType } from "@nestjs/graphql";
 import { PlayerClubRule } from "./rules/player-club.rule";
 import { TeamBaseGenderRule } from "./rules/team-base-gender.rule";
-import { Md5 } from "ts-md5";
+import { validationMessageId } from "./validation-id";
 import { IndexCalculationService } from "../index-calculation/index-calculation.service";
 import {
   IndexCalculationContributingPlayer,
@@ -388,7 +388,7 @@ export class EnrollmentValidationService {
         ?.map((r) => ({
           ...r,
           // hash of the error as an id
-          id: Md5.hashStr(JSON.stringify(r)),
+          id: validationMessageId(r),
         }))
         .filter((error, index, self) => {
           return index === self.findIndex((e) => e?.id === error?.id);
@@ -398,7 +398,7 @@ export class EnrollmentValidationService {
         ?.map((r) => ({
           ...r,
           // hash of the error as an id
-          id: Md5.hashStr(JSON.stringify(r)),
+          id: validationMessageId(r),
         }))
         .filter((warning, index, self) => {
           return index === self.findIndex((e) => e?.id === warning?.id);

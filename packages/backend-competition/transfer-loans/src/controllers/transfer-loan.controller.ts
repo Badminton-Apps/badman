@@ -2,7 +2,6 @@ import { File, UploadGuard } from "@badman/backend-utils";
 import { MultipartValue, MultipartFile } from "@fastify/multipart";
 import { Controller, Logger, Post, Res, UseGuards } from "@nestjs/common";
 import { FastifyReply } from "fastify";
-import "multer";
 import { ChangeTransferGuard } from "../guards";
 import { LoansService } from "../services/loans.service.ts";
 import { TransferService } from "../services/transfers.service";
