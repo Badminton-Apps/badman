@@ -15,15 +15,7 @@ export enum Sync {
   ScheduleSyncTournamentEvent = "ScheduleSyncTournamentEvent",
   ScheduleSyncTournamentSubEvent = "ScheduleSyncTournamentSubEvent",
   ScheduleSyncTournamentDraw = "ScheduleSyncTournamentDraw",
-  ScheduleSyncTournamentDrawStanding = "ScheduleSyncTournamentDrawStanding",
   ScheduleSyncTournamentGame = "ScheduleSyncTournamentMatch",
-
-  ScheduleSyncCompetitionEvent = "ScheduleSyncCompetitionEvent",
-  ScheduleSyncCompetitionSubEvent = "ScheduleSyncCompetitionSubEvent",
-  ScheduleSyncCompetitionDraw = "ScheduleSyncCompetitionDraw",
-  ScheduleSyncCompetitionDrawStanding = "ScheduleSyncCompetitionDrawStanding",
-  ScheduleSyncCompetitionEncounter = "ScheduleSyncCompetitionEncounter",
-  ScheduleSyncCompetitionGame = "ScheduleSyncCompetitionGame",
 
   ScheduleRecalculateStandingCompetitionEvent = "ScheduleRecalculateStandingCompetitionEvent",
   ScheduleRecalculateStandingCompetitionSubEvent = "ScheduleRecalculateStandingCompetitionSubEvent",
@@ -37,14 +29,5 @@ export enum Sync {
 
   ProcessSyncTournamentGame = "ProcessSyncTournamentMatch",
 
-  ProcessSyncCompetitionEvent = "ProcessSyncCompetitionEvent",
-  ProcessSyncCompetitionSubEvent = "ProcessSyncCompetitionSubEvent",
-  ProcessSyncCompetitionDraw = "ProcessSyncCompetitionDraw",
   ProcessSyncCompetitionDrawStanding = "ProcessSyncCompetitionDrawStanding",
-  ProcessSyncCompetitionEncounter = "ProcessSyncCompetitionEncounter",
-  ProcessSyncCompetitionGame = "ProcessSyncCompetitionGame",
-
-  ProcessRecalculateStandingCompetitionEvent = "ProcessRecalculateStandingCompetitionEvent",
-  ProcessRecalculateStandingCompetitionSubEvent = "ProcessRecalculateStandingCompetitionSubEvent",
-  ProcessRecalculateStandingCompetitionDraw = "ProcessRecalculateStandingCompetitionDraw",
 }
