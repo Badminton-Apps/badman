@@ -9,8 +9,9 @@ import {
 import { StepProcessor, StepOptions } from "../../../../processing";
 import { DrawStepData } from "./draw";
 import { EncounterStepData } from "./encounter";
-import { runParallel, sortStanding } from "@badman/utils";
+import { GameLinkType, runParallel, sortStanding } from "@badman/utils";
 import { Logger } from "@nestjs/common";
+import { Op } from "sequelize";
 
 export interface StandingStepOptions {
   newGames?: boolean;
@@ -52,6 +53,14 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
 
     const teams = await this._getTeams(draw, encounters);
     const standings = await this._getStanding(draw, teams);
+
+    const games = await Game.findAll({
+      where: {
+        linkId: { [Op.in]: encounters.map((e) => e.id) },
+        linkType: GameLinkType.COMPETITION,
+      },
+      transaction: this.transaction,
+    });
 
     // Only reset if we are running from start
     if (!this.standingOptions.newGames) {
@@ -110,7 +119,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         awayStanding.points++;
       }
 
-      const encoutnerGames = this.games?.filter((g) => g.linkId === encounter.id) ?? [];
+      const encoutnerGames = games.filter((g) => g.linkId === encounter.id);
 
       for (const game of encoutnerGames ?? []) {
         if (game.winner == 1) {
