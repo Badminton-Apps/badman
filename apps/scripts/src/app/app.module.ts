@@ -1,8 +1,6 @@
 import { join } from "path";
 import { DatabaseModule } from "@badman/backend-database";
 import { EnrollmentModule } from "@badman/backend-enrollment";
-import { PupeteerModule } from "@badman/backend-pupeteer";
-import { VisualModule } from "@badman/backend-visual";
 import { configSchema, load } from "@badman/utils";
 import { Logger, Module, OnModuleInit } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
@@ -23,8 +21,6 @@ import { RecalculateEntryIndexService, TwizzitToPlayerDbService } from "./script
     }),
     DatabaseModule,
     EnrollmentModule,
-    PupeteerModule,
-    VisualModule,
   ],
 })
 export class ScriptModule implements OnModuleInit {
