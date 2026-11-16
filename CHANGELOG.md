@@ -8,6 +8,40 @@
 
 - Arno Soontjens @ArnoSoontjens
 
+## [7.2.0](https://github.com/Badminton-Apps/badman/compare/v7.1.2...v7.2.0) (2026-11-16)
+
+
+### Features
+
+* **database:** log deleted competition games ([2cb9f19](https://github.com/Badminton-Apps/badman/commit/2cb9f1969b9ebbe4444422f9700a8ee275ed13e6))
+* **i18n:** add create-new-player strings to club add-player dialog ([722bc67](https://github.com/Badminton-Apps/badman/commit/722bc671208d8a587d96527815006f208d4f9c94))
+* **i18n:** add existingPlayer and level-range placeholders to add-player dialog ([4842792](https://github.com/Badminton-Apps/badman/commit/484279263bd3c6e3db6eda041d76460f55c9f144))
+* **player:** accept optional start levels on createPlayer ([856ae62](https://github.com/Badminton-Apps/badman/commit/856ae6273287b4a3c56b3cdd1390df109a34282a))
+* **player:** accept optional start levels on createPlayer (BAD-351) ([6fbbdfb](https://github.com/Badminton-Apps/badman/commit/6fbbdfbc4da03d466e4dc403f59823bbffe02229))
+* **sync:** log result pushes and skips ([06aba30](https://github.com/Badminton-Apps/badman/commit/06aba3061f6ae3f30834c26fe886ffb3ca593909))
+
+
+### Bug Fixes
+
+* **api:** limit result edits to 36 hours ([ab7f543](https://github.com/Badminton-Apps/badman/commit/ab7f543460afc1c600147159250cf682f27bb7ca))
+* **api:** request result push after commit ([dfda373](https://github.com/Badminton-Apps/badman/commit/dfda3733249b85a9fd9b7dd028380a552be401fe))
+* **games:** keep finished results when generating ([c090eb0](https://github.com/Badminton-Apps/badman/commit/c090eb096d3abf9b04143d33bfbbe5f11f010996))
+* **i18n:** add fr_BE assemblyMatrix betterMeta tooltip ([e0ecaf9](https://github.com/Badminton-Apps/badman/commit/e0ecaf913df7e123fe84ee66964d3885585cc9eb))
+* **i18n:** close strong tag in fr_BE player-order-doubles ([c47f61d](https://github.com/Badminton-Apps/badman/commit/c47f61dff3e58dd85456a803206bcbfea2b55c25))
+* **i18n:** close strong tag in player-club-none ([9e88967](https://github.com/Badminton-Apps/badman/commit/9e889671c1ff75dc34dba1a51a0c4cf21824cf85))
+* **i18n:** repair malformed tags and missing fr tooltip in translations (BAD-355) ([9c32cfd](https://github.com/Badminton-Apps/badman/commit/9c32cfd196fdacff92369d37ec73dee328c7a834))
+* require permissions on encounter staff, assembly and transfer-loan endpoints ([#1154](https://github.com/Badminton-Apps/badman/issues/1154)) ([41781af](https://github.com/Badminton-Apps/badman/commit/41781af6941168b1e9556a69266c8c163b96cac2))
+* stop result overwrites on toernooi.nl (BAD-352) ([88c1cbe](https://github.com/Badminton-Apps/badman/commit/88c1cbe645f4797c4fa7fecf28f1eb4258f8cd0e))
+* **sync:** fail push when form rows are missing ([3145c97](https://github.com/Badminton-Apps/badman/commit/3145c973242bb90e2507767f248f0ef49d526d8b))
+* **sync:** keep encounter date without match time ([8d265d6](https://github.com/Badminton-Apps/badman/commit/8d265d690649d449375cc85626ce9b407687838d))
+* **sync:** remove open worker admin endpoints ([9ad3c8e](https://github.com/Badminton-Apps/badman/commit/9ad3c8e14ac99d3a1f3de3535ad4bbb902bad2d5))
+* **sync:** retry failed pushes in retry cron ([7843dae](https://github.com/Badminton-Apps/badman/commit/7843dae25d1dac97fad2742b115abc7daa5d9d3e))
+* **sync:** retry newest failed pushes first ([35683f5](https://github.com/Badminton-Apps/badman/commit/35683f5d6c97019a3fb8c9268226d2014847c952))
+* **sync:** skip push when toernooi.nl has a result ([0ba2353](https://github.com/Badminton-Apps/badman/commit/0ba2353065eac9c6e032663a198a1fdf203d3710))
+* **sync:** stop pushes for closed seasons ([8e44080](https://github.com/Badminton-Apps/badman/commit/8e44080ea44c69392ff56c306efca2dd39948521))
+* **sync:** stop remapping federation memberIds ([3d88180](https://github.com/Badminton-Apps/badman/commit/3d881805045558f4a1004dbf2f798401490d6a5b))
+* **sync:** stop remapping federation memberIds ([374227c](https://github.com/Badminton-Apps/badman/commit/374227c3ab3caf46b62ab13dee506183da3452f3))
+
 ## [7.1.2](https://github.com/Badminton-Apps/badman/compare/v7.1.1...v7.1.2) (2026-10-12)
 
 
