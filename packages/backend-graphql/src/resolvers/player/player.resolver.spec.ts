@@ -274,3 +274,90 @@ describe("PlayerTeamResolver — RankingSystemService integration", () => {
     expect(rankingSystemService.getById).toHaveBeenCalledWith(SYS_A.id);
   });
 });
+
+describe("PlayersResolver — createPlayer", () => {
+  let resolver: PlayersResolver;
+  let transaction: { commit: jest.Mock; rollback: jest.Mock };
+  let findOrCreate: jest.SpyInstance;
+
+  const userWith = (allowed: boolean) =>
+    ({ hasAnyPermission: jest.fn().mockResolvedValue(allowed) }) as unknown as Player;
+  const data = {
+    firstName: "Stiene",
+    lastName: "Wauters",
+    memberId: "50560484",
+    gender: "F",
+  } as const;
+
+  beforeEach(async () => {
+    transaction = { commit: jest.fn(), rollback: jest.fn() };
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PlayersResolver,
+        { provide: Sequelize, useValue: { transaction: jest.fn().mockResolvedValue(transaction) } },
+        { provide: PointsService, useValue: {} },
+        { provide: RankingSystemService, useValue: {} },
+        { provide: PlayerAssociationService, useValue: {} },
+      ],
+    }).compile();
+
+    resolver = module.get<PlayersResolver>(PlayersResolver);
+
+    jest.spyOn(RankingSystem, "findOne").mockResolvedValue(PRIMARY);
+    jest
+      .spyOn(Player, "create")
+      .mockImplementation(async (values) => ({ id: "player-1", ...(values as object) }) as never);
+    findOrCreate = jest
+      .spyOn(RankingLastPlace, "findOrCreate")
+      .mockResolvedValue([{}, true] as never);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const lastPlaceDefaults = () => findOrCreate.mock.calls[0][0].defaults;
+
+  it("rejects users without add:player", async () => {
+    await expect(resolver.createPlayer(userWith(false), data)).rejects.toThrow(
+      "You do not have permission to create a player"
+    );
+    expect(Player.create).not.toHaveBeenCalled();
+  });
+
+  it("defaults single/double/mix to the lowest level when no levels are given", async () => {
+    await resolver.createPlayer(userWith(true), data);
+
+    expect(lastPlaceDefaults()).toMatchObject({
+      playerId: "player-1",
+      systemId: PRIMARY.id,
+      single: 12,
+      double: 12,
+      mix: 12,
+      gender: "F",
+    });
+    expect(transaction.commit).toHaveBeenCalled();
+  });
+
+  it("uses the given levels and defaults only the missing ones", async () => {
+    await resolver.createPlayer(userWith(true), data, { single: 7, mix: 9 });
+
+    expect(lastPlaceDefaults()).toMatchObject({ single: 7, double: 12, mix: 9 });
+  });
+
+  it.each([0, 13, 7.5])("rejects level %p with BAD_USER_INPUT before writing", async (level) => {
+    await expect(
+      resolver.createPlayer(userWith(true), data, { double: level })
+    ).rejects.toMatchObject({ extensions: { code: "BAD_USER_INPUT", field: "double" } });
+    expect(Player.create).not.toHaveBeenCalled();
+  });
+
+  it("rolls back when the ranking write fails", async () => {
+    findOrCreate.mockRejectedValue(new Error("db down"));
+
+    await expect(resolver.createPlayer(userWith(true), data)).rejects.toThrow("db down");
+    expect(transaction.rollback).toHaveBeenCalled();
+    expect(transaction.commit).not.toHaveBeenCalled();
+  });
+});

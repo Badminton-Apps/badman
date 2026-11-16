@@ -371,7 +371,6 @@ node ../../../scripts/render.js --app=worker_ranking
 - `apps/worker/sync/src/main.ts` — bootstrap
 - `apps/worker/sync/src/app/app.module.ts` — module + boot-time cron reset
 - `apps/worker/sync/src/app/services/idle-shutdown.service.ts` — browser cleanup after idle
-- `apps/worker/sync/src/app/controllers/admin.controller.ts` — `/admin/jobs/*` queue introspection endpoints
 
 ### Release / deploy
 

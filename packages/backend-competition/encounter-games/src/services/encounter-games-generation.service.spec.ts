@@ -163,6 +163,41 @@ describe("EncounterGamesGenerationService", () => {
       }
     });
 
+    it("creates missing slots but never rewrites existing games of a finished encounter", async () => {
+      const finishedEncounter = { ...mockEncounter, finished: true };
+      const unplayed = { id: "game-3", order: 3, gameType: "S", winner: 0, update: jest.fn() };
+      const existingGames = [
+        ...[1, 2, 4, 5, 6].map((order) => ({
+          id: `game-${order}`,
+          order,
+          winner: 1,
+          update: jest.fn(),
+        })),
+        unplayed,
+      ];
+      (EncounterCompetition.findByPk as jest.Mock).mockResolvedValue(finishedEncounter);
+      (Game.findAll as jest.Mock)
+        .mockResolvedValueOnce(existingGames)
+        .mockResolvedValueOnce(Array.from({ length: 8 }, (_, i) => ({ order: i + 1 })));
+      (Game.create as jest.Mock).mockImplementation((data: Record<string, unknown>) =>
+        Promise.resolve({ id: `game-${data["order"]}`, ...data })
+      );
+      (GamePlayerMembership.create as jest.Mock).mockResolvedValue({});
+      (RankingSystem.findOne as jest.Mock).mockResolvedValue({ id: "system-uuid" });
+      const { RankingLastPlace } = require("@badman/backend-database");
+      (RankingLastPlace.findOne as jest.Mock).mockResolvedValue(null);
+
+      await service.generateGames(encounterId);
+
+      expect((Game.create as jest.Mock).mock.calls.map(([data]) => data.order)).toEqual([7, 8]);
+      expect(unplayed.update).not.toHaveBeenCalled();
+      expect(GamePlayerMembership.destroy).not.toHaveBeenCalled();
+      expect(GamePlayerMembership.create).not.toHaveBeenCalledWith(
+        expect.objectContaining({ gameId: "game-3" }),
+        expect.anything()
+      );
+    });
+
     it("should throw NotFoundException when encounter is not found", async () => {
       (EncounterCompetition.findByPk as jest.Mock).mockResolvedValue(null);
 

@@ -91,7 +91,8 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   ) {
     // Ensure all 8 local game slots exist. Runs BEFORE the sync guards so
     // the invariant holds even when we skip the toernooi merge (e.g. encounter
-    // is in the future or finished). Idempotent — skips orders already present.
+    // is in the future or finished). Idempotent — skips orders already present;
+    // for a finished encounter existing games are never rewritten.
     // Requires a home team to resolve assembly positions; skip with a warning
     // otherwise rather than crashing the whole event sync.
     if (encounter.homeTeamId) {

@@ -1799,6 +1799,9 @@ export type I18nTranslations = {
                         "adminSettings": string;
                         "copyCompetitions": string;
                         "adminCompetitions": string;
+                        "dev": string;
+                        "devQueue": string;
+                        "devLogin": string;
                     };
                     "auth": {
                         "logIn": string;
@@ -2508,10 +2511,25 @@ export type I18nTranslations = {
                         "title": string;
                         "messages": {
                             "success": string;
+                            "error": string;
+                            "createSuccess": string;
+                            "createError": string;
+                            "linkError": string;
                         };
                         "buttons": {
                             "cancel": string;
                             "addPlayer": string;
+                            "createPlayer": string;
+                            "back": string;
+                        };
+                        "createTitle": string;
+                        "noResults": string;
+                        "existingPlayer": string;
+                        "levelsTitle": string;
+                        "levelsHint": string;
+                        "errors": {
+                            "required": string;
+                            "levelRange": string;
                         };
                     };
                     "twizzitOverview": string;

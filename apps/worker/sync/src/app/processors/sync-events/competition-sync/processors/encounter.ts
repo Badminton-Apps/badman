@@ -4,7 +4,7 @@ import { GameLinkType, runParallel } from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { isAfter, isEqual } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
 import { DrawStepData } from "./draw";
 import { EntryStepData } from "./entry";
@@ -133,7 +133,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
           dbEncounter = await new EncounterCompetition({
             drawId: draw.id,
             visualCode: xmlTeamMatch.Code,
-            date: matchDate,
+            date: matchDate ?? undefined,
             homeTeamId: team1?.id,
             awayTeamId: team2?.id,
           }).save({ transaction: this.transaction });
@@ -147,7 +147,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       }
 
       // Update date if needed
-      if (dbEncounter.date !== matchDate) {
+      if (dbEncounter.date !== matchDate && matchDate !== null) {
         dbEncounter.date = matchDate;
         await dbEncounter.save({ transaction: this.transaction });
       }
@@ -198,9 +198,9 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
           linkType: GameLinkType.COMPETITION,
           linkId: { [Op.in]: encounter.map((e) => e.id) },
           [Op.or]: [
-            { set1Team1: { [Op.ne]: null } },
-            { set1Team2: { [Op.ne]: null } },
-            { winner: { [Op.and]: [{ [Op.ne]: null }, { [Op.ne]: 0 }] } },
+            Sequelize.where(Sequelize.col("set1Team1"), { [Op.not]: null }),
+            Sequelize.where(Sequelize.col("set1Team2"), { [Op.not]: null }),
+            { winner: { [Op.ne]: 0 } },
           ],
         },
         attributes: ["linkId"],

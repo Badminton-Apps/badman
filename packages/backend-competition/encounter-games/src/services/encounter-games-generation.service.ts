@@ -107,7 +107,10 @@ export class EncounterGamesGenerationService {
           existingGame && (existingGame.winner == null || existingGame.winner === 0);
         const hasAssemblyData = homePlayerIds.length > 0 || awayPlayerIds.length > 0;
 
-        if (existingGame && isUnplayed) {
+        // A finished encounter holds a result confirmed in Badman: refreshing it from the
+        // assembly would replace the players the game leader entered. Missing slots are still
+        // created so a damaged result can be restored through the form.
+        if (existingGame && isUnplayed && !encounter.finished) {
           // Fix the game type if it was set incorrectly (e.g. all-MX bug for mixed teams)
           if (existingGame.gameType !== gameType) {
             await existingGame.update({ gameType }, { transaction });

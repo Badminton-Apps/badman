@@ -1,5 +1,5 @@
 // import { SocketEmitter, EVENTS } from '../../../sockets';
-import { GameStatus, GameType } from "@badman/utils";
+import { GameStatus, GameType, LoggingAction } from "@badman/utils";
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
@@ -15,6 +15,7 @@ import {
   BelongsToSetAssociationMixin,
   CreateOptions,
   CreationOptional,
+  DestroyOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -26,6 +27,8 @@ import {
   HasManySetAssociationsMixin,
   InferAttributes,
   InferCreationAttributes,
+  InstanceDestroyOptions,
+  Transaction,
   UpdateOptions,
 } from "sequelize";
 import {
@@ -33,6 +36,8 @@ import {
   AfterBulkUpdate,
   AfterCreate,
   AfterUpdate,
+  BeforeBulkDestroy,
+  BeforeDestroy,
   BelongsTo,
   BelongsToMany,
   Column,
@@ -54,6 +59,7 @@ import { RankingPoint } from "../ranking";
 import { EncounterCompetition } from "./competition/encounter-competition.model";
 import { Court } from "./court.model";
 import { GamePlayerMembership } from "./game-player.model";
+import { Logging } from "../system/logging.model";
 import { DrawTournament } from "./tournament";
 
 export const WINNER_STATUS = {
@@ -204,6 +210,61 @@ export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<G
     for (const instance of instances) {
       await Game.onUpdate(instance, options);
     }
+  }
+
+  static async logDeletedGames(games: Game[], transaction?: Transaction | null) {
+    // Games are hard-deleted and their players cascade with them, so this log is the only trace
+    // left of a competition result once it is gone. Stopgap until games get a soft delete.
+    const competitionGames = games.filter((game) => game.linkType === "competition");
+    if (competitionGames.length === 0) {
+      return;
+    }
+
+    const memberships = await GamePlayerMembership.findAll({
+      where: { gameId: competitionGames.map((game) => game.id) },
+      transaction,
+    });
+
+    await Logging.bulkCreate(
+      competitionGames.map((game) => ({
+        action: LoggingAction.GameDeleted,
+        meta: {
+          gameId: game.id,
+          linkId: game.linkId,
+          linkType: game.linkType,
+          order: game.order,
+          gameType: game.gameType,
+          status: game.status,
+          winner: game.winner,
+          sets: [
+            [game.set1Team1, game.set1Team2],
+            [game.set2Team1, game.set2Team2],
+            [game.set3Team1, game.set3Team2],
+          ],
+          visualCode: game.visualCode,
+          playedAt: game.playedAt,
+          players: memberships
+            .filter((membership) => membership.gameId === game.id)
+            .map(({ playerId, team, player }) => ({ playerId, team, player })),
+        },
+      })),
+      { transaction }
+    );
+  }
+
+  @BeforeDestroy
+  static async gameDestroyed(instance: Game, options: InstanceDestroyOptions) {
+    await Game.logDeletedGames([instance], options.transaction);
+  }
+
+  @BeforeBulkDestroy
+  static async gamesDestroyed(options: DestroyOptions<Game>) {
+    // With individualHooks Sequelize also runs gameDestroyed for every game.
+    if (options.individualHooks) {
+      return;
+    }
+    const games = await Game.findAll({ where: options.where, transaction: options.transaction });
+    await Game.logDeletedGames(games, options.transaction);
   }
 
   static async onUpdate(game: Game, options: CreateOptions | UpdateOptions) {
