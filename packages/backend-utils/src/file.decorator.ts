@@ -1,11 +1,10 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 import { FastifyRequest } from "fastify";
 import { MultipartFields } from "@fastify/multipart";
-import "multer";
 
 export const File = createParamDecorator((_data: unknown, ctx: ExecutionContext) => {
   const req = ctx.switchToHttp().getRequest() as FastifyRequest & {
-    incomingFile: Express.Multer.File;
+    incomingFile: MultipartFile;
   };
   const file = req?.["incomingFile"];
   return file;

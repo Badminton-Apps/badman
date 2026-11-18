@@ -1,4 +1,4 @@
-import { EncounterChange, EncounterChangeDate, Location, Player } from "@badman/backend-database";
+import { EncounterChange, EncounterChangeDate, Player } from "@badman/backend-database";
 import { NotFoundException } from "@nestjs/common";
 import {
   Args,
@@ -82,13 +82,5 @@ export class EncounterChangeCompetitionResolver {
     @Args("input") input: FinalizeEncounterChangeInput
   ): Promise<FinalizeEncounterChangeResult> {
     return this.encounterChangeService.finalize(user, input);
-  }
-}
-
-@Resolver(() => EncounterChangeDate)
-export class EncounterChangeDateCompetitionResolver {
-  @ResolveField(() => Location)
-  async dates(@Parent() encounterChangeDate: EncounterChangeDate): Promise<Location> {
-    return encounterChangeDate.getLocation();
   }
 }

@@ -65,8 +65,6 @@ apollo.config.js
 .obsidian/workspace.json
 files/
 
-playwright-report/
-blob-report/
 typesense-data/
 #Claude
 .claude/settings.local.json

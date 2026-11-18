@@ -4,7 +4,6 @@
   "dependencies": {
     "@badman/backend-database": "workspace:*",
     "@badman/backend-compile": "workspace:*",
-    "@badman/backend-change-encounter": "workspace:*",
     "@badman/utils": "workspace:*",
     "tslib": "^2.8.1",
     "@nestjs/common": "^11.0.0",
@@ -28,5 +27,8 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
+  },
+  "devDependencies": {
+    "pug": "^3.0.3"
   }
 }

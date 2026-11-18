@@ -1,4 +1,3 @@
-// start:ng42.barrel
 export * from "./eventCompetitionBuilder";
 export * from "./eventCompetitionDrawBuilder";
 export * from "./eventCompetitionEncounterBuilder";
@@ -14,4 +13,3 @@ export * from "./systemGroupBuilder";
 export * from "./teamBuilder";
 export * from "./clubBuilder";
 export * from "./rankingPlaceBuilder";
-// end:ng42.barrel
