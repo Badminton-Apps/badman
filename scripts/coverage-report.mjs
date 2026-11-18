@@ -134,8 +134,7 @@ function main() {
 
   // Ctrl-C reaches the child process too; keeping node alive lets `finally`
   // remove the worktree instead of leaving it registered in .git.
-  let interrupted = false;
-  process.on("SIGINT", () => (interrupted = true));
+  process.on("SIGINT", () => {});
 
   try {
     console.error(`> worktree for ${commit} in ${worktree}`);
@@ -184,8 +183,14 @@ function main() {
         worktree,
         "inherit"
       );
-    } catch {
-      if (interrupted) throw new Error("interrupted");
+    } catch (err) {
+      // execFileSync blocks the event loop, so a SIGINT listener can't flag the
+      // interrupt in time; the child's exit signal can.
+      if (err.signal === "SIGINT") {
+        console.error("> interrupted");
+        process.exitCode = 130;
+        return; // `finally` still removes the worktree
+      }
       console.error("> some test tasks failed; the report below includes what ran");
     }
 
