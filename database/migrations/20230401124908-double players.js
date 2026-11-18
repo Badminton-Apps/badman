@@ -17,14 +17,18 @@ module.exports = {
           return players.filter((p) => p.memberId === player.memberId).length > 1;
         });
 
-        const rankingLastPlaces = await queryInterface.sequelize.query(
-          `SELECT * from "ranking"."RankingLastPlaces" WHERE "playerId" IN (:ids)`,
-          {
-            replacements: { ids: playersWithSameMemberId.map((p) => p.id) },
-            type: queryInterface.sequelize.QueryTypes.SELECT,
-            transaction: t,
-          }
-        );
+        // `IN ()` is invalid SQL, so skip the lookup when there are no duplicates (e.g. a fresh database)
+        const rankingLastPlaces =
+          playersWithSameMemberId.length === 0
+            ? []
+            : await queryInterface.sequelize.query(
+                `SELECT * from "ranking"."RankingLastPlaces" WHERE "playerId" IN (:ids)`,
+                {
+                  replacements: { ids: playersWithSameMemberId.map((p) => p.id) },
+                  type: queryInterface.sequelize.QueryTypes.SELECT,
+                  transaction: t,
+                }
+              );
 
         console.log(`Fixing ${playersWithSameMemberId.length} players with same memberId`);
 

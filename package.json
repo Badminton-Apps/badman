@@ -20,6 +20,7 @@
     "run:belgium-flanders-points": "node ./apps/worker/belgium/flanders/points/dist/main.js",
     "run:ranking": "concurrently \"npm run run:worker\" \"npm run run:belgium-flanders-places\" \"npm run run:belgium-flanders-points\"",
     "docker:up": "docker compose -f docker-compose.dev.yml up -d",
+    "db:migrate": "npx --yes sequelize-cli db:migrate",
     "seed:build-utils": "tsc --project database/seeders/utils/tsconfig.json",
     "seed:test-data": "npm run seed:build-utils && npx sequelize-cli db:seed --seed 20250101000000-seed-test-data.js",
     "seed:test-data:undo": "npx sequelize-cli db:seed:undo --seed 20250101000000-seed-test-data.js",

@@ -15,6 +15,11 @@ module.exports = {
 
         console.log(`Found ${comments?.length} comments`);
 
+        // nothing to move (e.g. a fresh database); `id in ('')` would fail the uuid cast
+        if (!comments?.length) {
+          return;
+        }
+
         const encounterChanges = await queryInterface.sequelize.query(
           `SELECT * FROM "event"."EncounterChanges" where id in ('${comments
             ?.map((comment) => comment.linkId)

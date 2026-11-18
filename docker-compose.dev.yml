@@ -3,12 +3,15 @@ services:
   # Databases
   postgres:
     image: postgis/postgis:16-master
+    platform: linux/amd64 # postgis publishes no arm64 image; runs under Rosetta on Apple Silicon
     shm_size: 1gb
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_DB: postgres
+      # Only used when the data volume is first initialised; changing them
+      # later has no effect on an existing volume.
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-badman}
+      POSTGRES_USER: ${DB_USER:-badman}
+      POSTGRES_DB: ${DB_DATABASE:-badman}
       POSTGRES_MAX_CONNECTIONS: 500
     ports:
       - "0.0.0.0:5432:5432"
@@ -16,7 +19,7 @@ services:
       - api
       - postgres
     volumes:
-      - db-data:/var/lib/postgresql-16/data
+      - db-data:/var/lib/postgresql/data
       - ./database/backup:/home/backup
       - ./database/scripts:/home/scripts
 
@@ -37,8 +40,8 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
       GUNICORN_ACCESS_LOGFILE: "/dev/null"
       PGADMIN_CONFIG_SERVER_MODE: "False"
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER:-badman}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-badman}
       PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: "False"
     volumes:
       - db-admin:/var/lib/pgadmin
