@@ -1,4 +1,3 @@
-// start:ng42.barrel
 export * from "./club";
 export * from "./comment";
 export * from "./event";
@@ -11,4 +10,3 @@ export * from "./security";
 export * from "./team";
 export * from "./notification";
 export * from "./faq";
-// end:ng42.barrel

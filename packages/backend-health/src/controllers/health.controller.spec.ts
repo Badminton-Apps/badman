@@ -1,18 +1,24 @@
-import { INestApplication } from "@nestjs/common";
+import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify";
 import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { HealthModule } from "../health.module";
 
 describe("HealthController", () => {
-  let app: INestApplication;
+  let app: NestFastifyApplication;
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
       imports: [HealthModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    // Same HTTP adapter as the API (apps/api/src/main.ts).
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
   it("should be defined", () => {
     expect(app).toBeDefined();
