@@ -166,7 +166,18 @@ describe("ExportController", () => {
       expect(teamsService.getTeams).not.toHaveBeenCalled();
     });
 
-    it("throws ForbiddenException when user lacks edit:competition", async () => {
+    it("checks the export-teams:competition claim", async () => {
+      const hasAnyPermission = jest.fn().mockResolvedValue(true);
+
+      await controller.getTeams(mockUser({ hasAnyPermission } as any), mockRes(), {
+        eventId: VALID_EVENT_ID,
+        format: "xlsx",
+      });
+
+      expect(hasAnyPermission).toHaveBeenCalledWith(["export-teams:competition"]);
+    });
+
+    it("throws ForbiddenException when user lacks export-teams:competition", async () => {
       const res = mockRes();
 
       await expect(
