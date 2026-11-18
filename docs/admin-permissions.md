@@ -46,35 +46,29 @@ FROM security."Claims"
 ORDER BY type, name;
 ```
 
-Known claim names as of 2026-06-08:
+Known claim names as of 2026-11-18 (unused claims were removed in BAD-393):
 
-| Name                              | Type   | Purpose                               |
-| --------------------------------- | ------ | ------------------------------------- |
-| `add:faq`                         | global | Add FAQ entries                       |
-| `add:club`                        | global | Add a new club                        |
-| `change:enrollment`               | global | Open/close enrollment settings        |
-| `change:job`                      | global | Run/edit cron jobs, inspect queues    |
-| `change:rules`                    | global | Edit ranking rules                    |
-| `change:transfer`                 | global | Accept/reject player transfers        |
-| `edit:faq`                        | global | Edit FAQ content                      |
-| `edit:ranking`                    | global | Edit ranking configuration            |
-| `edit:state`                      | global | Edit province/state data              |
-| `edit:system-settings`            | global | Edit system settings                  |
-| `enlist-any-event:team`           | global | Enlist any team into any event        |
-| `export-exceptions:competition`   | global | Export competition exceptions         |
-| `export-locations:competition`    | global | Export competition locations          |
-| `export-planner:competition`      | global | Export competition planner            |
-| `export-teams:competition`        | global | Export competition teams              |
-| `re-sync:points`                  | global | Re-sync ranking points                |
-| `sync:competition`                | global | Sync competition data                 |
-| `sync:tournament`                 | global | Sync tournament data                  |
-| `view-any:enrollment-competition` | global | View any club's enrollment            |
-| `view-any:enrollment-tournament`  | global | View any club's tournament enrollment |
-| `edit:club`                       | club   | Edit own club                         |
-| `edit-any:club`                   | club   | Edit any club                         |
-| `edit:location`                   | club   | Edit locations in own club            |
-| `view:enrollment-competition`     | club   | View own club's enrollment            |
-| `view:enrollment-tournament`      | club   | View own club's tournament enrollment |
+| Name                              | Type   | Purpose                                                 |
+| --------------------------------- | ------ | ------------------------------------------------------- |
+| `add:faq`                         | global | Add FAQ entries                                         |
+| `add:club`                        | global | Add a new club                                          |
+| `change:enrollment`               | global | Open/close enrollment settings                          |
+| `change:job`                      | global | Run/edit cron jobs, inspect queues                      |
+| `change:transfer`                 | global | Accept/reject player transfers                          |
+| `edit:faq`                        | global | Edit FAQ content                                        |
+| `edit:ranking`                    | global | Edit ranking systems and players' rankings              |
+| `edit:system-settings`            | global | Edit system settings                                    |
+| `export-exceptions:competition`   | global | Export competition exceptions                           |
+| `export-locations:competition`    | global | Export competition locations                            |
+| `export-teams:competition`        | global | Export competition teams                                |
+| `re-sync:points`                  | global | Re-sync ranking points                                  |
+| `sync:competition`                | global | Sync competition data                                   |
+| `sync:tournament`                 | global | Sync tournament data                                    |
+| `view-any:enrollment-competition` | global | View any club's enrollment (frontend only, see BAD-396) |
+| `edit:club`                       | club   | Edit own club                                           |
+| `edit-any:club`                   | club   | Edit any club                                           |
+| `edit:location`                   | club   | Edit locations in own club                              |
+| `view:enrollment-competition`     | club   | View own club's enrollment (frontend only, see BAD-396) |
 
 > Always run the query above to get the current list — new claims are added via migrations and may not appear here.
 

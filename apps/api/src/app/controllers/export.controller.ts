@@ -80,7 +80,7 @@ export class ExportController {
     if (!user?.id) {
       throw new UnauthorizedException("Login required");
     }
-    if (!(await user.hasAnyPermission(["edit:competition"]))) {
+    if (!(await user.hasAnyPermission(["export-teams:competition"]))) {
       throw new ForbiddenException("Insufficient permissions");
     }
 
