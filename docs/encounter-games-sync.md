@@ -2,7 +2,7 @@
 
 How competition encounter games are pulled from toernooi.nl (Visual Reality) into the database, how local entries interact with synced data, and how the "always 8 games per encounter" invariant is enforced.
 
-> **Which pipeline runs in production?** The v1 sync chain under `apps/worker/sync/src/app/processors/sync-events/competition-sync/`. The v2 pipeline under `sync-events-v2/competition/` is a partial migration — its processors are not wired up in `app.module.ts` and no entry-point queues `Sync.ProcessSyncCompetitionEvent`. Ongoing v2 work lives on branch `feat/v2-competition-sync`.
+> **Which pipeline runs in production?** The v1 sync chain under `apps/worker/sync/src/app/processors/sync-events/competition-sync/`. The unfinished v2 competition pipeline was removed from `develop`; it lives on branch `feat/v2-competition-sync`. Only its standing processor and recalculate-standing schedulers remain under `sync-events-v2/competition/`.
 
 ---
 

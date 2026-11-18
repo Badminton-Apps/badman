@@ -155,6 +155,8 @@ The `TransactionManager` (`libs/backend/queue/src/services/transaction-manger.se
 
 #### Step-by-Step Pipeline
 
+> **Note:** the competition steps below describe the v2 job pipeline, which is **not** part of `develop`. It was removed from the main line and lives on branch `feat/v2-competition-sync`. Competitions are synced by the v1 `SyncEvents` processor (`apps/worker/sync/src/app/processors/sync-events/competition-sync/`). Of the v2 competition code, only the standing step (`ProcessSyncCompetitionDrawStanding`) and the recalculate-standing schedulers remain; tournaments use the v2 tournament processors.
+
 **Step 1: Event** (`ProcessSyncCompetitionEvent`)
 - Input: `eventCode` (visual code from toernooi.nl)
 - Fetches tournament metadata from `VisualService`
