@@ -10,6 +10,7 @@
     "test:affected": "turbo run test --affected",
     "test:coverage": "turbo run test --filter=worker-sync -- --coverage",
     "test:coverage:all": "turbo run test -- --coverage",
+    "test:coverage:report": "node scripts/coverage-report.mjs",
     "lint": "turbo run lint",
     "dev": "turbo run dev",
     "start:server": "turbo run dev --filter=api --filter=worker-sync",

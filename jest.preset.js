@@ -22,6 +22,9 @@ module.exports = {
     ],
   },
   passWithNoTests: true,
+  // Some builds copy spec files into dist/ (backend-mailing's templates);
+  // without this, those run a second time whenever dist/ happens to exist.
+  testPathIgnorePatterns: ["/node_modules/", "/dist/"],
   coverageReporters: ["html", "text", "lcov"],
   // Cold ts-jest compiles of large suites (assembly, graphql) can push the
   // first test past Jest's 5s default when the whole repo runs in parallel —

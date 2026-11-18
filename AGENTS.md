@@ -83,6 +83,13 @@ npm run seed:test-data
 # Produces: text summary per package + lcov.info under root coverage/
 pnpm test:coverage:all     # = turbo run test -- --coverage
 
+# Honest coverage number over ALL source files (untested files and packages
+# count as 0%; test:coverage:all only counts files a test imports). Runs in a
+# throwaway worktree at a commit, so uncommitted changes are not measured.
+# Prints a markdown table per package; use it for before/after comparisons.
+pnpm test:coverage:report                        # current commit
+pnpm test:coverage:report --ref <commit> --json out.json
+
 # Update coverage threshold after adding tests:
 # 1. Run: pnpm test:coverage:all
 # 2. Find the "Lines %" for backend-graphql in the output
