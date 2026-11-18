@@ -1,5 +1,4 @@
 import { ArgsType, Field, Int, InputType } from "@nestjs/graphql";
-import { Min } from "class-validator";
 import { GraphQLJSONObject } from "graphql-type-json";
 import { FindOptions, WhereOptions } from "sequelize";
 import { queryFixer } from "./queryFixer";
@@ -27,11 +26,9 @@ export class WhereArgs {
 @ArgsType()
 export class ListArgs extends WhereArgs {
   @Field(() => Int, { nullable: true })
-  @Min(0)
   skip = 0;
 
   @Field(() => Int, { nullable: true })
-  @Min(1)
   take?: number | null;
 
   @Field(() => [SortOrderType], { nullable: true })
