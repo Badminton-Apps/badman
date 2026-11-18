@@ -44,8 +44,8 @@ Deployable NestJS apps. Each builds into its own `dist/` and declares its runtim
   - Handles complex ranking algorithms
 
 - **`apps/worker/belgium/flanders/`** — Regional workers
-  - **`places/`** (`worker-belgium-flanders-places`) — Manages venue and location data for the Flanders region
-  - **`points/`** (`worker-belgium-flanders-points`) — Calculates region-specific point systems
+  - **`places/`** (`worker-belgium-flanders-places`) — Calculates ranking places (levels) for the Flanders ranking system
+  - **`points/`** (`worker-belgium-flanders-points`) — Calculates ranking points from games for the Flanders ranking system
 
 #### Development & Testing
 
@@ -66,9 +66,7 @@ The import alias is the package's `name` field and **does not always match its d
 | `packages/backend-graphql/`       | `@badman/backend-graphql` — all resolvers, scalars, query utilities    |
 | `packages/backend-cache/`         | `@badman/backend-cache` — Redis caching layer                          |
 | `packages/backend-queue/`         | `@badman/backend-queue` — Bull queue setup and queue name constants    |
-| `packages/backend-cluster/`       | `@badman/backend-cluster`                                              |
 | `packages/backend-orchestrator/`  | `@badman/backend-orchestrator`                                         |
-| `packages/backend-micro/`         | `@badman/backend-micro`                                                |
 | `packages/backend-health/`        | `@badman/backend-health`                                               |
 | `packages/backend-logging/`       | `@badman/backend-logging`                                              |
 
@@ -91,7 +89,6 @@ The import alias is the package's `name` field and **does not always match its d
 | ------------------------------------------- | ------------------------------------------------------- |
 | `packages/backend-twizzit/`                 | `@badman/backend-twizzit` — Twizzit tournament software |
 | `packages/backend-visual/`                  | `@badman/backend-visual` — VR/Visual federation API     |
-| `packages/backend-belgium/flanders/games/`  | `@badman/belgium-flanders-games`                        |
 | `packages/backend-belgium/flanders/places/` | `@badman/belgium-flanders-places`                       |
 | `packages/backend-belgium/flanders/points/` | `@badman/belgium-flanders-points`                       |
 

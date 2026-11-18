@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 "use strict";
-
-const { query } = require("express");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -39,11 +36,6 @@ module.exports = {
         },
         { transaction: t }
       );
-      try {
-      } catch (err) {
-        console.error("We errored with", err?.message ?? err);
-        t.rollback();
-      }
     });
   },
 
