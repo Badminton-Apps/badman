@@ -28,5 +28,8 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
+  },
+  "devDependencies": {
+    "pug": "^3.0.3"
   }
 }

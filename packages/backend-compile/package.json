@@ -11,7 +11,8 @@
     "puppeteer": "^23.11.1",
     "consolidate": "^1.0.4",
     "moment-timezone": "^0.5.47",
-    "nestjs-i18n": "~10.5.1"
+    "nestjs-i18n": "~10.5.1",
+    "pug": "^3.0.3"
   },
   "type": "commonjs",
   "main": "./dist/index.js",
