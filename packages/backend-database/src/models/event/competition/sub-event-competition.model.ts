@@ -244,9 +244,3 @@ export class SubEventCompetitionUpdateInput extends PartialType(
   ] as const),
   InputType
 ) {}
-
-@InputType()
-export class SubEventCompetitionNewInput extends PartialType(
-  OmitType(SubEventCompetitionUpdateInput, ["id"] as const),
-  InputType
-) {}

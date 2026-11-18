@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_FILTER } from "@nestjs/core";
 import { SentryModule } from "@sentry/nestjs/setup";
 import { PrematureCloseFilter } from "./filters/premature-close.filter";
-import { AppController, ImageController } from "./controllers";
+import { AppController } from "./controllers";
 import { CpController } from "./controllers/cp.controller";
 import { ExportController } from "./controllers/export.controller";
 import { AvgLevelService } from "./services/export/avg-level.service";
@@ -99,7 +99,7 @@ const envFilePath = join(projectRoot, envFileName);
     SocketModule,
     TransferLoanModule,
   ],
-  controllers: [AppController, ImageController, CalendarController, CpController, ExportController],
+  controllers: [AppController, CalendarController, CpController, ExportController],
   providers: [
     Logger,
     TeamsService,

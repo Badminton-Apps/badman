@@ -274,25 +274,6 @@ export class AssemblyValidationService
   }
 
   /**
-   * OPTIMIZATION: Get player with simple caching (kept for backward compatibility)
-   * @deprecated Use batchFetchPlayersWithCache for better performance
-   */
-  private async getPlayerWithCache(
-    playerId: string,
-    system: RankingSystem,
-    startRanking: moment.Moment,
-    endRanking: moment.Moment
-  ): Promise<Player | null> {
-    const players = await this.batchFetchPlayersWithCache(
-      [playerId],
-      system,
-      startRanking,
-      endRanking
-    );
-    return players[0] || null;
-  }
-
-  /**
    * OPTIMIZATION: Get club teams with caching
    */
   private async getClubTeamsWithCache(

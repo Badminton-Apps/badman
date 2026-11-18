@@ -1230,9 +1230,6 @@ importers:
 
   packages/backend-mailing:
     dependencies:
-      '@badman/backend-change-encounter':
-        specifier: workspace:*
-        version: link:../backend-competition/change-encounter
       '@badman/backend-compile':
         specifier: workspace:*
         version: link:../backend-compile
