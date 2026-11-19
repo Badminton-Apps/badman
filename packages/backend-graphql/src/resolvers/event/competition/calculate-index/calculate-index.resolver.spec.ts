@@ -190,6 +190,33 @@ describe("CalculateIndexResolver", () => {
     expect(mockService.calculate).not.toHaveBeenCalled();
   });
 
+  // Characterization (BAD-409): the upper bound follows the calendar year of
+  // "now", not the season, so it moves on 1 January.
+  describe("season upper bound around the turn of the year", () => {
+    beforeEach(() => {
+      mockService.calculate.mockResolvedValue([]);
+    });
+
+    afterEach(() => jest.useRealTimers());
+
+    it.each([
+      ["31 December 2026", 2027, true, "2026-12-31T23:59:59.999Z"],
+      ["31 December 2026", 2028, false, "2026-12-31T23:59:59.999Z"],
+      ["1 January 2027", 2028, true, "2027-01-01T00:00:00.000Z"],
+    ])("on %s, season %i is accepted: %s", async (_label, season, accepted, now) => {
+      jest.useFakeTimers({ doNotFake: ["nextTick"] }).setSystemTime(new Date(now));
+      const result = resolver.calculateIndex([validInput({ season })], authenticatedUser());
+
+      if (accepted) {
+        await expect(result).resolves.toEqual([]);
+      } else {
+        await expect(result).rejects.toMatchObject({
+          extensions: { code: ErrorCode.BAD_USER_INPUT },
+        });
+      }
+    });
+  });
+
   // -------------------------------------------------------------------------
   // T025 — Resolver parity loop
   // -------------------------------------------------------------------------

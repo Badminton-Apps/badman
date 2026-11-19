@@ -1,6 +1,7 @@
 import { ClubMembershipType } from "@badman/utils";
 import * as XLSX from "xlsx";
 import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
+import { Op } from "sequelize";
 import { TransferService } from "./transfers.service";
 
 jest.mock("xlsx");
@@ -187,5 +188,63 @@ describe("TransferService", () => {
       expect(newer.destroy).not.toHaveBeenCalled();
       expect(newer.save).toHaveBeenCalled();
     });
+  });
+});
+
+// Characterization (BAD-409): the dates a transfer writes. TZ is pinned to UTC
+// by jest.global-setup.js. These pin today's behaviour for the S3 groundwork.
+describe("TransferService membership dates (characterization)", () => {
+  let service: TransferService;
+
+  beforeEach(() => {
+    service = new TransferService();
+    (ClubPlayerMembership as unknown as jest.Mock).mockImplementation(() => ({
+      save: jest.fn().mockResolvedValue(undefined),
+      destroy: jest.fn().mockResolvedValue(undefined),
+      end: null,
+    }));
+    jest
+      .useFakeTimers({ doNotFake: ["nextTick", "setImmediate"] })
+      .setSystemTime(new Date("2025-05-20T14:30:00.000Z"));
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    jest.resetAllMocks();
+  });
+
+  const processOneTransfer = async () => {
+    mockXlsxRows([makeTransferRow(1001, 42)]);
+    const oldMembership = makeMembership({ playerId: "p1", clubId: "old-club", confirmed: true });
+    (Player.findAll as jest.Mock).mockResolvedValue([makePlayer("p1", "1001")]);
+    (Club.findAll as jest.Mock).mockResolvedValue([makeClub("c1", 42)]);
+    (ClubPlayerMembership.findAll as jest.Mock)
+      .mockResolvedValueOnce([oldMembership])
+      .mockResolvedValueOnce([]);
+
+    await service.process(Buffer.from(""), SEASON);
+
+    const newMembership = (ClubPlayerMembership as unknown as jest.Mock).mock.results[0].value;
+    const thisSeasonQuery = (ClubPlayerMembership.findAll as jest.Mock).mock.calls[1][0];
+    return { newMembership, oldMembership, thisSeasonQuery };
+  };
+
+  it("starts the new membership on 1 July of the season, 00:00 local time", async () => {
+    const { newMembership } = await processOneTransfer();
+    expect((newMembership.start as Date).toISOString()).toBe("2025-07-01T00:00:00.000Z");
+  });
+
+  it("looks for this season's memberships from 1 July of the season", async () => {
+    const { thisSeasonQuery } = await processOneTransfer();
+    expect((thisSeasonQuery.where.start[Op.gte] as Date).toISOString()).toBe(
+      "2025-07-01T00:00:00.000Z"
+    );
+  });
+
+  it("ends the old membership on the moment the file is processed", async () => {
+    const { oldMembership } = await processOneTransfer();
+    expect((oldMembership as unknown as { end: Date }).end.toISOString()).toBe(
+      "2025-05-20T14:30:00.000Z"
+    );
   });
 });

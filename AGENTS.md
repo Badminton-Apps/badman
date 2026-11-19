@@ -239,11 +239,14 @@ Versioning is **commit-driven** — contributors never hand-author release metad
 - Run via turbo (`pnpm turbo run test --filter=<pkg>`) or directly inside a package (`pnpm test`); cross-package imports resolve to built `dist`, so build dependencies once first (`turbo` does this automatically via `^build`)
 - Test files are co-located next to the source file: `foo.resolver.ts` → `foo.resolver.spec.ts`
 - Use `@nestjs/testing` `Test.createTestingModule` to wire up the unit under test with mocked dependencies
+- Tests run in UTC by default (`jest.global-setup.js` sets `TZ`), so date tests behave the same locally as in CI. Run a suite in another timezone with e.g. `TZ=Europe/Brussels pnpm test`. Jest copies `process.env` per test file, so changing `TZ` inside a test has no effect.
+- Characterization tests (`*.characterization.spec.ts`, plus tests named `current behaviour, fixed in BAD-xxx`) pin today's behaviour before a refactor. Change them only on purpose, in the ticket the name points to.
 
 ### Integration test convention
 
 Integration tests exercise behaviour that unit tests cannot fake — real infrastructure (Redis, postgres-only features), external APIs, multi-row transaction semantics. **They are skipped by default and never run in the CI gate** — each suite opts in explicitly. Current examples:
 
+- Ranking lookups against the dev postgres (BAD-409): [`index-calculation.integration.spec.ts`](packages/backend-competition/enrollment/src/services/index-calculation/index-calculation.integration.spec.ts), [`ranking-lookups.integration.spec.ts`](packages/backend-competition/assembly/src/services/ranking-lookups.integration.spec.ts) and [`entry.integration.spec.ts`](apps/worker/sync/src/app/processors/sync-events/competition-sync/processors/__tests__/entry.integration.spec.ts). They share the fixture in [`ranking-lookup.fixture.ts`](packages/backend-database/src/_testing/ranking-lookup.fixture.ts), which only connects to a local database and removes its rows afterwards. Gated behind `RUN_INTEGRATION_TESTS=1`.
 - [`apps/worker/sync/src/app/queue/__tests__/queue.integration.spec.ts`](apps/worker/sync/src/app/queue/__tests__/queue.integration.spec.ts) — Bull queue against `redis-memory-server`. Gated behind `RUN_INTEGRATION_TESTS=1`. **Caveat**: `redis-memory-server` downloads and compiles Redis from source on first run (takes minutes, then caches the binary per machine) — this is exactly why the suite must never run in the default/CI path.
 - [`packages/backend-visual/src/__integration__/visual.service.integration.spec.ts`](packages/backend-visual/src/__integration__/visual.service.integration.spec.ts) — real VR/Visual API. Gated on credentials presence (`VR_API_USER`/`VR_API_PASS`); skips itself when they're absent.
 
