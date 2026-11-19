@@ -130,7 +130,7 @@ export class Standing extends Model {
   lost!: number;
 
   restartCount() {
-    this.position = 0;
+    this.position = undefined;
     this.points = 0;
     this.played = 0;
     this.gamesWon = 0;
