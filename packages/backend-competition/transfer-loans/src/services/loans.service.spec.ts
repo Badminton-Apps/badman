@@ -1,6 +1,7 @@
 import { ClubMembershipType } from "@badman/utils";
 import * as XLSX from "xlsx";
 import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
+import { Op } from "sequelize";
 import { LoansService } from "./loans.service.ts";
 
 jest.mock("xlsx");
@@ -141,5 +142,55 @@ describe("LoansService", () => {
       const instance = (ClubPlayerMembership as unknown as jest.Mock).mock.results[0].value;
       expect(instance.save).toHaveBeenCalled();
     });
+  });
+});
+
+// Characterization (BAD-409): the dates a loan writes. TZ is pinned to UTC by
+// jest.global-setup.js. These pin today's behaviour for the S3 groundwork.
+describe("LoansService membership dates (characterization)", () => {
+  let service: LoansService;
+
+  beforeEach(() => {
+    service = new LoansService();
+    (ClubPlayerMembership as unknown as jest.Mock).mockImplementation(() => ({
+      save: jest.fn().mockResolvedValue(undefined),
+      end: null,
+    }));
+    jest
+      .useFakeTimers({ doNotFake: ["nextTick", "setImmediate"] })
+      .setSystemTime(new Date("2025-05-20T14:30:00.000Z"));
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    jest.resetAllMocks();
+  });
+
+  const processOneLoan = async () => {
+    mockXlsxRows([makeLoanRow(1001, 42)]);
+    (Player.findAll as jest.Mock).mockResolvedValue([makePlayer("p1", "1001")]);
+    (Club.findAll as jest.Mock).mockResolvedValue([makeClub("c1", 42)]);
+    (ClubPlayerMembership.findAll as jest.Mock).mockResolvedValueOnce([]);
+
+    await service.process(Buffer.from(""), SEASON);
+
+    const created = (ClubPlayerMembership as unknown as jest.Mock).mock.results[0].value;
+    const existingQuery = (ClubPlayerMembership.findAll as jest.Mock).mock.calls[0][0];
+    return { created, existingQuery };
+  };
+
+  it("creates a loan from 1 July 00:00 to 30 June 23:59:59.999 of the next year", async () => {
+    const { created } = await processOneLoan();
+    expect((created.start as Date).toISOString()).toBe("2025-07-01T00:00:00.000Z");
+    expect((created.end as Date).toISOString()).toBe("2026-06-30T23:59:59.999Z");
+  });
+
+  it("looks for existing loans inside the same window", async () => {
+    const { existingQuery } = await processOneLoan();
+    const [startClause, endClause] = existingQuery.where[Op.and];
+    const start = startClause.start[Op.gte] as Date;
+    const end = endClause.end[Op.lte] as Date;
+    expect(start.toISOString()).toBe("2025-07-01T00:00:00.000Z");
+    expect(end.toISOString()).toBe("2026-06-30T23:59:59.999Z");
   });
 });
