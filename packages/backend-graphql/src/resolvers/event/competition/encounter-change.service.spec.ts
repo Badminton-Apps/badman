@@ -10,11 +10,13 @@ import { ErrorCode } from "../../../utils/error-codes";
 import { EncounterChangeService } from "./encounter-change.service";
 
 /**
- * Characterization tests (BAD-409) for the season and deadline checks of the
- * change-request flow. They pin what the code does today, including two bugs
- * that BAD-391 fixes on purpose:
- * - every encounter in a season is checked against the period-1 deadline
- * - an event without a season falls back to the calendar year
+ * Season and deadline checks of the change-request flow. Written as
+ * characterization tests in BAD-409; BAD-391 fixed the two bugs they pinned:
+ * - a second-half encounter is checked against the period-2 deadline
+ * - an event without a season uses the enrollment season, not the calendar year
+ *
+ * Halves and the competition window use the Brussels calendar date (spec 039,
+ * FR-010a), so the boundary tests are written in Brussels time.
  *
  * The checks run before the transaction, so a transaction that throws
  * CHECKS_PASSED means every season and deadline check let the request through.
@@ -143,12 +145,25 @@ describe("EncounterChangeService season and deadline checks (characterization)",
       );
     });
 
-    it("current behaviour, fixed in BAD-391: rejects a second-half encounter after the period-1 deadline", async () => {
+    it("accepts a second-half encounter after the period-1 deadline, before the period-2 deadline (BAD-391)", async () => {
       now("2027-01-15T12:00:00.000Z");
+      await passes(propose(at("2027-02-20T19:00:00.000Z"), event2026(), inSeason));
+    });
+
+    it("decides the half on the Brussels date of the encounter (FR-010a)", async () => {
+      now("2027-01-15T12:00:00.000Z");
+      // 31 December 23:30 in Brussels: first half, period-1 deadline has passed.
       await rejectsWith(
-        propose(at("2027-02-20T19:00:00.000Z"), event2026(), inSeason),
+        propose(at("2026-12-31T22:30:00.000Z"), event2026(), inSeason),
         ErrorCode.DEADLINE_PASSED
       );
+      // 31 December 23:30 UTC is 1 January 00:30 in Brussels: second half.
+      await passes(propose(at("2026-12-31T23:30:00.000Z"), event2026(), inSeason));
+    });
+
+    it("uses the period-2 deadline for a second-half encounter in May", async () => {
+      now("2027-01-15T12:00:00.000Z");
+      await passes(propose(at("2027-05-10T19:00:00.000Z"), event2026(), inSeason));
     });
 
     it("rejects a second-half encounter after the period-2 deadline", async () => {
@@ -180,13 +195,7 @@ describe("EncounterChangeService season and deadline checks (characterization)",
 
     it("uses the period-2 deadline when the event has no season", async () => {
       now("2027-01-15T12:00:00.000Z");
-      await passes(
-        propose(
-          at("2026-12-15T19:00:00.000Z"),
-          event2026({ season: null }),
-          at("2027-09-15T19:00:00.000Z")
-        )
-      );
+      await passes(propose(at("2026-12-15T19:00:00.000Z"), event2026({ season: null }), inSeason));
     });
 
     it("skips the deadline check when either deadline is missing", async () => {
@@ -209,7 +218,7 @@ describe("EncounterChangeService season and deadline checks (characterization)",
 
     it("skips the deadline check when the encounter has no event", async () => {
       now("2027-04-01T12:00:00.000Z");
-      await passes(propose(at("2027-04-10T19:00:00.000Z"), null, at("2027-09-15T19:00:00.000Z")));
+      await passes(propose(at("2027-04-10T19:00:00.000Z"), null, at("2027-04-20T19:00:00.000Z")));
     });
   });
 
@@ -221,11 +230,11 @@ describe("EncounterChangeService season and deadline checks (characterization)",
     beforeEach(() => now("2026-11-15T12:00:00.000Z"));
 
     it.each([
-      ["31 August 23:59:59.999", false, "2026-08-31T23:59:59.999Z"],
-      ["1 September 00:00", true, "2026-09-01T00:00:00.000Z"],
-      ["30 April 23:59:59.999", true, "2027-04-30T23:59:59.999Z"],
-      ["1 May 00:00", false, "2027-05-01T00:00:00.000Z"],
-    ])("season 2026, %s → in season: %s", async (_label, inSeason, iso) => {
+      ["31 August 23:59:59.999", false, "2026-08-31T23:59:59.999+02:00"],
+      ["1 September 00:00", true, "2026-09-01T00:00:00.000+02:00"],
+      ["30 April 23:59:59.999", true, "2027-04-30T23:59:59.999+02:00"],
+      ["1 May 00:00", false, "2027-05-01T00:00:00.000+02:00"],
+    ])("season 2026, %s Brussels time → in season: %s", async (_label, inSeason, iso) => {
       const result = propose(encounterDate, noDeadlines(), at(iso));
       if (inSeason) {
         await passes(result);
@@ -234,7 +243,17 @@ describe("EncounterChangeService season and deadline checks (characterization)",
       }
     });
 
-    it("current behaviour, fixed in BAD-391: an event without a season uses the calendar year", async () => {
+    it("uses the Brussels date of a proposed date (FR-010a)", async () => {
+      // 31 August 22:30 UTC is 1 September 00:30 in Brussels.
+      await passes(propose(encounterDate, noDeadlines(), at("2026-08-31T22:30:00.000Z")));
+      // 30 April 22:30 UTC is 1 May 00:30 in Brussels.
+      await rejectsWith(
+        propose(encounterDate, noDeadlines(), at("2027-04-30T22:30:00.000Z")),
+        ErrorCode.DATE_OUT_OF_SEASON
+      );
+    });
+
+    it("an event without a season uses the enrollment season (BAD-391)", async () => {
       now("2027-02-10T12:00:00.000Z");
       const event = event2026({
         season: null,
@@ -242,27 +261,46 @@ describe("EncounterChangeService season and deadline checks (characterization)",
         changeCloseRequestDatePeriod2: null,
       });
 
+      await passes(propose(encounterDate, event, at("2027-02-20T19:00:00.000Z")));
+      await rejectsWith(
+        propose(encounterDate, event, at("2027-09-15T19:00:00.000Z")),
+        ErrorCode.DATE_OUT_OF_SEASON
+      );
+    });
+
+    it("an event without a season switches to the next season on 1 May (BAD-391)", async () => {
+      now("2027-05-01T12:00:00.000Z");
+      const event = event2026({
+        season: null,
+        changeCloseRequestDatePeriod1: null,
+        changeCloseRequestDatePeriod2: null,
+      });
+
+      await passes(propose(encounterDate, event, at("2027-09-15T19:00:00.000Z")));
       await rejectsWith(
         propose(encounterDate, event, at("2027-02-20T19:00:00.000Z")),
         ErrorCode.DATE_OUT_OF_SEASON
       );
-      await passes(propose(encounterDate, event, at("2027-09-15T19:00:00.000Z")));
     });
 
-    it("current behaviour, fixed in BAD-391: an encounter without an event uses the calendar year", async () => {
+    it("an encounter without an event uses the enrollment season (BAD-391)", async () => {
       now("2027-02-10T12:00:00.000Z");
-      await rejectsWith(
-        propose(encounterDate, null, at("2027-02-20T19:00:00.000Z")),
-        ErrorCode.DATE_OUT_OF_SEASON
-      );
+      await passes(propose(encounterDate, null, at("2027-02-20T19:00:00.000Z")));
     });
   });
 
   describe("triage uses the same checks", () => {
-    it("current behaviour, fixed in BAD-391: rejects a second-half encounter after the period-1 deadline", async () => {
+    it("accepts a second-half encounter before the period-2 deadline (BAD-391)", async () => {
       now("2027-01-15T12:00:00.000Z");
+      await passes(
+        triage(at("2027-02-20T19:00:00.000Z"), event2026(), at("2027-02-25T19:00:00.000Z"))
+      );
+    });
+
+    it("rejects a second-half encounter after the period-2 deadline", async () => {
+      now("2027-03-02T12:00:00.000Z");
       await rejectsWith(
-        triage(at("2027-02-20T19:00:00.000Z"), event2026(), at("2027-02-25T19:00:00.000Z")),
+        triage(at("2027-03-20T19:00:00.000Z"), event2026(), at("2027-03-25T19:00:00.000Z")),
         ErrorCode.DEADLINE_PASSED
       );
     });
@@ -274,9 +312,9 @@ describe("EncounterChangeService season and deadline checks (characterization)",
       );
     });
 
-    it("current behaviour, fixed in BAD-391: an event without a season uses the calendar year", async () => {
+    it("an event without a season uses the enrollment season (BAD-391)", async () => {
       now("2027-02-10T12:00:00.000Z");
-      await rejectsWith(
+      await passes(
         triage(
           at("2027-02-20T19:00:00.000Z"),
           event2026({
@@ -285,17 +323,22 @@ describe("EncounterChangeService season and deadline checks (characterization)",
             changeCloseRequestDatePeriod2: null,
           }),
           at("2027-02-25T19:00:00.000Z")
-        ),
-        ErrorCode.DATE_OUT_OF_SEASON
+        )
       );
     });
   });
 
   describe("finalize uses the same deadline check", () => {
-    it("current behaviour, fixed in BAD-391: rejects a second-half encounter after the period-1 deadline", async () => {
+    it("accepts a second-half encounter before the period-2 deadline (BAD-391)", async () => {
       now("2027-01-15T12:00:00.000Z");
+      await passes(finalize(at("2027-02-20T19:00:00.000Z"), event2026()));
+      expect(validate).toHaveBeenCalled();
+    });
+
+    it("rejects a second-half encounter after the period-2 deadline", async () => {
+      now("2027-03-02T12:00:00.000Z");
       await rejectsWith(
-        finalize(at("2027-02-20T19:00:00.000Z"), event2026()),
+        finalize(at("2027-03-20T19:00:00.000Z"), event2026()),
         ErrorCode.DEADLINE_PASSED
       );
       expect(validate).not.toHaveBeenCalled();

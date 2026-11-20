@@ -1,4 +1,5 @@
 import { EncounterCompetition } from "@badman/backend-database";
+import { seasonHalf } from "@badman/utils";
 import {
   EncounterValidationOutput,
   EncounterValidationData,
@@ -72,7 +73,7 @@ export class TeamClubRule extends Rule {
       } as EncounterCompetition;
 
       for (const suggestedDate of suggestedDates) {
-        const suggestedSemester1 = suggestedDate.date.getFullYear() === season;
+        const suggestedSemester1 = seasonHalf(suggestedDate.date, season) === "first";
 
         workingEncounter.date = suggestedDate.date;
         const encountersSemester = suggestedSemester1 ? encountersSemester1 : encountersSemester2;
