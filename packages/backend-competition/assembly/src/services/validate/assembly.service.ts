@@ -4,20 +4,26 @@ import {
   EntryCompetitionPlayer,
   EventCompetition,
   EventEntry,
+  findLatestRankingPlaces,
   MetaEntry,
   Player,
   RankingLastPlace,
-  RankingPlace,
   RankingSystem,
   Standing,
   SubEventCompetition,
   Team,
 } from "@badman/backend-database";
 import { ValidationService } from "@badman/backend-validation";
-import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum, IsUUID } from "@badman/utils";
+import {
+  CalendarRange,
+  getBestPlayers,
+  getBestPlayersFromTeam,
+  IsUUID,
+  lineUpRankingWindow,
+  SubEventTypeEnum,
+} from "@badman/utils";
 import { Logger, OnModuleDestroy } from "@nestjs/common";
-import moment from "moment";
-import { Op } from "sequelize";
+import { attachRankingPlaces } from "../ranking-places";
 import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from "../../models";
 import {
   PlayerCompStatusRule,
@@ -38,7 +44,9 @@ export class AssemblyValidationService
 
   private readonly _logger = new Logger(AssemblyValidationService.name);
 
-  // OPTIMIZATION: Simple player cache to avoid refetching same players
+  // OPTIMIZATION: Simple player cache to avoid refetching same players.
+  // Keyed on player, ranking system and window: the cached player carries the
+  // snapshot ranking of that system and window (BAD-392).
   private playerCache = new Map<string, Player>();
 
   // OPTIMIZATION: Cache for heavy database queries
@@ -161,9 +169,8 @@ export class AssemblyValidationService
   /**
    * Get snapshot ranking from player's rankingPlaces
    *
-   * The rankingPlaces are fetched with a date range filter (startRanking to endRanking)
-   * and ordered by rankingDate DESC, so rankingPlaces[0] is the most recent snapshot
-   * within the season's snapshot period.
+   * rankingPlaces[0] is the newest update publication of the system within the
+   * line-up window (findLatestRankingPlaces), or absent when there is none.
    *
    * @param player Player with rankingPlaces loaded
    * @param system Ranking system for fallback default
@@ -173,8 +180,7 @@ export class AssemblyValidationService
     player: Player,
     system: RankingSystem
   ): { single: number; double: number; mix: number } {
-    // rankingPlaces[0] is the snapshot ranking from the season start date range
-    // (fetched with order: [["rankingDate", "DESC"]] and date range filter)
+    // rankingPlaces[0] is the snapshot ranking from the line-up window
     const snapshot = player.rankingPlaces?.[0];
 
     return {
@@ -192,15 +198,13 @@ export class AssemblyValidationService
    *
    * @param playerIds Array of player IDs to fetch
    * @param system Ranking system for filtering rankings
-   * @param startRanking Start date for snapshot ranking range
-   * @param endRanking End date for snapshot ranking range
+   * @param window Calendar dates of the snapshot ranking window, both included
    * @returns Array of players with rankings loaded
    */
   private async batchFetchPlayersWithCache(
     playerIds: string[],
     system: RankingSystem,
-    startRanking: moment.Moment,
-    endRanking: moment.Moment
+    window: CalendarRange
   ): Promise<Player[]> {
     const normalizedPlayerIds = (playerIds ?? [])
       .filter((p): p is string => typeof p === "string" && p.trim().length > 0)
@@ -215,9 +219,11 @@ export class AssemblyValidationService
     const results: Player[] = [];
     const missingIds: string[] = [];
 
+    const cacheKey = (playerId: string) => `${playerId}|${system.id}|${window.from}|${window.to}`;
+
     // Check cache first
     for (const playerId of uniquePlayerIds) {
-      const cached = this.playerCache.get(playerId);
+      const cached = this.playerCache.get(cacheKey(playerId));
       if (cached) {
         results.push(cached);
       } else {
@@ -247,25 +253,22 @@ export class AssemblyValidationService
             model: RankingLastPlace,
             where: { systemId: system.id },
           },
-          {
-            attributes: ["id", "single", "double", "mix"],
-            required: false,
-            model: RankingPlace,
-            limit: 1,
-            where: {
-              rankingDate: { [Op.between]: [startRanking.toDate(), endRanking.toDate()] },
-              systemId: system.id,
-              updatePossible: true,
-            },
-            order: [["rankingDate", "DESC"]],
-            separate: true,
-          },
         ],
       });
 
+      // Snapshot ranking: newest update publication of the system in the window
+      const places = await findLatestRankingPlaces({
+        playerIds: missingIds,
+        systemId: system.id,
+        onOrAfter: window.from,
+        onOrBefore: window.to,
+        updatePossibleOnly: true,
+      });
+      attachRankingPlaces(fetchedPlayers, places);
+
       // Cache fetched players
       for (const player of fetchedPlayers) {
-        this.playerCache.set(player.id, player);
+        this.playerCache.set(cacheKey(player.id), player);
         results.push(player);
       }
     }
@@ -506,22 +509,16 @@ export class AssemblyValidationService
       .filter((m) => m.teamId !== args.teamId)
       .map((m) => m.meta) ?? []) as MetaEntry[];
 
-    // Calculate ranking dates
-    const year = event.season;
-    const usedRankingDate = moment();
-    usedRankingDate.set("year", year);
-    usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);
-
-    const startRanking = moment(usedRankingDate).startOf("month");
-    const endRanking = moment(usedRankingDate).endOf("month");
+    // Calendar month of the snapshot ranking, from the event's line-up setting
+    const rankingWindow = lineUpRankingWindow(event);
 
     // Parallelize player data fetching
     const [players, subs] = await Promise.all([
       idPlayers.length > 0
-        ? this.fetchPlayersWithRankings(idPlayers, system, startRanking, endRanking)
+        ? this.fetchPlayersWithRankings(idPlayers, system, rankingWindow)
         : Promise.resolve([]),
       idSubs && idSubs.length > 0
-        ? this.fetchSubstitutePlayers(idSubs, system, startRanking, endRanking)
+        ? this.fetchSubstitutePlayers(idSubs, system, rankingWindow)
         : Promise.resolve([]),
     ]);
 
@@ -615,15 +612,14 @@ export class AssemblyValidationService
   private async fetchPlayersWithRankings(
     idPlayers: string[],
     system: RankingSystem,
-    startRanking: moment.Moment,
-    endRanking: moment.Moment
+    rankingWindow: CalendarRange
   ): Promise<Player[]> {
     if (!idPlayers || idPlayers.length === 0) {
       return [];
     }
 
     // Batch fetch all players (checks cache internally)
-    return this.batchFetchPlayersWithCache(idPlayers, system, startRanking, endRanking);
+    return this.batchFetchPlayersWithCache(idPlayers, system, rankingWindow);
   }
 
   /**
@@ -632,15 +628,14 @@ export class AssemblyValidationService
   private async fetchSubstitutePlayers(
     idSubs: string[],
     system: RankingSystem,
-    startRanking: moment.Moment,
-    endRanking: moment.Moment
+    rankingWindow: CalendarRange
   ): Promise<Player[]> {
     if (!idSubs || idSubs.length === 0) {
       return [];
     }
 
     // Batch fetch all substitute players (checks cache internally)
-    return this.batchFetchPlayersWithCache(idSubs, system, startRanking, endRanking);
+    return this.batchFetchPlayersWithCache(idSubs, system, rankingWindow);
   }
 
   /**

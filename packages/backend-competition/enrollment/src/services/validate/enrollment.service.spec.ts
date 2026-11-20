@@ -8,7 +8,7 @@ import {
   SubEventCompetition,
   Team,
 } from "@badman/backend-database";
-import { SubEventTypeEnum } from "@badman/utils";
+import { SubEventTypeEnum, toCalendarDate } from "@badman/utils";
 import { ConfigModule } from "@nestjs/config";
 import { EnrollmentValidationService } from "./enrollment.service";
 import { IndexCalculationService } from "../index-calculation/index-calculation.service";
@@ -217,23 +217,24 @@ describe("EnrollmentValidationService", () => {
       // Player.findAll is called both by the validator (gender + names) and by
       // IndexCalculationService (gender). Same return is fine for both.
       jest.spyOn(Player, "findAll").mockResolvedValue(players);
-      // IndexCalculationService now fetches latest places per player via
-      // `_fetchLatestPlacesPerPlayer` (raw SQL DISTINCT ON). Mock that method
-      // directly: emulate DB-side DISTINCT ON + rankingDate <= cutoff filter.
+      // IndexCalculationService fetches latest places per player via
+      // `_fetchLatestPlacesPerPlayer` (the shared findLatestRankingPlaces
+      // lookup). Mock that method directly: emulate the newest place per player
+      // whose Brussels calendar date is on or before the cutoff date.
       const indexService = module.get<IndexCalculationService>(IndexCalculationService);
       jest
         .spyOn(
           indexService as unknown as { _fetchLatestPlacesPerPlayer: jest.Mock },
           "_fetchLatestPlacesPerPlayer"
         )
-        .mockImplementation(((playerIds: string[], _systemId: string, cutoff: Date) => {
+        .mockImplementation(((playerIds: string[], _systemId: string, onOrBefore: string) => {
           const allPlaces = players.flatMap(
             (p) => (p as unknown as { rankingPlaces?: RankingPlace[] }).rankingPlaces ?? []
           );
           const wanted = new Set(playerIds);
           const eligible = allPlaces
             .filter((rp) => rp.playerId && wanted.has(rp.playerId))
-            .filter((rp) => rp.rankingDate && rp.rankingDate <= cutoff)
+            .filter((rp) => rp.rankingDate && toCalendarDate(rp.rankingDate) <= onOrBefore)
             .sort((a, b) => (b.rankingDate?.getTime() ?? 0) - (a.rankingDate?.getTime() ?? 0));
           // DISTINCT ON (playerId) — keep first row per player in DESC date order.
           const latestByPlayer = new Map<string, RankingPlace>();
@@ -425,11 +426,9 @@ describe("EnrollmentValidationService", () => {
         indexService as unknown as { _fetchLatestPlacesPerPlayer: jest.SpyInstance }
       )._fetchLatestPlacesPerPlayer;
       expect(fetchSpy.mock.calls.length).toBeGreaterThan(0);
-      const cutoff = fetchSpy.mock.calls[0][2] as Date;
-      expect(cutoff.getFullYear()).toBe(SEASON);
-      expect(cutoff.getMonth()).toBe(5); // June (0-indexed)
-      expect(cutoff.getDate()).toBe(10);
-      expect(RANKING_DATE_AFTER_CUTOFF.getTime()).toBeGreaterThan(cutoff.getTime());
+      const cutoff = fetchSpy.mock.calls[0][2] as string;
+      expect(cutoff).toBe(`${SEASON}-06-10`);
+      expect(toCalendarDate(RANKING_DATE_AFTER_CUTOFF) > cutoff).toBe(true);
 
       // p4's stronger after-cutoff row is excluded; min+2 fallback yields 14+14=28 for that player.
       // (5+5)+(6+6)+(7+7)+14+14 = 64
