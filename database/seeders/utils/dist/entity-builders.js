@@ -16,6 +16,7 @@ exports.createAvailability =
 const error_handler_1 = require("./error-handler");
 const club_team_naming_1 = require("./club-team-naming");
 const membership_helpers_1 = require("./membership-helpers");
+const season_1 = require("./season");
 /**
  * Find or create a player
  */
@@ -295,14 +296,14 @@ async function createOpponentTeam(ctx, clubId, season, captainId, teamType = "M"
 async function createEncounters(ctx, drawId, teamId, opponentTeamId, encounterCount = 10, season) {
   console.log("⚔️ Creating Encounters...");
   const now = new Date();
-  const currentMonth = now.getMonth(); // 0-indexed
-  // Competition season runs Sep 1 (month 8) → Apr 30 (month 3) of the following year.
-  // If we're in the off-season (May–Aug, month 4–7), anchor dates to the season window
-  // instead of now so encounters don't land in off-season months.
-  const inOffSeason = currentMonth >= 4 && currentMonth < 8;
-  const effectiveSeason = season ?? (currentMonth >= 4 ? now.getFullYear() : now.getFullYear() - 1);
-  const seasonStart = new Date(`${effectiveSeason}-09-01`);
-  const seasonEnd = new Date(`${effectiveSeason + 1}-04-30`);
+  // Competition season runs 1 Sep → 30 Apr of the following year. If we're in the
+  // off-season (May–Aug), anchor dates to the season window instead of now so
+  // encounters don't land in off-season months.
+  const effectiveSeason = season ?? (0, season_1.enrollmentSeason)(now);
+  const inOffSeason = !(0, season_1.isInCompetitionSeason)(now, effectiveSeason);
+  const competitionWindow = (0, season_1.competitionSeasonWindow)(effectiveSeason);
+  const seasonStart = new Date(competitionWindow.from);
+  const seasonEnd = new Date(competitionWindow.to);
   const anchor = inOffSeason ? seasonStart : now;
   const halfCount = Math.floor(encounterCount / 2);
   // Spread encounters evenly across the season window

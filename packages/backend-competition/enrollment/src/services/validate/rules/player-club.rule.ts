@@ -1,5 +1,5 @@
 import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
-import { startOfSeason } from "@badman/utils";
+import { membershipCheckInstant } from "@badman/utils";
 import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from "../../../models";
 import { Rule } from "./_rule.base";
 
@@ -105,7 +105,7 @@ export class PlayerClubRule extends Rule {
     loans: string[],
     transfers: string[]
   ) {
-    const startDate = startOfSeason(season).toDate();
+    const startDate = membershipCheckInstant(season);
 
     // 1. find player in playerList
     // 2. check if the active club (= no end date) is the same as the club

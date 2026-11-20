@@ -113,13 +113,6 @@ export class DataFactory {
   }
 
   /**
-   * Get current season (September to April)
-   */
-  static getSeason(date = new Date()): number {
-    return date.getMonth() >= 8 ? date.getFullYear() : date.getFullYear() - 1;
-  }
-
-  /**
    * Generate a date for encounters
    */
   static generateDate(season: number, monthOffset = 0): Date {

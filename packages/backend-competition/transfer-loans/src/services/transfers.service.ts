@@ -1,7 +1,6 @@
 import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
-import { ClubMembershipType } from "@badman/utils";
+import { ClubMembershipType, membershipWindow } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
-import moment from "moment";
 import { Op } from "sequelize";
 import * as XLSX from "xlsx";
 
@@ -56,12 +55,7 @@ export class TransferService {
         continue;
       }
 
-      const startDate = moment()
-        .set("year", season)
-        .startOf("year")
-        .set("month", 6)
-        .set("date", 1)
-        .toDate();
+      const { start: startDate } = membershipWindow(season);
 
       // check if the player is already a member of the new club with the current season
       const thisseasonMemberships = await ClubPlayerMembership.findAll({
@@ -117,7 +111,7 @@ export class TransferService {
         for (const playerMembership of playerMemberships) {
           if (playerMembership && playerMembership.confirmed) {
             // mark the old membership as ended
-            playerMembership.end = moment().toDate();
+            playerMembership.end = new Date();
             await playerMembership.save();
           }
         }

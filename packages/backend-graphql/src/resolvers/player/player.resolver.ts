@@ -26,7 +26,7 @@ import {
   TeamWithPlayerMembershipType,
   Role,
 } from "@badman/backend-database";
-import { IsUUID, getSeason, getRankingProtected } from "@badman/utils";
+import { IsUUID, enrollmentSeason, getRankingProtected } from "@badman/utils";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import {
   Args,
@@ -262,7 +262,7 @@ export class PlayersResolver {
     const args = ListArgs.toFindOptions(listArgs);
 
     args.where = {
-      season: season ?? getSeason(),
+      season: season ?? enrollmentSeason(),
       ...args.where,
     };
 

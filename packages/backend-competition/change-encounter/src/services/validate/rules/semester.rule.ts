@@ -1,4 +1,5 @@
 import { EncounterCompetition } from "@badman/backend-database";
+import { seasonHalf } from "@badman/utils";
 import {
   EncounterValidationOutput,
   EncounterValidationData,
@@ -67,7 +68,7 @@ export class SemesterRule extends Rule {
     // and the user proposes semester 2, there is no conflict.
     if (suggestedDates && encounter) {
       for (const suggestedDate of suggestedDates) {
-        const suggestedSemester1 = suggestedDate.date.getFullYear() === season;
+        const suggestedSemester1 = seasonHalf(suggestedDate.date, season) === "first";
 
         const conflictInProposedSemester = this.findEncounterInSemseter(
           suggestedSemester1 ? encountersSem1 : encountersSem2,

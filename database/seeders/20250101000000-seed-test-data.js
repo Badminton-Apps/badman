@@ -26,6 +26,7 @@ const {
   createLocation,
   createAvailability,
   ensureClubAdminPermission,
+  enrollmentSeason,
 } = require("./utils/dist");
 
 const PLAYERS_ON_TEAM = 8;
@@ -299,8 +300,7 @@ module.exports = {
       return await sequelize.transaction(async (transaction) => {
         const ctx = new SeederContext(sequelize, QueryTypes, transaction);
 
-        const now = new Date();
-        const season = now.getMonth() >= 4 ? now.getFullYear() : now.getFullYear() - 1;
+        const season = enrollmentSeason();
         const previousSeason = season - 1;
         console.log(`📅 Using season: ${season}\n`);
         console.log(`📅 Using previous season for historical teams: ${previousSeason}\n`);
