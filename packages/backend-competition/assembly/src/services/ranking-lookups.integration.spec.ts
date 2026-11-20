@@ -9,8 +9,8 @@ import {
 } from "@badman/backend-database";
 import { config } from "dotenv";
 import { existsSync } from "fs";
-import moment from "moment";
 import { dirname, join } from "path";
+import { CalendarRange, lineUpRankingWindow } from "@badman/utils";
 import { Sequelize } from "sequelize-typescript";
 import { AssemblyExportService } from "./export/export.service";
 import { AssemblyValidationService } from "./validate/assembly.service";
@@ -81,10 +81,12 @@ describeOrSkip("line-up ranking lookups (integration)", () => {
   });
 
   describe("line-up check (AssemblyValidationService)", () => {
-    // The window fetchData derives from usedRankingUnit "months" / amount 4.
-    const usedRankingDate = moment().set("year", RANKING_LOOKUP_SEASON).set("months", 4);
-    const start = moment(usedRankingDate).startOf("month");
-    const end = moment(usedRankingDate).endOf("month");
+    // The window fetchData derives from usedRankingUnit "months" / amount 4: May.
+    const window = lineUpRankingWindow({
+      season: RANKING_LOOKUP_SEASON,
+      usedRankingUnit: "months",
+      usedRankingAmount: 4,
+    });
 
     const checkFor = async (system: RankingSystem, playerIds: string[]) => {
       const service = new AssemblyValidationService();
@@ -93,11 +95,10 @@ describeOrSkip("line-up ranking lookups (integration)", () => {
           batchFetchPlayersWithCache: (
             ids: string[],
             system: RankingSystem,
-            start: moment.Moment,
-            end: moment.Moment
+            window: CalendarRange
           ) => Promise<Player[]>;
         }
-      ).batchFetchPlayersWithCache(playerIds, system, start, end);
+      ).batchFetchPlayersWithCache(playerIds, system, window);
       return new Map(players.map((p) => [p.id, p.rankingPlaces?.[0]?.single]));
     };
 

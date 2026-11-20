@@ -1,17 +1,16 @@
 import {
   Club,
+  findLatestRankingPlaces,
   Player,
   RankingLastPlace,
-  RankingPlace,
   RankingSystem,
   Team,
   TeamPlayerMembership,
 } from "@badman/backend-database";
-import { TeamMembershipType } from "@badman/utils";
+import { enrollmentRankingDate, TeamMembershipType } from "@badman/utils";
 import { Injectable, NotFoundException } from "@nestjs/common";
-import moment from "moment";
-import { Op } from "sequelize";
 import { WorkBook, utils, write } from "xlsx";
+import { attachRankingPlaces } from "../ranking-places";
 
 @Injectable()
 export class AssemblyExportService {
@@ -115,20 +114,6 @@ export class AssemblyExportService {
               systemId: this.system?.id,
             },
           },
-          {
-            attributes: ["id", "single", "double", "mix", "rankingDate"],
-            required: false,
-            model: RankingPlace,
-            limit: 1,
-            where: {
-              systemId: this.system?.id,
-              rankingDate: {
-                [Op.lte]: moment([season, 5, 10]).toDate(),
-              },
-              updatePossible: true,
-            },
-            order: [["rankingDate", "DESC"]],
-          },
         ],
       });
       players.push(...teamPlayers);
@@ -137,6 +122,17 @@ export class AssemblyExportService {
     // filter out duplicates
     const playerIds = players.map((p) => p.id);
     const uniquePlayers = players.filter((p, i) => playerIds.indexOf(p.id) === i);
+
+    // Enrollment ranking: newest update publication up to and including 10 June.
+    if (this.system?.id) {
+      const places = await findLatestRankingPlaces({
+        playerIds: uniquePlayers.map((p) => p.id),
+        systemId: this.system.id,
+        onOrBefore: enrollmentRankingDate(season),
+        updatePossibleOnly: true,
+      });
+      attachRankingPlaces(uniquePlayers, places);
+    }
 
     return uniquePlayers;
   }
