@@ -1,10 +1,17 @@
+jest.mock("@badman/backend-database", () => ({
+  ...jest.requireActual("@badman/backend-database"),
+  findLatestRankingPlaces: jest.fn(),
+}));
+
 import { Test, TestingModule } from "@nestjs/testing";
 import {
   EventCompetition,
+  LatestRankingPlace,
   Player,
   RankingPlace,
   RankingSystem,
   SubEventCompetition,
+  findLatestRankingPlaces,
 } from "@badman/backend-database";
 import { SubEventTypeEnum } from "@badman/utils";
 import { IndexCalculationService } from "./index-calculation.service";
@@ -181,12 +188,36 @@ describe("IndexCalculationService", () => {
       ]);
 
       expect(spy).toHaveBeenCalledTimes(1);
-      // Positional args: (playerIds, systemId, cutoff, transaction)
-      const callArgs = spy.mock.calls[0] as unknown as [string[], string, Date, unknown];
-      const cutoff = callArgs[2];
-      expect(cutoff.getFullYear()).toBe(2024);
-      expect(cutoff.getMonth()).toBe(5); // June (0-indexed)
-      expect(cutoff.getDate()).toBe(10);
+      // Positional args: (playerIds, systemId, onOrBefore, transaction)
+      const callArgs = spy.mock.calls[0] as unknown as [string[], string, string, unknown];
+      expect(callArgs[2]).toBe("2024-06-10");
+    });
+
+    it("fetches through the shared ranking lookup, without an updatePossible filter", async () => {
+      const lookup = findLatestRankingPlaces as jest.MockedFunction<typeof findLatestRankingPlaces>;
+      lookup.mockResolvedValue(
+        new Map([["p1", { playerId: "p1", single: 4, double: 5, mix: 6 } as LatestRankingPlace]])
+      );
+
+      const rows = await (
+        service as unknown as {
+          _fetchLatestPlacesPerPlayer: (
+            ids: string[],
+            systemId: string,
+            onOrBefore: string,
+            transaction?: unknown
+          ) => Promise<unknown[]>;
+        }
+      )._fetchLatestPlacesPerPlayer(["p1", "p2"], SYSTEM_ID, "2024-06-10");
+
+      expect(lookup).toHaveBeenCalledWith({
+        playerIds: ["p1", "p2"],
+        systemId: SYSTEM_ID,
+        onOrBefore: "2024-06-10",
+        transaction: undefined,
+      });
+      expect(rows).toEqual([{ playerId: "p1", single: 4, double: 5, mix: 6 }]);
+      lookup.mockReset();
     });
 
     it("does not query for updatePossible (validator does not either)", async () => {
@@ -203,7 +234,7 @@ describe("IndexCalculationService", () => {
         { key: "k", type: SubEventTypeEnum.M, season: SEASON, players: [{ id: "p1" }] },
       ]);
 
-      // Helper signature takes (playerIds, systemId, cutoff, transaction) only —
+      // Helper signature takes (playerIds, systemId, onOrBefore, transaction) only —
       // no updatePossible filter passes through.
       expect(spy.mock.calls[0]).toHaveLength(4);
     });
@@ -300,10 +331,7 @@ describe("IndexCalculationService", () => {
 
       expect(result._tag).toBe("success");
       // Cutoff on June 10 2024 — derived from sub-event's EventCompetition.season
-      const cutoff = placeSpy.mock.calls[0][2] as Date;
-      expect(cutoff.getFullYear()).toBe(2024);
-      expect(cutoff.getMonth()).toBe(5);
-      expect(cutoff.getDate()).toBe(10);
+      expect(placeSpy.mock.calls[0][2]).toBe("2024-06-10");
     });
 
     it("returns SUB_EVENT_NOT_FOUND when subEventCompetitionId does not resolve", async () => {
@@ -360,8 +388,7 @@ describe("IndexCalculationService", () => {
       });
 
       // explicit season = 2024 wins, not sub-event's 2020
-      const cutoff = placeSpy.mock.calls[0][2] as Date;
-      expect(cutoff.getFullYear()).toBe(2024);
+      expect(placeSpy.mock.calls[0][2]).toBe("2024-06-10");
     });
   });
 

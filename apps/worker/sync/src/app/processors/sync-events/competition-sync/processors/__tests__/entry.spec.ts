@@ -10,8 +10,10 @@
  * producing wrong team indexes (the Shauni Goethals / Smash For Fun 1G bug).
  *
  * The fix:
- *  A. Player.findAll include uses `rankingDate <= June 10 of season` (same
- *     cutoff as IndexCalculationService) so the May snapshot row is targeted.
+ *  A. The ranking lookup uses the newest place on or before June 10 of the
+ *     season (same cutoff as IndexCalculationService) so the May snapshot row
+ *     is targeted. Since BAD-392 it goes through findLatestRankingPlaces and
+ *     filters on the primary ranking system.
  *  B. Level assignment uses `existingPlayerMeta?.single ?? ranking?.single ?? 12`
  *     so that any value already in entry.meta (e.g. Jeroen's manual correction)
  *     is preserved — the sync can never overwrite a deliberate admin edit.
@@ -19,7 +21,7 @@
  * Scenarios covered
  * ─────────────────
  *  1. Season guard: _updateTeamDataFromVisual is called only before Sep 1.
- *  2. June 10 cutoff is passed to Player.findAll's rankingPlaces include.
+ *  2. June 10 cutoff and the primary ranking system are passed to the lookup.
  *  3. Player with full May snapshot → correct levels stored.
  *  4. Player with null single/mix after May + no existing meta → fallback 12.
  *  5. Player with null single/mix + existing meta (Jeroen's correction) → meta preserved.
@@ -42,6 +44,8 @@ jest.mock("@badman/backend-database", () => ({
   })),
   Team: { findAll: jest.fn() },
   Player: { findAll: jest.fn() },
+  RankingSystem: { findOne: jest.fn() },
+  findLatestRankingPlaces: jest.fn(),
 }));
 
 jest.mock("sequelize", () => {
@@ -79,6 +83,7 @@ jest.mock("@badman/utils", () => ({
   LevelType: {},
   SubEventTypeEnum: {},
   teamValues: jest.fn().mockReturnValue({}),
+  enrollmentRankingDate: (season: number) => `${season}-06-10`,
 }));
 
 jest.mock("../../../../../utils", () => ({
@@ -88,14 +93,13 @@ jest.mock("../../../../../utils", () => ({
 // ─── Imports (after mocks) ──────────────────────────────────────────────────
 
 import { isBefore } from "date-fns";
-import { Op } from "sequelize";
-import { Player } from "@badman/backend-database";
+import { Player, RankingSystem, findLatestRankingPlaces } from "@badman/backend-database";
 import { CompetitionSyncEntryProcessor } from "../entry";
 
 // ─── Fixtures ───────────────────────────────────────────────────────────────
 
 const SEASON = 2026;
-const JUNE_10_CUTOFF = new Date(SEASON, 5, 10); // month 5 = June (0-indexed)
+const PRIMARY_SYSTEM_ID = "primary-system";
 
 function makeTeam(overrides: Record<string, unknown> = {}) {
   return {
@@ -179,6 +183,23 @@ describe("CompetitionSyncEntryProcessor._updateTeamDataFromVisual", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     ({ processor, visualService } = makeProcessor());
+
+    (RankingSystem.findOne as jest.Mock).mockResolvedValue({ id: PRIMARY_SYSTEM_ID });
+    // The lookup answers with the first ranking place of the players that the
+    // test gave to Player.findAll, so the level tests below only set up players.
+    (findLatestRankingPlaces as jest.Mock).mockImplementation(
+      async ({ playerIds }: { playerIds: string[] }) => {
+        const results = (Player.findAll as jest.Mock).mock.results;
+        const players: ReturnType<typeof makeDbPlayer>[] = results.length
+          ? await results[results.length - 1].value
+          : [];
+        return new Map(
+          players
+            .filter((p) => playerIds.includes(p.id) && p.rankingPlaces[0])
+            .map((p) => [p.id, p.rankingPlaces[0]])
+        );
+      }
+    );
   });
 
   afterEach(() => jest.restoreAllMocks());
@@ -296,77 +317,80 @@ describe("CompetitionSyncEntryProcessor._updateTeamDataFromVisual", () => {
 
   // ── June 10 cutoff query ─────────────────────────────────────────────────
 
-  describe("ranking cutoff — rankingDate <= June 10 of season", () => {
-    it("queries Player.findAll with rankingDate [Op.lte] June 10 of the team's season", async () => {
-      const team = makeTeam({ season: SEASON });
-      const entry = makeEntry();
-
+  describe("ranking lookup — newest place on or before June 10 of season", () => {
+    const callFor = async (season: number) => {
+      const team = makeTeam({ season });
       visualService.getDraw.mockResolvedValue(makeXmlDraw(team.name as string));
       visualService.getTeam.mockResolvedValue(makeXmlTeam([{ MemberID: "50098807", GenderID: 2 }]));
-      (Player.findAll as jest.Mock).mockResolvedValue([]);
+      (Player.findAll as jest.Mock).mockResolvedValue([
+        makeDbPlayer({ id: "player-uuid-1", memberId: "50098807" }),
+      ]);
+      await callMethod(team, makeEntry());
+    };
 
-      await callMethod(team, entry);
+    it("looks up places on or before June 10 of the team's season", async () => {
+      await callFor(SEASON);
 
-      expect(Player.findAll).toHaveBeenCalledWith(
-        expect.objectContaining({
-          include: expect.arrayContaining([
-            expect.objectContaining({
-              where: expect.objectContaining({
-                rankingDate: expect.objectContaining({
-                  [Op.lte]: JUNE_10_CUTOFF,
-                }),
-              }),
-            }),
-          ]),
-        })
+      expect(findLatestRankingPlaces).toHaveBeenCalledWith(
+        expect.objectContaining({ onOrBefore: "2026-06-10", playerIds: ["player-uuid-1"] })
       );
     });
 
     it("uses June 10 of the TEAM season, not the current year", async () => {
-      const team = makeTeam({ season: 2025 });
-      const entry = makeEntry();
-      const expectedCutoff = new Date(2025, 5, 10);
+      await callFor(2025);
 
-      visualService.getDraw.mockResolvedValue(makeXmlDraw(team.name as string));
-      visualService.getTeam.mockResolvedValue(makeXmlTeam([{ MemberID: "AAA", GenderID: 1 }]));
-      (Player.findAll as jest.Mock).mockResolvedValue([]);
-
-      await callMethod(team, entry);
-
-      expect(Player.findAll).toHaveBeenCalledWith(
-        expect.objectContaining({
-          include: expect.arrayContaining([
-            expect.objectContaining({
-              where: expect.objectContaining({
-                rankingDate: { [Op.lte]: expectedCutoff },
-              }),
-            }),
-          ]),
-        })
+      expect(findLatestRankingPlaces).toHaveBeenCalledWith(
+        expect.objectContaining({ onOrBefore: "2025-06-10" })
       );
     });
 
-    // Characterization (BAD-409): pins today's query exactly, including the
-    // missing ranking-system filter.
-    it("current behaviour, fixed in BAD-392: does not filter ranking places on a ranking system", async () => {
-      const team = makeTeam({ season: 2025 });
-      const entry = makeEntry();
+    it("filters ranking places on the primary ranking system (BAD-392)", async () => {
+      await callFor(2025);
+
+      expect(RankingSystem.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { primary: true } })
+      );
+      expect(findLatestRankingPlaces).toHaveBeenCalledWith({
+        playerIds: ["player-uuid-1"],
+        systemId: PRIMARY_SYSTEM_ID,
+        onOrBefore: "2025-06-10",
+        transaction: undefined,
+      });
+      const [{ include }] = (Player.findAll as jest.Mock).mock.calls[0];
+      expect(include).toBeUndefined();
+    });
+
+    it("looks up the primary ranking system once per processor", async () => {
+      await callFor(SEASON);
+      await callFor(SEASON);
+
+      expect(RankingSystem.findOne).toHaveBeenCalledTimes(1);
+      expect(findLatestRankingPlaces).toHaveBeenCalledTimes(2);
+    });
+
+    it("falls back to existing meta and 12 when there is no primary ranking system", async () => {
+      (RankingSystem.findOne as jest.Mock).mockResolvedValue(null);
+      const team = makeTeam();
+      const entry = makeEntry([{ id: "player-uuid-1", single: 6 }]);
 
       visualService.getDraw.mockResolvedValue(makeXmlDraw(team.name as string));
-      visualService.getTeam.mockResolvedValue(makeXmlTeam([{ MemberID: "AAA", GenderID: 1 }]));
-      (Player.findAll as jest.Mock).mockResolvedValue([]);
+      visualService.getTeam.mockResolvedValue(makeXmlTeam([{ MemberID: "50098807", GenderID: 2 }]));
+      (Player.findAll as jest.Mock).mockResolvedValue([
+        makeDbPlayer({
+          id: "player-uuid-1",
+          memberId: "50098807",
+          rankingPlaces: [{ single: 7, double: 5, mix: 7 }],
+        }),
+      ]);
 
       await callMethod(team, entry);
 
-      const [{ include }] = (Player.findAll as jest.Mock).mock.calls[0];
-      expect(include).toEqual([
-        {
-          association: "rankingPlaces",
-          limit: 1,
-          where: { rankingDate: { [Op.lte]: new Date(2025, 5, 10) } },
-          order: [["rankingDate", "DESC"]],
-        },
-      ]);
+      expect(findLatestRankingPlaces).not.toHaveBeenCalled();
+      expect(entry.meta?.competition?.players?.[0]).toMatchObject({
+        single: 6,
+        double: 12,
+        mix: 12,
+      });
     });
   });
 

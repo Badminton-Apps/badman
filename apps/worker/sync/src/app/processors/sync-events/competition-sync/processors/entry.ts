@@ -1,6 +1,19 @@
-import { Club, EventEntry, Team, Player } from "@badman/backend-database";
+import {
+  Club,
+  EventEntry,
+  Team,
+  Player,
+  RankingSystem,
+  findLatestRankingPlaces,
+} from "@badman/backend-database";
 import { VisualService, XmlClub, XmlTournament } from "@badman/backend-visual";
-import { LevelType, runParallel, SubEventTypeEnum, teamValues } from "@badman/utils";
+import {
+  enrollmentRankingDate,
+  LevelType,
+  runParallel,
+  SubEventTypeEnum,
+  teamValues,
+} from "@badman/utils";
 import { Logger } from "@nestjs/common";
 import { Op, WhereOptions } from "sequelize";
 import { StepOptions, StepProcessor } from "../../../../processing";
@@ -16,6 +29,7 @@ export interface EntryStepData {
 export class CompetitionSyncEntryProcessor extends StepProcessor {
   public draws?: DrawStepData[];
   private _entries: EntryStepData[] = [];
+  private _primarySystem?: Promise<RankingSystem | null>;
 
   constructor(
     protected readonly visualTournament: XmlTournament,
@@ -142,6 +156,16 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         this._entries = this._entries.filter((e) => e.entry.id !== entry.id);
       }
     }
+  }
+
+  /** The primary ranking system, looked up once per processor run. */
+  private _getPrimarySystem(): Promise<RankingSystem | null> {
+    this._primarySystem ??= RankingSystem.findOne({
+      attributes: ["id"],
+      where: { primary: true },
+      transaction: this.transaction,
+    });
+    return this._primarySystem;
   }
 
   private async _getClubByNumber(clubNumber: string | number): Promise<Club | null> {
@@ -474,14 +498,14 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
         const memberIds = players.map((p) => p.MemberID).filter((id) => id);
         // June 10 of the season is the enrollment ranking cutoff.
-        // We use the most recent RankingPlace at or before that date — the same
-        // cutoff used by IndexCalculationService — so that the stored base-player
-        // levels stay aligned with what was locked in at enrollment time.
+        // We use the most recent RankingPlace of the primary ranking system on or
+        // before that date — the same rule as IndexCalculationService — so that the
+        // stored base-player levels stay aligned with what was locked in at
+        // enrollment time.
         if (!team.season) {
           this.logger.warn(`Team season not found for ${team.name}`);
           return;
         }
-        const rankingCutoff = new Date(team.season, 5, 10); // month is 0-indexed: 5 = June
 
         const dbPlayers = await Player.findAll({
           where: {
@@ -489,18 +513,23 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
               [Op.in]: memberIds.filter((id): id is string => id !== undefined),
             },
           },
-          include: [
-            {
-              association: "rankingPlaces",
-              limit: 1,
-              where: {
-                rankingDate: { [Op.lte]: rankingCutoff },
-              },
-              order: [["rankingDate", "DESC"]],
-            },
-          ],
           transaction: this.transaction,
         });
+
+        const primarySystem = await this._getPrimarySystem();
+        if (!primarySystem) {
+          this.logger.warn(
+            `No primary ranking system found; storing levels for ${team.name} without rankings`
+          );
+        }
+        const rankingPlaces = primarySystem
+          ? await findLatestRankingPlaces({
+              playerIds: dbPlayers.map((p) => p.id),
+              systemId: primarySystem.id,
+              onOrBefore: enrollmentRankingDate(team.season),
+              transaction: this.transaction,
+            })
+          : new Map();
 
         const existingMeta = entry.meta || {};
         const existingPlayersMeta = existingMeta.competition?.players || [];
@@ -518,7 +547,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
               // Prefer existing meta values first (preserves manual corrections made
               // via the admin UI), then fall back to the snapshot, then to the
               // system maximum (12) when the player has no ranking at the cutoff.
-              const ranking = dbPlayer?.rankingPlaces?.[0];
+              const ranking = dbPlayer ? rankingPlaces.get(dbPlayer.id) : undefined;
 
               return {
                 id: dbPlayer?.id || undefined,
