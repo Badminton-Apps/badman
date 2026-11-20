@@ -10,10 +10,11 @@ import { TeamClubRule } from "./rules/team-club.rule";
  * out the season and its two halves. They pin today's behaviour so the S3
  * groundwork (BAD-390/391) can prove it changes nothing by accident.
  *
- * Today the halves are calendar years: every encounter in the season's start
- * year is "semester 1", every encounter in the next calendar year (including
- * May and June) is "semester 2". Tests run with TZ=Europe/Brussels, as
- * production does (jest.global-setup.js).
+ * The halves are calendar years: every encounter in the season's start year is
+ * "semester 1", every encounter in the next calendar year (including May and
+ * June) is "semester 2". Since BAD-391 the season module reads dates on the
+ * Brussels calendar, whatever the server timezone. Tests run with
+ * TZ=Europe/Brussels, as production does (jest.global-setup.js).
  */
 const at = (iso: string) => new Date(iso);
 
@@ -168,6 +169,12 @@ describe("change-encounter season handling (characterization)", () => {
       expect(result.errors).toHaveLength(inPeriod ? 0 : 1);
     });
 
+    it("uses the Brussels date of the encounter (FR-010a)", async () => {
+      // 30 April 23:59 UTC is already 1 May in Brussels.
+      const result = await rule.validate(data(at("2027-04-30T23:59:00.000Z"), 2026));
+      expect(result.errors).toHaveLength(1);
+    });
+
     it("reports the calendar year of the date as the season in the error", async () => {
       const result = await rule.validate(data(at("2027-05-01T10:00:00.000Z"), 2026));
       expect(result.errors[0]).toMatchObject({
@@ -177,8 +184,13 @@ describe("change-encounter season handling (characterization)", () => {
     });
 
     it("uses the current season when the data has no season", async () => {
-      // 15 August 2026 → getSeason() = 2026 → window 1 Sep 2026 – 30 Apr 2027
+      // 15 August 2026 → enrollmentSeason() = 2026 → window 1 Sep 2026 – 30 Apr 2027
       const result = await rule.validate(data(at("2026-10-01T19:00:00.000Z"), undefined));
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it("treats season 0 as missing and uses the current season", async () => {
+      const result = await rule.validate(data(at("2026-10-01T19:00:00.000Z"), 0));
       expect(result.errors).toHaveLength(0);
     });
 

@@ -1,7 +1,6 @@
 import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
-import { ClubMembershipType } from "@badman/utils";
+import { ClubMembershipType, membershipWindow } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
-import moment from "moment";
 import { Op } from "sequelize";
 import * as XLSX from "xlsx";
 
@@ -35,23 +34,14 @@ export class LoansService {
       },
     });
 
-    // We take a month before the start of the season and a month after the end of the season
-    const startDate = moment().set("year", season).startOf("year").set("month", 6).set("date", 1);
-
-    const endDate = moment()
-      .set("year", season + 1)
-      .startOf("year")
-      .set("month", 5)
-      .endOf("month");
+    // Loans run for the season membership window: 1 July – 30 June (C950)
+    const { start: startDate, end: endDate } = membershipWindow(season);
 
     const memberships = await ClubPlayerMembership.findAll({
       where: {
         playerId: players.map((p) => p.id),
         membershipType: ClubMembershipType.LOAN,
-        [Op.and]: [
-          { start: { [Op.gte]: startDate.toDate() } },
-          { end: { [Op.lte]: endDate.toDate() } },
-        ],
+        [Op.and]: [{ start: { [Op.gte]: startDate } }, { end: { [Op.lte]: endDate } }],
       },
     });
 
@@ -73,8 +63,8 @@ export class LoansService {
         this.logger.debug(`Processing new club membership for player ${player.fullName}`);
         membership = new ClubPlayerMembership();
         membership.playerId = player.id;
-        membership.start = startDate.toDate();
-        membership.end = endDate.toDate();
+        membership.start = new Date(startDate);
+        membership.end = new Date(endDate);
         membership.membershipType = ClubMembershipType.LOAN;
         membership.clubId = newClubId;
         membership.confirmed = true;

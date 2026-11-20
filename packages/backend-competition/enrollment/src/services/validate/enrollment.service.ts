@@ -9,7 +9,7 @@ import {
   SubEventCompetition,
   Team,
 } from "@badman/backend-database";
-import { getSeason } from "@badman/utils";
+import { enrollmentSeason } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import {
   EnrollmentOutput,
@@ -70,7 +70,7 @@ export class EnrollmentValidationService {
       throw new Error(`Club with id ${clubId} not found`);
     }
 
-    season = season ?? getSeason();
+    season = season ?? enrollmentSeason();
     let previousSeasonTeams: Team[] = [];
 
     if (!teams) {

@@ -1,3 +1,5 @@
+import { isScoreEntrySeasonOpen, oldestOpenScoreEntrySeason } from "@badman/utils";
+
 export interface EnterScoresConfig {
   /** Whether VISUAL_SYNC_ENABLED is true (controls headless vs visible browser) */
   visualSyncEnabled: boolean;
@@ -48,13 +50,13 @@ export function enterScoresPreflight(config: EnterScoresConfig): EnterScoresPref
 }
 
 // Competition season n (2025 = 2025-26) runs 1 Sep - 30 Apr, but some leagues still play
-// in May and June, so a season only closes on 1 July of the following year.
+// in May and June, so a season only closes on 1 July of the following year (Brussels time).
 export function isSeasonOpen(season: number, now: Date): boolean {
-  return now < new Date(season + 1, 6, 1);
+  return isScoreEntrySeasonOpen(season, now);
 }
 
 export function oldestOpenSeason(now: Date): number {
-  return now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+  return oldestOpenScoreEntrySeason(now);
 }
 
 /**

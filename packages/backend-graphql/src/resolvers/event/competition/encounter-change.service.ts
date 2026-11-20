@@ -14,7 +14,10 @@ import {
   ChangeEncounterDateStatus,
   ChangeEncounterParty,
   EncounterChangeAction,
+  enrollmentSeason,
+  isInCompetitionSeason,
   LoggingAction,
+  seasonHalf,
 } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectQueue } from "@nestjs/bull";
@@ -90,9 +93,9 @@ export class EncounterChangeService {
 
     this._assertDeadlineNotPassed(encounter, event, "propose");
 
-    const season = event?.season ?? new Date().getFullYear();
+    const season = event?.season ?? enrollmentSeason();
     for (const d of input.dates) {
-      if (!this._isInCompetitionSeason(d.date, season)) {
+      if (!isInCompetitionSeason(d.date, season)) {
         throw new GraphQLError(
           `Date ${d.date.toISOString()} is outside the competition season (Sep 1 – Apr 30)`,
           { extensions: { code: ErrorCode.DATE_OUT_OF_SEASON } }
@@ -227,10 +230,10 @@ export class EncounterChangeService {
 
     this._assertDeadlineNotPassed(encounter, event, "triage");
 
-    const season = event?.season ?? new Date().getFullYear();
+    const season = event?.season ?? enrollmentSeason();
 
     for (const d of input.newDates ?? []) {
-      if (!this._isInCompetitionSeason(d.date, season)) {
+      if (!isInCompetitionSeason(d.date, season)) {
         throw new GraphQLError(
           `Date ${d.date.toISOString()} is outside the competition season (Sep 1 – Apr 30)`,
           { extensions: { code: ErrorCode.DATE_OUT_OF_SEASON } }
@@ -560,25 +563,16 @@ export class EncounterChangeService {
     if (!event?.changeCloseRequestDatePeriod1 || !event?.changeCloseRequestDatePeriod2) {
       return;
     }
-    const isSeason1 =
-      !!event.season &&
-      (encounter.date?.getFullYear() === event.season ||
-        encounter.date?.getFullYear() === event.season + 1);
-    const closedDate = isSeason1
-      ? event.changeCloseRequestDatePeriod1
-      : event.changeCloseRequestDatePeriod2;
+    // First half → period-1 deadline. Second half, and anything we cannot place
+    // (no season, no date, outside the season's two years) → period-2 deadline.
+    const half = event.season && encounter.date ? seasonHalf(encounter.date, event.season) : null;
+    const closedDate =
+      half === "first" ? event.changeCloseRequestDatePeriod1 : event.changeCloseRequestDatePeriod2;
     if (moment().isAfter(moment(closedDate))) {
       this.logger.warn(`[${context}] deadline passed encounterId=${encounter.id}`);
       throw new GraphQLError("The deadline for requesting date changes has passed", {
         extensions: { code: ErrorCode.DEADLINE_PASSED },
       });
     }
-  }
-
-  private _isInCompetitionSeason(date: Date, season: number): boolean {
-    const d = moment(date);
-    const start = moment(`${season}-09-01`);
-    const end = moment(`${season + 1}-04-30`).endOf("day");
-    return d.isBetween(start, end, undefined, "[]");
   }
 }
