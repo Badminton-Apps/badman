@@ -4,9 +4,6 @@ import {
   connectRankingLookupDb,
   createRankingLookupFixture,
 } from "@badman/backend-database";
-import { config } from "dotenv";
-import { existsSync } from "fs";
-import { dirname, join } from "path";
 import { Sequelize } from "sequelize-typescript";
 import { CompetitionSyncEntryProcessor } from "../entry";
 
@@ -18,10 +15,6 @@ import { CompetitionSyncEntryProcessor } from "../entry";
  *
  * Opt-in: RUN_INTEGRATION_TESTS=1 with the docker dev database running.
  */
-const findRepoRoot = (dir: string): string =>
-  existsSync(join(dir, "pnpm-workspace.yaml")) ? dir : findRepoRoot(dirname(dir));
-config({ path: join(findRepoRoot(__dirname), ".env") });
-
 const sequelize: Sequelize | null = connectRankingLookupDb();
 const describeOrSkip = sequelize ? describe : describe.skip;
 

@@ -1,3 +1,7 @@
+import { existsSync, readFileSync } from "fs";
+import { dirname, join } from "path";
+import { parseEnv } from "util";
+import { Op } from "sequelize";
 import { Model, ModelCtor, Sequelize } from "sequelize-typescript";
 import { SubEventTypeEnum, TeamMembershipType } from "@badman/utils";
 import * as sequelizeModels from "../models";
@@ -7,14 +11,18 @@ import { Player, RankingPlace, RankingSystem, Team, TeamPlayerMembership } from 
  * Shared fixture for the ranking-lookup integration tests (BAD-409).
  *
  * It creates two ranking systems, four players and one team with fixed
- * publications around the 10 June cutoff of season 2026, so each caller's
+ * publications around the 10 June cutoff of a sentinel season, so each caller's
  * lookup rule can be checked against real Postgres behaviour. Each place has a
  * distinct `single` level, so a test can tell which row a lookup returned.
  *
  * Integration tests only: they write to the database, so `connectRankingLookupDb`
- * refuses anything but a local Postgres.
+ * refuses anything but a local Postgres. Every row carries the `bad409-` tag (and
+ * the team the sentinel season), so leftovers of a crashed run are removed when
+ * the next run creates the fixture.
  */
-export const RANKING_LOOKUP_SEASON = 2026;
+export const RANKING_LOOKUP_SEASON = 9999;
+
+const TAG_PREFIX = "bad409-";
 
 export type RankingLookupFixture = {
   systemA: RankingSystem;
@@ -35,14 +43,38 @@ export type RankingLookupFixture = {
 const LOCAL_HOSTS = ["localhost", "127.0.0.1", "::1"];
 
 /**
- * Connects to the dev Postgres from the environment (DB_* variables), or
- * returns null when the suite should skip: integration tests not enabled, not
- * Postgres, or not a local database.
+ * Copies the repo root `.env` into `env`, without overriding set variables.
+ * (Not `process.loadEnvFile`: Jest gives each test file its own copy of
+ * `process.env`, which that would not update.)
+ */
+function loadRootEnv(env: NodeJS.ProcessEnv): void {
+  let dir = __dirname;
+  while (!existsSync(join(dir, "pnpm-workspace.yaml"))) {
+    const parent = dirname(dir);
+    if (parent === dir) {
+      return;
+    }
+    dir = parent;
+  }
+  const envFile = join(dir, ".env");
+  if (!existsSync(envFile)) {
+    return;
+  }
+  for (const [key, value] of Object.entries(parseEnv(readFileSync(envFile, "utf8")))) {
+    env[key] ??= value;
+  }
+}
+
+/**
+ * Connects to the dev Postgres from the environment (DB_* variables, read from
+ * the repo root `.env`), or returns null when the suite should skip: integration
+ * tests not enabled, not Postgres, or not a local database.
  */
 export function connectRankingLookupDb(env = process.env): Sequelize | null {
   if (env["RUN_INTEGRATION_TESTS"] !== "1") {
     return null;
   }
+  loadRootEnv(env);
   if (env["DB_DIALECT"] !== "postgres") {
     console.warn("Ranking lookup integration tests need DB_DIALECT=postgres; skipping.");
     return null;
@@ -68,10 +100,36 @@ export function connectRankingLookupDb(env = process.env): Sequelize | null {
   });
 }
 
-const utc = (iso: string) => new Date(`${iso}T00:00:00.000Z`);
+/** Midnight UTC of a day in the sentinel season, e.g. `utc("06-10")`. */
+const utc = (monthDay: string) => new Date(`${RANKING_LOOKUP_SEASON}-${monthDay}T00:00:00.000Z`);
+
+/** Removes rows left behind by an earlier run that crashed before its cleanup. */
+async function removeLeftovers(): Promise<void> {
+  const tagged = { [Op.like]: `${TAG_PREFIX}%` };
+  const players = await Player.findAll({ attributes: ["id"], where: { lastName: tagged } });
+  const teams = await Team.findAll({
+    attributes: ["id"],
+    where: { season: RANKING_LOOKUP_SEASON, name: tagged },
+  });
+  const playerIds = players.map((p) => p.id);
+  const teamIds = teams.map((t) => t.id);
+
+  if (playerIds.length > 0) {
+    await RankingPlace.destroy({ where: { playerId: playerIds }, hooks: false });
+  }
+  if (teamIds.length > 0) {
+    await TeamPlayerMembership.destroy({ where: { teamId: teamIds }, hooks: false });
+    await Team.destroy({ where: { id: teamIds }, hooks: false });
+  }
+  if (playerIds.length > 0) {
+    await Player.destroy({ where: { id: playerIds }, hooks: false });
+  }
+  await RankingSystem.destroy({ where: { name: tagged }, hooks: false });
+}
 
 export async function createRankingLookupFixture(): Promise<RankingLookupFixture> {
-  const tag = `bad409-${Date.now()}`;
+  await removeLeftovers();
+  const tag = `${TAG_PREFIX}${Date.now()}`;
 
   const [systemA, systemB] = await Promise.all(
     ["A", "B"].map((name) =>
@@ -121,16 +179,16 @@ export async function createRankingLookupFixture(): Promise<RankingLookupFixture
 
   await RankingPlace.bulkCreate(
     [
-      place(exact, systemA, "2026-05-04", 10),
-      place(exact, systemA, "2026-05-25", 9, false),
-      place(exact, systemA, "2026-06-01", 8),
-      place(exact, systemA, "2026-06-08", 7, false),
-      place(exact, systemA, "2026-06-10", 6),
-      place(exact, systemA, "2026-06-15", 5),
-      place(twoSystems, systemA, "2026-06-01", 8),
-      place(twoSystems, systemB, "2026-06-05", 3),
-      place(noPlace, systemA, "2026-06-15", 5),
-      place(weeklyOnly, systemA, "2026-06-08", 7, false),
+      place(exact, systemA, "05-04", 10),
+      place(exact, systemA, "05-25", 9, false),
+      place(exact, systemA, "06-01", 8),
+      place(exact, systemA, "06-08", 7, false),
+      place(exact, systemA, "06-10", 6),
+      place(exact, systemA, "06-15", 5),
+      place(twoSystems, systemA, "06-01", 8),
+      place(twoSystems, systemB, "06-05", 3),
+      place(noPlace, systemA, "06-15", 5),
+      place(weeklyOnly, systemA, "06-08", 7, false),
     ],
     { hooks: false }
   );
@@ -150,7 +208,7 @@ export async function createRankingLookupFixture(): Promise<RankingLookupFixture
       teamId: team.id,
       playerId: p.id,
       membershipType: TeamMembershipType.REGULAR,
-      start: utc("2026-07-01"),
+      start: utc("07-01"),
     })),
     { hooks: false }
   );
