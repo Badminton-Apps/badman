@@ -150,7 +150,7 @@ The current rules per caller:
 - **FR-008**: When an event has no season, the change-request flow MUST derive the season from the season concept, not from the calendar year.
 - **FR-009**: The old helpers in `comp.ts` MUST be removed once no caller uses them.
 - **FR-010**: Apart from FR-007, FR-008 and the timezone change below, every migrated caller MUST keep its current results.
-- **FR-010a**: Timezone change (the only intended change besides the bugs): when a caller derives a season or a half from an instant, it uses the Brussels calendar date (FR-003). This changes the result only for instants between 22:00/23:00 UTC and midnight UTC on a boundary day (for example 30 April 22:30 UTC). Instants that are written to or compared with the database keep their current values (see research R2 and R3).
+- **FR-010a**: Timezone independence: when a caller derives a season or a half from an instant, it uses the Brussels calendar date explicitly (FR-003), and instants written to or compared with the database are midnight in Brussels. Production already runs with `TZ=Europe/Brussels`, so this does not change production results; it makes them independent of the server timezone (research R1, R2 and R3). Only a process running in another timezone (for example UTC in CI) sees different answers than before, for instants between 22:00/23:00 UTC and midnight UTC on a boundary day.
 
 **Ranking reference dates (US3)**
 
@@ -165,7 +165,7 @@ The current rules per caller:
 
 - **FR-017**: The GraphQL schema MUST NOT change.
 - **FR-018**: Tests MUST be written before the change they cover; for the bug fixes, a failing test MUST demonstrate the bug first.
-- **FR-019**: Before any caller changes, the current behaviour of every season and ranking-date function this feature touches MUST be pinned by characterization tests (BAD-409), including the named bugs. Season tests MUST run in both UTC and Europe/Brussels.
+- **FR-019**: Before any caller changes, the current behaviour of every season and ranking-date function this feature touches MUST be pinned by characterization tests (BAD-409), including the named bugs. The tests run in Europe/Brussels, the timezone production uses; the old season helper suite also runs in UTC to show which answers depend on the server. Once a caller uses the module (US2, US3), its season tests MUST also run in UTC with the same results.
 
 ### Key Entities
 
@@ -183,9 +183,9 @@ The current rules per caller:
 - **SC-002**: Ranking reference dates live in one place: 0 hard-coded "10 June" or "May" cutoffs remain outside the shared functions (down from 4 places today).
 - **SC-003**: Clubs can request date changes for second-half encounters until the period-2 deadline: 100% of such requests made between the period-1 and period-2 deadlines are accepted, where today 0% are.
 - **SC-004**: Every season and ranking-reference boundary is covered by an automated test on both sides.
-- **SC-005**: Existing behaviour is preserved: all existing test suites pass without changing their expectations, except the tests that pin the named bugs and the timezone change in FR-010a.
+- **SC-005**: Existing behaviour is preserved: all existing test suites pass without changing their expectations, except the tests that pin the named bugs.
 - **SC-006**: The open questions below are handed to Badminton Vlaanderen as question comments on Linear tickets BAD-397 to BAD-408.
-- **SC-007**: The characterization tests from FR-019 pass unchanged after US1, US2 and US3, except the tests that pin the named bugs and the tests named "depends on the server timezone" (FR-010a), which change on purpose.
+- **SC-007**: The characterization tests from FR-019 pass unchanged after US1, US2 and US3, except the tests that pin the named bugs, which change on purpose. The suites of migrated callers also pass in UTC (FR-010a).
 
 ## Open questions for Badminton Vlaanderen
 
@@ -199,10 +199,10 @@ These are answered outside this feature; the answers drive later S3 work.
 
 ## Assumptions
 
-- Current behaviour is what a process computes in UTC without the Brussels moment default that template rendering sets (research R1); the BAD-409 tests pin it. Whether Render sets `TZ` is checked before release.
+- Current behaviour is what production computes: the API and the workers run with `TZ=Europe/Brussels` on Render (checked 2026-11-25, research R1). The BAD-409 tests pin it by running in that timezone.
 - Publication dates are stored at midnight of their calendar date by the ranking sync.
 - The line-up month setting on events is "months" with an amount that points to May in production data; verified on a production dump during planning.
 - `getNextSeason` and the Twizzit window are kept as-is and documented; whether they are still needed is not decided here.
 - The seeders keep producing equivalent data; switching them to the module may shift seed dates at most within the same season.
-- Removing moment (BAD-380) is out of scope; only the new module is written with date-fns, and moment-based callers keep working until BAD-380.
+- Removing moment (BAD-380) is out of scope, but every date operation this feature writes or edits uses date-fns. moment stays installed, and code this feature does not touch keeps using it until BAD-380.
 - The S1 tickets (dead code removal) may land on `feat/refactor` before implementation starts; callers removed there are out of scope here.

@@ -14,14 +14,14 @@ Approach:
 2. **US2**: move every caller to the module, fix the two change-request bugs, remove the old helpers.
 3. **US3**: calendar-date reference functions plus a portable batch lookup in `@badman/backend-database`. The four callers pass their current rule explicitly. The sync worker gets a system filter, and the line-up cache key includes season and system.
 
-Research found that production's moment-based code switches from UTC to Brussels time once a process renders its first PDF or mail (`moment.tz.setDefault` in `backend-compile`, research R1). The design avoids depending on that.
+Production runs with `TZ=Europe/Brussels` (research R1). The module computes in Brussels explicitly, so results no longer depend on the server timezone, and database-facing instants stay at midnight in Brussels, the values production stores today (research R3).
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.8, Node 22
-**Primary Dependencies**: NestJS 11, Sequelize 6 (sequelize-typescript), `date-fns` 4 + `date-fns-tz` 3 (already in the repo; added to `@badman/utils`), moment (existing callers, removed later in BAD-380)
+**Primary Dependencies**: NestJS 11, Sequelize 6 (sequelize-typescript), `date-fns` 4 + `date-fns-tz` 3 (already in the repo; added to `@badman/utils`), moment (only in code this feature does not touch; removed in BAD-380)
 **Storage**: PostgreSQL (production, dev); SQLite in-memory for some unit specs. No schema change.
-**Testing**: Jest via `turbo run test`; characterization tests from BAD-409; integration tests gated behind `RUN_INTEGRATION_TESTS=1`; tests pinned to UTC with a Brussels re-run for season logic
+**Testing**: Jest via `turbo run test`; characterization tests from BAD-409; integration tests gated behind `RUN_INTEGRATION_TESTS=1`; tests run in Europe/Brussels like production, with a UTC run (`jest.also-run-in-timezone.ts`) for code that must not depend on the server timezone
 **Target Platform**: Render (Linux, Node), API and Bull workers
 **Project Type**: Backend monorepo (Turborepo + pnpm), internal packages
 **Performance Goals**: Lookups stay one query per call (batch over players); no extra queries per player
@@ -59,7 +59,7 @@ specs/039-s3-season-ranking-groundwork/
 │   ├── season-module.md
 │   └── ranking-lookup.md
 ├── checklists/requirements.md
-└── tasks.md             # Phase 2 (/speckit-tasks, not created here)
+└── tasks.md             # Phase 2 (/speckit-tasks)
 ```
 
 ### Source Code (repository root)
@@ -70,7 +70,7 @@ packages/utils/src/lib/season/            # US1 + US3 reference dates (new)
 ├── season.ts                             # enrollmentSeason, competitionSeasonWindow, seasonHalf, membership…, score-entry, nextSeason, twizzitExportWindow
 ├── ranking-dates.ts                      # enrollmentRankingDate, encounterRankingDate, lineUpRankingWindow
 ├── index.ts
-└── *.spec.ts                             # run in UTC and Europe/Brussels
+└── *.spec.ts                             # run in Europe/Brussels and UTC
 packages/utils/src/lib/comp.ts            # US1: delegates; US2: removed
 
 packages/backend-database/src/queries/    # US3 (new)
@@ -97,17 +97,17 @@ apps/worker/sync/src/app/processors/sync-events/competition-sync/processors/entr
 
 ## Delivery order
 
-1. **BAD-409** (done): characterization tests and integration fixture.
+1. **BAD-409** (done, #1176 and follow-up #1181): characterization tests and integration fixture; tests run in Europe/Brussels like production.
 2. **BAD-390 / US1**: module + tests in both timezones; `comp.ts` delegates. No caller changes.
 3. **BAD-391 / US2**: callers move to the module; FR-007 and FR-008 fixed with failing tests first; old helpers removed. The `moment.tz.setDefault` side effect is a separate bug (BAD-410).
 4. **BAD-392 / US3**: reference dates + lookup; callers switch; FR-014 and FR-015 fixed with failing tests first.
 
-Each ticket is its own branch and PR into `feat/refactor`. US3 only needs US1, so BAD-391 and BAD-392 can run in parallel after BAD-390.
+Each ticket is its own branch and PR into `feat/refactor`, stacked on the previous one while reviews are pending. US3 only needs US1, so BAD-391 and BAD-392 can run in parallel after BAD-390.
 
 ## Open items
 
-- **Spec amendment (confirmed 2026-11-19)**: the boundary-instant timezone change is now FR-010a, an exception in FR-010, SC-005 and SC-007 (research R2).
-- **Verify before release** (read-only production queries, research R1/R3/R7): Render `TZ`; time of day of stored ranking dates and membership starts; line-up unit values. None block implementation.
+- **Production timezone (checked 2026-11-25)**: Europe/Brussels on the API and both workers (research R1). FR-010a now describes timezone independence, not a change in production.
+- **Verify** (read-only production queries, research R3/R7): time of day of stored ranking dates and membership starts; line-up unit values. None block implementation or release.
 
 ## Complexity Tracking
 

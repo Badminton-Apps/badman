@@ -9,7 +9,7 @@ No tables, columns or migrations change, and the GraphQL schema stays the same (
 | Type | Shape | Meaning |
 | --- | --- | --- |
 | `Season` | `number` | The year a season starts in: 2026 is 2026–27. |
-| `CalendarDate` | `string`, `YYYY-MM-DD` | A date on the Belgian calendar, without time or timezone. All reference dates use this type. |
+| `CalendarDate` | `` `${number}-${number}-${number}` ``, `YYYY-MM-DD` | A date on the Belgian calendar, without time or timezone. All reference dates use this type. The template literal type rejects formats like `10/06/2026` or an ISO instant at compile time; `parseCalendarDate` checks the value at run time. |
 | `CalendarRange` | `{ from: CalendarDate; to: CalendarDate }` | Inclusive on both ends. |
 | `SeasonHalf` | `"first" \| "second"` | First half: calendar year = season. Second half: calendar year = season + 1 (includes May and June, as today). |
 | `InstantRange` | `{ start: Date; end: Date }` | Instants for database comparisons. Each function documents whether `end` is inclusive. |
@@ -18,7 +18,7 @@ Rules for these types:
 
 - A `CalendarDate` is derived from an instant in Europe/Brussels (FR-003), unless a function says it keeps the process-local timezone (only the delegating `comp.ts` helpers in US1, see research R2).
 - A `CalendarDate` is turned into an instant for the database in one of two documented ways (research R3):
-  - `storedInstant(date)`: midnight UTC of that date. Today's convention for memberships and the Twizzit window.
+  - `storedInstant(date)`: midnight in Brussels of that date. What production stores for memberships and uses for the Twizzit window (it runs with `TZ=Europe/Brussels`).
   - `brusselsDayRange(range)`: `[start of from in Brussels, start of the day after to in Brussels)`. Used by the ranking lookup.
 
 ## Existing entities read (unchanged)

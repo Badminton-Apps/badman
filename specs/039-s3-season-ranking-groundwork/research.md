@@ -1,49 +1,44 @@
 # Research: Season and Ranking Reference-Date Groundwork
 
-**Feature**: 039-s3-season-ranking-groundwork | **Date**: 2026-11-19
+**Feature**: 039-s3-season-ranking-groundwork | **Date**: 2026-11-19, updated 2026-11-25 (production timezone, review on #1177)
 
-Each item lists the decision, why, and what else was considered. Items marked **Verify before release** do not block implementation; they are read-only checks on production data.
+Each item lists the decision, why, and what else was considered. Items marked **Verify** do not block implementation; they are read-only checks on production data.
 
 ## R1. Which timezone does production compute in today?
 
-**Finding**: there is no single answer.
+**Finding**: Europe/Brussels. The Render dashboard sets `TZ=Europe/Brussels` on the API, the sync worker and the ranking worker (checked 2026-11-25; the setting is not in the repo).
 
-- Nothing in the repo sets `TZ` for the apps (no Dockerfile, no `render.yaml`, no `process.env.TZ`). Render runs Node in UTC unless the dashboard sets `TZ`.
-- `backend-compile` calls `moment.tz.setDefault("Europe/Brussels")` inside `generateHtmlFromTemplate` (PDF and mail rendering). `moment-timezone` patches the shared `moment` instance, so from the first template render onwards every `moment()` in that process interprets dates in Brussels time. Verified locally: with `TZ=UTC`, `getSeason(new Date("2027-04-30T22:30:00Z"))` returns 2026 before the call and 2027 after it.
-- The API and the sync worker both load `backend-compile` (via assembly and mailing). Their moment-based date logic therefore switches from UTC to Brussels during the process lifetime. Code that uses `Date` or `date-fns` directly (score-entry guards, sync entry cutoff, ranking sync) stays in the process timezone.
+- `backend-compile` calls `moment.tz.setDefault("Europe/Brussels")` inside `generateHtmlFromTemplate` (PDF and mail rendering). That patches the shared `moment` instance for the rest of the process. In production it changes nothing, because the process already runs in Brussels time; it only makes a process in another timezone (local, CI) switch halfway. Tracked as BAD-410 (low priority); BAD-380 removes the call.
+- Code that uses `Date` or `date-fns` without a timezone (score-entry guards, sync entry cutoff, ranking sync) also computes in Brussels time in production.
 
-**Decision**: treat "current behaviour" as what a process computes **without** the Brussels default, which is what the characterization tests (BAD-409) pin. The new module computes in Europe/Brussels explicitly (FR-003), so the result no longer depends on whether a template was rendered. Removing the `setDefault` side effect itself is out of scope here: it is tracked as a bug in BAD-410, and BAD-380 (moment → date-fns) removes the root cause.
+**Decision**: "current behaviour" is what production computes, so the tests run in Europe/Brussels by default (`jest.global-setup.js`) and the BAD-409 characterization tests pin the Brussels answers. The new module computes in Europe/Brussels explicitly (FR-003), so its results no longer depend on the server timezone; suites of migrated callers also run in UTC to prove it (`jest.also-run-in-timezone.ts`).
 
-**Alternatives considered**: fixing `setDefault` now (changes PDF and mail formatting, unrelated to this feature); pinning `TZ=Europe/Brussels` on Render (changes every `Date` call at once, too broad for a groundwork feature).
-
-**Verify before release**: whether the Render services set `TZ` (dashboard, not in the repo).
+**Alternatives considered**: keep the tests in UTC, as CI runners do (pins values production never computes, as #1176 did at first); fix `setDefault` now (changes PDF and mail formatting, unrelated to this feature).
 
 ## R2. FR-003 (Brussels) versus FR-004/FR-010 (identical results)
 
-**Finding**: deriving a season, a half or a window from an instant gives a different answer in Brussels than in UTC only for instants between 22:00/23:00 UTC and midnight UTC on a boundary day (for example 30 April 22:30 UTC). Today those instants already give different answers depending on R1.
+**Finding**: deriving a season, a half or a window from an instant gives a different answer in Brussels than in UTC only for instants between 22:00/23:00 UTC and midnight UTC on a boundary day (for example 30 April 22:30 UTC). Production already computes in Brussels (R1), so for production the module's explicit Brussels default gives the same answers as today.
 
 **Decision**:
 
-- US1: the old helpers in `comp.ts` delegate to the module **with the process-local timezone**, so they return exactly what they return today (FR-004). The BAD-409 tests stay green in both the UTC and the Brussels run.
-- US2: migrated callers use the module's default, Europe/Brussels. For boundary instants in that 1–2 hour window this is an intended change (FR-003). The BAD-409 tests named "depends on the server timezone" are the only season tests US2 changes on purpose.
-- **Spec amendment** (confirmed 2026-11-19): added as FR-010a, an exception in FR-010, SC-005 and SC-007, next to the two named bugs.
+- US1: the old helpers in `comp.ts` delegate to the module but keep reading the date the way they did, with moment in the process timezone, so they return exactly what they return today in every timezone (FR-004).
+- US2/US3: migrated callers use the module's default, Europe/Brussels. No change in production; a process in UTC now gives the production answer too (FR-010a).
 
-**Alternatives considered**: keep UTC everywhere (contradicts FR-003 and the regulations, which are Belgian calendar dates); switch the old helpers to Brussels in US1 (breaks FR-004 and the UTC characterization tests before any caller moves).
+**Alternatives considered**: delegate with `Intl.DateTimeFormat().resolvedOptions().timeZone` (differs from moment once `setDefault` has run, R1); switch the old helpers to Brussels in US1 (changes their answers in a UTC process before any caller moves).
 
 ## R3. Comparing calendar dates with stored timestamps
 
-**Finding**: ranking publications and memberships are stored as `timestamptz`. The ranking sync parses publication dates with `date-fns` `parseISO`/`parse` without an offset, so a publication for 10 June is stored at midnight of 10 June in the worker's timezone (00:00 UTC if the worker runs in UTC). Memberships created by the transfer and loan uploads use `moment`, so their `start` is 00:00 UTC or 22:00/23:00 UTC of the day before, depending on R1. The dev database has no synced data to confirm this.
+**Finding**: ranking publications and memberships are stored as `timestamptz`. The ranking sync parses publication dates without an offset, and the transfer and loan uploads build their dates with moment, both in the process timezone. With `TZ=Europe/Brussels` (R1), a publication for 10 June and a membership starting 1 July are stored at midnight in Brussels: 9 June 22:00 UTC and 30 June 22:00 UTC. Rows synced before `TZ` was set may be stored at midnight UTC.
 
 **Decision**:
 
 - Reference dates are **calendar dates** (`YYYY-MM-DD`), not instants.
-- **Ranking lookups** (US3) turn a calendar range into instants as `[start of the first day in Brussels, start of the day after the last day in Brussels)`. This returns the same rows for data stored at midnight UTC and for data stored at midnight Brussels. Checked against the BAD-409 fixture: a place on 10 June 00:00 UTC stays included, 11 June stays excluded, and the May window is unchanged.
-- **Every other instant that is written to or compared with the database** keeps today's value in US2: midnight UTC of the calendar date. That covers the membership check (`start <= 1 July 00:00 UTC`, `end > 1 July 00:00 UTC`), the membership window that transfers and loans write, and the Twizzit export window. The module offers these as explicit functions (`membershipCheckInstant`, `membershipWindow`, `twizzitExportWindow`) that name the storage assumption in one place (`storedInstant(calendarDate)`). A Brussels conversion would flip memberships that start at 1 July 00:00 UTC to "not yet active", which the BAD-409 tests catch.
-- In short: deriving a season from an instant moves to Brussels (R2); database-facing instants stay as they are; ranking lookups use the Brussels-day range, which returns identical rows for data stored at midnight UTC.
+- **Instants written to or compared with the database** are midnight in Brussels, which is what production writes and compares today: the membership check, the membership window that transfers and loans write, and the Twizzit export window. The module names that convention once, in `storedInstant(calendarDate)`. Using midnight UTC instead would make a transfer or loan re-upload miss the rows earlier uploads created and create duplicates.
+- **Ranking lookups** (US3) turn a calendar range into `[start of the first day in Brussels, start of the day after the last day in Brussels)`. That is exactly today's production window for the 10 June cutoff and for the line-up month. It also gives the production answer for rows stored at midnight UTC: such a row's instant (e.g. 1 June 00:00 UTC) falls in the same Brussels day as before.
 
-**Alternatives considered**: convert every comparison to Brussels (breaks memberships stored at 00:00 UTC); compare on UTC calendar dates (breaks rows stored at Brussels midnight, if any exist).
+**Alternatives considered**: midnight UTC for database instants (what a UTC process computed; differs from production, see above); compare on UTC calendar dates (breaks rows stored at Brussels midnight, which is most of them).
 
-**Verify before release** (read-only production queries):
+**Verify** (read-only production queries; not blocking, they confirm no row has an unexpected time of day). Expected: mostly 22:00 and 23:00.
 
 ```sql
 -- time of day of stored publication dates
@@ -74,7 +69,7 @@ FROM public."ClubPlayerMemberships" GROUP BY 1 ORDER BY 2 DESC LIMIT 5;
 
 **Finding**: the callers use three query shapes: raw `DISTINCT ON` (enrollment), an include with `limit: 1` on `team.getPlayers` (export), an include with `separate: true` (line-up check) and an include with `limit: 1` without a system filter (sync). The big assembly spec runs on SQLite, so the lookup must work there too.
 
-**Decision**: one batch query that returns a `Map<playerId, place>` using `ROW_NUMBER() OVER (PARTITION BY "playerId" ORDER BY "rankingDate" DESC)`. It works in Postgres and SQLite 3.25+, and the table name comes from Sequelize (`queryInterface.quoteTable(RankingPlace.getTableName())`). Parameters: player ids, system id, `onOrBefore`, optional `onOrAfter`, optional `updatePossibleOnly`, optional transaction. Callers map the result onto their current output shape.
+**Decision**: one batch query that returns a `Map<playerId, place>` using `ROW_NUMBER() OVER (PARTITION BY "playerId" ORDER BY "rankingDate" DESC)`. It works in Postgres and SQLite 3.25+, and the table name comes from Sequelize (the query generator's `quoteTable(RankingPlace.getTableName())`). The date bounds are passed as UTC text (`YYYY-MM-DD HH:mm:ss.SSS +00:00`): SQLite stores dates in that format and compares text, while Sequelize would format a `Date` replacement in the process timezone; Postgres reads the text as the same instant. Parameters: player ids, system id, `onOrBefore`, optional `onOrAfter`, optional `updatePossibleOnly`, optional transaction. Callers map the result onto their current output shape.
 
 **Alternatives considered**: keep `DISTINCT ON` (Postgres-only, breaks the SQLite specs); `findAll` and reduce in JavaScript (loads a player's full publication history).
 
@@ -82,16 +77,16 @@ FROM public."ClubPlayerMemberships" GROUP BY 1 ORDER BY 2 DESC LIMIT 5;
 
 **Finding**: the line-up check builds the window with `moment().set("year", season).set(unit, amount)` and takes that month. For `months` this is a fixed month (4 → May). For `weeks` or `days` the result depends on today's date, which the spec keeps as current behaviour.
 
-**Decision**: `lineUpRankingWindow(event)` computes `months` explicitly as a calendar month. For other units it keeps the current moment computation verbatim, marked for BAD-380. The function still throws when the setting is missing.
+**Decision**: `lineUpRankingWindow(event)` computes `months` explicitly as a calendar month. For `weeks` and `days` it reproduces moment's `set()` with date-fns (`setWeek` with weeks starting on Sunday and week 1 containing 1 January, `setDay` with weeks starting on Sunday, as moment's default "en" locale does); a test compares both over two years of days. The function still throws when the setting is missing (also for amount 0, as today).
 
-**Verify before release**:
+**Verify** (read-only production query):
 
 ```sql
 SELECT "usedRankingUnit", "usedRankingAmount", count(*)
 FROM event."EventCompetitions" GROUP BY 1, 2;
 ```
 
-If only `months` is used, BAD-380 can drop the other branch.
+If only `months` is used, the `weeks` and `days` branch can go.
 
 ## R8. Line-up player cache (FR-015)
 

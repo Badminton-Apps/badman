@@ -24,7 +24,7 @@ type LatestRankingPlace = {
 **Behaviour**
 
 - Returns at most one place per player: the newest `rankingDate` in the range, for the given system, optionally only update publications.
-- Calendar dates become instants with `brusselsDayRange` (research R3): `rankingDate >= start of onOrAfter in Brussels` and `rankingDate < start of the day after onOrBefore in Brussels`.
+- Calendar dates become instants with `brusselsDayRange` (research R3): `rankingDate >= start of onOrAfter in Brussels` and `rankingDate < start of the day after onOrBefore in Brussels`. That is today's production window; the bounds are passed as UTC text so SQLite compares them correctly (research R6).
 - Players without a matching place are absent from the map. Callers keep their current fallback (system maximum, 12, or `amountOfLevels + 2`).
 - Empty `playerIds` returns an empty map without a query.
 - Works on Postgres and SQLite (`ROW_NUMBER()` window function, research R6).

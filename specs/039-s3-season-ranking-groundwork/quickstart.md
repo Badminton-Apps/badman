@@ -13,13 +13,13 @@ pnpm turbo run test --filter=@badman/utils --filter=@badman/backend-graphql \
   --filter=@badman/backend-twizzit --filter=worker-sync
 ```
 
-Tests run in UTC by default (`jest.global-setup.js`). The season helper suite re-runs itself in Europe/Brussels.
+Tests run in Europe/Brussels by default (`jest.global-setup.js`), the timezone production uses. Suites that must not depend on the server timezone also run in UTC (`alsoRunInTimezone`).
 
 ## US1: season module (BAD-390)
 
 ```bash
 cd packages/utils && pnpm test
-TZ=Europe/Brussels pnpm test   # module results must be identical in both runs
+TZ=UTC pnpm test   # module results must be identical in both runs
 ```
 
 Expected: the new module tests pass in both timezones with the same results, and `comp.spec.ts` (BAD-409) passes unchanged.
@@ -36,7 +36,7 @@ Expected:
 
 - The grep finds no season derivation outside the module (SC-001). `calculate-index.resolver.ts` stays, see research R9.
 - The BAD-409 tests named "current behaviour, fixed in BAD-391" now fail. Flip them to the regulation behaviour in the same commit as the fix (FR-018).
-- The tests named "depends on the server timezone" change on purpose (research R2).
+- The season suites of migrated callers also pass in UTC (FR-010a).
 - All other BAD-409 tests pass unchanged.
 
 ## US3: ranking reference dates and lookup (BAD-392)
@@ -54,6 +54,6 @@ pnpm turbo run test --filter=@badman/backend-database --filter=@badman/backend-e
 
 Expected: every integration test returns the same place as before, except the sync worker test "takes the newest place of any ranking system", which flips to the system-filtered place (FR-014). The line-up cache test flips to "does not reuse across seasons or systems" (FR-015).
 
-## Before release
+## Production checks
 
-Run the read-only production checks in [research.md](research.md) (R1, R3, R7) and note the results in the PR.
+R1 is done: the Render services run with `TZ=Europe/Brussels`. Run the read-only checks in [research.md](research.md) (R3, R7) and note the results in the PR.
