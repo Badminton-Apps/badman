@@ -6,6 +6,7 @@ import { Sequelize } from "sequelize-typescript";
 
 const SETTING_PERMISSIONS: Record<string, string[]> = {
   enrollment: ["change:enrollment"],
+  movingEncounters: ["change-any:encounter"],
 };
 
 @Resolver(() => AdminSetting)

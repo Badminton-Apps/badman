@@ -1,4 +1,13 @@
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from "@nestjs/graphql";
+import { ChangeEncounterParty, EncounterChangeViewState } from "@badman/utils";
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+  registerEnumType,
+} from "@nestjs/graphql";
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -37,6 +46,8 @@ import {
 // New GraphQL enum type for frontend context with lowercase values
 export type FrontendContextType = "my-club" | "club" | "competition";
 
+registerEnumType(EncounterChangeViewState, { name: "EncounterChangeViewState" });
+
 @Table({
   timestamps: true,
   schema: "event",
@@ -60,10 +71,13 @@ export class EncounterChange extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Field(() => Boolean)
-  @Default(false)
-  @Column(DataType.BOOLEAN)
-  accepted?: boolean;
+  @Field(() => String)
+  @Column(DataType.ENUM(...Object.values(ChangeEncounterParty)))
+  lastActionBy!: ChangeEncounterParty;
+
+  @Field(() => Date)
+  @Column(DataType.DATE)
+  lastActionAt!: Date;
 
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: "encounterId",
@@ -101,17 +115,17 @@ export class EncounterChange extends Model {
 
 @InputType()
 export class EncounterChangeUpdateInput extends PartialType(
-  OmitType(EncounterChange, ["createdAt", "updatedAt", "dates"] as const),
+  OmitType(EncounterChange, [
+    "createdAt",
+    "updatedAt",
+    "dates",
+    "lastActionBy",
+    "lastActionAt",
+  ] as const),
   InputType
 ) {
-  @Field(() => Boolean, { nullable: true })
-  home?: boolean;
-
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })
   dates?: Relation<EncounterChangeDate[]>;
-
-  @Field(() => String, { nullable: true })
-  frontendContext?: FrontendContextType;
 }
 
 @InputType()
@@ -119,6 +133,15 @@ export class EncounterChangeNewInput extends PartialType(
   OmitType(EncounterChangeUpdateInput, ["id", "dates"] as const),
   InputType
 ) {
+  @Field(() => Boolean, { nullable: true })
+  home?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  accepted?: boolean;
+
   @Field(() => [EncounterChangeDateNewInput], { nullable: true })
-  dates?: Relation<EncounterChangeDate[]>;
+  dates?: EncounterChangeDateNewInput[];
+
+  @Field(() => String, { nullable: true })
+  frontendContext?: FrontendContextType;
 }

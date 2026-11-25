@@ -58,6 +58,30 @@ export class CronService implements OnModuleInit {
     }
   }
 
+  async runJob(job: CronJob): Promise<void> {
+    if (!job.meta?.queueName || !job.meta?.jobName) {
+      throw new Error(`Job ${job.name} is missing queueName or jobName in meta`);
+    }
+
+    const queue = this._getQueue(job.meta.queueName);
+
+    // if the job is already running, don't queue it again
+    const runningJobs = await queue.getJobs(["active", "waiting"]);
+    const running = runningJobs.find((j) => j?.name === job.meta?.jobName);
+    if (running) {
+      this.logger.verbose(`Job ${job.name} already running, skipping manual trigger`);
+      return;
+    }
+
+    this.logger.log(`Manually triggering job ${job.name}`);
+    await queue.add(job.meta.jobName, job.meta?.arguments, {
+      removeOnFail: 5,
+      removeOnComplete: 5,
+      attempts: 3,
+      backoff: { type: "exponential", delay: 30000 },
+    });
+  }
+
   private _getQueue(queueName: string) {
     switch (queueName) {
       case SyncQueue:

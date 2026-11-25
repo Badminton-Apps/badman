@@ -71,8 +71,14 @@ All callers (EnterScoresProcessor, CheckEncounterProcessor, GetRankingProcessor)
 
 ## Building
 
-Run `nx build backend-pupeteer` to build the library.
+```bash
+pnpm turbo run build --filter=@badman/backend-pupeteer
+```
 
 ## Running unit tests
 
-Run `nx test backend-pupeteer` to execute the unit tests via [Jest](https://jestjs.io).
+Unit tests run on [Jest](https://jestjs.io):
+
+```bash
+pnpm turbo run test --filter=@badman/backend-pupeteer
+```

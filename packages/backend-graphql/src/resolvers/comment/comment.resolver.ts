@@ -190,12 +190,9 @@ export class CommentResolver {
     const home = await link.getHome();
     const away = await link.getAway();
 
+    // Scope the permission to the side being commented on: comment.clubId comes from the client.
     if (
-      !(await user.hasAnyPermission([
-        `${home.clubId}_change:encounter`,
-        `${away.clubId}_change:encounter`,
-        "change-any:encounter",
-      ]))
+      !(await user.hasAnyPermission([`${comment.clubId}_change:encounter`, "change-any:encounter"]))
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this comment`);
     }
@@ -208,8 +205,8 @@ export class CommentResolver {
       throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
     }
 
-    // send notification
-    this.notificationService.notifyEncounterChange(link, home.clubId === comment.clubId);
+    // send notification to the opposing party only
+    this.notificationService.notifyEncounterChangeMessage(link, home.clubId === comment.clubId);
   }
   private async encounterComment(
     link: EncounterCompetition,
@@ -227,8 +224,7 @@ export class CommentResolver {
     if (
       !(
         (await user.hasAnyPermission([
-          `${home.clubId}_change:encounter`,
-          `${away.clubId}_change:encounter`,
+          `${comment.clubId}_change:encounter`,
           "change-any:encounter",
         ])) || encounter?.gameLeaderId === comment.playerId
       )

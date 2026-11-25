@@ -5,6 +5,9 @@ export enum EnterScoresErrorCode {
   COOKIE_ACCEPT = "COOKIE_ACCEPT",
   SITE_UNREACHABLE = "SITE_UNREACHABLE",
   SIGN_IN = "SIGN_IN",
+  SEASON_CLOSED = "SEASON_CLOSED",
+  RESULT_ALREADY_PRESENT = "RESULT_ALREADY_PRESENT",
+  EXISTING_RESULT_UNREADABLE = "EXISTING_RESULT_UNREADABLE",
   ENTER_GAMES = "ENTER_GAMES",
   ROW_VALIDATION = "ROW_VALIDATION",
   SAVE_BUTTON = "SAVE_BUTTON",
@@ -17,9 +20,11 @@ export type EnterScoresPhase =
   | "preflight"
   | "browser_open"
   | "load_encounter"
+  | "season_check"
   | "cookie_accept"
   | "sign_in"
   | "edit_mode"
+  | "existing_result_check"
   | "clear_fields"
   | "enter_games"
   | "optional_fields"
@@ -36,7 +41,9 @@ export class EnterScoresError extends Error {
     message: string,
     options?: { cause?: unknown }
   ) {
-    super(message);
+    // Bull only keeps the message as failedReason; the code in it lets the retry cron
+    // tell a push skipped for an existing result from a real failure.
+    super(`[${code}] ${message}`);
     this.name = "EnterScoresError";
     if (options?.cause !== undefined) {
       this.cause = options.cause;

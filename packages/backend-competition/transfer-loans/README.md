@@ -1,11 +1,17 @@
 # backend-transfer-loan
 
-This library was generated with [Nx](https://nx.dev).
+Internal package in the [Badman](../../../README.md) Turborepo monorepo. Import as `@badman/backend-transfer-loan`.
 
 ## Building
 
-Run `nx build backend-transfer-loan` to build the library.
+```bash
+pnpm turbo run build --filter=@badman/backend-transfer-loan
+```
 
 ## Running unit tests
 
-Run `nx test backend-transfer-loan` to execute the unit tests via [Jest](https://jestjs.io).
+Unit tests run on [Jest](https://jestjs.io):
+
+```bash
+pnpm turbo run test --filter=@badman/backend-transfer-loan
+```

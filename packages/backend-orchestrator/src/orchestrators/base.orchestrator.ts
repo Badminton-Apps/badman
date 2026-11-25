@@ -7,7 +7,7 @@ import { Cron } from "@nestjs/schedule";
 import { Queue } from "bull";
 import { Services } from "../services";
 import { RenderService } from "../services/render.service";
-import { isProductionEnv } from "../utils/env";
+import { isDeployedEnv } from "../utils/env";
 
 export class OrchestratorBase implements OnModuleInit {
   protected logger = new Logger(OrchestratorBase.name);
@@ -31,9 +31,9 @@ export class OrchestratorBase implements OnModuleInit {
 
   async onModuleInit() {
     const nodeEnv = this.configService.get<string>("NODE_ENV");
-    if (!isProductionEnv(nodeEnv)) {
+    if (!isDeployedEnv(nodeEnv)) {
       this.logger.debug(
-        `[${this.serviceName}] Skipping orchestrator init (only runs in production, NODE_ENV=${nodeEnv})`
+        `[${this.serviceName}] Skipping orchestrator init (only runs in production/staging, NODE_ENV=${nodeEnv})`
       );
       return;
     }
@@ -49,9 +49,9 @@ export class OrchestratorBase implements OnModuleInit {
   @Cron("*/1 * * * *")
   async checkQueue() {
     const nodeEnv = this.configService.get<string>("NODE_ENV");
-    if (!isProductionEnv(nodeEnv)) {
+    if (!isDeployedEnv(nodeEnv)) {
       this.logger.verbose(
-        `[${this.serviceName}] Skipping queue check (only runs in production, NODE_ENV=${nodeEnv})`
+        `[${this.serviceName}] Skipping queue check (only runs in production/staging, NODE_ENV=${nodeEnv})`
       );
       return;
     }

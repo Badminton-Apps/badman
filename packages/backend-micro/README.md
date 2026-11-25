@@ -1,11 +1,17 @@
 # backend-micro
 
-This library was generated with [Nx](https://nx.dev).
+Internal package in the [Badman](../../README.md) Turborepo monorepo. Import as `@badman/backend-micro`.
 
 ## Building
 
-Run `nx build backend-micro` to build the library.
+```bash
+pnpm turbo run build --filter=@badman/backend-micro
+```
 
 ## Running unit tests
 
-Run `nx test backend-micro` to execute the unit tests via [Jest](https://jestjs.io).
+Unit tests run on [Jest](https://jestjs.io):
+
+```bash
+pnpm turbo run test --filter=@badman/backend-micro
+```

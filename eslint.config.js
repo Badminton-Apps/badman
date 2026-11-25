@@ -12,12 +12,18 @@ const compat = new FlatCompat({
 module.exports = [
   {
     // Never lint build output or caches — dist/ now lives inside each package.
+    // specs/ holds point-in-time feature records, not maintained source.
+    // Migrations are append-only historical records (also excluded from
+    // prettier); CI never lints them, only the pre-commit hook would.
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
       "**/.turbo/**",
       "**/coverage/**",
       "**/i18n.generated.ts",
+      "specs/**",
+      "**/*.md",
+      "database/migrations/**",
     ],
   },
   { plugins: { "unused-imports": unusedImports } },

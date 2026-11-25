@@ -1,15 +1,20 @@
 import { EncounterCompetition, NotificationOptionsTypes, Player } from "@badman/backend-database";
 import { Notifier } from "../notifier.base";
 import { RequestOptions } from "web-push";
-import { unitOfTime } from "moment";
-export class CompetitionEncounterChangeConfirmationRequestNotifier extends Notifier<{
+import { EncounterChangeAction } from "@badman/utils";
+
+type ConfirmationData = {
   encounter: EncounterCompetition;
   isHome: boolean;
   url: string;
-}> {
+  actingTeamName?: string;
+  action?: EncounterChangeAction;
+};
+
+export class CompetitionEncounterChangeConfirmationRequestNotifier extends Notifier<ConfirmationData> {
   protected linkType = "encounterCompetition";
   protected type: keyof NotificationOptionsTypes = "encounterChangeConfirmationNotification";
-  protected override allowedInterval: unitOfTime.Diff = "second";
+  protected override allowedThrottle = false;
 
   private readonly options = (encounter: EncounterCompetition) => {
     return {
@@ -22,8 +27,7 @@ export class CompetitionEncounterChangeConfirmationRequestNotifier extends Notif
 
   async notifyPush(
     player: Player,
-
-    data: { encounter: EncounterCompetition; isHome: boolean; url: string },
+    data: ConfirmationData,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string }
   ): Promise<void> {
@@ -33,9 +37,7 @@ export class CompetitionEncounterChangeConfirmationRequestNotifier extends Notif
 
   async notifyEmail(
     player: Player,
-
-    data: { encounter: EncounterCompetition; isHome: boolean; url: string },
-
+    data: ConfirmationData,
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
@@ -59,14 +61,16 @@ export class CompetitionEncounterChangeConfirmationRequestNotifier extends Notif
       },
       data.encounter,
       data.isHome,
-      data.url
+      data.url,
+      data.actingTeamName,
+      data.action
     );
   }
 
   notifySms(
     player: Player,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    data: { encounter: EncounterCompetition; isHome: boolean; url: string },
+    data: ConfirmationData,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string }
   ): Promise<void> {

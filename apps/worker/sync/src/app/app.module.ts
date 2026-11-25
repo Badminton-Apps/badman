@@ -22,7 +22,6 @@ import versionPackage from "../version.json";
 import { EncounterFormPageService } from "./processors/enter-scores/encounter-form-page.service";
 import { EncounterDetailPageService } from "./processors/check-encounters/encounter-detail-page.service";
 import { IdleShutdownService } from "./services/idle-shutdown.service";
-import { AdminJobsController } from "./controllers/admin.controller";
 import {
   CheckEncounterProcessor,
   CheckRankingProcessor,
@@ -49,7 +48,6 @@ import {
 } from "./processors";
 
 @Module({
-  controllers: [AdminJobsController],
   providers: [
     { provide: APP_FILTER, useClass: SentryGlobalFilter },
     GlobalConsumer,
@@ -255,7 +253,7 @@ export class WorkerSyncModule implements OnApplicationBootstrap {
     });
 
     for (const job of cronJob) {
-      this.logger.log(`Starting cron job ${job.meta.jobName}`);
+      this.logger.log(`Starting cron job ${job.meta?.jobName}`);
       job.amount = 0;
       await job.save();
     }

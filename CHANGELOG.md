@@ -8,6 +8,19 @@
 
 - Arno Soontjens @ArnoSoontjens
 
+## [7.0.1](https://github.com/Badminton-Apps/badman/compare/v7.0.0...v7.0.1) (2026-06-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency nodemailer to v8 [security] ([dede237](https://github.com/Badminton-Apps/badman/commit/dede237fc1010c37e7146c92c0647f40d084a674))
+* single graphql instance — align pin + pnpm override (develop twin of [#1045](https://github.com/Badminton-Apps/badman/issues/1045)) ([a097441](https://github.com/Badminton-Apps/badman/commit/a09744123e64668c2140d1370b45d2eeb82df2df))
+
+
+### Performance Improvements
+
+* **test:** swap ts-jest for @swc/jest transform (4m14s -&gt; 2m10s) ([9edcd49](https://github.com/Badminton-Apps/badman/commit/9edcd49021a0f6ca0bce7848ca749baf8a492308))
+
 ## [7.0.0](https://github.com/Badminton-Apps/badman/compare/v7.0.0...v7.0.0) (2026-06-11)
 
 ### Features

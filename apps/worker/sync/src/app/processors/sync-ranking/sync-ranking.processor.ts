@@ -4,7 +4,7 @@ import { InjectQueue, Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { Job, Queue } from "bull";
 import { Sequelize } from "sequelize-typescript";
-import { RankingSyncer } from "./ranking-sync";
+import { RankingSyncArgs, RankingSyncer } from "./ranking-sync";
 import { CronJob } from "@badman/backend-database";
 import { startLockRenewal } from "../../utils";
 
@@ -31,6 +31,7 @@ export class SyncRankingProcessor {
     job: Job<{
       start?: string;
       stop?: string;
+      traceMemberIds?: string[];
     }>
   ): Promise<void> {
     this.logger.debug(`Syncing Ranking, data: ${JSON.stringify(job.data)}`);
@@ -59,8 +60,9 @@ export class SyncRankingProcessor {
     const stopLockRenewal = startLockRenewal(job);
     try {
       // Convert string dates to Date objects
-      const processArgs: { transaction: any; start?: Date; stop?: Date } = {
+      const processArgs: RankingSyncArgs = {
         transaction,
+        traceMemberIds: job.data.traceMemberIds,
       };
 
       if (job.data.start) {

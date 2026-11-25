@@ -1,6 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { Comment, Player } from "@badman/backend-database";
+import { Comment, EncounterCompetition, Player, Team } from "@badman/backend-database";
 import { NotificationService } from "@badman/backend-notifications";
+import { UnauthorizedException } from "@nestjs/common";
 import { Sequelize } from "sequelize-typescript";
 import { PlayerLoaderService } from "../../loaders";
 import { CommentResolver } from "./comment.resolver";
@@ -28,6 +29,7 @@ describe("CommentResolver", () => {
           provide: NotificationService,
           useValue: {
             notifyEncounterChange: jest.fn(),
+            notifyEncounterChangeMessage: jest.fn(),
           },
         },
         {
@@ -42,6 +44,117 @@ describe("CommentResolver", () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  // ── encounterChangeComment notification routing ───────────────────────────
+
+  describe("addComment — encounterChange linkType notification", () => {
+    const homeClubId = "club-home";
+    const awayClubId = "club-away";
+
+    const buildSetup = (commentingClubId: string) => {
+      const homeTeam = { id: "team-home", clubId: homeClubId } as unknown as Team;
+      const awayTeam = { id: "team-away", clubId: awayClubId } as unknown as Team;
+      const encounter = {
+        id: "enc-1",
+        getHome: jest.fn().mockResolvedValue(homeTeam),
+        getAway: jest.fn().mockResolvedValue(awayTeam),
+        addHomeCommentsChange: jest.fn().mockResolvedValue(undefined),
+        addAwayCommentsChange: jest.fn().mockResolvedValue(undefined),
+      } as unknown as EncounterCompetition;
+
+      const comment = { clubId: commentingClubId, playerId: "player-1" } as unknown as Comment;
+      const user = {
+        id: "player-1",
+        hasAnyPermission: jest.fn().mockResolvedValue(true),
+      } as unknown as Player;
+
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+
+      return { encounter, comment, user };
+    };
+
+    it("calls notifyEncounterChangeMessage(encounter, true) when home club comments", async () => {
+      const { encounter, comment, user } = buildSetup(homeClubId);
+      const notificationService = resolver[
+        "notificationService"
+      ] as jest.Mocked<NotificationService>;
+
+      await resolver["encounterChangeComment"](encounter, comment, user, {} as never);
+
+      expect(notificationService.notifyEncounterChangeMessage).toHaveBeenCalledWith(
+        encounter,
+        true
+      );
+      expect(notificationService.notifyEncounterChange).not.toHaveBeenCalled();
+    });
+
+    it("calls notifyEncounterChangeMessage(encounter, false) when away club comments", async () => {
+      const { encounter, comment, user } = buildSetup(awayClubId);
+      const notificationService = resolver[
+        "notificationService"
+      ] as jest.Mocked<NotificationService>;
+
+      await resolver["encounterChangeComment"](encounter, comment, user, {} as never);
+
+      expect(notificationService.notifyEncounterChangeMessage).toHaveBeenCalledWith(
+        encounter,
+        false
+      );
+      expect(notificationService.notifyEncounterChange).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── comment side is scoped to the commenter's permission ──────────────────
+
+  describe("addComment — permission is scoped to the commented side", () => {
+    const homeTeam = { id: "team-home", clubId: "club-home" } as unknown as Team;
+    const awayTeam = { id: "team-away", clubId: "club-away" } as unknown as Team;
+
+    const buildEncounter = () =>
+      ({
+        id: "enc-1",
+        gameLeaderId: "leader-1",
+        getHome: jest.fn().mockResolvedValue(homeTeam),
+        getAway: jest.fn().mockResolvedValue(awayTeam),
+        addHomeComment: jest.fn(),
+        addAwayComment: jest.fn(),
+        addHomeCommentsChange: jest.fn(),
+        addAwayCommentsChange: jest.fn(),
+      }) as unknown as EncounterCompetition;
+
+    // Only holds the home club's claim.
+    const homeUser = {
+      id: "player-1",
+      hasAnyPermission: jest.fn(async (perms: string[]) =>
+        perms.includes("club-home_change:encounter")
+      ),
+    } as unknown as Player;
+
+    it.each(["encounterChangeComment", "encounterComment"] as const)(
+      "%s rejects a home-club user posting on the away side",
+      async (method) => {
+        const encounter = buildEncounter();
+        jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+        const comment = { clubId: "club-away", playerId: "player-1" } as unknown as Comment;
+
+        await expect(resolver[method](encounter, comment, homeUser, {} as never)).rejects.toThrow(
+          UnauthorizedException
+        );
+        expect(encounter.addAwayComment).not.toHaveBeenCalled();
+        expect(encounter.addAwayCommentsChange).not.toHaveBeenCalled();
+      }
+    );
+
+    it("encounterComment still lets a home-club user post on the home side", async () => {
+      const encounter = buildEncounter();
+      jest.spyOn(EncounterCompetition, "findByPk").mockResolvedValue(encounter);
+      const comment = { clubId: "club-home", playerId: "player-1" } as unknown as Comment;
+
+      await resolver["encounterComment"](encounter, comment, homeUser, {} as never);
+
+      expect(encounter.addHomeComment).toHaveBeenCalledWith(comment, expect.any(Object));
+    });
   });
 
   // ── player ResolveField ───────────────────────────────────────────────────

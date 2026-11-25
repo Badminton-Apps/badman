@@ -11,7 +11,7 @@ import { NotificationService } from "@badman/backend-notifications";
 import { startBrowserHealthMonitoring } from "@badman/backend-pupeteer";
 import { Sync, SyncQueue } from "@badman/backend-queue";
 import { SearchService } from "@badman/backend-search";
-import { ConfigType } from "@badman/utils";
+import { ConfigType, EncounterComment } from "@badman/utils";
 import { Process, Processor } from "@nestjs/bull";
 import { Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -179,7 +179,10 @@ export class CheckEncounterProcessor {
                 try {
                   await this.detailPage.close();
                 } catch (closeErr) {
-                  this.logger.debug("Error closing destroyed page:", (closeErr as Error)?.message ?? closeErr);
+                  this.logger.debug(
+                    "Error closing destroyed page:",
+                    (closeErr as Error)?.message ?? closeErr
+                  );
                 }
                 // Next iteration will re-open via ensurePageOpenForEncounter()
               } else {
@@ -319,9 +322,11 @@ export class CheckEncounterProcessor {
       const { entered, enteredOn } = await this.detailPage.getDetailEntered();
       const { accepted, acceptedOn } = await this.detailPage.getDetailAccepted();
       let hasComment = false;
+      let comments: EncounterComment[] = [];
       try {
         const result = await this.detailPage.getDetailComment();
         hasComment = result.hasComment;
+        comments = result.comments;
       } catch (error) {
         this.logger.warn(
           `Error checking for comments on encounter ${encounter.visualCode}:`,
@@ -352,13 +357,13 @@ export class CheckEncounterProcessor {
 
       switch (checkAction.action) {
         case "notify-has-comment":
-          this.notificationService.notifyEncounterHasComment(encounter);
+          await this.notificationService.notifyEncounterHasComment(encounter, comments);
           break;
         case "notify-not-entered":
-          this.notificationService.notifyEncounterNotEntered(encounter);
+          await this.notificationService.notifyEncounterNotEntered(encounter);
           break;
         case "notify-not-accepted":
-          this.notificationService.notifyEncounterNotAccepted(encounter);
+          await this.notificationService.notifyEncounterNotAccepted(encounter);
           break;
         case "auto-accept": {
           this.logger.debug(
@@ -368,7 +373,7 @@ export class CheckEncounterProcessor {
           const succesfull = await this.detailPage.acceptEncounter();
           if (!succesfull) {
             this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
-            this.notificationService.notifyEncounterNotAccepted(encounter);
+            await this.notificationService.notifyEncounterNotAccepted(encounter);
           }
           break;
         }
@@ -396,7 +401,8 @@ export class CheckEncounterProcessor {
         encounter.enteredOn = enteredOn;
 
         try {
-          const { endedOn, startedOn, usedShuttle, gameLeader } = await this.detailPage.getDetailInfo();
+          const { endedOn, startedOn, usedShuttle, gameLeader } =
+            await this.detailPage.getDetailInfo();
 
           this.logger.debug(
             `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`

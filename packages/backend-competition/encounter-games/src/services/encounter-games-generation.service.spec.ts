@@ -12,7 +12,7 @@ import { EncounterGamesGenerationService } from "./encounter-games-generation.se
 jest.mock("@badman/backend-database", () => ({
   EncounterCompetition: { findByPk: jest.fn() },
   Game: { findAll: jest.fn(), create: jest.fn() },
-  GamePlayerMembership: { create: jest.fn() },
+  GamePlayerMembership: { create: jest.fn(), destroy: jest.fn() },
   RankingLastPlace: { findOne: jest.fn() },
   RankingSystem: { findOne: jest.fn() },
   Team: {},
@@ -110,12 +110,19 @@ describe("EncounterGamesGenerationService", () => {
 
     it("should be idempotent: skip already-existing orders", async () => {
       (EncounterCompetition.findByPk as jest.Mock).mockResolvedValue(mockEncounter);
-      // Orders 1-7 already exist
+      // Orders 1-7 already exist (with update mock for gameType correction)
+      const existingGames = Array.from({ length: 7 }, (_, i) => ({
+        order: i + 1,
+        gameType: "D",
+        winner: null,
+        update: jest.fn().mockResolvedValue(undefined),
+      }));
       (Game.findAll as jest.Mock)
-        .mockResolvedValueOnce(Array.from({ length: 7 }, (_, i) => ({ order: i + 1 })))
+        .mockResolvedValueOnce(existingGames)
         .mockResolvedValueOnce(Array.from({ length: 8 }, (_, i) => ({ order: i + 1 })));
       (Game.create as jest.Mock).mockResolvedValue({ id: "game-8", order: 8 });
       (GamePlayerMembership.create as jest.Mock).mockResolvedValue({});
+      (GamePlayerMembership.destroy as jest.Mock).mockResolvedValue(0);
       (RankingSystem.findOne as jest.Mock).mockResolvedValue(null);
 
       await service.generateGames(encounterId);
@@ -128,7 +135,9 @@ describe("EncounterGamesGenerationService", () => {
       );
     });
 
-    it("should use MX game type for all MX team slots", async () => {
+    it("should use correct game types for MX team slots", async () => {
+      // MX order: double1, double2, single1, single3, single2, single4, double3, double4
+      // Expected:    D        D        S        S        S        S       MX       MX
       const mxEncounter = {
         ...mockEncounter,
         home: { type: SubEventTypeEnum.MX },
@@ -144,14 +153,49 @@ describe("EncounterGamesGenerationService", () => {
 
       await service.generateGames(encounterId);
 
-      // All 8 games should have gameType MX
-      for (let i = 1; i <= 8; i++) {
+      const expectedTypes = ["D", "D", "S", "S", "S", "S", "MX", "MX"];
+      for (let i = 0; i < 8; i++) {
         expect(Game.create).toHaveBeenNthCalledWith(
-          i,
-          expect.objectContaining({ gameType: "MX" }),
+          i + 1,
+          expect.objectContaining({ gameType: expectedTypes[i] }),
           expect.objectContaining({ transaction: expect.anything() })
         );
       }
+    });
+
+    it("creates missing slots but never rewrites existing games of a finished encounter", async () => {
+      const finishedEncounter = { ...mockEncounter, finished: true };
+      const unplayed = { id: "game-3", order: 3, gameType: "S", winner: 0, update: jest.fn() };
+      const existingGames = [
+        ...[1, 2, 4, 5, 6].map((order) => ({
+          id: `game-${order}`,
+          order,
+          winner: 1,
+          update: jest.fn(),
+        })),
+        unplayed,
+      ];
+      (EncounterCompetition.findByPk as jest.Mock).mockResolvedValue(finishedEncounter);
+      (Game.findAll as jest.Mock)
+        .mockResolvedValueOnce(existingGames)
+        .mockResolvedValueOnce(Array.from({ length: 8 }, (_, i) => ({ order: i + 1 })));
+      (Game.create as jest.Mock).mockImplementation((data: Record<string, unknown>) =>
+        Promise.resolve({ id: `game-${data["order"]}`, ...data })
+      );
+      (GamePlayerMembership.create as jest.Mock).mockResolvedValue({});
+      (RankingSystem.findOne as jest.Mock).mockResolvedValue({ id: "system-uuid" });
+      const { RankingLastPlace } = require("@badman/backend-database");
+      (RankingLastPlace.findOne as jest.Mock).mockResolvedValue(null);
+
+      await service.generateGames(encounterId);
+
+      expect((Game.create as jest.Mock).mock.calls.map(([data]) => data.order)).toEqual([7, 8]);
+      expect(unplayed.update).not.toHaveBeenCalled();
+      expect(GamePlayerMembership.destroy).not.toHaveBeenCalled();
+      expect(GamePlayerMembership.create).not.toHaveBeenCalledWith(
+        expect.objectContaining({ gameId: "game-3" }),
+        expect.anything()
+      );
     });
 
     it("should throw NotFoundException when encounter is not found", async () => {

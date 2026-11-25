@@ -38,7 +38,9 @@ describe("Processor", () => {
 
     it("should replace an existing step when override=true", async () => {
       const processor = new Processor();
-      processor.addStep(new ProcessStep("step-a", async () => ({ value: "original", stop: false })));
+      processor.addStep(
+        new ProcessStep("step-a", async () => ({ value: "original", stop: false }))
+      );
       processor.addStep(
         new ProcessStep("step-a", async () => ({ value: "replaced", stop: false })),
         true

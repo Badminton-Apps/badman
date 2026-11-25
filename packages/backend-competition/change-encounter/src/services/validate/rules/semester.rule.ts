@@ -39,29 +39,42 @@ export class SemesterRule extends Rule {
       index: _index,
     } = changeEncounter;
 
-    const error = this.findEncounterInSemseter(
-      semseter1 ? encountersSem1 : encountersSem2,
-      encounter
-    );
+    // Only check current state when no date change is being proposed.
+    // During a swap, the current state may temporarily be wrong (both encounters
+    // in the same semester), so skip this check when the user is proposing dates.
+    if (!suggestedDates || suggestedDates.length === 0) {
+      const error = this.findEncounterInSemseter(
+        semseter1 ? encountersSem1 : encountersSem2,
+        encounter
+      );
 
-    if (error) {
-      errors.push({
-        message: "all.competition.change-encounter.errors.same-semester",
-        params: {
-          encounterId: encounter.id,
-          teamName: encounter.home?.name || encounter.away?.name,
-          semester: semseter1 ? "first" : "second",
-          season: season,
-        },
-      });
+      if (error) {
+        errors.push({
+          message: "all.competition.change-encounter.errors.same-semester",
+          params: {
+            encounterId: encounter.id,
+            teamName: encounter.home?.name || encounter.away?.name,
+            semester: semseter1 ? "first" : "second",
+            season: season,
+          },
+        });
+      }
     }
 
-    // if we have suggested dates for the working encounter, we need to check if that date would give a warning
+    // For proposed dates, check whether the proposed date would land in the same
+    // semester as the reverse encounter (which is what we want to prevent).
+    // Note: this correctly handles swaps — if the reverse encounter is in semester 1
+    // and the user proposes semester 2, there is no conflict.
     if (suggestedDates && encounter) {
       for (const suggestedDate of suggestedDates) {
         const suggestedSemester1 = suggestedDate.date.getFullYear() === season;
 
-        if (suggestedSemester1 != semseter1) {
+        const conflictInProposedSemester = this.findEncounterInSemseter(
+          suggestedSemester1 ? encountersSem1 : encountersSem2,
+          encounter
+        );
+
+        if (conflictInProposedSemester) {
           warnings.push({
             message: "all.competition.change-encounter.errors.same-semester-date",
             params: {

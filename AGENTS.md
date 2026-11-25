@@ -6,22 +6,9 @@ This file (`AGENTS.md`) is the single source of truth for AI-assisted developmen
 
 ## Environment Setup
 
-Required for dev and AI-assisted scripts:
+The full local setup (Node, pnpm via corepack, `.env`, docker, database, migrations, seeders, Auth0 login) is in [`README.md`](README.md). Keep it in sync when you change any part of the setup.
 
-```bash
-# pnpm is pinned via the packageManager field; corepack provides it
-corepack enable
-
-# Copy .env.local if it doesn't exist (contains LINEAR_API_KEY for issue creation)
-cp .env.local.example .env.local  # or manually source .env before running scripts
-
-# Load environment in your shell (add to ~/.zshrc or ~/.bashrc for persistence):
-source /path/to/badman/.env.local
-```
-
-**Variables needed for scripts:**
-
-- `LINEAR_API_KEY` — for creating Linear issues from CLI
+**Optional, for AI-assisted scripts:** the `speckit-maqa-linear-*` commands read `LINEAR_API_KEY` from your shell. Export it yourself (e.g. in `~/.zshrc`); it is not part of `.env`.
 
 ## Project Overview
 
@@ -147,7 +134,7 @@ Resolvers live in `packages/backend-graphql/src/resolvers/<domain>/`. Each domai
 - Slug support: `IsUUID(id)` decides between `findByPk` and `findOne({ where: { slug } })`
 - Paged results use inline `@ObjectType()` with `{ count: number; rows: T[] }`
 - `ListArgs` / `queryFixer()` utilities translate GraphQL filter operators to Sequelize `Op` symbols
-- **Classified errors**: when a mutation needs to expose distinct, machine-readable failure modes to clients, throw `GraphQLError` from the `graphql` package with `extensions.code` set to a constant from the shared registry [`packages/backend-graphql/src/utils/error-codes.ts`](packages/backend-graphql/src/utils/error-codes.ts) (`ErrorCode.PERMISSION_DENIED`, `ErrorCode.INTERNAL_ERROR`, etc.). Do NOT inline string literals — clients pin behavior to these codes and the registry is the single source of truth. Adding a new code: append a key to `error-codes.ts` and document the per-code `extensions` payload in the resolver's contract document under `specs/`. Reference implementations: [`enrollment.resolver.ts`](packages/backend-graphql/src/resolvers/event/competition/enrollment.resolver.ts) and [`team.resolver.ts`](packages/backend-graphql/src/resolvers/team/team.resolver.ts) (`createEnrollment` / `createTeam`).
+- **Classified errors**: when a mutation needs to expose distinct, machine-readable failure modes to clients, throw `GraphQLError` from the `graphql` package with `extensions.code` set to a constant from the shared registry [`packages/backend-graphql/src/utils/error-codes.ts`](packages/backend-graphql/src/utils/error-codes.ts) (`ErrorCode.PERMISSION_DENIED`, `ErrorCode.INTERNAL_ERROR`, etc.). Do NOT inline string literals — clients pin behavior to these codes and the registry is the single source of truth. Adding a new code: append a key to `error-codes.ts` and document the per-code `extensions` payload in the resolver's contract document under `specs/`, or in the matching rules doc under `docs/` when the behaviour comes from a Badminton Vlaanderen regulation (e.g. [`docs/result-entry-rules.md`](docs/result-entry-rules.md)). Reference implementations: [`enrollment.resolver.ts`](packages/backend-graphql/src/resolvers/event/competition/enrollment.resolver.ts) and [`team.resolver.ts`](packages/backend-graphql/src/resolvers/team/team.resolver.ts) (`createEnrollment` / `createTeam`).
 - **Idempotent create mutations**: when a create mutation has a natural uniqueness key (e.g. `(link, season)` for teams, `(teamId, subEventId)` for enrollments, `(clubId, playerId, season, type)` for club memberships), it MUST be idempotent on re-submission. Return a result `@ObjectType` carrying the entity's identifiers plus `alreadyExisted: boolean` (`true` = existing row matched, no write; `false` = fresh row created). Do NOT throw a duplicate error. Reference implementations: `TeamResult` ([`team-result.object.ts`](packages/backend-graphql/src/resolvers/team/team-result.object.ts)) and `EnrollmentResult` ([`enrollment-result.object.ts`](packages/backend-graphql/src/resolvers/event/competition/enrollment-result.object.ts)). See Constitution Principle III.
 
 ### Auth Flow
@@ -310,12 +297,13 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 - [`docs/sync-process.md`](docs/sync-process.md) — overall sync pipeline.
 - [`docs/settings-api-guide.md`](docs/settings-api-guide.md), [`docs/enrollment-settings-frontend.md`](docs/enrollment-settings-frontend.md) — enrollment-settings API + FE guidance.
 - [`docs/enter-scores-local-browser.md`](docs/enter-scores-local-browser.md) — local-dev workflow for scoring.
+- [`docs/result-entry-rules.md`](docs/result-entry-rules.md) — who may enter and correct results (C320 art. 62, 36h window), and the `RESULT_EDIT_WINDOW_CLOSED` error contract.
 - [`docs/guides/`](docs/guides/), [`docs/estimates/`](docs/estimates/) — assorted how-to guides and feature estimates.
 
 <!-- SPECKIT START -->
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/036-nx-to-turborepo/plan.md](specs/036-nx-to-turborepo/plan.md)
+[specs/038-fix-encounter-notifications/plan.md](specs/038-fix-encounter-notifications/plan.md)
 
 <!-- SPECKIT END -->

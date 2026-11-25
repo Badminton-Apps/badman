@@ -9,7 +9,16 @@ import { subWeeks, format, isAfter, isBefore } from "date-fns";
 import { Op, Transaction, Sequelize } from "sequelize";
 import { isPublicationUsedForUpdate, parsePublicationDate } from "./ranking-utils";
 import { ProcessStep, Processor } from "../../processing";
-import { correctWrongPlayers } from "../../utils";
+import { correctWrongPlayers, ensureDefaultRanking } from "../../utils";
+
+export interface RankingSyncArgs {
+  transaction: Transaction;
+  start?: Date;
+  stop?: Date;
+  // Logs every ranking level written for these federation memberIds, to follow a re-sync.
+  traceMemberIds?: string[];
+}
+
 interface RankingStepData {
   visualCode: string;
   system: RankingSystem;
@@ -57,7 +66,7 @@ export class RankingSyncer {
     this.processor.addStep(this.removeInvisiblePublications());
   }
 
-  async process(args: { transaction: Transaction; start?: Date; stop?: Date }) {
+  async process(args: RankingSyncArgs) {
     // Process initial steps with main transaction using original processor
     await this.processor.process({ ...args });
 
@@ -242,11 +251,8 @@ export class RankingSyncer {
     });
   }
 
-  private async processPointsWithSeparateTransactions(_args: {
-    transaction: Transaction;
-    start?: Date;
-    stop?: Date;
-  }) {
+  private async processPointsWithSeparateTransactions(args: RankingSyncArgs) {
+    const traceMemberIds = new Set(args.traceMemberIds ?? []);
     const ranking = this.processor.getData<RankingStepData>(this.STEP_RANKING);
     const { visiblePublications } =
       this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ?? {};
@@ -265,9 +271,7 @@ export class RankingSyncer {
 
     const totalPublications = publicationsToProcess.length;
     const runStart = Date.now();
-    this.logger.log(
-      `Processing ${totalPublications} publications with separate transactions`
-    );
+    this.logger.log(`Processing ${totalPublications} publications with separate transactions`);
 
     for (const [index, publication] of publicationsToProcess.entries()) {
       // Create a separate transaction for each publication
@@ -283,9 +287,10 @@ export class RankingSyncer {
         // Process this single publication with its own transaction
         const pubStats = await this.processSinglePublication(
           publication,
-          categories,
+          categories ?? [],
           ranking,
-          publicationTransaction
+          publicationTransaction,
+          traceMemberIds
         );
 
         // Commit the transaction for this publication
@@ -315,7 +320,8 @@ export class RankingSyncer {
     publication: VisualPublication,
     categories: CategoriesStepData[],
     ranking: RankingStepData,
-    transaction: Transaction
+    transaction: Transaction,
+    traceMemberIds: ReadonlySet<string>
   ): Promise<{ places: number; newPlayers: number }> {
     const rankingPlaces = new Map<string, RankingPlace>();
     const newPlayers = new Map<string, Player>();
@@ -355,9 +361,8 @@ export class RankingSyncer {
         false // Don't use cache to get fresh data
       );
 
-      const memberIds = rankingPoints?.map(
-        (points) => correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId
-      );
+      // The federation memberId is what tells persons apart, so it is never remapped here.
+      const memberIds = rankingPoints?.map((points) => `${points.Player1.MemberID}`);
 
       this.logger.debug(
         `Getting ${memberIds?.length} players for ${publication.name} ${type} ${gender}`
@@ -384,9 +389,7 @@ export class RankingSyncer {
       });
 
       for (const points of rankingPoints ?? []) {
-        const memberId = correctWrongPlayers({
-          memberId: `${points.Player1.MemberID}`,
-        }).memberId;
+        const memberId = `${points.Player1.MemberID}`;
         let foundPlayer = players.find((p) => p.memberId === memberId);
 
         if (!memberId) {
@@ -404,14 +407,15 @@ export class RankingSyncer {
           this.logger.log("New player");
           const [firstName, ...lastName] = points.Player1.Name.split(" ").filter(Boolean);
 
-          foundPlayer = new Player(
-            correctWrongPlayers({
+          foundPlayer = new Player({
+            ...correctWrongPlayers({
               memberId,
               firstName,
               lastName: lastName.join(" "),
               gender,
-            })
-          );
+            }),
+            memberId,
+          });
           players.push(foundPlayer);
 
           if (!foundPlayer.memberId) {
@@ -429,9 +433,19 @@ export class RankingSyncer {
           continue;
         }
 
+        if (traceMemberIds.has(memberId)) {
+          this.logger.log(
+            `[trace] ${publication.name} ${type} ${gender}: memberId ${memberId} -> player ${foundPlayer.id}, level ${points.Level} (${points.Totalpoints} points, rank ${points.Rank})`
+          );
+        }
+
         // Check if other publication has create the ranking place
         if (places.has(foundPlayer.id)) {
           const place = places.get(foundPlayer.id);
+          if (place == null) {
+            this.logger.error(`No place found for player ${foundPlayer.id}`);
+            continue;
+          }
           place[type] = points.Level;
           place[`${type}Points`] = points.Totalpoints;
           place[`${type}Rank`] = points.Rank;
@@ -477,6 +491,13 @@ export class RankingSyncer {
         transaction,
         returning: false,
       });
+
+      // Safety net: ensure every new player has at least a default 12-12-12 ranking.
+      // The RankingPlace bulk-create below will overwrite with real levels via the
+      // AfterBulkCreate hook, so this is a no-op for players with real rankings.
+      for (const [, player] of newPlayers) {
+        await ensureDefaultRanking(player, { transaction, systemId: ranking.system.id });
+      }
     }
 
     // Process ranking places in very small chunks
@@ -492,9 +513,7 @@ export class RankingSyncer {
 
       // Only log every 5th chunk (or first/last) to avoid noise on big publications
       if (chunkNum === 1 || chunkNum === totalChunks || chunkNum % 5 === 0) {
-        this.logger.log(
-          `  chunk ${chunkNum}/${totalChunks} (${chunk.length} records)`
-        );
+        this.logger.log(`  chunk ${chunkNum}/${totalChunks} (${chunk.length} records)`);
       }
 
       await RankingPlace.bulkCreate(chunk, {

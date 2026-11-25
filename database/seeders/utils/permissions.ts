@@ -32,7 +32,6 @@ async function getRoleSchemaInfo(ctx: SeederContext): Promise<RoleSchemaInfo> {
   };
 }
 
-
 export async function ensureRole(
   ctx: SeederContext,
   {
@@ -221,6 +220,17 @@ export async function ensureClubAdminPermission(
   console.log(`✅ Created edit:location claim (claim ID: ${locationClaimId})\n`);
   await ensureRoleClaim(ctx, roleId, locationClaimId);
   console.log(`✅ Added edit:location claim to Admin role (role ID: ${roleId})\n`);
+
+  const changeEncounterClaimId = await ensureClaimId(ctx, "change:encounter");
+  console.log(`✅ Created change:encounter claim (claim ID: ${changeEncounterClaimId})\n`);
+  await ensureRoleClaim(ctx, roleId, changeEncounterClaimId);
+  console.log(`✅ Added change:encounter claim to Admin role (role ID: ${roleId})\n`);
+
+  const enterResultsClaimId = await ensureClaimId(ctx, "enter:results");
+  console.log(`✅ Created enter:results claim (claim ID: ${enterResultsClaimId})\n`);
+  await ensureRoleClaim(ctx, roleId, enterResultsClaimId);
+  console.log(`✅ Added enter:results claim to Admin role (role ID: ${roleId})\n`);
+
   await ensurePlayerRole(ctx, playerId, roleId);
   console.log(`✅ Added Admin role to player (player ID: ${playerId})\n`);
 }

@@ -13,6 +13,8 @@ export abstract class Notifier<T, A = { email: string }> {
   protected allowedInterval: unitOfTime.Diff = "day";
   protected allowedIntervalUnit = 1;
   protected allowedAmount?: number = undefined;
+  /** Set to false in subclasses to disable throttling entirely (every invocation sends). */
+  protected allowedThrottle = true;
 
   constructor(
     protected mailing: MailingService,
@@ -32,7 +34,8 @@ export abstract class Notifier<T, A = { email: string }> {
       email?: boolean;
       push?: boolean;
       sms?: boolean;
-    }
+    },
+    meta?: Record<string, unknown>
   ): Promise<void> {
     try {
       if (!player) {
@@ -91,13 +94,28 @@ export abstract class Notifier<T, A = { email: string }> {
         },
       });
 
+      const dedupeKey = meta?.["dedupeKey"] as string | undefined;
+
       const logAction = await Logging.create({
         action: LoggingAction.SendNotification,
         playerId: player.id,
         meta: { linkId, linkType: this.linkType, type: NotificationType[type] },
       });
 
-      if (notification) {
+      if (dedupeKey && notification) {
+        const previousKey = this.readDedupeKey(notification.meta);
+        if (previousKey === dedupeKey) {
+          this.logger.debug(
+            `Notification ${this.type} already sent to ${player.fullName} for this content, skipping`
+          );
+          (logAction.meta as Record<string, unknown>)["reason"] = "Already sent for this content";
+          logAction.changed("meta", true);
+          await logAction.save();
+          return;
+        }
+      }
+
+      if (this.allowedThrottle && notification) {
         const lastSend = moment(notification.createdAt);
         if (moment().diff(lastSend, this.allowedInterval) < this.allowedIntervalUnit) {
           this.logger.debug(
@@ -105,7 +123,8 @@ export abstract class Notifier<T, A = { email: string }> {
               this.allowedInterval
             } (send on: ${lastSend.format("DD-MM-YYYY HH:mm:ss")})`
           );
-          (logAction.meta as any)["reason"] = "Already sent in the last interval";
+          (logAction.meta as Record<string, unknown>)["reason"] =
+            "Already sent in the last interval";
           logAction.changed("meta", true);
           await logAction.save();
           return;
@@ -115,18 +134,26 @@ export abstract class Notifier<T, A = { email: string }> {
           this.logger.debug(
             `Notification already sent to ${player.fullName} enough (${totalAmount}) times`
           );
-          (logAction.meta as any)["reason"] = "Already sent enough times";
+          (logAction.meta as Record<string, unknown>)["reason"] = "Already sent enough times";
           logAction.changed("meta", true);
           await logAction.save();
           return;
         }
       }
 
+      // With a dedupe key, claim the content before sending so an overlapping run sees it
+      // and skips; the claim is removed again if no channel delivered, so the next run retries.
+      const claim = dedupeKey ? await this.saveNotification(player, linkId, meta) : undefined;
+      let attempted = false;
+      let delivered = false;
+
       this.logger.debug(`Sending notification to ${player.fullName || "unknown"} (${type})`);
 
       if (type & NotificationType.PUSH || force?.push) {
+        attempted = true;
         try {
           await this.notifyPush(player, data, args);
+          delivered = true;
         } catch (error) {
           this.logger.error(
             `Failed to send push notification to ${player.fullName || "unknown"}:`,
@@ -136,8 +163,10 @@ export abstract class Notifier<T, A = { email: string }> {
       }
 
       if (type & NotificationType.EMAIL || force?.email) {
+        attempted = true;
         try {
           await this.notifyEmail(player, data, args);
+          delivered = true;
         } catch (error) {
           this.logger.error(
             `Failed to send email notification to ${player.fullName || "unknown"}:`,
@@ -147,8 +176,10 @@ export abstract class Notifier<T, A = { email: string }> {
       }
 
       if (type & NotificationType.SMS || force?.sms) {
+        attempted = true;
         try {
           await this.notifySms(player, data, args);
+          delivered = true;
         } catch (error) {
           this.logger.error(
             `Failed to send SMS notification to ${player.fullName || "unknown"}:`,
@@ -157,25 +188,65 @@ export abstract class Notifier<T, A = { email: string }> {
         }
       }
 
-      // Create notification once
-      try {
-        const notif = new Notification({
-          sendToId: player.id,
-          linkId,
-          linkType: this.linkType,
-          type: this.type,
-        });
-
-        await notif.save();
-      } catch (error) {
-        this.logger.error(
-          `Failed to save notification record for ${player.fullName || "unknown"}:`,
-          error
-        );
+      if (dedupeKey) {
+        if (claim && attempted && !delivered) {
+          this.logger.warn(
+            `Notification ${this.type} to ${player.fullName || "unknown"} failed on every channel, will retry next run`
+          );
+          await claim
+            .destroy()
+            .catch((error: unknown) =>
+              this.logger.error(`Failed to release notification claim:`, error)
+            );
+        }
+        return;
       }
+
+      // Create notification once
+      await this.saveNotification(player, linkId, meta);
     } catch (error) {
       this.logger.error(`Notification failed for player ${player?.fullName || "unknown"}:`, error);
       // Don't rethrow - we want to continue processing even if notifications fail
+    }
+  }
+
+  private async saveNotification(
+    player: Player,
+    linkId?: string,
+    meta?: Record<string, unknown>
+  ): Promise<Notification | undefined> {
+    try {
+      return await Notification.create({
+        sendToId: player.id,
+        linkId,
+        linkType: this.linkType,
+        type: this.type,
+        meta: meta ? JSON.stringify(meta) : undefined,
+      });
+    } catch (error) {
+      this.logger.error(
+        `Failed to save notification record for ${player.fullName || "unknown"}:`,
+        error
+      );
+      return undefined;
+    }
+  }
+
+  /**
+   * Reads the dedupe key from a stored notification, so we can tell whether we
+   * would be notifying about content that was already sent.
+   */
+  private readDedupeKey(meta?: string | null): string | undefined {
+    if (!meta) {
+      return undefined;
+    }
+
+    try {
+      const parsed = typeof meta === "string" ? JSON.parse(meta) : meta;
+      return (parsed as { dedupeKey?: string })?.dedupeKey;
+    } catch {
+      this.logger.debug(`Could not parse notification meta, ignoring dedupe key`);
+      return undefined;
     }
   }
 }

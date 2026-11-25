@@ -157,13 +157,20 @@ describe("waitForNavigation", () => {
 
 describe("waitForSaveErrorDialog", () => {
   it("returns dialog message when #dlgError becomes visible", async () => {
-    const fakeEl = { evaluate: jest.fn().mockResolvedValue("DE4: Catry, Petra heeft te veel wedstrijden gespeeld.") };
+    const fakeEl = {
+      evaluate: jest
+        .fn()
+        .mockResolvedValue("DE4: Catry, Petra heeft te veel wedstrijden gespeeld."),
+    };
     const page = makePage({ waitForSelector: jest.fn().mockResolvedValue(fakeEl) });
 
     const result = await waitForSaveErrorDialog({ page: page as any, timeout: 15000 });
 
     expect(result).toBe("DE4: Catry, Petra heeft te veel wedstrijden gespeeld.");
-    expect(page.waitForSelector).toHaveBeenCalledWith("#dlgError", { visible: true, timeout: 15000 });
+    expect(page.waitForSelector).toHaveBeenCalledWith("#dlgError", {
+      visible: true,
+      timeout: 15000,
+    });
     expect(fakeEl.evaluate).toHaveBeenCalled();
   });
 

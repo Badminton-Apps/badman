@@ -13,7 +13,12 @@ import { Sequelize } from "sequelize-typescript";
 jest.mock("@sentry/nestjs", () => ({
   __esModule: true,
   withScope: jest.fn((cb: (scope: any) => void) => {
-    cb({ setLevel: jest.fn(), setTag: jest.fn(), setContext: jest.fn(), setFingerprint: jest.fn() });
+    cb({
+      setLevel: jest.fn(),
+      setTag: jest.fn(),
+      setContext: jest.fn(),
+      setFingerprint: jest.fn(),
+    });
   }),
   captureException: jest.fn(),
   captureMessage: jest.fn(),
@@ -145,7 +150,10 @@ describe("SyncEventsProcessor", () => {
 
   describe("event source routing", () => {
     it("searches events when search term provided", async () => {
-      const events = [makeXmlEvent({ Name: "Event 1" }), makeXmlEvent({ Name: "Event 2", ID: "event-2" })];
+      const events = [
+        makeXmlEvent({ Name: "Event 1" }),
+        makeXmlEvent({ Name: "Event 2", ID: "event-2" }),
+      ];
       visualService.searchEvents.mockResolvedValue(events as any);
 
       const job = makeJob({ search: "league" });
@@ -261,7 +269,9 @@ describe("SyncEventsProcessor", () => {
 
       expect(sequelize._mockTransaction.rollback).toHaveBeenCalled();
       expect(sequelize._mockTransaction.commit).not.toHaveBeenCalled();
-      expect(Sentry.captureException).toHaveBeenCalledWith(expect.objectContaining({ message: "Sync failed" }));
+      expect(Sentry.captureException).toHaveBeenCalledWith(
+        expect.objectContaining({ message: "Sync failed" })
+      );
     });
 
     it("continues with next tournament after a prior one fails (Sentry #104397491 resilience)", async () => {
@@ -318,8 +328,14 @@ describe("SyncEventsProcessor", () => {
       const job = makeJob({ userId: ["user-1", "user-2"] });
       await processor.syncEvents(job as any);
 
-      expect(notificationService.notifySyncFinished).toHaveBeenCalledWith("user-1", expect.any(Object));
-      expect(notificationService.notifySyncFinished).toHaveBeenCalledWith("user-2", expect.any(Object));
+      expect(notificationService.notifySyncFinished).toHaveBeenCalledWith(
+        "user-1",
+        expect.any(Object)
+      );
+      expect(notificationService.notifySyncFinished).toHaveBeenCalledWith(
+        "user-2",
+        expect.any(Object)
+      );
     });
 
     it("does not notify when no userId provided", async () => {
@@ -383,7 +399,6 @@ describe("SyncEventsProcessor", () => {
         expect.objectContaining({ xmlTournament: expect.objectContaining({ ID: "event-2" }) })
       );
     });
-
   });
 
   describe("CronJob guards", () => {

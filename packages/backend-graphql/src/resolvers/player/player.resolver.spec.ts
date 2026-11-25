@@ -1,6 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { NotFoundException } from "@nestjs/common";
-import { Player, RankingLastPlace, RankingPlace, RankingSystem } from "@badman/backend-database";
+import {
+  Player,
+  RankingLastPlace,
+  RankingPlace,
+  RankingSystem,
+  Setting,
+} from "@badman/backend-database";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { Sequelize } from "sequelize-typescript";
 import { ListArgs } from "../../utils";
@@ -139,6 +145,79 @@ describe("PlayersResolver — RankingSystemService integration", () => {
   });
 });
 
+describe("PlayersResolver — setting ResolveField (auto-create)", () => {
+  let resolver: PlayersResolver;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PlayersResolver,
+        { provide: Sequelize, useValue: { transaction: jest.fn() } },
+        { provide: PointsService, useValue: {} },
+        {
+          provide: RankingSystemService,
+          useValue: { getPrimary: jest.fn(), getById: jest.fn() },
+        },
+        {
+          provide: PlayerAssociationService,
+          useValue: { getPrimaryRankingLastPlaces: jest.fn().mockResolvedValue([]) },
+        },
+      ],
+    }).compile();
+
+    resolver = module.get<PlayersResolver>(PlayersResolver);
+  });
+
+  afterEach(() => jest.restoreAllMocks());
+
+  it("returns existing settings when the player already has a settings row", async () => {
+    const existing = { id: "settings-1", playerId: "player-1" } as unknown as Setting;
+    const player = {
+      id: "player-1",
+      sub: "auth0|abc123",
+      getSetting: jest.fn().mockResolvedValue(existing),
+    } as unknown as Player;
+
+    const result = await resolver.setting(player);
+
+    expect(result).toBe(existing);
+    expect(player.getSetting).toHaveBeenCalledTimes(1);
+  });
+
+  it("auto-creates and returns a default settings row when player has sub but no settings", async () => {
+    // Evy Andries / Jeffrey Buysse scenario: logged-in player, no settings row yet
+    const created = { id: "settings-new", playerId: "player-1" } as unknown as Setting;
+    const player = {
+      id: "player-1",
+      sub: "auth0|test-claimed-player",
+      getSetting: jest.fn().mockResolvedValue(null),
+    } as unknown as Player;
+
+    jest.spyOn(Setting, "create").mockResolvedValue(created as never);
+
+    const result = await resolver.setting(player);
+
+    expect(Setting.create).toHaveBeenCalledWith({ playerId: "player-1" });
+    expect(result).toBe(created);
+  });
+
+  it("returns null for federation-imported players without a sub (no settings created)", async () => {
+    // 93k federation players — no login, no settings row should be created
+    const player = {
+      id: "player-federation",
+      sub: undefined,
+      getSetting: jest.fn().mockResolvedValue(null),
+    } as unknown as Player;
+
+    const create = jest.spyOn(Setting, "create");
+
+    const result = await resolver.setting(player);
+
+    expect(result).toBeNull();
+    expect(create).not.toHaveBeenCalled();
+  });
+});
+
 describe("PlayerTeamResolver — RankingSystemService integration", () => {
   let resolver: PlayerTeamResolver;
   let rankingSystemService: SystemServiceMock;
@@ -193,5 +272,92 @@ describe("PlayerTeamResolver — RankingSystemService integration", () => {
     expect(result).toHaveLength(1);
     expect(rankingSystemService.getById).toHaveBeenCalledTimes(1);
     expect(rankingSystemService.getById).toHaveBeenCalledWith(SYS_A.id);
+  });
+});
+
+describe("PlayersResolver — createPlayer", () => {
+  let resolver: PlayersResolver;
+  let transaction: { commit: jest.Mock; rollback: jest.Mock };
+  let findOrCreate: jest.SpyInstance;
+
+  const userWith = (allowed: boolean) =>
+    ({ hasAnyPermission: jest.fn().mockResolvedValue(allowed) }) as unknown as Player;
+  const data = {
+    firstName: "Stiene",
+    lastName: "Wauters",
+    memberId: "50560484",
+    gender: "F",
+  } as const;
+
+  beforeEach(async () => {
+    transaction = { commit: jest.fn(), rollback: jest.fn() };
+
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        PlayersResolver,
+        { provide: Sequelize, useValue: { transaction: jest.fn().mockResolvedValue(transaction) } },
+        { provide: PointsService, useValue: {} },
+        { provide: RankingSystemService, useValue: {} },
+        { provide: PlayerAssociationService, useValue: {} },
+      ],
+    }).compile();
+
+    resolver = module.get<PlayersResolver>(PlayersResolver);
+
+    jest.spyOn(RankingSystem, "findOne").mockResolvedValue(PRIMARY);
+    jest
+      .spyOn(Player, "create")
+      .mockImplementation(async (values) => ({ id: "player-1", ...(values as object) }) as never);
+    findOrCreate = jest
+      .spyOn(RankingLastPlace, "findOrCreate")
+      .mockResolvedValue([{}, true] as never);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const lastPlaceDefaults = () => findOrCreate.mock.calls[0][0].defaults;
+
+  it("rejects users without add:player", async () => {
+    await expect(resolver.createPlayer(userWith(false), data)).rejects.toThrow(
+      "You do not have permission to create a player"
+    );
+    expect(Player.create).not.toHaveBeenCalled();
+  });
+
+  it("defaults single/double/mix to the lowest level when no levels are given", async () => {
+    await resolver.createPlayer(userWith(true), data);
+
+    expect(lastPlaceDefaults()).toMatchObject({
+      playerId: "player-1",
+      systemId: PRIMARY.id,
+      single: 12,
+      double: 12,
+      mix: 12,
+      gender: "F",
+    });
+    expect(transaction.commit).toHaveBeenCalled();
+  });
+
+  it("uses the given levels and defaults only the missing ones", async () => {
+    await resolver.createPlayer(userWith(true), data, { single: 7, mix: 9 });
+
+    expect(lastPlaceDefaults()).toMatchObject({ single: 7, double: 12, mix: 9 });
+  });
+
+  it.each([0, 13, 7.5])("rejects level %p with BAD_USER_INPUT before writing", async (level) => {
+    await expect(
+      resolver.createPlayer(userWith(true), data, { double: level })
+    ).rejects.toMatchObject({ extensions: { code: "BAD_USER_INPUT", field: "double" } });
+    expect(Player.create).not.toHaveBeenCalled();
+  });
+
+  it("rolls back when the ranking write fails", async () => {
+    findOrCreate.mockRejectedValue(new Error("db down"));
+
+    await expect(resolver.createPlayer(userWith(true), data)).rejects.toThrow("db down");
+    expect(transaction.rollback).toHaveBeenCalled();
+    expect(transaction.commit).not.toHaveBeenCalled();
   });
 });

@@ -1,11 +1,17 @@
 # backend-validation
 
-This library was generated with [Nx](https://nx.dev).
+Internal package in the [Badman](../../README.md) Turborepo monorepo. Import as `@badman/backend-validation`.
 
 ## Building
 
-Run `nx build backend-validation` to build the library.
+```bash
+pnpm turbo run build --filter=@badman/backend-validation
+```
 
 ## Running unit tests
 
-Run `nx test backend-validation` to execute the unit tests via [Jest](https://jestjs.io).
+Unit tests run on [Jest](https://jestjs.io):
+
+```bash
+pnpm turbo run test --filter=@badman/backend-validation
+```

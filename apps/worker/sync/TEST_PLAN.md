@@ -395,6 +395,7 @@ Ensure TransactionManager can be cleanly replaced in `Test.createTestingModule` 
   - **Fix:** Added AdminJobsController with `/admin/jobs/failed`, `/active`, `/waiting`, `/stats` endpoints
 - **No manual retry:** Failed jobs were stuck in failed state
   - **Fix:** Added `POST /admin/jobs/:id/retry` endpoint for manual retry
+  - **Superseded:** these endpoints had no auth and were removed; use the API's `queueStats`, `queueJobs` and `retryQueueJob` GraphQL operations (`change:job`) instead
 - **Duplicate job risk:** Multiple EnterScores jobs could be enqueued for same encounter
   - **Fix:** Added `jobId: enter-scores-${encounterId}` for deduplication
 

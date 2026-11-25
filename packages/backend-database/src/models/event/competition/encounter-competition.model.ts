@@ -12,8 +12,6 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
-  HasOneGetAssociationMixin,
-  HasOneSetAssociationMixin,
   InferAttributes,
   InferCreationAttributes,
   Op,
@@ -25,7 +23,6 @@ import {
   Default,
   ForeignKey,
   HasMany,
-  HasOne,
   IsUUID,
   Model,
   PrimaryKey,
@@ -221,12 +218,12 @@ export class EncounterCompetition extends Model<
   @Column(DataType.STRING)
   endHour?: string;
 
-  @Field(() => EncounterChange, { nullable: true })
-  @HasOne(() => EncounterChange, {
+  @Field(() => [EncounterChange], { nullable: true })
+  @HasMany(() => EncounterChange, {
     foreignKey: "encounterId",
     onDelete: "CASCADE",
   })
-  encounterChange?: Relation<EncounterChange>;
+  encounterChanges?: Relation<EncounterChange[]>;
 
   @Field(() => Location, { nullable: true })
   @BelongsTo(() => Location, {
@@ -365,9 +362,8 @@ export class EncounterCompetition extends Model<
   getEnteredBy!: BelongsToGetAssociationMixin<Player>;
   setEnteredBy!: BelongsToSetAssociationMixin<Player, string>;
 
-  // Has one EncounterChange
-  getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
-  setEncounterChange!: HasOneSetAssociationMixin<EncounterChange, string>;
+  // Has many EncounterChanges
+  getEncounterChanges!: HasManyGetAssociationsMixin<EncounterChange>;
 
   // Has one Location
   getLocation!: BelongsToGetAssociationMixin<Location>;

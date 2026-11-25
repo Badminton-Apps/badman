@@ -63,7 +63,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     // VisualService normalises Structure.Item to an array.
     const teams = new Set<string>(
       xmlDraw.Structure?.Item?.map((item) => item.Team?.Name)?.filter(
-        (name): name is string => name?.length > 0
+        (name): name is string => typeof name === "string" && name.length > 0
       ) ?? []
     );
 
@@ -425,7 +425,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
       // VisualService normalises Structure.Item to an array.
       const teamItem = xmlDraw.Structure.Item.find(
-        (item) => item.Team?.Name?.indexOf(team.name) !== -1 && item.Team?.Code
+        (item) => item.Team?.Name?.indexOf(team.name ?? "") !== -1 && item.Team?.Code
       );
       if (!teamItem?.Team?.Code) {
         this.logger.warn(`Team code not found for ${team.name} in draw structure`);
@@ -473,16 +473,29 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         );
 
         const memberIds = players.map((p) => p.MemberID).filter((id) => id);
+        // June 10 of the season is the enrollment ranking cutoff.
+        // We use the most recent RankingPlace at or before that date — the same
+        // cutoff used by IndexCalculationService — so that the stored base-player
+        // levels stay aligned with what was locked in at enrollment time.
+        if (!team.season) {
+          this.logger.warn(`Team season not found for ${team.name}`);
+          return;
+        }
+        const rankingCutoff = new Date(team.season, 5, 10); // month is 0-indexed: 5 = June
+
         const dbPlayers = await Player.findAll({
           where: {
             memberId: {
-              [Op.in]: memberIds,
+              [Op.in]: memberIds.filter((id): id is string => id !== undefined),
             },
           },
           include: [
             {
               association: "rankingPlaces",
               limit: 1,
+              where: {
+                rankingDate: { [Op.lte]: rankingCutoff },
+              },
               order: [["rankingDate", "DESC"]],
             },
           ],
@@ -501,15 +514,19 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
               const existingPlayerMeta = existingPlayersMeta.find((p) => p.id === dbPlayer?.id);
 
+              // Use the June 10 snapshot ranking for levels.
+              // Prefer existing meta values first (preserves manual corrections made
+              // via the admin UI), then fall back to the snapshot, then to the
+              // system maximum (12) when the player has no ranking at the cutoff.
               const ranking = dbPlayer?.rankingPlaces?.[0];
 
               return {
                 id: dbPlayer?.id || undefined,
                 gender: (xmlPlayer.GenderID === 1 ? "M" : "F") as "M" | "F",
-                single: ranking?.single || 12, // Use current ranking
-                double: ranking?.double || 12,
-                mix: ranking?.mix || 12,
-                levelException: existingPlayerMeta?.levelException || false, // Preserve existing exceptions
+                single: existingPlayerMeta?.single ?? ranking?.single ?? 12,
+                double: existingPlayerMeta?.double ?? ranking?.double ?? 12,
+                mix: existingPlayerMeta?.mix ?? ranking?.mix ?? 12,
+                levelException: existingPlayerMeta?.levelException || false,
                 levelExceptionRequested: existingPlayerMeta?.levelExceptionRequested || false,
                 levelExceptionReason: existingPlayerMeta?.levelExceptionReason || undefined,
               };
@@ -518,8 +535,10 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         };
 
         // Update entry meta with Visual API data
+        // hooks: false — skips the @BeforeUpdate recalculateCompetitionIndex hook which
+        // requires IndexCalculationService (an enrollment concern not present in the sync worker).
         entry.meta = entryMeta;
-        await entry.save({ transaction: this.transaction });
+        await entry.save({ transaction: this.transaction, hooks: false });
 
         this.logger.debug(
           `Updated entry meta with Visual API data: ${players.length} players for team ${team.name}`

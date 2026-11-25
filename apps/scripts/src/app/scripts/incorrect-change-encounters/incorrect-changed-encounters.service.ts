@@ -51,8 +51,9 @@ export class IncorrectEncountersService {
           ],
         },
         {
-          attributes: ["id", "accepted"],
+          attributes: ["id", "accepted", "createdAt"],
           model: EncounterChange,
+          as: "encounterChanges",
           include: [
             {
               model: EncounterChangeDate,
@@ -62,6 +63,7 @@ export class IncorrectEncountersService {
               },
             },
           ],
+          order: [["createdAt", "DESC"]],
           required: true,
         },
       ],
@@ -79,7 +81,7 @@ export class IncorrectEncountersService {
 
     const filtered = encounters.filter((encounter) => {
       const date = moment(encounter.date);
-      const dates = encounter.encounterChange?.dates?.map((d) => moment(d.date));
+      const dates = encounter.encounterChanges?.[0]?.dates?.map((d) => moment(d.date));
 
       if (!dates) {
         return false;
@@ -105,7 +107,7 @@ export class IncorrectEncountersService {
       }
 
       try {
-        if ((encounter.encounterChange?.dates?.length ?? 0) > 1) {
+        if ((encounter.encounterChanges?.[0]?.dates?.length ?? 0) > 1) {
           this.logger.log(
             `encounter ${encounter.home?.name} vs ${encounter.away?.name} on ${moment(
               encounter.date
@@ -117,7 +119,7 @@ export class IncorrectEncountersService {
           continue;
         }
         // get first suggestion
-        const firstSuggestion = encounter.encounterChange?.dates?.[0]?.date;
+        const firstSuggestion = encounter.encounterChanges?.[0]?.dates?.[0]?.date;
 
         if (!firstSuggestion) {
           this.logger.error(`No first suggestion found for encounter ${encounter.id}`);
@@ -175,9 +177,10 @@ export class IncorrectEncountersService {
       link,
       moment(encounter.date).format("DD-MM-YYYY HH:mm"),
       "NO",
-      encounter.encounterChange?.dates?.length ?? 0,
-      ...(encounter.encounterChange?.dates?.map((d) => moment(d.date).format("DD-MM-YYYY HH:mm")) ??
-        []),
+      encounter.encounterChanges?.[0]?.dates?.length ?? 0,
+      ...(encounter.encounterChanges?.[0]?.dates?.map((d) =>
+        moment(d.date).format("DD-MM-YYYY HH:mm")
+      ) ?? []),
     ];
   }
 
@@ -200,9 +203,10 @@ export class IncorrectEncountersService {
       link,
       moment(encounter.date).format("DD-MM-YYYY HH:mm"),
       "YES",
-      encounter.encounterChange?.dates?.length ?? 0,
-      ...(encounter.encounterChange?.dates?.map((d) => moment(d.date).format("DD-MM-YYYY HH:mm")) ??
-        []),
+      encounter.encounterChanges?.[0]?.dates?.length ?? 0,
+      ...(encounter.encounterChanges?.[0]?.dates?.map((d) =>
+        moment(d.date).format("DD-MM-YYYY HH:mm")
+      ) ?? []),
     ];
   }
 

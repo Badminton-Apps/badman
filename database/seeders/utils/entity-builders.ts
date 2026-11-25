@@ -28,9 +28,10 @@ async function findOrCreatePlayer(
 ): Promise<Player> {
   // Check if user already exists
   // Note: QueryTypes.SELECT returns the array directly, not [results, metadata]
+  const slug = `${firstName}-${lastName}`.toLowerCase().replace(/\s+/g, "-");
   const existingUsers = await ctx.query<Player>(
-    `SELECT id, email, "firstName", "lastName" FROM "Players" WHERE email = :email LIMIT 1`,
-    { email: userEmail }
+    `SELECT id, email, "firstName", "lastName" FROM "Players" WHERE email = :email OR slug = :slug LIMIT 1`,
+    { email: userEmail, slug }
   );
 
   if (existingUsers && existingUsers.length > 0) {
@@ -41,7 +42,6 @@ async function findOrCreatePlayer(
 
   // Create new player
   console.log("👤 Creating new player...");
-  const slug = `${firstName}-${lastName}`.toLowerCase().replace(/\s+/g, "-");
   const user = await ctx.insert<Player>(
     `INSERT INTO "Players" (email, "firstName", "lastName", "memberId", gender, slug, "createdAt", "updatedAt", "competitionPlayer", "sub")
      VALUES (:email, :firstName, :lastName, :memberId, :gender, :slug, NOW(), NOW(),:competitionPlayer, :sub)
@@ -58,6 +58,21 @@ async function findOrCreatePlayer(
     }
   );
   console.log(`✅ Created new player: ${user.firstName} ${user.lastName} (${user.email})\n`);
+
+  // Create default settings row so notifications work out of the box
+  await ctx.query(
+    `INSERT INTO personal."Settings" (id, "playerId",
+      "encounterNotEnteredNotification", "encounterNotAcceptedNotification",
+      "encounterChangeNewNotification", "encounterChangeConfirmationNotification",
+      "encounterChangeFinishedNotification", "encounterHasCommentNotification",
+      "syncSuccessNotification", "syncFailedNotification",
+      "clubEnrollmentNotification", "synEncounterFailed",
+      "createdAt", "updatedAt")
+     VALUES (gen_random_uuid(), :playerId, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, NOW(), NOW())
+     ON CONFLICT DO NOTHING`,
+    { playerId: user.id }
+  );
+
   return user;
 }
 
@@ -221,15 +236,22 @@ async function createEventCompetition(ctx: SeederContext, season: number): Promi
     console.log(`ℹ️  EventCompetition already exists (${existing[0].id})\n`);
     return existing[0].id;
   }
+  const sixMonthsFromNow = new Date(Date.now() + 6 * 30 * 24 * 60 * 60 * 1000);
+  const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
   const event = await ctx.insert<EventCompetition>(
-    `INSERT INTO event."EventCompetitions" (name, type, season, official, "visualCode", "createdAt", "updatedAt")
-     VALUES (:name, :type, :season, true, :visualCode, NOW(), NOW())
+    `INSERT INTO event."EventCompetitions" (name, type, season, official, "visualCode", "changeOpenDate", "changeCloseDatePeriod1", "changeCloseDatePeriod2", "changeCloseRequestDatePeriod1", "changeCloseRequestDatePeriod2", "createdAt", "updatedAt")
+     VALUES (:name, :type, :season, true, :visualCode, :changeOpenDate, :closePeriod1, :closePeriod2, :requestPeriod1, :requestPeriod2, NOW(), NOW())
      RETURNING id`,
     {
       name: `Test Event ${season}`,
       type: "PROV",
       season,
       visualCode,
+      changeOpenDate: oneMonthAgo,
+      closePeriod1: sixMonthsFromNow,
+      closePeriod2: sixMonthsFromNow,
+      requestPeriod1: sixMonthsFromNow,
+      requestPeriod2: sixMonthsFromNow,
     }
   );
   const eventId = event.id;
@@ -325,33 +347,49 @@ async function createEncounters(
   drawId: string,
   teamId: string,
   opponentTeamId: string,
-  encounterCount = 10
+  encounterCount = 10,
+  season?: number
 ): Promise<void> {
   console.log("⚔️ Creating Encounters...");
   const now = new Date();
+  const currentMonth = now.getMonth(); // 0-indexed
+
+  // Competition season runs Sep 1 (month 8) → Apr 30 (month 3) of the following year.
+  // If we're in the off-season (May–Aug, month 4–7), anchor dates to the season window
+  // instead of now so encounters don't land in off-season months.
+  const inOffSeason = currentMonth >= 4 && currentMonth < 8;
+  const effectiveSeason = season ?? (currentMonth >= 4 ? now.getFullYear() : now.getFullYear() - 1);
+  const seasonStart = new Date(`${effectiveSeason}-09-01`);
+  const seasonEnd = new Date(`${effectiveSeason + 1}-04-30`);
+  const anchor = inOffSeason ? seasonStart : now;
   const halfCount = Math.floor(encounterCount / 2);
+  // Spread encounters evenly across the season window
+  const totalDays = Math.floor(
+    (seasonEnd.getTime() - seasonStart.getTime()) / (24 * 60 * 60 * 1000)
+  );
+  const step = Math.floor(totalDays / encounterCount);
 
   for (let i = 0; i < encounterCount; i++) {
     let encounterDate: Date;
 
-    if (i < halfCount) {
+    if (inOffSeason) {
+      // All encounters spread across the upcoming season
+      encounterDate = new Date(seasonStart);
+      encounterDate.setDate(seasonStart.getDate() + i * step + (i % 7));
+    } else if (i < halfCount) {
       // First half: dates before current date
-      // Generate dates going backwards from current date with varying intervals
-      // Use base interval of 5-6 days plus variation to avoid same weekday
       const baseDays = (halfCount - i) * 5;
-      const variation = (i % 7) - 3; // Vary by -3 to +3 days
+      const variation = (i % 7) - 3;
       const daysBefore = baseDays + variation;
-      encounterDate = new Date(now);
-      encounterDate.setDate(encounterDate.getDate() - daysBefore);
+      encounterDate = new Date(anchor);
+      encounterDate.setDate(anchor.getDate() - daysBefore);
     } else {
       // Second half: dates after current date
-      // Generate dates going forwards from current date with varying intervals
-      // Use base interval of 5-6 days plus variation to avoid same weekday
       const baseDays = (i - halfCount + 1) * 5;
-      const variation = (i % 7) - 3; // Vary by -3 to +3 days
+      const variation = (i % 7) - 3;
       const daysAfter = baseDays + variation;
-      encounterDate = new Date(now);
-      encounterDate.setDate(encounterDate.getDate() + daysAfter);
+      encounterDate = new Date(anchor);
+      encounterDate.setDate(anchor.getDate() + daysAfter);
     }
 
     // Validate the date
@@ -369,8 +407,9 @@ async function createEncounters(
                :homeCaptainAccepted, :awayCaptainAccepted, false, NOW(), NOW())`,
       {
         drawId,
-        homeTeamId: i % 2 === 0 ? teamId : opponentTeamId,
-        awayTeamId: i % 2 === 0 ? opponentTeamId : teamId,
+        // First half = sem1 (H→A), second half = sem2 (A→H return matches)
+        homeTeamId: i < halfCount ? teamId : opponentTeamId,
+        awayTeamId: i < halfCount ? opponentTeamId : teamId,
         date: encounterDate,
         originalDate: encounterDate,
         homeScore: i % 3 === 0 ? 4 : 0,
@@ -417,10 +456,10 @@ async function createLocation(
   }
 
   const hasCoordinates = locationData.latitude != null && locationData.longitude != null;
-  const coordinatesColumn = hasCoordinates ? ', coordinates' : '';
+  const coordinatesColumn = hasCoordinates ? ", coordinates" : "";
   const coordinatesValue = hasCoordinates
     ? `, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)`
-    : '';
+    : "";
 
   const location = await ctx.insert<Location>(
     `INSERT INTO event."Locations" (name, address, street, "streetNumber", postalcode, city, state, phone, "clubId", "createdAt", "updatedAt"${coordinatesColumn})
@@ -502,10 +541,7 @@ const createEncountersWithErrorHandling = withErrorHandling(
   createEncounters,
   "creating encounters"
 );
-const createLocationWithErrorHandling = withErrorHandling(
-  createLocation,
-  "creating location"
-);
+const createLocationWithErrorHandling = withErrorHandling(createLocation, "creating location");
 const createAvailabilityWithErrorHandling = withErrorHandling(
   createAvailability,
   "creating availability"

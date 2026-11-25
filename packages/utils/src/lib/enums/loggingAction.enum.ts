@@ -6,4 +6,9 @@ export enum LoggingAction {
   EncounterChanged = "EncounterChanged",
 
   SendNotification = "SendNotification",
+
+  ResultPushed = "ResultPushed",
+  ResultPushSkipped = "ResultPushSkipped",
+
+  GameDeleted = "GameDeleted",
 }

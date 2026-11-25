@@ -1,5 +1,6 @@
 import { EncounterCompetition, Location } from "@badman/backend-database";
 import { ValidationService } from "@badman/backend-validation";
+import { getSeason } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { Op } from "sequelize";
 import {
@@ -26,7 +27,7 @@ export class EncounterValidationService extends ValidationService<
     await this.registerRule(DatePeriodRule);
     await this.registerRule(TeamClubRule);
     await this.registerRule(ExceptionRule);
-    await this.registerRule(LocationRule, { activated: false });
+    await this.registerRule(LocationRule, { activated: true });
 
     this._logger.log("Rules initialized");
   }
@@ -46,11 +47,11 @@ export class EncounterValidationService extends ValidationService<
       include: [
         {
           association: "home",
-          attributes: ["id", "clubId"],
+          attributes: ["id", "name", "clubId"],
         },
         {
           association: "away",
-          attributes: ["id", "clubId"],
+          attributes: ["id", "name", "clubId"],
         },
       ],
     });
@@ -107,9 +108,15 @@ export class EncounterValidationService extends ValidationService<
       ],
     });
 
-    const season = Math.min(...encounters.map((r) => r.date?.getFullYear() ?? 0));
+    // Filter out undated encounters before computing season; fall back to current season.
+    // Using getSeason() so January-April dates in year N+1 correctly map to season N.
+    const datedEncounters = encounters.filter((r) => r.date != null);
+    const season =
+      datedEncounters.length > 0
+        ? Math.min(...datedEncounters.map((r) => getSeason(r.date!)))
+        : getSeason();
     const encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === season);
-    const encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== season);
+    const encountersSem2 = encounters.filter((r) => r.date?.getFullYear() === season + 1);
 
     const indexSem1 = encountersSem1.findIndex((r) => r.id === encounter.id);
     const indexSem2 = encountersSem2.findIndex((r) => r.id === encounter.id);

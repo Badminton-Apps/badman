@@ -28,15 +28,39 @@ import {
 } from "@badman/backend-database";
 import { IsUUID, getSeason, getRankingProtected } from "@badman/utils";
 import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import {
+  Args,
+  Field,
+  ID,
+  InputType,
+  Int,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from "@nestjs/graphql";
+import { GraphQLError } from "graphql";
 import { Op } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import { ListArgs, WhereArgs, queryFixer } from "../../utils";
+import { ErrorCode, ListArgs, WhereArgs, queryFixer } from "../../utils";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { PlayerAssociationService } from "./player-association.service";
 
 const PLAYERS_DEFAULT_TAKE = 25;
 const PLAYERS_MAX_TAKE = 200;
+
+@InputType()
+export class PlayerLevelsInput {
+  @Field(() => Int, { nullable: true })
+  single?: number;
+
+  @Field(() => Int, { nullable: true })
+  double?: number;
+
+  @Field(() => Int, { nullable: true })
+  mix?: number;
+}
 
 @Resolver(() => Player)
 export class PlayersResolver {
@@ -287,13 +311,45 @@ export class PlayersResolver {
 
   @ResolveField(() => Setting, { nullable: true })
   async setting(@Parent() player: Player): Promise<Setting> {
-    return player.getSetting();
+    let setting = await player.getSetting();
+
+    // Only auto-create for players who have claimed their account (have an Auth0 sub).
+    // Federation-imported players without a sub should not get settings rows created.
+    if (!setting && player.sub) {
+      setting = await Setting.create({ playerId: player.id });
+    }
+
+    return setting;
   }
 
   @Mutation(() => Player)
-  async createPlayer(@User() user: Player, @Args("data") data: PlayerNewInput) {
+  async createPlayer(
+    @User() user: Player,
+    @Args("data") data: PlayerNewInput,
+    @Args("levels", { type: () => PlayerLevelsInput, nullable: true }) levels?: PlayerLevelsInput
+  ) {
     if (!(await user.hasAnyPermission(["add:player"]))) {
       throw new UnauthorizedException(`You do not have permission to create a player`);
+    }
+
+    const system = await RankingSystem.findOne({
+      where: { primary: true },
+      attributes: ["id", "amountOfLevels"],
+    });
+
+    // Manually created players start at the lowest level (12) unless the caller overrides it.
+    const lowestLevel = system?.amountOfLevels ?? 12;
+    const startLevels = {
+      single: levels?.single ?? lowestLevel,
+      double: levels?.double ?? lowestLevel,
+      mix: levels?.mix ?? lowestLevel,
+    };
+    for (const [field, value] of Object.entries(startLevels)) {
+      if (!Number.isInteger(value) || value < 1 || value > lowestLevel) {
+        throw new GraphQLError(`${field} must be an integer between 1 and ${lowestLevel}`, {
+          extensions: { code: ErrorCode.BAD_USER_INPUT, field, value },
+        });
+      }
     }
 
     // Do transaction
@@ -306,6 +362,19 @@ export class PlayersResolver {
         },
         { transaction }
       );
+
+      if (system) {
+        await RankingLastPlace.findOrCreate({
+          where: { playerId: player.id, systemId: system.id },
+          defaults: {
+            playerId: player.id,
+            systemId: system.id,
+            ...startLevels,
+            gender: player.gender,
+          },
+          transaction,
+        });
+      }
 
       await transaction.commit();
 

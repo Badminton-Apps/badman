@@ -2,15 +2,23 @@ import { AssemblyInput, AssemblyOutput, AssemblyValidationService } from "@badma
 import { User } from "@badman/backend-authorization";
 import {
   Assembly,
+  EncounterCompetition,
   Player,
   PlayerRankingType,
   RankingLastPlace,
   RankingPlace,
   RankingSystem,
+  Team,
 } from "@badman/backend-database";
+import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
 import { RankingSystemService } from "@badman/backend-ranking";
 import { getRankingProtected, sortPlayers } from "@badman/utils";
-import { Logger, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
 
 @Resolver(() => AssemblyOutput)
@@ -18,7 +26,8 @@ export class AssemblyResolver {
   private readonly logger = new Logger(AssemblyResolver.name);
   constructor(
     private assemblyService: AssemblyValidationService,
-    private readonly rankingSystemService: RankingSystemService
+    private readonly rankingSystemService: RankingSystemService,
+    private readonly encounterGamesService: EncounterGamesGenerationService
   ) {}
 
   @Query(() => AssemblyOutput, {
@@ -98,6 +107,25 @@ export class AssemblyResolver {
     if (!assembly.encounterId) throw new Error("Encounter is required");
     if (!assembly.teamId) throw new Error("Team is required");
     if (!user?.id) throw new Error("User is required");
+
+    const [encounter, team] = await Promise.all([
+      EncounterCompetition.findByPk(assembly.encounterId),
+      Team.findByPk(assembly.teamId),
+    ]);
+    if (!encounter) {
+      throw new NotFoundException(`${EncounterCompetition.name}: ${assembly.encounterId}`);
+    }
+    if (!team) {
+      throw new NotFoundException(`${Team.name}: ${assembly.teamId}`);
+    }
+    if (team.id !== encounter.homeTeamId && team.id !== encounter.awayTeamId) {
+      throw new BadRequestException(`Team ${team.id} does not play in encounter ${encounter.id}`);
+    }
+
+    // Checked outside the try below: its catch swallows errors and returns null.
+    if (!(await this._canEditAssembly(user, encounter, team))) {
+      throw new UnauthorizedException(`You do not have permission to edit this team's assembly`);
+    }
 
     this.logger.debug(
       `Saving assembly for encounter ${assembly.encounterId} and team ${assembly.teamId}, by player ${user.fullName}`
@@ -181,16 +209,53 @@ export class AssemblyResolver {
 
         updateData.assembly = updatedAssembly;
 
-        return assemblyDb.update(updateData);
+        const updated = await assemblyDb.update(updateData);
+        await this._refreshEncounterGames(assembly.encounterId);
+        return updated;
       }
 
       this.logger.debug(
         `CREATED: A new assembly for encounter with ID ${assembly.encounterId} was created.`
       );
+      await this._refreshEncounterGames(assembly.encounterId);
       return assemblyDb;
     } catch (error) {
       this.logger.error(error);
       return null;
+    }
+  }
+
+  /**
+   * The team's captain, its temporary captain for this encounter, and club or encounter
+   * admins may save an assembly. Expects `team` to play in `encounter`.
+   */
+  private async _canEditAssembly(
+    user: Player,
+    encounter: EncounterCompetition,
+    team: Team
+  ): Promise<boolean> {
+    const tempCaptainId =
+      encounter.homeTeamId === team.id ? encounter.tempHomeCaptainId : encounter.tempAwayCaptainId;
+    if (user.id === team.captainId || user.id === tempCaptainId) {
+      return true;
+    }
+
+    return user.hasAnyPermission([
+      "change-any:encounter",
+      "edit-any:club",
+      `${team.clubId}_edit:team`,
+      `${team.clubId}_enter:results`,
+    ]);
+  }
+
+  private async _refreshEncounterGames(encounterId: string): Promise<void> {
+    try {
+      await this.encounterGamesService.generateGames(encounterId);
+    } catch (err) {
+      // Non-fatal: log and continue — the assembly itself was saved successfully
+      this.logger.warn(
+        `generateGames after assembly save failed for encounter ${encounterId}: ${(err as Error)?.message}`
+      );
     }
   }
 }

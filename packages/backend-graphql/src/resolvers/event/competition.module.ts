@@ -26,6 +26,7 @@ import {
   SubmitEnrollmentResolver,
   SubmitEnrollmentService,
 } from "./competition";
+import { EncounterChangeService } from "./competition/encounter-change.service";
 import { ChangeEncounterModule } from "@badman/backend-change-encounter";
 import { ClubMembershipService } from "../club/club-membership.service";
 import { TeamWriteService } from "../team/team-write.service";
@@ -55,6 +56,7 @@ import { EnrollmentFinalizeService } from "./enrollment-finalize.service";
     CalculateIndexResolver,
     SubmitEnrollmentResolver,
     SubmitEnrollmentService,
+    EncounterChangeService,
     ClubMembershipService,
     TeamWriteService,
     EnrollmentFinalizeService,

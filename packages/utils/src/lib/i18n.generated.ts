@@ -144,6 +144,14 @@ export type I18nTranslations = {
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
+                "email": {
+                    "action": {
+                        "propose": string;
+                        "endorse": string;
+                        "reject": string;
+                        "counter": string;
+                    };
+                };
                 "not-possible": string;
                 "possible": string;
                 "re-open": string;
@@ -686,7 +694,9 @@ export type I18nTranslations = {
             "september": string;
         };
         "notifications": {
+            "empty": string;
             "noNotifications": string;
+            "title": string;
             "types": {
                 "encounterNotAcceptedNotification": string;
                 "encounterNotEnteredNotification": string;
@@ -1473,6 +1483,15 @@ export type I18nTranslations = {
                     "success": string;
                     "error": string;
                 };
+                "movingEncounters": {
+                    "title": string;
+                    "enabled": string;
+                    "startDate": string;
+                    "endDate": string;
+                    "save": string;
+                    "success": string;
+                    "error": string;
+                };
             };
             "avgLevelPage": {
                 "error": string;
@@ -1780,6 +1799,9 @@ export type I18nTranslations = {
                         "adminSettings": string;
                         "copyCompetitions": string;
                         "adminCompetitions": string;
+                        "dev": string;
+                        "devQueue": string;
+                        "devLogin": string;
                     };
                     "auth": {
                         "logIn": string;
@@ -2489,10 +2511,25 @@ export type I18nTranslations = {
                         "title": string;
                         "messages": {
                             "success": string;
+                            "error": string;
+                            "createSuccess": string;
+                            "createError": string;
+                            "linkError": string;
                         };
                         "buttons": {
                             "cancel": string;
                             "addPlayer": string;
+                            "createPlayer": string;
+                            "back": string;
+                        };
+                        "createTitle": string;
+                        "noResults": string;
+                        "existingPlayer": string;
+                        "levelsTitle": string;
+                        "levelsHint": string;
+                        "errors": {
+                            "required": string;
+                            "levelRange": string;
                         };
                     };
                     "twizzitOverview": string;
@@ -2705,12 +2742,28 @@ export type I18nTranslations = {
                         "changedDate": string;
                         "homeGames": string;
                     };
+                    "adminChangeDateDialog": {
+                        "title": string;
+                        "dateLabel": string;
+                        "locationLabel": string;
+                        "locationNone": string;
+                        "messages": {
+                            "success": string;
+                            "error": string;
+                        };
+                        "buttons": {
+                            "cancel": string;
+                            "confirm": string;
+                        };
+                        "triggerButton": string;
+                    };
                     "table": {
                         "headers": {
                             "team": string;
                             "opponent": string;
                             "homeAway": string;
                             "date": string;
+                            "location": string;
                             "status": string;
                             "validation": string;
                             "changeEncounterDate": string;
@@ -2721,10 +2774,21 @@ export type I18nTranslations = {
                             "original": string;
                             "inProgress": string;
                         };
+                        "status": {
+                            "proposal_sent": string;
+                            "action_required": string;
+                            "rejected_waiting": string;
+                            "moved": string;
+                        };
                         "originalDate": string;
                         "home": string;
                         "away": string;
                         "noData": string;
+                        "validation": {
+                            "valid": string;
+                            "warnings": string;
+                            "invalid": string;
+                        };
                     };
                 };
                 "teamEnrollment": {
@@ -2795,6 +2859,7 @@ export type I18nTranslations = {
                                 "oost-vlaanderen": string;
                                 "vlaams-brabant": string;
                                 "west-vlaanderen": string;
+                                "liga": string;
                             };
                             "clubId": string;
                             "messages": {
@@ -3839,6 +3904,10 @@ export type I18nTranslations = {
                         "title": string;
                         "description": string;
                     };
+                    "encounterHasCommentNotification": {
+                        "title": string;
+                        "description": string;
+                    };
                     "types": {
                         "email": string;
                         "push": string;
@@ -3847,6 +3916,7 @@ export type I18nTranslations = {
                 "messages": {
                     "success": string;
                     "error": string;
+                    "noSettingsFound": string;
                 };
                 "buttons": {
                     "save": string;
@@ -3854,6 +3924,10 @@ export type I18nTranslations = {
             };
             "changeEncounter": {
                 "title": string;
+                "disabled": {
+                    "title": string;
+                    "message": string;
+                };
                 "encounterNotFound": string;
                 "proposals": {
                     "title": string;
@@ -3862,6 +3936,7 @@ export type I18nTranslations = {
                     "date": string;
                     "time": string;
                     "location": string;
+                    "previousRounds": string;
                     "messages": {
                         "proposalAddedSuccess": string;
                         "proposalAddedError": string;
@@ -3872,12 +3947,28 @@ export type I18nTranslations = {
                         "proposalDeletedSuccess": string;
                         "proposalDeletedError": string;
                         "generalError": string;
+                        "triageSuccess": string;
+                        "triageError": string;
+                        "finalizeSuccess": string;
+                        "finalizeError": string;
                     };
                     "buttons": {
                         "reject": string;
                         "accept": string;
                         "addProposal": string;
                         "delete": string;
+                        "submitTriage": string;
+                        "finalize": string;
+                    };
+                    "history": string;
+                    "status": {
+                        "pending": string;
+                        "tentativelyaccepted": string;
+                        "accepted": string;
+                        "rejected": string;
+                        "resolved": string;
+                        "tentatively_accepted": string;
+                        "possible": string;
                     };
                 };
                 "messages": {
@@ -3910,7 +4001,9 @@ export type I18nTranslations = {
                         "originalDate": string;
                         "proposal": string;
                         "buttons": {
-                            "courtsAvailable": string;
+                            "spaceForEncounters": string;
+                            "courtsAvailableTooltip": string;
+                            "alreadyProposedTooltip": string;
                         };
                         "eventWarning": string;
                         "drawer": {
@@ -3925,6 +4018,13 @@ export type I18nTranslations = {
                             "messages": {
                                 "success": string;
                                 "error": string;
+                                "duplicateDate": string;
+                                "deadlinePassed": string;
+                                "outsideCompetitionSeason": string;
+                                "dateNotEndorsed": string;
+                                "validationFailed": string;
+                                "permissionDenied": string;
+                                "invalidState": string;
                             };
                         };
                     };
@@ -3932,6 +4032,21 @@ export type I18nTranslations = {
             };
             "locations": {
                 "exceptions": string;
+            };
+            "notifications": {
+                "title": string;
+                "empty": string;
+                "markAllAsRead": string;
+                "types": {
+                    "encounterChangeNew": string;
+                    "encounterChangeConfirmation": string;
+                    "encounterChangeFinished": string;
+                    "encounterHasComment": string;
+                    "encounterNotAccepted": string;
+                    "encounterNotEntered": string;
+                    "clubEnrollment": string;
+                    "default": string;
+                };
             };
             "editClubPage": {
                 "locations": {
@@ -3950,6 +4065,14 @@ export type I18nTranslations = {
                                 "startRequired": string;
                                 "endRequired": string;
                             };
+                        };
+                    };
+                };
+                "generalInfoTab": {
+                    "title": string;
+                    "generalForm": {
+                        "states": {
+                            "liga": string;
                         };
                     };
                 };

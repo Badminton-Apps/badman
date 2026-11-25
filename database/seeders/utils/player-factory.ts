@@ -115,7 +115,7 @@ export class PlayerFactory {
       const name = DataFactory.generateNameAtIndex(index, playerGender);
 
       const player = await this.create(ctx, {
-        email: `${name.firstName.toLowerCase()}.${name.lastName.toLowerCase()}@${domain}`,
+        email: `${name.firstName.toLowerCase()}.${name.lastName.toLowerCase().replace(/\s+/g, "")}@${domain}`,
         firstName: name.firstName,
         lastName: name.lastName,
         memberId: `${prefix.toUpperCase()}-${index}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,

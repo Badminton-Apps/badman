@@ -9,20 +9,36 @@ import {
   Comment,
   DrawCompetition,
   EncounterChange,
+  EncounterChangeDate,
   EncounterCompetition,
   Game,
   Location,
+  Logging,
   Player,
   RankingSystem,
   Team,
   updateEncounterCompetitionInput,
   updateTempTeamCaptainInput,
 } from "@badman/backend-database";
+import {
+  ChangeEncounterDateStatus,
+  ChangeEncounterParty,
+  EncounterChangeViewState,
+  LoggingAction,
+} from "@badman/utils";
 import { EncounterGamesGenerationService } from "@badman/backend-encounter-games";
-import { getSyncJobOptions, Sync, SyncQueue } from "@badman/backend-queue";
+import { NotificationService } from "@badman/backend-notifications";
+import { EncounterChangeService } from "./encounter-change.service";
+import { assertResultEditWindowOpen } from "./result-edit-window";
+import { requestEnterScores, Sync, SyncQueue } from "@badman/backend-queue";
 import { PointsService, RankingSystemService } from "@badman/backend-ranking";
 import { InjectQueue } from "@nestjs/bull";
-import { Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import {
   Args,
   Field,
@@ -59,6 +75,11 @@ export class PlayerEncounterCompetition {
   rows?: EncounterCompetition[];
 }
 
+const tempCaptainKey = {
+  home: "tempHomeCaptainId",
+  away: "tempAwayCaptainId",
+} as const;
+
 @Resolver(() => EncounterCompetition)
 export class EncounterCompetitionResolver {
   private readonly logger = new Logger(EncounterCompetitionResolver.name);
@@ -71,7 +92,9 @@ export class EncounterCompetitionResolver {
     private encounterGamesService: EncounterGamesGenerationService,
     private readonly rankingSystemService: RankingSystemService,
     private readonly teamLoader: TeamLoaderService,
-    private readonly drawLoader: DrawCompetitionLoaderService
+    private readonly drawLoader: DrawCompetitionLoaderService,
+    private readonly notificationService: NotificationService,
+    private readonly encounterChangeService: EncounterChangeService
   ) {}
 
   @Query(() => EncounterCompetition)
@@ -361,9 +384,73 @@ export class EncounterCompetitionResolver {
     return encounter.getAssemblies(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => EncounterChange)
-  async encounterChange(@Parent() encounter: EncounterCompetition): Promise<EncounterChange> {
-    return encounter.getEncounterChange();
+  @ResolveField(() => EncounterChange, { nullable: true })
+  async encounterChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<EncounterChange | null> {
+    return this._getLatestEncounterChange(encounter.id);
+  }
+
+  @ResolveField(() => [EncounterChange], { nullable: true })
+  async encounterChanges(@Parent() encounter: EncounterCompetition): Promise<EncounterChange[]> {
+    return EncounterChange.findAll({
+      where: { encounterId: encounter.id },
+      order: [["createdAt", "DESC"]],
+    });
+  }
+
+  @ResolveField(() => EncounterChangeViewState, { nullable: true })
+  async changeStatus(
+    @Parent() encounter: EncounterCompetition,
+    @User() user: Player
+  ): Promise<EncounterChangeViewState | null> {
+    const encounterChange = await this._getLatestEncounterChange(encounter.id, {
+      include: [{ model: EncounterChangeDate }],
+    });
+
+    if (!encounterChange) return null;
+
+    const [homeTeam, awayTeam] = await Promise.all([
+      this.teamLoader.load(encounter.homeTeamId),
+      this.teamLoader.load(encounter.awayTeamId),
+    ]);
+
+    const isAdmin = await user.hasAnyPermission(["change-any:encounter"]);
+    const isHome =
+      isAdmin ||
+      (homeTeam != null && (await user.hasAnyPermission([`${homeTeam.clubId}_change:encounter`])));
+    const isAway =
+      !isHome &&
+      awayTeam != null &&
+      (await user.hasAnyPermission([`${awayTeam.clubId}_change:encounter`]));
+
+    if (!isHome && !isAway) return null;
+
+    const viewerParty = isHome ? ChangeEncounterParty.HOME : ChangeEncounterParty.AWAY;
+
+    // Exclude historical dates (NULL status from pre-migration rows)
+    const dates = (encounterChange.dates ?? []).filter((d) => d.status != null);
+
+    if (dates.some((d) => d.status === ChangeEncounterDateStatus.ACCEPTED)) {
+      return EncounterChangeViewState.MOVED;
+    }
+
+    const liveDates = dates.filter(
+      (d) =>
+        d.status === ChangeEncounterDateStatus.PENDING ||
+        d.status === ChangeEncounterDateStatus.TENTATIVELY_ACCEPTED
+    );
+
+    if (liveDates.length > 0) {
+      return encounterChange.lastActionBy === viewerParty
+        ? EncounterChangeViewState.PROPOSAL_SENT
+        : EncounterChangeViewState.ACTION_REQUIRED;
+    }
+
+    // All dates are REJECTED or RESOLVED — no live dates remain
+    return encounterChange.lastActionBy === viewerParty
+      ? EncounterChangeViewState.ACTION_REQUIRED
+      : EncounterChangeViewState.REJECTED_WAITING;
   }
 
   @ResolveField(() => Boolean)
@@ -515,16 +602,15 @@ export class EncounterCompetitionResolver {
     return true;
   }
 
-  @Mutation(() => Boolean)
-  async changeDate(
+  @Mutation(() => EncounterCompetition)
+  async adminChangeEncounterDate(
     @User() user: Player,
     @Args("id", { type: () => ID }) id: string,
     @Args("date") date: Date,
-
+    @Args("locationId", { type: () => ID, nullable: true }) locationId: string | undefined,
     @Args("updateBadman") updateBadman: boolean,
-    @Args("updateVisual") updateVisual: boolean,
-    @Args("closeChangeRequests") closeChangeRequests: boolean
-  ) {
+    @Args("updateVisual") updateVisual: boolean
+  ): Promise<EncounterCompetition> {
     const encounter = await EncounterCompetition.findByPk(id);
 
     if (!encounter) {
@@ -536,30 +622,57 @@ export class EncounterCompetitionResolver {
     }
 
     if (updateBadman) {
-      await encounter.update({ date: date });
+      const locationChanged = !!locationId && locationId !== encounter.locationId;
+      this.logger.log(
+        `[adminChangeEncounterDate] encounterId=${encounter.id} date=${date.toISOString()} locationId=${locationId ?? "unchanged"} actor=${user.id}`
+      );
+      const transaction = await this._sequelize.transaction();
+      try {
+        const updates: { date: Date; locationId?: string } = { date };
+        if (locationChanged) {
+          updates.locationId = locationId;
+        }
+        await encounter.update(updates, { transaction });
+
+        await this.encounterChangeService.resolveProposalsForAdminChange(
+          encounter.id,
+          date,
+          locationId ?? encounter.locationId ?? undefined,
+          transaction
+        );
+
+        await Logging.create(
+          {
+            action: LoggingAction.EncounterChanged,
+            playerId: user.id,
+            meta: {
+              encounterId: encounter.id,
+              date,
+              originalDate: encounter.originalDate,
+            },
+          },
+          { transaction }
+        );
+        await transaction.commit();
+        this.logger.log(`[adminChangeEncounterDate] committed encounterId=${encounter.id}`);
+      } catch (e) {
+        await transaction.rollback();
+        this.logger.error(`[adminChangeEncounterDate] rollback encounterId=${encounter.id}`, e);
+        throw e;
+      }
+
+      this.notificationService.notifyEncounterChangeFinished(encounter, locationChanged);
     }
 
     if (updateVisual) {
       await this.syncQueue.add(
         Sync.ChangeDate,
-        {
-          encounterId: encounter.id,
-        },
-        {
-          removeOnComplete: true,
-          removeOnFail: false,
-        }
+        { encounterId: encounter.id },
+        { removeOnComplete: true, removeOnFail: false }
       );
     }
 
-    if (closeChangeRequests) {
-      const change = await encounter.getEncounterChange();
-      if (change) {
-        await change.update({ accepted: true });
-      }
-    }
-
-    return true;
+    return encounter;
   }
 
   @Mutation(() => Boolean)
@@ -615,15 +728,29 @@ export class EncounterCompetitionResolver {
 
   @Mutation(() => Boolean)
   async updateGameLeader(
+    @User() user: Player,
     @Args("encounterId") encounterId: string,
     @Args("gameLeaderId") gameLeaderId: string
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
-      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
+      const encounter = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+        include: [
+          { model: Team, as: "home" },
+          { model: Team, as: "away" },
+        ],
+      });
 
       if (!encounter) {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
+
+      // The home side appoints the game leader.
+      if (!(await this._canManageSide(user, encounter, "home"))) {
+        throw new UnauthorizedException(
+          `You do not have permission to change the game leader of this encounter`
+        );
       }
 
       await encounter.update({ gameLeaderId }, { transaction }); // Ensure transaction is passed here
@@ -639,35 +766,10 @@ export class EncounterCompetitionResolver {
 
   @Mutation(() => Boolean)
   async updateTempTeamCaptain(
+    @User() user: Player,
     @Args("encounterId") encounterId: string,
     @Args("data") updateTempTeamCaptainData: updateTempTeamCaptainInput
   ): Promise<boolean> {
-    const transaction = await this._sequelize.transaction();
-    try {
-      const encounter = await EncounterCompetition.findByPk(encounterId, { transaction });
-
-      if (!encounter) {
-        throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
-      }
-
-      await encounter.update(updateTempTeamCaptainData, { transaction });
-
-      await transaction.commit();
-      return true;
-    } catch (error) {
-      this.logger.error(error);
-      await transaction.rollback();
-      throw error;
-    }
-  }
-
-  @Mutation(() => EncounterCompetition)
-  async updateEncounterCompetition(
-    @User() user: Player,
-    @Args("encounterId") encounterId: string,
-    @Args("data") updateEncounterCompetitionData: updateEncounterCompetitionInput
-  ) {
-    this.logger.log("Updating encounter record with id:", `${encounterId}`);
     const transaction = await this._sequelize.transaction();
     try {
       const encounter = await EncounterCompetition.findByPk(encounterId, {
@@ -682,16 +784,122 @@ export class EncounterCompetitionResolver {
         throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
       }
 
-      const hasPermission =
-        (await user.hasAnyPermission([
-          "change-any:encounter",
-          `${encounter.home?.clubId}_enter:results`,
-          `${encounter.away?.clubId}_enter:results`,
-        ])) || encounter.gameLeaderId === user.id;
-
-      if (!hasPermission) {
-        throw new UnauthorizedException(`You do not have permission to edit this encounter`);
+      const sides = this._tempCaptainSides(updateTempTeamCaptainData);
+      if (sides.length === 0) {
+        throw new BadRequestException(`tempHomeCaptainId or tempAwayCaptainId is required`);
       }
+
+      await this._assertCanManageSides(user, encounter, sides);
+
+      await encounter.update(updateTempTeamCaptainData, { transaction });
+
+      await transaction.commit();
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
+  /**
+   * Whether the user may manage one side's encounter staff: encounter admins, that club's
+   * result enterers, that team's (temporary) captain, and the game leader, who sets both
+   * captains on the encounter form. Expects `home` and `away` to be included.
+   */
+  private async _canManageSide(
+    user: Player,
+    encounter: EncounterCompetition,
+    side: "home" | "away"
+  ): Promise<boolean> {
+    const team = encounter[side];
+    const staffIds = [encounter.gameLeaderId, team?.captainId, encounter[tempCaptainKey[side]]];
+    if (user?.id && staffIds.includes(user.id)) {
+      return true;
+    }
+
+    return user.hasAnyPermission(["change-any:encounter", `${team?.clubId}_enter:results`]);
+  }
+
+  private _tempCaptainSides(data: { tempHomeCaptainId?: string; tempAwayCaptainId?: string }) {
+    return (["home", "away"] as const).filter((side) => data[tempCaptainKey[side]] !== undefined);
+  }
+
+  private async _assertCanManageSides(
+    user: Player,
+    encounter: EncounterCompetition,
+    sides: readonly ("home" | "away")[]
+  ): Promise<void> {
+    for (const side of sides) {
+      if (!(await this._canManageSide(user, encounter, side))) {
+        throw new UnauthorizedException(
+          `You do not have permission to change the ${side} captain of this encounter`
+        );
+      }
+    }
+  }
+
+  /**
+   * Encounter admins may always change the result. The game leader and the home club may
+   * within the result edit window; the away club has no entry right (BV).
+   */
+  private async _assertCanEditResult(user: Player, encounter: EncounterCompetition) {
+    if (await user.hasAnyPermission(["change-any:encounter"])) return;
+
+    const entersResult =
+      (user?.id != null && encounter.gameLeaderId === user.id) ||
+      (await user.hasAnyPermission([`${encounter.home?.clubId}_enter:results`]));
+    if (!entersResult) {
+      throw new UnauthorizedException(`You do not have permission to edit this encounter`);
+    }
+
+    assertResultEditWindowOpen(encounter);
+  }
+
+  private async requestResultPush(encounter: EncounterCompetition): Promise<void> {
+    const label = `encounter ${encounter.visualCode} (${encounter.id})`;
+    try {
+      const request = await requestEnterScores(this.syncQueue, encounter.id);
+      if (request.outcome === "skipped") {
+        this.logger.log(`EnterScores not requested for ${label} — ${request.reason}`);
+      } else {
+        this.logger.log(`EnterScores ${request.outcome} for ${label}`);
+      }
+    } catch (error) {
+      // The result is already committed; the RetryFailedEncounterSync cron requests the push later.
+      this.logger.error(`Requesting EnterScores for ${label} failed`, error);
+    }
+  }
+
+  @Mutation(() => EncounterCompetition)
+  async updateEncounterCompetition(
+    @User() user: Player,
+    @Args("encounterId") encounterId: string,
+    @Args("data") updateEncounterCompetitionData: updateEncounterCompetitionInput
+  ) {
+    this.logger.log("Updating encounter record with id:", `${encounterId}`);
+    const transaction = await this._sequelize.transaction();
+    let result: EncounterCompetition;
+    let shouldUpdateToernooiNL: boolean;
+    try {
+      const encounter = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+        include: [
+          { model: Team, as: "home" },
+          { model: Team, as: "away" },
+        ],
+      });
+
+      if (!encounter) {
+        throw new NotFoundException(`${EncounterCompetition.name}: ${encounterId}`);
+      }
+
+      await this._assertCanEditResult(user, encounter);
+      await this._assertCanManageSides(
+        user,
+        encounter,
+        this._tempCaptainSides(updateEncounterCompetitionData)
+      );
 
       // Trigger a toernooi.nl score sync whenever the encounter is finished AND has scores entered,
       // but hasn't been synced yet (scoresSyncedAt is null). Robust against the frontend sending
@@ -705,24 +913,37 @@ export class EncounterCompetitionResolver {
 
       const notYetSynced = encounter.scoresSyncedAt == null;
 
-      const shouldUpdateToernooiNL = willBeFinished && willHaveEnteredOn && notYetSynced;
+      shouldUpdateToernooiNL = willBeFinished && willHaveEnteredOn && notYetSynced;
 
-      const result = await encounter.update(updateEncounterCompetitionData, { transaction });
-
-      if (shouldUpdateToernooiNL) {
-        await this.syncQueue.add(
-          Sync.EnterScores,
-          { encounterId: encounter.id },
-          getSyncJobOptions({ jobId: `enter-scores-${encounter.id}` })
-        );
-      }
-
-      await transaction.commit();
-      return result.toJSON();
+      result = await encounter.update(updateEncounterCompetitionData, { transaction });
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();
       throw error;
     }
+
+    try {
+      await transaction.commit();
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+
+    if (shouldUpdateToernooiNL) {
+      await this.requestResultPush(result);
+    }
+
+    return result.toJSON();
+  }
+
+  private async _getLatestEncounterChange(
+    encounterId: string,
+    options?: Parameters<typeof EncounterChange.findOne>[0]
+  ): Promise<EncounterChange | null> {
+    return EncounterChange.findOne({
+      ...options,
+      where: { encounterId },
+      order: [["createdAt", "DESC"]],
+    });
   }
 }
