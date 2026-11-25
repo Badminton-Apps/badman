@@ -1,8 +1,13 @@
 import { SeederContext } from "./seeder-context";
 import { withErrorHandling } from "./error-handler";
 
+export const SEEDED_RANKING_SYSTEM_NAME = "Seeded ranking system";
+
 /**
- * Find or get the primary ranking system
+ * Find the primary ranking system, or create one when the database has none
+ * (a fresh database built from migrations only). The values mirror the
+ * primary system in the backend test fixtures (packages/backend-database/src/_testing/load-test.ts),
+ * plus procentLosing, which GraphQL requires (non-nullable) and the fixtures leave out.
  */
 async function findOrGetPrimaryRankingSystem(ctx: SeederContext): Promise<{ id: string }> {
   const systems = await ctx.query<{ id: string }>(
@@ -13,7 +18,15 @@ async function findOrGetPrimaryRankingSystem(ctx: SeederContext): Promise<{ id: 
     return systems[0];
   }
 
-  throw new Error("No primary ranking system found. Please create a ranking system first.");
+  console.log(`No primary ranking system found, creating "${SEEDED_RANKING_SYSTEM_NAME}"`);
+  const [created] = await ctx.query<{ id: string }>(
+    `INSERT INTO ranking."RankingSystems"
+       (name, "primary", "rankingSystem", "amountOfLevels", "procentWinning", "procentWinningPlus1", "procentLosing", "maxDiffLevels")
+     VALUES (:name, true, 'BVL', 12, 75, 50, 30, 2)
+     RETURNING id`,
+    { name: SEEDED_RANKING_SYSTEM_NAME }
+  );
+  return created;
 }
 
 /**

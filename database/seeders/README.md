@@ -83,6 +83,8 @@ NODE_ENV=staging npx sequelize-cli db:seed:undo:all
 
 The admin seeder is **independent** and can run before or after the test-data seeder. It does not depend on clubs or teams existing.
 
+On a fresh database (built with `npm run db:migrate` only), the seeders create a primary ranking system ("Seeded ranking system") when none exists. On a production copy the existing primary system is reused. The undo functions don't remove it. Permission claims come from migrations (`20261109120000-add_production_claim_catalog.js`), not from the seeders.
+
 ## Undo/Cleanup behavior
 
 Both seeders include comprehensive `down` functions that clean up **all** seeded data. ✅ **Verified to completely remove all records.**
