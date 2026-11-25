@@ -345,6 +345,29 @@ describe("CompetitionSyncEntryProcessor._updateTeamDataFromVisual", () => {
         })
       );
     });
+
+    // Characterization (BAD-409): pins today's query exactly, including the
+    // missing ranking-system filter.
+    it("current behaviour, fixed in BAD-392: does not filter ranking places on a ranking system", async () => {
+      const team = makeTeam({ season: 2025 });
+      const entry = makeEntry();
+
+      visualService.getDraw.mockResolvedValue(makeXmlDraw(team.name as string));
+      visualService.getTeam.mockResolvedValue(makeXmlTeam([{ MemberID: "AAA", GenderID: 1 }]));
+      (Player.findAll as jest.Mock).mockResolvedValue([]);
+
+      await callMethod(team, entry);
+
+      const [{ include }] = (Player.findAll as jest.Mock).mock.calls[0];
+      expect(include).toEqual([
+        {
+          association: "rankingPlaces",
+          limit: 1,
+          where: { rankingDate: { [Op.lte]: new Date(2025, 5, 10) } },
+          order: [["rankingDate", "DESC"]],
+        },
+      ]);
+    });
   });
 
   // ── Player levels: May snapshot (all disciplines set) ────────────────────

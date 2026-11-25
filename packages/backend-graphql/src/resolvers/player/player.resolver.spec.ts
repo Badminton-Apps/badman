@@ -143,6 +143,32 @@ describe("PlayersResolver — RankingSystemService integration", () => {
     expect(findAndCountAll).toHaveBeenCalledTimes(1);
     expect(findAndCountAll.mock.calls[0][0]?.limit).toBe(50);
   });
+
+  // Characterization (BAD-409): without a season argument, teams defaults to
+  // the current season, which switches on 1 May.
+  describe("teams: default season", () => {
+    afterEach(() => jest.useRealTimers());
+
+    it.each([
+      ["30 April 2027", 2026, "2027-04-30T12:00:00.000Z"],
+      ["1 May 2027", 2027, "2027-05-01T12:00:00.000Z"],
+    ])("on %s it uses season %s", async (_label, season, now) => {
+      jest.useFakeTimers({ doNotFake: ["nextTick"] }).setSystemTime(new Date(now));
+      const getTeams = jest.fn().mockResolvedValue([]);
+
+      await resolver.teams({ getTeams } as unknown as Player, {} as ListArgs);
+
+      expect(getTeams.mock.calls[0][0].where).toEqual({ season });
+    });
+
+    it("keeps an explicit season", async () => {
+      const getTeams = jest.fn().mockResolvedValue([]);
+
+      await resolver.teams({ getTeams } as unknown as Player, {} as ListArgs, 2020);
+
+      expect(getTeams.mock.calls[0][0].where).toEqual({ season: 2020 });
+    });
+  });
 });
 
 describe("PlayersResolver — setting ResolveField (auto-create)", () => {

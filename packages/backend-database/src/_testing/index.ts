@@ -13,3 +13,4 @@ export * from "./systemGroupBuilder";
 export * from "./teamBuilder";
 export * from "./clubBuilder";
 export * from "./rankingPlaceBuilder";
+export * from "./ranking-lookup.fixture";
