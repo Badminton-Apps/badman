@@ -107,7 +107,7 @@ Each ticket is its own branch and PR into `feat/refactor`, stacked on the previo
 ## Open items
 
 - **Production timezone (checked 2026-11-25)**: Europe/Brussels on the API and both workers (research R1). FR-010a now describes timezone independence, not a change in production.
-- **Verify** (read-only production queries, research R3/R7): time of day of stored ranking dates and membership starts; line-up unit values. None block implementation or release.
+- **Production checks (done 2026-11-25)**: about 90% of stored ranking dates and memberships are at midnight in Brussels, the rest at midnight UTC with the same results (research R3); every event uses `months`/4 (research R7).
 
 ## Complexity Tracking
 

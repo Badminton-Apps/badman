@@ -28,17 +28,28 @@ Each item lists the decision, why, and what else was considered. Items marked **
 
 ## R3. Comparing calendar dates with stored timestamps
 
-**Finding**: ranking publications and memberships are stored as `timestamptz`. The ranking sync parses publication dates without an offset, and the transfer and loan uploads build their dates with moment, both in the process timezone. With `TZ=Europe/Brussels` (R1), a publication for 10 June and a membership starting 1 July are stored at midnight in Brussels: 9 June 22:00 UTC and 30 June 22:00 UTC. Rows synced before `TZ` was set may be stored at midnight UTC.
+**Finding**: ranking publications and memberships are stored as `timestamptz`. The ranking sync parses publication dates without an offset, and the transfer and loan uploads build their dates with moment, both in the process timezone. With `TZ=Europe/Brussels` (R1), a publication for 10 June and a membership starting 1 July are stored at midnight in Brussels: 9 June 22:00 UTC and 30 June 22:00 UTC.
+
+Production check (2026-11-25, read-only):
+
+| Stored value | Midnight in Brussels (22:00/23:00 UTC) | Midnight UTC | Other times |
+| --- | --- | --- | --- |
+| `RankingPlaces.rankingDate` | about 90% (≈4.29 million) | about 10% (≈480,000, all in 2022 and 2023) | 89 rows (manual edits), 2 without a date |
+| `ClubPlayerMemberships.start` | about 90% (≈50,000) | about 9.5% (5,254, older uploads) | a few dozen |
+| `ClubPlayerMemberships.end` | mostly 22:00 / 23:00 / 21:59:59 | a few hundred at 00:00 / 23:59:59 | processing times (transfers end the old membership "now") |
+
+No publication is stored at midnight UTC on 10 June 2022 or 2023.
 
 **Decision**:
 
 - Reference dates are **calendar dates** (`YYYY-MM-DD`), not instants.
 - **Instants written to or compared with the database** are midnight in Brussels, which is what production writes and compares today: the membership check, the membership window that transfers and loans write, and the Twizzit export window. The module names that convention once, in `storedInstant(calendarDate)`. Using midnight UTC instead would make a transfer or loan re-upload miss the rows earlier uploads created and create duplicates.
-- **Ranking lookups** (US3) turn a calendar range into `[start of the first day in Brussels, start of the day after the last day in Brussels)`. That is exactly today's production window for the 10 June cutoff and for the line-up month. It also gives the production answer for rows stored at midnight UTC: such a row's instant (e.g. 1 June 00:00 UTC) falls in the same Brussels day as before.
+- **Ranking lookups** (US3) turn a calendar range into `[start of the first day in Brussels, start of the day after the last day in Brussels)`. That is exactly today's production window for the 10 June cutoff and for the line-up month. Rows stored at midnight UTC give the production answer too, with one theoretical exception: a midnight-UTC publication exactly on 10 June was excluded by today's cutoff (`<= 9 June 22:00 UTC`) and counts now. The production check found no such row, so every lookup gives today's answer.
+- Memberships stored at midnight UTC are compared against midnight in Brussels before and after this change, so they give the same results as today.
 
 **Alternatives considered**: midnight UTC for database instants (what a UTC process computed; differs from production, see above); compare on UTC calendar dates (breaks rows stored at Brussels midnight, which is most of them).
 
-**Verify** (read-only production queries; not blocking, they confirm no row has an unexpected time of day). Expected: mostly 22:00 and 23:00.
+**Queries used** (read-only):
 
 ```sql
 -- time of day of stored publication dates
@@ -77,16 +88,16 @@ FROM public."ClubPlayerMemberships" GROUP BY 1 ORDER BY 2 DESC LIMIT 5;
 
 **Finding**: the line-up check builds the window with `moment().set("year", season).set(unit, amount)` and takes that month. For `months` this is a fixed month (4 → May). For `weeks` or `days` the result depends on today's date, which the spec keeps as current behaviour.
 
-**Decision**: `lineUpRankingWindow(event)` computes `months` explicitly as a calendar month. For `weeks` and `days` it reproduces moment's `set()` with date-fns (`setWeek` with weeks starting on Sunday and week 1 containing 1 January, `setDay` with weeks starting on Sunday, as moment's default "en" locale does); a test compares both over two years of days. The function still throws when the setting is missing (also for amount 0, as today).
+**Production check** (2026-11-25): all 156 events use `months` with amount 4 (May).
 
-**Verify** (read-only production query):
+**Decision**: `lineUpRankingWindow(event)` computes `months` explicitly as a calendar month and rejects other units with a clear error; the `weeks` / `days` branch, whose moment semantics depended on today's date, is removed. The function still throws when the setting is missing (also for amount 0, as today).
+
+**Query used** (read-only):
 
 ```sql
 SELECT "usedRankingUnit", "usedRankingAmount", count(*)
 FROM event."EventCompetitions" GROUP BY 1, 2;
 ```
-
-If only `months` is used, the `weeks` and `days` branch can go.
 
 ## R8. Line-up player cache (FR-015)
 

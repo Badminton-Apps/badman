@@ -9,7 +9,7 @@
 
 ## Status (2026-11-25)
 
-US1–US3 are implemented: #1178 (BAD-390), #1179 (BAD-391), #1180 (BAD-392), stacked on #1181, which makes the tests run in Europe/Brussels like production (research R1). The task texts below are updated to what was built. Open: the seed run against the dev database (T022), the integration re-run after the review changes (T036), and T037–T040.
+US1–US3 are implemented: #1178 (BAD-390), #1179 (BAD-391), #1180 (BAD-392), stacked on #1181, which makes the tests run in Europe/Brussels like production (research R1); T037/T038 are in #1182. The task texts below are updated to what was built. Open: T040 (coverage after the merges).
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -84,7 +84,7 @@ US1–US3 are implemented: #1178 (BAD-390), #1179 (BAD-391), #1180 (BAD-392), st
 - [x] T019 [P] [US2] `apps/worker/sync/src/app/processors/enter-scores/guards.ts`: make `isSeasonOpen` and `oldestOpenSeason` call `isScoreEntrySeasonOpen` and `oldestOpenScoreEntrySeason` (or replace their callers and remove them). `__tests__/guards.spec.ts` passes unchanged
 - [x] T020 [P] [US2] `packages/backend-twizzit/src/services/game-export/game-export.service.ts`: use `twizzitExportWindow(year)` for the `Op.between` range. `game-export.service.spec.ts` passes unchanged
 - [x] T021 [P] [US2] `packages/backend-database/src/_testing/load-test.ts`: `enrollmentSeason()` instead of `getSeason()`
-- [ ] T022 [US2] Seeders: replace the inline season rules in `database/seeders/20250101000000-seed-test-data.js` (line ~303, 1 May switch), `database/seeders/utils/data-factory.ts` (`getSeason`, 1 September switch) and `database/seeders/utils/entity-builders.ts` (line ~355–362) with the module. The root has no workspace dependencies, so require the built package by relative path (`packages/utils/dist`), build `@badman/utils` first, and rebuild `database/seeders/utils/dist`. `data-factory.getSeason` uses `competitionSeasonWindow` semantics only if a seeder depends on the 1 September switch; otherwise use `enrollmentSeason` (seed dates may shift within the same season, spec assumption). Run `npm run seed:test-data` against the dev database to confirm it still seeds
+- [x] T022 [US2] Seeders: replace the inline season rules in `database/seeders/20250101000000-seed-test-data.js` (line ~303, 1 May switch), `database/seeders/utils/data-factory.ts` (`getSeason`, 1 September switch) and `database/seeders/utils/entity-builders.ts` (line ~355–362) with the module. The root has no workspace dependencies, so require the built package by relative path (`packages/utils/dist`), build `@badman/utils` first, and rebuild `database/seeders/utils/dist`. `data-factory.getSeason` uses `competitionSeasonWindow` semantics only if a seeder depends on the 1 September switch; otherwise use `enrollmentSeason` (seed dates may shift within the same season, spec assumption). Run `npm run seed:test-data` against the dev database to confirm it still seeds (done 2026-11-25 on a temporary schema copy of the dev database, so existing seed data stays untouched)
 
 ### Timezone change and cleanup
 
@@ -112,14 +112,14 @@ US1–US3 are implemented: #1178 (BAD-390), #1179 (BAD-391), #1180 (BAD-392), st
 
 ### Implementation
 
-- [x] T029 [US3] Implement `packages/utils/src/lib/season/ranking-dates.ts` per contracts/season-module.md ("Ranking reference dates"); write the `weeks` / `days` branch of `lineUpRankingWindow` with date-fns `setWeek` / `setDay` and the semantics of moment's `set()` (research R7), with a test that compares both. Export from `season/index.ts`
+- [x] T029 [US3] Implement `packages/utils/src/lib/season/ranking-dates.ts` per contracts/season-module.md ("Ranking reference dates"); support only `months` in `lineUpRankingWindow`, the only unit in use (research R7), and reject other units. Export from `season/index.ts`
 - [x] T030 [US3] Implement `packages/backend-database/src/queries/latest-ranking-places.ts` (`findLatestRankingPlaces`) per contracts/ranking-lookup.md: `ROW_NUMBER() OVER (PARTITION BY "playerId" ORDER BY "rankingDate" DESC)`, table name via `queryInterface.quoteTable(RankingPlace.getTableName())`, bounds from `brusselsDayRange`, `QueryTypes.SELECT`, optional transaction. Export it from `packages/backend-database/src/index.ts`. T027 passes
 - [x] T031 [US3] Enrollment team index: in `packages/backend-competition/enrollment/src/services/index-calculation/index-calculation.service.ts`, replace `fetchPlaceMap`'s cutoff and `_fetchLatestPlacesPerPlayer` with `findLatestRankingPlaces({ onOrBefore: enrollmentRankingDate(season), systemId, playerIds })`. Update the existing unit tests that mock `_fetchLatestPlacesPerPlayer` to mock the new function; their expectations stay the same. `index-calculation.integration.spec.ts` passes unchanged
 - [x] T032 [US3] Line-up export: in `packages/backend-competition/assembly/src/services/export/export.service.ts`, load team players without the `RankingPlace` include and attach the place from `findLatestRankingPlaces({ onOrBefore: enrollmentRankingDate(season), updatePossibleOnly: true, ... })` so the rest of the export reads the same values. Rewrite `export.service.spec.ts` to assert the lookup arguments instead of the include; `ranking-lookups.integration.spec.ts` (export part) passes unchanged
 - [x] T033 [US3] Line-up check: in `packages/backend-competition/assembly/src/services/validate/assembly.service.ts`, compute the window with `lineUpRankingWindow(event)` and pass calendar dates down; in `batchFetchPlayersWithCache`, fetch players without the `RankingPlace` include and attach places from `findLatestRankingPlaces({ onOrAfter: from, onOrBefore: to, updatePossibleOnly: true, ... })`. `getSnapshotRanking` keeps reading `rankingPlaces[0]`. The window tests in `ranking-date.characterization.spec.ts` keep their expectations (adapt only how the window is captured); `ranking-lookups.integration.spec.ts` (check part) passes unchanged
 - [x] T034 [US3] Line-up cache (FR-015): key `playerCache` in `assembly.service.ts` on `${playerId}|${systemId}|${from}|${to}`; cleanup and size cap unchanged. The flipped cache test from T028 passes
 - [x] T035 [US3] Sync worker (FR-014): in `apps/worker/sync/src/app/processors/sync-events/competition-sync/processors/entry.ts`, look up the primary ranking system once per run (`RankingSystem.findOne({ where: { primary: true } })`, cached on the processor) and replace the `rankingPlaces` include with `findLatestRankingPlaces({ onOrBefore: enrollmentRankingDate(team.season), systemId, playerIds })`. Keep the fallbacks (existing meta, then the place, then 12). Update `entry.spec.ts` mocks for the new call; the flipped tests from T028 pass
-- [ ] T036 [US3] Run the three integration specs with `RUN_INTEGRATION_TESTS=1`: all places identical to the baseline except the flipped sync test. Then `pnpm turbo run build lint test`
+- [x] T036 [US3] Run the three integration specs with `RUN_INTEGRATION_TESTS=1`: all places identical to the baseline except the flipped sync test. Then `pnpm turbo run build lint test`
 
 **Checkpoint**: US3 done when the integration specs match and the full run passes.
 
@@ -127,9 +127,9 @@ US1–US3 are implemented: #1178 (BAD-390), #1179 (BAD-391), #1180 (BAD-392), st
 
 ## Phase 6: Polish & cross-cutting
 
-- [ ] T037 [P] Update `AGENTS.md` (architecture and testing notes) to point at the season module and `findLatestRankingPlaces` as the only place for season and ranking-date rules
-- [ ] T038 [P] Add an entry to `docs/tech-debt.md` for the storage-convention assumption in `storedInstant` (midnight in Brussels, research R3) and the `weeks` / `days` branch of `lineUpRankingWindow` that may be unused (research R7), and bump its version line
-- [ ] T039 Run the read-only production checks from research.md (R1 Render `TZ`: done, Europe/Brussels on the API and both workers; R3 time of day of `RankingPlaces.rankingDate` and `ClubPlayerMemberships.start`; R7 line-up units) and record the results in the BAD-392 PR description; open a follow-up if stored times are not mostly 22:00/23:00 UTC
+- [x] T037 [P] Update `AGENTS.md` (architecture and testing notes) to point at the season module and `findLatestRankingPlaces` as the only place for season and ranking-date rules
+- [x] T038 [P] Add an entry to `docs/tech-debt.md` for the storage-convention assumption in `storedInstant` (midnight in Brussels, research R3), and bump its version line
+- [x] T039 Run the read-only production checks from research.md (R1 Render `TZ`: done, Europe/Brussels on the API and both workers; R3 time of day of `RankingPlaces.rankingDate` and `ClubPlayerMemberships.start`; R7 line-up units) and record the results in the BAD-392 PR description; open a follow-up if stored times are not mostly 22:00/23:00 UTC
 - [ ] T040 Run `pnpm test:coverage:report` on the merged `feat/refactor` commit and compare with the BAD-409 number (44.3% lines)
 
 ---

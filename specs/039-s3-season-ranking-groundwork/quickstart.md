@@ -56,4 +56,4 @@ Expected: every integration test returns the same place as before, except the sy
 
 ## Production checks
 
-R1 is done: the Render services run with `TZ=Europe/Brussels`. Run the read-only checks in [research.md](research.md) (R3, R7) and note the results in the PR.
+Done (2026-11-25): the Render services run with `TZ=Europe/Brussels` (R1), stored dates are mostly midnight in Brussels (R3), and every event uses `months`/4 (R7). The queries are in [research.md](research.md).

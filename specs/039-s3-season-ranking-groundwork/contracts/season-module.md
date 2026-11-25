@@ -25,7 +25,7 @@ Helpers: `toCalendarDate(at: Date, timeZone = "Europe/Brussels"): CalendarDate`,
 | Function | Returns | Rule | Source |
 | --- | --- | --- | --- |
 | `enrollmentRankingDate(season): CalendarDate` | `season-06-10` | Current rule kept: latest place up to 10 June. C320 says the May ranking (open question for BV, BAD-401) | C320 art. 51§1 (differs) |
-| `lineUpRankingWindow(event): CalendarRange` | Calendar month from `usedRankingUnit` / `usedRankingAmount` in the season year | `months` explicit; `weeks` and `days` reproduce moment's `set()` with date-fns (research R7). Throws when the setting is missing | Current behaviour |
+| `lineUpRankingWindow(event): CalendarRange` | Calendar month from `usedRankingUnit` / `usedRankingAmount` in the season year | Only `months` (the only unit in use, research R7); throws for other units or when the setting is missing | Current behaviour |
 
 The ranking on the day of the encounter (C320 art. 51§2, 55§1) gets a function when a caller needs it; no current caller does.
 
