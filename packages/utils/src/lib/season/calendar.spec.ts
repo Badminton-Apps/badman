@@ -1,7 +1,7 @@
-import { brusselsDayRange, storedInstant, toCalendarDate } from "./calendar";
-import { rerunInBrussels } from "./rerun-in-brussels.spec-helper";
+import { alsoRunInTimezone } from "../../../../../jest.also-run-in-timezone";
+import { brusselsDayRange, CalendarDate, storedInstant, toCalendarDate } from "./calendar";
 
-// Runs in UTC and again in Europe/Brussels: every result must be the same.
+// Runs in Europe/Brussels (the default) and again in UTC: every result must be the same.
 describe(`calendar helpers (process TZ ${process.env["TZ"]})`, () => {
   describe("toCalendarDate", () => {
     it.each([
@@ -35,14 +35,21 @@ describe(`calendar helpers (process TZ ${process.env["TZ"]})`, () => {
     });
   });
 
-  describe("storedInstant (midnight UTC of the date)", () => {
-    it("returns midnight UTC", () => {
-      expect(storedInstant("2026-07-01").toISOString()).toBe("2026-07-01T00:00:00.000Z");
-      expect(storedInstant("2028-02-29").toISOString()).toBe("2028-02-29T00:00:00.000Z");
+  describe("storedInstant (midnight in Brussels of the date)", () => {
+    it("returns midnight in Brussels, in summer and in winter time", () => {
+      expect(storedInstant("2026-07-01").toISOString()).toBe("2026-06-30T22:00:00.000Z");
+      expect(storedInstant("2026-12-01").toISOString()).toBe("2026-11-30T23:00:00.000Z");
+      expect(storedInstant("2028-02-29").toISOString()).toBe("2028-02-28T23:00:00.000Z");
+    });
+
+    it("returns midnight on the days summer and winter time begin", () => {
+      expect(storedInstant("2027-03-28").toISOString()).toBe("2027-03-27T23:00:00.000Z");
+      expect(storedInstant("2027-10-31").toISOString()).toBe("2027-10-30T22:00:00.000Z");
     });
 
     it.each(["2026-02-30", "2026-7-1", "2026-07-01T00:00:00Z", ""])("rejects %p", (value) => {
-      expect(() => storedInstant(value)).toThrow(RangeError);
+      // The CalendarDate type already rejects most of these at compile time.
+      expect(() => storedInstant(value as CalendarDate)).toThrow(RangeError);
     });
   });
 
@@ -103,4 +110,4 @@ describe(`calendar helpers (process TZ ${process.env["TZ"]})`, () => {
   });
 });
 
-rerunInBrussels(__filename);
+alsoRunInTimezone(__filename, "UTC");

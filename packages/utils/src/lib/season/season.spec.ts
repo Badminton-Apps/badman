@@ -1,5 +1,5 @@
-import { storedInstant } from "./calendar";
-import { rerunInBrussels } from "./rerun-in-brussels.spec-helper";
+import { CalendarDate, storedInstant } from "./calendar";
+import { alsoRunInTimezone } from "../../../../../jest.also-run-in-timezone";
 import {
   competitionSeasonWindow,
   enrollmentSeason,
@@ -18,7 +18,7 @@ import {
 const brussels = (localIso: string, offset: "+01:00" | "+02:00") =>
   new Date(`${localIso}${offset}`);
 
-// Runs in UTC and again in Europe/Brussels: every result must be the same.
+// Runs in Europe/Brussels (the default) and again in UTC: every result must be the same.
 describe(`season module (process TZ ${process.env["TZ"]})`, () => {
   afterEach(() => {
     jest.useRealTimers();
@@ -127,23 +127,23 @@ describe(`season module (process TZ ${process.env["TZ"]})`, () => {
     });
   });
 
-  describe("membership (1 July – 30 June, stored as midnight UTC)", () => {
+  describe("membership (1 July – 30 June, stored as midnight in Brussels)", () => {
     it("names the calendar dates of the period", () => {
       expect(membershipPeriod(2026)).toEqual({ from: "2026-07-01", to: "2027-06-30" });
     });
 
     it("returns the stored window, end included", () => {
       const { start, end } = membershipWindow(2026);
-      expect(start.toISOString()).toBe("2026-07-01T00:00:00.000Z");
-      expect(end.toISOString()).toBe("2027-06-30T23:59:59.999Z");
+      expect(start.toISOString()).toBe("2026-06-30T22:00:00.000Z");
+      expect(end.toISOString()).toBe("2027-06-30T21:59:59.999Z");
     });
 
-    it("checks membership at 1 July 00:00 UTC", () => {
-      expect(membershipCheckInstant(2026).toISOString()).toBe("2026-07-01T00:00:00.000Z");
+    it("checks membership at 1 July 00:00 Brussels time", () => {
+      expect(membershipCheckInstant(2026).toISOString()).toBe("2026-06-30T22:00:00.000Z");
     });
 
     it("places 30 June in the previous season and 1 July in the new one", () => {
-      const inWindow = (date: string, season: number) => {
+      const inWindow = (date: CalendarDate, season: number) => {
         const at = storedInstant(date);
         const { start, end } = membershipWindow(season);
         return at >= start && at <= end;
@@ -161,8 +161,8 @@ describe(`season module (process TZ ${process.env["TZ"]})`, () => {
       ["30 June 23:59", brussels("2027-06-30T23:59:59.999", "+02:00"), true],
       ["1 July 00:00", brussels("2027-07-01T00:00:00.000", "+02:00"), false],
       ["during the competition", brussels("2027-02-10T12:00:00.000", "+01:00"), true],
-    ])("isScoreEntrySeasonOpen(2026) on %s (Brussels time)", (_label, at, expected) => {
-      expect(isScoreEntrySeasonOpen(2026, at)).toBe(expected);
+    ])("isScoreEntrySeasonOpen(…, 2026) on %s (Brussels time)", (_label, at, expected) => {
+      expect(isScoreEntrySeasonOpen(at, 2026)).toBe(expected);
     });
 
     it.each([
@@ -180,8 +180,8 @@ describe(`season module (process TZ ${process.env["TZ"]})`, () => {
         brussels("2027-07-01T00:00:00.000", "+02:00"),
       ]) {
         const oldest = oldestOpenScoreEntrySeason(at);
-        expect(isScoreEntrySeasonOpen(oldest, at)).toBe(true);
-        expect(isScoreEntrySeasonOpen(oldest - 1, at)).toBe(false);
+        expect(isScoreEntrySeasonOpen(at, oldest)).toBe(true);
+        expect(isScoreEntrySeasonOpen(at, oldest - 1)).toBe(false);
       }
     });
   });
@@ -203,13 +203,13 @@ describe(`season module (process TZ ${process.env["TZ"]})`, () => {
     });
   });
 
-  describe("twizzitExportWindow (1 September – 1 September, stored as midnight UTC)", () => {
+  describe("twizzitExportWindow (1 September – 1 September, midnight in Brussels)", () => {
     it("returns the stored window, both ends included", () => {
       const { start, end } = twizzitExportWindow(2026);
-      expect(start.toISOString()).toBe("2026-09-01T00:00:00.000Z");
-      expect(end.toISOString()).toBe("2027-09-01T00:00:00.000Z");
+      expect(start.toISOString()).toBe("2026-08-31T22:00:00.000Z");
+      expect(end.toISOString()).toBe("2027-08-31T22:00:00.000Z");
     });
   });
 });
 
-rerunInBrussels(__filename);
+alsoRunInTimezone(__filename, "UTC");

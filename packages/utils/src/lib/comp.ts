@@ -1,5 +1,11 @@
 import moment from "moment";
-import { competitionSeasonWindow, enrollmentSeason, membershipPeriod, nextSeason } from "./season";
+import {
+  CalendarDate,
+  competitionSeasonWindow,
+  enrollmentSeason,
+  membershipPeriod,
+  nextSeason,
+} from "./season";
 
 /*
  * Old season helpers. They delegate to the season module (./season) but keep
@@ -14,7 +20,7 @@ const localCalendarDate = (inputDate?: Date | moment.Moment) => {
   if (!date.isValid()) {
     date = moment();
   }
-  return date.format("YYYY-MM-DD");
+  return date.format("YYYY-MM-DD") as CalendarDate;
 };
 
 /**

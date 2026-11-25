@@ -102,11 +102,11 @@ export function membershipPeriod(season: Season): CalendarRange {
 }
 
 /**
- * The membership window as stored instants: 1 July `season` 00:00 UTC up to and
- * including 30 June `season + 1` 23:59:59.999 UTC.
+ * The membership window as stored instants: 1 July `season` 00:00 up to and
+ * including 30 June `season + 1` 23:59:59.999, Brussels time.
  *
- * C925, C950. Midnight UTC is today's storage convention for memberships
- * (research R3), see `storedInstant`.
+ * C925, C950. Midnight in Brussels is how memberships are stored (research R3),
+ * see `storedInstant`.
  */
 export function membershipWindow(season: Season): InstantRange {
   const { from } = membershipPeriod(season);
@@ -116,9 +116,9 @@ export function membershipWindow(season: Season): InstantRange {
 
 /**
  * The moment at which club membership is checked for an enrollment:
- * 1 July `season` 00:00 UTC.
+ * 1 July `season` 00:00, Brussels time.
  *
- * C925, C950. Midnight UTC is today's storage convention (research R3).
+ * C925, C950. Midnight in Brussels is how memberships are stored (research R3).
  */
 export function membershipCheckInstant(season: Season): Date {
   return storedInstant(membershipPeriod(season).from);
@@ -132,8 +132,8 @@ export function membershipCheckInstant(season: Season): Date {
  * leagues still play in May and June.
  */
 export function isScoreEntrySeasonOpen(
-  season: Season,
   at: Date | CalendarDate,
+  season: Season,
   timeZone: string = BRUSSELS_TIME_ZONE
 ): boolean {
   assertSeason(season);
@@ -171,10 +171,10 @@ export function nextSeason(
 
 /**
  * The encounters the Twizzit export sends for a season: 1 September `season`
- * 00:00 UTC up to and including 1 September `season + 1` 00:00 UTC.
+ * 00:00 up to and including 1 September `season + 1` 00:00, Brussels time.
  *
- * Practical rule for the Twizzit export, no regulation. Midnight UTC is today's
- * value (research R3), see `storedInstant`.
+ * Practical rule for the Twizzit export, no regulation. Midnight in Brussels is
+ * today's value (research R3), see `storedInstant`.
  */
 export function twizzitExportWindow(season: Season): InstantRange {
   assertSeason(season);
