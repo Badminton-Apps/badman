@@ -12,7 +12,8 @@ import { TeamClubRule } from "./rules/team-club.rule";
  *
  * Today the halves are calendar years: every encounter in the season's start
  * year is "semester 1", every encounter in the next calendar year (including
- * May and June) is "semester 2". TZ is pinned to UTC by jest.global-setup.js.
+ * May and June) is "semester 2". Tests run with TZ=Europe/Brussels, as
+ * production does (jest.global-setup.js).
  */
 const at = (iso: string) => new Date(iso);
 
@@ -160,7 +161,7 @@ describe("change-encounter season handling (characterization)", () => {
     it.each([
       ["31 August", false, "2026-08-31T19:00:00.000Z"],
       ["1 September", true, "2026-09-01T00:00:00.000Z"],
-      ["30 April late evening", true, "2027-04-30T23:59:00.000Z"],
+      ["30 April late evening", true, "2027-04-30T23:59:00.000+02:00"],
       ["1 May", false, "2027-05-01T00:00:00.000Z"],
     ])("encounter on %s is in period: %s", async (_label, inPeriod, iso) => {
       const result = await rule.validate(data(at(iso), 2026));

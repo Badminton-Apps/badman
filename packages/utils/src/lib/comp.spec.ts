@@ -1,17 +1,16 @@
-import { execFileSync } from "child_process";
 import moment from "moment";
+import { alsoRunInTimezone } from "../../../../jest.also-run-in-timezone";
 import { endOfSeason, getNextSeason, getSeason, getSeasonPeriod, startOfSeason } from "./comp";
 
 /**
  * Characterization tests (BAD-409): they pin what the season helpers do today,
  * so the S3 groundwork (BAD-390/391) can prove it changes nothing by accident.
  *
- * The helpers read the server's local calendar. Production presumably runs in
- * UTC and developers in Europe/Brussels, so this suite runs in UTC (pinned by
- * jest.global-setup.js) and re-runs itself once in Europe/Brussels.
+ * The helpers read the server's local calendar. Production runs with
+ * TZ=Europe/Brussels, the default of the test run (jest.global-setup.js); the
+ * suite also runs once in UTC to show which answers depend on the server.
  */
 const tz = process.env["TZ"];
-const BRUSSELS_RERUN = "BADMAN_COMP_SPEC_BRUSSELS";
 
 if (tz !== "UTC" && tz !== "Europe/Brussels") {
   throw new Error(`comp.spec.ts expects TZ=UTC or TZ=Europe/Brussels, got ${tz}`);
@@ -121,26 +120,4 @@ describe(`season helpers in ${tz}`, () => {
   });
 });
 
-// Jest gives each test file a copy of process.env, so TZ cannot change inside
-// this run. Re-run this file in a child jest process with TZ=Europe/Brussels.
-if (tz === "UTC" && !process.env[BRUSSELS_RERUN]) {
-  describe("season helpers in Europe/Brussels", () => {
-    it("pass the same suite", () => {
-      const jestBin = require.resolve("jest/bin/jest");
-      try {
-        execFileSync(
-          process.execPath,
-          [jestBin, "--runTestsByPath", __filename, "--coverage=false", "--ci"],
-          {
-            cwd: process.cwd(),
-            env: { ...process.env, TZ: "Europe/Brussels", [BRUSSELS_RERUN]: "1" },
-            stdio: "pipe",
-          }
-        );
-      } catch (error) {
-        const { stdout, stderr } = error as { stdout?: Buffer; stderr?: Buffer };
-        throw new Error(`Europe/Brussels run failed:\n${stderr ?? ""}${stdout ?? ""}`);
-      }
-    });
-  });
-}
+alsoRunInTimezone(__filename, "UTC");

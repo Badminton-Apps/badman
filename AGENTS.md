@@ -239,7 +239,7 @@ Versioning is **commit-driven** — contributors never hand-author release metad
 - Run via turbo (`pnpm turbo run test --filter=<pkg>`) or directly inside a package (`pnpm test`); cross-package imports resolve to built `dist`, so build dependencies once first (`turbo` does this automatically via `^build`)
 - Test files are co-located next to the source file: `foo.resolver.ts` → `foo.resolver.spec.ts`
 - Use `@nestjs/testing` `Test.createTestingModule` to wire up the unit under test with mocked dependencies
-- Tests run in UTC by default (`jest.global-setup.js` sets `TZ`), so date tests behave the same locally as in CI. Run a suite in another timezone with e.g. `TZ=Europe/Brussels pnpm test`. Jest copies `process.env` per test file, so changing `TZ` inside a test has no effect.
+- Tests run in Europe/Brussels by default (`jest.global-setup.js` sets `TZ`), the timezone production runs in (`TZ=Europe/Brussels` on the Render services), so date tests behave the same locally, in CI and in production. Run a suite in another timezone with e.g. `TZ=UTC pnpm test`. Jest copies `process.env` per test file, so changing `TZ` inside a test has no effect; to make a suite prove it does not depend on the server timezone, end it with `alsoRunInTimezone(__filename, "UTC")` from [`jest.also-run-in-timezone.ts`](jest.also-run-in-timezone.ts).
 - Characterization tests (`*.characterization.spec.ts`, plus tests named `current behaviour, fixed in BAD-xxx`) pin today's behaviour before a refactor. Change them only on purpose, in the ticket the name points to.
 
 ### Integration test convention

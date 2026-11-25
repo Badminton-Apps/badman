@@ -18,8 +18,8 @@ import { PlayerClubRule } from "./rules/player-club.rule";
 /**
  * Characterization tests (BAD-409) for the season logic of enrollment
  * validation. They pin today's behaviour so the S3 groundwork (BAD-390/391)
- * can prove it changes nothing by accident. TZ is pinned to UTC by
- * jest.global-setup.js.
+ * can prove it changes nothing by accident. Tests run with TZ=Europe/Brussels,
+ * as production does (jest.global-setup.js).
  */
 const at = (iso: string) => new Date(iso);
 
@@ -125,11 +125,13 @@ describe("enrollment validation season handling (characterization)", () => {
     const OTHER = "all.v1.entryTeamDrawer.validation.errors.player-club";
 
     it("accepts a membership that starts exactly on 1 July 00:00", async () => {
-      expect(await validateWith([membership("club-1", "2026-07-01T00:00:00.000Z")])).toEqual([]);
+      expect(await validateWith([membership("club-1", "2026-07-01T00:00:00.000+02:00")])).toEqual(
+        []
+      );
     });
 
     it("rejects a membership that starts 1 ms after 1 July 00:00", async () => {
-      expect(await validateWith([membership("club-1", "2026-07-01T00:00:00.001Z")])).toEqual([
+      expect(await validateWith([membership("club-1", "2026-07-01T00:00:00.001+02:00")])).toEqual([
         NONE,
       ]);
     });
@@ -137,7 +139,7 @@ describe("enrollment validation season handling (characterization)", () => {
     it("rejects a membership that ends exactly on 1 July 00:00", async () => {
       expect(
         await validateWith([
-          membership("club-1", "2020-07-01T00:00:00.000Z", "2026-07-01T00:00:00.000Z"),
+          membership("club-1", "2020-07-01T00:00:00.000Z", "2026-07-01T00:00:00.000+02:00"),
         ])
       ).toEqual([NONE]);
     });
@@ -145,14 +147,16 @@ describe("enrollment validation season handling (characterization)", () => {
     it("accepts a membership that ends 1 ms after 1 July 00:00", async () => {
       expect(
         await validateWith([
-          membership("club-1", "2020-07-01T00:00:00.000Z", "2026-07-01T00:00:00.001Z"),
+          membership("club-1", "2020-07-01T00:00:00.000Z", "2026-07-01T00:00:00.001+02:00"),
         ])
       ).toEqual([]);
     });
 
     it("counts an unconfirmed membership", async () => {
       expect(
-        await validateWith([membership("club-1", "2026-07-01T00:00:00.000Z", undefined, false)])
+        await validateWith([
+          membership("club-1", "2026-07-01T00:00:00.000+02:00", undefined, false),
+        ])
       ).toEqual([]);
     });
 

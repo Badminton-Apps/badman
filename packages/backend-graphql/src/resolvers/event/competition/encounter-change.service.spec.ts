@@ -18,7 +18,7 @@ import { EncounterChangeService } from "./encounter-change.service";
  *
  * The checks run before the transaction, so a transaction that throws
  * CHECKS_PASSED means every season and deadline check let the request through.
- * TZ is pinned to UTC by jest.global-setup.js.
+ * Tests run with TZ=Europe/Brussels, as production does (jest.global-setup.js).
  */
 const CHECKS_PASSED = "CHECKS_PASSED";
 
@@ -221,11 +221,11 @@ describe("EncounterChangeService season and deadline checks (characterization)",
     beforeEach(() => now("2026-11-15T12:00:00.000Z"));
 
     it.each([
-      ["31 August 23:59:59.999", false, "2026-08-31T23:59:59.999Z"],
-      ["1 September 00:00", true, "2026-09-01T00:00:00.000Z"],
-      ["30 April 23:59:59.999", true, "2027-04-30T23:59:59.999Z"],
-      ["1 May 00:00", false, "2027-05-01T00:00:00.000Z"],
-    ])("season 2026, %s → in season: %s", async (_label, inSeason, iso) => {
+      ["31 August 23:59:59.999", false, "2026-08-31T23:59:59.999+02:00"],
+      ["1 September 00:00", true, "2026-09-01T00:00:00.000+02:00"],
+      ["30 April 23:59:59.999", true, "2027-04-30T23:59:59.999+02:00"],
+      ["1 May 00:00", false, "2027-05-01T00:00:00.000+02:00"],
+    ])("season 2026, %s Brussels time → in season: %s", async (_label, inSeason, iso) => {
       const result = propose(encounterDate, noDeadlines(), at(iso));
       if (inSeason) {
         await passes(result);

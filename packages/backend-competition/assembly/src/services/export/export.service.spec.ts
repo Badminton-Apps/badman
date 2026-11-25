@@ -5,7 +5,8 @@ import { AssemblyExportService } from "./export.service";
 /**
  * Characterization tests (BAD-409) for the ranking date of the line-up export.
  * They pin today's query so the S3 groundwork (BAD-392) can prove it changes
- * nothing by accident. TZ is pinned to UTC by jest.global-setup.js.
+ * nothing by accident. Tests run with TZ=Europe/Brussels, as production does
+ * (jest.global-setup.js), so 10 June 00:00 is 9 June 22:00 UTC.
  */
 describe("AssemblyExportService ranking date (characterization)", () => {
   type Include = {
@@ -36,13 +37,13 @@ describe("AssemblyExportService ranking date (characterization)", () => {
 
     expect(include.where.systemId).toBe("system-1");
     expect(include.where.updatePossible).toBe(true);
-    expect(include.where.rankingDate?.[Op.lte].toISOString()).toBe("2026-06-10T00:00:00.000Z");
+    expect(include.where.rankingDate?.[Op.lte].toISOString()).toBe("2026-06-09T22:00:00.000Z");
     expect(include.limit).toBe(1);
     expect(include.order).toEqual([["rankingDate", "DESC"]]);
   });
 
   it("uses 10 June of the given season, not of the current year", async () => {
     const include = await placeIncludeFor(2024);
-    expect(include.where.rankingDate?.[Op.lte].toISOString()).toBe("2024-06-10T00:00:00.000Z");
+    expect(include.where.rankingDate?.[Op.lte].toISOString()).toBe("2024-06-09T22:00:00.000Z");
   });
 });

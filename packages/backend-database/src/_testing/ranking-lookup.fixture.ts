@@ -100,8 +100,13 @@ export function connectRankingLookupDb(env = process.env): Sequelize | null {
   });
 }
 
-/** Midnight UTC of a day in the sentinel season, e.g. `utc("06-10")`. */
-const utc = (monthDay: string) => new Date(`${RANKING_LOOKUP_SEASON}-${monthDay}T00:00:00.000Z`);
+/**
+ * Midnight in Brussels of a day in the sentinel season, e.g. `stored("06-10")`:
+ * production runs with TZ=Europe/Brussels, so the ranking sync stores
+ * publication dates that way. All fixture dates fall in summer time (+02:00).
+ */
+const stored = (monthDay: string) =>
+  new Date(`${RANKING_LOOKUP_SEASON}-${monthDay}T00:00:00.000+02:00`);
 
 /** Removes rows left behind by an earlier run that crashed before its cleanup. */
 async function removeLeftovers(): Promise<void> {
@@ -170,7 +175,7 @@ export async function createRankingLookupFixture(): Promise<RankingLookupFixture
   ) => ({
     playerId: player.id,
     systemId: system.id,
-    rankingDate: utc(date),
+    rankingDate: stored(date),
     single,
     double: single,
     mix: single,
@@ -208,7 +213,7 @@ export async function createRankingLookupFixture(): Promise<RankingLookupFixture
       teamId: team.id,
       playerId: p.id,
       membershipType: TeamMembershipType.REGULAR,
-      start: utc("07-01"),
+      start: stored("07-01"),
     })),
     { hooks: false }
   );

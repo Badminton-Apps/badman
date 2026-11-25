@@ -191,8 +191,9 @@ describe("TransferService", () => {
   });
 });
 
-// Characterization (BAD-409): the dates a transfer writes. TZ is pinned to UTC
-// by jest.global-setup.js. These pin today's behaviour for the S3 groundwork.
+// Characterization (BAD-409): the dates a transfer writes. Tests run with
+// TZ=Europe/Brussels, as production does (jest.global-setup.js), so 1 July 00:00
+// is 30 June 22:00 UTC. These pin today's behaviour for the S3 groundwork.
 describe("TransferService membership dates (characterization)", () => {
   let service: TransferService;
 
@@ -229,15 +230,15 @@ describe("TransferService membership dates (characterization)", () => {
     return { newMembership, oldMembership, thisSeasonQuery };
   };
 
-  it("starts the new membership on 1 July of the season, 00:00 local time", async () => {
+  it("starts the new membership on 1 July of the season, 00:00 Brussels time", async () => {
     const { newMembership } = await processOneTransfer();
-    expect((newMembership.start as Date).toISOString()).toBe("2025-07-01T00:00:00.000Z");
+    expect((newMembership.start as Date).toISOString()).toBe("2025-06-30T22:00:00.000Z");
   });
 
   it("looks for this season's memberships from 1 July of the season", async () => {
     const { thisSeasonQuery } = await processOneTransfer();
     expect((thisSeasonQuery.where.start[Op.gte] as Date).toISOString()).toBe(
-      "2025-07-01T00:00:00.000Z"
+      "2025-06-30T22:00:00.000Z"
     );
   });
 

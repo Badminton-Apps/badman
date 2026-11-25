@@ -6,7 +6,8 @@ import { AssemblyValidationService } from "./assembly.service";
  * Characterization tests (BAD-409) for the ranking date of the line-up check.
  * They pin today's behaviour so the S3 groundwork (BAD-392) can prove it
  * changes nothing by accident, including the player cache bug it fixes.
- * TZ is pinned to UTC by jest.global-setup.js.
+ * Tests run with TZ=Europe/Brussels, as production does (jest.global-setup.js),
+ * so the May window runs from 30 April 22:00 UTC to 31 May 21:59:59.999 UTC.
  */
 const PLAYER_ID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12";
 const TEAM_ID = "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a13";
@@ -80,12 +81,12 @@ describe("AssemblyValidationService ranking date (characterization)", () => {
           { season: 2026, usedRankingUnit: "months", usedRankingAmount: 4 },
           "2026-10-15T12:00:00.000Z"
         )
-      ).toEqual(["2026-05-01T00:00:00.000Z", "2026-05-31T23:59:59.999Z"]);
+      ).toEqual(["2026-04-30T22:00:00.000Z", "2026-05-31T21:59:59.999Z"]);
     });
 
     it("gives the same window whatever day it is today", async () => {
       const event = { season: 2026, usedRankingUnit: "months", usedRankingAmount: 4 };
-      const expected = ["2026-05-01T00:00:00.000Z", "2026-05-31T23:59:59.999Z"];
+      const expected = ["2026-04-30T22:00:00.000Z", "2026-05-31T21:59:59.999Z"];
 
       expect(await windowFor(event, "2027-01-31T23:00:00.000Z")).toEqual(expected);
       expect(await windowFor(event, "2028-02-29T12:00:00.000Z")).toEqual(expected);
