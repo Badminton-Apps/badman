@@ -2,6 +2,9 @@
 
 <!--
 Versions (newest first):
+- v1.7 — 2026-11-25 — Add "Season module: database instants assume
+  midnight-in-Brussels storage" and "Line-up window: weeks/days units of
+  unknown use" from spec 039 (S3 groundwork).
 - v1.6 — 2026-11-13 — Remove the duplicated "Enrollment validation:
   cross-request caching deferred" entry.
 - v1.5 — 2026-06-10 — Resolve "Legacy Angular frontend" (deleted in feature
@@ -47,6 +50,8 @@ Versions (newest first):
 | [Team: no DB uniqueness on `Teams(link, season)`](#team-no-db-uniqueness-on-teamslink-season)                                    | Backend  | `packages/backend-database/src/models/team.model.ts`, `packages/backend-graphql/src/resolvers/team/team.resolver.ts`                           | ~half day                        | First observed duplicate `(link, season)` team in prod, OR a contention bug report on the team-create / season-rollover flow | open   |
 | [Team: FE migration of `createTeam` callers (BAD-128)](#team-fe-migration-of-createteam-callers-bad-128)                         | Frontend | active frontend repo (separate); pointer only here                                                                                             | tracked in Linear                | BAD-128 closes                                                                                                               | open   |
 | [Enrollment validation: cross-request caching deferred](#enrollment-validation-cross-request-caching-deferred)                   | Backend  | `packages/backend-competition/enrollment/src/services/cache/enrollment-validation-cache.service.ts`                                            | ~1–2 days                        | First complaint that repeated `enrollmentValidation(validate: true)` calls are slow across separate GraphQL requests         | open   |
+| [Season module: database instants assume midnight-in-Brussels storage](#season-module-database-instants-assume-midnight-in-brussels-storage) | Backend | `packages/utils/src/lib/season/calendar.ts`, `packages/utils/src/lib/season/season.ts` | S | R3 query shows other times of day, or a service runs without `TZ=Europe/Brussels` | open |
+| [Line-up window: weeks/days units of unknown use](#line-up-window-weeksdays-units-of-unknown-use) | Backend | `packages/utils/src/lib/season/ranking-dates.ts` | S | R7 query result | open |
 | [Turborepo migration deferrals (feature 036)](#turborepo-migration-deferrals-feature-036)                                        | Backend  | `turbo.json`, root `package.json`, `eslint.config.js`                                                                                          | 3 small PRs                      | CI slowness (remote cache), nestjs-i18n upgrade need, or lint-tightening push                                                | open   |
 
 ---
@@ -136,6 +141,22 @@ Versions (newest first):
 - **Fix**: (1) adopt Turborepo Remote Cache when CI time hurts; (2) bump
   nestjs-i18n + fix key typings; (3) re-tighten lint rules and fix the ~9
   violations. Each is a small standalone PR.
+- **Status**: open. **Owner**: unowned.
+
+### Season module: database instants assume midnight-in-Brussels storage
+
+- **Where**: [packages/utils/src/lib/season/calendar.ts](../packages/utils/src/lib/season/calendar.ts) (`storedInstant`), used by `membershipWindow`, `membershipCheckInstant` and `twizzitExportWindow` in [season.ts](../packages/utils/src/lib/season/season.ts).
+- **What**: memberships and the Twizzit window are compared as instants at midnight in Brussels (1 July = 30 June 22:00 UTC), because the services run with `TZ=Europe/Brussels` on Render and wrote them that way. Nothing in the database states that convention. A row written by a process in another timezone, or before `TZ` was set, sits at midnight UTC and is 1–2 hours off.
+- **Why we shipped it**: spec 039 keeps today's production values; normalizing stored data needs a migration and was out of scope. `storedInstant` names the assumption in one place.
+- **Fix**: run the R3 query in [research.md](../specs/039-s3-season-ranking-groundwork/research.md). If times are not consistently 22:00/23:00 UTC, normalize them with a migration, or store membership dates as `DATE` columns and compare calendar dates.
+- **Status**: open. **Owner**: unowned.
+
+### Line-up window: weeks/days units of unknown use
+
+- **Where**: [packages/utils/src/lib/season/ranking-dates.ts](../packages/utils/src/lib/season/ranking-dates.ts) — `lineUpRankingWindow`.
+- **What**: for `usedRankingUnit` `weeks` or `days`, the window reproduces moment's `set()`: the month of that week number in the season year, or (for `days`) the month of a weekday in the current week. Both depend on today's date, which is unlikely to be intended.
+- **Why we shipped it**: spec 039 keeps current behaviour, and it is not known whether any event uses these units. The branch is written with date-fns and tested against moment.
+- **Fix**: run the R7 query. If only `months` is used, remove the branch and narrow `usedRankingUnit`; otherwise ask Badminton Vlaanderen what the setting should mean.
 - **Status**: open. **Owner**: unowned.
 
 ## Frontend
