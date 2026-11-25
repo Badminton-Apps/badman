@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { alsoRunInTimezone } from "../../../../jest.also-run-in-timezone";
 import { Model, ModelCtor, Sequelize } from "sequelize-typescript";
 import * as sequelizeModels from "../models";
 import { Player, RankingPlace, RankingSystem } from "../models";
@@ -185,3 +186,6 @@ describe("findLatestRankingPlaces", () => {
     query.mockRestore();
   });
 });
+
+// The lookup compares instants, so it must not depend on the server timezone.
+alsoRunInTimezone(__filename, "UTC");

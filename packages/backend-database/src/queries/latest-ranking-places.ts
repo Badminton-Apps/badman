@@ -93,7 +93,13 @@ export async function findLatestRankingPlaces(
      WHERE "rowNumber" = 1`,
     {
       type: QueryTypes.SELECT,
-      replacements: { systemId, playerIds, start, endExclusive, updatePossible: true },
+      replacements: {
+        systemId,
+        playerIds,
+        start: utcTimestamp(start),
+        endExclusive: utcTimestamp(endExclusive),
+        updatePossible: true,
+      },
       transaction,
     }
   );
@@ -112,6 +118,16 @@ export async function findLatestRankingPlaces(
       },
     ])
   );
+}
+
+/**
+ * A bound as `YYYY-MM-DD HH:mm:ss.SSS +00:00`, the format Sequelize stores dates
+ * in on SQLite. Sequelize formats a Date replacement in the process timezone,
+ * and SQLite compares the stored text, so a Date would compare wrongly outside
+ * UTC. Postgres reads this text as the same instant.
+ */
+function utcTimestamp(at: Date): string {
+  return at.toISOString().replace("T", " ").replace("Z", " +00:00");
 }
 
 /** Postgres returns a Date; SQLite returns `YYYY-MM-DD HH:mm:ss.SSS +00:00`. */

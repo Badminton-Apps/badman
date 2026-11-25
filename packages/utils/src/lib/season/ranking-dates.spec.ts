@@ -1,7 +1,8 @@
-import { encounterRankingDate, enrollmentRankingDate, lineUpRankingWindow } from "./ranking-dates";
-import { rerunInBrussels } from "./rerun-in-brussels.spec-helper";
+import moment from "moment";
+import { alsoRunInTimezone } from "../../../../../jest.also-run-in-timezone";
+import { enrollmentRankingDate, lineUpRankingWindow } from "./ranking-dates";
 
-// Runs in UTC and again in Europe/Brussels: every result must be the same.
+// Runs in Europe/Brussels (the default) and again in UTC: every result must be the same.
 describe(`ranking reference dates (process TZ ${process.env["TZ"]})`, () => {
   afterEach(() => {
     jest.useRealTimers();
@@ -15,17 +16,6 @@ describe(`ranking reference dates (process TZ ${process.env["TZ"]})`, () => {
 
     it("throws for an invalid season", () => {
       expect(() => enrollmentRankingDate(2026.5)).toThrow(RangeError);
-    });
-  });
-
-  describe("encounterRankingDate (the Brussels date of the encounter)", () => {
-    it("keeps a late evening encounter on its own day", () => {
-      expect(encounterRankingDate(new Date("2027-01-31T23:30:00.000+01:00"))).toBe("2027-01-31");
-    });
-
-    it("uses the Brussels date when UTC is still on the previous day", () => {
-      // 31 January 23:30 UTC is 1 February 00:30 in Brussels.
-      expect(encounterRankingDate(new Date("2027-01-31T23:30:00.000Z"))).toBe("2027-02-01");
     });
   });
 
@@ -89,6 +79,43 @@ describe(`ranking reference dates (process TZ ${process.env["TZ"]})`, () => {
       });
     });
 
+    it("gives the same weeks and days windows as moment's set() did, on any day", () => {
+      // moment is only the reference here: the original code was
+      // moment().set("year", season).set(unit, amount), then that month.
+      const viaMoment = (season: number, unit: "weeks" | "days", amount: number) => {
+        const date = moment().set("year", season).set(unit, amount);
+        return {
+          from: moment(date).startOf("month").format("YYYY-MM-DD"),
+          to: moment(date).endOf("month").format("YYYY-MM-DD"),
+        };
+      };
+
+      jest.useFakeTimers();
+      const differences: string[] = [];
+      for (let day = 0; day < 2 * 366; day += 3) {
+        const today = new Date(Date.UTC(2026, 0, 1, 12) + day * 86_400_000);
+        jest.setSystemTime(today);
+        const cases: ["weeks" | "days", number][] = [
+          ...Array.from({ length: 53 }, (_, i) => ["weeks", i + 1] as ["weeks", number]),
+          ...Array.from({ length: 10 }, (_, i) => ["days", i + 1] as ["days", number]),
+        ];
+        for (const season of [2026, 2028]) {
+          for (const [unit, amount] of cases) {
+            const actual = lineUpRankingWindow({
+              season,
+              usedRankingUnit: unit,
+              usedRankingAmount: amount,
+            });
+            const expected = viaMoment(season, unit, amount);
+            if (actual.from !== expected.from || actual.to !== expected.to) {
+              differences.push(`${today.toISOString()} ${season} ${unit}/${amount}`);
+            }
+          }
+        }
+      }
+      expect(differences).toEqual([]);
+    });
+
     it.each([
       [{ season: 2026 }],
       [{ season: 2026, usedRankingUnit: "months" as const }],
@@ -102,4 +129,4 @@ describe(`ranking reference dates (process TZ ${process.env["TZ"]})`, () => {
   });
 });
 
-rerunInBrussels(__filename);
+alsoRunInTimezone(__filename, "UTC");
