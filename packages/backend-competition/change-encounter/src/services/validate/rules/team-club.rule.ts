@@ -7,7 +7,7 @@ import {
 } from "../../../models";
 import { Rule } from "./_rule.base";
 import { Logger } from "@nestjs/common";
-import moment from "moment";
+import { isSameDay } from "date-fns";
 
 export type TeamClubRuleParams = {
   encounterId: string;
@@ -100,7 +100,8 @@ export class TeamClubRule extends Rule {
         // Check if teams have other encounters on the suggested date
         const conflictingEncounters = encountersSemester.filter(
           (e) =>
-            moment(e.date).isSame(suggestedDate.date, "day") &&
+            !!e.date &&
+            isSameDay(e.date, suggestedDate.date) &&
             (e.homeTeamId === workingEncounter.homeTeamId ||
               e.awayTeamId === workingEncounter.homeTeamId ||
               e.homeTeamId === workingEncounter.awayTeamId ||

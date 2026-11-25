@@ -52,7 +52,7 @@ export function enterScoresPreflight(config: EnterScoresConfig): EnterScoresPref
 // Competition season n (2025 = 2025-26) runs 1 Sep - 30 Apr, but some leagues still play
 // in May and June, so a season only closes on 1 July of the following year (Brussels time).
 export function isSeasonOpen(season: number, now: Date): boolean {
-  return isScoreEntrySeasonOpen(season, now);
+  return isScoreEntrySeasonOpen(now, season);
 }
 
 export function oldestOpenSeason(now: Date): number {

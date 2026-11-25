@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../../jest.also-run-in-timezone";
 import { EncounterCompetition, Location } from "@badman/backend-database";
 import { EncounterValidationData } from "../../models";
 import { EncounterValidationService } from "./encounter.service";
@@ -272,3 +273,6 @@ describe("change-encounter season handling (characterization)", () => {
     });
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

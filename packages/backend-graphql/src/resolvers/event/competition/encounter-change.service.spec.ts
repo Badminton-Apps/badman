@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../../jest.also-run-in-timezone";
 import {
   EncounterChange,
   EncounterChangeDate,
@@ -351,3 +352,6 @@ describe("EncounterChangeService season and deadline checks (characterization)",
     });
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

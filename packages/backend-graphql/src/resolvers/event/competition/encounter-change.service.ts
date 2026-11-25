@@ -24,7 +24,7 @@ import { InjectQueue } from "@nestjs/bull";
 import * as Sentry from "@sentry/nestjs";
 import { GraphQLError } from "graphql";
 import { Queue } from "bull";
-import moment from "moment-timezone";
+import { isAfter } from "date-fns";
 import { Sequelize } from "sequelize-typescript";
 import { ErrorCode } from "../../../utils/error-codes";
 import {
@@ -132,7 +132,7 @@ export class EncounterChangeService {
       const existingDates = await encounterChange.getDates({ transaction });
 
       for (const d of input.dates) {
-        const parsedDate = moment(d.date).toDate();
+        const parsedDate = new Date(d.date);
         const duplicate = existingDates.find(
           (ed) =>
             ed.date?.getTime() === parsedDate.getTime() &&
@@ -279,7 +279,7 @@ export class EncounterChangeService {
       }
 
       for (const newDate of input.newDates ?? []) {
-        const parsedDate = moment(newDate.date).toDate();
+        const parsedDate = new Date(newDate.date);
         await EncounterChangeDate.create(
           {
             encounterChangeId: encounterChange.id,
@@ -568,7 +568,7 @@ export class EncounterChangeService {
     const half = event.season && encounter.date ? seasonHalf(encounter.date, event.season) : null;
     const closedDate =
       half === "first" ? event.changeCloseRequestDatePeriod1 : event.changeCloseRequestDatePeriod2;
-    if (moment().isAfter(moment(closedDate))) {
+    if (isAfter(new Date(), closedDate)) {
       this.logger.warn(`[${context}] deadline passed encounterId=${encounter.id}`);
       throw new GraphQLError("The deadline for requesting date changes has passed", {
         extensions: { code: ErrorCode.DEADLINE_PASSED },

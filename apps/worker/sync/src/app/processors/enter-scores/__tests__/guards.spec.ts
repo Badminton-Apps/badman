@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../../../../jest.also-run-in-timezone";
 import { enterScoresPreflight, isFinalAttempt, isSeasonOpen, oldestOpenSeason } from "../guards";
 
 describe("enterScoresPreflight", () => {
@@ -116,3 +117,6 @@ describe("oldestOpenSeason", () => {
     expect(oldestOpenSeason(new Date(now))).toBe(season);
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

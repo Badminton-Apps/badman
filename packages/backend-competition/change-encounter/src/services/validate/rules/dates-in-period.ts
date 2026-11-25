@@ -11,7 +11,7 @@ import {
   enrollmentSeason,
   isInCompetitionSeason,
 } from "@badman/utils";
-import moment from "moment";
+import { format, getYear, isBefore, isSameDay, parseISO, startOfDay } from "date-fns";
 
 export type DatePeriodRuleParams = {
   encounterId: string;
@@ -46,7 +46,7 @@ export class DatePeriodRule extends Rule {
     if (suggestedDates && encounter) {
       const warns = suggestedDates.map((suggestedDate) => {
         // Check if the suggested date is the same as the current date
-        if (moment(suggestedDate.date).isSame(encounter.date, "day")) {
+        if (encounter.date && isSameDay(suggestedDate.date, encounter.date)) {
           return {
             message: "all.competition.change-encounter.errors.same-date" as any,
             params: {
@@ -58,13 +58,13 @@ export class DatePeriodRule extends Rule {
         }
 
         // Check if the suggested date is in the past
-        if (moment(suggestedDate.date).isBefore(moment(), "day")) {
+        if (isBefore(suggestedDate.date, startOfDay(new Date()))) {
           return {
             message: "all.competition.change-encounter.errors.past-date" as any,
             params: {
               encounterId: encounter.id,
               date: suggestedDate.date,
-              currentDate: moment().toDate(),
+              currentDate: new Date(),
             },
           } as EncounterValidationError<DatePeriodRuleParams>;
         }
@@ -102,15 +102,14 @@ export class DatePeriodRule extends Rule {
     }
 
     if (!isInCompetitionSeason(inputDate, season)) {
-      const date = moment(inputDate);
       return {
         message: "all.competition.change-encounter.errors.date-out-of-period",
         params: {
           encounterId,
-          date: date.toDate(),
-          season: date.year(),
-          periodStart: moment(period.from).format("DD/MM/YYYY"),
-          periodEnd: moment(period.to).format("DD/MM/YYYY"),
+          date: new Date(inputDate),
+          season: getYear(inputDate),
+          periodStart: format(parseISO(period.from), "dd/MM/yyyy"),
+          periodEnd: format(parseISO(period.to), "dd/MM/yyyy"),
         },
       };
     }
