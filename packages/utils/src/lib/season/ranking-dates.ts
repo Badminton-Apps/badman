@@ -1,4 +1,3 @@
-import { endOfMonth, format, setDay, setWeek, setYear, startOfMonth } from "date-fns";
 import { assertSeason, CalendarDate, CalendarRange, calendarDate, Season } from "./calendar";
 
 /**
@@ -29,42 +28,30 @@ export interface LineUpRankingSetting {
 /**
  * The calendar month whose newest update publication the line-up check uses,
  * from the event's `usedRankingUnit` / `usedRankingAmount` in the season year.
- * `months` / 4 is May (moment counts months from 0).
+ * `months` / 4 is May (moment counts months from 0), the setting every event in
+ * production uses.
  *
- * Current behaviour, no regulation. `months` is computed explicitly and does not
- * depend on today's date. `weeks` and `days` keep what moment's
- * `set("weeks" | "days", amount)` did, which does depend on today's date
- * (research R7): the week number of the season year, or the weekday of the
- * current week. They can go if production only uses `months`. Throws when the
- * setting is missing.
+ * Current behaviour, no regulation. Only `months` is supported: no event uses
+ * `weeks` or `days` (research R7), whose moment semantics depended on today's
+ * date. Throws when the setting is missing or uses another unit.
  */
 export function lineUpRankingWindow(event: LineUpRankingSetting): CalendarRange {
   const { season, usedRankingUnit, usedRankingAmount } = event;
   if (!usedRankingUnit || !usedRankingAmount) {
     throw new Error("EventCompetition usedRankingUnit is not set");
   }
+  if (usedRankingUnit !== "months") {
+    throw new Error(
+      `EventCompetition usedRankingUnit "${usedRankingUnit}" is not supported, use "months"`
+    );
+  }
   assertSeason(season);
 
-  if (usedRankingUnit === "months") {
-    // Date.UTC rolls months past December into the next year, as moment did.
-    const first = new Date(Date.UTC(season, usedRankingAmount, 1));
-    const last = new Date(Date.UTC(season, usedRankingAmount + 1, 0));
-    return {
-      from: calendarDate(first.getUTCFullYear(), first.getUTCMonth() + 1, 1),
-      to: calendarDate(last.getUTCFullYear(), last.getUTCMonth() + 1, last.getUTCDate()),
-    };
-  }
-
-  // Same semantics as moment's set() with the default "en" locale: weeks start
-  // on Sunday, week 1 contains 1 January, and a weekday outside 0–6 moves into
-  // the next or previous weeks.
-  const inSeasonYear = setYear(new Date(), season);
-  const usedRankingDate =
-    usedRankingUnit === "weeks"
-      ? setWeek(inSeasonYear, usedRankingAmount, { weekStartsOn: 0, firstWeekContainsDate: 1 })
-      : setDay(inSeasonYear, usedRankingAmount, { weekStartsOn: 0 });
+  // Date.UTC rolls months past December into the next year, as moment did.
+  const first = new Date(Date.UTC(season, usedRankingAmount, 1));
+  const last = new Date(Date.UTC(season, usedRankingAmount + 1, 0));
   return {
-    from: format(startOfMonth(usedRankingDate), "yyyy-MM-dd") as CalendarDate,
-    to: format(endOfMonth(usedRankingDate), "yyyy-MM-dd") as CalendarDate,
+    from: calendarDate(first.getUTCFullYear(), first.getUTCMonth() + 1, 1),
+    to: calendarDate(last.getUTCFullYear(), last.getUTCMonth() + 1, last.getUTCDate()),
   };
 }
