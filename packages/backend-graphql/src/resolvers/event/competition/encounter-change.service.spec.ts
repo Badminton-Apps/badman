@@ -269,7 +269,9 @@ describe("EncounterChangeService season and deadline checks (characterization)",
       );
     });
 
-    it("an event without a season switches to the next season on 1 May (BAD-391)", async () => {
+    it("an event without a season switches to the next season on 1 May (current behaviour, fixed in BAD-397)", async () => {
+      // Badminton Vlaanderen confirmed (BAD-397) that May still belongs to the
+      // season that ended in April; BAD-397 moves this switch.
       now("2027-05-01T12:00:00.000Z");
       const event = event2026({
         season: null,

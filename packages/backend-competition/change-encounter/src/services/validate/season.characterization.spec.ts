@@ -13,8 +13,11 @@ import { TeamClubRule } from "./rules/team-club.rule";
  *
  * The halves are calendar years: every encounter in the season's start year is
  * "semester 1", every encounter in the next calendar year (including May and
- * June) is "semester 2". Since BAD-391 the season module reads dates on the
- * Brussels calendar, whatever the server timezone. Tests run with
+ * June) is "semester 2". The season itself is the earliest enrollment season of
+ * the team's dated encounters, so when all of them fall in May or June they
+ * count as semester 1 of the next season (current behaviour, fixed in
+ * BAD-397). Since BAD-391 the season module reads dates on the Brussels
+ * calendar, whatever the server timezone. Tests run with
  * TZ=Europe/Brussels, as production does (jest.global-setup.js).
  */
 const at = (iso: string) => new Date(iso);
@@ -119,6 +122,22 @@ describe("change-encounter season handling (characterization)", () => {
       expect(ids(data.encountersSem1)).toEqual([]);
       expect(ids(data.encountersSem2)).toEqual(["apr", "sep"]);
       expect(data.semseter1).toBe(false);
+    });
+
+    it("gives a team whose dated encounters all fall in May or June the next season (current behaviour, fixed in BAD-397)", async () => {
+      // enrollmentSeason switches on 1 May, so May 2027 resolves to season
+      // 2027 and both encounters land in its first half. Badminton Vlaanderen
+      // confirmed (BAD-397) that an encounter moved to May still belongs to
+      // the season that ended in April, i.e. 2026, second half.
+      const data = await fetchFor("may", [
+        row("may", at("2027-05-15T19:00:00.000Z")),
+        row("jun", at("2027-06-05T19:00:00.000Z")),
+      ]);
+
+      expect(data.season).toBe(2027);
+      expect(ids(data.encountersSem1)).toEqual(["may", "jun"]);
+      expect(ids(data.encountersSem2)).toEqual([]);
+      expect(data.semseter1).toBe(true);
     });
 
     it("ignores undated encounters for the season and leaves them out of both semesters", async () => {
