@@ -55,6 +55,7 @@ Known claim names as of 2026-11-18 (unused claims were removed in BAD-393):
 | `change:enrollment`               | global | Open/close enrollment settings                          |
 | `change:job`                      | global | Run/edit cron jobs, inspect queues                      |
 | `change:transfer`                 | global | Accept/reject player transfers                          |
+| `edit:claims`                     | global | Assign claims to players (full admin in practice)       |
 | `edit:faq`                        | global | Edit FAQ content                                        |
 | `edit:ranking`                    | global | Edit ranking systems and players' rankings              |
 | `edit:system-settings`            | global | Edit system settings                                    |

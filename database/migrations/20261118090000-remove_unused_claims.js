@@ -14,12 +14,17 @@ const { randomUUID } = require("crypto");
  *   frontend; the ranking-system mutations check `edit:ranking`.
  * - DUPLICATES: the same permission string under two categories. Both rows grant
  *   exactly the same permission, so assignments move to the kept row.
+ * - ENSURED: the claim admin checks `edit:claims` (not the unused `add:claims`),
+ *   but no earlier migration creates it, so fresh databases lack it. It is
+ *   created where it is missing. No assignments are copied to it: `add:claims`
+ *   grants nothing, and `edit:claims` lets its holder assign any claim.
  * - The teams export now checks `export-teams:competition` (like the exceptions
  *   and locations exports). Every player who holds the global `edit:competition`
  *   claim gets it too, so nobody loses access.
  *
  * down() puts the claim rows back (with new ids) but cannot restore deleted
- * assignments, split merged assignments, or take back the export grants.
+ * assignments, split merged assignments, take back the export grants, or remove
+ * `edit:claims` (it may have existed before).
  */
 const UNUSED = [
   { name: "add-any:role", category: "club", type: "global", description: "Add any role to club" },
@@ -76,6 +81,10 @@ const DUPLICATES = [
     description: "Edit ranking systems and players' rankings",
     dropDescription: "Can change ranking of player",
   },
+];
+
+const ENSURED = [
+  { name: "edit:claims", category: "security", type: "global", description: "Edit global claims" },
 ];
 
 const MEMBERSHIP_TABLES = ['security."RoleClaimMemberships"', 'security."PlayerClaimMemberships"'];
@@ -135,6 +144,18 @@ module.exports = {
       for (const claim of UNUSED) {
         const { name, category, type } = claim;
         await deleteClaims(queryInterface, await claimIds(queryInterface, { name, category, type }, t), t);
+      }
+
+      // Guarded on the name only, like 20260910120000-add_change_job_claim.js:
+      // long-lived databases may have a hand-inserted row under another category.
+      for (const claim of ENSURED) {
+        const [existing] = await queryInterface.sequelize.query(
+          `SELECT id FROM security."Claims" WHERE name = :name LIMIT 1`,
+          { replacements: { name: claim.name }, type: queryInterface.sequelize.QueryTypes.SELECT, transaction: t }
+        );
+        if (!existing) {
+          await insertClaim(queryInterface, claim, t);
+        }
       }
 
       for (const dup of DUPLICATES) {
@@ -201,6 +222,7 @@ module.exports = {
       for (const claim of UNUSED) {
         await insertClaim(queryInterface, claim, t);
       }
+      // ENSURED claims stay: they may have existed before this migration.
       for (const dup of DUPLICATES) {
         await insertClaim(
           queryInterface,
