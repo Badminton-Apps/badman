@@ -30,6 +30,11 @@ export type SeasonHalf = "first" | "second";
  *
  * Practical rule, no regulation: teams enroll in May for the season that
  * starts in September (enrollment deadline C320 art. 21§1).
+ *
+ * Not the season of an encounter: an encounter that moves to May still
+ * belongs to the season that ended in April (Badminton Vlaanderen, BAD-397).
+ * Callers that apply this to encounter dates today are pinned in tests and
+ * move to an encounter rule in BAD-397.
  */
 export function enrollmentSeason(
   at: Date | CalendarDate = new Date(),
@@ -125,11 +130,20 @@ export function membershipCheckInstant(season: Season): Date {
 }
 
 /**
- * Whether results of `season` can still be entered at `at`: until 1 July of
- * `season + 1`.
+ * Whether results of `season` may still be pushed to toernooi.nl at `at`, i.e.
+ * whether the season is not closed yet there: it closes on 1 July of
+ * `season + 1` (docs/result-entry-rules.md). It does not decide who may enter
+ * a result in Badman.
  *
- * Practical rule, no regulation: the competition ends on 30 April, but some
- * leagues still play in May and June.
+ * There is no lower bound on purpose: who may enter or correct a result, and
+ * until when, is decided per encounter (the game leader until 36 hours after
+ * the planned start, the sports commission without a deadline; C320 art. 62,
+ * docs/result-entry-rules.md), not per season.
+ *
+ * Practical rule, no regulation: the competition ends on 30 April, but an
+ * encounter can exceptionally still be played in May (Badminton Vlaanderen,
+ * BAD-397), and its result and corrections still have to be entered after
+ * that. Closing on 1 July leaves room for both.
  */
 export function isScoreEntrySeasonOpen(
   at: Date | CalendarDate,

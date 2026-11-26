@@ -36,6 +36,8 @@ export const getSeasonPeriod = (season?: number) => {
 
 /**
  * @deprecated Use `enrollmentSeason` from `@badman/utils` (reads the date in Brussels time).
+ * Not for encounter dates: an encounter in May still belongs to the season
+ * that ended in April (BAD-397).
  */
 export const getSeason = (inputDate?: Date | moment.Moment) => {
   return enrollmentSeason(localCalendarDate(inputDate));

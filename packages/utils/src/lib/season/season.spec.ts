@@ -165,6 +165,12 @@ describe(`season module (process TZ ${process.env["TZ"]})`, () => {
       expect(isScoreEntrySeasonOpen(at, 2026)).toBe(expected);
     });
 
+    it("has no lower bound: it only says the season is not closed yet", () => {
+      // Who may enter a result, and until when, is decided per encounter
+      // (C320 art. 62, docs/result-entry-rules.md), not per season.
+      expect(isScoreEntrySeasonOpen("2020-01-01", 2026)).toBe(true);
+    });
+
     it.each([
       ["30 June 23:59", brussels("2027-06-30T23:59:59.999", "+02:00"), 2026],
       ["1 July 00:00", brussels("2027-07-01T00:00:00.000", "+02:00"), 2027],
