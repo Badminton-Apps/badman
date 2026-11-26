@@ -80,7 +80,12 @@ describe("AssemblyValidationService ranking date (characterization)", () => {
       jest.spyOn(internals, "getMembershipsWithCache").mockResolvedValue([]);
       const fetch = jest.spyOn(internals, "batchFetchPlayersWithCache").mockResolvedValue([]);
 
-      await service.fetchData({ teamId: TEAM_ID, systemId: "system-1", single1: PLAYER_ID });
+      await service.fetchData({
+        teamId: TEAM_ID,
+        encounterId: "encounter-1",
+        systemId: "system-1",
+        single1: PLAYER_ID,
+      });
 
       const [, , window] = fetch.mock.calls[0];
       return window;
@@ -113,8 +118,8 @@ describe("AssemblyValidationService ranking date (characterization)", () => {
   describe("player cache", () => {
     const systemA = { id: "system-a", amountOfLevels: 12 } as RankingSystem;
     const systemB = { id: "system-b", amountOfLevels: 12 } as RankingSystem;
-    const may2025 = { from: "2025-05-01", to: "2025-05-31" };
-    const may2026 = { from: "2026-05-01", to: "2026-05-31" };
+    const may2025: CalendarRange = { from: "2025-05-01", to: "2025-05-31" };
+    const may2026: CalendarRange = { from: "2026-05-01", to: "2026-05-31" };
 
     it("looks up updated, system-filtered places within the window", async () => {
       const findAll = jest
@@ -150,11 +155,12 @@ describe("AssemblyValidationService ranking date (characterization)", () => {
         .spyOn(Player, "findAll")
         .mockImplementation(async () => [{ id: PLAYER_ID } as unknown as Player]);
       lookup.mockImplementation(async ({ systemId, onOrBefore }) => {
-        const single = {
+        const singles: Record<string, number> = {
           "system-a|2025-05-31": 5,
           "system-a|2026-05-31": 6,
           "system-b|2026-05-31": 7,
-        }[`${systemId}|${onOrBefore}`];
+        };
+        const single = singles[`${systemId}|${onOrBefore}`];
         return new Map([[PLAYER_ID, { single } as LatestRankingPlace]]);
       });
 
