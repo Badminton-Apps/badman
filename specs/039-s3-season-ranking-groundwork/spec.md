@@ -16,7 +16,7 @@ This section records the rules the groundwork touches, where they come from, and
 | --- | --- | --- |
 | **Season number** | A season is identified by the year it starts in: season 2026 is 2026–27. | Convention used throughout Badman |
 | **Competition season** | The period in which interclub encounters are played: 1 September up to and including 30 April. | C320 art. 1§2 |
-| **First half / second half** (heenronde / terugronde) | First half: 1 September – 31 December. Second half: 1 January – 30 April. The home and away encounter between two teams are played in different halves. | C320 art. 20§3, 26§5 |
+| **First half / second half** (heenronde / terugronde) | First half: 1 September – 31 December. Second half: 1 January – 30 April. The home and away encounter between two teams are played in different halves. The date the encounter is actually played decides its half (Badminton Vlaanderen, BAD-397). | C320 art. 20§3, 26§5 |
 | **Badminton season** | The federation's administrative year: 1 August – 31 July. | C100 art. 104 |
 | **Transfer / loan effective date** | Transfers and loans take effect on 1 July following the request period. | C925, C950 |
 | **Enrollment deadline** | Teams enroll for the next competition season by 15 May. Series are published by 15 June, the definitive calendar on 25 August. | C320 art. 21§1, 26§1–4 |
@@ -28,7 +28,7 @@ This section records the rules the groundwork touches, where they come from, and
 | **Enrollment ranking** (inschrijvingsklassement, discipline index) | The level from the May ranking before the competition season. It fixes base teams, team indexes, division placement and eligibility for the whole season. A level change during the season does not change it. | C320 art. 51§1, 55§2 |
 | **Ranking on the day of the encounter** (opstellingsindex) | The level on the day of an encounter. It decides the order of players and pairs in a line-up. | C320 art. 51§2, 55§1 |
 | **Team index** | The sum of the enrollment-ranking levels of the four base players (or titular players). | C320 art. 51§3–5 |
-| **Change request** | A request to move an encounter to another date. An encounter can never move to the other half of the season. Requests close on a deadline set per half on the event. | C320 art. 28 |
+| **Change request** | A request to move an encounter to another date. Requests close on a deadline set per half on the event. The actual date decides which half an encounter is in; an encounter may move to the other half, as long as each opponent is still played once per half (Badminton Vlaanderen, BAD-397, 2026-11-19). Badman already allows the move: it warns, but does not block, when the proposed half already holds the return encounter. | C320 art. 28; Badminton Vlaanderen (BAD-397) |
 
 ### Rules and where they live today
 
@@ -40,7 +40,7 @@ This section records the rules the groundwork touches, where they come from, and
 | Season of a change request when the event has no season | Should follow the season concept | `event?.season ?? new Date().getFullYear()` in `encounter-change.service.ts` (wrong from January to April) | **No (bug)** |
 | Enrollment year switch | 1 May | `getSeason` in `comp.ts`; seeders and seed builders repeat it | Yes (practical rule) |
 | Season membership window | 1 Jul – 30 Jun (transfer/loan effective date to the day before the next one) | `startOfSeason` / `endOfSeason` in `comp.ts`; `transfers.service.ts`, `loans.service.ts.ts`, `player-club.rule.ts` | Yes (duplicated) |
-| Season still open for score entry | Until 1 July of the following year (some leagues play into May and June) | `isSeasonOpen` / `oldestOpenSeason` in `apps/worker/sync/.../enter-scores/guards.ts` | Yes (separate implementation) |
+| Season still open for score entry | Until 1 July of the following year, for pushing results to toernooi.nl (an encounter can exceptionally move to May, Badminton Vlaanderen in BAD-397) | `isSeasonOpen` / `oldestOpenSeason` in `apps/worker/sync/.../enter-scores/guards.ts` | Yes (separate implementation) |
 | Next season | Switches on 1 October | `getNextSeason` in `comp.ts` (no production caller found) | Unclear purpose |
 | Twizzit game export window | 1 Sep – 1 Sep of the next year | `game-export.service.ts` in `backend-twizzit` | Own rule |
 | Seed data season | 1 May or 1 September switch | `database/seeders/**` | Inconsistent (test data only) |
@@ -125,7 +125,7 @@ The current rules per caller:
 - **Midnight and timezones**: dates near midnight on a cutoff day must resolve in Brussels time for season and half concepts. A server running in UTC must give the same answer as one running in Brussels.
 - **Publication dates**: publications are stored at midnight of their calendar date. A publication dated on the reference date itself must be included exactly as it is today, whatever timezone the server runs in.
 - **Leap years and month ends**: 29 February and 30/31 day months must not shift any window.
-- **Encounters outside the competition season** (May and June matches in some leagues): half detection and score-entry season open/close keep their current results.
+- **Encounters outside the competition season** (an encounter that exceptionally moves to May, or one played on 31 August; Badminton Vlaanderen in BAD-397): half detection and score-entry season open/close keep their current results.
 - **Event without change-request deadlines**: the deadline check keeps skipping, as today.
 - **Encounter without a date**: callers that skip undated encounters today keep doing so.
 - **Line-up month setting missing or set in weeks or days**: the line-up check keeps its current behaviour (it throws when the setting is missing).
@@ -146,7 +146,7 @@ The current rules per caller:
 **Callers (US2)**
 
 - **FR-006**: No backend code outside the module MAY derive a season, a half or a season window from month or year comparisons. This covers production code, seeders and test builders.
-- **FR-007**: The change-request deadline check MUST use the period-1 deadline for first-half encounters and the period-2 deadline for second-half encounters.
+- **FR-007**: The change-request deadline check MUST use the period-1 deadline for first-half encounters and the period-2 deadline for second-half encounters, where the half is that of the encounter's current date (an encounter moving to the other half is checked against the deadline of the half it leaves; see open question 6).
 - **FR-008**: When an event has no season, the change-request flow MUST derive the season from the season concept, not from the calendar year.
 - **FR-009**: The old helpers in `comp.ts` MUST be removed once no caller uses them.
 - **FR-010**: Apart from FR-007, FR-008 and the timezone change below, every migrated caller MUST keep its current results.
@@ -184,7 +184,7 @@ The current rules per caller:
 - **SC-003**: Clubs can request date changes for second-half encounters until the period-2 deadline: 100% of such requests made between the period-1 and period-2 deadlines are accepted, where today 0% are.
 - **SC-004**: Every season and ranking-reference boundary is covered by an automated test on both sides.
 - **SC-005**: Existing behaviour is preserved: all existing test suites pass without changing their expectations, except the tests that pin the named bugs.
-- **SC-006**: The open questions below are handed to Badminton Vlaanderen as question comments on Linear tickets BAD-397 to BAD-408.
+- **SC-006**: The open questions below are handed to Badminton Vlaanderen as question comments on Linear tickets BAD-397 to BAD-408, and BAD-423 for question 6.
 - **SC-007**: The characterization tests from FR-019 pass unchanged after US1, US2 and US3, except the tests that pin the named bugs, which change on purpose. The suites of migrated callers also pass in UTC (FR-010a).
 
 ## Open questions for Badminton Vlaanderen
@@ -196,6 +196,7 @@ These are answered outside this feature; the answers drive later S3 work.
 3. **Players without a ranking on the reference date** (new or returning players): which level applies for the season? C700 art. 707.3 says a first-time player starts at 12, and art. 717 covers returning players.
 4. **Ranking on the day of the encounter**: for an encounter validated after it was played, should the line-up order use the level on the encounter date or the current level?
 5. **National competition (C300)**: is it in scope for Badman's season rules? Its periods differ (encounters between 1 September and 15 April; qualification September–December, finals February–March).
+6. **Change-request deadlines**: when an encounter moves to the other half, which half's deadline applies, the half it leaves (Badman after FR-007; before that, the period-1 deadline for both halves) or the half it moves to? And after the deadline for new requests, may a club still accept or finalise a request until the deadline for accepted requests (`changeCloseDatePeriod1/2`, stored but not used today)? Asked in BAD-423.
 
 ## Assumptions
 
