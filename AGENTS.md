@@ -315,6 +315,6 @@ Long-form internal docs live under [`docs/`](docs/). Skim the relevant ones befo
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/038-fix-encounter-notifications/plan.md](specs/038-fix-encounter-notifications/plan.md)
+[specs/039-s3-season-ranking-groundwork/plan.md](specs/039-s3-season-ranking-groundwork/plan.md)
 
 <!-- SPECKIT END -->
