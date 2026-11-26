@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../../../../jest.also-run-in-timezone";
 import { enterScoresPreflight, isFinalAttempt, isSeasonOpen, oldestOpenSeason } from "../guards";
 
 describe("enterScoresPreflight", () => {
@@ -84,19 +85,22 @@ describe("isFinalAttempt", () => {
   });
 });
 
+// Times are Brussels wall-clock time: the season closes on 1 July in Brussels
+// (spec 039, FR-010a), whatever the server timezone.
 describe("isSeasonOpen", () => {
   it.each([
-    ["during the season", 2025, "2026-03-05T19:00:00"],
-    ["for matches played in May", 2025, "2026-05-30T20:00:00"],
-    ["until the end of June", 2025, "2026-06-30T23:59:00"],
-    ["for a season that has not started yet", 2027, "2026-10-29T12:00:00"],
+    ["during the season", 2025, "2026-03-05T19:00:00+01:00"],
+    ["for matches played in May", 2025, "2026-05-30T20:00:00+02:00"],
+    ["until the end of June", 2025, "2026-06-30T23:59:00+02:00"],
+    ["for a season that has not started yet", 2027, "2026-10-29T12:00:00+01:00"],
   ])("keeps the season open %s", (_, season, now) => {
     expect(isSeasonOpen(season, new Date(now))).toBe(true);
   });
 
   it.each([
-    ["from 1 July", 2025, "2026-07-01T00:00:00"],
-    ["when old jobs are retried in September", 2025, "2026-09-08T11:17:00"],
+    ["from 1 July", 2025, "2026-07-01T00:00:00+02:00"],
+    ["from 1 July in Brussels, still 30 June in UTC (FR-010a)", 2025, "2026-06-30T22:30:00Z"],
+    ["when old jobs are retried in September", 2025, "2026-09-08T11:17:00+02:00"],
   ])("closes the season %s", (_, season, now) => {
     expect(isSeasonOpen(season, new Date(now))).toBe(false);
   });
@@ -104,11 +108,15 @@ describe("isSeasonOpen", () => {
 
 describe("oldestOpenSeason", () => {
   it.each([
-    ["2026-01-15T12:00:00", 2025],
-    ["2026-06-30T23:59:00", 2025],
-    ["2026-07-01T00:00:00", 2026],
-    ["2026-10-29T12:00:00", 2026],
+    ["2026-01-15T12:00:00+01:00", 2025],
+    ["2026-06-30T23:59:00+02:00", 2025],
+    ["2026-07-01T00:00:00+02:00", 2026],
+    ["2026-06-30T22:30:00Z", 2026],
+    ["2026-10-29T12:00:00+01:00", 2026],
   ])("on %s is %i", (now, season) => {
     expect(oldestOpenSeason(new Date(now))).toBe(season);
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

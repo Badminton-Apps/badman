@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PlayerFactory = exports.DataFactory = exports.hasActiveMembership = exports.generateTeamName = exports.getClubById = exports.addRankingToPlayer = exports.createRankingLastPlace = exports.createRankingPlace = exports.findOrGetPrimaryRankingSystem = exports.ensureClubAdminPermission = exports.ensurePlayerRole = exports.ensureRoleClaim = exports.ensureClaimId = exports.ensureRole = exports.createAvailability = exports.createLocation = exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = exports.withErrorHandling = exports.handleSeederError = exports.SeederContext = void 0;
+exports.PlayerFactory = exports.isInCompetitionSeason = exports.competitionSeasonWindow = exports.enrollmentSeason = exports.DataFactory = exports.hasActiveMembership = exports.generateTeamName = exports.getClubById = exports.addRankingToPlayer = exports.createRankingLastPlace = exports.createRankingPlace = exports.findOrGetPrimaryRankingSystem = exports.ensureClubAdminPermission = exports.ensurePlayerRole = exports.ensureRoleClaim = exports.ensureClaimId = exports.ensureRole = exports.createAvailability = exports.createLocation = exports.createEncounters = exports.createOpponentTeam = exports.createDrawCompetition = exports.createSubEventCompetition = exports.createEventCompetition = exports.addPlayerToTeam = exports.createTeam = exports.addPlayerToClub = exports.createClub = exports.findOrCreatePlayer = exports.withErrorHandling = exports.handleSeederError = exports.SeederContext = void 0;
 var seeder_context_1 = require("./seeder-context");
 Object.defineProperty(exports, "SeederContext", { enumerable: true, get: function () { return seeder_context_1.SeederContext; } });
 var error_handler_1 = require("./error-handler");
@@ -37,5 +37,9 @@ var membership_helpers_1 = require("./membership-helpers");
 Object.defineProperty(exports, "hasActiveMembership", { enumerable: true, get: function () { return membership_helpers_1.hasActiveMembership; } });
 var data_factory_1 = require("./data-factory");
 Object.defineProperty(exports, "DataFactory", { enumerable: true, get: function () { return data_factory_1.DataFactory; } });
+var season_1 = require("./season");
+Object.defineProperty(exports, "enrollmentSeason", { enumerable: true, get: function () { return season_1.enrollmentSeason; } });
+Object.defineProperty(exports, "competitionSeasonWindow", { enumerable: true, get: function () { return season_1.competitionSeasonWindow; } });
+Object.defineProperty(exports, "isInCompetitionSeason", { enumerable: true, get: function () { return season_1.isInCompetitionSeason; } });
 var player_factory_1 = require("./player-factory");
 Object.defineProperty(exports, "PlayerFactory", { enumerable: true, get: function () { return player_factory_1.PlayerFactory; } });

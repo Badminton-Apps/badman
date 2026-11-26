@@ -41,5 +41,6 @@ export {
 export { getClubById, generateTeamName } from "./club-team-naming";
 export { hasActiveMembership } from "./membership-helpers";
 export { DataFactory } from "./data-factory";
+export { enrollmentSeason, competitionSeasonWindow, isInCompetitionSeason } from "./season";
 export { PlayerFactory } from "./player-factory";
 export type { CreatePlayerOptions, CreatePlayersOptions } from "./player-factory";

@@ -34,7 +34,8 @@
     "graphql-type-json": "^0.3.2",
     "graphql": "^16.14.2",
     "dataloader": "^2.2.3",
-    "@sentry/nestjs": "^10.43.0"
+    "@sentry/nestjs": "^10.43.0",
+    "date-fns": "^4.1.0"
   },
   "type": "commonjs",
   "main": "./dist/index.js",

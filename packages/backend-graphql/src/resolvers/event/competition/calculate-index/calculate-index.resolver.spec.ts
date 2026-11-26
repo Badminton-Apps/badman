@@ -200,9 +200,9 @@ describe("CalculateIndexResolver", () => {
     afterEach(() => jest.useRealTimers());
 
     it.each([
-      ["31 December 2026", 2027, true, "2026-12-31T23:59:59.999Z"],
-      ["31 December 2026", 2028, false, "2026-12-31T23:59:59.999Z"],
-      ["1 January 2027", 2028, true, "2027-01-01T00:00:00.000Z"],
+      ["31 December 2026", 2027, true, "2026-12-31T23:59:59.999+01:00"],
+      ["31 December 2026", 2028, false, "2026-12-31T23:59:59.999+01:00"],
+      ["1 January 2027", 2028, true, "2027-01-01T00:00:00.000+01:00"],
     ])("on %s, season %i is accepted: %s", async (_label, season, accepted, now) => {
       jest.useFakeTimers({ doNotFake: ["nextTick"] }).setSystemTime(new Date(now));
       const result = resolver.calculateIndex([validInput({ season })], authenticatedUser());

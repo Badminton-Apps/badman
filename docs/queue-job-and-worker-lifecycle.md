@@ -320,6 +320,7 @@ node ../../../scripts/render.js --app=worker_ranking
 | `RENDER_WAIT_TIME`                      | Optional. Idle milliseconds before suspending a worker (default 300000 = 5 min) |
 | `DEV_ONLY_ALLOW_QUEUE_JOB_WITHOUT_AUTH` | DEV only. `"true"` to bypass JWT on `/queue-job`                                |
 | `DEV_ONLY_QUEUE_JOB_AS_PLAYER_ID`       | DEV only. UUID of the player to impersonate when bypass is active               |
+| `TZ`                                    | `Europe/Brussels` in production. See [Timezone](#timezone)                      |
 
 ### Environment variables (sync worker)
 
@@ -327,6 +328,11 @@ node ../../../scripts/render.js --app=worker_ranking
 | ---------------------------------------------- | ---------------------------------------------------------------------------- |
 | `WORKER_IDLE_TIMEOUT_MS`                       | Milliseconds before the worker closes the browser (default 1800000 = 30 min) |
 | `REDIS_HOST` / `REDIS_PORT` / `REDIS_PASSWORD` | Required for websocket adapter and Bull                                      |
+| `TZ`                                           | `Europe/Brussels` in production. See [Timezone](#timezone)                   |
+
+### Timezone
+
+The API, the sync worker and the ranking worker run with `TZ=Europe/Brussels` on Render (set per service in the dashboard). Season and ranking dates are Brussels calendar dates. Ranking publication dates and membership start and end dates are stored as midnight in Brussels (some older rows as midnight UTC; none of those falls on a cutoff date such as 10 June, so they give the same results). The tests assume this timezone: `jest.global-setup.js` sets it for every test run, and suites that must not depend on it also run in UTC through `jest.also-run-in-timezone.ts`. The season dates and their sources are listed in [`season-dates.md`](season-dates.md).
 
 ### Database state
 

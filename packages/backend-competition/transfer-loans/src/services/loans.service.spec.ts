@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../jest.also-run-in-timezone";
 import { ClubMembershipType } from "@badman/utils";
 import * as XLSX from "xlsx";
 import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
@@ -145,8 +146,8 @@ describe("LoansService", () => {
   });
 });
 
-// Characterization (BAD-409): the dates a loan writes. TZ is pinned to UTC by
-// jest.global-setup.js. These pin today's behaviour for the S3 groundwork.
+// Characterization (BAD-409): the dates a loan writes. Tests run with
+// TZ=Europe/Brussels, as production does. These pin today's behaviour for the S3 groundwork.
 describe("LoansService membership dates (characterization)", () => {
   let service: LoansService;
 
@@ -179,10 +180,10 @@ describe("LoansService membership dates (characterization)", () => {
     return { created, existingQuery };
   };
 
-  it("creates a loan from 1 July 00:00 to 30 June 23:59:59.999 of the next year", async () => {
+  it("creates a loan from 1 July 00:00 to 30 June 23:59:59.999 of the next year, Brussels time", async () => {
     const { created } = await processOneLoan();
-    expect((created.start as Date).toISOString()).toBe("2025-07-01T00:00:00.000Z");
-    expect((created.end as Date).toISOString()).toBe("2026-06-30T23:59:59.999Z");
+    expect((created.start as Date).toISOString()).toBe("2025-06-30T22:00:00.000Z");
+    expect((created.end as Date).toISOString()).toBe("2026-06-30T21:59:59.999Z");
   });
 
   it("looks for existing loans inside the same window", async () => {
@@ -190,7 +191,10 @@ describe("LoansService membership dates (characterization)", () => {
     const [startClause, endClause] = existingQuery.where[Op.and];
     const start = startClause.start[Op.gte] as Date;
     const end = endClause.end[Op.lte] as Date;
-    expect(start.toISOString()).toBe("2025-07-01T00:00:00.000Z");
-    expect(end.toISOString()).toBe("2026-06-30T23:59:59.999Z");
+    expect(start.toISOString()).toBe("2025-06-30T22:00:00.000Z");
+    expect(end.toISOString()).toBe("2026-06-30T21:59:59.999Z");
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

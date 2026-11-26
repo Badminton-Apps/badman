@@ -13,7 +13,8 @@
     "graphql-type-json": "^0.3.2",
     "sequelize": "^6.37.5",
     "moment": "^2.30.1",
-    "moment-timezone": "^0.5.47"
+    "moment-timezone": "^0.5.47",
+    "date-fns": "^4.1.0"
   },
   "type": "commonjs",
   "main": "./dist/index.js",

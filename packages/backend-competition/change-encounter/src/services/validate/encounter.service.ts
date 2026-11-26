@@ -1,6 +1,6 @@
 import { EncounterCompetition, Location } from "@badman/backend-database";
 import { ValidationService } from "@badman/backend-validation";
-import { getSeason } from "@badman/utils";
+import { enrollmentSeason, seasonHalf } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import { Op } from "sequelize";
 import {
@@ -109,14 +109,18 @@ export class EncounterValidationService extends ValidationService<
     });
 
     // Filter out undated encounters before computing season; fall back to current season.
-    // Using getSeason() so January-April dates in year N+1 correctly map to season N.
+    // enrollmentSeason maps January-April dates in year N+1 to season N.
     const datedEncounters = encounters.filter((r) => r.date != null);
     const season =
       datedEncounters.length > 0
-        ? Math.min(...datedEncounters.map((r) => getSeason(r.date!)))
-        : getSeason();
-    const encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === season);
-    const encountersSem2 = encounters.filter((r) => r.date?.getFullYear() === season + 1);
+        ? Math.min(...datedEncounters.map((r) => enrollmentSeason(r.date!)))
+        : enrollmentSeason();
+    const encountersSem1 = encounters.filter(
+      (r) => r.date && seasonHalf(r.date, season) === "first"
+    );
+    const encountersSem2 = encounters.filter(
+      (r) => r.date && seasonHalf(r.date, season) === "second"
+    );
 
     const indexSem1 = encountersSem1.findIndex((r) => r.id === encounter.id);
     const indexSem2 = encountersSem2.findIndex((r) => r.id === encounter.id);

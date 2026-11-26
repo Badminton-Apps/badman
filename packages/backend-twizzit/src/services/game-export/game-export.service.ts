@@ -5,6 +5,7 @@ import {
   SubEventCompetition,
   Team,
 } from "@badman/backend-database";
+import { twizzitExportWindow } from "@badman/utils";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import moment from "moment-timezone";
 import { Op } from "sequelize";
@@ -26,11 +27,12 @@ export class GameExportService {
       attributes: ["id"],
     });
 
+    const exportWindow = twizzitExportWindow(year);
     const encounters = await EncounterCompetition.findAll({
       attributes: ["id", "date", "homeScore", "awayScore"],
       where: {
         date: {
-          [Op.between]: [moment([year, 8, 1]).toDate(), moment([year + 1, 8, 1]).toDate()],
+          [Op.between]: [exportWindow.start, exportWindow.end],
         },
         [Op.or]: [
           {

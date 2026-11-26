@@ -41,6 +41,7 @@ module.exports = {
   // Register a no-op IndexCalculationService on EventEntry so test fixtures
   // that save the model do not crash on the BeforeCreate/BeforeUpdate hook.
   setupFiles: [path.join(__dirname, "jest.setup.js")],
-  // Pin TZ (UTC unless set) so date tests behave the same locally and in CI.
+  // Pin TZ (Europe/Brussels, production's timezone, unless set) so date tests
+  // behave the same locally, in CI and in production.
   globalSetup: path.join(__dirname, "jest.global-setup.js"),
 };

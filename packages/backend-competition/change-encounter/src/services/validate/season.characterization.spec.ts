@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../../jest.also-run-in-timezone";
 import { EncounterCompetition, Location } from "@badman/backend-database";
 import { EncounterValidationData } from "../../models";
 import { EncounterValidationService } from "./encounter.service";
@@ -10,9 +11,14 @@ import { TeamClubRule } from "./rules/team-club.rule";
  * out the season and its two halves. They pin today's behaviour so the S3
  * groundwork (BAD-390/391) can prove it changes nothing by accident.
  *
- * Today the halves are calendar years: every encounter in the season's start
- * year is "semester 1", every encounter in the next calendar year (including
- * May and June) is "semester 2". TZ is pinned to UTC by jest.global-setup.js.
+ * The halves are calendar years: every encounter in the season's start year is
+ * "semester 1", every encounter in the next calendar year (including May and
+ * June) is "semester 2". The season itself is the earliest enrollment season of
+ * the team's dated encounters, so when all of them fall in May or June they
+ * count as semester 1 of the next season (current behaviour, fixed in
+ * BAD-397). Since BAD-391 the season module reads dates on the Brussels
+ * calendar, whatever the server timezone. Tests run with
+ * TZ=Europe/Brussels, as production does (jest.global-setup.js).
  */
 const at = (iso: string) => new Date(iso);
 
@@ -118,6 +124,22 @@ describe("change-encounter season handling (characterization)", () => {
       expect(data.semseter1).toBe(false);
     });
 
+    it("gives a team whose dated encounters all fall in May or June the next season (current behaviour, fixed in BAD-397)", async () => {
+      // enrollmentSeason switches on 1 May, so May 2027 resolves to season
+      // 2027 and both encounters land in its first half. Badminton Vlaanderen
+      // confirmed (BAD-397) that an encounter moved to May still belongs to
+      // the season that ended in April, i.e. 2026, second half.
+      const data = await fetchFor("may", [
+        row("may", at("2027-05-15T19:00:00.000Z")),
+        row("jun", at("2027-06-05T19:00:00.000Z")),
+      ]);
+
+      expect(data.season).toBe(2027);
+      expect(ids(data.encountersSem1)).toEqual(["may", "jun"]);
+      expect(ids(data.encountersSem2)).toEqual([]);
+      expect(data.semseter1).toBe(true);
+    });
+
     it("ignores undated encounters for the season and leaves them out of both semesters", async () => {
       const data = await fetchFor("sep", [
         row("undated", undefined),
@@ -160,11 +182,17 @@ describe("change-encounter season handling (characterization)", () => {
     it.each([
       ["31 August", false, "2026-08-31T19:00:00.000Z"],
       ["1 September", true, "2026-09-01T00:00:00.000Z"],
-      ["30 April late evening", true, "2027-04-30T23:59:00.000Z"],
+      ["30 April late evening", true, "2027-04-30T23:59:00.000+02:00"],
       ["1 May", false, "2027-05-01T00:00:00.000Z"],
     ])("encounter on %s is in period: %s", async (_label, inPeriod, iso) => {
       const result = await rule.validate(data(at(iso), 2026));
       expect(result.errors).toHaveLength(inPeriod ? 0 : 1);
+    });
+
+    it("uses the Brussels date of the encounter (FR-010a)", async () => {
+      // 30 April 23:59 UTC is already 1 May in Brussels.
+      const result = await rule.validate(data(at("2027-04-30T23:59:00.000Z"), 2026));
+      expect(result.errors).toHaveLength(1);
     });
 
     it("reports the calendar year of the date as the season in the error", async () => {
@@ -176,8 +204,13 @@ describe("change-encounter season handling (characterization)", () => {
     });
 
     it("uses the current season when the data has no season", async () => {
-      // 15 August 2026 → getSeason() = 2026 → window 1 Sep 2026 – 30 Apr 2027
+      // 15 August 2026 → enrollmentSeason() = 2026 → window 1 Sep 2026 – 30 Apr 2027
       const result = await rule.validate(data(at("2026-10-01T19:00:00.000Z"), undefined));
+      expect(result.errors).toHaveLength(0);
+    });
+
+    it("treats season 0 as missing and uses the current season", async () => {
+      const result = await rule.validate(data(at("2026-10-01T19:00:00.000Z"), 0));
       expect(result.errors).toHaveLength(0);
     });
 
@@ -259,3 +292,6 @@ describe("change-encounter season handling (characterization)", () => {
     });
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");
