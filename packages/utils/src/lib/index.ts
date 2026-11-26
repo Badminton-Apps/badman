@@ -1,5 +1,4 @@
 export * from "./assembly-positions";
-export * from "./comp";
 export * from "./encounter-comment-dedupe-key";
 export * from "./enums";
 export * from "./events";
@@ -15,5 +14,6 @@ export * from "./i18n.generated";
 export * from "./is-uuid";
 export * from "./languages";
 export * from "./run-parallel";
+export * from "./season";
 export * from "./sorts";
 export * from "./types";

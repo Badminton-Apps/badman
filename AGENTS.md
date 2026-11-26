@@ -117,14 +117,14 @@ Each app builds with `nest build` into its own `dist/` (e.g. `apps/api/dist/main
 
 Each package is a compiled workspace library: `tsc` emits to `<pkg>/dist`, consumers resolve through the package `exports`. The package **name equals the import alias** (e.g. `packages/backend-competition/assembly` is `@badman/backend-assembly`). Key ones:
 
-- `@badman/backend-database` — All Sequelize models + `DatabaseModule`
+- `@badman/backend-database` — All Sequelize models + `DatabaseModule`, and `findLatestRankingPlaces` (`src/queries/`): the one lookup for "a player's ranking place on or before date X for ranking system Y". Use it instead of a `RankingPlace` include or raw query.
 - `@badman/backend-graphql` — All resolvers + `GrapqhlModule` + scalars + query utilities
 - `@badman/backend-authorization` — JWT/Auth0 guard (`PermGuard`), `@User()` decorator, `@AllowAnonymous()`
 - `@badman/backend-queue` — Bull queue setup, queue name constants
 - `@badman/backend-translate` — `nestjs-i18n` module, i18n JSON files (assets ship inside the package's `dist`)
 - `@badman/backend-enrollment` — Enrollment validation rule engine
 - `@badman/backend-ranking` — Ranking calculation services
-- `@badman/utils` — business-logic helpers, enums, config schema, **`i18n.generated.ts`** (emitted by **nestjs-i18n** when the API boots—see Translation / i18n below; never edit manually).
+- `@badman/utils` — business-logic helpers, enums, config schema, the season module (`src/lib/season/`: `enrollmentSeason`, `competitionSeasonWindow`, `seasonHalf`, `membershipWindow`, `enrollmentRankingDate`, `lineUpRankingWindow`, …, each with its regulation reference; the only place for season and ranking-date rules, so don't compare months or years inline; spec 039), **`i18n.generated.ts`** (emitted by **nestjs-i18n** when the API boots—see Translation / i18n below; never edit manually).
 
 Adding a dependency between packages: add `"@badman/<name>": "workspace:*"` to the consumer's `package.json` and run `pnpm install`. Do NOT add tsconfig path aliases — they were removed in the Turborepo migration.
 

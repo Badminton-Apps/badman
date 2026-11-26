@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Query, Res } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Logger, Query, Res } from "@nestjs/common";
 import { GameExportService } from "../../services";
 import * as XLSX from "xlsx";
 import { FastifyReply } from "fastify";
@@ -12,9 +12,15 @@ export class TwizzitController {
   @Get("games")
   async getTwizzitGames(
     @Res() response: FastifyReply,
-    @Query() query: { year: number; clubId: string }
+    @Query() query: { year: number | string; clubId: string }
   ) {
-    const games = await this._export.gamesExport(query.year, query.clubId);
+    // Query parameters arrive as strings (no transform pipe in the app).
+    if (!/^\d{4}$/.test(String(query.year ?? ""))) {
+      throw new BadRequestException("year must be a four-digit season year");
+    }
+    const year = Number(query.year);
+
+    const games = await this._export.gamesExport(year, query.clubId);
 
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(games, {

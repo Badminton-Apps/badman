@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../jest.also-run-in-timezone";
 import { ClubMembershipType } from "@badman/utils";
 import * as XLSX from "xlsx";
 import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
@@ -145,8 +146,8 @@ describe("LoansService", () => {
   });
 });
 
-// Characterization (BAD-409): the dates a loan writes. TZ is pinned to UTC by
-// jest.global-setup.js. These pin today's behaviour for the S3 groundwork.
+// Characterization (BAD-409): the dates a loan writes. Tests run with
+// TZ=Europe/Brussels, as production does. These pin today's behaviour for the S3 groundwork.
 describe("LoansService membership dates (characterization)", () => {
   let service: LoansService;
 
@@ -194,3 +195,6 @@ describe("LoansService membership dates (characterization)", () => {
     expect(end.toISOString()).toBe("2026-06-30T21:59:59.999Z");
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

@@ -2,6 +2,7 @@ import { SeederContext } from "./seeder-context";
 import { withErrorHandling } from "./error-handler";
 import { getClubById, generateTeamName } from "./club-team-naming";
 import { hasActiveMembership } from "./membership-helpers";
+import { competitionSeasonWindow, enrollmentSeason, isInCompetitionSeason } from "./season";
 import type {
   Player,
   Club,
@@ -352,15 +353,15 @@ async function createEncounters(
 ): Promise<void> {
   console.log("⚔️ Creating Encounters...");
   const now = new Date();
-  const currentMonth = now.getMonth(); // 0-indexed
 
-  // Competition season runs Sep 1 (month 8) → Apr 30 (month 3) of the following year.
-  // If we're in the off-season (May–Aug, month 4–7), anchor dates to the season window
-  // instead of now so encounters don't land in off-season months.
-  const inOffSeason = currentMonth >= 4 && currentMonth < 8;
-  const effectiveSeason = season ?? (currentMonth >= 4 ? now.getFullYear() : now.getFullYear() - 1);
-  const seasonStart = new Date(`${effectiveSeason}-09-01`);
-  const seasonEnd = new Date(`${effectiveSeason + 1}-04-30`);
+  // Competition season runs 1 Sep → 30 Apr of the following year. If we're in the
+  // off-season (May–Aug), anchor dates to the season window instead of now so
+  // encounters don't land in off-season months.
+  const effectiveSeason = season ?? enrollmentSeason(now);
+  const inOffSeason = !isInCompetitionSeason(now, effectiveSeason);
+  const competitionWindow = competitionSeasonWindow(effectiveSeason);
+  const seasonStart = new Date(competitionWindow.from);
+  const seasonEnd = new Date(competitionWindow.to);
   const anchor = inOffSeason ? seasonStart : now;
   const halfCount = Math.floor(encounterCount / 2);
   // Spread encounters evenly across the season window

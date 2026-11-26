@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../jest.also-run-in-timezone";
 import { Club, EncounterCompetition } from "@badman/backend-database";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Op } from "sequelize";
@@ -38,3 +39,6 @@ describe("GameExportService", () => {
     expect(to.toISOString()).toBe("2027-08-31T22:00:00.000Z");
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

@@ -1,4 +1,5 @@
 import { EncounterCompetition } from "@badman/backend-database";
+import { seasonHalf } from "@badman/utils";
 import {
   EncounterValidationOutput,
   EncounterValidationData,
@@ -6,7 +7,7 @@ import {
 } from "../../../models";
 import { Rule } from "./_rule.base";
 import { Logger } from "@nestjs/common";
-import moment from "moment";
+import { isSameDay } from "date-fns";
 
 export type TeamClubRuleParams = {
   encounterId: string;
@@ -72,7 +73,7 @@ export class TeamClubRule extends Rule {
       } as EncounterCompetition;
 
       for (const suggestedDate of suggestedDates) {
-        const suggestedSemester1 = suggestedDate.date.getFullYear() === season;
+        const suggestedSemester1 = seasonHalf(suggestedDate.date, season) === "first";
 
         workingEncounter.date = suggestedDate.date;
         const encountersSemester = suggestedSemester1 ? encountersSemester1 : encountersSemester2;
@@ -99,7 +100,8 @@ export class TeamClubRule extends Rule {
         // Check if teams have other encounters on the suggested date
         const conflictingEncounters = encountersSemester.filter(
           (e) =>
-            moment(e.date).isSame(suggestedDate.date, "day") &&
+            !!e.date &&
+            isSameDay(e.date, suggestedDate.date) &&
             (e.homeTeamId === workingEncounter.homeTeamId ||
               e.awayTeamId === workingEncounter.homeTeamId ||
               e.homeTeamId === workingEncounter.awayTeamId ||

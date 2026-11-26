@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../../jest.also-run-in-timezone";
 import {
   Club,
   ClubPlayerMembership,
@@ -173,3 +174,6 @@ describe("enrollment validation season handling (characterization)", () => {
     });
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

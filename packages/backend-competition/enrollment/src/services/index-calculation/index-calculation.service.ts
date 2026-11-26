@@ -1,5 +1,13 @@
-import { Player, RankingPlace, RankingSystem, SubEventCompetition } from "@badman/backend-database";
 import {
+  findLatestRankingPlaces,
+  Player,
+  RankingPlace,
+  RankingSystem,
+  SubEventCompetition,
+} from "@badman/backend-database";
+import {
+  CalendarDate,
+  enrollmentRankingDate,
   getBestPlayersFromTeam,
   getIndexFromPlayers,
   IndexPlayer,
@@ -7,8 +15,7 @@ import {
 } from "@badman/utils";
 import { Injectable, Logger } from "@nestjs/common";
 import * as Sentry from "@sentry/nestjs";
-import moment from "moment";
-import { QueryTypes, Transaction } from "sequelize";
+import { Transaction } from "sequelize";
 import {
   IndexCalculationContributingPlayer,
   IndexCalculationFailure,
@@ -21,9 +28,9 @@ import {
  * Resolves a team's strength index using the EnrollmentValidationService's
  * canonical rule:
  *
- *   • RankingPlace.rankingDate <= moment([season, 5, 10]).toDate()
- *     (June 10 of season; moment month is 0-indexed)
- *   • ORDER BY rankingDate DESC, keep the first row per player
+ *   • The newest RankingPlace per player on or before
+ *     `enrollmentRankingDate(season)` (June 10 of season), looked up with
+ *     `findLatestRankingPlaces`
  *   • No `updatePossible` filter — both confirmed and in-progress rows count,
  *     same as the validator.
  *   • Missing per-discipline values fall back to
@@ -333,8 +340,12 @@ export class IndexCalculationService {
   ): Promise<Map<string, RankingPlace>> {
     if (playerIds.length === 0) return new Map();
 
-    const cutoff = moment([season, 5, 10]).toDate();
-    const rows = await this._fetchLatestPlacesPerPlayer(playerIds, systemId, cutoff, transaction);
+    const rows = await this._fetchLatestPlacesPerPlayer(
+      playerIds,
+      systemId,
+      enrollmentRankingDate(season),
+      transaction
+    );
 
     const map = new Map<string, RankingPlace>();
     for (const row of rows) {
@@ -346,45 +357,27 @@ export class IndexCalculationService {
   }
 
   /**
-   * Returns one row per player — the most-recent RankingPlace at or before
-   * `cutoff` for the given `systemId`. Uses Postgres `DISTINCT ON` and selects
-   * only the columns needed for index calculation, avoiding full-history
-   * fetches and Sequelize model hydration.
+   * Returns one row per player — the most-recent RankingPlace on or before
+   * `onOrBefore` for the given `systemId` — from the shared ranking lookup
+   * (`findLatestRankingPlaces`, one query for all players).
    *
-   * Extracted so unit tests can mock the DB boundary without standing up the
-   * Sequelize raw-query plumbing.
+   * Kept as a seam so unit tests can mock the DB boundary.
    */
   protected async _fetchLatestPlacesPerPlayer(
     playerIds: string[],
     systemId: string,
-    cutoff: Date,
+    onOrBefore: CalendarDate,
     transaction?: Transaction
   ): Promise<
     Array<{ playerId: string; single: number | null; double: number | null; mix: number | null }>
   > {
-    const sequelize = RankingPlace.sequelize;
-    if (!sequelize) {
-      throw new Error("RankingPlace.sequelize is not initialized");
-    }
-
-    return sequelize.query<{
-      playerId: string;
-      single: number | null;
-      double: number | null;
-      mix: number | null;
-    }>(
-      `SELECT DISTINCT ON ("playerId") "playerId", "single", "double", "mix"
-       FROM ranking."RankingPlaces"
-       WHERE "systemId" = :systemId
-         AND "rankingDate" <= :cutoff
-         AND "playerId" IN (:playerIds)
-       ORDER BY "playerId", "rankingDate" DESC`,
-      {
-        type: QueryTypes.SELECT,
-        replacements: { systemId, cutoff, playerIds },
-        transaction,
-      }
-    );
+    const places = await findLatestRankingPlaces({ playerIds, systemId, onOrBefore, transaction });
+    return [...places.values()].map(({ playerId, single, double, mix }) => ({
+      playerId,
+      single,
+      double,
+      mix,
+    }));
   }
 
   /** Batch-resolve player gender from the Player table. */

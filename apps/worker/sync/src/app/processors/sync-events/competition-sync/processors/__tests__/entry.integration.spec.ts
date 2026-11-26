@@ -1,6 +1,7 @@
 import {
   RANKING_LOOKUP_SEASON,
   RankingLookupFixture,
+  RankingSystem,
   connectRankingLookupDb,
   createRankingLookupFixture,
 } from "@badman/backend-database";
@@ -9,9 +10,13 @@ import { CompetitionSyncEntryProcessor } from "../entry";
 
 /**
  * Integration test (BAD-409): pins which ranking place the sync worker stores
- * as enrollment levels today, against the dev Postgres. Rule today: the newest
- * place at or before 10 June of the team's season, any publication, without a
- * ranking-system filter (a bug that BAD-392 fixes).
+ * as enrollment levels, against the dev Postgres. Rule: the newest place at or
+ * before 10 June of the team's season, any publication, in the primary ranking
+ * system (the system filter was added in BAD-392).
+ *
+ * The fixture's systems are not primary, so the dev database's real primary
+ * system stays untouched; the test makes fixture system A the primary one by
+ * stubbing that single lookup.
  *
  * Opt-in: RUN_INTEGRATION_TESTS=1 with the docker dev database running.
  */
@@ -26,6 +31,7 @@ describeOrSkip("CompetitionSyncEntryProcessor ranking lookup (integration)", () 
 
   beforeAll(async () => {
     fixture = await createRankingLookupFixture();
+    jest.spyOn(RankingSystem, "findOne").mockResolvedValue(fixture.systemA);
     const players = [fixture.exact, fixture.twoSystems, fixture.noPlace, fixture.weeklyOnly];
 
     const visualService = {
@@ -62,6 +68,7 @@ describeOrSkip("CompetitionSyncEntryProcessor ranking lookup (integration)", () 
   }, 30000);
 
   afterAll(async () => {
+    jest.restoreAllMocks();
     await fixture?.cleanup();
     await sequelize?.close();
   });
@@ -70,8 +77,8 @@ describeOrSkip("CompetitionSyncEntryProcessor ranking lookup (integration)", () 
     expect(stored.get(fixture.exact.id)?.single).toBe(6);
   });
 
-  it("current behaviour, fixed in BAD-392: takes the newest place of any ranking system", () => {
-    expect(stored.get(fixture.twoSystems.id)?.single).toBe(3);
+  it("takes the place of the primary ranking system, not a newer one of another system (BAD-392)", () => {
+    expect(stored.get(fixture.twoSystems.id)?.single).toBe(8);
   });
 
   it("counts weekly (non-update) publications", () => {
