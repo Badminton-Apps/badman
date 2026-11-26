@@ -1,3 +1,4 @@
+import { alsoRunInTimezone } from "../../../../../jest.also-run-in-timezone";
 import { ClubMembershipType } from "@badman/utils";
 import * as XLSX from "xlsx";
 import { Club, ClubPlayerMembership, Player } from "@badman/backend-database";
@@ -194,3 +195,6 @@ describe("LoansService membership dates (characterization)", () => {
     expect(end.toISOString()).toBe("2026-06-30T21:59:59.999Z");
   });
 });
+
+// The season logic no longer depends on the server timezone (BAD-391).
+alsoRunInTimezone(__filename, "UTC");

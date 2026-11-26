@@ -853,6 +853,9 @@ importers:
       '@nestjs/graphql':
         specifier: ^13.0.0
         version: 13.4.2(@nestjs/common@11.1.26(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.26)(class-validator@0.14.4)(graphql@16.14.2)(reflect-metadata@0.2.2)
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.4.0
       graphql-type-json:
         specifier: ^0.3.2
         version: 0.3.2(graphql@16.14.2)
@@ -1142,6 +1145,9 @@ importers:
       dataloader:
         specifier: ^2.2.3
         version: 2.2.3
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.4.0
       geojson:
         specifier: ^0.5.0
         version: 0.5.0
