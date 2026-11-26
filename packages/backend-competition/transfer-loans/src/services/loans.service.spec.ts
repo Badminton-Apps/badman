@@ -145,8 +145,8 @@ describe("LoansService", () => {
   });
 });
 
-// Characterization (BAD-409): the dates a loan writes. TZ is pinned to UTC by
-// jest.global-setup.js. These pin today's behaviour for the S3 groundwork.
+// Characterization (BAD-409): the dates a loan writes. Tests run with
+// TZ=Europe/Brussels, as production does. These pin today's behaviour for the S3 groundwork.
 describe("LoansService membership dates (characterization)", () => {
   let service: LoansService;
 
