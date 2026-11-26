@@ -2,6 +2,8 @@
 
 <!--
 Versions (newest first):
+- v1.7 — 2026-11-25 — Add "Season module: database instants assume
+  midnight-in-Brussels storage" from spec 039 (S3 groundwork).
 - v1.6 — 2026-11-13 — Remove the duplicated "Enrollment validation:
   cross-request caching deferred" entry.
 - v1.5 — 2026-06-10 — Resolve "Legacy Angular frontend" (deleted in feature
@@ -47,6 +49,7 @@ Versions (newest first):
 | [Team: no DB uniqueness on `Teams(link, season)`](#team-no-db-uniqueness-on-teamslink-season)                                    | Backend  | `packages/backend-database/src/models/team.model.ts`, `packages/backend-graphql/src/resolvers/team/team.resolver.ts`                           | ~half day                        | First observed duplicate `(link, season)` team in prod, OR a contention bug report on the team-create / season-rollover flow | open   |
 | [Team: FE migration of `createTeam` callers (BAD-128)](#team-fe-migration-of-createteam-callers-bad-128)                         | Frontend | active frontend repo (separate); pointer only here                                                                                             | tracked in Linear                | BAD-128 closes                                                                                                               | open   |
 | [Enrollment validation: cross-request caching deferred](#enrollment-validation-cross-request-caching-deferred)                   | Backend  | `packages/backend-competition/enrollment/src/services/cache/enrollment-validation-cache.service.ts`                                            | ~1–2 days                        | First complaint that repeated `enrollmentValidation(validate: true)` calls are slow across separate GraphQL requests         | open   |
+| [Season module: database instants assume midnight-in-Brussels storage](#season-module-database-instants-assume-midnight-in-brussels-storage) | Backend | `packages/utils/src/lib/season/calendar.ts`, `packages/utils/src/lib/season/season.ts` | M | a service runs without `TZ=Europe/Brussels`, or a feature needs exact membership dates for 2022–2023 data | open |
 | [Turborepo migration deferrals (feature 036)](#turborepo-migration-deferrals-feature-036)                                        | Backend  | `turbo.json`, root `package.json`, `eslint.config.js`                                                                                          | 3 small PRs                      | CI slowness (remote cache), nestjs-i18n upgrade need, or lint-tightening push                                                | open   |
 
 ---
@@ -136,6 +139,14 @@ Versions (newest first):
 - **Fix**: (1) adopt Turborepo Remote Cache when CI time hurts; (2) bump
   nestjs-i18n + fix key typings; (3) re-tighten lint rules and fix the ~9
   violations. Each is a small standalone PR.
+- **Status**: open. **Owner**: unowned.
+
+### Season module: database instants assume midnight-in-Brussels storage
+
+- **Where**: [packages/utils/src/lib/season/calendar.ts](../packages/utils/src/lib/season/calendar.ts) (`storedInstant`), used by `membershipWindow`, `membershipCheckInstant` and `twizzitExportWindow` in [season.ts](../packages/utils/src/lib/season/season.ts).
+- **What**: memberships and the Twizzit window are compared as instants at midnight in Brussels (1 July = 30 June 22:00 UTC), because the services run with `TZ=Europe/Brussels` on Render and wrote them that way. Nothing in the database states or enforces that convention. The production check (research R3, 2026-11-25) shows about 90% of rows follow it; about 10% sit at midnight UTC (ranking publications from 2022–2023, membership starts from older uploads), and a few dozen at other times (manual edits).
+- **Why we shipped it**: spec 039 keeps today's production values, and the midnight-UTC rows give the same results as today (the lookups and checks compare against midnight in Brussels both before and after). Normalizing stored data needs a migration and was out of scope. `storedInstant` names the assumption in one place.
+- **Fix**: normalize the midnight-UTC rows to midnight in Brussels with a migration (or store membership and publication dates as `DATE` columns and compare calendar dates), and keep `TZ=Europe/Brussels` on every service until then.
 - **Status**: open. **Owner**: unowned.
 
 ## Frontend
