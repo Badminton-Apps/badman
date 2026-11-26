@@ -4,6 +4,9 @@
     "tsconfig.base.json",
     "jest.preset.js",
     "jest.setup.js",
+    // test results depend on the timezone these set up.
+    "jest.global-setup.js",
+    "jest.also-run-in-timezone.ts",
     ".nvmrc",
     // lint output depends on these; without them a config change
     // leaves every package's lint result cached and stale.
@@ -17,7 +20,9 @@
       "outputs": ["dist/**"]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      // TZ=UTC pnpm turbo run test must not replay the Brussels results.
+      "env": ["TZ"]
     },
     "lint": {
       "dependsOn": ["^build"]
